@@ -86,23 +86,55 @@ class Booking extends Model
         $this->save();
     }
 
+    // --- Status & State Machine ---
+
+    public function getStatusEnumAttribute(): \Modules\AutoServe\Domain\Enums\BookingStatus
+    {
+        return \Modules\AutoServe\Domain\Enums\BookingStatus::fromString($this->attributes['status'] ?? 'pending');
+    }
+
+    public function setStatusAttribute($value): void
+    {
+        $target = $value instanceof \Modules\AutoServe\Domain\Enums\BookingStatus
+            ? $value
+            : \Modules\AutoServe\Domain\Enums\BookingStatus::tryFromString((string) $value);
+
+        if ($target && isset($this->attributes['status']) && $this->exists) {
+            $current = \Modules\AutoServe\Domain\Enums\BookingStatus::tryFromString((string) $this->attributes['status']);
+            if ($current && ! $current->canTransitionTo($target) && $current !== $target) {
+                throw \Modules\Shared\Domain\Exceptions\InvalidStateTransition::fromTo($current, $target, 'Booking');
+            }
+        }
+
+        $this->attributes['status'] = $target ? $target->value : (string) $value;
+    }
+
+    public function transitionTo(\Modules\AutoServe\Domain\Enums\BookingStatus|string $next): self
+    {
+        $target = $next instanceof \Modules\AutoServe\Domain\Enums\BookingStatus
+            ? $next
+            : \Modules\AutoServe\Domain\Enums\BookingStatus::fromString($next);
+
+        $this->status = $target;
+        $this->save();
+
+        return $this;
+    }
+
     // --- Status helpers ---
-    public function isPending(): bool { return $this->status === 'pending'; }
-    public function isConfirmed(): bool { return $this->status === 'confirmed'; }
-    public function isInProgress(): bool { return $this->status === 'in_progress'; }
-    public function isCompleted(): bool { return $this->status === 'completed'; }
-    public function isInvoiced(): bool { return $this->status === 'invoiced'; }
+    public function isPending(): bool { return $this->status === \Modules\AutoServe\Domain\Enums\BookingStatus::Pending->value; }
+    public function isConfirmed(): bool { return $this->status === \Modules\AutoServe\Domain\Enums\BookingStatus::Confirmed->value; }
+    public function isInProgress(): bool { return $this->status === \Modules\AutoServe\Domain\Enums\BookingStatus::InProgress->value; }
+    public function isWaitingParts(): bool { return $this->status === \Modules\AutoServe\Domain\Enums\BookingStatus::WaitingParts->value; }
+    public function isCompleted(): bool { return $this->status === \Modules\AutoServe\Domain\Enums\BookingStatus::Completed->value; }
+    public function isInvoiced(): bool { return $this->status === \Modules\AutoServe\Domain\Enums\BookingStatus::Invoiced->value; }
+    public function isCancelled(): bool { return $this->status === \Modules\AutoServe\Domain\Enums\BookingStatus::Cancelled->value; }
 
     /** Label warna status untuk tampilan badge */
     public function getStatusBadgeAttribute(): string
     {
-        return match($this->status) {
-            'pending' => 'bg-yellow-100 text-yellow-800',
-            'confirmed' => 'bg-blue-100 text-blue-800',
-            'in_progress' => 'bg-indigo-100 text-indigo-800',
-            'completed' => 'bg-green-100 text-green-800',
-            'invoiced' => 'bg-gray-100 text-gray-800',
-            default => 'bg-gray-100 text-gray-800',
-        };
+        $enum = \Modules\AutoServe\Domain\Enums\BookingStatus::tryFromString($this->status);
+
+        return $enum ? $enum->badgeClasses() : 'bg-slate-500/10 text-slate-400 border-slate-500/20';
     }
 }
