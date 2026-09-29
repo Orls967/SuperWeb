@@ -35,4 +35,7 @@
 - **Decision:** `PaymentGatewayService::capture` executes an atomic ledger transaction that: (1) moves the final amount from `escrow:payment:IDR` to `revenueSplits`, and (2) immediately credits any remaining difference (`held - final`) back to the payer's wallet account.
 - **Reason:** Ensures funds are never stranded in escrow and the ledger remains perfectly balanced and reconciled without requiring manual customer refund requests.
 
-
+## 2026-09-30: Inventory Reservation & Checkout Morph Resolution
+- **Context:** Store checkout required simultaneous inventory reservation, wallet balance verification with PIN, payment gateway charging, order fulfillment (including auto-acquiring cars to user's garage), and rollback on failure.
+- **Decision:** Reservation deducts cached stock with `RESERVATION` reason movement. If payment succeeds, reservation is committed to `SALE` reason. If checkout fails, reservations are immediately released via `RESERVATION_RELEASE`. In `PaymentGatewayService`, `payable->getMorphClass()` is used so morph maps resolve properly to alias strings (e.g. `store_order`).
+- **Reason:** Keeps inventory counts strictly truthful without race conditions, guarantees zero stock leakage, and integrates seamlessly with double-entry revenue splits and car ownership transfer.

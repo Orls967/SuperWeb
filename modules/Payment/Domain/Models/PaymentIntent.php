@@ -37,6 +37,7 @@ class PaymentIntent extends Model
     ];
 
     protected $casts = [
+        'status' => PaymentIntentStatus::class,
         'amount' => 'string',
         'expires_at' => 'datetime',
     ];
@@ -71,21 +72,23 @@ class PaymentIntent extends Model
         return Money::of($this->currency, $this->amount ?: '0');
     }
 
-    public function getStatusEnumAttribute(): PaymentIntentStatus
+    public function getStatusEnum(): PaymentIntentStatus
     {
-        return PaymentIntentStatus::from($this->status);
+        return $this->status instanceof PaymentIntentStatus
+            ? $this->status
+            : PaymentIntentStatus::from($this->status);
     }
 
     public function transitionTo(PaymentIntentStatus|string $target): self
     {
         $targetEnum = $target instanceof PaymentIntentStatus ? $target : PaymentIntentStatus::from($target);
-        $currentEnum = PaymentIntentStatus::from($this->status);
+        $currentEnum = $this->getStatusEnum();
 
         if (! $currentEnum->canTransitionTo($targetEnum)) {
             throw InvalidPaymentStateException::fromTo($currentEnum, $targetEnum);
         }
 
-        $this->status = $targetEnum->value;
+        $this->status = $targetEnum;
         $this->save();
 
         return $this;
@@ -93,31 +96,31 @@ class PaymentIntent extends Model
 
     public function isPending(): bool
     {
-        return $this->status === PaymentIntentStatus::PENDING->value;
+        return $this->getStatusEnum() === PaymentIntentStatus::PENDING;
     }
 
     public function isHeld(): bool
     {
-        return $this->status === PaymentIntentStatus::HELD->value;
+        return $this->getStatusEnum() === PaymentIntentStatus::HELD;
     }
 
     public function isCaptured(): bool
     {
-        return $this->status === PaymentIntentStatus::CAPTURED->value;
+        return $this->getStatusEnum() === PaymentIntentStatus::CAPTURED;
     }
 
     public function isReleased(): bool
     {
-        return $this->status === PaymentIntentStatus::RELEASED->value;
+        return $this->getStatusEnum() === PaymentIntentStatus::RELEASED;
     }
 
     public function isRefunded(): bool
     {
-        return $this->status === PaymentIntentStatus::REFUNDED->value;
+        return $this->getStatusEnum() === PaymentIntentStatus::REFUNDED;
     }
 
     public function isExpired(): bool
     {
-        return $this->status === PaymentIntentStatus::EXPIRED->value;
+        return $this->getStatusEnum() === PaymentIntentStatus::EXPIRED;
     }
 }

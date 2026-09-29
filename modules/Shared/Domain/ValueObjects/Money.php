@@ -28,6 +28,11 @@ final readonly class Money
         return self::of('IDR', $amount);
     }
 
+    public static function fromIdr(string|int|float|BigDecimal $amount): self
+    {
+        return self::IDR($amount);
+    }
+
     public static function zero(string $assetCode = 'IDR'): self
     {
         return new self($assetCode, BigDecimal::zero());

@@ -128,6 +128,21 @@
                     </button>
                 </form>
                 @endif
+
+                @php
+                    $storeProduct = \Modules\Store\Domain\Models\Product::where('productable_type', 'dex_car')
+                        ->where('productable_id', $car->id)
+                        ->where('is_listed', true)
+                        ->where('cached_stock', '>', 0)
+                        ->first();
+                @endphp
+
+                @if($storeProduct)
+                <a href="{{ route('store.products.show', $storeProduct->slug) }}" class="px-6 py-3 rounded-xl font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all shadow-lg shadow-amber-500/25 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                    Beli di Store ({{ $storeProduct->formatted_price }})
+                </a>
+                @endif
             </div>
             @endauth
         </div>

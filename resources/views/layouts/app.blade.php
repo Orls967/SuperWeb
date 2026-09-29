@@ -90,7 +90,7 @@
                         <span x-show="sidebarOpen" x-cloak>Buat Booking</span>
                     </a>
 
-                    @if(auth()->user()->isStaff())
+                    @if(auth()->check() && auth()->user()->isStaff())
                     <div class="pt-4 pb-2 px-3" x-show="sidebarOpen" x-cloak>
                         <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Master Data</p>
                     </div>
@@ -139,10 +139,47 @@
                         <span x-show="sidebarOpen" x-cloak>Mutasi Rekening</span>
                     </a>
 
-                    @if(auth()->user()->isAdmin())
+                    @if(auth()->check() && auth()->user()->isAdmin())
                     <a href="{{ route('admin.ledger.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('admin.ledger.*') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         <span x-show="sidebarOpen" x-cloak>Ledger Pembukuan</span>
+                    </a>
+                    @endif
+
+                    <div class="pt-4 pb-2 px-3" x-show="sidebarOpen" x-cloak>
+                        <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Store & Merchandise</p>
+                    </div>
+
+                    <a href="{{ route('store.catalog.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.catalog.*') || request()->routeIs('store.products.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Katalog Toko</span>
+                    </a>
+
+                    @auth
+                    <a href="{{ route('store.cart.index') }}" class="flex items-center justify-between px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.cart.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            <span x-show="sidebarOpen" x-cloak>Keranjang</span>
+                        </div>
+                        <span x-show="sidebarOpen" x-cloak id="nav-cart-badge" class="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-300">
+                            {{ \Modules\Store\Domain\Models\Cart::where('user_id', auth()->id())->first()?->items_count ?? 0 }}
+                        </span>
+                    </a>
+
+                    <a href="{{ route('store.orders.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.orders.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Pesanan Saya</span>
+                    </a>
+                    @endauth
+
+                    @if(auth()->check() && auth()->user()->isAdmin())
+                    <a href="{{ route('store.admin.orders.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.admin.orders.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Admin: Pesanan Toko</span>
+                    </a>
+                    <a href="{{ route('store.admin.products.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.admin.products.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Admin: Produk & Stok</span>
                     </a>
                     @endif
                 </nav>
@@ -168,6 +205,14 @@
                     </div>
 
                     <div class="flex items-center gap-4" x-data="{ dropdownOpen: false }">
+                        @auth
+                        <a href="{{ route('store.cart.index') }}" class="relative p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-all border border-transparent hover:border-slate-700/60" title="Keranjang Belanja">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                            <span id="topbar-cart-badge" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 text-[10px] font-bold rounded-full bg-amber-500 text-slate-950 flex items-center justify-center">
+                                {{ \Modules\Store\Domain\Models\Cart::where('user_id', auth()->id())->first()?->items_count ?? 0 }}
+                            </span>
+                        </a>
+
                         <a href="{{ route('wallet.index') }}" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-indigo-500/50 transition-all text-xs font-medium">
                             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                             <span class="text-slate-400">Saldo:</span>
@@ -194,6 +239,14 @@
                                 </form>
                             </div>
                         </div>
+                        @else
+                        <a href="{{ route('login') }}" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-all">
+                            Masuk
+                        </a>
+                        <a href="{{ route('register') }}" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold text-xs transition-all">
+                            Daftar
+                        </a>
+                        @endauth
                     </div>
                 </header>
 

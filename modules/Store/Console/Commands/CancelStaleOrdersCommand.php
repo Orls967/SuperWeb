@@ -1,0 +1,58 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Store\Console\Commands;
+
+use Illuminate\Console\Command;
+use Modules\Inventory\Contracts\InventoryService;
+use Modules\Store\Domain\Enums\OrderStatus;
+use Modules\Store\Domain\Models\Order;
+
+class CancelStaleOrdersCommand extends Command
+{
+    protected $signature = 'store:cancel-stale-orders {--minutes=30 : Batas waktu menit pesanan pending}';
+
+    protected $description = 'Batalkan pesanan pending payment yang melewati batas waktu dan lepaskan reservasi stok';
+
+    public function handle(InventoryService $inventoryService): int
+    {
+        $minutes = (int) $this->option('minutes');
+        $cutoff = now()->subMinutes($minutes);
+
+        $staleOrders = Order::where('status', OrderStatus::PENDING_PAYMENT->value)
+            ->where('created_at', '<=', $cutoff)
+            ->with('items')
+            ->get();
+
+        if ($staleOrders->isEmpty()) {
+            $this->info("Tidak ada pesanan pending payment yang kedaluwarsa (> {$minutes} menit).");
+
+            return self::SUCCESS;
+        }
+
+        $count = 0;
+        foreach ($staleOrders as $order) {
+            foreach ($order->items as $item) {
+                if ($item->reservation_id) {
+                    $inventoryService->release(
+                        $item->reservation_id,
+                        "Auto-cancel: Pesanan {$order->number} tidak dibayar dalam {$minutes} menit"
+                    );
+                }
+            }
+
+            $order->status = OrderStatus::CANCELLED;
+            $order->cancelled_at = now();
+            $order->cancellation_reason = "Kedaluwarsa: Tidak dibayar dalam {$minutes} menit";
+            $order->save();
+
+            $count++;
+            $this->line("Pesanan {$order->number} berhasil dibatalkan dan reservasi stok dilepaskan.");
+        }
+
+        $this->info("Total {$count} pesanan kedaluwarsa berhasil dibatalkan.");
+
+        return self::SUCCESS;
+    }
+}

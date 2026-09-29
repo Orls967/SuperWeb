@@ -58,17 +58,19 @@ class PaymentGatewayService implements PaymentGateway
             }
         }
 
+        $payableType = method_exists($payable, 'getMorphClass') ? $payable->getMorphClass() : get_class($payable);
+
         $txKey = 'tx_charge_'.$idempotencyKey;
         $dto = new PostingDTO(
             type: TransactionType::PAYMENT->value,
             description: $payable->payableDescription(),
             idempotencyKey: $txKey,
             entries: $entries,
-            referenceType: get_class($payable),
+            referenceType: $payableType,
             referenceId: method_exists($payable, 'getKey') ? $payable->getKey() : null,
             meta: [
                 'payer_id' => $payer->id,
-                'payable_type' => get_class($payable),
+                'payable_type' => $payableType,
                 'amount' => $amount->amount->__toString(),
             ],
             createdBy: $payer->id,
@@ -80,7 +82,7 @@ class PaymentGatewayService implements PaymentGateway
         $intent = PaymentIntent::create([
             'uuid' => (string) Str::uuid(),
             'payer_id' => $payer->id,
-            'payable_type' => get_class($payable),
+            'payable_type' => $payableType,
             'payable_id' => method_exists($payable, 'getKey') ? $payable->getKey() : null,
             'amount' => $amount->amount->__toString(),
             'currency' => $amount->assetCode,
@@ -111,17 +113,19 @@ class PaymentGatewayService implements PaymentGateway
             PostingEntryDTO::forCode($escrowCode, $amount->assetCode, $amount->amount),
         ];
 
+        $payableType = method_exists($payable, 'getMorphClass') ? $payable->getMorphClass() : get_class($payable);
+
         $txKey = 'tx_hold_'.$idempotencyKey;
         $dto = new PostingDTO(
             type: TransactionType::HOLD->value,
             description: 'Hold Escrow: '.$payable->payableDescription(),
             idempotencyKey: $txKey,
             entries: $entries,
-            referenceType: get_class($payable),
+            referenceType: $payableType,
             referenceId: method_exists($payable, 'getKey') ? $payable->getKey() : null,
             meta: [
                 'payer_id' => $payer->id,
-                'payable_type' => get_class($payable),
+                'payable_type' => $payableType,
                 'amount' => $amount->amount->__toString(),
             ],
             createdBy: $payer->id,
@@ -133,7 +137,7 @@ class PaymentGatewayService implements PaymentGateway
         $intent = PaymentIntent::create([
             'uuid' => (string) Str::uuid(),
             'payer_id' => $payer->id,
-            'payable_type' => get_class($payable),
+            'payable_type' => $payableType,
             'payable_id' => method_exists($payable, 'getKey') ? $payable->getKey() : null,
             'amount' => $amount->amount->__toString(),
             'currency' => $amount->assetCode,

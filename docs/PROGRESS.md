@@ -34,14 +34,14 @@
 - [x] 2.7 Quality gate Fase 2
 
 ## FASE 3 — CATALOG, INVENTORY & STORE
-- [ ] 3.1 Inventory: stock_movements, InventoryService
-- [ ] 3.2 store_products + store_items + store_categories, migrasi sparepart
-- [ ] 3.3 Refactor AutoServe stok → InventoryService
-- [ ] 3.4 Mobil sebagai produk (dex_car → store_product)
-- [ ] 3.5 Cart & Checkout, Orders, auto-cancel
-- [ ] 3.6 UI Store: katalog, produk, cart, checkout, riwayat order
-- [ ] 3.7 Tests: checkout, stok kurang, saldo kurang, beli mobil → Vehicle, refund
-- [ ] 3.8 Quality gate Fase 3
+- [x] 3.1 Inventory: stock_movements, InventoryService
+- [x] 3.2 store_products + store_items + store_categories, migrasi sparepart
+- [x] 3.3 Refactor AutoServe stok → InventoryService
+- [x] 3.4 Mobil sebagai produk (dex_car → store_product)
+- [x] 3.5 Cart & Checkout, Orders, auto-cancel
+- [x] 3.6 UI Store: katalog, produk, cart, checkout, riwayat order
+- [x] 3.7 Tests: checkout, stok kurang, saldo kurang, beli mobil → Vehicle, refund
+- [x] 3.8 Quality gate Fase 3
 
 ## FASE 4 — CRYPTO TRACKER (SIMULASI)
 - [ ] 4.1 crypto_assets + crypto_price_ticks + seeder
