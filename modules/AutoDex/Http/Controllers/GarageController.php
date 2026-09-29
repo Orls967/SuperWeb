@@ -17,10 +17,11 @@ class GarageController extends Controller
     public function index()
     {
         $user = auth()->user();
+        $vehicles = $user->vehicles()->with('car.brand')->where('status', 'active')->latest()->get();
         $garageCars = $user->garageCars()->with('brand')->latest('core_vehicles.created_at')->get();
         $wishlistCars = $user->wishlistCars()->with('brand')->latest('dex_wishlists.created_at')->get();
 
-        return view('autodex.garage', compact('garageCars', 'wishlistCars'));
+        return view('autodex.garage', compact('garageCars', 'wishlistCars', 'vehicles'));
     }
 
     /**

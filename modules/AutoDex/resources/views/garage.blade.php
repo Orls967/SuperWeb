@@ -62,6 +62,18 @@
                     <div class="bg-slate-900/50 rounded-xl p-3 text-sm text-slate-400">
                         Ditambahkan: {{ $car->pivot->created_at->format('d M Y') }}
                     </div>
+
+                    @php
+                        $veh = isset($vehicles) ? $vehicles->firstWhere('car_id', $car->id) : null;
+                    @endphp
+                    @if($veh)
+                    <div class="mt-3">
+                        <a href="{{ $veh->getPassportUrl() }}" target="_blank" class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-semibold transition">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                            Paspor Digital (Hash-Chain) &rarr;
+                        </a>
+                    </div>
+                    @endif
                 </div>
                 @endforeach
             </div>

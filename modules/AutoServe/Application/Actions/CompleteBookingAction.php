@@ -7,6 +7,7 @@ namespace Modules\AutoServe\Application\Actions;
 use Exception;
 use Illuminate\Support\Str;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
+use Modules\AutoServe\Domain\Events\BookingCompleted;
 use Modules\AutoServe\Domain\Models\Booking;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
@@ -21,14 +22,14 @@ class CompleteBookingAction extends BaseAction
         private readonly InventoryService $inventoryService
     ) {}
 
-    public function execute(Booking $booking, ?string $notes = null): Booking
+    public function execute(Booking $booking, ?string $notes = null, ?int $odometerKm = null, ?int $actorId = null): Booking
     {
-        return $this->handle($booking, $notes);
+        return $this->handle($booking, $notes, $odometerKm, $actorId);
     }
 
-    public function handle(Booking $booking, ?string $notes = null): Booking
+    public function handle(Booking $booking, ?string $notes = null, ?int $odometerKm = null, ?int $actorId = null): Booking
     {
-        return $this->transaction(function () use ($booking, $notes) {
+        return $this->transaction(function () use ($booking, $notes, $odometerKm, $actorId) {
             foreach ($booking->spareparts as $sparepart) {
                 $qty = (int) $sparepart->pivot->quantity;
 
@@ -80,6 +81,17 @@ class CompleteBookingAction extends BaseAction
                 }
             }
 
+            // Odometer validation
+            $vehicle = $booking->vehicle;
+            if ($vehicle && $odometerKm !== null) {
+                if ($odometerKm < (int) $vehicle->odometer_km) {
+                    throw new \InvalidArgumentException(
+                        "Angka odometer ({$odometerKm} km) tidak boleh lebih rendah dari odometer tercatat sebelumnya ({$vehicle->odometer_km} km)."
+                    );
+                }
+                $vehicle->update(['odometer_km' => $odometerKm]);
+            }
+
             $booking->refresh();
             $sparepartCost = (float) $booking->spareparts->sum('pivot.subtotal');
             $serviceCost = (float) ($booking->service->price ?? 0);
@@ -91,6 +103,12 @@ class CompleteBookingAction extends BaseAction
                 'sparepart_cost' => $sparepartCost,
                 'grand_total' => $serviceCost + $sparepartCost,
             ]);
+
+            event(new BookingCompleted(
+                booking: $booking,
+                odometerKm: $odometerKm ?? $vehicle?->odometer_km,
+                actorId: $actorId ?? $booking->mechanic_id
+            ));
 
             return $booking;
         });

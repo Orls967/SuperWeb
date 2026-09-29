@@ -8,8 +8,10 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\URL;
 use Modules\AutoDex\Domain\Models\Car;
 use Modules\Shared\Domain\Traits\HasUuid;
 
@@ -64,5 +66,15 @@ class Vehicle extends Model
     public function isActive(): bool
     {
         return $this->status === 'active';
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(VehicleEvent::class, 'vehicle_id')->orderBy('sequence');
+    }
+
+    public function getPassportUrl(): string
+    {
+        return URL::signedRoute('passport.show', ['uuid' => $this->uuid]);
     }
 }

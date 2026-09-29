@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace Modules\Core;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Modules\AutoServe\Domain\Events\BookingCompleted;
 use Modules\Core\Application\Actions\AcquireVehicleAction;
+use Modules\Core\Application\Listeners\RecordBookingCompletedPassportEvent;
+use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
+use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
+use Modules\Core\Domain\Events\VehicleAcquired;
 use Modules\Shared\Application\MenuRegistry;
 
 class CoreServiceProvider extends ServiceProvider
@@ -24,6 +30,10 @@ class CoreServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'core');
 
+        if (file_exists(__DIR__.'/routes/web.php')) {
+            $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        }
+
         // Register default Core menu item
         $registry = $this->app->make(MenuRegistry::class);
         $registry->addItem(
@@ -34,6 +44,22 @@ class CoreServiceProvider extends ServiceProvider
             order: 1,
             group: 'Core',
             activePattern: 'dashboard',
+        );
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                VerifyPassportsCommand::class,
+            ]);
+        }
+
+        // Register Passport Hash-Chain Event Listeners
+        Event::listen(
+            VehicleAcquired::class,
+            RecordVehicleAcquiredPassportEvent::class
+        );
+        Event::listen(
+            BookingCompleted::class,
+            RecordBookingCompletedPassportEvent::class
         );
     }
 }
