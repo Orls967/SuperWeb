@@ -119,6 +119,32 @@
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                         <span x-show="sidebarOpen" x-cloak>My Garage & Wishlist</span>
                     </a>
+
+                    <div class="pt-4 pb-2 px-3" x-show="sidebarOpen" x-cloak>
+                        <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Banking & Finance</p>
+                    </div>
+
+                    <a href="{{ route('wallet.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('wallet.index') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Dompet & Saldo</span>
+                    </a>
+
+                    <a href="{{ route('wallet.transfer') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('wallet.transfer*') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Transfer Dana</span>
+                    </a>
+
+                    <a href="{{ route('wallet.mutasi') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('wallet.mutasi*') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Mutasi Rekening</span>
+                    </a>
+
+                    @if(auth()->user()->isAdmin())
+                    <a href="{{ route('admin.ledger.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('admin.ledger.*') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Ledger Pembukuan</span>
+                    </a>
+                    @endif
                 </nav>
 
                 {{-- Sidebar Toggle --}}
@@ -142,6 +168,12 @@
                     </div>
 
                     <div class="flex items-center gap-4" x-data="{ dropdownOpen: false }">
+                        <a href="{{ route('wallet.index') }}" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-indigo-500/50 transition-all text-xs font-medium">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="text-slate-400">Saldo:</span>
+                            <span class="font-mono font-bold text-white">{{ auth()->user()->walletBalance('IDR')->format() }}</span>
+                        </a>
+
                         <div class="text-right hidden sm:block">
                             <p class="text-sm font-medium text-white">{{ auth()->user()->name }}</p>
                             <p class="text-xs text-slate-400 capitalize">{{ auth()->user()->role }}</p>

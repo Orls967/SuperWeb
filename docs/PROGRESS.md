@@ -10,19 +10,19 @@
 - [x] 0.7 AutoServe: vehicle_id di bookings
 - [x] 0.8 BookingStatus Enum + state machine
 - [x] 0.9 Arch tests batas modul
-- [ ] 0.10 Quality gate Fase 0
+- [x] 0.10 Quality gate Fase 0
 
 ## FASE 1 — CORE BANKING (DOUBLE-ENTRY LEDGER)
-- [ ] 1.1 Migrations (ledger_accounts, ledger_transactions, ledger_entries, wallet_pins)
-- [ ] 1.2 LedgerService (double-entry posting, idempotency, locking)
-- [ ] 1.3 Akun sistem via seeder
-- [ ] 1.4 HasLedgerAccounts trait + auto wallet creation
-- [ ] 1.5 Actions: SetPin, VerifyPin, TopUp, Transfer, FreezeAccount, ManualAdjustment
-- [ ] 1.6 StatementQuery + CSV export
-- [ ] 1.7 bank:reconcile command
-- [ ] 1.8 UI: Wallet, Transfer, Mutasi, Admin Ledger
-- [ ] 1.9 Tests: posting, insufficient funds, idempotency, concurrent, PIN lockout, reconcile
-- [ ] 1.10 Quality gate Fase 1
+- [x] 1.1 Migrations (ledger_accounts, ledger_transactions, ledger_entries, wallet_pins)
+- [x] 1.2 LedgerService (double-entry posting, idempotency, locking)
+- [x] 1.3 Akun sistem via seeder
+- [x] 1.4 HasLedgerAccounts trait + auto wallet creation
+- [x] 1.5 Actions: SetPin, VerifyPin, TopUp, Transfer, FreezeAccount, ManualAdjustment
+- [x] 1.6 StatementQuery + CSV export
+- [x] 1.7 bank:reconcile command
+- [x] 1.8 UI: Wallet, Transfer, Mutasi, Admin Ledger
+- [x] 1.9 Tests: posting, insufficient funds, idempotency, concurrent, PIN lockout, reconcile
+- [x] 1.10 Quality gate Fase 1
 
 ## FASE 2 — PAYMENT HUB + INTEGRASI AUTOSERVE
 - [ ] 2.1 Payable contract

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Modules\AutoDex\Domain\Models\Car;
+use Modules\Banking\Domain\Traits\HasLedgerAccounts;
 use Modules\Core\Domain\Models\Vehicle;
 
 #[Fillable(['name', 'email', 'password', 'phone', 'role'])]
@@ -18,7 +19,7 @@ use Modules\Core\Domain\Models\Vehicle;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, HasLedgerAccounts, Notifiable;
 
     protected function casts(): array
     {

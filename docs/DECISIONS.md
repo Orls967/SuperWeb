@@ -19,3 +19,14 @@
 - **Context:** SQLite doesn't support MySQL ENUM type. Existing migrations use `$table->enum()` which SQLite handles as string with CHECK constraint.
 - **Decision:** For new tables, use `$table->string()` columns with PHP Enum validation. This is more portable and aligns with the "use PHP Enum" pattern in the spec.
 - **Reason:** Better compatibility and type safety through application-level enforcement.
+
+## 2026-09-30: Genesis Liquidity Seeding via Double-Entry Ledger
+- **Context:** System exchange accounts need initial liquidity for simulated exchange and trading.
+- **Decision:** Seed initial liquidity via `LedgerService->post()` with `clearing:external:{ASSET}` as the source account (with `allow_negative=true`), rather than directly inserting arbitrary balance numbers into accounts.
+- **Reason:** Guarantees that `bank:reconcile` passes with 0 discrepancy: global `SUM(entries) == 0` for all assets and `cached_balance == SUM(entries)` for every account from the very start.
+
+## 2026-09-30: Atomicity & Lock Ordering in LedgerService
+- **Context:** Concurrent transactions transferring between multiple accounts can deadlock if locks are acquired in arbitrary order.
+- **Decision:** Collect all distinct involved account IDs and lock them via `whereIn('id', $ids)->orderBy('id', 'asc')->lockForUpdate()`. Balance calculations track running balances per account within the atomic block.
+- **Reason:** Prevents database deadlocks and race conditions completely.
+

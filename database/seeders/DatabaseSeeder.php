@@ -7,6 +7,9 @@ use App\Models\Sparepart;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Modules\Banking\Application\Actions\SetPinAction;
+use Modules\Banking\Application\Actions\TopUpAction;
+use Modules\Banking\database\seeders\BankingSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -91,9 +94,28 @@ class DatabaseSeeder extends Seeder
             Sparepart::create($part);
         }
 
-        // Jalankan seeder AutoDex
+        // Jalankan seeder AutoDex & Banking
         $this->call([
             AutoDexSeeder::class,
+            BankingSeeder::class,
         ]);
+
+        // Inisialisasi Dompet & PIN untuk seeded users
+        $topUp = app(TopUpAction::class);
+        $setPin = app(SetPinAction::class);
+
+        $customer = User::where('email', 'customer@autoserve.test')->first();
+        if ($customer) {
+            $customer->walletAccount('IDR');
+            $setPin->execute($customer, '123456');
+            $topUp->execute($customer, '5000000', 'seed_topup_customer');
+        }
+
+        $admin = User::where('email', 'admin@autoserve.test')->first();
+        if ($admin) {
+            $admin->walletAccount('IDR');
+            $setPin->execute($admin, '123456');
+            $topUp->execute($admin, '25000000', 'seed_topup_admin');
+        }
     }
 }

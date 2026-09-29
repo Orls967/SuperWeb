@@ -6,6 +6,7 @@ arch('controllers do not use DB facade directly')
     ->expect([
         'Modules\AutoServe\Http\Controllers',
         'Modules\AutoDex\Http\Controllers',
+        'Modules\Banking\Http\Controllers',
     ])
     ->not->toUse('Illuminate\Support\Facades\DB');
 
@@ -13,6 +14,7 @@ arch('domain does not depend on Http')
     ->expect([
         'Modules\AutoServe\Domain',
         'Modules\AutoDex\Domain',
+        'Modules\Banking\Domain',
         'Modules\Core\Domain',
         'Modules\Shared\Domain',
     ])
