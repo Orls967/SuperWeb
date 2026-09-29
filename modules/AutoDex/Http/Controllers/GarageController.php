@@ -7,7 +7,6 @@ namespace Modules\AutoDex\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\AutoDex\Domain\Models\Car;
-use Modules\Core\Application\Actions\AcquireVehicleAction;
 
 class GarageController extends Controller
 {
@@ -39,8 +38,8 @@ class GarageController extends Controller
             $message = 'Mobil dihapus dari My Garage.';
             $action = 'removed';
         } else {
-            // Tambah ke garasi via AcquireVehicleAction
-            app(AcquireVehicleAction::class)->handle(
+            // Tambah ke garasi via AcquiresVehicle contract
+            app(\Modules\Core\Contracts\AcquiresVehicle::class)->handle(
                 user: $user,
                 car: $car,
                 plateNumber: $request->plate_number,

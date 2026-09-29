@@ -1,8 +1,30 @@
 <?php
 
-// Architecture tests will be expanded in task 0.9
-// For now, ensure basic conventions hold
+declare(strict_types=1);
 
-arch('app classes use strict types')
-    ->expect('App')
-    ->toBeClasses();
+arch('controllers do not use DB facade directly')
+    ->expect([
+        'Modules\AutoServe\Http\Controllers',
+        'Modules\AutoDex\Http\Controllers',
+    ])
+    ->not->toUse('Illuminate\Support\Facades\DB');
+
+arch('domain does not depend on Http')
+    ->expect([
+        'Modules\AutoServe\Domain',
+        'Modules\AutoDex\Domain',
+        'Modules\Core\Domain',
+        'Modules\Shared\Domain',
+    ])
+    ->not->toUse([
+        'Illuminate\Http',
+        'Illuminate\Routing',
+    ]);
+
+arch('AutoServe does not import AutoDex domain')
+    ->expect('Modules\AutoServe')
+    ->not->toUse('Modules\AutoDex\Domain');
+
+arch('AutoDex does not import AutoServe domain')
+    ->expect('Modules\AutoDex')
+    ->not->toUse('Modules\AutoServe\Domain');

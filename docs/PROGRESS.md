@@ -8,7 +8,7 @@
 - [x] 0.5 Pindahkan AutoServe & AutoDex ke modules/
 - [x] 0.6 Entity Vehicle (core_vehicles) + migrasi garage
 - [x] 0.7 AutoServe: vehicle_id di bookings
-- [ ] 0.8 BookingStatus Enum + state machine
+- [x] 0.8 BookingStatus Enum + state machine
 - [ ] 0.9 Arch tests batas modul
 - [ ] 0.10 Quality gate Fase 0
 

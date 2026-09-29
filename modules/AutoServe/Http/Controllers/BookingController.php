@@ -7,7 +7,6 @@ namespace Modules\AutoServe\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
@@ -137,33 +136,10 @@ class BookingController extends Controller
         $newStatus = $request->status;
 
         if ($newStatus === 'completed') {
-            DB::transaction(function () use ($booking, $request) {
-                foreach ($booking->spareparts as $sparepart) {
-                    $qty = $sparepart->pivot->quantity;
-
-                    $affected = DB::table($sparepart->getTable())
-                        ->where('id', $sparepart->id)
-                        ->where('stock', '>=', $qty)
-                        ->decrement('stock', $qty);
-
-                    if ($affected === 0) {
-                        throw new \Exception(
-                            "Stok {$sparepart->name} tidak mencukupi! Tersisa: {$sparepart->stock}, dibutuhkan: {$qty}"
-                        );
-                    }
-                }
-
-                $booking->refresh();
-                $sparepartCost = $booking->spareparts->sum('pivot.subtotal');
-
-                $booking->update([
-                    'status' => 'completed',
-                    'mechanic_notes' => $request->mechanic_notes ?? $booking->mechanic_notes,
-                    'service_cost' => $booking->service->price ?? 0,
-                    'sparepart_cost' => $sparepartCost,
-                    'grand_total' => ($booking->service->price ?? 0) + $sparepartCost,
-                ]);
-            });
+            app(\Modules\AutoServe\Application\Actions\CompleteBookingAction::class)->handle(
+                $booking,
+                $request->mechanic_notes
+            );
 
             return back()->with('success', 'Servis selesai! Stok sparepart telah dipotong dan total biaya telah dihitung.');
         }

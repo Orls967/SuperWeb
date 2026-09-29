@@ -11,7 +11,10 @@ class CoreServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Core bindings
+        $this->app->bind(
+            \Modules\Core\Contracts\AcquiresVehicle::class,
+            \Modules\Core\Application\Actions\AcquireVehicleAction::class
+        );
     }
 
     public function boot(): void

@@ -6,16 +6,16 @@ namespace Modules\Core\Application\Actions;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Modules\AutoDex\Domain\Models\Car;
+use Modules\Core\Contracts\AcquiresVehicle;
 use Modules\Core\Domain\Events\VehicleAcquired;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Shared\Application\BaseAction;
 
-class AcquireVehicleAction extends BaseAction
+class AcquireVehicleAction extends BaseAction implements AcquiresVehicle
 {
     public function handle(
         User|int $user,
-        Car|int $car,
+        object|int $car,
         ?string $plateNumber = null,
         ?string $color = null,
         ?string $vin = null,
@@ -24,7 +24,7 @@ class AcquireVehicleAction extends BaseAction
         ?int $acquiredViaId = null,
     ): Vehicle {
         $userId = $user instanceof User ? $user->id : $user;
-        $carId = $car instanceof Car ? $car->id : $car;
+        $carId = is_object($car) ? ($car->id ?? null) : $car;
 
         return $this->transaction(function () use (
             $userId,
