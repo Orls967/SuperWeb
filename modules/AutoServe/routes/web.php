@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\AutoServe\Http\Controllers\BookingController;
+use Modules\AutoServe\Http\Controllers\InvoicePaymentController;
 use Modules\AutoServe\Http\Controllers\ServiceController;
 use Modules\AutoServe\Http\Controllers\SparepartController;
 
@@ -13,6 +14,8 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::get('/bookings/{booking}/invoice', [BookingController::class, 'invoice'])->name('bookings.invoice');
+    Route::post('/bookings/{booking}/pay', [InvoicePaymentController::class, 'pay'])->name('bookings.pay');
+    Route::post('/bookings/{booking}/refund', [InvoicePaymentController::class, 'refund'])->name('bookings.refund');
 
     // Staff only (Admin & Mekanik)
     Route::middleware('role:admin,mekanik')->group(function () {

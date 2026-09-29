@@ -9,12 +9,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
 use Modules\Core\Domain\Models\Vehicle;
+use Modules\Payment\Contracts\Payable;
+use Modules\Payment\Domain\Models\PaymentIntent;
 use Modules\Shared\Domain\Exceptions\InvalidStateTransition;
 use Modules\Shared\Domain\Traits\HasUuid;
+use Modules\Shared\Domain\ValueObjects\Money;
 
-class Booking extends Model
+class Booking extends Model implements Payable
 {
     use HasFactory, HasUuid;
 
@@ -26,12 +31,14 @@ class Booking extends Model
         'plate_number', 'vehicle_brand', 'vehicle_model', 'vehicle_year',
         'complaint', 'mechanic_notes', 'booking_date', 'booking_time',
         'status', 'service_cost', 'sparepart_cost', 'grand_total',
+        'payment_status', 'paid_at',
     ];
 
     protected function casts(): array
     {
         return [
             'booking_date' => 'date',
+            'paid_at' => 'datetime',
             'service_cost' => 'decimal:2',
             'sparepart_cost' => 'decimal:2',
             'grand_total' => 'decimal:2',
@@ -166,5 +173,87 @@ class Booking extends Model
         $enum = BookingStatus::tryFromString($this->status);
 
         return $enum ? $enum->badgeClasses() : 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+    }
+
+    // --- Payable Contract Implementation ---
+
+    public function payableAmount(): Money
+    {
+        return Money::IDR($this->grand_total ?: 0);
+    }
+
+    public function payableDescription(): string
+    {
+        return "Pembayaran Servis {$this->booking_code} ({$this->vehicle_brand} {$this->vehicle_model})";
+    }
+
+    public function payerId(): int
+    {
+        return (int) $this->customer_id;
+    }
+
+    public function revenueSplits(): array
+    {
+        $splits = [];
+        $serviceCost = (float) ($this->service_cost ?: 0);
+        $sparepartCost = (float) ($this->sparepart_cost ?: 0);
+        $grandTotal = (float) ($this->grand_total ?: 0);
+
+        if ($serviceCost > 0) {
+            $splits['revenue:autoserve:service:IDR'] = Money::IDR($serviceCost);
+        }
+
+        if ($sparepartCost > 0) {
+            $splits['revenue:autoserve:parts:IDR'] = Money::IDR($sparepartCost);
+        }
+
+        if (empty($splits) && $grandTotal > 0) {
+            $splits['revenue:autoserve:service:IDR'] = Money::IDR($grandTotal);
+        }
+
+        return $splits;
+    }
+
+    public function onPaymentCaptured(PaymentIntent $intent): void
+    {
+        $this->payment_status = 'paid';
+        $this->paid_at = now();
+
+        if ($this->status === BookingStatus::Completed->value) {
+            $this->status = BookingStatus::Invoiced->value;
+        }
+
+        $this->save();
+    }
+
+    public function onPaymentRefunded(PaymentIntent $intent): void
+    {
+        $this->payment_status = 'refunded';
+        $this->save();
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->payment_status === 'paid';
+    }
+
+    public function isUnpaid(): bool
+    {
+        return $this->payment_status === 'unpaid' || $this->payment_status === null;
+    }
+
+    public function isRefunded(): bool
+    {
+        return $this->payment_status === 'refunded';
+    }
+
+    public function paymentIntents(): MorphMany
+    {
+        return $this->morphMany(PaymentIntent::class, 'payable');
+    }
+
+    public function latestPaymentIntent(): MorphOne
+    {
+        return $this->morphOne(PaymentIntent::class, 'payable')->latestOfMany();
     }
 }

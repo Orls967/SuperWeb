@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('bank:reconcile')->daily();
+Schedule::command('payment:release-expired-holds')->daily();

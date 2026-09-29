@@ -12,6 +12,11 @@ use Modules\Shared\Application\BaseAction;
 
 class CompleteBookingAction extends BaseAction
 {
+    public function execute(Booking $booking, ?string $notes = null): Booking
+    {
+        return $this->handle($booking, $notes);
+    }
+
     public function handle(Booking $booking, ?string $notes = null): Booking
     {
         return $this->transaction(function () use ($booking, $notes) {

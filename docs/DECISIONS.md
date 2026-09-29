@@ -30,3 +30,9 @@
 - **Decision:** Collect all distinct involved account IDs and lock them via `whereIn('id', $ids)->orderBy('id', 'asc')->lockForUpdate()`. Balance calculations track running balances per account within the atomic block.
 - **Reason:** Prevents database deadlocks and race conditions completely.
 
+## 2026-09-30: Payment Gateway Hold-Capture Remainder Return & Invoice Payable
+- **Context:** When capturing a payment intent that was held, the final amount may be less than the held amount (e.g. estimate higher than actual cost).
+- **Decision:** `PaymentGatewayService::capture` executes an atomic ledger transaction that: (1) moves the final amount from `escrow:payment:IDR` to `revenueSplits`, and (2) immediately credits any remaining difference (`held - final`) back to the payer's wallet account.
+- **Reason:** Ensures funds are never stranded in escrow and the ledger remains perfectly balanced and reconciled without requiring manual customer refund requests.
+
+

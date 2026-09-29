@@ -5,6 +5,7 @@ use Modules\AutoDex\AutoDexServiceProvider;
 use Modules\AutoServe\AutoServeServiceProvider;
 use Modules\Banking\BankingServiceProvider;
 use Modules\Core\CoreServiceProvider;
+use Modules\Payment\PaymentServiceProvider;
 use Modules\Shared\SharedServiceProvider;
 
 return [
@@ -14,4 +15,5 @@ return [
     AutoServeServiceProvider::class,
     AutoDexServiceProvider::class,
     BankingServiceProvider::class,
+    PaymentServiceProvider::class,
 ];

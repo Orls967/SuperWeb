@@ -25,13 +25,13 @@
 - [x] 1.10 Quality gate Fase 1
 
 ## FASE 2 — PAYMENT HUB + INTEGRASI AUTOSERVE
-- [ ] 2.1 Payable contract
-- [ ] 2.2 pay_payment_intents table
-- [ ] 2.3 PaymentGateway: charge, hold, capture, release, refund
-- [ ] 2.4 AutoServe Invoice implements Payable
-- [ ] 2.5 Flow bayar invoice (saldo, PIN, badge LUNAS)
-- [ ] 2.6 Tests: bayar, saldo kurang, idempotent, hold/capture/release, refund, reconcile
-- [ ] 2.7 Quality gate Fase 2
+- [x] 2.1 Payable contract
+- [x] 2.2 pay_payment_intents table
+- [x] 2.3 PaymentGateway: charge, hold, capture, release, refund
+- [x] 2.4 AutoServe Invoice implements Payable
+- [x] 2.5 Flow bayar invoice (saldo, PIN, badge LUNAS)
+- [x] 2.6 Tests: bayar, saldo kurang, idempotent, hold/capture/release, refund, reconcile
+- [x] 2.7 Quality gate Fase 2
 
 ## FASE 3 — CATALOG, INVENTORY & STORE
 - [ ] 3.1 Inventory: stock_movements, InventoryService
