@@ -6,7 +6,7 @@
 - [x] 0.3 Characterization tests (AutoServe + AutoDex)
 - [x] 0.4 Modul Shared + Core
 - [x] 0.5 Pindahkan AutoServe & AutoDex ke modules/
-- [ ] 0.6 Entity Vehicle (core_vehicles) + migrasi garage
+- [x] 0.6 Entity Vehicle (core_vehicles) + migrasi garage
 - [ ] 0.7 AutoServe: vehicle_id di bookings
 - [ ] 0.8 BookingStatus Enum + state machine
 - [ ] 0.9 Arch tests batas modul

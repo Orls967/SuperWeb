@@ -20,8 +20,11 @@ class BookingController extends Controller
     public function create()
     {
         $services = Service::active()->get();
+        $vehicles = auth()->user()
+            ? auth()->user()->activeVehicles()->with('car.brand')->get()
+            : collect();
 
-        return view('bookings.create', compact('services'));
+        return view('bookings.create', compact('services', 'vehicles'));
     }
 
     /**
@@ -39,6 +42,7 @@ class BookingController extends Controller
             'booking_date' => 'required|date|after_or_equal:today',
             'booking_time' => 'nullable',
             'vehicle_id' => 'nullable|exists:core_vehicles,id',
+            'save_to_garage' => 'nullable|boolean',
         ]);
 
         $service = Service::findOrFail($validated['service_id']);
@@ -62,6 +66,16 @@ class BookingController extends Controller
 
         if (! empty($validated['vehicle_id'])) {
             $data['vehicle_id'] = $validated['vehicle_id'];
+        } elseif ($request->boolean('save_to_garage')) {
+            $createdVehicle = \Modules\Core\Domain\Models\Vehicle::create([
+                'user_id' => auth()->id(),
+                'plate_number' => strtoupper(trim($validated['plate_number'])),
+                'color' => $request->input('color'),
+                'status' => 'active',
+                'acquired_at' => now(),
+                'acquired_via_type' => 'manual',
+            ]);
+            $data['vehicle_id'] = $createdVehicle->id;
         }
 
         $booking = Booking::create($data);
