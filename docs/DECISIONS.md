@@ -39,3 +39,8 @@
 - **Context:** Store checkout required simultaneous inventory reservation, wallet balance verification with PIN, payment gateway charging, order fulfillment (including auto-acquiring cars to user's garage), and rollback on failure.
 - **Decision:** Reservation deducts cached stock with `RESERVATION` reason movement. If payment succeeds, reservation is committed to `SALE` reason. If checkout fails, reservations are immediately released via `RESERVATION_RELEASE`. In `PaymentGatewayService`, `payable->getMorphClass()` is used so morph maps resolve properly to alias strings (e.g. `store_order`).
 - **Reason:** Keeps inventory counts strictly truthful without race conditions, guarantees zero stock leakage, and integrates seamlessly with double-entry revenue splits and car ownership transfer.
+
+## 2026-09-30: 5-Entry Double-Entry Crypto Trading & 15-Second Locked Quotes
+- **Context:** Crypto trading required market order simulation with 15-second price lock, bi-directional conversions, 0.2% exchange fees, and multi-asset ledger integrity across fiat (IDR) and coins (BTC, ETH, SOL, BNB, USDT).
+- **Decision:** Trades execute as an atomic 5-entry ledger transaction: (1) user IDR debit/credit, (2) system exchange IDR credit/debit, (3) exchange fee credit to `fee:banking:IDR`, (4) exchange crypto debit/credit, and (5) user crypto wallet credit/debit. Quotes enforce a strict 15-second expiration timestamp.
+- **Reason:** Guarantees that both IDR and crypto assets balance individually to zero sum on every transaction (`SUM(IDR) = 0`, `SUM(ASSET) = 0`), ensuring `bank:reconcile` remains pristine while preventing slippage through locked quotes.

@@ -44,12 +44,12 @@
 - [x] 3.8 Quality gate Fase 3
 
 ## FASE 4 — CRYPTO TRACKER (SIMULASI)
-- [ ] 4.1 crypto_assets + crypto_price_ticks + seeder
-- [ ] 4.2 PriceEngine (crypto:tick) + PriceFeed contract + quotes
-- [ ] 4.3 crypto_trades + buy/sell flow
-- [ ] 4.4 Portfolio: holdings, P/L, charts, alerts
-- [ ] 4.5 Tests: buy/sell balance, fee, quote expired, holding limit, reconcile
-- [ ] 4.6 Quality gate Fase 4
+- [x] 4.1 crypto_assets + crypto_price_ticks + seeder
+- [x] 4.2 PriceEngine (crypto:tick) + PriceFeed contract + quotes
+- [x] 4.3 crypto_trades + buy/sell flow
+- [x] 4.4 Portfolio: holdings, P/L, charts, alerts
+- [x] 4.5 Tests: buy/sell balance, fee, quote expired, holding limit, reconcile
+- [x] 4.6 Quality gate Fase 4
 
 ## FASE 5 — FITUR LINTAS MODUL
 ### 5A. Vehicle Passport

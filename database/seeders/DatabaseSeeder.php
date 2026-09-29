@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Modules\Banking\Application\Actions\SetPinAction;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\database\seeders\BankingSeeder;
+use Modules\Crypto\database\seeders\CryptoSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -94,10 +95,11 @@ class DatabaseSeeder extends Seeder
             Sparepart::create($part);
         }
 
-        // Jalankan seeder AutoDex & Banking
+        // Jalankan seeder AutoDex, Banking & Crypto
         $this->call([
             AutoDexSeeder::class,
             BankingSeeder::class,
+            CryptoSeeder::class,
         ]);
 
         // Inisialisasi Dompet & PIN untuk seeded users

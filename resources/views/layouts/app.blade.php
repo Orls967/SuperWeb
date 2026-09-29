@@ -182,6 +182,27 @@
                         <span x-show="sidebarOpen" x-cloak>Admin: Produk & Stok</span>
                     </a>
                     @endif
+
+                    <div class="pt-4 pb-2 px-3" x-show="sidebarOpen" x-cloak>
+                        <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Crypto Exchange</p>
+                    </div>
+
+                    <a href="{{ route('crypto.market.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('crypto.market.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Pasar Kripto</span>
+                    </a>
+
+                    @auth
+                    <a href="{{ route('crypto.portfolio.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('crypto.portfolio.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Portofolio Kripto</span>
+                    </a>
+
+                    <a href="{{ route('crypto.alerts.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('crypto.alerts.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Price Alerts</span>
+                    </a>
+                    @endauth
                 </nav>
 
                 {{-- Sidebar Toggle --}}
@@ -200,8 +221,12 @@
                 {{-- Top Bar --}}
                 <header class="sticky top-0 z-40 flex items-center justify-between px-6 py-4 bg-slate-900/80 backdrop-blur-lg border-b border-slate-700/50">
                     <div>
-                        <h1 class="text-xl font-bold text-white">@yield('title', 'Dashboard')</h1>
-                        <p class="text-sm text-slate-400">@yield('subtitle', 'Sistem Manajemen Bengkel Otomotif')</p>
+                        @if(isset($header))
+                            {{ $header }}
+                        @else
+                            <h1 class="text-xl font-bold text-white">@yield('title', 'Dashboard')</h1>
+                            <p class="text-sm text-slate-400">@yield('subtitle', 'Sistem Manajemen Bengkel Otomotif')</p>
+                        @endif
                     </div>
 
                     <div class="flex items-center gap-4" x-data="{ dropdownOpen: false }">
@@ -285,6 +310,7 @@
 
                 {{-- Page Content --}}
                 <main class="p-6">
+                    {{ $slot ?? '' }}
                     @yield('content')
                 </main>
             </div>
