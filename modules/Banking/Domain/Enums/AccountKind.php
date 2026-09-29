@@ -14,6 +14,7 @@ enum AccountKind: string
     case EXCHANGE = 'exchange';
     case LOAN_RECEIVABLE = 'loan_receivable';
     case FEE = 'fee';
+    case EXPENSE = 'expense';
 
     public function label(): string
     {
@@ -26,6 +27,7 @@ enum AccountKind: string
             self::EXCHANGE => 'Exchange / Likuiditas',
             self::LOAN_RECEIVABLE => 'Piutang Pinjaman',
             self::FEE => 'Biaya Admin',
+            self::EXPENSE => 'Beban Operasional',
         };
     }
 }

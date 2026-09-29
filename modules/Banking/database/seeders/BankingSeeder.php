@@ -80,6 +80,14 @@ class BankingSeeder extends Seeder
                 'kind' => AccountKind::FEE->value,
                 'allow_negative' => false,
             ],
+            // Beban operasional bengkel untuk pembelian sparepart backorder
+            [
+                'code' => 'expense:autoserve:parts:IDR',
+                'name' => 'Beban Pembelian Sparepart Bengkel (Backorder)',
+                'asset_code' => 'IDR',
+                'kind' => AccountKind::EXPENSE->value,
+                'allow_negative' => true,
+            ],
         ];
 
         // Crypto accounts

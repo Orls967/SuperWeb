@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\AutoServe\Http\Controllers\BookingController;
+use Modules\AutoServe\Http\Controllers\EstimateController;
 use Modules\AutoServe\Http\Controllers\InvoicePaymentController;
 use Modules\AutoServe\Http\Controllers\ServiceController;
 use Modules\AutoServe\Http\Controllers\SparepartController;
@@ -17,12 +18,22 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::post('/bookings/{booking}/pay', [InvoicePaymentController::class, 'pay'])->name('bookings.pay');
     Route::post('/bookings/{booking}/refund', [InvoicePaymentController::class, 'refund'])->name('bookings.refund');
 
+    // Smart Repair Escrow: persetujuan customer
+    Route::post('/estimates/{estimate}/approve', [EstimateController::class, 'approve'])->name('estimates.approve');
+    Route::post('/estimates/{estimate}/reject', [EstimateController::class, 'reject'])->name('estimates.reject');
+    Route::post('/bookings/{booking}/extra-charge/approve', [EstimateController::class, 'approveExtra'])->name('bookings.approveExtra');
+
     // Staff only (Admin & Mekanik)
     Route::middleware('role:admin,mekanik')->group(function () {
         Route::patch('/bookings/{booking}/status', [BookingController::class, 'updateStatus'])->name('bookings.updateStatus');
         Route::patch('/bookings/{booking}/assign', [BookingController::class, 'assignMechanic'])->name('bookings.assign');
         Route::post('/bookings/{booking}/spareparts', [BookingController::class, 'addSparepart'])->name('bookings.addSparepart');
         Route::delete('/bookings/{booking}/spareparts/{sparepart}', [BookingController::class, 'removeSparepart'])->name('bookings.removeSparepart');
+
+        // Smart Repair Escrow: penyusunan estimasi oleh mekanik
+        Route::post('/bookings/{booking}/estimates', [EstimateController::class, 'store'])->name('estimates.store');
+        Route::post('/estimates/{estimate}/send', [EstimateController::class, 'send'])->name('estimates.send');
+        Route::post('/estimates/{estimate}/backorder/receive', [EstimateController::class, 'receiveBackorder'])->name('estimates.receiveBackorder');
     });
 
     // Admin only (Master Data)

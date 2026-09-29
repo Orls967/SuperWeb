@@ -14,7 +14,7 @@ class ServiceController extends Controller
     {
         $services = Service::latest()->get();
 
-        return view('services.index', compact('services'));
+        return view('serve::services.index', compact('services'));
     }
 
     public function store(Request $request)

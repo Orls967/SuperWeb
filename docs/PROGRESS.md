@@ -60,9 +60,9 @@
 - [x] 5A.5 Tests: rantai valid, manipulasi, C2C, reconcile
 
 ### 5B. Smart Repair Escrow
-- [ ] 5B.1 serve_estimates table
-- [ ] 5B.2 Flow: estimasi → hold → complete → capture/split
-- [ ] 5B.3 Tests: final < hold, final > hold, reject, waiting_parts, cancel
+- [x] 5B.1 serve_estimates table
+- [x] 5B.2 Flow: estimasi → hold → complete → capture/split
+- [x] 5B.3 Tests: final < hold, final > hold, reject, waiting_parts, cancel
 
 ### 5C. HODL-to-Drive (Crypto-Backed Financing)
 - [ ] 5C.1 fin_loans + fin_installments

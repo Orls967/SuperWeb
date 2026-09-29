@@ -64,3 +64,18 @@
 - **Context:** Store must move a `core_vehicles` row to the buyer and append an `ownership_transferred` block to the passport, but the hash-chain logic lives in Core.
 - **Decision:** Added `Modules\Core\Contracts\TransfersVehicleOwnership`, implemented by `TransferVehicleOwnershipAction` (locks the vehicle row, reassigns `user_id`, clears the buyer's wishlist entry, records the passport block). Store resolves it from the container, mirroring the existing `AcquiresVehicle` contract.
 - **Reason:** Keeps the append-only chain logic in one place and lets Finance (Fase 5C) reuse the same transfer path without duplicating hash-chain code.
+
+## 2026-09-30: View Modul Duplikat Dihapus — Namespace `serve::` / `dex::` Jadi Sumber Tunggal
+- **Context:** Setelah refactor Fase 0.5, view AutoServe/AutoDex ada dua salinan: `resources/views/{bookings,services,spareparts,autodex}` dan di dalam modul. Controller memanggil `view('bookings.show')` sehingga salinan app-level yang dirender, dan salinan modul menjadi kode mati. Akibatnya fitur yang hanya ditambahkan di salinan modul (tautan Paspor Digital di My Garage 5A.3 dan tombol "Beli di Store" 3.6) tidak pernah tampil di aplikasi.
+- **Decision:** Salinan app-level dihapus; controller memakai view bernamespace (`serve::bookings.show`, `dex::garage`, dst). Salinan modul adalah superset dari salinan app sehingga tidak ada konten yang hilang. Satu assertion pada characterization test diperbarui dari `assertViewIs('bookings.invoice')` menjadi `assertViewIs('serve::bookings.invoice')` — assertion perilaku (status 200 dan perubahan status booking) tetap utuh.
+- **Reason:** Duplikasi diam-diam ini membuat setiap perubahan UI modul berisiko tidak berefek. Satu sumber kebenaran mencegah bug senyap berulang, sekaligus menegakkan konvensi `view('{modul}::...')` dari spesifikasi.
+
+## 2026-09-30: Estimate Sebagai Payable dengan Nilai Posting Tersimpan
+- **Context:** Satu estimasi bisa menghasilkan dua posting ledger berbeda: capture escrow (sebesar dana ditahan) dan tagihan selisih bila biaya aktual melebihi estimasi. `PaymentGatewayService` membaca ulang payable dari database saat capture, sehingga split tidak bisa dititipkan lewat properti sementara.
+- **Decision:** `serve_estimates` menyimpan `final_service_total` dan `final_parts_total` yang selalu berisi pembagian untuk posting berikutnya; `revenueSplits()` dan `payableAmount()` membacanya (fallback ke nilai estimasi bila belum diisi). Bagian escrow dihitung proporsional terhadap biaya akhir (`intdiv`), sisanya menjadi tagihan selisih, sehingga total kedua posting persis sama dengan biaya aktual.
+- **Reason:** Menjaga invarian `payableAmount() == Σ revenueSplits()` yang dibutuhkan `charge()`, tanpa membuat model Payable kedua, dan menjamin `bank:reconcile` tetap nol.
+
+## 2026-09-30: Backorder Sparepart Dibayar Akun Beban Bengkel
+- **Context:** Saat estimasi disetujui tetapi stok sparepart kurang, spesifikasi meminta order internal yang dibayar akun sistem bengkel, bukan dompet customer.
+- **Decision:** Ditambahkan akun sistem `expense:autoserve:parts:IDR` (kind baru `expense`, `allow_negative = true`). Pembelian backorder diposting sebagai `expense:autoserve:parts:IDR −biaya` dan `clearing:external:IDR +biaya`, dengan `store_order` internal berstatus `processing` atas nama akun admin bengkel. Saat barang diterima, stok masuk lewat movement `purchase` dan booking kembali dari `waiting_parts` ke `in_progress`.
+- **Reason:** Arus kas ke pemasok tetap tercatat double-entry (reconcile nol), terpisah dari escrow customer, dan stok bengkel/toko tetap satu angka yang sama.

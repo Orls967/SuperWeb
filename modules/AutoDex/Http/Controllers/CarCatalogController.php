@@ -48,18 +48,18 @@ class CarCatalogController extends Controller
         // Jika request dari AJAX (Live Search via Alpine.js)
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
-                'html' => view('autodex.partials.car-list', compact('cars'))->render(),
+                'html' => view('dex::partials.car-list', compact('cars'))->render(),
                 'pagination' => (string) $cars->links(),
             ]);
         }
 
-        return view('autodex.index', compact('cars', 'brands'));
+        return view('dex::index', compact('cars', 'brands'));
     }
 
     public function show(Car $car)
     {
         $car->load('brand');
 
-        return view('autodex.show', compact('car'));
+        return view('dex::show', compact('car'));
     }
 }

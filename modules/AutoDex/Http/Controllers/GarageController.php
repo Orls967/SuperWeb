@@ -21,7 +21,7 @@ class GarageController extends Controller
         $garageCars = $user->garageCars()->with('brand')->latest('core_vehicles.created_at')->get();
         $wishlistCars = $user->wishlistCars()->with('brand')->latest('dex_wishlists.created_at')->get();
 
-        return view('autodex.garage', compact('garageCars', 'wishlistCars', 'vehicles'));
+        return view('dex::garage', compact('garageCars', 'wishlistCars', 'vehicles'));
     }
 
     /**

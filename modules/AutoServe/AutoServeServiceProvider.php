@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\AutoServe;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\Shared\Application\MenuRegistry;
 
 class AutoServeServiceProvider extends ServiceProvider
@@ -16,6 +18,10 @@ class AutoServeServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'serve');
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+
+        Relation::morphMap([
+            'serve_estimate' => Estimate::class,
+        ]);
 
         $registry = $this->app->make(MenuRegistry::class);
         $registry->addItem(

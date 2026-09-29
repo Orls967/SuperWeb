@@ -7,7 +7,10 @@ namespace Modules\AutoServe\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Modules\AutoServe\Application\Actions\CancelBookingAction;
 use Modules\AutoServe\Application\Actions\CompleteBookingAction;
+use Modules\AutoServe\Domain\Enums\BookingStatus;
+use Modules\AutoServe\Domain\Enums\EstimateStatus;
 use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
@@ -25,7 +28,7 @@ class BookingController extends Controller
             ? auth()->user()->activeVehicles()->with('car.brand')->get()
             : collect();
 
-        return view('bookings.create', compact('services', 'vehicles'));
+        return view('serve::bookings.create', compact('services', 'vehicles'));
     }
 
     /**
@@ -96,10 +99,24 @@ class BookingController extends Controller
             abort(403, 'Anda tidak memiliki akses ke booking ini.');
         }
 
-        $booking->load(['customer', 'mechanic', 'service', 'spareparts']);
+        $booking->load(['customer', 'mechanic', 'service', 'spareparts', 'estimates']);
         $spareparts = Sparepart::active()->where('stock', '>', 0)->get();
+        $allSpareparts = Sparepart::active()->get();
+        $services = Service::active()->get();
+        $activeEstimate = $booking->estimates
+            ->firstWhere(fn ($estimate) => in_array($estimate->status, [
+                EstimateStatus::Draft,
+                EstimateStatus::Sent,
+                EstimateStatus::Approved,
+            ], true));
 
-        return view('bookings.show', compact('booking', 'spareparts'));
+        return view('serve::bookings.show', compact(
+            'booking',
+            'spareparts',
+            'allSpareparts',
+            'services',
+            'activeEstimate'
+        ));
     }
 
     /**
@@ -131,19 +148,39 @@ class BookingController extends Controller
     public function updateStatus(Request $request, Booking $booking)
     {
         $request->validate([
-            'status' => 'required|in:pending,confirmed,in_progress,waiting_parts,completed,invoiced,cancelled',
+            'status' => 'required|in:pending,confirmed,in_progress,waiting_parts,awaiting_extra_approval,completed,invoiced,cancelled',
             'mechanic_notes' => 'nullable|string|max:2000',
+            'odometer_km' => 'nullable|integer|min:0',
         ]);
 
         $newStatus = $request->status;
 
         if ($newStatus === 'completed') {
-            app(CompleteBookingAction::class)->handle(
-                $booking,
-                $request->mechanic_notes
-            );
+            try {
+                $booking = app(CompleteBookingAction::class)->handle(
+                    $booking,
+                    $request->mechanic_notes,
+                    $request->filled('odometer_km') ? (int) $request->input('odometer_km') : null
+                );
+            } catch (\Throwable $e) {
+                return back()->with('error', $e->getMessage());
+            }
+
+            if ($booking->status === BookingStatus::AwaitingExtraApproval->value) {
+                return back()->with('success', 'Biaya aktual melebihi estimasi. Menunggu persetujuan biaya tambahan dari customer.');
+            }
 
             return back()->with('success', 'Servis selesai! Stok sparepart telah dipotong dan total biaya telah dihitung.');
+        }
+
+        if ($newStatus === 'cancelled') {
+            try {
+                app(CancelBookingAction::class)->execute($booking, $request->mechanic_notes ?? 'Dibatalkan oleh bengkel');
+            } catch (\Throwable $e) {
+                return back()->with('error', $e->getMessage());
+            }
+
+            return back()->with('success', 'Booking dibatalkan. Dana escrow estimasi (bila ada) dikembalikan ke customer.');
         }
 
         $booking->update([
@@ -241,6 +278,6 @@ class BookingController extends Controller
             $booking->update(['status' => 'invoiced']);
         }
 
-        return view('bookings.invoice', compact('booking'));
+        return view('serve::bookings.invoice', compact('booking'));
     }
 }

@@ -89,6 +89,16 @@
             </div>
 
             {{-- ============================================================ --}}
+            {{-- SMART REPAIR ESCROW: ESTIMASI & PERSETUJUAN --}}
+            {{-- ============================================================ --}}
+            @include('serve::bookings._estimate-panel', [
+                'booking' => $booking,
+                'activeEstimate' => $activeEstimate,
+                'services' => $services,
+                'allSpareparts' => $allSpareparts,
+            ])
+
+            {{-- ============================================================ --}}
             {{-- SPAREPART MANAGEMENT (hanya staff, hanya saat in_progress) --}}
             {{-- ============================================================ --}}
             <div class="glass-card rounded-2xl overflow-hidden">
@@ -254,6 +264,18 @@
                             <label class="block text-xs text-slate-400 mb-1.5">Catatan Mekanik</label>
                             <textarea name="mechanic_notes" rows="3" class="w-full px-3 py-2.5 rounded-xl bg-slate-800/50 border border-slate-700 text-white text-sm focus:border-blue-500 resize-none" placeholder="Catatan perbaikan...">{{ $booking->mechanic_notes }}</textarea>
                         </div>
+                        @if($booking->vehicle)
+                        <div class="mb-3">
+                            <label class="block text-xs text-slate-400 mb-1.5">
+                                Odometer Saat Ini (km) — minimal {{ number_format((int) $booking->vehicle->odometer_km, 0, ',', '.') }}
+                            </label>
+                            <input type="number" name="odometer_km" required
+                                min="{{ (int) $booking->vehicle->odometer_km }}"
+                                value="{{ old('odometer_km', (int) $booking->vehicle->odometer_km) }}"
+                                class="w-full px-3 py-2.5 rounded-xl bg-slate-800/50 border border-slate-700 text-white text-sm font-mono focus:border-blue-500">
+                            @error('odometer_km')<p class="mt-1 text-xs text-rose-400">{{ $message }}</p>@enderror
+                        </div>
+                        @endif
                         <input type="hidden" name="status" value="completed">
                         <button type="submit" class="w-full px-4 py-2.5 rounded-xl text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white transition-all" onclick="return confirm('Selesaikan job? Stok sparepart akan dipotong otomatis.')">
                             ✓ Selesai & Potong Stok

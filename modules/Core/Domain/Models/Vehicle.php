@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Modules\AutoDex\Domain\Models\Car;
 use Modules\Shared\Domain\Traits\HasUuid;
 
@@ -75,6 +76,11 @@ class Vehicle extends Model
 
     public function getPassportUrl(): string
     {
+        // Baris warisan (mis. hasil migrasi pivot garasi lama) bisa belum punya uuid
+        if (empty($this->uuid)) {
+            $this->forceFill(['uuid' => (string) Str::uuid()])->save();
+        }
+
         return URL::signedRoute('passport.show', ['uuid' => $this->uuid]);
     }
 }

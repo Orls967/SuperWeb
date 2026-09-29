@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
+use Modules\AutoServe\Domain\Enums\EstimateStatus;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Payment\Contracts\Payable;
 use Modules\Payment\Domain\Models\PaymentIntent;
@@ -65,6 +67,20 @@ class Booking extends Model implements Payable
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class, 'service_id');
+    }
+
+    /** Semua estimasi perbaikan pada booking ini */
+    public function estimates(): HasMany
+    {
+        return $this->hasMany(Estimate::class, 'booking_id')->latest('id');
+    }
+
+    /** Estimasi yang sudah disetujui customer (dananya ditahan di escrow) */
+    public function approvedEstimate(): ?Estimate
+    {
+        return $this->estimates()
+            ->where('status', EstimateStatus::Approved->value)
+            ->first();
     }
 
     /** Spareparts yang digunakan (many-to-many via pivot) */

@@ -14,7 +14,7 @@ class SparepartController extends Controller
     {
         $spareparts = Sparepart::latest()->get();
 
-        return view('spareparts.index', compact('spareparts'));
+        return view('serve::spareparts.index', compact('spareparts'));
     }
 
     public function store(Request $request)

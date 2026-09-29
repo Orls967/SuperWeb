@@ -252,7 +252,8 @@ test('invoice is accessible for completed booking', function () {
 
     $response = $this->actingAs($customer)->get(route('bookings.invoice', $booking));
     $response->assertOk();
-    $response->assertViewIs('bookings.invoice');
+    // View invoice kini dilayani dari namespace modul AutoServe (serve::)
+    $response->assertViewIs('serve::bookings.invoice');
 
     $booking->refresh();
     expect($booking->status)->toBe('invoiced');
