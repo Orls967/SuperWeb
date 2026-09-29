@@ -6,15 +6,24 @@ namespace Modules\Shared\Domain\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 trait HasUuid
 {
+    protected static array $hasUuidColumnCache = [];
+
     public static function bootHasUuid(): void
     {
         static::creating(function (Model $model): void {
             $uuidColumn = $model->getUuidColumnName();
-            if (empty($model->{$uuidColumn})) {
+            $table = $model->getTable();
+
+            if (! array_key_exists($table, static::$hasUuidColumnCache)) {
+                static::$hasUuidColumnCache[$table] = Schema::hasColumn($table, $uuidColumn);
+            }
+
+            if (static::$hasUuidColumnCache[$table] && empty($model->{$uuidColumn})) {
                 $model->{$uuidColumn} = (string) Str::uuid();
             }
         });

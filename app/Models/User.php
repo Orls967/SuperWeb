@@ -66,7 +66,7 @@ class User extends Authenticatable
     /** Mobil yang dimiliki user (My Garage) */
     public function garageCars(): BelongsToMany
     {
-        return $this->belongsToMany(Car::class, 'garages')
+        return $this->belongsToMany(\Modules\AutoDex\Domain\Models\Car::class, 'dex_garages')
             ->withPivot(['plate_number', 'color', 'year_bought', 'nickname', 'notes'])
             ->withTimestamps();
     }
@@ -74,7 +74,7 @@ class User extends Authenticatable
     /** Mobil impian user (Wishlist) */
     public function wishlistCars(): BelongsToMany
     {
-        return $this->belongsToMany(Car::class, 'wishlists')
+        return $this->belongsToMany(\Modules\AutoDex\Domain\Models\Car::class, 'dex_wishlists')
             ->withPivot(['priority', 'notes'])
             ->withTimestamps();
     }

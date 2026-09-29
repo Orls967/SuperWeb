@@ -2,9 +2,9 @@
 
 ## FASE 0 — FONDASI & REFACTOR
 - [x] 0.1 Audit codebase → docs/AUDIT.md
-- [ ] 0.2 Setup Pest + tests/Architecture
-- [ ] 0.3 Characterization tests (AutoServe + AutoDex)
-- [ ] 0.4 Modul Shared + Core
+- [x] 0.2 Setup Pest + tests/Architecture
+- [x] 0.3 Characterization tests (AutoServe + AutoDex)
+- [x] 0.4 Modul Shared + Core
 - [ ] 0.5 Pindahkan AutoServe & AutoDex ke modules/
 - [ ] 0.6 Entity Vehicle (core_vehicles) + migrasi garage
 - [ ] 0.7 AutoServe: vehicle_id di bookings
