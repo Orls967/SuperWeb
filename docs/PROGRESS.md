@@ -5,7 +5,7 @@
 - [x] 0.2 Setup Pest + tests/Architecture
 - [x] 0.3 Characterization tests (AutoServe + AutoDex)
 - [x] 0.4 Modul Shared + Core
-- [ ] 0.5 Pindahkan AutoServe & AutoDex ke modules/
+- [x] 0.5 Pindahkan AutoServe & AutoDex ke modules/
 - [ ] 0.6 Entity Vehicle (core_vehicles) + migrasi garage
 - [ ] 0.7 AutoServe: vehicle_id di bookings
 - [ ] 0.8 BookingStatus Enum + state machine

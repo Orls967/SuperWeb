@@ -56,8 +56,9 @@ class Car extends Model
     /** Users yang punya mobil ini di garasi mereka */
     public function garageUsers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'dex_garages')
-            ->withPivot(['plate_number', 'color', 'year_bought', 'nickname', 'notes'])
+        return $this->belongsToMany(User::class, 'core_vehicles', 'car_id', 'user_id')
+            ->wherePivotNull('deleted_at')
+            ->withPivot(['id', 'uuid', 'plate_number', 'color', 'vin', 'odometer_km', 'status'])
             ->withTimestamps();
     }
 

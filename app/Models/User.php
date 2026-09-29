@@ -61,13 +61,25 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class, 'mechanic_id');
     }
 
+    // --- Core Vehicles Relationship ---
+    public function vehicles(): HasMany
+    {
+        return $this->hasMany(\Modules\Core\Domain\Models\Vehicle::class, 'user_id');
+    }
+
+    public function activeVehicles(): HasMany
+    {
+        return $this->vehicles()->where('status', 'active');
+    }
+
     // --- AutoDex Relationships ---
 
     /** Mobil yang dimiliki user (My Garage) */
     public function garageCars(): BelongsToMany
     {
-        return $this->belongsToMany(\Modules\AutoDex\Domain\Models\Car::class, 'dex_garages')
-            ->withPivot(['plate_number', 'color', 'year_bought', 'nickname', 'notes'])
+        return $this->belongsToMany(\Modules\AutoDex\Domain\Models\Car::class, 'core_vehicles', 'user_id', 'car_id')
+            ->wherePivotNull('deleted_at')
+            ->withPivot(['id', 'uuid', 'plate_number', 'color', 'vin', 'odometer_km', 'status', 'created_at'])
             ->withTimestamps();
     }
 
@@ -75,14 +87,17 @@ class User extends Authenticatable
     public function wishlistCars(): BelongsToMany
     {
         return $this->belongsToMany(\Modules\AutoDex\Domain\Models\Car::class, 'dex_wishlists')
-            ->withPivot(['priority', 'notes'])
+            ->withPivot(['priority', 'notes', 'created_at'])
             ->withTimestamps();
     }
 
     /** Cek apakah mobil ada di garasi user */
     public function hasInGarage(int $carId): bool
     {
-        return $this->garageCars()->where('car_id', $carId)->exists();
+        return $this->vehicles()
+            ->where('car_id', $carId)
+            ->where('status', 'active')
+            ->exists();
     }
 
     /** Cek apakah mobil ada di wishlist user */

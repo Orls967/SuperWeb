@@ -7,6 +7,7 @@ namespace Modules\AutoDex\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\AutoDex\Domain\Models\Car;
+use Modules\Core\Application\Actions\AcquireVehicleAction;
 
 class GarageController extends Controller
 {
@@ -16,8 +17,8 @@ class GarageController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $garageCars = $user->garageCars()->with('brand')->latest('pivot_created_at')->get();
-        $wishlistCars = $user->wishlistCars()->with('brand')->latest('pivot_created_at')->get();
+        $garageCars = $user->garageCars()->with('brand')->latest('core_vehicles.created_at')->get();
+        $wishlistCars = $user->wishlistCars()->with('brand')->latest('dex_wishlists.created_at')->get();
 
         return view('autodex.garage', compact('garageCars', 'wishlistCars'));
     }
@@ -30,23 +31,23 @@ class GarageController extends Controller
         $user = auth()->user();
 
         if ($user->hasInGarage($car->id)) {
-            // Hapus dari garasi
-            $user->garageCars()->detach($car->id);
+            // Hapus dari garasi (soft delete vehicle)
+            $vehicle = $user->vehicles()->where('car_id', $car->id)->where('status', 'active')->first();
+            if ($vehicle) {
+                $vehicle->delete();
+            }
             $message = 'Mobil dihapus dari My Garage.';
             $action = 'removed';
         } else {
-            // Tambah ke garasi (opsional: tambah plat nomor via request)
-            $user->garageCars()->attach($car->id, [
-                'plate_number' => $request->plate_number,
-                'color' => $request->color,
-                'year_bought' => $request->year_bought,
-                'nickname' => $request->nickname,
-            ]);
-
-            // Jika mobil ditambah ke garasi, otomatis hapus dari wishlist jika ada
-            if ($user->hasInWishlist($car->id)) {
-                $user->wishlistCars()->detach($car->id);
-            }
+            // Tambah ke garasi via AcquireVehicleAction
+            app(AcquireVehicleAction::class)->handle(
+                user: $user,
+                car: $car,
+                plateNumber: $request->plate_number,
+                color: $request->color,
+                odometerKm: (int) ($request->odometer_km ?? 0),
+                acquiredViaType: 'manual',
+            );
 
             $message = 'Mobil ditambahkan ke My Garage.';
             $action = 'added';
