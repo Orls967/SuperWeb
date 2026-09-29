@@ -79,3 +79,23 @@
 - **Context:** Saat estimasi disetujui tetapi stok sparepart kurang, spesifikasi meminta order internal yang dibayar akun sistem bengkel, bukan dompet customer.
 - **Decision:** Ditambahkan akun sistem `expense:autoserve:parts:IDR` (kind baru `expense`, `allow_negative = true`). Pembelian backorder diposting sebagai `expense:autoserve:parts:IDR −biaya` dan `clearing:external:IDR +biaya`, dengan `store_order` internal berstatus `processing` atas nama akun admin bengkel. Saat barang diterima, stok masuk lewat movement `purchase` dan booking kembali dari `waiting_parts` ke `in_progress`.
 - **Reason:** Arus kas ke pemasok tetap tercatat double-entry (reconcile nol), terpisah dari escrow customer, dan stok bengkel/toko tetap satu angka yang sama.
+
+## 2026-09-30: Konvensi Tanda Akun `loan_receivable:IDR`
+- **Context:** Spesifikasi 5C.2 meminta pencairan "loan_receivable:IDR → wallet user", tetapi akun itu semula `allow_negative = false` dan bersaldo 0, sehingga posting pertama selalu gagal.
+- **Decision:** `loan_receivable:IDR` diubah menjadi `allow_negative = true` dengan konvensi: **saldo negatif = total pokok yang masih beredar di tangan peminjam**. Pencairan mengkredit dompet dan mendebit piutang (−pokok); setiap cicilan mengembalikan bagian pokok (+principal_part) sehingga saldo bergerak menuju nol saat lunas. Bunga masuk `fin:interest:IDR`, denda keterlambatan 0,1%/hari masuk `fin:penalty:IDR` (dua akun revenue baru).
+- **Reason:** Menjaga posting tetap dua sisi dan `bank:reconcile` nol tanpa perlu menyuntik dana awal fiktif ke akun piutang, sekaligus membuat sisa pokok seluruh portofolio terbaca langsung dari satu akun.
+
+## 2026-09-30: Pelunasan Awal Membayar Seluruh Sisa Cicilan
+- **Context:** Bunga pembiayaan bersifat flat, sehingga "pelunasan awal" bisa diartikan hanya membayar sisa pokok atau membayar pokok + seluruh sisa bunga.
+- **Decision:** Tombol "Lunasi Lebih Awal" membayar seluruh cicilan yang belum terbayar (pokok + bunga sesuai jadwal) dalam satu transaksi, lalu kolateral langsung dilepas.
+- **Reason:** Konsisten dengan skema bunga flat yang sudah ditetapkan di awal akad dan membuat jumlah yang dibayar persis sama dengan jadwal yang dilihat peminjam — tidak ada perhitungan diskon bunga yang tidak pernah dijanjikan.
+
+## 2026-09-30: Likuidasi Tidak Menandai Cicilan Sebagai Lunas
+- **Context:** Saat kolateral dilikuidasi, sisa pokok dilunasi dari hasil penjualan, tetapi cicilan-cicilan yang belum jatuh tempo masih berstatus `scheduled`.
+- **Decision:** Status cicilan dibiarkan apa adanya; pinjaman berpindah ke `liquidated` (atau `defaulted` bila hasil jual tidak menutup pokok) dan `closed_at` diisi. Scheduler `finance:charge-installments` hanya memproses pinjaman berstatus terbuka sehingga tidak ada penagihan ganda.
+- **Reason:** Menandai cicilan "paid" tanpa transaksi ledger akan memalsukan riwayat pembayaran. Riwayat tetap jujur: cicilan itu memang tidak pernah dibayar, pinjamannya ditutup lewat likuidasi.
+
+## 2026-09-30: Risk Monitor Lewat Domain Event `PricesTicked`
+- **Context:** Finance perlu mengevaluasi LTV setiap harga kripto berubah, tanpa Crypto mengetahui keberadaan modul Finance.
+- **Decision:** `PriceEngineService::tick()` mendispatch `Modules\Crypto\Domain\Events\PricesTicked`; `FinanceServiceProvider` mendaftarkan listener `MonitorLoanRisk` yang memanggil `EvaluateLoanRiskAction::evaluateAll()`.
+- **Reason:** Domain event adalah mekanisme lintas modul yang diizinkan spesifikasi; Crypto tetap tidak punya ketergantungan ke Finance, dan modul lain bisa ikut mendengarkan tick tanpa mengubah price engine.

@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Modules\Crypto\Contracts\PriceFeed;
 use Modules\Crypto\Domain\Enums\AlertCondition;
 use Modules\Crypto\Domain\Enums\TradeSide;
+use Modules\Crypto\Domain\Events\PricesTicked;
 use Modules\Crypto\Domain\Models\CryptoAlert;
 use Modules\Crypto\Domain\Models\CryptoAsset;
 use Modules\Crypto\Domain\Models\CryptoPriceTick;
@@ -110,6 +111,9 @@ class PriceEngineService implements PriceFeed
 
             $results[$asset->symbol] = (string) $newPrice;
         }
+
+        // Modul lain (mis. Finance risk monitor) bereaksi terhadap harga terbaru
+        PricesTicked::dispatch($results);
 
         return $results;
     }

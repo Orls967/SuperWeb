@@ -65,13 +65,13 @@
 - [x] 5B.3 Tests: final < hold, final > hold, reject, waiting_parts, cancel
 
 ### 5C. HODL-to-Drive (Crypto-Backed Financing)
-- [ ] 5C.1 fin_loans + fin_installments
-- [ ] 5C.2 Loan flow: kolateral → pinjaman → bayar → alur Store
-- [ ] 5C.3 Scheduler cicilan + overdue + denda
-- [ ] 5C.4 Risk monitor (LTV) + margin call + likuidasi
-- [ ] 5C.5 UI: dashboard pinjaman
-- [ ] 5C.6 Tests: open loan, cicilan, overdue, margin call, likuidasi, pelunasan, reconcile
-- [ ] 5.7 Quality gate Fase 5
+- [x] 5C.1 fin_loans + fin_installments
+- [x] 5C.2 Loan flow: kolateral → pinjaman → bayar → alur Store
+- [x] 5C.3 Scheduler cicilan + overdue + denda
+- [x] 5C.4 Risk monitor (LTV) + margin call + likuidasi
+- [x] 5C.5 UI: dashboard pinjaman
+- [x] 5C.6 Tests: open loan, cicilan, overdue, margin call, likuidasi, pelunasan, reconcile
+- [x] 5.7 Quality gate Fase 5
 
 ## FASE 6 — PLATFORM SERVICES
 - [ ] 6.1 Notification module + bell icon + unread counter

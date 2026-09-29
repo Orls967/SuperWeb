@@ -67,10 +67,25 @@ class BankingSeeder extends Seeder
             ],
             // Loan Receivable & Fee
             [
+                // Saldo negatif = pokok pinjaman yang masih beredar di tangan peminjam
                 'code' => 'loan_receivable:IDR',
                 'name' => 'Piutang Pembiayaan HODL-to-Drive IDR',
                 'asset_code' => 'IDR',
                 'kind' => AccountKind::LOAN_RECEIVABLE->value,
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'fin:interest:IDR',
+                'name' => 'Pendapatan Bunga Pembiayaan HODL-to-Drive',
+                'asset_code' => 'IDR',
+                'kind' => AccountKind::REVENUE->value,
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'fin:penalty:IDR',
+                'name' => 'Pendapatan Denda Keterlambatan Cicilan',
+                'asset_code' => 'IDR',
+                'kind' => AccountKind::REVENUE->value,
                 'allow_negative' => false,
             ],
             [

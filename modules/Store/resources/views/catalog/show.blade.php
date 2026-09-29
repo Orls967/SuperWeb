@@ -163,6 +163,16 @@
                         <span x-text="loading ? 'Memproses...' : 'Tambah ke Keranjang'"></span>
                     </button>
                 </div>
+
+                @auth
+                @if($product->is_car && $product->productable_type === 'dex_car')
+                <a href="{{ route('finance.loans.simulate', $product->slug) }}"
+                    class="mt-3 w-full px-6 py-3.5 rounded-2xl bg-slate-900 border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 font-extrabold text-sm flex items-center justify-center gap-2 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Cicil dengan Jaminan Crypto
+                </a>
+                @endif
+                @endauth
                 @else
                 <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-700/60 text-center text-slate-400 text-sm">
                     Mohon maaf, saat ini stok produk ini sedang habis. Silakan periksa kembali nanti.

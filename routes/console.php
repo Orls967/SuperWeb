@@ -13,3 +13,4 @@ Schedule::command('payment:release-expired-holds')->daily();
 Schedule::command('store:cancel-stale-orders')->everyTenMinutes();
 Schedule::command('store:auto-capture-c2c')->hourly();
 Schedule::command('crypto:tick')->everyMinute();
+Schedule::command('finance:charge-installments')->dailyAt('01:00');
