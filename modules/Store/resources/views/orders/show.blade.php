@@ -64,7 +64,15 @@
             $isCancelled = in_array($order->status, [\Modules\Store\Domain\Enums\OrderStatus::CANCELLED, \Modules\Store\Domain\Enums\OrderStatus::REFUNDED], true);
         @endphp
 
-        @if(! $isCancelled)
+        @if($isCancelled)
+        <div class="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm flex items-center gap-3">
+            <svg class="w-6 h-6 flex-shrink-0 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <div>
+                <strong class="font-bold block">Pesanan ini telah {{ $order->status->label() }}</strong>
+                <span class="text-xs text-red-400/80">Alasan: {{ $order->cancellation_reason ?: 'Dibatalkan' }} ({{ $order->cancelled_at?->format('d M Y, H:i') }})</span>
+            </div>
+        </div>
+        @elseif(! $order->isC2c())
         <div class="py-4">
             <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-6">Progres Pesanan</h4>
             <div class="grid grid-cols-4 gap-2 relative">
@@ -87,14 +95,6 @@
                     </span>
                 </div>
                 @endforeach
-            </div>
-        </div>
-        @else
-        <div class="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm flex items-center gap-3">
-            <svg class="w-6 h-6 flex-shrink-0 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-            <div>
-                <strong class="font-bold block">Pesanan ini telah {{ $order->status->label() }}</strong>
-                <span class="text-xs text-red-400/80">Alasan: {{ $order->cancellation_reason ?: 'Dibatalkan' }} ({{ $order->cancelled_at?->format('d M Y, H:i') }})</span>
             </div>
         </div>
         @endif
@@ -127,6 +127,10 @@
         </div>
         @endif
     </div>
+
+    @if($order->isC2c())
+        @include('store::c2c._escrow-panel', ['order' => $order])
+    @endif
 
     {{-- Order Content: Items & Address (Two Columns) --}}
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

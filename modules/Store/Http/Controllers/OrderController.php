@@ -35,11 +35,13 @@ class OrderController extends Controller
     public function show(Order $order, Request $request): View
     {
         $user = $request->user();
-        if ($order->user_id !== $user->id && ! $user->isAdmin()) {
+        if ($order->user_id !== $user->id
+            && (int) $order->seller_id !== (int) $user->id
+            && ! $user->isAdmin()) {
             abort(403, 'Akses tidak diizinkan.');
         }
 
-        $order->load(['items.product.category', 'paymentIntents']);
+        $order->load(['items.product.category', 'paymentIntents', 'seller']);
 
         return view('store::orders.show', [
             'order' => $order,

@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace Modules\Core;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\AutoServe\Domain\Events\BookingCompleted;
 use Modules\Core\Application\Actions\AcquireVehicleAction;
+use Modules\Core\Application\Actions\TransferVehicleOwnershipAction;
 use Modules\Core\Application\Listeners\RecordBookingCompletedPassportEvent;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
+use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Core\Domain\Events\VehicleAcquired;
+use Modules\Core\Domain\Models\Vehicle;
 use Modules\Shared\Application\MenuRegistry;
 
 class CoreServiceProvider extends ServiceProvider
@@ -23,12 +27,21 @@ class CoreServiceProvider extends ServiceProvider
             AcquiresVehicle::class,
             AcquireVehicleAction::class
         );
+
+        $this->app->bind(
+            TransfersVehicleOwnership::class,
+            TransferVehicleOwnershipAction::class
+        );
     }
 
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'core');
+
+        Relation::morphMap([
+            'core_vehicle' => Vehicle::class,
+        ]);
 
         if (file_exists(__DIR__.'/routes/web.php')) {
             $this->loadRoutesFrom(__DIR__.'/routes/web.php');

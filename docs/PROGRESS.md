@@ -56,8 +56,8 @@
 - [x] 5A.1 core_vehicle_events (hash-chain, append-only)
 - [x] 5A.2 Listeners: VehicleAcquired, BookingCompleted
 - [x] 5A.3 VerifyPassportAction + halaman publik + QR
-- [ ] 5A.4 Jual mobil bekas C2C (escrow)
-- [ ] 5A.5 Tests: rantai valid, manipulasi, C2C, reconcile
+- [x] 5A.4 Jual mobil bekas C2C (escrow)
+- [x] 5A.5 Tests: rantai valid, manipulasi, C2C, reconcile
 
 ### 5B. Smart Repair Escrow
 - [ ] 5B.1 serve_estimates table

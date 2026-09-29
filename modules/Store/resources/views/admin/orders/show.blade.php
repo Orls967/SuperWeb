@@ -143,6 +143,42 @@
             <div class="bg-slate-800/60 backdrop-blur-sm rounded-3xl border border-slate-700/60 p-6 space-y-4">
                 <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Tindakan Admin</h4>
 
+                @if($order->status === \Modules\Store\Domain\Enums\OrderStatus::DISPUTED)
+                <div class="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-300 text-xs space-y-1">
+                    <strong class="block">Sengketa C2C menunggu keputusan</strong>
+                    <span class="block text-orange-400/80">Pembeli: {{ $order->user?->name }} · Penjual: {{ $order->seller?->name }}</span>
+                    <span class="block">Alasan: {{ $order->dispute_reason }}</span>
+                </div>
+
+                <form method="POST" action="{{ route('store.admin.orders.resolveDispute', $order) }}" class="space-y-3">
+                    @csrf
+                    <label class="text-xs text-slate-300 block">Catatan Keputusan (opsional)</label>
+                    <textarea name="note" rows="2" maxlength="1000"
+                        class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs"
+                        placeholder="Hasil investigasi admin…"></textarea>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="submit" name="decision" value="capture"
+                            onclick="return confirm('Cairkan dana escrow ke penjual dan pindahkan kepemilikan kendaraan?')"
+                            class="py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-all">
+                            Menangkan Penjual
+                        </button>
+                        <button type="submit" name="decision" value="release"
+                            onclick="return confirm('Kembalikan dana escrow penuh ke pembeli?')"
+                            class="py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 font-bold text-xs transition-all">
+                            Menangkan Pembeli
+                        </button>
+                    </div>
+                </form>
+                @endif
+
+                @if($order->isC2c() && $order->status->isEscrowHeld() && $order->status !== \Modules\Store\Domain\Enums\OrderStatus::DISPUTED)
+                <div class="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs">
+                    Transaksi C2C: dana <span class="font-mono">{{ $order->formatted_grand_total }}</span> sedang ditahan di escrow
+                    (penjual {{ $order->seller?->name }}).
+                </div>
+                @endif
+
                 @if(in_array($order->status, [\Modules\Store\Domain\Enums\OrderStatus::PAID, \Modules\Store\Domain\Enums\OrderStatus::PROCESSING], true))
                 <form method="POST" action="{{ route('store.admin.orders.ship', $order) }}" class="space-y-3">
                     @csrf

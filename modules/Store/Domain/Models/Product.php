@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Store\Domain\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +24,7 @@ class Product extends Model
         'uuid',
         'productable_type',
         'productable_id',
+        'seller_id',
         'category_id',
         'sku',
         'name',
@@ -92,6 +94,24 @@ class Product extends Model
     public function scopeCars(Builder $query): Builder
     {
         return $query->where('is_car', true);
+    }
+
+    public function seller(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'seller_id');
+    }
+
+    /**
+     * Produk C2C: mobil bekas milik pengguna lain, dibayar lewat escrow.
+     */
+    public function isC2c(): bool
+    {
+        return $this->productable_type === 'core_vehicle' && $this->seller_id !== null;
+    }
+
+    public function scopeC2c(Builder $query): Builder
+    {
+        return $query->where('productable_type', 'core_vehicle')->whereNotNull('seller_id');
     }
 
     public function getFormattedPriceAttribute(): string

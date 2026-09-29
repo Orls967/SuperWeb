@@ -44,3 +44,23 @@
 - **Context:** Crypto trading required market order simulation with 15-second price lock, bi-directional conversions, 0.2% exchange fees, and multi-asset ledger integrity across fiat (IDR) and coins (BTC, ETH, SOL, BNB, USDT).
 - **Decision:** Trades execute as an atomic 5-entry ledger transaction: (1) user IDR debit/credit, (2) system exchange IDR credit/debit, (3) exchange fee credit to `fee:banking:IDR`, (4) exchange crypto debit/credit, and (5) user crypto wallet credit/debit. Quotes enforce a strict 15-second expiration timestamp.
 - **Reason:** Guarantees that both IDR and crypto assets balance individually to zero sum on every transaction (`SUM(IDR) = 0`, `SUM(ASSET) = 0`), ensuring `bank:reconcile` remains pristine while preventing slippage through locked quotes.
+
+## 2026-09-30: C2C Used-Car Sale Uses Dedicated Buy-Now Flow, Not the Cart
+- **Context:** Fase 5A.4 requires buying a used car from another user with escrow (hold → handover → confirm → capture), while the regular cart charges the wallet immediately.
+- **Decision:** C2C listings (`productable_type = 'core_vehicle'`, `seller_id` set) are excluded from the normal catalog and cart (`CartService::addItem` throws). They are bought through a dedicated route `/store/mobil-bekas/{product:slug}/beli` handled by `PurchaseC2cVehicleAction`, which creates a single-item order and calls `PaymentGateway::hold`.
+- **Reason:** Mixing escrow-held and immediately-charged items in one cart would make a single order need two conflicting payment modes. A dedicated flow keeps both paths simple and each order has exactly one payment intent.
+
+## 2026-09-30: C2C Escrow Statuses, Platform Fee and Shipping
+- **Context:** The existing `OrderStatus` enum only modelled platform-fulfilled orders (paid → processing → shipped → completed).
+- **Decision:** Added `awaiting_handover`, `awaiting_confirmation` and `disputed`. Revenue split for a C2C order is `wallet:user:{seller}:IDR` for 99% and `revenue:store:IDR` for the 1% platform fee, computed with `intdiv` so the two integers always sum exactly to `grand_total`. C2C orders carry `shipping_fee = 0` because the car is handed over directly between the two users.
+- **Reason:** The fee must not introduce rounding drift, otherwise `bank:reconcile` would report a discrepancy. A zero shipping fee keeps the captured amount identical to the listed price, so the seller and buyer both see the exact number they agreed on.
+
+## 2026-09-30: C2C Escrow Expiry Handled at Order Level, Not Payment Intent
+- **Context:** `payment:release-expired-holds` automatically releases any held intent whose `expires_at` has passed — which would refund a C2C buyer while the seller waits to hand over the car.
+- **Decision:** C2C holds are created with `expires_at = null`. The 3-day confirmation window lives on the order (`auto_capture_at`) and is processed by the new `store:auto-capture-c2c` command (hourly), which *captures* to the seller instead of releasing. Opening a dispute clears `auto_capture_at` so funds stay in escrow until an admin decides.
+- **Reason:** Auto-release and auto-capture are opposite outcomes; keeping the C2C deadline on the order prevents the generic payment job from resolving the deal the wrong way.
+
+## 2026-09-30: Ownership Transfer Exposed Through a Core Contract
+- **Context:** Store must move a `core_vehicles` row to the buyer and append an `ownership_transferred` block to the passport, but the hash-chain logic lives in Core.
+- **Decision:** Added `Modules\Core\Contracts\TransfersVehicleOwnership`, implemented by `TransferVehicleOwnershipAction` (locks the vehicle row, reassigns `user_id`, clears the buyer's wishlist entry, records the passport block). Store resolves it from the container, mirroring the existing `AcquiresVehicle` contract.
+- **Reason:** Keeps the append-only chain logic in one place and lets Finance (Fase 5C) reuse the same transfer path without duplicating hash-chain code.

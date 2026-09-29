@@ -14,6 +14,11 @@ enum OrderStatus: string
     case CANCELLED = 'cancelled';
     case REFUNDED = 'refunded';
 
+    // C2C (jual beli antar pengguna) dengan dana ditahan di escrow
+    case AWAITING_HANDOVER = 'awaiting_handover';
+    case AWAITING_CONFIRMATION = 'awaiting_confirmation';
+    case DISPUTED = 'disputed';
+
     public function label(): string
     {
         return match ($this) {
@@ -24,7 +29,22 @@ enum OrderStatus: string
             self::COMPLETED => 'Selesai',
             self::CANCELLED => 'Dibatalkan',
             self::REFUNDED => 'Dikembalikan (Refund)',
+            self::AWAITING_HANDOVER => 'Menunggu Serah Terima',
+            self::AWAITING_CONFIRMATION => 'Menunggu Konfirmasi Pembeli',
+            self::DISPUTED => 'Sengketa',
         };
+    }
+
+    /**
+     * Status C2C di mana dana pembeli masih tertahan di akun escrow.
+     */
+    public function isEscrowHeld(): bool
+    {
+        return in_array($this, [
+            self::AWAITING_HANDOVER,
+            self::AWAITING_CONFIRMATION,
+            self::DISPUTED,
+        ], true);
     }
 
     public function badgeClasses(): string
@@ -37,6 +57,9 @@ enum OrderStatus: string
             self::COMPLETED => 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
             self::CANCELLED => 'bg-red-500/10 text-red-400 border-red-500/20',
             self::REFUNDED => 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
+            self::AWAITING_HANDOVER => 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
+            self::AWAITING_CONFIRMATION => 'bg-sky-500/10 text-sky-400 border-sky-500/20',
+            self::DISPUTED => 'bg-orange-500/10 text-orange-400 border-orange-500/20',
         };
     }
 }

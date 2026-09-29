@@ -155,6 +155,11 @@
                         <span x-show="sidebarOpen" x-cloak>Katalog Toko</span>
                     </a>
 
+                    <a href="{{ route('store.c2c.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.c2c.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                        <span x-show="sidebarOpen" x-cloak>Mobil Bekas (C2C)</span>
+                    </a>
+
                     @auth
                     <a href="{{ route('store.cart.index') }}" class="flex items-center justify-between px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.cart.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
                         <div class="flex items-center gap-3">

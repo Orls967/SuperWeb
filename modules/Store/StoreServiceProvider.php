@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Modules\AutoDex\Domain\Models\Car;
 use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\Store\Console\Commands\AutoCaptureC2cOrdersCommand;
 use Modules\Store\Console\Commands\CancelStaleOrdersCommand;
 use Modules\Store\Domain\Models\Order;
 use Modules\Store\Domain\Models\StoreItem;
@@ -31,6 +32,7 @@ class StoreServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 CancelStaleOrdersCommand::class,
+                AutoCaptureC2cOrdersCommand::class,
             ]);
         }
 

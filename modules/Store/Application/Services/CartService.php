@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Store\Application\Services;
 
 use App\Models\User;
+use InvalidArgumentException;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Exceptions\InsufficientStockException;
 use Modules\Store\Domain\Models\Cart;
@@ -27,6 +28,12 @@ class CartService
         $cart = $this->getOrCreateCart($user);
         /** @var Product $product */
         $product = Product::findOrFail($productId);
+
+        if ($product->isC2c()) {
+            throw new InvalidArgumentException(
+                'Mobil bekas antar pengguna dibeli lewat alur escrow C2C, bukan keranjang belanja.'
+            );
+        }
 
         $existing = $cart->items()->where('product_id', $productId)->first();
         $targetQty = ($existing?->qty ?? 0) + $qty;

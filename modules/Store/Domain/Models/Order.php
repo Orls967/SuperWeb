@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 use Modules\Core\Contracts\AcquiresVehicle;
+use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Payment\Contracts\Payable;
@@ -30,6 +31,7 @@ class Order extends Model implements Payable
         'uuid',
         'number',
         'user_id',
+        'seller_id',
         'status',
         'subtotal',
         'shipping_fee',
@@ -38,9 +40,20 @@ class Order extends Model implements Payable
         'shipping_address',
         'tracking_number',
         'paid_at',
+        'handover_at',
+        'received_at',
+        'auto_capture_at',
+        'disputed_at',
+        'dispute_reason',
         'cancelled_at',
         'cancellation_reason',
     ];
+
+    /** Fee platform untuk transaksi C2C (1% dari nilai transaksi). */
+    public const C2C_PLATFORM_FEE_PERCENT = 1;
+
+    /** Batas waktu konfirmasi pembeli sebelum dana otomatis dicairkan ke penjual. */
+    public const C2C_AUTO_CAPTURE_DAYS = 3;
 
     protected $casts = [
         'status' => OrderStatus::class,
@@ -50,6 +63,10 @@ class Order extends Model implements Payable
         'grand_total' => 'integer',
         'shipping_address' => 'array',
         'paid_at' => 'datetime',
+        'handover_at' => 'datetime',
+        'received_at' => 'datetime',
+        'auto_capture_at' => 'datetime',
+        'disputed_at' => 'datetime',
         'cancelled_at' => 'datetime',
     ];
 
@@ -73,6 +90,35 @@ class Order extends Model implements Payable
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class, 'order_id');
+    }
+
+    public function seller(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'seller_id');
+    }
+
+    /**
+     * Pesanan C2C: pembeli membeli kendaraan milik pengguna lain lewat escrow.
+     */
+    public function isC2c(): bool
+    {
+        return $this->seller_id !== null;
+    }
+
+    /**
+     * Bagian penjual: nilai transaksi dikurangi fee platform.
+     */
+    public function c2cSellerAmount(): int
+    {
+        return $this->grand_total - $this->c2cPlatformFee();
+    }
+
+    /**
+     * Fee platform 1% (dibulatkan ke bawah agar total split tetap presisi).
+     */
+    public function c2cPlatformFee(): int
+    {
+        return intdiv($this->grand_total * self::C2C_PLATFORM_FEE_PERCENT, 100);
     }
 
     public function paymentIntents(): MorphMany
@@ -123,6 +169,13 @@ class Order extends Model implements Payable
 
     public function revenueSplits(): array
     {
+        if ($this->isC2c()) {
+            return [
+                "wallet:user:{$this->seller_id}:IDR" => Money::fromIdr($this->c2cSellerAmount()),
+                'revenue:store:IDR' => Money::fromIdr($this->c2cPlatformFee()),
+            ];
+        }
+
         return [
             'revenue:store:IDR' => Money::fromIdr($this->grand_total),
         ];
@@ -141,6 +194,17 @@ class Order extends Model implements Payable
                     "Penjualan via Order {$this->number}"
                 );
             }
+        }
+
+        if ($this->isC2c()) {
+            $this->status = OrderStatus::COMPLETED;
+            $this->paid_at = $this->paid_at ?? now();
+            $this->received_at = $this->received_at ?? now();
+            $this->save();
+
+            $this->transferC2cVehicles();
+
+            return;
         }
 
         $hasOnlyCars = $this->items->every(fn (OrderItem $item) => $item->product?->is_car);
@@ -192,14 +256,40 @@ class Order extends Model implements Payable
     /**
      * Fulfill car items by adding them to customer garage and removing from wishlist.
      */
+    /**
+     * Pindahkan kepemilikan kendaraan C2C ke pembeli dan nonaktifkan listing penjual.
+     */
+    public function transferC2cVehicles(): void
+    {
+        $transferrer = app(TransfersVehicleOwnership::class);
+
+        foreach ($this->items as $item) {
+            $product = $item->product;
+
+            if (! $product || $product->productable_type !== 'core_vehicle' || ! $product->productable_id) {
+                continue;
+            }
+
+            $transferrer->handle(
+                vehicle: (int) $product->productable_id,
+                toUserId: (int) $this->user_id,
+                viaType: 'store_order',
+                viaId: (int) $this->id,
+                priceIdr: (int) $item->price_snapshot,
+                actorId: (int) $this->user_id,
+            );
+
+            $product->update(['is_listed' => false]);
+        }
+    }
+
     public function fulfillCarPurchases(): void
     {
         $acquirer = app(AcquiresVehicle::class);
 
         foreach ($this->items as $item) {
             $product = $item->product;
-            if ($product && $product->is_car && $product->productable_id) {
-                // If productable_type is dex_car or Car model
+            if ($product && $product->is_car && $product->productable_type === 'dex_car' && $product->productable_id) {
                 for ($i = 0; $i < $item->qty; $i++) {
                     $acquirer->handle(
                         user: $this->user_id,

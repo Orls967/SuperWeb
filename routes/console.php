@@ -11,4 +11,5 @@ Artisan::command('inspire', function () {
 Schedule::command('bank:reconcile')->daily();
 Schedule::command('payment:release-expired-holds')->daily();
 Schedule::command('store:cancel-stale-orders')->everyTenMinutes();
+Schedule::command('store:auto-capture-c2c')->hourly();
 Schedule::command('crypto:tick')->everyMinute();

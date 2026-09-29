@@ -15,8 +15,10 @@ class CatalogController extends Controller
 {
     public function index(Request $request): View|JsonResponse
     {
+        // Katalog hanya memuat produk yang dijual platform; listing C2C punya halaman sendiri
         $query = Product::with(['category', 'productable'])
-            ->where('is_listed', true);
+            ->where('is_listed', true)
+            ->whereNull('seller_id');
 
         // Search
         if ($search = $request->query('search')) {
