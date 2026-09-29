@@ -204,5 +204,7 @@
                 </main>
             </div>
         </div>
+
+        <x-toast />
     </body>
 </html>
