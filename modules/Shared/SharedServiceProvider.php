@@ -17,10 +17,10 @@ class SharedServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadViewsFrom(__DIR__ . '/resources/views', 'shared');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'shared');
 
         // Allow components to be accessed via <x-card>, <x-stat>, etc. and <x-shared::card>
-        Blade::anonymousComponentPath(__DIR__ . '/resources/views/components', '');
-        Blade::anonymousComponentPath(__DIR__ . '/resources/views/components', 'shared');
+        Blade::anonymousComponentPath(__DIR__.'/resources/views/components', '');
+        Blade::anonymousComponentPath(__DIR__.'/resources/views/components', 'shared');
     }
 }

@@ -6,6 +6,4 @@ namespace App\Models;
 
 use Modules\AutoServe\Domain\Models\Sparepart as ModuleSparepart;
 
-class Sparepart extends ModuleSparepart
-{
-}
+class Sparepart extends ModuleSparepart {}

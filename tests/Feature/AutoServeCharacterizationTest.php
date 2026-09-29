@@ -4,8 +4,9 @@ use App\Models\Booking;
 use App\Models\Service;
 use App\Models\Sparepart;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 // ============================================================
 // HELPERS
@@ -60,6 +61,7 @@ function createSparepart(int $stock = 10, float $price = 85000): Sparepart
 {
     static $counter = 0;
     $counter++;
+
     return Sparepart::create([
         'name' => "Sparepart {$counter}",
         'code' => "SP-TEST-{$counter}",

@@ -7,9 +7,11 @@ namespace Modules\AutoServe\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Modules\AutoServe\Application\Actions\CompleteBookingAction;
 use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\Core\Domain\Models\Vehicle;
 
 class BookingController extends Controller
 {
@@ -36,7 +38,7 @@ class BookingController extends Controller
             'plate_number' => 'required|string|max:15',
             'vehicle_brand' => 'required|string|max:100',
             'vehicle_model' => 'nullable|string|max:100',
-            'vehicle_year' => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
+            'vehicle_year' => 'nullable|integer|min:1900|max:'.(date('Y') + 1),
             'complaint' => 'required|string|max:1000',
             'booking_date' => 'required|date|after_or_equal:today',
             'booking_time' => 'nullable',
@@ -66,7 +68,7 @@ class BookingController extends Controller
         if (! empty($validated['vehicle_id'])) {
             $data['vehicle_id'] = $validated['vehicle_id'];
         } elseif ($request->boolean('save_to_garage')) {
-            $createdVehicle = \Modules\Core\Domain\Models\Vehicle::create([
+            $createdVehicle = Vehicle::create([
                 'user_id' => auth()->id(),
                 'plate_number' => strtoupper(trim($validated['plate_number'])),
                 'color' => $request->input('color'),
@@ -136,7 +138,7 @@ class BookingController extends Controller
         $newStatus = $request->status;
 
         if ($newStatus === 'completed') {
-            app(\Modules\AutoServe\Application\Actions\CompleteBookingAction::class)->handle(
+            app(CompleteBookingAction::class)->handle(
                 $booking,
                 $request->mechanic_notes
             );

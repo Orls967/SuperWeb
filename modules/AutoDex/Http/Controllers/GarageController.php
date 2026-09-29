@@ -7,6 +7,7 @@ namespace Modules\AutoDex\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\AutoDex\Domain\Models\Car;
+use Modules\Core\Contracts\AcquiresVehicle;
 
 class GarageController extends Controller
 {
@@ -39,7 +40,7 @@ class GarageController extends Controller
             $action = 'removed';
         } else {
             // Tambah ke garasi via AcquiresVehicle contract
-            app(\Modules\Core\Contracts\AcquiresVehicle::class)->handle(
+            app(AcquiresVehicle::class)->handle(
                 user: $user,
                 car: $car,
                 plateNumber: $request->plate_number,

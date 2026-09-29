@@ -6,6 +6,4 @@ namespace App\Models;
 
 use Modules\AutoDex\Domain\Models\Brand as ModuleBrand;
 
-class Brand extends ModuleBrand
-{
-}
+class Brand extends ModuleBrand {}

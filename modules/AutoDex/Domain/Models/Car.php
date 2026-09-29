@@ -40,7 +40,7 @@ class Car extends Model
         static::creating(function (Car $car) {
             if (empty($car->slug)) {
                 $brand = Brand::find($car->brand_id);
-                $base = Str::slug(($brand?->name ?? '') . ' ' . $car->model . ' ' . $car->year_start);
+                $base = Str::slug(($brand?->name ?? '').' '.$car->model.' '.$car->year_start);
                 $car->slug = $base;
             }
         });
@@ -96,7 +96,7 @@ class Car extends Model
     {
         return $query->where(function ($q) use ($term) {
             $q->where('model', 'LIKE', "%{$term}%")
-              ->orWhereHas('brand', fn ($b) => $b->where('name', 'LIKE', "%{$term}%"));
+                ->orWhereHas('brand', fn ($b) => $b->where('name', 'LIKE', "%{$term}%"));
         });
     }
 
@@ -118,16 +118,16 @@ class Car extends Model
         }
 
         if ($this->price_idr >= 1_000_000_000) {
-            return 'Rp ' . number_format($this->price_idr / 1_000_000_000, 1, ',', '.') . ' M';
+            return 'Rp '.number_format($this->price_idr / 1_000_000_000, 1, ',', '.').' M';
         }
 
-        return 'Rp ' . number_format($this->price_idr / 1_000_000, 0, ',', '.') . ' Jt';
+        return 'Rp '.number_format($this->price_idr / 1_000_000, 0, ',', '.').' Jt';
     }
 
     /** Fuel type badge color */
     public function getFuelBadgeAttribute(): string
     {
-        return match($this->fuel_type) {
+        return match ($this->fuel_type) {
             'electric' => 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
             'hybrid' => 'bg-teal-500/10 text-teal-400 border-teal-500/20',
             'diesel' => 'bg-amber-500/10 text-amber-400 border-amber-500/20',

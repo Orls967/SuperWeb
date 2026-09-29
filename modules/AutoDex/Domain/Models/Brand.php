@@ -50,7 +50,7 @@ class Brand extends Model
     /** Label warna per kategori untuk UI badge */
     public function getCategoryBadgeAttribute(): string
     {
-        return match($this->category) {
+        return match ($this->category) {
             'jdm' => 'bg-red-500/10 text-red-400 border-red-500/20',
             'usdm' => 'bg-blue-500/10 text-blue-400 border-blue-500/20',
             'euro' => 'bg-amber-500/10 text-amber-400 border-amber-500/20',

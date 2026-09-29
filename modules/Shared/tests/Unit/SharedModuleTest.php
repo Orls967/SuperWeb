@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Brick\Math\BigDecimal;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Shared\Domain\Exceptions\InvalidStateTransition;
 use Modules\Shared\Domain\ValueObjects\Money;
@@ -31,7 +30,7 @@ test('Money rejects operations between different assets', function () {
     $btc = Money::of('BTC', '0.001');
 
     $idr->add($btc);
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 test('InvalidStateTransition throws with clear message', function () {
     $exception = InvalidStateTransition::fromTo('pending', 'completed', 'Booking');

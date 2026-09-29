@@ -6,6 +6,4 @@ namespace App\Models;
 
 use Modules\AutoDex\Domain\Models\Car as ModuleCar;
 
-class Car extends ModuleCar
-{
-}
+class Car extends ModuleCar {}

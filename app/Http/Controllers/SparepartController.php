@@ -6,6 +6,4 @@ namespace App\Http\Controllers;
 
 use Modules\AutoServe\Http\Controllers\SparepartController as ModuleSparepartController;
 
-class SparepartController extends ModuleSparepartController
-{
-}
+class SparepartController extends ModuleSparepartController {}

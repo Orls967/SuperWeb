@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Core;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Application\Actions\AcquireVehicleAction;
+use Modules\Core\Contracts\AcquiresVehicle;
 use Modules\Shared\Application\MenuRegistry;
 
 class CoreServiceProvider extends ServiceProvider
@@ -12,15 +14,15 @@ class CoreServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            \Modules\Core\Contracts\AcquiresVehicle::class,
-            \Modules\Core\Application\Actions\AcquireVehicleAction::class
+            AcquiresVehicle::class,
+            AcquireVehicleAction::class
         );
     }
 
     public function boot(): void
     {
-        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
-        $this->loadViewsFrom(__DIR__ . '/resources/views', 'core');
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'core');
 
         // Register default Core menu item
         $registry = $this->app->make(MenuRegistry::class);

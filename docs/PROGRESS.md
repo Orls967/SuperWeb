@@ -9,7 +9,7 @@
 - [x] 0.6 Entity Vehicle (core_vehicles) + migrasi garage
 - [x] 0.7 AutoServe: vehicle_id di bookings
 - [x] 0.8 BookingStatus Enum + state machine
-- [ ] 0.9 Arch tests batas modul
+- [x] 0.9 Arch tests batas modul
 - [ ] 0.10 Quality gate Fase 0
 
 ## FASE 1 — CORE BANKING (DOUBLE-ENTRY LEDGER)

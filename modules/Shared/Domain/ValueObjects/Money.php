@@ -104,13 +104,13 @@ final readonly class Money
             $rounded = $this->amount->toScale(0, RoundingMode::HalfUp);
             $formatted = number_format((float) $rounded->__toString(), 0, ',', '.');
 
-            return 'Rp ' . $formatted;
+            return 'Rp '.$formatted;
         }
 
         // Crypto: show up to 8 decimal places, trim trailing zeros
         $scaled = $this->amount->toScale(8, RoundingMode::HalfUp);
 
-        return $scaled->__toString() . ' ' . $this->assetCode;
+        return $scaled->__toString().' '.$this->assetCode;
     }
 
     public function toDecimalString(int $scale = 18): string

@@ -6,6 +6,4 @@ namespace App\Http\Controllers;
 
 use Modules\AutoDex\Http\Controllers\GarageController as ModuleGarageController;
 
-class GarageController extends ModuleGarageController
-{
-}
+class GarageController extends ModuleGarageController {}

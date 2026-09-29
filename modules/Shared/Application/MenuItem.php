@@ -7,7 +7,7 @@ namespace Modules\Shared\Application;
 final class MenuItem
 {
     /**
-     * @param array<string> $roles
+     * @param  array<string>  $roles
      */
     public function __construct(
         public string $label,
@@ -38,7 +38,7 @@ final class MenuItem
 
     public function isActive(): bool
     {
-        $pattern = $this->activePattern ?? ($this->route . '*');
+        $pattern = $this->activePattern ?? ($this->route.'*');
 
         return request()->routeIs($pattern);
     }

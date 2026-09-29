@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Modules\AutoDex\Domain\Models\Car;
+use Modules\Core\Domain\Models\Vehicle;
 
 #[Fillable(['name', 'email', 'password', 'phone', 'role'])]
 #[Hidden(['password', 'remember_token'])]
@@ -64,7 +66,7 @@ class User extends Authenticatable
     // --- Core Vehicles Relationship ---
     public function vehicles(): HasMany
     {
-        return $this->hasMany(\Modules\Core\Domain\Models\Vehicle::class, 'user_id');
+        return $this->hasMany(Vehicle::class, 'user_id');
     }
 
     public function activeVehicles(): HasMany
@@ -77,7 +79,7 @@ class User extends Authenticatable
     /** Mobil yang dimiliki user (My Garage) */
     public function garageCars(): BelongsToMany
     {
-        return $this->belongsToMany(\Modules\AutoDex\Domain\Models\Car::class, 'core_vehicles', 'user_id', 'car_id')
+        return $this->belongsToMany(Car::class, 'core_vehicles', 'user_id', 'car_id')
             ->wherePivotNull('deleted_at')
             ->withPivot(['id', 'uuid', 'plate_number', 'color', 'vin', 'odometer_km', 'status', 'created_at'])
             ->withTimestamps();
@@ -86,7 +88,7 @@ class User extends Authenticatable
     /** Mobil impian user (Wishlist) */
     public function wishlistCars(): BelongsToMany
     {
-        return $this->belongsToMany(\Modules\AutoDex\Domain\Models\Car::class, 'dex_wishlists')
+        return $this->belongsToMany(Car::class, 'dex_wishlists')
             ->withPivot(['priority', 'notes', 'created_at'])
             ->withTimestamps();
     }

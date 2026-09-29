@@ -6,7 +6,6 @@ use App\Models\Booking;
 use App\Models\Service;
 use App\Models\Sparepart;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {

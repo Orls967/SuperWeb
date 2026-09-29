@@ -36,7 +36,7 @@ class SparepartController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:serve_spareparts,code,' . $sparepart->id,
+            'code' => 'required|string|max:50|unique:serve_spareparts,code,'.$sparepart->id,
             'stock' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
             'unit' => 'required|string|max:20',

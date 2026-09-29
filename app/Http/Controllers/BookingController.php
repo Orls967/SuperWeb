@@ -6,6 +6,4 @@ namespace App\Http\Controllers;
 
 use Modules\AutoServe\Http\Controllers\BookingController as ModuleBookingController;
 
-class BookingController extends ModuleBookingController
-{
-}
+class BookingController extends ModuleBookingController {}

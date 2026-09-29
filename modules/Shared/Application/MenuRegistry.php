@@ -19,7 +19,7 @@ class MenuRegistry
     }
 
     /**
-     * @param array<string> $roles
+     * @param  array<string>  $roles
      */
     public function addItem(
         string $label,

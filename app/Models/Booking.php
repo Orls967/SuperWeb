@@ -6,6 +6,4 @@ namespace App\Models;
 
 use Modules\AutoServe\Domain\Models\Booking as ModuleBooking;
 
-class Booking extends ModuleBooking
-{
-}
+class Booking extends ModuleBooking {}
