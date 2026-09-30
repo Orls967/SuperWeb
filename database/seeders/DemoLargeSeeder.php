@@ -216,7 +216,8 @@ class DemoLargeSeeder extends Seeder
         foreach ($tenantBrands as $idx => $t) {
             [$name, $category, $extRef, $floor, $area, $baseRate, $scRate, $rentModel, $revSharePct] = $t;
 
-            $unitNumber = sprintf('%s-%02d', $floor, $unitIdx++);
+            $unitNumber = sprintf('%s-%03d', $floor, $unitIdx + 100);
+            $unitIdx++;
             $zone = $zones[$floor];
 
             $unit = Unit::updateOrCreate(
@@ -248,7 +249,7 @@ class DemoLargeSeeder extends Seeder
                 ]
             );
 
-            $leaseNumber = sprintf('LSE-DM-2026-%03d', $idx + 1);
+            $leaseNumber = sprintf('LSE-DM-2026-%03d', $idx + 10);
             $monthlyBaseRent = (int) round($area * $baseRate);
             $monthlyServiceCharge = (int) round($area * $scRate);
 
