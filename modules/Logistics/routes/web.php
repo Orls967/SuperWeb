@@ -8,7 +8,14 @@ use Modules\Logistics\Http\Controllers\FleetController;
 use Modules\Logistics\Http\Controllers\LaneController;
 use Modules\Logistics\Http\Controllers\LocationController;
 use Modules\Logistics\Http\Controllers\LogisticsDashboardController;
+use Modules\Logistics\Http\Controllers\PublicTrackingController;
 use Modules\Logistics\Http\Controllers\ShipperPortalController;
+
+// Public Tracking Routes (No login required, rate limited 30 req/min)
+Route::middleware(['web', 'throttle:30,1'])->group(function () {
+    Route::get('/track', [PublicTrackingController::class, 'index'])->name('track.index');
+    Route::get('/track/{tracking_number}', [PublicTrackingController::class, 'track'])->name('track.show');
+});
 
 Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {

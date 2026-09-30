@@ -255,7 +255,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - [x] 21.6 Akun postpaid B2B: lgx_shipper_accounts, credit limit, lgx:invoice-shippers bulanan idempotent, bayar invoice via wallet + PIN
 - [x] 21.7 Pembatalan: refund via gateway dikurangi cancellation fee -> lgx:freight_revenue (pre-pickup), tolak post-pickup
 - [x] 21.8 Portal shipper (mobile-responsive): form buat shipment, upload massal CSV s/d 5.000 baris queued job, cetak label QR
-- [ ] 21.9 Pelacakan publik: /track/{tracking_number} tanpa login, throttle 30/menit, penyamaran PII data consignee, timeline event
+- [x] 21.9 Pelacakan publik: /track/{tracking_number} tanpa login, throttle 30/menit, penyamaran PII data consignee, timeline event
 - [ ] 21.10 Quality gate Fase 21
 
 ## FASE 22 — OPERASI JARINGAN MULTIMODA: KAPASITAS, RUTE, KONSOLIDASI, HUB, LAST-MILE
