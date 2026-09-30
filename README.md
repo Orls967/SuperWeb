@@ -86,6 +86,11 @@ Seluruh akun telah disiapkan dengan kata sandi default `password` dan PIN Dompet
 | **Demo Customers (20 Akun)** | `customer01@autoserve.test` s/d `customer20@autoserve.test` | `password` | `123456` | 20 customer aktif dengan saldo dompet IDR, kendaraan berpaspor digital, riwayat servis bengkel, portofolio kripto & pinjaman HODL-to-Drive |
 | **Manajer Outlet Resto** | `resto.manager@autoserve.test` | `password` | `123456` | Dapur sentral CK-01, POS hidang, stok opname, order transfer, pembatalan VOID pesanan |
 | **Tenant Duta Mall** | `tenant@autoserve.test` | `password` | `123456` | Portal Mandiri Tenant, tagihan sewa/utilitas, lapor omzet bulanan, izin kerja lembur |
+| **Logistics Admin (Sari Ranah Express)** | `logistics.admin@autoserve.test` | `password` | `123456` | Manajemen penuh jaringan logistik multimoda, armada, kru, rate card, dan audit operasi |
+| **Dispatcher Logistik (3 Akun)** | `dispatcher01@autoserve.test` s/d `dispatcher03@autoserve.test` | `password` | `123456` | Papan dispatch trip, penugasan armada truk & driver sesuai kelas SIM dan batasan UU 22/2009 |
+| **Operator Hub Logistik (4 Akun)** | `hub.bdj@autoserve.test`, `hub.bjb@autoserve.test`, `hub.pky@autoserve.test`, `hub.bpn@autoserve.test` | `password` | `123456` | Operasi inbound/outbound hub, scan resi, sorting paket, dan pemantauan kontainer depot/CFS |
+| **Driver Ekspedisi (12 Akun)** | `driver01@autoserve.test` s/d `driver12@autoserve.test` | `password` | `123456` | Aplikasi tugas driver, scan pickup, rute pengantaran, dan pelaporan POD (Proof of Delivery) |
+| **Shipper Bisnis B2B (5 Akun)** | `shipper01@autoserve.test` s/d `shipper05@autoserve.test` | `password` | `123456` | Portal Shipper, pembuatan resi, upload massal CSV, cetak label QR, dan pembayaran prabayar/invoice |
 
 ---
 
