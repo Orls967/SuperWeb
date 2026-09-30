@@ -15,8 +15,8 @@ use Modules\Banking\Domain\Traits\HasLedgerAccounts;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Resto\Domain\Models\RestoStaffAssignment;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'role', 'pin'])]
-#[Hidden(['password', 'pin', 'remember_token'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'role'])]
+#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
