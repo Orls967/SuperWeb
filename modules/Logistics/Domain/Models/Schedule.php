@@ -80,6 +80,11 @@ class Schedule extends LogisticsEntity
         return $this->belongsTo(Location::class, 'destination_location_id');
     }
 
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(CapacityReservation::class, 'schedule_id');
+    }
+
     public function isPastCutoff(): bool
     {
         return now()->greaterThan($this->cutoff_at);

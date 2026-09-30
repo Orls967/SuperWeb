@@ -6,6 +6,7 @@ namespace Modules\Logistics;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Logistics\Application\Commands\InvoiceShippersCommand;
+use Modules\Logistics\Console\Commands\CheckCapacityCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class LogisticsServiceProvider extends ServiceProvider
@@ -25,6 +26,7 @@ class LogisticsServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 InvoiceShippersCommand::class,
+                CheckCapacityCommand::class,
             ]);
         }
 
