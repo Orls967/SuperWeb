@@ -312,8 +312,23 @@
   4. **Matriks Pembatasan Dangerous Goods (DG):**
      - Kargo dengan DG Kelas 1 (Explosives) dan Kelas 7 (Radioactive) dilarang keras diangkut melalui moda UDARA. Kargo DG ini harus dialihkan melalui moda Darat atau Laut bersertifikasi.
   5. **Armada Berpendingin (Reefer):** Paket yang memiliki spesifikasi suhu (`temp_min_c10` / `temp_max_c10`) hanya boleh dialokasikan pada leg dengan aset berpendingin (`isReeferCapable = true`).
-  6. **Penyimpanan Hasil:** Rute terbaik disimpan terstruktur ke `lgx_shipment_legs` dengan nomor urut leg (`leg_sequence`) dan referensi jadwal operasional (`schedule_id`).
-- **Reason:** Menjamin keselamatan transportasi multimoda sesuai standar IATA DGR / IMO IMDG Code, mencegah kegagalan transfer akibat jadwal yang terlalu mepet, dan memberikan kinerja routing real-time tanpa latensi I/O database.
+## 2026-09-30: Konsolidasi Kargo (Load Planning), Segregasi DG, dan Wajib SOLAS VGM (Fase 22)
+- **Context:** Pemuatan kontainer laut, ULD udara, dan truk konsolidasi memerlukan algoritma optimasi muatan yang ketat, aturan segregasi muatan berbahaya (IMDG Code), pencegahan pemuatan ganda pada kontainer yang sama, serta kepatuhan konvensi maritim SOLAS Chapter VI mengenai Verified Gross Mass (VGM).
+- **Decision:**
+  1. **Eksklusivitas Kontainer Aktif:** Satu kontainer/ULD/truk fisik tidak boleh terdaftar pada lebih dari satu load aktif (`planning`, `consolidating`, `sealed`, `loaded`, `in_transit`). Pelanggaran ditolak dengan `ActiveLoadConflictException`.
+  2. **FCL vs LCL:**
+     - FCL (Full Container Load): Dibatasi secara ketat tepat 1 shipment per kontainer (`max_shipments = 1`). Penambahan shipment kedua ditolak.
+     - LCL (Less than Container Load): Konsolidasi di CFS menggunakan algoritma First-Fit-Decreasing (FFD) berbasis pengurutan volume dan batas berat kargo.
+  3. **Matriks Segregasi Dangerous Goods (DG - IMDG Code):**
+     - Kelas 1 (Explosives) TIDAK BOLEH dikonsolidasi dalam satu kontainer/ruang muat bersama: Kelas 2.1 (Flammable Gas), Kelas 3 (Flammable Liquids), Kelas 4.1/4.2/4.3 (Flammable Solids), Kelas 5.1/5.2 (Oxidizing Substances & Organic Peroxides), dan Kelas 8 (Corrosive Substances).
+     - Kelas 3 (Flammable Liquids) TIDAK BOLEH dicampur dengan Kelas 5.1 (Oxidizing Substances).
+     - Barang non-DG dapat dikonsolidasi bersama DG yang kompatibel.
+  4. **Pemisahan Kargo Dingin (Reefer):** Paket reefer hanya boleh dimasukkan ke kontainer berpendingin aktif (`is_reefer = true`) dengan rentang suhu yang sesuai.
+  5. **Penegakan Wajib SOLAS VGM (Verified Gross Mass):**
+     - Sebelum kontainer diizinkan dimuat ke kapal (`LoadOntoScheduleAction` pada moda laut), data VGM wajib tercatat: berat total (`vgm_kg`), metode penimbangan (`method_1` penimbangan kontainer terisi atau `method_2` penimbangan isi + tara), sertifikasi nama penanggung jawab, dan stempel waktu.
+     - Upaya pemuatan kontainer ke kapal tanpa VGM terverifikasi ditolak mutlak dengan `MissingSolasVgmException`.
+- **Reason:** Menjamin keselamatan pelayaran internasional (SOLAS VI/2), mencegah kebakaran atau reaksi kimia berbahaya di laut, dan mengoptimalkan utilisasi ruang muat kontainer.
+
 
 
 

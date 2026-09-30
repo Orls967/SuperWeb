@@ -262,7 +262,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - [x] 22.1 Jadwal: lgx_schedules (truk, kapal voyage multi-port, pesawat freighter), kapasitas multi-dimensi
 - [x] 22.2 Reservasi kapasitas: ReserveCapacityAction lockForUpdate, ReleaseCapacityAction, lgx:capacity-check
 - [x] 22.3 Perencana rute: RoutePlanner pure domain service (Dijkstra/k-shortest paths graf terisolasi), filter mode & DG & reefer, lgx_shipment_legs
-- [ ] 22.4 Konsolidasi & load planning: lgx_loads + lgx_load_items (FCL, LCL first-fit-decreasing CFS, VGM SOLAS sebelum muat kapal)
+- [x] 22.4 Konsolidasi & load planning: lgx_loads + lgx_load_items (FCL, LCL first-fit-decreasing CFS, VGM SOLAS sebelum muat kapal)
 - [ ] 22.5 Chain of custody: lgx_tracking_events append-only hash chain per shipment, immutable, lgx:verify-custody chunkById
 - [ ] 22.6 Operasi hub (hub_operator, mobile): scan inbound, sortir, outbound, deteksi otomatis exception missort
 - [ ] 22.7 Papan dispatch (dispatcher): assign armada + driver dengan validasi SIM, jam kerja, status maintenance, paspor kendaraan
