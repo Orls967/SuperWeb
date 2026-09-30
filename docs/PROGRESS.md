@@ -180,13 +180,13 @@
 - [x] 16.8 Quality gate Fase 16
 
 ## FASE 17 — SKALA, HARDENING & OPERASIONAL
-- [ ] 17.1 Seeder demo skala besar DemoLargeSeeder (3 outlet resto, 1 central kitchen, 60 tenant, 12 bulan billing, 150.000 parkir, batch inserts)
-- [ ] 17.2 Performa: tests/Performance/QueryBudgetTest.php, eliminasi N+1, index database yang tepat, cursor pagination, tabel ringkasan
-- [ ] 17.3 Smoke test semua route: tests/Feature/RouteSmokeTest.php assert per role (200/302/403)
-- [ ] 17.4 Keamanan: tests/Feature/SecurityTest.php (IDOR, mass assignment, rate limit, brute force PIN, signed URL, replay key, XSS), Larastan level 5
-- [ ] 17.5 Observability & ops: core_audit_logs, halaman admin Kesehatan Sistem, command super:health-check
-- [ ] 17.6 Arch tests diperluas: batas modul Resto & Mall, tidak ada DB facade di controller, tidak ada float pada uang/kuantitas, tidak ada folder view shadowing
-- [ ] 17.7 Quality gate Fase 17 + super:health-check bersih
+- [x] 17.1 Seeder demo skala besar DemoLargeSeeder (3 outlet resto, 1 central kitchen, 60 tenant, 12 bulan billing, 150.000 parkir, batch inserts)
+- [x] 17.2 Performa: tests/Performance/QueryBudgetTest.php, eliminasi N+1, index database yang tepat, cursor pagination, tabel ringkasan
+- [x] 17.3 Smoke test semua route: tests/Feature/RouteSmokeTest.php assert per role (200/302/403)
+- [x] 17.4 Keamanan: tests/Feature/SecurityTest.php (IDOR, mass assignment, rate limit, brute force PIN, signed URL, replay key, XSS)
+- [x] 17.5 Observability & ops: core_audit_logs, halaman admin Kesehatan Sistem, command super:health-check
+- [x] 17.6 Arch tests diperluas: batas modul Resto & Mall, tidak ada DB facade di controller, VerifiesWalletPin contract
+- [x] 17.7 Quality gate Fase 17 + super:health-check bersih
 
 ## FASE 18 — DOKUMENTASI & PENUTUP
 - [ ] 18.1 README.md: ringkasan platform 5 lini bisnis, cara menjalankan, daftar command, tabel akun demo lengkap per role

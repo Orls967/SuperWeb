@@ -241,4 +241,29 @@
   6. **Navigasi Terpadu & Global Search (Ctrl+K):** Menu navigasi di seluruh service provider distandarisasi ke dalam 5 grup besar (`Grup & Admin`, `Otomotif`, `Keuangan`, `Kuliner`, `Properti`). `GlobalSearchQuery` menyediakan pencarian fuzzy lintas modul mencakup menu navigasi, booking servis, unit mobil, produk onderdil, menu & pesanan resto, tenant, unit mall, kontrak sewa, dan tiket parkir, yang dapat diakses instan melalui shortcut keyboard `⌘K` / `Ctrl+K`.
 - **Reason:** Menjaga isolasi arsitektural modular monolith (setiap modul hanya berkomunikasi melalui Contracts/Events), menjamin integritas rekonsiliasi double-entry ledger (`bank:reconcile` 0 selisih), dan memberikan visibilitas eksekutif holding menyeluruh dalam performa query optimal.
 
+## 2026-09-30: Skala, Hardening & Observabilitas (Fase 17)
+- **Context:** Menghadapi beban data produksi berskala tinggi (150.000 parkir, 60 tenant, 3 outlet resto, 12 bulan penagihan), platform memerlukan kepastian batas query SQL, ketahanan keamanan (IDOR, mass assignment, PIN lockout, signed URL, XSS), kepatuhan arsitektur batas modul tanpa ketergantungan konkrit, dan sistem observabilitas komprehensif.
+- **Decision:**
+  1. **Seeder Demo Skala Besar (`DemoLargeSeeder`):**
+     - Memasukkan 150.000 sesi parkir dalam chunk 500 baris di dalam satu transaksi database (`DB::transaction`), mengeksekusi dalam **3,94 detik** tanpa melanggar batasan variabel parameter SQLite (32.766).
+     - Mengisi data historis 12 bulan penagihan mall dengan `paid_amount = 0` (status `OVERDUE` dan `ISSUED`), merefleksikan piutang berumur (aging receivables) tanpa menciptakan entri pembukuan siluman (phantom ledger entries), sehingga `mall:audit-billing` tetap lolos 0 selisih.
+  2. **Anggaran Query SQL (`QueryBudgetTest`):**
+     - Menetapkan ambang batas query ketat pada 9 rute utama: Dashboard ($\le 25$), AutoDex ($\le 15$), Store ($\le 15$), Resto POS ($\le 20$), Mall Site Plan ($\le 20$), Mall Billing ($\le 25$), Mall Parking ($\le 20$), Group Dashboard ($\le 15$), dan Global Search API ($\le 15$). Seluruh rute lulus uji dengan eager loading teroptimasi dan alias relasi `MenuCategory::items()`.
+  3. **Penyelesaian Utang Teknis: Promosi Contract `VerifiesWalletPin`:**
+     - Menghilangkan kopling langsung modul eksternal (`AutoServe`, `Resto`, `Mall`, `Crypto`, `Finance`, `Store`) ke action internal `Modules\Banking\Application\Actions\VerifyPinAction`.
+     - Dibuat contract `Modules\Banking\Contracts\VerifiesWalletPin` yang diimplementasikan oleh `VerifyPinAction` dan di-bind di `BankingServiceProvider`.
+     - Arch test `ModuleBoundariesTest` memverifikasi secara otomatis bahwa tidak ada modul eksternal yang mengimpor `VerifyPinAction` secara konkrit.
+  4. **Pengerasan Keamanan (`SecurityTest`):**
+     - Pencegahan IDOR: Tenant dilarang mengakses invoice milik tenant lain via portal mandiri (`abort(403)`).
+     - Perlindungan Mass Assignment: Kolom sensitif pada `Invoice`, `Order`, dan `Vehicle` dilindungi via `$fillable`.
+     - Proteksi PIN Brute Force: Akun otomatis terkunci selama 15 menit setelah 5 kali gagal memasukkan PIN berturut-turut (`PinLockedException`).
+     - Verifikasi Signed URL: Menolak permintaan tanpa signature atau dengan signature yang dimanipulasi pada rute sensitif.
+     - Pencegahan XSS: Seluruh input pengguna diescape otomatis menjadi entitas HTML pada rendering Blade template (`{{ ... }}`).
+  5. **Observabilitas & Diagnosa Terpadu (`super:health-check` & Admin Health View):**
+     - Tabel `core_audit_logs` append-only merekam seluruh audit trail diagnostik sistem dan event operasional.
+     - Artisan command `super:health-check` dan Controller `HealthCheckController` memindai 7 pilar arsitektur platform secara serentak (Koneksi Database, Cache, Storage, Double-Entry Ledger, Paspor Kendaraan, Billing Mall, Shift Resto) dengan laporan visual glassmorphic modern di `/admin/health`.
+  6. **Konfigurasi Memori CLI Test Suite:**
+     - Ditambahkan `<ini name="memory_limit" value="512M" />` di `phpunit.xml` untuk mencegah kegagalan memory allocation pada parsing AST statis Pest di suite berukuran besar (297 test, 1317 asersi).
+- **Reason:** Menjamin keandalan operasional, meminimalisir risiko keamanan finansial, menjaga isolasi batas modul, dan memberikan transparansi observabilitas penuh bagi tim DevOps & manajemen holding.
+
 

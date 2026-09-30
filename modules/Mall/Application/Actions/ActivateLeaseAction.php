@@ -9,10 +9,10 @@ use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Modules\Banking\Application\Actions\VerifyPinAction;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
@@ -27,7 +27,7 @@ class ActivateLeaseAction
 {
     public function __construct(
         private readonly Ledger $ledger,
-        private readonly VerifyPinAction $verifyPinAction
+        private readonly VerifiesWalletPin $verifyPinAction
     ) {}
 
     public function handle(

@@ -8,7 +8,7 @@ use App\Models\User;
 use Exception;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
 use Modules\AutoServe\Domain\Models\Booking;
-use Modules\Banking\Application\Actions\VerifyPinAction;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Payment\Contracts\PaymentGateway;
 use Modules\Payment\Domain\Enums\PaymentIntentStatus;
 use Modules\Shared\Application\BaseAction;
@@ -21,7 +21,7 @@ class ApproveExtraChargeAction extends BaseAction
 {
     public function __construct(
         private readonly PaymentGateway $paymentGateway,
-        private readonly VerifyPinAction $verifyPinAction,
+        private readonly VerifiesWalletPin $verifyPinAction,
         private readonly CompleteBookingAction $completeBooking,
     ) {}
 

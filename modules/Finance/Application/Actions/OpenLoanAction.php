@@ -8,10 +8,10 @@ use App\Models\User;
 use Brick\Math\BigDecimal;
 use Exception;
 use Illuminate\Support\Str;
-use Modules\Banking\Application\Actions\VerifyPinAction;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Crypto\Contracts\PriceFeed;
 use Modules\Crypto\Domain\Models\CryptoAsset;
@@ -43,7 +43,7 @@ class OpenLoanAction extends BaseAction
         private readonly PriceFeed $priceFeed,
         private readonly PaymentGateway $paymentGateway,
         private readonly InventoryService $inventoryService,
-        private readonly VerifyPinAction $verifyPinAction,
+        private readonly VerifiesWalletPin $verifyPinAction,
         private readonly LoanSimulator $simulator,
     ) {}
 

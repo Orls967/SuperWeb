@@ -9,7 +9,7 @@ use Exception;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
 use Modules\AutoServe\Domain\Enums\EstimateStatus;
 use Modules\AutoServe\Domain\Models\Estimate;
-use Modules\Banking\Application\Actions\VerifyPinAction;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Payment\Contracts\PaymentGateway;
 use Modules\Shared\Application\BaseAction;
 use Modules\Shared\Domain\ValueObjects\Money;
@@ -22,7 +22,7 @@ class ApproveEstimateAction extends BaseAction
 {
     public function __construct(
         private readonly PaymentGateway $paymentGateway,
-        private readonly VerifyPinAction $verifyPinAction,
+        private readonly VerifiesWalletPin $verifyPinAction,
         private readonly BackorderPartsAction $backorderParts,
     ) {}
 

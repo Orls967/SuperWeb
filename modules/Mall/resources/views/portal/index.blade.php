@@ -42,7 +42,7 @@
                     <p class="text-xs text-indigo-200/70 mt-1">Digunakan untuk auto-debit & pelunasan invoice</p>
                     <div class="mt-4 pt-4 border-t border-indigo-900/60 flex items-center justify-between">
                         <span class="text-xs text-indigo-300">ID Pengguna: #{{ auth()->id() }}</span>
-                        <a href="{{ route('banking.dashboard') }}" class="text-xs font-bold text-amber-400 hover:text-amber-300">Isi Saldo &rarr;</a>
+                        <a href="{{ route('wallet.index') }}" class="text-xs font-bold text-amber-400 hover:text-amber-300">Isi Saldo &rarr;</a>
                     </div>
                 </div>
 

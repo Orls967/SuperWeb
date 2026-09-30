@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Modules\AutoServe\Domain\Models\Booking;
-use Modules\Banking\Application\Actions\VerifyPinAction;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
 use Modules\Banking\Domain\Exceptions\InvalidPinException;
 use Modules\Banking\Domain\Exceptions\PinLockedException;
@@ -21,7 +21,7 @@ class InvoicePaymentController extends Controller
         Request $request,
         Booking $booking,
         PaymentGateway $paymentGateway,
-        VerifyPinAction $verifyPin,
+        VerifiesWalletPin $verifyPin,
     ): RedirectResponse {
         $user = $request->user();
 

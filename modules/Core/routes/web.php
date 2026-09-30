@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Core\Http\Controllers\ActivityFeedController;
+use Modules\Core\Http\Controllers\HealthCheckController;
 use Modules\Core\Http\Controllers\NotificationController;
 use Modules\Core\Http\Controllers\PassportController;
 
@@ -21,4 +22,10 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
 
     // Activity Feed
     Route::get('/activity', [ActivityFeedController::class, 'index'])->name('activity.index');
+
+    // Admin System Health & Observability
+    Route::middleware('role:admin')->prefix('admin')->group(function () {
+        Route::get('/health', [HealthCheckController::class, 'index'])->name('admin.health.index');
+        Route::post('/health/run', [HealthCheckController::class, 'run'])->name('admin.health.run');
+    });
 });

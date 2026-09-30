@@ -6,14 +6,14 @@ namespace Modules\Mall\Application\Actions;
 
 use App\Models\User;
 use InvalidArgumentException;
-use Modules\Banking\Application\Actions\VerifyPinAction;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Mall\Domain\Models\Invoice;
 
 class PayInvoiceAction
 {
     public function __construct(
         protected AllocatePaymentAction $allocatePaymentAction,
-        protected VerifyPinAction $verifyPinAction,
+        protected VerifiesWalletPin $verifyPinAction,
     ) {}
 
     /**

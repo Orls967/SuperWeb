@@ -8,7 +8,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Modules\Banking\Application\Actions\VerifyPinAction;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Mall\Contracts\LoyaltyLedger;
 use Modules\Payment\Contracts\PaymentGateway;
@@ -22,7 +22,7 @@ class CheckoutService
         private readonly CartService $cartService,
         private readonly InventoryService $inventoryService,
         private readonly PaymentGateway $paymentGateway,
-        private readonly VerifyPinAction $verifyPinAction,
+        private readonly VerifiesWalletPin $verifyPinAction,
         private readonly ?LoyaltyLedger $loyaltyLedger = null
     ) {}
 

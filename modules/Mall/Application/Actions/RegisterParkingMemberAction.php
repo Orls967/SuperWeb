@@ -10,10 +10,10 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Modules\Banking\Application\Actions\VerifyPinAction;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Mall\Application\Services\MallLedgerAccounts;
@@ -34,7 +34,7 @@ class RegisterParkingMemberAction
 
     public function __construct(
         protected Ledger $ledger,
-        protected VerifyPinAction $verifyPinAction,
+        protected VerifiesWalletPin $verifyPinAction,
         protected MallLedgerAccounts $accounts,
     ) {}
 

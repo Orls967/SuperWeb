@@ -7,7 +7,7 @@ namespace Modules\Resto\Application\Actions;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Modules\Banking\Application\Actions\VerifyPinAction;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Payment\Contracts\PaymentGateway;
@@ -19,7 +19,7 @@ class HoldCateringDepositAction
 {
     public function __construct(
         private readonly PaymentGateway $paymentGateway,
-        private readonly VerifyPinAction $verifyPinAction
+        private readonly VerifiesWalletPin $verifyPinAction
     ) {}
 
     public function handle(

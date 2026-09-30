@@ -6,10 +6,11 @@ namespace Modules\Banking\Application\Actions;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Exceptions\InvalidPinException;
 use Modules\Banking\Domain\Exceptions\PinLockedException;
 
-class VerifyPinAction
+class VerifyPinAction implements VerifiesWalletPin
 {
     public function execute(User $user, string $pin): bool
     {

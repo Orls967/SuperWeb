@@ -7,9 +7,11 @@ namespace Modules\Banking;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Modules\Banking\Application\Actions\VerifyPinAction;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Console\Commands\ReconcileBankLedgerCommand;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Listeners\CreateUserWalletListener;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -18,6 +20,10 @@ class BankingServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(Ledger::class, LedgerService::class);
+        $this->app->bind(
+            VerifiesWalletPin::class,
+            VerifyPinAction::class
+        );
     }
 
     public function boot(): void

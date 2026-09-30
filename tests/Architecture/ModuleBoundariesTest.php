@@ -12,6 +12,8 @@ arch('controllers do not use DB facade directly')
         'Modules\Crypto\Http\Controllers',
         'Modules\Resto\Http\Controllers',
         'Modules\Mall\Http\Controllers',
+        'Modules\Core\Http\Controllers',
+        'Modules\Finance\Http\Controllers',
     ])
     ->not->toUse('Illuminate\Support\Facades\DB');
 
@@ -41,3 +43,22 @@ arch('AutoServe does not import AutoDex domain')
 arch('AutoDex does not import AutoServe domain')
     ->expect('Modules\AutoDex')
     ->not->toUse('Modules\AutoServe\Domain');
+
+arch('external modules do not use Banking VerifyPinAction directly')
+    ->expect([
+        'Modules\AutoServe',
+        'Modules\Crypto',
+        'Modules\Finance',
+        'Modules\Mall',
+        'Modules\Resto',
+        'Modules\Store',
+    ])
+    ->not->toUse('Modules\Banking\Application\Actions\VerifyPinAction');
+
+arch('Resto Domain does not import Mall')
+    ->expect('Modules\Resto\Domain')
+    ->not->toUse('Modules\Mall');
+
+arch('Mall Domain does not import Resto')
+    ->expect('Modules\Mall\Domain')
+    ->not->toUse('Modules\Resto');

@@ -7,10 +7,10 @@ namespace Modules\Crypto\Application\Services;
 use App\Models\User;
 use Brick\Math\BigDecimal;
 use Illuminate\Support\Str;
-use Modules\Banking\Application\Actions\VerifyPinAction;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
 use Modules\Crypto\Domain\Enums\TradeSide;
@@ -24,7 +24,7 @@ class TradeExecutionService
 {
     public function __construct(
         private readonly Ledger $ledger,
-        private readonly VerifyPinAction $verifyPinAction
+        private readonly VerifiesWalletPin $verifyPinAction
     ) {}
 
     public function executeTrade(User $user, string $quoteUuid, string $pin): CryptoTrade

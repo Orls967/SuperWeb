@@ -8,10 +8,10 @@ use App\Models\User;
 use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Modules\Banking\Application\Actions\VerifyPinAction;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -32,7 +32,7 @@ class PayOrderAction
     public function __construct(
         private readonly Ledger $ledger,
         private readonly PaymentGateway $paymentGateway,
-        private readonly VerifyPinAction $verifyPinAction,
+        private readonly VerifiesWalletPin $verifyPinAction,
         private readonly ?ParkingValidator $parkingValidator = null,
         private readonly ?LoyaltyLedger $loyaltyLedger = null
     ) {}

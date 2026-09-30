@@ -7,7 +7,7 @@ namespace Modules\Store\Application\Actions;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Str;
-use Modules\Banking\Application\Actions\VerifyPinAction;
+use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Payment\Contracts\PaymentGateway;
@@ -27,7 +27,7 @@ class PurchaseC2cVehicleAction extends BaseAction
     public function __construct(
         private readonly InventoryService $inventoryService,
         private readonly PaymentGateway $paymentGateway,
-        private readonly VerifyPinAction $verifyPinAction,
+        private readonly VerifiesWalletPin $verifyPinAction,
     ) {}
 
     /**
