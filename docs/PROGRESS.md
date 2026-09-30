@@ -79,7 +79,7 @@
 - [x] 6.3 Dashboard Customer terpadu
 - [x] 6.4 Dashboard Admin terpadu
 - [x] 6.5 Dashboard Mekanik terpadu
-- [ ] 6.6 Seeder demo lengkap — **DIBUKA KEMBALI 2026-09-30**: pemeriksaan pada Fase 14 menemukan seeder hanya membuat 4 user dan 0 kendaraan, bukan 20 customer + riwayat booking + 3 pinjaman seperti spesifikasi. Kendaraan garasi demo sudah ditambahkan ke `PlatformSeeder`; sisanya digabungkan ke task 17.1 (DemoLargeSeeder) yang cakupannya lebih luas.
+- [x] 6.6 Seeder demo lengkap — **DITUTUP 2026-09-30 (Fase 19)**: diimplementasikan komprehensif via `DemoCustomerSeeder` (20 customer ber-PIN & bersaldo, 20 kendaraan berpaspor, 40+ booking terbayar lewat ledger, 3 pinjaman HODL-to-Drive aktif LTV < 70%, 6 produk mobil Store, reconcile 0) dan diverifikasi oleh `DemoCustomerSeederTest`.
 - [x] 6.7 Quality gate Fase 6
 
 ## DEFINITION OF DONE (FASE 0–6)
@@ -235,7 +235,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - [x] 19.5 Gate harian tidak boleh lolos karena kosong: default seed memuat >= 1 hari usaha Resto ditutup dengan >= 5 order terbayar, dan >= 1 bulan tagihan Mall terbit sebagian dibayar, audit-billing dan resto:close-day melaporkan nilai non-nol
 - [x] 19.6 Hapus kolom users.pin: migrasi drop kolom, hapus referensi, verifikasi PIN tetap via contract Banking
 - [x] 19.7 Kompatibilitas DemoLargeSeeder: jalankan ulang di atas DatabaseSeeder baru tanpa bentrok unique, ukur ulang benchmark (3.24s, 0 collision)
-- [ ] 19.8 Rapikan dokumen: centang 6.6 dengan catatan benar, perbaiki DoD 0-6, catat DECISIONS seeder, update akun demo di README
+- [x] 19.8 Rapikan dokumen: centang 6.6 dengan catatan benar, perbaiki DoD 0-6, catat DECISIONS seeder, update akun demo di README
 - [ ] 19.9 Quality gate Fase 19
 
 ## FASE 20 — FONDASI LOGISTIK: MODUL, JARINGAN, ARMADA

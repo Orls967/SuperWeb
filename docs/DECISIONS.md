@@ -275,5 +275,23 @@
   4. **Pencapaian Kualitas Mutlak:** Memverifikasi seluruh tolok ukur kualitas lolos serentak: `php artisan test` (297 passed, 1317 assertions), `vendor/bin/pint --test` (clean), `npm run build` (clean), `bank:reconcile` (0 selisih), `core:verify-passports` (valid), `resto:close-day --check` (valid), `mall:audit-billing` (0 selisih), dan `super:health-check` (7/7 HEALTHY).
 - **Reason:** Menghadirkan sistem kelas enterprise yang tangguh, teruji, terdokumentasi rapi, dan siap beroperasi di lingkungan produksi holding konglomerasi.
 
+## 2026-09-30: Penstabilan Demo Seeder, Rute Kripto Asli, dan Penghapusan Kolom PIN (Fase 19)
+- **Context:** Fase 18 menyisakan celah pada seeder: trade kripto tidak memakai alur pasar asli melainkan quote acak yang memicu saldo minus saat seeder dieksekusi, pinjaman HODL-to-Drive berisiko margin call jika harga kripto berfluktuasi tanpa buffer kolateral, `users.pin` masih ada di skema database padahal PIN dompet sudah dipindahkan ke `bank_wallet_pins`, serta `resto:close-day` dan `mall:audit-billing` melewati quality gate karena database kosong alih-alih memvalidasi transaksi riil.
+- **Decision:**
+  1. **Alur Perdagangan Kripto Asli (Real Trade Flow, Bukan Genesis Injection):**
+     Di `DemoCustomerSeeder`, pembelian kripto customer dialirkan melalui alur perdagangan riil: `PriceEngineService->getQuote()` dengan parameter eksplisit (`fromAsset`, `toAsset`, `amount`, `isBuy`), memverifikasi kecukupan saldo IDR customer, lalu mengeksekusi `TradeCryptoAction->execute()`. Untuk menjamin determinisme 100% antar-run pengujian, generator harga kripto di-seed secara deterministik (`mt_srand(12345)`).
+  2. **Buffer Kolateral Pinjaman HODL-to-Drive (1.6x Buffer, Bebas Margin Call):**
+     `OpenLoanAction` diperluas dengan parameter opsional `collateralQty`. Di `DemoCustomerSeeder`, pinjaman kripto mengunci 1.6x buffer kolateral di atas kebutuhan minimum sehingga rasio LTV awal berada pada level ~31.25% (jauh di bawah batas margin call 70% dan batas likuidasi 85%), menjamin ketiga pinjaman aktif customer tetap dalam kondisi sehat dan stabil.
+  3. **Konvensi Akun Demo Terstandarisasi:**
+     20 akun customer demo (`customer01@autoserve.test` s/d `customer20@autoserve.test`) dibuat dengan password terstandarisasi `password` dan 6-digit PIN dompet `123456` yang terdaftar langsung di tabel `bank_wallet_pins` dengan proteksi brute force (5x lockout). Masing-masing customer memiliki saldo IDR, minimal 1 kendaraan berpaspor digital terverifikasi, dan riwayat transaksi booking servis yang terhubung ke buku besar umum.
+  4. **Penghapusan Kolom `users.pin` (Single Source of Truth):**
+     Kolom legacy `pin` pada tabel `users` dihapus melalui migrasi `2026_09_30_180001_drop_pin_from_users_table`. Seluruh modul wajib memvalidasi PIN melalui contract `Banking\Contracts\VerifiesWalletPin` yang mengarah ke `bank_wallet_pins`.
+  5. **Gate Harian Wajib Berisi Data Usaha Non-Nol:**
+     Default `DatabaseSeeder` kini mengeksekusi minimal 1 hari usaha Resto yang ditutup via `CloseBusinessDayAction` (dengan 5 transaksi POS terbayar bernilai non-nol Rp 170.000) dan minimal 1 penagihan bulanan Mall yang terbit via `GenerateMonthlyBillingAction` dengan pembayaran parsial invoice via `PayInvoiceAction` (Rp 20.000.000). Dengan demikian `resto:close-day --check` dan `mall:audit-billing` memverifikasi data riil, bukan lolos semu akibat tabel kosong.
+  6. **Kompatibilitas Seeder Demo Skala Besar (`DemoLargeSeeder`):**
+     Offset penomoran unit (`sprintf('%s-%03d', $floor, $unitIdx + 100)`) dan nomor kontrak sewa mall (`sprintf('LSE-DM-2026-%03d', $idx + 10)`) diterapkan di `DemoLargeSeeder` agar penambahan 60 tenant demo skala besar dapat berjalan harmonis di atas data dasar tanpa bentrok unique constraint.
+- **Reason:** Memastikan seluruh data seeder mencerminkan alur domain dan invarian moneter riil, melindungi integritas double-entry ledger, dan menghilangkan segala bentuk ambiguitas autentikasi PIN.
+
+
 
 
