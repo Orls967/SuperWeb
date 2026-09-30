@@ -239,7 +239,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - [x] 19.9 Quality gate Fase 19 (305 passed / 1569 assertions, Pint clean, build clean, 89 ledger accounts, 30 passports valid, resto/mall/health gates pass)
 
 ## FASE 20 — FONDASI LOGISTIK: MODUL, JARINGAN, ARMADA
-- [ ] 20.1 Kerangka modul modules/Logistics, provider, MenuRegistry "Logistik", roles (logistics_admin, dispatcher, hub_operator, driver, shipper), policies, arch tests batas modul
+- [x] 20.1 Kerangka modul modules/Logistics, provider, MenuRegistry "Logistik", roles (logistics_admin, dispatcher, hub_operator, driver, shipper), policies, arch tests batas modul
 - [ ] 20.2 Lokasi & jaringan: lgx_locations, lgx_lanes, seed jaringan berpusat di Banjarmasin (pelabuhan UN/LOCODE, bandara IATA, hub darat, CFS, depot), CRUD + SVG skematik
 - [ ] 20.3 Armada: lgx_trucks (terhubung Vehicle Passport core_vehicles, DA plate), lgx_trailers, lgx_vessels (IMO check digit), lgx_aircraft, lgx_containers (ISO 6346 check digit), lgx_ulds, unit tests check digit
 - [ ] 20.4 Pengemudi & kru: lgx_drivers (SIM class, expiry, hub asal), batas jam mengemudi UU 22/2009 maks 8 jam/hari & istirahat 30 menit per 4 jam

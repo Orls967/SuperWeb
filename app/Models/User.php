@@ -76,9 +76,46 @@ class User extends Authenticatable
         return $this->role === 'technician';
     }
 
+    public function isLogisticsAdmin(): bool
+    {
+        return $this->role === 'logistics_admin';
+    }
+
+    public function isDispatcher(): bool
+    {
+        return $this->role === 'dispatcher';
+    }
+
+    public function isHubOperator(): bool
+    {
+        return $this->role === 'hub_operator';
+    }
+
+    public function isDriver(): bool
+    {
+        return $this->role === 'driver';
+    }
+
+    public function isShipper(): bool
+    {
+        return $this->role === 'shipper';
+    }
+
     public function isStaff(): bool
     {
-        return in_array($this->role, ['admin', 'mekanik', 'cashier', 'kitchen', 'outlet_manager', 'mall_admin', 'technician']);
+        return in_array($this->role, [
+            'admin',
+            'mekanik',
+            'cashier',
+            'kitchen',
+            'outlet_manager',
+            'mall_admin',
+            'technician',
+            'logistics_admin',
+            'dispatcher',
+            'hub_operator',
+            'driver',
+        ]);
     }
 
     // --- AutoServe Relationships ---

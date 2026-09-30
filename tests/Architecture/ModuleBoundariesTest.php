@@ -14,6 +14,7 @@ arch('controllers do not use DB facade directly')
         'Modules\Mall\Http\Controllers',
         'Modules\Core\Http\Controllers',
         'Modules\Finance\Http\Controllers',
+        'Modules\Logistics\Http\Controllers',
     ])
     ->not->toUse('Illuminate\Support\Facades\DB');
 
@@ -30,6 +31,7 @@ arch('domain does not depend on Http')
         'Modules\Crypto\Domain',
         'Modules\Resto\Domain',
         'Modules\Mall\Domain',
+        'Modules\Logistics\Domain',
     ])
     ->not->toUse([
         'Illuminate\Http',
@@ -52,6 +54,7 @@ arch('external modules do not use Banking VerifyPinAction directly')
         'Modules\Mall',
         'Modules\Resto',
         'Modules\Store',
+        'Modules\Logistics',
     ])
     ->not->toUse('Modules\Banking\Application\Actions\VerifyPinAction');
 
@@ -62,3 +65,21 @@ arch('Resto Domain does not import Mall')
 arch('Mall Domain does not import Resto')
     ->expect('Modules\Mall\Domain')
     ->not->toUse('Modules\Resto');
+
+arch('Logistics Domain does not import other business domains')
+    ->expect('Modules\Logistics\Domain')
+    ->not->toUse([
+        'Modules\Resto\Domain',
+        'Modules\Mall\Domain',
+        'Modules\AutoServe\Domain',
+        'Modules\Store\Domain',
+    ]);
+
+arch('other business domains do not import Logistics Domain')
+    ->expect([
+        'Modules\AutoServe',
+        'Modules\Store',
+        'Modules\Resto',
+        'Modules\Mall',
+    ])
+    ->not->toUse('Modules\Logistics\Domain');

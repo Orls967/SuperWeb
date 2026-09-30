@@ -107,7 +107,7 @@
                     @php
                         $menuRegistry = app(\Modules\Shared\Application\MenuRegistry::class);
                         $groupedMenu = $menuRegistry->getGroupedItemsForUser(auth()->user());
-                        $groupOrder = ['Grup & Admin', 'Otomotif', 'Keuangan', 'Kuliner', 'Properti'];
+                        $groupOrder = ['Grup & Admin', 'Otomotif', 'Keuangan', 'Kuliner', 'Properti', 'Logistik'];
                         uksort($groupedMenu, function($a, $b) use ($groupOrder) {
                             $idxA = array_search($a, $groupOrder);
                             $idxB = array_search($b, $groupOrder);
