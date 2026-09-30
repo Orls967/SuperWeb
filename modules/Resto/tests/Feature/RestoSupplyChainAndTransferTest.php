@@ -224,6 +224,7 @@ class RestoSupplyChainAndTransferTest extends TestCase
         );
 
         $transitBalBefore = LedgerAccount::where('code', 'inventory:resto:transit:IDR')->value('cached_balance') ?? '0';
+        $destBalBefore = LedgerAccount::where('code', "inventory:resto:{$this->outlet->code}:IDR")->value('cached_balance') ?? '0';
 
         // 1. Ship 20,000 grams from CK to Outlet
         $transfer = $shipAction->handle(
@@ -258,7 +259,7 @@ class RestoSupplyChainAndTransferTest extends TestCase
 
         // Outlet inventory account increased by Rp 300,000
         $destBal = LedgerAccount::where('code', "inventory:resto:{$this->outlet->code}:IDR")->firstOrFail()->cached_balance;
-        $this->assertGreaterThanOrEqual(300000.0, (float) $destBal);
+        $this->assertEquals(300000.0, (float) $destBal - (float) $destBalBefore);
     }
 
     public function test_transfer_dengan_selisih_mencatat_discrepancy_ke_expense_waste(): void
