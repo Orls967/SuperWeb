@@ -8,10 +8,13 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Modules\Banking\Application\Actions\SetPinAction;
+use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Core\Domain\Models\Vehicle;
-use Modules\Mall\Application\Actions\GenerateMonthlyInvoicesAction;
+use Modules\Mall\Application\Actions\GenerateMonthlyBillingAction;
+use Modules\Mall\Application\Actions\PayInvoiceAction;
 use Modules\Mall\Application\Actions\RecordUtilityReadingAction;
 use Modules\Mall\Application\Actions\RegisterParkingMemberAction;
 use Modules\Mall\Application\Services\FootfallGenerator;
@@ -22,6 +25,7 @@ use Modules\Mall\Domain\Enums\AssetStatus;
 use Modules\Mall\Domain\Enums\DepositStatus;
 use Modules\Mall\Domain\Enums\EventBookingStatus;
 use Modules\Mall\Domain\Enums\EventType;
+use Modules\Mall\Domain\Enums\InvoiceStatus;
 use Modules\Mall\Domain\Enums\LeaseStatus;
 use Modules\Mall\Domain\Enums\LoyaltyTier;
 use Modules\Mall\Domain\Enums\MemberStatus;
@@ -36,6 +40,7 @@ use Modules\Mall\Domain\Enums\WorkOrderType;
 use Modules\Mall\Domain\Models\Asset;
 use Modules\Mall\Domain\Models\EventBooking;
 use Modules\Mall\Domain\Models\EventSpace;
+use Modules\Mall\Domain\Models\Invoice;
 use Modules\Mall\Domain\Models\Lease;
 use Modules\Mall\Domain\Models\LoyaltyMember;
 use Modules\Mall\Domain\Models\ParkingMember;
@@ -412,8 +417,24 @@ class MallSeeder extends Seeder
         $readingAction->execute($leaseStarbucks, $currentMonth, UtilityType::ELECTRICITY, 4200.0, 2600.0); // 1600 kWh
         $readingAction->execute($leaseStarbucks, $currentMonth, UtilityType::WATER, 150.0, 80.0); // 70 m3
 
-        // 9. Generate Monthly Invoices
-        app(GenerateMonthlyInvoicesAction::class)->generateAll($currentMonth, $dutaMall->id);
+        // 9. Generate Monthly Invoices via GenerateMonthlyBillingAction & Pay partial invoice
+        app(GenerateMonthlyBillingAction::class)->generateAll($currentMonth, $dutaMall->id);
+
+        $starbucksInvoice = Invoice::where('tenant_id', $tStarbucks->id)
+            ->where('status', InvoiceStatus::ISSUED)
+            ->first();
+
+        if ($starbucksInvoice && $customerUser) {
+            $topUp = app(TopUpAction::class);
+            $setPin = app(SetPinAction::class);
+            $payInvoice = app(PayInvoiceAction::class);
+
+            $payAmount = 20_000_000;
+            $customerUser->walletAccount('IDR');
+            $setPin->execute($customerUser, '123456');
+            $topUp->execute($customerUser, $payAmount + 5_000_000, "seed_mall_pay_starbucks_{$starbucksInvoice->id}");
+            $payInvoice->execute($starbucksInvoice, $payAmount, '123456', $customerUser);
+        }
 
         // 10. Parkir: zona, tarif progresif, akun ledger, dan langganan member
         $this->seedParking($dutaMall, $customerUser);

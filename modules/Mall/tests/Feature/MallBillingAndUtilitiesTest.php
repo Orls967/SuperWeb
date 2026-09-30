@@ -16,6 +16,7 @@ use Modules\Mall\Application\Actions\AllocatePaymentAction;
 use Modules\Mall\Application\Actions\ApplyLatePenaltiesAction;
 use Modules\Mall\Application\Actions\GenerateMonthlyInvoicesAction;
 use Modules\Mall\Application\Actions\PayInvoiceAction;
+use Modules\Mall\Application\Queries\AuditBillingQuery;
 use Modules\Mall\Application\Services\TenantSalesService;
 use Modules\Mall\Application\Services\UtilityTariffCalculator;
 use Modules\Mall\database\seeders\MallSeeder;
@@ -476,6 +477,12 @@ class MallBillingAndUtilitiesTest extends TestCase
         // Jalankan audit billing artisan
         $exitAudit = Artisan::call('mall:audit-billing');
         $this->assertEquals(0, $exitAudit);
+
+        $auditResult = app(AuditBillingQuery::class)->execute();
+        $this->assertTrue($auditResult['passed']);
+        $this->assertGreaterThan(0, $auditResult['total_billed']);
+        $this->assertGreaterThan(0, $auditResult['total_paid']);
+        $this->assertGreaterThan(0, $auditResult['ledger_paid']);
 
         // Jalankan rekonsiliasi perbankan ledger global
         $exitReconcile = Artisan::call('bank:reconcile');

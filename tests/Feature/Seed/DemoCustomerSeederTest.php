@@ -15,6 +15,8 @@ use Modules\Core\Domain\Models\Vehicle;
 use Modules\Crypto\Contracts\PriceFeed;
 use Modules\Finance\Domain\Enums\LoanStatus;
 use Modules\Finance\Domain\Models\Loan;
+use Modules\Mall\Application\Queries\AuditBillingQuery;
+use Modules\Resto\Domain\Models\DailySummary;
 use Modules\Store\Domain\Models\Product;
 use Tests\TestCase;
 
@@ -130,5 +132,32 @@ class DemoCustomerSeederTest extends TestCase
     public function test_bank_reconcile_returns_zero_discrepancy(): void
     {
         $this->artisan('bank:reconcile')->assertSuccessful();
+    }
+
+    public function test_resto_closed_business_day_has_at_least_five_orders_and_positive_revenue(): void
+    {
+        $this->artisan('resto:close-day', ['--check' => true])->assertSuccessful();
+
+        $summaries = DailySummary::whereDate('date', date('Y-m-d'))->get();
+        $this->assertTrue(
+            $summaries->contains(fn ($s) => $s->transactions >= 5),
+            'Harus ada minimal 1 outlet dengan ringkasan harian memiliki minimal 5 transaksi.'
+        );
+
+        $totalNetSales = (int) $summaries->sum('net_sales');
+        $this->assertGreaterThan(0, $totalNetSales, 'Total net sales resto harian harus lebih besar dari 0.');
+    }
+
+    public function test_mall_audit_billing_verifies_issued_and_partially_paid_invoices_with_positive_totals(): void
+    {
+        $this->artisan('mall:audit-billing')->assertSuccessful();
+
+        $auditResult = app(AuditBillingQuery::class)->execute();
+        $this->assertTrue($auditResult['passed'], 'Audit billing harus berstatus lolos tanpa diskrepansi.');
+        $this->assertGreaterThanOrEqual(3, $auditResult['invoices_checked']);
+        $this->assertGreaterThan(0, $auditResult['total_billed'], 'Total tagihan mall diterbitkan harus > 0.');
+        $this->assertGreaterThan(0, $auditResult['total_paid'], 'Total penerimaan pembayaran mall harus > 0.');
+        $this->assertGreaterThan(0, $auditResult['ledger_paid'], 'Total kredit ledger pendapatan mall harus > 0.');
+        $this->assertSame($auditResult['total_paid'], $auditResult['ledger_paid']);
     }
 }

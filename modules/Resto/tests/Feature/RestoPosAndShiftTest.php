@@ -28,6 +28,7 @@ use Modules\Resto\Domain\Enums\TableStatus;
 use Modules\Resto\Domain\Enums\TrayStatus;
 use Modules\Resto\Domain\Exceptions\InvalidOrderOperationException;
 use Modules\Resto\Domain\Exceptions\TableOccupiedException;
+use Modules\Resto\Domain\Models\DailySummary;
 use Modules\Resto\Domain\Models\DisplayTray;
 use Modules\Resto\Domain\Models\MenuItem;
 use Modules\Resto\Domain\Models\Order;
@@ -475,6 +476,10 @@ class RestoPosAndShiftTest extends TestCase
         $cashier = User::where('email', 'kasir@autoserve.test')->firstOrFail();
         $table = RestoTable::where('outlet_id', $outlet->id)->where('code', 'A1')->firstOrFail();
 
+        $initialSummary = DailySummary::where('outlet_id', $outlet->id)->whereDate('date', date('Y-m-d'))->first();
+        $initialTransactions = $initialSummary ? (int) $initialSummary->transactions : 0;
+        $initialGross = $initialSummary ? (int) $initialSummary->gross_sales : 0;
+
         $shift = app(OpenShiftAction::class)->handle($cashier->id, $outlet->id, 100_000);
         $session = app(OpenTableSessionAction::class)->handle($table->id, 2, $cashier->id);
         $order = $session->orders->first();
@@ -494,11 +499,12 @@ class RestoPosAndShiftTest extends TestCase
         $this->artisan('resto:close-day', ['--check' => true])
             ->assertExitCode(0);
 
-        // Ensure daily summary was created and matches paid order
+        // Ensure daily summary was created and matches accumulated orders
         $this->assertDatabaseHas('resto_daily_summaries', [
             'outlet_id' => $outlet->id,
-            'gross_sales' => $order->subtotal,
-            'transactions' => 1,
+            'gross_sales' => $initialGross + $order->subtotal,
+            'transactions' => $initialTransactions + 1,
         ]);
+        $this->assertGreaterThan(0, $initialGross + $order->subtotal);
     }
 }

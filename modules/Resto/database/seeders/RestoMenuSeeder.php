@@ -11,9 +11,15 @@ use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
+use Modules\Resto\Application\Actions\AddOrderItemAction;
+use Modules\Resto\Application\Actions\CloseBusinessDayAction;
 use Modules\Resto\Application\Actions\CookBatchAction;
+use Modules\Resto\Application\Actions\OpenShiftAction;
+use Modules\Resto\Application\Actions\PayOrderAction;
 use Modules\Resto\Domain\Enums\BaseUnit;
 use Modules\Resto\Domain\Enums\IngredientCategory;
+use Modules\Resto\Domain\Enums\OrderChannel;
+use Modules\Resto\Domain\Enums\OrderStatus;
 use Modules\Resto\Domain\Enums\OutletType;
 use Modules\Resto\Domain\Enums\RecipeLineType;
 use Modules\Resto\Domain\Enums\ServiceStyle;
@@ -23,6 +29,7 @@ use Modules\Resto\Domain\Models\IngredientCost;
 use Modules\Resto\Domain\Models\MenuCategory;
 use Modules\Resto\Domain\Models\MenuItem;
 use Modules\Resto\Domain\Models\MenuItemOutlet;
+use Modules\Resto\Domain\Models\Order;
 use Modules\Resto\Domain\Models\Outlet;
 use Modules\Resto\Domain\Models\Recipe;
 use Modules\Resto\Domain\Models\RecipeLine;
@@ -567,5 +574,77 @@ class RestoMenuSeeder extends Seeder
                 );
             }
         }
+
+        // 11. Seed at least 1 closed business day with >= 5 paid orders (Task 19.5)
+        $this->seedClosedBusinessDay($dmOutlet, $kasirUser);
+    }
+
+    private function seedClosedBusinessDay(Outlet $outlet, User $cashier): void
+    {
+        $shift = app(OpenShiftAction::class)->handle(
+            cashierId: $cashier->id,
+            outletId: $outlet->id,
+            openingFloat: 500_000
+        );
+
+        $customer = User::where('email', 'customer@autoserve.test')->first()
+            ?? User::where('role', 'customer')->first();
+
+        $menuItems = MenuItem::where('is_active', true)->orderBy('id')->get();
+        if ($menuItems->isEmpty()) {
+            return;
+        }
+
+        $addOrderItem = app(AddOrderItemAction::class);
+        $payOrder = app(PayOrderAction::class);
+
+        // Buat minimal 5 pesanan terbayar
+        for ($i = 1; $i <= 5; $i++) {
+            $order = Order::create([
+                'uuid' => (string) Str::uuid(),
+                'outlet_id' => $outlet->id,
+                'number' => 'ORD-SEED-'.str_pad((string) $i, 3, '0', STR_PAD_LEFT),
+                'channel' => OrderChannel::DINE_IN,
+                'customer_id' => $customer?->id,
+                'guest_name' => $customer?->name ?? "Pelanggan Meja {$i}",
+                'subtotal' => 0,
+                'discount' => 0,
+                'service_charge' => 0,
+                'tax_pb1' => 0,
+                'rounding' => 0,
+                'grand_total' => 0,
+                'status' => OrderStatus::OPEN,
+                'shift_id' => $shift->id,
+                'idempotency_key' => "idem-seed-resto-order-{$i}",
+            ]);
+
+            // Tambahkan 1-2 menu per pesanan
+            $item1 = $menuItems[($i - 1) % $menuItems->count()];
+            $addOrderItem->handle($order, $item1->id, 1);
+            $total = (int) $item1->base_price;
+
+            if ($i % 2 === 0 && $menuItems->count() > 1) {
+                $item2 = $menuItems[$i % $menuItems->count()];
+                $addOrderItem->handle($order, $item2->id, 1);
+                $total += (int) $item2->base_price;
+            }
+
+            $order->subtotal = $total;
+            $order->grand_total = $total;
+            $order->status = OrderStatus::AWAITING_PAYMENT;
+            $order->save();
+
+            $payOrder->handle(
+                order: $order,
+                paymentMethod: 'cash',
+                cashTendered: $total,
+                shiftId: $shift->id,
+                cashierUserId: $cashier->id,
+                payerUser: $customer
+            );
+        }
+
+        // Tutup hari usaha melalui CloseBusinessDayAction
+        app(CloseBusinessDayAction::class)->execute($outlet, date('Y-m-d'), true);
     }
 }
