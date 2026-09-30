@@ -247,7 +247,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - [x] 20.6 Quality gate Fase 20
 
 ## FASE 21 — SHIPMENT, TARIF, BOOKING & PORTAL SHIPPER
-- [ ] 21.1 Model shipment: lgx_shipments (SRX + 10 digit + check digit Luhn), state machine canTransitionTo(), lgx_packages (berat, dimensi, hs_code, dg_un_number, temp reefer)
+- [x] 21.1 Model shipment: lgx_shipments (SRX + 10 digit + check digit Luhn), state machine canTransitionTo(), lgx_packages (berat, dimensi, hs_code, dg_un_number, temp reefer)
 - [ ] 21.2 Berat tertagih (chargeable weight) BigDecimal: max(aktual, volumetrik), pembagi volumetrik per mode, pembulatan
 - [ ] 21.3 Rate card & surcharge: lgx_rate_cards, lgx_rate_brackets, lgx_surcharges, validasi non-overlapping, PPN simulasi 11%
 - [ ] 21.4 Quote: QuoteShipmentAction -> lgx_quotes timelock 15 menit + hash anti-manipulasi
