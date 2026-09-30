@@ -21,6 +21,7 @@ use Modules\Resto\Application\Actions\OpenTableSessionAction;
 use Modules\Resto\Application\Actions\PayOrderAction;
 use Modules\Resto\Application\Actions\PresentHidangAction;
 use Modules\Resto\Application\Actions\SettleCashAction;
+use Modules\Resto\Application\Actions\ValidateOrderParkingAction;
 use Modules\Resto\Application\Actions\VoidOrderAction;
 use Modules\Resto\Domain\Enums\OrderStatus;
 use Modules\Resto\Domain\Enums\ShiftStatus;
@@ -257,6 +258,9 @@ class PosController extends Controller
             'cash_tendered' => ['nullable', 'integer', 'min:0'],
             'pin' => ['nullable', 'string', 'max:6'],
             'idempotency_key' => ['nullable', 'string'],
+            'parking_ticket_number' => ['nullable', 'string'],
+            'mall_voucher_code' => ['nullable', 'string'],
+            'redeem_points' => ['nullable', 'integer', 'min:0'],
         ]);
 
         $activeShift = Shift::where('cashier_id', $request->user()->id)
@@ -271,7 +275,10 @@ class PosController extends Controller
             pin: $validated['pin'] ?? null,
             idempotencyKey: $validated['idempotency_key'] ?? null,
             shiftId: $activeShift?->id,
-            cashierUserId: (int) $request->user()->id
+            cashierUserId: (int) $request->user()->id,
+            parkingTicketNumber: $validated['parking_ticket_number'] ?? null,
+            mallVoucherCode: $validated['mall_voucher_code'] ?? null,
+            redeemPoints: isset($validated['redeem_points']) ? (int) $validated['redeem_points'] : null
         );
 
         return response()->json([
@@ -279,6 +286,21 @@ class PosController extends Controller
             'message' => "Pembayaran pesanan {$paidOrder->number} berhasil diselesaikan.",
             'order' => $paidOrder,
             'receipt_url' => route('resto.pos.order.receipt', $paidOrder),
+        ]);
+    }
+
+    public function validateParking(Request $request, Order $order, ValidateOrderParkingAction $action): JsonResponse
+    {
+        $validated = $request->validate([
+            'ticket_number' => ['required', 'string'],
+        ]);
+
+        $result = $action->handle($order, $validated['ticket_number']);
+
+        return response()->json([
+            'success' => true,
+            'message' => $result->receiptLine(),
+            'result' => $result,
         ]);
     }
 

@@ -15,6 +15,8 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Mall\Contracts\LoyaltyLedger;
+use Modules\Mall\Contracts\ParkingValidator;
 use Modules\Payment\Contracts\PaymentGateway;
 use Modules\Resto\Domain\Enums\OrderStatus;
 use Modules\Resto\Domain\Enums\SessionStatus;
@@ -30,7 +32,9 @@ class PayOrderAction
     public function __construct(
         private readonly Ledger $ledger,
         private readonly PaymentGateway $paymentGateway,
-        private readonly VerifyPinAction $verifyPinAction
+        private readonly VerifyPinAction $verifyPinAction,
+        private readonly ?ParkingValidator $parkingValidator = null,
+        private readonly ?LoyaltyLedger $loyaltyLedger = null
     ) {}
 
     public function handle(
@@ -41,7 +45,10 @@ class PayOrderAction
         ?string $idempotencyKey = null,
         ?int $shiftId = null,
         ?int $cashierUserId = null,
-        ?User $payerUser = null
+        ?User $payerUser = null,
+        ?string $parkingTicketNumber = null,
+        ?string $mallVoucherCode = null,
+        ?int $redeemPoints = null
     ): Order {
         $idemKey = $idempotencyKey ?: $order->idempotency_key ?: "order_pay_{$order->id}_".Str::uuid();
 
@@ -53,7 +60,10 @@ class PayOrderAction
             $idemKey,
             $shiftId,
             $cashierUserId,
-            $payerUser
+            $payerUser,
+            $parkingTicketNumber,
+            $mallVoucherCode,
+            $redeemPoints
         ) {
             $lockedOrder = Order::where('id', $order->id)->lockForUpdate()->firstOrFail();
 
@@ -68,6 +78,37 @@ class PayOrderAction
 
             $outlet = $lockedOrder->outlet;
             $outletCode = $outlet?->code ?: "OUT-{$lockedOrder->outlet_id}";
+
+            // 1. Terapkan Voucher Mall bila ada
+            if ($mallVoucherCode && $this->loyaltyLedger) {
+                $voucherDiscount = $this->loyaltyLedger->applyVoucher(
+                    voucherCode: $mallVoucherCode,
+                    tenantExternalRef: $outletCode,
+                    spendAmount: (int) $lockedOrder->grand_total,
+                    transactionRef: $lockedOrder->number
+                );
+                $lockedOrder->mall_voucher_code = $mallVoucherCode;
+                $lockedOrder->mall_voucher_discount = $voucherDiscount;
+                $lockedOrder->discount += $voucherDiscount;
+                $lockedOrder->grand_total = max(0, $lockedOrder->grand_total - $voucherDiscount);
+                $lockedOrder->save();
+            }
+
+            // 2. Tukar Duta Points untuk potongan harga bila diminta
+            if ($redeemPoints && $this->loyaltyLedger) {
+                $payer = $payerUser ?? ($lockedOrder->customer_id ? User::find($lockedOrder->customer_id) : auth()->user());
+                if ($payer) {
+                    $ptsDiscount = $this->loyaltyLedger->redeemPointsForDiscount(
+                        user: $payer,
+                        pointsToRedeem: $redeemPoints,
+                        description: "Diskon Duta Points pesanan #{$lockedOrder->number}",
+                        referenceId: (string) $lockedOrder->id
+                    );
+                    $lockedOrder->discount += $ptsDiscount;
+                    $lockedOrder->grand_total = max(0, $lockedOrder->grand_total - $ptsDiscount);
+                    $lockedOrder->save();
+                }
+            }
 
             if ($paymentMethod === 'cash') {
                 // Find active shift
@@ -156,11 +197,60 @@ class PayOrderAction
                     $lockedOrder->shift_id = $shiftId;
                 }
                 $lockedOrder->save();
+            } elseif ($paymentMethod === 'points') {
+                $payer = $payerUser ?? ($lockedOrder->customer_id ? User::find($lockedOrder->customer_id) : auth()->user());
+                if ($payer && $this->loyaltyLedger && $lockedOrder->grand_total > 0) {
+                    $ptsNeeded = (int) ceil($lockedOrder->grand_total / 100);
+                    $this->loyaltyLedger->redeemPointsForDiscount(
+                        user: $payer,
+                        pointsToRedeem: $ptsNeeded,
+                        description: "Pelunasan penuh Duta Points pesanan #{$lockedOrder->number}",
+                        referenceId: (string) $lockedOrder->id
+                    );
+                }
+
+                $lockedOrder->status = OrderStatus::PAID;
+                $lockedOrder->paid_at = now();
+                $lockedOrder->payment_method = 'points';
+                if ($shiftId) {
+                    $lockedOrder->shift_id = $shiftId;
+                }
+                $lockedOrder->save();
             } else {
-                // Other methods (e.g. split, voucher, points) handled with appropriate tag
+                // Other methods (e.g. split, voucher) handled with appropriate tag
                 $lockedOrder->status = OrderStatus::PAID;
                 $lockedOrder->paid_at = now();
                 $lockedOrder->payment_method = $paymentMethod;
+                if ($shiftId) {
+                    $lockedOrder->shift_id = $shiftId;
+                }
+                $lockedOrder->save();
+            }
+
+            // 3. Validasi Tiket Parkir Pelanggan bila disertakan
+            if ($parkingTicketNumber && $this->parkingValidator) {
+                $spendForParking = (int) ($lockedOrder->subtotal > 0 ? $lockedOrder->subtotal : $lockedOrder->grand_total);
+                $valResult = $this->parkingValidator->validateTicket(
+                    ticketNumber: $parkingTicketNumber,
+                    tenantExternalRef: $outletCode,
+                    spendAmount: $spendForParking
+                );
+                $lockedOrder->parking_ticket_number = $valResult->ticketNumber;
+                $lockedOrder->parking_validation_hours = $valResult->freeHours;
+                $lockedOrder->save();
+            }
+
+            // 4. Perolehan Duta Points untuk Pembeli
+            $payerForPoints = $payerUser ?? ($lockedOrder->customer_id ? User::find($lockedOrder->customer_id) : null);
+            if ($payerForPoints && $this->loyaltyLedger && $lockedOrder->grand_total >= 10_000) {
+                $earned = $this->loyaltyLedger->awardPoints(
+                    user: $payerForPoints,
+                    spendAmount: (int) $lockedOrder->grand_total,
+                    receiptNumber: $lockedOrder->number,
+                    tenantExternalRef: $outletCode,
+                    processor: $cashierUserId ? User::find($cashierUserId) : null
+                );
+                $lockedOrder->loyalty_points_earned = $earned;
                 $lockedOrder->save();
             }
 

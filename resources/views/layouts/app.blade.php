@@ -59,7 +59,31 @@
         </style>
     </head>
     <body class="antialiased bg-slate-900 text-slate-200">
-        <div class="min-h-screen flex" x-data="{ sidebarOpen: true }">
+        <div class="min-h-screen flex" x-data="{
+            sidebarOpen: true,
+            searchOpen: false,
+            searchQuery: '',
+            searchResults: [],
+            searchLoading: false,
+            executeSearch() {
+                let url = '{{ route('api.global-search') }}';
+                if (this.searchQuery && this.searchQuery.trim().length >= 2) {
+                    url += '?q=' + encodeURIComponent(this.searchQuery.trim());
+                }
+                this.searchLoading = true;
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        this.searchResults = data.results || [];
+                        this.searchLoading = false;
+                    })
+                    .catch(() => { this.searchLoading = false; });
+            }
+        }"
+        @keydown.window.prevent.cmd.k="searchOpen = true; $nextTick(() => { if($refs.globalSearchInput) { $refs.globalSearchInput.focus(); executeSearch(); } })"
+        @keydown.window.prevent.ctrl.k="searchOpen = true; $nextTick(() => { if($refs.globalSearchInput) { $refs.globalSearchInput.focus(); executeSearch(); } })"
+        @keydown.window.escape="searchOpen = false"
+        >
 
             {{-- ============================================================ --}}
             {{-- SIDEBAR --}}
@@ -79,164 +103,53 @@
                 </div>
 
                 {{-- Navigation --}}
-                <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('dashboard') ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                <nav class="flex-1 px-3 py-4 space-y-3 overflow-y-auto">
+                    @php
+                        $menuRegistry = app(\Modules\Shared\Application\MenuRegistry::class);
+                        $groupedMenu = $menuRegistry->getGroupedItemsForUser(auth()->user());
+                        $groupOrder = ['Grup & Admin', 'Otomotif', 'Keuangan', 'Kuliner', 'Properti'];
+                        uksort($groupedMenu, function($a, $b) use ($groupOrder) {
+                            $idxA = array_search($a, $groupOrder);
+                            $idxB = array_search($b, $groupOrder);
+                            $idxA = $idxA === false ? 99 : $idxA;
+                            $idxB = $idxB === false ? 99 : $idxB;
+                            return $idxA <=> $idxB;
+                        });
+                    @endphp
+
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs transition-all {{ request()->routeIs('dashboard') ? 'bg-blue-500/20 text-blue-400 font-bold' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                         <span x-show="sidebarOpen" x-cloak>Dashboard</span>
                     </a>
 
-                    <a href="{{ route('bookings.create') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('bookings.create') ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Buat Booking</span>
-                    </a>
-
-                    @if(auth()->check() && auth()->user()->isStaff())
-                    <div class="pt-4 pb-2 px-3" x-show="sidebarOpen" x-cloak>
-                        <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Master Data</p>
-                    </div>
-
-                    <a href="{{ route('services.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('services.*') ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Jenis Servis</span>
-                    </a>
-
-                    <a href="{{ route('spareparts.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('spareparts.*') ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Sparepart</span>
-                    </a>
-                    @endif
-
-                    <div class="pt-4 pb-2 px-3" x-show="sidebarOpen" x-cloak>
-                        <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">AutoDex Module</p>
-                    </div>
-
-                    <a href="{{ route('autodex.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('autodex.index') || request()->routeIs('autodex.show') ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Katalog Mobil</span>
-                    </a>
-
-                    <a href="{{ route('autodex.garage.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('autodex.garage.*') ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>My Garage & Wishlist</span>
-                    </a>
-
-                    <div class="pt-4 pb-2 px-3" x-show="sidebarOpen" x-cloak>
-                        <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Banking & Finance</p>
-                    </div>
-
-                    <a href="{{ route('wallet.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('wallet.index') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Dompet & Saldo</span>
-                    </a>
-
-                    <a href="{{ route('wallet.transfer') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('wallet.transfer*') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Transfer Dana</span>
-                    </a>
-
-                    <a href="{{ route('wallet.mutasi') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('wallet.mutasi*') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Mutasi Rekening</span>
-                    </a>
-
-                    @if(auth()->check() && auth()->user()->isAdmin())
-                    <a href="{{ route('admin.ledger.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('admin.ledger.*') ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Ledger Pembukuan</span>
-                    </a>
-                    @endif
-
-                    <div class="pt-4 pb-2 px-3" x-show="sidebarOpen" x-cloak>
-                        <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Store & Merchandise</p>
-                    </div>
-
-                    <a href="{{ route('store.catalog.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.catalog.*') || request()->routeIs('store.products.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Katalog Toko</span>
-                    </a>
-
-                    <a href="{{ route('store.c2c.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.c2c.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Mobil Bekas (C2C)</span>
-                    </a>
-
-                    @auth
-                    <a href="{{ route('store.cart.index') }}" class="flex items-center justify-between px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.cart.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                            <span x-show="sidebarOpen" x-cloak>Keranjang</span>
+                    @foreach($groupedMenu as $groupName => $items)
+                    <div class="space-y-0.5">
+                        <div class="pt-2 pb-1 px-3" x-show="sidebarOpen" x-cloak>
+                            <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500">{{ $groupName }}</p>
                         </div>
-                        <span x-show="sidebarOpen" x-cloak id="nav-cart-badge" class="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-300">
-                            {{ \Modules\Store\Domain\Models\Cart::where('user_id', auth()->id())->first()?->items_count ?? 0 }}
-                        </span>
-                    </a>
-
-                    <a href="{{ route('store.orders.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.orders.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Pesanan Saya</span>
-                    </a>
-                    @endauth
-
-                    @if(auth()->check() && auth()->user()->isAdmin())
-                    <a href="{{ route('store.admin.orders.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.admin.orders.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Admin: Pesanan Toko</span>
-                    </a>
-                    <a href="{{ route('store.admin.products.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('store.admin.products.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Admin: Produk & Stok</span>
-                    </a>
-                    @endif
-
-                    <div class="pt-4 pb-2 px-3" x-show="sidebarOpen" x-cloak>
-                        <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Crypto Exchange</p>
+                        @foreach($items as $item)
+                        @php
+                            $isActive = $item->isActive();
+                        @endphp
+                        <a href="{{ route($item->route) }}" class="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium transition-all {{ $isActive ? 'bg-indigo-500/20 text-indigo-300 font-semibold' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                {!! $item->icon !!}
+                                <span class="truncate" x-show="sidebarOpen" x-cloak>{{ $item->label }}</span>
+                            </div>
+                            @if($item->badge)
+                            <span x-show="sidebarOpen" x-cloak class="px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-indigo-500/20 text-indigo-300">{{ $item->badge }}</span>
+                            @endif
+                        </a>
+                        @endforeach
                     </div>
-
-                    <a href="{{ route('crypto.market.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('crypto.market.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Pasar Kripto</span>
-                    </a>
-
-                    @auth
-                    <a href="{{ route('crypto.portfolio.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('crypto.portfolio.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Portofolio Kripto</span>
-                    </a>
-
-                    <a href="{{ route('crypto.alerts.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('crypto.alerts.*') ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Price Alerts</span>
-                    </a>
-                    @endauth
-
-                    <div class="pt-4 pb-2 px-3" x-show="sidebarOpen" x-cloak>
-                        <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Platform</p>
-                    </div>
-
-                    @auth
-                    <a href="{{ route('notifications.index') }}" class="flex items-center justify-between px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('notifications.*') ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                            <span x-show="sidebarOpen" x-cloak>Notifikasi</span>
-                        </div>
-                        @php $notifUnread = \Modules\Core\Domain\Models\PlatformNotification::forUser(auth()->id())->unread()->count(); @endphp
-                        @if($notifUnread > 0)
-                        <span x-show="sidebarOpen" x-cloak class="px-2 py-0.5 text-xs font-semibold rounded-full bg-cyan-500/20 text-cyan-300">{{ $notifUnread }}</span>
-                        @endif
-                    </a>
-
-                    <a href="{{ route('activity.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {{ request()->routeIs('activity.*') ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span x-show="sidebarOpen" x-cloak>Activity Feed</span>
-                    </a>
-                    @endauth
+                    @endforeach
                 </nav>
 
                 {{-- Sidebar Toggle --}}
-                <div class="px-3 py-4 border-t border-slate-700/50">
-                    <button @click="sidebarOpen = !sidebarOpen" class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-slate-400 hover:bg-slate-700/50 hover:text-slate-200 transition-all">
-                        <svg class="w-5 h-5 transition-transform" :class="sidebarOpen ? '' : 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
-                        <span x-show="sidebarOpen" x-cloak class="text-sm">Tutup</span>
+                <div class="px-3 py-3 border-t border-slate-700/50">
+                    <button @click="sidebarOpen = !sidebarOpen" class="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-slate-400 hover:bg-slate-700/50 hover:text-slate-200 transition-all">
+                        <svg class="w-4 h-4 transition-transform" :class="sidebarOpen ? '' : 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
+                        <span x-show="sidebarOpen" x-cloak class="text-xs">Tutup</span>
                     </button>
                 </div>
             </aside>
@@ -247,13 +160,24 @@
             <div class="flex-1 transition-all duration-300" :class="sidebarOpen ? 'ml-64' : 'ml-20'">
                 {{-- Top Bar --}}
                 <header class="sticky top-0 z-40 flex items-center justify-between px-6 py-4 bg-slate-900/80 backdrop-blur-lg border-b border-slate-700/50">
-                    <div>
-                        @if(isset($header))
-                            {{ $header }}
-                        @else
-                            <h1 class="text-xl font-bold text-white">@yield('title', 'Dashboard')</h1>
-                            <p class="text-sm text-slate-400">@yield('subtitle', 'Sistem Manajemen Bengkel Otomotif')</p>
-                        @endif
+                    <div class="flex items-center gap-6">
+                        <div>
+                            @if(isset($header))
+                                {{ $header }}
+                            @else
+                                <h1 class="text-xl font-bold text-white">@yield('title', 'Dashboard')</h1>
+                                <p class="text-sm text-slate-400">@yield('subtitle', 'Sistem Manajemen Bengkel Otomotif')</p>
+                            @endif
+                        </div>
+
+                        {{-- Search Trigger Button --}}
+                        <button @click="searchOpen = true; $nextTick(() => { if($refs.globalSearchInput) { $refs.globalSearchInput.focus(); executeSearch(); } })"
+                                type="button"
+                                class="hidden md:flex items-center gap-3 px-3.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 text-slate-400 hover:text-slate-200 transition-all text-xs shadow-inner">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            <span class="text-slate-400">Cari modul, tenant, menu, tiket...</span>
+                            <kbd class="px-1.5 py-0.5 rounded bg-slate-900/80 text-[10px] font-mono text-slate-400 border border-slate-700/80">⌘K</kbd>
+                        </button>
                     </div>
 
                     <div class="flex items-center gap-4" x-data="{ dropdownOpen: false, notifOpen: false, notifCount: {{ $notifUnread ?? 0 }}, notifItems: [] }">
@@ -380,6 +304,93 @@
                     @yield('content')
                 </main>
             </div>
+
+            {{-- ============================================================ --}}
+            {{-- GLOBAL SEARCH MODAL (Ctrl+K) --}}
+            {{-- ============================================================ --}}
+            <div x-show="searchOpen"
+                 x-cloak
+                 class="fixed inset-0 z-50 overflow-y-auto p-4 sm:p-6 md:p-20"
+                 role="dialog"
+                 aria-modal="true">
+                {{-- Backdrop --}}
+                <div x-show="searchOpen"
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     @click="searchOpen = false"
+                     class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+
+                {{-- Modal Dialog --}}
+                <div x-show="searchOpen"
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="mx-auto max-w-2xl transform divide-y divide-slate-700/60 overflow-hidden rounded-2xl bg-slate-900/95 border border-slate-700/80 shadow-2xl transition-all relative z-10">
+                    
+                    {{-- Search Header --}}
+                    <div class="relative flex items-center px-4">
+                        <svg class="pointer-events-none w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <input type="text"
+                               x-ref="globalSearchInput"
+                               x-model="searchQuery"
+                               @input.debounce.250ms="executeSearch()"
+                               placeholder="Cari transaksi, menu resto, tenant mall, tiket parkir, unit..."
+                               class="h-14 w-full border-0 bg-transparent pl-3 pr-10 text-white placeholder-slate-400 focus:ring-0 sm:text-sm outline-none" />
+                        <div class="absolute right-4 flex items-center gap-2">
+                            <div x-show="searchLoading" class="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
+                            <kbd class="hidden sm:inline-block px-1.5 py-0.5 rounded bg-slate-800 text-[10px] font-mono text-slate-400 border border-slate-700">ESC</kbd>
+                        </div>
+                    </div>
+
+                    {{-- Results Container --}}
+                    <div class="max-h-96 overflow-y-auto p-2">
+                        <template x-if="searchResults.length === 0 && !searchLoading">
+                            <div class="py-10 text-center text-sm text-slate-400">
+                                <svg class="mx-auto h-8 w-8 text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <p>Tidak ada hasil untuk pencarian ini.</p>
+                            </div>
+                        </template>
+
+                        <template x-for="(item, index) in searchResults" :key="index">
+                            <a :href="item.url"
+                               class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-800/80 transition-colors group cursor-pointer">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700/60 flex items-center justify-center text-slate-400 group-hover:text-indigo-400 group-hover:border-indigo-500/30 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-medium text-slate-200 group-hover:text-white truncate" x-text="item.title"></p>
+                                        <p class="text-xs text-slate-400 truncate" x-text="item.subtitle"></p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 flex-shrink-0">
+                                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-md" :class="item.badge_color" x-text="item.badge"></span>
+                                    <svg class="w-4 h-4 text-slate-500 group-hover:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+
+                    {{-- Footer --}}
+                    <div class="flex items-center justify-between px-4 py-2.5 bg-slate-950/50 text-[11px] text-slate-400">
+                        <div class="flex items-center gap-3">
+                            <span><kbd class="px-1 py-0.5 rounded bg-slate-800 text-[10px] border border-slate-700">↵</kbd> untuk buka</span>
+                            <span><kbd class="px-1 py-0.5 rounded bg-slate-800 text-[10px] border border-slate-700">ESC</kbd> untuk keluar</span>
+                        </div>
+                        <span class="text-slate-500 font-mono text-[10px]">Superwebsite Global Search</span>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
 
         <x-toast />

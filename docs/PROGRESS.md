@@ -170,14 +170,14 @@
 - [x] 15.6 Quality gate Fase 15
 
 ## FASE 16 — INTEGRASI LINTAS LINI
-- [ ] 16.1 Resto & AutoServe sebagai tenant Duta Mall via TenantSalesProvider (omzet terintegrasi otomatis masuk revenue_share_topup tanpa input manual)
-- [ ] 16.2 Validasi parkir dari POS Resto via ParkingValidator contract, potong tarif dan masuk piutang tenant
-- [ ] 16.3 Poin & Voucher lintas modul: LoyaltyLedger contract, order Resto dapat poin, voucher mall bisa dipakai di Resto & Store, poin tukar diskon Store
-- [ ] 16.4 Kendaraan & parkir: member parkir disinkronkan ke core_vehicles, transfer kepemilikan nonaktifkan parkir member
-- [ ] 16.5 Dashboard Grup konsolidasi (role admin): P&L per lini bisnis dari ledger, grafik 30 hari, query budget <= 30 query
-- [ ] 16.6 Navigasi terpadu: sidebar dikelompokkan per lini (Otomotif, Keuangan, Kuliner, Properti), global search Ctrl+K lintas modul
-- [ ] 16.7 Test integrasi end-to-end satu hari penuh (parkir -> makan hidang -> bayar wallet -> dapat poin -> validasi parkir -> keluar gate -> akhir bulan tagih sewa revenue share -> tenant bayar -> reconcile & audit-billing bersih)
-- [ ] 16.8 Quality gate Fase 16
+- [x] 16.1 Resto & AutoServe sebagai tenant Duta Mall via TenantSalesProvider (omzet terintegrasi otomatis masuk revenue_share_topup tanpa input manual)
+- [x] 16.2 Validasi parkir dari POS Resto via ParkingValidator contract, potong tarif dan masuk piutang tenant
+- [x] 16.3 Poin & Voucher lintas modul: LoyaltyLedger contract, order Resto dapat poin, voucher mall bisa dipakai di Resto & Store, poin tukar diskon Store
+- [x] 16.4 Kendaraan & parkir: member parkir disinkronkan ke core_vehicles, transfer kepemilikan nonaktifkan parkir member
+- [x] 16.5 Dashboard Grup konsolidasi (role admin): P&L per lini bisnis dari ledger, grafik 30 hari, query budget <= 30 query
+- [x] 16.6 Navigasi terpadu: sidebar dikelompokkan per lini (Otomotif, Keuangan, Kuliner, Properti), global search Ctrl+K lintas modul
+- [x] 16.7 Test integrasi end-to-end satu hari penuh (parkir -> makan hidang -> bayar wallet -> dapat poin -> validasi parkir -> keluar gate -> akhir bulan tagih sewa revenue share -> tenant bayar -> reconcile & audit-billing bersih)
+- [x] 16.8 Quality gate Fase 16
 
 ## FASE 17 — SKALA, HARDENING & OPERASIONAL
 - [ ] 17.1 Seeder demo skala besar DemoLargeSeeder (3 outlet resto, 1 central kitchen, 60 tenant, 12 bulan billing, 150.000 parkir, batch inserts)

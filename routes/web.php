@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Modules\Core\Http\Controllers\DashboardController;
+use Modules\Shared\Http\Controllers\GlobalSearchController;
 
 // ============================================================
 // PUBLIC
@@ -24,6 +25,9 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Global Search (Ctrl+K)
+    Route::get('/api/global-search', GlobalSearchController::class)->name('api.global-search');
 });
 
 require __DIR__.'/auth.php';

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Core\Domain\Enums\VehicleEventType;
+use Modules\Core\Domain\Events\VehicleOwnershipTransferred;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Shared\Application\BaseAction;
 
@@ -69,6 +70,12 @@ class TransferVehicleOwnershipAction extends BaseAction implements TransfersVehi
                 ],
                 actorId: $actorId ?? $toUserId,
             );
+
+            event(new VehicleOwnershipTransferred(
+                vehicle: $locked,
+                fromUserId: $fromUserId,
+                toUserId: $toUserId
+            ));
 
             return $locked->fresh();
         });

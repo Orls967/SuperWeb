@@ -43,6 +43,7 @@ Route::middleware(['web', 'auth'])->prefix('resto')->name('resto.')->group(funct
     Route::post('pos/session/{session}/item', [PosController::class, 'addItem'])->name('pos.session.item');
     Route::post('pos/session/{session}/bill', [PosController::class, 'calculateBill'])->name('pos.session.bill');
     Route::post('pos/order/{order}/pay', [PosController::class, 'payOrder'])->name('pos.order.pay');
+    Route::post('pos/order/{order}/validate-parking', [PosController::class, 'validateParking'])->name('pos.order.validate-parking');
     Route::post('pos/order/{order}/void', [PosController::class, 'voidOrder'])->name('pos.order.void');
     Route::get('pos/order/{order}/receipt', [PosController::class, 'receipt'])->name('pos.order.receipt');
 

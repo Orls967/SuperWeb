@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\Actions\VerifyPinAction;
 use Modules\Inventory\Contracts\InventoryService;
+use Modules\Mall\Contracts\LoyaltyLedger;
 use Modules\Payment\Contracts\PaymentGateway;
 use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Order;
@@ -21,7 +22,8 @@ class CheckoutService
         private readonly CartService $cartService,
         private readonly InventoryService $inventoryService,
         private readonly PaymentGateway $paymentGateway,
-        private readonly VerifyPinAction $verifyPinAction
+        private readonly VerifyPinAction $verifyPinAction,
+        private readonly ?LoyaltyLedger $loyaltyLedger = null
     ) {}
 
     /**
@@ -33,7 +35,9 @@ class CheckoutService
         User $user,
         array $shippingAddress,
         string $pin,
-        ?string $idempotencyKey = null
+        ?string $idempotencyKey = null,
+        ?string $mallVoucherCode = null,
+        ?int $redeemPoints = null
     ): Order {
         $cart = $this->cartService->getOrCreateCart($user);
         $cartItems = $cart->items()->with('product')->get();
@@ -61,9 +65,31 @@ class CheckoutService
             : max(15000, (int) (ceil($totalWeightGram / 1000) * 10000)); // Rp 10.000 / kg (min 15k)
 
         $discount = 0;
-        $grandTotal = $subtotal + $shippingFee - $discount;
-
         $idempotency = $idempotencyKey ?? (string) Str::uuid();
+
+        // Terapkan Voucher Mall bila diberikan
+        if ($mallVoucherCode && $this->loyaltyLedger) {
+            $vDisc = $this->loyaltyLedger->applyVoucher(
+                voucherCode: $mallVoucherCode,
+                tenantExternalRef: 'AUTOSERVE-DM',
+                spendAmount: $subtotal,
+                transactionRef: $idempotency
+            );
+            $discount += $vDisc;
+        }
+
+        // Tukar Duta Points bila diminta
+        if ($redeemPoints && $this->loyaltyLedger) {
+            $pDisc = $this->loyaltyLedger->redeemPointsForDiscount(
+                user: $user,
+                pointsToRedeem: $redeemPoints,
+                description: 'Diskon Belanja AutoServe Store',
+                referenceId: $idempotency
+            );
+            $discount += $pDisc;
+        }
+
+        $grandTotal = max(0, $subtotal + $shippingFee - $discount);
 
         // 1. Create order & reserve stock
         /** @var Order $order */
@@ -130,6 +156,16 @@ class CheckoutService
         try {
             $this->paymentGateway->charge($order, $idempotency);
             $this->cartService->clearCart($user);
+
+            // Berikan Duta Points atas belanja di Store
+            if ($this->loyaltyLedger && $order->grand_total >= 10_000) {
+                $this->loyaltyLedger->awardPoints(
+                    user: $user,
+                    spendAmount: (int) $order->grand_total,
+                    receiptNumber: $order->number ?: "ORD-{$order->id}",
+                    tenantExternalRef: 'AUTOSERVE-DM'
+                );
+            }
 
             return $order->fresh(['items.product', 'paymentIntents']);
         } catch (\Throwable $e) {

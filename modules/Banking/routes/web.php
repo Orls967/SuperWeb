@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Banking\Http\Controllers\AdminLedgerController;
+use Modules\Banking\Http\Controllers\GroupDashboardController;
 use Modules\Banking\Http\Controllers\MutationController;
 use Modules\Banking\Http\Controllers\TopUpController;
 use Modules\Banking\Http\Controllers\TransferController;
@@ -26,11 +27,15 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/wallet/mutasi', [MutationController::class, 'index'])->name('wallet.mutasi');
     Route::get('/wallet/mutasi/export', [MutationController::class, 'export'])->name('wallet.mutasi.export');
 
-    // Admin Ledger
-    Route::middleware(['role:admin'])->prefix('admin/ledger')->name('admin.ledger.')->group(function () {
-        Route::get('/', [AdminLedgerController::class, 'index'])->name('index');
-        Route::get('/transactions/{transaction}', [AdminLedgerController::class, 'show'])->name('show');
-        Route::post('/accounts/{account}/freeze', [AdminLedgerController::class, 'freeze'])->name('freeze');
-        Route::post('/accounts/{account}/adjust', [AdminLedgerController::class, 'adjust'])->name('adjust');
+    // Admin Ledger & Group P&L Dashboard
+    Route::middleware(['role:admin'])->prefix('admin')->group(function () {
+        Route::get('/group-dashboard', GroupDashboardController::class)->name('admin.group-dashboard');
+
+        Route::prefix('ledger')->name('admin.ledger.')->group(function () {
+            Route::get('/', [AdminLedgerController::class, 'index'])->name('index');
+            Route::get('/transactions/{transaction}', [AdminLedgerController::class, 'show'])->name('show');
+            Route::post('/accounts/{account}/freeze', [AdminLedgerController::class, 'freeze'])->name('freeze');
+            Route::post('/accounts/{account}/adjust', [AdminLedgerController::class, 'adjust'])->name('adjust');
+        });
     });
 });
