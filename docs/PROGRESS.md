@@ -244,7 +244,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - [x] 20.3 Armada: lgx_trucks (terhubung Vehicle Passport core_vehicles, DA plate), lgx_trailers, lgx_vessels (IMO check digit), lgx_aircraft, lgx_containers (ISO 6346 check digit), lgx_ulds, unit tests check digit
 - [x] 20.4 Pengemudi & kru: lgx_drivers (SIM class, expiry, hub asal), batas jam mengemudi UU 22/2009 maks 8 jam/hari & istirahat 30 menit per 4 jam
 - [x] 20.5 Seeder LogisticsSeeder (30 truk berpaspor, 8 trailer, 4 kapal, 2 pesawat, 300 kontainer ISO 6346, 12 driver, 3 dispatcher, 4 hub operator, 5 shipper, 1 admin), akun demo di README
-- [ ] 20.6 Quality gate Fase 20
+- [x] 20.6 Quality gate Fase 20
 
 ## FASE 21 — SHIPMENT, TARIF, BOOKING & PORTAL SHIPPER
 - [ ] 21.1 Model shipment: lgx_shipments (SRX + 10 digit + check digit Luhn), state machine canTransitionTo(), lgx_packages (berat, dimensi, hs_code, dg_un_number, temp reefer)
