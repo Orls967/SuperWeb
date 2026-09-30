@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\Logistics\Http\Controllers\DriverController;
 use Modules\Logistics\Http\Controllers\FleetController;
+use Modules\Logistics\Http\Controllers\HubOperationsController;
 use Modules\Logistics\Http\Controllers\LaneController;
 use Modules\Logistics\Http\Controllers\LocationController;
 use Modules\Logistics\Http\Controllers\LogisticsDashboardController;
@@ -45,7 +46,13 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::get('/shipments/{id}/label', [ShipperPortalController::class, 'label'])->name('shipments.label');
 
         Route::get('/dispatch', [LogisticsDashboardController::class, 'index'])->name('dispatch.index');
-        Route::get('/hub', [LogisticsDashboardController::class, 'index'])->name('hub.index');
+
+        // Operasi Hub (Inbound, Sort, Outbound)
+        Route::get('/hub', [HubOperationsController::class, 'index'])->name('hub.index');
+        Route::post('/hub/inbound', [HubOperationsController::class, 'inbound'])->name('hub.inbound');
+        Route::post('/hub/sort', [HubOperationsController::class, 'sort'])->name('hub.sort');
+        Route::post('/hub/outbound', [HubOperationsController::class, 'outbound'])->name('hub.outbound');
+
         Route::get('/driver/tasks', [LogisticsDashboardController::class, 'index'])->name('driver.tasks');
     });
 });

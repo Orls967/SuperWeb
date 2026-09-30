@@ -20,6 +20,7 @@ use Modules\Logistics\Domain\Enums\TruckType;
 use Modules\Logistics\Domain\Models\Aircraft;
 use Modules\Logistics\Domain\Models\Container;
 use Modules\Logistics\Domain\Models\Driver;
+use Modules\Logistics\Domain\Models\HubOperator;
 use Modules\Logistics\Domain\Models\Location;
 use Modules\Logistics\Domain\Models\Trailer;
 use Modules\Logistics\Domain\Models\Truck;
@@ -85,12 +86,12 @@ class LogisticsSeeder extends Seeder
 
         // 2c. 4 Hub Operators
         $hubOps = [
-            ['hub.bdj@autoserve.test', 'Operator Hub Banjarmasin', '081299200001'],
-            ['hub.bjb@autoserve.test', 'Operator Hub Banjarbaru', '081299200002'],
-            ['hub.pky@autoserve.test', 'Operator Hub Palangkaraya', '081299200003'],
-            ['hub.bpn@autoserve.test', 'Operator Hub Balikpapan', '081299200004'],
+            ['hub.bdj@autoserve.test', 'Operator Hub Banjarmasin', '081299200001', $hubBdj->id],
+            ['hub.bjb@autoserve.test', 'Operator Hub Banjarbaru', '081299200002', $hubBjb->id],
+            ['hub.pky@autoserve.test', 'Operator Hub Palangkaraya', '081299200003', $hubPky->id],
+            ['hub.bpn@autoserve.test', 'Operator Hub Balikpapan', '081299200004', $hubBpn->id],
         ];
-        foreach ($hubOps as [$email, $name, $phone]) {
+        foreach ($hubOps as [$email, $name, $phone, $hubId]) {
             $op = User::firstOrCreate(
                 ['email' => $email],
                 [
@@ -103,6 +104,11 @@ class LogisticsSeeder extends Seeder
             );
             $op->walletAccount('IDR');
             $setPin->execute($op, '123456');
+
+            HubOperator::firstOrCreate(
+                ['user_id' => $op->id],
+                ['hub_id' => $hubId, 'is_active' => true]
+            );
         }
 
         // 2d. 12 Drivers

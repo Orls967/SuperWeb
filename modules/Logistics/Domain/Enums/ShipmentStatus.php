@@ -32,7 +32,7 @@ enum ShipmentStatus: string
 
         return match ($this) {
             self::Draft => in_array($target, [self::Booked, self::Cancelled], true),
-            self::Booked => in_array($target, [self::PickedUp, self::Cancelled, self::OnHold], true),
+            self::Booked => in_array($target, [self::PickedUp, self::AtHub, self::Cancelled, self::OnHold, self::Exception], true),
             self::PickedUp => in_array($target, [self::InTransit, self::AtHub, self::Exception, self::OnHold, self::CustomsHold, self::ReturnToSender], true),
             self::InTransit => in_array($target, [self::AtHub, self::OutForDelivery, self::Exception, self::OnHold, self::CustomsHold, self::Lost, self::ReturnToSender], true),
             self::AtHub => in_array($target, [self::InTransit, self::OutForDelivery, self::Exception, self::OnHold, self::CustomsHold, self::ReturnToSender], true),

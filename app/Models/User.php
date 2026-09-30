@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Modules\AutoDex\Domain\Models\Car;
 use Modules\Banking\Domain\Traits\HasLedgerAccounts;
 use Modules\Core\Domain\Models\Vehicle;
+use Modules\Logistics\Domain\Models\HubOperator;
 use Modules\Resto\Domain\Models\RestoStaffAssignment;
 
 #[Fillable(['name', 'email', 'password', 'phone', 'role'])]
@@ -185,5 +187,15 @@ class User extends Authenticatable
     public function assignedOutletId(): ?int
     {
         return $this->restoAssignments()->where('is_active', true)->value('outlet_id');
+    }
+
+    public function hubOperatorAssignment(): HasOne
+    {
+        return $this->hasOne(HubOperator::class, 'user_id');
+    }
+
+    public function assignedHubId(): ?int
+    {
+        return $this->hubOperatorAssignment()->where('is_active', true)->value('hub_id');
     }
 }

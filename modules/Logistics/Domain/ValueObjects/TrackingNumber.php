@@ -77,4 +77,12 @@ class TrackingNumber
 
         return self::PREFIX.$payload.$checkDigit;
     }
+
+    /**
+     * Normalize tracking number string by trimming and uppercasing.
+     */
+    public static function normalize(string $trackingNumber): string
+    {
+        return strtoupper(trim($trackingNumber));
+    }
 }
