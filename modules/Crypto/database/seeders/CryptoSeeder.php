@@ -13,6 +13,8 @@ class CryptoSeeder extends Seeder
 {
     public function run(): void
     {
+        mt_srand(12345);
+
         $assets = [
             [
                 'symbol' => 'BTC',

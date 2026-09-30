@@ -59,6 +59,7 @@ class OpenLoanAction extends BaseAction
         array $shippingAddress,
         string $pin,
         ?string $idempotencyKey = null,
+        ?BigDecimal $collateralQty = null,
     ): Loan {
         if (! $product->is_car || $product->productable_type !== 'dex_car') {
             throw new Exception('Pembiayaan HODL-to-Drive hanya berlaku untuk unit mobil baru di Store.');
@@ -84,13 +85,16 @@ class OpenLoanAction extends BaseAction
 
         $price = $this->priceFeed->currentPrice($asset->symbol);
         $requiredQty = Loan::requiredCollateralQty($principal, $price, (int) $asset->decimals);
+        $actualCollateralQty = ($collateralQty !== null && $collateralQty->isGreaterThanOrEqualTo($requiredQty))
+            ? $collateralQty
+            : $requiredQty;
 
         $holding = BigDecimal::of($user->walletAccount($asset->symbol)->cached_balance ?: '0');
-        if ($holding->isLessThan($requiredQty)) {
+        if ($holding->isLessThan($actualCollateralQty)) {
             throw new Exception(sprintf(
                 'Kolateral %s tidak mencukupi. Dibutuhkan %s %s (LTV maksimal %d%%), holding kamu %s %s.',
                 $asset->symbol,
-                $requiredQty->__toString(),
+                $actualCollateralQty->__toString(),
                 $asset->symbol,
                 (int) (Loan::MAX_LTV_AT_OPEN * 100),
                 $holding->__toString(),
@@ -113,7 +117,7 @@ class OpenLoanAction extends BaseAction
             $product,
             $asset,
             $price,
-            $requiredQty,
+            $actualCollateralQty,
             $principal,
             $downPayment,
             $tenorMonths,
@@ -162,8 +166,8 @@ class OpenLoanAction extends BaseAction
                 description: "Pencairan pembiayaan HODL-to-Drive untuk order {$order->number}",
                 idempotencyKey: 'loan_open_'.$key,
                 entries: [
-                    PostingEntryDTO::forAccount($cryptoAccount->id, $asset->symbol, $requiredQty->negated()),
-                    PostingEntryDTO::forCode("collateral:crypto:{$asset->symbol}", $asset->symbol, $requiredQty),
+                    PostingEntryDTO::forAccount($cryptoAccount->id, $asset->symbol, $actualCollateralQty->negated()),
+                    PostingEntryDTO::forCode("collateral:crypto:{$asset->symbol}", $asset->symbol, $actualCollateralQty),
                     PostingEntryDTO::forCode('loan_receivable:IDR', 'IDR', BigDecimal::of((string) $principal)->negated()),
                     PostingEntryDTO::forAccount($idrAccount->id, 'IDR', (string) $principal),
                 ],
@@ -172,7 +176,7 @@ class OpenLoanAction extends BaseAction
                 meta: [
                     'principal' => $principal,
                     'collateral_asset' => $asset->symbol,
-                    'collateral_qty' => $requiredQty->__toString(),
+                    'collateral_qty' => $actualCollateralQty->__toString(),
                     'collateral_price_idr' => $price->__toString(),
                 ],
                 createdBy: $user->id,
@@ -191,8 +195,8 @@ class OpenLoanAction extends BaseAction
                 'interest_rate_annual' => $schedule['interest_rate_annual'],
                 'tenor_months' => $tenorMonths,
                 'collateral_asset_id' => $asset->id,
-                'collateral_qty' => $requiredQty->__toString(),
-                'ltv_at_open' => $this->simulator->ltvFor($principal, $requiredQty, $price),
+                'collateral_qty' => $actualCollateralQty->__toString(),
+                'ltv_at_open' => $this->simulator->ltvFor($principal, $actualCollateralQty, $price),
                 'outstanding_principal' => $principal,
                 'status' => LoanStatus::Active,
                 'opened_at' => now(),

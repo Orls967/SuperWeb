@@ -8,8 +8,10 @@ use App\Models\Service;
 use App\Models\Sparepart;
 use App\Models\User;
 use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Modules\AutoDex\Domain\Models\Car;
 use Modules\AutoServe\Application\Actions\CompleteBookingAction;
@@ -109,9 +111,9 @@ class DemoCustomerSeeder extends Seeder
     /**
      * 20 customer dengan dompet IDR, PIN, dan saldo hasil top up.
      *
-     * @return \Illuminate\Support\Collection<int, User>
+     * @return Collection<int, User>
      */
-    private function seedCustomers(): \Illuminate\Support\Collection
+    private function seedCustomers(): Collection
     {
         $setPin = app(SetPinAction::class);
         $customers = collect();
@@ -159,10 +161,10 @@ class DemoCustomerSeeder extends Seeder
      * Kendaraan My Garage dibuat lewat AcquireVehicleAction supaya rantai
      * Vehicle Passport ikut terbentuk dan lolos core:verify-passports.
      *
-     * @param  \Illuminate\Support\Collection<int, User>  $customers
-     * @return \Illuminate\Support\Collection<int, Vehicle>
+     * @param  Collection<int, User>  $customers
+     * @return Collection<int, Vehicle>
      */
-    private function seedGarageVehicles(\Illuminate\Support\Collection $customers): \Illuminate\Support\Collection
+    private function seedGarageVehicles(Collection $customers): Collection
     {
         $acquire = app(AcquireVehicleAction::class);
 
@@ -181,8 +183,8 @@ class DemoCustomerSeeder extends Seeder
         $plateSequence = 2000;
         $carIndex = 0;
 
-        foreach ($customers as $customer) {
-            $target = self::CUSTOMERS[$customers->search($customer)]['vehicles'] ?? 1;
+        foreach ($customers as $index => $customer) {
+            $target = self::CUSTOMERS[$index]['vehicles'] ?? 1;
 
             for ($n = 0; $n < $target; $n++) {
                 $car = $cars[$carIndex % $cars->count()];
@@ -209,12 +211,12 @@ class DemoCustomerSeeder extends Seeder
      * lewat PaymentGateway; sebagian dibiarkan berjalan agar dashboard
      * admin dan mekanik punya pekerjaan aktif.
      *
-     * @param  \Illuminate\Support\Collection<int, User>  $customers
-     * @param  \Illuminate\Support\Collection<int, Vehicle>  $vehicles
+     * @param  Collection<int, User>  $customers
+     * @param  Collection<int, Vehicle>  $vehicles
      */
     private function seedBookingHistory(
-        \Illuminate\Support\Collection $customers,
-        \Illuminate\Support\Collection $vehicles
+        Collection $customers,
+        Collection $vehicles
     ): int {
         $services = Service::query()->orderBy('id')->get();
         $spareparts = Sparepart::query()->orderBy('id')->get();
@@ -328,9 +330,9 @@ class DemoCustomerSeeder extends Seeder
      * bursa simulasi, lalu membuka pinjaman berjaminan kripto atas unit mobil
      * yang benar-benar terdaftar di Store.
      *
-     * @param  \Illuminate\Support\Collection<int, User>  $customers
+     * @param  Collection<int, User>  $customers
      */
-    private function seedFinancedPurchases(\Illuminate\Support\Collection $customers): int
+    private function seedFinancedPurchases(Collection $customers): int
     {
         $products = $this->listFinanceableCars();
 
@@ -372,14 +374,14 @@ class DemoCustomerSeeder extends Seeder
             // Kolateral minimum LTV 50% ditambah buffer agar tidak langsung margin call
             $collateralQty = Loan::requiredCollateralQty($principal, $btcPrice, 8)
                 ->multipliedBy(self::COLLATERAL_BUFFER)
-                ->toScale(8, \Brick\Math\RoundingMode::Up);
+                ->toScale(8, RoundingMode::Up);
 
             // Dana untuk membeli kolateral + uang muka, dibulatkan ke atas
             $collateralCost = $collateralQty->multipliedBy($btcPrice);
             $funding = BigDecimal::of($collateralCost)
                 ->multipliedBy('1.05')
                 ->plus($downPayment)
-                ->toScale(0, \Brick\Math\RoundingMode::Up)
+                ->toScale(0, RoundingMode::Up)
                 ->toInt();
 
             $this->topUp($customer, $funding, "seed_loan_funding_{$customer->id}");
@@ -388,8 +390,18 @@ class DemoCustomerSeeder extends Seeder
                 user: $customer,
                 symbol: self::COLLATERAL_SYMBOL,
                 side: TradeSide::BUY,
+                amountIdr: null,
                 cryptoQty: (string) $collateralQty,
             );
+
+            // Pastikan saldo IDR customer mencukupi untuk biaya beli kripto (termasuk fee) dan DP
+            $quoteCost = BigDecimal::of($quote->gross_idr)->plus($quote->fee_idr);
+            $walletBalance = BigDecimal::of($customer->walletAccount('IDR')->fresh()->cached_balance ?: '0');
+            $needed = $quoteCost->plus($downPayment);
+            if ($walletBalance->isLessThan($needed)) {
+                $deficit = $needed->minus($walletBalance)->toScale(0, RoundingMode::Up)->toInt();
+                $this->topUp($customer, $deficit, "seed_loan_buffer_{$customer->id}");
+            }
 
             $trade->executeTrade($customer, $quote->uuid, self::PIN);
 
@@ -408,6 +420,7 @@ class DemoCustomerSeeder extends Seeder
                 ],
                 pin: self::PIN,
                 idempotencyKey: "seed_loan_{$customer->id}_{$product->id}",
+                collateralQty: $collateralQty,
             );
 
             $opened++;
@@ -420,9 +433,9 @@ class DemoCustomerSeeder extends Seeder
      * Daftarkan beberapa unit mobil AutoDex ke Store supaya etalase tidak
      * kosong dan pembiayaan punya objek yang bisa dibeli.
      *
-     * @return \Illuminate\Support\Collection<int, Product>
+     * @return Collection<int, Product>
      */
-    private function listFinanceableCars(): \Illuminate\Support\Collection
+    private function listFinanceableCars(): Collection
     {
         $listCar = app(ListCarProductAction::class);
 

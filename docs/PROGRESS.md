@@ -229,7 +229,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 
 ## FASE 19 — PENUTUPAN UTANG FASE 18
 - [x] 19.1 Baseline & commit Fase 18 (AUDIT.md baseline dicatat, docs phase 18 committed)
-- [ ] 19.2 Stabilkan DemoCustomerSeeder (deterministik, quote kripto, saldo cukup, ListCarProductAction stok tersedia, buffer kolateral 1.6x)
+- [x] 19.2 Stabilkan DemoCustomerSeeder (deterministik, quote kripto, saldo cukup, ListCarProductAction stok tersedia, buffer kolateral 1.6x)
 - [ ] 19.3 Test seeder: tests/Feature/Seed/DemoCustomerSeederTest.php (20 customer ber-PIN dan saldo > 0, >=20 kendaraan berpaspor valid, >=40 booking terbayar lewat ledger, tepat 3 pinjaman HODL-to-Drive aktif LTV < 70%, 6 produk mobil Store, reconcile 0)
 - [ ] 19.4 Perbaiki test yang terdampak data seed baru (SecurityTest, RouteSmokeTest, QueryBudgetTest, dll.) tanpa melemahkan assertion/anggaran
 - [ ] 19.5 Gate harian tidak boleh lolos karena kosong: default seed memuat >= 1 hari usaha Resto ditutup dengan >= 5 order terbayar, dan >= 1 bulan tagihan Mall terbit sebagian dibayar, audit-billing dan resto:close-day melaporkan nilai non-nol
