@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Logistics\Http\Controllers\FleetController;
 use Modules\Logistics\Http\Controllers\LaneController;
 use Modules\Logistics\Http\Controllers\LocationController;
 use Modules\Logistics\Http\Controllers\LogisticsDashboardController;
@@ -19,7 +20,8 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::post('/lanes', [LaneController::class, 'store'])->name('lanes.store');
         Route::delete('/lanes/{lane}', [LaneController::class, 'destroy'])->name('lanes.destroy');
 
-        Route::get('/fleet', [LogisticsDashboardController::class, 'index'])->name('fleet.index');
+        // Armada Multimoda (Fleet)
+        Route::get('/fleet', [FleetController::class, 'index'])->name('fleet.index');
         Route::get('/drivers', [LogisticsDashboardController::class, 'index'])->name('drivers.index');
         Route::get('/shipments', [LogisticsDashboardController::class, 'index'])->name('shipments.index');
         Route::get('/dispatch', [LogisticsDashboardController::class, 'index'])->name('dispatch.index');
