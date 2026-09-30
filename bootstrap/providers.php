@@ -9,6 +9,7 @@ use Modules\Crypto\CryptoServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
 use Modules\Inventory\InventoryServiceProvider;
 use Modules\Payment\PaymentServiceProvider;
+use Modules\Resto\RestoServiceProvider;
 use Modules\Shared\SharedServiceProvider;
 use Modules\Store\StoreServiceProvider;
 
@@ -24,4 +25,5 @@ return [
     StoreServiceProvider::class,
     CryptoServiceProvider::class,
     FinanceServiceProvider::class,
+    RestoServiceProvider::class,
 ];

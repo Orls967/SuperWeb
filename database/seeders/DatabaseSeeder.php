@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Hash;
 use Modules\Banking\Application\Actions\SetPinAction;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\database\seeders\BankingSeeder;
+use Modules\Core\database\seeders\PlatformSeeder;
 use Modules\Crypto\database\seeders\CryptoSeeder;
+use Modules\Resto\database\seeders\RestoMenuSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -119,5 +121,11 @@ class DatabaseSeeder extends Seeder
             $setPin->execute($admin, '123456');
             $topUp->execute($admin, '25000000', 'seed_topup_admin');
         }
+
+        // Platform notifications & activity log demo data
+        $this->call([
+            PlatformSeeder::class,
+            RestoMenuSeeder::class,
+        ]);
     }
 }

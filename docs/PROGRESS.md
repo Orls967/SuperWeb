@@ -94,12 +94,12 @@
 - [x] docs/DECISIONS.md lengkap
 
 ## FASE 7 — MODUL RESTO: FONDASI, MENU, RESEP, HPP
-- [ ] 7.1 Modul Resto + provider + menu sidebar + route group + tabel resto_outlets, resto_ingredients, resto_unit_conversions, resto_ingredient_costs
-- [ ] 7.2 Menu & kategori khas Padang (resto_menu_categories, resto_menu_items, resto_menu_item_outlet) + Seeder menu realistis min 40 item
-- [ ] 7.3 Resep berlapis (BOM multi-level) + RecipeCycleDetected exception + RecipeCostCalculator (HPP per porsi, moving average cost, waste_percent)
-- [ ] 7.4 Halaman admin: CRUD menu (builder resep dinamis Alpine, HPP per porsi real-time via JSON), CRUD bahan + konversi satuan, outlet list + margin badge
-- [ ] 7.5 Tests: konversi satuan, HPP resep berlapis presisi 6 desimal, resep sirkular ditolak, harga per outlet override, menu nonaktif tersembunyi
-- [ ] 7.6 Quality gate Fase 7
+- [x] 7.1 Modul Resto + provider + menu sidebar + route group + tabel resto_outlets, resto_ingredients, resto_unit_conversions, resto_ingredient_costs
+- [x] 7.2 Menu & kategori khas Padang (resto_menu_categories, resto_menu_items, resto_menu_item_outlet) + Seeder menu realistis min 40 item
+- [x] 7.3 Resep berlapis (BOM multi-level) + RecipeCycleDetected exception + RecipeCostCalculator (HPP per porsi, moving average cost, waste_percent)
+- [x] 7.4 Halaman admin: CRUD menu (builder resep dinamis Alpine, HPP per porsi real-time via JSON), CRUD bahan + konversi satuan, outlet list + margin badge
+- [x] 7.5 Tests: konversi satuan, HPP resep berlapis presisi 6 desimal, resep sirkular ditolak, harga per outlet override, menu nonaktif tersembunyi
+- [x] 7.6 Quality gate Fase 7
 
 ## FASE 8 — RESTO: DAPUR, BATCH PRODUKSI & SIKLUS ETALASE HIDANG
 - [ ] 8.1 Tabel resto_production_batches & resto_batch_consumptions

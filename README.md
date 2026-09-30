@@ -1,58 +1,103 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# AutoServe — Superwebsite
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem Bengkel Otomotif Terpadu (Modular Monolith) dibangun dengan **Laravel 11, Blade + Tailwind CSS + Alpine.js, Laravel Breeze** dengan role **Admin**, **Mekanik**, dan **Customer**.
 
-## About Laravel
+## Modul
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Modul | Deskripsi |
+|-------|-----------|
+| **AutoServe** | Manajemen bengkel: booking servis, invoice, mekanik assignment |
+| **AutoDex** | Ensiklopedia mobil global, My Garage, Wishlist |
+| **Banking** | Double-entry ledger, dompet digital, transfer P2P, mutasi |
+| **Payment** | Payment Hub (charge, hold/capture/release, refund) |
+| **Inventory** | Stock movement tracking terpusat |
+| **Store** | Toko online (sparepart, aksesoris, mobil bekas C2C) |
+| **Crypto** | Exchange kripto simulasi (BTC, ETH, SOL) + price alerts |
+| **Finance** | HODL-to-Drive crypto-backed financing, cicilan, LTV monitoring |
+| **Core** | Vehicle registry, Vehicle Passport (hash-chain), Notifications, Activity Feed, Dashboard terpadu |
+| **Shared** | Komponen UI, BaseAction, MenuRegistry, value objects |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Arsitektur
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Proyek ini menggunakan pola **Modular Monolith** — setiap modul berada di `modules/{Modul}/` dengan struktur:
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+modules/{Modul}/
+├── Application/       # Actions, Services, Listeners
+├── Contracts/         # Interface untuk integrasi lintas modul
+├── Console/           # Artisan commands
+├── Domain/
+│   ├── Models/        # Eloquent models
+│   ├── Enums/         # PHP enums
+│   └── Events/        # Domain events
+├── Http/Controllers/  # HTTP layer
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── resources/views/   # Blade templates (namespaced)
+├── routes/web.php     # Module routes
+├── tests/Feature/     # Pest tests
+└── {Modul}ServiceProvider.php
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Integritas Data
 
-## Contributing
+- **Double-Entry Ledger**: Setiap transaksi finansial (top-up, transfer, bayar, beli, trading, escrow, cicilan) menggunakan posting dua sisi atomik melalui `LedgerService`. Validasi: `php artisan bank:reconcile`
+- **Vehicle Passport**: Hash-chain SHA-256 append-only yang merekam riwayat kendaraan (akuisisi, servis, pergantian part, penjualan). Validasi: `php artisan core:verify-passports`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Akun Demo
 
-## Code of Conduct
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@autoserve.test | password |
+| Mekanik | mekanik@autoserve.test | password |
+| Customer | customer@autoserve.test | password |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+PIN Dompet: `123456`
 
-## Security Vulnerabilities
+## Quick Start
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+# Install dependencies
+composer install
+npm install
 
-## License
+# Setup environment
+cp .env.example .env
+php artisan key:generate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Database (MySQL)
+php artisan migrate:fresh --seed
+
+# Development server
+npm run dev          # Vite (terminal 1)
+php artisan serve    # Laravel (terminal 2)
+```
+
+## Commands
+
+| Command | Deskripsi |
+|---------|-----------|
+| `php artisan bank:reconcile` | Verifikasi keseimbangan double-entry ledger |
+| `php artisan core:verify-passports` | Audit integritas hash-chain kendaraan |
+| `php artisan crypto:tick` | Generate random price tick untuk aset kripto |
+| `php artisan finance:charge-installments` | Proses cicilan jatuh tempo |
+| `php artisan finance:monitor-ltv` | Evaluasi LTV pinjaman kripto |
+| `php artisan store:cancel-stale-orders` | Batalkan pesanan pending > 24 jam |
+| `php artisan payment:release-expired-holds` | Lepas hold yang expired |
+
+## Testing
+
+```bash
+php artisan test                    # Run all tests (183 tests, 737 assertions)
+php artisan test --filter=Banking   # Run per-module
+```
+
+## Tech Stack
+
+- Laravel 11 + PHP 8.3+
+- Blade + Tailwind CSS + Alpine.js
+- Laravel Breeze (auth)
+- Pest (testing)
+- brick/math (financial precision)
+- MySQL 8+ (production) / SQLite (testing)

@@ -19,6 +19,20 @@ enum TransactionType: string
     case LOAN_REPAYMENT = 'loan_repayment';
     case LIQUIDATION = 'liquidation';
     case GENESIS = 'genesis';
+    case PRODUCTION = 'production';
+    case WASTE = 'waste';
+    case CASH_VARIANCE = 'cash_variance';
+    case SETTLEMENT = 'settlement';
+    case SUPPLIER_PAYABLE = 'supplier_payable';
+    case SUPPLIER_PAYMENT = 'supplier_payment';
+    case ROYALTY = 'royalty';
+    case LEASE_DEPOSIT = 'lease_deposit';
+    case LEASE_BILLING = 'lease_billing';
+    case PARKING = 'parking';
+    case LOYALTY_EARN = 'loyalty_earn';
+    case LOYALTY_REDEEM = 'loyalty_redeem';
+    case VOUCHER_SETTLEMENT = 'voucher_settlement';
+    case EVENT_BOOKING = 'event_booking';
 
     public function label(): string
     {
@@ -36,6 +50,20 @@ enum TransactionType: string
             self::LOAN_REPAYMENT => 'Pembayaran Cicilan',
             self::LIQUIDATION => 'Likuidasi Kolateral',
             self::GENESIS => 'Saldo Awal Sistem',
+            self::PRODUCTION => 'Produksi Masakan',
+            self::WASTE => 'Pembuangan Makanan / Waste',
+            self::CASH_VARIANCE => 'Selisih Kas Shift',
+            self::SETTLEMENT => 'Penyelesaian Kas / Kliring',
+            self::SUPPLIER_PAYABLE => 'Penerimaan Bahan Supplier',
+            self::SUPPLIER_PAYMENT => 'Pembayaran Tagihan Supplier',
+            self::ROYALTY => 'Royalti Franchise',
+            self::LEASE_DEPOSIT => 'Deposit Sewa Tenant',
+            self::LEASE_BILLING => 'Tagihan Sewa Mall',
+            self::PARKING => 'Pembayaran Parkir',
+            self::LOYALTY_EARN => 'Perolehan Poin Loyalitas',
+            self::LOYALTY_REDEEM => 'Penukaran Poin Loyalitas',
+            self::VOUCHER_SETTLEMENT => 'Settlement Voucher Tenant',
+            self::EVENT_BOOKING => 'Sewa Atrium & Event',
         };
     }
 }

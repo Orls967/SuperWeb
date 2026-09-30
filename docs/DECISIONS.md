@@ -99,3 +99,33 @@
 - **Context:** Finance perlu mengevaluasi LTV setiap harga kripto berubah, tanpa Crypto mengetahui keberadaan modul Finance.
 - **Decision:** `PriceEngineService::tick()` mendispatch `Modules\Crypto\Domain\Events\PricesTicked`; `FinanceServiceProvider` mendaftarkan listener `MonitorLoanRisk` yang memanggil `EvaluateLoanRiskAction::evaluateAll()`.
 - **Reason:** Domain event adalah mekanisme lintas modul yang diizinkan spesifikasi; Crypto tetap tidak punya ketergantungan ke Finance, dan modul lain bisa ikut mendengarkan tick tanpa mengubah price engine.
+
+## 2026-09-30: In-App Notification Hub & Unread Counter
+- **Context:** Sistem memerlukan notifikasi in-app untuk pembaruan status servis, pembayaran, transfer saldo, margin call, dan pesanan toko secara real-time/semi-real-time tanpa memperkenalkan ketergantungan infrastruktur eksternal (seperti Pusher atau WebSocket daemon).
+- **Decision:** Diimplementasikan `core_notifications` dengan payload terstruktur (`type`, `title`, `message`, `action_url`, `read_at`), dikelola oleh `NotificationService`. UI menggunakan Alpine.js polling ringan ke endpoint `/notifications/recent` dengan debounce 30 detik untuk memperbarui badge counter merah di navbar dan popup modal.
+- **Reason:** Menyediakan UX interaktif tanpa konfigurasi infrastruktur server tambahan, berjalan mulus di lingkungan production standar maupun local testing.
+
+## 2026-09-30: Cross-Module Activity Logging
+- **Context:** Diperlukan audit trail aktivitas pengguna yang terpadu mencakup beragam interaksi lintas modul (booking servis, transfer perbankan, transaksi trading kripto, pinjaman dana, pembelian toko).
+- **Decision:** Dibuat `ActivityLogger` di Core yang menyimpan rekaman ke `core_activity_logs` dengan relasi polimorfik opsional ke entitas subjek (`subject_type`, `subject_id`). Action penting di modul-modul lain memanggil `ActivityLogger::log()` atau mendengarkan domain event.
+- **Reason:** Menghindari fragmentasi log riwayat per modul dan memungkinkan satu tampilan feed aktivitas komprehensif bagi customer maupun audit admin.
+
+## 2026-09-30: Dashboard Berbasis Peran Terintegrasi
+- **Context:** Setiap peran (Admin, Mekanik, Customer) memiliki konteks kerja yang sangat berbeda dan membutuhkan ringkasan data dari berbagai modul di satu halaman utama (`/dashboard`).
+- **Decision:** `DashboardController` mengecek peran pengguna (`Auth::user()->role`) dan merender view spesifik:
+  - `Customer`: Menggabungkan saldo wallet IDR & crypto portfolio, ringkasan mobil di garasi, servis aktif, pinjaman aktif, serta pesanan terbaru.
+  - `Admin`: Menampilkan omzet gabungan (bengkel, store, fee), antrean servis, status order pending, dan ringkasan risiko pembiayaan.
+  - `Mekanik`: Fokus pada antrean pekerjaan servis yang ditugaskan (*assigned*), tracking suku cadang, dan tombol perubahan status pengerjaan cepat.
+- **Reason:** Mengoptimalkan alur kerja pengguna berdasarkan perannya dan mengeliminasi kebutuhan navigasi berulang ke modul-modul berbeda untuk melihat status terkini.
+
+## 2026-09-30: Demo Seeder Terpadu Lintas Seluruh Fase
+- **Context:** Penguji dan evaluator memerlukan status aplikasi yang siap pakai dengan data representatif di seluruh modul (kendaraan dengan paspor valid, saldo dompet, transaksi kripto, produk toko, estimasi servis, pinjaman berjalan).
+- **Decision:** Dibuat `PlatformSeeder` yang dijalankan otomatis di akhir `DatabaseSeeder`, membuat skenario realistis untuk akun demo `admin@autoserve.test`, `mekanik@autoserve.test`, dan `customer@autoserve.test`, lengkap dengan paspor genesis, pesanan toko, notifikasi belum dibaca, dan aktivitas terkini.
+- **Reason:** Menjamin kemudahan demonstrasi instan setelah `php artisan migrate:fresh --seed` tanpa konfigurasi manual.
+
+## 2026-09-30: Satuan Bahan Dasar & Resep BOM Bertingkat (Modul Resto)
+- **Context:** Masakan Padang memiliki struktur bumbu dasar (bumbu merah, bumbu gulai) yang dimasak dalam jumlah besar di dapur dan dipakai sebagai bahan untuk berbagai lauk, serta satuan pembelian (kg, ikat, liter) yang berbeda dari takaran resep.
+- **Decision:** (1) Semua bahan baku disimpan dalam satuan dasar terkecil (`gram`, `ml`, `pcs`) menggunakan presisi `decimal(18,6)`. Konversi dari satuan dagang (`kg`, `liter`, `ikat`) dipetakan lewat `resto_unit_conversions`. (2) Resep dimodelkan sebagai Bill of Materials (BOM) bertingkat di mana satu baris resep dapat merujuk ke bahan mentah ataupun sub-resep `Recipe` lain. (3) `RecipeCostCalculator` melakukan kalkulasi HPP rekursif dengan moving average cost per outlet dan memperhitungkan waste factor. Jika terjadi referensi sirkular (A $\to$ B $\to$ A), dilempar `RecipeCycleDetected`.
+- **Reason:** Menjamin keakuratan perhitungan HPP hingga 6 desimal tanpa pembulatan mengambang (float), mencegah loop tak terbatas, dan merefleksikan proses memasak nyata rumah makan Padang.
+
+

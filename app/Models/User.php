@@ -45,9 +45,39 @@ class User extends Authenticatable
         return $this->role === 'customer';
     }
 
+    public function isCashier(): bool
+    {
+        return $this->role === 'cashier';
+    }
+
+    public function isKitchen(): bool
+    {
+        return $this->role === 'kitchen';
+    }
+
+    public function isOutletManager(): bool
+    {
+        return $this->role === 'outlet_manager';
+    }
+
+    public function isTenant(): bool
+    {
+        return $this->role === 'tenant';
+    }
+
+    public function isMallAdmin(): bool
+    {
+        return $this->role === 'mall_admin';
+    }
+
+    public function isTechnician(): bool
+    {
+        return $this->role === 'technician';
+    }
+
     public function isStaff(): bool
     {
-        return in_array($this->role, ['admin', 'mekanik']);
+        return in_array($this->role, ['admin', 'mekanik', 'cashier', 'kitchen', 'outlet_manager', 'mall_admin', 'technician']);
     }
 
     // --- AutoServe Relationships ---
