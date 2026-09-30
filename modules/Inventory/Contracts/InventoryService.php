@@ -60,4 +60,54 @@ interface InventoryService
         ?string $note = null,
         ?int $userId = null
     ): StockMovement;
+
+    /**
+     * Get available stock for an ingredient in a specific outlet (in base unit, e.g. gram/ml/pcs).
+     */
+    public function availableIngredient(int $ingredientId, int $outletId): string;
+
+    /**
+     * Deduct ingredient stock for production/service usage or waste.
+     *
+     * @throws InsufficientStockException
+     */
+    public function deductIngredient(
+        int $ingredientId,
+        int $outletId,
+        string $qtyBaseUnit,
+        string|StockMovementReason $reason = StockMovementReason::PRODUCTION,
+        ?string $sourceType = null,
+        ?int $sourceId = null,
+        ?string $note = null,
+        ?int $userId = null
+    ): void;
+
+    /**
+     * Add ingredient stock for purchase, goods receipt, or transfer.
+     */
+    public function addIngredient(
+        int $ingredientId,
+        int $outletId,
+        string $qtyBaseUnit,
+        string|StockMovementReason $reason = StockMovementReason::PURCHASE,
+        ?string $sourceType = null,
+        ?int $sourceId = null,
+        ?string $note = null,
+        ?int $userId = null
+    ): void;
+
+    /**
+     * Adjust ingredient stock to an actual counted quantity (stock opname).
+     * Returns the signed variance (counted - current).
+     */
+    public function adjustIngredient(
+        int $ingredientId,
+        int $outletId,
+        string $newStockBaseUnit,
+        string|StockMovementReason $reason = StockMovementReason::ADJUSTMENT,
+        ?string $sourceType = null,
+        ?int $sourceId = null,
+        ?string $note = null,
+        ?int $userId = null
+    ): string;
 }

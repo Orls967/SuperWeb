@@ -14,6 +14,8 @@ enum StockMovementReason: string
     case RETURN = 'return';
     case RESERVATION = 'reservation';
     case RESERVATION_RELEASE = 'reservation_release';
+    case PRODUCTION = 'production';
+    case WASTE = 'waste';
 
     public function label(): string
     {
@@ -26,6 +28,8 @@ enum StockMovementReason: string
             self::RETURN => 'Pengembalian / Retur',
             self::RESERVATION => 'Reservasi Checkout',
             self::RESERVATION_RELEASE => 'Pelepasan Reservasi',
+            self::PRODUCTION => 'Pemakaian Dapur / Produksi Masakan',
+            self::WASTE => 'Bahan Terbuang / Kadaluwarsa',
         };
     }
 }

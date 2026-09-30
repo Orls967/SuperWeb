@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Inventory\Application\Services;
 
+use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Illuminate\Support\Facades\DB;
 use Modules\Inventory\Contracts\InventoryService as InventoryServiceContract;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
@@ -160,5 +162,215 @@ class InventoryService implements InventoryServiceContract
 
             return $movement;
         });
+    }
+
+    public function availableIngredient(int $ingredientId, int $outletId): string
+    {
+        $val = DB::table('resto_ingredient_stocks')
+            ->where('ingredient_id', $ingredientId)
+            ->where('outlet_id', $outletId)
+            ->value('stock_base_unit');
+
+        return $val !== null ? (string) $val : '0.000000';
+    }
+
+    public function deductIngredient(
+        int $ingredientId,
+        int $outletId,
+        string $qtyBaseUnit,
+        string|StockMovementReason $reason = StockMovementReason::PRODUCTION,
+        ?string $sourceType = null,
+        ?int $sourceId = null,
+        ?string $note = null,
+        ?int $userId = null
+    ): void {
+        $reasonEnum = is_string($reason) ? StockMovementReason::from($reason) : $reason;
+        $deductAmount = BigDecimal::of($qtyBaseUnit);
+
+        if ($deductAmount->isNegative()) {
+            throw new \InvalidArgumentException('Jumlah potongan bahan tidak boleh negatif.');
+        }
+
+        if ($deductAmount->isZero()) {
+            return;
+        }
+
+        DB::transaction(function () use ($ingredientId, $outletId, $deductAmount, $reasonEnum, $sourceType, $sourceId, $note, $userId) {
+            $stockRow = DB::table('resto_ingredient_stocks')
+                ->where('ingredient_id', $ingredientId)
+                ->where('outlet_id', $outletId)
+                ->lockForUpdate()
+                ->first();
+
+            $currentStock = $stockRow !== null
+                ? BigDecimal::of((string) $stockRow->stock_base_unit)
+                : BigDecimal::zero();
+
+            if ($currentStock->isLessThan($deductAmount)) {
+                $ingName = DB::table('resto_ingredients')->where('id', $ingredientId)->value('name') ?? "Bahan #{$ingredientId}";
+                throw new InsufficientStockException(
+                    "Stok bahan '{$ingName}' di outlet #{$outletId} tidak mencukupi. Tersedia: {$currentStock}, dibutuhkan: {$deductAmount}"
+                );
+            }
+
+            $newStock = $currentStock->minus($deductAmount);
+
+            if ($stockRow !== null) {
+                DB::table('resto_ingredient_stocks')
+                    ->where('id', $stockRow->id)
+                    ->update([
+                        'stock_base_unit' => $newStock->toScale(6, RoundingMode::HalfUp)->__toString(),
+                        'updated_at' => now(),
+                    ]);
+            } else {
+                DB::table('resto_ingredient_stocks')->insert([
+                    'outlet_id' => $outletId,
+                    'ingredient_id' => $ingredientId,
+                    'stock_base_unit' => $newStock->toScale(6, RoundingMode::HalfUp)->__toString(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            DB::table('resto_ingredient_movements')->insert([
+                'outlet_id' => $outletId,
+                'ingredient_id' => $ingredientId,
+                'qty_base_unit' => $deductAmount->negated()->toScale(6, RoundingMode::HalfUp)->__toString(),
+                'reason' => $reasonEnum->value,
+                'source_type' => $sourceType,
+                'source_id' => $sourceId,
+                'note' => $note,
+                'created_by' => $userId ?? auth()->id(),
+                'created_at' => now(),
+            ]);
+        }, attempts: 3);
+    }
+
+    public function addIngredient(
+        int $ingredientId,
+        int $outletId,
+        string $qtyBaseUnit,
+        string|StockMovementReason $reason = StockMovementReason::PURCHASE,
+        ?string $sourceType = null,
+        ?int $sourceId = null,
+        ?string $note = null,
+        ?int $userId = null
+    ): void {
+        $reasonEnum = is_string($reason) ? StockMovementReason::from($reason) : $reason;
+        $addAmount = BigDecimal::of($qtyBaseUnit);
+
+        if ($addAmount->isNegative()) {
+            throw new \InvalidArgumentException('Jumlah penambahan bahan tidak boleh negatif.');
+        }
+
+        if ($addAmount->isZero()) {
+            return;
+        }
+
+        DB::transaction(function () use ($ingredientId, $outletId, $addAmount, $reasonEnum, $sourceType, $sourceId, $note, $userId) {
+            $stockRow = DB::table('resto_ingredient_stocks')
+                ->where('ingredient_id', $ingredientId)
+                ->where('outlet_id', $outletId)
+                ->lockForUpdate()
+                ->first();
+
+            $currentStock = $stockRow !== null
+                ? BigDecimal::of((string) $stockRow->stock_base_unit)
+                : BigDecimal::zero();
+
+            $newStock = $currentStock->plus($addAmount);
+
+            if ($stockRow !== null) {
+                DB::table('resto_ingredient_stocks')
+                    ->where('id', $stockRow->id)
+                    ->update([
+                        'stock_base_unit' => $newStock->toScale(6, RoundingMode::HalfUp)->__toString(),
+                        'updated_at' => now(),
+                    ]);
+            } else {
+                DB::table('resto_ingredient_stocks')->insert([
+                    'outlet_id' => $outletId,
+                    'ingredient_id' => $ingredientId,
+                    'stock_base_unit' => $newStock->toScale(6, RoundingMode::HalfUp)->__toString(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            DB::table('resto_ingredient_movements')->insert([
+                'outlet_id' => $outletId,
+                'ingredient_id' => $ingredientId,
+                'qty_base_unit' => $addAmount->toScale(6, RoundingMode::HalfUp)->__toString(),
+                'reason' => $reasonEnum->value,
+                'source_type' => $sourceType,
+                'source_id' => $sourceId,
+                'note' => $note,
+                'created_by' => $userId ?? auth()->id(),
+                'created_at' => now(),
+            ]);
+        }, attempts: 3);
+    }
+
+    public function adjustIngredient(
+        int $ingredientId,
+        int $outletId,
+        string $newStockBaseUnit,
+        string|StockMovementReason $reason = StockMovementReason::ADJUSTMENT,
+        ?string $sourceType = null,
+        ?int $sourceId = null,
+        ?string $note = null,
+        ?int $userId = null
+    ): string {
+        $reasonEnum = is_string($reason) ? StockMovementReason::from($reason) : $reason;
+        $targetStock = BigDecimal::of($newStockBaseUnit);
+
+        if ($targetStock->isNegative()) {
+            throw new \InvalidArgumentException('Stok hasil penyesuaian tidak boleh negatif.');
+        }
+
+        return DB::transaction(function () use ($ingredientId, $outletId, $targetStock, $reasonEnum, $sourceType, $sourceId, $note, $userId) {
+            $stockRow = DB::table('resto_ingredient_stocks')
+                ->where('ingredient_id', $ingredientId)
+                ->where('outlet_id', $outletId)
+                ->lockForUpdate()
+                ->first();
+
+            $currentStock = $stockRow !== null
+                ? BigDecimal::of((string) $stockRow->stock_base_unit)
+                : BigDecimal::zero();
+
+            $variance = $targetStock->minus($currentStock);
+
+            if ($stockRow !== null) {
+                DB::table('resto_ingredient_stocks')
+                    ->where('id', $stockRow->id)
+                    ->update([
+                        'stock_base_unit' => $targetStock->toScale(6, RoundingMode::HalfUp)->__toString(),
+                        'updated_at' => now(),
+                    ]);
+            } else {
+                DB::table('resto_ingredient_stocks')->insert([
+                    'outlet_id' => $outletId,
+                    'ingredient_id' => $ingredientId,
+                    'stock_base_unit' => $targetStock->toScale(6, RoundingMode::HalfUp)->__toString(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            DB::table('resto_ingredient_movements')->insert([
+                'outlet_id' => $outletId,
+                'ingredient_id' => $ingredientId,
+                'qty_base_unit' => $variance->toScale(6, RoundingMode::HalfUp)->__toString(),
+                'reason' => $reasonEnum->value,
+                'source_type' => $sourceType,
+                'source_id' => $sourceId,
+                'note' => $note,
+                'created_by' => $userId ?? auth()->id(),
+                'created_at' => now(),
+            ]);
+
+            return $variance->toScale(6, RoundingMode::HalfUp)->__toString();
+        }, attempts: 3);
     }
 }

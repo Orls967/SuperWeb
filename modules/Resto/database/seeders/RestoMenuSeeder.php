@@ -7,6 +7,11 @@ namespace Modules\Resto\database\seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Modules\Banking\Domain\Enums\AccountKind;
+use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Inventory\Contracts\InventoryService;
+use Modules\Inventory\Domain\Enums\StockMovementReason;
+use Modules\Resto\Application\Actions\CookBatchAction;
 use Modules\Resto\Domain\Enums\BaseUnit;
 use Modules\Resto\Domain\Enums\IngredientCategory;
 use Modules\Resto\Domain\Enums\OutletType;
@@ -450,6 +455,84 @@ class RestoMenuSeeder extends Seeder
             RecipeLine::updateOrCreate(
                 ['recipe_id' => $tehRecipe->id, 'line_type' => RecipeLineType::INGREDIENT, 'ingredient_id' => $ingredients['ING-SUSU-KENTAL']->id],
                 ['qty_base_unit' => '20.000000', 'note' => '20 ml susu kental manis']
+            );
+        }
+
+        // 7. Seed initial ingredient stocks across outlets
+        $inventoryService = app(InventoryService::class);
+
+        foreach ([$dmOutlet, $centralKitchen, $kayutangiOutlet] as $outlet) {
+            foreach ($ingredients as $sku => $ingredient) {
+                $qty = match ($ingredient->base_unit) {
+                    'pcs' => '500.000000',
+                    'ml' => '80000.000000',
+                    default => '100000.000000', // gram (100kg)
+                };
+
+                $inventoryService->adjustIngredient(
+                    ingredientId: $ingredient->id,
+                    outletId: $outlet->id,
+                    newStockBaseUnit: $qty,
+                    reason: StockMovementReason::INITIAL,
+                    note: "Inisialisasi stok awal outlet {$outlet->code}"
+                );
+            }
+        }
+
+        // 8. Ensure Resto ledger accounts exist
+        $ledgerAccs = [
+            'expense:resto:waste:IDR' => ['name' => 'Beban Limbah/Waste Makanan Resto', 'kind' => AccountKind::EXPENSE, 'allow_negative' => true],
+            'expense:resto:cogs:IDR' => ['name' => 'Beban Pokok Penjualan (HPP) Resto', 'kind' => AccountKind::EXPENSE, 'allow_negative' => true],
+            'revenue:group:royalty:IDR' => ['name' => 'Pendapatan Royalti Franchise', 'kind' => AccountKind::REVENUE, 'allow_negative' => true],
+        ];
+
+        foreach ([$dmOutlet, $centralKitchen, $kayutangiOutlet] as $outlet) {
+            $ledgerAccs["inventory:resto:{$outlet->code}:IDR"] = ['name' => "Persediaan Resto {$outlet->name}", 'kind' => AccountKind::INVENTORY, 'allow_negative' => true];
+            $ledgerAccs["cash:drawer:{$outlet->code}:IDR"] = ['name' => "Kas Fisik Kasir {$outlet->name}", 'kind' => AccountKind::CASH, 'allow_negative' => true];
+            $ledgerAccs["revenue:resto:{$outlet->code}:food:IDR"] = ['name' => "Pendapatan Makanan {$outlet->name}", 'kind' => AccountKind::REVENUE, 'allow_negative' => true];
+            $ledgerAccs["revenue:resto:{$outlet->code}:beverage:IDR"] = ['name' => "Pendapatan Minuman {$outlet->name}", 'kind' => AccountKind::REVENUE, 'allow_negative' => true];
+        }
+
+        foreach ($ledgerAccs as $accCode => $accData) {
+            LedgerAccount::firstOrCreate(
+                ['code' => $accCode],
+                [
+                    'uuid' => (string) Str::uuid(),
+                    'name' => $accData['name'],
+                    'asset_code' => 'IDR',
+                    'kind' => $accData['kind']->value,
+                    'allow_negative' => $accData['allow_negative'],
+                    'cached_balance' => '0',
+                    'is_frozen' => false,
+                ]
+            );
+        }
+
+        // 9. Seed initial demo batches and trays in DM-01
+        $cookAction = app(CookBatchAction::class);
+        $kitchenStaff = User::where('email', 'dapur@autoserve.test')->first();
+
+        if (isset($rendangRecipe)) {
+            $cookAction->handle(
+                outletId: $dmOutlet->id,
+                recipeId: $rendangRecipe->id,
+                plannedPortions: 20,
+                actualPortions: 20,
+                producedBy: $kitchenStaff?->id,
+                note: 'Batch pagi Rendang Daging Sapi Spesial',
+                putOnDisplay: true
+            );
+        }
+
+        if (isset($tunjangRecipe)) {
+            $cookAction->handle(
+                outletId: $dmOutlet->id,
+                recipeId: $tunjangRecipe->id,
+                plannedPortions: 15,
+                actualPortions: 15,
+                producedBy: $kitchenStaff?->id,
+                note: 'Batch pagi Gulai Tunjang Kaki Sapi',
+                putOnDisplay: true
             );
         }
     }

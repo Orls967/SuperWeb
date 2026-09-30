@@ -102,12 +102,12 @@
 - [x] 7.6 Quality gate Fase 7
 
 ## FASE 8 — RESTO: DAPUR, BATCH PRODUKSI & SIKLUS ETALASE HIDANG
-- [ ] 8.1 Tabel resto_production_batches & resto_batch_consumptions
-- [ ] 8.2 CookBatchAction: stok potong via InventoryService, cost_total aktual, posting ledger, ShortageException, scale-down resep, varians produksi
-- [ ] 8.3 Siklus etalase: resto_display_trays, aturan recirculate (max 3x, max 6 jam), waste expense, piring disentuh dihitung terjual, command resto:expire-display
-- [ ] 8.4 UI Dapur (role kitchen): papan produksi harian, tombol "Masak Batch", monitor etalase countdown warna, tombol buang, rekap waste
-- [ ] 8.5 Tests: potong bahan, kekurangan stok ditolak, scale-down produksi, cost_per_portion, tray expired jadi waste, recirculate ke-4 ditolak, reconcile bersih
-- [ ] 8.6 Quality gate Fase 8
+- [x] 8.1 Tabel resto_production_batches & resto_batch_consumptions
+- [x] 8.2 CookBatchAction: stok potong via InventoryService, cost_total aktual, posting ledger, ShortageException, scale-down resep, varians produksi
+- [x] 8.3 Siklus etalase: resto_display_trays, aturan recirculate (max 3x, max 6 jam), waste expense, piring disentuh dihitung terjual, command resto:expire-display
+- [x] 8.4 UI Dapur (role kitchen): papan produksi harian, tombol "Masak Batch", monitor etalase countdown warna, tombol buang, rekap waste
+- [x] 8.5 Tests: potong bahan, kekurangan stok ditolak, scale-down produksi, cost_per_portion, tray expired jadi waste, recirculate ke-4 ditolak, reconcile bersih
+- [x] 8.6 Quality gate Fase 8
 
 ## FASE 9 — RESTO: POS HIDANG, SESI MEJA, SHIFT KASIR & TUTUP HARIAN
 - [ ] 9.1 Tabel resto_tables, resto_table_sessions, resto_order_items, resto_orders

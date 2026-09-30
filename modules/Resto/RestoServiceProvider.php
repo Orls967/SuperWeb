@@ -7,9 +7,13 @@ namespace Modules\Resto;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Modules\Resto\Application\Services\RecipeCostCalculator;
+use Modules\Resto\Console\Commands\CloseDayCommand;
+use Modules\Resto\Console\Commands\ExpireDisplayTraysCommand;
+use Modules\Resto\Domain\Models\DisplayTray;
 use Modules\Resto\Domain\Models\Ingredient;
 use Modules\Resto\Domain\Models\MenuItem;
 use Modules\Resto\Domain\Models\Outlet;
+use Modules\Resto\Domain\Models\ProductionBatch;
 use Modules\Resto\Domain\Models\Recipe;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -34,10 +38,22 @@ class RestoServiceProvider extends ServiceProvider
             'resto_ingredient' => Ingredient::class,
             'resto_menu_item' => MenuItem::class,
             'resto_recipe' => Recipe::class,
+            'resto_batch' => ProductionBatch::class,
+            'resto_tray' => DisplayTray::class,
         ]);
 
         if ($this->app->bound(MenuRegistry::class)) {
             $registry = $this->app->make(MenuRegistry::class);
+
+            $registry->addItem(
+                label: 'Dapur & Etalase',
+                route: 'resto.kitchen.index',
+                icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path></svg>',
+                roles: ['admin', 'outlet_manager', 'kitchen'],
+                order: 59,
+                group: 'Kuliner (RM Sari Ranah)',
+                activePattern: 'resto/kitchen*'
+            );
 
             $registry->addItem(
                 label: 'Menu Padang',
@@ -68,6 +84,13 @@ class RestoServiceProvider extends ServiceProvider
                 group: 'Kuliner (RM Sari Ranah)',
                 activePattern: 'resto/outlets*'
             );
+        }
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                ExpireDisplayTraysCommand::class,
+                CloseDayCommand::class,
+            ]);
         }
     }
 }

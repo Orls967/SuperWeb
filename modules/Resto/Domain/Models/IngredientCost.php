@@ -39,6 +39,11 @@ class IngredientCost extends Model
         return BigDecimal::of($this->moving_avg_cost_per_base_unit ?: '0');
     }
 
+    public function movingAverageCost(): BigDecimal
+    {
+        return $this->movingAvgCost();
+    }
+
     public function lastPurchaseCost(): BigDecimal
     {
         return BigDecimal::of($this->last_purchase_cost ?: '0');

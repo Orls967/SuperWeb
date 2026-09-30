@@ -13,6 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Modules\AutoDex\Domain\Models\Car;
 use Modules\Banking\Domain\Traits\HasLedgerAccounts;
 use Modules\Core\Domain\Models\Vehicle;
+use Modules\Resto\Domain\Models\RestoStaffAssignment;
 
 #[Fillable(['name', 'email', 'password', 'phone', 'role'])]
 #[Hidden(['password', 'remember_token'])]
@@ -137,5 +138,15 @@ class User extends Authenticatable
     public function hasInWishlist(int $carId): bool
     {
         return $this->wishlistCars()->where('car_id', $carId)->exists();
+    }
+
+    public function restoAssignments(): HasMany
+    {
+        return $this->hasMany(RestoStaffAssignment::class, 'user_id');
+    }
+
+    public function assignedOutletId(): ?int
+    {
+        return $this->restoAssignments()->where('is_active', true)->value('outlet_id');
     }
 }

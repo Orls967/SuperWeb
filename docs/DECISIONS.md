@@ -128,4 +128,22 @@
 - **Decision:** (1) Semua bahan baku disimpan dalam satuan dasar terkecil (`gram`, `ml`, `pcs`) menggunakan presisi `decimal(18,6)`. Konversi dari satuan dagang (`kg`, `liter`, `ikat`) dipetakan lewat `resto_unit_conversions`. (2) Resep dimodelkan sebagai Bill of Materials (BOM) bertingkat di mana satu baris resep dapat merujuk ke bahan mentah ataupun sub-resep `Recipe` lain. (3) `RecipeCostCalculator` melakukan kalkulasi HPP rekursif dengan moving average cost per outlet dan memperhitungkan waste factor. Jika terjadi referensi sirkular (A $\to$ B $\to$ A), dilempar `RecipeCycleDetected`.
 - **Reason:** Menjamin keakuratan perhitungan HPP hingga 6 desimal tanpa pembulatan mengambang (float), mencegah loop tak terbatas, dan merefleksikan proses memasak nyata rumah makan Padang.
 
+## 2026-09-30: Perluasan Kontrak `InventoryService` untuk Bahan Baku Resto
+- **Context:** Aturan arsitektur melarang modul Resto mengakses domain Inventory secara langsung, dan aturan modul melarang breaking changes pada kontrak publik yang ada (`InventoryService`). Bahan baku restoran memiliki satuan desimal (`decimal(18,6)`) dan dikelola per outlet, berbeda dengan `store_products` yang berupa integer global.
+- **Decision:** Kontrak `Modules\Inventory\Contracts\InventoryService` diperluas dengan 4 method baru non-breaking: `availableIngredient`, `deductIngredient`, `addIngredient`, dan `adjustIngredient`. Data pergerakan disimpan pada `resto_ingredient_movements` dan saldo per outlet di `resto_ingredient_stocks`. Di dalam implementasi `InventoryService`, mutasi dilakukan lewat query tabel tanpa mengimpor kelas domain Resto.
+- **Reason:** Mematuhi batas modul modular monolith (lintas modul hanya via kontrak/event), mempertahankan backward compatibility untuk Store & Finance, dan mendukung presisi bahan baku masakan per outlet.
+
+## 2026-09-30: Konvensi Posting Ledger Produksi Batch (Internal Inventory Transfer)
+- **Context:** Saat bahan mentah dimasak menjadi porsi jadi (batch produksi), nilai bahan ditransfer menjadi nilai barang siap hidang di outlet yang sama. Total nilai persediaan outlet tidak berkurang sampai porsi tersebut terjual (COGS) atau dibuang (Waste).
+- **Decision:** `CookBatchAction` melakukan posting double-entry pada akun `inventory:resto:{outlet}:IDR`:
+  - Kredit `inventory:resto:{outlet}:IDR` sebesar `-$cost_total` (pengurangan nilai bahan mentah)
+  - Debet `inventory:resto:{outlet}:IDR` sebesar `+$cost_total` (penambahan nilai barang jadi / porsi matang)
+  Saldo bersih persediaan outlet tidak berubah, jumlah entri = 0, dan `bank:reconcile` terbukti tetap 0 selisih.
+- **Reason:** Merefleksikan standar akuntansi persediaan di mana konversi bahan baku ke barang jadi adalah perpindahan sub-kategori aset, bukan pengakuan beban (beban baru diakui saat terjual lewat `expense:resto:cogs` atau rusak lewat `expense:resto:waste`).
+
+## 2026-09-30: Siklus Etalase Hidang Padang & Batas Resirkulasi 3 Kali
+- **Context:** Tradisi rumah makan Padang meletakkan piring-piring lauk di meja tamu ("sistem hidang"). Piring yang tidak disentuh dapat kembali ke etalase, sedangkan piring yang disentuh sebagian dihitung terjual penuh. Perlu aturan higienitas ketat agar piring tidak berulang kali keluar-masuk meja tanpa batas.
+- **Decision:** (1) Ditetapkan konstanta pada model `DisplayTray`: `MAX_RECIRCULATION = 3` dan `MAX_DISPLAY_HOURS = 6`. (2) Piring yang dikembalikan utuh dari meja dinaikkan `recirculation_count`-nya. Jika mencapai batas maksimal atau melewati 6 jam sejak dimasak, piring ditolak masuk kembali dan dialihkan ke `discarded` (waste). (3) Nilai HPP sisa porsi yang dibuang otomatis diposting ke `expense:resto:waste:IDR` dan dikreditkan dari `inventory:resto:{outlet}:IDR`.
+- **Reason:** Memastikan standar higienitas pangan masakan Padang modern, mencegah penyajian makanan basi, dan menjaga akurasi pembukuan waste operasional.
+
 
