@@ -16,6 +16,7 @@ enum StockMovementReason: string
     case RESERVATION_RELEASE = 'reservation_release';
     case PRODUCTION = 'production';
     case WASTE = 'waste';
+    case TRANSFER = 'transfer';
 
     public function label(): string
     {
@@ -30,6 +31,7 @@ enum StockMovementReason: string
             self::RESERVATION_RELEASE => 'Pelepasan Reservasi',
             self::PRODUCTION => 'Pemakaian Dapur / Produksi Masakan',
             self::WASTE => 'Bahan Terbuang / Kadaluwarsa',
+            self::TRANSFER => 'Transfer Antar Outlet',
         };
     }
 }

@@ -159,6 +159,15 @@
 - **Decision:** Sistem menghitung PB1 10% setelah dikurangi diskon (`round(subtotalAfterDiscount * 0.10)`), kemudian menjumlahkan total sementara, dan membulatkan ke kelipatan Rp 100 terdekat (`round(rawTotal / 100) * 100`). Selisih pembulatan (positif atau negatif) disimpan pada kolom `rounding` pada model `Order` dan diserap secara proporsional ke dalam pembagian pendapatan (`revenueSplits`) agar jumlah entri ledger sama persis dengan `grand_total`.
 - **Reason:** Mengeliminasi masalah kembalian uang koin receh di meja kasir restoran, sekaligus menjaga integritas pembukuan double-entry tanpa selisih 1 rupiah pun.
 
+## 2026-09-30: Moving Average Cost (MAC) Presisi Tinggi & Akuntansi In-Transit Rantai Pasok
+- **Context:** Harga pembelian bahan baku restoran dari pemasok fluktuatif di pasar, dan transfer bahan dari Dapur Sentral (Central Kitchen) ke outlet cabang memakan waktu pengiriman antarkota/antarwilayah.
+- **Decision:**
+  - MAC dihitung menggunakan `BigDecimal` dengan 6 angka di belakang koma (`RoundingMode::HalfUp`): `((old_stock * old_cost) + (received_qty * unit_cost)) / (old_stock + received_qty)` dan diperbarui otomatis pada setiap `ReceiveGoodsAction`.
+  - Transfer bahan baku antarcabang tidak pernah menurunkan total aset persediaan pada neraca kelompok usaha. Selama perjalanan, nilai barang ditampung di `inventory:resto:transit:IDR` (`AccountKind::INVENTORY`).
+  - Saat diterima di cabang tujuan, akun transit dikosongkan. Jika ada selisih fisik (misal: telur pecah, kemasan bocor), nilai selisih langsung dibukukan sebagai kerugian susut ke `expense:resto:waste:IDR`.
+  - Utang usaha pemasok (`ap:supplier:{id}:IDR`) dikreditkan saat barang diterima fisik (`ReceiveGoodsAction`) dan didebet saat pelunasan kas/bank (`PaySupplierAction`). Umur utang dipilah menjadi bucket `0-30`, `31-60`, dan `60+` hari berdasarkan `terms_days` pemasok oleh `PayableAgingQuery`.
+- **Reason:** Menjamin neraca keuangan grup selalu akurat dan transparan, meminimalkan kerugian transfer tanpa jejak, dan menjaga audit kesesuaian double-entry ledger 0 selisih.
+
 ## 2026-09-30: Penutupan Harian & Sumber Data Laporan Analitik
 - **Context:** Query analitik yang memindai tabel transaksi mentah (`resto_orders`) ribuan kali per hari dapat menurunkan performa basis data secara signifikan.
 - **Decision:** Command terjadwal `resto:close-day` (berjalan tiap 23:59) merangkum performa harian outlet ke tabel `resto_daily_summaries` (`gross_sales`, `discount`, `pb1`, `net_sales`, `cogs`, `waste_value`, `gross_margin`, `transactions`, `guests`, `cash_variance`, `top_items`). Seluruh dasbor dan laporan analitik diwajibkan hanya membaca dari `resto_daily_summaries`. Opsi `--check` memvalidasi angka ringkasan harian terhadap riwayat entri buku besar (ledger) untuk mendeteksi kecurangan atau inkonsistensi data.

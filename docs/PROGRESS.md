@@ -119,13 +119,13 @@
 - [x] 9.7 Quality gate Fase 9
 
 ## FASE 10 — RESTO: RANTAI PASOK, DAPUR SENTRAL & MULTI-OUTLET
-- [ ] 10.1 Tabel resto_suppliers, resto_purchase_orders, resto_purchase_order_lines, resto_goods_receipts
-- [ ] 10.2 ReceiveGoodsAction: stok bahan masuk via InventoryService, moving avg cost BigDecimal, varians harga, posting AP supplier & inventory, PaySupplierAction, aging payable
-- [ ] 10.3 Dapur sentral & transfer antar outlet: resto_stock_transfers, in-transit account, selisih terima ke waste
-- [ ] 10.4 Stock opname: resto_stock_counts, adjustment via InventoryService, posting selisih
-- [ ] 10.5 Peringatan otomatis: stok di bawah min_stock notifikasi + draft PO otomatis, perishable mendekati kedaluwarsa notifikasi dapur
-- [ ] 10.6 Tests: PO terima parsial & penuh, moving avg cost 3 harga, transfer in-transit, opname minus, aging payable, reconcile bersih
-- [ ] 10.7 Quality gate Fase 10
+- [x] 10.1 Tabel resto_suppliers, resto_purchase_orders, resto_purchase_order_lines, resto_goods_receipts
+- [x] 10.2 ReceiveGoodsAction: stok bahan masuk via InventoryService, moving avg cost BigDecimal, varians harga, posting AP supplier & inventory, PaySupplierAction, aging payable
+- [x] 10.3 Dapur sentral & transfer antar outlet: resto_stock_transfers, in-transit account, selisih terima ke waste
+- [x] 10.4 Stock opname: resto_stock_counts, adjustment via InventoryService, posting selisih
+- [x] 10.5 Peringatan otomatis: stok di bawah min_stock notifikasi + draft PO otomatis, perishable mendekati kedaluwarsa notifikasi dapur
+- [x] 10.6 Tests: PO terima parsial & penuh, moving avg cost 3 harga, transfer in-transit, opname minus, aging payable, reconcile bersih
+- [x] 10.7 Quality gate Fase 10
 
 ## FASE 11 — RESTO: KANAL PENJUALAN, KATERING, FRANCHISE & ANALITIK
 - [ ] 11.1 Bungkus & delivery: harga takeaway, potong bahan kemasan, resto_deliveries ongkir bertingkat, pesan online wallet, refund parsial

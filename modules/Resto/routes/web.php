@@ -8,6 +8,9 @@ use Modules\Resto\Http\Controllers\KitchenController;
 use Modules\Resto\Http\Controllers\MenuItemController;
 use Modules\Resto\Http\Controllers\OutletController;
 use Modules\Resto\Http\Controllers\PosController;
+use Modules\Resto\Http\Controllers\PurchaseController;
+use Modules\Resto\Http\Controllers\StockCountController;
+use Modules\Resto\Http\Controllers\StockTransferController;
 
 Route::middleware(['web', 'auth'])->prefix('resto')->name('resto.')->group(function () {
     // Menu Management
@@ -41,4 +44,17 @@ Route::middleware(['web', 'auth'])->prefix('resto')->name('resto.')->group(funct
 
     // Outlets & Central Kitchens
     Route::resource('outlets', OutletController::class);
+
+    // Rantai Pasok & Purchase Orders
+    Route::post('purchases/{purchase}/receive', [PurchaseController::class, 'receive'])->name('purchases.receive');
+    Route::post('purchases/{purchase}/pay', [PurchaseController::class, 'pay'])->name('purchases.pay');
+    Route::resource('purchases', PurchaseController::class);
+
+    // Transfer Antar Outlet
+    Route::post('transfers/{transfer}/receive', [StockTransferController::class, 'receive'])->name('transfers.receive');
+    Route::resource('transfers', StockTransferController::class);
+
+    // Stock Opname
+    Route::post('stock-counts/{stock_count}/approve', [StockCountController::class, 'approve'])->name('stock-counts.approve');
+    Route::resource('stock-counts', StockCountController::class);
 });

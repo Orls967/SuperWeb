@@ -140,23 +140,33 @@ class CloseDayCommand extends Command
             ])->toArray();
 
             // Simpan / update DailySummary
-            $summary = DailySummary::updateOrCreate(
-                ['outlet_id' => $outlet->id, 'date' => $targetDate],
-                [
-                    'gross_sales' => $grossSales,
-                    'discount' => $discount,
-                    'pb1' => $pb1,
-                    'net_sales' => $netSales,
-                    'cogs' => $cogs,
-                    'waste_value' => $wasteValue,
-                    'gross_margin' => $grossMargin,
-                    'transactions' => $transactions,
-                    'guests' => $guests,
-                    'avg_check' => $avgCheck,
-                    'cash_variance' => $cashVariance,
-                    'top_items' => $topItems,
-                ]
-            );
+            $summary = DailySummary::where('outlet_id', $outlet->id)
+                ->whereDate('date', $targetDate)
+                ->first();
+
+            $summaryData = [
+                'gross_sales' => $grossSales,
+                'discount' => $discount,
+                'pb1' => $pb1,
+                'net_sales' => $netSales,
+                'cogs' => $cogs,
+                'waste_value' => $wasteValue,
+                'gross_margin' => $grossMargin,
+                'transactions' => $transactions,
+                'guests' => $guests,
+                'avg_check' => $avgCheck,
+                'cash_variance' => $cashVariance,
+                'top_items' => $topItems,
+            ];
+
+            if ($summary) {
+                $summary->update($summaryData);
+            } else {
+                $summary = DailySummary::create(array_merge(
+                    ['outlet_id' => $outlet->id, 'date' => $targetDate],
+                    $summaryData
+                ));
+            }
 
             $this->line('  Gross: Rp '.number_format($grossSales, 0, ',', '.').
                 ' | Net: Rp '.number_format($netSales, 0, ',', '.').
