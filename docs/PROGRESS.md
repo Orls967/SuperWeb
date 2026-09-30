@@ -74,21 +74,139 @@
 - [x] 5.7 Quality gate Fase 5
 
 ## FASE 6 — PLATFORM SERVICES
-- [ ] 6.1 Notification module + bell icon + unread counter
-- [ ] 6.2 Activity feed
-- [ ] 6.3 Dashboard Customer terpadu
-- [ ] 6.4 Dashboard Admin terpadu
-- [ ] 6.5 Dashboard Mekanik terpadu
-- [ ] 6.6 Seeder demo lengkap
-- [ ] 6.7 Quality gate Fase 6
+- [x] 6.1 Notification module + bell icon + unread counter
+- [x] 6.2 Activity feed
+- [x] 6.3 Dashboard Customer terpadu
+- [x] 6.4 Dashboard Admin terpadu
+- [x] 6.5 Dashboard Mekanik terpadu
+- [x] 6.6 Seeder demo lengkap
+- [x] 6.7 Quality gate Fase 6
 
-## DEFINITION OF DONE
-- [ ] Semua task tercentang
-- [ ] migrate:fresh --seed, test, build, pint → lolos
-- [ ] Arch tests hijau
-- [ ] bank:reconcile + core:verify-passports bersih
-- [ ] Characterization tests hijau
-- [ ] Tidak ada TODO/stub/placeholder
-- [ ] README.md diperbarui
-- [ ] docs/ARCHITECTURE.md selesai
-- [ ] docs/DECISIONS.md lengkap
+## DEFINITION OF DONE (FASE 0–6)
+- [x] Semua task tercentang
+- [x] migrate:fresh --seed, test, build, pint → lolos
+- [x] Arch tests hijau
+- [x] bank:reconcile + core:verify-passports bersih
+- [x] Characterization tests hijau
+- [x] Tidak ada TODO/stub/placeholder
+- [x] README.md diperbarui
+- [x] docs/ARCHITECTURE.md selesai
+- [x] docs/DECISIONS.md lengkap
+
+## FASE 7 — MODUL RESTO: FONDASI, MENU, RESEP, HPP
+- [ ] 7.1 Modul Resto + provider + menu sidebar + route group + tabel resto_outlets, resto_ingredients, resto_unit_conversions, resto_ingredient_costs
+- [ ] 7.2 Menu & kategori khas Padang (resto_menu_categories, resto_menu_items, resto_menu_item_outlet) + Seeder menu realistis min 40 item
+- [ ] 7.3 Resep berlapis (BOM multi-level) + RecipeCycleDetected exception + RecipeCostCalculator (HPP per porsi, moving average cost, waste_percent)
+- [ ] 7.4 Halaman admin: CRUD menu (builder resep dinamis Alpine, HPP per porsi real-time via JSON), CRUD bahan + konversi satuan, outlet list + margin badge
+- [ ] 7.5 Tests: konversi satuan, HPP resep berlapis presisi 6 desimal, resep sirkular ditolak, harga per outlet override, menu nonaktif tersembunyi
+- [ ] 7.6 Quality gate Fase 7
+
+## FASE 8 — RESTO: DAPUR, BATCH PRODUKSI & SIKLUS ETALASE HIDANG
+- [ ] 8.1 Tabel resto_production_batches & resto_batch_consumptions
+- [ ] 8.2 CookBatchAction: stok potong via InventoryService, cost_total aktual, posting ledger, ShortageException, scale-down resep, varians produksi
+- [ ] 8.3 Siklus etalase: resto_display_trays, aturan recirculate (max 3x, max 6 jam), waste expense, piring disentuh dihitung terjual, command resto:expire-display
+- [ ] 8.4 UI Dapur (role kitchen): papan produksi harian, tombol "Masak Batch", monitor etalase countdown warna, tombol buang, rekap waste
+- [ ] 8.5 Tests: potong bahan, kekurangan stok ditolak, scale-down produksi, cost_per_portion, tray expired jadi waste, recirculate ke-4 ditolak, reconcile bersih
+- [ ] 8.6 Quality gate Fase 8
+
+## FASE 9 — RESTO: POS HIDANG, SESI MEJA, SHIFT KASIR & TUTUP HARIAN
+- [ ] 9.1 Tabel resto_tables, resto_table_sessions, resto_order_items, resto_orders
+- [ ] 9.2 Flow hidang: sesi meja, piring hidang presented, hitung hidangan (consumed vs returned), nasi/minuman pesan, tambuah cepat, PB1 10%, pembulatan Rp100, bayar tunai/wallet/voucher/split, void/refund
+- [ ] 9.3 Shift kasir & kas: resto_shifts, OpenShiftAction, CloseShiftAction, cash variance posting, SettleCashAction
+- [ ] 9.4 POS UI: tablet/mobile friendly, grid menu, panel meja & etalase, layar hitung hidangan, keypad, idempotency offline-tolerant
+- [ ] 9.5 Tutup harian: command resto:close-day, resto_daily_summaries, flag --check vs ledger
+- [ ] 9.6 Tests: alur hidang lengkap, disentuh sebagian dihitung penuh, PB1 & pembulatan, tunai & wallet, submit ganda idempoten, konkurensi meja, shift variance, void/refund, close-day --check cocok ledger, reconcile bersih
+- [ ] 9.7 Quality gate Fase 9
+
+## FASE 10 — RESTO: RANTAI PASOK, DAPUR SENTRAL & MULTI-OUTLET
+- [ ] 10.1 Tabel resto_suppliers, resto_purchase_orders, resto_purchase_order_lines, resto_goods_receipts
+- [ ] 10.2 ReceiveGoodsAction: stok bahan masuk via InventoryService, moving avg cost BigDecimal, varians harga, posting AP supplier & inventory, PaySupplierAction, aging payable
+- [ ] 10.3 Dapur sentral & transfer antar outlet: resto_stock_transfers, in-transit account, selisih terima ke waste
+- [ ] 10.4 Stock opname: resto_stock_counts, adjustment via InventoryService, posting selisih
+- [ ] 10.5 Peringatan otomatis: stok di bawah min_stock notifikasi + draft PO otomatis, perishable mendekati kedaluwarsa notifikasi dapur
+- [ ] 10.6 Tests: PO terima parsial & penuh, moving avg cost 3 harga, transfer in-transit, opname minus, aging payable, reconcile bersih
+- [ ] 10.7 Quality gate Fase 10
+
+## FASE 11 — RESTO: KANAL PENJUALAN, KATERING, FRANCHISE & ANALITIK
+- [ ] 11.1 Bungkus & delivery: harga takeaway, potong bahan kemasan, resto_deliveries ongkir bertingkat, pesan online wallet, refund parsial
+- [ ] 11.2 Katering & nasi bungkus massal: resto_catering_orders, flow quote -> customer approve -> HOLD deposit 30% -> produksi -> deliver -> capture + charge sisa, batal < 3 hari potongan deposit, validasi kapasitas pax
+- [ ] 11.3 Franchise royalty: resto_outlet_contracts, command resto:post-royalty harian dari daily summary ke revenue:group:royalty
+- [ ] 11.4 Analitik: Menu engineering (Star/Plowhorse/Puzzle/Dog scatter chart), waste report, heatmap sales mix per jam, P&L per outlet dari ledger, peramalan rata-rata bergerak 4 minggu
+- [ ] 11.5 Tests: takeaway pakai harga bungkus, kemasan potong stok, delivery gagal refund, katering hold -> capture, batal potongan deposit, kapasitas penuh ditolak, royalty posting, klasifikasi menu engineering, reconcile bersih
+- [ ] 11.6 Quality gate Fase 11
+
+## FASE 12 — MODUL MALL: FONDASI, UNIT & LEASING
+- [ ] 12.1 Modul Mall + provider + menu. Tabel: mall_properties, mall_zones, mall_units, mall_tenants
+- [ ] 12.2 mall_leases: fit_out_days, rent_model (fixed|revenue_share|greater_of), eskalasi tahunan, billing_day, grace_days, denda harian
+- [ ] 12.3 Actions: CreateLeaseAction (anti-overlap), ActivateLeaseAction (tarik deposit via Payment Hub ke deposit:tenant), TerminateLeaseAction (potong tunggakan dari deposit), RenewLeaseAction
+- [ ] 12.4 UI: site plan per lantai (Tailwind grid/SVG interaktif), occupancy & GLA, daftar lease & expiring soon (<90 hari), direktori tenant publik
+- [ ] 12.5 Tests: lease ganda ditolak, deposit liability, terminate potong deposit, eskalasi tahun ke-2, occupancy rate, reconcile bersih
+- [ ] 12.6 Quality gate Fase 12
+
+## FASE 13 — MALL: LAPORAN PENJUALAN TENANT, TAGIHAN BULANAN & TUNGGAKAN
+- [ ] 13.1 mall_tenant_sales_reports, portal tenant lapor penjualan, TenantSalesProvider contract untuk tenant terintegrasi
+- [ ] 13.2 Utilitas: mall_utility_readings, mall_utility_tariffs bertingkat, mall_overtime_requests AC overtime
+- [ ] 13.3 Tagihan bulanan: mall_invoices, mall_invoice_lines, command mall:generate-invoices idempoten, MallAutoDebitAction tanpa PIN, command mall:apply-penalties denda 0,1%/hari bertingkat
+- [ ] 13.4 Pembayaran sebagian via portal (wallet + PIN) alokasi urut (denda -> utilitas -> service charge -> sewa), status partially_paid
+- [ ] 13.5 Command mall:audit-billing: audit kesesuaian invoice vs ledger, masukkan ke quality gate
+- [ ] 13.6 UI: dashboard billing, aging receivable, detail tagihan, input meteran batch, portal tenant
+- [ ] 13.7 Tests: generate-invoices idempoten, revenue_share_topup bila % > base rent, tarif utilitas bertingkat, bayar cicil urut, denda harian, suspend H+30, isolasi tenant IDOR, audit-billing & reconcile bersih
+- [ ] 13.8 Quality gate Fase 13
+
+## FASE 14 — MALL: PARKIR, AKSES & FOOTFALL
+- [ ] 14.1 Tabel mall_parking_zones, mall_parking_tariffs, mall_parking_sessions, mall_parking_members
+- [ ] 14.2 Tarif progresif BigDecimal: grace 15 menit, pembulatan jam, batas harian, tiket hilang, validasi parkir oleh tenant jadi piutang tenant
+- [ ] 14.3 Gate simulasi UI: gate masuk (tiket/plat member) & gate keluar (scan tiket, bayar, buka gate), tolak jika penuh, real-time occupancy polling
+- [ ] 14.4 Footfall: mall_footfall_counts, command mall:simulate-footfall, dashboard footfall & konversi tenant
+- [ ] 14.5 Tests: tarif grace, 61 menit, 8 jam batas harian, tiket hilang, member aktif gratis, member kedaluwarsa bayar, validasi tenant, kapasitas penuh ditolak, tiket ganda ditolak, query budget, reconcile bersih
+- [ ] 14.6 Quality gate Fase 14
+
+## FASE 15 — MALL: LOYALTY, VOUCHER, EVENT & FACILITY MANAGEMENT
+- [ ] 15.1 Loyalty Duta Points (aset ledger PTS): points:user:{id}:PTS & liability:mall:points:PTS, earn dari belanja / struk klaim unik, redeem voucher & tier membership, FIFO expiry mall:expire-points
+- [ ] 15.2 Voucher mall: mall_vouchers, liability:mall:voucher, settlement mingguan mall:settle-vouchers ke wallet tenant, voucher expired balik ke breakage/penalty
+- [ ] 15.3 Event & atrium: mall_event_spaces, mall_event_bookings, deteksi bentrok jadwal ConflictException, bazaar booth, kalender bulanan
+- [ ] 15.4 Facility management: mall_assets, mall_work_orders, SLA priority, command mall:generate-pm-orders, biaya perbaikan masuk tagihan tenant, Kanban board
+- [ ] 15.5 Tests: earn poin belanja, klaim struk dobel ditolak, redeem voucher, voucher dipakai lalu settle, voucher expired, event bentrok ditolak, PM order terjadwal, SLA breach, biaya perbaikan ke invoice, reconcile IDR & PTS bersih
+- [ ] 15.6 Quality gate Fase 15
+
+## FASE 16 — INTEGRASI LINTAS LINI
+- [ ] 16.1 Resto & AutoServe sebagai tenant Duta Mall via TenantSalesProvider (omzet terintegrasi otomatis masuk revenue_share_topup tanpa input manual)
+- [ ] 16.2 Validasi parkir dari POS Resto via ParkingValidator contract, potong tarif dan masuk piutang tenant
+- [ ] 16.3 Poin & Voucher lintas modul: LoyaltyLedger contract, order Resto dapat poin, voucher mall bisa dipakai di Resto & Store, poin tukar diskon Store
+- [ ] 16.4 Kendaraan & parkir: member parkir disinkronkan ke core_vehicles, transfer kepemilikan nonaktifkan parkir member
+- [ ] 16.5 Dashboard Grup konsolidasi (role admin): P&L per lini bisnis dari ledger, grafik 30 hari, query budget <= 30 query
+- [ ] 16.6 Navigasi terpadu: sidebar dikelompokkan per lini (Otomotif, Keuangan, Kuliner, Properti), global search Ctrl+K lintas modul
+- [ ] 16.7 Test integrasi end-to-end satu hari penuh (parkir -> makan hidang -> bayar wallet -> dapat poin -> validasi parkir -> keluar gate -> akhir bulan tagih sewa revenue share -> tenant bayar -> reconcile & audit-billing bersih)
+- [ ] 16.8 Quality gate Fase 16
+
+## FASE 17 — SKALA, HARDENING & OPERASIONAL
+- [ ] 17.1 Seeder demo skala besar DemoLargeSeeder (3 outlet resto, 1 central kitchen, 60 tenant, 12 bulan billing, 150.000 parkir, batch inserts)
+- [ ] 17.2 Performa: tests/Performance/QueryBudgetTest.php, eliminasi N+1, index database yang tepat, cursor pagination, tabel ringkasan
+- [ ] 17.3 Smoke test semua route: tests/Feature/RouteSmokeTest.php assert per role (200/302/403)
+- [ ] 17.4 Keamanan: tests/Feature/SecurityTest.php (IDOR, mass assignment, rate limit, brute force PIN, signed URL, replay key, XSS), Larastan level 5
+- [ ] 17.5 Observability & ops: core_audit_logs, halaman admin Kesehatan Sistem, command super:health-check
+- [ ] 17.6 Arch tests diperluas: batas modul Resto & Mall, tidak ada DB facade di controller, tidak ada float pada uang/kuantitas, tidak ada folder view shadowing
+- [ ] 17.7 Quality gate Fase 17 + super:health-check bersih
+
+## FASE 18 — DOKUMENTASI & PENUTUP
+- [ ] 18.1 README.md: ringkasan platform 5 lini bisnis, cara menjalankan, daftar command, tabel akun demo lengkap per role
+- [ ] 18.2 docs/ARCHITECTURE.md: ERD Mermaid, diagram integrasi, contracts & events, konvensi ledger (IDR/PTS/kripto), sequence diagram Mermaid
+- [ ] 18.3 docs/RUNBOOK.md: panduan troubleshooting operasional
+- [ ] 18.4 docs/DECISIONS.md final: seluruh keputusan teknis Fase 7-18 tercatat
+- [ ] 18.5 Pembersihan kode: tidak ada TODO/FIXME/stub/dd()/dump()
+- [ ] 18.6 Quality gate final & laporan penutup di docs/PROGRESS.md
+
+## DEFINITION OF DONE (FASE 7–18)
+- [ ] Semua task 7.1–18.6 tercentang di docs/PROGRESS.md
+- [ ] migrate:fresh --seed, php artisan test, npm run build, pint → semua lolos
+- [ ] bank:reconcile bersih untuk SEMUA aset (IDR, PTS, BTC/ETH/SOL/BNB/USDT)
+- [ ] core:verify-passports bersih; resto:close-day --check bersih; mall:audit-billing bersih; super:health-check bersih
+- [ ] Arch tests batas modul hijau: tidak ada import Domain/Application lintas modul; Resto dan Mall hanya berkomunikasi lewat Contracts/Events
+- [ ] Characterization tests AutoServe & AutoDex dari Fase 0 dan seluruh test Fase 1–6 tetap hijau; jumlah test akhir > jumlah test baseline
+- [ ] RouteSmokeTest, AuthorizationMatrixTest, SecurityTest, QueryBudgetTest hijau
+- [ ] Test integrasi lintas lini (16.7) hijau
+- [ ] Setiap fitur baru punya jalur navigasi yang bisa diklik untuk role yang berhak
+- [ ] Tidak ada TODO/FIXME/stub/dd()/dump() di modules/
+- [ ] README.md, docs/ARCHITECTURE.md, docs/RUNBOOK.md, docs/DECISIONS.md, docs/AUDIT.md diperbarui dan konsisten dengan kode
+
+

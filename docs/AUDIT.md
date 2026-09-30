@@ -99,3 +99,28 @@
 7. No domain events, no action classes.
 8. Garage pivot stores vehicle ownership data (plate_number, color) — needs migration to core_vehicles.
 9. Money stored as decimal(12,2) — needs migration to integer (rupiah) per spec.
+
+---
+
+## Baseline sebelum Fase 7 — 2026-09-30
+
+- **Waktu Audit:** 2026-09-30 08:07 WIB
+- **Total Test:** 183 tests (semua PASS)
+- **Total Assertion:** 737 assertions
+- **Status Build Frontend (Vite):** Sukses (built in ~595ms)
+- **Status Standar Kode (Pint):** Passed (`{"tool":"pint","result":"passed"}`)
+- **Total Akun Ledger:** 28 akun (`bank:reconcile` bersih, 0 selisih, total global per aset = 0)
+- **Integritas Paspor Kendaraan:** `core:verify-passports` bersih, seluruh rantai valid
+- **Modul Terdaftar di `bootstrap/providers.php`:**
+  1. `App\Providers\AppServiceProvider`
+  2. `Modules\Shared\SharedServiceProvider`
+  3. `Modules\Core\CoreServiceProvider`
+  4. `Modules\AutoServe\AutoServeServiceProvider`
+  5. `Modules\AutoDex\AutoDexServiceProvider`
+  6. `Modules\Banking\BankingServiceProvider`
+  7. `Modules\Payment\PaymentServiceProvider`
+  8. `Modules\Inventory\InventoryServiceProvider`
+  9. `Modules\Store\StoreServiceProvider`
+  10. `Modules\Crypto\CryptoServiceProvider`
+  11. `Modules\Finance\FinanceServiceProvider`
+
