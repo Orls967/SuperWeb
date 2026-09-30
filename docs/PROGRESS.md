@@ -225,5 +225,92 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - **Anggaran Query SQL**: 9 rute utama beroperasi jauh di bawah ambang batas (Group Dashboard konsolidasi P&L hanya **2 query SQL**).
 - **Standar Kode & Build**: `vendor/bin/pint --test` lolos 100%, `npm run build` sukses tanpa error, dan 0 artefak debug (`dd()`, `dump()`, `TODO`, `FIXME`).
 
+---
+
+## FASE 19 — PENUTUPAN UTANG FASE 18
+- [x] 19.1 Baseline & commit Fase 18 (AUDIT.md baseline dicatat, docs phase 18 committed)
+- [ ] 19.2 Stabilkan DemoCustomerSeeder (deterministik, quote kripto, saldo cukup, ListCarProductAction stok tersedia, buffer kolateral 1.6x)
+- [ ] 19.3 Test seeder: tests/Feature/Seed/DemoCustomerSeederTest.php (20 customer ber-PIN dan saldo > 0, >=20 kendaraan berpaspor valid, >=40 booking terbayar lewat ledger, tepat 3 pinjaman HODL-to-Drive aktif LTV < 70%, 6 produk mobil Store, reconcile 0)
+- [ ] 19.4 Perbaiki test yang terdampak data seed baru (SecurityTest, RouteSmokeTest, QueryBudgetTest, dll.) tanpa melemahkan assertion/anggaran
+- [ ] 19.5 Gate harian tidak boleh lolos karena kosong: default seed memuat >= 1 hari usaha Resto ditutup dengan >= 5 order terbayar, dan >= 1 bulan tagihan Mall terbit sebagian dibayar, audit-billing dan resto:close-day melaporkan nilai non-nol
+- [ ] 19.6 Hapus kolom users.pin: migrasi drop kolom, hapus referensi, verifikasi PIN tetap via contract Banking
+- [ ] 19.7 Kompatibilitas DemoLargeSeeder: jalankan ulang di atas DatabaseSeeder baru tanpa bentrok unique, ukur ulang benchmark
+- [ ] 19.8 Rapikan dokumen: centang 6.6 dengan catatan benar, perbaiki DoD 0-6, catat DECISIONS seeder, update akun demo di README
+- [ ] 19.9 Quality gate Fase 19
+
+## FASE 20 — FONDASI LOGISTIK: MODUL, JARINGAN, ARMADA
+- [ ] 20.1 Kerangka modul modules/Logistics, provider, MenuRegistry "Logistik", roles (logistics_admin, dispatcher, hub_operator, driver, shipper), policies, arch tests batas modul
+- [ ] 20.2 Lokasi & jaringan: lgx_locations, lgx_lanes, seed jaringan berpusat di Banjarmasin (pelabuhan UN/LOCODE, bandara IATA, hub darat, CFS, depot), CRUD + SVG skematik
+- [ ] 20.3 Armada: lgx_trucks (terhubung Vehicle Passport core_vehicles, DA plate), lgx_trailers, lgx_vessels (IMO check digit), lgx_aircraft, lgx_containers (ISO 6346 check digit), lgx_ulds, unit tests check digit
+- [ ] 20.4 Pengemudi & kru: lgx_drivers (SIM class, expiry, hub asal), batas jam mengemudi UU 22/2009 maks 8 jam/hari & istirahat 30 menit per 4 jam
+- [ ] 20.5 Seeder LogisticsSeeder (30 truk berpaspor, 8 trailer, 4 kapal, 2 pesawat, 300 kontainer ISO 6346, 12 driver, 3 dispatcher, 4 hub operator, 5 shipper, 1 admin), akun demo di README
+- [ ] 20.6 Quality gate Fase 20
+
+## FASE 21 — SHIPMENT, TARIF, BOOKING & PORTAL SHIPPER
+- [ ] 21.1 Model shipment: lgx_shipments (SRX + 10 digit + check digit Luhn), state machine canTransitionTo(), lgx_packages (berat, dimensi, hs_code, dg_un_number, temp reefer)
+- [ ] 21.2 Berat tertagih (chargeable weight) BigDecimal: max(aktual, volumetrik), pembagi volumetrik per mode, pembulatan
+- [ ] 21.3 Rate card & surcharge: lgx_rate_cards, lgx_rate_brackets, lgx_surcharges, validasi non-overlapping, PPN simulasi 11%
+- [ ] 21.4 Quote: QuoteShipmentAction -> lgx_quotes timelock 15 menit + hash anti-manipulasi
+- [ ] 21.5 Booking prabayar: BookShipmentAction, PIN wajib via VerifiesWalletPin, PaymentGateway::charge ke lgx:unearned_freight
+- [ ] 21.6 Akun postpaid B2B: lgx_shipper_accounts, credit limit, lgx:invoice-shippers bulanan idempotent, bayar invoice via wallet + PIN
+- [ ] 21.7 Pembatalan: refund via gateway dikurangi cancellation fee -> lgx:freight_revenue (pre-pickup), tolak post-pickup
+- [ ] 21.8 Portal shipper (mobile-responsive): form buat shipment, upload massal CSV s/d 5.000 baris queued job, cetak label QR
+- [ ] 21.9 Pelacakan publik: /track/{tracking_number} tanpa login, throttle 30/menit, penyamaran PII data consignee, timeline event
+- [ ] 21.10 Quality gate Fase 21
+
+## FASE 22 — OPERASI JARINGAN MULTIMODA: KAPASITAS, RUTE, KONSOLIDASI, HUB, LAST-MILE
+- [ ] 22.1 Jadwal: lgx_schedules (truk, kapal voyage multi-port, pesawat freighter), kapasitas multi-dimensi
+- [ ] 22.2 Reservasi kapasitas: ReserveCapacityAction lockForUpdate, ReleaseCapacityAction, lgx:capacity-check
+- [ ] 22.3 Perencana rute: RoutePlanner pure domain service (Dijkstra/k-shortest paths graf terisolasi), filter mode & DG & reefer, lgx_shipment_legs
+- [ ] 22.4 Konsolidasi & load planning: lgx_loads + lgx_load_items (FCL, LCL first-fit-decreasing CFS, VGM SOLAS sebelum muat kapal)
+- [ ] 22.5 Chain of custody: lgx_tracking_events append-only hash chain per shipment, immutable, lgx:verify-custody chunkById
+- [ ] 22.6 Operasi hub (hub_operator, mobile): scan inbound, sortir, outbound, deteksi otomatis exception missort
+- [ ] 22.7 Papan dispatch (dispatcher): assign armada + driver dengan validasi SIM, jam kerja, status maintenance, paspor kendaraan
+- [ ] 22.8 Aplikasi driver (mobile): daftar stop, scan pickup, Proof of Delivery (nama penerima, OTP 6 digit hash, foto bukti, tanda tangan canvas), 3x gagal -> ReturnToSender
+- [ ] 22.9 Exception & SLA: tipe exception terstruktur, SLA monitoring, lgx:detect-late idempotent
+- [ ] 22.10 Quality gate Fase 22 (termasuk lgx:verify-custody dan lgx:capacity-check)
+
+## FASE 23 — UANG LOGISTIK: PENDAPATAN, COD, CARRIER, KLAIM, D&D, BEA CUKAI
+- [ ] 23.1 Pengakuan pendapatan (Alur 2 & 4): ShipmentDelivered event -> debit unearned_freight / kredit freight_revenue
+- [ ] 23.2 COD (Alur 6-8): driver collect cash -> setor di hub -> lgx:settle-cod D+N ke shipper + cod_fee_revenue, dashboard COD
+- [ ] 23.3 Carrier subkontrak (Alur 9-10): lgx_carriers, akrual biaya leg, lgx:pay-carriers mingguan, laporan margin shipment
+- [ ] 23.4 Klaim (Alur 11): workflow klaim asuransi/non-asuransi, aturan 4 mata (penyetuju != pengaju != pembuat), anti bayar ganda
+- [ ] 23.5 Demurrage & Detention (Alur 12): lgx_dd_tariffs, free time, lgx:accrue-dd harian zona waktu lokasi, invoice D&D
+- [ ] 23.6 Bea cukai (Alur 13): lgx_customs_declarations PIB/PEB, lgx_hs_tariffs, simulasi bea masuk/PPN/PPh 22, CustomsHold
+- [ ] 23.7 Bahan bakar & biaya truk: lgx_fuel_logs (liter x 1000 integer), konsumsi km/l, flag anomali > 30%
+- [ ] 23.8 lgx:audit-billing command: invoice freight, D&D, bea cukai vs ledger, pendapatan Delivered vs unearned, non-nol pada seed default
+- [ ] 23.9 Quality gate Fase 23 (termasuk lgx:audit-billing)
+
+## FASE 24 — INTEGRASI LINTAS LINI
+- [ ] 24.1 Store -> Logistik: event order dibayar -> shipment otomatis via ShipmentBooking contract, ongkir Store -> unearned_freight, resi di order detail
+- [ ] 24.2 Pengiriman mobil (Store/AutoDex/HODL-to-Drive): shipment FTL car carrier, event delivered_by_carrier masuk Vehicle Passport
+- [ ] 24.3 Perawatan armada -> AutoServe: trip odometer trigger service_interval_m -> FleetServiceDue event -> booking bengkel via contract, status Maintenance
+- [ ] 24.4 Resto -> Logistik (cold-chain): replenishment dapur pusat CK-01 -> shipment reefer, lgx_temperature_readings, excursion alert, terima stok via Inventory
+- [ ] 24.5 Mall -> Logistik (loading dock): lgx_dock_appointments di Duta Mall, slot time-lock tanpa overlap, portal tenant booking dock, satpam check-in/out
+- [ ] 24.6 Finance & observabilitas: pendapatan Logistik masuk Group Dashboard P&L tanpa menaikkan query budget, pilar Logistik di super:health-check
+- [ ] 24.7 Quality gate Fase 24
+
+## FASE 25 — SKALA, API, HARDENING, CONTROL TOWER
+- [ ] 25.1 LogisticsLargeSeeder: >= 200.000 shipment, >= 2.000.000 tracking event, >= 5.000 kontainer, >= 20 kapal, >= 300 truk, 12 bulan riwayat, B2B postpaid ledger, benchmark waktu
+- [ ] 25.2 Anggaran kinerja (QueryBudgetTest): lookup resi <= 3 query p95 < 50ms, dispatcher <= 10 query, control tower <= 12 query, lgx:accrue-dd < 30s, EXPLAIN docs
+- [ ] 25.3 API v1 (Sanctum): quotes, shipments (Idempotency-Key header), tracking, token abilities, rate limit, docs/API.md
+- [ ] 25.4 Webhook outbox: lgx_webhook_endpoints + deliveries, HMAC-SHA256, exponential backoff max 8 retry, dead-letter, manual replay
+- [ ] 25.5 Queue & scheduler: queued jobs idempotent ShouldBeUnique, seluruh command di routes/console.php, docs/RUNBOOK.md update
+- [ ] 25.6 Matriks otorisasi: SecurityTest & RouteSmokeTest mencakup seluruh rute dan role logistik
+- [ ] 25.7 Control Tower (logistics_admin): KPI OTIF, status chart, armada, dwell time, COD, margin per lane
+- [ ] 25.8 Dokumentasi final: ARCHITECTURE, RUNBOOK, README, DECISIONS lengkap
+- [ ] 25.9 Quality gate final: seluruh test & large seeder lolos, semua gate hijau
+
+## DEFINITION OF DONE (FASE 19–25)
+- [ ] Semua task 19.1–25.9 tercentang, masing-masing di commit-nya sendiri.
+- [ ] Jumlah test >= baseline 19.1 (297 test, 1317 assertions) dan naik di setiap fase; tidak ada test yang di-skip/dilemahkan.
+- [ ] Semua quality gate lulus pada commit terakhir; bank:reconcile = 0 untuk semua aset.
+- [ ] Setiap alur uang di tabel Fase 23 punya test (a)–(e).
+- [ ] Setiap fitur baru bisa dicapai lewat klik oleh role yang berhak (dibuktikan oleh RouteSmokeTest + entri menu).
+- [ ] Portal shipper, aplikasi driver, operasi hub, dan pelacakan publik responsif di lebar 375 px.
+- [ ] ARCHITECTURE, DECISIONS, BLOCKERS, RUNBOOK, README, API mutakhir.
+- [ ] Working tree bersih (git status kosong).
+
+
 
 

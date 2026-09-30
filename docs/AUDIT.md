@@ -123,4 +123,26 @@
   9. `Modules\Store\StoreServiceProvider`
   10. `Modules\Crypto\CryptoServiceProvider`
   11. `Modules\Finance\FinanceServiceProvider`
+  12. `Modules\Resto\RestoServiceProvider`
+  13. `Modules\Mall\MallServiceProvider`
+
+---
+
+## Baseline sebelum Fase 19–25 — 2026-09-30
+
+- **Waktu Audit:** 2026-09-30 20:46 WITA (12:46 UTC)
+- **Git Commit:** `7e133c8` (`docs: complete phase 18 documentation, runbook, architecture, and final project sign-off`)
+- **Total Test:** **297 tests** (100% PASS, 0 failure, 0 skipped)
+- **Total Assertion:** **1317 assertions**
+- **Durasi Eksekusi Test Suite:** 21.18s
+- **Status Build Frontend (Vite):** Sukses (`built in 557ms`)
+- **Status Standar Kode (Pint):** Passed (`{"tool":"pint","result":"passed"}`)
+- **Hasil Quality Gates:**
+  - `php artisan bank:reconcile`: 64 akun ledger seimbang, 0 selisih, total per aset = 0
+  - `php artisan core:verify-passports`: 2 kendaraan valid, hash-chain utuh
+  - `php artisan resto:close-day --check`: lolos penutupan 3 outlet
+  - `php artisan mall:audit-billing`: 3 invoice Rp 178.400.000, 0 selisih ledger
+  - `php artisan super:health-check`: 7/7 sub-sistem HEALTHY (durasi 28.75 ms, Audit Log ID #2)
+- **Modul Aktif:**
+  `Shared`, `Core`, `AutoServe`, `AutoDex`, `Banking`, `Payment`, `Inventory`, `Store`, `Crypto`, `Finance`, `Resto`, `Mall` (12 modul).
 
