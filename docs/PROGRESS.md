@@ -251,7 +251,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - [x] 21.2 Berat tertagih (chargeable weight) BigDecimal: max(aktual, volumetrik), pembagi volumetrik per mode, pembulatan
 - [x] 21.3 Rate card & surcharge: lgx_rate_cards, lgx_rate_brackets, lgx_surcharges, validasi non-overlapping, PPN simulasi 11%
 - [x] 21.4 Quote: QuoteShipmentAction -> lgx_quotes timelock 15 menit + hash anti-manipulasi
-- [ ] 21.5 Booking prabayar: BookShipmentAction, PIN wajib via VerifiesWalletPin, PaymentGateway::charge ke lgx:unearned_freight
+- [x] 21.5 Booking prabayar: BookShipmentAction, PIN wajib via VerifiesWalletPin, PaymentGateway::charge ke lgx:unearned_freight
 - [ ] 21.6 Akun postpaid B2B: lgx_shipper_accounts, credit limit, lgx:invoice-shippers bulanan idempotent, bayar invoice via wallet + PIN
 - [ ] 21.7 Pembatalan: refund via gateway dikurangi cancellation fee -> lgx:freight_revenue (pre-pickup), tolak post-pickup
 - [ ] 21.8 Portal shipper (mobile-responsive): form buat shipment, upload massal CSV s/d 5.000 baris queued job, cetak label QR

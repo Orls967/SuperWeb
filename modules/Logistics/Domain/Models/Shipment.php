@@ -124,7 +124,7 @@ class Shipment extends LogisticsEntity implements Payable
 
     public function payableAmount(): Money
     {
-        return Money::fromDecimal((string) $this->total_amount_idr, 'IDR');
+        return Money::IDR($this->total_amount_idr);
     }
 
     public function payableDescription(): string
