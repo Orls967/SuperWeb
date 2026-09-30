@@ -287,3 +287,179 @@ Tenant menanggung N jam pertama bila pelanggan berbelanja minimal X, keduanya pa
 ### Catatan perbandingan tanggal
 
 Cast `date` Eloquent menyimpan nilai lengkap `Y-m-d H:i:s`, sehingga `where('kolom_date', '<=', '2026-09-30')` bernilai **salah** pada SQLite karena dibandingkan sebagai string. Semua filter kolom bertipe tanggal memakai `whereDate()`.
+
+---
+
+## 3. MODUL MALL — LOYALITAS DUTA POINTS, VOUCHER, ATRIUM & FASILITAS (FASE 15)
+
+### 3.1 Duta Points Sebagai Aset Multi-Currency (`PTS`)
+Program loyalitas mall tidak dicatat sebagai *integer counter* statis di tabel user, melainkan diperlakukan sebagai **mata uang buku besar umum berjenis `PTS`**:
+- **Akun Pengguna**: `points:user:{id}:PTS` (`AccountKind::CUSTOMER_WALLET`, `allow_negative=false`).
+- **Akun Kewajiban Mall**: `liability:mall:points:PTS` (`AccountKind::LIABILITY`, `allow_negative=true`).
+- **Batch Kedaluwarsa FIFO**: Tabel `mall_point_batches` melacak penerbitan poin per transaksi dengan masa kedaluwarsa 12 bulan. Pemakaian poin mendahulukan batch terlama (First In, First Out).
+
+### 3.2 Siklus Hidup Voucher & Breakage Accounting
+1. **Penerbitan Voucher**:
+   Pengguna menukarkan `PTS` menjadi voucher belanja senilai nominal IDR.
+   - Sisi PTS: Debet `PTS` user, Kredit `liability:mall:points:PTS`.
+   - Sisi IDR: Debet beban promosi `expense:mall:loyalty:IDR`, Kredit kewajiban voucher `liability:mall:voucher:IDR`.
+2. **Penyelesaian Voucher (Settlement)**:
+   Saat voucher digunakan di tenant (Resto atau Toko Mall), klaim dicairkan pada siklus mingguan via command `mall:settle-vouchers`:
+   - Debet `liability:mall:voucher:IDR`, Kredit dompet tenant `wallet:user:{tenant_id}:IDR`.
+3. **Voucher Kedaluwarsa (Breakage)**:
+   Voucher yang tidak digunakan hingga batas waktu kedaluwarsa diproses oleh `mall:expire-vouchers`:
+   - Debet `liability:mall:voucher:IDR`, Kredit pendapatan *breakage* `revenue:mall:voucher_breakage:IDR`.
+
+### 3.3 Pemesanan Atrium Event & Proteksi Jadwal
+- Manajemen ruang event (`mall_event_spaces`) dan pemesanan atrium bazaar (`mall_event_bookings`).
+- **Pendeteksian Bentrok Jadwal**: `EventScheduleConflictException` dilempar saat terjadi irisan tanggal mulai/selesai untuk status `CONFIRMED` atau `ONGOING`.
+- Perhitungan tarif sewa harian digabung dengan biaya sewa booth UMKM tambahan.
+
+### 3.4 Manajemen Fasilitas (Work Order & Tagihan Tenant)
+- Pemeliharaan preventif berkala terhadap fasilitas gedung (HVAC, Genset, Eskalator, Pompa Kebakaran). Command `mall:generate-pm` membuat *work order* otomatis saat mencapai `next_pm_date`.
+- Kerusakan yang disebabkan kelalaian tenant dapat ditagihkan langsung ke invoice sewa tenant sebagai `InvoiceLineType::REPAIR_COST` (prioritas alokasi ke-6, setelah parkir dan sebelum service charge).
+
+---
+
+## 4. INTEGRASI LINTAS LINI BISNIS & HOLDING MONOLITH (FASE 16)
+
+### 4.1 Arsitektur Holding Terpadu
+Ekosistem mengintegrasikan seluruh lini bisnis ke dalam holding konglomerasi yang kohesif:
+1. **Resto RM Sari Ranah & AutoServe Express Beroperasi Sebagai Tenant Mall**:
+   - Modul Mall mengekspos contract `Modules\Mall\Contracts\TenantSalesProvider`.
+   - Modul Resto mendaftarkan `RestoTenantSalesProvider` (tagged `mall.tenant_sales_provider`) yang mengonsolidasi omzet dari `resto_daily_summaries` berdasarkan `mall_tenants.external_ref = 'DM-01'`.
+   - Modul AutoServe mendaftarkan `AutoServeTenantSalesProvider` berdasarkan `mall_tenants.external_ref = 'AUTOSERVE-DM'`.
+   - Saat `mall:generate-invoices` dijalankan, omzet ditarik otomatis untuk menghitung top-up bagi hasil sewa (*revenue share* / *greater of*).
+2. **Validasi Parkir dari POS Resto**:
+   - Kasir Resto menyematkan potongan parkir pada pesanan hidang via `Modules\Mall\Contracts\ParkingValidator`.
+   - Jam gratis disimpan di sesi parkir, dan nominal diskon dibebankan sebagai piutang tenant pada tagihan bulanan `parking_validation`.
+3. **Duta Points & Voucher Belanja Lintas Modul**:
+   - Resto dan Store mengonsumsi contract `Modules\Mall\Contracts\LoyaltyLedger`.
+   - Makan di Resto memperoleh Duta Points `PTS`.
+   - Voucher mall dapat dipakai memotong pembayaran tagihan makan hidang atau suku cadang Store.
+4. **Sinkronisasi Paspor Kendaraan & Hak Akses Parkir**:
+   - Event `VehicleOwnershipTransferred` dari modul Core didengar oleh `CancelParkingMembershipOnVehicleTransfer` di modul Mall.
+   - Kartu langganan parkir pemilik lama otomatis dibatalkan, mencegah penyalahgunaan hak akses gerbang parkir.
+5. **Dashboard Grup Konsolidasi (Holding Executive P&L)**:
+   - `ConsolidatedPlQuery` mengagregasi pendapatan dan beban dari `bank_ledger_entries` ke dalam 4 pilar usaha dalam **hanya 2 query SQL**.
+
+### 4.2 Sequence Diagram: Siklus Hidup Transaksi Lintas Lini 1 Hari Penuh
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Pelanggan (Customer)
+    participant Gate as Gate Masuk Parkir
+    participant Core as Modul Core (Vehicle)
+    participant POS as POS Resto (RM Sari Ranah)
+    participant Mall as Modul Mall (Duta Mall)
+    participant Bank as Core Banking (Ledger)
+    participant Exit as Gate Keluar Parkir
+    actor Admin as Admin Mall / Holding
+
+    %% 1. Masuk Parkir
+    C->>Gate: Masuk Gate Parkir (Plat B 1234 ABC)
+    Gate->>Core: Cocokkan Plat dengan My Garage
+    Gate->>Mall: Terbitkan Tiket Sesi Parkir (mall_parking_sessions)
+
+    %% 2. Makan di Resto
+    C->>POS: Pesan Hidang Meja & Santap Makanan
+    C->>POS: Minta Validasi Parkir & Bayar via Wallet IDR
+    POS->>Mall: Validasi Tiket Parkir via ParkingValidator (Gratis 2 Jam)
+    POS->>Bank: Potong Saldo Dompet Customer (PayOrderAction)
+    Bank-->>POS: Konfirmasi Pembayaran Sukses (0 Selisih)
+    POS->>Bank: Tambah Duta Points (+100 PTS) via LoyaltyLedger
+
+    %% 3. Keluar Parkir
+    C->>Exit: Tiba di Gate Keluar Parkir
+    Exit->>Mall: Hitung Tarif Parkir (3 Jam - 2 Jam Diskon Validasi = 1 Jam)
+    Exit->>Bank: Potong Saldo Dompet IDR untuk Biaya 1 Jam (SettleParkingSessionAction)
+    Exit->>Mall: Catat Piutang Validasi Tenant Resto (validation_free_hours)
+    Exit-->>C: Buka Palang Otomatis
+
+    %% 4. Penagihan Akhir Bulan
+    Admin->>Mall: Jalankan Artisan mall:generate-invoices
+    Mall->>POS: Tarik Omzet Bersih Resto via TenantSalesProvider
+    Mall->>Mall: Hitung Sewa (Greater-Of: Minimum Base vs 10% Revenue Share)
+    Mall->>Mall: Tambahkan Baris Piutang Validasi Parkir & Biaya Utilitas
+    Mall->>Bank: Eksekusi Auto-Debit Tagihan Sewa dari Dompet Tenant
+    Bank-->>Mall: Konfirmasi Pembukuan Kredit Pendapatan Sewa Mall
+
+    %% 5. Audit & Rekonsiliasi
+    Admin->>Bank: Jalankan php artisan bank:reconcile
+    Bank-->>Admin: ✓ 64 Akun Seimbang, Selisih = 0
+    Admin->>Mall: Jalankan php artisan mall:audit-billing
+    Mall-->>Admin: ✓ Seluruh Tagihan Sinkron Sempurna dengan Ledger
+```
+
+---
+
+## 5. SKALA, HARDENING & OBSERVABILITAS (FASE 17)
+
+### 5.1 Seeder Skala Besar (`DemoLargeSeeder`)
+- Menginisialisasi 3 outlet resto, 60 tenant/unit mall, 12 bulan penagihan historis, dan **150.000 sesi parkir**.
+- Menggunakan chunk 500 baris dalam satu transaksi database tunggal untuk menyelesaikan penyisipan ratusan ribu data dalam **< 4 detik**.
+- Penagihan historis ditandai status `OVERDUE` dan `ISSUED` dengan `paid_amount = 0` guna merepresentasikan piutang berumur tanpa menciptakan posting saldo fiktif di buku besar.
+
+### 5.2 Anggaran Query SQL Teruji (`QueryBudgetTest`)
+Ambang batas query ketat pada rute tersibuk dipantau melalui test otomatis:
+- Main Dashboard: $\le 25$ query (Aktual: 11)
+- AutoDex Catalog: $\le 15$ query (Aktual: 3)
+- Store Catalog: $\le 15$ query (Aktual: 3)
+- Resto POS: $\le 20$ query (Aktual: 14)
+- Mall Site Plan: $\le 20$ query (Aktual: 4)
+- Mall Billing Index: $\le 25$ query (Aktual: 14)
+- Mall Parking Realtime: $\le 20$ query (Aktual: 11)
+- Group P&L Dashboard: $\le 15$ query (Aktual: 2)
+- Global Search API: $\le 15$ query (Aktual: 9)
+
+### 5.3 Promosi Contract `VerifiesWalletPin`
+Untuk menghilangkan pelanggaran batas arsitektur di mana 6 modul eksternal mengimpor implementasi konkrit `Modules\Banking\Application\Actions\VerifyPinAction`:
+- Dibuat interface publik `Modules\Banking\Contracts\VerifiesWalletPin`.
+- Seluruh modul eksternal (`AutoServe`, `Resto`, `Mall`, `Crypto`, `Finance`, `Store`) beralih ke tipe data contract.
+- Arch test Pest menegakkan bahwa tidak ada kode di luar Banking yang mengimpor `VerifyPinAction` secara langsung.
+
+### 5.4 Pertahanan Keamanan Platform (`SecurityTest`)
+1. **IDOR (Insecure Direct Object Reference)**: Verifikasi isolasi kepemilikan invoice dan portal mandiri antar-tenant dengan `abort(403)`.
+2. **Perlindungan Mass Assignment**: Atribut kritis terlindungi dari injeksi massal di model `Invoice`, `Order`, dan `Vehicle`.
+3. **PIN Brute Force Lockout**: Sistem otomatis mengunci akun pengguna selama 15 menit setelah 5 kali gagal berturut-turut (`PinLockedException`).
+4. **Verifikasi Signed URL**: Mencegah pemalsuan parameter atau manipulasi URL bertandatangan kriptografis.
+5. **Pencegahan XSS**: Seluruh data dinamis di Blade template diproteksi dengan sanitasi entitas HTML (`{{ ... }}`).
+
+### 5.5 Observabilitas 7 Pilar Platform (`super:health-check`)
+Artisan command `super:health-check` dan dashboard `/admin/health` mengevaluasi kesehatan sistem menyeluruh:
+1. **Primary Database**: Latensi ping koneksi dan integritas driver SQLite/MySQL.
+2. **Cache Store**: Kesiapan pembacaan dan penulisan *in-memory cache*.
+3. **Direktori Storage**: Verifikasi izin tulis (*writable*) pada filesystem direktori kerja framework dan log.
+4. **Buku Besar Double-Entry**: Rekonsiliasi nol selisih seluruh akun buku besar (`bank:reconcile`).
+5. **Paspor Kendaraan**: Integritas kriptografis rantai hash SHA-256 (`core:verify-passports`).
+6. **Tagihan & Revenue Mall**: Audit kecocokan penerbitan dan pelunasan invoice terhadap ledger (`mall:audit-billing`).
+7. **Shift & Kasir Resto**: Validasi konsistensi laci kasir dan penutupan harian (`resto:close-day --check`).
+
+---
+
+## 6. KONVENSI BUKU BESAR DOUBLE-ENTRY MULTI-ASET
+
+Seluruh transaksi finansial di platform ini diatur oleh tabel `bank_ledger_accounts` dan `bank_ledger_entries`:
+
+$$\sum \text{Entries per Akun} = \text{cached\_balance}$$
+$$\sum \text{Entries Seluruh Akun per Aset} = 0$$
+
+### Peta Akun Sistem Utama
+
+| Kode Akun | Jenis Aset | Kind | allow_negative | Fungsi Moneter |
+|---|---|---|---|---|
+| `wallet:user:{id}:IDR` | IDR | CUSTOMER_WALLET | false | Saldo dompet rupiah pengguna / customer |
+| `points:user:{id}:PTS` | PTS | CUSTOMER_WALLET | false | Saldo Duta Points loyalitas pengguna |
+| `clearing:external:IDR` | IDR | CLEARING | true | Penampung arus dana masuk eksternal (Payment Gateway, Top Up) |
+| `escrow:trade:{uuid}:IDR` | IDR | ESCROW | false | Rekening penampung escrow servis bengkel / bursa C2C |
+| `revenue:resto:{outlet}:IDR` | IDR | REVENUE | false | Pendapatan penjualan makanan & minuman outlet resto |
+| `revenue:mall:rent:IDR` | IDR | REVENUE | false | Pendapatan sewa dasar tenant Duta Mall |
+| `revenue:mall:rev_share:IDR` | IDR | REVENUE | false | Pendapatan bagi hasil omzet tenant Duta Mall |
+| `revenue:mall:parking:IDR` | IDR | REVENUE | false | Pendapatan tiket dan langganan parkir mall |
+| `revenue:holding:royalty:IDR`| IDR | REVENUE | false | Pendapatan royalti waralaba holding dari franchise resto |
+| `liability:mall:points:PTS` | PTS | LIABILITY | true | Penampung kewajiban poin Duta Points mall |
+| `liability:mall:voucher:IDR` | IDR | LIABILITY | true | Penampung kewajiban klaim voucher belanja mall |
+| `expense:mall:loyalty:IDR` | IDR | EXPENSE | false | Beban promosi penerbitan voucher loyalitas mall |
+| `cash:drawer:{outlet}:IDR` | IDR | CASH | true | Posisi fisik uang tunai di laci kasir resto |
+| `cash:mall:parking:IDR` | IDR | CASH | true | Posisi fisik uang tunai di pos kasir keluar parkir |

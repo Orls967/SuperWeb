@@ -266,4 +266,14 @@
      - Ditambahkan `<ini name="memory_limit" value="512M" />` di `phpunit.xml` untuk mencegah kegagalan memory allocation pada parsing AST statis Pest di suite berukuran besar (297 test, 1317 asersi).
 - **Reason:** Menjamin keandalan operasional, meminimalisir risiko keamanan finansial, menjaga isolasi batas modul, dan memberikan transparansi observabilitas penuh bagi tim DevOps & manajemen holding.
 
+## 2026-09-30: Penutupan Arsitektur & Dokumentasi Komprehensif (Fase 18)
+- **Context:** Menyelesaikan seluruh fase pengembangan ekspansi platform (Fase 0 s/d 18), menyiapkan dokumentasi teknis dan operasional yang sinkron dengan kode aktif, serta memastikan seluruh tolok ukur *Definition of Done* terpenuhi tanpa kompromi.
+- **Decision:**
+  1. **Dokumentasi Lengkap 5 Lini Bisnis:** Memperbarui `README.md` dan `docs/ARCHITECTURE.md` dengan menyertakan diagram urutan (sequence diagram Mermaid), konvensi multi-aset double-entry ledger (`IDR`, `PTS`, Kripto), peta akun sistem, serta seluruh 12 modul aktif.
+  2. **Runbook Operasional Komprehensif:** Menyusun `docs/RUNBOOK.md` berisi SOP diagnosa harian, panduan penanganan insiden moneter/teknis (5 Incident Playbooks), tabel crontab scheduler produksi, dan prosedur Disaster Recovery.
+  3. **Kode Bersih Tanpa Artefak Debug:** Dipastikan 0 `dd()`, 0 `dump()`, 0 `TODO`, 0 `FIXME` di seluruh pohon kode aplikasi (`modules/`, `app/`, `tests/`).
+  4. **Pencapaian Kualitas Mutlak:** Memverifikasi seluruh tolok ukur kualitas lolos serentak: `php artisan test` (297 passed, 1317 assertions), `vendor/bin/pint --test` (clean), `npm run build` (clean), `bank:reconcile` (0 selisih), `core:verify-passports` (valid), `resto:close-day --check` (valid), `mall:audit-billing` (0 selisih), dan `super:health-check` (7/7 HEALTHY).
+- **Reason:** Menghadirkan sistem kelas enterprise yang tangguh, teruji, terdokumentasi rapi, dan siap beroperasi di lingkungan produksi holding konglomerasi.
+
+
 

@@ -126,6 +126,7 @@ class DatabaseSeeder extends Seeder
         // Platform notifications & activity log demo data
         $this->call([
             PlatformSeeder::class,
+            DemoCustomerSeeder::class,
             RestoMenuSeeder::class,
             MallSeeder::class,
         ]);
