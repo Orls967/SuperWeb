@@ -144,14 +144,14 @@
 - [x] 12.6 Quality gate Fase 12
 
 ## FASE 13 — MALL: LAPORAN PENJUALAN TENANT, TAGIHAN BULANAN & TUNGGAKAN
-- [ ] 13.1 mall_tenant_sales_reports, portal tenant lapor penjualan, TenantSalesProvider contract untuk tenant terintegrasi
-- [ ] 13.2 Utilitas: mall_utility_readings, mall_utility_tariffs bertingkat, mall_overtime_requests AC overtime
-- [ ] 13.3 Tagihan bulanan: mall_invoices, mall_invoice_lines, command mall:generate-invoices idempoten, MallAutoDebitAction tanpa PIN, command mall:apply-penalties denda 0,1%/hari bertingkat
-- [ ] 13.4 Pembayaran sebagian via portal (wallet + PIN) alokasi urut (denda -> utilitas -> service charge -> sewa), status partially_paid
-- [ ] 13.5 Command mall:audit-billing: audit kesesuaian invoice vs ledger, masukkan ke quality gate
-- [ ] 13.6 UI: dashboard billing, aging receivable, detail tagihan, input meteran batch, portal tenant
-- [ ] 13.7 Tests: generate-invoices idempoten, revenue_share_topup bila % > base rent, tarif utilitas bertingkat, bayar cicil urut, denda harian, suspend H+30, isolasi tenant IDOR, audit-billing & reconcile bersih
-- [ ] 13.8 Quality gate Fase 13
+- [x] 13.1 mall_tenant_sales_reports, portal tenant lapor penjualan, TenantSalesProvider contract untuk tenant terintegrasi
+- [x] 13.2 Utilitas: mall_utility_readings, mall_utility_tariffs bertingkat, mall_overtime_requests AC overtime
+- [x] 13.3 Tagihan bulanan: mall_invoices, mall_invoice_lines, command mall:generate-invoices idempoten, MallAutoDebitAction tanpa PIN, command mall:apply-penalties denda 0,1%/hari bertingkat
+- [x] 13.4 Pembayaran sebagian via portal (wallet + PIN) alokasi urut (denda -> utilitas -> service charge -> sewa), status partially_paid
+- [x] 13.5 Command mall:audit-billing: audit kesesuaian invoice vs ledger, masukkan ke quality gate
+- [x] 13.6 UI: dashboard billing, aging receivable, detail tagihan, input meteran batch, portal tenant
+- [x] 13.7 Tests: generate-invoices idempoten, revenue_share_topup bila % > base rent, tarif utilitas bertingkat, bayar cicil urut, denda harian, suspend H+30, isolasi tenant IDOR, audit-billing & reconcile bersih
+- [x] 13.8 Quality gate Fase 13
 
 ## FASE 14 — MALL: PARKIR, AKSES & FOOTFALL
 - [ ] 14.1 Tabel mall_parking_zones, mall_parking_tariffs, mall_parking_sessions, mall_parking_members

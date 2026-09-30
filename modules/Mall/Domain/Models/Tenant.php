@@ -50,4 +50,14 @@ class Tenant extends Model
     {
         return $this->hasMany(Lease::class, 'tenant_id')->where('status', LeaseStatus::ACTIVE);
     }
+
+    public function salesReports(): HasMany
+    {
+        return $this->hasMany(TenantSalesReport::class, 'tenant_id');
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'tenant_id');
+    }
 }

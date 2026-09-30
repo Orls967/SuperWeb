@@ -6,10 +6,20 @@ namespace Modules\Mall;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Modules\Mall\Application\Services\TenantSalesService;
+use Modules\Mall\Console\Commands\ApplyPenaltiesCommand;
+use Modules\Mall\Console\Commands\AuditBillingCommand;
+use Modules\Mall\Console\Commands\AutoDebitCommand;
+use Modules\Mall\Console\Commands\GenerateInvoicesCommand;
+use Modules\Mall\Domain\Models\Invoice;
+use Modules\Mall\Domain\Models\InvoiceLine;
 use Modules\Mall\Domain\Models\Lease;
+use Modules\Mall\Domain\Models\OvertimeRequest;
 use Modules\Mall\Domain\Models\Property;
 use Modules\Mall\Domain\Models\Tenant;
+use Modules\Mall\Domain\Models\TenantSalesReport;
 use Modules\Mall\Domain\Models\Unit;
+use Modules\Mall\Domain\Models\UtilityReading;
 use Modules\Mall\Domain\Models\Zone;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -17,13 +27,24 @@ class MallServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->singleton(TenantSalesService::class, function ($app) {
+            return new TenantSalesService;
+        });
     }
 
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'mall');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                GenerateInvoicesCommand::class,
+                ApplyPenaltiesCommand::class,
+                AuditBillingCommand::class,
+                AutoDebitCommand::class,
+            ]);
+        }
 
         if (file_exists(__DIR__.'/routes/web.php')) {
             $this->loadRoutesFrom(__DIR__.'/routes/web.php');
@@ -35,6 +56,11 @@ class MallServiceProvider extends ServiceProvider
             'mall_unit' => Unit::class,
             'mall_tenant' => Tenant::class,
             'mall_lease' => Lease::class,
+            'mall_invoice' => Invoice::class,
+            'mall_invoice_line' => InvoiceLine::class,
+            'mall_sales_report' => TenantSalesReport::class,
+            'mall_utility_reading' => UtilityReading::class,
+            'mall_overtime_request' => OvertimeRequest::class,
         ]);
 
         if ($this->app->bound(MenuRegistry::class)) {
@@ -78,6 +104,36 @@ class MallServiceProvider extends ServiceProvider
                 order: 73,
                 group: 'Properti (Duta Mall)',
                 activePattern: 'mall/directory*'
+            );
+
+            $registry->addItem(
+                label: 'Tagihan & Piutang Mall',
+                route: 'mall.billing.index',
+                icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+                roles: ['admin', 'mall_manager', 'leasing_agent'],
+                order: 74,
+                group: 'Properti (Duta Mall)',
+                activePattern: 'mall/billing*'
+            );
+
+            $registry->addItem(
+                label: 'Pencatatan Meteran Utilitas',
+                route: 'mall.utilities.index',
+                icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>',
+                roles: ['admin', 'mall_manager', 'technician'],
+                order: 75,
+                group: 'Properti (Duta Mall)',
+                activePattern: 'mall/utilities*'
+            );
+
+            $registry->addItem(
+                label: 'Portal Tenant Mall',
+                route: 'mall.portal.index',
+                icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>',
+                roles: ['admin', 'mall_manager', 'tenant'],
+                order: 76,
+                group: 'Properti (Duta Mall)',
+                activePattern: 'mall/portal*'
             );
         }
     }

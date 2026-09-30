@@ -7,6 +7,7 @@ namespace Modules\Mall\Domain\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Mall\Domain\Enums\DepositStatus;
 use Modules\Mall\Domain\Enums\LeaseStatus;
 use Modules\Mall\Domain\Enums\RentModel;
@@ -81,6 +82,26 @@ class Lease extends Model implements Payable
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class, 'tenant_id');
+    }
+
+    public function salesReports(): HasMany
+    {
+        return $this->hasMany(TenantSalesReport::class, 'lease_id');
+    }
+
+    public function utilityReadings(): HasMany
+    {
+        return $this->hasMany(UtilityReading::class, 'lease_id');
+    }
+
+    public function overtimeRequests(): HasMany
+    {
+        return $this->hasMany(OvertimeRequest::class, 'lease_id');
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'lease_id');
     }
 
     /**

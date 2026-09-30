@@ -190,5 +190,16 @@
   4. **Eskalasi Sewa Multi-Tahun:** Sewa dengan model `fixed` atau `greater_of` mengalami eskalasi majemuk tahunan: $\text{MonthlyRent}(Y) = \text{base\_monthly\_rent} \times (1 + \text{escalation\_percent}/100)^{Y-1}$.
 - **Reason:** Memastikan integritas fisik ketersediaan unit komersial, kepatuhan standar akuntansi keuangan (deposit sebagai liabilitas yang dapat dikembalikan), dan otomatisasi perhitungan sewa multi-tahun.
 
+## 2026-09-30: Mall Billing, Alokasi Pelunasan Terurut & Rekonsiliasi Double-Entry
+- **Context:** Tagihan bulanan mall menggabungkan beberapa komponen pendapatan heterogen (sewa pokok, top-up bagi hasil omzet, service charge, utilitas listrik/air berjenjang, lembur AC operasional, dan denda keterlambatan). Saat tenant membayar sebagian (cicilan), diperlukan aturan bisnis prioritas pelunasan yang baku dan pembukuan double-entry yang presisi.
+- **Decision:**
+  1. **Idempotensi Invoicing & Revenue Share Top-Up:** `mall:generate-invoices` membuat/memperbarui tagihan bulanan secara idempoten pada kunci `[lease_id, period_month]`. Untuk model `greater_of`, bila omzet bagi hasil melebihi sewa pokok minimum, sistem menerbitkan dua baris sewa: baris `base_rent` sebesar batas minimum dan baris `revenue_share_topup` sebesar selisihnya, sehingga total sewa sama persis dengan persentase omzet.
+  2. **Tarif Utilitas Berjenjang (Tiered Tariffs):** Tagihan listrik dan air dihitung berjenjang per rentang kWh/m³ ditambah biaya beban tetap (abonemen) melalui `UtilityTariffCalculator`.
+  3. **Alokasi Pelunasan Terurut (Priority Allocation):** Saat terjadi pembayaran penuh maupun parsial via `AllocatePaymentAction`, dana pembayaran dialokasikan secara ketat mengikuti urutan: (1) Denda Keterlambatan $\to$ (2) Utilitas (AC Overtime, Air, Listrik) $\to$ (3) Service Charge $\to$ (4) Sewa Pokok & Bagi Hasil. Pembukuan double-entry mendebet saldo dompet tenant `wallet:user:{id}:IDR` dan mengkreditkan secara proporsional ke akun pendapatan spesifik masing-masing baris (`revenue:mall:*`), menjamin `SUM(amount) = 0`.
+  4. **Denda Harian & Penangguhan (Suspension H+30):** Command `mall:apply-penalties` membebankan denda 0,1%/hari dari sisa tagihan yang belum lunas. Jika keterlambatan melebihi 30 hari kalender, status kontrak unit otomatis diubah menjadi `suspended`.
+  5. **Auto-Debit Tanpa PIN vs Portal Dengan PIN:** Penagihan otomatis kontrak via `MallAutoDebitAction` mendebet saldo dompet tenant tanpa memerlukan interaksi PIN, sedangkan pembayaran manual mandiri oleh tenant via portal mewajibkan verifikasi 6 digit PIN dompet pengguna serta pengamanan isolasi IDOR.
+  6. **Audit Billing Otomatis (`mall:audit-billing`):** Didaftarkan sebagai gerbang kualitas (quality gate) wajib untuk memverifikasi kesesuaian matematis setiap invoice terhadap entri buku besar (ledger) dan memastikan tidak ada selisih saldo global per aset.
+- **Reason:** Menjamin keadilan pengakuan pendapatan, akurasi pelunasan bertahap, dan transparansi mutlak antara tagihan tenant dengan neraca buku besar perusahaan.
+
 
 

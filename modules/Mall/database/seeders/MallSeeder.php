@@ -8,15 +8,22 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Modules\Banking\Domain\Enums\AccountKind;
+use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Mall\Application\Actions\GenerateMonthlyInvoicesAction;
+use Modules\Mall\Application\Actions\RecordUtilityReadingAction;
+use Modules\Mall\Application\Services\TenantSalesService;
 use Modules\Mall\Domain\Enums\DepositStatus;
 use Modules\Mall\Domain\Enums\LeaseStatus;
 use Modules\Mall\Domain\Enums\RentModel;
 use Modules\Mall\Domain\Enums\TenantCategory;
 use Modules\Mall\Domain\Enums\UnitStatus;
+use Modules\Mall\Domain\Enums\UtilityType;
 use Modules\Mall\Domain\Models\Lease;
 use Modules\Mall\Domain\Models\Property;
 use Modules\Mall\Domain\Models\Tenant;
 use Modules\Mall\Domain\Models\Unit;
+use Modules\Mall\Domain\Models\UtilityTariff;
 use Modules\Mall\Domain\Models\Zone;
 
 class MallSeeder extends Seeder
@@ -287,5 +294,91 @@ class MallSeeder extends Seeder
             ]
         );
         $unitGF01->update(['status' => UnitStatus::LEASED]);
+
+        // 6. Utility Tariffs for Duta Mall
+        // Listrik Berjenjang
+        UtilityTariff::updateOrCreate(
+            ['property_id' => $dutaMall->id, 'utility_type' => UtilityType::ELECTRICITY, 'tier_number' => 1],
+            ['tier_min' => 0.0, 'tier_max' => 500.0, 'rate_per_unit' => 1500, 'standing_charge' => 100000, 'effective_from' => '2026-01-01']
+        );
+        UtilityTariff::updateOrCreate(
+            ['property_id' => $dutaMall->id, 'utility_type' => UtilityType::ELECTRICITY, 'tier_number' => 2],
+            ['tier_min' => 500.0, 'tier_max' => 2000.0, 'rate_per_unit' => 1800, 'standing_charge' => 0, 'effective_from' => '2026-01-01']
+        );
+        UtilityTariff::updateOrCreate(
+            ['property_id' => $dutaMall->id, 'utility_type' => UtilityType::ELECTRICITY, 'tier_number' => 3],
+            ['tier_min' => 2000.0, 'tier_max' => null, 'rate_per_unit' => 2200, 'standing_charge' => 0, 'effective_from' => '2026-01-01']
+        );
+
+        // Air PDAM Berjenjang
+        UtilityTariff::updateOrCreate(
+            ['property_id' => $dutaMall->id, 'utility_type' => UtilityType::WATER, 'tier_number' => 1],
+            ['tier_min' => 0.0, 'tier_max' => 50.0, 'rate_per_unit' => 8000, 'standing_charge' => 50000, 'effective_from' => '2026-01-01']
+        );
+        UtilityTariff::updateOrCreate(
+            ['property_id' => $dutaMall->id, 'utility_type' => UtilityType::WATER, 'tier_number' => 2],
+            ['tier_min' => 50.0, 'tier_max' => null, 'rate_per_unit' => 12000, 'standing_charge' => 0, 'effective_from' => '2026-01-01']
+        );
+
+        // 7. Ensure All Mall Ledger Accounts Exist
+        $mallAccounts = [
+            'liability:mall:tenant_deposit:IDR' => ['name' => 'Uang Jaminan Tenant Mall (Deposit)', 'kind' => AccountKind::LIABILITY, 'allow_negative' => true],
+            'revenue:mall:rent:IDR' => ['name' => 'Pendapatan Sewa & Bagi Hasil Mall', 'kind' => AccountKind::REVENUE, 'allow_negative' => false],
+            'revenue:mall:service_charge:IDR' => ['name' => 'Pendapatan Service Charge Mall', 'kind' => AccountKind::REVENUE, 'allow_negative' => false],
+            'revenue:mall:utilities:electricity:IDR' => ['name' => 'Pendapatan Utilitas Listrik Mall', 'kind' => AccountKind::REVENUE, 'allow_negative' => false],
+            'revenue:mall:utilities:water:IDR' => ['name' => 'Pendapatan Utilitas Air Bersih Mall', 'kind' => AccountKind::REVENUE, 'allow_negative' => false],
+            'revenue:mall:utilities:ac_overtime:IDR' => ['name' => 'Pendapatan Lembur AC Mall', 'kind' => AccountKind::REVENUE, 'allow_negative' => false],
+            'revenue:mall:penalties:IDR' => ['name' => 'Pendapatan Denda Keterlambatan Mall', 'kind' => AccountKind::REVENUE, 'allow_negative' => false],
+            'revenue:mall:rent_settlement:IDR' => ['name' => 'Pendapatan Penyelesaian Sewa Mall', 'kind' => AccountKind::REVENUE, 'allow_negative' => false],
+        ];
+
+        foreach ($mallAccounts as $code => $attr) {
+            LedgerAccount::firstOrCreate(
+                ['code' => $code],
+                [
+                    'name' => $attr['name'],
+                    'asset_code' => 'IDR',
+                    'kind' => $attr['kind'],
+                    'allow_negative' => $attr['allow_negative'],
+                ]
+            );
+        }
+
+        // 8. Seed Sales Reports & Utility Readings for Current Month
+        $currentMonth = date('Y-m');
+
+        // Laporan omzet Sari Ranah (Rp 550.000.000)
+        app(TenantSalesService::class)->recordManualSales(
+            lease: $leaseSariRanah,
+            periodMonth: $currentMonth,
+            grossSales: 600000000,
+            netSales: 550000000,
+            txCount: 4200,
+            notes: 'Realisasi omzet bulanan RM Sari Ranah Cabang Duta Mall'
+        );
+
+        // Laporan omzet Starbucks (Rp 250.000.000)
+        app(TenantSalesService::class)->recordManualSales(
+            lease: $leaseStarbucks,
+            periodMonth: $currentMonth,
+            grossSales: 260000000,
+            netSales: 250000000,
+            txCount: 5100,
+            notes: 'Realisasi omzet Starbucks GF-01'
+        );
+
+        // Utility Readings for active leases
+        $readingAction = app(RecordUtilityReadingAction::class);
+        $readingAction->execute($leaseSariRanah, $currentMonth, UtilityType::ELECTRICITY, 3500.0, 2000.0); // 1500 kWh
+        $readingAction->execute($leaseSariRanah, $currentMonth, UtilityType::WATER, 120.0, 40.0); // 80 m3
+
+        $readingAction->execute($leaseAutoServe, $currentMonth, UtilityType::ELECTRICITY, 2800.0, 1600.0); // 1200 kWh
+        $readingAction->execute($leaseAutoServe, $currentMonth, UtilityType::WATER, 65.0, 20.0); // 45 m3
+
+        $readingAction->execute($leaseStarbucks, $currentMonth, UtilityType::ELECTRICITY, 4200.0, 2600.0); // 1600 kWh
+        $readingAction->execute($leaseStarbucks, $currentMonth, UtilityType::WATER, 150.0, 80.0); // 70 m3
+
+        // 9. Generate Monthly Invoices
+        app(GenerateMonthlyInvoicesAction::class)->generateAll($currentMonth, $dutaMall->id);
     }
 }
