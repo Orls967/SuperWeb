@@ -102,6 +102,11 @@ class Shipment extends LogisticsEntity implements Payable
         return $this->hasMany(ShipmentLeg::class, 'shipment_id')->orderBy('leg_sequence');
     }
 
+    public function trackingEvents(): HasMany
+    {
+        return $this->hasMany(TrackingEvent::class, 'shipment_id')->orderBy('sequence');
+    }
+
     /**
      * Transition the shipment status safely using state machine rules.
      */
@@ -175,6 +180,23 @@ class Shipment extends LogisticsEntity implements Payable
      */
     public function getTimelineEvents(): array
     {
+        if ($this->relationLoaded('trackingEvents') ? $this->trackingEvents->isNotEmpty() : $this->trackingEvents()->exists()) {
+            $events = [];
+            foreach ($this->trackingEvents()->with('location')->orderByDesc('sequence')->get() as $te) {
+                $events[] = [
+                    'status' => $te->event_type,
+                    'title' => ucwords(strtolower(str_replace('_', ' ', $te->event_type))),
+                    'description' => $te->description ?? ($te->location ? "Lokasi: {$te->location->name}" : 'Pembaruan status kargo.'),
+                    'location' => $te->location?->name,
+                    'actor_role' => $te->actor_role,
+                    'timestamp' => $te->occurred_at,
+                    'completed' => true,
+                ];
+            }
+
+            return $events;
+        }
+
         $events = [];
 
         if ($this->created_at) {
