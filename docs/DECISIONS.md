@@ -292,6 +292,17 @@
      Offset penomoran unit (`sprintf('%s-%03d', $floor, $unitIdx + 100)`) dan nomor kontrak sewa mall (`sprintf('LSE-DM-2026-%03d', $idx + 10)`) diterapkan di `DemoLargeSeeder` agar penambahan 60 tenant demo skala besar dapat berjalan harmonis di atas data dasar tanpa bentrok unique constraint.
 - **Reason:** Memastikan seluruh data seeder mencerminkan alur domain dan invarian moneter riil, melindungi integritas double-entry ledger, dan menghilangkan segala bentuk ambiguitas autentikasi PIN.
 
+## 2026-09-30: Perhitungan Berat Tertagih (Chargeable Weight) Multimoda (Fase 21)
+- **Context:** Penetapan tarif logistik memerlukan standarisasi berat tertagih (chargeable weight) yang memperhitungkan volume kargo (berat volumetrik) vs berat aktual barang agar utilisasi kapasitas moda transportasi darat, laut, dan udara optimal dan adil secara ekonomi.
+- **Decision:**
+  1. `ChargeableWeightCalculator` mengimplementasikan formula `max(berat aktual, berat volumetrik)` secara murni menggunakan `Brick\Math\BigDecimal` untuk mencegah galat floating-point.
+  2. **Darat / Kurir (SameDay, Express, Regular, Economy, LTL):** Pembagi volumetrik $6.000\text{ cm}^3/\text{kg}$. Pembulatan ke atas (`RoundingMode::Up`) ke bilangan bulat $1\text{ kg}$ terdekat, batas minimum $1\text{ kg}$.
+  3. **Udara (AirFreight / IATA):** Pembagi volumetrik $6.000\text{ cm}^3/\text{kg}$. Pembulatan ke atas ke kelipatan $0,5\text{ kg}$ terdekat (`(raw * 2)->toScale(0, RoundingMode::Up) / 2`), batas minimum $5,0\text{ kg}$.
+  4. **Laut LCL (W/M - Weight or Measurement):** $1\text{ CBM} = 1.000\text{ kg}$ ($1\text{ Revenue Ton}$ / RT). Berat tertagih adalah $\max(\text{ton aktual}, \text{CBM})$, batas minimum $1\text{ RT}$ ($1.000\text{ kg}$).
+  5. **FTL & FCL:** Berbasis unit kargo penuh (per truk / per kontainer), bukan berbasis berat tertagih.
+- **Reason:** Menjamin kepatuhan standar industri transportasi internasional (IATA, FIATA/W/M, Asperindo) dan konsistensi perhitungan tarif freight antar-moda.
+
+
 
 
 

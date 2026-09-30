@@ -34,9 +34,9 @@ enum ServiceLevel: string
     public function defaultMode(): TransportMode
     {
         return match ($this) {
-            self::SameDay, self::Express, self::Regular, self::LTL, self::FTL => TransportMode::Road,
-            self::Economy, self::LCL, self::FCL => TransportMode::Sea,
-            self::AirFreight => TransportMode::Air,
+            self::SameDay, self::Express, self::Regular, self::LTL, self::FTL => TransportMode::ROAD,
+            self::Economy, self::LCL, self::FCL => TransportMode::SEA,
+            self::AirFreight => TransportMode::AIR,
         };
     }
 
