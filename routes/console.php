@@ -31,3 +31,6 @@ Schedule::command('mall:expire-points')->dailyAt('00:30');
 Schedule::command('mall:expire-vouchers')->dailyAt('00:45');
 Schedule::command('mall:settle-vouchers')->weeklyOn(1, '08:00');
 Schedule::command('mall:generate-pm-orders')->dailyAt('06:30');
+
+// --- Logistik (Sari Ranah Express) ---
+Schedule::command('lgx:invoice-shippers')->monthlyOn(1, '02:00');
