@@ -128,12 +128,12 @@
 - [x] 10.7 Quality gate Fase 10
 
 ## FASE 11 — RESTO: KANAL PENJUALAN, KATERING, FRANCHISE & ANALITIK
-- [ ] 11.1 Bungkus & delivery: harga takeaway, potong bahan kemasan, resto_deliveries ongkir bertingkat, pesan online wallet, refund parsial
-- [ ] 11.2 Katering & nasi bungkus massal: resto_catering_orders, flow quote -> customer approve -> HOLD deposit 30% -> produksi -> deliver -> capture + charge sisa, batal < 3 hari potongan deposit, validasi kapasitas pax
-- [ ] 11.3 Franchise royalty: resto_outlet_contracts, command resto:post-royalty harian dari daily summary ke revenue:group:royalty
-- [ ] 11.4 Analitik: Menu engineering (Star/Plowhorse/Puzzle/Dog scatter chart), waste report, heatmap sales mix per jam, P&L per outlet dari ledger, peramalan rata-rata bergerak 4 minggu
-- [ ] 11.5 Tests: takeaway pakai harga bungkus, kemasan potong stok, delivery gagal refund, katering hold -> capture, batal potongan deposit, kapasitas penuh ditolak, royalty posting, klasifikasi menu engineering, reconcile bersih
-- [ ] 11.6 Quality gate Fase 11
+- [x] 11.1 Bungkus & delivery: harga takeaway, potong bahan kemasan, resto_deliveries ongkir bertingkat, pesan online wallet, refund parsial
+- [x] 11.2 Katering & nasi bungkus massal: resto_catering_orders, flow quote -> customer approve -> HOLD deposit 30% -> produksi -> deliver -> capture + charge sisa, batal < 3 hari potongan deposit, validasi kapasitas pax
+- [x] 11.3 Franchise royalty: resto_outlet_contracts, command resto:post-royalty harian dari daily summary ke revenue:group:royalty
+- [x] 11.4 Analitik: Menu engineering (Star/Plowhorse/Puzzle/Dog scatter chart), waste report, heatmap sales mix per jam, P&L per outlet dari ledger, peramalan rata-rata bergerak 4 minggu
+- [x] 11.5 Tests: takeaway pakai harga bungkus, kemasan potong stok, delivery gagal refund, katering hold -> capture, batal potongan deposit, kapasitas penuh ditolak, royalty posting, klasifikasi menu engineering, reconcile bersih
+- [x] 11.6 Quality gate Fase 11
 
 ## FASE 12 — MODUL MALL: FONDASI, UNIT & LEASING
 - [ ] 12.1 Modul Mall + provider + menu. Tabel: mall_properties, mall_zones, mall_units, mall_tenants

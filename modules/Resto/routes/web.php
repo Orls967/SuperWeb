@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Resto\Http\Controllers\AnalyticsController;
+use Modules\Resto\Http\Controllers\CateringController;
+use Modules\Resto\Http\Controllers\DeliveryController;
+use Modules\Resto\Http\Controllers\FranchiseController;
 use Modules\Resto\Http\Controllers\IngredientController;
 use Modules\Resto\Http\Controllers\KitchenController;
 use Modules\Resto\Http\Controllers\MenuItemController;
@@ -57,4 +61,23 @@ Route::middleware(['web', 'auth'])->prefix('resto')->name('resto.')->group(funct
     // Stock Opname
     Route::post('stock-counts/{stock_count}/approve', [StockCountController::class, 'approve'])->name('stock-counts.approve');
     Route::resource('stock-counts', StockCountController::class);
+
+    // Delivery & Bungkus Jarak Jauh
+    Route::post('deliveries/{delivery}/status', [DeliveryController::class, 'updateStatus'])->name('deliveries.status');
+    Route::post('deliveries/{delivery}/fail', [DeliveryController::class, 'fail'])->name('deliveries.fail');
+    Route::resource('deliveries', DeliveryController::class);
+
+    // Katering & Pesanan Acara
+    Route::post('catering/{order}/deposit', [CateringController::class, 'holdDeposit'])->name('catering.deposit');
+    Route::post('catering/{order}/complete', [CateringController::class, 'complete'])->name('catering.complete');
+    Route::post('catering/{order}/cancel', [CateringController::class, 'cancel'])->name('catering.cancel');
+    Route::resource('catering', CateringController::class);
+
+    // Analitik & Menu Engineering
+    Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+
+    // Franchise & Royalti
+    Route::get('franchise', [FranchiseController::class, 'index'])->name('franchise.index');
+    Route::post('franchise/contract', [FranchiseController::class, 'storeContract'])->name('franchise.contract.store');
+    Route::post('franchise/royalty', [FranchiseController::class, 'runRoyalty'])->name('franchise.royalty.run');
 });

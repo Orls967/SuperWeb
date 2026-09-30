@@ -65,6 +65,16 @@ class MenuItem extends Model
         return $this->hasMany(MenuItemOutlet::class, 'menu_item_id');
     }
 
+    public function getPriceAttribute(): int
+    {
+        return $this->base_price ?? 0;
+    }
+
+    public function setPriceAttribute(int $value): void
+    {
+        $this->attributes['base_price'] = $value;
+    }
+
     public function priceForOutlet(?int $outletId = null, bool $isTakeaway = false): int
     {
         if ($outletId !== null) {

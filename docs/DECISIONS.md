@@ -173,5 +173,13 @@
 - **Decision:** Command terjadwal `resto:close-day` (berjalan tiap 23:59) merangkum performa harian outlet ke tabel `resto_daily_summaries` (`gross_sales`, `discount`, `pb1`, `net_sales`, `cogs`, `waste_value`, `gross_margin`, `transactions`, `guests`, `cash_variance`, `top_items`). Seluruh dasbor dan laporan analitik diwajibkan hanya membaca dari `resto_daily_summaries`. Opsi `--check` memvalidasi angka ringkasan harian terhadap riwayat entri buku besar (ledger) untuk mendeteksi kecurangan atau inkonsistensi data.
 - **Reason:** Memberikan respons halaman dasbor instan dengan budget query sangat rendah (O(1)), sembari menyediakan mekanisme audit harian yang ketat.
 
+## 2026-09-30: Delivery, Katering Bertahap & Royalti Waralaba Resto
+- **Context:** Penjualan delivery jarak jauh dan katering skala besar memerlukan aturan operasional yang berbeda dari dine-in (biaya kemasan nasi bungkus terpisah, ongkir berjenjang radius km, risiko pembatalan mendadak, serta pemotongan royalti holding grup).
+- **Decision:**
+  1. **Delivery & Bungkus:** Menggunakan `takeaway_price` dari `resto_menu_items`. Bahan baku kertas bungkus (`ING-KERTAS-BUNGKUS`) dipotong otomatis lewat `InventoryService::deductIngredient` dengan alasan `sale`. Ongkir berjenjang (Rp10.000 untuk 3 km pertama + Rp2.500/km ekstra). Jika pengiriman gagal kirim, hanya harga makanan (+PB1) yang dikembalikan ke dompet pelanggan; ongkir tetap ditahan sebagai kompensasi kurir.
+  2. **Katering & Escrow:** `CateringOrder` mengimplementasikan `Payable`. Saat pesanan disetujui, deposit 30% ditahan di escrow (`PaymentGateway::hold()`). Pada hari H pengiriman, deposit dicairkan (`capture()`) dan sisa 70% didebet dari dompet pemesan. Kebijakan pembatalan: pembatalan $\ge$ H-3 melepaskan hold kembali ke pelanggan, sedangkan pembatalan $<$ 3 hari mengeksekusi penyitaan deposit (capture denda pembatalan ke pendapatan katering outlet).
+  3. **Royalti Franchise:** Command `resto:post-royalty` membebankan royalti dan marketing fee harian dari omzet bersih `DailySummary`. Jurnal buku besar mencatat `expense:resto:franchise_royalty:IDR` (debit) dan mengkredit rekening holding `revenue:group:royalty:IDR` serta `revenue:group:marketing:IDR`, seimbang tanpa selisih (sum = 0).
+- **Reason:** Menjamin manajemen kas dan persediaan akurat tanpa celah kebocoran dana operasional restoran dan holding.
+
 
 
