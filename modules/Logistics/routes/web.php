@@ -3,12 +3,22 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Logistics\Http\Controllers\LaneController;
+use Modules\Logistics\Http\Controllers\LocationController;
 use Modules\Logistics\Http\Controllers\LogisticsDashboardController;
 
 Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [LogisticsDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/locations', [LogisticsDashboardController::class, 'index'])->name('locations.index');
+
+        // Lokasi & Jaringan (Locations)
+        Route::resource('locations', LocationController::class)->except(['show']);
+
+        // Jalur Transportasi (Lanes)
+        Route::get('/lanes', [LaneController::class, 'index'])->name('lanes.index');
+        Route::post('/lanes', [LaneController::class, 'store'])->name('lanes.store');
+        Route::delete('/lanes/{lane}', [LaneController::class, 'destroy'])->name('lanes.destroy');
+
         Route::get('/fleet', [LogisticsDashboardController::class, 'index'])->name('fleet.index');
         Route::get('/drivers', [LogisticsDashboardController::class, 'index'])->name('drivers.index');
         Route::get('/shipments', [LogisticsDashboardController::class, 'index'])->name('shipments.index');
