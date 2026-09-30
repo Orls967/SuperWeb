@@ -97,6 +97,11 @@ class Shipment extends LogisticsEntity implements Payable
         return $this->hasMany(Package::class, 'shipment_id');
     }
 
+    public function legs(): HasMany
+    {
+        return $this->hasMany(ShipmentLeg::class, 'shipment_id')->orderBy('leg_sequence');
+    }
+
     /**
      * Transition the shipment status safely using state machine rules.
      */
