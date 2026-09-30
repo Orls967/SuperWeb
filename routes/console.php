@@ -27,3 +27,7 @@ Schedule::command('mall:auto-debit')->dailyAt('04:00');
 Schedule::command('mall:apply-penalties')->dailyAt('05:00');
 Schedule::command('mall:renew-parking-members')->dailyAt('06:00');
 Schedule::command('mall:audit-billing')->dailyAt('07:00');
+Schedule::command('mall:expire-points')->dailyAt('00:30');
+Schedule::command('mall:expire-vouchers')->dailyAt('00:45');
+Schedule::command('mall:settle-vouchers')->weeklyOn(1, '08:00');
+Schedule::command('mall:generate-pm-orders')->dailyAt('06:30');

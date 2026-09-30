@@ -17,15 +17,27 @@ use Modules\Mall\Application\Actions\RegisterParkingMemberAction;
 use Modules\Mall\Application\Services\FootfallGenerator;
 use Modules\Mall\Application\Services\MallLedgerAccounts;
 use Modules\Mall\Application\Services\TenantSalesService;
+use Modules\Mall\Domain\Enums\AssetCategory;
+use Modules\Mall\Domain\Enums\AssetStatus;
 use Modules\Mall\Domain\Enums\DepositStatus;
+use Modules\Mall\Domain\Enums\EventBookingStatus;
+use Modules\Mall\Domain\Enums\EventType;
 use Modules\Mall\Domain\Enums\LeaseStatus;
+use Modules\Mall\Domain\Enums\LoyaltyTier;
 use Modules\Mall\Domain\Enums\MemberStatus;
 use Modules\Mall\Domain\Enums\RentModel;
 use Modules\Mall\Domain\Enums\TenantCategory;
 use Modules\Mall\Domain\Enums\UnitStatus;
 use Modules\Mall\Domain\Enums\UtilityType;
 use Modules\Mall\Domain\Enums\VehicleType;
+use Modules\Mall\Domain\Enums\WorkOrderPriority;
+use Modules\Mall\Domain\Enums\WorkOrderStatus;
+use Modules\Mall\Domain\Enums\WorkOrderType;
+use Modules\Mall\Domain\Models\Asset;
+use Modules\Mall\Domain\Models\EventBooking;
+use Modules\Mall\Domain\Models\EventSpace;
 use Modules\Mall\Domain\Models\Lease;
+use Modules\Mall\Domain\Models\LoyaltyMember;
 use Modules\Mall\Domain\Models\ParkingMember;
 use Modules\Mall\Domain\Models\ParkingTariff;
 use Modules\Mall\Domain\Models\ParkingZone;
@@ -33,6 +45,8 @@ use Modules\Mall\Domain\Models\Property;
 use Modules\Mall\Domain\Models\Tenant;
 use Modules\Mall\Domain\Models\Unit;
 use Modules\Mall\Domain\Models\UtilityTariff;
+use Modules\Mall\Domain\Models\VoucherTemplate;
+use Modules\Mall\Domain\Models\WorkOrder;
 use Modules\Mall\Domain\Models\Zone;
 
 class MallSeeder extends Seeder
@@ -410,6 +424,9 @@ class MallSeeder extends Seeder
             startDate: Carbon::today()->subDays(29),
             endDate: Carbon::today(),
         );
+
+        // 12. FASE 15: Loyalty, Voucher, Event Atrium & Fasilitas Gedung
+        $this->seedLoyaltyAndFacilities($dutaMall, $customerUser, $tSariRanah, $createdUnits['LG-12'] ?? null);
     }
 
     /**
@@ -498,6 +515,231 @@ class MallSeeder extends Seeder
                     'end_date' => Carbon::today()->addDays(20),
                     'status' => MemberStatus::ACTIVE,
                     'notes' => 'Langganan demo bebas parkir Duta Mall',
+                ]
+            );
+        }
+    }
+
+    protected function seedLoyaltyAndFacilities(
+        Property $property,
+        ?User $customerUser,
+        Tenant $tenantSariRanah,
+        ?Unit $unitSariRanah
+    ): void {
+        // 1. Voucher Templates
+        $templates = [
+            [
+                'code' => 'VCH-25K',
+                'title' => 'Voucher Diskon Belanja Rp 25.000',
+                'description' => 'Potongan langsung Rp 25.000 dengan minimal belanja Rp 100.000 di seluruh tenant Duta Mall.',
+                'points_required' => 25,
+                'nominal_value' => 25000,
+                'min_spend' => 100000,
+                'validity_days' => 30,
+            ],
+            [
+                'code' => 'VCH-50K',
+                'title' => 'Voucher Diskon Belanja Rp 50.000',
+                'description' => 'Potongan langsung Rp 50.000 dengan minimal belanja Rp 200.000 di seluruh tenant Duta Mall.',
+                'points_required' => 50,
+                'nominal_value' => 50000,
+                'min_spend' => 200000,
+                'validity_days' => 30,
+            ],
+            [
+                'code' => 'VCH-100K',
+                'title' => 'Voucher Belanja Sultan Rp 100.000',
+                'description' => 'Voucher eksklusif potongan Rp 100.000 dengan minimal belanja Rp 500.000.',
+                'points_required' => 100,
+                'nominal_value' => 100000,
+                'min_spend' => 500000,
+                'validity_days' => 45,
+            ],
+        ];
+
+        foreach ($templates as $t) {
+            VoucherTemplate::updateOrCreate(
+                ['code' => $t['code']],
+                $t + ['uuid' => (string) Str::uuid(), 'is_active' => true]
+            );
+        }
+
+        // 2. Profil Loyalty Member Demo Customer
+        if ($customerUser !== null) {
+            LoyaltyMember::updateOrCreate(
+                ['user_id' => $customerUser->id],
+                [
+                    'uuid' => (string) Str::uuid(),
+                    'tier' => LoyaltyTier::GOLD,
+                    'lifetime_spend' => 15000000,
+                    'current_year_spend' => 15000000,
+                    'tier_expires_at' => Carbon::now()->addYear(),
+                ]
+            );
+        }
+
+        // 3. Event Spaces & Atrium
+        $spaces = [
+            [
+                'code' => 'ATR-MAIN',
+                'name' => 'Atrium Utama Ground Floor',
+                'area_sqm' => 450.0,
+                'daily_rate' => 15000000,
+                'hourly_rate' => 2000000,
+                'max_booths' => 20,
+                'description' => 'Area pameran utama di tengah mall dengan akses visual dari semua lantai.',
+            ],
+            [
+                'code' => 'ATR-NORTH',
+                'name' => 'North Corridor Exhibition Hall',
+                'area_sqm' => 200.0,
+                'daily_rate' => 7500000,
+                'hourly_rate' => 1000000,
+                'max_booths' => 10,
+                'description' => 'Koridor pameran utara ideal untuk bazaar fashion dan pameran otomotif mini.',
+            ],
+            [
+                'code' => 'ATR-ROOFTOP',
+                'name' => 'Sky Atrium Rooftop 4F',
+                'area_sqm' => 350.0,
+                'daily_rate' => 10000000,
+                'hourly_rate' => 1500000,
+                'max_booths' => 15,
+                'description' => 'Area rooftop terbuka untuk festival musik, konser, dan culinary night bazaar.',
+            ],
+        ];
+
+        $createdSpaces = [];
+        foreach ($spaces as $s) {
+            $createdSpaces[$s['code']] = EventSpace::updateOrCreate(
+                ['property_id' => $property->id, 'code' => $s['code']],
+                $s + ['uuid' => (string) Str::uuid(), 'is_active' => true]
+            );
+        }
+
+        // 4. Sample Event Booking
+        if (isset($createdSpaces['ATR-MAIN']) && $customerUser !== null) {
+            EventBooking::updateOrCreate(
+                ['booking_number' => 'EVT-202610-001'],
+                [
+                    'uuid' => (string) Str::uuid(),
+                    'property_id' => $property->id,
+                    'event_space_id' => $createdSpaces['ATR-MAIN']->id,
+                    'customer_id' => $customerUser->id,
+                    'event_name' => 'Duta Mall Culinary & Craft Expo 2026',
+                    'event_type' => EventType::BAZAAR,
+                    'start_date' => Carbon::now()->addDays(5)->toDateString(),
+                    'end_date' => Carbon::now()->addDays(8)->toDateString(),
+                    'booth_count' => 15,
+                    'total_amount' => 60000000,
+                    'paid_amount' => 60000000,
+                    'status' => EventBookingStatus::CONFIRMED,
+                    'confirmed_at' => Carbon::now(),
+                    'notes' => 'Pameran bazaar kuliner nusantara',
+                ]
+            );
+        }
+
+        // 5. Assets Fasilitas Gedung
+        $assets = [
+            [
+                'asset_tag' => 'AST-HVAC-01',
+                'name' => 'Water Chiller Central Carrier 500TR',
+                'category' => AssetCategory::HVAC,
+                'brand' => 'Carrier',
+                'model_number' => '19XRV-500',
+                'pm_frequency_days' => 30,
+                'status' => AssetStatus::OPERATIONAL,
+                'last_pm_date' => Carbon::today()->subDays(31)->toDateString(),
+                'next_pm_date' => Carbon::today()->subDay()->toDateString(), // Jatuh tempo PM!
+            ],
+            [
+                'asset_tag' => 'AST-LIFT-01',
+                'name' => 'Passenger Elevator Otis 15-Pax Central',
+                'category' => AssetCategory::ELEVATOR,
+                'brand' => 'Otis',
+                'model_number' => 'Gen2-Regen',
+                'pm_frequency_days' => 15,
+                'status' => AssetStatus::OPERATIONAL,
+                'last_pm_date' => Carbon::today()->subDays(5)->toDateString(),
+                'next_pm_date' => Carbon::today()->addDays(10)->toDateString(),
+            ],
+            [
+                'asset_tag' => 'AST-GEN-01',
+                'name' => 'Cummins Diesel Backup Generator 500kVA',
+                'category' => AssetCategory::ELECTRICAL,
+                'brand' => 'Cummins',
+                'model_number' => 'QSK19-G4',
+                'pm_frequency_days' => 60,
+                'status' => AssetStatus::OPERATIONAL,
+                'last_pm_date' => Carbon::today()->subDays(10)->toDateString(),
+                'next_pm_date' => Carbon::today()->addDays(50)->toDateString(),
+            ],
+            [
+                'asset_tag' => 'AST-PUMP-01',
+                'name' => 'Grundfos Clean Water Booster Pump LG',
+                'category' => AssetCategory::PLUMBING,
+                'brand' => 'Grundfos',
+                'model_number' => 'Hydro-MPC',
+                'pm_frequency_days' => 45,
+                'status' => AssetStatus::MAINTENANCE,
+                'last_pm_date' => Carbon::today()->subDays(50)->toDateString(),
+                'next_pm_date' => Carbon::today()->subDays(5)->toDateString(),
+            ],
+        ];
+
+        $createdAssets = [];
+        foreach ($assets as $a) {
+            $createdAssets[$a['asset_tag']] = Asset::updateOrCreate(
+                ['property_id' => $property->id, 'asset_tag' => $a['asset_tag']],
+                $a + ['uuid' => (string) Str::uuid()]
+            );
+        }
+
+        // 6. Work Orders (SPK)
+        if (isset($createdAssets['AST-HVAC-01'])) {
+            WorkOrder::updateOrCreate(
+                ['order_number' => 'WO-202609-001'],
+                [
+                    'uuid' => (string) Str::uuid(),
+                    'property_id' => $property->id,
+                    'asset_id' => $createdAssets['AST-HVAC-01']->id,
+                    'order_number' => 'WO-202609-001',
+                    'type' => WorkOrderType::PREVENTIVE,
+                    'priority' => WorkOrderPriority::MEDIUM,
+                    'title' => 'Inspeksi & Pembersihan Filter Chiller HVAC',
+                    'description' => 'Pembersihan kondensor dan filter oli rutin bulanan.',
+                    'status' => WorkOrderStatus::COMPLETED,
+                    'due_date' => Carbon::now()->subDays(2),
+                    'completed_at' => Carbon::now()->subDays(2),
+                    'parts_cost' => 500000,
+                    'labor_cost' => 300000,
+                    'total_cost' => 800000,
+                    'is_billable_to_tenant' => false,
+                ]
+            );
+        }
+
+        if ($unitSariRanah !== null) {
+            WorkOrder::updateOrCreate(
+                ['order_number' => 'WO-202609-002'],
+                [
+                    'uuid' => (string) Str::uuid(),
+                    'property_id' => $property->id,
+                    'unit_id' => $unitSariRanah->id,
+                    'tenant_id' => $tenantSariRanah->id,
+                    'order_number' => 'WO-202609-002',
+                    'type' => WorkOrderType::CORRECTIVE,
+                    'priority' => WorkOrderPriority::HIGH,
+                    'title' => 'Perbaikan Pipa Pembuangan Grease Trap Resto',
+                    'description' => 'Pembersihan sumbatan lemak dapur hidang dan perbaikan seal pipa.',
+                    'status' => WorkOrderStatus::OPEN,
+                    'due_date' => Carbon::now()->addHours(8),
+                    'sla_hours' => 8,
+                    'parts_cost' => 250000,
+                    'labor_cost' => 200000,
+                    'total_cost' => 450000,
+                    'is_billable_to_tenant' => true,
                 ]
             );
         }

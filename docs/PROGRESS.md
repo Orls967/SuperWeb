@@ -162,12 +162,12 @@
 - [x] 14.6 Quality gate Fase 14
 
 ## FASE 15 — MALL: LOYALTY, VOUCHER, EVENT & FACILITY MANAGEMENT
-- [ ] 15.1 Loyalty Duta Points (aset ledger PTS): points:user:{id}:PTS & liability:mall:points:PTS, earn dari belanja / struk klaim unik, redeem voucher & tier membership, FIFO expiry mall:expire-points
-- [ ] 15.2 Voucher mall: mall_vouchers, liability:mall:voucher, settlement mingguan mall:settle-vouchers ke wallet tenant, voucher expired balik ke breakage/penalty
-- [ ] 15.3 Event & atrium: mall_event_spaces, mall_event_bookings, deteksi bentrok jadwal ConflictException, bazaar booth, kalender bulanan
-- [ ] 15.4 Facility management: mall_assets, mall_work_orders, SLA priority, command mall:generate-pm-orders, biaya perbaikan masuk tagihan tenant, Kanban board
-- [ ] 15.5 Tests: earn poin belanja, klaim struk dobel ditolak, redeem voucher, voucher dipakai lalu settle, voucher expired, event bentrok ditolak, PM order terjadwal, SLA breach, biaya perbaikan ke invoice, reconcile IDR & PTS bersih
-- [ ] 15.6 Quality gate Fase 15
+- [x] 15.1 Loyalty Duta Points (aset ledger PTS): points:user:{id}:PTS & liability:mall:points:PTS, earn dari belanja / struk klaim unik, redeem voucher & tier membership, FIFO expiry mall:expire-points
+- [x] 15.2 Voucher mall: mall_vouchers, liability:mall:voucher, settlement mingguan mall:settle-vouchers ke wallet tenant, voucher expired balik ke breakage/penalty
+- [x] 15.3 Event & atrium: mall_event_spaces, mall_event_bookings, deteksi bentrok jadwal ConflictException, bazaar booth, kalender bulanan
+- [x] 15.4 Facility management: mall_assets, mall_work_orders, SLA priority, command mall:generate-pm-orders, biaya perbaikan masuk tagihan tenant, Kanban board
+- [x] 15.5 Tests: earn poin belanja, klaim struk dobel ditolak, redeem voucher, voucher dipakai lalu settle, voucher expired, event bentrok ditolak, PM order terjadwal, SLA breach, biaya perbaikan ke invoice, reconcile IDR & PTS bersih
+- [x] 15.6 Quality gate Fase 15
 
 ## FASE 16 — INTEGRASI LINTAS LINI
 - [ ] 16.1 Resto & AutoServe sebagai tenant Duta Mall via TenantSalesProvider (omzet terintegrasi otomatis masuk revenue_share_topup tanpa input manual)

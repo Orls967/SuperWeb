@@ -13,6 +13,7 @@ enum InvoiceLineType: string
     case WATER = 'water';
     case AC_OVERTIME = 'ac_overtime';
     case PARKING_VALIDATION = 'parking_validation';
+    case REPAIR_COST = 'repair_cost';
     case PENALTY = 'penalty';
 
     public function label(): string
@@ -25,6 +26,7 @@ enum InvoiceLineType: string
             self::WATER => 'Tagihan Air PDAM',
             self::AC_OVERTIME => 'Lembur Pendingin Ruangan (AC Overtime)',
             self::PARKING_VALIDATION => 'Validasi Parkir Pelanggan',
+            self::REPAIR_COST => 'Biaya Perbaikan Fasilitas (Work Order)',
             self::PENALTY => 'Denda Keterlambatan Pembayaran',
         };
     }
@@ -42,13 +44,14 @@ enum InvoiceLineType: string
             self::AC_OVERTIME => 'revenue:mall:utilities:ac_overtime:IDR',
             // Tarif parkir yang ditanggung tenant tetap diakui sebagai pendapatan parkir mall
             self::PARKING_VALIDATION => 'revenue:mall:parking:IDR',
+            self::REPAIR_COST => 'revenue:mall:repairs:IDR',
             self::PENALTY => 'revenue:mall:penalties:IDR',
         };
     }
 
     /**
      * Prioritas pelunasan saat pembayaran sebagian (1 = tertinggi / dilunasi pertama).
-     * Aturan: denda -> utilitas -> service charge -> sewa
+     * Aturan: denda -> utilitas -> perbaikan -> service charge -> sewa
      */
     public function paymentPriority(): int
     {
@@ -58,9 +61,10 @@ enum InvoiceLineType: string
             self::WATER => 3,
             self::ELECTRICITY => 4,
             self::PARKING_VALIDATION => 5,
-            self::SERVICE_CHARGE => 6,
-            self::REVENUE_SHARE_TOPUP => 7,
-            self::BASE_RENT => 8,
+            self::REPAIR_COST => 6,
+            self::SERVICE_CHARGE => 7,
+            self::REVENUE_SHARE_TOPUP => 8,
+            self::BASE_RENT => 9,
         };
     }
 }

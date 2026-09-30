@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Mall\Http\Controllers\BillingController;
+use Modules\Mall\Http\Controllers\EventController;
+use Modules\Mall\Http\Controllers\FacilityController;
 use Modules\Mall\Http\Controllers\LeaseController;
+use Modules\Mall\Http\Controllers\LoyaltyController;
 use Modules\Mall\Http\Controllers\ParkingController;
 use Modules\Mall\Http\Controllers\ParkingGateController;
 use Modules\Mall\Http\Controllers\PublicDirectoryController;
@@ -64,5 +67,21 @@ Route::middleware(['web'])->prefix('mall')->name('mall.')->group(function () {
         Route::get('portal/sales', [TenantPortalController::class, 'sales'])->name('portal.sales');
         Route::post('portal/sales', [TenantPortalController::class, 'storeSales'])->name('portal.sales.store');
         Route::post('portal/overtime', [TenantPortalController::class, 'requestOvertime'])->name('portal.overtime');
+
+        // Loyalty Duta Points & Voucher Mall
+        Route::get('loyalty', [LoyaltyController::class, 'index'])->name('loyalty.index');
+        Route::post('loyalty/claim', [LoyaltyController::class, 'claimReceipt'])->name('loyalty.claim');
+        Route::post('loyalty/redeem/{template}', [LoyaltyController::class, 'redeem'])->name('loyalty.redeem');
+        Route::post('loyalty/use', [LoyaltyController::class, 'useVoucher'])->name('loyalty.use');
+        Route::post('loyalty/settle', [LoyaltyController::class, 'settle'])->name('loyalty.settle');
+
+        // Sewa Atrium & Event Mall
+        Route::get('events', [EventController::class, 'index'])->name('events.index');
+        Route::post('events', [EventController::class, 'store'])->name('events.store');
+
+        // Facility Management & Work Orders
+        Route::get('facilities', [FacilityController::class, 'index'])->name('facilities.index');
+        Route::post('facilities/generate-pm', [FacilityController::class, 'generatePm'])->name('facilities.generate-pm');
+        Route::post('facilities/work-orders/{workOrder}/bill-tenant', [FacilityController::class, 'billToTenant'])->name('facilities.bill-tenant');
     });
 });

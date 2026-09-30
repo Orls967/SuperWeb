@@ -163,6 +163,8 @@ class AllocatePaymentAction
             'revenue:mall:utilities:electricity:IDR' => 'Pendapatan Utilitas Listrik Mall',
             'revenue:mall:utilities:water:IDR' => 'Pendapatan Utilitas Air Bersih Mall',
             'revenue:mall:utilities:ac_overtime:IDR' => 'Pendapatan Lembur AC Mall',
+            'revenue:mall:parking:IDR' => 'Pendapatan Parkir Mall',
+            'revenue:mall:repairs:IDR' => 'Pendapatan Perbaikan Fasilitas Mall',
             'revenue:mall:penalties:IDR' => 'Pendapatan Denda Keterlambatan Mall',
         ];
 

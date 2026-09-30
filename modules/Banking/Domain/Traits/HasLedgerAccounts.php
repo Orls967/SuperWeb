@@ -35,11 +35,38 @@ trait HasLedgerAccounts
         );
     }
 
+    public function pointsAccount(): LedgerAccount
+    {
+        return LedgerAccount::firstOrCreate(
+            [
+                'code' => "points:user:{$this->id}:PTS",
+            ],
+            [
+                'uuid' => (string) Str::uuid(),
+                'owner_type' => self::class,
+                'owner_id' => $this->id,
+                'asset_code' => 'PTS',
+                'kind' => AccountKind::POINTS->value,
+                'name' => "Poin Loyalitas - {$this->name}",
+                'allow_negative' => false,
+                'cached_balance' => '0',
+                'is_frozen' => false,
+            ]
+        );
+    }
+
     public function walletBalance(string $asset = 'IDR'): Money
     {
         $account = $this->walletAccount($asset);
 
         return Money::of($asset, $account->cached_balance ?: '0');
+    }
+
+    public function pointsBalance(): int
+    {
+        $account = $this->pointsAccount();
+
+        return (int) $account->cached_balance;
     }
 
     public function walletPin(): HasOne

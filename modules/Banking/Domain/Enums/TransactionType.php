@@ -31,7 +31,10 @@ enum TransactionType: string
     case PARKING = 'parking';
     case LOYALTY_EARN = 'loyalty_earn';
     case LOYALTY_REDEEM = 'loyalty_redeem';
+    case LOYALTY_EXPIRE = 'loyalty_expire';
+    case VOUCHER_ISSUE = 'voucher_issue';
     case VOUCHER_SETTLEMENT = 'voucher_settlement';
+    case VOUCHER_BREAKAGE = 'voucher_breakage';
     case EVENT_BOOKING = 'event_booking';
 
     public function label(): string
@@ -62,7 +65,10 @@ enum TransactionType: string
             self::PARKING => 'Pembayaran Parkir',
             self::LOYALTY_EARN => 'Perolehan Poin Loyalitas',
             self::LOYALTY_REDEEM => 'Penukaran Poin Loyalitas',
+            self::LOYALTY_EXPIRE => 'Kedaluwarsa Poin Loyalitas',
+            self::VOUCHER_ISSUE => 'Penerbitan Voucher Mall',
             self::VOUCHER_SETTLEMENT => 'Settlement Voucher Tenant',
+            self::VOUCHER_BREAKAGE => 'Breakage Voucher Kedaluwarsa',
             self::EVENT_BOOKING => 'Sewa Atrium & Event',
         };
     }
