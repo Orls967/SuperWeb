@@ -110,13 +110,13 @@
 - [x] 8.6 Quality gate Fase 8
 
 ## FASE 9 — RESTO: POS HIDANG, SESI MEJA, SHIFT KASIR & TUTUP HARIAN
-- [ ] 9.1 Tabel resto_tables, resto_table_sessions, resto_order_items, resto_orders
-- [ ] 9.2 Flow hidang: sesi meja, piring hidang presented, hitung hidangan (consumed vs returned), nasi/minuman pesan, tambuah cepat, PB1 10%, pembulatan Rp100, bayar tunai/wallet/voucher/split, void/refund
-- [ ] 9.3 Shift kasir & kas: resto_shifts, OpenShiftAction, CloseShiftAction, cash variance posting, SettleCashAction
-- [ ] 9.4 POS UI: tablet/mobile friendly, grid menu, panel meja & etalase, layar hitung hidangan, keypad, idempotency offline-tolerant
-- [ ] 9.5 Tutup harian: command resto:close-day, resto_daily_summaries, flag --check vs ledger
-- [ ] 9.6 Tests: alur hidang lengkap, disentuh sebagian dihitung penuh, PB1 & pembulatan, tunai & wallet, submit ganda idempoten, konkurensi meja, shift variance, void/refund, close-day --check cocok ledger, reconcile bersih
-- [ ] 9.7 Quality gate Fase 9
+- [x] 9.1 Tabel resto_tables, resto_table_sessions, resto_order_items, resto_orders
+- [x] 9.2 Flow hidang: sesi meja, piring hidang presented, hitung hidangan (consumed vs returned), nasi/minuman pesan, tambuah cepat, PB1 10%, pembulatan Rp100, bayar tunai/wallet/voucher/split, void/refund
+- [x] 9.3 Shift kasir & kas: resto_shifts, OpenShiftAction, CloseShiftAction, cash variance posting, SettleCashAction
+- [x] 9.4 POS UI: tablet/mobile friendly, grid menu, panel meja & etalase, layar hitung hidangan, keypad, idempotency offline-tolerant
+- [x] 9.5 Tutup harian: command resto:close-day, resto_daily_summaries, flag --check vs ledger
+- [x] 9.6 Tests: alur hidang lengkap, disentuh sebagian dihitung penuh, PB1 & pembulatan, tunai & wallet, submit ganda idempoten, konkurensi meja, shift variance, void/refund, close-day --check cocok ledger, reconcile bersih
+- [x] 9.7 Quality gate Fase 9
 
 ## FASE 10 — RESTO: RANTAI PASOK, DAPUR SENTRAL & MULTI-OUTLET
 - [ ] 10.1 Tabel resto_suppliers, resto_purchase_orders, resto_purchase_order_lines, resto_goods_receipts

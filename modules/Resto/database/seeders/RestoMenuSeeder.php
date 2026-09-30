@@ -17,6 +17,7 @@ use Modules\Resto\Domain\Enums\IngredientCategory;
 use Modules\Resto\Domain\Enums\OutletType;
 use Modules\Resto\Domain\Enums\RecipeLineType;
 use Modules\Resto\Domain\Enums\ServiceStyle;
+use Modules\Resto\Domain\Enums\TableStatus;
 use Modules\Resto\Domain\Models\Ingredient;
 use Modules\Resto\Domain\Models\IngredientCost;
 use Modules\Resto\Domain\Models\MenuCategory;
@@ -26,6 +27,7 @@ use Modules\Resto\Domain\Models\Outlet;
 use Modules\Resto\Domain\Models\Recipe;
 use Modules\Resto\Domain\Models\RecipeLine;
 use Modules\Resto\Domain\Models\RestoStaffAssignment;
+use Modules\Resto\Domain\Models\RestoTable;
 use Modules\Resto\Domain\Models\UnitConversion;
 
 class RestoMenuSeeder extends Seeder
@@ -483,6 +485,7 @@ class RestoMenuSeeder extends Seeder
         $ledgerAccs = [
             'expense:resto:waste:IDR' => ['name' => 'Beban Limbah/Waste Makanan Resto', 'kind' => AccountKind::EXPENSE, 'allow_negative' => true],
             'expense:resto:cogs:IDR' => ['name' => 'Beban Pokok Penjualan (HPP) Resto', 'kind' => AccountKind::EXPENSE, 'allow_negative' => true],
+            'expense:resto:cash_variance:IDR' => ['name' => 'Selisih Kas Fisik Kasir Resto', 'kind' => AccountKind::EXPENSE, 'allow_negative' => true],
             'revenue:group:royalty:IDR' => ['name' => 'Pendapatan Royalti Franchise', 'kind' => AccountKind::REVENUE, 'allow_negative' => true],
         ];
 
@@ -491,6 +494,9 @@ class RestoMenuSeeder extends Seeder
             $ledgerAccs["cash:drawer:{$outlet->code}:IDR"] = ['name' => "Kas Fisik Kasir {$outlet->name}", 'kind' => AccountKind::CASH, 'allow_negative' => true];
             $ledgerAccs["revenue:resto:{$outlet->code}:food:IDR"] = ['name' => "Pendapatan Makanan {$outlet->name}", 'kind' => AccountKind::REVENUE, 'allow_negative' => true];
             $ledgerAccs["revenue:resto:{$outlet->code}:beverage:IDR"] = ['name' => "Pendapatan Minuman {$outlet->name}", 'kind' => AccountKind::REVENUE, 'allow_negative' => true];
+            $ledgerAccs["revenue:resto:{$outlet->code}:catering:IDR"] = ['name' => "Pendapatan Katering {$outlet->name}", 'kind' => AccountKind::REVENUE, 'allow_negative' => true];
+            $ledgerAccs["revenue:resto:{$outlet->code}:service:IDR"] = ['name' => "Pendapatan Biaya Layanan {$outlet->name}", 'kind' => AccountKind::REVENUE, 'allow_negative' => true];
+            $ledgerAccs["revenue:resto:{$outlet->code}:tax_pb1:IDR"] = ['name' => "Titipan PB1 Resto {$outlet->name}", 'kind' => AccountKind::REVENUE, 'allow_negative' => true];
         }
 
         foreach ($ledgerAccs as $accCode => $accData) {
@@ -534,6 +540,32 @@ class RestoMenuSeeder extends Seeder
                 note: 'Batch pagi Gulai Tunjang Kaki Sapi',
                 putOnDisplay: true
             );
+        }
+
+        // 10. Seed resto tables
+        $tablesConfig = [
+            ['code' => 'A1', 'seats' => 4, 'zone' => 'indoor'],
+            ['code' => 'A2', 'seats' => 4, 'zone' => 'indoor'],
+            ['code' => 'A3', 'seats' => 4, 'zone' => 'indoor'],
+            ['code' => 'A4', 'seats' => 4, 'zone' => 'indoor'],
+            ['code' => 'B1', 'seats' => 2, 'zone' => 'indoor'],
+            ['code' => 'B2', 'seats' => 2, 'zone' => 'indoor'],
+            ['code' => 'VIP-1', 'seats' => 8, 'zone' => 'vip'],
+            ['code' => 'L1', 'seats' => 6, 'zone' => 'lesehan'],
+            ['code' => 'O1', 'seats' => 4, 'zone' => 'outdoor'],
+        ];
+
+        foreach ([$dmOutlet, $kayutangiOutlet] as $outlet) {
+            foreach ($tablesConfig as $tbl) {
+                RestoTable::firstOrCreate(
+                    ['outlet_id' => $outlet->id, 'code' => $tbl['code']],
+                    [
+                        'seats' => $tbl['seats'],
+                        'zone' => $tbl['zone'],
+                        'status' => TableStatus::AVAILABLE,
+                    ]
+                );
+            }
         }
     }
 }

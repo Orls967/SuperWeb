@@ -146,4 +146,23 @@
 - **Decision:** (1) Ditetapkan konstanta pada model `DisplayTray`: `MAX_RECIRCULATION = 3` dan `MAX_DISPLAY_HOURS = 6`. (2) Piring yang dikembalikan utuh dari meja dinaikkan `recirculation_count`-nya. Jika mencapai batas maksimal atau melewati 6 jam sejak dimasak, piring ditolak masuk kembali dan dialihkan ke `discarded` (waste). (3) Nilai HPP sisa porsi yang dibuang otomatis diposting ke `expense:resto:waste:IDR` dan dikreditkan dari `inventory:resto:{outlet}:IDR`.
 - **Reason:** Memastikan standar higienitas pangan masakan Padang modern, mencegah penyajian makanan basi, dan menjaga akurasi pembukuan waste operasional.
 
+## 2026-09-30: Konvensi Tanda Double-Entry Pembayaran Tunai & Kasir Resto
+- **Context:** Transaksi kasir POS dapat berupa tunai (cash fisik di laci) atau non-tunai (wallet pelanggan). Akun pendapatan (`revenue:resto:{outlet}:*`) memiliki sifat saldo non-negatif (`allow_negative=false`), sementara total mutasi per aset harus selalu bernilai 0 (`SUM(amount) = 0`).
+- **Decision:**
+  - Penjualan Tunai: `cash:drawer:{outlet}:IDR` bertindak sebagai sumber aliran dana (`-$grand_total`) yang diimbangi dengan kredit akun pendapatan (`+$split`).
+  - Setoran Kas ke Bank (`SettleCashAction`): dana ditransfer dari laci kasir ke rekening kliring bank eksternal, di mana `cash:drawer` di-debet `+$amount` (mengembalikan saldo laci kasir ke titik impas/nol) dan `clearing:external:IDR` dikredit `-$amount`.
+  - Selisih Kas Shift (`CloseShiftAction`): selisih (`variance = counted - expected`) diposting ke `expense:resto:cash_variance:IDR` (`+$variance`) dan diimbangi pada `cash:drawer:{outlet}:IDR` (`-$variance`).
+- **Reason:** Menjamin saldo akun pendapatan selalu positif sesuai aturan bisnis akuntansi, memfasilitasi rekonsiliasi kas fisik harian per outlet, dan memastikan `bank:reconcile` selalu seimbang dengan 0 selisih global per aset.
+
+## 2026-09-30: Perhitungan PB1 10% & Pembulatan Rp 100 Terdekat
+- **Context:** Pajak Restoran (PB1) di Indonesia adalah 10% dari nilai konsumsi makanan/minuman setelah potongan diskon. Nilai transaksi kasir fisik sering menghasilkan angka pecahan rupiah ganjil yang tidak memiliki uang koin riil.
+- **Decision:** Sistem menghitung PB1 10% setelah dikurangi diskon (`round(subtotalAfterDiscount * 0.10)`), kemudian menjumlahkan total sementara, dan membulatkan ke kelipatan Rp 100 terdekat (`round(rawTotal / 100) * 100`). Selisih pembulatan (positif atau negatif) disimpan pada kolom `rounding` pada model `Order` dan diserap secara proporsional ke dalam pembagian pendapatan (`revenueSplits`) agar jumlah entri ledger sama persis dengan `grand_total`.
+- **Reason:** Mengeliminasi masalah kembalian uang koin receh di meja kasir restoran, sekaligus menjaga integritas pembukuan double-entry tanpa selisih 1 rupiah pun.
+
+## 2026-09-30: Penutupan Harian & Sumber Data Laporan Analitik
+- **Context:** Query analitik yang memindai tabel transaksi mentah (`resto_orders`) ribuan kali per hari dapat menurunkan performa basis data secara signifikan.
+- **Decision:** Command terjadwal `resto:close-day` (berjalan tiap 23:59) merangkum performa harian outlet ke tabel `resto_daily_summaries` (`gross_sales`, `discount`, `pb1`, `net_sales`, `cogs`, `waste_value`, `gross_margin`, `transactions`, `guests`, `cash_variance`, `top_items`). Seluruh dasbor dan laporan analitik diwajibkan hanya membaca dari `resto_daily_summaries`. Opsi `--check` memvalidasi angka ringkasan harian terhadap riwayat entri buku besar (ledger) untuk mendeteksi kecurangan atau inkonsistensi data.
+- **Reason:** Memberikan respons halaman dasbor instan dengan budget query sangat rendah (O(1)), sembari menyediakan mekanisme audit harian yang ketat.
+
+
 
