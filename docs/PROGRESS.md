@@ -136,12 +136,12 @@
 - [x] 11.6 Quality gate Fase 11
 
 ## FASE 12 — MODUL MALL: FONDASI, UNIT & LEASING
-- [ ] 12.1 Modul Mall + provider + menu. Tabel: mall_properties, mall_zones, mall_units, mall_tenants
-- [ ] 12.2 mall_leases: fit_out_days, rent_model (fixed|revenue_share|greater_of), eskalasi tahunan, billing_day, grace_days, denda harian
-- [ ] 12.3 Actions: CreateLeaseAction (anti-overlap), ActivateLeaseAction (tarik deposit via Payment Hub ke deposit:tenant), TerminateLeaseAction (potong tunggakan dari deposit), RenewLeaseAction
-- [ ] 12.4 UI: site plan per lantai (Tailwind grid/SVG interaktif), occupancy & GLA, daftar lease & expiring soon (<90 hari), direktori tenant publik
-- [ ] 12.5 Tests: lease ganda ditolak, deposit liability, terminate potong deposit, eskalasi tahun ke-2, occupancy rate, reconcile bersih
-- [ ] 12.6 Quality gate Fase 12
+- [x] 12.1 Modul Mall + provider + menu. Tabel: mall_properties, mall_zones, mall_units, mall_tenants
+- [x] 12.2 mall_leases: fit_out_days, rent_model (fixed|revenue_share|greater_of), eskalasi tahunan, billing_day, grace_days, denda harian
+- [x] 12.3 Actions: CreateLeaseAction (anti-overlap), ActivateLeaseAction (tarik deposit via Payment Hub ke deposit:tenant), TerminateLeaseAction (potong tunggakan dari deposit), RenewLeaseAction
+- [x] 12.4 UI: site plan per lantai (Tailwind grid/SVG interaktif), occupancy & GLA, daftar lease & expiring soon (<90 hari), direktori tenant publik
+- [x] 12.5 Tests: lease ganda ditolak, deposit liability, terminate potong deposit, eskalasi tahun ke-2, occupancy rate, reconcile bersih
+- [x] 12.6 Quality gate Fase 12
 
 ## FASE 13 — MALL: LAPORAN PENJUALAN TENANT, TAGIHAN BULANAN & TUNGGAKAN
 - [ ] 13.1 mall_tenant_sales_reports, portal tenant lapor penjualan, TenantSalesProvider contract untuk tenant terintegrasi

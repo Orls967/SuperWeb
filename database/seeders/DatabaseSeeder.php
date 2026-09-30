@@ -12,6 +12,7 @@ use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\database\seeders\BankingSeeder;
 use Modules\Core\database\seeders\PlatformSeeder;
 use Modules\Crypto\database\seeders\CryptoSeeder;
+use Modules\Mall\database\seeders\MallSeeder;
 use Modules\Resto\database\seeders\RestoMenuSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -126,6 +127,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PlatformSeeder::class,
             RestoMenuSeeder::class,
+            MallSeeder::class,
         ]);
     }
 }

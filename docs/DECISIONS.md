@@ -181,5 +181,14 @@
   3. **Royalti Franchise:** Command `resto:post-royalty` membebankan royalti dan marketing fee harian dari omzet bersih `DailySummary`. Jurnal buku besar mencatat `expense:resto:franchise_royalty:IDR` (debit) dan mengkredit rekening holding `revenue:group:royalty:IDR` serta `revenue:group:marketing:IDR`, seimbang tanpa selisih (sum = 0).
 - **Reason:** Menjamin manajemen kas dan persediaan akurat tanpa celah kebocoran dana operasional restoran dan holding.
 
+## 2026-09-30: Mall Leasing, Deposit Liability & Anti-Overlap Invariant
+- **Context:** Pengelolaan sewa unit mall (leasing) membutuhkan perlindungan terhadap tumpang-tindih tanggal sewa (double leasing), akuntansi uang jaminan sewa (security deposit) yang merupakan kewajiban (liabilitas) dan bukan pendapatan instan, serta eskalasi sewa multi-tahun.
+- **Decision:**
+  1. **Anti-Overlap Invariant:** Model `Unit` memvalidasi ketersediaan unit melalui `isAvailableBetween($start, $end)`. `CreateLeaseAction` menolak pembuatan draf sewa jika unit sudah terikat draf atau kontrak aktif lain pada rentang tanggal yang bersinggungan (`UnitAlreadyLeasedException`).
+  2. **Deposit Liability Accounting:** Saat kontrak diaktifkan (`ActivateLeaseAction`), deposit didebet dari dompet tenant (`wallet:user:{id}:IDR`) dan dikreditkan ke `liability:mall:tenant_deposit:IDR` (`AccountKind::LIABILITY`, `allow_negative=true`).
+  3. **Penyelesaian Terminasi (`TerminateLeaseAction`):** Uang deposit digunakan terlebih dahulu untuk melunasi tagihan tertunggak tenant (diakui sebagai pendapatan `revenue:mall:rent_settlement:IDR`), dan sisa deposit dikembalikan utuh ke saldo dompet tenant. Liabilitas deposit di-debet penuh kembali ke 0.
+  4. **Eskalasi Sewa Multi-Tahun:** Sewa dengan model `fixed` atau `greater_of` mengalami eskalasi majemuk tahunan: $\text{MonthlyRent}(Y) = \text{base\_monthly\_rent} \times (1 + \text{escalation\_percent}/100)^{Y-1}$.
+- **Reason:** Memastikan integritas fisik ketersediaan unit komersial, kepatuhan standar akuntansi keuangan (deposit sebagai liabilitas yang dapat dikembalikan), dan otomatisasi perhitungan sewa multi-tahun.
+
 
 
