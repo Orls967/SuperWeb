@@ -17,6 +17,7 @@ use Modules\Mall\Domain\Models\Invoice;
 use Modules\Mall\Domain\Models\InvoiceLine;
 use Modules\Mall\Domain\Models\Lease;
 use Modules\Mall\Domain\Models\OvertimeRequest;
+use Modules\Mall\Domain\Models\ParkingSession;
 use Modules\Mall\Domain\Models\TenantSalesReport;
 use Modules\Mall\Domain\Models\UtilityReading;
 
@@ -160,6 +161,23 @@ class GenerateMonthlyInvoicesAction
                 ];
             }
 
+            // 6. Validasi parkir pelanggan yang ditanggung tenant pada periode ini
+            $validatedSessions = ParkingSession::query()
+                ->unbilledValidation($lease->tenant_id, $periodMonth)
+                ->get();
+
+            $parkingValidationTotal = (int) $validatedSessions->sum('discount_amount');
+
+            if ($parkingValidationTotal > 0) {
+                $linesData[] = [
+                    'type' => InvoiceLineType::PARKING_VALIDATION,
+                    'description' => 'Validasi Parkir Pelanggan ('.$validatedSessions->count().' tiket ditanggung tenant)',
+                    'quantity' => (float) $validatedSessions->count(),
+                    'unit_price' => (int) round($parkingValidationTotal / max(1, $validatedSessions->count())),
+                    'amount' => $parkingValidationTotal,
+                ];
+            }
+
             $subtotal = array_sum(array_column($linesData, 'amount'));
 
             // Tanggal jatuh tempo: billing_day + grace_days
@@ -213,6 +231,12 @@ class GenerateMonthlyInvoicesAction
                     'invoice_id' => $invoice->id,
                     'status' => OvertimeStatus::BILLED,
                 ]);
+            }
+
+            // Tandai sesi parkir yang validasinya sudah ditagihkan agar tidak dobel
+            if ($validatedSessions->isNotEmpty()) {
+                ParkingSession::whereIn('id', $validatedSessions->pluck('id'))
+                    ->update(['validation_invoice_id' => $invoice->id]);
             }
 
             return $invoice;

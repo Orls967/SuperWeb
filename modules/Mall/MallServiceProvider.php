@@ -6,15 +6,22 @@ namespace Modules\Mall;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Modules\Mall\Application\Actions\ValidateParkingAction;
 use Modules\Mall\Application\Services\TenantSalesService;
 use Modules\Mall\Console\Commands\ApplyPenaltiesCommand;
 use Modules\Mall\Console\Commands\AuditBillingCommand;
 use Modules\Mall\Console\Commands\AutoDebitCommand;
 use Modules\Mall\Console\Commands\GenerateInvoicesCommand;
+use Modules\Mall\Console\Commands\RenewParkingMembersCommand;
+use Modules\Mall\Console\Commands\SimulateFootfallCommand;
+use Modules\Mall\Contracts\ParkingValidator;
 use Modules\Mall\Domain\Models\Invoice;
 use Modules\Mall\Domain\Models\InvoiceLine;
 use Modules\Mall\Domain\Models\Lease;
 use Modules\Mall\Domain\Models\OvertimeRequest;
+use Modules\Mall\Domain\Models\ParkingMember;
+use Modules\Mall\Domain\Models\ParkingSession;
+use Modules\Mall\Domain\Models\ParkingZone;
 use Modules\Mall\Domain\Models\Property;
 use Modules\Mall\Domain\Models\Tenant;
 use Modules\Mall\Domain\Models\TenantSalesReport;
@@ -30,6 +37,9 @@ class MallServiceProvider extends ServiceProvider
         $this->app->singleton(TenantSalesService::class, function ($app) {
             return new TenantSalesService;
         });
+
+        // Dipakai POS tenant (mis. Resto) untuk menanggung tarif parkir pelanggan
+        $this->app->bind(ParkingValidator::class, ValidateParkingAction::class);
     }
 
     public function boot(): void
@@ -43,6 +53,8 @@ class MallServiceProvider extends ServiceProvider
                 ApplyPenaltiesCommand::class,
                 AuditBillingCommand::class,
                 AutoDebitCommand::class,
+                RenewParkingMembersCommand::class,
+                SimulateFootfallCommand::class,
             ]);
         }
 
@@ -61,6 +73,9 @@ class MallServiceProvider extends ServiceProvider
             'mall_sales_report' => TenantSalesReport::class,
             'mall_utility_reading' => UtilityReading::class,
             'mall_overtime_request' => OvertimeRequest::class,
+            'mall_parking_session' => ParkingSession::class,
+            'mall_parking_member' => ParkingMember::class,
+            'mall_parking_zone' => ParkingZone::class,
         ]);
 
         if ($this->app->bound(MenuRegistry::class)) {
@@ -124,6 +139,46 @@ class MallServiceProvider extends ServiceProvider
                 order: 75,
                 group: 'Properti (Duta Mall)',
                 activePattern: 'mall/utilities*'
+            );
+
+            $registry->addItem(
+                label: 'Operasional Parkir',
+                route: 'mall.parking.index',
+                icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h2.5a2.5 2.5 0 010 5H9m-4 5h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>',
+                roles: ['admin', 'mall_manager'],
+                order: 77,
+                group: 'Properti (Duta Mall)',
+                activePattern: 'mall/parking'
+            );
+
+            $registry->addItem(
+                label: 'Gate Masuk & Keluar',
+                route: 'mall.parking.gate.entry',
+                icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>',
+                roles: ['admin', 'mall_manager'],
+                order: 78,
+                group: 'Properti (Duta Mall)',
+                activePattern: 'mall/parking/gate*'
+            );
+
+            $registry->addItem(
+                label: 'Langganan Parkir Bulanan',
+                route: 'mall.parking.members',
+                icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0"></path></svg>',
+                roles: ['admin', 'mall_manager', 'customer'],
+                order: 79,
+                group: 'Properti (Duta Mall)',
+                activePattern: 'mall/parking/members*'
+            );
+
+            $registry->addItem(
+                label: 'Analitik Kunjungan',
+                route: 'mall.parking.footfall',
+                icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>',
+                roles: ['admin', 'mall_manager'],
+                order: 80,
+                group: 'Properti (Duta Mall)',
+                activePattern: 'mall/parking/footfall*'
             );
 
             $registry->addItem(

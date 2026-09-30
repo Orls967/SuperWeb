@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Modules\Banking\Application\Actions\SetPinAction;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\database\seeders\BankingSeeder;
 use Modules\Banking\Domain\Models\LedgerEntry;
@@ -67,16 +68,21 @@ class MallBillingAndUtilitiesTest extends TestCase
 
         $this->tenantUser = User::firstOrCreate(
             ['email' => 'tenant.sariranah@duttamall.com'],
-            ['name' => 'Sari Ranah Owner', 'role' => 'tenant', 'pin' => '123456', 'password' => bcrypt('password')]
+            ['name' => 'Sari Ranah Owner', 'role' => 'tenant', 'password' => bcrypt('password')]
         );
 
         $this->otherTenantUser = User::create([
             'name' => 'Other Tenant Owner',
             'email' => 'other.tenant@mall.com',
             'role' => 'tenant',
-            'pin' => '654321',
             'password' => bcrypt('password'),
         ]);
+
+        // PIN dompet lewat mekanisme Banking (hash + lockout), bukan kolom users.pin
+        foreach ([$this->tenantUser, $this->otherTenantUser] as $pinUser) {
+            $pinUser->walletAccount('IDR');
+            app(SetPinAction::class)->execute($pinUser, '123456');
+        }
 
         $this->property = Property::where('code', 'DM-BJM')->firstOrFail();
         $this->tenant = Tenant::where('brand_name', 'RM Sari Ranah')->firstOrFail();

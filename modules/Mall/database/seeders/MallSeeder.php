@@ -10,16 +10,25 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Core\Domain\Models\Vehicle;
 use Modules\Mall\Application\Actions\GenerateMonthlyInvoicesAction;
 use Modules\Mall\Application\Actions\RecordUtilityReadingAction;
+use Modules\Mall\Application\Actions\RegisterParkingMemberAction;
+use Modules\Mall\Application\Services\FootfallGenerator;
+use Modules\Mall\Application\Services\MallLedgerAccounts;
 use Modules\Mall\Application\Services\TenantSalesService;
 use Modules\Mall\Domain\Enums\DepositStatus;
 use Modules\Mall\Domain\Enums\LeaseStatus;
+use Modules\Mall\Domain\Enums\MemberStatus;
 use Modules\Mall\Domain\Enums\RentModel;
 use Modules\Mall\Domain\Enums\TenantCategory;
 use Modules\Mall\Domain\Enums\UnitStatus;
 use Modules\Mall\Domain\Enums\UtilityType;
+use Modules\Mall\Domain\Enums\VehicleType;
 use Modules\Mall\Domain\Models\Lease;
+use Modules\Mall\Domain\Models\ParkingMember;
+use Modules\Mall\Domain\Models\ParkingTariff;
+use Modules\Mall\Domain\Models\ParkingZone;
 use Modules\Mall\Domain\Models\Property;
 use Modules\Mall\Domain\Models\Tenant;
 use Modules\Mall\Domain\Models\Unit;
@@ -151,6 +160,8 @@ class MallSeeder extends Seeder
                 'pic_phone' => '081255566677',
                 'pic_email' => 'leasing@sariranah.test',
                 'npwp' => '01.234.567.8-731.000',
+                // Referensi ke kode outlet Resto agar omzet POS & validasi parkir terhubung otomatis
+                'external_ref' => 'DM-01',
                 'user_id' => $adminUser?->id,
                 'is_active' => true,
             ]
@@ -166,6 +177,7 @@ class MallSeeder extends Seeder
                 'pic_phone' => '081234567890',
                 'pic_email' => 'mall.bengkel@autoserve.test',
                 'npwp' => '02.345.678.9-731.000',
+                'external_ref' => 'AUTOSERVE-DM',
                 'user_id' => $adminUser?->id,
                 'is_active' => true,
             ]
@@ -225,6 +237,9 @@ class MallSeeder extends Seeder
                 'service_charge_monthly' => $scLG12,
                 'annual_escalation_percent' => 5.00,
                 'revenue_share_percent' => 8.00, // 8% dari omzet hidang
+                // Tenant menanggung 2 jam parkir bila pelanggan belanja minimal Rp 100.000
+                'parking_validation_hours' => 2,
+                'parking_validation_min_spend' => 100000,
                 'security_deposit_amount' => $baseRentLG12 * 3,
                 'deposit_status' => DepositStatus::HELD,
                 'status' => LeaseStatus::ACTIVE,
@@ -256,6 +271,9 @@ class MallSeeder extends Seeder
                 'service_charge_monthly' => $scLG08,
                 'annual_escalation_percent' => 5.00,
                 'revenue_share_percent' => null,
+                // Servis kendaraan berdurasi lama: 3 jam parkir ditanggung bengkel
+                'parking_validation_hours' => 3,
+                'parking_validation_min_spend' => 250000,
                 'security_deposit_amount' => $baseRentLG08 * 3,
                 'deposit_status' => DepositStatus::HELD,
                 'status' => LeaseStatus::ACTIVE,
@@ -287,6 +305,8 @@ class MallSeeder extends Seeder
                 'service_charge_monthly' => $scGF01,
                 'annual_escalation_percent' => 7.00,
                 'revenue_share_percent' => 12.00,
+                'parking_validation_hours' => 1,
+                'parking_validation_min_spend' => 75000,
                 'security_deposit_amount' => $baseRentGF01 * 3,
                 'deposit_status' => DepositStatus::HELD,
                 'status' => LeaseStatus::ACTIVE,
@@ -380,5 +400,106 @@ class MallSeeder extends Seeder
 
         // 9. Generate Monthly Invoices
         app(GenerateMonthlyInvoicesAction::class)->generateAll($currentMonth, $dutaMall->id);
+
+        // 10. Parkir: zona, tarif progresif, akun ledger, dan langganan member
+        $this->seedParking($dutaMall, $customerUser);
+
+        // 11. Data kunjungan 30 hari terakhir untuk analitik footfall
+        app(FootfallGenerator::class)->generate(
+            property: $dutaMall,
+            startDate: Carbon::today()->subDays(29),
+            endDate: Carbon::today(),
+        );
+    }
+
+    /**
+     * Zona parkir, tarif, akun ledger parkir, dan satu langganan member contoh.
+     */
+    private function seedParking(Property $property, ?User $customerUser): void
+    {
+        // Akun sistem ledger parkir & keanggotaan
+        app(MallLedgerAccounts::class)->ensureAll();
+
+        $zones = [
+            ['code' => 'P1-MOBIL', 'name' => 'Basement 1 — Mobil', 'vehicle_type' => VehicleType::CAR, 'total_capacity' => 320],
+            ['code' => 'P2-MOBIL', 'name' => 'Basement 2 — Mobil', 'vehicle_type' => VehicleType::CAR, 'total_capacity' => 280],
+            ['code' => 'P3-MOTOR', 'name' => 'Ground — Sepeda Motor', 'vehicle_type' => VehicleType::MOTORCYCLE, 'total_capacity' => 600],
+        ];
+
+        foreach ($zones as $zone) {
+            ParkingZone::updateOrCreate(
+                ['property_id' => $property->id, 'code' => $zone['code']],
+                [
+                    'uuid' => (string) Str::uuid(),
+                    'name' => $zone['name'],
+                    'vehicle_type' => $zone['vehicle_type'],
+                    'total_capacity' => $zone['total_capacity'],
+                    'current_occupancy' => 0,
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        // Tarif progresif: jam pertama, jam berikutnya, batas harian, denda tiket hilang
+        $tariffs = [
+            [
+                'vehicle_type' => VehicleType::CAR,
+                'grace_period_minutes' => 15,
+                'first_hour_rate' => 5000,
+                'subsequent_hour_rate' => 3000,
+                'max_daily_rate' => 30000,
+                'lost_ticket_penalty' => 50000,
+            ],
+            [
+                'vehicle_type' => VehicleType::MOTORCYCLE,
+                'grace_period_minutes' => 15,
+                'first_hour_rate' => 3000,
+                'subsequent_hour_rate' => 1000,
+                'max_daily_rate' => 12000,
+                'lost_ticket_penalty' => 25000,
+            ],
+            [
+                'vehicle_type' => VehicleType::TRUCK,
+                'grace_period_minutes' => 10,
+                'first_hour_rate' => 10000,
+                'subsequent_hour_rate' => 6000,
+                'max_daily_rate' => 60000,
+                'lost_ticket_penalty' => 100000,
+            ],
+        ];
+
+        foreach ($tariffs as $tariff) {
+            ParkingTariff::updateOrCreate(
+                ['property_id' => $property->id, 'vehicle_type' => $tariff['vehicle_type']],
+                $tariff + ['is_active' => true]
+            );
+        }
+
+        // Langganan member contoh yang terhubung ke kendaraan di My Garage
+        $vehicle = $customerUser !== null
+            ? Vehicle::where('user_id', $customerUser->id)->whereNotNull('plate_number')->first()
+            : null;
+
+        if ($vehicle !== null) {
+            ParkingMember::updateOrCreate(
+                [
+                    'property_id' => $property->id,
+                    'plate_number' => strtoupper((string) $vehicle->plate_number),
+                ],
+                [
+                    'uuid' => (string) Str::uuid(),
+                    'user_id' => $customerUser->id,
+                    'vehicle_id' => $vehicle->id,
+                    'member_number' => 'MBR-DEMO001',
+                    'vehicle_type' => VehicleType::CAR,
+                    'monthly_price' => RegisterParkingMemberAction::DEFAULT_MONTHLY_PRICE,
+                    'auto_renew' => true,
+                    'start_date' => Carbon::today()->subDays(10),
+                    'end_date' => Carbon::today()->addDays(20),
+                    'status' => MemberStatus::ACTIVE,
+                    'notes' => 'Langganan demo bebas parkir Duta Mall',
+                ]
+            );
+        }
     }
 }

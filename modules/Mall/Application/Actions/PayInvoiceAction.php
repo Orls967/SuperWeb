@@ -6,31 +6,33 @@ namespace Modules\Mall\Application\Actions;
 
 use App\Models\User;
 use InvalidArgumentException;
+use Modules\Banking\Application\Actions\VerifyPinAction;
 use Modules\Mall\Domain\Models\Invoice;
 
 class PayInvoiceAction
 {
     public function __construct(
         protected AllocatePaymentAction $allocatePaymentAction,
+        protected VerifyPinAction $verifyPinAction,
     ) {}
 
     /**
-     * Pembayaran manual via portal tenant (memerlukan PIN transaksi dompet).
+     * Pembayaran manual via portal tenant.
+     *
+     * PIN diverifikasi lewat mekanisme dompet Banking (hash + lockout 5x gagal),
+     * satu-satunya sumber kebenaran PIN di platform ini.
      *
      * @throws InvalidArgumentException
      */
     public function execute(Invoice $invoice, int $amount, string $pin, User $user): Invoice
     {
-        // Validasi PIN transaksi
-        if (! $user->verifyPin($pin)) {
-            throw new InvalidArgumentException('PIN dompet yang Anda masukkan salah.');
-        }
-
         // Validasi hak akses (hanya pemilik tenant atau admin/staff yang berhak)
         $tenantUserId = $invoice->tenant?->user_id;
         if ($tenantUserId !== $user->id && ! $user->isMallAdmin() && ! $user->isAdmin()) {
             throw new InvalidArgumentException('Anda tidak memiliki otoritas untuk membayar tagihan tenant ini.');
         }
+
+        $this->verifyPinAction->execute($user, $pin);
 
         return $this->allocatePaymentAction->execute(
             $invoice,

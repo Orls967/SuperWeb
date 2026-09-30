@@ -25,7 +25,8 @@ class ApplyLatePenaltiesAction
 
         $invoices = Invoice::with(['lease', 'lines'])
             ->whereIn('status', [InvoiceStatus::ISSUED, InvoiceStatus::PARTIALLY_PAID, InvoiceStatus::OVERDUE])
-            ->where('due_date', '<', $today->toDateString())
+            // whereDate agar perbandingan tanggal konsisten di MySQL maupun SQLite
+            ->whereDate('due_date', '<', $today->toDateString())
             ->get();
 
         $penalizedCount = 0;

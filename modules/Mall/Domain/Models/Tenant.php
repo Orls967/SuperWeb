@@ -27,6 +27,7 @@ class Tenant extends Model
         'pic_phone',
         'pic_email',
         'npwp',
+        'external_ref',
         'category',
         'is_active',
     ];

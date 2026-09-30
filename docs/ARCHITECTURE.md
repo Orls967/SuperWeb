@@ -209,3 +209,81 @@ erDiagram
   - Seluruh laporan & dashboard membaca tabel ringkasan `resto_daily_summaries` untuk menjaga efisiensi query.
 
 
+
+---
+
+## MODUL MALL — PARKIR, GATE, MEMBER & FOOTFALL (FASE 14)
+
+### ERD Parkir
+
+```mermaid
+erDiagram
+    mall_properties ||--o{ mall_parking_zones : "punya zona"
+    mall_properties ||--o{ mall_parking_tariffs : "tarif per jenis kendaraan"
+    mall_properties ||--o{ mall_parking_members : "langganan bulanan"
+    mall_properties ||--o{ mall_footfall_counts : "penghitung pengunjung"
+    mall_parking_zones ||--o{ mall_parking_sessions : "menampung sesi"
+    mall_parking_members ||--o{ mall_parking_sessions : "sesi bebas biaya"
+    mall_tenants ||--o{ mall_parking_sessions : "validasi belanja"
+    mall_invoices ||--o{ mall_parking_sessions : "menagihkan validasi"
+    core_vehicles ||--o{ mall_parking_members : "kendaraan My Garage"
+    core_vehicles ||--o{ mall_parking_sessions : "plat dikenali"
+    users ||--o{ mall_parking_sessions : "pembayar dompet"
+```
+
+### Tabel
+
+| Tabel | Peran |
+|---|---|
+| `mall_parking_zones` | Zona parkir per jenis kendaraan dengan `total_capacity` dan `current_occupancy` |
+| `mall_parking_tariffs` | Tarif progresif: `grace_period_minutes`, `first_hour_rate`, `subsequent_hour_rate`, `max_daily_rate`, `lost_ticket_penalty` |
+| `mall_parking_sessions` | Satu sesi masuk–keluar, termasuk rincian tarif, validasi tenant, dan metode bayar |
+| `mall_parking_members` | Langganan bulanan per plat, terhubung ke `core_vehicles`, dengan `auto_renew` |
+| `mall_footfall_counts` | Kunjungan per properti per tanggal per jam per gate (unik pada kombinasi tersebut) |
+
+Indeks `mall_parking_validation_billing_idx` pada `(validated_by_tenant_id, validation_invoice_id, exit_time)` dipakai agar penagihan validasi bulanan tidak memindai seluruh tabel sesi.
+
+### Aturan tarif
+
+1. Durasi dibulatkan ke jam penuh berikutnya: 61 menit ditagih 2 jam.
+2. Di bawah masa tenggang (15 menit) bebas biaya.
+3. Tarif satu siklus 24 jam dibatasi `max_daily_rate`; parkir 12 jam mobil = min(38.000, 30.000) = **30.000**.
+4. Member aktif bebas biaya; setelah kedaluwarsa tarif normal berlaku kembali.
+5. Tiket hilang menambah denda flat dan tidak bisa dibebaskan oleh status member.
+
+### Validasi parkir oleh tenant
+
+Tenant menanggung N jam pertama bila pelanggan berbelanja minimal X, keduanya parameter pada kontrak sewa (`parking_validation_hours`, `parking_validation_min_spend`).
+
+- Yang disimpan saat validasi adalah **jumlah jam**, bukan rupiah, karena durasi akhir baru diketahui di gate keluar.
+- Nominal potongan dihitung di gate keluar oleh `ParkingTariffCalculator::discountForFreeHours()`.
+- Nominal itu **tidak hilang** dari pendapatan mall: pada tagihan bulanan tenant muncul baris `parking_validation` yang dikreditkan ke `revenue:mall:parking:IDR`.
+- `validation_invoice_id` menandai sesi yang sudah ditagih; sesi yang belum tertagih otomatis ikut siklus berikutnya.
+
+### Contracts
+
+| Contract | Implementor | Dipakai oleh |
+|---|---|---|
+| `Modules\Mall\Contracts\ParkingValidator` | `ValidateParkingAction` | POS Resto (Fase 16.2), portal tenant |
+| `Modules\Mall\Contracts\TenantSalesProvider` | Resto & AutoServe (Fase 16.1) | `TenantSalesService` saat menerbitkan tagihan |
+
+`ParkingValidationResult` adalah DTO readonly di namespace `Contracts` supaya modul lain tidak perlu menyentuh `Mall\Domain`.
+
+### Akun sistem parkir
+
+| Kode akun | Kind | allow_negative | Konvensi |
+|---|---|---|---|
+| `revenue:mall:parking:IDR` | REVENUE | tidak | Dikreditkan positif saat tarif diterima |
+| `cash:mall:parking:IDR` | CASH | ya | Dicatat negatif saat menerima tunai, sama seperti `cash:drawer:{outlet}:IDR` |
+| `revenue:mall:membership:IDR` | REVENUE | tidak | Pendapatan langganan parkir bulanan |
+
+### Command terjadwal
+
+| Command | Jadwal | Fungsi |
+|---|---|---|
+| `mall:renew-parking-members` | harian 06:00 | Pengingat H-3 lalu debit perpanjangan otomatis; saldo kurang → kedaluwarsa |
+| `mall:simulate-footfall` | manual | Mengisi data kunjungan (pola ramai akhir pekan & jam 17–21) untuk analitik dan demo |
+
+### Catatan perbandingan tanggal
+
+Cast `date` Eloquent menyimpan nilai lengkap `Y-m-d H:i:s`, sehingga `where('kolom_date', '<=', '2026-09-30')` bernilai **salah** pada SQLite karena dibandingkan sebagai string. Semua filter kolom bertipe tanggal memakai `whereDate()`.

@@ -6,8 +6,11 @@ namespace Modules\Core\database\seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Modules\AutoDex\Domain\Models\Car;
+use Modules\Core\Application\Actions\AcquireVehicleAction;
 use Modules\Core\Application\Services\ActivityLogger;
 use Modules\Core\Application\Services\NotificationService;
+use Modules\Core\Domain\Models\Vehicle;
 
 class PlatformSeeder extends Seeder
 {
@@ -23,6 +26,8 @@ class PlatformSeeder extends Seeder
         if (! $customer || ! $admin) {
             return;
         }
+
+        $this->seedGarageVehicles($customer);
 
         // === Sample Notifications for Customer ===
         $notif->send(
@@ -126,6 +131,48 @@ class PlatformSeeder extends Seeder
                 event: 'mechanic_login',
                 description: 'Mekanik Budi memulai shift hari ini',
                 userId: $mekanik->id,
+            );
+        }
+    }
+
+    /**
+     * Kendaraan demo di My Garage. Dibuat lewat AcquireVehicleAction supaya
+     * rantai Vehicle Passport ikut terbentuk dan bisa diverifikasi.
+     */
+    private function seedGarageVehicles(User $customer): void
+    {
+        if (Vehicle::where('user_id', $customer->id)->exists()) {
+            return;
+        }
+
+        $cars = Car::query()->orderBy('id')->limit(2)->get();
+
+        if ($cars->isEmpty()) {
+            return;
+        }
+
+        $acquire = app(AcquireVehicleAction::class);
+
+        $fixtures = [
+            ['plate' => 'DA 1234 XY', 'color' => 'Putih Mutiara', 'odometer' => 42_500],
+            ['plate' => 'DA 5678 ZA', 'color' => 'Hitam Metalik', 'odometer' => 18_900],
+        ];
+
+        foreach ($cars as $index => $car) {
+            $fixture = $fixtures[$index] ?? null;
+
+            if ($fixture === null) {
+                continue;
+            }
+
+            $acquire->handle(
+                user: $customer,
+                car: $car,
+                plateNumber: $fixture['plate'],
+                color: $fixture['color'],
+                vin: 'DEMOVIN'.str_pad((string) $car->id, 10, '0', STR_PAD_LEFT),
+                odometerKm: $fixture['odometer'],
+                acquiredViaType: 'manual',
             );
         }
     }

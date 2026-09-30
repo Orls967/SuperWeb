@@ -79,7 +79,7 @@
 - [x] 6.3 Dashboard Customer terpadu
 - [x] 6.4 Dashboard Admin terpadu
 - [x] 6.5 Dashboard Mekanik terpadu
-- [x] 6.6 Seeder demo lengkap
+- [ ] 6.6 Seeder demo lengkap — **DIBUKA KEMBALI 2026-09-30**: pemeriksaan pada Fase 14 menemukan seeder hanya membuat 4 user dan 0 kendaraan, bukan 20 customer + riwayat booking + 3 pinjaman seperti spesifikasi. Kendaraan garasi demo sudah ditambahkan ke `PlatformSeeder`; sisanya digabungkan ke task 17.1 (DemoLargeSeeder) yang cakupannya lebih luas.
 - [x] 6.7 Quality gate Fase 6
 
 ## DEFINITION OF DONE (FASE 0–6)
@@ -154,12 +154,12 @@
 - [x] 13.8 Quality gate Fase 13
 
 ## FASE 14 — MALL: PARKIR, AKSES & FOOTFALL
-- [ ] 14.1 Tabel mall_parking_zones, mall_parking_tariffs, mall_parking_sessions, mall_parking_members
-- [ ] 14.2 Tarif progresif BigDecimal: grace 15 menit, pembulatan jam, batas harian, tiket hilang, validasi parkir oleh tenant jadi piutang tenant
-- [ ] 14.3 Gate simulasi UI: gate masuk (tiket/plat member) & gate keluar (scan tiket, bayar, buka gate), tolak jika penuh, real-time occupancy polling
-- [ ] 14.4 Footfall: mall_footfall_counts, command mall:simulate-footfall, dashboard footfall & konversi tenant
-- [ ] 14.5 Tests: tarif grace, 61 menit, 8 jam batas harian, tiket hilang, member aktif gratis, member kedaluwarsa bayar, validasi tenant, kapasitas penuh ditolak, tiket ganda ditolak, query budget, reconcile bersih
-- [ ] 14.6 Quality gate Fase 14
+- [x] 14.1 Tabel mall_parking_zones, mall_parking_tariffs, mall_parking_sessions, mall_parking_members
+- [x] 14.2 Tarif progresif BigDecimal: grace 15 menit, pembulatan jam, batas harian, tiket hilang, validasi parkir oleh tenant jadi piutang tenant
+- [x] 14.3 Gate simulasi UI: gate masuk (tiket/plat member) & gate keluar (scan tiket, bayar, buka gate), tolak jika penuh, real-time occupancy polling
+- [x] 14.4 Footfall: mall_footfall_counts, command mall:simulate-footfall, dashboard footfall & konversi tenant
+- [x] 14.5 Tests: tarif grace, 61 menit, 8 jam batas harian, tiket hilang, member aktif gratis, member kedaluwarsa bayar, validasi tenant, kapasitas penuh ditolak, tiket ganda ditolak, query budget, reconcile bersih
+- [x] 14.6 Quality gate Fase 14
 
 ## FASE 15 — MALL: LOYALTY, VOUCHER, EVENT & FACILITY MANAGEMENT
 - [ ] 15.1 Loyalty Duta Points (aset ledger PTS): points:user:{id}:PTS & liability:mall:points:PTS, earn dari belanja / struk klaim unik, redeem voucher & tier membership, FIFO expiry mall:expire-points
