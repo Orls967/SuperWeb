@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Logistics\Http\Controllers\DriverController;
 use Modules\Logistics\Http\Controllers\FleetController;
 use Modules\Logistics\Http\Controllers\LaneController;
 use Modules\Logistics\Http\Controllers\LocationController;
@@ -22,7 +23,8 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
 
         // Armada Multimoda (Fleet)
         Route::get('/fleet', [FleetController::class, 'index'])->name('fleet.index');
-        Route::get('/drivers', [LogisticsDashboardController::class, 'index'])->name('drivers.index');
+        // Pengemudi (Drivers)
+        Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
         Route::get('/shipments', [LogisticsDashboardController::class, 'index'])->name('shipments.index');
         Route::get('/dispatch', [LogisticsDashboardController::class, 'index'])->name('dispatch.index');
         Route::get('/hub', [LogisticsDashboardController::class, 'index'])->name('hub.index');

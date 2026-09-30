@@ -242,7 +242,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - [x] 20.1 Kerangka modul modules/Logistics, provider, MenuRegistry "Logistik", roles (logistics_admin, dispatcher, hub_operator, driver, shipper), policies, arch tests batas modul
 - [x] 20.2 Lokasi & jaringan: lgx_locations, lgx_lanes, seed jaringan berpusat di Banjarmasin (pelabuhan UN/LOCODE, bandara IATA, hub darat, CFS, depot), CRUD + SVG skematik
 - [x] 20.3 Armada: lgx_trucks (terhubung Vehicle Passport core_vehicles, DA plate), lgx_trailers, lgx_vessels (IMO check digit), lgx_aircraft, lgx_containers (ISO 6346 check digit), lgx_ulds, unit tests check digit
-- [ ] 20.4 Pengemudi & kru: lgx_drivers (SIM class, expiry, hub asal), batas jam mengemudi UU 22/2009 maks 8 jam/hari & istirahat 30 menit per 4 jam
+- [x] 20.4 Pengemudi & kru: lgx_drivers (SIM class, expiry, hub asal), batas jam mengemudi UU 22/2009 maks 8 jam/hari & istirahat 30 menit per 4 jam
 - [ ] 20.5 Seeder LogisticsSeeder (30 truk berpaspor, 8 trailer, 4 kapal, 2 pesawat, 300 kontainer ISO 6346, 12 driver, 3 dispatcher, 4 hub operator, 5 shipper, 1 admin), akun demo di README
 - [ ] 20.6 Quality gate Fase 20
 
