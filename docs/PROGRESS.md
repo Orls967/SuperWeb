@@ -268,7 +268,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - [x] 22.7 Papan dispatch (dispatcher): assign armada + driver dengan validasi SIM, jam kerja, status maintenance, paspor kendaraan
 - [x] 22.8 Aplikasi driver (mobile): daftar stop, scan pickup, Proof of Delivery (nama penerima, OTP 6 digit hash, foto bukti, tanda tangan canvas), 3x gagal -> ReturnToSender
 - [x] 22.9 Exception & SLA: tipe exception terstruktur, SLA monitoring, lgx:detect-late idempotent
-- [ ] 22.10 Quality gate Fase 22 (termasuk lgx:verify-custody dan lgx:capacity-check)
+- [x] 22.10 Quality gate Fase 22 (termasuk lgx:verify-custody dan lgx:capacity-check)
 
 ## FASE 23 — UANG LOGISTIK: PENDAPATAN, COD, CARRIER, KLAIM, D&D, BEA CUKAI
 - [ ] 23.1 Pengakuan pendapatan (Alur 2 & 4): ShipmentDelivered event -> debit unearned_freight / kredit freight_revenue
