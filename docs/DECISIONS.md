@@ -355,3 +355,40 @@
 - **Context:** Fase 22.9 needs structured exceptions and an idempotent `lgx:detect-late`.
 - **Decision:** `lgx_shipment_exceptions` stores type/severity/status with a unique `dedupe_key` (`late:{shipment}`, `missort:{shipment}:{event}`, `delivery_failed:{shipment}:{attempt}`). Late exceptions do not change shipment status and do not write custody events (internal signal only); manual blocking types (damaged, address invalid, vehicle breakdown) move the shipment to `Exception` and write `EXCEPTION_RAISED`/`EXCEPTION_RESOLVED` events. Closing the last open exception of a shipment in `Exception` status requires an explicit resume status. SLA hours per service level live in `config/logistics.php` (`sla_hours`), due time = `booked_at + hours`. `lgx:detect-late` is scheduled every 15 minutes with `withoutOverlapping` and auto-closes late exceptions of finished shipments.
 - **Reason:** Re-running the command can never create duplicates, and public tracking is not polluted by internal SLA signals.
+
+## 2026-10-02: Fase 23 — Konvensi Ledger Logistik dan Tafsiran Test (a)–(e)
+- **Context:** DoD Fase 19–25 meminta "setiap alur uang di tabel Fase 23 punya test (a)–(e)" tanpa mendefinisikan huruf-hurufnya.
+- **Decision:** Dipakai lima dimensi seragam di setiap file test alur uang: (a) jurnal dan saldo benar pada jalur utama, (b) idempoten/tidak ganda, (c) `bank:reconcile` tetap 0 selisih, (d) penolakan keadaan/input tidak valid tanpa efek samping, (e) otorisasi dan cakupan akses per peran. Konvensi tanda ledger yang dipakai seluruh alur: kredit positif, debit negatif, total per jurnal 0. Seluruh posting lewat `LogisticsLedger` (menjamin akun `lgx:*` ada) dan memakai kunci idempotensi deterministik.
+- **Reason:** Tafsiran ini bisa diaudit oleh `lgx:audit-billing` dan menutup risiko transaksi ganda, selisih buku besar, dan akses tidak sah.
+
+## 2026-10-02: Pengakuan Pendapatan Terjadi di Dalam Transaksi Pengantaran
+- **Context:** Fase 23.1 mengakui pendapatan saat `ShipmentDelivered`.
+- **Decision:** Event dipicu di dalam transaksi `CompleteDeliveryAction` dan listener sinkron memposting jurnal. Prabayar: debit `unearned_freight`, kredit `freight_revenue`. Pascabayar: debit piutang `lgx:ar:{shipper}`, kredit `freight_revenue`; pembayaran invoice mengkredit AR sehingga saldo AR kembali 0. Nilai yang diakui adalah `total_amount_idr` penuh (PPN masih simulasi dan belum dipisah ke akun utang pajak).
+- **Reason:** Jika posting ledger gagal, pengantaran ikut dibatalkan, sehingga tidak pernah ada resi Delivered tanpa pendapatan. `revenue_recognized_at` dan kunci `lgx:revenue:{id}` menjaga idempotensi.
+
+## 2026-10-02: Quote Menyimpan Nilai Barang, Asuransi, dan COD; Fee COD Dipotong Saat Settlement
+- **Context:** `QuoteShipmentAction` menerima `declaredValueIdr`, `insured`, `codAmountIdr` tetapi tidak menyimpannya sehingga resi tidak pernah membawa COD/asuransi. Selain itu surcharge `COD_FEE` pada quote akan menggandakan fee COD yang dipotong saat settlement.
+- **Decision:** Kolom `declared_value_idr`, `insured`, `cod_amount_idr` ditambahkan ke `lgx_quotes` (ikut hash payload anti-tamper) dan disalin ke resi oleh kedua action booking. Surcharge `COD_FEE` tidak lagi diterapkan di quote; fee COD (config `cod_fee_rate`, minimum `cod_fee_min_idr`, maksimum sebesar dana COD) dipotong saat `lgx:settle-cod` dan masuk `cod_fee_revenue`.
+- **Reason:** Satu titik pengenaan fee dan data COD/asuransi benar-benar sampai ke alur uang.
+
+## 2026-10-02: COD Tiga Tahap dengan Setoran Persis
+- **Decision:** Collect (debit kas driver, kredit titipan COD shipper) terjadi di transaksi pengantaran dan wajib dikonfirmasi driver; setoran di hub harus sama persis dengan total pengumpulan driver yang belum disetor (selisih ditolak, tidak ada jurnal); `lgx:settle-cod` mencairkan D+N (config `cod_settlement_days`, default 2) ke dompet shipper dikurangi fee. Kas tetap tercatat di akun kas hub sebagai aset perusahaan.
+
+## 2026-10-02: Carrier Subkontrak — Akrual Saat Leg Selesai, Bayar Setelah Termin
+- **Decision:** Biaya hanya diakrual saat leg selesai (`CompleteShipmentLegAction`, satu transaksi): debit `carrier_cost`, kredit `carrier_payable:{carrier}`. `lgx:pay-carriers` (mingguan) membayar leg yang melewati `payment_terms_days` terhadap `clearing:external:IDR`, dengan kunci jurnal dari hash daftar leg sehingga tidak dapat terbayar dua kali. Margin shipment = pendapatan diakui − biaya carrier yang sudah diakrual.
+
+## 2026-10-02: Klaim — Pembuat, Pengaju, dan Penyetuju Harus Tiga Orang Berbeda
+- **Context:** Spec menulis "penyetuju != pengaju != pembuat".
+- **Decision:** Tiga aktor: pembuat membuat draft (shipper pemilik atau staf), pengaju (staf, bukan pembuat) mengajukan, penyetuju (admin/admin logistik, bukan pembuat maupun pengaju) memutuskan; pembayaran oleh admin. Batas ganti rugi: berasuransi = nilai deklarasi; tidak berasuransi = 10x ongkir (maks. nilai deklarasi); keterlambatan = ongkir. Anti bayar ganda berlapis: kolom `active_key` unik per resi (dibebaskan hanya saat ditolak), kunci jurnal `lgx:claim_pay:{id}`, dan status `paid` terminal.
+
+## 2026-10-02: D&D — Hari Kalender Zona Waktu Lokasi, Akrual Kumulatif, Invoice Terpisah
+- **Decision:** Hari dihitung per tanggal kalender pada zona waktu lokasi (hari mulai = hari ke-1), dikurangi free days, tarif eskalasi opsional; tarif dipilih berdasarkan kekhususan (lokasi+ukuran > lokasi > ukuran > umum). Akrual kumulatif memposting selisih (debit AR shipper, kredit `dd_revenue`) dengan kunci yang memuat total kumulatif, sehingga `lgx:accrue-dd` aman diulang. Invoice D&D memakai `lgx_invoices.kind='dd'` agar pembayaran memakai alur invoice yang sama dan tidak menghalangi invoice freight periode yang sama.
+
+## 2026-10-02: Bea Cukai adalah Simulasi dengan Jalur Merah Otomatis
+- **Decision:** BM = nilai x tarif; PPN dan PPh 22 (API 2,5% / non-API 7,5%, dapat dikonfigurasi per HS) dihitung atas (nilai + BM), pembulatan half-up per baris. Jalur merah bila ada HS lartas (`requires_inspection`) atau nilai total >= `customs_red_lane_threshold_idr`: resi masuk `CustomsHold` (hanya dari PickedUp/InTransit/AtHub) dengan exception `customs_hold`. Bea dibayar shipper dari dompet (PIN) ke `customs_duty_payable`; hanya admin yang meloloskan dan resi kembali ke status sebelumnya.
+
+## 2026-10-02: BBM Memakai Integer dan Anomali Ketat > 30%
+- **Decision:** Liter x1000, jarak meter, km/l x100, deviasi basis poin. Metode isi penuh; baseline = rata-rata hingga 5 log terakhir yang tidak anomali (minimal 2 sampel); anomali bila |deviasi| > 3.000 bp (tepat 30% bukan anomali). Odometer wajib naik dan memperbarui truk. Driver hanya boleh mencatat untuk truk pada trip aktifnya.
+
+## 2026-10-02: lgx:audit-billing dan Seed Demo Bernilai Non-Nol
+- **Decision:** 15 pemeriksaan membandingkan dokumen dengan saldo ledger (unearned vs resi belum Delivered, Delivered vs pengakuan, invoice, AR per shipper, D&D, bea cukai, COD, carrier, klaim, BBM); command gagal (exit 1) bila ada selisih. `LogisticsFinanceSeeder` membangun seluruh alur lewat action produksi (bukan jurnal manual) sehingga audit pada seed default memeriksa 29 dokumen non-nol.

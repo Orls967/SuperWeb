@@ -239,3 +239,31 @@
   - Monitoring SLA per service level (melewati SLA / berisiko), command `lgx:detect-late` terjadwal tiap 15 menit
 - **Catatan Lingkungan:** `composer.lock` mensyaratkan PHP >= 8.4 (Symfony 8.1) sedangkan sandbox hanya PHP 8.3. Dependensi diselesaikan sementara dengan `platform.php=8.3.6` untuk menjalankan test, lalu `composer.json`/`composer.lock` dikembalikan tanpa perubahan.
 
+## Quality Gate Fase 23 — 2026-10-02
+
+- **Cakupan Fase:** Fase 23 — Uang Logistik: Pendapatan, COD, Carrier, Klaim, D&D, Bea Cukai (Tasks 23.1–23.9)
+- **Total Test:** **521 tests** (100% PASS, 0 failure, 0 skipped), naik dari 457 pada gate Fase 22
+- **Total Assertion:** **3070 assertions**
+- **Durasi Eksekusi Test Suite:** 91.85s
+- **Status Build Frontend (Vite):** Sukses
+- **Status Standar Kode (Pint):** Passed (`vendor/bin/pint --test`)
+- **Arch Tests (batas modul):** 9 passed
+- **Hasil Quality Gates (`migrate:fresh --seed`):**
+  - `php artisan bank:reconcile`: 128 akun ledger seimbang, 0 selisih
+  - `php artisan lgx:audit-billing`: 15 pemeriksaan, 29 dokumen non-nol, 0 selisih (unearned, pendapatan Delivered, invoice freight/D&D, piutang shipper, bea cukai, COD, carrier, klaim, BBM)
+  - `php artisan lgx:verify-custody`: 6 pengiriman (9 event) valid
+  - `php artisan lgx:capacity-check`: 1 jadwal valid
+  - `php artisan core:verify-passports`, `mall:audit-billing`, `super:health-check`: lulus; `lgx:detect-late`, `lgx:settle-cod`, `lgx:accrue-dd`, `lgx:pay-carriers` berjalan idempoten
+- **Pencapaian Fitur Fase 23:**
+  - 23.1 Pengakuan pendapatan saat Delivered (prabayar via unearned_freight, pascabayar via piutang), idempoten
+  - 23.2 COD: collect oleh driver, setoran hub persis, `lgx:settle-cod` D+N dengan fee ke `cod_fee_revenue`, dashboard COD
+  - 23.3 Carrier subkontrak: akrual biaya leg, `lgx:pay-carriers` mingguan, laporan margin per resi
+  - 23.4 Klaim: workflow pembuat/pengaju/penyetuju (4 mata), batas ganti rugi asuransi/non-asuransi, anti bayar ganda berlapis
+  - 23.5 Demurrage & Detention: free time, tarif bertingkat, `lgx:accrue-dd` per zona waktu lokasi, invoice D&D
+  - 23.6 Bea cukai: HS tariff, PIB/PEB simulasi BM/PPN/PPh 22, jalur merah → CustomsHold, bayar dan loloskan
+  - 23.7 BBM: log isi penuh integer, konsumsi km/l, anomali > 30%
+  - 23.8 `lgx:audit-billing` (15 pemeriksaan) dan `LogisticsFinanceSeeder`
+  - Setiap alur uang memiliki test (a)–(e) (lihat DECISIONS 2026-10-02)
+- **Perubahan lintas fase yang perlu diketahui:** quote kini menyimpan nilai deklarasi/asuransi/COD; surcharge COD_FEE tidak lagi diterapkan di quote (fee dipotong saat settlement); `lgx_invoices` memiliki kolom `kind`.
+- **Catatan Lingkungan:** `composer.lock` mensyaratkan PHP >= 8.4 sedangkan sandbox PHP 8.3; test dijalankan dengan resolusi dependensi sementara (`platform.php=8.3.6`), `composer.json`/`composer.lock` tidak diubah.
+

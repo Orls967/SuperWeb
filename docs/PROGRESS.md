@@ -279,7 +279,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - [x] 23.6 Bea cukai (Alur 13): lgx_customs_declarations PIB/PEB, lgx_hs_tariffs, simulasi bea masuk/PPN/PPh 22, CustomsHold
 - [x] 23.7 Bahan bakar & biaya truk: lgx_fuel_logs (liter x 1000 integer), konsumsi km/l, flag anomali > 30%
 - [x] 23.8 lgx:audit-billing command: invoice freight, D&D, bea cukai vs ledger, pendapatan Delivered vs unearned, non-nol pada seed default
-- [ ] 23.9 Quality gate Fase 23 (termasuk lgx:audit-billing)
+- [x] 23.9 Quality gate Fase 23 (termasuk lgx:audit-billing)
 
 ## FASE 24 — INTEGRASI LINTAS LINI
 - [ ] 24.1 Store -> Logistik: event order dibayar -> shipment otomatis via ShipmentBooking contract, ongkir Store -> unearned_freight, resi di order detail
