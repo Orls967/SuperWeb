@@ -3,11 +3,17 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Logistics\Http\Controllers\CarrierController;
+use Modules\Logistics\Http\Controllers\ClaimController;
+use Modules\Logistics\Http\Controllers\CodController;
+use Modules\Logistics\Http\Controllers\CustomsController;
+use Modules\Logistics\Http\Controllers\DemurrageController;
 use Modules\Logistics\Http\Controllers\DispatchBoardController;
 use Modules\Logistics\Http\Controllers\DriverController;
 use Modules\Logistics\Http\Controllers\DriverTaskController;
 use Modules\Logistics\Http\Controllers\ExceptionController;
 use Modules\Logistics\Http\Controllers\FleetController;
+use Modules\Logistics\Http\Controllers\FuelLogController;
 use Modules\Logistics\Http\Controllers\HubOperationsController;
 use Modules\Logistics\Http\Controllers\LaneController;
 use Modules\Logistics\Http\Controllers\LocationController;
@@ -59,6 +65,43 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::post('/hub/inbound', [HubOperationsController::class, 'inbound'])->name('hub.inbound');
         Route::post('/hub/sort', [HubOperationsController::class, 'sort'])->name('hub.sort');
         Route::post('/hub/outbound', [HubOperationsController::class, 'outbound'])->name('hub.outbound');
+
+        // Carrier subkontrak & margin
+        Route::get('/carriers', [CarrierController::class, 'index'])->name('carriers.index');
+        Route::post('/carriers', [CarrierController::class, 'store'])->name('carriers.store');
+        Route::post('/carriers/{carrier}/pay', [CarrierController::class, 'pay'])->name('carriers.pay');
+        Route::post('/legs/{leg}/assign-carrier', [CarrierController::class, 'assignLeg'])->name('legs.assign-carrier');
+        Route::post('/legs/{leg}/complete', [CarrierController::class, 'completeLeg'])->name('legs.complete');
+        Route::get('/margins', [CarrierController::class, 'margins'])->name('margins');
+
+        // Klaim
+        Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
+        Route::post('/claims', [ClaimController::class, 'store'])->name('claims.store');
+        Route::post('/claims/{claim}/submit', [ClaimController::class, 'submit'])->name('claims.submit');
+        Route::post('/claims/{claim}/decide', [ClaimController::class, 'decide'])->name('claims.decide');
+        Route::post('/claims/{claim}/pay', [ClaimController::class, 'pay'])->name('claims.pay');
+
+        // Demurrage & Detention
+        Route::get('/demurrage', [DemurrageController::class, 'index'])->name('dd.index');
+        Route::post('/demurrage/tariffs', [DemurrageController::class, 'storeTariff'])->name('dd.tariffs.store');
+        Route::post('/demurrage/start', [DemurrageController::class, 'start'])->name('dd.start');
+        Route::post('/demurrage/{dwell}/end', [DemurrageController::class, 'end'])->name('dd.end');
+        Route::post('/demurrage/invoice', [DemurrageController::class, 'invoice'])->name('dd.invoice');
+
+        // Bea Cukai
+        Route::get('/customs', [CustomsController::class, 'index'])->name('customs.index');
+        Route::post('/customs', [CustomsController::class, 'store'])->name('customs.store');
+        Route::post('/customs/tariffs', [CustomsController::class, 'storeTariff'])->name('customs.tariffs.store');
+        Route::post('/customs/{declaration}/pay', [CustomsController::class, 'pay'])->name('customs.pay');
+        Route::post('/customs/{declaration}/clear', [CustomsController::class, 'clear'])->name('customs.clear');
+
+        // BBM & biaya truk
+        Route::get('/fuel', [FuelLogController::class, 'index'])->name('fuel.index');
+        Route::post('/fuel', [FuelLogController::class, 'store'])->name('fuel.store');
+
+        // COD
+        Route::get('/cod', [CodController::class, 'index'])->name('cod.index');
+        Route::post('/cod/deposit', [CodController::class, 'deposit'])->name('cod.deposit');
 
         // Exception & SLA
         Route::get('/exceptions', [ExceptionController::class, 'index'])->name('exceptions.index');

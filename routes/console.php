@@ -35,3 +35,7 @@ Schedule::command('mall:generate-pm-orders')->dailyAt('06:30');
 // --- Logistik (Sari Ranah Express) ---
 Schedule::command('lgx:invoice-shippers')->monthlyOn(1, '02:00');
 Schedule::command('lgx:detect-late')->everyFifteenMinutes()->withoutOverlapping();
+Schedule::command('lgx:settle-cod')->dailyAt('08:30');
+Schedule::command('lgx:pay-carriers')->weeklyOn(1, '09:00');
+Schedule::command('lgx:accrue-dd')->dailyAt('00:10');
+Schedule::command('lgx:audit-billing')->dailyAt('07:15');

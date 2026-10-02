@@ -40,6 +40,9 @@ return [
     'cod_fee_rate' => (float) env('LOGISTICS_COD_FEE_RATE', 0.03),
     'cod_fee_min_idr' => (int) env('LOGISTICS_COD_FEE_MIN_IDR', 5_000),
 
+    // Pencairan dana COD ke shipper D+N hari setelah disetor di hub.
+    'cod_settlement_days' => (int) env('LOGISTICS_COD_SETTLEMENT_DAYS', 2),
+
     /*
     |--------------------------------------------------------------------------
     | SLA Pengiriman (jam sejak booked_at)
@@ -58,6 +61,19 @@ return [
         'fcl' => 336,
         'air_freight' => 48,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Klaim Kargo
+    |--------------------------------------------------------------------------
+    | Batas ganti rugi: barang diasuransikan = nilai deklarasi; tidak diasuransikan =
+    | N x ongkos kirim (maks. nilai deklarasi bila ada). Klaim keterlambatan = ongkos kirim.
+    */
+    'claim_window_days' => (int) env('LOGISTICS_CLAIM_WINDOW_DAYS', 14),
+    'claim_uninsured_multiplier' => (int) env('LOGISTICS_CLAIM_UNINSURED_MULTIPLIER', 10),
+
+    // Nilai pabean total (IDR) yang otomatis masuk jalur merah (pemeriksaan fisik) pada simulasi bea cukai.
+    'customs_red_lane_threshold_idr' => (int) env('LOGISTICS_CUSTOMS_RED_LANE_THRESHOLD_IDR', 500_000_000),
 
     // Jendela peringatan dini: resi yang jatuh tempo SLA dalam N jam ke depan dianggap berisiko.
     'sla_at_risk_hours' => (int) env('LOGISTICS_SLA_AT_RISK_HOURS', 6),

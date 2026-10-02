@@ -36,6 +36,16 @@ enum TransactionType: string
     case VOUCHER_SETTLEMENT = 'voucher_settlement';
     case VOUCHER_BREAKAGE = 'voucher_breakage';
     case EVENT_BOOKING = 'event_booking';
+    case LOGISTICS_REVENUE = 'lgx_revenue';
+    case LOGISTICS_COD_COLLECTION = 'lgx_cod_collect';
+    case LOGISTICS_COD_DEPOSIT = 'lgx_cod_deposit';
+    case LOGISTICS_COD_SETTLEMENT = 'lgx_cod_settle';
+    case LOGISTICS_CARRIER_ACCRUAL = 'lgx_carrier_accrual';
+    case LOGISTICS_CARRIER_PAYMENT = 'lgx_carrier_payment';
+    case LOGISTICS_CLAIM_PAYOUT = 'lgx_claim_payout';
+    case LOGISTICS_DD_ACCRUAL = 'lgx_dd_accrual';
+    case LOGISTICS_CUSTOMS_DUTY = 'lgx_customs_duty';
+    case LOGISTICS_FUEL_EXPENSE = 'lgx_fuel_expense';
 
     public function label(): string
     {
@@ -70,6 +80,16 @@ enum TransactionType: string
             self::VOUCHER_SETTLEMENT => 'Settlement Voucher Tenant',
             self::VOUCHER_BREAKAGE => 'Breakage Voucher Kedaluwarsa',
             self::EVENT_BOOKING => 'Sewa Atrium & Event',
+            self::LOGISTICS_REVENUE => 'Pengakuan Pendapatan Freight',
+            self::LOGISTICS_COD_COLLECTION => 'Penerimaan Dana COD oleh Driver',
+            self::LOGISTICS_COD_DEPOSIT => 'Setoran Dana COD di Hub',
+            self::LOGISTICS_COD_SETTLEMENT => 'Pencairan Dana COD ke Shipper',
+            self::LOGISTICS_CARRIER_ACCRUAL => 'Akrual Biaya Carrier Subkontrak',
+            self::LOGISTICS_CARRIER_PAYMENT => 'Pembayaran Carrier Subkontrak',
+            self::LOGISTICS_CLAIM_PAYOUT => 'Pembayaran Klaim Kargo',
+            self::LOGISTICS_DD_ACCRUAL => 'Akrual Demurrage & Detention',
+            self::LOGISTICS_CUSTOMS_DUTY => 'Pembayaran Bea Cukai',
+            self::LOGISTICS_FUEL_EXPENSE => 'Biaya Bahan Bakar Armada',
         };
     }
 }

@@ -13,6 +13,7 @@ enum ExceptionType: string
     case VehicleBreakdown = 'vehicle_breakdown';
     case WeatherDelay = 'weather_delay';
     case Late = 'late';
+    case CustomsHold = 'customs_hold';
     case Other = 'other';
 
     public function label(): string
@@ -25,6 +26,7 @@ enum ExceptionType: string
             self::VehicleBreakdown => 'Armada Mogok',
             self::WeatherDelay => 'Gangguan Cuaca',
             self::Late => 'Terlambat (SLA Terlampaui)',
+            self::CustomsHold => 'Pemeriksaan Bea Cukai',
             self::Other => 'Lainnya',
         };
     }
@@ -34,7 +36,7 @@ enum ExceptionType: string
         return match ($this) {
             self::Damaged => ExceptionSeverity::Critical,
             self::Missort, self::VehicleBreakdown, self::Late => ExceptionSeverity::High,
-            self::DeliveryFailed, self::AddressInvalid => ExceptionSeverity::Medium,
+            self::DeliveryFailed, self::AddressInvalid, self::CustomsHold => ExceptionSeverity::Medium,
             self::WeatherDelay, self::Other => ExceptionSeverity::Low,
         };
     }

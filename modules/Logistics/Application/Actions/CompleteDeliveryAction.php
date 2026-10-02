@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
+use Modules\Logistics\Domain\Events\ShipmentDelivered;
+use Modules\Logistics\Domain\Exceptions\CodException;
 use Modules\Logistics\Domain\Exceptions\InvalidDeliveryOperationException;
 use Modules\Logistics\Domain\Exceptions\InvalidDeliveryOtpException;
 use Modules\Logistics\Domain\Models\Driver;
@@ -24,7 +26,8 @@ class CompleteDeliveryAction extends AbstractDriverTaskAction
     public const MAX_SIGNATURE_BYTES = 512 * 1024;
 
     public function __construct(
-        protected RecordTrackingEventAction $recordEvent
+        protected RecordTrackingEventAction $recordEvent,
+        protected RecordCodCollectionAction $recordCod
     ) {}
 
     /**
@@ -37,12 +40,17 @@ class CompleteDeliveryAction extends AbstractDriverTaskAction
         string $receiverName,
         string $otp,
         UploadedFile $photo,
-        string $signatureDataUrl
+        string $signatureDataUrl,
+        bool $codCollected = false
     ): ProofOfDelivery {
         $signature = $this->decodeSignature($signatureDataUrl);
 
         $shipment = Shipment::findOrFail($shipment->id);
         $this->assertAssignedTo($shipment, $driver);
+
+        if ($shipment->cod_amount_idr > 0 && ! $codCollected) {
+            throw CodException::notCollected($shipment->tracking_number, $shipment->cod_amount_idr);
+        }
 
         $limiterKey = 'lgx-otp:'.$shipment->id;
         if (RateLimiter::tooManyAttempts($limiterKey, self::MAX_OTP_ATTEMPTS)) {
@@ -98,6 +106,12 @@ class CompleteDeliveryAction extends AbstractDriverTaskAction
                         'otp_verified' => true,
                     ]
                 );
+
+                if ($shipment->cod_amount_idr > 0) {
+                    $this->recordCod->execute($shipment, $driver);
+                }
+
+                event(new ShipmentDelivered($shipment));
 
                 return $pod;
             });

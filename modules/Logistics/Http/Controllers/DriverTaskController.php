@@ -112,7 +112,8 @@ class DriverTaskController extends Controller
                 $data['receiver_name'],
                 $data['otp'],
                 $request->file('photo'),
-                $data['signature']
+                $data['signature'],
+                $request->boolean('cod_collected')
             );
         } catch (RuntimeException $e) {
             return back()->with('error', $e->getMessage());

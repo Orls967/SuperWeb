@@ -29,6 +29,7 @@ class GenerateMonthlyInvoicesAction
             // Idempotency: skip if an invoice already exists for this shipper and billing period
             $existing = LogisticsInvoice::where('shipper_id', $account->shipper_id)
                 ->where('billing_period', $period)
+                ->where('kind', 'freight')
                 ->first();
 
             if ($existing !== null) {
