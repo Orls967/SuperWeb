@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Logistics\Http\Controllers\DispatchBoardController;
 use Modules\Logistics\Http\Controllers\DriverController;
 use Modules\Logistics\Http\Controllers\DriverTaskController;
+use Modules\Logistics\Http\Controllers\ExceptionController;
 use Modules\Logistics\Http\Controllers\FleetController;
 use Modules\Logistics\Http\Controllers\HubOperationsController;
 use Modules\Logistics\Http\Controllers\LaneController;
@@ -58,6 +59,11 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::post('/hub/inbound', [HubOperationsController::class, 'inbound'])->name('hub.inbound');
         Route::post('/hub/sort', [HubOperationsController::class, 'sort'])->name('hub.sort');
         Route::post('/hub/outbound', [HubOperationsController::class, 'outbound'])->name('hub.outbound');
+
+        // Exception & SLA
+        Route::get('/exceptions', [ExceptionController::class, 'index'])->name('exceptions.index');
+        Route::post('/exceptions', [ExceptionController::class, 'store'])->name('exceptions.store');
+        Route::post('/exceptions/{exception}/resolve', [ExceptionController::class, 'resolve'])->name('exceptions.resolve');
 
         // Aplikasi Driver (mobile)
         Route::get('/driver/tasks', [DriverTaskController::class, 'index'])->name('driver.tasks');

@@ -103,6 +103,11 @@ class Shipment extends LogisticsEntity implements Payable
         return $this->hasOne(ProofOfDelivery::class, 'shipment_id');
     }
 
+    public function exceptions(): HasMany
+    {
+        return $this->hasMany(ShipmentException::class, 'shipment_id');
+    }
+
     public function deliveryAttempts(): HasMany
     {
         return $this->hasMany(DeliveryAttempt::class, 'shipment_id')->orderBy('attempt_number');

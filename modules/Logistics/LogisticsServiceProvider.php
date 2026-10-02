@@ -7,6 +7,7 @@ namespace Modules\Logistics;
 use Illuminate\Support\ServiceProvider;
 use Modules\Logistics\Application\Commands\InvoiceShippersCommand;
 use Modules\Logistics\Console\Commands\CheckCapacityCommand;
+use Modules\Logistics\Console\Commands\DetectLateShipmentsCommand;
 use Modules\Logistics\Console\Commands\VerifyCustodyCommand;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -29,6 +30,7 @@ class LogisticsServiceProvider extends ServiceProvider
                 InvoiceShippersCommand::class,
                 CheckCapacityCommand::class,
                 VerifyCustodyCommand::class,
+                DetectLateShipmentsCommand::class,
             ]);
         }
 
@@ -101,6 +103,16 @@ class LogisticsServiceProvider extends ServiceProvider
             order: 85,
             group: 'Logistik',
             activePattern: 'logistics/hub*'
+        );
+
+        $registry->addItem(
+            label: 'Exception & SLA',
+            route: 'logistics.exceptions.index',
+            icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>',
+            roles: ['admin', 'logistics_admin', 'dispatcher', 'hub_operator'],
+            order: 87,
+            group: 'Logistik',
+            activePattern: 'logistics/exceptions*'
         );
 
         $registry->addItem(

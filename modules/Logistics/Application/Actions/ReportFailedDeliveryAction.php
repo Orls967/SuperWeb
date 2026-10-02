@@ -6,6 +6,8 @@ namespace Modules\Logistics\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Logistics\Domain\Enums\DeliveryFailureReason;
+use Modules\Logistics\Domain\Enums\ExceptionSeverity;
+use Modules\Logistics\Domain\Enums\ExceptionType;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
 use Modules\Logistics\Domain\Exceptions\InvalidDeliveryOperationException;
 use Modules\Logistics\Domain\Models\DeliveryAttempt;
@@ -17,7 +19,8 @@ class ReportFailedDeliveryAction extends AbstractDriverTaskAction
     public const MAX_ATTEMPTS = 3;
 
     public function __construct(
-        protected RecordTrackingEventAction $recordEvent
+        protected RecordTrackingEventAction $recordEvent,
+        protected RaiseShipmentExceptionAction $raiseException
     ) {}
 
     /**
@@ -61,6 +64,18 @@ class ReportFailedDeliveryAction extends AbstractDriverTaskAction
             );
 
             $returned = $attemptNumber >= self::MAX_ATTEMPTS;
+
+            $this->raiseException->execute(
+                shipment: $shipment,
+                type: ExceptionType::DeliveryFailed,
+                description: "Pengantaran gagal (percobaan ke-{$attemptNumber}): {$reason->label()}.",
+                reporter: $driver->user,
+                severity: $returned ? ExceptionSeverity::High : null,
+                locationId: $shipment->destination_location_id,
+                dedupeKey: "delivery_failed:{$shipment->id}:{$attemptNumber}",
+                payload: ['attempt' => $attemptNumber, 'reason' => $reason->value, 'driver_id' => $driver->id],
+            );
+
             if ($returned) {
                 $shipment->delivery_otp_hash = null;
                 $shipment->transitionTo(ShipmentStatus::ReturnToSender);
