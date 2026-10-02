@@ -7,12 +7,18 @@ namespace Tests\Feature;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
+use Laravel\Sanctum\Sanctum;
 use Modules\Banking\Application\Actions\SetPinAction;
 use Modules\Banking\Application\Actions\VerifyPinAction;
 use Modules\Banking\Domain\Exceptions\InvalidPinException;
 use Modules\Banking\Domain\Exceptions\PinLockedException;
 use Modules\Core\Domain\Models\Vehicle;
+use Modules\Logistics\Application\Actions\DispatchWebhookAction;
+use Modules\Logistics\Domain\Models\Shipment;
+use Modules\Logistics\Domain\Models\WebhookEndpoint;
 use Modules\Mall\Domain\Enums\InvoiceStatus;
 use Modules\Mall\Domain\Enums\LeaseStatus;
 use Modules\Mall\Domain\Enums\RentModel;
@@ -305,5 +311,112 @@ class SecurityTest extends TestCase
 
         // Harus di-escape menjadi entitas HTML
         $response->assertSee('&lt;script&gt;alert(&quot;XSS_PAYLOAD&quot;)&lt;/script&gt;', false);
+    }
+
+    // ============================================================
+    // 6. LOGISTICS SECURITY & IDOR PROTECTION
+    // ============================================================
+
+    public function test_shipper_cannot_view_another_shippers_shipment_idor(): void
+    {
+        $shipperA = User::factory()->create(['role' => 'shipper']);
+        $shipperB = User::factory()->create(['role' => 'shipper']);
+
+        $shipmentB = Shipment::create([
+            'tracking_number' => 'SRX99999999991',
+            'shipper_id' => $shipperB->id,
+            'origin_location_id' => 1,
+            'destination_location_id' => 2,
+            'service_level' => 'regular',
+            'mode' => 'road',
+            'status' => 'booked',
+            'total_amount_idr' => 150000,
+            'consignee_name' => 'Rahasia Shipper B',
+            'consignee_phone' => '081999999999',
+            'consignee_address' => ['street' => 'Jl Rahasia', 'city' => 'Banjarmasin'],
+            'total_chargeable_weight_g' => 5000,
+        ]);
+
+        // Shipper A mencoba melihat shipment milik Shipper B
+        $response = $this->actingAs($shipperA)->get(route('logistics.shipments.show', $shipmentB->id));
+        $this->assertTrue(
+            in_array($response->getStatusCode(), [403, 404], true),
+            "Shipper A tidak boleh melihat shipment milik Shipper B (diterima: {$response->getStatusCode()})"
+        );
+    }
+
+    public function test_public_tracking_masks_consignee_pii(): void
+    {
+        $shipment = Shipment::create([
+            'tracking_number' => 'SRX88888888882',
+            'shipper_id' => 1,
+            'origin_location_id' => 1,
+            'destination_location_id' => 2,
+            'service_level' => 'regular',
+            'mode' => 'road',
+            'status' => 'in_transit',
+            'total_amount_idr' => 200000,
+            'consignee_name' => 'Muhammad Hidayatullah',
+            'consignee_phone' => '081234567890',
+            'consignee_address' => ['street' => 'Jl. Pangeran Samudera No. 88', 'city' => 'Banjarmasin'],
+            'total_chargeable_weight_g' => 3000,
+        ]);
+
+        $response = $this->get(route('track.show', ['tracking_number' => $shipment->tracking_number]));
+        $response->assertOk();
+
+        // Nomor telepon lengkap tidak boleh bocor
+        $response->assertDontSee('081234567890');
+        // Alamat jalan lengkap tidak boleh bocor
+        $response->assertDontSee('Jl. Pangeran Samudera No. 88');
+        // Versi tersamar harus muncul
+        $response->assertSee('****');
+    }
+
+    public function test_api_v1_token_ability_enforcement(): void
+    {
+        $shipper = User::factory()->create(['role' => 'shipper']);
+        Sanctum::actingAs($shipper, ['quote:create']);
+
+        // Token hanya punya 'quote:create', mencoba buat shipment tanpa 'shipment:create'
+        $response = $this->postJson(route('api.v1.logistics.shipments.store'), [
+            'quote_id' => 999,
+            'consignee_name' => 'Budi',
+            'consignee_phone' => '08123456789',
+            'consignee_address' => ['street' => 'Jl A', 'city' => 'Bjm'],
+            'pin' => '123456',
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    public function test_webhook_hmac_sha256_signature_verification(): void
+    {
+        $secret = 'whsec_testing_secret_key_12345';
+        $endpoint = WebhookEndpoint::create([
+            'url' => 'https://example.test/webhook',
+            'secret' => $secret,
+            'events' => ['shipment.delivered'],
+            'is_active' => true,
+        ]);
+
+        Http::fake([
+            'https://example.test/*' => Http::response(['received' => true], 200),
+        ]);
+
+        $action = app(DispatchWebhookAction::class);
+        $deliveries = $action->execute('shipment.delivered', [
+            'tracking_number' => 'SRX12345678901',
+            'status' => 'delivered',
+        ]);
+
+        $this->assertCount(1, $deliveries);
+        $this->assertSame('delivered', $deliveries[0]->status);
+
+        Http::assertSent(function (Request $request) use ($secret) {
+            $expectedSignature = hash_hmac('sha256', $request->body(), $secret);
+
+            return $request->header('X-Webhook-Signature')[0] === $expectedSignature;
+        });
     }
 }

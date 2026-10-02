@@ -101,10 +101,13 @@ Platform menyediakan rangkaian Artisan Command untuk otomatisasi operasional dan
 ### 1. Diagnosa & Observabilitas
 | Command | Deskripsi |
 |---|---|
-| `php artisan super:health-check` | Memindai kesehatan 7 pilar platform (DB, Cache, Storage, Ledger, Passport, Mall Billing, Resto Shift) |
+| `php artisan super:health-check` | Memindai kesehatan 8 pilar platform (DB, Cache, Storage, Ledger, Passport, Mall Billing, Resto Shift, Logistik Kustodi & Billing) |
 | `php artisan bank:reconcile` | Memverifikasi seluruh saldo akun buku besar double-entry (0 diskrepansi saldo) |
 | `php artisan core:verify-passports` | Memvalidasi keabsahan kriptografis rantai hash-chain Paspor Kendaraan |
 | `php artisan mall:audit-billing` | Mengaudit keselarasan seluruh penagihan invoice mall terhadap pendapatan buku besar |
+| `php artisan lgx:audit-billing` | Mengaudit keselarasan 15 titik penagihan logistik vs saldo buku besar (0 selisih) |
+| `php artisan lgx:verify-custody` | Memvalidasi keabsahan kriptografis rantai lacak balak (Chain of Custody) logistik |
+| `php artisan lgx:capacity-check` | Memverifikasi alokasi kapasitas jadwal operasi multimoda |
 
 ### 2. Kuliner RM Sari Ranah
 | Command | Deskripsi |
@@ -124,7 +127,17 @@ Platform menyediakan rangkaian Artisan Command untuk otomatisasi operasional dan
 | `php artisan mall:expire-vouchers` | Bukukan voucher kedaluwarsa ke pendapatan *breakage* holding |
 | `php artisan mall:generate-pm` | Terbitkan work order pemeliharaan preventif fasilitas gedung |
 
-### 4. Otomotif, Toko & Finansial
+### 4. Logistik Multimoda Sari Ranah Express (SRX)
+| Command | Deskripsi |
+|---|---|
+| `php artisan lgx:invoice-shippers` | Terbitkan invoice bulanan untuk akun shipper pascabayar B2B |
+| `php artisan lgx:settle-cod` | Cairkan setoran COD dari pos kasir hub ke dompet shipper (D+N) |
+| `php artisan lgx:pay-carriers` | Bayar tagihan jasa carrier subkontrak yang melewati batas termin |
+| `php artisan lgx:accrue-dd` | Akrual harian denda Demurrage & Detention kontainer di lokasi |
+| `php artisan lgx:detect-late` | Deteksi pengiriman yang berpotensi atau telah melewati target SLA |
+| `php artisan lgx:retry-webhooks` | Kirim ulang webhook outbox yang gagal dengan exponential backoff |
+
+### 5. Otomotif, Toko & Finansial
 | Command | Deskripsi |
 |---|---|
 | `php artisan crypto:tick` | Simulasikan fluktuasi harga pasar kripto real-time |
@@ -136,7 +149,7 @@ Platform menyediakan rangkaian Artisan Command untuk otomatisasi operasional dan
 
 ## 🧪 Pengujian & Uji Kualitas (Quality Gates)
 
-Platform dilengkapi rangkaian automated test komprehensif (**297 Tests, 1317 Assertions**):
+Platform dilengkapi rangkaian automated test komprehensif (**538+ Tests, 3180+ Assertions**):
 
 ```bash
 # 1. Jalankan seluruh test suite
@@ -146,12 +159,12 @@ php artisan test
 php artisan test tests/Architecture/ModuleBoundariesTest.php
 
 # 3. Uji integrasi lintas lini bisnis end-to-end
-php artisan test tests/Feature/CrossLineIntegrationTest.php
+php artisan test tests/Feature/CrossLineIntegrationTest.php modules/Logistics/tests/Feature/CrossLineIntegrationTest.php
 
 # 4. Uji anggaran query SQL performa tinggi
 php artisan test tests/Performance/QueryBudgetTest.php
 
-# 5. Uji ketahanan keamanan (IDOR, Mass Assignment, PIN Lockout, XSS, Signed URL)
+# 5. Uji ketahanan keamanan (IDOR, Mass Assignment, PIN Lockout, XSS, Signed URL, Sanctum, Webhooks)
 php artisan test tests/Feature/SecurityTest.php
 
 # 6. Uji aksesibilitas rute per role (Smoke Test)
@@ -168,11 +181,13 @@ vendor/bin/pint --test
 Untuk memvalidasi kesiapan operasional pada beban data tinggi, jalankan:
 
 ```bash
+# Seeder Skala Besar Kuliner & Mall
 php artisan db:seed --class=DemoLargeSeeder
+
+# Seeder Skala Besar Logistik Multimoda
+php artisan db:seed --class="Modules\Logistics\database\seeders\LogisticsLargeSeeder"
 ```
 Seeder ini menginisialisasi:
-- **3 Outlet Resto**: Dapur Sentral Veteran (CK-01), Mall Outlet Duta Mall (DM-01), Cabang Dine-In Kayutangi (KD-01).
-- **60 Tenant & Unit Mall**: Tersebar di LG, GF, L1, L2 dengan kontrak sewa aktif (*fixed*, *revenue share*, *greater of*).
-- **12 Bulan Data Penagihan Historis**: Invoice penagihan sewa dan utilitas terverifikasi bersih tanpa diskrepansi ledger.
-- **150.000 Sesi Parkir Riil**: Disisipkan dalam chunk transaksi berkinerja tinggi dalam **< 4 detik**.
+- **Resto & Mall**: 3 Outlet Resto, 60 Tenant, 12 Bulan Billing, dan 150.000 Sesi Parkir dalam < 4 detik.
+- **Logistik Multimoda**: 300+ truk berpaspor, 20+ kapal laut ber-IMO, 5.000+ kontainer ISO 6346, ratusan ribu shipment dan jutaan event kustodi dengan penegakan ledger akurat.
 - Keseimbangan ledger dan audit billing tetap terverifikasi **0 selisih**.

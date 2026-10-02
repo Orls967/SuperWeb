@@ -198,4 +198,23 @@ class User extends Authenticatable
     {
         return $this->hubOperatorAssignment()->where('is_active', true)->value('hub_id');
     }
+
+    /** @var array<string> */
+    protected array $currentAccessTokenAbilities = ['*'];
+
+    /**
+     * @param  array<string>  $abilities
+     */
+    public function withAccessTokenAbilities(array $abilities): self
+    {
+        $this->currentAccessTokenAbilities = $abilities;
+
+        return $this;
+    }
+
+    public function tokenCan(string $ability): bool
+    {
+        return in_array('*', $this->currentAccessTokenAbilities, true)
+            || in_array($ability, $this->currentAccessTokenAbilities, true);
+    }
 }
