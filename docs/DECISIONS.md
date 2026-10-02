@@ -335,3 +335,23 @@
 
 
 
+
+## 2026-10-02: Dispatch Validation Lives in AssignScheduleResourcesAction, Not the Controller
+- **Context:** Fase 22.7 requires assigning truck + driver with SIM, working-hour, maintenance and vehicle-passport checks.
+- **Decision:** One transactional action locks schedule, truck and driver rows (`lockForUpdate`) and validates in order: schedule mode/status, truck status (maintenance/retired/not available), Vehicle Passport hash-chain via Core's `VerifyPassportAction`, schedule overlap for truck and driver, then `Driver::validateAssignment` (SIM validity evaluated on the trip's ETD, class, 8h/day and 4h continuous limits). The daily limit additionally counts the driver's other active same-day assignments, because `daily_driving_minutes` is only updated when a trip actually runs. Reassigning releases the previous truck inside the same transaction; every assignment/release is kept in `lgx_dispatch_assignments` for audit.
+- **Reason:** Controllers stay thin (arch test forbids DB in controllers) and two dispatchers racing for the same truck/driver cannot both succeed.
+
+## 2026-10-02: Delivery OTP Is Hashed, Delivered Through the Shipper Notification, and Rate Limited
+- **Context:** Fase 22.8 requires a 6-digit OTP stored as a hash. The consignee has no platform account.
+- **Decision:** `StartDeliveryAction` generates the OTP, stores only `Hash::make($otp)` on the shipment (hidden attribute), and sends the plaintext once to the shipper via `NotificationService` (simulated SMS/WhatsApp relay). The OTP never appears in tracking events or the public timeline. `CompleteDeliveryAction` limits wrong guesses to 5 per hour per shipment (`RateLimiter`), since a 6-digit space is brute-forceable by a driver. The OTP hash is cleared on Delivered and ReturnToSender.
+- **Reason:** Keeps the secret out of the database, logs and the append-only custody chain while still giving the consignee a code the driver cannot see.
+
+## 2026-10-02: Failed Delivery Keeps OutForDelivery Until the Third Attempt
+- **Context:** The shipment state machine does not allow `OutForDelivery -> AtHub`, and the spec says 3 failures -> ReturnToSender.
+- **Decision:** Attempts 1-2 are recorded in `lgx_delivery_attempts` + `DELIVERY_FAILED` custody events while the status stays `OutForDelivery` (driver may resend the OTP and retry). Attempt 3 transitions to `ReturnToSender` and writes `RETURN_TO_SENDER`.
+- **Reason:** No state-machine change is needed and the attempt counter (`failed_delivery_attempts`) is the single source of truth.
+
+## 2026-10-02: Exceptions Are Separate Records; SLA Detection Is Idempotent by Dedupe Key
+- **Context:** Fase 22.9 needs structured exceptions and an idempotent `lgx:detect-late`.
+- **Decision:** `lgx_shipment_exceptions` stores type/severity/status with a unique `dedupe_key` (`late:{shipment}`, `missort:{shipment}:{event}`, `delivery_failed:{shipment}:{attempt}`). Late exceptions do not change shipment status and do not write custody events (internal signal only); manual blocking types (damaged, address invalid, vehicle breakdown) move the shipment to `Exception` and write `EXCEPTION_RAISED`/`EXCEPTION_RESOLVED` events. Closing the last open exception of a shipment in `Exception` status requires an explicit resume status. SLA hours per service level live in `config/logistics.php` (`sla_hours`), due time = `booked_at + hours`. `lgx:detect-late` is scheduled every 15 minutes with `withoutOverlapping` and auto-closes late exceptions of finished shipments.
+- **Reason:** Re-running the command can never create duplicates, and public tracking is not polluted by internal SLA signals.

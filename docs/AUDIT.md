@@ -217,6 +217,25 @@
 - **Modul Aktif:**
   `Shared`, `Core`, `AutoServe`, `AutoDex`, `Banking`, `Payment`, `Inventory`, `Store`, `Crypto`, `Finance`, `Resto`, `Mall`, `Logistics` (13 modul).
 
+## Quality Gate Fase 22 — 2026-10-02
 
-
+- **Cakupan Fase:** Fase 22 — Operasi Jaringan Multimoda: Kapasitas, Rute, Konsolidasi, Hub, Last-Mile (Tasks 22.1–22.10)
+- **Total Test:** **457 tests** (100% PASS, 0 failure, 0 skipped), naik dari baseline 411 pada awal sesi
+- **Total Assertion:** **2637 assertions**
+- **Status Build Frontend (Vite):** Sukses
+- **Status Standar Kode (Pint):** Passed (`vendor/bin/pint --test`)
+- **Arch Tests (batas modul):** 9 passed
+- **Hasil Quality Gates (`migrate:fresh --seed`):**
+  - `php artisan bank:reconcile`: 114 akun ledger seimbang, 0 selisih
+  - `php artisan core:verify-passports`: seluruh paspor kendaraan valid
+  - `php artisan lgx:verify-custody`: lulus. Pada seed default 0 pengiriman, sehingga gate bermakna dibuktikan oleh `Phase22IntegrationTest` (1 pengiriman, 8 event rantai kustodi valid)
+  - `php artisan lgx:capacity-check`: lulus. Seed default tidak memiliki jadwal, dan `Phase22IntegrationTest` mengaudit jadwal berisi reservasi aktif
+  - `php artisan lgx:detect-late`: berjalan idempoten (run kedua menghasilkan 0 exception baru)
+  - `php artisan mall:audit-billing` dan `php artisan super:health-check`: SEIMBANG / 7 pilar HEALTHY
+- **Pencapaian Fitur Fase 22.7–22.10:**
+  - Papan dispatch: validasi SIM (masa berlaku pada tanggal trip + kelas), batas jam UU 22/2009 Pasal 90 (termasuk beban trip lain di hari yang sama), status maintenance, tabrakan jadwal, dan integritas Vehicle Passport sebelum penugasan truk + driver; reassign/release dengan riwayat `lgx_dispatch_assignments`; penugasan resi pickup/last-mile
+  - Aplikasi driver mobile: daftar stop, scan pickup, OTP 6 digit (hash, rate limit 5/jam), Proof of Delivery (nama penerima, foto, tanda tangan canvas PNG tervalidasi), 3x gagal otomatis ReturnToSender
+  - Exception terstruktur (8 tipe, 4 tingkat keparahan) dengan dedupe key, penyelesaian dengan status lanjutan, penangkapan otomatis missort dan pengantaran gagal
+  - Monitoring SLA per service level (melewati SLA / berisiko), command `lgx:detect-late` terjadwal tiap 15 menit
+- **Catatan Lingkungan:** `composer.lock` mensyaratkan PHP >= 8.4 (Symfony 8.1) sedangkan sandbox hanya PHP 8.3. Dependensi diselesaikan sementara dengan `platform.php=8.3.6` untuk menjalankan test, lalu `composer.json`/`composer.lock` dikembalikan tanpa perubahan.
 

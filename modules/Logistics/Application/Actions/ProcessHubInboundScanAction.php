@@ -6,6 +6,7 @@ namespace Modules\Logistics\Application\Actions;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Modules\Logistics\Domain\Enums\ExceptionType;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
 use Modules\Logistics\Domain\Models\Location;
 use Modules\Logistics\Domain\Models\Shipment;
@@ -14,7 +15,8 @@ use Modules\Logistics\Domain\Models\TrackingEvent;
 class ProcessHubInboundScanAction
 {
     public function __construct(
-        protected RecordTrackingEventAction $recordEventAction
+        protected RecordTrackingEventAction $recordEventAction,
+        protected RaiseShipmentExceptionAction $raiseException
     ) {}
 
     /**
@@ -67,6 +69,16 @@ class ProcessHubInboundScanAction
                         'allowed_hub_ids' => $allowedLocationIds,
                         'is_missort' => true,
                     ]
+                );
+
+                $this->raiseException->execute(
+                    shipment: $shipment,
+                    type: ExceptionType::Missort,
+                    description: "Kargo salah sortir tiba di {$hub->name} ({$hub->code}), di luar itinerary resmi.",
+                    reporter: $operator,
+                    locationId: $hub->id,
+                    dedupeKey: "missort:{$shipment->id}:{$event->id}",
+                    payload: ['scanned_hub_id' => $hub->id, 'tracking_event_id' => $event->id],
                 );
 
                 return [

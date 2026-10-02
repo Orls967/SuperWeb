@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Logistics\Domain\Enums\Incoterm;
 use Modules\Logistics\Domain\Enums\PaymentTerms;
 use Modules\Logistics\Domain\Enums\ServiceLevel;
@@ -41,6 +42,8 @@ class Shipment extends LogisticsEntity implements Payable
         'total_chargeable_weight_g',
         'total_amount_idr',
         'cancellation_fee_idr',
+        'delivery_otp_hash',
+        'failed_delivery_attempts',
         'quote_id',
         'driver_id',
         'invoice_id',
@@ -49,6 +52,8 @@ class Shipment extends LogisticsEntity implements Payable
         'delivered_at',
         'cancelled_at',
     ];
+
+    protected $hidden = ['delivery_otp_hash'];
 
     protected $casts = [
         'consignee_address' => 'array',
@@ -63,6 +68,7 @@ class Shipment extends LogisticsEntity implements Payable
         'total_chargeable_weight_g' => 'integer',
         'total_amount_idr' => 'integer',
         'cancellation_fee_idr' => 'integer',
+        'failed_delivery_attempts' => 'integer',
         'quote_id' => 'integer',
         'driver_id' => 'integer',
         'invoice_id' => 'integer',
@@ -90,6 +96,21 @@ class Shipment extends LogisticsEntity implements Payable
     public function destination(): BelongsTo
     {
         return $this->belongsTo(Location::class, 'destination_location_id');
+    }
+
+    public function proofOfDelivery(): HasOne
+    {
+        return $this->hasOne(ProofOfDelivery::class, 'shipment_id');
+    }
+
+    public function exceptions(): HasMany
+    {
+        return $this->hasMany(ShipmentException::class, 'shipment_id');
+    }
+
+    public function deliveryAttempts(): HasMany
+    {
+        return $this->hasMany(DeliveryAttempt::class, 'shipment_id')->orderBy('attempt_number');
     }
 
     public function packages(): HasMany

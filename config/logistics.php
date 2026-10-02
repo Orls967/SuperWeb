@@ -39,4 +39,26 @@ return [
     */
     'cod_fee_rate' => (float) env('LOGISTICS_COD_FEE_RATE', 0.03),
     'cod_fee_min_idr' => (int) env('LOGISTICS_COD_FEE_MIN_IDR', 5_000),
+
+    /*
+    |--------------------------------------------------------------------------
+    | SLA Pengiriman (jam sejak booked_at)
+    |--------------------------------------------------------------------------
+    | Resi yang belum selesai melewati batas ini dianggap terlambat dan
+    | ditandai exception tipe "late" oleh lgx:detect-late.
+    */
+    'sla_hours' => [
+        'same_day' => 12,
+        'express' => 24,
+        'regular' => 72,
+        'economy' => 168,
+        'ltl' => 96,
+        'ftl' => 72,
+        'lcl' => 336,
+        'fcl' => 336,
+        'air_freight' => 48,
+    ],
+
+    // Jendela peringatan dini: resi yang jatuh tempo SLA dalam N jam ke depan dianggap berisiko.
+    'sla_at_risk_hours' => (int) env('LOGISTICS_SLA_AT_RISK_HOURS', 6),
 ];
