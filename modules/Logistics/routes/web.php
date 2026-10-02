@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Logistics\Http\Controllers\CarrierController;
 use Modules\Logistics\Http\Controllers\ClaimController;
 use Modules\Logistics\Http\Controllers\CodController;
+use Modules\Logistics\Http\Controllers\CustomsController;
 use Modules\Logistics\Http\Controllers\DemurrageController;
 use Modules\Logistics\Http\Controllers\DispatchBoardController;
 use Modules\Logistics\Http\Controllers\DriverController;
@@ -85,6 +86,13 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::post('/demurrage/start', [DemurrageController::class, 'start'])->name('dd.start');
         Route::post('/demurrage/{dwell}/end', [DemurrageController::class, 'end'])->name('dd.end');
         Route::post('/demurrage/invoice', [DemurrageController::class, 'invoice'])->name('dd.invoice');
+
+        // Bea Cukai
+        Route::get('/customs', [CustomsController::class, 'index'])->name('customs.index');
+        Route::post('/customs', [CustomsController::class, 'store'])->name('customs.store');
+        Route::post('/customs/tariffs', [CustomsController::class, 'storeTariff'])->name('customs.tariffs.store');
+        Route::post('/customs/{declaration}/pay', [CustomsController::class, 'pay'])->name('customs.pay');
+        Route::post('/customs/{declaration}/clear', [CustomsController::class, 'clear'])->name('customs.clear');
 
         // COD
         Route::get('/cod', [CodController::class, 'index'])->name('cod.index');

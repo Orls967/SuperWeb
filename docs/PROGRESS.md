@@ -276,7 +276,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 - [x] 23.3 Carrier subkontrak (Alur 9-10): lgx_carriers, akrual biaya leg, lgx:pay-carriers mingguan, laporan margin shipment
 - [x] 23.4 Klaim (Alur 11): workflow klaim asuransi/non-asuransi, aturan 4 mata (penyetuju != pengaju != pembuat), anti bayar ganda
 - [x] 23.5 Demurrage & Detention (Alur 12): lgx_dd_tariffs, free time, lgx:accrue-dd harian zona waktu lokasi, invoice D&D
-- [ ] 23.6 Bea cukai (Alur 13): lgx_customs_declarations PIB/PEB, lgx_hs_tariffs, simulasi bea masuk/PPN/PPh 22, CustomsHold
+- [x] 23.6 Bea cukai (Alur 13): lgx_customs_declarations PIB/PEB, lgx_hs_tariffs, simulasi bea masuk/PPN/PPh 22, CustomsHold
 - [ ] 23.7 Bahan bakar & biaya truk: lgx_fuel_logs (liter x 1000 integer), konsumsi km/l, flag anomali > 30%
 - [ ] 23.8 lgx:audit-billing command: invoice freight, D&D, bea cukai vs ledger, pendapatan Delivered vs unearned, non-nol pada seed default
 - [ ] 23.9 Quality gate Fase 23 (termasuk lgx:audit-billing)
