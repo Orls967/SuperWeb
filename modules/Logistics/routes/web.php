@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Logistics\Http\Controllers\CodController;
 use Modules\Logistics\Http\Controllers\DispatchBoardController;
 use Modules\Logistics\Http\Controllers\DriverController;
 use Modules\Logistics\Http\Controllers\DriverTaskController;
@@ -59,6 +60,10 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::post('/hub/inbound', [HubOperationsController::class, 'inbound'])->name('hub.inbound');
         Route::post('/hub/sort', [HubOperationsController::class, 'sort'])->name('hub.sort');
         Route::post('/hub/outbound', [HubOperationsController::class, 'outbound'])->name('hub.outbound');
+
+        // COD
+        Route::get('/cod', [CodController::class, 'index'])->name('cod.index');
+        Route::post('/cod/deposit', [CodController::class, 'deposit'])->name('cod.deposit');
 
         // Exception & SLA
         Route::get('/exceptions', [ExceptionController::class, 'index'])->name('exceptions.index');

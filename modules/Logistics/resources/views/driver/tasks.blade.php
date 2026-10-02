@@ -99,6 +99,12 @@
                                     @pointerdown="start($event)" @pointermove="draw($event)" @pointerup="stop()" @pointerleave="stop()"></canvas>
                             <button type="button" @click="clear()" class="mt-1 text-[11px] text-slate-400 underline">Hapus tanda tangan</button>
                         </div>
+                        @if($s->cod_amount_idr > 0)
+                            <label class="flex items-start gap-2 p-3 rounded-lg bg-amber-950/60 border border-amber-700 text-amber-200">
+                                <input type="checkbox" name="cod_collected" value="1" required class="mt-0.5">
+                                <span>COD: saya telah menerima uang tunai <strong>Rp {{ number_format($s->cod_amount_idr, 0, ',', '.') }}</strong> dari penerima.</span>
+                            </label>
+                        @endif
                         <input type="hidden" name="signature" x-ref="signature">
                         <button class="w-full px-4 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold">Konfirmasi Terkirim</button>
                     </form>

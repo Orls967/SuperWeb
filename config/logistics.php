@@ -40,6 +40,9 @@ return [
     'cod_fee_rate' => (float) env('LOGISTICS_COD_FEE_RATE', 0.03),
     'cod_fee_min_idr' => (int) env('LOGISTICS_COD_FEE_MIN_IDR', 5_000),
 
+    // Pencairan dana COD ke shipper D+N hari setelah disetor di hub.
+    'cod_settlement_days' => (int) env('LOGISTICS_COD_SETTLEMENT_DAYS', 2),
+
     /*
     |--------------------------------------------------------------------------
     | SLA Pengiriman (jam sejak booked_at)

@@ -10,6 +10,7 @@ use Modules\Logistics\Application\Commands\InvoiceShippersCommand;
 use Modules\Logistics\Application\Listeners\RecognizeFreightRevenueOnDelivery;
 use Modules\Logistics\Console\Commands\CheckCapacityCommand;
 use Modules\Logistics\Console\Commands\DetectLateShipmentsCommand;
+use Modules\Logistics\Console\Commands\SettleCodCommand;
 use Modules\Logistics\Console\Commands\VerifyCustodyCommand;
 use Modules\Logistics\Domain\Events\ShipmentDelivered;
 use Modules\Shared\Application\MenuRegistry;
@@ -36,6 +37,7 @@ class LogisticsServiceProvider extends ServiceProvider
                 CheckCapacityCommand::class,
                 VerifyCustodyCommand::class,
                 DetectLateShipmentsCommand::class,
+                SettleCodCommand::class,
             ]);
         }
 
@@ -118,6 +120,16 @@ class LogisticsServiceProvider extends ServiceProvider
             order: 87,
             group: 'Logistik',
             activePattern: 'logistics/exceptions*'
+        );
+
+        $registry->addItem(
+            label: 'Dashboard COD',
+            route: 'logistics.cod.index',
+            icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>',
+            roles: ['admin', 'logistics_admin', 'dispatcher', 'hub_operator'],
+            order: 88,
+            group: 'Logistik',
+            activePattern: 'logistics/cod*'
         );
 
         $registry->addItem(
