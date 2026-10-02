@@ -13,6 +13,7 @@ use Modules\Logistics\Http\Controllers\DriverController;
 use Modules\Logistics\Http\Controllers\DriverTaskController;
 use Modules\Logistics\Http\Controllers\ExceptionController;
 use Modules\Logistics\Http\Controllers\FleetController;
+use Modules\Logistics\Http\Controllers\FuelLogController;
 use Modules\Logistics\Http\Controllers\HubOperationsController;
 use Modules\Logistics\Http\Controllers\LaneController;
 use Modules\Logistics\Http\Controllers\LocationController;
@@ -93,6 +94,10 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::post('/customs/tariffs', [CustomsController::class, 'storeTariff'])->name('customs.tariffs.store');
         Route::post('/customs/{declaration}/pay', [CustomsController::class, 'pay'])->name('customs.pay');
         Route::post('/customs/{declaration}/clear', [CustomsController::class, 'clear'])->name('customs.clear');
+
+        // BBM & biaya truk
+        Route::get('/fuel', [FuelLogController::class, 'index'])->name('fuel.index');
+        Route::post('/fuel', [FuelLogController::class, 'store'])->name('fuel.store');
 
         // COD
         Route::get('/cod', [CodController::class, 'index'])->name('cod.index');
