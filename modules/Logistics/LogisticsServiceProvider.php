@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Logistics\Application\Commands\InvoiceShippersCommand;
 use Modules\Logistics\Application\Listeners\RecognizeFreightRevenueOnDelivery;
+use Modules\Logistics\Console\Commands\AccrueDemurrageCommand;
 use Modules\Logistics\Console\Commands\CheckCapacityCommand;
 use Modules\Logistics\Console\Commands\DetectLateShipmentsCommand;
 use Modules\Logistics\Console\Commands\PayCarriersCommand;
@@ -40,6 +41,7 @@ class LogisticsServiceProvider extends ServiceProvider
                 DetectLateShipmentsCommand::class,
                 SettleCodCommand::class,
                 PayCarriersCommand::class,
+                AccrueDemurrageCommand::class,
             ]);
         }
 
@@ -152,6 +154,16 @@ class LogisticsServiceProvider extends ServiceProvider
             order: 90,
             group: 'Logistik',
             activePattern: 'logistics/claims*'
+        );
+
+        $registry->addItem(
+            label: 'Demurrage & Detention',
+            route: 'logistics.dd.index',
+            icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+            roles: ['admin', 'logistics_admin', 'dispatcher'],
+            order: 91,
+            group: 'Logistik',
+            activePattern: 'logistics/demurrage*'
         );
 
         $registry->addItem(

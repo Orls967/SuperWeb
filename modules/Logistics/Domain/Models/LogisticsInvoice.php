@@ -17,6 +17,7 @@ class LogisticsInvoice extends LogisticsEntity implements Payable
 
     protected $fillable = [
         'invoice_number',
+        'kind',
         'shipper_id',
         'billing_period',
         'total_amount_idr',

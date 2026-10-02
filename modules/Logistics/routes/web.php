@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Logistics\Http\Controllers\CarrierController;
 use Modules\Logistics\Http\Controllers\ClaimController;
 use Modules\Logistics\Http\Controllers\CodController;
+use Modules\Logistics\Http\Controllers\DemurrageController;
 use Modules\Logistics\Http\Controllers\DispatchBoardController;
 use Modules\Logistics\Http\Controllers\DriverController;
 use Modules\Logistics\Http\Controllers\DriverTaskController;
@@ -77,6 +78,13 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::post('/claims/{claim}/submit', [ClaimController::class, 'submit'])->name('claims.submit');
         Route::post('/claims/{claim}/decide', [ClaimController::class, 'decide'])->name('claims.decide');
         Route::post('/claims/{claim}/pay', [ClaimController::class, 'pay'])->name('claims.pay');
+
+        // Demurrage & Detention
+        Route::get('/demurrage', [DemurrageController::class, 'index'])->name('dd.index');
+        Route::post('/demurrage/tariffs', [DemurrageController::class, 'storeTariff'])->name('dd.tariffs.store');
+        Route::post('/demurrage/start', [DemurrageController::class, 'start'])->name('dd.start');
+        Route::post('/demurrage/{dwell}/end', [DemurrageController::class, 'end'])->name('dd.end');
+        Route::post('/demurrage/invoice', [DemurrageController::class, 'invoice'])->name('dd.invoice');
 
         // COD
         Route::get('/cod', [CodController::class, 'index'])->name('cod.index');
