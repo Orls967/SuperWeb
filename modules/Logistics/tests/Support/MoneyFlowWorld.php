@@ -79,7 +79,7 @@ final class MoneyFlowWorld
         $user = User::factory()->create(['role' => $role, 'name' => ucfirst($role)." {$this->userSeq}"]);
         app(SetPinAction::class)->execute($user, '123456');
         if ($balance > 0) {
-            app(TopUpAction::class)->execute($user, (string) $balance, 'IDR', 'world_topup_'.uniqid());
+            app(TopUpAction::class)->execute($user, (string) $balance, 'world_topup_'.$user->id);
         }
 
         return $user;

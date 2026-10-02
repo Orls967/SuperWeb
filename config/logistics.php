@@ -62,6 +62,16 @@ return [
         'air_freight' => 48,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Klaim Kargo
+    |--------------------------------------------------------------------------
+    | Batas ganti rugi: barang diasuransikan = nilai deklarasi; tidak diasuransikan =
+    | N x ongkos kirim (maks. nilai deklarasi bila ada). Klaim keterlambatan = ongkos kirim.
+    */
+    'claim_window_days' => (int) env('LOGISTICS_CLAIM_WINDOW_DAYS', 14),
+    'claim_uninsured_multiplier' => (int) env('LOGISTICS_CLAIM_UNINSURED_MULTIPLIER', 10),
+
     // Jendela peringatan dini: resi yang jatuh tempo SLA dalam N jam ke depan dianggap berisiko.
     'sla_at_risk_hours' => (int) env('LOGISTICS_SLA_AT_RISK_HOURS', 6),
 ];

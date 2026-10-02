@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Logistics\Http\Controllers\CarrierController;
+use Modules\Logistics\Http\Controllers\ClaimController;
 use Modules\Logistics\Http\Controllers\CodController;
 use Modules\Logistics\Http\Controllers\DispatchBoardController;
 use Modules\Logistics\Http\Controllers\DriverController;
@@ -69,6 +70,13 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::post('/legs/{leg}/assign-carrier', [CarrierController::class, 'assignLeg'])->name('legs.assign-carrier');
         Route::post('/legs/{leg}/complete', [CarrierController::class, 'completeLeg'])->name('legs.complete');
         Route::get('/margins', [CarrierController::class, 'margins'])->name('margins');
+
+        // Klaim
+        Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
+        Route::post('/claims', [ClaimController::class, 'store'])->name('claims.store');
+        Route::post('/claims/{claim}/submit', [ClaimController::class, 'submit'])->name('claims.submit');
+        Route::post('/claims/{claim}/decide', [ClaimController::class, 'decide'])->name('claims.decide');
+        Route::post('/claims/{claim}/pay', [ClaimController::class, 'pay'])->name('claims.pay');
 
         // COD
         Route::get('/cod', [CodController::class, 'index'])->name('cod.index');
