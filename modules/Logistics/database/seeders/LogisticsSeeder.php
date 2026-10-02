@@ -353,5 +353,8 @@ class LogisticsSeeder extends Seeder
                 ]
             );
         }
+
+        // 8. Data demo alur uang logistik (Fase 23): pendapatan, COD, carrier, klaim, D&D, bea cukai, BBM
+        $this->call(LogisticsFinanceSeeder::class);
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Logistics\Application\Commands\InvoiceShippersCommand;
 use Modules\Logistics\Application\Listeners\RecognizeFreightRevenueOnDelivery;
 use Modules\Logistics\Console\Commands\AccrueDemurrageCommand;
+use Modules\Logistics\Console\Commands\AuditBillingCommand;
 use Modules\Logistics\Console\Commands\CheckCapacityCommand;
 use Modules\Logistics\Console\Commands\DetectLateShipmentsCommand;
 use Modules\Logistics\Console\Commands\PayCarriersCommand;
@@ -42,6 +43,7 @@ class LogisticsServiceProvider extends ServiceProvider
                 SettleCodCommand::class,
                 PayCarriersCommand::class,
                 AccrueDemurrageCommand::class,
+                AuditBillingCommand::class,
             ]);
         }
 
