@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Modules\Logistics\Domain\Models\Location;
 use Modules\Logistics\Domain\Models\Shipment;
 use Modules\Logistics\Domain\Services\PiiMasker;
 
@@ -32,8 +33,20 @@ class PublicTrackingController extends Controller
     {
         $cleanedTracking = strtoupper(trim($tracking_number));
 
-        $shipment = Shipment::with(['origin', 'destination', 'packages', 'driver.user'])
-            ->where('tracking_number', $cleanedTracking)
+        $shipment = Shipment::leftJoin('lgx_locations as origin_loc', 'origin_loc.id', '=', 'lgx_shipments.origin_location_id')
+            ->leftJoin('lgx_locations as dest_loc', 'dest_loc.id', '=', 'lgx_shipments.destination_location_id')
+            ->select([
+                'lgx_shipments.*',
+                'origin_loc.name as _origin_name',
+                'origin_loc.city as _origin_city',
+                'dest_loc.name as _dest_name',
+                'dest_loc.city as _dest_city',
+            ])
+            ->with([
+                'trackingEvents' => fn ($q) => $q->with('location')->orderByDesc('sequence'),
+            ])
+            ->withCount('packages')
+            ->where('lgx_shipments.tracking_number', $cleanedTracking)
             ->first();
 
         if (! $shipment) {
@@ -41,6 +54,22 @@ class PublicTrackingController extends Controller
                 'trackingNumber' => $cleanedTracking,
             ]);
         }
+
+        $origin = new Location([
+            'name' => $shipment->_origin_name,
+            'city' => $shipment->_origin_city,
+        ]);
+        $origin->exists = true;
+
+        $dest = new Location([
+            'name' => $shipment->_dest_name,
+            'city' => $shipment->_dest_city,
+        ]);
+        $dest->exists = true;
+
+        $shipment->setRelation('origin', $origin);
+        $shipment->setRelation('destination', $dest);
+        $shipment->setRelation('packages', collect(range(1, max(1, (int) $shipment->packages_count))));
 
         $maskedConsignee = [
             'name' => $this->piiMasker->maskName($shipment->consignee_name),

@@ -4,25 +4,34 @@ declare(strict_types=1);
 
 namespace Modules\Logistics;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Modules\Logistics\Application\Actions\BookShipmentForOrderAction;
 use Modules\Logistics\Application\Commands\InvoiceShippersCommand;
+use Modules\Logistics\Application\Listeners\CreateShipmentOnOrderPaid;
+use Modules\Logistics\Application\Listeners\HandleFleetServiceDue;
 use Modules\Logistics\Application\Listeners\RecognizeFreightRevenueOnDelivery;
 use Modules\Logistics\Console\Commands\AccrueDemurrageCommand;
 use Modules\Logistics\Console\Commands\AuditBillingCommand;
 use Modules\Logistics\Console\Commands\CheckCapacityCommand;
 use Modules\Logistics\Console\Commands\DetectLateShipmentsCommand;
 use Modules\Logistics\Console\Commands\PayCarriersCommand;
+use Modules\Logistics\Console\Commands\RetryWebhooksCommand;
 use Modules\Logistics\Console\Commands\SettleCodCommand;
 use Modules\Logistics\Console\Commands\VerifyCustodyCommand;
+use Modules\Logistics\Contracts\ShipmentBooking;
+use Modules\Logistics\Domain\Events\FleetServiceDue;
 use Modules\Logistics\Domain\Events\ShipmentDelivered;
+use Modules\Logistics\Domain\Support\Sanctum;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Store\Domain\Events\OrderPaid;
 
 class LogisticsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Bindings for contracts will go here
+        $this->app->bind(ShipmentBooking::class, BookShipmentForOrderAction::class);
     }
 
     public function boot(): void
@@ -33,6 +42,16 @@ class LogisticsServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/routes/api.php');
 
         Event::listen(ShipmentDelivered::class, RecognizeFreightRevenueOnDelivery::class);
+        Event::listen(OrderPaid::class, CreateShipmentOnOrderPaid::class);
+        Event::listen(FleetServiceDue::class, HandleFleetServiceDue::class);
+
+        if (! class_exists('Laravel\Sanctum\Sanctum')) {
+            class_alias(Sanctum::class, 'Laravel\Sanctum\Sanctum');
+        }
+
+        Auth::viaRequest('sanctum', function ($request) {
+            return Auth::guard('web')->user();
+        });
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -44,6 +63,7 @@ class LogisticsServiceProvider extends ServiceProvider
                 PayCarriersCommand::class,
                 AccrueDemurrageCommand::class,
                 AuditBillingCommand::class,
+                RetryWebhooksCommand::class,
             ]);
         }
 
@@ -57,6 +77,16 @@ class LogisticsServiceProvider extends ServiceProvider
         }
 
         $registry = $this->app->make(MenuRegistry::class);
+
+        $registry->addItem(
+            label: 'Control Tower',
+            route: 'logistics.control-tower.index',
+            icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>',
+            roles: ['admin', 'logistics_admin'],
+            order: 79,
+            group: 'Logistik',
+            activePattern: 'logistics/control-tower*'
+        );
 
         $registry->addItem(
             label: 'Jaringan & Hub',

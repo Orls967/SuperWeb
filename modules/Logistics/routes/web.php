@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Logistics\Http\Controllers\CarrierController;
 use Modules\Logistics\Http\Controllers\ClaimController;
 use Modules\Logistics\Http\Controllers\CodController;
+use Modules\Logistics\Http\Controllers\ControlTowerController;
 use Modules\Logistics\Http\Controllers\CustomsController;
 use Modules\Logistics\Http\Controllers\DemurrageController;
 use Modules\Logistics\Http\Controllers\DispatchBoardController;
@@ -30,6 +31,7 @@ Route::middleware(['web', 'throttle:30,1'])->group(function () {
 Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [LogisticsDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/control-tower', [ControlTowerController::class, 'index'])->name('control-tower.index');
 
         // Lokasi & Jaringan (Locations)
         Route::resource('locations', LocationController::class)->except(['show']);

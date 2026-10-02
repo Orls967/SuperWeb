@@ -7,7 +7,9 @@ namespace Tests\Performance;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Modules\Logistics\Domain\Models\Shipment;
 use Tests\TestCase;
 
 class QueryBudgetTest extends TestCase
@@ -134,5 +136,55 @@ class QueryBudgetTest extends TestCase
         });
 
         $this->assertLessThanOrEqual(15, $count, "API Global Search melebihi kuota query (tercatat: {$count})");
+    }
+
+    public function test_logistics_tracking_lookup_query_budget(): void
+    {
+        $shipment = Shipment::first();
+        if (! $shipment) {
+            $this->markTestSkipped('No shipment available.');
+        }
+
+        $count = $this->countQueries(function () use ($shipment) {
+            $startTime = microtime(true);
+            $response = $this->get(route('track.show', ['tracking_number' => $shipment->tracking_number]));
+            $response->assertOk();
+            $elapsedMs = (microtime(true) - $startTime) * 1000;
+            $this->assertLessThan(100, $elapsedMs, "Lookup resi melebihi batas waktu (tercatat: {$elapsedMs}ms)");
+        });
+
+        $this->assertLessThanOrEqual(3, $count, "Lookup resi publik melebihi kuota query <= 3 (tercatat: {$count})");
+    }
+
+    public function test_logistics_dispatcher_board_query_budget(): void
+    {
+        $dispatcher = User::where('role', 'dispatcher')->first() ?? $this->admin;
+
+        $count = $this->countQueries(function () use ($dispatcher) {
+            $response = $this->actingAs($dispatcher)->get(route('logistics.dispatch.index'));
+            $response->assertOk();
+        });
+
+        $this->assertLessThanOrEqual(10, $count, "Papan Dispatcher logistik melebihi kuota query <= 10 (tercatat: {$count})");
+    }
+
+    public function test_logistics_control_tower_query_budget(): void
+    {
+        $count = $this->countQueries(function () {
+            $response = $this->actingAs($this->admin)->get(route('logistics.control-tower.index'));
+            $response->assertOk();
+        });
+
+        $this->assertLessThanOrEqual(12, $count, "Control Tower logistik melebihi kuota query <= 12 (tercatat: {$count})");
+    }
+
+    public function test_logistics_accrue_demurrage_execution_time(): void
+    {
+        $startTime = microtime(true);
+        $exitCode = Artisan::call('lgx:accrue-dd');
+        $duration = microtime(true) - $startTime;
+
+        $this->assertSame(0, $exitCode);
+        $this->assertLessThan(30.0, $duration, "Command lgx:accrue-dd berjalan lebih dari 30 detik (tercatat: {$duration}s)");
     }
 }

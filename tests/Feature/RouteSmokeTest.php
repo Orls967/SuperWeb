@@ -177,6 +177,26 @@ class RouteSmokeTest extends TestCase
             'mall.loyalty.index',
             'mall.events.index',
             'mall.facilities.index',
+
+            // Logistik (Sari Ranah Express)
+            'logistics.dashboard',
+            'logistics.control-tower.index',
+            'logistics.locations.index',
+            'logistics.lanes.index',
+            'logistics.fleet.index',
+            'logistics.drivers.index',
+            'logistics.shipments.index',
+            'logistics.shipments.create',
+            'logistics.dispatch.index',
+            'logistics.hub.index',
+            'logistics.carriers.index',
+            'logistics.margins',
+            'logistics.claims.index',
+            'logistics.dd.index',
+            'logistics.customs.index',
+            'logistics.fuel.index',
+            'logistics.cod.index',
+            'logistics.exceptions.index',
         ];
 
         foreach ($adminRoutes as $route) {
@@ -187,5 +207,43 @@ class RouteSmokeTest extends TestCase
                 "Admin harus dapat mengakses route [{$route}] (diterima: {$response->getStatusCode()})"
             );
         }
+    }
+
+    // ============================================================
+    // 5. LOGISTICS ROLES ACCESS MATRIX
+    // ============================================================
+
+    public function test_logistics_roles_authorization_matrix(): void
+    {
+        $logisticsAdmin = User::where('role', 'logistics_admin')->first()
+            ?? User::factory()->create(['role' => 'logistics_admin']);
+        $dispatcher = User::where('role', 'dispatcher')->first()
+            ?? User::factory()->create(['role' => 'dispatcher']);
+        $driverUser = User::where('role', 'driver')->first()
+            ?? User::factory()->create(['role' => 'driver']);
+        $shipper = User::where('role', 'shipper')->first()
+            ?? User::factory()->create(['role' => 'shipper']);
+
+        // 1. Logistics Admin can access control tower and dispatch
+        $this->actingAs($logisticsAdmin)->get(route('logistics.control-tower.index'))->assertOk();
+        $this->actingAs($logisticsAdmin)->get(route('logistics.dispatch.index'))->assertOk();
+
+        // 2. Dispatcher can access dispatch board but forbidden from control tower
+        $this->actingAs($dispatcher)->get(route('logistics.dispatch.index'))->assertOk();
+        $this->actingAs($dispatcher)->get(route('logistics.control-tower.index'))->assertForbidden();
+
+        // 3. Driver can access driver tasks but forbidden from control tower and dispatch board
+        $this->actingAs($driverUser)->get(route('logistics.driver.tasks'))->assertOk();
+        $this->actingAs($driverUser)->get(route('logistics.control-tower.index'))->assertForbidden();
+        $this->actingAs($driverUser)->get(route('logistics.dispatch.index'))->assertForbidden();
+
+        // 4. Shipper can access shipments but forbidden from dispatch board and control tower
+        $this->actingAs($shipper)->get(route('logistics.shipments.index'))->assertOk();
+        $this->actingAs($shipper)->get(route('logistics.control-tower.index'))->assertForbidden();
+        $this->actingAs($shipper)->get(route('logistics.dispatch.index'))->assertForbidden();
+
+        // 5. Customer forbidden from logistics internal operations
+        $this->actingAs($this->customer)->get(route('logistics.control-tower.index'))->assertForbidden();
+        $this->actingAs($this->customer)->get(route('logistics.dispatch.index'))->assertForbidden();
     }
 }

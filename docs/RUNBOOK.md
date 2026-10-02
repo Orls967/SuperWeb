@@ -6,13 +6,13 @@ Dokumen ini adalah panduan standar operasional prosedur (SOP) bagi tim Engineeri
 
 ## 1. Pemantauan Rutin & Pemeriksaan Kesehatan Harian
 
-### 1.1 Diagnosa Menyeluruh 7 Pilar Platform
+### 1.1 Diagnosa Menyeluruh 8 Pilar Platform
 Jalankan diagnosa otomatis satu pintu setiap pagi atau pasca deployment:
 ```bash
 php artisan super:health-check
 ```
 **Parameter Keberhasilan**:
-- Seluruh 7 sub-sistem berstatus `<fg=green>✓ HEALTHY</>`:
+- Seluruh 8 sub-sistem berstatus `<fg=green>✓ HEALTHY</>`:
   1. Koneksi Database Primary (latensi $< 50$ ms)
   2. Cache & In-Memory Store
   3. Izin Akses Direktori Storage (writable)
@@ -20,6 +20,7 @@ php artisan super:health-check
   5. Integritas Hash-Chain Paspor Kendaraan (`core:verify-passports` rantai utuh)
   6. Audit Tagihan & Revenue Mall (`mall:audit-billing` 0 selisih)
   7. Operasional & Shift Kasir Resto (`resto:close-day --check` lolos)
+  8. Logistik: Billing & Rantai Kustodi (`lgx:audit-billing` & `lgx:verify-custody` bersih)
 - Terbit entri log audit di tabel `core_audit_logs` dengan aksi `system.health_check`.
 
 ### 1.2 Dashboard Observabilitas GUI
@@ -112,6 +113,37 @@ Halaman ini menyajikan metrik latensi, status komponen visual, tombol pemindaian
 
 ---
 
+### Playbook F: Diskrepansi Billing Logistik atau Kerusakan Chain of Custody
+- **Gejala**: `lgx:audit-billing` atau `lgx:verify-custody` keluar dengan kode 1 / merah.
+- **Dampak**: Ketidaksesuaian piutang shipper, unearned revenue, akrual carrier/D&D, atau manipulasi histori event resi.
+- **Langkah Penanganan**:
+  1. Jalankan `php artisan lgx:audit-billing` untuk mengisolasi 15 titik rekonsiliasi logistik.
+  2. Bila ditemukan selisih pengakuan unearned/freight revenue:
+     - Telusuri `lgx_shipments` dengan status `Delivered` yang belum tercatat `revenue_recognized_at`.
+     - Jalankan `php artisan lgx:verify-custody` untuk memverifikasi SHA-256 hash chain per shipment.
+  3. Periksa akun ledger `lgx:*` terkait untuk memastikan balancing debit/credit.
+
+---
+
+### Playbook G: Kegagalan Pengiriman Webhook (Dead-Letter Outbox)
+- **Gejala**: Partner/shipper eksternal melaporkan tidak menerima notifikasi webhook status shipment.
+- **Dampak**: Keterlambatan integrasi sistem mitra B2B.
+- **Langkah Penanganan**:
+  1. Periksa tabel `lgx_webhook_deliveries` untuk status `dead_letter` atau `pending`:
+     ```sql
+     SELECT id, endpoint_id, event, attempts, status, response_status, last_error 
+     FROM lgx_webhook_deliveries 
+     WHERE status IN ('failed', 'dead_letter')
+     ORDER BY updated_at DESC LIMIT 20;
+     ```
+  2. Jalankan retry manual via artisan command:
+     ```bash
+     php artisan lgx:retry-webhooks
+     ```
+  3. Jika endpoint klien mengembalikan error 4xx/5xx persisten, hubungi pihak IT mitra untuk memeriksa konfigurasi URL atau shared secret HMAC-SHA256.
+
+---
+
 ## 3. Jadwal Scheduler Otomatis (Production Crontab)
 
 Pastikan satu baris crontab berikut aktif di server produksi:
@@ -124,20 +156,34 @@ Pastikan satu baris crontab berikut aktif di server produksi:
 
 | Waktu Eksekusi | Artisan Command | Deskripsi Pekerjaan |
 |---|---|---|
-| Setiap 5 Menit | `crypto:tick` | Update harga pasar simulasi aset kripto |
-| Setiap 5 Menit | `finance:monitor-risk` | Evaluasi risiko LTV, margin call & likuidasi |
-| Setiap Jam | `store:cancel-stale-orders` | Batalkan reservasi belanja yang kedaluwarsa |
+| Setiap Menit | `crypto:tick` | Update harga pasar simulasi aset kripto |
+| Setiap 5 Menit | `lgx:retry-webhooks` | Retry pengiriman webhook gagal (exponential backoff) |
+| Setiap 10 Menit | `store:cancel-stale-orders` | Batalkan reservasi belanja yang kedaluwarsa |
+| Setiap 15 Menit | `resto:expire-display` | Buang makanan etalase lewat batas 6 jam |
+| Setiap 15 Menit | `lgx:detect-late` | Deteksi shipment melewati estimasi SLA waktu |
+| Setiap Jam | `store:auto-capture-c2c` | Auto-capture dana escrow C2C setelah 3 hari |
 | Setiap Jam | `payment:release-expired-holds` | Rilis dana hold escrow yang melewati batas waktu |
+| Setiap Jam | `lgx:capacity-check` | Verifikasi kapasitas jadwal armada tidak overload |
+| Harian 00:10 | `lgx:accrue-dd` | Akrual harian denda Demurrage & Detention kontainer |
+| Harian 00:30 | `mall:expire-points` | Kadaluwarsa Duta Points loyalitas |
+| Harian 00:45 | `mall:expire-vouchers` | Bukukan voucher kedaluwarsa ke breakage |
+| Harian 01:00 | `finance:charge-installments` | Auto-debit cicilan pinjaman HODL-to-Drive |
+| Harian 02:00 | `resto:post-royalty` | Hitung & posting royalti waralaba holding |
+| Harian 02:30 | `lgx:verify-custody` | Audit integritas kriptografis rantai kustodi resi |
+| Harian 04:00 | `mall:auto-debit` | Eksekusi auto-debit tagihan tenant dari dompet |
+| Harian 05:00 | `mall:apply-penalties` | Terapkan denda 2% bagi tagihan terlambat |
 | Harian 06:00 | `mall:renew-parking-members` | Perpanjangan otomatis langganan parkir |
-| Harian 07:00 | `mall:generate-pm` | Terbitkan work order pemeliharaan gedung |
-| Harian 08:00 | `resto:check-stock` | Pantau stok kritis bahan baku & draf PO |
+| Harian 06:30 | `mall:generate-pm-orders` | Terbitkan work order pemeliharaan gedung |
+| Harian 07:00 | `mall:audit-billing` | Audit integritas penagihan mall vs ledger |
+| Harian 07:15 | `lgx:audit-billing` | Audit integritas penagihan logistik vs ledger |
+| Harian 07:30 | `resto:check-stock` | Pantau stok kritis bahan baku & draf PO |
+| Harian 08:30 | `lgx:settle-cod` | Cairkan setoran COD ke dompet shipper (D+N) |
 | Harian 23:59 | `resto:close-day --check` | Tutup harian resto, buang waste & ringkasan |
-| Bulanan Tgl 1, 00:01 | `mall:generate-invoices` | Terbitkan tagihan sewa & utilitas bulanan |
-| Bulanan Tgl 1, 01:00 | `resto:post-royalty` | Hitung & posting royalti waralaba holding |
-| Bulanan Tgl 5, 09:00 | `mall:auto-debit` | Eksekusi auto-debit tagihan tenant dari dompet |
-| Bulanan Tgl 11, 00:01 | `mall:apply-penalties` | Terapkan denda 2% bagi tagihan terlambat |
+| Harian 23:59 | `bank:reconcile` | Audit keselarasan saldo buku besar double-entry |
 | Mingguan Senin, 08:00 | `mall:settle-vouchers` | Cairkan klaim voucher belanja tenant |
-| Mingguan Minggu, 23:59 | `mall:expire-vouchers` | Bukukan voucher kedaluwarsa ke breakage |
+| Mingguan Senin, 09:00 | `lgx:pay-carriers` | Bayar tagihan leg carrier subkontrak jatuh tempo |
+| Bulanan Tgl 1, 02:00 | `lgx:invoice-shippers` | Terbitkan tagihan bulanan shipper pascabayar B2B |
+| Bulanan Tgl 1, 03:00 | `mall:generate-invoices` | Terbitkan tagihan sewa & utilitas bulanan |
 
 ---
 
@@ -165,7 +211,7 @@ tar -czvf backups/storage_$(date +%Y%m%d_%H%M%S).tar.gz storage/app/public
    ```bash
    php artisan super:health-check
    ```
-4. Jika seluruh 7 pilar lolos verifikasi, aktifkan kembali server:
+4. Jika seluruh 8 pilar lolos verifikasi, aktifkan kembali server:
    ```bash
    php artisan up
    ```

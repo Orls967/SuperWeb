@@ -16,10 +16,12 @@ use Modules\Core\Contracts\AcquiresVehicle;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
+use Modules\Logistics\Contracts\ShipmentBooking;
 use Modules\Payment\Contracts\Payable;
 use Modules\Payment\Domain\Models\PaymentIntent;
 use Modules\Shared\Domain\ValueObjects\Money;
 use Modules\Store\Domain\Enums\OrderStatus;
+use Modules\Store\Domain\Events\OrderPaid;
 
 class Order extends Model implements Payable
 {
@@ -217,6 +219,15 @@ class Order extends Model implements Payable
         if ($hasOnlyCars || $this->status === OrderStatus::COMPLETED) {
             $this->fulfillCarPurchases();
         }
+
+        // Dispatch OrderPaid for non-C2C physical orders to trigger shipment creation
+        if (! $hasOnlyCars) {
+            event(new OrderPaid(
+                $this->id,
+                (int) $this->user_id,
+                (int) $this->grand_total,
+            ));
+        }
     }
 
     public function onPaymentRefunded(PaymentIntent $intent): void
@@ -240,6 +251,14 @@ class Order extends Model implements Payable
         $this->cancelled_at = now();
         $this->cancellation_reason = 'Pembayaran dibatalkan dan direfund';
         $this->save();
+
+        if (app()->bound(ShipmentBooking::class)) {
+            app(ShipmentBooking::class)->cancelForOrder(
+                'store_order',
+                (int) $this->id,
+                $this->cancellation_reason
+            );
+        }
     }
 
     /**

@@ -12,6 +12,7 @@ enum VehicleEventType: string
     case PART_REPLACED = 'part_replaced';
     case ODOMETER_UPDATED = 'odometer_updated';
     case OWNERSHIP_TRANSFERRED = 'ownership_transferred';
+    case DELIVERED_BY_CARRIER = 'delivered_by_carrier';
 
     public function label(): string
     {
@@ -22,6 +23,7 @@ enum VehicleEventType: string
             self::PART_REPLACED => 'Penggantian Suku Cadang',
             self::ODOMETER_UPDATED => 'Pembaruan Odometer',
             self::OWNERSHIP_TRANSFERRED => 'Pengalihan Kepemilikan (C2C)',
+            self::DELIVERED_BY_CARRIER => 'Pengiriman oleh Car Carrier Selesai',
         };
     }
 }
