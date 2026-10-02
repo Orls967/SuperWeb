@@ -4,8 +4,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-02 · **Fase selesai terakhir:** 23 (merged ke `master`, PR #1 & #2) · **Berikutnya:** Fase 24 → 25 → 26–50 (lihat PROGRESS.md)
-**Snapshot gate (akhir Fase 23):** 521 test / 3070 assertion, 0 skipped · `bank:reconcile` 128 akun 0 selisih · `lgx:audit-billing` 0 selisih · verify-custody 6 resi/9 event · Pint, Vite, arch (9) lulus.
+**Terakhir diperbarui:** 2026-10-03 · **Fase selesai terakhir:** 25 (merged ke `master`, PR #1, #2, #3) · **Berikutnya:** Fase 26–57 (roadmap rantai nilai hulu→hilir di PROGRESS.md; backlog 58+)
+**Snapshot gate (akhir Fase 25):** 538 test / 3189 assertion, 0 skipped · `bank:reconcile` 0 selisih · `lgx:audit-billing` 0 selisih · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus. Query budget: lookup resi ≤ 3, dispatch ≤ 10, control tower ≤ 12.
 
 ---
 
@@ -50,14 +50,14 @@ Gotcha yang sudah pernah menggigit: `event(new X)` bukan `X::dispatch` bila even
 | Finance | `fin_` | `/pembiayaan` | HODL-to-Drive: pinjaman beragun kripto, cicilan, LTV monitor/likuidasi; cmd `finance:charge-installments` | 22 |
 | Resto | `resto_` (34 tabel) | `/resto` | RM Sari Ranah: outlet, dapur sentral CK-01, resep BOM, HPP (MAC), batch, etalase hidang, POS/shift, rantai pasok, katering, franchise/royalti; cmd `resto:{expire-display,close-day,post-royalty,check-stock}` | 156 |
 | Mall | `mall_` (25 tabel) | `/mall` | Duta Mall: leasing, tagihan, tunggakan/denda, utilitas, parkir, footfall, loyalty (points), voucher, event, facility WO, `mall_assets`; cmd `mall:*` (9) | 168 |
-| Logistics | `lgx_` (37+ tabel) | `/logistics` | Sari Ranah Express — lihat §6 | 269 |
+| Logistics | `lgx_` (≈ 43 tabel) | `/logistics` | Sari Ranah Express — lihat §6 | 269 |
 
 Tabel non-prefiks lama: `users`, `bookings`, `spareparts`, `services`, `cars`, `brands`, `garages`, `wishlists`, `platform_*`.
 
 ## 4. Role & akun demo
 
 Role (`users.role`): `admin`, `customer`, `mekanik`, `tenant`, `outlet_manager`, `kitchen`, `cashier`, `shipper`, `driver`, `dispatcher`, `hub_operator`, `logistics_admin`.
-Seeder: `DatabaseSeeder` → Banking, Platform, Crypto, Mall, Resto, Logistics (+ `LogisticsFinanceSeeder`). Akun demo contoh: `admin@autoserve.test`, `customer@autoserve.test`, `mekanik@autoserve.test` (password `password`). `DemoLargeSeeder` = data besar lintas modul.
+Seeder: `DatabaseSeeder` → Banking, Platform, Crypto, Mall, Resto, Logistics (+ `LogisticsFinanceSeeder`). Akun demo contoh: `admin@autoserve.test`, `customer@autoserve.test`, `mekanik@autoserve.test` (password `password`). `DemoLargeSeeder` = data besar lintas modul; `LogisticsLargeSeeder` = skala logistik (Fase 25).
 
 ## 5. Ledger & uang (inti sistem)
 
@@ -72,11 +72,11 @@ Seeder: `DatabaseSeeder` → Banking, Platform, Crypto, Mall, Resto, Logistics (
 
 ## 6. Modul Logistics (`modules/Logistics`) — detail
 
-Fase 20–23 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee_idr, insurance_rate/min, cod_fee_rate, cod_settlement_days, sla_hours per service level, claim_window_days, claim_uninsured_multiplier, customs_red_lane_threshold_idr, dll.).
+Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee_idr, insurance_rate/min, cod_fee_rate, cod_settlement_days, sla_hours per service level, claim_window_days, claim_uninsured_multiplier, customs_red_lane_threshold_idr, dll.).
 
 **Enum:** `ShipmentStatus` (state machine), `ServiceLevel`, `TransportMode`, `TruckType`, `TrailerType`, `FleetStatus`, `LocationType`, `Incoterm`, `PaymentTerms`, `ScheduleStatus`, `DeliveryFailureReason`, `ExceptionType` (+CustomsHold), `ExceptionSeverity`.
 
-**Model (domain):** `LogisticsEntity`, `Location`, `Lane`, `Driver`, `Truck`, `Trailer`, `Vessel`, `Aircraft`, `Container`, `Uld`, `ShipperAccount`, `ShipmentLeg`, `HubOperator`, `Schedule`, `CapacityReservation`, `RateCard`/`RateBracket`/`Surcharge`, `Quote`, `Shipment`, `Package`, `Load`/`LoadItem`, `TrackingEvent`, `DispatchAssignment`, `ProofOfDelivery`, `DeliveryAttempt`, `ShipmentException`, `LogisticsInvoice` (kind: freight|dd), `CodCollection`, `Carrier`/`CarrierPayment`, `Claim`, `DdTariff`/`ContainerDwell`, `HsTariff`/`CustomsDeclaration`, `FuelLog`.
+**Model (domain):** `LogisticsEntity`, `Location`, `Lane`, `Driver`, `Truck`, `Trailer`, `Vessel`, `Aircraft`, `Container`, `Uld`, `ShipperAccount`, `ShipmentLeg`, `HubOperator`, `Schedule`, `CapacityReservation`, `RateCard`/`RateBracket`/`Surcharge`, `Quote`, `Shipment`, `Package`, `Load`/`LoadItem`, `TrackingEvent`, `DispatchAssignment`, `ProofOfDelivery`, `DeliveryAttempt`, `ShipmentException`, `LogisticsInvoice` (kind: freight|dd), `CodCollection`, `Carrier`/`CarrierPayment`, `Claim`, `DdTariff`/`ContainerDwell`, `HsTariff`/`CustomsDeclaration`, `FuelLog`, `TemperatureReading`, `DockAppointment`, `WebhookEndpoint`/`WebhookDelivery`.
 
 **Action (45)** per domain: Booking/Quote (`QuoteShipmentAction`, `BookShipmentAction`, `BookPostpaidShipmentAction`, `CancelShipmentAction`, `GenerateMonthlyInvoicesAction`, `PayLogisticsInvoiceAction`) · Jaringan (`PlanShipmentRouteAction`, `ReserveCapacityAction`/`ReleaseCapacityAction`, `ConsolidateLclAction`, `RecordSolasVgmAction`, `ProcessHub{InboundScan,Sort,Outbound}Action`, `RecordTrackingEventAction`) · Dispatch/Driver (`AssignScheduleResourcesAction`, `ReleaseScheduleResourcesAction`, `AssignShipmentToDriverAction`, `ScanPickup`, `StartDelivery`, `CompleteDelivery`, `ReportFailedDelivery` — via `AbstractDriverTaskAction`) · Exception (`RaiseShipmentExceptionAction`, `ResolveShipmentExceptionAction`) · Uang (`RecognizeFreightRevenueAction`, `RecordCodCollection`, `DepositCodCash`, `SettleCod`, `AssignCarrierToLeg`, `AccrueLegCost`, `CompleteShipmentLeg`, `PayCarriers`, `CreateClaim/SubmitClaim/DecideClaim/PayClaim`, `StartContainerDwell`, `AccrueDemurrageDetention`, `EndContainerDwell`, `GenerateDdInvoices`, `SubmitCustomsDeclaration`, `PayCustomsDuty`, `ClearCustoms`, `RecordFuelLog`).
 
@@ -92,7 +92,9 @@ Fase 20–23 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 **Seeder:** `LogisticsNetworkSeeder`, `LogisticsSeeder`, `LogisticsFinanceSeeder` (data nyata agar gate custody/capacity tidak vacuous).
 
-**Belum ada (rencana):** integrasi lintas lini (Fase 24), API/webhook/control tower/large seeder (Fase 25).
+**Fase 24 (integrasi lintas lini):** kontrak `ShipmentBooking` (Store `OrderPaid` → `CreateShipmentOnOrderPaid` → `BookShipmentForOrderAction`, ongkir ke `unearned_freight`, resi di order) · `DeliverVehicleByCarrierAction` (event `DELIVERED_BY_CARRIER` ke Vehicle Passport) · `FleetServiceDue` → `HandleFleetServiceDue` → kontrak `FleetMaintenanceBooking` (impl. `AutoServe\...\AutoServeFleetMaintenanceBooking`), armada `MAINTENANCE` ditolak dispatch, `CompleteFleetMaintenanceAction` · cold-chain: `TemperatureReading`, `RecordTemperatureAction` (excursion → `ShipmentException`), `ReceiveReeferReplenishmentAction` (stok ke Inventory) · `DockAppointment` (slot dock Duta Mall tanpa overlap, check-in/out) · pilar Logistik di `super:health-check` (8 pilar). Migrasi `2026_10_02_240101_phase_24_cross_line_integration`.
+**Fase 25 (skala & API):** `LogisticsLargeSeeder` · `ControlTowerQuery` + `ControlTowerController` (logistics_admin) · **API v1** `routes/api.php` (`/api/v1/logistics/{quotes,shipments,tracking}`, `Idempotency-Key`, throttle 60/30 per menit, `Http/Controllers/Api/LogisticsApiController`, dokumen `docs/API.md`) · **Webhook outbox**: `WebhookEndpoint`, `WebhookDelivery`, `DispatchWebhookAction`, `lgx:retry-webhooks` (5 mnt; HMAC-SHA256, backoff, dead-letter), migrasi `2026_10_03_250401` · job `ProcessBulkShipmentUploadJob` (ShouldBeUnique) · `SecurityTest`/`RouteSmokeTest`/`QueryBudgetTest` mencakup rute logistik.
+**PERINGATAN autentikasi API:** `laravel/sanctum` **tidak terpasang**. `LogisticsServiceProvider` membuat `class_alias` palsu `Laravel\Sanctum\Sanctum` → `Domain/Support/Sanctum.php` dan guard `Auth::viaRequest('sanctum')` yang hanya mengembalikan user session `web` → **tidak ada validasi token/ability sungguhan**. Wajib diganti di tugas 26.1.
 
 ## 7. Modul lain — fakta penting
 
@@ -106,7 +108,7 @@ Fase 20–23 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 ## 8. Peta command lengkap
 
-`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (7 pilar) · `lgx:*` (§6). Jadwal: `routes/console.php`.
+`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (7 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal). Jadwal: `routes/console.php`.
 
 ## 9. Test
 
@@ -118,20 +120,20 @@ Fase 20–23 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 ## 11. Dokumen & branch
 
-Dokumen: `README.md` (belum memuat Logistics/`lgx:*` → tugas 25.8) · `docs/{PROGRESS,DECISIONS,ARCHITECTURE,RUNBOOK,AUDIT,BLOCKERS}.md`. Branch: kerja di `feature/...` (tanpa kata "claude"), merge via PR ke `master`. PR #1 = Fase 22, PR #2 = Fase 23. Branch lama `claude/funny-galileo-v69spt` perlu dihapus manual di GitHub.
+Dokumen: `README.md` (memuat Logistics sejak 25.8) · `docs/{PROGRESS,DECISIONS,ARCHITECTURE,RUNBOOK,AUDIT,BLOCKERS}.md`. Branch: kerja di `feature/...` (tanpa kata "claude"), merge via PR ke `master`. PR #1 = Fase 22, PR #2 = Fase 23. PR #3 = Fase 24–25. Branch lama `claude/funny-galileo-v69spt` & `docs/prompt-fase-24-25` perlu dihapus manual di GitHub.
 
 ## 12. Utang teknis / catatan terbuka
 
-1. Fase 24 (integrasi lintas lini) & 25 (skala/API/control tower) **belum dikerjakan** di `master`.
-2. `RouteSmokeTest`/`SecurityTest` belum mencakup rute logistik (25.6).
-3. README belum memuat Logistics (25.8).
+1. **Sanctum palsu** (lihat §6) — ganti dengan `laravel/sanctum` asli (26.1).
+2. `docs/AUDIT.md` belum punya section "Quality Gate Fase 25" (hanya sampai Fase 24); catatan penutup ada di PROGRESS.md (26.2).
+3. Sweep transaksi/idempotensi/N+1 seluruh modul (26.3–26.4).
 4. Duplikasi konsep **Asset** (`mall_assets`) akan dikonsolidasikan di Fase 29.
 5. BOM/HPP ada di Resto (`resto_`), akan digeneralisasi di Fase 33–36 (Resto tetap bekerja lewat adapter).
 6. Role masih satu kolom `users.role`; RBAC granular direncanakan Fase 26/48.
 
 ## 13. Rencana ke depan (ringkas; detail di PROGRESS.md)
 
-Fase 24–25 Logistik selesai → **26–50**: fondasi enterprise (Party, entitas hukum, approval engine) → Kontrak (27–28) → Aset (29–30) → Procurement/Produsen (31–32) → Pabrik & Produksi (33–38) → Distributor (39–40) → Agensi (41) → Mitra (42) → Internasional: FX, ekspor-impor, trade finance, kerja sama (43–45) → S&OP, Group Finance, hardening, simulasi skala, sign-off (46–50).
+Fase 20–25 Logistik selesai → **26–57** (detail di PROGRESS.md): 26 utang teknis+RBAC+outbox+approval · 27 Party & badan hukum · 28–29 Kontrak · 30–31 Aset · 32–34 Pemasok/Procurement/AP · 35–40 Pabrik (master, MRP, shop floor, costing, QMS, OEE/K3) · 41 WMS · 42–44 Distributor, distribusi, pricing · 45–46 Agensi · 47 Mitra · 48 Multi-currency/Treasury · 49–50 Ekspor-impor & Trade finance · 51–52 Kerja sama internasional & konsolidasi · 53 S&OP/Control tower · 54 Finance grup/kepatuhan · 55 API v2/EDI · 56 Skala/simulasi · 57 E2E & serah terima. Backlog 58+: SDM, PLM, ESG, marketplace, hulu pertanian, konstruksi, AI, mobile, DR.
 
 ## 14. PROTOKOL PEMBARUAN (wajib)
 
