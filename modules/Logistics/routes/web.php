@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Logistics\Http\Controllers\DispatchBoardController;
 use Modules\Logistics\Http\Controllers\DriverController;
 use Modules\Logistics\Http\Controllers\FleetController;
 use Modules\Logistics\Http\Controllers\HubOperationsController;
@@ -45,7 +46,11 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::get('/shipments/{id}', [ShipperPortalController::class, 'show'])->name('shipments.show');
         Route::get('/shipments/{id}/label', [ShipperPortalController::class, 'label'])->name('shipments.label');
 
-        Route::get('/dispatch', [LogisticsDashboardController::class, 'index'])->name('dispatch.index');
+        // Papan Dispatch (dispatcher)
+        Route::get('/dispatch', [DispatchBoardController::class, 'index'])->name('dispatch.index');
+        Route::post('/dispatch/assign', [DispatchBoardController::class, 'assign'])->name('dispatch.assign');
+        Route::delete('/dispatch/{schedule}/release', [DispatchBoardController::class, 'release'])->name('dispatch.release');
+        Route::post('/dispatch/assign-shipment', [DispatchBoardController::class, 'assignShipment'])->name('dispatch.assign-shipment');
 
         // Operasi Hub (Inbound, Sort, Outbound)
         Route::get('/hub', [HubOperationsController::class, 'index'])->name('hub.index');
