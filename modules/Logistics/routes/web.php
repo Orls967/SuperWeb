@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\Logistics\Http\Controllers\DispatchBoardController;
 use Modules\Logistics\Http\Controllers\DriverController;
+use Modules\Logistics\Http\Controllers\DriverTaskController;
 use Modules\Logistics\Http\Controllers\FleetController;
 use Modules\Logistics\Http\Controllers\HubOperationsController;
 use Modules\Logistics\Http\Controllers\LaneController;
@@ -58,6 +59,11 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::post('/hub/sort', [HubOperationsController::class, 'sort'])->name('hub.sort');
         Route::post('/hub/outbound', [HubOperationsController::class, 'outbound'])->name('hub.outbound');
 
-        Route::get('/driver/tasks', [LogisticsDashboardController::class, 'index'])->name('driver.tasks');
+        // Aplikasi Driver (mobile)
+        Route::get('/driver/tasks', [DriverTaskController::class, 'index'])->name('driver.tasks');
+        Route::post('/driver/pickup', [DriverTaskController::class, 'pickup'])->name('driver.pickup');
+        Route::post('/driver/shipments/{shipment}/start-delivery', [DriverTaskController::class, 'startDelivery'])->name('driver.start-delivery');
+        Route::post('/driver/shipments/{shipment}/deliver', [DriverTaskController::class, 'deliver'])->name('driver.deliver');
+        Route::post('/driver/shipments/{shipment}/fail', [DriverTaskController::class, 'fail'])->name('driver.fail');
     });
 });
