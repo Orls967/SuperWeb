@@ -426,7 +426,7 @@ Untuk menghilangkan pelanggaran batas arsitektur di mana 6 modul eksternal mengi
 4. **Verifikasi Signed URL**: Mencegah pemalsuan parameter atau manipulasi URL bertandatangan kriptografis.
 5. **Pencegahan XSS**: Seluruh data dinamis di Blade template diproteksi dengan sanitasi entitas HTML (`{{ ... }}`).
 
-### 5.5 Observabilitas 7 Pilar Platform (`super:health-check`)
+### 5.5 Observabilitas 8 Pilar Platform (`super:health-check`)
 Artisan command `super:health-check` dan dashboard `/admin/health` mengevaluasi kesehatan sistem menyeluruh:
 1. **Primary Database**: Latensi ping koneksi dan integritas driver SQLite/MySQL.
 2. **Cache Store**: Kesiapan pembacaan dan penulisan *in-memory cache*.
@@ -435,10 +435,51 @@ Artisan command `super:health-check` dan dashboard `/admin/health` mengevaluasi 
 5. **Paspor Kendaraan**: Integritas kriptografis rantai hash SHA-256 (`core:verify-passports`).
 6. **Tagihan & Revenue Mall**: Audit kecocokan penerbitan dan pelunasan invoice terhadap ledger (`mall:audit-billing`).
 7. **Shift & Kasir Resto**: Validasi konsistensi laci kasir dan penutupan harian (`resto:close-day --check`).
+8. **Logistik (Billing & Rantai Kustodi)**: Audit integritas billing logistik vs ledger (`lgx:audit-billing`) dan keabsahan rantai hash lacak balak (`lgx:verify-custody`).
 
 ---
 
-## 6. KONVENSI BUKU BESAR DOUBLE-ENTRY MULTI-ASET
+## 6. MODUL LOGISTIK — SARI RANAH EXPRESS (FASE 20–25)
+
+### 6.1 Fondasi Jaringan, Armada Multimoda & Kustodi Kriptografis
+- **Jaringan Hub-and-Spoke**: Berpusat di Kalimantan Selatan (Banjarmasin HUB-BDJ & HUB-BJB), pelabuhan UN/LOCODE, bandara IATA, CFS, dan depot kontainer.
+- **Armada Multimoda**:
+  - Truk terhubung ke Vehicle Passport (`core_vehicles`) plat DA dengan verifikasi rantai paspor.
+  - Kapal laut (`lgx_vessels`) dengan verifikasi check-digit IMO dan kontainer (`lgx_containers`) dengan check-digit ISO 6346.
+  - Pengemudi (`lgx_drivers`) dengan penegakan regulasi batas jam kerja maks 8 jam/hari & istirahat 30 menit per 4 jam.
+- **Rantai Kustodi Kriptografis (`lgx_tracking_events`)**: Append-only hash chain SHA-256 per shipment `hash = SHA256(prev_hash || payload)`. Terverifikasi secara periodik via command `lgx:verify-custody`.
+
+### 6.2 Alur Moneter & Akun Buku Besar Logistik
+- **Unearned vs Recognized Freight**:
+  - Booking prabayar mendebit dompet pelanggan ke `lgx:unearned_freight:IDR`.
+  - Saat pengiriman selesai (`ShipmentDelivered`), diposting debit `lgx:unearned_freight:IDR` dan kredit `lgx:freight_revenue:IDR`.
+- **Shipper Pascabayar B2B**:
+  - Resi pascabayar diakui saat Delivered dengan mendebit piutang `lgx:ar:{shipper}:IDR` dan kredit `lgx:freight_revenue:IDR`.
+  - Pembayaran invoice bulanan (`lgx:invoice-shippers`) membalik saldo piutang menjadi nol.
+- **Cash on Delivery (COD)**:
+  - Alur 3 tahap: penagihan kas oleh driver -> setoran fisik di hub -> settlement D+N ke shipper dikurangi fee COD (`lgx:cod_fee_revenue:IDR`).
+- **Carrier Subkontrak, D&D, Bea Cukai & BBM**:
+  - Akrual biaya leg carrier, termin mingguan (`lgx:pay-carriers`).
+  - Demurrage & Detention per hari kalender lokasi (`lgx:accrue-dd`).
+  - Bea cukai simulasi (PIB/PEB) dengan pembayaran via dompet digital.
+  - Log konsumsi bahan bakar (integer ml & meter) dengan proteksi anomali > 30%.
+
+### 6.3 Integrasi Lintas Lini (Fase 24)
+- **Store -> Logistik**: Pesanan belanja online terbayar otomatis menerbitkan shipment via contract `ShipmentBooking`.
+- **Pengiriman Kendaraan**: Ekspedisi mobil terintegrasi mencatat event `DELIVERED_BY_CARRIER` langsung ke paspor kendaraan digital.
+- **Armada -> AutoServe**: Truk yang mencapai batas jarak servis memicu event `FleetServiceDue`, otomatis memesan perawatan di AutoServe, dan mengunci truk ke status Maintenance.
+- **Resto Cold Chain**: Pengiriman bahan baku dapur pusat (CK-01) menggunakan truk reefer berpendingin dengan monitoring `lgx_temperature_readings` dan notifikasi deviasi suhu.
+- **Mall Loading Dock**: Reservasi slot bongkar muat Duta Mall (`lgx_dock_appointments`) dengan sistem antrean anti-bentrok waktu.
+
+### 6.4 Skala, API & Control Tower (Fase 25)
+- **LogisticsLargeSeeder**: Seeder performa tinggi untuk pengujian skala ratusan ribu pengiriman dan jutaan event kustodi.
+- **RESTful API v1 (Laravel Sanctum)**: Endpoint `/api/v1/logistics` dengan token abilities granular (`quote:create`, `shipment:create`, `shipment:read`), rate limit token-bucket, dan header idempotensi `Idempotency-Key`.
+- **Webhook Outbox**: Pengiriman event asinkron bergaransi dengan penandatanganan HMAC-SHA256, exponential backoff hingga 8 kali retry, dan command `lgx:retry-webhooks`.
+- **Control Tower Dashboard**: Pusat kendali eksekutif untuk `logistics_admin` menyajikan metrik OTIF, utilisasi armada, dwell time, saldo titipan COD, dan margin per rute.
+
+---
+
+## 7. KONVENSI BUKU BESAR DOUBLE-ENTRY MULTI-ASET
 
 Seluruh transaksi finansial di platform ini diatur oleh tabel `bank_ledger_accounts` dan `bank_ledger_entries`:
 
@@ -463,3 +504,16 @@ $$\sum \text{Entries Seluruh Akun per Aset} = 0$$
 | `expense:mall:loyalty:IDR` | IDR | EXPENSE | false | Beban promosi penerbitan voucher loyalitas mall |
 | `cash:drawer:{outlet}:IDR` | IDR | CASH | true | Posisi fisik uang tunai di laci kasir resto |
 | `cash:mall:parking:IDR` | IDR | CASH | true | Posisi fisik uang tunai di pos kasir keluar parkir |
+| `lgx:unearned_freight:IDR` | IDR | LIABILITY | true | Pendapatan freight diterima di muka (resi belum Delivered) |
+| `lgx:freight_revenue:IDR` | IDR | REVENUE | false | Pendapatan freight yang telah diakui pasca pengantaran |
+| `lgx:ar:{shipper}:IDR` | IDR | CLEARING | true | Piutang freight dan D&D shipper pascabayar B2B |
+| `lgx:carrier_payable:{id}:IDR`| IDR| LIABILITY | true | Utang ongkos angkut carrier subkontrak |
+| `lgx:carrier_cost:IDR` | IDR | EXPENSE | false | Beban biaya jasa carrier subkontrak |
+| `lgx:dd_revenue:IDR` | IDR | REVENUE | false | Pendapatan denda Demurrage & Detention |
+| `lgx:customs_duty_payable:IDR`| IDR| LIABILITY | true | Titipan pungutan bea masuk & pajak impor kepabeanan |
+| `lgx:cod_clearing:{shipper}:IDR`| IDR| LIABILITY| true | Titipan dana COD sebelum dicairkan ke shipper |
+| `lgx:cod_fee_revenue:IDR` | IDR | REVENUE | false | Pendapatan fee layanan COD |
+| `lgx:cash:driver:{id}:IDR` | IDR | CASH | true | Posisi uang tunai COD di tangan pengemudi |
+| `lgx:cash:hub:{id}:IDR` | IDR | CASH | true | Posisi kas setoran COD di hub operasi |
+| `lgx:claim_expense:IDR` | IDR | EXPENSE | false | Beban pembayaran klaim kerusakan / kehilangan barang |
+| `lgx:fuel_expense:IDR` | IDR | EXPENSE | false | Beban pembelian bahan bakar minyak armada |

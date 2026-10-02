@@ -392,3 +392,25 @@
 
 ## 2026-10-02: lgx:audit-billing dan Seed Demo Bernilai Non-Nol
 - **Decision:** 15 pemeriksaan membandingkan dokumen dengan saldo ledger (unearned vs resi belum Delivered, Delivered vs pengakuan, invoice, AR per shipper, D&D, bea cukai, COD, carrier, klaim, BBM); command gagal (exit 1) bila ada selisih. `LogisticsFinanceSeeder` membangun seluruh alur lewat action produksi (bukan jurnal manual) sehingga audit pada seed default memeriksa 29 dokumen non-nol.
+
+## 2026-10-02: Fase 24 — Integrasi Lintas Lini Logistik (Store, AutoServe, Resto, Mall, Finance)
+- **Context:** Sistem modular monolith SuperWeb menghubungkan modul Logistik dengan lini bisnis lainnya tanpa merusak boundary architecture (arch tests).
+- **Decision:**
+  1. **Store -> Logistik**: Event `OrderPaid` didengarkan oleh `CreateShipmentOnOrderPaid` yang mengeksekusi `BookShipmentForOrderAction`. Biaya kirim diposting ke `lgx:unearned_freight`, dan nomor resi disimpan di `store_orders.tracking_number`.
+  2. **Pengiriman Mobil & Paspor Digital**: `DeliverVehicleByCarrierAction` membuat shipment FTL car carrier. Saat terkirim, event `DELIVERED_BY_CARRIER` dicatat ke hash-chain paspor kendaraan (`core_vehicles`) dengan integritas kriptografis SHA-256.
+  3. **Armada -> AutoServe**: Pembaruan odometer truk yang melebihi interval servis memicu `FleetServiceDue`, membuat janji servis di AutoServe secara otomatis, dan mengubah status truk menjadi `Maintenance`. Setelah servis selesai, `CompleteFleetMaintenanceAction` mengembalikan status truk menjadi `Available` dan memperbarui paspor kendaraan.
+  4. **Resto Cold Chain**: Replenishment bahan baku dari Dapur Sentral (CK-01) menggunakan truk reefer berpendingin. Pembacaan suhu disimpan di `lgx_temperature_readings`; suhu di luar rentang aman memicu alert deviasi suhu. Penerimaan di outlet memperbarui stok via Inventory Resto.
+  5. **Mall Loading Dock**: `lgx_dock_appointments` menyediakan slot waktu bongkar muat di Duta Mall dengan lock pencegahan overlap waktu. Portal tenant dapat memesan slot dan petugas keamanan dapat melakukan check-in / check-out truk.
+  6. **Finance & Observabilitas**: Pendapatan logistik dikonsolidasikan ke Group Dashboard P&L tanpa menambah anggaran query (tetap 2 query). `SystemHealthService` menambahkan pilar ke-8 untuk audit billing dan rantai kustodi logistik.
+- **Reason:** Menjaga isolasi domain modul melalui contracts dan domain events serta mencegah coupling langsung antar domain.
+
+## 2026-10-03: Fase 25 — Skala, API v1, Webhook Outbox, dan Control Tower
+- **Context:** Penutupan ekspansi platform logistik skala enterprise memerlukan seeder skala besar, API RESTful publik/mitra, keandalan webhook outbox, penegakan anggaran kinerja, dan dashboard analitik eksekutif.
+- **Decision:**
+  1. **LogisticsLargeSeeder**: Menginisialisasi data multimodal skala besar (ratusan truk, puluhan kapal, ribuan kontainer, dan rantai lacak balak) menggunakan teknik batch insert deterministik dan seimbang dengan ledger.
+  2. **Anggaran Kinerja (QueryBudgetTest)**: Lookup resi publik dibatasi <= 3 query (p95 < 50ms), dispatch board <= 10 query, control tower dashboard <= 12 query, dan lgx:accrue-dd < 30 detik.
+  3. **API v1 (Laravel Sanctum)**: Endpoint `/api/v1/logistics` dilindungi token bearer dengan granular abilities (`quote:create`, `shipment:create`, `shipment:read`), rate limit bertingkat (60 req/min auth, 30 req/min public), serta dukungan header `Idempotency-Key` pada pembuatan shipment.
+  4. **Webhook Outbox Pattern**: Menggunakan tabel `lgx_webhook_endpoints` dan `lgx_webhook_deliveries` dengan signature `X-SRX-Signature: sha256=<hmac>`, exponential backoff (maksimal 8 kali retry), penanganan dead-letter, dan command terjadwal `lgx:retry-webhooks`.
+  5. **Antrean Idempoten**: `ProcessBulkShipmentUploadJob` menerapkan `ShouldBeUnique` berbasis `batchId` untuk mencegah eksekusi impor CSV ganda. Seluruh scheduler logistik terdaftar di `routes/console.php`.
+  6. **Control Tower**: Antarmuka pusat kendali untuk `logistics_admin` menampilkan metrik On-Time In-Full (OTIF), utilisasi armada, dwell time kontainer pelabuhan/depot, saldo titipan COD kasir/driver, dan margin per jalur transportasi (lane).
+- **Reason:** Memastikan platform logistik siap skala produksi, aman dari gangguan jaringan atau replay ganda, serta memiliki observabilitas operasional menyeluruh.

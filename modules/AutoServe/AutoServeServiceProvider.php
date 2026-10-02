@@ -6,8 +6,10 @@ namespace Modules\AutoServe;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Modules\AutoServe\Application\Services\AutoServeFleetMaintenanceBooking;
 use Modules\AutoServe\Application\Services\AutoServeTenantSalesProvider;
 use Modules\AutoServe\Domain\Models\Estimate;
+use Modules\Logistics\Contracts\FleetMaintenanceBooking;
 use Modules\Shared\Application\MenuRegistry;
 
 class AutoServeServiceProvider extends ServiceProvider
@@ -16,6 +18,10 @@ class AutoServeServiceProvider extends ServiceProvider
     {
         $this->app->singleton(AutoServeTenantSalesProvider::class);
         $this->app->tag(AutoServeTenantSalesProvider::class, 'mall.tenant_sales_provider');
+        $this->app->bind(
+            FleetMaintenanceBooking::class,
+            AutoServeFleetMaintenanceBooking::class
+        );
     }
 
     public function boot(): void

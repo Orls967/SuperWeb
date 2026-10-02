@@ -72,7 +72,7 @@
                                     <td class="px-6 py-3.5 text-slate-400">{{ $truck->currentLocation?->name ?? 'Dalam Perjalanan' }}</td>
                                     <td class="px-6 py-3.5">
                                         @if($truck->vehicle)
-                                            <a href="{{ route('core.passport.show', $truck->vehicle->uuid) }}" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 font-medium">
+                                            <a href="{{ route('passport.show', $truck->vehicle->uuid) }}" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 font-medium">
                                                 <span>Paspor</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                             </a>

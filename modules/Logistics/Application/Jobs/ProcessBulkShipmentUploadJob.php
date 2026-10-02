@@ -6,6 +6,7 @@ namespace Modules\Logistics\Application\Jobs;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -25,7 +26,7 @@ use Modules\Logistics\Domain\Services\ChargeableWeightCalculator;
 use Modules\Logistics\Domain\ValueObjects\TrackingNumber;
 use Throwable;
 
-class ProcessBulkShipmentUploadJob implements ShouldQueue
+class ProcessBulkShipmentUploadJob implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -34,6 +35,11 @@ class ProcessBulkShipmentUploadJob implements ShouldQueue
         public readonly string $filePath,
         public readonly string $batchId
     ) {}
+
+    public function uniqueId(): string
+    {
+        return $this->batchId;
+    }
 
     public function handle(
         QuoteShipmentAction $quoteAction,

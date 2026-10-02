@@ -267,3 +267,28 @@
 - **Perubahan lintas fase yang perlu diketahui:** quote kini menyimpan nilai deklarasi/asuransi/COD; surcharge COD_FEE tidak lagi diterapkan di quote (fee dipotong saat settlement); `lgx_invoices` memiliki kolom `kind`.
 - **Catatan Lingkungan:** `composer.lock` mensyaratkan PHP >= 8.4 sedangkan sandbox PHP 8.3; test dijalankan dengan resolusi dependensi sementara (`platform.php=8.3.6`), `composer.json`/`composer.lock` tidak diubah.
 
+## Quality Gate Fase 24 — 2026-10-02
+
+- **Cakupan Fase:** Fase 24 — Integrasi Lintas Lini (Tasks 24.1–24.7)
+- **Total Test:** **532 tests** (100% PASS, 0 failure, 0 skipped), naik dari 521 pada gate Fase 23
+- **Total Assertion:** **3119 assertions**
+- **Durasi Eksekusi Test Suite:** 39.53s
+- **Status Build Frontend (Vite):** Sukses (built in 577ms)
+- **Status Standar Kode (Pint):** Passed (`vendor/bin/pint --test`)
+- **Arch Tests (batas modul):** 9 passed (seluruh batas modul terjaga ketat)
+- **Hasil Quality Gates:**
+  - `php artisan bank:reconcile`: 128 akun ledger seimbang, 0 selisih
+  - `php artisan lgx:audit-billing`: 15 pemeriksaan, 29 dokumen non-nol, 0 selisih
+  - `php artisan lgx:verify-custody`: 6 pengiriman (9 event) valid
+  - `php artisan lgx:capacity-check`: 1 jadwal valid
+  - `php artisan super:health-check`: 8 pilar HEALTHY (termasuk pilar Logistik baru)
+- **Pencapaian Fitur Fase 24:**
+  - 24.1 Store -> Logistik: event `OrderPaid` memicu booking pengiriman otomatis via kontrak `ShipmentBooking`, ongkir dicatat ke `unearned_freight`, nomor resi disimpan di order; idempotensi dan refund teruji dengan pembalikan unearned freight ke kas bank secara seimbang.
+  - 24.2 Pengiriman Mobil: aksi `DeliverVehicleByCarrierAction` menambahkan event `DELIVERED_BY_CARRIER` ke rantai kriptografis Vehicle Passport; integritas hash-chain terverifikasi penuh (`VerifyPassportAction`).
+  - 24.3 Perawatan Armada -> AutoServe: event `FleetServiceDue` memicu booking bengkel via kontrak `FleetMaintenanceBooking`; armada bertransisi ke status `MAINTENANCE` dan ditolak oleh `AssignScheduleResourcesAction`; selesai perawatan via `CompleteFleetMaintenanceAction` mengembalikan armada ke status `AVAILABLE`.
+  - 24.4 Resto -> Logistik (cold-chain): pencatatan suhu via `RecordTemperatureAction` memicu exception keparahan tinggi (`ShipmentException`) secara idempoten saat deviasi suhu; aksi `ReceiveReeferReplenishmentAction` menerima stok bahan baku ke modul Inventory secara presisi dan idempoten.
+  - 24.5 Mall -> Logistik (loading dock): model `DockAppointment` mengunci slot dock mall tanpa tumpang tindih waktu (dijamin transaksi database dan unique constraint); alur check-in dan check-out satpam dijaga dengan validasi status wajib check-in sebelum check-out.
+  - 24.6 Finance & Observabilitas: `ConsolidatedPlQuery` mengagregasi pendapatan dan beban pilar Logistik tanpa menaikkan budget query dashboard (tetap 1 agregasi query); `SystemHealthService` dan `super:health-check` memverifikasi pilar ke-8 (Logistik: Billing & Rantai Kustodi).
+  - 24.7 Quality Gate End-to-End: alur penuh Order Store terbayar -> Pengiriman -> Terkirim -> Pengakuan pendapatan freight -> `bank:reconcile` menghasilkan 0 diskrepansi saldo.
+
+
