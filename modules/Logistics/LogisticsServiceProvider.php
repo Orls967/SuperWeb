@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Logistics;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Logistics\Application\Commands\InvoiceShippersCommand;
+use Modules\Logistics\Application\Listeners\RecognizeFreightRevenueOnDelivery;
 use Modules\Logistics\Console\Commands\CheckCapacityCommand;
 use Modules\Logistics\Console\Commands\DetectLateShipmentsCommand;
 use Modules\Logistics\Console\Commands\VerifyCustodyCommand;
+use Modules\Logistics\Domain\Events\ShipmentDelivered;
 use Modules\Shared\Application\MenuRegistry;
 
 class LogisticsServiceProvider extends ServiceProvider
@@ -24,6 +27,8 @@ class LogisticsServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/resources/views', 'logistics');
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         $this->loadRoutesFrom(__DIR__.'/routes/api.php');
+
+        Event::listen(ShipmentDelivered::class, RecognizeFreightRevenueOnDelivery::class);
 
         if ($this->app->runningInConsole()) {
             $this->commands([

@@ -92,7 +92,8 @@ class QuoteShipmentAction
                 Surcharge::CODE_DG => $hasDg,
                 Surcharge::CODE_REEFER => $hasReefer,
                 Surcharge::CODE_INSURANCE => $insured && $declaredValueIdr > 0,
-                Surcharge::CODE_COD_FEE => $codAmountIdr > 0,
+                // Fee COD dipotong dari dana COD saat settlement (lgx:settle-cod), bukan ditagihkan di quote.
+                Surcharge::CODE_COD_FEE => false,
                 default => false,
             };
 
@@ -133,6 +134,9 @@ class QuoteShipmentAction
             'destination_location_id' => $destinationLocationId,
             'service_level' => $serviceLevel,
             'mode' => $mode,
+            'declared_value_idr' => $declaredValueIdr,
+            'insured' => $insured,
+            'cod_amount_idr' => $codAmountIdr,
             'packages_payload' => $packages,
             'actual_weight_kg' => (string) $weightResult->actualWeightKg->toScale(4, RoundingMode::HalfUp),
             'chargeable_weight_kg' => (string) $weightResult->chargeableWeightKg->toScale(4, RoundingMode::HalfUp),

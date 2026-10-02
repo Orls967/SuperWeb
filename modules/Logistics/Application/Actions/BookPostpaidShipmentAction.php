@@ -95,6 +95,9 @@ class BookPostpaidShipmentAction
                 'status' => ShipmentStatus::Booked,
                 'total_chargeable_weight_g' => $chargeableWeightGrams,
                 'total_amount_idr' => $newAmount,
+                'declared_value_idr' => $quote->declared_value_idr,
+                'insured' => $quote->insured,
+                'cod_amount_idr' => $quote->cod_amount_idr,
                 'quote_id' => $quote->id,
                 'booked_at' => now(),
             ]);

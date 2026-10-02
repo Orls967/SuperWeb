@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
+use Modules\Logistics\Domain\Events\ShipmentDelivered;
 use Modules\Logistics\Domain\Exceptions\InvalidDeliveryOperationException;
 use Modules\Logistics\Domain\Exceptions\InvalidDeliveryOtpException;
 use Modules\Logistics\Domain\Models\Driver;
@@ -37,7 +38,8 @@ class CompleteDeliveryAction extends AbstractDriverTaskAction
         string $receiverName,
         string $otp,
         UploadedFile $photo,
-        string $signatureDataUrl
+        string $signatureDataUrl,
+        bool $codCollected = false
     ): ProofOfDelivery {
         $signature = $this->decodeSignature($signatureDataUrl);
 
@@ -98,6 +100,8 @@ class CompleteDeliveryAction extends AbstractDriverTaskAction
                         'otp_verified' => true,
                     ]
                 );
+
+                event(new ShipmentDelivered($shipment));
 
                 return $pod;
             });

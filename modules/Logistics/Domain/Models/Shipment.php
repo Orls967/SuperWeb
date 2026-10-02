@@ -50,6 +50,7 @@ class Shipment extends LogisticsEntity implements Payable
         'booked_at',
         'picked_up_at',
         'delivered_at',
+        'revenue_recognized_at',
         'cancelled_at',
     ];
 
@@ -75,6 +76,7 @@ class Shipment extends LogisticsEntity implements Payable
         'booked_at' => 'datetime',
         'picked_up_at' => 'datetime',
         'delivered_at' => 'datetime',
+        'revenue_recognized_at' => 'datetime',
         'cancelled_at' => 'datetime',
     ];
 
