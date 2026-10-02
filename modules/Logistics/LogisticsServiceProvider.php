@@ -10,6 +10,7 @@ use Modules\Logistics\Application\Commands\InvoiceShippersCommand;
 use Modules\Logistics\Application\Listeners\RecognizeFreightRevenueOnDelivery;
 use Modules\Logistics\Console\Commands\CheckCapacityCommand;
 use Modules\Logistics\Console\Commands\DetectLateShipmentsCommand;
+use Modules\Logistics\Console\Commands\PayCarriersCommand;
 use Modules\Logistics\Console\Commands\SettleCodCommand;
 use Modules\Logistics\Console\Commands\VerifyCustodyCommand;
 use Modules\Logistics\Domain\Events\ShipmentDelivered;
@@ -38,6 +39,7 @@ class LogisticsServiceProvider extends ServiceProvider
                 VerifyCustodyCommand::class,
                 DetectLateShipmentsCommand::class,
                 SettleCodCommand::class,
+                PayCarriersCommand::class,
             ]);
         }
 
@@ -130,6 +132,16 @@ class LogisticsServiceProvider extends ServiceProvider
             order: 88,
             group: 'Logistik',
             activePattern: 'logistics/cod*'
+        );
+
+        $registry->addItem(
+            label: 'Carrier & Margin',
+            route: 'logistics.carriers.index',
+            icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>',
+            roles: ['admin', 'logistics_admin', 'dispatcher'],
+            order: 89,
+            group: 'Logistik',
+            activePattern: 'logistics/carriers*'
         );
 
         $registry->addItem(

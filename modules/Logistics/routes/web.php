@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Logistics\Http\Controllers\CarrierController;
 use Modules\Logistics\Http\Controllers\CodController;
 use Modules\Logistics\Http\Controllers\DispatchBoardController;
 use Modules\Logistics\Http\Controllers\DriverController;
@@ -60,6 +61,14 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::post('/hub/inbound', [HubOperationsController::class, 'inbound'])->name('hub.inbound');
         Route::post('/hub/sort', [HubOperationsController::class, 'sort'])->name('hub.sort');
         Route::post('/hub/outbound', [HubOperationsController::class, 'outbound'])->name('hub.outbound');
+
+        // Carrier subkontrak & margin
+        Route::get('/carriers', [CarrierController::class, 'index'])->name('carriers.index');
+        Route::post('/carriers', [CarrierController::class, 'store'])->name('carriers.store');
+        Route::post('/carriers/{carrier}/pay', [CarrierController::class, 'pay'])->name('carriers.pay');
+        Route::post('/legs/{leg}/assign-carrier', [CarrierController::class, 'assignLeg'])->name('legs.assign-carrier');
+        Route::post('/legs/{leg}/complete', [CarrierController::class, 'completeLeg'])->name('legs.complete');
+        Route::get('/margins', [CarrierController::class, 'margins'])->name('margins');
 
         // COD
         Route::get('/cod', [CodController::class, 'index'])->name('cod.index');

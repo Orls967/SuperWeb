@@ -14,6 +14,10 @@ class ShipmentLeg extends LogisticsEntity
     protected $fillable = [
         'shipment_id',
         'schedule_id',
+        'carrier_id',
+        'carrier_cost_idr',
+        'cost_accrued_at',
+        'carrier_payment_id',
         'leg_sequence',
         'mode',
         'origin_location_id',
@@ -27,6 +31,8 @@ class ShipmentLeg extends LogisticsEntity
 
     protected $casts = [
         'leg_sequence' => 'integer',
+        'carrier_cost_idr' => 'integer',
+        'cost_accrued_at' => 'datetime',
         'mode' => TransportMode::class,
         'estimated_departure' => 'datetime',
         'estimated_arrival' => 'datetime',
@@ -42,6 +48,11 @@ class ShipmentLeg extends LogisticsEntity
     public function schedule(): BelongsTo
     {
         return $this->belongsTo(Schedule::class, 'schedule_id');
+    }
+
+    public function carrier(): BelongsTo
+    {
+        return $this->belongsTo(Carrier::class, 'carrier_id');
     }
 
     public function origin(): BelongsTo
