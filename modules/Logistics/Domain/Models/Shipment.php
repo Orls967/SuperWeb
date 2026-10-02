@@ -47,6 +47,8 @@ class Shipment extends LogisticsEntity implements Payable
         'quote_id',
         'driver_id',
         'invoice_id',
+        'source_type',
+        'source_id',
         'booked_at',
         'picked_up_at',
         'delivered_at',
@@ -203,9 +205,13 @@ class Shipment extends LogisticsEntity implements Payable
      */
     public function getTimelineEvents(): array
     {
-        if ($this->relationLoaded('trackingEvents') ? $this->trackingEvents->isNotEmpty() : $this->trackingEvents()->exists()) {
+        $eventsList = $this->relationLoaded('trackingEvents')
+            ? $this->trackingEvents->sortByDesc('sequence')
+            : $this->trackingEvents()->with('location')->orderByDesc('sequence')->get();
+
+        if ($eventsList->isNotEmpty()) {
             $events = [];
-            foreach ($this->trackingEvents()->with('location')->orderByDesc('sequence')->get() as $te) {
+            foreach ($eventsList as $te) {
                 $events[] = [
                     'status' => $te->event_type,
                     'title' => ucwords(strtolower(str_replace('_', ' ', $te->event_type))),

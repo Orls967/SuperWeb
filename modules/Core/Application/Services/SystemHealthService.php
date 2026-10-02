@@ -188,6 +188,29 @@ class SystemHealthService
             ];
         }
 
+        // 8. Logistics Billing & Chain of Custody (lgx:audit-billing + lgx:verify-custody)
+        try {
+            $auditExit = Artisan::call('lgx:audit-billing');
+            $custodyExit = Artisan::call('lgx:verify-custody');
+            $isOk = ($auditExit === 0 && $custodyExit === 0);
+
+            $checks['logistics'] = [
+                'name' => 'Logistik: Billing & Rantai Kustodi',
+                'ok' => $isOk,
+                'status' => $isOk ? 'HEALTHY' : 'UNHEALTHY',
+                'message' => $isOk
+                    ? 'Audit billing logistik dan integritas chain-of-custody terverifikasi'
+                    : 'Ditemukan diskrepansi pada billing logistik atau chain-of-custody',
+            ];
+        } catch (\Throwable $e) {
+            $checks['logistics'] = [
+                'name' => 'Logistik: Billing & Rantai Kustodi',
+                'ok' => false,
+                'status' => 'UNHEALTHY',
+                'message' => 'Gagal memeriksa logistik: '.$e->getMessage(),
+            ];
+        }
+
         // Overall status
         $allPassed = ! in_array(false, array_column($checks, 'ok'), true);
         $duration = round((microtime(true) - $startTime) * 1000, 2);

@@ -17,6 +17,8 @@ class ConsolidatedPlQuery
 
     public const LINE_PROPERTI = 'properti';
 
+    public const LINE_LOGISTIK = 'logistik';
+
     /**
      * Jalankan query konsolidasi P&L seluruh lini bisnis dalam budget query minimal (maks 2-3 query).
      */
@@ -75,6 +77,16 @@ class ConsolidatedPlQuery
                 'key' => self::LINE_PROPERTI,
                 'name' => 'Properti Duta Mall',
                 'color' => '#10b981',
+                'revenue' => 0,
+                'expense' => 0,
+                'net_profit' => 0,
+                'margin_percent' => 0.0,
+                'accounts' => [],
+            ],
+            self::LINE_LOGISTIK => [
+                'key' => self::LINE_LOGISTIK,
+                'name' => 'Logistik & Pengiriman',
+                'color' => '#f97316',
                 'revenue' => 0,
                 'expense' => 0,
                 'net_profit' => 0,
@@ -163,6 +175,7 @@ class ConsolidatedPlQuery
                 self::LINE_KEUANGAN => 0,
                 self::LINE_KULINER => 0,
                 self::LINE_PROPERTI => 0,
+                self::LINE_LOGISTIK => 0,
                 'total_revenue' => 0,
                 'total_expense' => 0,
                 'net_profit' => 0,
@@ -234,6 +247,13 @@ class ConsolidatedPlQuery
 
         if (str_starts_with($code, 'revenue:mall:') || str_starts_with($code, 'expense:mall:')) {
             return self::LINE_PROPERTI;
+        }
+
+        if (str_starts_with($code, 'lgx:freight_revenue') || str_starts_with($code, 'lgx:cod_fee_revenue') ||
+            str_starts_with($code, 'lgx:dd_revenue') || str_starts_with($code, 'lgx:carrier_cost') ||
+            str_starts_with($code, 'lgx:claims_expense') || str_starts_with($code, 'lgx:fuel_expense') ||
+            str_starts_with($code, 'lgx:customs_duty_payable')) {
+            return self::LINE_LOGISTIK;
         }
 
         return null;
