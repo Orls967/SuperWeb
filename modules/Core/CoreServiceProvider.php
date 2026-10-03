@@ -17,11 +17,13 @@ use Modules\Core\Application\Listeners\NotifyPaymentRefunded;
 use Modules\Core\Application\Listeners\RecordBookingCompletedPassportEvent;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
 use Modules\Core\Application\Services\ActivityLogger;
+use Modules\Core\Application\Services\AuditTrailService;
 use Modules\Core\Application\Services\NotificationService;
 use Modules\Core\Application\Services\RbacService;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
+use Modules\Core\Contracts\AuditTrailInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Core\Domain\Events\VehicleAcquired;
 use Modules\Core\Domain\Models\Vehicle;
@@ -43,10 +45,16 @@ class CoreServiceProvider extends ServiceProvider
             TransferVehicleOwnershipAction::class
         );
 
+        $this->app->bind(
+            AuditTrailInterface::class,
+            AuditTrailService::class
+        );
+
         // Platform services — singletons so they can be injected anywhere
         $this->app->singleton(NotificationService::class);
         $this->app->singleton(ActivityLogger::class);
         $this->app->singleton(RbacService::class);
+        $this->app->singleton(AuditTrailService::class);
     }
 
     public function boot(): void
@@ -108,6 +116,16 @@ class CoreServiceProvider extends ServiceProvider
             order: 98,
             group: 'Grup & Admin',
             activePattern: 'admin/rbac*',
+        );
+
+        $registry->addItem(
+            label: 'Audit Trail',
+            route: 'admin.audit-logs.index',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
+            roles: ['admin'],
+            order: 97,
+            group: 'Grup & Admin',
+            activePattern: 'admin/audit-logs*',
         );
 
         if ($this->app->runningInConsole()) {

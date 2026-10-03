@@ -16,9 +16,10 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Exceptions\SelfTransferException;
 use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Shared\Application\BaseAction;
 use RuntimeException;
 
-class TransferAction
+class TransferAction extends BaseAction
 {
     public const FEE_THRESHOLD = 1_000_000;
 
@@ -124,7 +125,28 @@ class TransferAction
                 postedAt: now(),
             );
 
-            return $this->ledger->post($dto);
+            $tx = $this->ledger->post($dto);
+
+            $this->audit(
+                action: 'banking.wallet.transfer',
+                auditable: $tx,
+                oldValues: null,
+                newValues: [
+                    'amount' => $amountBd->__toString(),
+                    'fee' => $feeBd->__toString(),
+                    'total_deduction' => $totalDeduction->__toString(),
+                    'recipient_id' => $recipient->id,
+                ],
+                context: [
+                    'recipient_name' => $recipient->name,
+                    'note' => $note,
+                ],
+                correlationId: $key,
+                impactType: 'financial',
+                user: $sender
+            );
+
+            return $tx;
         });
     }
 }

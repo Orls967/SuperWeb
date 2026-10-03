@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Core\Http\Controllers\ActivityFeedController;
+use Modules\Core\Http\Controllers\AuditLogController;
 use Modules\Core\Http\Controllers\HealthCheckController;
 use Modules\Core\Http\Controllers\NotificationController;
 use Modules\Core\Http\Controllers\PassportController;
@@ -36,5 +37,9 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         Route::post('/rbac/assign', [RbacController::class, 'assignRole'])->name('admin.rbac.assign');
         Route::post('/rbac/revoke', [RbacController::class, 'revokeRole'])->name('admin.rbac.revoke');
         Route::get('/rbac/user/{user}', [RbacController::class, 'showUser'])->name('admin.rbac.user');
+
+        // Audit Trail Generik
+        Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('admin.audit-logs.index');
+        Route::get('/audit-logs/{auditLog}', [AuditLogController::class, 'show'])->name('admin.audit-logs.show');
     });
 });

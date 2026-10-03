@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Application;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Contracts\AuditTrailInterface;
 
 abstract class BaseAction
 {
@@ -14,5 +17,34 @@ abstract class BaseAction
     protected function transaction(callable $callback, int $attempts = 3): mixed
     {
         return DB::transaction($callback, $attempts);
+    }
+
+    /**
+     * Record an audit log for impactful actions (financial, state, ownership, security).
+     */
+    protected function audit(
+        string $action,
+        ?object $auditable = null,
+        ?array $oldValues = null,
+        ?array $newValues = null,
+        array $context = [],
+        ?string $correlationId = null,
+        ?string $impactType = null,
+        ?object $user = null
+    ): mixed {
+        if (app()->bound(AuditTrailInterface::class)) {
+            return app(AuditTrailInterface::class)->record(
+                action: $action,
+                auditable: $auditable instanceof Model ? $auditable : null,
+                oldValues: $oldValues,
+                newValues: $newValues,
+                context: $context,
+                correlationId: $correlationId,
+                impactType: $impactType,
+                user: $user instanceof User ? $user : null
+            );
+        }
+
+        return null;
     }
 }

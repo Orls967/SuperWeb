@@ -445,5 +445,14 @@
   3. **Gate/Policy Integration:** Daftarkan `Gate::before` di `CoreServiceProvider` yang mengecek `RbacService::userHasPermission($user, $ability)` untuk mengintegrasikan permission RBAC secara transparan ke seluruh otorisasi Laravel.
   4. **Seeder & Backfill:** `RbacSeeder` memetakan permission default untuk setiap role sistem dan secara otomatis mem-backfill seluruh user lama dari nilai `users.role` masing-masing.
   5. **Admin UI:** Sediakan `RbacController` dan view Blade di `/admin/rbac` untuk mengelola role, permission matrix per modul, dan assignment user.
-- **Verification:** 23 test baru (`RbacTest.php`, 53 assertions) mencakup CRUD role/permission, assignment multi-role dengan/tanpa scope entitas, idempotensi, backfill legacy, integrasi Gate, dan UI web admin. Total suite: 577 passed / 3286 assertions.
+## 2026-10-04: Fase 26.6 — Audit Trail Generik (Append-Only, Impactful Actions, Admin UI)
+- **Context:** Sistem membutuhkan pencatatan jejak audit (audit trail) generik yang standar dan terpusat untuk setiap aksi ber-impact (mutasi uang, perubahan state kritis, transfer kepemilikan aset, dan konfigurasi keamanan) yang dijamin append-only (tidak dapat diedit maupun dihapus).
+- **Decision:**
+  1. **Schema & Model:** Tambahkan kolom `correlation_id` (index) dan `impact_type` (index: `financial`, `state`, `ownership`, `security`) pada tabel `core_audit_logs`. Model `AuditLog` menegakkan immutability mutlak (`static::updating` dan `static::deleting` melempar `RuntimeException`).
+  2. **Kontrak & Layanan:** Buat `AuditTrailInterface` dan `AuditTrailService` yang terdaftar sebagai singleton di container Core.
+  3. **BaseAction Helper:** Tambahkan helper `audit()` pada `BaseAction` sehingga seluruh Action di semua lini bisnis dapat mencatat audit log dengan mudah tanpa melanggar batasan arsitektur (boundary decoupling).
+  4. **Penerapan Aksi Kritis:** Terapkan pencatatan audit pada `TransferAction` (keuangan), `TransferVehicleOwnershipAction` & `AcquireVehicleAction` (kepemilikan), `UpdateOrderStatusAction` (state), dan `RbacService` (keamanan/hak akses).
+  5. **Admin UI:** Sediakan `AuditLogController` dan antarmuka Blade di `/admin/audit-logs` dengan kemampuan pencarian teks bebas, penyaringan berdasarkan aksi, tipe dampak, pengguna, dan rentang tanggal, serta visualisasi perbandingan *Old Values* vs *New Values*.
+- **Verification:** 6 test baru (`AuditTrailTest.php`, 33 assertions). Full suite: **583 passed / 3319 assertions / 0 skipped**.
+
 

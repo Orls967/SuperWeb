@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Services;
 
 use App\Models\User;
+use Modules\Core\Domain\Models\AuditLog;
 use Modules\Core\Domain\Models\Permission;
 use Modules\Core\Domain\Models\Role;
 
@@ -64,7 +65,25 @@ class RbacService
      */
     public function assignRole(User $user, string|Role $role, ?string $entityType = null, ?int $entityId = null): void
     {
+        $roleName = $role instanceof Role ? $role->name : $role;
         $user->assignRbacRole($role, $entityType, $entityId);
+
+        AuditLog::record(
+            action: 'core.rbac.role_assigned',
+            auditable: $user,
+            oldValues: null,
+            newValues: [
+                'role' => $roleName,
+                'entity_type' => $entityType,
+                'entity_id' => $entityId,
+            ],
+            context: [
+                'target_user_id' => $user->id,
+                'target_user_email' => $user->email,
+            ],
+            correlationId: 'rbac_assign_'.$user->id.'_'.$roleName,
+            impactType: 'security'
+        );
     }
 
     /**
@@ -72,7 +91,25 @@ class RbacService
      */
     public function revokeRole(User $user, string|Role $role, ?string $entityType = null, ?int $entityId = null): void
     {
+        $roleName = $role instanceof Role ? $role->name : $role;
         $user->revokeRbacRole($role, $entityType, $entityId);
+
+        AuditLog::record(
+            action: 'core.rbac.role_revoked',
+            auditable: $user,
+            oldValues: [
+                'role' => $roleName,
+                'entity_type' => $entityType,
+                'entity_id' => $entityId,
+            ],
+            newValues: null,
+            context: [
+                'target_user_id' => $user->id,
+                'target_user_email' => $user->email,
+            ],
+            correlationId: 'rbac_revoke_'.$user->id.'_'.$roleName,
+            impactType: 'security'
+        );
     }
 
     /**

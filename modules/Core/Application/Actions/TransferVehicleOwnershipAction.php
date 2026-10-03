@@ -71,6 +71,21 @@ class TransferVehicleOwnershipAction extends BaseAction implements TransfersVehi
                 actorId: $actorId ?? $toUserId,
             );
 
+            $this->audit(
+                action: 'core.vehicle.ownership_transferred',
+                auditable: $locked,
+                oldValues: ['user_id' => $fromUserId],
+                newValues: ['user_id' => $toUserId],
+                context: [
+                    'via_type' => $viaType,
+                    'via_id' => $viaId,
+                    'price_idr' => $priceIdr,
+                    'plate_number' => $locked->plate_number,
+                ],
+                correlationId: 'veh_tx_'.$locked->id.'_'.$fromUserId.'_'.$toUserId,
+                impactType: 'ownership',
+            );
+
             // Defer until after commit: the Mall listener cancels parking
             // membership and must not act on a transfer that may roll back.
             DB::afterCommit(fn () => event(new VehicleOwnershipTransferred(

@@ -28,10 +28,21 @@ class UpdateOrderStatusAction extends BaseAction
                 throw new Exception("Hanya pesanan berstatus Dibayar/Diproses yang dapat dikirim. Status saat ini: {$order->status->label()}");
             }
 
+            $oldStatus = $order->status->value;
             $order->update([
                 'status' => OrderStatus::SHIPPED,
                 'tracking_number' => $trackingNumber,
             ]);
+
+            $this->audit(
+                action: 'store.order.shipped',
+                auditable: $order,
+                oldValues: ['status' => $oldStatus],
+                newValues: ['status' => OrderStatus::SHIPPED->value, 'tracking_number' => $trackingNumber],
+                context: ['order_number' => $order->order_number],
+                correlationId: 'order_ship_'.$order->id,
+                impactType: 'state'
+            );
 
             return $order->fresh();
         });
@@ -47,12 +58,23 @@ class UpdateOrderStatusAction extends BaseAction
                 throw new Exception('Pesanan yang telah dibatalkan tidak dapat diselesaikan.');
             }
 
+            $oldStatus = $order->status->value;
             if ($order->status !== OrderStatus::COMPLETED) {
                 $order->status = OrderStatus::COMPLETED;
                 $order->save();
             }
 
             $this->fulfillMissingCarPurchases($order);
+
+            $this->audit(
+                action: 'store.order.completed',
+                auditable: $order,
+                oldValues: ['status' => $oldStatus],
+                newValues: ['status' => OrderStatus::COMPLETED->value],
+                context: ['order_number' => $order->order_number, 'total_price' => $order->total_price],
+                correlationId: 'order_complete_'.$order->id,
+                impactType: 'state'
+            );
 
             return $order->fresh();
         });
