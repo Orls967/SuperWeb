@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\AutoServe\Application\Actions;
 
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
 use Modules\AutoServe\Domain\Events\BookingCompleted;
 use Modules\AutoServe\Domain\Models\Booking;
@@ -104,11 +105,13 @@ class CompleteBookingAction extends BaseAction
                 'grand_total' => $finalTotal,
             ]);
 
-            event(new BookingCompleted(
+            // Defer until after commit: passport-event listeners read the final
+            // costs captured below and must not run if the completion rolls back.
+            DB::afterCommit(fn () => event(new BookingCompleted(
                 booking: $booking,
                 odometerKm: $odometerKm ?? $vehicle?->odometer_km,
                 actorId: $actorId ?? $booking->mechanic_id
-            ));
+            )));
 
             // Cairkan escrow estimasi: sisa dana kembali ke dompet customer otomatis
             if ($heldIntent !== null) {

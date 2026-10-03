@@ -111,7 +111,9 @@ class CompleteDeliveryAction extends AbstractDriverTaskAction
                     $this->recordCod->execute($shipment, $driver);
                 }
 
-                event(new ShipmentDelivered($shipment));
+                // Defer until after commit: the freight-revenue listener must not
+                // post revenue for a delivery that may still roll back.
+                DB::afterCommit(fn () => event(new ShipmentDelivered($shipment)));
 
                 return $pod;
             });

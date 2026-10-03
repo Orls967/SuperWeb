@@ -55,11 +55,13 @@ class AcquireVehicleAction extends BaseAction implements AcquiresVehicle
                 ->where('car_id', $carId)
                 ->delete();
 
-            event(new VehicleAcquired(
+            // Defer until after commit: listeners write to the Vehicle Passport
+            // hash chain and must never observe uncommitted vehicle state.
+            DB::afterCommit(fn () => event(new VehicleAcquired(
                 vehicle: $vehicle,
                 actorId: $userId,
                 method: $acquiredViaType ?? 'manual'
-            ));
+            )));
 
             return $vehicle;
         });

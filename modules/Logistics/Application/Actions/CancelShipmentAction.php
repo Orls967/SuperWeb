@@ -46,16 +46,22 @@ class CancelShipmentAction
             throw new DomainException('Anda tidak memiliki wewenang untuk membatalkan pengiriman ini.');
         }
 
-        // 2. Status verification
-        if ($shipment->status === ShipmentStatus::Cancelled) {
-            return $shipment; // Idempotent
-        }
-
-        if (! in_array($shipment->status, [ShipmentStatus::Draft, ShipmentStatus::Booked], true)) {
-            throw CannotCancelPickedUpShipmentException::forStatus($shipment->status, $shipment->tracking_number);
-        }
-
+        // 2. Status verification happens against the LOCKED row inside the
+        // transaction: two concurrent cancel requests serialise on the shipment
+        // row, so the second one sees Cancelled (idempotent) or a status that is
+        // no longer cancellable, instead of refunding twice from a stale model.
         return DB::transaction(function () use ($user, $shipment, $reason, $idempotencyKey) {
+            /** @var Shipment $shipment */
+            $shipment = Shipment::query()->lockForUpdate()->findOrFail($shipment->getKey());
+
+            if ($shipment->status === ShipmentStatus::Cancelled) {
+                return $shipment; // Idempotent
+            }
+
+            if (! in_array($shipment->status, [ShipmentStatus::Draft, ShipmentStatus::Booked], true)) {
+                throw CannotCancelPickedUpShipmentException::forStatus($shipment->status, $shipment->tracking_number);
+            }
+
             // 3. Process refund if prepaid and booked
             if ($shipment->payment_terms === PaymentTerms::Prepaid && $shipment->status === ShipmentStatus::Booked && $shipment->total_amount_idr > 0) {
                 $configuredFee = (int) config('logistics.cancellation_fee_idr', 25_000);

@@ -31,34 +31,9 @@ class BookPostpaidShipmentAction
         string $consigneePhone,
         array $consigneeAddress
     ): Shipment {
-        // 1. Verify B2B Account and Credit Limit
-        $account = ShipperAccount::where('shipper_id', $shipper->id)
-            ->where('is_active', true)
-            ->first();
-
-        if (! $account) {
-            throw new DomainException("Pengirim #{$shipper->id} belum memiliki akun B2B pascabayar (postpaid) yang aktif.");
-        }
-
-        $outstanding = $account->calculateOutstandingBalance();
-        $newAmount = $quote->total_amount_idr;
-
-        if (! $account->canAccommodate($newAmount)) {
-            throw CreditLimitExceededException::forShipper(
-                $shipper->id,
-                $outstanding,
-                $newAmount,
-                $account->credit_limit_idr
-            );
-        }
-
-        // 2. Validate quote
+        // Validate quote contents that do not depend on mutable shared state.
         if ($quote->shipper_id !== $shipper->id) {
             throw InvalidQuoteException::tampered();
-        }
-
-        if ($quote->is_booked) {
-            throw InvalidQuoteException::alreadyBooked();
         }
 
         if ($quote->isExpired()) {
@@ -69,15 +44,46 @@ class BookPostpaidShipmentAction
             throw InvalidQuoteException::tampered();
         }
 
-        // 3. Create Shipment and Packages
+        // Create Shipment and Packages. The credit-limit check and the is_booked
+        // guard run INSIDE the transaction against locked rows, so two concurrent
+        // bookings cannot both pass the same limit or book the same quote twice.
         return DB::transaction(function () use (
             $shipper,
             $quote,
             $consigneeName,
             $consigneePhone,
-            $consigneeAddress,
-            $newAmount
+            $consigneeAddress
         ) {
+            /** @var Quote $lockedQuote */
+            $lockedQuote = Quote::query()->lockForUpdate()->findOrFail($quote->getKey());
+
+            if ($lockedQuote->is_booked) {
+                throw InvalidQuoteException::alreadyBooked();
+            }
+
+            // Lock the B2B account row so concurrent bookings serialise on it.
+            $account = ShipperAccount::query()
+                ->where('shipper_id', $shipper->id)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $account || ! $account->is_active) {
+                throw new DomainException("Pengirim #{$shipper->id} belum memiliki akun B2B pascabayar (postpaid) yang aktif.");
+            }
+
+            $newAmount = $lockedQuote->total_amount_idr;
+            $outstanding = $account->calculateOutstandingBalance();
+
+            if (! $account->canAccommodate($newAmount)) {
+                throw CreditLimitExceededException::forShipper(
+                    $shipper->id,
+                    $outstanding,
+                    $newAmount,
+                    $account->credit_limit_idr
+                );
+            }
+
+            $quote = $lockedQuote;
             $trackingNumber = TrackingNumber::generate();
             $chargeableWeightGrams = (int) round(((float) $quote->chargeable_weight_kg) * 1000);
 

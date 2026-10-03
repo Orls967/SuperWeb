@@ -7,7 +7,6 @@ namespace Modules\Mall\Application\Actions;
 use App\Models\User;
 use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
@@ -15,6 +14,7 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mall\Domain\Enums\InvoiceStatus;
 use Modules\Mall\Domain\Enums\LeaseStatus;
 use Modules\Mall\Domain\Models\Invoice;
@@ -34,36 +34,62 @@ class AllocatePaymentAction
      *
      * @throws InvalidArgumentException
      */
-    public function execute(Invoice $invoice, int $paymentAmount, string $source = 'portal'): Invoice
+    public function execute(Invoice $invoice, int $paymentAmount, string $source = 'portal', ?string $idempotencyKey = null): Invoice
     {
         if ($paymentAmount <= 0) {
             throw new InvalidArgumentException('Nominal pembayaran harus lebih besar dari 0.');
         }
 
-        $remainingTotal = $invoice->remainingAmount();
-        if ($paymentAmount > $remainingTotal) {
-            throw new InvalidArgumentException('Nominal pembayaran (Rp '.number_format($paymentAmount).') melebihi sisa tagihan (Rp '.number_format($remainingTotal).').');
-        }
+        return DB::transaction(function () use ($invoice, $paymentAmount, $source, $idempotencyKey) {
+            // Kunci baris invoice dan seluruh baris tagihannya terlebih dahulu.
+            /** @var Invoice $lockedInvoice */
+            $lockedInvoice = Invoice::query()->lockForUpdate()->findOrFail($invoice->getKey());
 
-        $tenant = $invoice->tenant;
-        $payer = User::findOrFail($tenant->user_id);
-        $walletAccount = $payer->walletAccount('IDR');
+            // Semua pemeriksaan sisa tagihan dilakukan setelah baris di bawah lock.
+            $remainingTotal = $lockedInvoice->remainingAmount();
+            if ($paymentAmount > $remainingTotal) {
+                throw new InvalidArgumentException('Nominal pembayaran (Rp '.number_format($paymentAmount).') melebihi sisa tagihan (Rp '.number_format($remainingTotal).').');
+            }
 
-        // Validasi saldo dompet
-        $walletBal = BigDecimal::of($walletAccount->cached_balance ?: '0')->toInt();
-        if ($walletBal < $paymentAmount) {
-            throw new InvalidArgumentException('Saldo dompet tenant tidak mencukupi (Tersedia: Rp '.number_format($walletBal).', Diperlukan: Rp '.number_format($paymentAmount).').');
-        }
+            $tenant = $lockedInvoice->tenant;
+            $payer = User::findOrFail($tenant->user_id);
 
-        return DB::transaction(function () use ($invoice, $paymentAmount, $payer, $walletAccount, $source) {
-            // Urutkan baris tagihan berdasarkan prioritas pelunasan
-            $lines = $invoice->lines()
+            // Kunci juga baris tagihan agar dua pembayaran berjalan tidak dapat
+            // mengalokasikan nominal yang sama ke baris yang sama secara bersamaan.
+            // Urutkan baris tagihan berdasarkan prioritas pelunasan:
+            // 1. Denda  2. Utilitas  3. Service Charge  4. Sewa Pokok & Bagi Hasil
+            $lines = $lockedInvoice->lines()
                 ->where('paid_amount', '<', DB::raw('amount'))
+                ->lockForUpdate()
                 ->get()
                 ->sort(function ($a, $b) {
                     return $a->type->paymentPriority() <=> $b->type->paymentPriority();
                 });
 
+            // Kunci akun dompet payer agar saldo cukup dan dapat dipotong atomik.
+            /** @var LedgerAccount $walletAccount */
+            $walletAccount = LedgerAccount::query()
+                ->where('code', 'wallet:user:'.$payer->id.':IDR')
+                ->lockForUpdate()
+                ->first();
+
+            $walletAccount ??= $payer->walletAccount('IDR');
+            $walletBal = BigDecimal::of($walletAccount->cached_balance ?: '0')->toInt();
+            if ($walletBal < $paymentAmount) {
+                throw new InvalidArgumentException('Saldo dompet tenant tidak mencukupi (Tersedia: Rp '.number_format($walletBal).', Diperlukan: Rp '.number_format($paymentAmount).').');
+            }
+
+            $txKey = $idempotencyKey ?? (
+                'mall_pay_'.$lockedInvoice->id.'_'.$paymentAmount.'_'.$source.'_'.$lockedInvoice->paid_amount
+            );
+
+            // Replay guard: kembalikan hasil tanpa double posting bila sudah pernah
+            // tercatat dengan kunci yang sama (retry browser/gateway).
+            if (LedgerTransaction::where('idempotency_key', $txKey)->exists()) {
+                return $lockedInvoice->fresh(['lines', 'tenant', 'lease']);
+            }
+
+            // Urutkan baris tagihan berdasarkan prioritas pelunasan
             $remainingToAllocate = $paymentAmount;
             $splits = []; // [accountCode => amount]
 
@@ -101,7 +127,6 @@ class AllocatePaymentAction
                 }
             }
 
-            $txKey = 'mall_pay_'.$invoice->id.'_'.Str::random(12);
             $dto = new PostingDTO(
                 type: TransactionType::LEASE_BILLING->value,
                 description: "Pembayaran Tagihan Mall {$invoice->invoice_number} ({$source})",
@@ -123,22 +148,22 @@ class AllocatePaymentAction
             $this->ledger->post($dto);
 
             // Update status dan nominal terbayar invoice
-            $newInvoicePaid = $invoice->paid_amount + $paymentAmount;
-            $isFullyPaid = $newInvoicePaid >= $invoice->total_amount;
+            $newInvoicePaid = $lockedInvoice->paid_amount + $paymentAmount;
+            $isFullyPaid = $newInvoicePaid >= $lockedInvoice->total_amount;
 
-            $invoice->update([
+            $lockedInvoice->update([
                 'paid_amount' => $newInvoicePaid,
                 'status' => $isFullyPaid ? InvoiceStatus::PAID : InvoiceStatus::PARTIALLY_PAID,
-                'paid_at' => $isFullyPaid ? now() : $invoice->paid_at,
+                'paid_at' => $isFullyPaid ? now() : $lockedInvoice->paid_at,
                 'payment_reference' => $txKey,
             ]);
 
             // Jika lease sebelumnya disuspend dan invoice ini sudah lunas, cek apakah masih ada tunggakan lain
-            $lease = $invoice->lease;
+            $lease = $lockedInvoice->lease;
             if ($lease && $lease->status === LeaseStatus::SUSPENDED) {
                 $hasOtherOverdue = Invoice::where('lease_id', $lease->id)
                     ->whereIn('status', [InvoiceStatus::OVERDUE, InvoiceStatus::PARTIALLY_PAID])
-                    ->where('id', '!=', $invoice->id)
+                    ->where('id', '!=', $lockedInvoice->id)
                     ->exists();
 
                 if (! $hasOtherOverdue) {
@@ -146,7 +171,7 @@ class AllocatePaymentAction
                 }
             }
 
-            return $invoice->fresh(['lines', 'tenant', 'lease']);
+            return $lockedInvoice->fresh(['lines', 'tenant', 'lease']);
         });
     }
 

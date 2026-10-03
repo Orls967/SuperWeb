@@ -20,7 +20,7 @@ class MallAutoDebitAction
      *
      * @return array{success: bool, debited: int, remaining: int, is_fully_paid: bool, message: string}
      */
-    public function execute(Invoice $invoice): array
+    public function execute(Invoice $invoice, ?string $idempotencyKey = null): array
     {
         $needed = $invoice->remainingAmount();
         if ($needed <= 0) {
@@ -73,7 +73,8 @@ class MallAutoDebitAction
         $updatedInvoice = $this->allocatePaymentAction->execute(
             $invoice,
             $debitAmount,
-            source: 'auto_debit'
+            source: 'auto_debit',
+            idempotencyKey: $idempotencyKey
         );
 
         return [

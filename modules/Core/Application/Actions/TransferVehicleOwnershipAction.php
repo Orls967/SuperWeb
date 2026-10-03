@@ -71,11 +71,13 @@ class TransferVehicleOwnershipAction extends BaseAction implements TransfersVehi
                 actorId: $actorId ?? $toUserId,
             );
 
-            event(new VehicleOwnershipTransferred(
+            // Defer until after commit: the Mall listener cancels parking
+            // membership and must not act on a transfer that may roll back.
+            DB::afterCommit(fn () => event(new VehicleOwnershipTransferred(
                 vehicle: $locked,
                 fromUserId: $fromUserId,
                 toUserId: $toUserId
-            ));
+            )));
 
             return $locked->fresh();
         });

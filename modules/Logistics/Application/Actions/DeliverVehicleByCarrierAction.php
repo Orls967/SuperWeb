@@ -47,7 +47,9 @@ class DeliverVehicleByCarrierAction
                 actorId: $actor->id,
             );
 
-            event(new ShipmentDelivered($shipment->fresh()));
+            // Defer until after commit: freight revenue + passport event must
+            // only be recorded for a delivery that actually committed.
+            DB::afterCommit(fn () => event(new ShipmentDelivered($shipment->fresh())));
 
             return $event;
         });

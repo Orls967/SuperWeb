@@ -78,6 +78,14 @@ class BookShipmentAction
             $consigneeAddress,
             $idempotencyKey
         ) {
+            /** @var Quote $lockedQuote */
+            $lockedQuote = Quote::query()->lockForUpdate()->findOrFail($quote->getKey());
+
+            if ($lockedQuote->is_booked) {
+                throw InvalidQuoteException::alreadyBooked();
+            }
+
+            $quote = $lockedQuote;
             $trackingNumber = TrackingNumber::generate();
             $chargeableWeightGrams = (int) round(((float) $quote->chargeable_weight_kg) * 1000);
 
