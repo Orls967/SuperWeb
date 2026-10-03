@@ -436,3 +436,14 @@
   6. **Integritas kepemilikan & escrow**: penyelesaian pesanan Store (status + akuisisi kendaraan) dibungkus satu transaksi dengan perbaikan saat retry; alur C2C dibuat dapat diulang (release escrow yang sudah terlanjur commit tidak lagi membuat pesanan tak terbatal).
 - **Verification:** 554 tests / 3233 assertions 0 skipped; 5 test race berurutan baru (`ActionConcurrencyRegressionTest`) + 4 test regresi Payment; pint clean; `bank:reconcile`, `lgx:audit-billing`, `mall:audit-billing` = 0 selisih.
 - **Reason:** 110 temuan semuanya berpotensi menggandakan uang, stok, atau limit kredit pada retry/ketidaksamaan; audit juga membuktikan sejumlah tuduhan tidak benar, jadi laporan mencatat yang tertutup dan yang ternyata bukan cacat.
+
+## 2026-10-04: Fase 26.5 — RBAC Granular (Multi-Role, Scope Entitas, Gate/Policy Integrasi)
+- **Context:** Sistem otorisasi sebelumnya hanya mengandalkan kolom string enum `users.role` (admin, mekanik, customer, dsb) yang kaku, tidak mendukung multi-role, tidak mendukung hak akses granular per aksi/modul, dan tidak memiliki scoping per entitas.
+- **Decision:**
+  1. **Schema RBAC:** Tambahkan tabel `roles`, `permissions`, `role_permission`, dan `user_role` dengan dukungan scoping entitas (`entity_type`, `entity_id`).
+  2. **Backward Compatibility:** Pertahankan kolom `users.role` sebagai fallback dan cermin (mirror). `CheckRole` middleware diperbarui untuk mengecek tabel RBAC terlebih dahulu sebelum jatuh kembali ke `users.role`.
+  3. **Gate/Policy Integration:** Daftarkan `Gate::before` di `CoreServiceProvider` yang mengecek `RbacService::userHasPermission($user, $ability)` untuk mengintegrasikan permission RBAC secara transparan ke seluruh otorisasi Laravel.
+  4. **Seeder & Backfill:** `RbacSeeder` memetakan permission default untuk setiap role sistem dan secara otomatis mem-backfill seluruh user lama dari nilai `users.role` masing-masing.
+  5. **Admin UI:** Sediakan `RbacController` dan view Blade di `/admin/rbac` untuk mengelola role, permission matrix per modul, dan assignment user.
+- **Verification:** 23 test baru (`RbacTest.php`, 53 assertions) mencakup CRUD role/permission, assignment multi-role dengan/tanpa scope entitas, idempotensi, backfill legacy, integrasi Gate, dan UI web admin. Total suite: 577 passed / 3286 assertions.
+

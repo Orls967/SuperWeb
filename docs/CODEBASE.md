@@ -4,8 +4,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 25 (merged, PR #1–#4) · **Berjalan:** Fase 26.1–26.4 (26.4 selesai) · **Berikutnya:** 26.5 RBAC granular (roadmap rantai nilai hulu→hilir di PROGRESS.md; backlog 58+)
-**Snapshot gate (akhir Fase 26.4):** 554 test / 3233 assertion (26.3: 554 / 3233, 26.1–26.2: 545 / 3203, Fase 25: 538 / 3189), 0 skipped · `bank:reconcile` 0 selisih · `lgx:audit-billing` 0 selisih · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus. Query budget: lookup resi ≤ 3, dispatch ≤ 10, control tower ≤ 12, bank:reconcile ≤ 10, lgx:audit-billing ≤ 60.
+**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 25 (merged, PR #1–#4) · **Berjalan:** Fase 26.1–26.5 (26.5 selesai) · **Berikutnya:** 26.6 Audit trail generik (roadmap rantai nilai hulu→hilir di PROGRESS.md; backlog 58+)
+**Snapshot gate (akhir Fase 26.5):** 577 test / 3286 assertion (26.5: +23 test RBAC, 26.4: 554 / 3233, 26.1–26.2: 545 / 3203, Fase 25: 538 / 3189), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus. Query budget: lookup resi ≤ 3, dispatch ≤ 10, control tower ≤ 12, bank:reconcile ≤ 10, lgx:audit-billing ≤ 60.
 
 ---
 
@@ -32,14 +32,14 @@ Gotcha yang sudah pernah menggigit: `event(new X)` bukan `X::dispatch` bila even
 - **State machine** lewat enum (`ShipmentStatus`, `FleetStatus`, `BookingStatus`, …) dengan guard transisi.
 - **Hash-chain append-only**: `core_vehicle_events` (Vehicle Passport) & tracking event Logistik. Model menolak update/delete.
 - **Menu**: `Shared\Application\MenuRegistry` + `MenuItem`, didaftarkan di ServiceProvider tiap modul (visibilitas per role).
-- **Role** = kolom `users.role` + middleware `role:` (`app/Http/Middleware/CheckRole.php`) + Policy (Logistics).
+- **Role** = RBAC tabel (`roles`, `permissions`, `role_permission`, `user_role` — multi-role + scope entitas) + legacy kolom `users.role` sebagai fallback/mirror; `Gate::before` mengecek RBAC permission; middleware `role:` (`app/Http/Middleware/CheckRole.php`) mengecek kedua sumber; Policy (Logistics). Seeder `RbacSeeder` backfill dari `users.role`. Admin UI di `/admin/rbac`.
 
 ## 3. Peta modul
 
 | Modul | Prefix tabel | Prefix rute | Isi pokok | Ukuran |
 |---|---|---|---|---|
 | Shared | – | – | `MenuRegistry`, `BaseAction`, VO `Money`, trait, komponen Blade, halaman umum | 18 php |
-| Core | `core_` | `/admin/*`, publik passport | `Vehicle`, `VehicleEvent` (hash-chain), `ActivityLog`, `AuditLog`, `PlatformNotification`, dashboard terpadu, `PlatformSeeder`; command `core:verify-passports`, `super:health-check` | 45 |
+| Core | `core_` | `/admin/*`, publik passport | `Vehicle`, `VehicleEvent` (hash-chain), `ActivityLog`, `AuditLog`, `PlatformNotification`, **`Role`, `Permission`** (RBAC), dashboard terpadu, `PlatformSeeder`, `RbacSeeder`; command `core:verify-passports`, `super:health-check`; **`RbacService`**, **`HasRbacRoles`** trait, **`RbacController`** (admin RBAC UI) | 55 |
 | Banking | `bank_` | `/admin/ledger`, wallet | **Ledger double-entry** multi-aset, `LedgerAccount`, wallet, PIN, transfer, top-up, statement/CSV; command `bank:reconcile` | 52 |
 | Payment | `pay_` | `/payment` | `PaymentGateway` (charge/hold/capture/release/refund), `Payable`, `PaymentIntent`; command `payment:release-expired-holds` | 18 |
 | Inventory | `inv_` | – | `InventoryService`, `StockMovement` append-only, reservasi 2 langkah | 8 |
@@ -56,7 +56,7 @@ Tabel non-prefiks lama: `users`, `bookings`, `spareparts`, `services`, `cars`, `
 
 ## 4. Role & akun demo
 
-Role (`users.role`): `admin`, `customer`, `mekanik`, `tenant`, `outlet_manager`, `kitchen`, `cashier`, `shipper`, `driver`, `dispatcher`, `hub_operator`, `logistics_admin`.
+Role (`users.role` + RBAC tabel `roles`): `admin`, `customer`, `mekanik`, `tenant`, `outlet_manager`, `kitchen`, `cashier`, `shipper`, `driver`, `dispatcher`, `hub_operator`, `logistics_admin`. RBAC mendukung multi-role per user dengan scope entitas (contoh: cashier scoped ke outlet). 12 role × 48 permission tersemai di `RbacSeeder`.
 Seeder: `DatabaseSeeder` → Banking, Platform, Crypto, Mall, Resto, Logistics (+ `LogisticsFinanceSeeder`). Akun demo contoh: `admin@autoserve.test`, `customer@autoserve.test`, `mekanik@autoserve.test` (password `password`). `DemoLargeSeeder` = data besar lintas modul; `LogisticsLargeSeeder` = skala logistik (Fase 25).
 
 ## 5. Ledger & uang (inti sistem)
@@ -130,7 +130,7 @@ Dokumen: `README.md` (Logistics + section API v1 sejak 26.2) · `docs/{PROGRESS,
 4. ~~Sweep N+1 / indeks / query budget~~ **DITUTUP (26.4)** — Agregat SQL pada `bank:reconcile` dan `BillingAuditor`, `chunkById` pada `VerifyPassportsCommand`, `ExpireDisplayTraysCommand`, `CancelStaleOrdersCommand`, penambahan assertion query budget untuk `bank:reconcile` ($\le 10$) dan `lgx:audit-billing` ($\le 60$).
 5. Duplikasi konsep **Asset** (`mall_assets`) akan dikonsolidasikan di Fase 29.
 6. BOM/HPP ada di Resto (`resto_`), akan digeneralisasi di Fase 33–36 (Resto tetap bekerja lewat adapter).
-7. Role masih satu kolom `users.role`; RBAC granular di Fase 26.5.
+7. ~~Role masih satu kolom `users.role`~~ **DITUTUP (26.5)** — RBAC granular aktif: tabel `roles`, `permissions`, `role_permission`, `user_role`; `HasRbacRoles` trait di User; `Gate::before` mengecek RBAC permission; `CheckRole` middleware mengecek kedua sumber; `RbacSeeder` backfill semua user; admin UI `/admin/rbac`; `users.role` tetap sebagai mirror sampai migrasi modul selesai.
 
 ## 13. Rencana ke depan (ringkas; detail di PROGRESS.md)
 

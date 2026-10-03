@@ -397,4 +397,16 @@
 - `npm run build`: sukses
 - Seluruh gate audit operasional seimbang dan 0 diskrepansi: `bank:reconcile`, `core:verify-passports`, `resto:close-day`, `mall:audit-billing`, `lgx:audit-billing`, `lgx:verify-custody`, `lgx:capacity-check`, `super:health-check` (8 pilar HEALTHY).
 
+## Quality Gate Fase 26.5 — RBAC Granular — 2026-10-04
+
+**Cakupan:** Model RBAC (`Role`, `Permission`), tabel migrasi (`roles`, `permissions`, `role_permission`, `user_role` dengan scope entitas), service `RbacService`, trait `HasRbacRoles`, middleware `CheckRole` terintegrasi, seeder `RbacSeeder` dengan backfill legacy otomatis, Gate::before resolver, dan konsol web admin RBAC (`/admin/rbac`).
+
+### Hasil Quality Gate:
+- **Test Suite:** **577 passed / 3286 assertions / 0 skipped** (23 test baru di `RbacTest.php` mencakup 53 assertions, 0 gagal, 0 skipped).
+- **Pint:** `vendor/bin/pint --test` lulus tanpa error formatting.
+- **Ledger Reconcile:** `php artisan bank:reconcile` 0 selisih pada seluruh 128 akun (global sum = 0).
+- **Health Check:** `php artisan super:health-check` 8 pilar HEALTHY.
+- **Audit Operasional:** `core:verify-passports`, `lgx:audit-billing`, `mall:audit-billing`, `resto:close-day` semuanya lulus tanpa diskrepansi.
+
+
 

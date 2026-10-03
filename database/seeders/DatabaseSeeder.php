@@ -11,6 +11,7 @@ use Modules\Banking\Application\Actions\SetPinAction;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\database\seeders\BankingSeeder;
 use Modules\Core\database\seeders\PlatformSeeder;
+use Modules\Core\database\seeders\RbacSeeder;
 use Modules\Crypto\database\seeders\CryptoSeeder;
 use Modules\Logistics\database\seeders\LogisticsSeeder;
 use Modules\Mall\database\seeders\MallSeeder;
@@ -131,6 +132,7 @@ class DatabaseSeeder extends Seeder
             RestoMenuSeeder::class,
             MallSeeder::class,
             LogisticsSeeder::class,
+            RbacSeeder::class,
         ]);
     }
 }

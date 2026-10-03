@@ -15,6 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Modules\AutoDex\Domain\Models\Car;
 use Modules\Banking\Domain\Traits\HasLedgerAccounts;
 use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Domain\Traits\HasRbacRoles;
 use Modules\Logistics\Domain\Models\HubOperator;
 use Modules\Resto\Domain\Models\RestoStaffAssignment;
 
@@ -23,7 +24,7 @@ use Modules\Resto\Domain\Models\RestoStaffAssignment;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, HasLedgerAccounts, Notifiable;
+    use HasApiTokens, HasFactory, HasLedgerAccounts, HasRbacRoles, Notifiable;
 
     protected function casts(): array
     {
