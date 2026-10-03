@@ -4,8 +4,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 25 (merged, PR #1–#4) · **Berjalan:** Fase 26.1–26.8 (26.8 selesai) · **Berikutnya:** 26.9 Approval engine generik (roadmap rantai nilai hulu→hilir di PROGRESS.md; backlog 58+)
-**Snapshot gate (akhir Fase 26.8):** 592 test / 3361 assertion (26.8: +5 test Document Services / +19 assertion, 26.7: 587 / 3342, 26.6: 583 / 3319, 26.5: 577 / 3286, 26.4: 554 / 3233, 26.1–26.2: 545 / 3203, Fase 25: 538 / 3189), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus. Query budget: lookup resi ≤ 3, dispatch ≤ 10, control tower ≤ 12, bank:reconcile ≤ 10, lgx:audit-billing ≤ 60.
+**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 26 (Utang Teknis & Fondasi Platform, semua sub-fase 26.1–26.10 selesai) · **Berjalan:** — · **Berikutnya:** Fase 27 Party Master & Badan Hukum
+**Snapshot gate (akhir Fase 26.10):** 597 test / 3382 assertion (26.9: +5 test Approval Engine / +21 assertion, 26.8: 592/3361, 26.7: 587/3342, 26.6: 583/3319, 26.5: 577/3286, 26.4: 554/3233, 26.1–26.2: 545/3203, Fase 25: 538/3189), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih (29 dok) · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus.
 
 ---
 
@@ -39,7 +39,7 @@ Gotcha yang sudah pernah menggigit: `event(new X)` bukan `X::dispatch` bila even
 | Modul | Prefix tabel | Prefix rute | Isi pokok | Ukuran |
 |---|---|---|---|---|
 | Shared | – | – | `MenuRegistry`, `BaseAction` (dengan helper `audit()` & `outbox()`), VO `Money`, trait, komponen Blade, halaman umum | 18 php |
-| Core | `core_` | `/admin/*`, publik passport | `Vehicle`, `VehicleEvent` (hash-chain), `ActivityLog`, `AuditLog`, `PlatformNotification`, **`Role`, `Permission`** (RBAC), **`OutboxMessage`**, `OutboxSubscription`, `OutboxDispatch`, **`DocumentSequence`**, **`DocumentAttachment`**, dashboard terpadu, `PlatformSeeder`, `RbacSeeder`; command `core:verify-passports`, `core:process-outbox`, `super:health-check`; **`RbacService`**, **`AuditTrailService`**, **`OutboxBusService`**, **`DocumentNumberingService`**, **`DocumentStoreService`**, **`HasRbacRoles`** trait, **`RbacController`**, **`AuditLogController`** | 65 |
+| Core | `core_` | `/admin/*`, publik passport | `Vehicle`, `VehicleEvent` (hash-chain), `ActivityLog`, `AuditLog`, `PlatformNotification`, **`Role`, `Permission`** (RBAC), **`OutboxMessage`**, `OutboxSubscription`, `OutboxDispatch`, **`DocumentSequence`**, **`DocumentAttachment`**, **`Approval`**, **`ApprovalStep`**, **`ApprovalHistory`**, dashboard terpadu, `PlatformSeeder`, `RbacSeeder`; command `core:verify-passports`, `core:process-outbox`, `super:health-check`; **`RbacService`**, **`AuditTrailService`**, **`OutboxBusService`**, **`DocumentNumberingService`**, **`DocumentStoreService`**, **`ApprovalEngineService`**, **`HasRbacRoles`** trait, **`RbacController`**, **`AuditLogController`** | 70 |
 | Banking | `bank_` | `/admin/ledger`, wallet | **Ledger double-entry** multi-aset, `LedgerAccount`, wallet, PIN, transfer, top-up, statement/CSV; command `bank:reconcile` | 52 |
 | Payment | `pay_` | `/payment` | `PaymentGateway` (charge/hold/capture/release/refund), `Payable`, `PaymentIntent`; command `payment:release-expired-holds` | 18 |
 | Inventory | `inv_` | – | `InventoryService`, `StockMovement` append-only, reservasi 2 langkah | 8 |
@@ -128,9 +128,10 @@ Dokumen: `README.md` (Logistics + section API v1 sejak 26.2) · `docs/{PROGRESS,
 2. ~~AUDIT.md tanpa gate Fase 25~~ **DITUTUP (26.2)** — section "Quality Gate Fase 25" ditambahkan; README disinkronkan (545 test / 3203 assertion) dan diberi section API v1.
 3. ~~Sweep transaksi/idempotensi~~ **DITUTUP (26.3)** — 110 temuan di 143 Action diperbaiki/ditutup (laporan: AUDIT 26.3).
 4. ~~Sweep N+1 / indeks / query budget~~ **DITUTUP (26.4)** — Agregat SQL pada `bank:reconcile` dan `BillingAuditor`, `chunkById` pada `VerifyPassportsCommand`, `ExpireDisplayTraysCommand`, `CancelStaleOrdersCommand`, penambahan assertion query budget untuk `bank:reconcile` ($\le 10$) dan `lgx:audit-billing` ($\le 60$).
-5. Duplikasi konsep **Asset** (`mall_assets`) akan dikonsolidasikan di Fase 29.
-6. BOM/HPP ada di Resto (`resto_`), akan digeneralisasi di Fase 33–36 (Resto tetap bekerja lewat adapter).
-7. ~~Role masih satu kolom `users.role`~~ **DITUTUP (26.5)** — RBAC granular aktif: tabel `roles`, `permissions`, `role_permission`, `user_role`; `HasRbacRoles` trait di User; `Gate::before` mengecek RBAC permission; `CheckRole` middleware mengecek kedua sumber; `RbacSeeder` backfill semua user; admin UI `/admin/rbac`; `users.role` tetap sebagai mirror sampai migrasi modul selesai.
+5. ~~Audit trail generik~~ **DITUTUP (26.6)** — `core_audit_logs` dengan `correlation_id` & `impact_type`, `AuditTrailInterface/Service`, append-only (RuntimeException pada update/delete), helper `audit()` di `BaseAction`, admin UI `/admin/audit-logs`.
+6. ~~Outbox/event bus generik~~ **DITUTUP (26.7)** — `core_outbox` + subscriptions + dispatches, `OutboxBusInterface/Service`, helper `outbox()` di `BaseAction`, `core:process-outbox`, dead-letter & replay; Logistics `DispatchWebhookAction` dimigrasikan.
+7. ~~Document numbering & document store~~ **DITUTUP (26.8)** — `core_document_sequences` (gapless, lockForUpdate), `core_documents` (SHA-256 checksum, retensi, mime/extension guard), `DocumentNumberingInterface/Service`, `DocumentStoreInterface/Service`.
+8. ~~Approval engine generik~~ **DITUTUP (26.9)** — `core_approvals`, `core_approval_steps`, `core_approval_histories`, `ApprovalEngineInterface/Service` (four-eyes, multi-level, delegasi, SLA escalation, histori); helper `approval()` di `BaseAction`.
 
 ## 13. Rencana ke depan (ringkas; detail di PROGRESS.md)
 

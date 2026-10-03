@@ -17,6 +17,7 @@ use Modules\Core\Application\Listeners\NotifyPaymentRefunded;
 use Modules\Core\Application\Listeners\RecordBookingCompletedPassportEvent;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
 use Modules\Core\Application\Services\ActivityLogger;
+use Modules\Core\Application\Services\ApprovalEngineService;
 use Modules\Core\Application\Services\AuditTrailService;
 use Modules\Core\Application\Services\DocumentNumberingService;
 use Modules\Core\Application\Services\DocumentStoreService;
@@ -27,6 +28,7 @@ use Modules\Core\Console\Commands\ProcessOutboxCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
+use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\AuditTrailInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Core\Contracts\DocumentStoreInterface;
@@ -72,6 +74,11 @@ class CoreServiceProvider extends ServiceProvider
             DocumentStoreService::class
         );
 
+        $this->app->bind(
+            ApprovalEngineInterface::class,
+            ApprovalEngineService::class
+        );
+
         // Platform services — singletons so they can be injected anywhere
         $this->app->singleton(NotificationService::class);
         $this->app->singleton(ActivityLogger::class);
@@ -80,6 +87,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(OutboxBusService::class);
         $this->app->singleton(DocumentNumberingService::class);
         $this->app->singleton(DocumentStoreService::class);
+        $this->app->singleton(ApprovalEngineService::class);
     }
 
     public function boot(): void

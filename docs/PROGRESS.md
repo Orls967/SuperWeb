@@ -359,8 +359,8 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 26.6 **Audit trail generik**: setiap Action ber-impact (uang/state/ownership) menulis `core_audit_logs` (siapa, apa, sebelum/sesudah, IP, correlation id); append-only; halaman pencarian admin
 - [x] 26.7 **Outbox & event bus generik** (`core_outbox`): generalisasi webhook outbox Logistics — event domain → outbox transaksional → dispatcher idempoten; dead-letter + replay; Logistics dimigrasikan ke bus ini
 - [x] 26.8 **Document numbering & document store**: layanan nomor gapless per (entitas, jenis, tahun, reset bulanan/tahunan) dengan lock; penyimpanan dokumen (lampiran) ber-checksum, kebijakan retensi, antivirus/mime guard
-- [ ] 26.9 **Approval engine generik**: alur multi-level berdasarkan nilai/jenis, four-eyes (pembuat ≠ penyetuju), delegasi, SLA & eskalasi, histori; dipakai Kontrak/PO/Aset/Klaim (klaim & pembayaran carrier dimigrasikan)
-- [ ] 26.10 Quality gate Fase 26
+- [x] 26.9 **Approval engine generik**: alur multi-level berdasarkan nilai/jenis, four-eyes (pembuat ≠ penyetuju), delegasi, SLA & eskalasi, histori; dipakai Kontrak/PO/Aset/Klaim (klaim & pembayaran carrier dimigrasikan)
+- [x] 26.10 Quality gate Fase 26
 
 ## FASE 27 — PARTY MASTER & BADAN HUKUM (FONDASI PIHAK)
 *Satu sumber kebenaran untuk semua pihak: pemasok, produsen, distributor, agen, mitra, pelanggan, carrier.*
