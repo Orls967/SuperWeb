@@ -16,6 +16,7 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Resto\Domain\Enums\POStatus;
@@ -44,11 +45,30 @@ class ReceiveGoodsAction
         ?string $note = null,
         ?string $photoRef = null
     ): GoodsReceipt {
-        if ($po->status === POStatus::RECEIVED || $po->status === POStatus::CANCELLED) {
-            throw new InvalidArgumentException("PO #{$po->number} sudah berstatus {$po->status->value} dan tidak dapat diterima lagi.");
-        }
-
         return DB::transaction(function () use ($po, $linesData, $receiver, $quality, $note, $photoRef) {
+            $lockedPo = PurchaseOrder::where('id', $po->id)->lockForUpdate()->firstOrFail();
+
+            if ($lockedPo->status === POStatus::RECEIVED || $lockedPo->status === POStatus::CANCELLED) {
+                throw new InvalidArgumentException("PO #{$lockedPo->number} sudah berstatus {$lockedPo->status->value} dan tidak dapat diterima lagi.");
+            }
+
+            foreach ($linesData as $data) {
+                $poLine = PurchaseOrderLine::where('id', $data['po_line_id'])
+                    ->where('po_id', $lockedPo->id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+                $qtyReceivedBd = BigDecimal::of((string) $data['qty_received_base_unit']);
+                $qtyAlreadyReceived = BigDecimal::of((string) $poLine->qty_received);
+                $qtyOrdered = BigDecimal::of((string) $poLine->qty_base_unit);
+
+                if ($qtyAlreadyReceived->plus($qtyReceivedBd)->isGreaterThan($qtyOrdered)) {
+                    throw new InvalidArgumentException("Jumlah penerimaan PO #{$lockedPo->number} melebihi jumlah pesanan pada baris #{$poLine->id}.");
+                }
+            }
+
+            // The rest of the receipt works on the locked PO row (status, lines, outlets).
+            $po = $lockedPo;
+
             $receipt = GoodsReceipt::create([
                 'uuid' => (string) Str::uuid(),
                 'po_id' => $po->id,
@@ -63,7 +83,7 @@ class ReceiveGoodsAction
 
             foreach ($linesData as $data) {
                 $poLine = PurchaseOrderLine::where('id', $data['po_line_id'])
-                    ->where('po_id', $po->id)
+                    ->where('po_id', $lockedPo->id)
                     ->lockForUpdate()
                     ->firstOrFail();
 
@@ -150,6 +170,14 @@ class ReceiveGoodsAction
 
             // 6. Double-entry ledger posting
             if ($totalReceiptCost > 0) {
+                $ledgerKey = "resto:po:receive:{$receipt->id}";
+
+                // Deterministic from the receipt row id (created above); never post twice for
+                // the same receipt even if this closure is retried.
+                if (LedgerTransaction::where('idempotency_key', $ledgerKey)->exists()) {
+                    return $receipt->load(['lines.poLine.ingredient', 'receiver']);
+                }
+
                 $outlet = $po->outlet;
                 $outletCode = $outlet?->code ?: "OUT-{$po->outlet_id}";
                 $invAccCode = "inventory:resto:{$outletCode}:IDR";
@@ -163,7 +191,7 @@ class ReceiveGoodsAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::SUPPLIER_PAYABLE->value,
                     description: "Penerimaan bahan PO #{$po->number} dari {$po->supplier?->name}",
-                    idempotencyKey: "resto:po:receive:{$receipt->id}:".Str::uuid(),
+                    idempotencyKey: $ledgerKey,
                     entries: [
                         PostingEntryDTO::forCode($invAccCode, 'IDR', $costBd),
                         PostingEntryDTO::forCode($apAccCode, 'IDR', $costBd->negated()),

@@ -16,6 +16,7 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Resto\Domain\Enums\TransferStatus;
@@ -38,12 +39,22 @@ class ReceiveStockTransferAction
         User $receiver,
         ?string $varianceNote = null
     ): StockTransfer {
-        if ($transfer->status !== TransferStatus::IN_TRANSIT) {
-            throw new InvalidArgumentException("Transfer #{$transfer->number} tidak berstatus in_transit.");
-        }
-
         return DB::transaction(function () use ($transfer, $receivedQtys, $receiver, $varianceNote) {
             $lockedTransfer = StockTransfer::where('id', $transfer->id)->lockForUpdate()->firstOrFail();
+
+            // Status must be re-checked AFTER the row lock, otherwise two concurrent
+            // receivers can both pass the pre-transaction check and both credit stock.
+            if ($lockedTransfer->status !== TransferStatus::IN_TRANSIT) {
+                throw new InvalidArgumentException("Transfer #{$lockedTransfer->number} tidak berstatus in_transit.");
+            }
+
+            $ledgerKey = "resto:trf:recv:{$lockedTransfer->id}";
+            if (LedgerTransaction::where('idempotency_key', $ledgerKey)->exists()) {
+                // The ledger posting for this transfer already happened: a concurrent or
+                // repeated receive has already credited the destination inventory.
+                return $lockedTransfer->load(['fromOutlet', 'toOutlet', 'receiver']);
+            }
+
             $toOutlet = $lockedTransfer->toOutlet;
 
             $updatedLines = [];
@@ -158,7 +169,7 @@ class ReceiveStockTransferAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::PRODUCTION->value,
                     description: "Penerimaan transfer #{$lockedTransfer->number} di {$toOutlet->name}".($hasDiscrepancy ? ' (Terdapat selisih)' : ''),
-                    idempotencyKey: "resto:trf:recv:{$lockedTransfer->id}:".Str::uuid(),
+                    idempotencyKey: $ledgerKey,
                     entries: $entries,
                     referenceType: 'resto_transfer',
                     referenceId: $lockedTransfer->id,

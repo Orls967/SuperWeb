@@ -317,3 +317,58 @@
   - 25.7 Control Tower (logistics_admin): KPI OTIF, chart status, armada, dwell time, COD, margin per lane
   - 25.8 Dokumentasi final: ARCHITECTURE, RUNBOOK, README, DECISIONS mutakhir
   - 25.9 Quality gate final: seluruh test & large seeder lolos, semua gate hijau
+
+## Laporan Temuan 26.3 — Sweep Kebenaran Seluruh Action — 2026-10-03
+
+**Cakupan:** seluruh 143 kelas Action di `modules/{AutoServe,Banking,Core,Finance,Logistics,Mall,Resto,Store}/Application/Actions`.
+
+**Metode:** audit dua putaran — (a) pemindaian mekanis seluruh Action terhadap 4 konvensi CODEBASE §14, (b) verifikasi manual per temuan (setiap klaim dicek langsung ke file + migrasi yang bersangkutan sebelum dilaporkan). Klarifikasi penting: 2 klaim dari putaran awal terbukti **SALAH** dan dibuang — `AcquireVehicleAction` & `RecordVehicleEventAction` **sudah** bertransaksi (klaim "tanpa transaksi" tidak benar), dan "penurunan stok AutoServe di luar transaksi" juga keliru (yang benar adalah transaksi terbelah di `ReceiveBackorderAction`).
+
+**Hasil: 110 temuan nyata → 100 diperbaiki, 10 terbukti aman / tidak jadi cacat.**
+
+### A. Klasifikasi temuan
+
+| Kategori | Jumlah | Contoh dampak |
+|---|---:|---|
+| Kunci idempotensi tidak deterministik (`Str::random`/`uuid`/`now()`) | 38 | retry menimbulkan posting ledger ganda |
+| Check-then-write tanpa lock (TOCTOU) | 41 | limit kredit, stok, alokasi, status ganda |
+| Multi-tabel tanpa pembungkus transaksi | 18 | status terlanjur tersimpan tanpa aset/uang |
+| Event di dalam transaksi (melanggar aturan afterCommit) | 8 | listener melihat state yang belum commit |
+| Non-atomic read-modify-write | 5 | counter kunci salah baca, kuantitas kolateral hilang |
+
+### B. Temuan paling berdampak (HIGH) yang diperbaiki
+
+1. **`PaymentGatewayService` — partial refund membalik pendapatan penuh.** `refund()` membalik *seluruh* `revenueSplits()` sementara kredit ke dompet hanya sebagian → `UnbalancedTransactionException` (dibuktikan empiris sebelum diperbaiki). Kini pembalikan pendapatan diskalakan proporsional dengan pecahan refund, `refunded_amount` dicatat (kolom baru), dan total refund kumulatif ditolak bila melebihi tangkapanan.
+2. **`PaymentGatewayService` — seluruh operasi non-atomik.** `charge/hold/capture/release/refund` sebelumnya: posting ledger (ter-commit) lalu tulis intent sebagai pernyataan terpisah tanpa lock, dengan fallback key `Str::random`. Kini seluruhnya dalam satu `DB::transaction` + `lockForUpdate` pada baris intent + kunci deterministik (`tx_cap_/tx_rel_/tx_ref_` + id intent) + penanganan `UniqueConstraintViolationException` untuk first-write bersaing.
+3. **`VerifyPinAction` — bypass brute-force PIN.** Counter `failed_attempts` di-read-modify-write tanpa lock: N permintaan salah bersaan sama-sama membaca `0`, sama-sama menulis `1` → counter tak pernah mencapai 5 → **brute-force PIN dompet tak terbatas** (PIN ini mengunci transfer, pembelian C2C, dan approve estimasi). Kini di bawah `lockForUpdate` dengan inkrementasi atomik.
+4. **`BookPostpaidShipmentAction` — limit kredit B2B bisa dilewati.** Pemeriksaan `canAccommodate()` berjalan *sebelum* transaksi tanpa lock akun → dua booking bersaan sama-sama lolos limit yang sama. Kini: lock akun shipper + lock quote + re-check di dalam transaksi.
+5. **`CancelShipmentAction` — refund ganda saat dibatalkan dua kali.** Guard status dibaca dari model basi sebelum transaksi → dua request bersaan sama-sama lolos pre-check dan sama-sama refund. Kini: lock baris shipment + re-check status di dalam transaksi.
+6. **`AddCollateralAction` / `LiquidateLoanAction` — kripto pengguna bisa tersangkut.** Keduanya membaca `collateral_qty` *di luar* transaksi tanpa lock: penambahan kolateral yang commit di celah itu didebet dari dompet tetapi tidak pernah ikut dihitung saat likuidasi → kuantitas hilang selamanya dari akun kolateral. Kini keduanya lock `fin_loans` dan membaca ulang di dalam transaksi.
+7. **`UpdateOrderStatusAction` — order COMPLETED tanpa kendaraan, permanen.** Pemenuhan mobil berjalan di transaksi terpisah dari penulisan status, dan `complete()` langsung return bila status sudah COMPLETED → kegagalan di tengah tak pernah bisa diperbaiki oleh retry. Kini dibungkus satu transaksi dengan logika perbaikan (repair-on-retry).
+8. **`Store` C2C — dana tertahan tanpa kompensasi.** `PurchaseC2cVehicleAction` menutup escrow lalu menulis status di luar transaksi dan di luar blok kompensasi → crash menyisakan dana tertahan + unit ter-reserve dengan status `PENDING_PAYMENT` yang tak bisa dibatalkan. `CancelC2cOrderAction` kebalikannya: sudah release escrow lalu gagal, dan retry-nya justru melempar error sehingga pesanan tidak bisa dibatalkan selamanya.
+
+### C. Perbaikan lintas modul
+
+- **Event `afterCommit` (8 titik):** `VehicleAcquired`, `VehicleOwnershipTransferred`, `BookingCompleted`, `ShipmentDelivered` (2 titik), `PaymentCaptured/Held/Released/Refunded` — listener kini hanya berjalan bila transaksi benar-benar commit, tidak pernah membaca state belum-commit, dan tidak berjalan setelah rollback.
+- **Serialisasi sumber daya bersama:** `ReserveCapacityAction` kunci baris driver/aset sebelum mendeteksi bentrok jadwal (kunci baris jadwal sendiri ternyata tidak cukup — dua jadwal berbeda dengan driver sama lolos bersamaan).
+- **Kunci deterministik di 38 titik** diganti dari `Str::random`/`uuid`/`now()` menjadi turunan sumber bisnis (id intent, id resi, nomor struk, id batch urut), dengan guard replay (return awal bila key sudah tercatat).
+- **Idempotensi lewat formulir:** transfer, top-up, penyesuaian manual, bayar PO, setoran kas, bayar tagihan mall, redeem voucher, collateral top-up, dan buka pinjaman kini membawa `idempotency_key` tersembunyi sehingga double-submit tidak menggandakan pencatatan.
+
+### D. Test regresi
+
+`tests/Feature/ActionConcurrencyRegressionTest.php` (5 test) meniru race dengan menjalankan permintaan identik dua kali berurutan (SQLite in-memory tidak memuat dua koneksi): release retry, refund replay + over-refund, pembatalan ganda, quote ganda, alokasi kapasitas ganda.
+`modules/Payment/tests/Feature/PaymentGatewayTest.php` (+4): partial refund seimbang, replay refund, penolakan over-refund, retry capture/release.
+
+### E. Angka gate 26.3
+
+- **Test: 554 passed / 3233 assertions / 0 skipped** (naik dari 549 setelah 26.1–26.2; baseline Fase 25 = 538/3189)
+- `vendor/bin/pint --test`: clean
+- `php artisan bank:reconcile`: 0 selisih · `lgx:audit-billing`: 0 selisih (29 dokumen) · `mall:audit-billing`: 0 selisih
+- `lgx:capacity-check`, `core:verify-passports`, `super:health-check`: lulus
+
+### F. Tidak diperbaiki (dengan alasan)
+
+- `ClaimReceiptPointsAction` duplikat struk — sudah dijaga unique index nomor struk; hanya key acak yang diperbaiki.
+- `ShipStockTransferAction` kekurangan stok (klaim awal bertanda UNVERIFIED) — `InventoryService` terbukti sudah mengunci baris produk dan mengecek saldo cukup di bawah lock, jadi **bukan cacat**.
+- `Store/ResolveC2cDisputeAction`, `Banking/SetPinAction`, `Banking/FreezeAccountAction`, `Core/RecordVehicleEventAction`, `AutoServe/CancelBookingAction` — diverifikasi aman, tidak diubah.
+

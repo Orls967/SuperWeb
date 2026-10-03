@@ -231,6 +231,7 @@
 
                     <form method="POST" action="{{ route('resto.purchases.pay', $po) }}" class="space-y-4">
                         @csrf
+                        <input type="hidden" name="idempotency_key" value="{{ \Illuminate\Support\Str::uuid() }}">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Pembayaran (Rp)</label>
                             <input type="number" name="amount" required min="1" max="{{ $po->remainingPayable() }}" value="{{ $po->remainingPayable() }}" class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm font-bold">

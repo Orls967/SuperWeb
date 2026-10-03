@@ -80,6 +80,7 @@ class TransferController extends Controller
             'amount' => ['required', 'numeric', 'min:1000', 'max:100000000'],
             'pin' => ['required', 'digits:6'],
             'note' => ['nullable', 'string', 'max:255'],
+            'idempotency_key' => ['nullable', 'string', 'max:64'],
         ], [
             'recipient_query.required' => 'Penerima transfer wajib ditentukan.',
             'amount.required' => 'Nominal transfer wajib diisi.',
@@ -113,6 +114,7 @@ class TransferController extends Controller
                 amount: (string) $validated['amount'],
                 pin: $validated['pin'],
                 note: $validated['note'] ?? null,
+                idempotencyKey: $validated['idempotency_key'] ?? null,
             );
 
             $formatted = Money::IDR($validated['amount'])->format();

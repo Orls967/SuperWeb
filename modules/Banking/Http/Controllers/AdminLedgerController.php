@@ -60,6 +60,7 @@ class AdminLedgerController extends Controller
         $validated = $request->validate([
             'amount' => ['required', 'numeric', 'not_in:0'],
             'reason' => ['required', 'string', 'min:5', 'max:255'],
+            'idempotency_key' => ['nullable', 'string', 'max:64'],
         ], [
             'amount.required' => 'Nominal penyesuaian wajib diisi.',
             'amount.not_in' => 'Nominal penyesuaian tidak boleh bernilai 0.',
@@ -71,6 +72,7 @@ class AdminLedgerController extends Controller
             amount: (string) $validated['amount'],
             reason: $validated['reason'],
             adminUser: $request->user(),
+            idempotencyKey: $validated['idempotency_key'] ?? null,
         );
 
         return back()->with('status', "Penyesuaian manual pada akun '{$account->code}' berhasil diposting ke ledger.");

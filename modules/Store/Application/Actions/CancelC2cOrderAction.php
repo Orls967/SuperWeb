@@ -25,42 +25,62 @@ class CancelC2cOrderAction extends BaseAction
 
     public function execute(Order $order, string $reason = 'Transaksi C2C dibatalkan'): Order
     {
-        if (! $order->isC2c()) {
-            throw new Exception('Pesanan ini bukan transaksi C2C.');
-        }
+        return $this->transaction(function () use ($order, $reason) {
+            /** @var Order $order */
+            $order = Order::query()->lockForUpdate()->findOrFail($order->id);
 
-        if (! $order->status->isEscrowHeld()) {
-            throw new Exception("Pesanan dengan status {$order->status->label()} tidak dapat dibatalkan.");
-        }
+            if (! $order->isC2c()) {
+                throw new Exception('Pesanan ini bukan transaksi C2C.');
+            }
 
-        $intent = $order->paymentIntents()
-            ->where('status', PaymentIntentStatus::HELD->value)
-            ->latest()
-            ->first();
+            // Pembatalan sudah pernah diselesaikan: idempoten.
+            if ($order->status === OrderStatus::CANCELLED) {
+                return $order->fresh(['items.product', 'paymentIntents']);
+            }
 
-        if ($intent !== null) {
-            $this->paymentGateway->release($intent, 'c2c_release_'.$order->uuid);
-        }
+            if (! $order->status->isEscrowHeld()) {
+                throw new Exception("Pesanan dengan status {$order->status->label()} tidak dapat dibatalkan.");
+            }
 
-        foreach ($order->items as $item) {
-            if ($item->reservation_id) {
-                try {
-                    $this->inventoryService->release($item->reservation_id, "Pembatalan C2C: {$reason}");
-                } catch (\Throwable) {
-                    // reservasi mungkin sudah dilepas sebelumnya
+            $intent = $order->paymentIntents()
+                ->where('status', PaymentIntentStatus::HELD->value)
+                ->latest()
+                ->first();
+
+            if ($intent !== null) {
+                $this->paymentGateway->release($intent, 'c2c_release_'.$order->uuid);
+            } else {
+                // Retry-safe: escrow sudah dilepas pada percobaan sebelumnya
+                // (crash di tengah jalan) — lanjutkan langkah berikutnya.
+                $alreadyReleased = $order->paymentIntents()
+                    ->where('status', PaymentIntentStatus::RELEASED->value)
+                    ->exists();
+
+                if (! $alreadyReleased) {
+                    throw new Exception('Dana escrow tidak berada dalam status yang dapat dilepas.');
                 }
             }
 
-            // Aktifkan kembali listing agar kendaraan bisa dijual ke pembeli lain
-            $item->product?->update(['is_listed' => true]);
-        }
+            foreach ($order->items as $item) {
+                if ($item->reservation_id) {
+                    try {
+                        $this->inventoryService->release($item->reservation_id, "Pembatalan C2C: {$reason}");
+                    } catch (\Throwable) {
+                        // reservasi mungkin sudah dilepas sebelumnya
+                    }
+                }
 
-        $order->update([
-            'status' => OrderStatus::CANCELLED,
-            'cancelled_at' => now(),
-            'cancellation_reason' => $reason,
-        ]);
+                // Aktifkan kembali listing agar kendaraan bisa dijual ke pembeli lain
+                $item->product?->update(['is_listed' => true]);
+            }
 
-        return $order->fresh(['items.product', 'paymentIntents']);
+            $order->update([
+                'status' => OrderStatus::CANCELLED,
+                'cancelled_at' => now(),
+                'cancellation_reason' => $reason,
+            ]);
+
+            return $order->fresh(['items.product', 'paymentIntents']);
+        });
     }
 }

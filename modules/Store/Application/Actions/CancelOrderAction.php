@@ -21,47 +21,52 @@ class CancelOrderAction extends BaseAction
 
     public function execute(Order $order, string $reason = 'Pembatalan pesanan'): Order
     {
-        if (in_array($order->status, [OrderStatus::SHIPPED, OrderStatus::COMPLETED], true)) {
-            throw new Exception('Pesanan yang sudah dikirim atau selesai tidak dapat dibatalkan.');
-        }
+        return $this->transaction(function () use ($order, $reason) {
+            /** @var Order $order */
+            $order = Order::query()->lockForUpdate()->findOrFail($order->id);
 
-        if (in_array($order->status, [OrderStatus::CANCELLED, OrderStatus::REFUNDED], true)) {
-            throw new Exception('Pesanan ini sudah dibatalkan sebelumnya.');
-        }
-
-        // If order was paid/processing, execute full refund via PaymentGateway
-        if (in_array($order->status, [OrderStatus::PAID, OrderStatus::PROCESSING], true)) {
-            $intent = $order->paymentIntents()
-                ->where('status', PaymentIntentStatus::CAPTURED)
-                ->latest()
-                ->first();
-
-            if ($intent) {
-                $this->paymentGateway->refund($intent, $order->payableAmount(), $reason);
-
-                return $order->fresh();
+            if (in_array($order->status, [OrderStatus::SHIPPED, OrderStatus::COMPLETED], true)) {
+                throw new Exception('Pesanan yang sudah dikirim atau selesai tidak dapat dibatalkan.');
             }
-        }
 
-        // If pending payment, release any active reservations
-        if ($order->status === OrderStatus::PENDING_PAYMENT) {
-            foreach ($order->items as $item) {
-                if ($item->reservation_id) {
-                    try {
-                        $this->inventoryService->release($item->reservation_id, "Pembatalan order: {$reason}");
-                    } catch (\Throwable) {
-                        // ignore if already released
-                    }
+            if (in_array($order->status, [OrderStatus::CANCELLED, OrderStatus::REFUNDED], true)) {
+                throw new Exception('Pesanan ini sudah dibatalkan sebelumnya.');
+            }
+
+            // If order was paid/processing, execute full refund via PaymentGateway
+            if (in_array($order->status, [OrderStatus::PAID, OrderStatus::PROCESSING], true)) {
+                $intent = $order->paymentIntents()
+                    ->where('status', PaymentIntentStatus::CAPTURED)
+                    ->latest()
+                    ->first();
+
+                if ($intent) {
+                    $this->paymentGateway->refund($intent, $order->payableAmount(), $reason);
+
+                    return $order->fresh();
                 }
             }
 
-            $order->update([
-                'status' => OrderStatus::CANCELLED,
-                'cancelled_at' => now(),
-                'cancellation_reason' => $reason,
-            ]);
-        }
+            // If pending payment, release any active reservations
+            if ($order->status === OrderStatus::PENDING_PAYMENT) {
+                foreach ($order->items as $item) {
+                    if ($item->reservation_id) {
+                        try {
+                            $this->inventoryService->release($item->reservation_id, "Pembatalan order: {$reason}");
+                        } catch (\Throwable) {
+                            // ignore if already released
+                        }
+                    }
+                }
 
-        return $order->fresh();
+                $order->update([
+                    'status' => OrderStatus::CANCELLED,
+                    'cancelled_at' => now(),
+                    'cancellation_reason' => $reason,
+                ]);
+            }
+
+            return $order->fresh();
+        });
     }
 }

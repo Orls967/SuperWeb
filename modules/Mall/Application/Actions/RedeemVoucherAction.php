@@ -14,6 +14,7 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mall\Domain\Enums\VoucherStatus;
 use Modules\Mall\Domain\Exceptions\InsufficientPointsException;
 use Modules\Mall\Domain\Models\PointBatch;
@@ -31,15 +32,36 @@ class RedeemVoucherAction
      *
      * @throws InsufficientPointsException
      */
-    public function execute(User $user, VoucherTemplate $template): Voucher
+    public function execute(User $user, VoucherTemplate $template, ?string $idempotencyKey = null): Voucher
     {
-        $currentPoints = $user->pointsBalance();
+        return DB::transaction(function () use ($user, $template, $idempotencyKey) {
+            $batches = PointBatch::query()
+                ->where('user_id', $user->id)
+                ->where('is_expired', false)
+                ->where('points_remaining', '>', 0)
+                ->orderBy('expires_at', 'asc')
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get();
 
-        if ($currentPoints < $template->points_required) {
-            throw new InsufficientPointsException("Poin tidak mencukupi (Tersedia: {$currentPoints} PTS, Diperlukan: {$template->points_required} PTS).");
-        }
+            $currentPoints = (int) $batches->sum('points_remaining');
 
-        return DB::transaction(function () use ($user, $template) {
+            if ($currentPoints < $template->points_required) {
+                throw new InsufficientPointsException("Poin tidak mencukupi (Tersedia: {$currentPoints} PTS, Diperlukan: {$template->points_required} PTS).");
+            }
+
+            $batchIds = $batches->pluck('id')->sort()->implode('_');
+            $sourceKey = $idempotencyKey ?? implode('_', [$user->id, $batchIds, $template->code, $template->points_required, $template->nominal_value]);
+            $pointsKey = 'pts_redeem_'.$sourceKey;
+            $voucherKey = 'vch_issue_'.$sourceKey;
+
+            if (LedgerTransaction::query()->where('idempotency_key', $pointsKey)->exists()) {
+                return Voucher::query()
+                    ->where('user_id', $user->id)
+                    ->where('template_id', $template->id)
+                    ->latest('id')
+                    ->firstOrFail();
+            }
             // 1. Double-Entry Posting untuk aset PTS (Kredit akun user, Debit kewajiban mall)
             $userPointsAccount = $user->pointsAccount();
 
@@ -66,7 +88,7 @@ class RedeemVoucherAction
             $dtoPts = new PostingDTO(
                 type: TransactionType::LOYALTY_REDEEM->value,
                 description: "Penukaran {$template->points_required} PTS untuk Voucher {$template->title}",
-                idempotencyKey: 'pts_redeem_'.$user->id.'_'.Str::random(10),
+                idempotencyKey: $pointsKey,
                 entries: $ptsEntries,
                 referenceType: VoucherTemplate::class,
                 referenceId: $template->id,
@@ -119,7 +141,7 @@ class RedeemVoucherAction
             $dtoIdr = new PostingDTO(
                 type: TransactionType::VOUCHER_ISSUE->value,
                 description: "Penerbitan Liabilitas Voucher {$template->title} (Rp ".number_format($template->nominal_value).')',
-                idempotencyKey: 'vch_issue_'.$user->id.'_'.Str::random(10),
+                idempotencyKey: $voucherKey,
                 entries: $idrEntries,
                 referenceType: VoucherTemplate::class,
                 referenceId: $template->id,
@@ -133,14 +155,8 @@ class RedeemVoucherAction
 
             $this->ledger->post($dtoIdr);
 
-            // 3. Potong saldo PointBatch secara FIFO
+            // 3. Potong saldo PointBatch secara FIFO (baris sudah terkunci sejak awal transaksi)
             $neededPoints = $template->points_required;
-            $batches = PointBatch::query()
-                ->where('user_id', $user->id)
-                ->where('is_expired', false)
-                ->where('points_remaining', '>', 0)
-                ->orderBy('expires_at', 'asc')
-                ->get();
 
             foreach ($batches as $batch) {
                 if ($neededPoints <= 0) {

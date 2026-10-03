@@ -35,7 +35,8 @@ class ProcessHubOutboundAction
         Schedule $schedule
     ): array {
         return DB::transaction(function () use ($shipment, $hub, $operator, $schedule) {
-            $shipment->refresh();
+            // Lock the shipment row so concurrent scans serialise on status.
+            $shipment = Shipment::query()->lockForUpdate()->findOrFail($shipment->getKey());
 
             // Validate that the schedule actually departs from this hub
             if ($schedule->origin_location_id !== $hub->id) {

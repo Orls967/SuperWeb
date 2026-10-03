@@ -14,6 +14,7 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mall\Domain\Enums\VoucherStatus;
 use Modules\Mall\Domain\Models\Voucher;
 
@@ -30,52 +31,52 @@ class ExpireVouchersAction
     {
         $asOfDate = $asOfDate ?? Carbon::now();
 
-        $vouchers = Voucher::query()
-            ->where('status', VoucherStatus::ACTIVE)
-            ->where('expires_at', '<=', $asOfDate)
-            ->get();
-
-        if ($vouchers->isEmpty()) {
-            return 0;
-        }
-
-        $mallVoucherLiability = LedgerAccount::firstOrCreate(
-            ['code' => 'liability:mall:voucher:IDR'],
-            [
-                'uuid' => (string) Str::uuid(),
-                'name' => 'Kewajiban Voucher Belanja Mall',
-                'asset_code' => 'IDR',
-                'kind' => AccountKind::LIABILITY->value,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'is_frozen' => false,
-            ]
-        );
-
-        $breakageRevenueAccount = LedgerAccount::firstOrCreate(
-            ['code' => 'revenue:mall:voucher_breakage:IDR'],
-            [
-                'uuid' => (string) Str::uuid(),
-                'name' => 'Pendapatan Breakage Voucher Kedaluwarsa',
-                'asset_code' => 'IDR',
-                'kind' => AccountKind::REVENUE->value,
-                'allow_negative' => false,
-                'cached_balance' => '0',
-                'is_frozen' => false,
-            ]
-        );
-
         $expiredCount = 0;
 
-        DB::transaction(function () use (
-            $vouchers,
-            $mallVoucherLiability,
-            $breakageRevenueAccount,
-            &$expiredCount
-        ) {
+        DB::transaction(function () use ($asOfDate, &$expiredCount) {
+            $vouchers = Voucher::query()
+                ->where('status', VoucherStatus::ACTIVE)
+                ->where('expires_at', '<=', $asOfDate)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get();
+
+            if ($vouchers->isEmpty()) {
+                return;
+            }
+
+            $mallVoucherLiability = LedgerAccount::firstOrCreate(
+                ['code' => 'liability:mall:voucher:IDR'],
+                [
+                    'uuid' => (string) Str::uuid(),
+                    'name' => 'Kewajiban Voucher Belanja Mall',
+                    'asset_code' => 'IDR',
+                    'kind' => AccountKind::LIABILITY->value,
+                    'allow_negative' => true,
+                    'cached_balance' => '0',
+                    'is_frozen' => false,
+                ]
+            );
+
+            $breakageRevenueAccount = LedgerAccount::firstOrCreate(
+                ['code' => 'revenue:mall:voucher_breakage:IDR'],
+                [
+                    'uuid' => (string) Str::uuid(),
+                    'name' => 'Pendapatan Breakage Voucher Kedaluwarsa',
+                    'asset_code' => 'IDR',
+                    'kind' => AccountKind::REVENUE->value,
+                    'allow_negative' => false,
+                    'cached_balance' => '0',
+                    'is_frozen' => false,
+                ]
+            );
+
             $totalBreakage = (int) $vouchers->sum('nominal_value');
 
-            if ($totalBreakage > 0) {
+            // Kunci deterministik dari voucher id terurut agar retry tidak men-posting ganda
+            $txKey = 'vch_breakage_'.implode('_', $vouchers->pluck('id')->sort()->values()->all());
+
+            if ($totalBreakage > 0 && ! LedgerTransaction::query()->where('idempotency_key', $txKey)->exists()) {
                 $valBd = BigDecimal::of($totalBreakage);
 
                 // Tutup liabilitas voucher (-idr), Akui pendapatan breakage (+idr)
@@ -87,7 +88,7 @@ class ExpireVouchersAction
                 $dto = new PostingDTO(
                     type: TransactionType::VOUCHER_BREAKAGE->value,
                     description: "Breakage {$vouchers->count()} Voucher Kedaluwarsa (Total Rp ".number_format($totalBreakage).')',
-                    idempotencyKey: 'vch_breakage_'.now()->format('YmdHis').'_'.Str::random(6),
+                    idempotencyKey: $txKey,
                     entries: $entries,
                     referenceType: Voucher::class,
                     referenceId: null,

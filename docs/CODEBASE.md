@@ -4,8 +4,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-03 · **Fase selesai terakhir:** 25 (merged, PR #1–#4) · **Berjalan:** Fase 26.1–26.2 · **Berikutnya:** 26.3–57 (roadmap rantai nilai hulu→hilir di PROGRESS.md; backlog 58+)
-**Snapshot gate (akhir Fase 26.1–26.2):** 545 test / 3203 assertion (Fase 25: 538 / 3189), 0 skipped · `bank:reconcile` 0 selisih · `lgx:audit-billing` 0 selisih · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus. Query budget: lookup resi ≤ 3, dispatch ≤ 10, control tower ≤ 12.
+**Terakhir diperbarui:** 2026-10-03 · **Fase selesai terakhir:** 25 (merged, PR #1–#4) · **Berjalan:** Fase 26.1–26.3 · **Berikutnya:** 26.4–57 (roadmap rantai nilai hulu→hilir di PROGRESS.md; backlog 58+)
+**Snapshot gate (akhir Fase 26.3):** 554 test / 3233 assertion (26.1–26.2: 545 / 3203) (Fase 25: 538 / 3189), 0 skipped · `bank:reconcile` 0 selisih · `lgx:audit-billing` 0 selisih · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus. Query budget: lookup resi ≤ 3, dispatch ≤ 10, control tower ≤ 12.
 
 ---
 
@@ -112,7 +112,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 ## 9. Test
 
-`tests/Architecture/ModuleBoundariesTest.php` · `tests/Feature/{RouteSmokeTest,SecurityTest,CrossLineIntegrationTest,*Characterization*,Auth,Seed}` · `tests/Performance/QueryBudgetTest.php` · test per modul di `modules/*/tests/Feature` (Logistics: DispatchBoard, DriverApp, ExceptionAndSla, Phase22Integration, RevenueRecognition, CodFlow, CarrierSubcontract, ClaimWorkflow, DemurrageDetention, CustomsClearance, FuelLog, BillingAudit, …). Fixture: `tests/Support/MoneyFlowWorld.php`. Standar tiap fitur: test (a) happy path (b) validasi/otorisasi (c) idempotensi/retry (d) invarian ledger (e) edge case.
+`tests/Architecture/ModuleBoundariesTest.php` · `tests/Feature/{RouteSmokeTest,SecurityTest,ActionConcurrencyRegressionTest,CrossLineIntegrationTest,*Characterization*,Auth,Seed}` · `tests/Performance/QueryBudgetTest.php` · test per modul di `modules/*/tests/Feature` (Logistics: DispatchBoard, DriverApp, ExceptionAndSla, Phase22Integration, RevenueRecognition, CodFlow, CarrierSubcontract, ClaimWorkflow, DemurrageDetention, CustomsClearance, FuelLog, BillingAudit, …). Fixture: `tests/Support/MoneyFlowWorld.php`. Standar tiap fitur: test (a) happy path (b) validasi/otorisasi (c) idempotensi/retry (d) invarian ledger (e) edge case.
 
 ## 10. Quality gate (jalankan di akhir tiap fase)
 
@@ -126,7 +126,7 @@ Dokumen: `README.md` (Logistics + section API v1 sejak 26.2) · `docs/{PROGRESS,
 
 1. ~~Sanctum palsu~~ **DITUTUP (26.1)** — `laravel/sanctum ^4.3` asli aktif, token bisa diterbitkan/dicabut di Profil, session cookie ditolak di API.
 2. ~~AUDIT.md tanpa gate Fase 25~~ **DITUTUP (26.2)** — section "Quality Gate Fase 25" ditambahkan; README disinkronkan (545 test / 3203 assertion) dan diberi section API v1.
-3. Sweep transaksi/idempotensi/N+1 seluruh modul (26.3–26.4).
+3. ~~Sweep transaksi/idempotensi~~ **DITUTUP (26.3)** — 110 temuan di 143 Action diperbaiki/ditutup (laporan: AUDIT 26.3). Sisa: sweep **N+1 / indeks / query budget** (26.4).
 4. Duplikasi konsep **Asset** (`mall_assets`) akan dikonsolidasikan di Fase 29.
 5. BOM/HPP ada di Resto (`resto_`), akan digeneralisasi di Fase 33–36 (Resto tetap bekerja lewat adapter).
 6. Role masih satu kolom `users.role`; RBAC granular direncanakan Fase 26/48.

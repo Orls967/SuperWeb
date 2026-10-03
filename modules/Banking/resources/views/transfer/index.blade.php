@@ -126,6 +126,8 @@
             <input type="hidden" name="recipient_query" :value="recipientQuery">
             <input type="hidden" name="amount" :value="amount">
             <input type="hidden" name="note" :value="note">
+            {{-- Kunci idempoten tetap sama saat submit ulang setelah validasi gagal --}}
+            <input type="hidden" name="idempotency_key" value="{{ old('idempotency_key', (string) \Illuminate\Support\Str::uuid()) }}">
 
             {{-- STEP 1: TUJUAN TRANSFER --}}
             <div x-show="step === 1" class="space-y-6">

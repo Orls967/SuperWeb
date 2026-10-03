@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
 use Modules\AutoServe\Domain\Models\Booking;
+use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Payment\Contracts\PaymentGateway;
 use Modules\Payment\Domain\Enums\PaymentIntentStatus;
@@ -27,68 +28,76 @@ class ApproveExtraChargeAction extends BaseAction
 
     public function execute(Booking $booking, User $customer, string $pin): Booking
     {
-        if ($booking->status !== BookingStatus::AwaitingExtraApproval->value) {
-            throw new Exception('Booking ini tidak sedang menunggu persetujuan biaya tambahan.');
-        }
+        return $this->transaction(function () use ($booking, $customer, $pin) {
+            // Urutan lock konsisten dengan ApproveEstimateAction: booking → estimasi.
+            /** @var Booking $lockedBooking */
+            $lockedBooking = Booking::query()->lockForUpdate()->findOrFail($booking->id);
 
-        if ((int) $booking->customer_id !== (int) $customer->id && ! $customer->isAdmin()) {
-            throw new Exception('Hanya pemilik booking yang dapat menyetujui biaya tambahan.');
-        }
+            if ($lockedBooking->status !== BookingStatus::AwaitingExtraApproval->value) {
+                throw new Exception('Booking ini tidak sedang menunggu persetujuan biaya tambahan.');
+            }
 
-        $estimate = $booking->approvedEstimate();
-        if ($estimate === null) {
-            throw new Exception('Estimasi yang disetujui tidak ditemukan untuk booking ini.');
-        }
+            if ((int) $lockedBooking->customer_id !== (int) $customer->id && ! $customer->isAdmin()) {
+                throw new Exception('Hanya pemilik booking yang dapat menyetujui biaya tambahan.');
+            }
 
-        $heldIntent = $estimate->paymentIntents()
-            ->where('status', PaymentIntentStatus::HELD->value)
-            ->latest()
-            ->first();
+            $approvedEstimate = $lockedBooking->approvedEstimate();
+            if ($approvedEstimate === null) {
+                throw new Exception('Estimasi yang disetujui tidak ditemukan untuk booking ini.');
+            }
 
-        if ($heldIntent === null) {
-            throw new Exception('Dana escrow estimasi tidak ditemukan.');
-        }
+            /** @var Estimate $lockedEstimate */
+            $lockedEstimate = Estimate::query()->lockForUpdate()->findOrFail($approvedEstimate->id);
 
-        $heldAmount = (int) $heldIntent->amount;
-        $serviceCost = (int) $booking->service_cost;
-        $sparepartCost = (int) $booking->sparepart_cost;
-        $finalTotal = $serviceCost + $sparepartCost;
-        $extra = $finalTotal - $heldAmount;
+            $heldIntent = $lockedEstimate->paymentIntents()
+                ->where('status', PaymentIntentStatus::HELD->value)
+                ->latest()
+                ->first();
 
-        if ($extra <= 0) {
-            throw new Exception('Tidak ada selisih biaya yang perlu dibayar.');
-        }
+            if ($heldIntent === null) {
+                throw new Exception('Dana escrow estimasi tidak ditemukan.');
+            }
 
-        $walletBalance = (int) $customer->walletAccount('IDR')->cached_balance;
-        if ($walletBalance < $extra) {
-            $kurang = number_format($extra - $walletBalance, 0, ',', '.');
-            throw new Exception("Saldo dompet kurang Rp {$kurang} untuk membayar selisih biaya.");
-        }
+            $heldAmount = (int) $heldIntent->amount;
+            $serviceCost = (int) $lockedBooking->service_cost;
+            $sparepartCost = (int) $lockedBooking->sparepart_cost;
+            $finalTotal = $serviceCost + $sparepartCost;
+            $extra = $finalTotal - $heldAmount;
 
-        $this->verifyPinAction->execute($customer, $pin);
+            if ($extra <= 0) {
+                throw new Exception('Tidak ada selisih biaya yang perlu dibayar.');
+            }
 
-        // Bagian escrow memakai rasio biaya akhir; sisanya menjadi tagihan selisih
-        $captureService = intdiv($heldAmount * $serviceCost, $finalTotal);
-        $captureParts = $heldAmount - $captureService;
-        $extraService = $serviceCost - $captureService;
-        $extraParts = $sparepartCost - $captureParts;
+            $walletBalance = (int) $customer->walletAccount('IDR')->cached_balance;
+            if ($walletBalance < $extra) {
+                $kurang = number_format($extra - $walletBalance, 0, ',', '.');
+                throw new Exception("Saldo dompet kurang Rp {$kurang} untuk membayar selisih biaya.");
+            }
 
-        $estimate->update([
-            'final_service_total' => $extraService,
-            'final_parts_total' => $extraParts,
-            'extra_amount' => $extra,
-        ]);
+            $this->verifyPinAction->execute($customer, $pin);
 
-        $extraIntent = $this->paymentGateway->charge(
-            $estimate->fresh(),
-            'estimate_extra_'.$estimate->uuid
-        );
+            // Bagian escrow memakai rasio biaya akhir; sisanya menjadi tagihan selisih
+            $captureService = intdiv($heldAmount * $serviceCost, $finalTotal);
+            $captureParts = $heldAmount - $captureService;
+            $extraService = $serviceCost - $captureService;
+            $extraParts = $sparepartCost - $captureParts;
 
-        $estimate->update(['extra_charge_intent_id' => $extraIntent->id]);
+            $lockedEstimate->update([
+                'final_service_total' => $extraService,
+                'final_parts_total' => $extraParts,
+                'extra_amount' => $extra,
+            ]);
 
-        // Kembali ke pengerjaan lalu selesaikan: escrow dicairkan penuh
-        $booking->transitionTo(BookingStatus::InProgress);
+            // Gateway menagih selisih (idempoten per estimasi) di savepoint sendiri.
+            $extraIntent = $this->paymentGateway->charge(
+                $lockedEstimate->fresh(),
+                'estimate_extra_'.$lockedEstimate->uuid
+            );
 
-        return $this->completeBooking->handle($booking->fresh());
+            $lockedEstimate->update(['extra_charge_intent_id' => $extraIntent->id]);
+            $lockedBooking->transitionTo(BookingStatus::InProgress);
+
+            return $this->completeBooking->handle($lockedBooking->fresh());
+        });
     }
 }

@@ -15,6 +15,7 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Resto\Domain\Enums\StockCountStatus;
@@ -39,6 +40,20 @@ class ApproveStockCountAction
 
         return DB::transaction(function () use ($stockCount, $approver) {
             $lockedCount = StockCount::where('id', $stockCount->id)->lockForUpdate()->firstOrFail();
+
+            // Re-check under the lock: the caller's model may be stale, and without this
+            // two concurrent approvals would both apply the variance adjustment.
+            if ($lockedCount->status === StockCountStatus::APPROVED) {
+                return $lockedCount->load(['lines.ingredient', 'approver', 'counter']);
+            }
+
+            // Deterministic key per stock count; if it is already on the ledger, this
+            // approval was posted before, so no second adjustment or posting.
+            $ledgerKey = "resto:opname:approve:{$lockedCount->id}";
+            if (LedgerTransaction::where('idempotency_key', $ledgerKey)->exists()) {
+                return $lockedCount->load(['lines.ingredient', 'approver', 'counter']);
+            }
+
             $outlet = $lockedCount->outlet;
             $outletCode = $outlet->code ?: "OUT-{$outlet->id}";
 
@@ -94,7 +109,7 @@ class ApproveStockCountAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::WASTE->value,
                     description: "Penyesuaian nilai persediaan hasil Stock Opname #{$lockedCount->id} ({$outlet->name})",
-                    idempotencyKey: "resto:opname:approve:{$lockedCount->id}:".Str::uuid(),
+                    idempotencyKey: $ledgerKey,
                     entries: [
                         PostingEntryDTO::forCode($invAccCode, 'IDR', $netValBd),
                         PostingEntryDTO::forCode($wasteAccCode, 'IDR', $netValBd->negated()),

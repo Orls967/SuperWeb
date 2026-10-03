@@ -11,6 +11,7 @@ use Modules\Mall\Domain\Enums\InvoiceStatus;
 use Modules\Mall\Domain\Enums\LeaseStatus;
 use Modules\Mall\Domain\Models\Invoice;
 use Modules\Mall\Domain\Models\InvoiceLine;
+use Modules\Mall\Domain\Models\Lease;
 
 class ApplyLatePenaltiesAction
 {
@@ -48,21 +49,43 @@ class ApplyLatePenaltiesAction
                 continue;
             }
 
-            DB::transaction(function () use ($invoice, $lease, $daysOverdue, &$penalizedCount, &$suspendedCount) {
+            DB::transaction(function () use ($invoice, $daysOverdue, $today, &$penalizedCount, &$suspendedCount) {
+                // Kunci invoice dan lease, lalu baca ulang state terbaru sebelum menghitung denda
+                $lockedInvoice = Invoice::query()->lockForUpdate()->findOrFail($invoice->id);
+                $lockedInvoice->load('lines');
+                $lockedInvoice->setRelation('lines', $lockedInvoice->lines()->lockForUpdate()->get());
+
+                if (! in_array($lockedInvoice->status, [InvoiceStatus::ISSUED, InvoiceStatus::PARTIALLY_PAID, InvoiceStatus::OVERDUE], true)) {
+                    return;
+                }
+
+                $dueDate = Carbon::parse($lockedInvoice->due_date)->startOfDay();
+                if (! $today->greaterThan($dueDate)) {
+                    return;
+                }
+
+                $lockedLease = $lockedInvoice->lease_id
+                    ? Lease::query()->lockForUpdate()->find($lockedInvoice->lease_id)
+                    : null;
+
+                if (! $lockedLease) {
+                    return;
+                }
+
                 // Hitung sisa tagihan non-denda yang belum dibayar
                 $unpaidSubtotal = 0;
-                foreach ($invoice->lines as $line) {
+                foreach ($lockedInvoice->lines as $line) {
                     if ($line->type !== InvoiceLineType::PENALTY) {
                         $unpaidSubtotal += $line->remainingAmount();
                     }
                 }
 
-                $dailyRatePercent = (float) $lease->penalty_rate_daily_percent;
+                $dailyRatePercent = (float) $lockedLease->penalty_rate_daily_percent;
                 $dailyPenalty = (int) round($unpaidSubtotal * ($dailyRatePercent / 100.0));
                 $totalPenalty = $dailyPenalty * $daysOverdue;
 
                 // Cari baris denda yang sudah ada atau buat baru
-                $penaltyLine = $invoice->lines()->where('type', InvoiceLineType::PENALTY)->first();
+                $penaltyLine = $lockedInvoice->lines->first(fn ($line) => $line->type === InvoiceLineType::PENALTY);
 
                 if ($penaltyLine) {
                     $penaltyLine->update([
@@ -73,7 +96,7 @@ class ApplyLatePenaltiesAction
                     ]);
                 } else {
                     InvoiceLine::create([
-                        'invoice_id' => $invoice->id,
+                        'invoice_id' => $lockedInvoice->id,
                         'type' => InvoiceLineType::PENALTY,
                         'description' => "Denda Keterlambatan {$daysOverdue} Hari ({$dailyRatePercent}%/hari)",
                         'quantity' => (float) $daysOverdue,
@@ -84,17 +107,17 @@ class ApplyLatePenaltiesAction
                     ]);
                 }
 
-                $invoice->update([
+                $lockedInvoice->update([
                     'penalty_amount' => $totalPenalty,
-                    'total_amount' => $invoice->subtotal + $totalPenalty,
-                    'status' => $invoice->status === InvoiceStatus::PARTIALLY_PAID ? InvoiceStatus::PARTIALLY_PAID : InvoiceStatus::OVERDUE,
+                    'total_amount' => $lockedInvoice->subtotal + $totalPenalty,
+                    'status' => $lockedInvoice->status === InvoiceStatus::PARTIALLY_PAID ? InvoiceStatus::PARTIALLY_PAID : InvoiceStatus::OVERDUE,
                 ]);
 
                 $penalizedCount++;
 
                 // Suspend lease jika keterlambatan melewati H+30 (lebih dari 30 hari)
-                if ($daysOverdue > 30 && $lease->status === LeaseStatus::ACTIVE) {
-                    $lease->update(['status' => LeaseStatus::SUSPENDED]);
+                if ($daysOverdue > 30 && $lockedLease->status === LeaseStatus::ACTIVE) {
+                    $lockedLease->update(['status' => LeaseStatus::SUSPENDED]);
                     $suspendedCount++;
                 }
             });

@@ -30,8 +30,14 @@ class ListCarProductAction extends BaseAction
             $name = "{$brandName} {$car->model}";
             $carPrice = $price ?? (int) ($car->price_idr ?: 250000000);
 
-            /** @var Product $product */
-            $product = Product::firstOrNew([
+            /** @var Product|null $existingProduct */
+            $existingProduct = Product::query()
+                ->where('productable_type', 'dex_car')
+                ->where('productable_id', $car->id)
+                ->lockForUpdate()
+                ->first();
+
+            $product = $existingProduct ?? new Product([
                 'productable_type' => 'dex_car',
                 'productable_id' => $car->id,
             ]);

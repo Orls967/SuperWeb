@@ -16,17 +16,26 @@ class SendEstimateAction extends BaseAction
 {
     public function execute(Estimate $estimate): Estimate
     {
-        if ($estimate->status !== EstimateStatus::Draft) {
-            throw new Exception("Estimasi berstatus {$estimate->status->label()} tidak dapat dikirim ulang.");
-        }
+        return $this->transaction(function () use ($estimate) {
+            /** @var Estimate $estimate */
+            $estimate = Estimate::query()->lockForUpdate()->findOrFail($estimate->id);
 
-        if ($estimate->total <= 0) {
-            throw new Exception('Estimasi dengan total nol tidak dapat dikirim ke customer.');
-        }
+            if ($estimate->status !== EstimateStatus::Draft) {
+                throw new Exception("Estimasi berstatus {$estimate->status->label()} tidak dapat dikirim ulang.");
+            }
 
-        $estimate->transitionTo(EstimateStatus::Sent);
-        $estimate->update(['sent_at' => now()]);
+            if ($estimate->total <= 0) {
+                throw new Exception('Estimasi dengan total nol tidak dapat dikirim ke customer.');
+            }
 
-        return $estimate->fresh();
+            $estimate->transitionTo(EstimateStatus::Sent);
+
+            // Jangan menimpa sent_at pada double-submit.
+            if ($estimate->sent_at === null) {
+                $estimate->update(['sent_at' => now()]);
+            }
+
+            return $estimate->fresh();
+        });
     }
 }

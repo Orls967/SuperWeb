@@ -23,7 +23,7 @@ class SettleCashAction
         private readonly Ledger $ledger
     ) {}
 
-    public function handle(int $outletId, int $amount, ?int $userId = null, ?string $note = null): LedgerTransaction
+    public function handle(int $outletId, int $amount, ?int $userId = null, ?string $note = null, ?string $idempotencyKey = null): LedgerTransaction
     {
         if ($amount <= 0) {
             throw new InvalidArgumentException('Nominal setoran kas harus lebih besar dari 0.');
@@ -32,19 +32,30 @@ class SettleCashAction
         $outlet = Outlet::findOrFail($outletId);
         $outletCode = $outlet->code ?: "OUT-{$outlet->id}";
 
-        return DB::transaction(function () use ($outlet, $outletCode, $amount, $userId, $note) {
+        return DB::transaction(function () use ($outlet, $outletCode, $amount, $userId, $note, $idempotencyKey) {
             $cashAccCode = "cash:drawer:{$outletCode}:IDR";
             $clearingAccCode = 'clearing:external:IDR';
 
             $this->ensureLedgerAccountExists($cashAccCode, "Kas Fisik Kasir {$outlet->name}", AccountKind::CASH);
             $this->ensureLedgerAccountExists($clearingAccCode, 'Rekening Kliring Eksternal IDR', AccountKind::CLEARING);
 
+            // Every deposit is a distinct business event, so the key stays unique unless the
+            // caller supplies one (one per submitted form) to collapse a double submit.
+            $ledgerKey = $idempotencyKey !== null && $idempotencyKey !== ''
+                ? "resto:settle:cash:{$outlet->id}:{$idempotencyKey}"
+                : "resto:settle:cash:{$outlet->id}:".Str::uuid();
+
+            $existing = LedgerTransaction::where('idempotency_key', $ledgerKey)->first();
+            if ($existing !== null) {
+                return $existing;
+            }
+
             $amountBd = BigDecimal::of($amount);
 
             return $this->ledger->post(new PostingDTO(
                 type: TransactionType::SETTLEMENT->value,
                 description: "Setoran kas laci kasir {$outlet->name} ke bank: Rp ".number_format($amount, 0, ',', '.').($note ? " ($note)" : ''),
-                idempotencyKey: "resto:settle:cash:{$outlet->id}:".Str::uuid(),
+                idempotencyKey: $ledgerKey,
                 entries: [
                     PostingEntryDTO::forCode($cashAccCode, 'IDR', $amountBd),
                     PostingEntryDTO::forCode($clearingAccCode, 'IDR', $amountBd->negated()),

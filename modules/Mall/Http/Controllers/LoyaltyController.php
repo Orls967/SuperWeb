@@ -7,6 +7,7 @@ namespace Modules\Mall\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Modules\Mall\Application\Actions\ClaimReceiptPointsAction;
 use Modules\Mall\Application\Actions\RedeemVoucherAction;
@@ -29,6 +30,7 @@ class LoyaltyController extends Controller
             'overview' => $overview,
             'userPoints' => $userPoints,
             'tenants' => $tenants,
+            'redeemIdempotencyKey' => (string) Str::uuid(),
         ]);
     }
 
@@ -62,8 +64,16 @@ class LoyaltyController extends Controller
         VoucherTemplate $template,
         RedeemVoucherAction $action
     ): RedirectResponse {
+        $validated = $request->validate([
+            'idempotency_key' => ['nullable', 'string', 'max:64'],
+        ]);
+
         try {
-            $voucher = $action->execute($request->user(), $template);
+            $voucher = $action->execute(
+                $request->user(),
+                $template,
+                $validated['idempotency_key'] ?? null
+            );
 
             return back()->with('success', "Voucher {$template->title} berhasil ditukarkan! Kode voucher Anda: {$voucher->voucher_code}.");
         } catch (\Throwable $e) {

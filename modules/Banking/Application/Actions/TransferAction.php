@@ -6,6 +6,7 @@ namespace Modules\Banking\Application\Actions;
 
 use App\Models\User;
 use Brick\Math\BigDecimal;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -86,40 +87,44 @@ class TransferAction
 
         $totalDeduction = $amountBd->plus($feeBd);
 
-        $senderWallet = $sender->walletAccount('IDR');
-        $recipientWallet = $recipient->walletAccount('IDR');
+        return DB::transaction(function () use ($sender, $recipient, $amountBd, $feeBd, $totalDeduction, $note, $idempotencyKey): LedgerTransaction {
+            $senderWallet = $sender->walletAccount('IDR');
+            $recipientWallet = $recipient->walletAccount('IDR');
 
-        $key = $idempotencyKey ?? ('xfer_'.$sender->id.'_'.Str::random(16));
+            // A transfer has no natural source identifier. Without a caller key,
+            // preserve distinct transfers rather than deduping them incorrectly.
+            $key = $idempotencyKey ?? ('xfer_'.$sender->id.'_'.Str::random(16));
 
-        $entries = [
-            PostingEntryDTO::forAccount($senderWallet->id, 'IDR', $totalDeduction->negated()),
-            PostingEntryDTO::forAccount($recipientWallet->id, 'IDR', $amountBd),
-        ];
+            $entries = [
+                PostingEntryDTO::forAccount($senderWallet->id, 'IDR', $totalDeduction->negated()),
+                PostingEntryDTO::forAccount($recipientWallet->id, 'IDR', $amountBd),
+            ];
 
-        if ($feeBd->isPositive()) {
-            $entries[] = PostingEntryDTO::forCode('fee:banking:IDR', 'IDR', $feeBd);
-        }
+            if ($feeBd->isPositive()) {
+                $entries[] = PostingEntryDTO::forCode('fee:banking:IDR', 'IDR', $feeBd);
+            }
 
-        $desc = "Transfer ke {$recipient->name}".($note ? " - {$note}" : '');
+            $desc = "Transfer ke {$recipient->name}".($note ? " - {$note}" : '');
 
-        $dto = new PostingDTO(
-            type: TransactionType::TRANSFER->value,
-            description: $desc,
-            idempotencyKey: $key,
-            entries: $entries,
-            referenceType: User::class,
-            referenceId: $recipient->id,
-            meta: [
-                'sender_id' => $sender->id,
-                'recipient_id' => $recipient->id,
-                'amount' => $amountBd->__toString(),
-                'fee' => $feeBd->__toString(),
-                'note' => $note,
-            ],
-            createdBy: $sender->id,
-            postedAt: now(),
-        );
+            $dto = new PostingDTO(
+                type: TransactionType::TRANSFER->value,
+                description: $desc,
+                idempotencyKey: $key,
+                entries: $entries,
+                referenceType: User::class,
+                referenceId: $recipient->id,
+                meta: [
+                    'sender_id' => $sender->id,
+                    'recipient_id' => $recipient->id,
+                    'amount' => $amountBd->__toString(),
+                    'fee' => $feeBd->__toString(),
+                    'note' => $note,
+                ],
+                createdBy: $sender->id,
+                postedAt: now(),
+            );
 
-        return $this->ledger->post($dto);
+            return $this->ledger->post($dto);
+        });
     }
 }

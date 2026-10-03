@@ -149,7 +149,7 @@ Platform menyediakan rangkaian Artisan Command untuk otomatisasi operasional dan
 
 ## 🧪 Pengujian & Uji Kualitas (Quality Gates)
 
-Platform dilengkapi rangkaian automated test komprehensif (**545 Tests, 3203 Assertions**, 0 skipped):
+Platform dilengkapi rangkaian automated test komprehensif (**554 Tests, 3233 Assertions**, 0 skipped):
 
 ```bash
 # 1. Jalankan seluruh test suite
@@ -167,10 +167,13 @@ php artisan test tests/Performance/QueryBudgetTest.php
 # 5. Uji ketahanan keamanan (IDOR, Mass Assignment, PIN Lockout, XSS, Signed URL, Sanctum, Webhooks)
 php artisan test tests/Feature/SecurityTest.php
 
-# 6. Uji aksesibilitas rute per role (Smoke Test)
+# 6. Uji regresi race/idempotensi Action (retry ganda, refund ganda, alokasi ganda)
+php artisan test tests/Feature/ActionConcurrencyRegressionTest.php
+
+#7. Uji aksesibilitas rute per role (Smoke Test)
 php artisan test tests/Feature/RouteSmokeTest.php
 
-# 7. Format kode sesuai standar Laravel Pint
+#8. Format kode sesuai standar Laravel Pint
 vendor/bin/pint --test
 ```
 

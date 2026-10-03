@@ -513,6 +513,7 @@
 
                     <form method="POST" action="{{ route('resto.pos.shift.settle') }}" class="space-y-4">
                         @csrf
+                        <input type="hidden" name="idempotency_key" value="{{ \Illuminate\Support\Str::uuid() }}">
                         <input type="hidden" name="outlet_id" value="{{ $outlet->id }}">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Uang Tunai Disetor (Rp)</label>

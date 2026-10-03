@@ -34,7 +34,10 @@ class ProcessHubInboundScanAction
     public function execute(Shipment $shipment, Location $hub, User $operator): array
     {
         return DB::transaction(function () use ($shipment, $hub, $operator) {
-            $shipment->refresh();
+            // Lock the shipment row: refresh() re-reads committed state but does
+            // not block a concurrent scan, so two operators could both pass the
+            // same status checks and double-apply the transition.
+            $shipment = Shipment::query()->lockForUpdate()->findOrFail($shipment->getKey());
             $shipment->loadMissing('legs');
 
             // 1. Calculate all valid location IDs in the shipment's itinerary

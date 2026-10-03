@@ -16,13 +16,18 @@ class TopUpController extends Controller
     {
         $validated = $request->validate([
             'amount' => ['required', 'numeric', 'min:10000', 'max:50000000'],
+            'idempotency_key' => ['nullable', 'string', 'max:64'],
         ], [
             'amount.required' => 'Nominal top up wajib diisi.',
             'amount.min' => 'Minimal top up adalah Rp 10.000.',
             'amount.max' => 'Maksimal top up adalah Rp 50.000.000 per transaksi.',
         ]);
 
-        $tx = $topUpAction->execute($request->user(), (string) $validated['amount']);
+        $tx = $topUpAction->execute(
+            $request->user(),
+            (string) $validated['amount'],
+            $validated['idempotency_key'] ?? null,
+        );
 
         $formatted = Money::IDR($validated['amount'])->format();
 

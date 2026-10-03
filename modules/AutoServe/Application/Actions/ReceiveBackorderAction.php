@@ -21,22 +21,29 @@ class ReceiveBackorderAction extends BaseAction
 
     public function execute(Estimate $estimate): Estimate
     {
-        $estimate->loadMissing('booking');
-        $order = $estimate->backorder_order_id
-            ? Order::with('items.product')->find($estimate->backorder_order_id)
-            : null;
+        return $this->transaction(function () use ($estimate) {
+            /** @var Estimate $estimate */
+            $estimate = Estimate::query()->lockForUpdate()->findOrFail($estimate->id);
+            $estimate->loadMissing('booking');
 
-        if ($order === null) {
-            throw new Exception('Tidak ada backorder sparepart untuk estimasi ini.');
-        }
+            $order = $estimate->backorder_order_id
+                ? Order::with('items.product')->find($estimate->backorder_order_id)
+                : null;
 
-        $this->backorderParts->receive($order);
+            if ($order === null) {
+                throw new Exception('Tidak ada backorder sparepart untuk estimasi ini.');
+            }
 
-        $booking = $estimate->booking;
-        if ($booking !== null && $booking->isWaitingParts()) {
-            $booking->transitionTo(BookingStatus::InProgress);
-        }
+            // receive() locks the order and is idempotent if already completed;
+            // keep the booking transition atomic with stock receipt.
+            $this->backorderParts->receive($order);
 
-        return $estimate->fresh('booking');
+            $booking = $estimate->booking;
+            if ($booking !== null && $booking->isWaitingParts()) {
+                $booking->transitionTo(BookingStatus::InProgress);
+            }
+
+            return $estimate->fresh('booking');
+        });
     }
 }

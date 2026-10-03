@@ -212,10 +212,16 @@ class LoanController extends Controller
     {
         $request->validate([
             'qty' => 'required|numeric|gt:0',
+            'idempotency_key' => 'nullable|string|max:64',
         ]);
 
         try {
-            $this->addCollateral->execute($loan, $request->user(), (string) BigDecimal::of((string) $request->input('qty')));
+            $this->addCollateral->execute(
+                $loan,
+                $request->user(),
+                (string) BigDecimal::of((string) $request->input('qty')),
+                $request->input('idempotency_key'),
+            );
 
             return redirect()->back()->with('success', 'Kolateral berhasil ditambahkan dan LTV diperbarui.');
         } catch (\Throwable $e) {
