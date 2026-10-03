@@ -4,8 +4,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 25 (merged, PR #1–#4) · **Berjalan:** Fase 26.1–26.7 (26.7 selesai) · **Berikutnya:** 26.8 Document numbering & document store (roadmap rantai nilai hulu→hilir di PROGRESS.md; backlog 58+)
-**Snapshot gate (akhir Fase 26.7):** 587 test / 3342 assertion (26.7: +4 test Outbox / +23 assertion, 26.6: 583 / 3319, 26.5: 577 / 3286, 26.4: 554 / 3233, 26.1–26.2: 545 / 3203, Fase 25: 538 / 3189), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus. Query budget: lookup resi ≤ 3, dispatch ≤ 10, control tower ≤ 12, bank:reconcile ≤ 10, lgx:audit-billing ≤ 60.
+**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 25 (merged, PR #1–#4) · **Berjalan:** Fase 26.1–26.8 (26.8 selesai) · **Berikutnya:** 26.9 Approval engine generik (roadmap rantai nilai hulu→hilir di PROGRESS.md; backlog 58+)
+**Snapshot gate (akhir Fase 26.8):** 592 test / 3361 assertion (26.8: +5 test Document Services / +19 assertion, 26.7: 587 / 3342, 26.6: 583 / 3319, 26.5: 577 / 3286, 26.4: 554 / 3233, 26.1–26.2: 545 / 3203, Fase 25: 538 / 3189), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus. Query budget: lookup resi ≤ 3, dispatch ≤ 10, control tower ≤ 12, bank:reconcile ≤ 10, lgx:audit-billing ≤ 60.
 
 ---
 
@@ -39,7 +39,7 @@ Gotcha yang sudah pernah menggigit: `event(new X)` bukan `X::dispatch` bila even
 | Modul | Prefix tabel | Prefix rute | Isi pokok | Ukuran |
 |---|---|---|---|---|
 | Shared | – | – | `MenuRegistry`, `BaseAction` (dengan helper `audit()` & `outbox()`), VO `Money`, trait, komponen Blade, halaman umum | 18 php |
-| Core | `core_` | `/admin/*`, publik passport | `Vehicle`, `VehicleEvent` (hash-chain), `ActivityLog`, `AuditLog`, `PlatformNotification`, **`Role`, `Permission`** (RBAC), **`OutboxMessage`**, **`OutboxSubscription`**, **`OutboxDispatch`** (`core_outbox`), dashboard terpadu, `PlatformSeeder`, `RbacSeeder`; command `core:verify-passports`, `core:process-outbox`, `super:health-check`; **`RbacService`**, **`AuditTrailService`**, **`OutboxBusService`** (`OutboxBusInterface`), **`HasRbacRoles`** trait, **`RbacController`**, **`AuditLogController`** | 61 |
+| Core | `core_` | `/admin/*`, publik passport | `Vehicle`, `VehicleEvent` (hash-chain), `ActivityLog`, `AuditLog`, `PlatformNotification`, **`Role`, `Permission`** (RBAC), **`OutboxMessage`**, `OutboxSubscription`, `OutboxDispatch`, **`DocumentSequence`**, **`DocumentAttachment`**, dashboard terpadu, `PlatformSeeder`, `RbacSeeder`; command `core:verify-passports`, `core:process-outbox`, `super:health-check`; **`RbacService`**, **`AuditTrailService`**, **`OutboxBusService`**, **`DocumentNumberingService`**, **`DocumentStoreService`**, **`HasRbacRoles`** trait, **`RbacController`**, **`AuditLogController`** | 65 |
 | Banking | `bank_` | `/admin/ledger`, wallet | **Ledger double-entry** multi-aset, `LedgerAccount`, wallet, PIN, transfer, top-up, statement/CSV; command `bank:reconcile` | 52 |
 | Payment | `pay_` | `/payment` | `PaymentGateway` (charge/hold/capture/release/refund), `Payable`, `PaymentIntent`; command `payment:release-expired-holds` | 18 |
 | Inventory | `inv_` | – | `InventoryService`, `StockMovement` append-only, reservasi 2 langkah | 8 |

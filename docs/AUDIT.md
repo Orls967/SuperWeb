@@ -426,8 +426,19 @@
 - **Pint:** `vendor/bin/pint --test` lulus tanpa error.
 - **Ledger Reconcile:** `php artisan bank:reconcile` 0 selisih pada seluruh 128 akun (global sum = 0).
 - **Health Check:** `php artisan super:health-check` 8 pilar HEALTHY.
-- **Architecture Boundaries:** 9 arch test lulus tanpa pelanggaran batas modul.
 - **Security Tests:** 16 security test (termasuk verifikasi tanda tangan HMAC-SHA256) lulus.
+
+## Quality Gate Fase 26.8 — Document Numbering & Document Store — 2026-10-04
+
+**Cakupan:** Tabel `core_document_sequences` dan `core_documents`, model `DocumentSequence` dan `DocumentAttachment`, antarmuka `DocumentNumberingInterface` & layanan `DocumentNumberingService` (gapless sequence generator dengan proteksi lock transaksi), antarmuka `DocumentStoreInterface` & layanan `DocumentStoreService` (penyimpanan dokumen terpusat, SHA-256 checksum verification, pembatasan ekstensi berbahaya / guard antivirus, dan kebijakan masa retensi).
+
+### Hasil Quality Gate:
+- **Test Suite:** **592 passed / 3361 assertions / 0 skipped** (5 test baru di `DocumentServicesTest.php` mencakup 19 assertions, 0 gagal, 0 skipped).
+- **Pint:** `vendor/bin/pint --test` lulus tanpa error.
+- **Ledger Reconcile:** `php artisan bank:reconcile` 0 selisih pada seluruh 128 akun (global sum = 0).
+- **Health Check:** `php artisan super:health-check` 8 pilar HEALTHY.
+- **Architecture Boundaries:** 9 arch test lulus tanpa pelanggaran batas modul.
+
 
 
 

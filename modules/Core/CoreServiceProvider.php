@@ -18,6 +18,8 @@ use Modules\Core\Application\Listeners\RecordBookingCompletedPassportEvent;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
 use Modules\Core\Application\Services\ActivityLogger;
 use Modules\Core\Application\Services\AuditTrailService;
+use Modules\Core\Application\Services\DocumentNumberingService;
+use Modules\Core\Application\Services\DocumentStoreService;
 use Modules\Core\Application\Services\NotificationService;
 use Modules\Core\Application\Services\OutboxBusService;
 use Modules\Core\Application\Services\RbacService;
@@ -26,6 +28,8 @@ use Modules\Core\Console\Commands\SuperHealthCheckCommand;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
 use Modules\Core\Contracts\AuditTrailInterface;
+use Modules\Core\Contracts\DocumentNumberingInterface;
+use Modules\Core\Contracts\DocumentStoreInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Core\Domain\Events\VehicleAcquired;
@@ -58,12 +62,24 @@ class CoreServiceProvider extends ServiceProvider
             OutboxBusService::class
         );
 
+        $this->app->bind(
+            DocumentNumberingInterface::class,
+            DocumentNumberingService::class
+        );
+
+        $this->app->bind(
+            DocumentStoreInterface::class,
+            DocumentStoreService::class
+        );
+
         // Platform services — singletons so they can be injected anywhere
         $this->app->singleton(NotificationService::class);
         $this->app->singleton(ActivityLogger::class);
         $this->app->singleton(RbacService::class);
         $this->app->singleton(AuditTrailService::class);
         $this->app->singleton(OutboxBusService::class);
+        $this->app->singleton(DocumentNumberingService::class);
+        $this->app->singleton(DocumentStoreService::class);
     }
 
     public function boot(): void

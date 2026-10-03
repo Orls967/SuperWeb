@@ -462,7 +462,16 @@
   4. **Migrasi Modul:** Integrasikan `DispatchWebhookAction` (Logistics) agar otomatis mencatat event ke bus generik `core_outbox`.
   5. **Console Command:** Sediakan `core:process-outbox` dengan opsi `--limit` dan `--retry` untuk eksekusi terjadwal via worker/cron.
   6. **Replay Mechanism:** Metode `replay()` mereset status pesan dead-letter menjadi pending untuk dicoba kembali setelah pihak penerima pulih.
-- **Verification:** 4 test baru (`OutboxBusTest.php`, 23 assertions). Full suite: **587 passed / 3342 assertions / 0 skipped**.
+## 2026-10-04: Fase 26.8 — Document Numbering & Document Store (Gapless Sequence & Secure Storage)
+- **Context:** Setiap transaksi legal, faktur, klaim, atau kontrak membutuhkan penomoran resmi yang urut tanpa celah (gapless) per entitas dan periode (bulanan/tahunan) di bawah konkurensi tinggi. Dokumen lampiran (faktur PDF, bukti bayar, foto serah terima, ID kyc) juga membutuhkan media penyimpanan aman yang ber-checksum (SHA-256), bervalidasi ekstensi, dan memiliki masa retensi jelas.
+- **Decision:**
+  1. **Schema & Model:**
+     - Tabel `core_document_sequences` dengan model `DocumentSequence` dan unique index `(entity_code, document_type, year, month)`.
+     - Tabel `core_documents` dengan model `DocumentAttachment` (`uuid`, `polymorphic documentable`, `checksum_sha256`, `mime_type`, `file_size_bytes`, `retention_until`).
+  2. **Gapless Numbering Service:** `DocumentNumberingService` mengunci baris urutan dengan `lockForUpdate()` dalam `DB::transaction`, menghasilkan nomor berurutan tanpa celah dan zero-padded (default 5 digit) dengan prefix template dinamis.
+  3. **Document Store Service:** `DocumentStoreService` menyimpan file ke storage lokal/S3, menghasilkan SHA-256 checksum untuk deteksi integritas/tampering, memblokir ekstensi berbahaya (executable/script), serta mencatat waktu jatuh tempo retensi (retention policy).
+- **Verification:** 5 test baru (`DocumentServicesTest.php`, 19 assertions). Full suite: **592 passed / 3361 assertions / 0 skipped**.
+
 
 
 
