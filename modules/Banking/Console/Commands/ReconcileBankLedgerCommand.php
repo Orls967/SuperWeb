@@ -6,8 +6,8 @@ namespace Modules\Banking\Console\Commands;
 
 use Brick\Math\BigDecimal;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Modules\Banking\Domain\Models\LedgerAccount;
-use Modules\Banking\Domain\Models\LedgerEntry;
 
 class ReconcileBankLedgerCommand extends Command
 {
@@ -21,19 +21,21 @@ class ReconcileBankLedgerCommand extends Command
 
         $discrepancies = [];
 
+        $accountCount = LedgerAccount::count();
+        $this->info("Memeriksa {$accountCount} akun ledger...");
+
         // 1. Verifikasi tiap akun: cached_balance == SUM(entries.amount)
-        $accounts = LedgerAccount::all();
-        $this->info("Memeriksa {$accounts->count()} akun ledger...");
+        //
+        // Satu query agregat (GROUP BY account_id) menggantikan satu query per
+        // akun. GROUP_CONCAT dipilih di atas SUM() karena kolom bertipe
+        // decimal(36,18) tidak menjamin presisi penuh lewat agregat numerik
+        // SQLite; penjumlahan tetap dilakukan di PHP dengan BigDecimal sehingga
+        // presisi uang tidak berubah sedikit pun.
+        $sumsByAccount = $this->sumsByAccount();
 
-        foreach ($accounts as $account) {
+        foreach (LedgerAccount::query()->get() as $account) {
             $cachedBal = BigDecimal::of($account->cached_balance ?: '0');
-
-            // Sum all entries for this account
-            $entries = LedgerEntry::where('account_id', $account->id)->pluck('amount');
-            $calculatedSum = BigDecimal::zero();
-            foreach ($entries as $amt) {
-                $calculatedSum = $calculatedSum->plus(BigDecimal::of((string) $amt));
-            }
+            $calculatedSum = $sumsByAccount[$account->id] ?? BigDecimal::zero();
 
             if (! $cachedBal->isEqualTo($calculatedSum)) {
                 $discrepancies[] = [
@@ -44,14 +46,7 @@ class ReconcileBankLedgerCommand extends Command
         }
 
         // 2. Verifikasi SUM global per aset = 0
-        $assets = LedgerEntry::select('asset_code')->distinct()->pluck('asset_code');
-        foreach ($assets as $asset) {
-            $entries = LedgerEntry::where('asset_code', $asset)->pluck('amount');
-            $globalSum = BigDecimal::zero();
-            foreach ($entries as $amt) {
-                $globalSum = $globalSum->plus(BigDecimal::of((string) $amt));
-            }
-
+        foreach ($this->globalSumsByAsset() as $asset => $globalSum) {
             if (! $globalSum->isZero()) {
                 $discrepancies[] = [
                     'type' => 'Global Asset Sum Non-Zero',
@@ -70,5 +65,63 @@ class ReconcileBankLedgerCommand extends Command
         $this->info('✓ Rekonsiliasi selesai: Semua akun seimbang dan total global per aset = 0.');
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Jumlah entri per akun, dihitung penuh dengan BigDecimal dari string mentah.
+     *
+     * @return array<int, BigDecimal>
+     */
+    private function sumsByAccount(): array
+    {
+        $sums = [];
+
+        DB::table('bank_ledger_entries')
+            ->selectRaw("account_id, group_concat(amount, '§') as amounts")
+            ->groupBy('account_id')
+            ->orderBy('account_id')
+            ->get()
+            ->each(function (object $row) use (&$sums): void {
+                $sums[(int) $row->account_id] = $this->sumAmounts((string) $row->amounts);
+            });
+
+        return $sums;
+    }
+
+    /**
+     * Jumlah global per aset, dihitung penuh dengan BigDecimal dari string mentah.
+     *
+     * @return array<string, BigDecimal>
+     */
+    private function globalSumsByAsset(): array
+    {
+        $sums = [];
+
+        DB::table('bank_ledger_entries')
+            ->selectRaw("asset_code, group_concat(amount, '§') as amounts")
+            ->groupBy('asset_code')
+            ->orderBy('asset_code')
+            ->get()
+            ->each(function (object $row) use (&$sums): void {
+                $sums[(string) $row->asset_code] = $this->sumAmounts((string) $row->amounts);
+            });
+
+        return $sums;
+    }
+
+    /**
+     * @param  string  $amounts  String terpisah pemisah "§" berisi nilai entri.
+     */
+    private function sumAmounts(string $amounts): BigDecimal
+    {
+        $sum = BigDecimal::zero();
+
+        foreach (explode('§', $amounts) as $amount) {
+            if ($amount !== '') {
+                $sum = $sum->plus(BigDecimal::of($amount));
+            }
+        }
+
+        return $sum;
     }
 }

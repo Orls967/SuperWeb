@@ -372,3 +372,29 @@
 - `ShipStockTransferAction` kekurangan stok (klaim awal bertanda UNVERIFIED) — `InventoryService` terbukti sudah mengunci baris produk dan mengecek saldo cukup di bawah lock, jadi **bukan cacat**.
 - `Store/ResolveC2cDisputeAction`, `Banking/SetPinAction`, `Banking/FreezeAccountAction`, `Core/RecordVehicleEventAction`, `AutoServe/CancelBookingAction` — diverifikasi aman, tidak diubah.
 
+## Laporan Temuan 26.4 — Sweep Performa, Agregasi SQL & Query Budget — 2026-10-04
+
+**Cakupan:** optimasi command berat, eliminasi query N+1 pada audit dan verifikasi, konversi ke agregasi SQL, serta penambahan batasan query budget.
+
+### A. Perubahan & Optimasi Utama
+1. **`BillingAuditor` (Logistics)**:
+   - Eliminasi loop N query pada audit Demurrage & Detention: satu query agregat `GROUP BY invoice_id` menggantikan puluhan query `sum('accrued_amount_idr')` per invoice.
+   - Eliminasi loop N query pada audit pembayaran carrier: satu query agregat `GROUP BY carrier_payment_id` menggantikan pemindaian berulang per transaksi pembayaran.
+2. **`ReconcileBankLedgerCommand` (Banking)**:
+   - Eliminasi N query per akun: digantikan satu query agregat `GROUP BY account_id` menggunakan `group_concat(amount, '§')` yang dijumlahkan secara presisi menggunakan `BigDecimal` di PHP (menjaga kepatuhan tanpa risiko pembulatan float di SQLite).
+   - Verifikasi total global per aset digantikan satu query agregat `GROUP BY asset_code`.
+3. **Chunking & Memory Safety Command Skala Besar**:
+   - `VerifyPassportsCommand`: eager loading relasi `car.brand` untuk mencegah N+1 nama mobil, diproses per `chunkById(200)` agar stabil pada puluhan ribu kendaraan.
+   - `ExpireDisplayTraysCommand`: diproses per `chunkById(200)` untuk etalase skala besar.
+   - `CancelStaleOrdersCommand`: diproses per `chunkById(200)` dengan eager-load `items`.
+4. **Penambahan Query Budget Test (`QueryBudgetTest.php`)**:
+   - `test_bank_reconcile_query_budget`: memastikan eksekusi `bank:reconcile` selesai dalam $\le 10$ query SQL.
+   - `test_logistics_billing_audit_query_budget`: memastikan eksekusi `lgx:audit-billing` (15 titik pemeriksaan) selesai dalam $\le 60$ query SQL.
+
+### B. Angka Gate 26.4
+- **Test Suite:** **554 passed / 3233 assertions / 0 skipped** (100% lulus)
+- `vendor/bin/pint --test`: passed
+- `npm run build`: sukses
+- Seluruh gate audit operasional seimbang dan 0 diskrepansi: `bank:reconcile`, `core:verify-passports`, `resto:close-day`, `mall:audit-billing`, `lgx:audit-billing`, `lgx:verify-custody`, `lgx:capacity-check`, `super:health-check` (8 pilar HEALTHY).
+
+

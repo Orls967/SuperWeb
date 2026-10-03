@@ -29,22 +29,23 @@ class ExpireDisplayTraysCommand extends Command
             $query->where('outlet_id', $outletId);
         }
 
-        $expiredTrays = $query->get();
-
-        if ($expiredTrays->isEmpty()) {
-            $this->info('Tidak ada piring etalase yang kedaluwarsa.');
-
-            return self::SUCCESS;
-        }
-
         $totalWasteValue = 0;
         $count = 0;
 
-        foreach ($expiredTrays as $tray) {
-            $val = $tray->totalWasteValue();
-            $discardAction->handle($tray, 'Kedaluwarsa otomatis batas pajang etalase (6 jam)');
-            $totalWasteValue += $val;
-            $count++;
+        // Proses per batch agar piring etalase skala besar tidak dimuat sekaligus ke memori.
+        $query->chunkById(200, function ($expiredTrays) use ($discardAction, &$totalWasteValue, &$count): void {
+            foreach ($expiredTrays as $tray) {
+                $val = $tray->totalWasteValue();
+                $discardAction->handle($tray, 'Kedaluwarsa otomatis batas pajang etalase (6 jam)');
+                $totalWasteValue += $val;
+                $count++;
+            }
+        });
+
+        if ($count === 0) {
+            $this->info('Tidak ada piring etalase yang kedaluwarsa.');
+
+            return self::SUCCESS;
         }
 
         $this->info("Berhasil membuang {$count} piring etalase kedaluwarsa dengan total nilai waste: Rp ".number_format($totalWasteValue, 0, ',', '.'));

@@ -23,22 +23,28 @@ class VerifyPassportsCommand extends Command
             $query->where('uuid', $uuid);
         }
 
-        $vehicles = $query->get();
-        $this->line("Memeriksa {$vehicles->count()} kendaraan...");
+        // Eager-load relasi karoseri+brand agar tidak ada N+1 per kendaraan,
+        // lalu proses per batch agar memori tetap terbatas walau armada ratusan ribu.
+        $query->with('car.brand');
+        $total = (clone $query)->count();
+        $this->line("Memeriksa {$total} kendaraan...");
 
         $allValid = true;
+        $seen = 0;
 
-        foreach ($vehicles as $vehicle) {
-            $result = $verifyAction->execute($vehicle);
-            $carName = $vehicle->car ? "{$vehicle->car->brand->name} {$vehicle->car->model}" : ($vehicle->plate_number ?: 'Kendaraan #'.$vehicle->id);
+        $query->chunkById(200, function ($vehicles) use (&$allValid, $verifyAction): void {
+            foreach ($vehicles as $vehicle) {
+                $result = $verifyAction->execute($vehicle);
+                $carName = $vehicle->car ? "{$vehicle->car->brand->name} {$vehicle->car->model}" : ($vehicle->plate_number ?: 'Kendaraan #'.$vehicle->id);
 
-            if ($result['is_valid']) {
-                $this->line("  [✓] {$carName} ({$vehicle->uuid}): {$result['event_count']} event terverifikasi.");
-            } else {
-                $allValid = false;
-                $this->error("  [✗] {$carName} ({$vehicle->uuid}): RUSAK pada sequence {$result['broken_at_sequence']}! {$result['message']}");
+                if ($result['is_valid']) {
+                    $this->line("  [✓] {$carName} ({$vehicle->uuid}): {$result['event_count']} event terverifikasi.");
+                } else {
+                    $allValid = false;
+                    $this->error("  [✗] {$carName} ({$vehicle->uuid}): RUSAK pada sequence {$result['broken_at_sequence']}! {$result['message']}");
+                }
             }
-        }
+        });
 
         if ($allValid) {
             $this->info('✓ Seluruh paspor kendaraan valid dan tidak ada manipulasi data.');
