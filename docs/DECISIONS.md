@@ -453,6 +453,16 @@
   3. **BaseAction Helper:** Tambahkan helper `audit()` pada `BaseAction` sehingga seluruh Action di semua lini bisnis dapat mencatat audit log dengan mudah tanpa melanggar batasan arsitektur (boundary decoupling).
   4. **Penerapan Aksi Kritis:** Terapkan pencatatan audit pada `TransferAction` (keuangan), `TransferVehicleOwnershipAction` & `AcquireVehicleAction` (kepemilikan), `UpdateOrderStatusAction` (state), dan `RbacService` (keamanan/hak akses).
   5. **Admin UI:** Sediakan `AuditLogController` dan antarmuka Blade di `/admin/audit-logs` dengan kemampuan pencarian teks bebas, penyaringan berdasarkan aksi, tipe dampak, pengguna, dan rentang tanggal, serta visualisasi perbandingan *Old Values* vs *New Values*.
-- **Verification:** 6 test baru (`AuditTrailTest.php`, 33 assertions). Full suite: **583 passed / 3319 assertions / 0 skipped**.
+## 2026-10-04: Fase 26.7 — Outbox & Event Bus Generik (Transactional Outbox, Dispatcher, Dead-Letter & Replay)
+- **Context:** Pengiriman event dan webhook ke pihak luar (mitra, sistem eksternal) sebelumnya hanya tersedia secara khusus di modul Logistics, rentan kehilangan pesan saat kegagalan jaringan atau crash aplikasi jika dipanggil langsung di tengah transaksi.
+- **Decision:**
+  1. **Schema & Model:** Buat tabel `core_outbox`, `core_outbox_subscriptions`, dan `core_outbox_dispatches`. Model `OutboxMessage`, `OutboxSubscription`, dan `OutboxDispatch`.
+  2. **Kontrak & Layanan:** Buat `OutboxBusInterface` dan `OutboxBusService` yang menangani pencatatan idempoten (`record` dengan `idempotency_key`), dispatch bertarget (webhook dengan tanda tangan HMAC-SHA256, listener), exponential backoff retry, dan transisi ke dead-letter setelah 5 kali gagal.
+  3. **BaseAction Helper:** Tambahkan helper `outbox()` pada `BaseAction` sehingga semua action transaksi dapat menulis ke outbox transaksional secara terstandarisasi.
+  4. **Migrasi Modul:** Integrasikan `DispatchWebhookAction` (Logistics) agar otomatis mencatat event ke bus generik `core_outbox`.
+  5. **Console Command:** Sediakan `core:process-outbox` dengan opsi `--limit` dan `--retry` untuk eksekusi terjadwal via worker/cron.
+  6. **Replay Mechanism:** Metode `replay()` mereset status pesan dead-letter menjadi pending untuk dicoba kembali setelah pihak penerima pulih.
+- **Verification:** 4 test baru (`OutboxBusTest.php`, 23 assertions). Full suite: **587 passed / 3342 assertions / 0 skipped**.
+
 
 

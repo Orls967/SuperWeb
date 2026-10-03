@@ -417,6 +417,19 @@
 - **Health Check:** `php artisan super:health-check` 8 pilar HEALTHY.
 - **Architecture Boundaries:** 9 arch test lulus tanpa pelanggaran batas modul.
 
+## Quality Gate Fase 26.7 — Outbox & Event Bus Generik — 2026-10-04
+
+**Cakupan:** Tabel `core_outbox`, `core_outbox_subscriptions`, dan `core_outbox_dispatches`, model `OutboxMessage`, `OutboxSubscription`, dan `OutboxDispatch`, antarmuka `OutboxBusInterface` & layanan `OutboxBusService`, helper `outbox()` pada `BaseAction`, integrasi domain event outbox pada `DispatchWebhookAction` Logistics, command pengiriman terjadwal `core:process-outbox`, penanganan dead-letter setelah 5 kegagalan, dan mekanisme replay.
+
+### Hasil Quality Gate:
+- **Test Suite:** **587 passed / 3342 assertions / 0 skipped** (4 test baru di `OutboxBusTest.php` mencakup 23 assertions, 0 gagal, 0 skipped).
+- **Pint:** `vendor/bin/pint --test` lulus tanpa error.
+- **Ledger Reconcile:** `php artisan bank:reconcile` 0 selisih pada seluruh 128 akun (global sum = 0).
+- **Health Check:** `php artisan super:health-check` 8 pilar HEALTHY.
+- **Architecture Boundaries:** 9 arch test lulus tanpa pelanggaran batas modul.
+- **Security Tests:** 16 security test (termasuk verifikasi tanda tangan HMAC-SHA256) lulus.
+
+
 
 
 

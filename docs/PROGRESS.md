@@ -357,7 +357,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 26.4 Sweep performa: N+1 di seluruh controller/view, indeks FK/status/tanggal, command berat → `chunkById`/`cursor`; `BillingAuditor` & `bank:reconcile` ke agregat SQL; perbarui `QueryBudgetTest`
 - [x] 26.5 **RBAC granular**: tabel `permissions`, `roles`, `role_permission`, `user_role` (multi-role + scope entitas), `Gate`/Policy generik; `users.role` tetap sebagai kompatibilitas (mirror) sampai seluruh modul dimigrasikan; matriks otorisasi data-driven
 - [x] 26.6 **Audit trail generik**: setiap Action ber-impact (uang/state/ownership) menulis `core_audit_logs` (siapa, apa, sebelum/sesudah, IP, correlation id); append-only; halaman pencarian admin
-- [ ] 26.7 **Outbox & event bus generik** (`core_outbox`): generalisasi webhook outbox Logistics — event domain → outbox transaksional → dispatcher idempoten; dead-letter + replay; Logistics dimigrasikan ke bus ini
+- [x] 26.7 **Outbox & event bus generik** (`core_outbox`): generalisasi webhook outbox Logistics — event domain → outbox transaksional → dispatcher idempoten; dead-letter + replay; Logistics dimigrasikan ke bus ini
 - [ ] 26.8 **Document numbering & document store**: layanan nomor gapless per (entitas, jenis, tahun, reset bulanan/tahunan) dengan lock; penyimpanan dokumen (lampiran) ber-checksum, kebijakan retensi, antivirus/mime guard
 - [ ] 26.9 **Approval engine generik**: alur multi-level berdasarkan nilai/jenis, four-eyes (pembuat ≠ penyetuju), delegasi, SLA & eskalasi, histori; dipakai Kontrak/PO/Aset/Klaim (klaim & pembayaran carrier dimigrasikan)
 - [ ] 26.10 Quality gate Fase 26

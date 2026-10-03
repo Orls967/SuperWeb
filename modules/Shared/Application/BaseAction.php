@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Contracts\AuditTrailInterface;
+use Modules\Core\Contracts\OutboxBusInterface;
 
 abstract class BaseAction
 {
@@ -42,6 +43,32 @@ abstract class BaseAction
                 correlationId: $correlationId,
                 impactType: $impactType,
                 user: $user instanceof User ? $user : null
+            );
+        }
+
+        return null;
+    }
+
+    /**
+     * Record a domain event into the transactional outbox.
+     *
+     * @param  array<string, mixed>  $payload
+     * @param  array<string, mixed>|null  $headers
+     */
+    protected function outbox(
+        string $eventType,
+        array $payload,
+        ?string $idempotencyKey = null,
+        ?object $aggregate = null,
+        ?array $headers = null
+    ): mixed {
+        if (app()->bound(OutboxBusInterface::class)) {
+            return app(OutboxBusInterface::class)->record(
+                eventType: $eventType,
+                payload: $payload,
+                idempotencyKey: $idempotencyKey,
+                aggregate: $aggregate instanceof Model ? $aggregate : null,
+                headers: $headers
             );
         }
 
