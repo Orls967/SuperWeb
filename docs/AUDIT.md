@@ -292,3 +292,28 @@
   - 24.7 Quality Gate End-to-End: alur penuh Order Store terbayar -> Pengiriman -> Terkirim -> Pengakuan pendapatan freight -> `bank:reconcile` menghasilkan 0 diskrepansi saldo.
 
 
+
+## Quality Gate Fase 25 — 2026-10-03
+
+- **Cakupan Fase:** Fase 25 — Skala, API, Hardening, Control Tower (Tasks 25.1–25.9)
+- **Total Test:** **538 tests** (100% PASS, 0 failure, 0 skipped), naik dari 532 pada gate Fase 24
+- **Total Assertion:** **3189 assertions**
+- **Status Build Frontend (Vite):** Sukses
+- **Status Standar Kode (Pint):** Passed (`vendor/bin/pint --test`)
+- **Arch Tests (batas modul):** 9 passed
+- **Hasil Quality Gates (`migrate:fresh --seed`):**
+  - `php artisan bank:reconcile`: 128 akun ledger seimbang, 0 selisih
+  - `php artisan lgx:audit-billing`: 15 pemeriksaan, 29 dokumen non-nol, 0 selisih
+  - `php artisan lgx:verify-custody`: 6 pengiriman (9 event) valid
+  - `php artisan lgx:capacity-check`: 1 jadwal valid
+  - `php artisan core:verify-passports`, `mall:audit-billing`, `super:health-check` (8 pilar): lulus
+- **Pencapaian Fitur Fase 25:**
+  - 25.1 `LogisticsLargeSeeder`: >= 200.000 resi, >= 2.000.000 event pelacakan, >= 5.000 kontainer, >= 20 kapal, >= 300 truk, riwayat 12 bulan
+  - 25.2 `QueryBudgetTest`: lookup resi <= 3 query, papan dispatch <= 10 query, control tower <= 12 query, `lgx:accrue-dd` < 30 detik
+  - 25.3 API v1 (Sanctum): quotes, shipments (header `Idempotency-Key`), tracking, ability token, rate limit, `docs/API.md`
+  - 25.4 Webhook outbox: `lgx_webhook_endpoints` + `lgx_webhook_deliveries`, HMAC-SHA256, exponential backoff maks 8 retry, dead-letter, replay manual
+  - 25.5 Queue & scheduler: job idempoten `ShouldBeUnique`, seluruh command terdaftar di `routes/console.php`
+  - 25.6 Matriks otorisasi: `SecurityTest` & `RouteSmokeTest` mencakup seluruh rute dan role logistik
+  - 25.7 Control Tower (logistics_admin): KPI OTIF, chart status, armada, dwell time, COD, margin per lane
+  - 25.8 Dokumentasi final: ARCHITECTURE, RUNBOOK, README, DECISIONS mutakhir
+  - 25.9 Quality gate final: seluruh test & large seeder lolos, semua gate hijau

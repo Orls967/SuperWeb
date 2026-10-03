@@ -414,3 +414,13 @@
   5. **Antrean Idempoten**: `ProcessBulkShipmentUploadJob` menerapkan `ShouldBeUnique` berbasis `batchId` untuk mencegah eksekusi impor CSV ganda. Seluruh scheduler logistik terdaftar di `routes/console.php`.
   6. **Control Tower**: Antarmuka pusat kendali untuk `logistics_admin` menampilkan metrik On-Time In-Full (OTIF), utilisasi armada, dwell time kontainer pelabuhan/depot, saldo titipan COD kasir/driver, dan margin per jalur transportasi (lane).
 - **Reason:** Memastikan platform logistik siap skala produksi, aman dari gangguan jaringan atau replay ganda, serta memiliki observabilitas operasional menyeluruh.
+
+## 2026-10-03: Fase 26.1 — Autentikasi API dengan Sanctum Asli
+- **Context:** Pemeriksaan Fase 24–25 menemukan `auth:sanctum` Logistics v1 bukan guard Sanctum: provider membuat alias test helper dan guard berbasis session web. API tidak memvalidasi bearer token atau token abilities.
+- **Decision:** Pasang `laravel/sanctum ^4.3`, migrasi `personal_access_tokens`, gunakan `HasApiTokens` pada `User`, dan terbitkan token bernama dengan abilities/expiry opsional melalui UI profil (`POST /profile/api-tokens`). Token hanya dapat dicabut oleh pemilik lewat profil. Set `sanctum.guard` kosong agar API v1 hanya menerima bearer token dan tidak mewarisi session web; ability diperiksa lewat `tokenCan()` dari Sanctum. Hapus alias, guard custom, shim helper, dan array ability in-memory.
+- **Verification:** Security tests membuktikan bearer token valid, no-token/session-only/revoked/expired => 401, ability tidak cocok => 403, serta issuance/revocation profil berhasil.
+
+## 2026-10-03: Fase 26.2 — Dokumentasi Quality Gate Fase 25
+- **Context:** `docs/AUDIT.md` belum memuat gate final Fase 25, dan README mencantumkan assertion count lama serta belum memiliki ringkasan API v1.
+- **Decision:** Tambahkan catatan Fase 25 di AUDIT, sinkronkan README ke 545 tests / 3203 assertions setelah perubahan Fase 26.1, dan jelaskan Logistics commands, token API, abilities, expiry, rate limits, serta respons autentikasi. Perbarui `CODEBASE.md` sesuai protokol orientasi.
+- **Verification:** Full Pest suite (545 passed, 3203 assertions, 0 skipped), Pint, Vite, `bank:reconcile`, Logistics billing/custody/capacity, Mall billing, Vehicle Passport, dan `super:health-check` lulus.

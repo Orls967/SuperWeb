@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Modules\AutoDex\Domain\Models\Car;
 use Modules\Banking\Domain\Traits\HasLedgerAccounts;
 use Modules\Core\Domain\Models\Vehicle;
@@ -22,7 +23,7 @@ use Modules\Resto\Domain\Models\RestoStaffAssignment;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasLedgerAccounts, Notifiable;
+    use HasApiTokens, HasFactory, HasLedgerAccounts, Notifiable;
 
     protected function casts(): array
     {
@@ -197,24 +198,5 @@ class User extends Authenticatable
     public function assignedHubId(): ?int
     {
         return $this->hubOperatorAssignment()->where('is_active', true)->value('hub_id');
-    }
-
-    /** @var array<string> */
-    protected array $currentAccessTokenAbilities = ['*'];
-
-    /**
-     * @param  array<string>  $abilities
-     */
-    public function withAccessTokenAbilities(array $abilities): self
-    {
-        $this->currentAccessTokenAbilities = $abilities;
-
-        return $this;
-    }
-
-    public function tokenCan(string $ability): bool
-    {
-        return in_array('*', $this->currentAccessTokenAbilities, true)
-            || in_array($ability, $this->currentAccessTokenAbilities, true);
     }
 }

@@ -149,7 +149,7 @@ Platform menyediakan rangkaian Artisan Command untuk otomatisasi operasional dan
 
 ## 🧪 Pengujian & Uji Kualitas (Quality Gates)
 
-Platform dilengkapi rangkaian automated test komprehensif (**538+ Tests, 3180+ Assertions**):
+Platform dilengkapi rangkaian automated test komprehensif (**545 Tests, 3203 Assertions**, 0 skipped):
 
 ```bash
 # 1. Jalankan seluruh test suite
@@ -191,3 +191,16 @@ Seeder ini menginisialisasi:
 - **Resto & Mall**: 3 Outlet Resto, 60 Tenant, 12 Bulan Billing, dan 150.000 Sesi Parkir dalam < 4 detik.
 - **Logistik Multimoda**: 300+ truk berpaspor, 20+ kapal laut ber-IMO, 5.000+ kontainer ISO 6346, ratusan ribu shipment dan jutaan event kustodi dengan penegakan ledger akurat.
 - Keseimbangan ledger dan audit billing tetap terverifikasi **0 selisih**.
+
+---
+
+## 🌐 API v1 Logistik (Laravel Sanctum)
+
+API v1 Sari Ranah Express (`/api/v1/logistics`) melayani integrasi mitra B2B:
+- **Autentikasi**: bearer token Sanctum asli (`Authorization: Bearer <token>`), diterbitkan lewat **Profil → API Tokens** (pilih abilities, kedaluwarsa opsional, cabut kapan saja).
+- **Abilities**: `quote:create`, `shipment:create`, `shipment:read`, atau `*`.
+- **Endpoint publik**: `GET /api/v1/logistics/tracking/{tracking_number}` (rate limit 30/menit, tanpa token).
+- **Endpoint terotentikasi**: `POST /quotes`, `POST /shipments` (header `Idempotency-Key`), `GET /shipments`, `GET /shipments/{tracking_number}` (rate limit 60/menit).
+- **Enforcement**: tanpa token 401, ability tidak cocok 403, token dicabut/kedaluwarsa 401, session cookie web tidak diterima sebagai autentikasi API.
+
+Dokumentasi lengkap: [`docs/API.md`](docs/API.md).

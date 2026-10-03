@@ -4,8 +4,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-03 · **Fase selesai terakhir:** 25 (merged ke `master`, PR #1, #2, #3) · **Berikutnya:** Fase 26–57 (roadmap rantai nilai hulu→hilir di PROGRESS.md; backlog 58+)
-**Snapshot gate (akhir Fase 25):** 538 test / 3189 assertion, 0 skipped · `bank:reconcile` 0 selisih · `lgx:audit-billing` 0 selisih · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus. Query budget: lookup resi ≤ 3, dispatch ≤ 10, control tower ≤ 12.
+**Terakhir diperbarui:** 2026-10-03 · **Fase selesai terakhir:** 25 (merged, PR #1–#4) · **Berjalan:** Fase 26.1–26.2 · **Berikutnya:** 26.3–57 (roadmap rantai nilai hulu→hilir di PROGRESS.md; backlog 58+)
+**Snapshot gate (akhir Fase 26.1–26.2):** 545 test / 3203 assertion (Fase 25: 538 / 3189), 0 skipped · `bank:reconcile` 0 selisih · `lgx:audit-billing` 0 selisih · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus. Query budget: lookup resi ≤ 3, dispatch ≤ 10, control tower ≤ 12.
 
 ---
 
@@ -94,7 +94,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 **Fase 24 (integrasi lintas lini):** kontrak `ShipmentBooking` (Store `OrderPaid` → `CreateShipmentOnOrderPaid` → `BookShipmentForOrderAction`, ongkir ke `unearned_freight`, resi di order) · `DeliverVehicleByCarrierAction` (event `DELIVERED_BY_CARRIER` ke Vehicle Passport) · `FleetServiceDue` → `HandleFleetServiceDue` → kontrak `FleetMaintenanceBooking` (impl. `AutoServe\...\AutoServeFleetMaintenanceBooking`), armada `MAINTENANCE` ditolak dispatch, `CompleteFleetMaintenanceAction` · cold-chain: `TemperatureReading`, `RecordTemperatureAction` (excursion → `ShipmentException`), `ReceiveReeferReplenishmentAction` (stok ke Inventory) · `DockAppointment` (slot dock Duta Mall tanpa overlap, check-in/out) · pilar Logistik di `super:health-check` (8 pilar). Migrasi `2026_10_02_240101_phase_24_cross_line_integration`.
 **Fase 25 (skala & API):** `LogisticsLargeSeeder` · `ControlTowerQuery` + `ControlTowerController` (logistics_admin) · **API v1** `routes/api.php` (`/api/v1/logistics/{quotes,shipments,tracking}`, `Idempotency-Key`, throttle 60/30 per menit, `Http/Controllers/Api/LogisticsApiController`, dokumen `docs/API.md`) · **Webhook outbox**: `WebhookEndpoint`, `WebhookDelivery`, `DispatchWebhookAction`, `lgx:retry-webhooks` (5 mnt; HMAC-SHA256, backoff, dead-letter), migrasi `2026_10_03_250401` · job `ProcessBulkShipmentUploadJob` (ShouldBeUnique) · `SecurityTest`/`RouteSmokeTest`/`QueryBudgetTest` mencakup rute logistik.
-**PERINGATAN autentikasi API:** `laravel/sanctum` **tidak terpasang**. `LogisticsServiceProvider` membuat `class_alias` palsu `Laravel\Sanctum\Sanctum` → `Domain/Support/Sanctum.php` dan guard `Auth::viaRequest('sanctum')` yang hanya mengembalikan user session `web` → **tidak ada validasi token/ability sungguhan**. Wajib diganti di tugas 26.1.
+**Autentikasi API (Fase 26.1, Sanctum asli):** `laravel/sanctum ^4.3` terpasang; migrasi `personal_access_tokens`; `User` memakai trait `HasApiTokens`; `config/sanctum.php` `'guard' => []` sehingga session cookie **tidak** diterima di API (wajib bearer token). Rute kelola token: `POST|DELETE /profile/api-tokens` (`ApiTokenController`, UI `profile/partials/api-token-form.blade.php`). Pengecekan ability via `tokenCan()` di `LogisticsApiController`. `class_alias` palsu, guard `viaRequest('sanctum')`, dan `Domain/Support/Sanctum.php` sudah dihapus.
 
 ## 7. Modul lain — fakta penting
 
@@ -108,7 +108,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 ## 8. Peta command lengkap
 
-`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (7 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal). Jadwal: `routes/console.php`.
+`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (8 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal). Jadwal: `routes/console.php`.
 
 ## 9. Test
 
@@ -120,12 +120,12 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 ## 11. Dokumen & branch
 
-Dokumen: `README.md` (memuat Logistics sejak 25.8) · `docs/{PROGRESS,DECISIONS,ARCHITECTURE,RUNBOOK,AUDIT,BLOCKERS}.md`. Branch: kerja di `feature/...` (tanpa kata "claude"), merge via PR ke `master`. PR #1 = Fase 22, PR #2 = Fase 23. PR #3 = Fase 24–25. Branch lama `claude/funny-galileo-v69spt` & `docs/prompt-fase-24-25` perlu dihapus manual di GitHub.
+Dokumen: `README.md` (Logistics + section API v1 sejak 26.2) · `docs/{PROGRESS,DECISIONS,ARCHITECTURE,RUNBOOK,AUDIT,CODEBASE,BLOCKERS}.md`. Branch: kerja di `feature/...` (tanpa kata "claude"), merge via PR ke `master`. PR #1 = Fase 22, PR #2 = Fase 23. PR #3 = Fase 24–25. Branch lama `claude/funny-galileo-v69spt` & `docs/prompt-fase-24-25` perlu dihapus manual di GitHub.
 
 ## 12. Utang teknis / catatan terbuka
 
-1. **Sanctum palsu** (lihat §6) — ganti dengan `laravel/sanctum` asli (26.1).
-2. `docs/AUDIT.md` belum punya section "Quality Gate Fase 25" (hanya sampai Fase 24); catatan penutup ada di PROGRESS.md (26.2).
+1. ~~Sanctum palsu~~ **DITUTUP (26.1)** — `laravel/sanctum ^4.3` asli aktif, token bisa diterbitkan/dicabut di Profil, session cookie ditolak di API.
+2. ~~AUDIT.md tanpa gate Fase 25~~ **DITUTUP (26.2)** — section "Quality Gate Fase 25" ditambahkan; README disinkronkan (545 test / 3203 assertion) dan diberi section API v1.
 3. Sweep transaksi/idempotensi/N+1 seluruh modul (26.3–26.4).
 4. Duplikasi konsep **Asset** (`mall_assets`) akan dikonsolidasikan di Fase 29.
 5. BOM/HPP ada di Resto (`resto_`), akan digeneralisasi di Fase 33–36 (Resto tetap bekerja lewat adapter).
