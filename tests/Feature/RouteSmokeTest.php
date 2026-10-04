@@ -204,6 +204,8 @@ class RouteSmokeTest extends TestCase
             'contract.index',
             'contract.clauses.index',
             'contract.templates.index',
+            'asset.index',
+            'asset.create',
         ];
 
         foreach ($adminRoutes as $route) {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Providers\AppServiceProvider;
+use Modules\Asset\AssetServiceProvider;
 use Modules\AutoDex\AutoDexServiceProvider;
 use Modules\AutoServe\AutoServeServiceProvider;
 use Modules\Banking\BankingServiceProvider;
@@ -33,5 +34,6 @@ return [
     MallServiceProvider::class,
     LogisticsServiceProvider::class,
     PartyServiceProvider::class,
+    AssetServiceProvider::class,
     ContractServiceProvider::class,
 ];

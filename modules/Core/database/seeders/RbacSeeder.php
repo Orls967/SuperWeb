@@ -39,6 +39,8 @@ class RbacSeeder extends Seeder
             ['name' => 'party_manager', 'label' => 'Manajer Pihak', 'description' => 'Mengelola direktori pihak & badan hukum.'],
             ['name' => 'contract_manager', 'label' => 'Manajer Kontrak', 'description' => 'Mengelola kontrak, klausul, dan template.'],
             ['name' => 'legal', 'label' => 'Legal', 'description' => 'Meninjau, menegosiasi, dan menyetujui kontrak.'],
+            ['name' => 'asset_manager', 'label' => 'Manajer Aset', 'description' => 'Mengelola register aset, mutasi, opname, asuransi.'],
+            ['name' => 'auditor', 'label' => 'Auditor', 'description' => 'Hanya baca untuk audit dan rekonsiliasi.'],
         ];
 
         foreach ($roles as $r) {
@@ -140,6 +142,11 @@ class RbacSeeder extends Seeder
                 'contract.manage' => 'Kelola kontrak, klausul, dan template',
                 'contract.approve' => 'Menyetujui & menandatangani kontrak',
             ],
+            'asset' => [
+                'asset.view' => 'Lihat register aset',
+                'asset.manage' => 'Registrasi, mutasi, opname, dan asuransi aset',
+                'asset.approve' => 'Menyetujui mutasi & penyesuaian aset',
+            ],
         ];
 
         foreach ($permissions as $module => $perms) {
@@ -239,6 +246,16 @@ class RbacSeeder extends Seeder
                 'core.dashboard.view',
                 'party.view',
                 'contract.view', 'contract.approve',
+            ],
+
+            'asset_manager' => [
+                'core.dashboard.view',
+                'asset.view', 'asset.manage', 'asset.approve',
+            ],
+
+            'auditor' => [
+                'core.dashboard.view',
+                'party.view', 'contract.view', 'asset.view',
             ],
         ];
 

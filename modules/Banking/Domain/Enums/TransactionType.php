@@ -51,6 +51,9 @@ enum TransactionType: string
     case CONTRACT_RETENTION = 'ctr_retention';
     case CONTRACT_PENALTY = 'ctr_penalty';
     case CONTRACT_EXPENSE = 'ctr_expense';
+    case ASSET_ACQUISITION = 'ast_acquire';
+    case ASSET_DISPOSAL = 'ast_dispose';
+    case ASSET_TRANSFER = 'ast_transfer';
 
     public function label(): string
     {
@@ -100,6 +103,9 @@ enum TransactionType: string
             self::CONTRACT_RETENTION => 'Retensi Kontrak',
             self::CONTRACT_PENALTY => 'Denda Kontrak',
             self::CONTRACT_EXPENSE => 'Beban Kontrak',
+            self::ASSET_ACQUISITION => 'Akuisisi Aset Tetap',
+            self::ASSET_DISPOSAL => 'Disposal Aset Tetap',
+            self::ASSET_TRANSFER => 'Mutasi Aset Tetap',
         };
     }
 }

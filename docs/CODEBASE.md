@@ -4,8 +4,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 29 (Kontrak Lanjutan) · **Berjalan:** — · **Berikutnya:** Fase 30 Aset Inti (modul ast_)
-**Snapshot gate (akhir Fase 29):** 653 test / 3602 assertion (Fase 28: 642/3558), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih (29 dok) · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (10) lulus.
+**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 30 (Aset Inti) · **Berjalan:** — · **Berikutnya:** Fase 31 Aset (penyusutan, pemeliharaan, revaluasi & disposal)
+**Snapshot gate (akhir Fase 30):** 664 test / 3662 assertion (Fase 29: 653/3602), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih (29 dok) · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (10) lulus.
 
 ---
 
@@ -52,13 +52,14 @@ Gotcha yang sudah pernah menggigit: `event(new X)` bukan `X::dispatch` bila even
 | Mall | `mall_` (25 tabel) | `/mall` | Duta Mall: leasing, tagihan, tunggakan/denda, utilitas, parkir, footfall, loyalty (points), voucher, event, facility WO, `mall_assets`; cmd `mall:*` (9) | 168 |
 | Logistics | `lgx_` (≈ 43 tabel) | `/logistics` | Sari Ranah Express — lihat §6 | 269 |
 | Party | `pty_` (11 tabel) | `/party` | Party Master & Badan Hukum: `Party` (orang/perusahaan), `LegalEntity` (holding/anak/cabang), `PartyRole`, `PartyAddress`, `PartyContact`, `PartyBankAccount`, `KycDocument`, `SanctionCheck`, `CreditProfile`, `pty_merge_logs`; actions KYC submit/approve/reject; screening sanksi fuzzy similar_text + hash; credit scoring 0-100; command `party:backfill-links`, `party:remind-expiring-docs` | 25 |
+| Asset | `ast_` (7 tabel) | `/assets` | Aset Inti: `AssetCategory` (umur ekonomis & metode PSAK 16 simulasi), `AssetLocation` (hirarki entitas→site→area), `Asset` (register + book value), `AssetEvent` (hash-chain append-only SHA-256), `AssetStocktake` (opname per siklus), `AssetAssignment` (check-out/in), `AssetInsurance` (polis+klaim); `AssetService` (nomor gapless `AST/{ENT}/`, posting `ast:fixed_assets`, mutasi via ApprovalEngine, opname idempoten, DocumentStore untuk foto/dokumen); command `ast:verify-chain`, `ast:backfill-links` (348 aset lama: mall_assets, lgx fleet, idempoten); role `asset_manager`, `auditor`; tautan `asset_id` nullable di 6 tabel legacy |
 | Contract | `ctr_` (13 tabel) | `/contracts` | Kontrak inti: `Contract`, `ContractParty`, `ContractClause`, `ContractVersion` (SHA-256 hash-chain append-only), `ContractMilestone`, `ContractAttachment` (Core DocumentStore checksum/retensi), `ContractTemplate`, `ClauseTemplate`; `ContractService` (gapless numbering, state machine, approval engine, e-sign simulasi, append/verify chain, diff); command `contracts:verify-chain`, `ctr:remind`; role `contract_manager`, `legal`; tabs kontrak: overview/pihak/klausul/obligasi/**keuangan**/lampiran/versi; **Fase 29**: `ContractFinanceService` (jadwal termin/advance/retensi, denda waiver via approval, eskalasi indeks terbatas-parser), `ContractAmendmentService` (diff + versi chain + regenerate jadwal), `ContractUsageService`/`UsageSync` (plafon idempoten, early warning 80/100%), `ContractRiskService` (skor 0–100), `ContractReportService` (eksposur per jenis/pihak, aging, `ctr:audit`), `ContractRateResolver` (rate card kontrak menang via `RateCardOverrideResolver`); command `ctr:audit`; laporan `/contracts/reports` | 47 |
 
 Tabel non-prefiks lama: `users`, `bookings`, `spareparts`, `services`, `cars`, `brands`, `garages`, `wishlists`, `platform_*`.
 
 ## 4. Role & akun demo
 
-Role (`users.role` + RBAC tabel `roles`): `admin`, `customer`, `mekanik`, `tenant`, `outlet_manager`, `kitchen`, `cashier`, `shipper`, `driver`, `dispatcher`, `hub_operator`, `logistics_admin`. RBAC mendukung multi-role per user dengan scope entitas (contoh: cashier scoped ke outlet). 12 role × 48 permission tersemai di `RbacSeeder`.
+Role (`users.role` + RBAC tabel `roles`): `admin`, `customer`, `mekanik`, `tenant`, `outlet_manager`, `kitchen`, `cashier`, `shipper`, `driver`, `dispatcher`, `hub_operator`, `logistics_admin`, `party_manager`, `contract_manager`, `legal`, `asset_manager`, `auditor`. RBAC mendukung multi-role per user dengan scope entitas (contoh: cashier scoped ke outlet). 17 role (termasuk `party_manager`, `contract_manager`, `legal`, `asset_manager`, `auditor`) tersemai di `RbacSeeder`.
 Seeder: `DatabaseSeeder` → Banking, Platform, Crypto, Mall, Resto, Logistics (+ `LogisticsFinanceSeeder`). Akun demo contoh: `admin@autoserve.test`, `customer@autoserve.test`, `mekanik@autoserve.test` (password `password`). `DemoLargeSeeder` = data besar lintas modul; `LogisticsLargeSeeder` = skala logistik (Fase 25).
 
 ## 5. Ledger & uang (inti sistem)
@@ -69,7 +70,7 @@ Seeder: `DatabaseSeeder` → Banking, Platform, Crypto, Mall, Resto, Logistics (
 - `TransactionType` (Banking enum, ±40 case; nilai ≤ 32 char; Logistik memakai `LOGISTICS_*`).
 - Akun sistem Logistik (`Application/Services/LogisticsLedger.php`): `lgx:unearned_freight`, `lgx:freight_revenue`, `lgx:cod_fee_revenue`, `lgx:carrier_cost`, `lgx:claims_expense`, `lgx:dd_revenue`, `lgx:customs_duty_payable`, `lgx:fuel_expense`, `clearing:external:IDR`.
 - Akun escrow pembayaran `escrow:payment:IDR`; kolateral `escrow:finance:collateral:{ASSET}`.
-- Akun & tipe kontrak (Fase 29): `ctr:advance` (liabilitas uang muka), `ctr:retention_receivable`/`ctr:retention_payable`, `ctr:penalty_revenue:IDR`, `ctr:revenue:{contract_id}`; TransactionType `ctr_advance|ctr_payment|ctr_retention|ctr_penalty|ctr_expense`.
+- Akun & tipe kontrak (Fase 29): `ctr:advance` (liabilitas uang muka), `ctr:retention_receivable`/`ctr:retention_payable`, `ctr:penalty_revenue:IDR`, `ctr:revenue:{contract_id}`; TransactionType `ctr_advance|ctr_payment|ctr_retention|ctr_penalty|ctr_expense`; aset `ast_acquire|ast_dispose|ast_transfer` dengan akun `ast:fixed_assets`.
 - Pembulatan: Brick Math `HalfUp`; PB1 resto 10% pembulatan Rp100; PPN 11% (config `logistics.vat_rate`).
 - **Audit:** `bank:reconcile` (Σ=0 & saldo cache = agregat entri), `mall:audit-billing`, `lgx:audit-billing` (15 pemeriksaan, exit 1 bila selisih).
 
@@ -111,7 +112,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 ## 8. Peta command lengkap
  
-`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (8 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal) · `party:backfill-links` · `party:remind-expiring-docs` · `contracts:verify-chain` · `ctr:remind` · `ctr:audit {--sync}`. Jadwal: `routes/console.php`.
+`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (8 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal) · `party:backfill-links` · `party:remind-expiring-docs` · `contracts:verify-chain` · `ctr:remind` · `ctr:audit {--sync}` · `ast:verify-chain` · `ast:backfill-links`. Jadwal: `routes/console.php`.
 
 ## 9. Test
 
@@ -160,6 +161,15 @@ Setiap commit yang mengubah salah satu di bawah **harus** ikut mengubah bagian t
 Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila ragu apakah suatu file ada, verifikasi dengan `ls`/`grep`, lalu koreksi dokumen ini.
 
 ## 15. Modul baru (diisi saat dibuat, Fase 26+)
+
+### Asset (`ast_`) — Fase 30
+
+- **Tujuan:** register aset grup tunggal (PSAK 16 simulasi) dengan kapitalisasi, hash-chain riwayat, mutasi ber-approval, stok opname, penugasan, dan asuransi.
+- **Tabel:** `ast_categories`, `ast_locations`, `ast_assets`, `ast_events`, `ast_stocktakes`, `ast_assignments`, `ast_insurances` (+ `asset_id` nullable di 6 tabel legacy).
+- **Service:** `AssetService` — nomor gapless via `DocumentNumberingInterface` (`AST/{ENT}/`), posting `ast:fixed_assets` (key `ast:acquire:{id}`), riwayat hash-chain, mutasi via `ApprovalEngineInterface`, opname/check-out idempoten, asuransi, dokumen via `DocumentStoreInterface`.
+- **Rute:** `/assets` (role `admin`, `asset_manager`): index/create/show/scan/verify-chain/move/checkout/checkin/insurance.
+- **Command:** `ast:verify-chain --asset=<UUID>`, `ast:backfill-links {--dry-run}` (idempoten).
+- **Aturan:** PSAK 16 & regulasi asuransi bersifat simulasi; book value = biaya perolehan + landed − depresiasi akumulatif.
 
 ### Contract (`ctr_`) — Fase 28
 

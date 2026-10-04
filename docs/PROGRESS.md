@@ -398,16 +398,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 29.9 Quality gate Fase 29
 
 ## FASE 30 — ASET INTI (MODUL `ast_`)
-- [ ] 30.1 Modul Asset: kategori (tanah, bangunan, mesin pabrik, kendaraan, peralatan, IT, hak/intangible), umur ekonomis & metode default per kategori (PSAK 16, **simulasi**)
-- [ ] 30.2 Register aset: kode via 26.8, tag/QR, lokasi (hirarki entitas→site→area), penanggung jawab, kondisi, foto/dokumen
-- [ ] 30.3 **Akuisisi & kapitalisasi**: dari PO/GRN (Fase 34), pembelian langsung, atau konstruksi (CIP → aset); posting `ast:fixed_assets`, `ap`/kas; biaya perolehan termasuk landed cost
-- [ ] 30.4 Riwayat aset **hash-chain** append-only (akuisisi, pindah, perbaikan, revaluasi, disposal); `ast:verify-chain`
-- [ ] 30.5 Mutasi aset antar lokasi/entitas (approval; transfer antar-entitas memicu intercompany di Fase 52)
-- [ ] 30.6 Konsolidasi aset lama: `Mall\Asset`, armada Logistics (`Truck/Trailer/Vessel/Aircraft/Container`), peralatan dapur Resto → tautan `asset_id` non-breaking + backfill idempoten
-- [ ] 30.7 Stok opname aset (scan QR, selisih ditemukan/hilang, penyesuaian dengan approval)
-- [ ] 30.8 Penugasan & peminjaman aset (check-out/in), asuransi aset (polis, jatuh tempo, klaim)
-- [ ] 30.9 UI register, detail aset, pemindaian QR publik terbatas; role `asset_manager`
-- [ ] 30.10 Quality gate Fase 30
+- [x] 30.1 Modul Asset: kategori (tanah, bangunan, mesin pabrik, kendaraan, peralatan, IT, hak/intangible), umur ekonomis & metode default per kategori (PSAK 16, **simulasi**)
+- [x] 30.2 Register aset: kode via 26.8, tag/QR, lokasi (hirarki entitas→site→area), penanggung jawab, kondisi, foto/dokumen
+- [x] 30.3 **Akuisisi & kapitalisasi**: dari PO/GRN (Fase 34), pembelian langsung, atau konstruksi (CIP → aset); posting `ast:fixed_assets`, `ap`/kas; biaya perolehan termasuk landed cost
+- [x] 30.4 Riwayat aset **hash-chain** append-only (akuisisi, pindah, perbaikan, revaluasi, disposal); `ast:verify-chain`
+- [x] 30.5 Mutasi aset antar lokasi/entitas (approval; transfer antar-entitas memicu intercompany di Fase 52)
+- [x] 30.6 Konsolidasi aset lama: `Mall\Asset`, armada Logistics (`Truck/Trailer/Vessel/Aircraft/Container`), peralatan dapur Resto → tautan `asset_id` non-breaking + backfill idempoten
+- [x] 30.7 Stok opname aset (scan QR, selisih ditemukan/hilang, penyesuaian dengan approval)
+- [x] 30.8 Penugasan & peminjaman aset (check-out/in), asuransi aset (polis, jatuh tempo, klaim)
+- [x] 30.9 UI register, detail aset, pemindaian QR publik terbatas; role `asset_manager`
+- [x] 30.10 Quality gate Fase 30
 
 ## FASE 31 — ASET: PENYUSUTAN, PEMELIHARAAN, REVALUASI & DISPOSAL
 - [ ] 31.1 Penyusutan: garis lurus, saldo menurun, unit produksi (jam mesin/km); `ast:depreciate` bulanan idempoten per (aset, periode); akun `ast:accumulated_depreciation`, `ast:depreciation_expense`

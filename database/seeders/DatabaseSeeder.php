@@ -7,6 +7,7 @@ use App\Models\Sparepart;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Modules\Asset\Database\Seeders\AssetSeeder;
 use Modules\Banking\Application\Actions\SetPinAction;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\database\seeders\BankingSeeder;
@@ -136,6 +137,7 @@ class DatabaseSeeder extends Seeder
             LogisticsSeeder::class,
             PartySeeder::class,
             ContractSeeder::class,
+            AssetSeeder::class,
             RbacSeeder::class,
         ]);
     }
