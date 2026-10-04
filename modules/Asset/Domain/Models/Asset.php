@@ -27,7 +27,7 @@ class Asset extends Model
         'asset_number', 'asset_tag', 'name', 'description', 'category_id',
         'location_id', 'legal_entity_id', 'responsible_user_id', 'condition', 'status',
         'brand', 'serial_number', 'acquired_at', 'in_service_at',
-        'acquisition_cost_idr', 'landed_cost_idr', 'accumulated_depreciation_idr',
+        'acquisition_cost_idr', 'landed_cost_idr', 'accumulated_depreciation_idr', 'salvage_value_idr',
         'book_value_idr', 'source_type', 'source_id', 'photo_path',
     ];
 
@@ -41,6 +41,7 @@ class Asset extends Model
         'acquisition_cost_idr' => 'integer',
         'landed_cost_idr' => 'integer',
         'accumulated_depreciation_idr' => 'integer',
+        'salvage_value_idr' => 'integer',
         'book_value_idr' => 'integer',
         'source_id' => 'integer',
     ];
@@ -78,6 +79,36 @@ class Asset extends Model
     public function documents()
     {
         return $this->morphMany(DocumentAttachment::class, 'documentable');
+    }
+
+    public function workOrders(): HasMany
+    {
+        return $this->hasMany(AssetWorkOrder::class, 'asset_id')->orderByDesc('created_at');
+    }
+
+    public function depreciations(): HasMany
+    {
+        return $this->hasMany(Depreciation::class, 'asset_id')->orderByDesc('period');
+    }
+
+    public function revaluations(): HasMany
+    {
+        return $this->hasMany(AssetRevaluation::class, 'asset_id')->orderByDesc('created_at');
+    }
+
+    public function disposals(): HasMany
+    {
+        return $this->hasMany(AssetDisposal::class, 'asset_id')->orderByDesc('created_at');
+    }
+
+    public function leases(): HasMany
+    {
+        return $this->hasMany(AssetLease::class, 'asset_id')->orderByDesc('created_at');
+    }
+
+    public function usageLogs(): HasMany
+    {
+        return $this->hasMany(AssetUsageLog::class, 'asset_id')->orderByDesc('logged_at');
     }
 
     /**

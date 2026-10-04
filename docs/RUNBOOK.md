@@ -211,7 +211,7 @@ tar -czvf backups/storage_$(date +%Y%m%d_%H%M%S).tar.gz storage/app/public
    ```bash
    php artisan super:health-check
    ```
-4. Jika seluruh 8 pilar lolos verifikasi, aktifkan kembali server:
+4. Jika seluruh 9 pilar lolos verifikasi, aktifkan kembali server:
    ```bash
    php artisan up
    ```

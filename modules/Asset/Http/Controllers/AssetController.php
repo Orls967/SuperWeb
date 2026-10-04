@@ -9,12 +9,23 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
+use Modules\Asset\Application\Services\AssetAuditService;
 use Modules\Asset\Application\Services\AssetService;
+use Modules\Asset\Application\Services\AssetTcoService;
+use Modules\Asset\Application\Services\DepreciationService;
+use Modules\Asset\Application\Services\LeaseService;
+use Modules\Asset\Application\Services\RevaluationService;
+use Modules\Asset\Application\Services\WorkOrderService;
 use Modules\Asset\Domain\Enums\AssetStatus;
+use Modules\Asset\Domain\Enums\DisposalMethod;
 use Modules\Asset\Domain\Models\Asset;
 use Modules\Asset\Domain\Models\AssetAssignment;
 use Modules\Asset\Domain\Models\AssetCategory;
+use Modules\Asset\Domain\Models\AssetDisposal;
+use Modules\Asset\Domain\Models\AssetLease;
 use Modules\Asset\Domain\Models\AssetLocation;
+use Modules\Asset\Domain\Models\AssetRevaluation;
+use Modules\Asset\Domain\Models\AssetWorkOrder;
 
 /**
  * UI aset (30.9): register, detail, opname, penugasan, asuransi.
@@ -23,6 +34,12 @@ class AssetController extends Controller
 {
     public function __construct(
         private readonly AssetService $service,
+        private readonly DepreciationService $depreciation,
+        private readonly WorkOrderService $workOrders,
+        private readonly LeaseService $leases,
+        private readonly RevaluationService $revaluations,
+        private readonly AssetTcoService $tco,
+        private readonly AssetAuditService $audit,
     ) {}
 
     public function index(Request $request): View
@@ -55,12 +72,17 @@ class AssetController extends Controller
 
     public function show(Asset $asset): View
     {
-        $asset->load(['category', 'location', 'events', 'assignments.assignedTo', 'insurances', 'stocktakes']);
+        $asset->load(['category', 'location', 'events', 'assignments.assignedTo', 'insurances', 'stocktakes', 'workOrders', 'leases.payments']);
+
+        $this->service->ensureDefaultCategories();
 
         return view('asset::show', [
             'asset' => $asset,
             'locations' => AssetLocation::orderBy('name')->get(),
             'openAssignments' => $asset->assignments()->where('status', 'out')->get(),
+            'tco' => $this->tco->tco($asset),
+            'revaluations' => $asset->revaluations()->latest()->get(),
+            'disposals' => $asset->disposals()->latest()->get(),
         ]);
     }
 
@@ -210,5 +232,145 @@ class AssetController extends Controller
         }
 
         return back()->with('error', 'Rantai hash aset RUSAK: '.count($result['broken']).' ketidakcocokan ditemukan.');
+    }
+
+    // ── 31.1 / 31.2 Penyusutan (komersial & fiskal) ──────────────────────
+
+    public function depreciate(Request $request, Asset $asset): RedirectResponse
+    {
+        $data = $request->validate([
+            'period' => ['required', 'regex:/^\d{4}-\d{2}$/'],
+            'book' => 'required|in:commercial,fiscal',
+        ]);
+
+        $result = $this->depreciation->depreciate($asset, $data['period'], null, $data['book']);
+
+        return back()->with(
+            'success',
+            $result['amount_idr'] > 0
+                ? 'Penyusutan '.$data['book'].' periode '.$data['period'].': '.number_format($result['amount_idr']).' IDR (book value '.number_format($result['book_value_after_idr']).').'
+                : 'Tidak ada penyusutan untuk periode tersebut (sudah tercatat, nol, atau aset sudah disposal).'
+        );
+    }
+
+    // ── 31.3 Impairment & revaluasi ──────────────────────────────────────
+
+    public function requestRevaluation(Request $request, Asset $asset): RedirectResponse
+    {
+        $data = $request->validate([
+            'kind' => 'required|in:revaluation,impairment',
+            'new_value_idr' => 'required|integer|min:0',
+            'reason' => 'required|string|max:500',
+        ]);
+
+        $this->revaluations->request(
+            $asset,
+            $data['kind'],
+            (int) $data['new_value_idr'],
+            $data['reason'],
+            $request->user(),
+        );
+
+        return back()->with('success', 'Pengajuan '.($data['kind'] === 'impairment' ? 'impairment' : 'revaluasi').' diajukan (butuh persetujuan asset_manager + admin).');
+    }
+
+    public function applyRevaluation(Asset $asset, AssetRevaluation $revaluation): RedirectResponse
+    {
+        abort_unless($revaluation->asset_id === $asset->id, 404);
+        abort_unless(auth()->user()?->isAdmin() ?? false, 403);
+
+        $this->revaluations->apply($revaluation);
+
+        return back()->with('success', 'Revaluasi diterapkan: nilai buku aset diperbarui.');
+    }
+
+    // ── 31.4 Disposal ────────────────────────────────────────────────────
+
+    public function requestDisposal(Request $request, Asset $asset): RedirectResponse
+    {
+        $data = $request->validate([
+            'method' => 'required|in:sale,write_off,donation,loss',
+            'proceeds_idr' => 'required|integer|min:0',
+            'reason' => 'nullable|string|max:500',
+        ]);
+
+        $this->revaluations->requestDisposal(
+            $asset,
+            DisposalMethod::from($data['method']),
+            (int) $data['proceeds_idr'],
+            $data['reason'] ?? null,
+            $request->user(),
+        );
+
+        return back()->with('success', 'Pengajuan disposal diajukan (butuh persetujuan asset_manager + admin).');
+    }
+
+    public function finalizeDisposal(Asset $asset, AssetDisposal $disposal): RedirectResponse
+    {
+        abort_unless($disposal->asset_id === $asset->id, 404);
+        abort_unless(auth()->user()?->isAdmin() ?? false, 403);
+
+        $this->revaluations->finalizeDisposal($disposal);
+
+        return back()->with('success', 'Disposal dieksekusi: aset berstatus disposal.');
+    }
+
+    // ── 31.5 Work order pemeliharaan ─────────────────────────────────────
+
+    public function scheduleWorkOrder(Request $request, Asset $asset): RedirectResponse
+    {
+        $data = $request->validate([
+            'type' => 'required|in:preventive,corrective,calibration',
+            'trigger' => 'required|in:time,usage',
+            'due_date' => 'required_if:trigger,time|nullable|date',
+            'due_units' => 'required_if:trigger,usage|nullable|integer|min:1',
+            'parts_cost_idr' => 'nullable|integer|min:0',
+            'labor_cost_idr' => 'nullable|integer|min:0',
+            'cost_treatment' => 'required|in:expense,capitalized',
+            'description' => 'nullable|string|max:1000',
+            'vendor' => 'nullable|string|max:160',
+        ]);
+
+        $this->workOrders->schedule($asset, $data);
+
+        return back()->with('success', 'Work order dijadwalkan.');
+    }
+
+    public function completeWorkOrder(Asset $asset, AssetWorkOrder $workOrder): RedirectResponse
+    {
+        abort_unless($workOrder->asset_id === $asset->id, 404);
+
+        $this->workOrders->complete($workOrder, request('completed_units'));
+
+        return back()->with('success', 'Work order selesai (biaya tercatat di ledger).');
+    }
+
+    // ── 31.6 Sewa (PSAK 73 simulasi) ─────────────────────────────────────
+
+    public function startLease(Request $request, Asset $asset): RedirectResponse
+    {
+        $data = $request->validate([
+            'contract_id' => 'nullable|uuid|exists:ctr_contracts,id',
+            'periodic_payment_idr' => 'required|integer|min:1',
+            'total_periods' => 'required|integer|min:1|max:120',
+            'implicit_rate' => 'nullable|numeric|min:0|max:100',
+            'start_date' => 'required|date',
+        ]);
+
+        $this->leases->start($asset, $data);
+
+        return back()->with('success', 'Sewa (PSAK 73 simulasi) dibuka dan jadwal amortisasi dibentuk.');
+    }
+
+    public function payLeasePeriod(Request $request, AssetLease $lease): RedirectResponse
+    {
+        $data = $request->validate([
+            'period_no' => 'required|integer|min:1',
+        ]);
+
+        $payment = $lease->payments()->where('period_no', $data['period_no'])->firstOrFail();
+        $this->leases->payPeriod($payment, $request->user()?->id);
+
+        return back()->with('success', 'Pembayaran periode sewa tercatat.');
     }
 }

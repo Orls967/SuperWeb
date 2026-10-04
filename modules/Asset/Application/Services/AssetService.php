@@ -26,6 +26,7 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Core\Contracts\DocumentStoreInterface;
@@ -155,6 +156,36 @@ class AssetService
             ], $actor?->name);
 
             return $asset;
+        });
+    }
+
+    /**
+     * Naikkan aset yang sudah ada ke ledger (idempoten per key `ast:acquire:{id}`).
+     *
+     * Dipakai seeder & data awal agar subledger buku selalu sama dengan
+     * ledger modul Asset; aset legacy (source_type=legacy_backfill) sengaja
+     * TIDAK dinaikkan — biayanya sudah tercatat di modul asal.
+     */
+    public function ensureCapitalized(Asset $asset): bool
+    {
+        $total = (int) $asset->acquisition_cost_idr + (int) $asset->landed_cost_idr;
+
+        if ($total <= 0 || $asset->source_type === 'legacy_backfill') {
+            return false;
+        }
+
+        $exists = LedgerTransaction::query()
+            ->where('idempotency_key', 'ast:acquire:'.$asset->id)
+            ->exists();
+
+        if ($exists) {
+            return false;
+        }
+
+        return (bool) DB::transaction(function () use ($asset) {
+            $this->postAcquisition($asset, 'direct', null);
+
+            return true;
         });
     }
 

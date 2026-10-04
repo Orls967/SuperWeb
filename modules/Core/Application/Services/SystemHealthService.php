@@ -13,7 +13,7 @@ use Modules\Core\Domain\Models\AuditLog;
 class SystemHealthService
 {
     /**
-     * Jalankan diagnosa kesehatan sistem menyeluruh di 7 pilar utama platform.
+     * Jalankan diagnosa kesehatan sistem menyeluruh di 9 pilar utama platform.
      *
      * @return array{
      *     status: string,
@@ -208,6 +208,28 @@ class SystemHealthService
                 'ok' => false,
                 'status' => 'UNHEALTHY',
                 'message' => 'Gagal memeriksa logistik: '.$e->getMessage(),
+            ];
+        }
+
+        // 9. Asset Subledger & Hash Chain (ast:audit) — Fase 31.8
+        try {
+            $exitCode = Artisan::call('ast:audit');
+            $isOk = ($exitCode === 0);
+
+            $checks['assets'] = [
+                'name' => 'Aset: Subledger & Rantai Hash',
+                'ok' => $isOk,
+                'status' => $isOk ? 'HEALTHY' : 'UNHEALTHY',
+                'message' => $isOk
+                    ? 'Book value, akumulasi penyusutan, ledger, dan rantai hash aset konsisten (0 selisih)'
+                    : 'Ditemukan selisih subledger aset atau rantai hash rusak',
+            ];
+        } catch (\Throwable $e) {
+            $checks['assets'] = [
+                'name' => 'Aset: Subledger & Rantai Hash',
+                'ok' => false,
+                'status' => 'UNHEALTHY',
+                'message' => 'Gagal memeriksa aset: '.$e->getMessage(),
             ];
         }
 

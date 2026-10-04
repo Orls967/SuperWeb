@@ -410,15 +410,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 30.10 Quality gate Fase 30
 
 ## FASE 31 — ASET: PENYUSUTAN, PEMELIHARAAN, REVALUASI & DISPOSAL
-- [ ] 31.1 Penyusutan: garis lurus, saldo menurun, unit produksi (jam mesin/km); `ast:depreciate` bulanan idempoten per (aset, periode); akun `ast:accumulated_depreciation`, `ast:depreciation_expense`
-- [ ] 31.2 Penyusutan fiskal vs komersial (dua buku, selisih temporer — simulasi), laporan rekonsiliasi
-- [ ] 31.3 Impairment & revaluasi (approval, jurnal selisih, surplus revaluasi di ekuitas)
-- [ ] 31.4 Disposal: jual, hapus, hibah, hilang; laba/rugi pelepasan; link ke penjualan (Store/Auction sederhana) dan Payment
-- [ ] 31.5 Pemeliharaan preventif berbasis waktu/penggunaan; work order aset (generalisasi Mall `WorkOrder` & AutoServe fleet service via contract); biaya pemeliharaan → kapitalisasi vs beban
-- [ ] 31.6 Sewa (PSAK 73 **simulasi**): hak guna aset & liabilitas sewa dari kontrak sewa (Fase 29), amortisasi bunga
-- [ ] 31.7 Total cost of ownership per aset (susut + pemeliharaan + BBM/asuransi), rekomendasi ganti
-- [ ] 31.8 `ast:audit` (subledger aset = ledger, 0 selisih), pilar baru di `super:health-check`
-- [ ] 31.9 Quality gate Fase 31
+- [x] 31.1 Penyusutan: garis lurus, saldo menurun, unit produksi (jam mesin/km); `ast:depreciate` bulanan idempoten per (aset, periode); akun `ast:accumulated_depreciation`, `ast:depreciation_expense`
+- [x] 31.2 Penyusutan fiskal vs komersial (dua buku, selisih temporer — simulasi), laporan rekonsiliasi
+- [x] 31.3 Impairment & revaluasi (approval, jurnal selisih, surplus revaluasi di ekuitas)
+- [x] 31.4 Disposal: jual, hapus, hibah, hilang; laba/rugi pelepasan; link ke penjualan (Store/Auction sederhana) dan Payment
+- [x] 31.5 Pemeliharaan preventif berbasis waktu/penggunaan; work order aset (generalisasi Mall `WorkOrder` & AutoServe fleet service via contract); biaya pemeliharaan → kapitalisasi vs beban
+- [x] 31.6 Sewa (PSAK 73 **simulasi**): hak guna aset & liabilitas sewa dari kontrak sewa (Fase 29), amortisasi bunga
+- [x] 31.7 Total cost of ownership per aset (susut + pemeliharaan + BBM/asuransi), rekomendasi ganti
+- [x] 31.8 `ast:audit` (subledger aset = ledger, 0 selisih), pilar baru di `super:health-check`
+- [x] 31.9 Quality gate Fase 31
 
 ## FASE 32 — PRODUSEN & PEMASOK (SUPPLIER MANAGEMENT, MODUL `sup_`)
 - [ ] 32.1 Modul Supplier: profil pemasok/produsen (party role), kategori barang/jasa, kapabilitas, lokasi pabrik, sertifikasi (ISO, SNI, Halal, BPOM, GMP) dengan masa berlaku

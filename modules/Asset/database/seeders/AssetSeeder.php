@@ -47,7 +47,14 @@ class AssetSeeder extends Seeder
                 'landed_cost_idr' => 100_000_000,
                 'source_type' => 'direct',
                 'acquired_at' => now()->subYears(2)->toDateString(),
-            ], null, false); // seed: tanpa posting ledger agar rekonsiliasi seed tidak berubah
+            ], null, false);
+        }
+
+        // Kapitalisasi idempoten semua aset non-legacy agar subledger == ledger.
+        foreach (Asset::query()
+            ->where('source_type', '!=', 'legacy_backfill')
+            ->get() as $seededAsset) {
+            $service->ensureCapitalized($seededAsset);
         }
     }
 }

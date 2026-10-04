@@ -14,6 +14,9 @@ enum AssetEventType: string
     case Insurance = 'insurance';
     case Assignment = 'assignment';
     case Stocktake = 'stocktake';
+    case Depreciation = 'depreciation';
+    case Maintenance = 'maintenance';
+    case Lease = 'lease';
 
     public function label(): string
     {
@@ -26,6 +29,9 @@ enum AssetEventType: string
             self::Insurance => 'Asuransi',
             self::Assignment => 'Penugasan',
             self::Stocktake => 'Stok Opname',
+            self::Depreciation => 'Penyusutan',
+            self::Maintenance => 'Pemeliharaan',
+            self::Lease => 'Sewa',
         };
     }
 }

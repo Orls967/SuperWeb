@@ -54,6 +54,11 @@ enum TransactionType: string
     case ASSET_ACQUISITION = 'ast_acquire';
     case ASSET_DISPOSAL = 'ast_dispose';
     case ASSET_TRANSFER = 'ast_transfer';
+    case ASSET_DEPRECIATION = 'ast_depreciation';
+    case ASSET_REVALUATION = 'ast_revaluation';
+    case ASSET_IMPAIRMENT = 'ast_impairment';
+    case ASSET_WORK_ORDER = 'ast_work_order';
+    case ASSET_LEASE_AMORT = 'ast_lease_amort';
 
     public function label(): string
     {
@@ -106,6 +111,11 @@ enum TransactionType: string
             self::ASSET_ACQUISITION => 'Akuisisi Aset Tetap',
             self::ASSET_DISPOSAL => 'Disposal Aset Tetap',
             self::ASSET_TRANSFER => 'Mutasi Aset Tetap',
+            self::ASSET_DEPRECIATION => 'Beban Penyusutan Aset',
+            self::ASSET_REVALUATION => 'Revaluasi Aset',
+            self::ASSET_IMPAIRMENT => 'Impairment Aset',
+            self::ASSET_WORK_ORDER => 'Biaya Pemeliharaan Aset',
+            self::ASSET_LEASE_AMORT => 'Amortisasi Sewa',
         };
     }
 }

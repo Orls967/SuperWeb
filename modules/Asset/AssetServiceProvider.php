@@ -5,8 +5,17 @@ declare(strict_types=1);
 namespace Modules\Asset;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Asset\Application\Services\AssetAuditService;
 use Modules\Asset\Application\Services\AssetService;
+use Modules\Asset\Application\Services\AssetTcoService;
+use Modules\Asset\Application\Services\DepreciationService;
+use Modules\Asset\Application\Services\LeaseService;
+use Modules\Asset\Application\Services\RevaluationService;
+use Modules\Asset\Application\Services\WorkOrderService;
+use Modules\Asset\Console\Commands\AuditAssetCommand;
 use Modules\Asset\Console\Commands\BackfillAssetLinksCommand;
+use Modules\Asset\Console\Commands\CapitalizeAssetsCommand;
+use Modules\Asset\Console\Commands\DepreciateAssetsCommand;
 use Modules\Asset\Console\Commands\VerifyAssetChainsCommand;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -15,6 +24,12 @@ class AssetServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(AssetService::class);
+        $this->app->singleton(DepreciationService::class);
+        $this->app->singleton(WorkOrderService::class);
+        $this->app->singleton(LeaseService::class);
+        $this->app->singleton(RevaluationService::class);
+        $this->app->singleton(AssetTcoService::class);
+        $this->app->singleton(AssetAuditService::class);
     }
 
     public function boot(): void
@@ -27,6 +42,9 @@ class AssetServiceProvider extends ServiceProvider
             $this->commands([
                 VerifyAssetChainsCommand::class,
                 BackfillAssetLinksCommand::class,
+                DepreciateAssetsCommand::class,
+                AuditAssetCommand::class,
+                CapitalizeAssetsCommand::class,
             ]);
         }
 

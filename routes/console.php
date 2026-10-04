@@ -49,3 +49,7 @@ Schedule::command('party:remind-expiring-docs')->dailyAt('08:00');
 // --- Kontrak Inti ---
 Schedule::command('contracts:verify-chain')->dailyAt('03:00');
 Schedule::command('ctr:remind')->dailyAt('08:15');
+
+// --- Aset (Fase 31) ---
+Schedule::command('ast:depreciate')->monthlyOn(1, '01:30');
+Schedule::command('ast:audit')->monthlyOn(1, '02:00');

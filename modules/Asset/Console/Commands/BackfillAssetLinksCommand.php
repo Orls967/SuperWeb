@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Schema;
 use Modules\Asset\Application\Services\AssetService;
 use Modules\Asset\Domain\Enums\AssetEventType;
 use Modules\Asset\Domain\Enums\AssetStatus;
+use Modules\Asset\Domain\Models\Asset;
 use Modules\Asset\Domain\Models\AssetCategory;
 
 /**
@@ -76,6 +77,15 @@ class BackfillAssetLinksCommand extends Command
 
                     $this->linkLegacy($table, (int) $row->id, (string) $name, '', $category = AssetCategory::where('code', 'vehicle')->firstOrFail(), $service, false, $label);
                 }
+            }
+        }
+
+        if (! $dryRun) {
+            // Aset inti yang dibuat seed/manual harus ikut punya posting akuisisi.
+            foreach (Asset::query()
+                ->where('source_type', '!=', 'legacy_backfill')
+                ->cursor() as $asset) {
+                $service->ensureCapitalized($asset);
             }
         }
 

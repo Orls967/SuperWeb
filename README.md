@@ -101,7 +101,7 @@ Platform menyediakan rangkaian Artisan Command untuk otomatisasi operasional dan
 ### 1. Diagnosa & Observabilitas
 | Command | Deskripsi |
 |---|---|
-| `php artisan super:health-check` | Memindai kesehatan 8 pilar platform (DB, Cache, Storage, Ledger, Passport, Mall Billing, Resto Shift, Logistik Kustodi & Billing) |
+| `php artisan super:health-check` | Memindai kesehatan 9 pilar platform (DB, Cache, Storage, Ledger, Passport, Mall Billing, Resto Shift, Logistik Kustodi & Billing, Aset Subledger & Hash Chain) |
 | `php artisan bank:reconcile` | Memverifikasi seluruh saldo akun buku besar double-entry (0 diskrepansi saldo) |
 | `php artisan core:verify-passports` | Memvalidasi keabsahan kriptografis rantai hash-chain Paspor Kendaraan |
 | `php artisan mall:audit-billing` | Mengaudit keselarasan seluruh penagihan invoice mall terhadap pendapatan buku besar |

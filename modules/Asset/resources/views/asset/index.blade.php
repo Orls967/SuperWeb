@@ -30,6 +30,8 @@
                 <button class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm">Filter</button>
             </form>
 
+            <a href="{{ route('asset.audit') }}" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-sm font-medium">📊 Audit & TCO</a>
+
             <form method="POST" action="{{ route('asset.verify-chain') }}">
                 @csrf
                 <button class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm">🔗 Verify Chain</button>
