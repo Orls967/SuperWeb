@@ -364,15 +364,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 27 — PARTY MASTER & BADAN HUKUM (FONDASI PIHAK)
 *Satu sumber kebenaran untuk semua pihak: pemasok, produsen, distributor, agen, mitra, pelanggan, carrier.*
-- [ ] 27.1 Modul `Party` (`pty_`): `Party` (orang/perusahaan), `PartyRole` (supplier, producer, distributor, agent, partner, customer, carrier, tenant, franchisee), alamat, kontak, NPWP/NIB/NIK (terenkripsi sebagian), rekening bank
-- [ ] 27.2 KYC/KYB workflow: dokumen (akta, NIB, NPWP, SIUP), verifikasi bertahap lewat approval engine, masa berlaku dokumen + pengingat kedaluwarsa, status `pending/verified/suspended/blacklisted`
-- [ ] 27.3 **Legal entity** grup (`pty_legal_entities`): induk–anak perusahaan, mata uang fungsional, NPWP entitas, tahun fiskal; **chart of accounts per entitas** (mapping ke akun ledger yang ada tanpa memecah ledger lama)
-- [ ] 27.4 Tautan non-breaking ke data lama: `Carrier`, `ShipperAccount` (Logistics), `Tenant` (Mall), seller C2C (Store), supplier Resto → `party_id` (nullable → diisi backfill idempoten)
-- [ ] 27.5 Deteksi duplikat & merge party (aturan NPWP/nama/telepon; merge tercatat, reversible lewat audit trail)
-- [ ] 27.6 Screening daftar hitam/sanksi (data simulasi) saat onboarding & sebelum transaksi bernilai tinggi; hasil tersimpan
-- [ ] 27.7 Credit profile pihak (limit, skor internal simulasi, eksposur gabungan lintas modul)
-- [ ] 27.8 UI direktori pihak + detail 360° (kontrak, transaksi, aset, eksposur — placeholder tautan ke fase berikutnya)
-- [ ] 27.9 Quality gate Fase 27
+- [x] 27.1 Modul `Party` (`pty_`): `Party` (orang/perusahaan), `PartyRole` (supplier, producer, distributor, agent, partner, customer, carrier, tenant, franchisee), alamat, kontak, NPWP/NIB/NIK (terenkripsi sebagian), rekening bank
+- [x] 27.2 KYC/KYB workflow: dokumen (akta, NIB, NPWP, SIUP), verifikasi bertahap lewat approval engine, masa berlaku dokumen + pengingat kedaluwarsa, status `pending/verified/suspended/blacklisted`
+- [x] 27.3 **Legal entity** grup (`pty_legal_entities`): induk–anak perusahaan, mata uang fungsional, NPWP entitas, tahun fiskal; **chart of accounts per entitas** (mapping ke akun ledger yang ada tanpa memecah ledger lama)
+- [x] 27.4 Tautan non-breaking ke data lama: `Carrier`, `ShipperAccount` (Logistics), `Tenant` (Mall), seller C2C (Store), supplier Resto → `party_id` (nullable → diisi backfill idempoten)
+- [x] 27.5 Deteksi duplikat & merge party (aturan NPWP/nama/telepon; merge tercatat, reversible lewat audit trail)
+- [x] 27.6 Screening daftar hitam/sanksi (data simulasi) saat onboarding & sebelum transaksi bernilai tinggi; hasil tersimpan
+- [x] 27.7 Credit profile pihak (limit, skor internal simulasi, eksposur gabungan lintas modul)
+- [x] 27.8 UI direktori pihak + detail 360° (kontrak, transaksi, aset, eksposur — placeholder tautan ke fase berikutnya)
+- [x] 27.9 Quality gate Fase 27
 
 ## FASE 28 — KONTRAK INTI (MODUL `ctr_`)
 - [ ] 28.1 Modul Contract: `Contract` (jenis: pembelian, penjualan, distribusi, keagenan, sewa, jasa, lisensi, JV, OEM/ODM, NDA), `ContractParty` (≥ 2 pihak, peran), nomor via 26.8

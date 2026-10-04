@@ -4,8 +4,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 26 (Utang Teknis & Fondasi Platform, semua sub-fase 26.1–26.10 selesai) · **Berjalan:** — · **Berikutnya:** Fase 27 Party Master & Badan Hukum
-**Snapshot gate (akhir Fase 26.10):** 597 test / 3382 assertion (26.9: +5 test Approval Engine / +21 assertion, 26.8: 592/3361, 26.7: 587/3342, 26.6: 583/3319, 26.5: 577/3286, 26.4: 554/3233, 26.1–26.2: 545/3203, Fase 25: 538/3189), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih (29 dok) · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (9) lulus.
+**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 27 (Party Master & Badan Hukum selesai) · **Berjalan:** — · **Berikutnya:** Fase 28 Kontrak Inti (Modul ctr_)
+**Snapshot gate (akhir Fase 27.9):** 611 test / 3438 assertion (Fase 27: +14 test Party / +56 assertion, 26.9: 597/3382, Fase 25: 538/3189), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih (29 dok) · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (10) lulus.
 
 ---
 
@@ -15,7 +15,7 @@
 |---|---|
 | Framework | Laravel 13 (`laravel/framework ^13.17`), PHP `^8.3` (composer.lock butuh ≥ 8.4; sandbox 8.3 → pakai `platform.php 8.3.6` sementara, **jangan commit composer.lock**) |
 | DB | SQLite (dev/test). Uang = integer IDR atau `decimal(36,18)` untuk kripto; **tanpa float** |
-| Test | Pest 4 + pest-plugin-arch; `vendor/bin/pest` (≈ 80 file test) |
+| Test | Pest 4 + pest-plugin-arch; `vendor/bin/pest` (≈ 81 file test) |
 | Front-end | Blade + Tailwind + Alpine, Vite (`npm run build`) |
 | Lib | `brick/math` v1 (`RoundingMode::HalfUp`), `bacon/bacon-qr-code`, Breeze (auth) |
 | Autoload | `App\`, `Modules\` → `modules/`, `Database\Seeders\` |
@@ -27,7 +27,7 @@ Gotcha yang sudah pernah menggigit: `event(new X)` bukan `X::dispatch` bila even
 
 - **Modular monolith** `modules/{Nama}/` — struktur standar: `Application/{Actions,Services,Queries,Listeners}`, `Contracts/`, `Console/(Commands)`, `Domain/{Enums,Events,Exceptions,Models,DTOs}`, `Http/Controllers`, `database/{migrations,seeders}`, `resources/views` (namespace view `{modul}::`), `routes/web.php`, `tests/Feature`, `{Nama}ServiceProvider.php`.
 - **Action/Service**: logika bisnis di Action (satu use-case, `__invoke`/`execute`, extends `Shared\Application\BaseAction` bila relevan), mutasi dalam `DB::transaction`. **Controller tipis**, tidak boleh memakai `DB` facade (ditegakkan arch test).
-- **Antar-modul hanya lewat Contract / Domain Event / Ledger / PaymentGateway**. Tidak boleh impor `Domain` modul lain (`tests/Architecture/ModuleBoundariesTest.php`, 9 aturan).
+- **Antar-modul hanya lewat Contract / Domain Event / Ledger / PaymentGateway**. Tidak boleh impor `Domain` modul lain (`tests/Architecture/ModuleBoundariesTest.php`, 10 aturan).
 - **Idempotensi**: setiap posting ledger & event handler memakai idempotency key deterministik (per sumber).
 - **State machine** lewat enum (`ShipmentStatus`, `FleetStatus`, `BookingStatus`, …) dengan guard transisi.
 - **Hash-chain append-only**: `core_vehicle_events` (Vehicle Passport) & tracking event Logistik. Model menolak update/delete.
@@ -51,6 +51,7 @@ Gotcha yang sudah pernah menggigit: `event(new X)` bukan `X::dispatch` bila even
 | Resto | `resto_` (34 tabel) | `/resto` | RM Sari Ranah: outlet, dapur sentral CK-01, resep BOM, HPP (MAC), batch, etalase hidang, POS/shift, rantai pasok, katering, franchise/royalti; cmd `resto:{expire-display,close-day,post-royalty,check-stock}` | 156 |
 | Mall | `mall_` (25 tabel) | `/mall` | Duta Mall: leasing, tagihan, tunggakan/denda, utilitas, parkir, footfall, loyalty (points), voucher, event, facility WO, `mall_assets`; cmd `mall:*` (9) | 168 |
 | Logistics | `lgx_` (≈ 43 tabel) | `/logistics` | Sari Ranah Express — lihat §6 | 269 |
+| Party | `pty_` (11 tabel) | `/party` | Party Master & Badan Hukum: `Party` (orang/perusahaan), `LegalEntity` (holding/anak/cabang), `PartyRole`, `PartyAddress`, `PartyContact`, `PartyBankAccount`, `KycDocument`, `SanctionCheck`, `CreditProfile`, `pty_merge_logs`; actions KYC submit/approve/reject; screening sanksi fuzzy similar_text + hash; credit scoring 0-100; command `party:backfill-links`, `party:remind-expiring-docs` | 25 |
 
 Tabel non-prefiks lama: `users`, `bookings`, `spareparts`, `services`, `cars`, `brands`, `garages`, `wishlists`, `platform_*`.
 
@@ -107,8 +108,8 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 - Detail alasan: `docs/DECISIONS.md` (≈ 40 entri bertanggal).
 
 ## 8. Peta command lengkap
-
-`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (8 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal). Jadwal: `routes/console.php`.
+ 
+`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (8 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal) · `party:backfill-links` · `party:remind-expiring-docs`. Jadwal: `routes/console.php`.
 
 ## 9. Test
 

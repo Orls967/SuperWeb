@@ -83,3 +83,15 @@ arch('other business domains do not import Logistics Domain')
         'Modules\Mall',
     ])
     ->not->toUse('Modules\Logistics\Domain');
+
+arch('Party Domain does not import business domain models')
+    ->expect('Modules\Party\Domain')
+    ->not->toUse([
+        'Modules\Logistics\Domain',
+        'Modules\Mall\Domain',
+        'Modules\Resto\Domain',
+        'Modules\Store\Domain',
+        'Modules\AutoServe\Domain',
+        'Modules\Crypto\Domain',
+        'Modules\Banking\Domain',
+    ]);

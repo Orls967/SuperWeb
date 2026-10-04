@@ -42,3 +42,6 @@ Schedule::command('lgx:pay-carriers')->weeklyOn(1, '09:00');
 Schedule::command('lgx:accrue-dd')->dailyAt('00:10');
 Schedule::command('lgx:audit-billing')->dailyAt('07:15');
 Schedule::command('lgx:verify-custody')->dailyAt('02:30');
+
+// --- Party Master & Compliance ---
+Schedule::command('party:remind-expiring-docs')->dailyAt('08:00');

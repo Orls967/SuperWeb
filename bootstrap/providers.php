@@ -10,6 +10,7 @@ use Modules\Finance\FinanceServiceProvider;
 use Modules\Inventory\InventoryServiceProvider;
 use Modules\Logistics\LogisticsServiceProvider;
 use Modules\Mall\MallServiceProvider;
+use Modules\Party\PartyServiceProvider;
 use Modules\Payment\PaymentServiceProvider;
 use Modules\Resto\RestoServiceProvider;
 use Modules\Shared\SharedServiceProvider;
@@ -30,4 +31,5 @@ return [
     RestoServiceProvider::class,
     MallServiceProvider::class,
     LogisticsServiceProvider::class,
+    PartyServiceProvider::class,
 ];

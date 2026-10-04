@@ -508,4 +508,48 @@
 
 > Fase 26 selesai. Siap melanjutkan ke **Fase 27 — Party Master & Badan Hukum**.
 
+---
+
+## ✅ Quality Gate Fase 27 — PENUTUP FINAL — 2026-10-04
+
+**Cakupan fase:** Fase 27.1 – 27.9 (Party Master & Badan Hukum — Fondasi Pihak)
+
+### Ringkasan Capaian Sub-Fase
+
+| Sub-Fase | Komponen & Fitur | Status | Detail Implementasi |
+|---|---|:---:|---|
+| 27.1 | Modul `Party` (`pty_`) | Selesai | `pty_parties`, `pty_party_roles`, `pty_addresses`, `pty_contacts`, `pty_bank_accounts`. NIK/NPWP hash deterministik + masked representation. |
+| 27.2 | KYC/KYB Workflow | Selesai | `SubmitKycDocumentAction`, `ApproveKycDocumentAction`, `RejectKycDocumentAction`. Verifikasi multi-tahap, expiry tracking + command `party:remind-expiring-docs`. |
+| 27.3 | Legal Entities & CoA Map | Selesai | `pty_legal_entities` struktur pohon holding, anak perusahaan & cabang operasional. Mapping akun entitas per functional currency. |
+| 27.4 | Non-Breaking Backlinks | Selesai | Kolom `party_id` nullable di `lgx_carriers`, `lgx_shipper_accounts`, `mall_tenants`, `resto_suppliers` + command idempoten `party:backfill-links`. |
+| 27.5 | Dedup & Reversible Merge | Selesai | Guard duplikasi NPWP keras (`DuplicatePartyException`), penggabungan party dengan pemindahan role, audit trail append-only `pty_merge_logs`, dan fungsi pembatalan `reverseMerge`. |
+| 27.6 | Sanctions Screening | Selesai | `SanctionScreeningService`, tabel `pty_sanctions_lists` & `pty_sanctions_checks`. Fuzzy matching trigram similarity + hash identifier, idempoten 24 jam. |
+| 27.7 | Credit Profile & Risk Tier | Selesai | `CreditScoringService`, kalkulasi dinamis 0-100 (KYB, Sanctions, Approved docs, exposure ratio), breakdown lintas modul (`lgx_shipper_accounts`, `mall_invoices`). |
+| 27.8 | UI Direktori & 360° Profile | Selesai | `/party` (index directory), `/party/create`, `/party/{party}` (detail 360° KYC, sanctions, bank, contact, addresses), `/party/legal-entities` (corporate tree). |
+| **27.9** | **Quality Gate Fase 27** | **Lulus** | 611 tests / 3438 assertions / 0 failure / 0 skipped. |
+
+### Metrik Kualitas Final Fase 27
+- **Test Suite**: **611 Tests, 3438 Assertions** (100% PASS, 0 Failures, 0 Skipped).
+- **Kenaikan dari baseline Fase 26**: +14 tests, +56 assertions.
+- **Status Build Frontend (Vite):** Sukses (`built in 636ms`).
+- **Status Standar Kode (Pint):** Passed (`{"tool":"pint","result":"passed"}`).
+- **Arch Tests (batas modul):** 10 passed — mencakup aturan isolasi domain model Party dari domain bisnis lain.
+
+### Hasil Seluruh Quality Gate Operasional
+- `php artisan migrate:fresh --seed` — Sukses (seeder PartySeeder menyemai 5 party realistis, entitas holding/subsidiary, dan daftar sanksi UN/OFAC/DTTOT).
+- `php artisan bank:reconcile` — **128 akun ledger seimbang, 0 selisih** (global sum per aset = 0).
+- `php artisan core:verify-passports` — Seluruh paspor kendaraan valid, rantai SHA-256 utuh.
+- `php artisan lgx:audit-billing` — **15 pemeriksaan, 29 dokumen non-nol, 0 selisih**.
+- `php artisan lgx:verify-custody` — 6 pengiriman (9 event) valid bebas manipulasi.
+- `php artisan lgx:capacity-check` — 1 jadwal valid, alokasi cocok sempurna dengan reservasi aktif.
+- `php artisan mall:audit-billing` — Seluruh invoice mall sinkron dengan pendapatan buku besar, 0 selisih.
+- `php artisan super:health-check` — **8/8 pilar HEALTHY** (Durasi 51.56 ms).
+- `php artisan party:backfill-links` — Sukses (idempoten).
+- `php artisan party:remind-expiring-docs` — Sukses (idempoten).
+
+### Modul Aktif Akhir Fase 27
+`Shared`, `Core`, `AutoServe`, `AutoDex`, `Banking`, `Payment`, `Inventory`, `Store`, `Crypto`, `Finance`, `Resto`, `Mall`, `Logistics`, **`Party`** — **14 modul aktif**.
+
+> Fase 27 selesai. Siap melanjutkan ke **Fase 28 — Kontrak Inti (Modul `ctr_`)**.
+
 
