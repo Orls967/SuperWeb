@@ -432,15 +432,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 32.9 Quality gate Fase 32
 
 ## FASE 33 — PROCUREMENT: PR → RFQ → TENDER → PO
-- [ ] 33.1 Purchase Requisition (PR): dari kebutuhan manual, MRP (Fase 36), atau reorder-point; approval berjenjang berdasar nilai & pusat biaya
-- [ ] 33.2 RFQ multi-pemasok, perbandingan penawaran (matriks harga/lead time/skor), pemilihan dengan alasan tercatat
-- [ ] 33.3 Tender tertutup/terbuka: periode, addendum, segel penawaran (hash), buka bersamaan, evaluasi berbobot, penetapan pemenang (approval)
-- [ ] 33.4 Purchase Order (PO): dari PR/RFQ/kontrak kerangka; versi PO, perubahan via approval, close/cancel; blanket PO & call-off
-- [ ] 33.5 PO impor: mata uang asing, Incoterm, pelabuhan, estimasi landed cost (menghubungkan Fase 48–49)
-- [ ] 33.6 Komitmen anggaran: PR/PO mengunci anggaran (encumbrance) per pusat biaya; peringatan melebihi anggaran
-- [ ] 33.7 Integrasi Logistics: PO inbound membuat shipment masuk (via `ShipmentBooking`), jadwal kedatangan, appointment dock (Fase 24.5 untuk gudang/pabrik)
-- [ ] 33.8 Dashboard procurement: spend analysis, saving, siklus PR→PO, PO terbuka/lewat jatuh tempo
-- [ ] 33.9 Quality gate Fase 33
+- [x] 33.1 Purchase Requisition (PR): dari kebutuhan manual, MRP (Fase 36), atau reorder-point; approval berjenjang berdasar nilai & pusat biaya
+- [x] 33.2 RFQ multi-pemasok, perbandingan penawaran (matriks harga/lead time/skor), pemilihan dengan alasan tercatat
+- [x] 33.3 Tender tertutup/terbuka: periode, addendum, segel penawaran (hash), buka bersamaan, evaluasi berbobot, penetapan pemenang (approval)
+- [x] 33.4 Purchase Order (PO): dari PR/RFQ/kontrak kerangka; versi PO, perubahan via approval, close/cancel; blanket PO & call-off
+- [x] 33.5 PO impor: mata uang asing, Incoterm, pelabuhan, estimasi landed cost (menghubungkan Fase 48–49)
+- [x] 33.6 Komitmen anggaran: PR/PO mengunci anggaran (encumbrance) per pusat biaya; peringatan melebihi anggaran
+- [x] 33.7 Integrasi Logistics: PO inbound membuat shipment masuk (via `ShipmentBooking`), jadwal kedatangan, appointment dock (Fase 24.5 untuk gudang/pabrik)
+- [x] 33.8 Dashboard procurement: spend analysis, saving, siklus PR→PO, PO terbuka/lewat jatuh tempo
+- [x] 33.9 Quality gate Fase 33
 
 ## FASE 34 — PENERIMAAN BARANG, HUTANG USAHA & PEMBAYARAN PEMASOK
 - [ ] 34.1 Goods Receipt (GRN): terhadap PO, parsial/berkali, toleransi over/under-delivery, lot/batch & kedaluwarsa, penempatan ke gudang via `InventoryService`

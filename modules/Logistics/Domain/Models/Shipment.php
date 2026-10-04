@@ -92,6 +92,21 @@ class Shipment extends LogisticsEntity implements Payable
         return $this->belongsTo(Driver::class, 'driver_id');
     }
 
+    /**
+     * Ambil source_id: nilai numerik dikembalikan sebagai int (kompatibel
+     * pemakaian lama Store), UUID/identitas lain tetap string.
+     */
+    public function getSourceIdAttribute(mixed $value): int|string|null
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $string = (string) $value;
+
+        return ctype_digit($string) ? (int) $string : $string;
+    }
+
     public function origin(): BelongsTo
     {
         return $this->belongsTo(Location::class, 'origin_location_id');

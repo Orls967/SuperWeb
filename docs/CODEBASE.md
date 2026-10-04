@@ -4,8 +4,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase selesai terakhir:** 32 (Produsen & Pemasok) · **Berjalan:** — · **Berikutnya:** Fase 33 Procurement (PR → RFQ → Tender → PO)
-**Snapshot gate (akhir Fase 32):** 696 test / 3786 assertion (Fase 31: 680/3733), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih (29 dok) · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 9 pilar HEALTHY · Pint, Vite, arch (10) lulus.
+**Terakhir diperbarui:** 2026-10-05 · **Fase selesai terakhir:** 33 (Procurement PR → RFQ → Tender → PO) · **Berjalan:** — · **Berikutnya:** Fase 34 Penerimaan Barang, Hutang Usaha & Pembayaran Pemasok
+**Snapshot gate (akhir Fase 33):** 713 test / 3852 assertion (Fase 32: 696/3786), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih (29 dok) · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 9 pilar HEALTHY · Pint, Vite, arch (10) lulus.
 
 ---
 
@@ -56,11 +56,12 @@ Gotcha yang sudah pernah menggigit: `event(new X)` bukan `X::dispatch` bila even
 | Supplier | `sup_` (10 tabel) | `/suppliers`, `/portal/suppliers` | Produsen & Pemasok: `Supplier` (kandidat→approved→preferred→probation→disqualified, guard + riwayat), `SupplierCertification` (ISO/SNI/Halal/BPOM/GMP+masa berlaku), `SupplierQualification` (kuesioner/audit lokasi + ApprovalEngine four-eyes), `SupplierItem` + `SupplierPriceTier` (MOQ, tier qty, periode tanpa overlap, `contract_id` → kontrak Fase 28/29 menang atas katalog), `SupplierScorecard` (OTD/kualitas/harga/respons, aksi korektif <70, SCAR <50, idempoten per periode), `SupplierRiskFlag` (sertifikat kedaluwarsa, skor rendah, sanksi Party 27.6, single-source), `SupplierAsn` + `SupplierDocument` (portal via DocumentStore), `SupplierStatusHistory`; `SupplierService`; kontrak `ReferenceCostUpdater` (32.8 harga → MAC Resto tanpa import domain); role `supplier`, `procurement`; command `sup:scan-risks`, `sup:remind-certifications` (jadwal harian) |
 | Contract | `ctr_` (13 tabel) | `/contracts` | Kontrak inti: `Contract`, `ContractParty`, `ContractClause`, `ContractVersion` (SHA-256 hash-chain append-only), `ContractMilestone`, `ContractAttachment` (Core DocumentStore checksum/retensi), `ContractTemplate`, `ClauseTemplate`; `ContractService` (gapless numbering, state machine, approval engine, e-sign simulasi, append/verify chain, diff); command `contracts:verify-chain`, `ctr:remind`; role `contract_manager`, `legal`; tabs kontrak: overview/pihak/klausul/obligasi/**keuangan**/lampiran/versi; **Fase 29**: `ContractFinanceService` (jadwal termin/advance/retensi, denda waiver via approval, eskalasi indeks terbatas-parser), `ContractAmendmentService` (diff + versi chain + regenerate jadwal), `ContractUsageService`/`UsageSync` (plafon idempoten, early warning 80/100%), `ContractRiskService` (skor 0–100), `ContractReportService` (eksposur per jenis/pihak, aging, `ctr:audit`), `ContractRateResolver` (rate card kontrak menang via `RateCardOverrideResolver`); command `ctr:audit`; laporan `/contracts/reports` | 47 |
 
+| Procurement | `prc_` (14 tabel) | `/procurement` | PR → RFQ → Tender → PO: `BudgetCenter`/`BudgetEncumbrance` (33.6 encumbrance per pusat biaya, warning >100%), `Requisition`+`RequisitionLine` (33.1 approval berjenjang, threshold 50jt), `Rfq`+`RfqInvitation`+`Quote` (33.2 matriks harga/lead/skor, alasan wajib), `Tender`+`TenderBid` (33.3 segel SHA-256 blind, buka bersamaan, evaluasi berbobot), `PurchaseOrder`+`PoLine`+`PoVersion` (33.4 versi via approval, blanket/call-off, close/cancel lepas encumbrance), `ImportProfile` (33.5 Incoterm/kurs/landed cost simulasi), `InboundShipmentService` (33.7 via kontrak `ShipmentBooking`, `source_id` UUID); rute `/procurement` (admin/procurement) + grup supplier untuk quote/seal; RBAC permission `procurement.*` |
 Tabel non-prefiks lama: `users`, `bookings`, `spareparts`, `services`, `cars`, `brands`, `garages`, `wishlists`, `platform_*`.
 
 ## 4. Role & akun demo
 
-Role (`users.role` + RBAC tabel `roles`): `admin`, `customer`, `mekanik`, `tenant`, `outlet_manager`, `kitchen`, `cashier`, `shipper`, `driver`, `dispatcher`, `hub_operator`, `logistics_admin`, `party_manager`, `contract_manager`, `legal`, `asset_manager`, `auditor`, `supplier`, `procurement`. RBAC mendukung multi-role per user dengan scope entitas (contoh: cashier scoped ke outlet). 17 role (termasuk `party_manager`, `contract_manager`, `legal`, `asset_manager`, `auditor`) tersemai di `RbacSeeder`.
+Role (`users.role` + RBAC tabel `roles`): `admin`, `customer`, `mekanik`, `tenant`, `outlet_manager`, `kitchen`, `cashier`, `shipper`, `driver`, `dispatcher`, `hub_operator`, `logistics_admin`, `party_manager`, `contract_manager`, `legal`, `asset_manager`, `auditor`, `supplier`, `procurement`. RBAC mendukung multi-role per user dengan scope entitas (contoh: cashier scoped ke outlet). 19 role (12 awal + `party_manager`, `contract_manager`, `legal`, `asset_manager`, `auditor`, `supplier`, `procurement`) tersemai di `RbacSeeder`.
 Seeder: `DatabaseSeeder` → Banking, Platform, Crypto, Mall, Resto, Logistics (+ `LogisticsFinanceSeeder`). Akun demo contoh: `admin@autoserve.test`, `customer@autoserve.test`, `mekanik@autoserve.test` (password `password`). `DemoLargeSeeder` = data besar lintas modul; `LogisticsLargeSeeder` = skala logistik (Fase 25).
 
 ## 5. Ledger & uang (inti sistem)
@@ -117,7 +118,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 ## 9. Test
 
-`tests/Architecture/ModuleBoundariesTest.php` · `tests/Feature/{RouteSmokeTest,SecurityTest,ActionConcurrencyRegressionTest,AssetCoreTest,AssetPhase31Test,SupplierManagementTest,ContractFeatureTest,ContractObligationsTest,CrossLineIntegrationTest,*Characterization*,Auth,Seed}` · `tests/Performance/QueryBudgetTest.php` · test per modul di `modules/*/tests/Feature` (Logistics: DispatchBoard, DriverApp, ExceptionAndSla, Phase22Integration, RevenueRecognition, CodFlow, CarrierSubcontract, ClaimWorkflow, DemurrageDetention, CustomsClearance, FuelLog, BillingAudit, …). Fixture: `tests/Support/MoneyFlowWorld.php`. Standar tiap fitur: test (a) happy path (b) validasi/otorisasi (c) idempotensi/retry (d) invarian ledger (e) edge case.
+`tests/Architecture/ModuleBoundariesTest.php` · `tests/Feature/{RouteSmokeTest,SecurityTest,ActionConcurrencyRegressionTest,AssetCoreTest,AssetPhase31Test,SupplierManagementTest,ProcurementTest,ContractFeatureTest,ContractObligationsTest,CrossLineIntegrationTest,*Characterization*,Auth,Seed}` · `tests/Performance/QueryBudgetTest.php` · test per modul di `modules/*/tests/Feature` (Logistics: DispatchBoard, DriverApp, ExceptionAndSla, Phase22Integration, RevenueRecognition, CodFlow, CarrierSubcontract, ClaimWorkflow, DemurrageDetention, CustomsClearance, FuelLog, BillingAudit, …). Fixture: `tests/Support/MoneyFlowWorld.php`. Standar tiap fitur: test (a) happy path (b) validasi/otorisasi (c) idempotensi/retry (d) invarian ledger (e) edge case.
 
 ## 10. Quality gate (jalankan di akhir tiap fase)
 
@@ -162,6 +163,15 @@ Setiap commit yang mengubah salah satu di bawah **harus** ikut mengubah bagian t
 Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila ragu apakah suatu file ada, verifikasi dengan `ls`/`grep`, lalu koreksi dokumen ini.
 
 ## 15. Modul baru (diisi saat dibuat, Fase 26+)
+
+### Procurement (`prc_`) — Fase 33
+
+- **Tujuan:** siklus pembelian PR → RFQ/Tender → PO dengan penguncian anggaran (encumbrance), versi PO, PO impor simulasi, dan jadwal pengiriman masuk.
+- **Tabel:** `prc_budget_centers`, `prc_budget_encumbrances` (source_id string; unik per source_type+source_id), `prc_requisitions`(+lines), `prc_rfqs`(+invitations), `prc_quotes`, `prc_tenders`(+bids: seal_hash SHA-256, opened_at), `prc_purchase_orders`(+lines, versions, import_profiles).
+- **Service:** `ProcurementService` (PR approval berjenjang ≥50jt → admin; encumbrance idempoten + warning >100%; RFQ matriks komposit harga50/lead20/skor30 dengan alasan wajib; tender segel-buta, buka bersamaan hanya setelah tenggat, evaluasi berbobot bobot=100; PO versi ordinal riwayat vs versi bisnis `version`, close/cancel melepas encumbrance; blanket → call-off; landed cost = nilai+freight+asuransi+bea) · `InboundShipmentService` (kontrak `ShipmentBooking`, guard replay per `procurement_po`+PO.id, `amount_idr` ≥1 karena ledger menolak 1 entri).
+- **Rute:** `/procurement` (role `admin,procurement,supplier`, aksi mutasi dibatasi middleware `role:admin,procurement`): dashboard, PR, RFQ (termasuk supplier kirim quote), tender (seal/open/evaluate/award), PO (revise/close/cancel/import-profile/inbound).
+- **Perubahan lintas modul:** `lgx_shipments.source_id` kini string (menampung UUID PO) dengan accessor yang mempertahankan int untuk sumber numerik lama; kontrak `ShipmentBooking::cancelForOrder` memakai `string|int`.
+- **Aturan:** bursa/kurs/Incoterm/bea = simulasi; uang integer IDR.
 
 ### Supplier (`sup_`) — Fase 32
 

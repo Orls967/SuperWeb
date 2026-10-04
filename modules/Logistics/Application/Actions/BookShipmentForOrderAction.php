@@ -138,7 +138,7 @@ class BookShipmentForOrderAction implements ShipmentBooking
     /**
      * {@inheritDoc}
      */
-    public function cancelForOrder(string $sourceType, int $sourceId, ?string $reason = null): bool
+    public function cancelForOrder(string $sourceType, string|int $sourceId, ?string $reason = null): bool
     {
         $shipment = Shipment::where('source_type', $sourceType)
             ->where('source_id', $sourceId)

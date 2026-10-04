@@ -18,6 +18,7 @@ use Modules\Crypto\database\seeders\CryptoSeeder;
 use Modules\Logistics\database\seeders\LogisticsSeeder;
 use Modules\Mall\database\seeders\MallSeeder;
 use Modules\Party\database\seeders\PartySeeder;
+use Modules\Procurement\database\seeders\ProcurementSeeder;
 use Modules\Resto\database\seeders\RestoMenuSeeder;
 use Modules\Supplier\database\seeders\SupplierSeeder;
 
@@ -140,6 +141,7 @@ class DatabaseSeeder extends Seeder
             ContractSeeder::class,
             AssetSeeder::class,
             SupplierSeeder::class,
+            ProcurementSeeder::class,
             RbacSeeder::class,
         ]);
     }

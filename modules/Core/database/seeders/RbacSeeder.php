@@ -155,6 +155,12 @@ class RbacSeeder extends Seeder
                 'supplier.approve' => 'Menyetujui kualifikasi & transisi status pemasok',
                 'supplier.portal.access' => 'Akses portal pemasok (PO/ASN/COA)',
             ],
+            'procurement' => [
+                'procurement.view' => 'Lihat dashboard & dokumen pembelian',
+                'procurement.manage' => 'Kelola PR, RFQ, tender, dan PO',
+                'procurement.approve' => 'Menyetujui PR, revisi PO, dan penetapan pemenang',
+                'procurement.quote.submit' => 'Kirim penawaran & segel tender sebagai pemasok',
+            ],
         ];
 
         foreach ($permissions as $module => $perms) {
@@ -268,7 +274,13 @@ class RbacSeeder extends Seeder
 
             'supplier' => [
                 'core.dashboard.view',
-                'supplier.view', 'supplier.portal.access',
+                'supplier.view', 'supplier.portal.access', 'procurement.quote.submit',
+            ],
+
+            'procurement' => [
+                'core.dashboard.view',
+                'party.view', 'supplier.view',
+                'procurement.view', 'procurement.manage', 'procurement.approve',
             ],
 
             'procurement' => [

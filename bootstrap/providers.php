@@ -14,6 +14,7 @@ use Modules\Logistics\LogisticsServiceProvider;
 use Modules\Mall\MallServiceProvider;
 use Modules\Party\PartyServiceProvider;
 use Modules\Payment\PaymentServiceProvider;
+use Modules\Procurement\ProcurementServiceProvider;
 use Modules\Resto\RestoServiceProvider;
 use Modules\Shared\SharedServiceProvider;
 use Modules\Store\StoreServiceProvider;
@@ -38,4 +39,5 @@ return [
     AssetServiceProvider::class,
     ContractServiceProvider::class,
     SupplierServiceProvider::class,
+    ProcurementServiceProvider::class,
 ];
