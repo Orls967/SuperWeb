@@ -454,16 +454,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 34.9 Quality gate Fase 34
 
 ## FASE 35 — PABRIK: MASTER DATA MANUFAKTUR (MODUL `mfg_`)
-- [ ] 35.1 Modul Manufacturing: **Plant** (pabrik) per entitas hukum, area/line, kalender kerja & shift (hari libur, lembur), kapasitas nominal
-- [ ] 35.2 Work center & mesin: kapasitas/jam, efisiensi, biaya per jam (mesin + tenaga kerja + overhead), mesin ↔ aset (Fase 30)
-- [ ] 35.3 Master material: bahan baku, setengah jadi (WIP), barang jadi, kemasan, by-product/co-product; satuan & konversi; atribut lot/kedaluwarsa/serial
-- [ ] 35.4 **BOM multi-level ber-versi** (generalisasi BOM Resto): efektif-dari/sampai, alternatif/substitusi, scrap %, by-product; BOM Resto tetap berjalan lewat adapter (tidak merusak HPP resto)
-- [ ] 35.5 Routing: urutan operasi, work center, waktu setup & run, instruksi kerja, inspeksi di titik tertentu
-- [ ] 35.6 Resep/formula untuk proses (pangan/kimia): yield, toleransi, bahan aktif; kontrol perubahan formula (approval + versi + hash)
-- [ ] 35.7 Konversi Dapur Sentral **CK-01** menjadi plant tipe `central_kitchen` (batch produksi Resto tetap sah; sinkron stok & HPP lewat contract)
-- [ ] 35.8 Master tenaga kerja produksi: operator, skill, sertifikasi, jadwal shift (tanpa payroll; hanya penugasan)
-- [ ] 35.9 UI master data + validasi BOM (siklus/kuantitas nol/UoM tak kompatibel dideteksi)
-- [ ] 35.10 Quality gate Fase 35
+- [x] 35.1 Modul Manufacturing: **Plant** (pabrik) per entitas hukum, area/line, kalender kerja & shift (hari libur, lembur), kapasitas nominal
+- [x] 35.2 Work center & mesin: kapasitas/jam, efisiensi, biaya per jam (mesin + tenaga kerja + overhead), mesin ↔ aset (Fase 30)
+- [x] 35.3 Master material: bahan baku, setengah jadi (WIP), barang jadi, kemasan, by-product/co-product; satuan & konversi; atribut lot/kedaluwarsa/serial
+- [x] 35.4 **BOM multi-level ber-versi** (generalisasi BOM Resto): efektif-dari/sampai, alternatif/substitusi, scrap %, by-product; BOM Resto tetap berjalan lewat adapter (tidak merusak HPP resto)
+- [x] 35.5 Routing: urutan operasi, work center, waktu setup & run, instruksi kerja, inspeksi di titik tertentu
+- [x] 35.6 Resep/formula untuk proses (pangan/kimia): yield, toleransi, bahan aktif; kontrol perubahan formula (approval + versi + hash)
+- [x] 35.7 Konversi Dapur Sentral **CK-01** menjadi plant tipe `central_kitchen` (batch produksi Resto tetap sah; sinkron stok & HPP lewat contract)
+- [x] 35.8 Master tenaga kerja produksi: operator, skill, sertifikasi, jadwal shift (tanpa payroll; hanya penugasan)
+- [x] 35.9 UI master data + validasi BOM (siklus/kuantitas nol/UoM tak kompatibel dideteksi)
+- [x] 35.10 Quality gate Fase 35
 
 ## FASE 36 — PERENCANAAN PRODUKSI (MPS / MRP / CRP)
 - [ ] 36.1 Forecast & demand input: order penjualan, forecast distributor (Fase 43), reorder-point; versi skenario

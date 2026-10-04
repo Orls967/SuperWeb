@@ -567,3 +567,17 @@
   8. **`proc:audit` (34.8):** agregat SQL (bukan memuat seluruh baris) memverifikasi subledger AP == ledger per pemasok dan GR/IR nol untuk PO received; pilar ke-10 `procurement` ditambahkan ke `super:health-check`.
 - **Verification:** 726 tests / 3906 assertions 0 skipped; Pint, Vite, arch (12); `proc:audit`, `bank:reconcile`, `lgx:audit-billing`, `ctr:audit`, `ast:audit` 0 selisih; `super:health-check` 10 pilar HEALTHY. 13 test baru `ReceivingAndPayablesTest`.
 - **Reason:** uang pemasok disentuh di banyak titik (GRN → invoice → bayar) — semua key deterministik dan seluruh perubahan dalam satu transaksi agar gagal tengah tidak meninggalkan subledger vs ledger tidak sinkron.
+
+## 2026-10-05: Fase 35 — Pabrik: Master Data Manufaktur (Modul `mfg_`)
+
+- **Context:** Fase 36–40 (MRP, shop floor, costing, QMS, OKE/K3) membutuhkan master plant, BOM, routing, formula, dan tenaga kerja. BOM Resto sudah berjalan mandiri dan tidak boleh diubah.
+- **Decision:**
+  - Modul baru `modules/Manufacturing` (16 tabel `mfg_*`), service tunggal `ManufacturingService` dipakai controller dan seeder.
+  - BOM multi-level ber-versi: nomor versi = `max(version)+1` per material output; validasi saat `createBom` — siklus langsung (A→A) dan multi-level (A→B→A) lewat DFS leluhur, qty ≤ 0, UoM tanpa jalur konversi, alokasi co-product ≠ 100%.
+  - Formula: hash-chain `prev_hash/hash` (canonical `prev|version|sha256(body)`), status `draft → pending_approval (MFG_FORMULA_CHANGE, four-eyes) → approved`; `approveFormula` hanya dari `pending_approval` dan meneruskan ke `ApprovalEngineInterface::approve` (creator ≠ approver).
+  - CK-01: plant `central_kitchen` + `mfg_resto_adapters` (pointer outlet + stempel `last_synced_at/last_sync_key`, replay idempoten). Query mentah `resto_outlets` di seeder — arsitektur melarang import Domain lintas modul. BOM/HPP Resto tidak tersentuh.
+  - `mfg_work_centers.asset_id` & `mfg_routing_operations.work_center_id` bertipe `uuid` agar tidak melanggar FK tabel `ast_assets` / `mfg_work_centers` yang PK-nya UUID.
+  - RBAC: 3 role baru (`planner`, `operator`, `qc_inspector`) + grup permission `manufacturing.*`; ekspektasi `RbacTest` 19 → 22. Sekaligus memperbaiki duplikasi kunci `'procurement'` di `$rolePermissionMap` (kunci kedua menimpa yang pertama) — dua set permission digabung.
+  - Seeder `ManufacturingSeeder` menanam `PLT-JKT` + `CK-01` dan mengaitkan adapter ke outlet Resto CK-01 (urutan `RestoSeeder` sebelumnya di `DatabaseSeeder`); tes tabrak kode disesuaikan (`ck-99`).
+- **Reason:** satu service/penyimpanan untuk seluruh master produksi; validasi BOM dilakukan sekali di sisi server agar modul berikutnya (MRP/shop floor) tidak perlu mengulang; tanpa ledger di Fase 35 (posting produksi baru di Fase 37–38).
+- **Tests:** `modules/Manufacturing/tests/Feature/ManufacturingPhase35Test` (7 tes / 26 asersi) + `RbacTest` 22 role. Gate: 733 test / 3932 assertion.

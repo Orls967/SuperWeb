@@ -12,6 +12,7 @@ use Modules\Finance\FinanceServiceProvider;
 use Modules\Inventory\InventoryServiceProvider;
 use Modules\Logistics\LogisticsServiceProvider;
 use Modules\Mall\MallServiceProvider;
+use Modules\Manufacturing\ManufacturingServiceProvider;
 use Modules\Party\PartyServiceProvider;
 use Modules\Payment\PaymentServiceProvider;
 use Modules\Procurement\ProcurementServiceProvider;
@@ -40,4 +41,5 @@ return [
     ContractServiceProvider::class,
     SupplierServiceProvider::class,
     ProcurementServiceProvider::class,
+    ManufacturingServiceProvider::class,
 ];

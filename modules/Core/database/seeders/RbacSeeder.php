@@ -43,6 +43,9 @@ class RbacSeeder extends Seeder
             ['name' => 'auditor', 'label' => 'Auditor', 'description' => 'Hanya baca untuk audit dan rekonsiliasi.'],
             ['name' => 'supplier', 'label' => 'Pemasok', 'description' => 'Portal pemasok: PO, ASN, sertifikat, pembayaran.'],
             ['name' => 'procurement', 'label' => 'Procurement', 'description' => 'Kualifikasi, RFQ, harga, dan skor pemasok.'],
+            ['name' => 'planner', 'label' => 'Perencana Produksi', 'description' => 'Mengelola BOM, routing, formula, dan MPS/MRP.'],
+            ['name' => 'operator', 'label' => 'Operator Produksi', 'description' => 'Menjalankan order produksi di pabrik.'],
+            ['name' => 'qc_inspector', 'label' => 'Inspektor QC', 'description' => 'Inspeksi mutu di titik pemeriksaan produksi.'],
         ];
 
         foreach ($roles as $r) {
@@ -160,6 +163,12 @@ class RbacSeeder extends Seeder
                 'procurement.manage' => 'Kelola PR, RFQ, tender, dan PO',
                 'procurement.approve' => 'Menyetujui PR, revisi PO, dan penetapan pemenang',
                 'procurement.quote.submit' => 'Kirim penawaran & segel tender sebagai pemasok',
+            ],
+            'manufacturing' => [
+                'manufacturing.view' => 'Lihat master data pabrik',
+                'manufacturing.manage' => 'Kelola plant, material, BOM, routing, dan formula',
+                'manufacturing.approve' => 'Menyetujui perubahan formula & BOM kritis',
+                'manufacturing.operate' => 'Menjalankan order produksi & pencatatan hasil',
             ],
         ];
 
@@ -279,14 +288,24 @@ class RbacSeeder extends Seeder
 
             'procurement' => [
                 'core.dashboard.view',
-                'party.view', 'supplier.view',
+                'party.view', 'supplier.view', 'supplier.manage', 'supplier.approve',
+                'contract.view',
                 'procurement.view', 'procurement.manage', 'procurement.approve',
             ],
 
-            'procurement' => [
+            'planner' => [
                 'core.dashboard.view',
-                'party.view', 'supplier.view', 'supplier.manage', 'supplier.approve',
-                'contract.view',
+                'manufacturing.view', 'manufacturing.manage', 'manufacturing.approve',
+            ],
+
+            'operator' => [
+                'core.dashboard.view',
+                'manufacturing.view', 'manufacturing.operate',
+            ],
+
+            'qc_inspector' => [
+                'core.dashboard.view',
+                'manufacturing.view',
             ],
         ];
 

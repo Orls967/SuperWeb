@@ -314,8 +314,8 @@ test('RbacSeeder produces complete role and permission data', function () {
     // Run the seeder
     $this->seed(RbacSeeder::class);
 
-    // 19 roles: 12 lama + party_manager, contract_manager, legal, asset_manager, auditor, supplier, procurement
-    expect(Role::count())->toBe(19);
+    // 22 roles: 19 + planner, operator, qc_inspector (Fase 35)
+    expect(Role::count())->toBe(22);
 
     // Permissions should be > 0
     expect(Permission::count())->toBeGreaterThan(30);
