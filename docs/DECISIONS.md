@@ -475,3 +475,14 @@
 
 
 
+
+## 2026-10-04: Fase 28 — Kontrak Inti (Modul `ctr_`)
+- **Context:** Rantai nilai Fase 29–57 membutuhkan kontrak sebagai objek utama: nomor gapless, negosiasi ber-versi, persetujuan berjenjang, dan keterkaitan ke pihak (Fase 27) serta dokumen (Fase 26.8).
+- **Decision:**
+  1. **Modul Contract** (`modules/Contract`, tabel `ctr_*`): `ContractService` memakai `DocumentNumberingInterface` untuk nomor `CTR/{entity}/YYYY-NNNNN` (gapless, lock) dan `ApprovalEngineInterface` untuk persetujuan berjenjang dengan aturan nilai (≥ Rp 100 juta menuntut dua langkah: legal lalu admin). State machine digarap ketat: ≥2 pihak sebelum keluar dari Draft, `Signed` hanya boleh dari `Approved`, dan `terminate`/`suspend` wajib beralasan; pelanggaran melempar exception domain khusus.
+  2. **Versioning hash-chain append-only**: setiap versi (creation/negotiation/amendment/clause_update) membawa `prev_hash` → `hash` SHA-256 berantai seperti Vehicle Passport; update & delete pada `ContractVersion` diblokir; `contracts:verify-chain` memverifikasi seluruh rantai; halaman diff membandingkan dua versi. Kunci rantai dihitung di dalam transaksi dengan `lockForUpdate` agar dua revisi bersaing tidak pernah membuat cabang.
+  3. **Lampiran lewat Core DocumentStore**: `ctr_contract_attachments` hanya *tautan* (kontrak ↔ pihak ↔ entitas hukum) sementara berkas, checksum, dan retensi 7 tahun tetap pada `core_documents` — satu pintu penyimpanan, validasi ekstensi, dan verifikasi checksum untuk seluruh platform. Unggah dibatasi status Draft/Negosiasi agar kontrak aktif tidak bisa diubah diam-diam.
+  4. **Pengingat ganda (in-app + outbox)**: `ctr:remind` mengirim notifikasi in-app ke pembuat kontrak + pemegang role `contract_manager`/`legal` dan merekam event ke Outbox generik Fase 26.7 dengan **idempotency key deterministik** (`contract_expiring:{id}:{hari}`, `milestone_reminder:{id}:{tanggal}`) sehingga cron harian tidak pernah menggandakan event; milestone menandai `reminder_sent` agar pengiriman terbatas sekali.
+  5. **Role granular**: `contract_manager`, `legal`, `party_manager` didaftarkan di RBAC Fase 26.5 dengan permission `contract.{view,manage,approve}` / `party.{view,manage,legal_entity.manage}`; guard rute `/contracts` memakai ketiganya dan `/party` ditambah `party_manager`. Dilengkapi matriks akses di `RouteSmokeTest`.
+- **Verification:** 642 tests / 3558 assertions 0 skipped; Pint, Vite, arch test lulus; `contracts:verify-chain` (2 kontrak seed valid), `ctr:remind` (0 duplikat pada retry), `bank:reconcile`, `lgx:audit-billing`, `mall:audit-billing` = 0 selisih, `super:health-check` 8 pilar HEALTHY.
+- **Reason:** kontrak adalah fondasi untuk Fase 29 (keuangan kontrak) dan integrasi Logistics/Mall/Resto; pendekatan hash-chain + approval engine memakai ulang kerja Fase 26 tanpa meniru.

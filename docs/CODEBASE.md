@@ -4,8 +4,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 27 (Party Master & Badan Hukum selesai) · **Berjalan:** — · **Berikutnya:** Fase 28 Kontrak Inti (Modul ctr_)
-**Snapshot gate (akhir Fase 27.9):** 611 test / 3438 assertion (Fase 27: +14 test Party / +56 assertion, 26.9: 597/3382, Fase 25: 538/3189), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih (29 dok) · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (10) lulus.
+**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 28 (Kontrak Inti) · **Berjalan:** — · **Berikutnya:** Fase 29 Kontrak Lanjutan (keuangan, kepatuhan & integrasi)
+**Snapshot gate (akhir Fase 28):** 642 test / 3558 assertion (Fase 27: 611/3438), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih (29 dok) · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (10) lulus.
 
 ---
 
@@ -52,6 +52,7 @@ Gotcha yang sudah pernah menggigit: `event(new X)` bukan `X::dispatch` bila even
 | Mall | `mall_` (25 tabel) | `/mall` | Duta Mall: leasing, tagihan, tunggakan/denda, utilitas, parkir, footfall, loyalty (points), voucher, event, facility WO, `mall_assets`; cmd `mall:*` (9) | 168 |
 | Logistics | `lgx_` (≈ 43 tabel) | `/logistics` | Sari Ranah Express — lihat §6 | 269 |
 | Party | `pty_` (11 tabel) | `/party` | Party Master & Badan Hukum: `Party` (orang/perusahaan), `LegalEntity` (holding/anak/cabang), `PartyRole`, `PartyAddress`, `PartyContact`, `PartyBankAccount`, `KycDocument`, `SanctionCheck`, `CreditProfile`, `pty_merge_logs`; actions KYC submit/approve/reject; screening sanksi fuzzy similar_text + hash; credit scoring 0-100; command `party:backfill-links`, `party:remind-expiring-docs` | 25 |
+| Contract | `ctr_` (8 tabel) | `/contracts` | Kontrak inti: `Contract`, `ContractParty`, `ContractClause`, `ContractVersion` (SHA-256 hash-chain append-only), `ContractMilestone`, `ContractAttachment` (Core DocumentStore checksum/retensi), `ContractTemplate`, `ClauseTemplate`; `ContractService` (gapless numbering, state machine, approval engine, e-sign simulasi, append/verify chain, diff); command `contracts:verify-chain`, `ctr:remind`; role `contract_manager`, `legal`; tabs kontrak: overview/pihak/klausul/obligasi/lampiran/versi | 31 |
 
 Tabel non-prefiks lama: `users`, `bookings`, `spareparts`, `services`, `cars`, `brands`, `garages`, `wishlists`, `platform_*`.
 
@@ -109,7 +110,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 ## 8. Peta command lengkap
  
-`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (8 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal) · `party:backfill-links` · `party:remind-expiring-docs`. Jadwal: `routes/console.php`.
+`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (8 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal) · `party:backfill-links` · `party:remind-expiring-docs` · `contracts:verify-chain` · `ctr:remind`. Jadwal: `routes/console.php`.
 
 ## 9. Test
 
@@ -159,4 +160,11 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 
 ## 15. Modul baru (diisi saat dibuat, Fase 26+)
 
-_(kosong — tambahkan satu subbagian per modul baru: tujuan, tabel, model, action, event/contract, command, rute/role, aturan bisnis kunci)_
+### Contract (`ctr_`) — Fase 28
+
+- **Tujuan:** sistem kontrak grup dengan klausul/templat, state machine ber-guard, persetujuan generik Core, e-sign simulasi, hash-chain versi, lampiran melalui DocumentStore, milestone/obligasi & pengingat.
+- **Tabel:** `ctr_clause_templates`, `ctr_contract_templates`, `ctr_contracts`, `ctr_contract_parties`, `ctr_contract_versions`, `ctr_milestones`, `ctr_contract_clauses`, `ctr_contract_attachments`.
+- **Service:** `ContractService` memakai `DocumentNumberingInterface` (`CTR/{entity}/YYYY-NNNNN` gapless) + `ApprovalEngineInterface`; append-version `lockForUpdate`; verify-chain `contracts:verify-chain`; diff textual.
+- **Rute:** `/contracts` (role `admin`, `contract_manager`, `legal`): CRUD kontrak draft/negosiasi, transisi status, approval, sign per pihak berurutan, clauses/templates, versions/diff, milestones, attachments via `DocumentStoreInterface`, obligations dashboard.
+- **Command:** `contracts:verify-chain --contract=<UUID>`, `ctr:remind --days=30` (notice period, expiring, milestone; in-app + Core Outbox idempoten).
+- **Aturan kunci:** ≥2 pihak sebelum review; Signed hanya setelah Approved; alasan wajib suspend/terminate; hash-chain versi append-only; tanda tangan simulasi di-hash; lampiran disimpan checksum+retensi 7 tahun melalui Core DocumentStore; jenis pajak/regulasi tetap simulasi.

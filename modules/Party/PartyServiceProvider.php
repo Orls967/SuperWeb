@@ -49,7 +49,7 @@ class PartyServiceProvider extends ServiceProvider
             label: 'Parties & Legal',
             route: 'party.index',
             icon: 'building-office',
-            roles: ['admin', 'logistics_admin'],
+            roles: ['admin', 'logistics_admin', 'party_manager'],
             order: 45,
             group: 'Master Data',
             activePattern: 'party*',

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\Party\Http\Controllers\PartyController;
 
-Route::middleware(['web', 'auth', 'verified', 'role:admin,logistics_admin'])
+Route::middleware(['web', 'auth', 'verified', 'role:admin,logistics_admin,party_manager'])
     ->prefix('party')
     ->name('party.')
     ->group(function () {

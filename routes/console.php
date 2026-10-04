@@ -45,3 +45,7 @@ Schedule::command('lgx:verify-custody')->dailyAt('02:30');
 
 // --- Party Master & Compliance ---
 Schedule::command('party:remind-expiring-docs')->dailyAt('08:00');
+
+// --- Kontrak Inti ---
+Schedule::command('contracts:verify-chain')->dailyAt('03:00');
+Schedule::command('ctr:remind')->dailyAt('08:15');

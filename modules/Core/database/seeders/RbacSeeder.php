@@ -36,6 +36,9 @@ class RbacSeeder extends Seeder
             ['name' => 'dispatcher', 'label' => 'Dispatcher', 'description' => 'Petugas dispatch logistik.'],
             ['name' => 'hub_operator', 'label' => 'Operator Hub', 'description' => 'Operator hub/gudang logistik.'],
             ['name' => 'logistics_admin', 'label' => 'Admin Logistik', 'description' => 'Admin modul logistik.'],
+            ['name' => 'party_manager', 'label' => 'Manajer Pihak', 'description' => 'Mengelola direktori pihak & badan hukum.'],
+            ['name' => 'contract_manager', 'label' => 'Manajer Kontrak', 'description' => 'Mengelola kontrak, klausul, dan template.'],
+            ['name' => 'legal', 'label' => 'Legal', 'description' => 'Meninjau, menegosiasi, dan menyetujui kontrak.'],
         ];
 
         foreach ($roles as $r) {
@@ -125,6 +128,18 @@ class RbacSeeder extends Seeder
                 'logistics.control_tower.view' => 'Lihat control tower',
                 'logistics.api.access' => 'Akses API logistik',
             ],
+
+            // -- Party & Contract --
+            'party' => [
+                'party.view' => 'Lihat direktori pihak',
+                'party.manage' => 'Kelola pihak & KYC',
+                'party.legal_entity.manage' => 'Kelola badan hukum',
+            ],
+            'contract' => [
+                'contract.view' => 'Lihat kontrak',
+                'contract.manage' => 'Kelola kontrak, klausul, dan template',
+                'contract.approve' => 'Menyetujui & menandatangani kontrak',
+            ],
         ];
 
         foreach ($permissions as $module => $perms) {
@@ -207,6 +222,23 @@ class RbacSeeder extends Seeder
                 'logistics.carrier.manage', 'logistics.claim.manage',
                 'logistics.customs.manage', 'logistics.billing.manage',
                 'logistics.control_tower.view', 'logistics.api.access',
+            ],
+            'party_manager' => [
+                'core.dashboard.view',
+                'party.view', 'party.manage', 'party.legal_entity.manage',
+                'contract.view',
+            ],
+
+            'contract_manager' => [
+                'core.dashboard.view',
+                'party.view',
+                'contract.view', 'contract.manage', 'contract.approve',
+            ],
+
+            'legal' => [
+                'core.dashboard.view',
+                'party.view',
+                'contract.view', 'contract.approve',
             ],
         ];
 

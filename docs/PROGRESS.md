@@ -375,16 +375,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 27.9 Quality gate Fase 27
 
 ## FASE 28 — KONTRAK INTI (MODUL `ctr_`)
-- [ ] 28.1 Modul Contract: `Contract` (jenis: pembelian, penjualan, distribusi, keagenan, sewa, jasa, lisensi, JV, OEM/ODM, NDA), `ContractParty` (≥ 2 pihak, peran), nomor via 26.8
-- [ ] 28.2 Library klausul & templat: klausul ber-versi, variabel (`{{party.name}}`, nilai, tanggal), perakitan kontrak dari templat, pratinjau
-- [ ] 28.3 State machine kontrak: `draft → review → negotiation → approved → signed → active → (suspended) → expired|terminated|renewed`, guard transisi, alasan wajib untuk terminate/suspend
-- [ ] 28.4 **Versioning hash-chain**: tiap revisi/negosiasi tercatat append-only (SHA-256 berantai, seperti Vehicle Passport); `contracts:verify-chain`; diff antar versi
-- [ ] 28.5 Persetujuan berjenjang (26.9) berdasarkan nilai & jenis; e-sign **simulasi** (tanda tangan terenkripsi + hash dokumen + timestamp, urutan penandatangan)
-- [ ] 28.6 Lampiran & dokumen pendukung (26.8), tautan kontrak ↔ pihak (27) ↔ entitas hukum
-- [ ] 28.7 Obligasi & milestone: tanggal, penanggung jawab, status, bukti penyelesaian; dashboard kewajiban jatuh tempo
-- [ ] 28.8 Pengingat otomatis (`ctr:remind`): kedaluwarsa, perpanjangan, milestone, notice period (in-app + outbox)
-- [ ] 28.9 UI: daftar, editor kontrak, linimasa, tab pihak/obligasi/versi; role `contract_manager`, `legal`
-- [ ] 28.10 Quality gate Fase 28
+- [x] 28.1 Modul Contract: `Contract` (jenis: pembelian, penjualan, distribusi, keagenan, sewa, jasa, lisensi, JV, OEM/ODM, NDA), `ContractParty` (≥ 2 pihak, peran), nomor via 26.8
+- [x] 28.2 Library klausul & templat: klausul ber-versi, variabel (`{{party.name}}`, nilai, tanggal), perakitan kontrak dari templat, pratinjau
+- [x] 28.3 State machine kontrak: `draft → review → negotiation → approved → signed → active → (suspended) → expired|terminated|renewed`, guard transisi, alasan wajib untuk terminate/suspend
+- [x] 28.4 **Versioning hash-chain**: tiap revisi/negosiasi tercatat append-only (SHA-256 berantai, seperti Vehicle Passport); `contracts:verify-chain`; diff antar versi
+- [x] 28.5 Persetujuan berjenjang (26.9) berdasarkan nilai & jenis; e-sign **simulasi** (tanda tangan terenkripsi + hash dokumen + timestamp, urutan penandatangan)
+- [x] 28.6 Lampiran & dokumen pendukung (26.8), tautan kontrak ↔ pihak (27) ↔ entitas hukum
+- [x] 28.7 Obligasi & milestone: tanggal, penanggung jawab, status, bukti penyelesaian; dashboard kewajiban jatuh tempo
+- [x] 28.8 Pengingat otomatis (`ctr:remind`): kedaluwarsa, perpanjangan, milestone, notice period (in-app + outbox)
+- [x] 28.9 UI: daftar, editor kontrak, linimasa, tab pihak/obligasi/versi; role `contract_manager`, `legal`
+- [x] 28.10 Quality gate Fase 28
 
 ## FASE 29 — KONTRAK LANJUTAN: KEUANGAN, KEPATUHAN & INTEGRASI
 - [ ] 29.1 Jadwal pembayaran kontrak (termin, milestone, berkala), retensi (retention %), uang muka (advance) & pelunasannya; akun ledger `ctr:advance`, `ctr:retention_payable/receivable`

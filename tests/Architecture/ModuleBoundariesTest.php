@@ -15,6 +15,8 @@ arch('controllers do not use DB facade directly')
         'Modules\Core\Http\Controllers',
         'Modules\Finance\Http\Controllers',
         'Modules\Logistics\Http\Controllers',
+        'Modules\Contract\Http\Controllers',
+        'Modules\Party\Http\Controllers',
     ])
     ->not->toUse('Illuminate\Support\Facades\DB');
 
@@ -94,4 +96,24 @@ arch('Party Domain does not import business domain models')
         'Modules\AutoServe\Domain',
         'Modules\Crypto\Domain',
         'Modules\Banking\Domain',
+    ]);
+
+arch('Contract Domain does not import other business domain models')
+    ->expect('Modules\Contract\Domain')
+    ->not->toUse([
+        'Modules\Logistics\Domain',
+        'Modules\Mall\Domain',
+        'Modules\Resto\Domain',
+        'Modules\Store\Domain',
+        'Modules\AutoServe\Domain',
+        'Modules\Crypto\Domain',
+        'Modules\Banking\Domain',
+    ]);
+
+arch('Contract does not import Logistics or Mall Domain directly')
+    ->expect('Modules\Contract')
+    ->not->toUse([
+        'Modules\Logistics\Domain',
+        'Modules\Mall\Domain',
+        'Modules\Resto\Domain',
     ]);

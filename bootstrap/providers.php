@@ -4,6 +4,7 @@ use App\Providers\AppServiceProvider;
 use Modules\AutoDex\AutoDexServiceProvider;
 use Modules\AutoServe\AutoServeServiceProvider;
 use Modules\Banking\BankingServiceProvider;
+use Modules\Contract\ContractServiceProvider;
 use Modules\Core\CoreServiceProvider;
 use Modules\Crypto\CryptoServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
@@ -32,4 +33,5 @@ return [
     MallServiceProvider::class,
     LogisticsServiceProvider::class,
     PartyServiceProvider::class,
+    ContractServiceProvider::class,
 ];
