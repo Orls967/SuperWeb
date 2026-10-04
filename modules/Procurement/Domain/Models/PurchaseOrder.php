@@ -53,4 +53,19 @@ class PurchaseOrder extends Model
     {
         return $this->belongsTo(BudgetCenter::class, 'budget_center_id');
     }
+
+    public function receivingReports(): HasMany
+    {
+        return $this->hasMany(ReceivingReport::class, 'po_id')->orderByDesc('received_at');
+    }
+
+    public function supplierInvoices(): HasMany
+    {
+        return $this->hasMany(SupplierInvoice::class, 'po_id');
+    }
+
+    public function landedCosts(): HasMany
+    {
+        return $this->hasMany(LandedCost::class, 'po_id');
+    }
 }

@@ -233,6 +233,28 @@ class SystemHealthService
             ];
         }
 
+        // 10. Procurement AP & GR/IR (proc:audit) — Fase 34.8
+        try {
+            $exitCode = Artisan::call('proc:audit');
+            $isOk = ($exitCode === 0);
+
+            $checks['procurement'] = [
+                'name' => 'Pembelian: Subledger AP & GR/IR',
+                'ok' => $isOk,
+                'status' => $isOk ? 'HEALTHY' : 'UNHEALTHY',
+                'message' => $isOk
+                    ? 'Subledger AP & GR/IR sinkron dengan ledger (0 selisih)'
+                    : 'Ditemukan selisih subledger pembelian',
+            ];
+        } catch (\Throwable $e) {
+            $checks['procurement'] = [
+                'name' => 'Pembelian: Subledger AP & GR/IR',
+                'ok' => false,
+                'status' => 'UNHEALTHY',
+                'message' => 'Gagal memeriksa procurement: '.$e->getMessage(),
+            ];
+        }
+
         // Overall status
         $allPassed = ! in_array(false, array_column($checks, 'ok'), true);
         $duration = round((microtime(true) - $startTime) * 1000, 2);

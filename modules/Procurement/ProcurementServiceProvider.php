@@ -6,6 +6,8 @@ namespace Modules\Procurement;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Procurement\Application\Services\ProcurementService;
+use Modules\Procurement\Application\Services\ReceivingService;
+use Modules\Procurement\Console\Commands\AuditProcurementCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class ProcurementServiceProvider extends ServiceProvider
@@ -13,6 +15,7 @@ class ProcurementServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(ProcurementService::class);
+        $this->app->singleton(ReceivingService::class);
     }
 
     public function boot(): void
@@ -20,6 +23,10 @@ class ProcurementServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
         $this->loadViewsFrom(__DIR__.'/resources/views/procurement', 'procurement');
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([AuditProcurementCommand::class]);
+        }
 
         $this->registerMenu();
     }

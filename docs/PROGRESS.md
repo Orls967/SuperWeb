@@ -443,15 +443,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 33.9 Quality gate Fase 33
 
 ## FASE 34 — PENERIMAAN BARANG, HUTANG USAHA & PEMBAYARAN PEMASOK
-- [ ] 34.1 Goods Receipt (GRN): terhadap PO, parsial/berkali, toleransi over/under-delivery, lot/batch & kedaluwarsa, penempatan ke gudang via `InventoryService`
-- [ ] 34.2 Inspeksi penerimaan (hook ke QMS Fase 39): kuarantina sampai lulus; retur ke pemasok (debit note)
-- [ ] 34.3 Invoice pemasok & **3-way match** (PO–GRN–Invoice) dengan toleransi harga/qty; selisih → hold + approval
-- [ ] 34.4 Akuntansi: GR/IR clearing (`inv:grir`), `ap:supplier`, PPN masukan 11% (simulasi), PPh 23 dipotong (simulasi), selisih harga (PPV)
-- [ ] 34.5 Jadwal & eksekusi pembayaran: termin, diskon pembayaran dini, batch payment run dengan approval, bukti potong, pembayaran via PaymentGateway/ledger
-- [ ] 34.6 Uang muka pemasok & kompensasi; kredit memo; pelunasan sebagian
-- [ ] 34.7 Landed cost: alokasi biaya angkut/bea/asuransi ke nilai persediaan (by nilai/berat/qty), jurnal koreksi
-- [ ] 34.8 `proc:audit` (subledger AP = ledger, GR/IR = 0 untuk PO selesai), pilar health-check
-- [ ] 34.9 Quality gate Fase 34
+- [x] 34.1 Goods Receipt (GRN): terhadap PO, parsial/berkali, toleransi over/under-delivery, lot/batch & kedaluwarsa, penempatan ke gudang via `InventoryService`
+- [x] 34.2 Inspeksi penerimaan (hook ke QMS Fase 39): kuarantina sampai lulus; retur ke pemasok (debit note)
+- [x] 34.3 Invoice pemasok & **3-way match** (PO–GRN–Invoice) dengan toleransi harga/qty; selisih → hold + approval
+- [x] 34.4 Akuntansi: GR/IR clearing (`inv:grir`), `ap:supplier`, PPN masukan 11% (simulasi), PPh 23 dipotong (simulasi), selisih harga (PPV)
+- [x] 34.5 Jadwal & eksekusi pembayaran: termin, diskon pembayaran dini, batch payment run dengan approval, bukti potong, pembayaran via PaymentGateway/ledger
+- [x] 34.6 Uang muka pemasok & kompensasi; kredit memo; pelunasan sebagian
+- [x] 34.7 Landed cost: alokasi biaya angkut/bea/asuransi ke nilai persediaan (by nilai/berat/qty), jurnal koreksi
+- [x] 34.8 `proc:audit` (subledger AP = ledger, GR/IR = 0 untuk PO selesai), pilar health-check
+- [x] 34.9 Quality gate Fase 34
 
 ## FASE 35 — PABRIK: MASTER DATA MANUFAKTUR (MODUL `mfg_`)
 - [ ] 35.1 Modul Manufacturing: **Plant** (pabrik) per entitas hukum, area/line, kalender kerja & shift (hari libur, lembur), kapasitas nominal
