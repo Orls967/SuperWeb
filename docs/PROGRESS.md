@@ -387,15 +387,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 28.10 Quality gate Fase 28
 
 ## FASE 29 — KONTRAK LANJUTAN: KEUANGAN, KEPATUHAN & INTEGRASI
-- [ ] 29.1 Jadwal pembayaran kontrak (termin, milestone, berkala), retensi (retention %), uang muka (advance) & pelunasannya; akun ledger `ctr:advance`, `ctr:retention_payable/receivable`
-- [ ] 29.2 Denda & liquidated damages: aturan (per hari/%) dihitung otomatis dari keterlambatan obligasi; pembebasan (waiver) via approval
-- [ ] 29.3 Eskalasi harga & indeksasi (formula + indeks tersimpan), rate card kontrak yang mengalahkan harga standar
-- [ ] 29.4 **Amandemen & addendum**: perubahan nilai/jangka waktu menghasilkan versi baru, dampak jadwal bayar dihitung ulang, jejak lengkap
-- [ ] 29.5 Rekonsiliasi kontrak ↔ transaksi riil (PO/penjualan/pengiriman): nilai terpakai vs plafon, early warning 80%/100%
-- [ ] 29.6 Integrasi: kontrak pengiriman B2B → `RateCard`/postpaid Logistics; kontrak sewa → Mall `Lease` (tautan, bukan duplikasi); kontrak waralaba → Resto royalti
-- [ ] 29.7 Klausul kepatuhan: governing law, yurisdiksi/arbitrase (BANI/ICC/SIAC — data referensi), force majeure, kerahasiaan; flag risiko kontrak (skor aturan simulasi)
-- [ ] 29.8 Laporan: eksposur kontrak, nilai kontrak aktif per jenis/pihak, aging obligasi, kontrak yang akan kedaluwarsa; `ctr:audit` (0 selisih vs ledger)
-- [ ] 29.9 Quality gate Fase 29
+- [x] 29.1 Jadwal pembayaran kontrak (termin, milestone, berkala), retensi (retention %), uang muka (advance) & pelunasannya; akun ledger `ctr:advance`, `ctr:retention_payable/receivable`
+- [x] 29.2 Denda & liquidated damages: aturan (per hari/%) dihitung otomatis dari keterlambatan obligasi; pembebasan (waiver) via approval
+- [x] 29.3 Eskalasi harga & indeksasi (formula + indeks tersimpan), rate card kontrak yang mengalahkan harga standar
+- [x] 29.4 **Amandemen & addendum**: perubahan nilai/jangka waktu menghasilkan versi baru, dampak jadwal bayar dihitung ulang, jejak lengkap
+- [x] 29.5 Rekonsiliasi kontrak ↔ transaksi riil (PO/penjualan/pengiriman): nilai terpakai vs plafon, early warning 80%/100%
+- [x] 29.6 Integrasi: kontrak pengiriman B2B → `RateCard`/postpaid Logistics; kontrak sewa → Mall `Lease` (tautan, bukan duplikasi); kontrak waralaba → Resto royalti
+- [x] 29.7 Klausul kepatuhan: governing law, yurisdiksi/arbitrase (BANI/ICC/SIAC — data referensi), force majeure, kerahasiaan; flag risiko kontrak (skor aturan simulasi)
+- [x] 29.8 Laporan: eksposur kontrak, nilai kontrak aktif per jenis/pihak, aging obligasi, kontrak yang akan kedaluwarsa; `ctr:audit` (0 selisih vs ledger)
+- [x] 29.9 Quality gate Fase 29
 
 ## FASE 30 — ASET INTI (MODUL `ast_`)
 - [ ] 30.1 Modul Asset: kategori (tanah, bangunan, mesin pabrik, kendaraan, peralatan, IT, hak/intangible), umur ekonomis & metode default per kategori (PSAK 16, **simulasi**)

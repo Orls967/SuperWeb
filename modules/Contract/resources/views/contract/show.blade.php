@@ -53,7 +53,7 @@
     {{-- Tabs --}}
     <div x-data="{ tab: 'overview' }" class="space-y-6">
         <div class="flex gap-1 bg-slate-800/50 border border-slate-700 rounded-xl p-1.5">
-            @foreach(['overview' => '📋 Overview', 'parties' => '👥 Pihak', 'clauses' => '📄 Klausul', 'milestones' => '🎯 Obligasi', 'attachments' => '📎 Lampiran', 'versions' => '🔗 Versi'] as $key => $label)
+            @foreach(['overview' => '📋 Overview', 'parties' => '👥 Pihak', 'clauses' => '📄 Klausul', 'milestones' => '🎯 Obligasi', 'finance' => '💰 Keuangan', 'attachments' => '📎 Lampiran', 'versions' => '🔗 Versi'] as $key => $label)
                 <button @click="tab = '{{ $key }}'"
                         :class="tab === '{{ $key }}' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'"
                         class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition">
@@ -362,6 +362,250 @@
                     </div>
                     <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm transition">Tambah Milestone</button>
                 </form>
+            </div>
+        </div>
+
+        {{-- Finance Tab (Fase 29) --}}
+        <div x-show="tab === 'finance'" x-transition>
+            {{-- Ringkasan plafon & utilisasi (29.5) --}}
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+                    <p class="text-xs text-slate-400">Nilai Kontrak</p>
+                    <p class="text-white font-semibold mt-1">{{ number_format($contract->total_value_idr) }}</p>
+                </div>
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+                    <p class="text-xs text-slate-400">Terpakai</p>
+                    <p class="text-white font-semibold mt-1">{{ number_format($usage['used_idr']) }}</p>
+                    <p class="text-xs mt-1 {{ $usage['status'] === 'ok' ? 'text-emerald-400' : ($usage['status'] === 'warning' ? 'text-amber-400' : 'text-red-400') }}">{{ $usage['percent'] }}% plafon — {{ strtoupper($usage['status']) }}</p>
+                </div>
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+                    <p class="text-xs text-slate-400">Uang Muka (Advance)</p>
+                    <p class="text-white font-semibold mt-1">{{ number_format($contract->advance_paid_idr) }} / {{ number_format($contract->advance_amount_idr) }}</p>
+                </div>
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+                    <p class="text-xs text-slate-400">Retensi</p>
+                    <p class="text-white font-semibold mt-1">{{ $contract->retention_percent }}%</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 mb-6">
+                <form method="POST" action="{{ route('contract.schedule.build', $contract) }}" class="flex items-end gap-2">
+                    @csrf
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Jumlah termin</label>
+                        <input type="number" name="count" value="3" min="1" max="60" class="w-24 px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Interval (bulan)</label>
+                        <input type="number" name="interval_months" value="3" min="1" max="60" class="w-24 px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white text-sm">
+                    </div>
+                    <label class="flex items-center gap-2 text-xs text-slate-400 pb-2">
+                        <input type="checkbox" name="by_milestone" value="1" class="rounded"> per milestone
+                    </label>
+                    <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm">Bentuk Jadwal</button>
+                </form>
+
+                @if($contract->advance_amount_idr > $contract->advance_paid_idr)
+                <form method="POST" action="{{ route('contract.advance.pay', $contract) }}" class="flex items-end gap-2">
+                    @csrf
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Bayar advance (IDR)</label>
+                        <input type="number" name="amount_idr" min="1" max="{{ $contract->advance_amount_idr - $contract->advance_paid_idr }}"
+                               placeholder="{{ number_format($contract->advance_amount_idr - $contract->advance_paid_idr) }}"
+                               class="w-40 px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white text-sm">
+                    </div>
+                    <input type="hidden" name="idempotency_key" value="{{ \Illuminate\Support\Str::uuid() }}">
+                    <button class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm">Bayar Advance</button>
+                </form>
+                @endif
+            </div>
+
+            {{-- Tabel termin --}}
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden mb-6">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-900/60 text-slate-400 text-xs uppercase">
+                        <tr>
+                            <th class="text-left px-4 py-3">Termin</th>
+                            <th class="text-left px-4 py-3">Jatuh tempo</th>
+                            <th class="text-right px-4 py-3">Nilai</th>
+                            <th class="text-right px-4 py-3">Retensi</th>
+                            <th class="text-right px-4 py-3">Terbayar</th>
+                            <th class="text-left px-4 py-3">Status</th>
+                            <th class="px-4 py-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/60">
+                        @forelse($schedules as $sc)
+                            <tr>
+                                <td class="px-4 py-3 text-slate-200">
+                                    {{ $sc->kind->label() }}
+                                    @if($sc->milestone)<span class="text-xs text-slate-500">— {{ $sc->milestone->title }}</span>@endif
+                                </td>
+                                <td class="px-4 py-3 {{ $sc->due_date->isPast() && $sc->status->value !== 'paid' ? 'text-red-400' : 'text-slate-300' }}">{{ $sc->due_date->format('d M Y') }}</td>
+                                <td class="px-4 py-3 text-right text-white">{{ number_format($sc->amount_idr) }}</td>
+                                <td class="px-4 py-3 text-right text-amber-300">{{ $sc->retention_amount_idr > 0 ? number_format($sc->retention_amount_idr) : '—' }}</td>
+                                <td class="px-4 py-3 text-right text-slate-300">{{ number_format($sc->paid_amount_idr) }}</td>
+                                <td class="px-4 py-3">
+                                    <span class="text-xs px-2 py-0.5 rounded {{
+                                        $sc->status->value === 'paid' ? 'bg-emerald-500/15 text-emerald-300' :
+                                        ($sc->status->value === 'waived' ? 'bg-slate-600/40 text-slate-300' :
+                                        ($sc->status->value === 'partial' ? 'bg-amber-500/15 text-amber-300' : 'bg-red-500/15 text-red-300')) }}">
+                                        {{ $sc->status->label() }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-right space-x-2">
+                                    @if($sc->status->value !== 'paid' && $sc->status->value !== 'waived')
+                                    <form method="POST" action="{{ route('contract.schedule.pay', [$contract, $sc]) }}" class="inline-flex items-center gap-1">
+                                        @csrf
+                                        <input type="number" name="amount_idr" min="1" max="{{ $sc->amount_idr - $sc->paid_amount_idr }}"
+                                               value="{{ $sc->amount_idr - $sc->paid_amount_idr }}"
+                                               class="w-28 px-2 py-1 bg-slate-900 border border-slate-600 rounded text-white text-xs">
+                                        <input type="hidden" name="idempotency_key" value="{{ \Illuminate\Support\Str::uuid() }}">
+                                        <button class="px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs">Bayar</button>
+                                    </form>
+
+                                    @if($sc->due_date->isPast())
+                                    <form method="POST" action="{{ route('contract.schedule.penalty.pay', [$contract, $sc]) }}" class="inline" title="Bayar denda keterlambatan">
+                                        @csrf
+                                        <input type="hidden" name="idempotency_key" value="{{ \Illuminate\Support\Str::uuid() }}">
+                                        <button class="px-2 py-1 bg-red-600/70 hover:bg-red-500 text-white rounded text-xs">Denda</button>
+                                    </form>
+                                    <form method="POST" action="{{ route('contract.schedule.penalty.waiver', [$contract, $sc]) }}" class="inline" title="Ajukan pembebasan denda">
+                                        @csrf
+                                        <input type="hidden" name="reason" value="Pembebasan denda termin {{ $sc->id }}">
+                                        <button class="px-2 py-1 bg-slate-600 hover:bg-slate-500 text-white rounded text-xs">Waiver</button>
+                                    </form>
+                                    @endif
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="7" class="px-4 py-8 text-center text-slate-500 text-sm">Belum ada jadwal pembayaran. Bentuk jadwal di atas.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- Eskalasi (29.3) --}}
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 mb-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-3">📈 Eskalasi Harga</h3>
+                @if($contract->escalation_enabled && $contract->escalation_index_code)
+                <p class="text-xs text-slate-400 mb-3">
+                    Indeks <span class="text-indigo-300 font-mono">{{ $contract->escalation_index_code }}</span> ·
+                    dasar <span class="text-white">{{ $contract->escalation_index_base }}</span> ·
+                    kini <span class="text-white">{{ $escalation['current_index'] ?? '—' }}</span> ·
+                    faktor <span class="text-white">{{ round($escalation['factor'], 6) }}</span>
+                    @if($contract->escalation_cap_percent !== null) · cap ±{{ $contract->escalation_cap_percent }}% @endif
+                    · formula <span class="font-mono text-slate-500">{{ $contract->escalation_formula }}</span>
+                </p>
+                <div class="flex gap-2">
+                    <form method="POST" action="{{ route('contract.escalation.preview', $contract) }}">
+                        @csrf
+                        <button class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs">Pratinjau</button>
+                    </form>
+                    <form method="POST" action="{{ route('contract.escalation.apply', $contract) }}" onsubmit="return confirm('Terapkan eskalasi? Nilai kontrak & termin belum dibayar akan berubah.')">
+                        @csrf
+                        <button class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs">Terapkan Eskalasi</button>
+                    </form>
+                </div>
+                @else
+                <p class="text-xs text-slate-500">Eskalasi tidak aktif untuk kontrak ini.</p>
+                @endif
+            </div>
+
+            {{-- Amandemen (29.4) --}}
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 mb-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-3">✍️ Amandemen / Addendum</h3>
+                @if($contract->status->value === 'active')
+                <form method="POST" action="{{ route('contract.amend', $contract) }}" class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+                    @csrf
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Nilai baru (IDR)</label>
+                        <input type="number" name="total_value_idr" min="0" value="{{ $contract->total_value_idr }}" class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Akhir baru</label>
+                        <input type="date" name="end_date" value="{{ $contract->end_date?->toDateString() }}" class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Jenis</label>
+                        <select name="kind" class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white text-sm">
+                            <option value="amendment">Amandemen</option>
+                            <option value="addendum">Addendum</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Alasan</label>
+                        <input name="reason" placeholder="Alasan perubahan..." class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white text-sm">
+                    </div>
+                    <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm">Catat</button>
+                </form>
+                @else
+                <p class="text-xs text-slate-500">Amandemen hanya tersedia pada kontrak aktif.</p>
+                @endif
+
+                @if($contract->amendments->isNotEmpty())
+                <div class="mt-4 space-y-2">
+                    @foreach($contract->amendments as $am)
+                    <div class="text-xs bg-slate-900/60 border border-slate-700 rounded p-3">
+                        <span class="text-indigo-300 font-semibold">{{ $am->kind->label() }}</span>
+                        <span class="text-slate-500">{{ $am->effective_date->format('d M Y') }}</span>
+                        — nilai {{ number_format($am->old_value_idr) }} → {{ number_format($am->new_value_idr) }}
+                        · jadwal {{ $am->schedule_recalculated ? 'dihitung ulang ✓' : 'tidak berubah' }}
+                        · versi <a href="{{ route('contract.versions', $contract) }}" class="text-indigo-400 underline">chain #{{ $am->contract_version_id ? 'ada' : '—' }}</a>
+                        @if($am->reason)· <span class="text-slate-400">{{ $am->reason }}</span>@endif
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+
+            {{-- Penggunaan plafon & risiko (29.5, 29.7) --}}
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-sm font-semibold text-slate-300">🧾 Rekonsiliasi Pemakaian</h3>
+                        <form method="POST" action="{{ route('contract.usage.sync', $contract) }}">
+                            @csrf
+                            <button class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs">Sinkronkan</button>
+                        </form>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-2.5 mb-3">
+                        <div class="h-2.5 rounded-full {{ $usage['status'] === 'ok' ? 'bg-emerald-500' : ($usage['status'] === 'warning' ? 'bg-amber-500' : 'bg-red-500') }}" style="width: {{ min(100, $usage['percent']) }}%"></div>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-2">{{ number_format($usage['used_idr']) }} dari {{ number_format($usage['total_idr']) }} (sisa {{ number_format($usage['remaining_idr']) }})</p>
+                    @if($usage['status'] !== 'ok')
+                    <p class="text-xs {{ $usage['status'] === 'warning' ? 'text-amber-400' : 'text-red-400' }}">Early warning: plafon {{ $usage['status'] === 'exceeded' ? 'TERLEWATI' : '≥80%' }}.</p>
+                    @endif
+                    @if($contract->usages->isNotEmpty())
+                    <ul class="mt-3 space-y-1 text-xs text-slate-500 max-h-32 overflow-y-auto">
+                        @foreach($contract->usages->take(10) as $u)
+                        <li>{{ $u->source_type }} #{{ $u->source_id }} — {{ number_format($u->amount_idr) }}</li>
+                        @endforeach
+                    </ul>
+                    @endif
+                </div>
+
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-sm font-semibold text-slate-300">⚖️ Skor Risiko (simulasi)</h3>
+                        <form method="POST" action="{{ route('contract.risk.rescore', $contract) }}">
+                            @csrf
+                            <button class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs">Hitung Ulang</button>
+                        </form>
+                    </div>
+                    <p class="text-3xl font-bold {{ $risk['score'] >= 60 ? 'text-red-400' : ($risk['score'] >= 30 ? 'text-amber-400' : 'text-emerald-400') }}">{{ $risk['score'] }}<span class="text-sm text-slate-500 font-normal">/100</span></p>
+                    <p class="text-xs text-slate-500 mb-2">Forum: {{ $contract->arbitration_rules ?? $contract->dispute_forum ?? '—' }}</p>
+                    @if($risk['flags'])
+                    <ul class="space-y-1 text-xs">
+                        @foreach($risk['flags'] as $flag)
+                        <li class="text-amber-300">⚠ {{ $flag }}</li>
+                        @endforeach
+                    </ul>
+                    @else
+                    <p class="text-xs text-emerald-400">✓ Tidak ada flag risiko.</p>
+                    @endif
+                </div>
             </div>
         </div>
 

@@ -47,6 +47,10 @@ class ContractService
      *     auto_renew?: bool,
      *     renewal_period_months?: int|null,
      *     governing_law?: string,
+     *     advance_amount_idr?: int, retention_percent?: int,
+     *     escalation_enabled?: bool, escalation_formula?: string,
+     *     escalation_index_code?: string, escalation_index_base?: float,
+     *     escalation_cap_percent?: float, arbitration_rules?: string,
      *     dispute_forum?: string,
      *     created_by?: string|null,
      *     parties?: array<array{party_id: string, role: string, signing_order?: int}>,
@@ -88,6 +92,18 @@ class ContractService
                 'governing_law' => $data['governing_law'] ?? 'Indonesia',
                 'dispute_forum' => $data['dispute_forum'] ?? 'BANI Jakarta',
                 'created_by' => $data['created_by'] ?? null,
+                // 29.1 Keuangan
+                'advance_amount_idr' => (int) ($data['advance_amount_idr'] ?? 0),
+                'advance_paid_idr' => 0,
+                'retention_percent' => (int) ($data['retention_percent'] ?? 0),
+                // 29.3 Eskalasi
+                'escalation_enabled' => (bool) ($data['escalation_enabled'] ?? false),
+                'escalation_formula' => $data['escalation_formula'] ?? null,
+                'escalation_index_code' => $data['escalation_index_code'] ?? null,
+                'escalation_index_base' => isset($data['escalation_index_base']) ? (float) $data['escalation_index_base'] : null,
+                'escalation_cap_percent' => isset($data['escalation_cap_percent']) ? (float) $data['escalation_cap_percent'] : null,
+                // 29.7 Kepatuhan
+                'arbitration_rules' => $data['arbitration_rules'] ?? null,
             ]);
 
             // 2. Attach Template Clauses if provided

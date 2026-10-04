@@ -8,7 +8,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
+use Modules\Contract\Application\Services\ContractFinanceService;
+use Modules\Contract\Application\Services\ContractRiskService;
 use Modules\Contract\Application\Services\ContractService;
+use Modules\Contract\Application\Services\ContractUsageService;
 use Modules\Contract\Domain\Enums\ContractPartyRole;
 use Modules\Contract\Domain\Enums\ContractStatus;
 use Modules\Contract\Domain\Enums\ContractType;
@@ -111,8 +114,19 @@ class ContractController extends Controller
             'clauses',
             'milestones',
             'attachments.document',
+            'paymentSchedules.milestone',
+            'amendments.version',
+            'usages',
             'versions' => fn ($q) => $q->orderBy('sequence'),
         ]);
+
+        $financeService = app(ContractFinanceService::class);
+        $riskService = app(ContractRiskService::class);
+        $usageService = app(ContractUsageService::class);
+        $schedules = $contract->paymentSchedules;
+        $usage = $usageService->utilization($contract);
+        $risk = $riskService->score($contract, persist: false);
+        $escalation = $financeService->computeEscalation($contract);
 
         $allParties = Party::where('is_active', true)->whereNull('merged_into_id')->orderBy('name')->get();
         $roles = ContractPartyRole::cases();
@@ -122,7 +136,7 @@ class ContractController extends Controller
             ->filter(fn ($s) => $contract->status->canTransitionTo($s));
 
         return view('contract::show', compact(
-            'contract', 'allParties', 'roles', 'statuses', 'msStatuses', 'nextStatus'
+            'contract', 'allParties', 'roles', 'statuses', 'msStatuses', 'nextStatus', 'schedules', 'usage', 'risk', 'escalation'
         ));
     }
 

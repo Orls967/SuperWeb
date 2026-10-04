@@ -46,6 +46,11 @@ enum TransactionType: string
     case LOGISTICS_DD_ACCRUAL = 'lgx_dd_accrual';
     case LOGISTICS_CUSTOMS_DUTY = 'lgx_customs_duty';
     case LOGISTICS_FUEL_EXPENSE = 'lgx_fuel_expense';
+    case CONTRACT_ADVANCE = 'ctr_advance';
+    case CONTRACT_PAYMENT = 'ctr_payment';
+    case CONTRACT_RETENTION = 'ctr_retention';
+    case CONTRACT_PENALTY = 'ctr_penalty';
+    case CONTRACT_EXPENSE = 'ctr_expense';
 
     public function label(): string
     {
@@ -90,6 +95,11 @@ enum TransactionType: string
             self::LOGISTICS_DD_ACCRUAL => 'Akrual Demurrage & Detention',
             self::LOGISTICS_CUSTOMS_DUTY => 'Pembayaran Bea Cukai',
             self::LOGISTICS_FUEL_EXPENSE => 'Biaya Bahan Bakar Armada',
+            self::CONTRACT_ADVANCE => 'Uang Muka Kontrak',
+            self::CONTRACT_PAYMENT => 'Pembayaran Termin Kontrak',
+            self::CONTRACT_RETENTION => 'Retensi Kontrak',
+            self::CONTRACT_PENALTY => 'Denda Kontrak',
+            self::CONTRACT_EXPENSE => 'Beban Kontrak',
         };
     }
 }

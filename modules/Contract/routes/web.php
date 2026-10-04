@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\Contract\Http\Controllers\ClauseTemplateController;
 use Modules\Contract\Http\Controllers\ContractController;
+use Modules\Contract\Http\Controllers\ContractFinanceController;
 use Modules\Contract\Http\Controllers\ContractTemplateController;
 
 Route::middleware(['web', 'auth', 'verified', 'role:admin,contract_manager,legal'])
@@ -66,4 +67,21 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,contract_manager,legal
 
         // Dashboard kewajiban jatuh tempo (28.7)
         Route::get('/obligations/due', [ContractController::class, 'obligations'])->name('obligations');
+
+        // Laporan paparan & audit subledger (29.8)
+        Route::get('/reports', [ContractFinanceController::class, 'reports'])->name('reports');
+
+        // Fase 29 — finansial per kontrak
+        Route::post('/{contract}/schedule/build', [ContractFinanceController::class, 'buildSchedule'])->name('schedule.build');
+        Route::post('/{contract}/schedule/{schedule}/pay', [ContractFinanceController::class, 'paySchedule'])->name('schedule.pay');
+        Route::post('/{contract}/advance/pay', [ContractFinanceController::class, 'payAdvance'])->name('advance.pay');
+        Route::post('/{contract}/schedule/{schedule}/penalty', [ContractFinanceController::class, 'showPenalty'])->name('schedule.penalty.show');
+        Route::post('/{contract}/schedule/{schedule}/penalty/pay', [ContractFinanceController::class, 'payPenalty'])->name('schedule.penalty.pay');
+        Route::post('/{contract}/schedule/{schedule}/penalty/waiver', [ContractFinanceController::class, 'requestWaiver'])->name('schedule.penalty.waiver');
+        Route::post('/{contract}/schedule/{schedule}/penalty/waiver/apply', [ContractFinanceController::class, 'applyWaiver'])->name('schedule.penalty.waiver.apply');
+        Route::post('/{contract}/escalation/preview', [ContractFinanceController::class, 'previewEscalation'])->name('escalation.preview');
+        Route::post('/{contract}/escalation/apply', [ContractFinanceController::class, 'applyEscalation'])->name('escalation.apply');
+        Route::post('/{contract}/amend', [ContractFinanceController::class, 'amend'])->name('amend');
+        Route::post('/{contract}/usage/sync', [ContractFinanceController::class, 'syncUsage'])->name('usage.sync');
+        Route::post('/{contract}/risk/rescore', [ContractFinanceController::class, 'rescoreRisk'])->name('risk.rescore');
     });

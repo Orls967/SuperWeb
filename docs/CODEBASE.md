@@ -4,8 +4,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 28 (Kontrak Inti) · **Berjalan:** — · **Berikutnya:** Fase 29 Kontrak Lanjutan (keuangan, kepatuhan & integrasi)
-**Snapshot gate (akhir Fase 28):** 642 test / 3558 assertion (Fase 27: 611/3438), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih (29 dok) · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (10) lulus.
+**Terakhir diperbarui:** 2026-10-04 · **Fase selesai terakhir:** 29 (Kontrak Lanjutan) · **Berjalan:** — · **Berikutnya:** Fase 30 Aset Inti (modul ast_)
+**Snapshot gate (akhir Fase 29):** 653 test / 3602 assertion (Fase 28: 642/3558), 0 skipped · `bank:reconcile` 0 selisih (128 akun) · `lgx:audit-billing` 0 selisih (29 dok) · `lgx:verify-custody`, `lgx:capacity-check` valid · `super:health-check` 8 pilar HEALTHY · Pint, Vite, arch (10) lulus.
 
 ---
 
@@ -52,7 +52,7 @@ Gotcha yang sudah pernah menggigit: `event(new X)` bukan `X::dispatch` bila even
 | Mall | `mall_` (25 tabel) | `/mall` | Duta Mall: leasing, tagihan, tunggakan/denda, utilitas, parkir, footfall, loyalty (points), voucher, event, facility WO, `mall_assets`; cmd `mall:*` (9) | 168 |
 | Logistics | `lgx_` (≈ 43 tabel) | `/logistics` | Sari Ranah Express — lihat §6 | 269 |
 | Party | `pty_` (11 tabel) | `/party` | Party Master & Badan Hukum: `Party` (orang/perusahaan), `LegalEntity` (holding/anak/cabang), `PartyRole`, `PartyAddress`, `PartyContact`, `PartyBankAccount`, `KycDocument`, `SanctionCheck`, `CreditProfile`, `pty_merge_logs`; actions KYC submit/approve/reject; screening sanksi fuzzy similar_text + hash; credit scoring 0-100; command `party:backfill-links`, `party:remind-expiring-docs` | 25 |
-| Contract | `ctr_` (8 tabel) | `/contracts` | Kontrak inti: `Contract`, `ContractParty`, `ContractClause`, `ContractVersion` (SHA-256 hash-chain append-only), `ContractMilestone`, `ContractAttachment` (Core DocumentStore checksum/retensi), `ContractTemplate`, `ClauseTemplate`; `ContractService` (gapless numbering, state machine, approval engine, e-sign simulasi, append/verify chain, diff); command `contracts:verify-chain`, `ctr:remind`; role `contract_manager`, `legal`; tabs kontrak: overview/pihak/klausul/obligasi/lampiran/versi | 31 |
+| Contract | `ctr_` (13 tabel) | `/contracts` | Kontrak inti: `Contract`, `ContractParty`, `ContractClause`, `ContractVersion` (SHA-256 hash-chain append-only), `ContractMilestone`, `ContractAttachment` (Core DocumentStore checksum/retensi), `ContractTemplate`, `ClauseTemplate`; `ContractService` (gapless numbering, state machine, approval engine, e-sign simulasi, append/verify chain, diff); command `contracts:verify-chain`, `ctr:remind`; role `contract_manager`, `legal`; tabs kontrak: overview/pihak/klausul/obligasi/**keuangan**/lampiran/versi; **Fase 29**: `ContractFinanceService` (jadwal termin/advance/retensi, denda waiver via approval, eskalasi indeks terbatas-parser), `ContractAmendmentService` (diff + versi chain + regenerate jadwal), `ContractUsageService`/`UsageSync` (plafon idempoten, early warning 80/100%), `ContractRiskService` (skor 0–100), `ContractReportService` (eksposur per jenis/pihak, aging, `ctr:audit`), `ContractRateResolver` (rate card kontrak menang via `RateCardOverrideResolver`); command `ctr:audit`; laporan `/contracts/reports` | 47 |
 
 Tabel non-prefiks lama: `users`, `bookings`, `spareparts`, `services`, `cars`, `brands`, `garages`, `wishlists`, `platform_*`.
 
@@ -69,6 +69,7 @@ Seeder: `DatabaseSeeder` → Banking, Platform, Crypto, Mall, Resto, Logistics (
 - `TransactionType` (Banking enum, ±40 case; nilai ≤ 32 char; Logistik memakai `LOGISTICS_*`).
 - Akun sistem Logistik (`Application/Services/LogisticsLedger.php`): `lgx:unearned_freight`, `lgx:freight_revenue`, `lgx:cod_fee_revenue`, `lgx:carrier_cost`, `lgx:claims_expense`, `lgx:dd_revenue`, `lgx:customs_duty_payable`, `lgx:fuel_expense`, `clearing:external:IDR`.
 - Akun escrow pembayaran `escrow:payment:IDR`; kolateral `escrow:finance:collateral:{ASSET}`.
+- Akun & tipe kontrak (Fase 29): `ctr:advance` (liabilitas uang muka), `ctr:retention_receivable`/`ctr:retention_payable`, `ctr:penalty_revenue:IDR`, `ctr:revenue:{contract_id}`; TransactionType `ctr_advance|ctr_payment|ctr_retention|ctr_penalty|ctr_expense`.
 - Pembulatan: Brick Math `HalfUp`; PB1 resto 10% pembulatan Rp100; PPN 11% (config `logistics.vat_rate`).
 - **Audit:** `bank:reconcile` (Σ=0 & saldo cache = agregat entri), `mall:audit-billing`, `lgx:audit-billing` (15 pemeriksaan, exit 1 bila selisih).
 
@@ -110,7 +111,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 ## 8. Peta command lengkap
  
-`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (8 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal) · `party:backfill-links` · `party:remind-expiring-docs` · `contracts:verify-chain` · `ctr:remind`. Jadwal: `routes/console.php`.
+`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (8 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal) · `party:backfill-links` · `party:remind-expiring-docs` · `contracts:verify-chain` · `ctr:remind` · `ctr:audit {--sync}`. Jadwal: `routes/console.php`.
 
 ## 9. Test
 

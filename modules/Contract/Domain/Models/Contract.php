@@ -26,6 +26,17 @@ class Contract extends Model
         'current_body', 'current_hash', 'approval_id', 'signed_at',
         'activated_at', 'terminated_at', 'termination_reason',
         'suspension_reason', 'renewed_to_id', 'created_by',
+        // 29.1 Keuangan
+        'advance_amount_idr', 'advance_paid_idr', 'retention_percent',
+        // 29.3 Eskalasi
+        'escalation_enabled', 'escalation_formula', 'escalation_index_code',
+        'escalation_index_base', 'escalation_cap_percent',
+        // 29.7 Kepatuhan & risiko
+        'arbitration_rules', 'risk_score', 'risk_flags',
+        // 29.5 Rekonsiliasi (cache agregat)
+        'used_value_idr',
+        // 29.6 Integrasi non-breaking
+        'linked_rate_card_id', 'linked_lease_id', 'linked_royalty_ref',
     ];
 
     protected $casts = [
@@ -40,6 +51,16 @@ class Contract extends Model
         'signed_at' => 'datetime',
         'activated_at' => 'datetime',
         'terminated_at' => 'datetime',
+        'advance_amount_idr' => 'integer',
+        'advance_paid_idr' => 'integer',
+        'retention_percent' => 'integer',
+        'escalation_enabled' => 'boolean',
+        'escalation_index_base' => 'float',
+        'escalation_cap_percent' => 'float',
+        'risk_score' => 'integer',
+        'risk_flags' => 'array',
+        'used_value_idr' => 'integer',
+        'linked_rate_card_id' => 'integer',
     ];
 
     public function legalEntity(): BelongsTo
@@ -75,6 +96,34 @@ class Contract extends Model
     public function attachments(): HasMany
     {
         return $this->hasMany(ContractAttachment::class, 'contract_id');
+    }
+
+    public function paymentSchedules(): HasMany
+    {
+        return $this->hasMany(PaymentSchedule::class, 'contract_id')->orderBy('due_date');
+    }
+
+    public function amendments(): HasMany
+    {
+        return $this->hasMany(Amendment::class, 'contract_id')->orderByDesc('effective_date');
+    }
+
+    public function penaltyRules(): HasMany
+    {
+        return $this->hasMany(PenaltyRule::class, 'contract_id');
+    }
+
+    public function usages(): HasMany
+    {
+        return $this->hasMany(UsageLedger::class, 'contract_id')->orderByDesc('occurred_at');
+    }
+
+    /**
+     * Nilai plafon yang tersisa (total nilai kontrak - nilai terpakai).
+     */
+    public function remainingValue(): int
+    {
+        return max(0, (int) $this->total_value_idr - (int) $this->used_value_idr);
     }
 
     public function latestVersion(): ?ContractVersion
