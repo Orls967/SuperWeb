@@ -421,15 +421,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 31.9 Quality gate Fase 31
 
 ## FASE 32 — PRODUSEN & PEMASOK (SUPPLIER MANAGEMENT, MODUL `sup_`)
-- [ ] 32.1 Modul Supplier: profil pemasok/produsen (party role), kategori barang/jasa, kapabilitas, lokasi pabrik, sertifikasi (ISO, SNI, Halal, BPOM, GMP) dengan masa berlaku
-- [ ] 32.2 Kualifikasi & onboarding: kuesioner, audit lokasi (checklist + skor), approval, status `candidate → approved → preferred → probation → disqualified`
-- [ ] 32.3 Katalog & daftar harga pemasok: item pemasok (SKU pemasok ↔ SKU internal), harga bertingkat (qty), mata uang, berlaku-dari/sampai tanpa overlap, MOQ, lead time
-- [ ] 32.4 Kontrak kerangka pemasok (Fase 28/29) memengaruhi harga & syarat bayar; verifikasi otomatis saat PO
-- [ ] 32.5 Portal pemasok: lihat PO, konfirmasi, kirim ASN (advance ship notice), unggah sertifikat/COA, lihat pembayaran; role `supplier`
-- [ ] 32.6 **Supplier scorecard**: OTD, kualitas (reject rate), harga vs pasar, responsivitas; skor periodik, ambang tindakan korektif (SCAR)
-- [ ] 32.7 Manajemen risiko pemasok: konsentrasi (single source), ketergantungan, sertifikat kedaluwarsa, sanksi (27.6)
-- [ ] 32.8 Integrasi Resto: pemasok bahan resto → supplier; harga terakhir memperbarui MAC referensi (kontrak, bukan impor domain)
-- [ ] 32.9 Quality gate Fase 32
+- [x] 32.1 Modul Supplier: profil pemasok/produsen (party role), kategori barang/jasa, kapabilitas, lokasi pabrik, sertifikasi (ISO, SNI, Halal, BPOM, GMP) dengan masa berlaku
+- [x] 32.2 Kualifikasi & onboarding: kuesioner, audit lokasi (checklist + skor), approval, status `candidate → approved → preferred → probation → disqualified`
+- [x] 32.3 Katalog & daftar harga pemasok: item pemasok (SKU pemasok ↔ SKU internal), harga bertingkat (qty), mata uang, berlaku-dari/sampai tanpa overlap, MOQ, lead time
+- [x] 32.4 Kontrak kerangka pemasok (Fase 28/29) memengaruhi harga & syarat bayar; verifikasi otomatis saat PO
+- [x] 32.5 Portal pemasok: lihat PO, konfirmasi, kirim ASN (advance ship notice), unggah sertifikat/COA, lihat pembayaran; role `supplier`
+- [x] 32.6 **Supplier scorecard**: OTD, kualitas (reject rate), harga vs pasar, responsivitas; skor periodik, ambang tindakan korektif (SCAR)
+- [x] 32.7 Manajemen risiko pemasok: konsentrasi (single source), ketergantungan, sertifikat kedaluwarsa, sanksi (27.6)
+- [x] 32.8 Integrasi Resto: pemasok bahan resto → supplier; harga terakhir memperbarui MAC referensi (kontrak, bukan impor domain)
+- [x] 32.9 Quality gate Fase 32
 
 ## FASE 33 — PROCUREMENT: PR → RFQ → TENDER → PO
 - [ ] 33.1 Purchase Requisition (PR): dari kebutuhan manual, MRP (Fase 36), atau reorder-point; approval berjenjang berdasar nilai & pusat biaya

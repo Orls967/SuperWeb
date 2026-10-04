@@ -53,3 +53,7 @@ Schedule::command('ctr:remind')->dailyAt('08:15');
 // --- Aset (Fase 31) ---
 Schedule::command('ast:depreciate')->monthlyOn(1, '01:30');
 Schedule::command('ast:audit')->monthlyOn(1, '02:00');
+
+// --- Supplier Management (Fase 32) ---
+Schedule::command('sup:scan-risks')->dailyAt('06:45');
+Schedule::command('sup:remind-certifications')->dailyAt('07:10');

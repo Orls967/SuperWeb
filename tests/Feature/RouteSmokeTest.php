@@ -208,6 +208,9 @@ class RouteSmokeTest extends TestCase
             'asset.create',
             'asset.audit',
             'asset.depreciation.index',
+            'supplier.index',
+            'supplier.create',
+            'supplier.portal.home',
         ];
 
         foreach ($adminRoutes as $route) {

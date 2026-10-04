@@ -41,6 +41,8 @@ class RbacSeeder extends Seeder
             ['name' => 'legal', 'label' => 'Legal', 'description' => 'Meninjau, menegosiasi, dan menyetujui kontrak.'],
             ['name' => 'asset_manager', 'label' => 'Manajer Aset', 'description' => 'Mengelola register aset, mutasi, opname, asuransi.'],
             ['name' => 'auditor', 'label' => 'Auditor', 'description' => 'Hanya baca untuk audit dan rekonsiliasi.'],
+            ['name' => 'supplier', 'label' => 'Pemasok', 'description' => 'Portal pemasok: PO, ASN, sertifikat, pembayaran.'],
+            ['name' => 'procurement', 'label' => 'Procurement', 'description' => 'Kualifikasi, RFQ, harga, dan skor pemasok.'],
         ];
 
         foreach ($roles as $r) {
@@ -146,6 +148,12 @@ class RbacSeeder extends Seeder
                 'asset.view' => 'Lihat register aset',
                 'asset.manage' => 'Registrasi, mutasi, opname, dan asuransi aset',
                 'asset.approve' => 'Menyetujui mutasi & penyesuaian aset',
+            ],
+            'supplier' => [
+                'supplier.view' => 'Lihat direktori pemasok',
+                'supplier.manage' => 'Kelola profil, harga, katalog & skor pemasok',
+                'supplier.approve' => 'Menyetujui kualifikasi & transisi status pemasok',
+                'supplier.portal.access' => 'Akses portal pemasok (PO/ASN/COA)',
             ],
         ];
 
@@ -255,7 +263,18 @@ class RbacSeeder extends Seeder
 
             'auditor' => [
                 'core.dashboard.view',
-                'party.view', 'contract.view', 'asset.view',
+                'party.view', 'contract.view', 'asset.view', 'supplier.view',
+            ],
+
+            'supplier' => [
+                'core.dashboard.view',
+                'supplier.view', 'supplier.portal.access',
+            ],
+
+            'procurement' => [
+                'core.dashboard.view',
+                'party.view', 'supplier.view', 'supplier.manage', 'supplier.approve',
+                'contract.view',
             ],
         ];
 

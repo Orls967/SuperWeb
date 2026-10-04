@@ -17,6 +17,7 @@ use Modules\Payment\PaymentServiceProvider;
 use Modules\Resto\RestoServiceProvider;
 use Modules\Shared\SharedServiceProvider;
 use Modules\Store\StoreServiceProvider;
+use Modules\Supplier\SupplierServiceProvider;
 
 return [
     AppServiceProvider::class,
@@ -36,4 +37,5 @@ return [
     PartyServiceProvider::class,
     AssetServiceProvider::class,
     ContractServiceProvider::class,
+    SupplierServiceProvider::class,
 ];

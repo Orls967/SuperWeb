@@ -19,6 +19,7 @@ use Modules\Logistics\database\seeders\LogisticsSeeder;
 use Modules\Mall\database\seeders\MallSeeder;
 use Modules\Party\database\seeders\PartySeeder;
 use Modules\Resto\database\seeders\RestoMenuSeeder;
+use Modules\Supplier\database\seeders\SupplierSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -138,6 +139,7 @@ class DatabaseSeeder extends Seeder
             PartySeeder::class,
             ContractSeeder::class,
             AssetSeeder::class,
+            SupplierSeeder::class,
             RbacSeeder::class,
         ]);
     }
