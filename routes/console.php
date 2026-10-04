@@ -57,3 +57,6 @@ Schedule::command('ast:audit')->monthlyOn(1, '02:00');
 // --- Supplier Management (Fase 32) ---
 Schedule::command('sup:scan-risks')->dailyAt('06:45');
 Schedule::command('sup:remind-certifications')->dailyAt('07:10');
+
+// --- Perencanaan Produksi (Fase 36) ---
+Schedule::command('mfg:run-mrp')->dailyAt('04:45');

@@ -466,15 +466,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 35.10 Quality gate Fase 35
 
 ## FASE 36 — PERENCANAAN PRODUKSI (MPS / MRP / CRP)
-- [ ] 36.1 Forecast & demand input: order penjualan, forecast distributor (Fase 43), reorder-point; versi skenario
-- [ ] 36.2 **MPS** (jadwal induk): kuantitas per periode untuk barang jadi, time fence, freeze period
-- [ ] 36.3 **MRP**: ledakan BOM bertingkat, netting terhadap stok/PO/produksi terbuka, lot sizing (L4L, EOQ, fixed, periodik), lead time offset → rencana PR/PO & order produksi (planned)
-- [ ] 36.4 **CRP** (kapasitas): beban per work center per periode vs kapasitas, bottleneck, pemerataan/penjadwalan maju-mundur sederhana
-- [ ] 36.5 Konversi planned → firm order produksi; reservasi bahan (hard/soft), konflik alokasi diselesaikan prioritas
-- [ ] 36.6 Mengusulkan PR otomatis ke Procurement (Fase 33) dengan lead time pemasok & MOQ
-- [ ] 36.7 Aturan stok pengaman & titik pesan ulang; simulasi "what-if" (skenario tidak mengubah data nyata)
-- [ ] 36.8 `mfg:run-mrp` terjadwal & idempoten (run id, perbandingan antar-run, hasil dapat diulang dengan data sama)
-- [ ] 36.9 Quality gate Fase 36
+- [x] 36.1 Forecast & demand input: order penjualan, forecast distributor (Fase 43), reorder-point; versi skenario
+- [x] 36.2 **MPS** (jadwal induk): kuantitas per periode untuk barang jadi, time fence, freeze period
+- [x] 36.3 **MRP**: ledakan BOM bertingkat, netting terhadap stok/PO/produksi terbuka, lot sizing (L4L, EOQ, fixed, periodik), lead time offset → rencana PR/PO & order produksi (planned)
+- [x] 36.4 **CRP** (kapasitas): beban per work center per periode vs kapasitas, bottleneck, pemerataan/penjadwalan maju-mundur sederhana
+- [x] 36.5 Konversi planned → firm order produksi; reservasi bahan (hard/soft), konflik alokasi diselesaikan prioritas
+- [x] 36.6 Mengusulkan PR otomatis ke Procurement (Fase 33) dengan lead time pemasok & MOQ
+- [x] 36.7 Aturan stok pengaman & titik pesan ulang; simulasi "what-if" (skenario tidak mengubah data nyata)
+- [x] 36.8 `mfg:run-mrp` terjadwal & idempoten (run id, perbandingan antar-run, hasil dapat diulang dengan data sama)
+- [x] 36.9 Quality gate Fase 36
 
 ## FASE 37 — EKSEKUSI PRODUKSI (SHOP FLOOR)
 - [ ] 37.1 **Order produksi** (`mfg_production_orders`): state `planned → released → in_progress → completed → closed|cancelled`; nomor via 26.8

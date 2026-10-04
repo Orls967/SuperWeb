@@ -581,3 +581,18 @@
   - Seeder `ManufacturingSeeder` menanam `PLT-JKT` + `CK-01` dan mengaitkan adapter ke outlet Resto CK-01 (urutan `RestoSeeder` sebelumnya di `DatabaseSeeder`); tes tabrak kode disesuaikan (`ck-99`).
 - **Reason:** satu service/penyimpanan untuk seluruh master produksi; validasi BOM dilakukan sekali di sisi server agar modul berikutnya (MRP/shop floor) tidak perlu mengulang; tanpa ledger di Fase 35 (posting produksi baru di Fase 37–38).
 - **Tests:** `modules/Manufacturing/tests/Feature/ManufacturingPhase35Test` (7 tes / 26 asersi) + `RbacTest` 22 role. Gate: 733 test / 3932 assertion.
+
+## 2026-10-05: Fase 36 — Perencanaan Produksi (MPS / MRP / CRP)
+
+- **Context:** Fase 35 menyediakan BOM, routing, material; perencanaan perlu demand per bucket, netting stok/supply, usulan produksi/pembelian, dan beban work center. Resto/Inventory tetap pemilik stok outlet; saldo `mfg_material_balances` adalah stok material pabrik.
+- **Decision:**
+  - Tambah 12 tabel planning `mfg_*`: parameter, forecast scenarios/lines, MPS headers/lines, balance, scheduled receipts, MRP run/requirements, planned orders, reservations, CRP loads.
+  - Forecast skenario ber-versi, hanya satu `active`; MPS juga ber-versi, satu `active`, dan baris within `freeze_days` diberi `frozen`.
+  - `PlanningService::runMrp`: snapshot MPS/forecast/parameter/balance/receipt + horizon/bucket → SHA-256 `run_key`; replay `completed` dengan key sama mengembalikan run terdahulu. MRP mode scenario ikut key, menulis requirement/summary saja, tanpa planned orders atau CRP rows.
+  - Ledakan BOM bertingkat menggunakan level-relaxation topological order (induk sebelum komponen), netting per bucket (`on_hand − reserved + scheduled receipts − gross demand`), semua qty kalkulasi disimpan sebagai decimal 6 via bc-math. BOM effective per bucket, qty line dinormalisasi `bom.output_qty`, scrap ditambahkan.
+  - Lot sizing: `l4l`, `fixed`, `periodic`, `eoq` (EOQ memakai `sqrt(2DS/H)`, dibulatkan ke atas 6 desimal); `moq` floor selalu diterapkan. Receipt terjadwal dialokasikan berdasar bucket due date.
+  - Planned order purchase → requisition via contract `Modules\Procurement\Contracts\MrpRequisitionProposer`; Procurement yang membentuk PR dan approval. Tidak ada import Domain lintas modul. Adapter interface dapat dipakai modul lain bila mengusulkan material purchase.
+  - Firming membuat reservasi BOM (soft/hard); `resolveAllocationConflicts` alokasi ulang per material berdasarkan due date lalu creation (earliest due wins), shortfall dicatat; simulasi what-if menyimpan `is_scenario=true` dan tidak menulis order nyata.
+  - CRP menghitung setup + run time terhadap kapasitas work center ter-adjust efisiensi; load > capacity atau capacity=0 ditandai bottleneck. `mfg:run-mrp` harian 04:45.
+- **Reason:** MRP dapat diulang deterministik terhadap snapshot yang sama, tidak langsung memutasi inventory/PO, dan semua lintas modul memakai contract; what-if tidak boleh merusak parameter/data nyata.
+- **Tests:** `modules/Manufacturing/tests/Feature/ProductionPlanningTest` (10 tes); full gate 743 test / 3971 assertions, Pint, Vite, audit bank/proc/asset/contract/logistics/mall, 10 pilar HEALTHY.

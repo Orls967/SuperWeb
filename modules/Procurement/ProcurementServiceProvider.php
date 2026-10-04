@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Modules\Procurement;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Procurement\Application\Services\MrpRequisitionProposer;
 use Modules\Procurement\Application\Services\ProcurementService;
 use Modules\Procurement\Application\Services\ReceivingService;
 use Modules\Procurement\Console\Commands\AuditProcurementCommand;
+use Modules\Procurement\Contracts\MrpRequisitionProposer as MrpRequisitionProposerContract;
 use Modules\Shared\Application\MenuRegistry;
 
 class ProcurementServiceProvider extends ServiceProvider
@@ -16,6 +18,7 @@ class ProcurementServiceProvider extends ServiceProvider
     {
         $this->app->singleton(ProcurementService::class);
         $this->app->singleton(ReceivingService::class);
+        $this->app->bind(MrpRequisitionProposerContract::class, MrpRequisitionProposer::class);
     }
 
     public function boot(): void

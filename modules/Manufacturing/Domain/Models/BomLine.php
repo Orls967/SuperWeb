@@ -31,4 +31,16 @@ class BomLine extends Model
     {
         return $this->belongsTo(Material::class, 'input_material_id');
     }
+
+    /**
+     * Kebutuhan baris untuk kuantitas output tertentu, termasuk scrap %.
+     * BOM line qty relatif terhadap bom.output_qty.
+     */
+    public function requiredQty(float $outputQty): float
+    {
+        $scrap = 1 + ((float) $this->scrap_percent / 100);
+        $perUnit = (float) $this->qty / max(0.000001, (float) ($this->bom?->output_qty ?? 1));
+
+        return $perUnit * max(0.0, $outputQty) * $scrap;
+    }
 }

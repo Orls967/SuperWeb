@@ -5,6 +5,10 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="flex items-center justify-between rounded-lg bg-indigo-50 px-4 py-3">
+                <p class="text-sm text-indigo-800">Fase 36 — perencanaan MPS / MRP / CRP, reservasi bahan, usulan PR.</p>
+                <a href="{{ route('manufacturing.planning.index') }}" class="rounded bg-indigo-600 px-4 py-2 text-sm text-white">Buka perencanaan</a>
+            </div>
             @if (session('success'))
                 <div class="rounded-md bg-green-50 p-4 text-green-800">{{ session('success') }}</div>
             @endif

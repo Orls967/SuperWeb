@@ -6,6 +6,8 @@ namespace Modules\Manufacturing;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Manufacturing\Application\Services\ManufacturingService;
+use Modules\Manufacturing\Application\Services\PlanningService;
+use Modules\Manufacturing\Console\Commands\RunMrpCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class ManufacturingServiceProvider extends ServiceProvider
@@ -13,6 +15,7 @@ class ManufacturingServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(ManufacturingService::class);
+        $this->app->singleton(PlanningService::class);
     }
 
     public function boot(): void
@@ -25,6 +28,10 @@ class ManufacturingServiceProvider extends ServiceProvider
 
         if (is_dir(__DIR__.'/resources/views/manufacturing')) {
             $this->loadViewsFrom(__DIR__.'/resources/views/manufacturing', 'manufacturing');
+        }
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([RunMrpCommand::class]);
         }
 
         $this->registerMenu();
