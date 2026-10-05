@@ -883,6 +883,19 @@
   - **57.4–57.7 Dokumentasi & Berita Acara:** Sinkronisasi menyeluruh catatan arsitektur, inventaris kode, dan log pengujian.
 - **Tests:** `GoldenValueChainMegaIntegrationTest` (3 tes / 21 asersi). Sub-suite `GoldenValueChainMegaIntegrationTest|ModuleBoundariesTest` (15 passed / 81 assertions), `chain:audit-all` (12 audit lulus, 0 diskrepansi), Pint lulus.
 
+---
+
+## 2026-10-06: Fase 57B — Deep Audit Codebase, Hardening, Keamanan, Validasi Ketat & Enriched Unique Seeders
+
+- **Context:** Pemeliharaan menyeluruh ekosistem platform modular monolith, pengerasan kontrol keamanan rate limiting, pengujian kepatuhan batas modul, pengayaan dataset unik idempoten skala besar (100+ badan hukum unik), dan validasi integritas sistem multi-pilar.
+- **Decision:**
+  - **57B.1 & 57B.2 Zero Fat Controller & DTO/Exception Hierarchy:** Penegakan konsistensi pemanggilan service/action terenkapsulasi `DB::transaction`, standardisasi DTO strongly-typed, dan pemisahan exception bisnis dari layer HTTP.
+  - **57B.4 Security Hardening & Rate Limiter Granular:** Konfigurasi rate limiter di `AppServiceProvider` (`transactions` 10/min, `wallet-pin` 3/5min, `auth-attempts` 5/min, `exports-imports` 5/min) untuk mitigasi DoS dan brute-force.
+  - **57B.6 Dataset Unik & Idempoten (`EnterpriseUniverseSeeder`):** Penambahan 100 entitas badan hukum (PT, CV, Firma) dengan NIK/NPWP/NIB ber-masking dan ber-hash deterministik, aman diulang berulang kali tanpa benturan constraint.
+  - **57B.8 Observabilitas 10 Pilar Multi-Domain:** Pengujian kesehatan ekosistem via `super:health-check` menghasilkan status HEALTHY di seluruh subsistem utama.
+- **Tests:** `MaintenanceAndResiliencePhase57BTest` (4 tes / 8 asersi). Sub-suite `MaintenanceAndResiliencePhase57BTest|ModuleBoundariesTest` (16 passed / 68 assertions), `super:health-check` (lulus 100%), `chain:audit-all` (0 selisih), Pint lulus.
+
+
 
 
 

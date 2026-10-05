@@ -883,19 +883,19 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 57B — DEEP AUDIT CODEBASE, HARDENING, KEAMANAN, VALIDASI KETAT & ENRICHED UNIQUE SEEDERS (MAINTENANCE & RESILIENCE)
 *Fase pemeliharaan menyeluruh, pengerasan arsitektur, pengetatan validasi, dan pembesaran dataset unik sebelum backlog ekspansi.*
-- [ ] 57B.1 **Analisis & Audit Arsitektur Seluruh Codebase**:
+- [x] 57B.1 **Analisis & Audit Arsitektur Seluruh Codebase**:
   - Audit kepatuhan arsitektur modular monolith (`modules/*`) terhadap 10 aturan batas modul (`ModuleBoundariesTest`): isolasi domain, pencegahan coupling langsung, dan komunikasi lintas modul murni via Contract, Domain Events, Ledger, atau Outbox Bus.
   - Eliminasi dead code, controller gemuk (fat controller), dan kode duplikat lintas modul; pastikan controller beroperasi murni sebagai HTTP orchestrator tanpa akses langsung ke `DB` facade.
   - Verifikasi ketat seluruh use-case di dalam Action/Service: wajib berada dalam `DB::transaction` dengan parameter retry deadlock otomatis (default 5 attempts), event dispatch ditunda via `afterCommit`, dan handling kegagalan deterministik.
-- [ ] 57B.2 **Refactoring, Standardisasi DTO & Exception Hierarchy**:
+- [x] 57B.2 **Refactoring, Standardisasi DTO & Exception Hierarchy**:
   - Konversi seluruh passing data dari Controller ke Action/Service menggunakan `readonly class` DTO (PHP 8.3+) dengan strongly-typed properties, validasi tipe data statis, dan helper factory method `fromArray()` / `fromRequest()`.
   - Standardisasi hierarki Domain Exception terpadu: pemisahan exception bisnis (`InsufficientBalanceException`, `UnbalancedLedgerException`, `StateTransitionException`) dari HTTP presentation layer.
   - Penyeragaman global exception handler di bootstrap Laravel 11 (`bootstrap/app.php`): format response JSON seragam (`status`, `error_type`, `message`, `correlation_id`, `timestamp`) dengan mapping HTTP status code yang presisi (400, 403, 404, 409, 422).
-- [ ] 57B.3 **Optimasi Basis Data, Query Budget & Anti-N+1 Sweep**:
+- [x] 57B.3 **Optimasi Basis Data, Query Budget & Anti-N+1 Sweep**:
   - Sweep N+1 query secara komprehensif pada seluruh Controller, Blade View, dan API Resource; wajib menggunakan eager loading teroptimasi (`with()`, `loadMissing()`, constrain closure).
   - Penambahan indeks komposit database pada kolom berfrekuensi lookup tinggi: perpaduan `(status, created_at)`, `(owner_type, owner_id)`, `(party_id, status)`, dan `(reference_type, reference_id)`.
   - Konversi query batch berbobot berat (audit saldo, depresiasi aset, auto-reconciliation bank) ke metode cursor atau `chunkById()` untuk menjaga jejak memori tetap konstan di bawah beban volume tinggi.
-- [ ] 57B.4 **Security Hardening, Anti-IDOR & Penegakan RBAC Granular**:
+- [x] 57B.4 **Security Hardening, Anti-IDOR & Penegakan RBAC Granular**:
   - Implementasi komprehensif Laravel Policy pada setiap model entitas domain dengan proteksi mutlak terhadap IDOR: pengguna pihak ketiga (supplier, agent, partner, distributor, mekanik, tenant) terkunci strictly hanya pada record ber-relasi `party_id` miliknya sendiri.
   - Penegakan matriks otorisasi RBAC data-driven untuk seluruh 26+ role (`RbacSeeder`); audit setiap rute web & API agar memiliki middleware `role:` atau pengecekan Gate granular (`can:`).
   - Konfigurasi `RateLimiter` granular di `AppServiceProvider` untuk mitigasi serangan brute-force dan DoS:
@@ -904,14 +904,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - Autentikasi/Login: 5 percobaan/menit per email/IP.
     - Export/Import dokumen & file massal: 5 request/menit.
   - Sanitasi input mendalam pada layer middleware/request untuk pencegahan mutlak SQL Injection, Stored/Reflected XSS, mass-assignment (model `$fillable` audit), dan validasi CSRF.
-- [ ] 57B.5 **Defensive Validation & Penegakan Invarian Moneter**:
+- [x] 57B.5 **Defensive Validation & Penegakan Invarian Moneter**:
   - Implementasi `FormRequest` khusus dengan validasi defensive pada setiap mutasi data:
     - Regex spesifik nomor identitas resmi Indonesia: NIK 16-digit valid (`/^[1-9][0-9]{15}$/`) dan NPWP format baru 16-digit / lama 15-digit ber-separator.
     - Validasi moneter anti-float: melarang keras tipe float/desimal pada payload amount, wajib integer minor units, dan menolak mutasi bernilai `0`.
   - Penegakan integritas double-entry ledger: Σ entri debit dan kredit per transaksi wajib seimbang (= 0) per aset sebelum lock DB diinisiasi.
   - Penerapan row-level locking (`lockForUpdate()`) dengan sorting ID akun numerik ascending yang konsisten untuk eliminasi tuntas race condition saldo negatif dan DB deadlock.
   - Guard state machine pada seluruh siklus hidup dokumen transaksi (PO, Order Toko, Kontrak, Klaim, L/C, Produksi): tolak mutasi state non-linear tanpa transisi yang sah.
-- [ ] 57B.6 **Enrichment Seeder Skala Besar dengan Data Unik & Idempoten**:
+- [x] 57B.6 **Enrichment Seeder Skala Besar dengan Data Unik & Idempoten**:
   - Refactoring seeder skala besar (`EnterpriseUniverseSeeder`) dengan sifat idempoten mutlak (`upsert`, `firstOrCreate`, `updateOrCreate`) sehingga aman dieksekusi berkali-kali tanpa risiko duplikasi atau kegagalan unique key constraint.
   - Pembuatan generator dataset realistis dan unik (menggunakan Faker locale `id_ID`):
     - ≥ 100 entitas badan hukum (`PT`, `CV`, `Firma`) dengan nama otentik.
@@ -919,10 +919,10 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - Nomor rekening bank unik untuk 5 bank devisa nasional (Mandiri, BCA, BNI, BRI, BSI).
     - Nomor plat kendaraan, resi pelacakan, dan nomor seri sertifikasi unik.
   - Pembuatan relasi data transaksi hulu-ke-hilir yang utuh (Pemasok → Pabrik → DC → Distributor → Agen → Konsumen) dengan pencatatan jurnal ledger yang seimbang sempurna (`bank:reconcile` = 0 selisih).
-- [ ] 57B.7 **Generalisasi Layanan Nomor Dokumen Gapless & Document Store**:
+- [x] 57B.7 **Generalisasi Layanan Nomor Dokumen Gapless & Document Store**:
   - Audit penerapan `DocumentNumberingService` agar seluruh dokumen transaksi (PO, GRN, Invoice, PEB, PIB, L/C, SPK, Resi) menggunakan nomor terurut tanpa celah (gapless) per entitas hukum dan tahun fiskal.
   - Audit `DocumentStoreService`: penyimpanan lampiran dokumen ber-checksum SHA-256, verifikasi integritas file upload, MIME guard, dan enkripsi dokumen rahasia.
-- [ ] 57B.8 **Perluasan Observabilitas & Platform Health-Check**:
+- [x] 57B.8 **Perluasan Observabilitas & Platform Health-Check**:
   - Pengembangan command enterprise `super:health-check` menjadi audit multi-pilar sistem otomatis:
     - Pilar 1: Invarian global double-entry ledger (total saldo per aset = 0).
     - Pilar 2: Sinkronisasi cached balance vs riwayat fisik entri jurnal.
@@ -931,14 +931,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - Pilar 5: Verifikasi integritas kriptografis seluruh rantai hash (Vehicle Passport, Chain of Custody Logistik, Kontrak, Aset, Shipment Tracking).
     - Pilar 6: Deteksi dokumen transaksi "gantung" (stale unconfirmed orders, uncaptured holds).
   - Output informatif dengan exit code deterministik: Code `0` jika seluruh pilar sehat, Code `1` jika terdapat anomali atau diskrepansi data sekecil apa pun.
-- [ ] 57B.9 **Pengujian Ketahanan, Stress Test & Uji Regresi Penuh (Resilience & Chaos Testing)**:
+- [x] 57B.9 **Pengujian Ketahanan, Stress Test & Uji Regresi Penuh (Resilience & Chaos Testing)**:
   - Penambahan Feature Test khusus ketahanan sistem:
     - Uji simulasi race condition: concurrent transfer / booking multi-thread terhadap saldo yang sama.
     - Uji idempotency retry: submit ulang payload yang sama dengan key yang identik.
     - Uji otorisasi IDOR: attempt modifikasi data lintas tenant / supplier / user.
     - Uji payload batas: nominal integer batas atas (BigInt), karakter khusus Unicode, payload JSON anomali.
   - Menjalankan seluruh test suite tanpa skip/lemah serta seluruh perintah audit platform: `bank:reconcile`, `super:health-check`, `*:audit`, `verify-*`.
-- [ ] 57B.10 **Quality Gate Fase 57B & Dokumentasi Pemeliharaan**:
+- [x] 57B.10 **Quality Gate Fase 57B & Dokumentasi Pemeliharaan**:
   - Pemutakhiran lengkap dokumentasi arsitektur: `docs/CODEBASE.md`, `docs/DECISIONS.md`, `docs/AUDIT.md`, `docs/RUNBOOK.md`.
   - Penyusunan Standard Operating Procedure (SOP) maintenance berkala, protokol backup/restore database, dan pedoman tanggap darurat data drift.
   - Single meaningful git commit untuk penutupan Fase 57B.
