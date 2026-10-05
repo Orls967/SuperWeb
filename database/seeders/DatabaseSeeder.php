@@ -22,6 +22,7 @@ use Modules\Party\database\seeders\PartySeeder;
 use Modules\Procurement\database\seeders\ProcurementSeeder;
 use Modules\Resto\database\seeders\RestoMenuSeeder;
 use Modules\Supplier\database\seeders\SupplierSeeder;
+use Modules\Wms\Database\Seeders\WmsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -144,6 +145,7 @@ class DatabaseSeeder extends Seeder
             SupplierSeeder::class,
             ProcurementSeeder::class,
             ManufacturingSeeder::class,
+            WmsSeeder::class,
             RbacSeeder::class,
         ]);
     }

@@ -664,3 +664,17 @@
   - Energi/lingkungan `electricity_kwh|water_liter|waste_kg` dicatat per production order, laporan intensitas = total resource / `qty_completed` (jika nol, divisor minimum 1). Input sensor/ambang, standar K3 & resource usage bersifat simulasi.
 - **Reason:** maintenance aset perlu satu sumber biaya/event, OEE dihitung dari shop floor/downtime riil (bukan angka demo), pembatas izin berbasis jendela waktu untuk kerja berisiko, integrasi stok fisik sengaja ditunda ke WMS.
 - **Tests:** `modules/Manufacturing/tests/Feature/MaintenanceOeeHseTest` (8 tes / 50 asersi). Gate: 784 test / 4179 assertion, Pint, Vite, arch (12), audit ledger/proc/asset/contract/logistics/mall/costing/QMS sehat, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 41 — Gudang & Pusat Distribusi (WMS, `wms_`)
+
+- **Context:** Manufacturing 35–40 menghasilkan/pakai barang; Logistics mengangkut shipment; perlu posisi gudang/bin, putaway/pick, transfer, cycle count & dock tanpa mengganti pemilik saldo produk global `InventoryService`.
+- **Decision:**
+  - Modul `modules/Wms` (15 tabel `wms_*`), provider & menu Gudang; `WmsSeeder` menyediakan `DC-BJM` + zona/rak/bin contoh.
+  - Hirarki Warehouse(UUID)→Zone(id)→Rack(id)→Bin(id). Bin stock per `(bin,product,lot,serial,status)`; status `available/quarantine/blocked`. Putaway capacity check; pergerakan internal bin tidak mengubah `store_products.cached_stock`; hanya cycle-count variance disinkronkan lewat `InventoryService::adjust` contract. WMS subledger tidak pernah membolehkan stok bin negatif; `wms:audit` memastikan Σ bin tidak negatif/melebihi saldo global `inv_`.
+  - Pick FIFO/FEFO per lot, stok tidak cukup → ditolak; Wave `open→released→closed`, kosong tidak dirilis; Task close replay idempoten.
+  - Transfer `draft→in_transit→received`: saat ship, pick stok gudang asal, booking Logistics `ShipmentBooking` (source `wms_transfer`, idempotent) → tracking_number; bila Logistics tak menyediakan route usable, transfer tetap lanjut tanpa resi; receipt putaway gudang tujuan; dua langkah jadi in-transit view (saldo produk global tetap sama). Cross-dock ditandai transfer, aturan direct inbound→outbound dicatat sebagai mode.
+  - Cycle count snapshot per bin/product/lot, accuracy %, variance≠0 → ApprovalEngine four-eyes; apply mengubah BinStock + InventoryService adjust (ketidakcukupan ditolak, satu transaksi).
+  - Replenishment pick-face min/max → task saat di bawah min; slotting ABC sederhana; dock appointment menolak overlap arah/gudang; packing list `draft→printed`, item snapshot + label resi.
+  - `wms:audit` menjaga posisi bin valid; opening stock/outside-WMS stock boleh membuat cached global > total bin (normal), maka audit hanya fail pada stok bin negatif atau bin melebihi saldo global.
+- **Reason:** WMS menjadi *location subledger*, bukan buku saldo alternatif — semua perubahan total stock melalui Inventory contract, jadi modul Store tetap backward-compatible; Logistics hanya dipanggil via `ShipmentBooking` Contract.
+- **Tests:** `modules/Wms/tests/Feature/WmsTest` (10 tes / 48 asersi). Gate: 794 test / 4227 assertion, Pint, Vite, arch (12), audit bank/WMS/proc/asset/contract/logistics/mall/manufacturing sehat, 10 pilar HEALTHY.

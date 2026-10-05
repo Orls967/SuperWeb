@@ -20,6 +20,7 @@ use Modules\Resto\RestoServiceProvider;
 use Modules\Shared\SharedServiceProvider;
 use Modules\Store\StoreServiceProvider;
 use Modules\Supplier\SupplierServiceProvider;
+use Modules\Wms\WmsServiceProvider;
 
 return [
     AppServiceProvider::class,
@@ -42,4 +43,5 @@ return [
     SupplierServiceProvider::class,
     ProcurementServiceProvider::class,
     ManufacturingServiceProvider::class,
+    WmsServiceProvider::class,
 ];

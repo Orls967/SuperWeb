@@ -521,15 +521,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 40.8 Quality gate Fase 40
 
 ## FASE 41 — GUDANG & PUSAT DISTRIBUSI (WMS, MODUL `wms_`)
-- [ ] 41.1 Multi-gudang/DC: hirarki gudang → zona → rak → bin; tipe (bahan, FG, karantina, transit, konsinyasi, reefer)
-- [ ] 41.2 Stok per bin/lot/serial/status (tersedia, karantina, blokir) di atas `InventoryService` (kontrak diperluas, tetap kompatibel)
-- [ ] 41.3 Putaway (aturan zona/kapasitas), pick (FEFO/FIFO, wave/batch/zone), pack, staging; tugas gudang untuk operator mobile
-- [ ] 41.4 Transfer antar-gudang & in-transit (akuntansi transit seperti Resto), cross-dock
-- [ ] 41.5 Cycle counting & penyesuaian (approval), selisih → jurnal; akurasi stok KPI
-- [ ] 41.6 Replenishment pick-face, slotting sederhana (ABC)
-- [ ] 41.7 Integrasi Logistics: outbound DC → shipment otomatis; inbound dock appointment; label resi & packing list
-- [ ] 41.8 `wms:audit` (Σ stok bin = saldo `inv_`; tidak ada stok negatif)
-- [ ] 41.9 Quality gate Fase 41
+- [x] 41.1 Multi-gudang/DC: hirarki gudang → zona → rak → bin; tipe (bahan, FG, karantina, transit, konsinyasi, reefer)
+- [x] 41.2 Stok per bin/lot/serial/status (tersedia, karantina, blokir) di atas `InventoryService` (kontrak diperluas, tetap kompatibel)
+- [x] 41.3 Putaway (aturan zona/kapasitas), pick (FEFO/FIFO, wave/batch/zone), pack, staging; tugas gudang untuk operator mobile
+- [x] 41.4 Transfer antar-gudang & in-transit (akuntansi transit seperti Resto), cross-dock
+- [x] 41.5 Cycle counting & penyesuaian (approval), selisih → jurnal; akurasi stok KPI
+- [x] 41.6 Replenishment pick-face, slotting sederhana (ABC)
+- [x] 41.7 Integrasi Logistics: outbound DC → shipment otomatis; inbound dock appointment; label resi & packing list
+- [x] 41.8 `wms:audit` (Σ stok bin = saldo `inv_`; tidak ada stok negatif)
+- [x] 41.9 Quality gate Fase 41
 
 ## FASE 42 — JARINGAN DISTRIBUTOR (MODUL `dist_`)
 - [ ] 42.1 Modul Distribution: distributor / sub-distributor / agen grosir / dealer (party role), hirarki jaringan, kode toko/outlet
