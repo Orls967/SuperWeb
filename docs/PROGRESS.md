@@ -689,31 +689,32 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 
 ## FASE 52 — KERJA SAMA INTERNASIONAL II: INTERCOMPANY, TRANSFER PRICING & KONSOLIDASI
-- [ ] 52.1 **Arsitektur Transaksi Antar-Entitas Grup (Intercompany Transactions Engine)**:
+- [x] 52.1 **Arsitektur Transaksi Antar-Entitas Grup (Intercompany Transactions Engine)**:
   - Transaksi otomatis *Mirror Transaction*: penjualan barang/jasa dari Entitas A ke Entitas B menghasilkan otomatis Sales Order/Invoice di A dan Purchase Order/Bill di B secara atomik.
   - Pengelolaan pinjaman antar-perusahaan (*Intercompany Loans*): jadwal amortisasi bunga arm's length, penarikan dana, dan integrasi cash pooling Treasury (Fase 48.8).
   - Skema penagihan biaya bersama (*Cost Sharing / Management Fee Allocation*) berdasarkan porsi headcount atau omzet entitas.
-- [ ] 52.2 **Transfer Pricing Engine & Dokumentasi Simulasi (OECD & PMK Compliance)**:
+- [x] 52.2 **Transfer Pricing Engine & Dokumentasi Simulasi (OECD & PMK Compliance)**:
   - Penerapan metode transfer pricing: *Comparable Uncontrolled Price* (CUP), *Cost Plus Method* (CPM), *Resale Price Method* (RPM), dan *Transactional Net Margin Method* (TNMM).
   - Penegakan prinsip kewajaran dan kelaziman usaha (*Arm's Length Principle*): rentang margin intercompany terverifikasi otomatis terhadap benchmark industri simulasi.
   - Generator draf Local File & Master File TP Doc simulasi: analisis fungsi, aset, dan risiko (FAR) per entitas grup.
   - Penyesuaian transfer pricing akhir tahun (*Year-End TP True-up Adjustments*) dengan jurnal penyesuaian otomatis.
-- [ ] 52.3 **Perpindahan Aset & Logistik Antar-Entitas/Negara**:
+- [x] 52.3 **Perpindahan Aset & Logistik Antar-Entitas/Negara**:
   - Mutasi aset tetap antar-entitas: transfer nilai buku, transfer akumulasi depresiasi, dan faktur pengalihan aset.
   - Pengiriman stok antar-entitas lintas batas: integrasi ke modul Logistik (`lgx_`) dan dokumen kepabeanan ekspor-impor (PEB/PIB), penanganan PPN/bea masuk antar-anak perusahaan.
-- [ ] 52.4 **Mesin Eliminasi Intercompany & Konsolidasi Keuangan Otomatis**:
+- [x] 52.4 **Mesin Eliminasi Intercompany & Konsolidasi Keuangan Otomatis**:
   - Eliminasi saldo akun timbal balik (*Reciprocal Balances*): eliminasi piutang-hutang intercompany (`ic:ar` vs `ic:ap`).
   - Eliminasi transaksi penjualan/pembelian intercompany agar omzet grup tidak terhitung ganda (*double-counting*).
   - Eliminasi laba antar-perusahaan yang belum terealisasi (*Unrealized Profit in Ending Inventory*).
   - Translasi laporan keuangan mata uang asing ke mata uang pelaporan IDR sesuai standar akuntansi: pos neraca memakai kurs penutupan (*closing rate*), pos laba rugi memakai kurs rata-rata (*average rate*), dan selisih kurs translasi dicatat pada akun Ekuitas (*Foreign Currency Translation Reserve*).
-- [ ] 52.5 **Kepemilikan Kepentingan Non-Pengendali (Non-Controlling Interest - NCI)**:
+- [x] 52.5 **Kepemilikan Kepentingan Non-Pengendali (Non-Controlling Interest - NCI)**:
   - Perhitungan porsi laba/rugi bersih dan ekuitas yang diatribusikan kepada pemegang saham minoritas pada anak perusahaan / JV parsial.
   - Pencatatan pembagian dividen kepada pihak ketiga non-pengendali.
-- [ ] 52.6 **Pelaporan Segmen Usaha Terkonsolidasi (Segment Reporting)**:
+- [x] 52.6 **Pelaporan Segmen Usaha Terkonsolidasi (Segment Reporting)**:
   - Laporan laba rugi dan neraca per segmen operasi (Manufaktur, Logistik, Retail/Store, Resto, Mall) dan per wilayah geografis.
   - Fitur drill-down dari laporan konsolidasi grup hingga ke level voucher jurnal sumber di entitas anak.
-- [ ] 52.7 `group:audit` (Invarian eliminasi: Σ Eliminasi debit = Σ Eliminasi kredit, selisih rekonsiliasi IC = 0, translasi matematis konsisten 100%).
-- [ ] 52.8 Quality gate Fase 52.
+- [x] 52.7 `group:audit` (Invarian eliminasi: Σ Eliminasi debit = Σ Eliminasi kredit, selisih rekonsiliasi IC = 0, translasi matematis konsisten 100%).
+- [x] 52.8 Quality gate Fase 52.
+
 
 ## FASE 53 — SUPPLY CHAIN CONTROL TOWER & SALES AND OPERATIONS PLANNING (S&OP)
 - [ ] 53.1 **Menara Pengawas Rantai Pasok Terpadu (Supply Chain Control Tower)**:

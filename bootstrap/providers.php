@@ -58,5 +58,7 @@ return [
     TradeServiceProvider::class,
     \Modules\TradeFinance\TradeFinanceServiceProvider::class,
     \Modules\International\InternationalServiceProvider::class,
+    \Modules\Intercompany\IntercompanyServiceProvider::class,
 ];
+
 

@@ -818,8 +818,19 @@
   - **51.3 Lisensi HKI & Royalti Otomatis:** Perhitungan royalti berjenjang terhadap omzet bersih dengan mekanisme jaminan tahunan minimum (MAG) fallback per bulan.
   - **51.4 OEM/ODM Manufaktur:** Pengelolaan kontrak OEM/ODM dengan penetapan unit tolling fee dan penelusuran bahan baku konsinyasi tanpa pengakuan hutang dagang.
   - **51.5 Alih Teknologi (Tech Transfer):** Pelacakan tahapan milestone serah terima teknologi dengan validasi nilai milestone terhadap total nilai proyek alih teknologi.
-  - **51.7 Tax Treaty (P3B) Withholding Tax:** Engine penentuan tarif pemotongan pajak efektif WHT (royalti, dividen, bunga, jasa) dengan fallback otomatis ke tarif domestik 20% apabila Certificate of Domicile (Form DGT) tidak valid.
-  - **51.9 Audit Kemitraan Internasional:** Command `intl:audit` memvalidasi integritas rasio saham JV, setoran modal, dan keselarasan transfer teknologi bernilai 0 diskrepansi.
 - **Tests:** `InternationalTest` (8 tes / 31 asersi). Sub-suite `InternationalTest|ModuleBoundariesTest` (20 passed / 91 assertions), `bank:reconcile` (0 diskrepansi), `intl:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 52 — Kerja Sama Internasional II: Intercompany & TP (Modul `ic_`)
+
+- **Context:** Transaksi antar-anak perusahaan dalam konglomerasi memerlukan otomasi mirror transaction (SO/PO cermin), pinjaman intercompany dengan suku bunga wajar (*arm's length rate*), regulasi kepatuhan transfer pricing (OECD/PMK), eliminasi saldo akun timbal balik (AR/AP konsolidasi), dan pembagian kepemilikan non-pengendali (Non-Controlling Interest / NCI).
+- **Decision:**
+  - Prefix tabel **`ic_`** (5 tabel: `ic_transactions`, `ic_loans`, `ic_transfer_pricing_rules`, `ic_elimination_entries`, `ic_subsidiary_nci`).
+  - **52.1 Mirror Transactions & Intercompany Loans:** Penjualan dari Entitas Penjual ke Entitas Pembeli secara atomik menghasilkan referensi faktur penjualan dan tagihan pembelian yang saling cocok (*matched*), melarang transaksi diri sendiri (*self-transaction*). Pinjaman intercompany menerapkan suku bunga wajar dan pelacakan pelunasan.
+  - **52.2 Transfer Pricing Engine (OECD / PMK):** Penegakan batas margin wajar minimum dan maksimum (*arm's length margin range*) untuk metode CUP, CPM, RPM, dan TNMM terhadap benchmark industri.
+  - **52.4 Mesin Eliminasi Konsolidasi:** Pencatatan jurnal eliminasi saldo timbal balik antar-entitas (`DR ic:ap / CR ic:ar`) per periode pelaporan keuangan.
+  - **52.5 Non-Controlling Interest (NCI):** Perhitungan otomatis porsi laba bersih entitas anak yang diatribusikan ke pemegang saham minoritas non-pengendali.
+  - **52.7 Audit Konsolidasi Grup:** Command `group:audit` memverifikasi keselarasan transaksi cermin, batasan margin transfer pricing, dan validitas NCI dengan 0 diskrepansi.
+- **Tests:** `IntercompanyTest` (7 tes / 23 asersi). Sub-suite `IntercompanyTest|ModuleBoundariesTest` (19 passed / 83 assertions), `bank:reconcile` (0 diskrepansi), `group:audit` (0 diskrepansi), Pint lulus.
+
 
 
