@@ -60,7 +60,9 @@ return [
     \Modules\International\InternationalServiceProvider::class,
     \Modules\Intercompany\IntercompanyServiceProvider::class,
     \Modules\ControlTower\ControlTowerServiceProvider::class,
+    \Modules\EnterpriseFinance\EnterpriseFinanceServiceProvider::class,
 ];
+
 
 
 

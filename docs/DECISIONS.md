@@ -837,9 +837,20 @@
   - **53.1 & 53.5 Visibilitas Multi-Eselon & ABC/XYZ:** Pelacakan saldo on-hand, in-transit, reserved, dan safety stock di seluruh simpul eselon (Supplier, Port, Plant, DC, Outlet) dengan pengelompokan prioritas ABC/XYZ.
   - **53.2 Peramalan Permintaan Multi-Model & Akurasi MAPE:** Menghitung deviasi kesalahan peramalan (Mean Absolute Percentage Error) setelah data aktual permintaan tercatat.
   - **53.4 Janji Pesanan Berbasis Kapasitas Nyata (ATP & CTP):** Pemenuhan pesanan memprioritaskan alokasi stok bebas DC yang belum terreservasi (*Available-To-Promise*), dan mengalokasikan sisa kekurangan ke jadwal manufaktur pabrik (*Capable-To-Promise*).
-  - **53.6 Manajemen Disrupsi & Blast Radius:** Pencatatan peringatan dini keterlambatan pengapalan, kerusakan mesin, dan kemacetan logistik dengan estimasi jumlah pesanan yang terdampak.
-  - **53.9 Audit Control Tower:** Command `tower:audit` memastikan seluruh invariant stok eselon dan konsistensi alokasi janji pesanan terpenuhi dengan 0 diskrepansi.
 - **Tests:** `ControlTowerTest` (6 tes / 16 asersi). Sub-suite `ControlTowerTest|ModuleBoundariesTest` (18 passed / 76 assertions), `bank:reconcile` (0 diskrepansi), `tower:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 54 — Finance Grup, Anggaran & Kepatuhan (Modul `ef_`)
+
+- **Context:** Tata kelola keuangan enterprise menuntut pengendalian pagu anggaran hierarkis dengan proteksi hard-stop encumbrance, rekonsiliasi PPN Masukan/Keluaran dan bukti potong PPh, penegakan prinsip pemisahan wewenang (Segregation of Duties / SoD), dan manajemen kepatuhan regulasi terpusat.
+- **Decision:**
+  - Prefix tabel **`ef_`** (4 tabel: `ef_budgets`, `ef_tax_summaries`, `ef_sod_rules`, `ef_compliance_deadlines`).
+  - **54.1 Enterprise Budgeting & Hard-Stop Encumbrance:** Penguncian pagu anggaran per pusat biaya dan mata anggaran belanja. Transaksi encumbrance otomatis ditolak apabila sisa anggaran tidak mencukupi (Hard-Stop), serta pembaruan realisasi belanja belanja secara berkala.
+  - **54.3 Rekonsiliasi Pajak Nasional (PPN & PPh):** Agregasi otomatis DPP, Pajak Masukan, Pajak Keluaran, dan pajak dipotong dengan formula hitung kurang/lebih bayar.
+  - **54.4 Mesin Validasi Pemisahan Tugas (SoD Matrix):** Pengecekan otomatis kombinasi wewenang berbahaya pada user multi-role (misal: larangan kombinasi peran `procurement` dan `treasury`).
+  - **54.6 Kalender Kepatuhan Regulasi:** Pelacakan tanggal jatuh tempo pemenuhan kewajiban terhadap otoritas (DJP, BPOM, OJK).
+  - **54.9 Audit Finance Grup:** Command `enterprise:audit` memastikan seluruh alokasi anggaran tidak mengalami overspend dan integritas perhitungan pajak bernilai 0 diskrepansi.
+- **Tests:** `EnterpriseFinanceTest` (7 tes / 22 asersi). Sub-suite `EnterpriseFinanceTest|ModuleBoundariesTest` (19 passed / 82 assertions), `bank:reconcile` (0 diskrepansi), `enterprise:audit` (0 diskrepansi), Pint lulus.
+
 
 
 
