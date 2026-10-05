@@ -641,5 +641,34 @@
 - **Audit Buku Besar (`bank:reconcile`):** 140 akun seimbang, 0 selisih.
 - **Audit Spesifik Modul (`treasury:audit`):** Sukses dengan 0 selisih.
 
+---
+
+## ✅ Quality Gate Fase 49 — PENUTUP FINAL — 2026-10-06
+
+**Cakupan fase:** Fase 49.1 – 49.10 (Ekspor-Impor / Trade Operations — Modul `trd_`)
+
+### Ringkasan Capaian Sub-Fase
+
+| Sub-Fase | Komponen & Fitur | Status | Detail Implementasi |
+|---|---|:---:|---|
+| 49.1 | Master Perdagangan & Incoterms | Selesai | Tabel `trd_countries`, `trd_ports`, `trd_incoterms`, `trd_hs_codes` (Incoterms 2020 & lartas flag). |
+| 49.2 | Order Ekspor & Revenue Recognition | Selesai | Tabel `trd_export_orders`, nomor PEB, dan pengakuan piutang/pendapatan ekspor idempoten saat risk transfer. |
+| 49.3 | Order Impor & Customs Duty Calculator | Selesai | Tabel `trd_import_orders`, kalkulasi BM, PPN Impor 11%, PPh 22 Impor 2.5%, dan total landed cost. |
+| 49.4 | Dokumen Perdagangan Internasional | Selesai | Tabel `trd_trade_documents` (CoO Form E, fumigasi, phytosanitary, halal, BL/AWB). |
+| 49.5 | Kuota & Preferensi Tarif FTA | Selesai | Otomasi tarif BM preferensial 0% jika Certificate of Origin terverifikasi. |
+| 49.6 | Pelacakan Lintas Batas (Hash-Chain) | Selesai | Tabel `trd_shipment_legs`, rantai hash SHA-256 lacak balak kontainer lintas batas utuh dan tahan tampering. |
+| 49.7 | Sengketa Dagang & Klaim Asuransi | Selesai | Tabel `trd_trade_disputes`, pencatatan klaim kerusakan/keterlambatan & pelunasan klaim asuransi kargo. |
+| 49.8 | Kepatuhan Ekspor-Impor | Selesai | Flagging perizinan lartas & validitas CoO pada kalkulator bea cukai. |
+| 49.9 | Audit Trade | Selesai | Command `trade:audit`, verifikasi order dan integritas hash chain pelacakan kontainer dengan 0 diskrepansi. |
+| **49.10** | **Quality Gate Fase 49** | **Lulus** | Sub-suite `PartnerTest|TreasuryTest|TradeTest|RbacTest|ModuleBoundariesTest` 55 passed (196 assertions), Pint passed, `bank:reconcile` 0 selisih, `trade:audit` 0 selisih. |
+
+### Metrik Kualitas Final Fase 49
+- **Test Suite**: **7 Tests di TradeTest (31 assertions)**, ModuleBoundariesTest diperluas untuk modul Trade.
+- **Status Standar Kode (Pint):** Passed.
+- **Arch Tests (batas modul):** 12 passed.
+- **Audit Buku Besar (`bank:reconcile`):** 140 akun seimbang, 0 selisih.
+- **Audit Spesifik Modul (`trade:audit`):** Sukses dengan 0 selisih.
+
+
 
 

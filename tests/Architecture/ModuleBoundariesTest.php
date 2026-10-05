@@ -20,6 +20,7 @@ arch('controllers do not use DB facade directly')
         'Modules\Agency\Http\Controllers',
         'Modules\Partner\Http\Controllers',
         'Modules\Treasury\Http\Controllers',
+        'Modules\Trade\Http\Controllers',
     ])
     ->not->toUse('Illuminate\Support\Facades\DB');
 
@@ -40,6 +41,7 @@ arch('domain does not depend on Http')
         'Modules\Agency\Domain',
         'Modules\Partner\Domain',
         'Modules\Treasury\Domain',
+        'Modules\Trade\Domain',
     ])
     ->not->toUse([
         'Illuminate\Http',

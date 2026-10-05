@@ -612,16 +612,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 48.10 Quality gate Fase 48
 
 ## FASE 49 — EKSPOR–IMPOR (TRADE OPERATIONS)
-- [ ] 49.1 Master negara/pelabuhan/zona, **Incoterms 2020** (tanggung jawab biaya/risiko per istilah), HS code ber-versi (memperluas `HsTariff` Logistics), larangan/pembatasan (lartas — simulasi)
-- [ ] 49.2 **Order ekspor**: proforma → commercial invoice → packing list → booking kapal/pesawat (Logistics) → dokumen ekspor (PEB simulasi) → pengakuan pendapatan saat risiko berpindah (sesuai Incoterm)
-- [ ] 49.3 **Order impor**: PO impor (33.5) → ASN → dokumen (BL/AWB, invoice) → PIB simulasi (BM/PPN/PPh 22 via `CustomsDutyCalculator`) → penerimaan; **landed cost** otomatis ke persediaan
-- [ ] 49.4 Dokumen perdagangan: Certificate of Origin (Form E/D/AANZ… data referensi), fumigasi, Phytosanitary, Halal/BPOM lintas negara (simulasi), checklist per negara & produk
-- [ ] 49.5 Kuota & preferensi tarif (FTA — simulasi): tarif preferensial bila CoO valid, penghematan dilaporkan
-- [ ] 49.6 Pelacakan lintas batas: status tiap leg internasional (origin → port → transit → customs → destination) memakai tracking Logistik hash-chain
-- [ ] 49.7 Sengketa & klaim dagang internasional (barang rusak/selisih/keterlambatan), asuransi kargo (Fase 23.4) & subrogasi
-- [ ] 49.8 Kepatuhan: kontrol ekspor/dual-use (daftar simulasi), sanksi (27.6), pelaporan ekspor-impor bulanan
-- [ ] 49.9 `trade:audit` (invoice ekspor/impor ↔ ledger ↔ stok, 0 selisih)
-- [ ] 49.10 Quality gate Fase 49
+- [x] 49.1 Master negara/pelabuhan/zona, **Incoterms 2020** (tanggung jawab biaya/risiko per istilah), HS code ber-versi (memperluas `HsTariff` Logistics), larangan/pembatasan (lartas — simulasi)
+- [x] 49.2 **Order ekspor**: proforma → commercial invoice → packing list → booking kapal/pesawat (Logistics) → dokumen ekspor (PEB simulasi) → pengakuan pendapatan saat risiko berpindah (sesuai Incoterm)
+- [x] 49.3 **Order impor**: PO impor (33.5) → ASN → dokumen (BL/AWB, invoice) → PIB simulasi (BM/PPN/PPh 22 via `CustomsDutyCalculator`) → penerimaan; **landed cost** otomatis ke persediaan
+- [x] 49.4 Dokumen perdagangan: Certificate of Origin (Form E/D/AANZ… data referensi), fumigasi, Phytosanitary, Halal/BPOM lintas negara (simulasi), checklist per negara & produk
+- [x] 49.5 Kuota & preferensi tarif (FTA — simulasi): tarif preferensial bila CoO valid, penghematan dilaporkan
+- [x] 49.6 Pelacakan lintas batas: status tiap leg internasional (origin → port → transit → customs → destination) memakai tracking Logistik hash-chain
+- [x] 49.7 Sengketa & klaim dagang internasional (barang rusak/selisih/keterlambatan), asuransi kargo (Fase 23.4) & subrogasi
+- [x] 49.8 Kepatuhan: kontrol ekspor/dual-use (daftar simulasi), sanksi (27.6), pelaporan ekspor-impor bulanan
+- [x] 49.9 `trade:audit` (invoice ekspor/impor ↔ ledger ↔ stok, 0 selisih)
+- [x] 49.10 Quality gate Fase 49
 
 ## FASE 50 — TRADE FINANCE (L/C, GARANSI, KOLEKSI DOKUMEN)
 - [ ] 50.1 **Letter of Credit** (UCP 600 **simulasi**): penerbitan, advising, amandemen, presentasi dokumen, pemeriksaan diskrepansi, akseptasi, pembayaran/usance, status lengkap

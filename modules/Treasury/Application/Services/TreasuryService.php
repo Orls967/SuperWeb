@@ -102,6 +102,15 @@ class TreasuryService
             ->first();
 
         if (! $rate) {
+            // Coba ambil rate terakhir yang ada
+            $rate = ExchangeRate::where('from_currency', $from)
+                ->where('to_currency', $to)
+                ->where('rate_type', $rateType)
+                ->orderByDesc('rate_date')
+                ->first();
+        }
+
+        if (! $rate) {
             // Coba kebalikannya jika ada
             $inverseRate = ExchangeRate::where('from_currency', $to)
                 ->where('to_currency', $from)
@@ -109,6 +118,14 @@ class TreasuryService
                 ->whereDate('rate_date', '<=', $date)
                 ->orderByDesc('rate_date')
                 ->first();
+
+            if (! $inverseRate) {
+                $inverseRate = ExchangeRate::where('from_currency', $to)
+                    ->where('to_currency', $from)
+                    ->where('rate_type', $rateType)
+                    ->orderByDesc('rate_date')
+                    ->first();
+            }
 
             if (! $inverseRate) {
                 throw new InvalidArgumentException("Kurs dari {$from} ke {$to} untuk tanggal {$date} tidak ditemukan.");

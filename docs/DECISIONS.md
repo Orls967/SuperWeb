@@ -781,3 +781,17 @@
   - **48.8 Cash Pooling:** Mekanisme sweep otomatis dari sub-account ke header account ketika saldo melampaui target balance.
   - **48.9 Audit & Role:** Command `treasury:audit` memastikan konsistensi saldo, rasio limit fasilitas kredit, dan ketiadaan diskrepansi. Role `treasury` didaftarkan sebagai role ke-26 di `RbacSeeder`.
 - **Tests:** `TreasuryTest` (8 tes / 29 asersi). Suite terverifikasi: `PartnerTest|TreasuryTest|RbacTest|ModuleBoundariesTest` (48 passed / 165 assertions), `bank:reconcile` (0 diskrepansi), `treasury:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 49 — Ekspor-Impor / Trade Operations (Modul `trd_`)
+
+- **Context:** Operasi perdagangan lintas batas memerlukan tata kelola master negara, pelabuhan, Incoterms 2020 (titik transfer risiko & biaya), HS Code & lartas, alur pesanan ekspor (PEB) & impor (PIB), kalkulasi landed cost otomatis, pengelolaan dokumen CoO, dan pelacakan kontainer lintas batas hash-chain.
+- **Decision:**
+  - Prefix tabel **`trd_`** (8 tabel: `trd_countries`, `trd_ports`, `trd_incoterms`, `trd_hs_codes`, `trd_export_orders`, `trd_import_orders`, `trd_trade_documents`, `trd_shipment_legs`, `trd_trade_disputes`).
+  - **49.1 Master Perdagangan & Incoterms:** Incoterms 2020 dengan kejelasan titik transfer risiko dan pembagian beban biaya. HS Code mencatat base duty, tarif preferensial FTA, dan indikator izin lartas (larangan/pembatasan).
+  - **49.2 Order Ekspor & Pengakuan Pendapatan:** Pesanan ekspor bertransisi dari `draft → proforma → confirmed (PEB)` hingga `risk_transferred` yang secara otomatis memicu pengakuan piutang internasional dan pendapatan ekspor di ledger double-entry secara idempoten (`DR ar:international:IDR / CR revenue:export:IDR`).
+  - **49.3 & 49.5 Kalkulator Bea Cukai & FTA:** Simulasi perhitungan Bea Masuk (BM) dengan penerapan tarif preferensial FTA bila Certificate of Origin (CoO) valid, ditambah PPN Impor 11% dan PPh 22 Impor 2.5%, menghitung total landed cost secara deterministik.
+  - **49.4 Dokumen Perdagangan:** Lampiran dokumen CoO Form E, Fumigasi, Phytosanitary, dan sertifikasi Halal dengan masa berlaku dan otoritas penerbit.
+  - **49.6 Pelacakan Lintas Batas Kriptografis:** `trd_shipment_legs` membentuk hash-chain append-only SHA-256 (`GENESIS_CROSS_BORDER_TRACK → leg1 → leg2 → ...`) untuk menjamin integritas lacak balak perpindahan kontainer antar-pelabuhan/negara.
+  - **49.7 Sengketa & Asuransi:** Pencatatan klaim kerusakan/keterlambatan dagang dan pelunasan klaim asuransi kargo internasional.
+  - **49.9 Audit Perdagangan:** Command `trade:audit` memverifikasi keselarasan pesanan ekspor/impor dan keutuhan seluruh rantai hash tracking tanpa kerusakan.
+- **Tests:** `TradeTest` (7 tes / 31 asersi). Sub-suite `PartnerTest|TreasuryTest|TradeTest|RbacTest|ModuleBoundariesTest` (55 passed / 196 assertions), `bank:reconcile` (0 diskrepansi), `trade:audit` (0 diskrepansi), Pint lulus.
