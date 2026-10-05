@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Manufacturing\Http\Controllers\MaintenanceController;
 use Modules\Manufacturing\Http\Controllers\ManufacturingController;
 use Modules\Manufacturing\Http\Controllers\PlanningController;
 use Modules\Manufacturing\Http\Controllers\ProductionController;
@@ -87,4 +88,20 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,qc_inspector,a
         Route::post('/quality/lots/{lot}/recall', [QualityController::class, 'storeRecall'])->name('quality.lots.recall');
         Route::post('/quality/recalls/{recall}/notify', [QualityController::class, 'notifyRecall'])->name('quality.recalls.notify');
         Route::post('/quality/recalls/{recall}/complete', [QualityController::class, 'completeRecall'])->name('quality.recalls.complete');
+    });
+
+Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,operator,asset_manager,auditor'])
+    ->prefix('manufacturing')
+    ->name('manufacturing.')
+    ->group(function () {
+        Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('maintenance.index');
+        Route::post('/maintenance/orders', [MaintenanceController::class, 'storeOrder'])->name('maintenance.orders.store');
+        Route::post('/maintenance/orders/{order}/transition', [MaintenanceController::class, 'transitionOrder'])->name('maintenance.orders.transition');
+        Route::post('/maintenance/sensors', [MaintenanceController::class, 'storeSensor'])->name('maintenance.sensors.store');
+        Route::post('/maintenance/oee', [MaintenanceController::class, 'computeOee'])->name('maintenance.oee.compute');
+        Route::post('/maintenance/parts', [MaintenanceController::class, 'storePart'])->name('maintenance.parts.store');
+        Route::post('/maintenance/incidents', [MaintenanceController::class, 'storeIncident'])->name('maintenance.incidents.store');
+        Route::post('/maintenance/incidents/{incident}/close', [MaintenanceController::class, 'closeIncident'])->name('maintenance.incidents.close');
+        Route::post('/maintenance/permits', [MaintenanceController::class, 'storePermit'])->name('maintenance.permits.store');
+        Route::post('/maintenance/permits/{permit}/approve', [MaintenanceController::class, 'approvePermit'])->name('maintenance.permits.approve');
     });

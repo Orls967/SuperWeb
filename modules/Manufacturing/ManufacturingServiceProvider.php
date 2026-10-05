@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Manufacturing\Application\Listeners\PostSaleCogsListener;
 use Modules\Manufacturing\Application\Services\CostingService;
+use Modules\Manufacturing\Application\Services\HseService;
+use Modules\Manufacturing\Application\Services\MaintenanceService;
 use Modules\Manufacturing\Application\Services\ManufacturingService;
 use Modules\Manufacturing\Application\Services\PlanningService;
 use Modules\Manufacturing\Application\Services\ProductionService;
@@ -28,6 +30,8 @@ class ManufacturingServiceProvider extends ServiceProvider
         $this->app->singleton(ProductionService::class);
         $this->app->singleton(CostingService::class);
         $this->app->singleton(QualityService::class);
+        $this->app->singleton(MaintenanceService::class);
+        $this->app->singleton(HseService::class);
     }
 
     public function boot(): void

@@ -651,3 +651,16 @@
   - Command `mfg:qms-audit` harian 05:00: expired calibration, CAPA/NCR lewat due date, recall planned/notified >3 hari → exit 1; selain itu 0.
 - **Reason:** waiver harus mematuhi four-eyes; lot release/recall tak boleh bergantung UI; query trace tetap bounded per satu lot; memakai query mentah untuk boundary ke Store/Supplier menjaga 12 arch rules.
 - **Tests:** `modules/Manufacturing/tests/Feature/QualityManagementTest` (12 tes / 59 asersi). Gate: 776 test / 4129 assertion, Pint, Vite, arch (12), seluruh audit termasuk QMS 0 temuan, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 40 — Pemeliharaan Pabrik, OEE & K3
+
+- **Context:** Fase 35–39 melengkapi master→MRP→shop floor→costing→QMS; operasi pabrik perlu availability/performance/quality, maintenance, sensor, K3, dan intensitas resource per order. Asset & Resto punya domain sendiri.
+- **Decision:**
+  - 8 tabel `mfg_*`: maintenance orders, BOM suku cadang + pemakaian, bacaan sensor, agregat OEE, insiden HSE, work permit, penggunaan resource.
+  - `MaintenanceService` WO pabrik bernomor `MWO/{ENT}/`, state `open→in_progress→completed|cancelled`, replay guard `trigger_key` unik; bila `work_center.asset_id` mengarah ke aset valid, delegasi ke `AssetWorkOrderService::schedule` agar event chain/TCO pemilik aset tetap satu. Part usage biaya integer IDR menambah `parts_cost_idr` maintenance WO; persediaan suku cadang fisik menunggu WMS Fase 41 (min-stock Fase 40 hanya simulasi pemakaian vs threshold).
+  - Sensor IoT `temperature/vibration/current` **simulasi**; out-of-threshold → predictive MWO idempoten per `(work_center_id, metric, tanggal)`. Tidak memanggil layanan IoT eksternal.
+  - OEE: A=`(planned−downtime)/planned`, P=`ideal_cycle×qty_total/run_minutes`, Q=`good/total`, OEE=`A×P×Q`; MTBF/MTTR & Pareto downtime. `OeeSummary` unik `(work_center,date,shift)`; karena SQLite unik tidak menolak duplikasi NULL, key shift kosong dinormalisasi `''`. Penyimpanan memakai lookup `whereDate` (SQLite simpan cast `date` sebagai datetime sehingga `updateOrCreate(date-string)` tidak cocok).
+  - HSE: insiden `reported→action→closed` (investigasi wajib sebelum close), work permit `PTW/{ENT}/` tipe `hot_work|confined_space` via ApprovalEngine four-eyes; akses kerja hanya saat status active & waktu dalam window; `expirePermits` menandai expired.
+  - Energi/lingkungan `electricity_kwh|water_liter|waste_kg` dicatat per production order, laporan intensitas = total resource / `qty_completed` (jika nol, divisor minimum 1). Input sensor/ambang, standar K3 & resource usage bersifat simulasi.
+- **Reason:** maintenance aset perlu satu sumber biaya/event, OEE dihitung dari shop floor/downtime riil (bukan angka demo), pembatas izin berbasis jendela waktu untuk kerja berisiko, integrasi stok fisik sengaja ditunda ke WMS.
+- **Tests:** `modules/Manufacturing/tests/Feature/MaintenanceOeeHseTest` (8 tes / 50 asersi). Gate: 784 test / 4179 assertion, Pint, Vite, arch (12), audit ledger/proc/asset/contract/logistics/mall/costing/QMS sehat, 10 pilar HEALTHY.

@@ -511,14 +511,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 39.9 Quality gate Fase 39
 
 ## FASE 40 — PEMELIHARAAN PABRIK, OEE & K3
-- [ ] 40.1 **OEE** per mesin/line (Availability × Performance × Quality) dari downtime/produksi nyata; dasbor shift/harian
-- [ ] 40.2 Pemeliharaan korektif/preventif/prediktif (aturan ambang sensor **simulasi**), work order mesin memakai modul Aset (31.5)
-- [ ] 40.3 Suku cadang pabrik: BOM peralatan, stok minimum, penggunaan per WO, biaya → TCO aset
-- [ ] 40.4 Simulasi sensor IoT (`mfg_sensor_readings`): suhu/getaran/arus; alarm → WO otomatis (idempoten)
-- [ ] 40.5 Pareto downtime, MTBF/MTTR, backlog pemeliharaan
-- [ ] 40.6 K3/HSE: insiden & near-miss, investigasi, tindakan, izin kerja berisiko (hot work/confined space) dengan approval & masa berlaku
-- [ ] 40.7 Lingkungan & energi: pemakaian listrik/air/limbah per order, intensitas per unit (dasar ESG di backlog)
-- [ ] 40.8 Quality gate Fase 40
+- [x] 40.1 **OEE** per mesin/line (Availability × Performance × Quality) dari downtime/produksi nyata; dasbor shift/harian
+- [x] 40.2 Pemeliharaan korektif/preventif/prediktif (aturan ambang sensor **simulasi**), work order mesin memakai modul Aset (31.5)
+- [x] 40.3 Suku cadang pabrik: BOM peralatan, stok minimum, penggunaan per WO, biaya → TCO aset
+- [x] 40.4 Simulasi sensor IoT (`mfg_sensor_readings`): suhu/getaran/arus; alarm → WO otomatis (idempoten)
+- [x] 40.5 Pareto downtime, MTBF/MTTR, backlog pemeliharaan
+- [x] 40.6 K3/HSE: insiden & near-miss, investigasi, tindakan, izin kerja berisiko (hot work/confined space) dengan approval & masa berlaku
+- [x] 40.7 Lingkungan & energi: pemakaian listrik/air/limbah per order, intensitas per unit (dasar ESG di backlog)
+- [x] 40.8 Quality gate Fase 40
 
 ## FASE 41 — GUDANG & PUSAT DISTRIBUSI (WMS, MODUL `wms_`)
 - [ ] 41.1 Multi-gudang/DC: hirarki gudang → zona → rak → bin; tipe (bahan, FG, karantina, transit, konsinyasi, reefer)
