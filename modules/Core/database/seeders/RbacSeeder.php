@@ -171,6 +171,11 @@ class RbacSeeder extends Seeder
                 'distribution.approve' => 'Menyetujui onboarding & transisi distributor',
                 'distribution.portal.access' => 'Akses portal distributor (order & sell-out)',
             ],
+            'pricing' => [
+                'pricing.view' => 'Lihat price list, diskon & promo',
+                'pricing.manage' => 'Kelola price list, diskon, promo & analitik',
+                'pricing.approve' => 'Menyetujui klaim promo & override harga',
+            ],
             'manufacturing' => [
                 'manufacturing.view' => 'Lihat master data pabrik',
                 'manufacturing.manage' => 'Kelola plant, material, BOM, routing, dan formula',

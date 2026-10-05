@@ -555,14 +555,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 43.10 Quality gate Fase 43
 
 ## FASE 44 — HARGA, PROMO & TRADE TERMS (PRICING ENGINE)
-- [ ] 44.1 Price list engine: daftar harga per segmen/saluran/wilayah/mata uang, berlaku-dari/sampai tanpa overlap, prioritas
-- [ ] 44.2 Diskon bertingkat: volume, paket (bundle), kombinasi, kupon; urutan penerapan deterministik & dapat diaudit (price waterfall)
-- [ ] 44.3 Promo dagang (trade promotion): anggaran promo, mekanik, klaim distributor dengan bukti, validasi, settlement
-- [ ] 44.4 Harga kontrak (Fase 29.3) mengalahkan price list; kunci harga di dokumen saat order (immutable)
-- [ ] 44.5 Aturan margin minimum & approval override harga
-- [ ] 44.6 Integrasi ke Store (harga produk produksi sendiri), Distribusi, Agensi; perubahan harga bersifat event idempoten
-- [ ] 44.7 Analitik: realisasi harga vs list, kebocoran diskon, efektivitas promo
-- [ ] 44.8 Quality gate Fase 44
+- [x] 44.1 Price list engine: daftar harga per segmen/saluran/wilayah/mata uang, berlaku-dari/sampai tanpa overlap, prioritas
+- [x] 44.2 Diskon bertingkat: volume, paket (bundle), kombinasi, kupon; urutan penerapan deterministik & dapat diaudit (price waterfall)
+- [x] 44.3 Promo dagang (trade promotion): anggaran promo, mekanik, klaim distributor dengan bukti, validasi, settlement
+- [x] 44.4 Harga kontrak (Fase 29.3) mengalahkan price list; kunci harga di dokumen saat order (immutable)
+- [x] 44.5 Aturan margin minimum & approval override harga
+- [x] 44.6 Integrasi ke Store (harga produk produksi sendiri), Distribusi, Agensi; perubahan harga bersifat event idempoten
+- [x] 44.7 Analitik: realisasi harga vs list, kebocoran diskon, efektivitas promo
+- [x] 44.8 Quality gate Fase 44
 
 ## FASE 45 — AGENSI: AGEN PENJUALAN & KOMISI (MODUL `agy_`)
 - [ ] 45.1 Modul Agency: agen individu/badan (party role), tipe (agen penjualan, broker, reseller, afiliasi, agen tunggal merek), hirarki upline/downline

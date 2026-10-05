@@ -16,6 +16,7 @@ use Modules\Mall\MallServiceProvider;
 use Modules\Manufacturing\ManufacturingServiceProvider;
 use Modules\Party\PartyServiceProvider;
 use Modules\Payment\PaymentServiceProvider;
+use Modules\Pricing\PricingServiceProvider;
 use Modules\Procurement\ProcurementServiceProvider;
 use Modules\Resto\RestoServiceProvider;
 use Modules\Shared\SharedServiceProvider;
@@ -45,5 +46,6 @@ return [
     ProcurementServiceProvider::class,
     ManufacturingServiceProvider::class,
     DistributionServiceProvider::class,
+    PricingServiceProvider::class,
     WmsServiceProvider::class,
 ];

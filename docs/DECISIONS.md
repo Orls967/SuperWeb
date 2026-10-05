@@ -711,3 +711,20 @@
   - **Audit 43.9:** `dist:audit` diperluas: rebate payable ledger == Σ akrual, `qty_sold_unbilled` == Σ penjualan reported, penjualan invoiced punya `invoice_id`.
 - **Reason:** reservasi per baris menghindari race dua order memakai reservasi yang sama; fair-share berbasis "belum teralokasi" membuat perilaku deterministik & idempoten; seluruh pihak lintas modul hanya lewat Contract (arch 12).
 - **Tests:** `modules/Distribution/tests/Feature/DistributionFulfilmentTest` (9 tes) + `DistributionTest` (13). Gate: 816 test / 4349 assertion, Pint, Vite, arch (12), semua audit 0 selisih, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 44 — Harga, Promo & Trade Terms (Pricing Engine)
+
+- **Context:** modul Store/Distribution/Contract sudah memakai harga sendiri (snapshot `price_snapshot`, harga order, rate card kontrak 29.6). Fase 44 menyediakan mesin harga terpusat tanpa memutus modul lama.
+- **Decision:**
+  - Prefix tabel **`pric_`** (bukan `prc_` yang sudah dipakai Procurement — diperiksa sebelum menulis). Modul baru `modules/Pricing` (10 tabel), provider terdaftar di `bootstrap/providers.php`.
+  - **44.1** `PriceList` per `(channel, segment, region, currency)` + `priority`; aktivasi menolak overlap periode pada scope identik; resolver `resolveList` memakai tingkat spesifisitas (region 0, segment+2, general+1) lalu priority kecil menang — bukan hanya urutan insert. Price list `active` immutable (perubahan = list baru).
+  - **44.2** Waterfall deterministik: `DiscountRule` urut `(order, code)`; threshold qty/nilai; alokasi diskon proporsional ke baris layak (pembulatan terakhir menyerap sisa); `stackable=false` menghentikan tambahan non-kupon; kupon diverifikasi `coupon_code` + `isLive` dan status `stackable`. Hasil waterfall disimpan sebagai array JSON → dapat diaudit ulang.
+  - **44.3** Klaim promo wajib `evidence_note` non-kosong, `budget` diperiksa terhadap `remainingBudget + pendingClaims (submitted|validated)` (menangkap bug: klaim kedua lolos karena klaim pertama belum `spent`); settlement four-eyes via ApprovalEngine (guard loop 5×), `spent_idr` baru naik saat settle — anggaran tidak dibakar saat submit.
+  - **44.4** `PriceLock` unik `(subject_type, subject_id, sku)`; replay `lockPrice` mengembalikan snapshot lama (immutable); `source_kind` ∈ `price_list|contract|discount|promo|override|order_snapshot`. `quote()` memberi prioritas **harga kontrak lebih dulu** lalu price list lalu discount — sesuai 44.4.
+  - **44.5** `MarginPolicy.minAllowedPrice = ceil(floor_cost × (100+margin)/100)`; `quote` melempar bila harga < floor dan tidak ada override approved dengan harga sama; `requestOverride` → ApprovalEngine; `decideOverride(approve)` mengisi `decided_at` (dicegah `pricing:audit`).
+  - **44.6** Listener `PostSalePriceLockListener` pada event `OrderPaid` Store (dipublish `Order::onPaymentCaptured`) → snapshot per baris, replay idempoten; contract `PriceLocker` terikat ke `PricingService` untuk konsumen lain (Distribusi/Agensi) tanpa import Domain. `PriceEvent` `firstOrCreate` by hash — idempoten.
+  - **44.7** `computeAnalytics(period, channel)` dari price locks: realisasi = Σ(applied×qty)/Σ(list×qty), leakage = Σ discount yang `source_kind` tidak dikenal, diskon rata-rata & efektivitas promo (cap 100%).
+  - `pricing:audit` (5 pemeriksaan: budget, settled tanpa approval, override tanpa `decided_at`, lock `applied > list` tanpa `reason`, overlap price list) exit 1 bila ada temuan.
+  - Permission grup `pricing.*` ditambahkan (admin mendapat semua; modul lain tidak menambah role baru → jumlah role tetap 23).
+- **Reason:** harga lama tetap jalan (price snapshot order); mesin baru menyediakan lapisan resolusi & audit; prefix `pric_` mencegah tabrakan dengan `prc_` Procurement; kasus precedence `$a ?? $b && …` di PHP menangkap lebih longgar — diperbaiki eksplisit dengan variabel temp.
+- **Tests:** `modules/Pricing/tests/Feature/PricingEngineTest` (7 tes / 44 asersi). Gate: 823 test / 4393 assertion, Pint, Vite, arch (12), semua audit (bank, dist, wms, proc, ast, ctr, lgx, mall, mfg-cost, mfg-qms, pricing) 0 selisih, 10 pilar HEALTHY.
