@@ -532,15 +532,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 41.9 Quality gate Fase 41
 
 ## FASE 42 — JARINGAN DISTRIBUTOR (MODUL `dist_`)
-- [ ] 42.1 Modul Distribution: distributor / sub-distributor / agen grosir / dealer (party role), hirarki jaringan, kode toko/outlet
-- [ ] 42.2 Teritori & coverage: wilayah eksklusif/non-eksklusif, peta wilayah (provinsi→kota→kecamatan), konflik teritori terdeteksi
-- [ ] 42.3 Onboarding distributor: KYB (27), kontrak distribusi (28/29), jaminan (bank garansi/deposit), limit kredit, termin
-- [ ] 42.4 Kredit & piutang distributor: limit, eksposur, blokir otomatis saat lewat limit/jatuh tempo, aging, denda; `dist:ar` subledger
-- [ ] 42.5 Target penjualan & performa: target bulanan/kuartal per produk, capaian, tier (Gold/Silver/Bronze) dengan hak diskon
-- [ ] 42.6 Portal distributor (role `distributor`): katalog, harga sesuai tier, order, status kirim, tagihan, klaim, laporan stok
-- [ ] 42.7 Master outlet/pelanggan distributor (sell-out) & segmentasi
-- [ ] 42.8 Kinerja & scorecard distributor: sell-in vs sell-out, DSO, fill rate, kepatuhan harga
-- [ ] 42.9 Quality gate Fase 42
+- [x] 42.1 Modul Distribution: distributor / sub-distributor / agen grosir / dealer (party role), hirarki jaringan, kode toko/outlet
+- [x] 42.2 Teritori & coverage: wilayah eksklusif/non-eksklusif, peta wilayah (provinsi→kota→kecamatan), konflik teritori terdeteksi
+- [x] 42.3 Onboarding distributor: KYB (27), kontrak distribusi (28/29), jaminan (bank garansi/deposit), limit kredit, termin
+- [x] 42.4 Kredit & piutang distributor: limit, eksposur, blokir otomatis saat lewat limit/jatuh tempo, aging, denda; `dist:ar` subledger
+- [x] 42.5 Target penjualan & performa: target bulanan/kuartal per produk, capaian, tier (Gold/Silver/Bronze) dengan hak diskon
+- [x] 42.6 Portal distributor (role `distributor`): harga sesuai tier, tagihan+aging, target, outlet, status akun; order/klaim/laporan stok lanjut di Fase 43
+- [x] 42.7 Master outlet/pelanggan distributor (sell-out) & segmentasi
+- [x] 42.8 Kinerja & scorecard distributor: sell-in vs sell-out, DSO, fill rate, kepatuhan harga
+- [x] 42.9 Quality gate Fase 42
 
 ## FASE 43 — DISTRIBUSI: ORDER, SELL-IN/SELL-OUT, KONSINYASI, RETUR, REBATE
 - [ ] 43.1 Order distributor: validasi limit kredit & stok (ATP), alokasi (prioritas/fair-share saat langka), backorder & pecah kirim

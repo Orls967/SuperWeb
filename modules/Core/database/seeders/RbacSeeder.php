@@ -43,6 +43,7 @@ class RbacSeeder extends Seeder
             ['name' => 'auditor', 'label' => 'Auditor', 'description' => 'Hanya baca untuk audit dan rekonsiliasi.'],
             ['name' => 'supplier', 'label' => 'Pemasok', 'description' => 'Portal pemasok: PO, ASN, sertifikat, pembayaran.'],
             ['name' => 'procurement', 'label' => 'Procurement', 'description' => 'Kualifikasi, RFQ, harga, dan skor pemasok.'],
+            ['name' => 'distributor', 'label' => 'Distributor', 'description' => 'Portal distributor: katalog, order, sell-out, tagihan.'],
             ['name' => 'planner', 'label' => 'Perencana Produksi', 'description' => 'Mengelola BOM, routing, formula, dan MPS/MRP.'],
             ['name' => 'operator', 'label' => 'Operator Produksi', 'description' => 'Menjalankan order produksi di pabrik.'],
             ['name' => 'qc_inspector', 'label' => 'Inspektor QC', 'description' => 'Inspeksi mutu di titik pemeriksaan produksi.'],
@@ -163,6 +164,12 @@ class RbacSeeder extends Seeder
                 'procurement.manage' => 'Kelola PR, RFQ, tender, dan PO',
                 'procurement.approve' => 'Menyetujui PR, revisi PO, dan penetapan pemenang',
                 'procurement.quote.submit' => 'Kirim penawaran & segel tender sebagai pemasok',
+            ],
+            'distribution' => [
+                'distribution.view' => 'Lihat jaringan distributor',
+                'distribution.manage' => 'Kelola distributor, teritori, target & outlet',
+                'distribution.approve' => 'Menyetujui onboarding & transisi distributor',
+                'distribution.portal.access' => 'Akses portal distributor (order & sell-out)',
             ],
             'manufacturing' => [
                 'manufacturing.view' => 'Lihat master data pabrik',
@@ -291,6 +298,11 @@ class RbacSeeder extends Seeder
                 'party.view', 'supplier.view', 'supplier.manage', 'supplier.approve',
                 'contract.view',
                 'procurement.view', 'procurement.manage', 'procurement.approve',
+            ],
+
+            'distributor' => [
+                'core.dashboard.view',
+                'distribution.view', 'distribution.portal.access',
             ],
 
             'planner' => [

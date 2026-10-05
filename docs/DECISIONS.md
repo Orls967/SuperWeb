@@ -678,3 +678,20 @@
   - `wms:audit` menjaga posisi bin valid; opening stock/outside-WMS stock boleh membuat cached global > total bin (normal), maka audit hanya fail pada stok bin negatif atau bin melebihi saldo global.
 - **Reason:** WMS menjadi *location subledger*, bukan buku saldo alternatif — semua perubahan total stock melalui Inventory contract, jadi modul Store tetap backward-compatible; Logistics hanya dipanggil via `ShipmentBooking` Contract.
 - **Tests:** `modules/Wms/tests/Feature/WmsTest` (10 tes / 48 asersi). Gate: 794 test / 4227 assertion, Pint, Vite, arch (12), audit bank/WMS/proc/asset/contract/logistics/mall/manufacturing sehat, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 42 — Jaringan Distributor (Modul `dist_`)
+
+- **Context:** dibutuhkan jaringan jual (distributor/agen/dealer), kredit, dan skor kinerja sebelum Fase 43 (order/sell-in/retur/rebate). Party sudah punya `PartyRoleType::Distributor` dan `CreditProfile`; modul baru menjaga ownership piutang & tier sendiri.
+- **Decision:**
+  - Modul baru `modules/Distribution` (10 tabel `dist_*`), provider + menu Distributor + role `distributor` (RBAC 23 role) + permission `distribution.*` + seeder `dist_tiers` (Bronze 0%, Silver 2,5% ≥70%, Gold 5% ≥90%).
+  - **Hirarki & jenis:** `kind ∈ {distributor, sub_distributor, agent, dealer}`; sub hanya boleh ke induk `approved`. `parent_id` self-FK UUID.
+  - **Teritori:** level provinsi→kota→kecamatan (wajib berurutan satu tingkat), coverage eksklusif menolak distributor lain pada wilayah sama (interval valid); `territoryConflicts()` melaporkan sisa konflik.
+  - **Onboarding 42.3:** wajib `Security` aktif (bank garansi/deposit) sebelum `submitOnboarding` → ApprovalEngine `DISTRIBUTOR_ONBOARDING` (procurement → admin) disimpan di `dist_distributors.approval_id`; `approveOnboarding` menolak tanpa pengajuan dan meneruskan approve sampai engine `approved` (guard loop 5) — four-eyes sungguhan.
+  - **AR 42.4:** `ArInvoice` per distributor (`AR/{ENT}/`); exposure = Σ `amount + denda − paid` (sinkron dengan `dist:audit`). Jurnal: terbit `DR dist:receivable / CR dist:ar:{id}`, bayar `DR dist:ar / CR clearing`, denda `DR dist:receivable / CR dist:denda` (semua kredit negatif — menangkap bug awal kedua entri positif → UnbalancedTransactionException). Denda 0,1%/hari cap 5% (simulasi); pelunasan penuh menghapus sisa denda & exposure-nya. **Blokir otomatis**: eksposur > limit saat tagihan terbit, dan overdue > grace 7 hari pada sweep; unblock otomatis saat eksposur < limit.
+  - **Target/tier 42.5:** `Target` unik (distributor, SKU, periode, basis sell_in/sell_out), achievement akumulatif; `evaluateTier` memakai rata-rata capaian tahun berjalan vs threshold tier.
+  - **Outlet 42.7:** wajib wilayah ter-cover distributor; kode unik per distributor; segment retail/horeca/modern/wholesale.
+  - **Scorecard 42.8:** komposit 0–100 = achievement 40% + fill-rate 20% + DSO 20% (0 bila >90 hari) + kepatuhan harga 20%; `recommended_tier` gold ≥80, silver ≥60.
+  - **Portal 42.6 (minimal di Fase 42):** `/portal/distributors` menampilkan ringkasan kredit, tagihan + aging, target, outlet; order/klaim/laporan stok menanti Fase 43; 403 bila akun belum terhubung `owner_user_id`.
+  - `dist:audit`: exposure == Σ terbuka, |saldo akun `dist:ar:{id}| == |open|, tanpa overpaid, tier valid. `Sweep harian` (dipanggil manual / scheduler menyusul) menandai overdue + denda + blokir grace.
+- **Reason:** semua keputusan kredit (limit, blokir, denda) terpusat di service dengan jurnal idempoten; konflik teritori dideteksi sebelum coverage tersimpan; audit subledger AR memakai formula yang sama dengan exposure agar gate konsisten.
+- **Tests:** `modules/Distribution/tests/Feature/DistributionTest` (13 tes / 63 asersi). Gate: 807 test / 4290 assertion, Pint, Vite, arch (12), seluruh audit (termasuk `dist:audit` & `wms:audit`) 0 selisih, 10 pilar HEALTHY.

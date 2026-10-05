@@ -15,6 +15,7 @@ use Modules\Contract\database\seeders\ContractSeeder;
 use Modules\Core\database\seeders\PlatformSeeder;
 use Modules\Core\database\seeders\RbacSeeder;
 use Modules\Crypto\database\seeders\CryptoSeeder;
+use Modules\Distribution\Database\Seeders\DistributionSeeder;
 use Modules\Logistics\database\seeders\LogisticsSeeder;
 use Modules\Mall\database\seeders\MallSeeder;
 use Modules\Manufacturing\Database\Seeders\ManufacturingSeeder;
@@ -145,6 +146,7 @@ class DatabaseSeeder extends Seeder
             SupplierSeeder::class,
             ProcurementSeeder::class,
             ManufacturingSeeder::class,
+            DistributionSeeder::class,
             WmsSeeder::class,
             RbacSeeder::class,
         ]);

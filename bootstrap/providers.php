@@ -8,6 +8,7 @@ use Modules\Banking\BankingServiceProvider;
 use Modules\Contract\ContractServiceProvider;
 use Modules\Core\CoreServiceProvider;
 use Modules\Crypto\CryptoServiceProvider;
+use Modules\Distribution\DistributionServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
 use Modules\Inventory\InventoryServiceProvider;
 use Modules\Logistics\LogisticsServiceProvider;
@@ -43,5 +44,6 @@ return [
     SupplierServiceProvider::class,
     ProcurementServiceProvider::class,
     ManufacturingServiceProvider::class,
+    DistributionServiceProvider::class,
     WmsServiceProvider::class,
 ];
