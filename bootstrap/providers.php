@@ -57,4 +57,6 @@ return [
     TreasuryServiceProvider::class,
     TradeServiceProvider::class,
     \Modules\TradeFinance\TradeFinanceServiceProvider::class,
+    \Modules\International\InternationalServiceProvider::class,
 ];
+

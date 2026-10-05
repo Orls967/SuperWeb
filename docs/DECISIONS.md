@@ -806,6 +806,20 @@
   - **50.3 Documentary Collection (D/P, D/A):** Pengelolaan inkaso wesel dagang tunai vs akseptasi berjangka.
   - **50.4 Garansi Bank (Bank Guarantee):** Bid Bond, Performance Bond, Advance Payment Guarantee dengan validasi ketat klaim tidak boleh melampaui nilai plafon garansi.
   - **50.5 Pembiayaan Modal Kerja & SCF:** Pinjaman perdagangan pre/post-shipment dengan perhitungan bunga dan pelunasan parsial/lunas.
-  - **50.8 Audit Trade Finance:** Command `tf:audit` memastikan seluruh invariant garansi bank, status pinjaman, dan rekonsiliasi instrumen perbankan bernilai 0 diskrepansi.
 - **Tests:** `TradeFinanceTest` (8 tes / 29 asersi). Sub-suite `TradeFinanceTest|ModuleBoundariesTest` (20 passed / 89 assertions), `bank:reconcile` (0 diskrepansi), `tf:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 51 — Kerja Sama Internasional I (Modul `intl_`)
+
+- **Context:** Kolaborasi bisnis multinasional memerlukan tata kelola master entitas hukum asing, kepatuhan AML/Apostille, struktur Joint Venture (Equity & Contractual) beserta panggilan modal (capital calls), lisensi HKI & royalti dengan Minimum Annual Guarantee (MAG), kontrak manufaktur OEM/ODM, milestone delivery transfer teknologi, dan perhitungan Withholding Tax (WHT) berbasis Tax Treaty (P3B).
+- **Decision:**
+  - Prefix tabel **`intl_`** (6 tabel: `intl_foreign_entities`, `intl_joint_ventures`, `intl_technology_licenses`, `intl_oem_contracts`, `intl_tech_transfers`, `intl_tax_treaties`).
+  - **51.1 Master Entitas Asing:** Pendataan nomor registrasi resmi negara asal, mata uang fungsional, yurisdiksi arbitrase (SIAC/ICC/BANI), dan bukti screening AML.
+  - **51.2 Joint Venture Management:** Dukungan Equity JV vs Contractual JV dengan validasi invariant total kepemilikan saham tepat 100% dan setoran modal (paid-in capital) tidak boleh melebihi plafon modal yang dikomitmenkan.
+  - **51.3 Lisensi HKI & Royalti Otomatis:** Perhitungan royalti berjenjang terhadap omzet bersih dengan mekanisme jaminan tahunan minimum (MAG) fallback per bulan.
+  - **51.4 OEM/ODM Manufaktur:** Pengelolaan kontrak OEM/ODM dengan penetapan unit tolling fee dan penelusuran bahan baku konsinyasi tanpa pengakuan hutang dagang.
+  - **51.5 Alih Teknologi (Tech Transfer):** Pelacakan tahapan milestone serah terima teknologi dengan validasi nilai milestone terhadap total nilai proyek alih teknologi.
+  - **51.7 Tax Treaty (P3B) Withholding Tax:** Engine penentuan tarif pemotongan pajak efektif WHT (royalti, dividen, bunga, jasa) dengan fallback otomatis ke tarif domestik 20% apabila Certificate of Domicile (Form DGT) tidak valid.
+  - **51.9 Audit Kemitraan Internasional:** Command `intl:audit` memvalidasi integritas rasio saham JV, setoran modal, dan keselarasan transfer teknologi bernilai 0 diskrepansi.
+- **Tests:** `InternationalTest` (8 tes / 31 asersi). Sub-suite `InternationalTest|ModuleBoundariesTest` (20 passed / 91 assertions), `bank:reconcile` (0 diskrepansi), `intl:audit` (0 diskrepansi), Pint lulus.
+
 

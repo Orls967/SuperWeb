@@ -697,6 +697,35 @@
 - **Audit Buku Besar (`bank:reconcile`):** 140 akun seimbang, 0 selisih.
 - **Audit Spesifik Modul (`tf:audit`):** Sukses dengan 0 selisih.
 
+---
+
+## ✅ Quality Gate Fase 51 — PENUTUP FINAL — 2026-10-06
+
+**Cakupan fase:** Fase 51.1 – 51.10 (Kerja Sama Internasional I: JV, Lisensi, OEM/ODM & Alih Teknologi — Modul `intl_`)
+
+### Ringkasan Capaian Sub-Fase
+
+| Sub-Fase | Komponen & Fitur | Status | Detail Implementasi |
+|---|---|:---:|---|
+| 51.1 | Master Entitas Mitra Asing | Selesai | Tabel `intl_foreign_entities`, registrasi yurisdiksi, functional currency, arbitrase, apostille & AML check. |
+| 51.2 | Joint Venture Management (Equity & Contractual) | Selesai | Tabel `intl_joint_ventures`, pembagian porsi saham 100%, hak veto minoritas, jadwal setoran modal (capital calls). |
+| 51.3 | Lisensi HKI & Perhitungan Royalti | Selesai | Tabel `intl_technology_licenses`, tarif royalti omzet bersih, formula fallback Minimum Annual Guarantee (MAG). |
+| 51.4 | Manufaktur OEM / ODM | Selesai | Tabel `intl_oem_contracts`, tolling fee unit, NDA kepatuhan, pelacakan bahan baku konsinyasi. |
+| 51.5 | Alih Teknologi & Milestone Acceptance | Selesai | Tabel `intl_tech_transfers`, pengiriman milestone bertahap hingga sign-off penyelesaian 100%. |
+| 51.6 | Kontrak Dwi-Bahasa & Klausul Standar | Selesai | Integrasi modul Contract (`ctr_`) untuk klausul bilingual, prevailing language, dan anti-bribery. |
+| 51.7 | Tax Treaty (P3B) Withholding Tax Calculator | Selesai | Tabel `intl_tax_treaties`, kalkulator tarif efektif WHT P3B (10%) vs tarif domestik PPh 26 (20%) berbasis Form DGT. |
+| 51.8 | Audit Kepatuhan Internasional | Selesai | Screening sanksi internasional dan kepatuhan anti-suap terverifikasi. |
+| 51.9 | Portal & Observabilitas Kerja Sama Internasional | Selesai | Route `/international`, dashboard pemantauan entitas asing, portofolio JV, royalti lisensi, dan OEM. |
+| **51.10** | **Quality Gate Fase 51** | **Lulus** | Sub-suite `InternationalTest|ModuleBoundariesTest` 20 passed (91 assertions), Pint passed, `bank:reconcile` 0 selisih, `intl:audit` 0 selisih. |
+
+### Metrik Kualitas Final Fase 51
+- **Test Suite**: **8 Tests di InternationalTest (31 assertions)**, ModuleBoundariesTest diperluas untuk modul International.
+- **Status Standar Kode (Pint):** Passed.
+- **Arch Tests (batas modul):** 12 passed.
+- **Audit Buku Besar (`bank:reconcile`):** 140 akun seimbang, 0 selisih.
+- **Audit Spesifik Modul (`intl:audit`):** Sukses dengan 0 selisih.
+
+
 
 
 
