@@ -743,5 +743,19 @@
   - **45.7 Payout Periodik:** Agregasi seluruh akrual payable (termasuk kompensasi clawback negatif), verifikasi total net > 0, PPh 21/23 pemotongan simulasi (`withheld_tax_idr`). Alur four-eyes approval (`AGENCY_PAYOUT` via `ApprovalEngineInterface`). Eksekusi pembayaran memposting ledger net `DR agy:commission_payable / CR clearing:external` dan pajak `DR agy:commission_payable / CR tax:withheld`.
   - **45.8 Statement & Portal:** `Statement` merekonsiliasi `opening + accrued - clawback - paid = closing balance`. Portal `/agency` dan `/agency/{agent}` dapat diakses role `agent`, `admin`, `procurement`, `auditor`.
   - **45.9 Audit & Role:** Command `agy:audit` memvalidasi saldo payable ledger = Σ akrual, payout net = gross - tax, payout berstatus paid memiliki transaksi ledger, dan atribusi valid. Role `agent` (role ke-24) didaftarkan di `RbacSeeder`.
-- **Reason:** Penanganan retur/clawback melalui akrual negatif menjaga kepatuhan double-entry buku besar tanpa manipulasi historis data; hold period memastikan komisi tidak dibayar prematur sebelum batas retur customer/distributor usai.
 - **Tests:** `modules/Agency/tests/Feature/AgencyCommissionTest` (9 tes / 54 asersi), RouteSmokeTest (+2 asersi), RbacTest (+24 roles). Gate final Fase 45: **832 tests passed (4446 assertions)**, 0 failures, 0 skipped, Pint lulus, Vite sukses, `bank:reconcile` (140 akun, 0 selisih), `agy:audit` 0 selisih, `super:health-check` 10 pilar HEALTHY.
+
+## 2026-10-06: Fase 46 — Agensi: Ekosistem, Lead, Tier & Kepatuhan (Modul `agy_`)
+
+- **Context:** Jaringan agensi memerlukan manajemen siklus hidup prospek (CRM), rekrutmen/sertifikasi, sistem level/tiering untuk gamifikasi, keagenan pemegang merek (APM-style), sanksi kepatuhan, serta deteksi dini kecurangan (self-referral & spike komisi).
+- **Decision:**
+  - Tambah 6 tabel baru di modul Agency: `agy_leads`, `agy_lead_activities`, `agy_certifications`, `agy_agent_tiers`, `agy_brand_agencies`, `agy_compliance_incidents`, `agy_fraud_checks`, serta kolom status performa `tier_code`, `total_sales_volume_idr`, `total_deals_count` pada `agy_agents`.
+  - **46.1 CRM Leads:** Pengelolaan prospek pipeline (`new → contacted → qualified → proposal → converted → lost`), pencatatan aktivitas, dan konversi otomatis yang langsung mengakumulasikan volume dan deal count agen serta memicu evaluasi tier.
+  - **46.2 Sertifikasi & Lisensi:** Pelacakan lisensi (properti, asuransi, keagenan) dengan verifikasi tanggal berlaku `isValidAt()`.
+  - **46.3 Tier & Gamifikasi:** Konfigurasi tier dinamis (`BRONZE`, `SILVER`, `GOLD`) berdasarkan volume dan jumlah closing, serta leaderboard performa agen.
+  - **46.4 APM Brand Agencies:** Pendaftaran hak keagenan merek resmi dengan bendera hak impor dan garansi servis purna jual yang terhubung ke jaringan bengkel AutoServe.
+  - **46.5 Kepatuhan & Sanksi:** Pencatatan insiden pelanggaran dengan eskalasi sanksi, di mana sanksi pembekuan (`commission_freeze`) secara otomatis menyuspensi agen dan mencabut hak mendapatkan komisi (`canEarn = false`), dengan mekanisme banding (`appealIncident`).
+  - **46.6 Deteksi Kecurangan:** Mesin deteksi kecurangan otomatis (pemeriksaan nomor telepon self-referral berbobot risiko 95 dan pemblokiran otomatis; serta deteksi lonjakan anomali komisi >5x rata-rata historis).
+  - **46.7/46.8 Analitik & Lintas Lini:** Analitik ROI agen menghitung rasio perolehan penjualan terhadap total komisi dibayar (`sales / paid`).
+- **Reason:** Evaluasi tier otomatis saat konversi lead menjaga integritas gamifikasi secara instan; fraud check algoritmik mencegah kebocoran kas perusahaan akibat skema referral diri sendiri.
+- **Tests:** `modules/Agency/tests/Feature/AgencyEcosystemTest` (7 tes / 31 asersi). Gate final Fase 46: **839 tests passed (4477 assertions)**, 0 failures, 0 skipped, Pint lulus, Vite sukses, `bank:reconcile` (140 akun, 0 selisih), `agy:audit` 0 selisih, `super:health-check` 10 pilar HEALTHY.

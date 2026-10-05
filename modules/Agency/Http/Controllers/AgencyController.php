@@ -13,6 +13,7 @@ use Modules\Agency\Domain\Models\Agent;
 use Modules\Agency\Domain\Models\Attribution;
 use Modules\Agency\Domain\Models\CommissionAccrual;
 use Modules\Agency\Domain\Models\CommissionScheme;
+use Modules\Agency\Domain\Models\Lead;
 use Modules\Agency\Domain\Models\Payout;
 
 class AgencyController extends Controller
@@ -148,5 +149,92 @@ class AgencyController extends Controller
         }
 
         return back()->with('success', "Payout {$payout->number} disetujui.");
+    }
+
+    public function storeLead(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'agent_id' => 'nullable|uuid|exists:agy_agents,id',
+            'name' => 'required|string|max:160',
+            'phone' => 'nullable|string|max:40',
+            'email' => 'nullable|email|max:120',
+            'category' => 'required|string|max:40',
+            'estimated_value_idr' => 'nullable|integer|min:0',
+            'notes' => 'nullable|string',
+        ]);
+
+        $agent = ! empty($data['agent_id']) ? Agent::find($data['agent_id']) : null;
+        $this->service->createLead($agent, $data);
+
+        return back()->with('success', 'Lead prospek berhasil ditambahkan.');
+    }
+
+    public function convertLead(Lead $lead, Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'order_id' => 'required|string|max:60',
+        ]);
+
+        $this->service->convertLead($lead, $data['order_id']);
+
+        return back()->with('success', 'Lead berhasil dikonversi ke transaksi.');
+    }
+
+    public function storeCertification(Agent $agent, Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'type' => 'required|string|max:40',
+            'license_number' => 'nullable|string|max:80',
+            'issuing_body' => 'nullable|string|max:120',
+            'issued_at' => 'required|date',
+            'expires_at' => 'nullable|date',
+        ]);
+
+        $this->service->addCertification($agent, $data);
+
+        return back()->with('success', 'Sertifikasi / lisensi agen berhasil dicatat.');
+    }
+
+    public function storeBrandAgency(Agent $agent, Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'brand_name' => 'required|string|max:120',
+            'principal_country' => 'nullable|string|max:4',
+            'has_import_rights' => 'nullable|boolean',
+            'has_warranty_service' => 'nullable|boolean',
+            'service_network_ref' => 'nullable|string|max:60',
+            'effective_from' => 'required|date',
+            'effective_until' => 'nullable|date',
+        ]);
+
+        $this->service->registerBrandAgency($agent, $data);
+
+        return back()->with('success', 'Keagenan merek (APM) berhasil didaftarkan.');
+    }
+
+    public function storeCompliance(Agent $agent, Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'violation_type' => 'required|string|max:40',
+            'severity' => 'required|in:low,medium,high,severe',
+            'sanction' => 'required|in:warning,commission_freeze,demotion,termination',
+            'description' => 'required|string',
+        ]);
+
+        $this->service->reportIncident($agent, $data['violation_type'], $data['severity'], $data['sanction'], $data['description']);
+
+        return back()->with('success', 'Insiden kepatuhan agen berhasil dicatat.');
+    }
+
+    public function runFraudCheck(Agent $agent, Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'check_type' => 'required|string|max:40',
+            'metrics' => 'nullable|array',
+        ]);
+
+        $check = $this->service->checkFraud($agent, $data['check_type'], $data['metrics'] ?? []);
+
+        return back()->with('success', "Fraud check selesai: Keputusan [{$check->decision}], Skor risiko: {$check->risk_score}.");
     }
 }

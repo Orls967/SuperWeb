@@ -577,15 +577,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 45.10 Quality gate Fase 45
 
 ## FASE 46 — AGENSI: EKOSISTEM, LEAD, TIER & KEPATUHAN
-- [ ] 46.1 CRM ringan: lead/prospek, pipeline, aktivitas, konversi → order; penugasan lead ke agen
-- [ ] 46.2 Rekrutmen & onboarding agen: pendaftaran, KYC (27.2), pelatihan/sertifikasi internal, lisensi (mis. agen asuransi/properti — data simulasi) dengan masa berlaku
-- [ ] 46.3 Tier & gamifikasi: level agen, syarat naik/turun, benefit; leaderboard (privasi dijaga)
-- [ ] 46.4 Agensi merek/keagenan impor: agen tunggal pemegang merek (APM-style) → hak impor, garansi, purna jual terhubung AutoServe (kontrak)
-- [ ] 46.5 Kepatuhan agen: pelanggaran (diskon liar, klaim palsu), sanksi bertingkat, suspensi komisi, banding
-- [ ] 46.6 Deteksi kecurangan: pola self-referral, penjualan palsu, anomali komisi (aturan + skor simulasi)
-- [ ] 46.7 Integrasi lintas lini: agen properti Mall (leasing unit), agen kendaraan Store/AutoDex, agen katering Resto
-- [ ] 46.8 Analitik: ROI agen, biaya akuisisi, retensi, kontribusi downline
-- [ ] 46.9 Quality gate Fase 46
+- [x] 46.1 CRM ringan: lead/prospek, pipeline, aktivitas, konversi → order; penugasan lead ke agen
+- [x] 46.2 Rekrutmen & onboarding agen: pendaftaran, KYC (27.2), pelatihan/sertifikasi internal, lisensi (mis. agen asuransi/properti — data simulasi) dengan masa berlaku
+- [x] 46.3 Tier & gamifikasi: level agen, syarat naik/turun, benefit; leaderboard (privasi dijaga)
+- [x] 46.4 Agensi merek/keagenan impor: agen tunggal pemegang merek (APM-style) → hak impor, garansi, purna jual terhubung AutoServe (kontrak)
+- [x] 46.5 Kepatuhan agen: pelanggaran (diskon liar, klaim palsu), sanksi bertingkat, suspensi komisi, banding
+- [x] 46.6 Deteksi kecurangan: pola self-referral, penjualan palsu, anomali komisi (aturan + skor simulasi)
+- [x] 46.7 Integrasi lintas lini: agen properti Mall (leasing unit), agen kendaraan Store/AutoDex, agen katering Resto
+- [x] 46.8 Analitik: ROI agen, biaya akuisisi, retensi, kontribusi downline
+- [x] 46.9 Quality gate Fase 46
 
 ## FASE 47 — MITRA & KEMITRAAN (MODUL `ptn_`)
 - [ ] 47.1 Modul Partner: jenis mitra (strategis, teknologi, saluran, waralaba, JV, riset, CSR), siklus hidup `prospect → due diligence → negotiation → active → review → exit`

@@ -21,5 +21,11 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,agent,procurement,audi
             Route::post('/accruals/release-holds', [AgencyController::class, 'releaseHold'])->name('accruals.release');
             Route::post('/{agent}/payouts', [AgencyController::class, 'storePayout'])->name('payouts.store');
             Route::post('/payouts/{payout}/approve', [AgencyController::class, 'approvePayout'])->name('payouts.approve');
+            Route::post('/leads', [AgencyController::class, 'storeLead'])->name('leads.store');
+            Route::post('/leads/{lead}/convert', [AgencyController::class, 'convertLead'])->name('leads.convert');
+            Route::post('/{agent}/certifications', [AgencyController::class, 'storeCertification'])->name('certifications.store');
+            Route::post('/{agent}/brand-agencies', [AgencyController::class, 'storeBrandAgency'])->name('brands.store');
+            Route::post('/{agent}/compliance', [AgencyController::class, 'storeCompliance'])->name('compliance.store');
+            Route::post('/{agent}/fraud-checks', [AgencyController::class, 'runFraudCheck'])->name('fraud.store');
         });
     });

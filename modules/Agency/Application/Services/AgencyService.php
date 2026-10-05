@@ -6,14 +6,22 @@ namespace Modules\Agency\Application\Services;
 
 use App\Models\User;
 use Brick\Math\BigDecimal;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Agency\Domain\Models\Agent;
+use Modules\Agency\Domain\Models\AgentCertification;
 use Modules\Agency\Domain\Models\AgentContract;
+use Modules\Agency\Domain\Models\AgentTier;
 use Modules\Agency\Domain\Models\Attribution;
+use Modules\Agency\Domain\Models\BrandAgency;
 use Modules\Agency\Domain\Models\CommissionAccrual;
 use Modules\Agency\Domain\Models\CommissionScheme;
+use Modules\Agency\Domain\Models\ComplianceIncident;
+use Modules\Agency\Domain\Models\FraudCheck;
+use Modules\Agency\Domain\Models\Lead;
+use Modules\Agency\Domain\Models\LeadActivity;
 use Modules\Agency\Domain\Models\Payout;
 use Modules\Agency\Domain\Models\PayoutItem;
 use Modules\Agency\Domain\Models\Statement;
@@ -660,5 +668,222 @@ class AgencyService
                 ]
             );
         }
+    }
+
+    // ── 46.1 CRM Leads ──────────────────────────────────────────────────
+
+    /**
+     * @param  array{name:string,phone?:string,email?:string,category?:string,
+     *   estimated_value_idr?:int,notes?:string}  $data
+     */
+    public function createLead(?Agent $agent, array $data): Lead
+    {
+        return Lead::create([
+            'agent_id' => $agent?->id,
+            'name' => $data['name'],
+            'phone' => $data['phone'] ?? null,
+            'email' => $data['email'] ?? null,
+            'category' => $data['category'] ?? 'general',
+            'status' => 'new',
+            'estimated_value_idr' => (int) ($data['estimated_value_idr'] ?? 0),
+            'notes' => $data['notes'] ?? null,
+        ]);
+    }
+
+    public function recordLeadActivity(Lead $lead, string $type, string $description, ?string $date = null): LeadActivity
+    {
+        return LeadActivity::create([
+            'lead_id' => $lead->id,
+            'type' => $type,
+            'description' => $description,
+            'activity_date' => $date ?? now()->toDateString(),
+        ]);
+    }
+
+    public function convertLead(Lead $lead, string $orderId): Lead
+    {
+        $lead->status = 'converted';
+        $lead->converted_order_id = $orderId;
+        $lead->save();
+
+        if ($lead->agent !== null) {
+            $agent = $lead->agent;
+            $agent->total_deals_count = (int) $agent->total_deals_count + 1;
+            $agent->total_sales_volume_idr = (int) $agent->total_sales_volume_idr + (int) $lead->estimated_value_idr;
+            $agent->save();
+            $this->evaluateTier($agent);
+        }
+
+        return $lead;
+    }
+
+    // ── 46.2 Sertifikasi & Onboarding ───────────────────────────────────
+
+    /**
+     * @param  array{type:string,license_number?:string,issuing_body?:string,
+     *   issued_at:string,expires_at?:string,status?:string}  $data
+     */
+    public function addCertification(Agent $agent, array $data): AgentCertification
+    {
+        return AgentCertification::create([
+            'agent_id' => $agent->id,
+            'type' => $data['type'],
+            'license_number' => $data['license_number'] ?? null,
+            'issuing_body' => $data['issuing_body'] ?? null,
+            'issued_at' => $data['issued_at'],
+            'expires_at' => $data['expires_at'] ?? null,
+            'status' => $data['status'] ?? 'verified',
+        ]);
+    }
+
+    // ── 46.3 Tier & Gamifikasi ──────────────────────────────────────────
+
+    public function saveTier(string $code, string $name, int $minDeals, int $minVolumeIdr, float $bonusMultiplier, array $perks = []): AgentTier
+    {
+        return AgentTier::updateOrCreate(
+            ['code' => strtoupper($code)],
+            [
+                'name' => $name,
+                'min_sales_count' => $minDeals,
+                'min_volume_idr' => $minVolumeIdr,
+                'bonus_multiplier' => $bonusMultiplier,
+                'perks' => $perks,
+            ]
+        );
+    }
+
+    public function evaluateTier(Agent $agent): string
+    {
+        $tiers = AgentTier::orderByDesc('min_volume_idr')->get();
+        $assigned = 'BRONZE';
+
+        foreach ($tiers as $tier) {
+            if ($agent->total_sales_volume_idr >= $tier->min_volume_idr && $agent->total_deals_count >= $tier->min_sales_count) {
+                $assigned = $tier->code;
+                break;
+            }
+        }
+
+        $agent->tier_code = $assigned;
+        $agent->save();
+
+        return $assigned;
+    }
+
+    public function getLeaderboard(int $limit = 10): Collection
+    {
+        return Agent::where('status', 'active')
+            ->orderByDesc('total_sales_volume_idr')
+            ->limit($limit)
+            ->get(['id', 'code', 'name', 'tier_code', 'total_sales_volume_idr', 'total_deals_count']);
+    }
+
+    // ── 46.4 APM Brand Agencies ─────────────────────────────────────────
+
+    /**
+     * @param  array{brand_name:string,principal_country?:string,has_import_rights?:bool,
+     *   has_warranty_service?:bool,service_network_ref?:string,effective_from:string,
+     *   effective_until?:string}  $data
+     */
+    public function registerBrandAgency(Agent $agent, array $data): BrandAgency
+    {
+        return BrandAgency::create([
+            'agent_id' => $agent->id,
+            'brand_name' => $data['brand_name'],
+            'principal_country' => $data['principal_country'] ?? 'ID',
+            'has_import_rights' => (bool) ($data['has_import_rights'] ?? true),
+            'has_warranty_service' => (bool) ($data['has_warranty_service'] ?? true),
+            'service_network_ref' => $data['service_network_ref'] ?? 'AutoServe Central Bengkel',
+            'effective_from' => $data['effective_from'],
+            'effective_until' => $data['effective_until'] ?? null,
+            'status' => 'active',
+        ]);
+    }
+
+    // ── 46.5 Kepatuhan & Sanksi ─────────────────────────────────────────
+
+    public function reportIncident(Agent $agent, string $violation, string $severity, string $sanction, string $description): ComplianceIncident
+    {
+        $incident = ComplianceIncident::create([
+            'agent_id' => $agent->id,
+            'violation_type' => $violation,
+            'severity' => $severity,
+            'sanction' => $sanction,
+            'description' => $description,
+            'status' => 'active',
+        ]);
+
+        if (in_array($sanction, ['commission_freeze', 'termination'], true)) {
+            $agent->status = $sanction === 'termination' ? 'terminated' : 'suspended';
+            $agent->save();
+        }
+
+        return $incident;
+    }
+
+    public function appealIncident(ComplianceIncident $incident, string $notes): ComplianceIncident
+    {
+        $incident->status = 'appealed';
+        $incident->appeal_notes = $notes;
+        $incident->save();
+
+        return $incident;
+    }
+
+    // ── 46.6 Deteksi Kecurangan (Fraud Check) ───────────────────────────
+
+    public function checkFraud(Agent $agent, string $checkType, array $metrics = []): FraudCheck
+    {
+        $riskScore = 0;
+        $decision = 'clean';
+        $reason = 'Tidak ditemukan indikasi kecurangan';
+
+        if ($checkType === 'self_referral') {
+            $customerPhone = $metrics['customer_phone'] ?? '';
+            $agentPhone = $metrics['agent_phone'] ?? '';
+            if (! empty($customerPhone) && $customerPhone === $agentPhone) {
+                $riskScore = 95;
+                $decision = 'blocked';
+                $reason = 'Nomor telepon pelanggan sama dengan nomor agen (Self-referral terdeteksi)';
+            }
+        } elseif ($checkType === 'commission_spike') {
+            $currentAmount = (int) ($metrics['current_amount'] ?? 0);
+            $avgAmount = (int) ($metrics['avg_amount'] ?? 0);
+            if ($avgAmount > 0 && $currentAmount > ($avgAmount * 5)) {
+                $riskScore = 75;
+                $decision = 'review';
+                $reason = 'Lonjakan nilai komisi lebih dari 5x rata-rata historis';
+            }
+        }
+
+        return FraudCheck::create([
+            'agent_id' => $agent->id,
+            'check_type' => $checkType,
+            'risk_score' => $riskScore,
+            'decision' => $decision,
+            'reason' => $reason,
+            'metrics' => $metrics,
+        ]);
+    }
+
+    // ── 46.8 Analitik Kinerja Agen ──────────────────────────────────────
+
+    /**
+     * @return array{agent_code:string,tier:string,total_sales_idr:int,total_deals:int,total_commission_paid_idr:int,roi_ratio:float}
+     */
+    public function calculateAnalytics(Agent $agent): array
+    {
+        $paid = (int) Payout::where('agent_id', $agent->id)->where('status', 'paid')->sum('net_idr');
+        $sales = (int) $agent->total_sales_volume_idr;
+        $roi = $paid > 0 ? round($sales / $paid, 2) : ($sales > 0 ? (float) $sales : 0.0);
+
+        return [
+            'agent_code' => $agent->code,
+            'tier' => $agent->tier_code,
+            'total_sales_idr' => $sales,
+            'total_deals' => (int) $agent->total_deals_count,
+            'total_commission_paid_idr' => $paid,
+            'roi_ratio' => (float) $roi,
+        ];
     }
 }

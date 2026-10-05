@@ -18,11 +18,15 @@ class Agent extends Model
 
     protected $fillable = [
         'code', 'name', 'kind', 'parent_id', 'party_id', 'owner_user_id',
-        'region_code', 'status', 'max_downline_levels', 'notes',
+        'region_code', 'status', 'tier_code', 'total_sales_volume_idr',
+        'total_deals_count', 'max_downline_levels', 'notes',
     ];
 
     protected $casts = [
-        'owner_user_id' => 'integer', 'max_downline_levels' => 'integer',
+        'owner_user_id' => 'integer',
+        'max_downline_levels' => 'integer',
+        'total_sales_volume_idr' => 'integer',
+        'total_deals_count' => 'integer',
     ];
 
     public const KINDS = ['sales_agent', 'broker', 'reseller', 'affiliate', 'sole_agent'];
@@ -55,6 +59,31 @@ class Agent extends Model
     public function payouts(): HasMany
     {
         return $this->hasMany(Payout::class, 'agent_id');
+    }
+
+    public function leads(): HasMany
+    {
+        return $this->hasMany(Lead::class, 'agent_id');
+    }
+
+    public function certifications(): HasMany
+    {
+        return $this->hasMany(AgentCertification::class, 'agent_id');
+    }
+
+    public function brandAgencies(): HasMany
+    {
+        return $this->hasMany(BrandAgency::class, 'agent_id');
+    }
+
+    public function complianceIncidents(): HasMany
+    {
+        return $this->hasMany(ComplianceIncident::class, 'agent_id');
+    }
+
+    public function fraudChecks(): HasMany
+    {
+        return $this->hasMany(FraudCheck::class, 'agent_id');
     }
 
     public function canEarn(): bool
