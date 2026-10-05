@@ -827,10 +827,20 @@
   - Prefix tabel **`ic_`** (5 tabel: `ic_transactions`, `ic_loans`, `ic_transfer_pricing_rules`, `ic_elimination_entries`, `ic_subsidiary_nci`).
   - **52.1 Mirror Transactions & Intercompany Loans:** Penjualan dari Entitas Penjual ke Entitas Pembeli secara atomik menghasilkan referensi faktur penjualan dan tagihan pembelian yang saling cocok (*matched*), melarang transaksi diri sendiri (*self-transaction*). Pinjaman intercompany menerapkan suku bunga wajar dan pelacakan pelunasan.
   - **52.2 Transfer Pricing Engine (OECD / PMK):** Penegakan batas margin wajar minimum dan maksimum (*arm's length margin range*) untuk metode CUP, CPM, RPM, dan TNMM terhadap benchmark industri.
-  - **52.4 Mesin Eliminasi Konsolidasi:** Pencatatan jurnal eliminasi saldo timbal balik antar-entitas (`DR ic:ap / CR ic:ar`) per periode pelaporan keuangan.
-  - **52.5 Non-Controlling Interest (NCI):** Perhitungan otomatis porsi laba bersih entitas anak yang diatribusikan ke pemegang saham minoritas non-pengendali.
-  - **52.7 Audit Konsolidasi Grup:** Command `group:audit` memverifikasi keselarasan transaksi cermin, batasan margin transfer pricing, dan validitas NCI dengan 0 diskrepansi.
 - **Tests:** `IntercompanyTest` (7 tes / 23 asersi). Sub-suite `IntercompanyTest|ModuleBoundariesTest` (19 passed / 83 assertions), `bank:reconcile` (0 diskrepansi), `group:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 53 — Supply Chain Control Tower & S&OP (Modul `sct_`)
+
+- **Context:** Operasi rantai pasok multi-eselon membutuhkan visibilitas menyeluruh dari pemasok hingga konsumen, otomasi peramalan permintaan deterministik (Moving Average, Exponential Smoothing), penetapan janji pesanan akurat (ATP dari stok bebas & CTP dari kapasitas pabrik), klasifikasi material ABC/XYZ, dan mitigasi disrupsi operasional secara dini.
+- **Decision:**
+  - Prefix tabel **`sct_`** (4 tabel: `sct_echelon_stocks`, `sct_demand_forecasts`, `sct_order_promises`, `sct_disruption_alerts`).
+  - **53.1 & 53.5 Visibilitas Multi-Eselon & ABC/XYZ:** Pelacakan saldo on-hand, in-transit, reserved, dan safety stock di seluruh simpul eselon (Supplier, Port, Plant, DC, Outlet) dengan pengelompokan prioritas ABC/XYZ.
+  - **53.2 Peramalan Permintaan Multi-Model & Akurasi MAPE:** Menghitung deviasi kesalahan peramalan (Mean Absolute Percentage Error) setelah data aktual permintaan tercatat.
+  - **53.4 Janji Pesanan Berbasis Kapasitas Nyata (ATP & CTP):** Pemenuhan pesanan memprioritaskan alokasi stok bebas DC yang belum terreservasi (*Available-To-Promise*), dan mengalokasikan sisa kekurangan ke jadwal manufaktur pabrik (*Capable-To-Promise*).
+  - **53.6 Manajemen Disrupsi & Blast Radius:** Pencatatan peringatan dini keterlambatan pengapalan, kerusakan mesin, dan kemacetan logistik dengan estimasi jumlah pesanan yang terdampak.
+  - **53.9 Audit Control Tower:** Command `tower:audit` memastikan seluruh invariant stok eselon dan konsistensi alokasi janji pesanan terpenuhi dengan 0 diskrepansi.
+- **Tests:** `ControlTowerTest` (6 tes / 16 asersi). Sub-suite `ControlTowerTest|ModuleBoundariesTest` (18 passed / 76 assertions), `bank:reconcile` (0 diskrepansi), `tower:audit` (0 diskrepansi), Pint lulus.
+
 
 
 
