@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /** Order produksi: planned → released → in_progress → completed → closed|cancelled. */
 class ProductionOrder extends Model
@@ -85,5 +86,10 @@ class ProductionOrder extends Model
     public function reworks(): HasMany
     {
         return $this->hasMany(ReworkRecord::class, 'production_order_id');
+    }
+
+    public function orderCost(): HasOne
+    {
+        return $this->hasOne(OrderCost::class, 'order_id');
     }
 }

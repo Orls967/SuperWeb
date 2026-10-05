@@ -58,3 +58,12 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,operator,qc_in
         Route::post('/downtimes', [ProductionController::class, 'startDowntime'])->name('downtimes.store');
         Route::post('/downtimes/{downtime}/end', [ProductionController::class, 'endDowntime'])->name('downtimes.end');
     });
+
+Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,auditor'])
+    ->prefix('manufacturing')
+    ->name('manufacturing.')
+    ->group(function () {
+        Route::get('/costing', [ProductionController::class, 'costing'])->name('costing.index');
+        Route::post('/costing/versions/{version}/submit', [ProductionController::class, 'submitCostVersion'])->name('costing.versions.submit');
+        Route::post('/costing/versions/{version}/approve', [ProductionController::class, 'approveCostVersion'])->name('costing.versions.approve');
+    });

@@ -613,3 +613,25 @@
   - FEFO ditulis `fefo` (bukan `fefe`) pada kode, validasi controller, dan UI.
 - **Reason:** ketertelusuran lot per issue membuat invarian dapat dibuktikan; stok pabrik dipisah dari stok outlet Resto agar HPP resto tidak terpengaruh; seluruh integrasi lintas modul memakai Contract/Domain-event yang sah (arch 12).
 - **Tests:** `modules/Manufacturing/tests/Feature/ShopFloorTest` (14 tes / 63 asersi). Gate: 757 test / 4034 assertion, Pint, Vite, arch (12), audit bank/lgx/proc/ast/ctr/mall 0 selisih, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 38 — Biaya Produksi (Costing)
+
+- **Context:** Shop floor Fase 37 menghasilkan qty & lot tanpa nilai rupiah. Dibutuhkan HPP (COGM/COGS), standar biaya ber-versi, dan varians — tanpa merusak ledger Resto/Procurement yang sudah berjalan.
+- **Decision:**
+  - **Konvensi tanda ledger (38.3)** — debit positif, kredit negatif (konsisten `PostingEntryDTO` yang memakai `->negated()` untuk kredit):
+    - Issue bahan: `DR inv:wip` / `CR inv:materials`
+    - Konversi (tenaga+mesin+overhead): `DR inv:wip` / `CR clearing:external`
+    - Scrap: `DR expense:mfg_scrap` / `CR inv:wip`
+    - Penerimaan FG: `DR inv:finished_goods` / `CR inv:wip`
+    - COGS penjualan: `DR expense:mfg_cogs` / `CR inv:finished_goods`
+    - Varians post: `DR expense:mfg_variance` / `CR clearing:external`; capitalize: `DR inv:wip` / `CR clearing:external`
+  - 4 tabel baru `mfg_cost_*`/`mfg_variances` + kolom biaya per lot (`mfg_material_lots.unit_cost_idr`) dan per receipt (`mfg_fg_receipts.unit_cost_idr`).
+  - Standard cost: `CostVersion` draft → `submitCostVersion` (ApprovalEngine four-eyes) → approved (versi lama → retired). Roll-up level: bahan baku ← `baseCosts`, output BOM ← Σ(input × level) termasuk scrap, konversi ← routing menit × biaya/jam WC (ceil integer, tanpa float).
+  - Actual cost per order (`OrderCost`) dihitung ulang setiap transisi `completed`/`closed`: bahan (alokasi lot × unit_cost + sisa tanpa lot × standar), tenaga/mesin/overhead (menit laporan × tarif WC), subkontrak, dikurangi nilai by-product (standar × qty).
+  - **FG transfer proporsional**: setiap receipt memindahkan `total_cost × (kumulatif_qty_receipt / qty_completed) − yang sudah keluar`; receipt terakhir menyerap pembulatan. (BUG awal: memindahkan sisa penuh setiap receipt → penerimaan parsial menguras seluruh WIP; ditangkap tes 38.3.)
+  - Varians (38.4): harga = Σ qty×(lot−std); pemakaian = Σ (qty aktual − qty std BOM) × harga std — **terpisah** agar tidak menumpuk; tenaga/mesin, overhead volume, yield. Policy `post` → akun varians, `capitalize` → WIP; idempoten per `mfg:variance:{order}:{kind}`. (BUG awal: pemakaian dihitung dari total material aktual → ganda dengan harga; ditangkap tes 38.4.)
+  - COGS (38.5) lewat listener `OrderPaid` Store (dipublish `Order::onPaymentCaptured`); SKU produk = kode material; FIFO dari lot FG; query mentah `store_order_items`/`store_products` (tanpa import Domain Store — arsitektur); key `mfg:cogs:{order}:{item}`.
+  - Settle order `closed`: sisa WIP + varians capitalize − yang sudah keluar ke FG diserap via `mfg:settle:{order}` sehingga audit 38.8 menemukan 0 sisa.
+  - Laporan 38.7 (`/manufacturing/costing`): margin per barang jadi (revenue dari `store_order_items`, HPP = unit cost aktual × qty terjual) + drill-down `OrderCost` per order.
+- **Reason:** seluruh jurnal idempotent dan dapat diaudit ulang; roll-up & netting memakai integer/bc-math mengikuti konvensi proyek (tanpa float untuk nilai tersimpan); keputusan varians & tanda terdokumentasi agar modul 39–40 konsisten.
+- **Tests:** `modules/Manufacturing/tests/Feature/ProductionCostingTest` (7 tes / 34 asersi). Gate: 764 test / 4070 assertion, Pint, Vite, arch (12), audit bank/proc/ast/ctr/lgx/mall + `mfg:audit-costing` 0 selisih, 10 pilar HEALTHY.

@@ -16,12 +16,12 @@ class MaterialLot extends Model
     protected $table = 'mfg_material_lots';
 
     protected $fillable = [
-        'material_id', 'lot_number', 'qty', 'expiry_date', 'produced_at',
+        'material_id', 'lot_number', 'qty', 'unit_cost_idr', 'expiry_date', 'produced_at',
         'source_type', 'source_ref', 'status',
     ];
 
     protected $casts = [
-        'qty' => 'decimal:6', 'expiry_date' => 'date', 'produced_at' => 'date',
+        'qty' => 'decimal:6', 'unit_cost_idr' => 'integer', 'expiry_date' => 'date', 'produced_at' => 'date',
     ];
 
     public function material(): BelongsTo

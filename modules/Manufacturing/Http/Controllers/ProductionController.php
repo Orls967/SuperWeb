@@ -8,17 +8,23 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
+use Modules\Manufacturing\Application\Services\CostingService;
 use Modules\Manufacturing\Application\Services\ProductionService;
+use Modules\Manufacturing\Domain\Models\CostVersion;
 use Modules\Manufacturing\Domain\Models\DowntimeLog;
 use Modules\Manufacturing\Domain\Models\MaterialBalance;
 use Modules\Manufacturing\Domain\Models\MaterialLot;
+use Modules\Manufacturing\Domain\Models\OrderCost;
 use Modules\Manufacturing\Domain\Models\PlannedOrder;
 use Modules\Manufacturing\Domain\Models\ProductionOrder;
 use Modules\Manufacturing\Domain\Models\WorkCenter;
 
 class ProductionController extends Controller
 {
-    public function __construct(private readonly ProductionService $service) {}
+    public function __construct(
+        private readonly ProductionService $service,
+        private readonly CostingService $costing,
+    ) {}
 
     public function index(): View
     {
@@ -31,6 +37,30 @@ class ProductionController extends Controller
             'downtimes' => DowntimeLog::with('workCenter')->orderByDesc('started_at')->limit(20)->get(),
             'workCenters' => WorkCenter::where('is_active', true)->orderBy('code')->get(),
         ]);
+    }
+
+    /** 38.7 Laporan: margin per produk + drill-down cost per order. */
+    public function costing(): View
+    {
+        return view('manufacturing::costing', [
+            'margins' => $this->costing->marginReport(),
+            'costVersions' => CostVersion::withCount('standardCosts')->orderByDesc('created_at')->get(),
+            'orderCosts' => OrderCost::with('order.material')->orderByDesc('computed_at')->limit(50)->get(),
+        ]);
+    }
+
+    public function submitCostVersion(CostVersion $version, Request $request): RedirectResponse
+    {
+        $this->costing->submitCostVersion($version, $request->user());
+
+        return back()->with('success', 'Versi biaya diajukan untuk approval.');
+    }
+
+    public function approveCostVersion(CostVersion $version, Request $request): RedirectResponse
+    {
+        $this->costing->approveCostVersion($version, $request->user());
+
+        return back()->with('success', 'Versi biaya disetujui.');
     }
 
     public function store(Request $request): RedirectResponse

@@ -16,12 +16,12 @@ class FgReceipt extends Model
     protected $table = 'mfg_fg_receipts';
 
     protected $fillable = [
-        'production_order_id', 'material_id', 'qty', 'serials', 'by_product',
+        'production_order_id', 'material_id', 'qty', 'unit_cost_idr', 'serials', 'by_product',
         'notes', 'received_by_user_id',
     ];
 
     protected $casts = [
-        'qty' => 'decimal:6', 'serials' => 'array', 'by_product' => 'boolean',
+        'qty' => 'decimal:6', 'unit_cost_idr' => 'integer', 'serials' => 'array', 'by_product' => 'boolean',
         'received_by_user_id' => 'integer',
     ];
 

@@ -40,6 +40,7 @@ class ProductionService
         private readonly ApprovalEngineInterface $approvals,
         private readonly MrpRequisitionProposer $prProposer,
         private readonly ShipmentBooking $shipmentBooking,
+        private readonly CostingService $costing,
     ) {}
 
     // ── 37.1 Order produksi ──────────────────────────────────────────────
@@ -116,6 +117,16 @@ class ProductionService
 
             if ($to === 'completed') {
                 $this->backflush($locked, $actor);
+
+                // 38.2/38.4/38.5: snapshot biaya, posting varians, settle WIP.
+                $locked->refresh();
+                $this->costing->computeOrderCost($locked);
+                $this->costing->postVariances($locked);
+            }
+
+            if ($to === 'closed') {
+                $locked->refresh();
+                $this->costing->settleClosedOrder($locked);
             }
 
             if ($to === 'cancelled' && $locked->planned_order_id !== null) {
@@ -202,6 +213,9 @@ class ProductionService
 
                 $created[] = $issue;
             }
+
+            // 38.3 Jurnal: bahan → WIP.
+            $this->costing->postIssue($locked, $created);
 
             return $created;
         });
@@ -419,6 +433,9 @@ class ProductionService
             $order->qty_completed = bcadd((string) $order->qty_completed, (string) $qtyGood, 6);
             $order->save();
 
+            // 38.3 Jurnal: konversi → WIP.
+            $this->costing->postConversion($order, $locked);
+
             return ['report' => $locked->fresh(), 'order' => $order->fresh()];
         });
     }
@@ -533,6 +550,9 @@ class ProductionService
             $balance->qty_on_hand = bcadd((string) $balance->qty_on_hand, (string) $qty, 6);
             $balance->save();
 
+            // 38.3 Jurnal: FG receipt — WIP → persediaan barang jadi.
+            $this->costing->postFgReceipt($locked, $receipt);
+
             return $receipt;
         });
     }
@@ -642,6 +662,9 @@ class ProductionService
             if ($kind === 'scrap') {
                 $locked->qty_completed = bcsub((string) $locked->qty_completed, (string) $qty, 6);
                 $locked->save();
+
+                // 38.3 Jurnal: beban scrap → WIP.
+                $this->costing->postScrap($locked, $record);
             }
 
             return ['record' => $record, 'scrapPct' => $scrapPct, 'ncrRequired' => $ncr];
