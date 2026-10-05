@@ -795,3 +795,17 @@
   - **49.7 Sengketa & Asuransi:** Pencatatan klaim kerusakan/keterlambatan dagang dan pelunasan klaim asuransi kargo internasional.
   - **49.9 Audit Perdagangan:** Command `trade:audit` memverifikasi keselarasan pesanan ekspor/impor dan keutuhan seluruh rantai hash tracking tanpa kerusakan.
 - **Tests:** `TradeTest` (7 tes / 31 asersi). Sub-suite `PartnerTest|TreasuryTest|TradeTest|RbacTest|ModuleBoundariesTest` (55 passed / 196 assertions), `bank:reconcile` (0 diskrepansi), `trade:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 50 — Trade Finance & SCF (Modul `tf_`)
+
+- **Context:** Transaksi perdagangan global memerlukan instrumen keuangan bank (Letter of Credit, Documentary Collection, Bank Guarantee) dan fasilitas pembiayaan supply chain (Pre/Post-shipment financing).
+- **Decision:**
+  - Prefix tabel **`tf_`** (5 tabel: `tf_letters_of_credit`, `tf_lc_documents`, `tf_documentary_collections`, `tf_bank_guarantees`, `tf_trade_loans`).
+  - **50.1 & 50.7 Letter of Credit Engine (UCP 600) & Ledger Memorandum:** Siklus L/C dengan pencatatan komitmen off-balance-sheet di ledger double-entry secara idempoten (`DR tf:contingent_lc:IDR / CR tf:contra_lc:IDR`) dengan nilai fungsional IDR terhitung via `TreasuryService`.
+  - **50.2 Pemeriksaan Dokumen & Diskrepansi:** Presentasi dokumen perdagangan dengan flag diskrepansi otomatis dan alur persetujuan waiver oleh applicant untuk meloloskan akseptasi L/C.
+  - **50.3 Documentary Collection (D/P, D/A):** Pengelolaan inkaso wesel dagang tunai vs akseptasi berjangka.
+  - **50.4 Garansi Bank (Bank Guarantee):** Bid Bond, Performance Bond, Advance Payment Guarantee dengan validasi ketat klaim tidak boleh melampaui nilai plafon garansi.
+  - **50.5 Pembiayaan Modal Kerja & SCF:** Pinjaman perdagangan pre/post-shipment dengan perhitungan bunga dan pelunasan parsial/lunas.
+  - **50.8 Audit Trade Finance:** Command `tf:audit` memastikan seluruh invariant garansi bank, status pinjaman, dan rekonsiliasi instrumen perbankan bernilai 0 diskrepansi.
+- **Tests:** `TradeFinanceTest` (8 tes / 29 asersi). Sub-suite `TradeFinanceTest|ModuleBoundariesTest` (20 passed / 89 assertions), `bank:reconcile` (0 diskrepansi), `tf:audit` (0 diskrepansi), Pint lulus.
+

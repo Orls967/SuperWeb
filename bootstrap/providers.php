@@ -56,4 +56,5 @@ return [
     WmsServiceProvider::class,
     TreasuryServiceProvider::class,
     TradeServiceProvider::class,
+    \Modules\TradeFinance\TradeFinanceServiceProvider::class,
 ];

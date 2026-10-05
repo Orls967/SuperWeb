@@ -623,103 +623,439 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 49.9 `trade:audit` (invoice ekspor/impor ↔ ledger ↔ stok, 0 selisih)
 - [x] 49.10 Quality gate Fase 49
 
-## FASE 50 — TRADE FINANCE (L/C, GARANSI, KOLEKSI DOKUMEN)
-- [ ] 50.1 **Letter of Credit** (UCP 600 **simulasi**): penerbitan, advising, amandemen, presentasi dokumen, pemeriksaan diskrepansi, akseptasi, pembayaran/usance, status lengkap
-- [ ] 50.2 Dokumen L/C: checklist per syarat, deteksi diskrepansi otomatis (nilai, tanggal, deskripsi, pelabuhan), waiver oleh applicant (approval)
-- [ ] 50.3 Documentary collection (D/P, D/A) & open account dengan batas eksposur
-- [ ] 50.4 Garansi bank (bid bond, performance bond, advance payment guarantee): terbit, klaim, pelepasan; terhubung ke tender (33.3) & kontrak (29.1)
-- [ ] 50.5 Pembiayaan perdagangan: pre-shipment/post-shipment financing, supply chain finance (dynamic discounting pemasok), anjak piutang (factoring) simulasi
-- [ ] 50.6 Asuransi kargo internasional (polis, premi, klaim) memperluas klaim Logistik
-- [ ] 50.7 Biaya & jurnal: komisi bank, margin deposit, selisih kurs (Fase 48), akun `tf:*`
-- [ ] 50.8 `tf:audit` (eksposur L/C & garansi = ledger memorandum, 0 selisih)
-- [ ] 50.9 Quality gate Fase 50
+## FASE 50 — TRADE FINANCE (L/C, GARANSI, KOLEKSI DOKUMEN & PEMBIAYAAN SUPPLY CHAIN)
+- [x] 50.1 **Letter of Credit Engine (UCP 600 Simulasi Lanjutan)**:
+  - Siklus penuh L/C: *Application → Issuance → Advising → Amendment → Document Presentation → Examination → Acceptance → Payment / Usance Settlement*.
+  - Klasifikasi instrumen: Sight L/C, Usance L/C (deferred payment/tenor 30/60/90/180 hari), Revolving L/C, Transferable L/C, dan Standby L/C (SBLC).
+  - Alur amandemen: pelacakan versi amandemen gapless, rekonsiliasi selisih nilai notional, dan persetujuan formal kedua belah pihak via ApprovalEngine.
+- [x] 50.2 **Pemeriksaan Dokumen L/C & Otomasi Deteksi Diskrepansi (Document Checking Engine)**:
+  - Checklist otomatis kesesuaian dokumen dagang (Commercial Invoice, Bill of Lading / Air Waybill, Packing List, Certificate of Origin, Insurance Certificate) terhadap klausul L/C.
+  - Aturan deteksi diskrepansi otomatis: ketidakcocokan nilai nominal, perbedaan deskripsi barang (toleransi ketat UCP 600), pelabuhan muat/tujuan tidak sesuai, tanggal dokumen melebihi masa berlaku (*stale documents*).
+  - Workflow *Discrepancy Notice* & alur waiver persetujuan applicant (four-eyes approval) sebelum bank melakukan akseptasi/pembayaran.
+- [x] 50.3 **Documentary Collection (D/P, D/A) & Open Account Monitoring**:
+  - Instrumen Dokumen Inkaso: *Documents against Payment* (D/P) dan *Documents against Acceptance* (D/A) dengan pelacakan jatuh tempo bill of exchange/wesel.
+  - Manajemen Open Account dengan batasan limit eksposur kredit perdagangan per mitra buyer/seller, pemantauan batas waktu penagihan, dan mitigasi risiko default.
+- [x] 50.4 **Garansi Bank & Obligasi Kontrak Terpadu (Bank Guarantee & Surety Bonds)**:
+  - Pengelolaan tipe garansi: *Bid Bond* (Jaminan Tender), *Performance Bond* (Jaminan Pelaksanaan), *Advance Payment Guarantee* (Jaminan Uang Muka), dan *Retention Bond* (Jaminan Pemeliharaan).
+  - Integrasi dua arah: terhubung langsung ke modul Procurement Tender (Fase 33.3) dan Kontrak Bisnis (Fase 28/29.1).
+  - Siklus penjaminan: penerbitan, perpanjangan masa berlaku otomatis, pengajuan klaim default, penyelesaian arbitrase, dan pelepasan formal jaminan (*guarantee release*).
+- [x] 50.5 **Pembiayaan Perdagangan & Supply Chain Finance (SCF) Multi-Fasilitas**:
+  - *Pre-Shipment Export Financing* (kredit modal kerja ekspor berbasis Purchase Order terkonfirmasi).
+  - *Post-Shipment Financing & Invoice Discounting* (pencairan piutang dagang segera sebelum jatuh tempo pembayaran buyer).
+  - *Dynamic Discounting Pemasok*: pembiayaan rantai pasok berbasis skala waktu pelunasan lebih awal dengan potongan harga dinamis.
+  - Anjak Piutang (*Factoring*) simulasi: *with recourse* vs *without recourse*, cadangan retensi, dan biaya administrasi diskonto.
+- [x] 50.6 **Asuransi Kargo Internasional & Integrasi Klaim Logistik**:
+  - Polis kargo laut/udara berbasis Institute Cargo Clauses (ICC A/B/C): perhitungan premi terintegrasi CIF, klausul perils laut, perang, pemogokan.
+  - Integrasi klaim asuransi kargo ke insiden kerusakan logistik (Fase 23.4) & sengketa perdagangan (Fase 49.7), lengkap dengan alur subrogasi hukum.
+- [x] 50.7 **Akuntansi Trade Finance, Biaya Bank & Jurnal Double-Entry Terintegrasi**:
+  - Akun memorandum kontinjensi: pencatatan komitmen off-balance-sheet untuk L/C dan Garansi Bank aktif (`DR tf:contingent_lc:IDR / CR tf:contra_lc:IDR`).
+  - Pembebanan biaya administrasi, provisi bank, komisi advising/akseptasi, dan margin deposit yang ditahan di bank (`bank_accounts`).
+  - Integrasi selisih kurs valas (Fase 48): pengakuan untung/rugi kurs pada tanggal penyelesaian wesel usance vs tanggal akseptasi.
+- [x] 50.8 **Portal & Observabilitas Trade Finance**:
+  - Portal role `treasury` dan `procurement`: pemantauan plafon fasilitas trade finance, kalender jatuh tempo L/C, monitoring dokumen inkaso, dan dashboard eksposur per bank mitra.
+- [x] 50.9 `tf:audit` (Plafon garansi = subledger, saldo komitmen memorandum L/C = transaksi aktif, klaim <= plafon, 0 selisih diskrepansi).
+- [x] 50.10 Quality gate Fase 50.
 
-## FASE 51 — KERJA SAMA INTERNASIONAL I: JV, LISENSI, OEM/ODM, ALIH TEKNOLOGI
-- [ ] 51.1 Entitas mitra asing (party lintas yurisdiksi): dokumen legalisasi/apostille, wakil resmi, mata uang, hukum yang berlaku
-- [ ] 51.2 **Joint Venture**: struktur (equity JV/kontraktual), porsi saham/modal, setoran modal bertahap, dewan/hak veto, tata kelola; entitas JV terdaftar sebagai legal entity (27.3)
-- [ ] 51.3 **Lisensi & franchise internasional**: lisensi merek/teknologi (HKI 47.8), royalti (% / minimum garansi / bertingkat), wilayah & eksklusivitas, sub-lisensi, audit royalti
-- [ ] 51.4 **OEM/ODM & contract manufacturing**: pabrik kita memproduksi untuk merek asing (atau sebaliknya) — kontrak, spesifikasi, bahan konsinyasi milik klien, biaya konversi, QA bersama, hak cipta desain
-- [ ] 51.5 **Alih teknologi**: paket (dokumen teknis, pelatihan, bantuan teknis), milestone penerimaan, pembayaran berdasarkan milestone, kerahasiaan & hak turunan
-- [ ] 51.6 Kontrak lintas yurisdiksi: governing law, arbitrase (BANI/SIAC/ICC), bahasa, mata uang, force majeure, sanksi; template ganda bahasa (ID/EN)
-- [ ] 51.7 Pajak lintas negara **simulasi**: PPh 26 / WHT atas royalti/jasa, tabel P3B (tax treaty) ber-versi, sertifikat domisili (DGT) → tarif efektif otomatis
-- [ ] 51.8 Kepatuhan: anti-suap (FCPA/UU Tipikor — checklist & atestasi), kontrol ekspor, due diligence mitra asing (47.2) wajib
-- [ ] 51.9 Dashboard kerja sama internasional: portofolio, nilai royalti, eksposur kurs, milestone, risiko negara
-- [ ] 51.10 Quality gate Fase 51
+
+## FASE 51 — KERJA SAMA INTERNASIONAL I: JV, LISENSI, OEM/ODM & ALIH TEKNOLOGI
+- [ ] 51.1 **Master Entitas Mitra Asing & Tata Kelola Multi-Yurisdiksi**:
+  - Perluasan modul Party (`pty_`): registrasi entitas hukum asing, nomor registrasi bisnis yurisdiksi asal, legalisasi dokumen / Apostille Convention, dan kuasa hukum/wakil sah di Indonesia.
+  - Penentuan mata uang fungsional, regulasi anti-pencucian uang (AML/Sanction screening internasional), dan yurisdiksi hukum penyelesaian sengketa (Arbitrase BANI/SIAC/ICC).
+- [ ] 51.2 **Struktur Usaha Patungan (Joint Venture - JV Management)**:
+  - Struktur Equity JV vs Contractual JV: porsi kepemilikan modal saham, jadwal setoran modal bertahap (*capital calls*), dan pencatatan kepemilikan saham di entitas anak (`pty_legal_entities`).
+  - Tata kelola dewan: klausul hak veto pemegang saham minoritas, kuorum rapat pemegang saham, dan pembagian dividen bersyarat KPI performa.
+- [ ] 51.3 **Lisensi Hak Cipta, Merek & Waralaba Internasional**:
+  - Registrasi lisensi teknologi dan merek (HKI Fase 47.8): cakupan teritori geografis, hak eksklusif vs non-eksklusif, sub-lisensi, dan masa berlaku.
+  - Kalkulasi royalti otomatis: basis persentase penjualan kotor/bersih, *minimum annual guarantee* (MAG), slab berjenjang, dan audit keselarasan laporan royalti terhadap sell-out Store/Distribusi.
+- [ ] 51.4 **OEM/ODM & Contract Manufacturing Lintas Batas**:
+  - Pabrik platform memproduksi barang untuk merek prinsipal global (OEM) atau sebaliknya menerima pasokan barang ber-desain khusus (ODM).
+  - Pengelolaan bahan baku konsinyasi milik prinsipal: persediaan terpisah tanpa pengakuan hutang dagang, biaya konversi manufaktur (*conversion cost/tolling fee*), dan klausul kerahasiaan desain (NDA).
+  - Integrasi ke modul Manufaktur (`mfg_`): routing khusus OEM, pengawasan mutu bersama (*joint QA/QC*), dan sertifikasi kepatuhan pabrik (*social compliance audit*).
+- [ ] 51.5 **Alih Teknologi, R&D Bersama & Milestone Delivery**:
+  - Paket alih teknologi: blueprint teknis, formula terenkripsi, program pelatihan teknisi, dan asistensi teknis lapangan.
+  - Alur pembayaran bertahap berbasis milestone penerimaan (*acceptance testing sign-off*) via approval four-eyes lintas direksi.
+  - Klausul hak kekayaan intelektual turunan (*derivative IP*): pembagian hak kepemilikan atas paten/invensi baru hasil pengembangan bersama.
+- [ ] 51.6 **Kontrak Lintas Yurisdiksi & Perjanjian Dwi-Bahasa (Bilingual Legal Contracts)**:
+  - Pembuatan kontrak bisnis dua bahasa (Bahasa Indonesia & Bahasa Inggris) otomatis via modul Contract (`ctr_`) dengan klausul *prevailing language*.
+  - Klausul standar internasional: *Force Majeure*, pembatasan liabilitas (*limitation of liability*), sanksi kepatuhan ekspor dual-use, dan klausul anti-suap/korupsi (FCPA / UK Bribery Act / UU Tipikor).
+- [ ] 51.7 **Perpajakan Lintas Negara Simulasi (Tax Treaty / P3B & Withholding Tax)**:
+  - Pemotongan PPh Pasal 26 / WHT atas royalti, bunga, dividen, dan jasa teknik luar negeri.
+  - Engine P3B (Perjanjian Penghindaran Pajak Berganda) ber-versi: validasi *Certificate of Domicile* (Form DGT simulasi) untuk menentukan tarif pajak efektif yang berlaku (misal: 10% vs tarif normal 20%).
+  - Penerbitan bukti potong pajak luar negeri simulasi dan pencatatan kredit pajak luar negeri.
+- [ ] 51.8 **Audit Kepatuhan Internasional (Compliance & Anti-Bribery Checklists)**:
+  - Kuesioner uji tuntas (*due diligence*) kepatuhan mitra asing: verifikasi *Beneficial Ownership*, deklarasi non-suap, dan screening daftar sanksi PBB/OFAC.
+- [ ] 51.9 Dashboard portofolio kerja sama internasional: visualisasi proyek JV, aliran royalti global, status transfer teknologi, dan eksposur nilai tukar.
+- [ ] 51.10 Quality gate Fase 51.
 
 ## FASE 52 — KERJA SAMA INTERNASIONAL II: INTERCOMPANY, TRANSFER PRICING & KONSOLIDASI
-- [ ] 52.1 **Transaksi intercompany**: jual/beli/jasa/pinjaman antar-entitas grup; dokumen cermin otomatis di kedua entitas; akun `ic:*`; pencocokan & selisih
-- [ ] 52.2 Transfer pricing **simulasi**: metode (CUP/Cost-plus/TNMM), benchmark internal, dokumentasi (Master/Local file ringkas), penyesuaian akhir tahun
-- [ ] 52.3 Transfer aset & stok antar-entitas/negara (kena PPN/bea simulasi) memakai shipment Logistik + dokumen ekspor-impor
-- [ ] 52.4 Eliminasi intercompany & **konsolidasi**: neraca/laba rugi per entitas → grup, eliminasi saldo/laba belum terealisasi, translasi mata uang (kurs akhir/rata-rata, selisih translasi di ekuitas)
-- [ ] 52.5 Kepemilikan non-pengendali (NCI) untuk JV/anak parsial, bagi hasil laba
-- [ ] 52.6 Pelaporan per segmen (lini bisnis × negara), laporan konsolidasi dapat ditelusuri (drill-down) ke entitas & jurnal
-- [ ] 52.7 `group:audit`: Σ eliminasi = 0, saldo IC kedua sisi cocok, konsolidasi dapat direproduksi (deterministik)
-- [ ] 52.8 Quality gate Fase 52
+- [ ] 52.1 **Arsitektur Transaksi Antar-Entitas Grup (Intercompany Transactions Engine)**:
+  - Transaksi otomatis *Mirror Transaction*: penjualan barang/jasa dari Entitas A ke Entitas B menghasilkan otomatis Sales Order/Invoice di A dan Purchase Order/Bill di B secara atomik.
+  - Pengelolaan pinjaman antar-perusahaan (*Intercompany Loans*): jadwal amortisasi bunga arm's length, penarikan dana, dan integrasi cash pooling Treasury (Fase 48.8).
+  - Skema penagihan biaya bersama (*Cost Sharing / Management Fee Allocation*) berdasarkan porsi headcount atau omzet entitas.
+- [ ] 52.2 **Transfer Pricing Engine & Dokumentasi Simulasi (OECD & PMK Compliance)**:
+  - Penerapan metode transfer pricing: *Comparable Uncontrolled Price* (CUP), *Cost Plus Method* (CPM), *Resale Price Method* (RPM), dan *Transactional Net Margin Method* (TNMM).
+  - Penegakan prinsip kewajaran dan kelaziman usaha (*Arm's Length Principle*): rentang margin intercompany terverifikasi otomatis terhadap benchmark industri simulasi.
+  - Generator draf Local File & Master File TP Doc simulasi: analisis fungsi, aset, dan risiko (FAR) per entitas grup.
+  - Penyesuaian transfer pricing akhir tahun (*Year-End TP True-up Adjustments*) dengan jurnal penyesuaian otomatis.
+- [ ] 52.3 **Perpindahan Aset & Logistik Antar-Entitas/Negara**:
+  - Mutasi aset tetap antar-entitas: transfer nilai buku, transfer akumulasi depresiasi, dan faktur pengalihan aset.
+  - Pengiriman stok antar-entitas lintas batas: integrasi ke modul Logistik (`lgx_`) dan dokumen kepabeanan ekspor-impor (PEB/PIB), penanganan PPN/bea masuk antar-anak perusahaan.
+- [ ] 52.4 **Mesin Eliminasi Intercompany & Konsolidasi Keuangan Otomatis**:
+  - Eliminasi saldo akun timbal balik (*Reciprocal Balances*): eliminasi piutang-hutang intercompany (`ic:ar` vs `ic:ap`).
+  - Eliminasi transaksi penjualan/pembelian intercompany agar omzet grup tidak terhitung ganda (*double-counting*).
+  - Eliminasi laba antar-perusahaan yang belum terealisasi (*Unrealized Profit in Ending Inventory*).
+  - Translasi laporan keuangan mata uang asing ke mata uang pelaporan IDR sesuai standar akuntansi: pos neraca memakai kurs penutupan (*closing rate*), pos laba rugi memakai kurs rata-rata (*average rate*), dan selisih kurs translasi dicatat pada akun Ekuitas (*Foreign Currency Translation Reserve*).
+- [ ] 52.5 **Kepemilikan Kepentingan Non-Pengendali (Non-Controlling Interest - NCI)**:
+  - Perhitungan porsi laba/rugi bersih dan ekuitas yang diatribusikan kepada pemegang saham minoritas pada anak perusahaan / JV parsial.
+  - Pencatatan pembagian dividen kepada pihak ketiga non-pengendali.
+- [ ] 52.6 **Pelaporan Segmen Usaha Terkonsolidasi (Segment Reporting)**:
+  - Laporan laba rugi dan neraca per segmen operasi (Manufaktur, Logistik, Retail/Store, Resto, Mall) dan per wilayah geografis.
+  - Fitur drill-down dari laporan konsolidasi grup hingga ke level voucher jurnal sumber di entitas anak.
+- [ ] 52.7 `group:audit` (Invarian eliminasi: Σ Eliminasi debit = Σ Eliminasi kredit, selisih rekonsiliasi IC = 0, translasi matematis konsisten 100%).
+- [ ] 52.8 Quality gate Fase 52.
 
-## FASE 53 — SUPPLY CHAIN CONTROL TOWER & S&OP
-- [ ] 53.1 Visibilitas end-to-end: pemasok → pabrik → gudang → distributor → pelanggan; satu "peta aliran" (PO, produksi, shipment, stok, order)
-- [ ] 53.2 Forecasting permintaan (moving average/exp smoothing/seasonal — deterministik), akurasi forecast (MAPE/bias), override terkontrol
-- [ ] 53.3 **S&OP**: siklus bulanan (demand review → supply review → pra-S&OP → eksekutif), skenario, keputusan tercatat, dampak finansial
-- [ ] 53.4 **ATP/CTP** (available/capable-to-promise): janji tanggal order berdasar stok, produksi terjadwal, kapasitas, transit
-- [ ] 53.5 Stok pengaman & kebijakan persediaan (service level → safety stock), analisis ABC/XYZ, slow-moving & kedaluwarsa dini
-- [ ] 53.6 Peringatan rantai pasok: pemasok telat, mesin down, stok kritis, lane terganggu (exception Logistik), dampak pada order pelanggan (impact analysis)
-- [ ] 53.7 KPI: OTIF end-to-end, cash-to-cash cycle, inventory turns, fill rate, forecast accuracy, biaya logistik % penjualan
-- [ ] 53.8 Digital twin sederhana: simulasi "bagaimana jika" (pemasok gagal, lonjakan permintaan, penutupan pelabuhan) tanpa memodifikasi data nyata
-- [ ] 53.9 Quality gate Fase 53
+## FASE 53 — SUPPLY CHAIN CONTROL TOWER & SALES AND OPERATIONS PLANNING (S&OP)
+- [ ] 53.1 **Menara Pengawas Rantai Pasok Terpadu (Supply Chain Control Tower)**:
+  - Peta aliran nilai digital end-to-end: pelacakan visual status pasokan dari Pemasok Tier-1/2 → Pelabuhan → Pabrik Manufaktur → Gudang Sentral (DC) → Distributor → Toko/Konsumen.
+  - Indikator visibilitas inventori multi-eselon (*Multi-Echelon Inventory Visibility*): stok di tangan, stok dalam perjalanan (*in-transit*), stok terreservasi, dan stok komitmen.
+- [ ] 53.2 **Mesin Prediksi Permintaan Multi-Model (Demand Forecasting Engine)**:
+  - Algoritma proyeksi kuantitatif deterministik: *Weighted Moving Average*, *Exponential Smoothing*, *Holt-Winters Trend & Seasonality*, dan *Linear Regression*.
+  - Metrik evaluasi akurasi forecast: *Mean Absolute Percentage Error* (MAPE), *Mean Absolute Deviation* (MAD), dan *Forecast Bias Tracking Signal*.
+  - Mekanisme override forecast kolaboratif oleh tim penjualan dengan audit trail alasan perubahan.
+- [ ] 53.3 **Proses Siklus Bulanan S&OP Kolaboratif (Sales & Operations Planning Workflow)**:
+  - 4 Tahap S&OP terstruktur: (1) *Demand Review* → (2) *Supply & Capacity Review* → (3) *Pre-S&OP Financial Balancing* → (4) *Executive S&OP Sign-off*.
+  - Skenario perbandingan rencana pasokan: skenario konservatif, moderat, dan agresif lengkap dengan proyeksi dampak laba kotor dan arus kas.
+- [ ] 53.4 **Mesin Janji Pesanan Berbasis Kapasitas Nyata (ATP & CTP Engine)**:
+  - *Available-to-Promise* (ATP): perhitungan alokasi stok bebas janji per periode waktu tanpa mengorbankan reservasi yang sudah ada.
+  - *Capable-to-Promise* (CTP): jika stok fisik tidak mencukupi, sistem secara dinamis mengecek ketersediaan bahan baku di MRP dan kapasitas mesin kosong di pabrik untuk menetapkan tanggal pengiriman realistis ke pelanggan.
+- [ ] 53.5 **Optimalisasi Kebijakan Persediaan Multi-Eselon & Klasifikasi Material**:
+  - Matriks analisis gabungan ABC/XYZ (berdasarkan nilai pemakaian dan variabilitas permintaan).
+  - Formula stok pengaman dinamis (*Dynamic Safety Stock*) berbasis tingkat layanan target (*Service Level* 90%/95%/99%) dan variabilitas lead time pemasok.
+  - Deteksi dini barang bergerak lambat (*Slow Moving*), barang usang (*Dead Stock*), dan produk mendekati masa kedaluwarsa (*Shelf-Life Expiry Warning*).
+- [ ] 53.6 **Sistem Manajemen Anomali & Deteksi Dampak Rantai Pasok (Disruption Alert & Impact Analysis)**:
+  - Peringatan dini otomatis: keterlambatan kedatangan bahan baku impor, mesin pabrik breakdown kritis, kemacetan rute logistik ekspres, atau lonjakan pesanan mendadak.
+  - Analisis dampak berantai (*Blast Radius Impact Analysis*): kalkulasi instan pesanan distributor/konsumen mana saja yang berisiko terlambat akibat gangguan di hulu.
+- [ ] 53.7 **Eksekutif Dashboard KPI Kinerja Pasokan Kelas Dunia**:
+  - Metrik performa kunci: *On-Time In-Full* (OTIF) end-to-end, *Cash-to-Cash Cycle Time*, *Inventory Days of Supply* (DOS), *Order Fulfillment Lead Time*, dan rasio biaya logistik terhadap penjualan.
+- [ ] 53.8 **Digital Twin Simulasi Skenario Rantai Pasok (What-If Simulation Twin)**:
+  - Fasilitas sandbox tanpa mengubah database riil: simulasi penutupan pelabuhan utama selama 14 hari, kenaikan harga bahan baku 20%, atau penambahan lini pabrik baru terhadap profitabilitas grup.
+- [ ] 53.9 `tower:audit` (Invarian alokasi ATP tidak melebihi stok fisik + jadwal rilis PO, integritas pohon perhitungan CTP konsisten 100%).
+- [ ] 53.10 Quality gate Fase 53.
 
-## FASE 54 — FINANCE GRUP, ANGGARAN & KEPATUHAN
-- [ ] 54.1 Anggaran (budget) per entitas/pusat biaya/proyek, versi & revisi, budget vs actual, komitmen (encumbrance 33.6), forecast ulang
-- [ ] 54.2 Laporan keuangan standar (neraca, L/R, arus kas) per entitas & konsolidasi; periode tutup buku (close checklist, lock periode, jurnal penyesuaian terkontrol)
-- [ ] 54.3 Perpajakan **simulasi**: PPN keluaran/masukan, PPh 21/23/4(2)/26 agregat, SPT masa (draf), rekonsiliasi fiskal; e-Faktur simulasi
-- [ ] 54.4 Segregation of Duties (SoD): matriks konflik peran/permission (26.5), deteksi pelanggaran, review akses berkala
-- [ ] 54.5 Internal control: kontrol kunci (RCM), pengujian kontrol otomatis, temuan & tindak lanjut
-- [ ] 54.6 Kalender kepatuhan (pajak, perizinan, sertifikasi, kontrak, laporan) dengan pengingat dan eskalasi
-- [ ] 54.7 Audit pack: ekspor bukti per periode (jurnal, subledger, rekonsiliasi, hash-chain verifikasi) untuk auditor
-- [ ] 54.8 `super:health-check` diperluas ke seluruh pilar baru (aset, procurement, manufaktur, distribusi, agensi, treasury, kontrak, intercompany)
-- [ ] 54.9 Quality gate Fase 54
+## FASE 54 — FINANCE GRUP, ANGGARAN, AUDIT TRAIL & KEPATUHAN
+- [ ] 54.1 **Sistem Perencanaan & Pengendalian Anggaran (Enterprise Budgeting & Encumbrance)**:
+  - Struktur anggaran hierarkis: Anggaran per Entitas → Direktorat → Pusat Biaya (*Cost Center*) → Mata Anggaran (Akun Beban).
+  - Mekanisme kontrol anggaran ketat: *Hard-Stop* (menolak transaksi jika melebihi plafon) vs *Soft-Stop* (peringatan & eskalasi approval ke Direktur Keuangan).
+  - Alur komitmen anggaran (*Budget Encumbrance*): penguncian dana sejak PR/PO disetujui hingga realisasi invoice pelunasan.
+  - Pelaporan *Budget vs Actual vs Encumbrance* secara real-time dan mekanisme revisi anggaran resmi ber-versi.
+- [ ] 54.2 **Laporan Keuangan Standar Enterprise & Prosedur Tutup Buku Periode (Financial Close)**:
+  - Penerbitan otomatis Laporan Neraca (*Balance Sheet*), Laporan Laba Rugi Komprehensif (*Income Statement*), dan Laporan Arus Kas Metode Langsung & Tidak Langsung.
+  - Checklist tutup buku akhir bulan/tahun (*Month-End Close Workflow*): penyesuaian depresiasi, rekonsiliasi subledger, penutupan akun nominal, dan penguncian periode akuntansi (*Period Lock*) anti-backdating.
+- [ ] 54.3 **Simulator Kepatuhan Perpajakan Nasional (Tax Engine & e-Faktur Simulation)**:
+  - Rekonsiliasi PPN Masukan vs PPN Keluaran, pembuatan draf pelaporan SPT Masa PPN 1111 dengan nomor seri faktur pajak gapless.
+  - Agregasi pemotongan pajak penghasilan: PPh Pasal 21 (karyawan/agen), PPh 23 (jasa/sewa), PPh 4 ayat 2 (final sewa Mall/properti), dan PPh 22 (impor/pengadaan).
+  - Ekspor format CSV siap impor simulator e-Faktur dan e-Bupot DJP.
+- [ ] 54.4 **Penegakan Pemisahan Tugas Mutlak (Segregation of Duties - SoD Matrix Engine)**:
+  - Matriks konflik wewenang: larangan satu akun memiliki dua role bertentangan (misal: Pembuat PO dilarang menyetujui PO; Penginput Invoice dilarang mengeksekusi pembayaran bank; Kasir POS dilarang melakukan void tanpa persetujuan SPV).
+  - Deteksi dan pelaporan otomatis pelanggaran SoD dalam log audit keamanan.
+- [ ] 54.5 **Kerangka Pengendalian Internal & Risk Control Matrix (RCM)**:
+  - Katalog titik kendali internal operasional: verifikasi approval ganda, pencocokan 3-way match, validasi batas toleransi timbangan logistik, dan batas margin harga tebus.
+  - Pengujian kontrol otomatis harian: sistem mencatat temuan anomali (*control exception*) dan menugaskan tindakan korektif ke manajer terkait.
+- [ ] 54.6 **Kalender Kepatuhan Regulasi & Pengingat Kedaluwarsa Hukum**:
+  - Penjadwalan pemenuhan kewajiban: pelaporan pajak bulanan, perpanjangan izin edar BPOM/Halal, kedaluwarsa polis asuransi aset, dan masa berlaku kontrak perjanjian kemitraan.
+  - Eskalasi bertingkat via notifikasi outbox kepada penanggung jawab hukum sebelum jatuh tempo.
+- [ ] 54.7 **Paket Bukti Audit Eksternal Terpadu (Auditor Data Pack Generator)**:
+  - Satu-klik ekspor bukti audit untuk KAP: buku besar, neraca saldo, daftar mutasi bank terverifikasi, register aset tetap, serta laporan verifikasi integritas hash-chain sistem.
+- [ ] 54.8 Perluasan pilar observabilitas `super:health-check` ke seluruh 16 domain arsitektur platform.
+- [ ] 54.9 `finance:audit` (Buku besar = subledger AR/AP/Aset/Persediaan/Pajak, selisih fiskal terjelaskan, saldo kas = bank statement, 0 diskrepansi).
+- [ ] 54.10 Quality gate Fase 54.
 
-## FASE 55 — API V2, INTEGRASI B2B & PLATFORM
-- [ ] 55.1 API v2 terpadu (Sanctum asli 26.1): kontrak OpenAPI per modul, versioning, pagination/filter/sort standar, error format konsisten (problem+json), `Idempotency-Key` untuk semua POST bernilai
-- [ ] 55.2 Webhook generik di atas outbox (26.7): katalog event, langganan per mitra/distributor/pemasok, HMAC, backoff, dead-letter, replay, uji endpoint
-- [ ] 55.3 **EDI sederhana** (simulasi): PO/ASN/Invoice/POD dalam format terstruktur (JSON/CSV/XML ber-skema; opsional X12/EDIFACT-lite), validator, ack, log pesan
-- [ ] 55.4 Impor/ekspor massal (CSV/XLSX) dengan validasi baris, pratinjau, rollback transaksional, laporan error
-- [ ] 55.5 Rate limit & kuota per klien API, kunci API per mitra, rotasi kunci, audit akses
-- [ ] 55.6 Portal pengembang: dokumentasi `docs/API.md` + sandbox (data simulasi), contoh curl terverifikasi
-- [ ] 55.7 Multi-tenant/scoping data per entitas hukum & per mitra (row-level scope di Policy/query), tes kebocoran data lintas tenant
-- [ ] 55.8 Retensi & arsip data (partisi/arsip ke tabel dingin), backup/restore terverifikasi (drill di RUNBOOK)
-- [ ] 55.9 Quality gate Fase 55
+## FASE 55 — INTEGRASI API V2, B2B ELECTRONIC DATA INTERCHANGE (EDI) & MULTI-TENANCY
+- [ ] 55.1 **Enterprise RESTful & GraphQL API v2 Terstandarisasi**:
+  - Spesifikasi kontrak OpenAPI 3.1 publik lengkap untuk seluruh modul ekosistem (Procurement, WMS, Logistics, Trade, Treasury, Finance).
+  - Autentikasi berbasis token Sanctum asli dengan enforcement granular abilities (`tokenCan`).
+  - Standarisasi format envelope JSON: pagination terstandarisasi, sorting multi-kolom, filter dinamis, dan error payload RFC 7807 (*Problem Details for HTTP APIs*).
+  - Penegakan header wajib `Idempotency-Key` pada seluruh endpoint HTTP berbobot mutasi state/uang.
+- [ ] 55.2 **Mesin Webhook B2B Andal Berbasis Transaksional Outbox**:
+  - Katalog event domain kaya untuk konsumsi mitra eksternal: perubahan status pesanan, notifikasi pembayaran, perubahan status tracking kontainer, dan peluncuran PO baru.
+  - Keamanan transmisi webhook: penandatanganan payload dengan signature kriptografis HMAC-SHA256 (`X-Signature`).
+  - Mekanisme pengiriman andal: antrean pengiriman asinkron, retry eksponensial otomatis dengan jitter, penanganan sirkuit terputus (*circuit breaker*), dan *Dead-Letter Queue* (DLQ) untuk pengiriman gagal.
+- [ ] 55.3 **Subsistem Electronic Data Interchange (EDI) Otomotif & Ritel (EDIFACT / X12 Simulasi)**:
+  - Penerjemah pesan bisnis standar EDI:
+    - EDI 850 / ORDERS: Purchase Order dari mitra pembeli.
+    - EDI 855 / ORDRSP: Purchase Order Acknowledgment.
+    - EDI 856 / DESADV: Advance Shipping Notice (ASN) dengan hierarki packing list terstruktur.
+    - EDI 810 / INVOIC: Faktur tagihan elektronik terverifikasi.
+  - Parser dan generator dokumen EDI dengan validasi skema ketat serta penerbitan Functional Acknowledgment (EDI 997 / CONTRL).
+- [ ] 55.4 **Mesin Ekspor/Impor Data Massal Berperforma Tinggi**:
+  - Upload file spreadsheet massal (CSV/XLSX) berbasis streaming memory: validasi baris demi baris, pratinjau kesalahan komprehensif, dan eksekusi batch transaksional terisolasi.
+  - Ekspor asynchronous untuk dataset ratusan ribu baris dengan kompresi ZIP otomatis dan link unduh kedaluwarsa terproteksi tanda tangan token.
+- [ ] 55.5 **Pengelolaan Klien B2B, Kuota API & Keamanan Gateway**:
+  - Portal manajemen API Key per badan hukum mitra dengan fitur rotasi kunci rahasia (*secret rotation*) tanpa downtime.
+  - Pembatasan tingkat penggunaan bertingkat (*Tiered Rate Limiting*) berbasis kuota harian/menit per tier mitra (Silver, Gold, Platinum).
+- [ ] 55.6 **Portal Pengembang Interaktif (Developer Hub & Mock Sandbox)**:
+  - Halaman dokumentasi interaktif dengan konsol uji coba langsung (*API Playground*), skema data interaktif, dan contoh kode curl/SDK terverifikasi.
+  - Lingkungan *Sandbox* dengan data terisolasi untuk pengujian integrasi pihak ketiga tanpa risiko merusak data produksi.
+- [ ] 55.7 **Isolasi Data Multi-Tenant & Penegakan Scoping Tingkat Baris (Row-Level Security)**:
+  - Penerapan global query scope otomatis pada setiap model entitas domain berdasarkan `tenant_id` / `entity_id` / `party_id` pengguna yang terautentikasi.
+  - Pengujian penetrasi otomatis untuk memvalidasi zero data leakage antar-badan hukum independen.
+- [ ] 55.8 **Manajemen Siklus Hidup Data, Partisi & Retensi**:
+  - Pemindahan otomatis data transaksional historis (> 5 tahun) ke tabel arsip dingin (*cold storage archive*) untuk menjaga efisiensi kinerja indeks tabel aktif.
+  - Prosedur validasi integritas backup basis data berkala dengan uji pemulihan (*disaster recovery drill*) terukur.
+- [ ] 55.9 `api:audit` (Validasi skema OpenAPI vs implementasi rute aktual, uji integritas signature HMAC webhook 100% cocok).
+- [ ] 55.10 Quality gate Fase 55.
 
-## FASE 56 — SKALA & SIMULASI RANTAI NILAI 12 BULAN
-- [ ] 56.1 `ValueChainLargeSeeder`: ≥ 2.000 pemasok/produsen, ≥ 20 pabrik/line, ≥ 50.000 order produksi, ≥ 500 distributor, ≥ 5.000 agen, ≥ 500.000 order distribusi, ≥ 200 kontrak aktif, ≥ 10.000 aset, 12 bulan riwayat; deterministik, resumable, bulk insert chunk, benchmark waktu per tahap
-- [ ] 56.2 Simulasi siklus penuh: **procure-to-pay**, **plan-to-produce**, **order-to-cash**, **record-to-report**, **agent-to-pay**, **import/export-to-settle** — semua berakhir dengan semua `*:audit` = 0 selisih
-- [ ] 56.3 Anggaran kinerja modul baru (query budget p95, `EXPLAIN QUERY PLAN` didokumentasikan, indeks): MRP run, ATP, lookup lot (trace), statement komisi, konsolidasi
-- [ ] 56.4 Uji kekacauan (chaos): job gagal di tengah, event ganda, restart worker, deadlock; semua idempoten & pulih tanpa selisih
-- [ ] 56.5 Uji konkurensi lintas modul (alokasi stok vs MRP vs order distributor vs transfer gudang): tak ada oversell/stok negatif
-- [ ] 56.6 Uji keamanan menyeluruh: matriks otorisasi semua rute × semua role, IDOR lintas pihak (pemasok/distributor/agen/mitra hanya data sendiri), fuzz input utama
-- [ ] 56.7 Optimasi hasil benchmark (indeks, agregat/ringkasan, cache dengan invalidasi benar) + laporan sebelum/sesudah
-- [ ] 56.8 Quality gate Fase 56
+## FASE 56 — STRESS TESTING SKALA ULTRA, SIMULASI 12 BULAN & RESILIENCE
+- [ ] 56.1 **ValueChainUltraSeeder: Dataset Skala Enterprise 12 Bulan Transaksi**:
+  - Seeder raksasa deterministik dengan eksekusi chunk streaming bulk-insert:
+    - ≥ 2.500 Pemasok/Vendor terverifikasi dengan data legalitas, sertifikasi ISO/Halal, dan rekening bank.
+    - ≥ 25 Fasilitas Pabrik Manufaktur dengan ratusan work center dan routing BOM multi-tingkat.
+    - ≥ 100.000 Pesanan Produksi (MPO) dengan catatan material lot issue, inspeksi QC, dan laporan OEE mesin.
+    - ≥ 1.000 Jaringan Distributor resmi dengan teritori eksklusif dan batas kredit terkelola.
+    - ≥ 10.000 Agen Penjualan aktif dengan struktur hirarki downline dan catatan klaim komisi.
+    - ≥ 1.000.000 Transaksi Penjualan hulu-ke-hilir yang merefleksikan dinamika musim riil selama 12 bulan kalender.
+    - ≥ 25.000 Register Aset Tetap dengan riwayat depresiasi bulanan komersial dan fiskal.
+    - ≥ 500 Kontrak Bisnis aktif dengan rekam jejak amandemen hash-chain SHA-256.
+  - Idempoten mutlak, resumable dari checkpoint kegagalan, dan disertai benchmark durasi waktu per etape seeder.
+- [ ] 56.2 **Simulasi Penuh 6 Siklus Rantai Nilai Makro Tanpa Selisih**:
+  - (1) *Procure-to-Pay* (PR → RFQ → PO Impor → LC → Shipment → PIB/Landed Cost → GRN → 3-Way Match → Pelunasan AP).
+  - (2) *Plan-to-Produce* (Forecast Permintaan → S&OP → MRP → SPK Manufaktur → Konsumsi Lot FIFO → Inspeksi QA → Penerimaan FG).
+  - (3) *Order-to-Cash* (Order Distributor → Verifikasi Limit Kredit → Alokasi ATP → Wave Pick WMS → Resi Logistik → POD → Pelunasan AR).
+  - (4) *Agent-to-Pay* (Penjualan Retail → Atribusi Referral → Hold Komisi → Verifikasi Retur/Clawback → Potong PPh 21 → Payout Komisi).
+  - (5) *Import/Export-to-Settle* (Order Ekspor FOB/CIF → Booking Kontainer → Penerbitan PEB → Lacak Balak Hash-Chain → Pengakuan Pendapatan).
+  - (6) *Record-to-Report* (Jurnal Transaksional → Eliminasi Intercompany → Revaluasi Valas → Penyusutan Aset → Konsolidasi Laporan Grup).
+  - Kriteria mutlak: Seluruh 6 siklus berakhir dengan seluruh perintah audit platform melaporkan 0 selisih diskrepansi.
+- [ ] 56.3 **Penegakan Anggaran Kueri & Optimasi Kinerja Ekstrem (Query Budget Enforcement)**:
+  - Benchmark p95 latensi endpoint di bawah beban konkurensi: MRP run < 3 detik, alokasi ATP < 50ms, kalkulasi komisi agensi < 200ms, konsolidasi grup < 1 detik.
+  - Dokumentasi `EXPLAIN QUERY PLAN` pada seluruh kueri agregat berat: pembuktian tidak adanya *Full Table Scan* pada tabel berukuran di atas 100.000 baris.
+  - Implementasi caching berlapis (Redis/In-Memory) dengan aturan invalidasi event-driven berbasis *Cache Tagging* yang tepat.
+- [ ] 56.4 **Chaos Engineering & Uji Ketahanan Terhadap Kegagalan Sistem**:
+  - Simulasi kegagalan worker antrean di tengah eksekusi transaksi moneter multi-entri: mekanisme recovery menjamin transaksi rollback sempurna atau selesai tanpa entri menggantung.
+  - Simulasi pengiriman event outbox duplikat: handler menolak pemrosesan ganda berkat idempotency key deterministik.
+  - Simulasi konkurensi deadlock database: sistem secara transparan melakukan retry otomatis hingga berhasil tanpa memunculkan error 500 ke pengguna.
+- [ ] 56.5 **Uji Balap Konkurensi Ekstrem (Race Condition Stress Test)**:
+  - Eksekusi 500 permintaan pemesanan serentak terhadap sisa 10 unit stok barang: sistem mengalokasikan tepat 10 unit dan menolak 490 permintaan lainnya tanpa pernah menghasilkan saldo stok negatif.
+  - Eksekusi penarikan dana serentak dari saldo dompet yang sama: saldo terpotong presisi tanpa saldo overdraft ilegal.
+- [ ] 56.6 **Penetrasi Keamanan & Uji Fuzzing Input Massal**:
+  - Uji otomatisasi matriks otorisasi: ribuan kombinasi seluruh rute sistem terhadap 26+ role untuk memastikan tidak ada celah eskalasi hak akses (*Privilege Escalation*).
+  - Pengujian IDOR massal: skrip otomatis mencoba mengakses data transaksi milik entitas lain menggunakan token entitas yang berbeda; wajib menghasilkan respon HTTP 403 Forbidden.
+  - Fuzzing input: pengiriman payload berukuran sangat besar, karakter injeksi SQL, tag XSS bersarang, dan format angka abnormal ke seluruh formulir input.
+- [ ] 56.7 Laporan komprehensif profil performa sistem sebelum vs sesudah optimasi indeks dan refactoring kueri.
+- [ ] 56.8 Quality gate Fase 56.
 
-## FASE 57 — SKENARIO END-TO-END, DOKUMENTASI FINAL & SERAH TERIMA
-- [ ] 57.1 Skenario emas lintas rantai (otomatis, 1 test panjang): pemasok asing (kontrak + L/C + impor + landed cost) → pabrik (MRP → produksi → QC → FG) → DC → distributor (rebate, konsinyasi) → agen (komisi) → pelanggan; kontrak & aset & mitra terlibat; seluruh audit 0 selisih
-- [ ] 57.2 Skenario recall end-to-end: lot cacat → ketertelusuran → penerima → kuarantina → retur → biaya → klaim pemasok/asuransi
-- [ ] 57.3 Skenario kerja sama internasional: JV + lisensi + OEM + intercompany + konsolidasi + pajak lintas negara
-- [ ] 57.4 Group Dashboard final: nilai rantai (pemasok → pelanggan), P&L per lini/negara/entitas, KPI S&OP, eksposur kontrak/kurs, tanpa menaikkan query budget
-- [ ] 57.5 Dokumentasi: `ARCHITECTURE.md` (diagram rantai nilai & aliran uang/stok), `RUNBOOK.md` (jadwal & pemulihan seluruh job baru), `README.md`, `API.md`, `DECISIONS.md`, `CODEBASE.md` final
-- [ ] 57.6 Panduan peran (playbook per role: pemasok, planner, operator pabrik, QC, gudang, distributor, agen, legal, treasury, auditor)
-- [ ] 57.7 Quality gate final seluruh sistem + laporan penutup & serah terima (angka apa adanya)
+## FASE 57 — SKENARIO EMAS END-TO-END, DOKUMENTASI FINAL & SERAH TERIMA
+- [ ] 57.1 **Skenario Emas Lintas Ekosistem (The Golden Value Chain Mega-Integration Test)**:
+  - Satu skenario pengujian otomatis tunggal yang merajut seluruh rantai nilai hulu ke hilir tanpa terputus:
+    1. Perusahaan menandatangani Kontrak Pengadaan bahan baku global dengan Pemasok Asing via modul Kontrak.
+    2. Modul Treasury & Trade Finance menerbitkan Letter of Credit (L/C) dan mencatat eksposur kontinjensi di buku besar.
+    3. Barang dikapalkan melalui pesanan impor, melewati pelabuhan internasional dengan pelacakan kontainer hash-chain, dan dihitung bea masuknya via kalkulator PIB otomatis.
+    4. Gudang WMS menerima barang (GRN), melakukan 3-way matching terhadap PO dan Invoice, serta membukukan landed cost otomatis ke nilai persediaan.
+    5. Modul Manufaktur menjalankan peramalan S&OP dan MRP, menjadwalkan SPK pabrik, mengonsumsi bahan baku via alokasi lot FIFO, dan menyelesaikan perakitan produk jadi terverifikasi QC.
+    6. Produk jadi dipindahkan ke Distribution Center dan dipesan oleh Distributor resmi dengan pengecekan plafon limit kredit dan alokasi ATP.
+    7. Armada Logistik menjadwalkan dispatch pengantaran, diverifikasi Chain of Custody, dan menyelesaikan serah terima barang bukti POD digital.
+    8. Konsumen akhir membeli produk melalui toko/portal ritel berkat referral Agen Penjualan; sistem mengatribusikan komisi agen, menahannya selama masa garansi retur, memotong PPh 21, dan membayarkan komisi via transfer buku besar.
+    9. Skenario diakhiri dengan eksekusi eliminasi transaksi intercompany dan penutupan buku konsolidasi holding grup.
+  - Verifikasi akhir: Seluruh perintah audit sistem (`bank:reconcile`, `treasury:audit`, `trade:audit`, `tf:audit`, `proc:audit`, `mfg:audit-costing`, `dist:audit`, `agy:audit`, `group:audit`) serentak menghasilkan **0 selisih diskrepansi**.
+- [ ] 57.2 **Skenario Recall Mutu End-to-End (Critical Defect Recall Scenario)**:
+  - Pengujian krisis mutu: deteksi batch bahan baku cacat di pasar → penelusuran silsilah lot (*genealogy trace*) secara instan ke nomor PO pemasok, lini mesin pabrik, nomor batch produk jadi, daftar gudang penyimpanan, hingga identitas distributor dan pelanggan yang menerima barang.
+  - Eksekusi penarikan produk massal otomatis: penguncian stok di gudang (*quarantine hold*), notifikasi darurat penarikan produk, penerbitan kredit nota retur, dan pengajuan klaim ganti rugi asuransi/pemasok secara otomatis.
+- [ ] 57.3 **Skenario Integrasi Usaha Patungan & Konsolidasi Pajak Internasional**:
+  - Eksekusi siklus lengkap pembentukan anak perusahaan JV asing: pencatatan setoran modal saham, lisensi teknologi HKI, penagihan biaya manajemen fee intercompany, pemotongan pajak PPh 26 dengan fasilitas tax treaty P3B, hingga translasi neraca valas ke laporan konsolidasi grup.
+- [ ] 57.4 **Group Executive Command Center (Dashboard Eksekutif Nilai Rantai Grup)**:
+  - Dasbor terpadu untuk jajaran C-Level: visualisasi aliran nilai uang dan barang real-time dari hulu (pemasok) ke hilir (pelanggan).
+  - Laporan profitabilitas terkonsolidasi (P&L per entitas, per divisi bisnis, dan per negara), ringkasan KPI S&OP, dan analisis eksposur risiko kredit/valas terpadu tanpa melanggar batas anggaran kueri SQL.
+- [ ] 57.5 **Penyusunan Dokumentasi Arsitektur & Operasional Final**:
+  - `docs/ARCHITECTURE.md`: diagram arsitektur tingkat tinggi modular monolith, peta relasi antar-domain, dan prinsip invarian keabadian data.
+  - `docs/RUNBOOK.md`: panduan prosedur operasional standar (SOP), jadwal cron job platform, tata cara recovery kegagalan job, dan langkah pemulihan disaster recovery.
+  - `docs/API.md`: dokumentasi lengkap seluruh endpoint B2B API v2 dan spesifikasi pesan webhook.
+  - `docs/DECISIONS.md`, `docs/AUDIT.md`, `docs/CODEBASE.md`: pemutakhiran menyeluruh seluruh catatan keputusan rekayasa dan log audit.
+- [ ] 57.6 **Buku Panduan Operasional Peran Pengguna (Role Playbooks)**:
+  - Panduan kerja komprehensif untuk masing-masing dari 26+ role di sistem (Supplier, Procurement Officer, Production Planner, Factory Operator, QC Inspector, Hub Operator, Dispatcher, Logistics Driver, Distributor, Sales Agent, Partner, Treasury Specialist, Legal Counsel, Auditor Eksternal).
+- [ ] 57.7 **Quality Gate Final Seluruh Sistem & Berita Acara Serah Terima**:
+  - Verifikasi total test suite mencapai target kelulusan 100% tanpa ada satu pun tes yang dilemahkan atau diabaikan.
+  - Pemeriksaan kelulusan linting Pint 100%, kompilasi asset front-end Vite tanpa kendala, dan ketiadaan artefak debugging (`dd()`, `dump()`, `console.log`).
+  - Penyusunan Laporan Penutup Resmi & Berita Acara Serah Terima Arsitektur Superwebsite Rantai Nilai Hulu-ke-Hilir.
+
+## FASE 57B — DEEP AUDIT CODEBASE, HARDENING, KEAMANAN, VALIDASI KETAT & ENRICHED UNIQUE SEEDERS (MAINTENANCE & RESILIENCE)
+*Fase pemeliharaan menyeluruh, pengerasan arsitektur, pengetatan validasi, dan pembesaran dataset unik sebelum backlog ekspansi.*
+- [ ] 57B.1 **Analisis & Audit Arsitektur Seluruh Codebase**:
+  - Audit kepatuhan arsitektur modular monolith (`modules/*`) terhadap 10 aturan batas modul (`ModuleBoundariesTest`): isolasi domain, pencegahan coupling langsung, dan komunikasi lintas modul murni via Contract, Domain Events, Ledger, atau Outbox Bus.
+  - Eliminasi dead code, controller gemuk (fat controller), dan kode duplikat lintas modul; pastikan controller beroperasi murni sebagai HTTP orchestrator tanpa akses langsung ke `DB` facade.
+  - Verifikasi ketat seluruh use-case di dalam Action/Service: wajib berada dalam `DB::transaction` dengan parameter retry deadlock otomatis (default 5 attempts), event dispatch ditunda via `afterCommit`, dan handling kegagalan deterministik.
+- [ ] 57B.2 **Refactoring, Standardisasi DTO & Exception Hierarchy**:
+  - Konversi seluruh passing data dari Controller ke Action/Service menggunakan `readonly class` DTO (PHP 8.3+) dengan strongly-typed properties, validasi tipe data statis, dan helper factory method `fromArray()` / `fromRequest()`.
+  - Standardisasi hierarki Domain Exception terpadu: pemisahan exception bisnis (`InsufficientBalanceException`, `UnbalancedLedgerException`, `StateTransitionException`) dari HTTP presentation layer.
+  - Penyeragaman global exception handler di bootstrap Laravel 11 (`bootstrap/app.php`): format response JSON seragam (`status`, `error_type`, `message`, `correlation_id`, `timestamp`) dengan mapping HTTP status code yang presisi (400, 403, 404, 409, 422).
+- [ ] 57B.3 **Optimasi Basis Data, Query Budget & Anti-N+1 Sweep**:
+  - Sweep N+1 query secara komprehensif pada seluruh Controller, Blade View, dan API Resource; wajib menggunakan eager loading teroptimasi (`with()`, `loadMissing()`, constrain closure).
+  - Penambahan indeks komposit database pada kolom berfrekuensi lookup tinggi: perpaduan `(status, created_at)`, `(owner_type, owner_id)`, `(party_id, status)`, dan `(reference_type, reference_id)`.
+  - Konversi query batch berbobot berat (audit saldo, depresiasi aset, auto-reconciliation bank) ke metode cursor atau `chunkById()` untuk menjaga jejak memori tetap konstan di bawah beban volume tinggi.
+- [ ] 57B.4 **Security Hardening, Anti-IDOR & Penegakan RBAC Granular**:
+  - Implementasi komprehensif Laravel Policy pada setiap model entitas domain dengan proteksi mutlak terhadap IDOR: pengguna pihak ketiga (supplier, agent, partner, distributor, mekanik, tenant) terkunci strictly hanya pada record ber-relasi `party_id` miliknya sendiri.
+  - Penegakan matriks otorisasi RBAC data-driven untuk seluruh 26+ role (`RbacSeeder`); audit setiap rute web & API agar memiliki middleware `role:` atau pengecekan Gate granular (`can:`).
+  - Konfigurasi `RateLimiter` granular di `AppServiceProvider` untuk mitigasi serangan brute-force dan DoS:
+    - Transaksi moneter & transfer saldo: 10 request/menit per user/IP.
+    - Verifikasi PIN Wallet: 3 kegagalan/5 menit (anti brute-force PIN).
+    - Autentikasi/Login: 5 percobaan/menit per email/IP.
+    - Export/Import dokumen & file massal: 5 request/menit.
+  - Sanitasi input mendalam pada layer middleware/request untuk pencegahan mutlak SQL Injection, Stored/Reflected XSS, mass-assignment (model `$fillable` audit), dan validasi CSRF.
+- [ ] 57B.5 **Defensive Validation & Penegakan Invarian Moneter**:
+  - Implementasi `FormRequest` khusus dengan validasi defensive pada setiap mutasi data:
+    - Regex spesifik nomor identitas resmi Indonesia: NIK 16-digit valid (`/^[1-9][0-9]{15}$/`) dan NPWP format baru 16-digit / lama 15-digit ber-separator.
+    - Validasi moneter anti-float: melarang keras tipe float/desimal pada payload amount, wajib integer minor units, dan menolak mutasi bernilai `0`.
+  - Penegakan integritas double-entry ledger: Σ entri debit dan kredit per transaksi wajib seimbang (= 0) per aset sebelum lock DB diinisiasi.
+  - Penerapan row-level locking (`lockForUpdate()`) dengan sorting ID akun numerik ascending yang konsisten untuk eliminasi tuntas race condition saldo negatif dan DB deadlock.
+  - Guard state machine pada seluruh siklus hidup dokumen transaksi (PO, Order Toko, Kontrak, Klaim, L/C, Produksi): tolak mutasi state non-linear tanpa transisi yang sah.
+- [ ] 57B.6 **Enrichment Seeder Skala Besar dengan Data Unik & Idempoten**:
+  - Refactoring seeder skala besar (`EnterpriseUniverseSeeder`) dengan sifat idempoten mutlak (`upsert`, `firstOrCreate`, `updateOrCreate`) sehingga aman dieksekusi berkali-kali tanpa risiko duplikasi atau kegagalan unique key constraint.
+  - Pembuatan generator dataset realistis dan unik (menggunakan Faker locale `id_ID`):
+    - ≥ 100 entitas badan hukum (`PT`, `CV`, `Firma`) dengan nama otentik.
+    - Pool NIK dan NPWP unik tanpa collision.
+    - Nomor rekening bank unik untuk 5 bank devisa nasional (Mandiri, BCA, BNI, BRI, BSI).
+    - Nomor plat kendaraan, resi pelacakan, dan nomor seri sertifikasi unik.
+  - Pembuatan relasi data transaksi hulu-ke-hilir yang utuh (Pemasok → Pabrik → DC → Distributor → Agen → Konsumen) dengan pencatatan jurnal ledger yang seimbang sempurna (`bank:reconcile` = 0 selisih).
+- [ ] 57B.7 **Generalisasi Layanan Nomor Dokumen Gapless & Document Store**:
+  - Audit penerapan `DocumentNumberingService` agar seluruh dokumen transaksi (PO, GRN, Invoice, PEB, PIB, L/C, SPK, Resi) menggunakan nomor terurut tanpa celah (gapless) per entitas hukum dan tahun fiskal.
+  - Audit `DocumentStoreService`: penyimpanan lampiran dokumen ber-checksum SHA-256, verifikasi integritas file upload, MIME guard, dan enkripsi dokumen rahasia.
+- [ ] 57B.8 **Perluasan Observabilitas & Platform Health-Check**:
+  - Pengembangan command enterprise `super:health-check` menjadi audit multi-pilar sistem otomatis:
+    - Pilar 1: Invarian global double-entry ledger (total saldo per aset = 0).
+    - Pilar 2: Sinkronisasi cached balance vs riwayat fisik entri jurnal.
+    - Pilar 3: Verifikasi non-negatif stok persediaan di seluruh gudang (`wms_bin_stocks`).
+    - Pilar 4: Verifikasi fasilitas kredit treasury vs batasan plafon (overdrawn check).
+    - Pilar 5: Verifikasi integritas kriptografis seluruh rantai hash (Vehicle Passport, Chain of Custody Logistik, Kontrak, Aset, Shipment Tracking).
+    - Pilar 6: Deteksi dokumen transaksi "gantung" (stale unconfirmed orders, uncaptured holds).
+  - Output informatif dengan exit code deterministik: Code `0` jika seluruh pilar sehat, Code `1` jika terdapat anomali atau diskrepansi data sekecil apa pun.
+- [ ] 57B.9 **Pengujian Ketahanan, Stress Test & Uji Regresi Penuh (Resilience & Chaos Testing)**:
+  - Penambahan Feature Test khusus ketahanan sistem:
+    - Uji simulasi race condition: concurrent transfer / booking multi-thread terhadap saldo yang sama.
+    - Uji idempotency retry: submit ulang payload yang sama dengan key yang identik.
+    - Uji otorisasi IDOR: attempt modifikasi data lintas tenant / supplier / user.
+    - Uji payload batas: nominal integer batas atas (BigInt), karakter khusus Unicode, payload JSON anomali.
+  - Menjalankan seluruh test suite tanpa skip/lemah serta seluruh perintah audit platform: `bank:reconcile`, `super:health-check`, `*:audit`, `verify-*`.
+- [ ] 57B.10 **Quality Gate Fase 57B & Dokumentasi Pemeliharaan**:
+  - Pemutakhiran lengkap dokumentasi arsitektur: `docs/CODEBASE.md`, `docs/DECISIONS.md`, `docs/AUDIT.md`, `docs/RUNBOOK.md`.
+  - Penyusunan Standard Operating Procedure (SOP) maintenance berkala, protokol backup/restore database, dan pedoman tanggap darurat data drift.
+  - Single meaningful git commit untuk penutupan Fase 57B.
 
 ---
 
-## BACKLOG FASE 58+ (boleh dikerjakan setelah 57, atau disisipkan bila prioritas berubah)
-- **58 — SDM & Penggajian**: karyawan, kontrak kerja, absensi/shift pabrik, lembur, payroll (PPh 21 simulasi, BPJS simulasi), tenaga kerja produksi menggantikan placeholder di costing.
-- **59 — R&D & PLM**: pengembangan produk, stage-gate, formula/BOM engineering vs manufacturing, perubahan teknik (ECN/ECO), uji coba pilot.
-- **60 — ESG & Karbon**: jejak karbon per produk/shipment/pabrik, laporan keberlanjutan, rantai pasok hijau, sertifikasi.
-- **61 — Marketplace B2B & Lelang**: katalog multi-penjual, RFQ publik, lelang aset/surplus, escrow.
-- **62 — Pertanian/Bahan Baku Hulu**: kontrak petani/plasma, panen, grading, sentra pengumpul (bahan baku Resto & pabrik pangan).
-- **63 — Konstruksi & Proyek Properti**: manajemen proyek (WBS, RAB, progres, termin), pembangunan unit Mall, CIP → aset.
-- **64 — Analitik & AI**: forecasting lanjutan, deteksi anomali ML, rekomendasi harga/stok (dengan guardrail & penjelasan), model dijalankan deterministik di test.
-- **65 — Aplikasi Mobile/PWA**: operator pabrik, gudang, sales agen, driver, offline-first dengan sinkronisasi idempoten.
-- **66 — Ketahanan & DR**: replikasi, failover drill, RPO/RTO terukur, multi-region simulasi.
+## BACKLOG FASE 58+ (STRATEGIC ENTERPRISE HORIZONS & INDUSTRY EXPANSION)
+*Roadmap strategis lanjutan berskala industri konglomerasi multi-sektor, memperluas rantai nilai dari hulu agrikultur, teknik rekayasa R&D, konstruksi EPC, SDM terpadu, hingga ketahanan bencana multi-region.*
+
+### FASE 58 — HUMAN CAPITAL MANAGEMENT (HCM), TALENT & PRODUCTION PAYROLL
+- [ ] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
+  - Struktur organisasi hierarkis: Holding → Anak Perusahaan → Direktorat → Divisi → Departemen → Seksi → Posisi/Jabatan.
+  - Profil karyawan 360°: identitas kependudukan terenkripsi (NIK/Paspor), riwayat pendidikan, rekam jejak kepangkatan, grade gaji, dan rekening penggajian bank.
+  - Jenis hubungan kerja: PKWT (kontrak waktu tertentu), PKWTT (karyawan tetap), tenaga kerja lepas (*casual worker*), magang, dan tenaga alih daya (*outsourcing*).
+- [ ] 58.2 **Manajemen Waktu, Absensi Biometrik & Penjadwalan Shift Pabrik Kompleks**:
+  - Penjadwalan shift multi-pola: shift 3/1, shift 2/2, shift bergilir 24/7 di lantai pabrik manufaktur dan operasional hub logistik.
+  - Integrasi mesin absensi biometrik & geofencing mobile: pencatatan clock-in/out, dispensasi toleransi keterlambatan, dan approval lembur (SPL - Surat Perintah Lembur).
+  - Manajemen cuti, izin sakit dengan surat dokter, dan akumulasi hak cuti tahunan (*leave accrual engine*).
+- [ ] 58.3 **Mesin Penggajian Terotomasi (Enterprise Payroll & Tax Engine)**:
+  - Perhitungan gaji bruto: gaji pokok, tunjangan tetap/tidak tetap, premi kehadiran, dan kalkulasi upah lembur resmi Depnaker (1.5x jam pertama, 2x jam berikutnya).
+  - Pemotongan jaminan sosial tenaga kerja nasional: BPJS Ketenagakerjaan (JKK, JKM, JHT, JP) dan BPJS Kesehatan dengan pembagian porsi perusahaan vs porsi pekerja.
+  - Engine PPh Pasal 21 Terintegrasi (TER - Tarif Efektif Rata-Rata bulanan & kalkulasi masa pajak Desember dengan PTKP dinamis).
+  - Alur approval penggajian bertingkat (HR Manager → CFO) dan penerbitan slip gaji terenkripsi PDF.
+- [ ] 58.4 **Alokasi Biaya Tenaga Kerja Langsung ke Modul Manufaktur (Direct Labor Costing)**:
+  - Integrasi langsung ke `CostingService` Manufaktur (Fase 38): menggantikan placeholder biaya tenaga kerja dengan jam kerja aktual operator per Work Order SPK.
+  - Rekonsiliasi payroll clearing: pencatatan jurnal `DR mfg:labor_wip / CR clearing:payroll_payable`.
+- [ ] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
+
+### FASE 59 — RESEARCH & DEVELOPMENT (R&D) & PRODUCT LIFECYCLE MANAGEMENT (PLM)
+- [ ] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process**:
+  - Pipeline inovasi produk bertahap (*Stage-Gate Model*): *Ideation → Scoping → Business Case → Development → Testing/Pilot → Commercial Launch*.
+  - Matriks penilaian kelayakan: estimasi biaya R&D, proyeksi ROI, analisis kanibalisasi produk eksisting, dan penilaian kepatuhan regulasi.
+- [ ] 59.2 **Engineering BOM (EBOM) vs Manufacturing BOM (MBOM)**:
+  - Pengelolaan versi rancangan teknik: transisi terkontrol dari purwarupa R&D (EBOM) ke resep produksi massal pabrik (MBOM).
+  - Manajemen Perubahan Teknik (*Engineering Change Order - ECO & ECN*): alur persetujuan perubahan spesifikasi material, dampak biaya, dan disposisi sisa stok lama (*scrap, rework, run-out*).
+- [ ] 59.3 **Formulasi Kimia, Uji Stabilitas & Sensori Laboratorium**:
+  - Buku catatan laboratorium elektronik (*Electronic Lab Notebook - ELN*): formula rahasia terenkripsi, uji stabilitas suhu/kelembaban terakselerasi, dan uji organoleptik sensori.
+  - Manajemen sampel R&D dan sertifikasi pra-rilis (uji klinis/lab independen terakreditasi).
+- [ ] 59.4 `plm:audit` (Integritas riwayat revisi ECO hash-chain terverifikasi, sinkronisasi EBOM ke MBOM konsisten 100%).
+
+### FASE 60 — ESG, EMISI KARBON & SUSTAINABLE VALUE CHAIN
+- [ ] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol)**:
+  - Cakupan 1 (Emisi Langsung): konsumsi bahan bakar armada logistik (`lgx_fleets`) dan genset/boiler pabrik.
+  - Cakupan 2 (Emisi Tidak Langsung): pemakaian listrik PLN di seluruh mall, outlet resto, kantor, dan fasilitas gudang.
+  - Cakupan 3 (Rantai Nilai): emisi pengiriman pihak ketiga, perjalanan dinas, dan emisi rantai pasok bahan baku hulu.
+- [ ] 60.2 **Akuntansi Karbon & Pengimbangan Karbon (Carbon Accounting & Offsetting)**:
+  - Kalkulasi jejak karbon per unit produk jadi (CO2e per kg/unit produk).
+  - Portofolio kredit karbon: pembelian sertifikat kredit karbon terverifikasi, alokasi penyeimbangan emisi (*carbon offset retirement*), dan jurnal buku besar karbon.
+- [ ] 60.3 **Pelaporan Keberlanjutan Standar GRI & Penilaian Pemasok Hijau**:
+  - Generator draf Laporan Keberlanjutan (GRI Standards & Taksonomi Hijau OJK).
+  - Skor audit keberlanjutan pemasok: verifikasi sertifikasi ramah lingkungan (FSC, RSPO, ISO 14001, PROPER Hijau/Emas).
+- [ ] 60.4 `esg:audit` (Faktor emisi terstandarisasi, neraca kredit karbon = sertifikat aktif, 0 diskrepansi).
+
+### FASE 61 — MARKETPLACE B2B, SURPLUS ASSET AUCTION & ESCROW
+- [ ] 61.1 **Portal Marketplace B2B Multi-Vendor**:
+  - Direktori katalog grosir tertutup: etalase produk distributor dan mitra resmi dengan penetapan harga berbasis kuantitas (*Tiered Pricing*) dan harga kontrak khusus.
+  - Alur RFQ (Request for Quotation) publik antar-perusahaan dengan negosiasi termin pembayaran tempo (TOP 30/60).
+- [ ] 61.2 **Balai Lelang Digital Aset Surplus & Peralatan Pabrik**:
+  - Pendaftaran barang lelang: unit mobil bekas AutoDex, mesin pabrik idle dari modul Aset, atau surplus persediaan WMS.
+  - Mesin lelang real-time (*English Auction & Dutch Auction*): penawaran harga dinamis, waktu perpanjangan otomatis (*anti-sniping*), dan penentuan pemenang deterministik.
+- [ ] 61.3 **Escrow Multi-Pihak Terproteksi**:
+  - Penguncian dana deposit lelang dan pembayaran transaksi B2B di rekening escrow platform.
+  - Rilis dana bertahap ke penjual setelah konfirmasi serah terima fisik (BAST / POD digital) disetujui kedua pihak.
+- [ ] 61.4 `b2b:audit` (Dana rekening escrow = saldo komitmen lelang + transaksi berjalan, 0 diskrepansi).
+
+### FASE 62 — AGRIBISNIS, KONTRAK PETANI & HULU RANTAI PASOK MAKANAN
+- [ ] 62.1 **Kemitraan Petani, Kebun Plasma & Kontrak Tani (Contract Farming)**:
+  - Registrasi kelompok tani/petani plasma: pencatatan koordinat poligon lahan (GIS mapping), sertifikat hak milik, dan jenis komoditas tanam (sayur, padi, ternak).
+  - Kontrak bagi hasil tani: penyediaan bibit/pupuk oleh platform sebagai uang muka barang, garansi harga beli minimum (*floor price*), dan jadwal masa panen.
+- [ ] 62.2 **Sentra Pengumpul (Collection Center) & Grading Komoditas**:
+  - Operasional pos pengumpul hasil panen di pedesaan: penerimaan hasil tani harian, penimbangan digital, dan uji mutu (*grading A/B/C* kadar air/kesegaran).
+  - Konversi hasil grading ke nota timbang digital dan pelunasan seketika ke rekening dompet petani.
+- [ ] 62.3 **Integrasi Rantai Dingin ke Dapur Sentral Resto & Pabrik Pengolahan**:
+  - Penjadwalan armada logistik berpendingin (*reefer truck*) dari sentra tani langsung ke Dapur Sentral CK-01 Resto Sari Ranah dan pabrik makanan.
+  - Pelacakan suhu real-time IoT dan sertifikasi halal dari sumber kebun hingga meja hidang.
+- [ ] 62.4 `agri:audit` (Stok panen pos pengumpul = penerimaan gudang/CK-01, potongan uang muka bibit tepat, 0 selisih).
+
+### FASE 63 — KONSTRUKSI EPC, MANAJEMEN PROYEK PROPERTI & ASSET CAPITALIZATION
+- [ ] 63.1 **Work Breakdown Structure (WBS) & Rencana Anggaran Biaya (RAB Proyek)**:
+  - Hierarki proyek konstruksi: Proyek (Mall Ekstensi/Pabrik Baru) → Tahap → Paket Pekerjaan → Butir Aktivitas WBS.
+  - Estimasi RAB terperinci: komponen material (beton, baja), upah tenaga kerja kontraktor, dan sewa alat berat.
+- [ ] 63.2 **Manajemen Progres Fisik, Kurva-S & Sertifikat Prestasi Proyek (MC)**:
+  - Pelacakan deviasi progres aktual vs target kurva-S (bobot persentase penyelesaian fisik).
+  - Penerbitan *Monthly Certificate* (MC) berdasarkan verifikasi konsultan pengawas independen dan pengajuan klaim termin penagihan.
+- [ ] 63.3 **Konstruksi Dalam Pengerjaan (CIP) & Kapitalisasi Aset Tetap**:
+  - Akumulasi seluruh biaya proyek ke akun buku besar *Construction in Progress* (`ast:cip_project`).
+  - Berita Acara Serah Terima Akhir (BAST 1 & 2): penutupan akun CIP dan reklasifikasi otomatis menjadi Aset Tetap Bangunan, Gedung, dan Instalasi Fasilitas di modul Aset (`Modules\Asset`).
+- [ ] 63.4 `epc:audit` (Realisasi termin tagihan = progres MC terverifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, 0 diskrepansi).
+
+### FASE 64 — ANALITIK PREDIKTIF, AI-DRIVEN REVENUE MANAGEMENT & ANOMALY DETECTION
+- [ ] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
+  - Algoritma penetapan harga dinamis deterministik: elastisitas harga permintaan, sisa umur simpan produk, dan tingkat keterisian ruang mall/katering.
+  - Guardrail keamanan batas harga: proteksi harga batas bawah (*floor price*) dan kepatuhan regulasi HET pemerintah.
+- [ ] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
+  - Skor anomali transaksi real-time: pola belanja abnormal, split bill mencurigakan, order fiktif agen, atau deviasi konsumsi bahan bakar logistik.
+  - Trigger otomatis karantina transaksi berisiko tinggi sebelum settlement bank dieksekusi.
+- [ ] 64.3 **Rekomendasi Preskriptif Perencanaan Stok & Pengadaan Cerdas**:
+  - Analisis tren musiman eksternal (hari libur nasional, musim hujan, tren pasar) menghasilkan usulan rekomendasi revisi safety stock dan rilis PO ke vendor secara otomatis.
+- [ ] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
+
+### FASE 65 — ENTERPRISE MOBILE SUITE (PWA/HYBRID OFFLINE-FIRST ARCHITECTURE)
+- [ ] 65.1 **Aplikasi Mobile Lapangan Khusus 4 Peran Kunci**:
+  - *Operator Pabrik*: scan QR work order, input output produksi, catat downtime mesin.
+  - *Petugas WMS*: scanner barcode rak/bin, konfirmasi putaway, picking wave panduan jalur terpendek.
+  - *Driver Logistik*: navigasi rute optimal, bukti serah terima foto + tanda tangan digital (e-POD offline-capable).
+  - *Sales Agen Lapangan*: katalog mobile offline, pembuatan pesanan di lokasi pelanggan, dan pengecekan komisi.
+- [ ] 65.2 **Sinkronisasi Data Dua Arah Berbasis Idempotensi (Offline-First Sync Engine)**:
+  - Penyimpanan lokal perangkat (SQLite / IndexedDB): operasional tetap berjalan tanpa koneksi internet di area terpencil/gudang bawah tanah.
+  - Mekanisme rekonsiliasi saat online: transmisi antrean mutasi dengan key idempotensi unik deterministik dan resolusi konflik berbasis *Last-Write-Wins with Timestamp Guard*.
+- [ ] 65.3 `mobile:audit` (Zero duplicate records akibat sync retry, integritas hash tanda tangan e-POD 100% valid).
+
+### FASE 66 — RESILIENSI GLOBAL, DISASTER RECOVERY MULTI-REGION & DATA SOVEREIGNTY
+- [ ] 66.1 **Arsitektur Multi-Region Replikasi Aktif-Pasif**:
+  - Replikasi basis data asinkron antar-data center geografis (Region Primer Jakarta vs Region Sekunder Surabaya/Singapura).
+  - Mekanisme failover otomatis: pendeteksian kegagalan primer via health-check heartbeat dan pengalihan trafik DNS/Load Balancer tanpa kehilangan data (RPO = 0 untuk transaksi ledger).
+- [ ] 66.2 **Drill Pemulihan Bencana Berkala (Disaster Recovery Simulation Drill)**:
+  - Prosedur simulasi darurat pemadaman data center utama: pengukuran waktu pemulihan aktual (*Recovery Time Objective - RTO*) target < 15 menit.
+  - Validasi konsistensi integritas ledger paska-failover: eksekusi otomatis `bank:reconcile` dan verifikasi hash-chain di data center cadangan.
+- [ ] 66.3 **Kedaulatan Data & Enkripsi Tingkat Tinggi (Data Sovereignty & Post-Quantum Readiness)**:
+  - Klasifikasi data residensi: data sensitif keuangan dan NIK/NPWP diisolasi strictly di yurisdiksi Indonesia (PP 71/2019).
+  - Enkripsi end-to-end data at rest (AES-256 GCM) dan data in transit (TLS 1.3), serta audit rotasi kunci master KMS berkala.
+- [ ] 66.4 `dr:audit` (Kesiapan failover drill terverifikasi, integritas sinkronisasi replika 100%, 0 paket data hilang).
 
 ---
 
