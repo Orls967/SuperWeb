@@ -847,9 +847,19 @@
   - **54.1 Enterprise Budgeting & Hard-Stop Encumbrance:** Penguncian pagu anggaran per pusat biaya dan mata anggaran belanja. Transaksi encumbrance otomatis ditolak apabila sisa anggaran tidak mencukupi (Hard-Stop), serta pembaruan realisasi belanja belanja secara berkala.
   - **54.3 Rekonsiliasi Pajak Nasional (PPN & PPh):** Agregasi otomatis DPP, Pajak Masukan, Pajak Keluaran, dan pajak dipotong dengan formula hitung kurang/lebih bayar.
   - **54.4 Mesin Validasi Pemisahan Tugas (SoD Matrix):** Pengecekan otomatis kombinasi wewenang berbahaya pada user multi-role (misal: larangan kombinasi peran `procurement` dan `treasury`).
-  - **54.6 Kalender Kepatuhan Regulasi:** Pelacakan tanggal jatuh tempo pemenuhan kewajiban terhadap otoritas (DJP, BPOM, OJK).
-  - **54.9 Audit Finance Grup:** Command `enterprise:audit` memastikan seluruh alokasi anggaran tidak mengalami overspend dan integritas perhitungan pajak bernilai 0 diskrepansi.
 - **Tests:** `EnterpriseFinanceTest` (7 tes / 22 asersi). Sub-suite `EnterpriseFinanceTest|ModuleBoundariesTest` (19 passed / 82 assertions), `bank:reconcile` (0 diskrepansi), `enterprise:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 55 — Integrasi API v2, B2B EDI & Multi-Tenancy (Modul `intg_`)
+
+- **Context:** Integrasi ekosistem enterprise ke sistem prinsipal, perbankan, vendor tier-1, dan mitra logistik global membutuhkan pengiriman webhook andal dengan integritas signature kriptografis HMAC-SHA256, subsistem penerjemah pesan B2B Electronic Data Interchange (EDI 850/855/856/810), serta otentikasi klien B2B dengan limitasi kuota bertingkat (*tiered rate limiting*).
+- **Decision:**
+  - Prefix tabel **`intg_`** (4 tabel: `intg_webhook_subscriptions`, `intg_webhook_deliveries`, `intg_edi_messages`, `intg_api_clients`).
+  - **55.2 Mesin Webhook B2B & HMAC Signature:** Publikasi event domain dengan penandatanganan payload transaksional menggunakan HMAC-SHA256 (`secret_key`) untuk verifikasi integritas oleh penerima.
+  - **55.3 B2B Electronic Data Interchange (EDI):** Penanganan standar pesan EDI X12 / EDIFACT untuk set transaksi Purchase Order (850), Order Acknowledgment (855), Advance Shipping Notice (856), dan Electronic Invoice (810).
+  - **55.5 Manajemen Klien B2B & Tiered Quota:** Penerbitan kredensial API key dengan proteksi hash SHA-256 dan penetapan batas panggilan per menit berdasarkan tier langganan (Silver: 120, Gold: 600, Platinum: 2000).
+  - **55.9 Audit Integrasi B2B:** Command `api:audit` memverifikasi keselarasan signature pengiriman webhook dan keutuhan transmisi pesan EDI bernilai 0 diskrepansi.
+- **Tests:** `IntegrationTest` (5 tes / 18 asersi). Sub-suite `IntegrationTest|ModuleBoundariesTest` (17 passed / 78 assertions), `bank:reconcile` (0 diskrepansi), `api:audit` (0 diskrepansi), Pint lulus.
+
 
 
 

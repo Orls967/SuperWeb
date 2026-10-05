@@ -61,7 +61,9 @@ return [
     \Modules\Intercompany\IntercompanyServiceProvider::class,
     \Modules\ControlTower\ControlTowerServiceProvider::class,
     \Modules\EnterpriseFinance\EnterpriseFinanceServiceProvider::class,
+    \Modules\Integration\IntegrationServiceProvider::class,
 ];
+
 
 
 
