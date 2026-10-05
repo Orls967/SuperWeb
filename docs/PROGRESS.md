@@ -543,16 +543,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 42.9 Quality gate Fase 42
 
 ## FASE 43 — DISTRIBUSI: ORDER, SELL-IN/SELL-OUT, KONSINYASI, RETUR, REBATE
-- [ ] 43.1 Order distributor: validasi limit kredit & stok (ATP), alokasi (prioritas/fair-share saat langka), backorder & pecah kirim
-- [ ] 43.2 Pemenuhan: pick di WMS → shipment Logistics (FTL/LTL/multimoda) → POD → pengakuan penjualan; faktur pajak **simulasi** (nomor seri, PPN 11%)
-- [ ] 43.3 Sell-out reporting: distributor melaporkan penjualan & stok (unggah/API), validasi, deteksi anomali (stuffing, diversi, harga)
-- [ ] 43.4 **Konsinyasi**: stok milik prinsipal di lokasi distributor, laporan penjualan memicu faktur & transfer kepemilikan, rekonsiliasi stok konsinyasi
-- [ ] 43.5 Retur & klaim: kedaluwarsa, rusak, salah kirim; kebijakan retur per kontrak; kredit nota; restock/kuarantina/musnahkan
-- [ ] 43.6 **Rebate & insentif**: program volume/pertumbuhan/bertingkat, akrual per transaksi (`dist:rebate_payable`), penyelesaian periodik via approval; breakage
-- [ ] 43.7 Perhitungan margin distributor & price compliance (harga tebus vs HET simulasi)
-- [ ] 43.8 Stok kritis distributor → saran replenishment (VMI sederhana)
-- [ ] 43.9 `dist:audit` (AR distributor, rebate, konsinyasi = ledger/stok, 0 selisih)
-- [ ] 43.10 Quality gate Fase 43
+- [x] 43.1 Order distributor: validasi limit kredit & stok (ATP), alokasi (prioritas/fair-share saat langka), backorder & pecah kirim
+- [x] 43.2 Pemenuhan: pick di WMS → shipment Logistics (FTL/LTL/multimoda) → POD → pengakuan penjualan; faktur pajak **simulasi** (nomor seri, PPN 11%)
+- [x] 43.3 Sell-out reporting: distributor melaporkan penjualan & stok (unggah/API), validasi, deteksi anomali (stuffing, diversi, harga)
+- [x] 43.4 **Konsinyasi**: stok milik prinsipal di lokasi distributor, laporan penjualan memicu faktur & transfer kepemilikan, rekonsiliasi stok konsinyasi
+- [x] 43.5 Retur & klaim: kedaluwarsa, rusak, salah kirim; kebijakan retur per kontrak; kredit nota; restock/kuarantina/musnahkan
+- [x] 43.6 **Rebate & insentif**: program volume/pertumbuhan/bertingkat, akrual per transaksi (`dist:rebate_payable`), penyelesaian periodik via approval; breakage
+- [x] 43.7 Perhitungan margin distributor & price compliance (harga tebus vs HET simulasi)
+- [x] 43.8 Stok kritis distributor → saran replenishment (VMI sederhana)
+- [x] 43.9 `dist:audit` (AR distributor, rebate, konsinyasi = ledger/stok, 0 selisih)
+- [x] 43.10 Quality gate Fase 43
 
 ## FASE 44 — HARGA, PROMO & TRADE TERMS (PRICING ENGINE)
 - [ ] 44.1 Price list engine: daftar harga per segmen/saluran/wilayah/mata uang, berlaku-dari/sampai tanpa overlap, prioritas

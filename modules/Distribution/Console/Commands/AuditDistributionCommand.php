@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 /**
- * 42.4/42.9 Audit: subledger AR distributor = ledger `dist:ar:*`,
+ * 42.4/42.9 + 43.9 Audit: subledger AR = ledger `dist:ar:*`, rebate,
  * exposure = Σ invoice terbuka, tidak ada status konsisten rusak.
  */
 class AuditDistributionCommand extends Command
@@ -76,6 +76,40 @@ class AuditDistributionCommand extends Command
         if ($badTier > 0) {
             $hasDiscrepancy = true;
             $rows[] = ['tier.invalid', '0', (string) $badTier, (string) $badTier, 'SELISIH'];
+        }
+
+        // 5. (43.9) Rebate payable ledger == Σ akrual rebate.
+        $accruedTotal = (int) DB::table('dist_rebate_accruals')
+            ->where('status', '!=', 'expired')->sum('rebate_amount_idr');
+        $payable = DB::table('bank_ledger_accounts')
+            ->where('code', 'dist:rebate_payable:IDR')
+            ->value('cached_balance');
+        if ($payable !== null && abs((int) $payable) !== $accruedTotal) {
+            $hasDiscrepancy = true;
+            $rows[] = [
+                'rebate.payable', number_format($accruedTotal), number_format((int) $payable),
+                number_format($accruedTotal - abs((int) $payable)), 'SELISIH',
+            ];
+        }
+
+        // 6. (43.9) Konsinyasi: qty_sold_unbilled == Σ penjualan status reported.
+        $stockUnbilled = (float) DB::table('dist_consignment_stocks')->sum('qty_sold_unbilled');
+        $reportedQty = (float) DB::table('dist_consignment_sales')
+            ->where('status', 'reported')->sum('qty');
+        if (abs($stockUnbilled - $reportedQty) > 0.0001) {
+            $hasDiscrepancy = true;
+            $rows[] = [
+                'consignment.unbilled', number_format($reportedQty, 4),
+                number_format($stockUnbilled, 4), number_format($stockUnbilled - $reportedQty, 4), 'SELISIH',
+            ];
+        }
+
+        // 7. (43.9) Penjualan konsinyasi terfaktur wajib menunjuk faktur.
+        $invoicedNoRef = DB::table('dist_consignment_sales')
+            ->where('status', 'invoiced')->whereNull('invoice_id')->count();
+        if ($invoicedNoRef > 0) {
+            $hasDiscrepancy = true;
+            $rows[] = ['consignment.invoice_ref', '0', (string) $invoicedNoRef, (string) $invoicedNoRef, 'SELISIH'];
         }
 
         $this->table(['Sumber', 'Subledger', 'Ledger / eksposur', 'Selisih', 'Status'],

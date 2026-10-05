@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Distribution;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Distribution\Application\Services\DistributionFulfilmentService;
 use Modules\Distribution\Application\Services\DistributionService;
 use Modules\Distribution\Console\Commands\AuditDistributionCommand;
 use Modules\Shared\Application\MenuRegistry;
@@ -14,6 +15,7 @@ class DistributionServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(DistributionService::class);
+        $this->app->singleton(DistributionFulfilmentService::class);
     }
 
     public function boot(): void
