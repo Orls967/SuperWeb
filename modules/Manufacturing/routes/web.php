@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Manufacturing\Http\Controllers\ManufacturingController;
 use Modules\Manufacturing\Http\Controllers\PlanningController;
 use Modules\Manufacturing\Http\Controllers\ProductionController;
+use Modules\Manufacturing\Http\Controllers\QualityController;
 
 Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,operator,qc_inspector'])
     ->prefix('manufacturing')
@@ -66,4 +67,24 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,auditor'])
         Route::get('/costing', [ProductionController::class, 'costing'])->name('costing.index');
         Route::post('/costing/versions/{version}/submit', [ProductionController::class, 'submitCostVersion'])->name('costing.versions.submit');
         Route::post('/costing/versions/{version}/approve', [ProductionController::class, 'approveCostVersion'])->name('costing.versions.approve');
+    });
+
+Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,qc_inspector,auditor'])
+    ->prefix('manufacturing')
+    ->name('manufacturing.')
+    ->group(function () {
+        Route::get('/quality', [QualityController::class, 'index'])->name('quality.index');
+        Route::post('/quality/plans', [QualityController::class, 'storePlan'])->name('quality.plans.store');
+        Route::post('/quality/inspections', [QualityController::class, 'inspect'])->name('quality.inspections.store');
+        Route::post('/quality/inspections/{inspection}/waiver', [QualityController::class, 'submitWaiver'])->name('quality.inspections.waiver');
+        Route::post('/quality/inspections/{inspection}/approve', [QualityController::class, 'approveWaiver'])->name('quality.inspections.approve');
+        Route::post('/quality/ncrs', [QualityController::class, 'storeNcr'])->name('quality.ncrs.store');
+        Route::post('/quality/ncrs/{ncr}/capas', [QualityController::class, 'storeCapa'])->name('quality.capas.store');
+        Route::post('/quality/capas/{capa}/complete', [QualityController::class, 'completeCapa'])->name('quality.capas.complete');
+        Route::post('/quality/lots/{lot}/certificates', [QualityController::class, 'addCertificate'])->name('quality.lots.certificates');
+        Route::post('/quality/lots/{lot}/release', [QualityController::class, 'releaseLot'])->name('quality.lots.release');
+        Route::get('/quality/lots/{lot}/trace', [QualityController::class, 'trace'])->name('quality.lots.trace');
+        Route::post('/quality/lots/{lot}/recall', [QualityController::class, 'storeRecall'])->name('quality.lots.recall');
+        Route::post('/quality/recalls/{recall}/notify', [QualityController::class, 'notifyRecall'])->name('quality.recalls.notify');
+        Route::post('/quality/recalls/{recall}/complete', [QualityController::class, 'completeRecall'])->name('quality.recalls.complete');
     });

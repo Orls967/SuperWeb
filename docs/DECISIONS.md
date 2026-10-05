@@ -635,3 +635,19 @@
   - Laporan 38.7 (`/manufacturing/costing`): margin per barang jadi (revenue dari `store_order_items`, HPP = unit cost aktual × qty terjual) + drill-down `OrderCost` per order.
 - **Reason:** seluruh jurnal idempotent dan dapat diaudit ulang; roll-up & netting memakai integer/bc-math mengikuti konvensi proyek (tanpa float untuk nilai tersimpan); keputusan varians & tanda terdokumentasi agar modul 39–40 konsisten.
 - **Tests:** `modules/Manufacturing/tests/Feature/ProductionCostingTest` (7 tes / 34 asersi). Gate: 764 test / 4070 assertion, Pint, Vite, arch (12), audit bank/proc/ast/ctr/lgx/mall + `mfg:audit-costing` 0 selisih, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 39 — Mutu & Ketertelusuran (QMS)
+
+- **Context:** Shop floor/costing sudah punya lot, issue per lot, hasil operasi, scrap, dan penjualan per lot; perlu inspeksi berlapis, CAPA, recall, dan traceability maju-mundur. Standar sertifikasi/regulasi Indonesia belum terintegrasi — semua sertifikat bersifat simulasi.
+- **Decision:**
+  - 10 tabel `mfg_*` QMS: `inspection_plans`, `inspections` (+`approval_id`), `spc_samples`, `gauges`, `ncrs`, `capas`, `lot_sales`, `recalls`, `recall_recipients`, `certificates`.
+  - Inspection plan menyimpan stage `receiving/in_process/final`, characteristic JSON, batas min/max, ukuran sample, frequency, AQL; AQL hanya **simulasi**: gagal bila persentase out-of-spec > AQL. Inspeksi dengan readings kosong ditolak.
+  - Waiver: `submitWaiver` gagal inspection → `ApprovalEngineInterface::submit(MFG_INSPECTION_WAIVER)` (status tetap failed); `approveWaiver` memanggil engine dan hanya menjadi `waived` setelah approval (empat mata creator ≠ approver). Tidak ada approver otomatis.
+  - `Gauge::isCalibrationValid`: alat aktif + `calibration_due` future; alat expired/null memblokir inspeksi (39.8). Rilis lot mensyaratkan tidak ada inspeksi `failed` dan setidaknya satu sertifikat valid per tipe wajib; default COA; sertifikat `SNI/Halal/BPOM/GMP/COA/COC` data simulasi.
+  - SPC X-bar/R: mean/range per subgroup; `σ=R̄/d2` untuk n=5 (`d2=2.326`); `Cp=(USL−LSL)/(6σ)`, `Cpk=min(USL−μ,μ−LSL)/(3σ)`; alarm sederhana bila mean di luar spec atau Cpk<1.
+  - `openNcr` nomor gapless `NCR/{ENT}/`; sumber supplier memunculkan `sup_risk_flags.type='scar'` via query mentah + `scar_ref` (tanpa import Supplier Domain). CAPA corrective/preventive, due date, completion/effectiveness; sweep `mfg:qms-audit` menandai overdue; NCR menutup setelah semua CAPA tidak lagi open.
+  - Trace backward: FG lot `source_ref` → nomor order produksi → material issues + `mfg_material_issue_lots` → lot bahan → source_type/ref. Trace forward: listener `OrderPaid` membuat `mfg_lot_sales` FIFO per SKU=material code; replay idempoten per `store_order_item_id`.
+  - Recall idempoten per lot: lot `blocked`, penerima disalin dari `mfg_lot_sales`, notifikasi dicap, biaya recall `DR expense:mfg_scrap / CR inv:finished_goods` via key `mfg:recall:{id}`, completion menandai lot consumed & qty 0 + destruction note. Regulasi pemusnahan/sertifikat bersifat simulasi.
+  - Command `mfg:qms-audit` harian 05:00: expired calibration, CAPA/NCR lewat due date, recall planned/notified >3 hari → exit 1; selain itu 0.
+- **Reason:** waiver harus mematuhi four-eyes; lot release/recall tak boleh bergantung UI; query trace tetap bounded per satu lot; memakai query mentah untuk boundary ke Store/Supplier menjaga 12 arch rules.
+- **Tests:** `modules/Manufacturing/tests/Feature/QualityManagementTest` (12 tes / 59 asersi). Gate: 776 test / 4129 assertion, Pint, Vite, arch (12), seluruh audit termasuk QMS 0 temuan, 10 pilar HEALTHY.

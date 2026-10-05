@@ -11,7 +11,9 @@ use Modules\Manufacturing\Application\Services\CostingService;
 use Modules\Manufacturing\Application\Services\ManufacturingService;
 use Modules\Manufacturing\Application\Services\PlanningService;
 use Modules\Manufacturing\Application\Services\ProductionService;
+use Modules\Manufacturing\Application\Services\QualityService;
 use Modules\Manufacturing\Console\Commands\AuditCostingCommand;
+use Modules\Manufacturing\Console\Commands\QmsAuditCommand;
 use Modules\Manufacturing\Console\Commands\RunMrpCommand;
 use Modules\Manufacturing\Console\Commands\WipReportCommand;
 use Modules\Shared\Application\MenuRegistry;
@@ -25,6 +27,7 @@ class ManufacturingServiceProvider extends ServiceProvider
         $this->app->singleton(PlanningService::class);
         $this->app->singleton(ProductionService::class);
         $this->app->singleton(CostingService::class);
+        $this->app->singleton(QualityService::class);
     }
 
     public function boot(): void
@@ -42,7 +45,7 @@ class ManufacturingServiceProvider extends ServiceProvider
         Event::listen(OrderPaid::class, PostSaleCogsListener::class);
 
         if ($this->app->runningInConsole()) {
-            $this->commands([RunMrpCommand::class, WipReportCommand::class, AuditCostingCommand::class]);
+            $this->commands([RunMrpCommand::class, WipReportCommand::class, AuditCostingCommand::class, QmsAuditCommand::class]);
         }
 
         $this->registerMenu();

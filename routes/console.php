@@ -60,3 +60,4 @@ Schedule::command('sup:remind-certifications')->dailyAt('07:10');
 
 // --- Perencanaan Produksi (Fase 36) ---
 Schedule::command('mfg:run-mrp')->dailyAt('04:45');
+Schedule::command('mfg:qms-audit')->dailyAt('05:00');

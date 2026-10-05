@@ -41,6 +41,7 @@ class ProductionService
         private readonly MrpRequisitionProposer $prProposer,
         private readonly ShipmentBooking $shipmentBooking,
         private readonly CostingService $costing,
+        private readonly QualityService $quality,
     ) {}
 
     // ── 37.1 Order produksi ──────────────────────────────────────────────
@@ -657,6 +658,18 @@ class ProductionService
                 'ncr_required' => $ncr,
                 'created_by_user_id' => $actor->id,
             ]);
+
+            // 37.7/39.4: scrap melebihi toleransi → NCR otomatis.
+            if ($ncr && $kind === 'scrap') {
+                $this->quality->openNcr([
+                    'source' => 'scrap',
+                    'production_order_id' => $locked->id,
+                    'severity' => $scrapPct > $locked->scrap_tolerance_percent * 3 ? 'major' : 'minor',
+                    'title' => sprintf('Scrap %.2f%% melebihi toleransi %.2f%% (order %s)', $scrapPct, (float) $locked->scrap_tolerance_percent, $locked->number),
+                    'description' => $reason,
+                    'lot_id' => null,
+                ], $actor);
+            }
 
             // Scrap mengurangi qty FG yang dapat diterima.
             if ($kind === 'scrap') {

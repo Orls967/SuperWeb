@@ -500,15 +500,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 38.9 Quality gate Fase 38
 
 ## FASE 39 — MUTU & KETERTELUSURAN (QMS, LOT, RECALL)
-- [ ] 39.1 Rencana inspeksi: karakteristik (atribut/variabel), batas spesifikasi, sampling (AQL simulasi), frekuensi
-- [ ] 39.2 Inspeksi: penerimaan (GRN), in-process (operasi), akhir (FG); hasil lulus/gagal/dispensasi (approval); pelepasan lot
-- [ ] 39.3 Statistical process control sederhana (X-bar/R, Cp/Cpk), alarm di luar kendali
-- [ ] 39.4 **NCR** (ketidaksesuaian) → investigasi → **CAPA** (korektif/preventif) dengan tenggat, efektivitas, status; terhubung ke SCAR pemasok (Fase 32)
-- [ ] 39.5 **Ketertelusuran lot maju-mundur**: dari lot FG ke bahan baku & pemasok, dan sebaliknya ke semua pelanggan/distributor penerima; waktu respons ≤ ambang (query budget)
-- [ ] 39.6 **Recall**: pilih lot terdampak → daftar penerima (distributor/agen/pelanggan) → notifikasi, kuarantina stok, retur & penghancuran bersertifikat, laporan akhir; jurnal biaya recall
-- [ ] 39.7 Sertifikat (COA/COC) per lot, dokumen kepatuhan (SNI/Halal/BPOM/GMP — **data simulasi**), kedaluwarsa sertifikat memblokir rilis
-- [ ] 39.8 Kalibrasi alat ukur (jadwal, bukti), alat kedaluwarsa memblokir inspeksi
-- [ ] 39.9 Quality gate Fase 39
+- [x] 39.1 Rencana inspeksi: karakteristik (atribut/variabel), batas spesifikasi, sampling (AQL simulasi), frekuensi
+- [x] 39.2 Inspeksi: penerimaan (GRN), in-process (operasi), akhir (FG); hasil lulus/gagal/dispensasi (approval); pelepasan lot
+- [x] 39.3 Statistical process control sederhana (X-bar/R, Cp/Cpk), alarm di luar kendali
+- [x] 39.4 **NCR** (ketidaksesuaian) → investigasi → **CAPA** (korektif/preventif) dengan tenggat, efektivitas, status; terhubung ke SCAR pemasok (Fase 32)
+- [x] 39.5 **Ketertelusuran lot maju-mundur**: dari lot FG ke bahan baku & pemasok, dan sebaliknya ke semua pelanggan/distributor penerima; waktu respons ≤ ambang (query budget)
+- [x] 39.6 **Recall**: pilih lot terdampak → daftar penerima (distributor/agen/pelanggan) → notifikasi, kuarantina stok, retur & penghancuran bersertifikat, laporan akhir; jurnal biaya recall
+- [x] 39.7 Sertifikat (COA/COC) per lot, dokumen kepatuhan (SNI/Halal/BPOM/GMP — **data simulasi**), kedaluwarsa sertifikat memblokir rilis
+- [x] 39.8 Kalibrasi alat ukur (jadwal, bukti), alat kedaluwarsa memblokir inspeksi
+- [x] 39.9 Quality gate Fase 39
 
 ## FASE 40 — PEMELIHARAAN PABRIK, OEE & K3
 - [ ] 40.1 **OEE** per mesin/line (Availability × Performance × Quality) dari downtime/produksi nyata; dasbor shift/harian
