@@ -613,4 +613,33 @@
 - **Audit Spesifik Modul (`agy:audit`):** Sukses dengan 0 selisih.
 - **Observabilitas Platform (`super:health-check`):** 10/10 pilar HEALTHY.
 
+---
+
+## ✅ Quality Gate Fase 48 — PENUTUP FINAL — 2026-10-06
+
+**Cakupan fase:** Fase 48.1 – 48.10 (Multi-Currency & Treasury — Modul `trs_`)
+
+### Ringkasan Capaian Sub-Fase
+
+| Sub-Fase | Komponen & Fitur | Status | Detail Implementasi |
+|---|---|:---:|---|
+| 48.1 | Master Mata Uang & Kurs | Selesai | Tabel `trs_currencies` & `trs_exchange_rates`, rate integer scaled 1e6 immutable, penanganan konversi tanpa float. |
+| 48.2 | Multi-Currency Ledger | Selesai | Posting multi-valas berimbang per aset mata uang asing + perhitungan nilai fungsional IDR idempoten. |
+| 48.3 | Revaluasi Valas Akhir Periode | Selesai | Tabel `trs_revaluations`, kalkulasi unrealized gain/loss selisih kurs akhir periode berdasarkan kurs penutupan vs nilai buku. |
+| 48.4 | Rekening Bank & Kas | Selesai | Tabel `trs_bank_accounts` & `trs_bank_statements`, pencatatan rekening operasional dan kas kecil, auto-reconciliation statement. |
+| 48.5 | Cash Forecast 13 Minggu | Selesai | Tabel `trs_cash_forecasts`, simulasi proyeksi arus kas mingguan (inflow, outflow, saldo penutupan). |
+| 48.6 | Lindung Nilai (Forward Contract) | Selesai | Tabel `trs_forward_contracts`, pencatatan kontrak forward & mark-to-market (MTM) valuasi berkala. |
+| 48.7 | Fasilitas Kredit & Covenant | Selesai | Tabel `trs_credit_facilities`, penarikan kredit terkontrol plafon & deteksi pelanggaran rasio Debt-to-Equity (DER). |
+| 48.8 | Cash Pooling | Selesai | Tabel `trs_cash_pools`, sweeping saldo berlebih dari sub-account ke header account secara transaksional dengan `lockForUpdate`. |
+| 48.9 | Audit Treasury | Selesai | Command `treasury:audit`, pengecekan integritas saldo, kurs, rekening, statement, dan fasilitas kredit dengan 0 diskrepansi. |
+| **48.10** | **Quality Gate Fase 48** | **Lulus** | Sub-suite `PartnerTest|TreasuryTest|RbacTest|ModuleBoundariesTest` 48 passed, Pint passed, `bank:reconcile` 0 selisih, `treasury:audit` 0 selisih. |
+
+### Metrik Kualitas Final Fase 48
+- **Test Suite**: **8 Tests di TreasuryTest (29 assertions)**, RbacTest diperluas ke 26 roles, ModuleBoundariesTest diperluas untuk modul Treasury.
+- **Status Standar Kode (Pint):** Passed.
+- **Arch Tests (batas modul):** 12 passed.
+- **Audit Buku Besar (`bank:reconcile`):** 140 akun seimbang, 0 selisih.
+- **Audit Spesifik Modul (`treasury:audit`):** Sukses dengan 0 selisih.
+
+
 

@@ -765,3 +765,19 @@
 - **Decision:** modul `modules/Partner` (8 tabel `ptn_*`), state machine mitra ber-guard, bagi hasil generik idempoten (`floor(net × rate)`), jurnal `DR ptn:rev_share_expense / CR clearing:external`, role `partner` (total 25 role).
 - **Batasan yang diketahui:** portal mitra minimal, due diligence berbasis skor tanpa approval berjenjang, HKI belum terhubung ke Asset, adapter Resto royalti/Mall revenue share belum dimigrasikan.
 - **Tests:** `PartnerTest` (5 tes). Gate parsial: RbacTest, RouteSmokeTest, arch (12) lulus; full suite belum dijalankan ulang untuk fase ini.
+
+## 2026-10-06: Fase 48 — Multi-Currency & Treasury (Modul `trs_`)
+
+- **Context:** Operasi enterprise membutuhkan dukungan mata uang multi-valas dengan perhitungan tanpa kehilangan presisi, rekonsiliasi mutasi bank, pengelolaan fasilitas pinjaman & covenant bank, serta lindung nilai nilai tukar (FX hedging).
+- **Decision:**
+  - Prefix tabel **`trs_`** (9 tabel: `trs_currencies`, `trs_exchange_rates`, `trs_revaluations`, `trs_bank_accounts`, `trs_bank_statements`, `trs_cash_forecasts`, `trs_forward_contracts`, `trs_credit_facilities`, `trs_cash_pools`).
+  - **48.1 Master Mata Uang & Kurs:** Nilai tukar disimpan dalam bentuk pasangan `(from, to, date, type)` dengan representasi integer scaled `rate_numerator / rate_denominator` (1e6) untuk menghindari floating-point imprecision. Konversi amount dalam integer minor units.
+  - **48.2 Multi-Currency Posting:** Transaksi multi-valas memposting entri valas yang seimbang per aset (`assetCode`) dengan nilai fungsional IDR terhitung secara deterministik dan idempoten.
+  - **48.3 Revaluasi Valas:** Menghitung unrealized gain/loss selisih kurs akhir periode berdasarkan kurs penutupan vs nilai buku fungsional IDR.
+  - **48.4 Rekening Bank & Rekonsiliasi:** Akun operasional dan kas kecil dengan pencocokan otomatis mutasi statement bank (`BankStatement`).
+  - **48.5 Cash Forecast:** Horizon 13 minggu memproyeksikan inflow, outflow, dan saldo akhir periodik per skenario.
+  - **48.6 Lindung Nilai Forward Contract:** Kontrak forward valas dengan valuasi mark-to-market (MTM) berdasarkan selisih kurs forward vs spot berjalan.
+  - **48.7 Fasilitas Kredit & Pemantauan Covenant:** Pengelolaan plafon pinjaman bank dengan peringatan pelanggaran rasio Debt-to-Equity (DER).
+  - **48.8 Cash Pooling:** Mekanisme sweep otomatis dari sub-account ke header account ketika saldo melampaui target balance.
+  - **48.9 Audit & Role:** Command `treasury:audit` memastikan konsistensi saldo, rasio limit fasilitas kredit, dan ketiadaan diskrepansi. Role `treasury` didaftarkan sebagai role ke-26 di `RbacSeeder`.
+- **Tests:** `TreasuryTest` (8 tes / 29 asersi). Suite terverifikasi: `PartnerTest|TreasuryTest|RbacTest|ModuleBoundariesTest` (48 passed / 165 assertions), `bank:reconcile` (0 diskrepansi), `treasury:audit` (0 diskrepansi), Pint lulus.

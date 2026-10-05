@@ -24,6 +24,7 @@ use Modules\Resto\RestoServiceProvider;
 use Modules\Shared\SharedServiceProvider;
 use Modules\Store\StoreServiceProvider;
 use Modules\Supplier\SupplierServiceProvider;
+use Modules\Treasury\TreasuryServiceProvider;
 use Modules\Wms\WmsServiceProvider;
 
 return [
@@ -52,4 +53,5 @@ return [
     DistributionServiceProvider::class,
     PricingServiceProvider::class,
     WmsServiceProvider::class,
+    TreasuryServiceProvider::class,
 ];

@@ -600,16 +600,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 47.10 Quality gate Fase 47
 
 ## FASE 48 — MULTI-CURRENCY & TREASURY
-- [ ] 48.1 Master mata uang & kurs: kurs harian (sumber simulasi + input manual), jenis kurs (spot/tengah/pajak), tabel kurs ber-versi tak dapat diubah
-- [ ] 48.2 Ledger multi-currency: transaksi dalam mata uang asing dengan nilai fungsional tersimpan (minor unit), **tanpa float**; Σ per mata uang & Σ fungsional seimbang
-- [ ] 48.3 Revaluasi piutang/utang/kas valas akhir periode, laba/rugi kurs terealisasi & belum terealisasi, jurnal pembalik otomatis
-- [ ] 48.4 Rekening bank perusahaan & kas: saldo, rekonsiliasi bank (impor mutasi simulasi, pencocokan otomatis, selisih), kas kecil
-- [ ] 48.5 Forecast arus kas (AR/AP/PO/payroll-placeholder/pajak), horizon 13 minggu, skenario
-- [ ] 48.6 Lindung nilai sederhana (forward contract simulasi): eksposur, kontrak, mark-to-market, penyelesaian
-- [ ] 48.7 Pinjaman & fasilitas bank: plafon, penarikan, bunga, covenant (rasio) & peringatan pelanggaran
-- [ ] 48.8 Pooling kas antar-entitas (Fase 52 intercompany loan)
-- [ ] 48.9 `treasury:audit` (0 selisih), pilar health-check
-- [ ] 48.10 Quality gate Fase 48
+- [x] 48.1 Master mata uang & kurs: kurs harian (sumber simulasi + input manual), jenis kurs (spot/tengah/pajak), tabel kurs ber-versi tak dapat diubah
+- [x] 48.2 Ledger multi-currency: transaksi dalam mata uang asing dengan nilai fungsional tersimpan (minor unit), **tanpa float**; Σ per mata uang & Σ fungsional seimbang
+- [x] 48.3 Revaluasi piutang/utang/kas valas akhir periode, laba/rugi kurs terealisasi & belum terealisasi, jurnal pembalik otomatis
+- [x] 48.4 Rekening bank perusahaan & kas: saldo, rekonsiliasi bank (impor mutasi simulasi, pencocokan otomatis, selisih), kas kecil
+- [x] 48.5 Forecast arus kas (AR/AP/PO/payroll-placeholder/pajak), horizon 13 minggu, skenario
+- [x] 48.6 Lindung nilai sederhana (forward contract simulasi): eksposur, kontrak, mark-to-market, penyelesaian
+- [x] 48.7 Pinjaman & fasilitas bank: plafon, penarikan, bunga, covenant (rasio) & peringatan pelanggaran
+- [x] 48.8 Pooling kas antar-entitas (Fase 52 intercompany loan)
+- [x] 48.9 `treasury:audit` (0 selisih), pilar health-check
+- [x] 48.10 Quality gate Fase 48
 
 ## FASE 49 — EKSPOR–IMPOR (TRADE OPERATIONS)
 - [ ] 49.1 Master negara/pelabuhan/zona, **Incoterms 2020** (tanggung jawab biaya/risiko per istilah), HS code ber-versi (memperluas `HsTariff` Logistics), larangan/pembatasan (lartas — simulasi)

@@ -46,6 +46,7 @@ class RbacSeeder extends Seeder
             ['name' => 'distributor', 'label' => 'Distributor', 'description' => 'Portal distributor: katalog, order, sell-out, tagihan.'],
             ['name' => 'agent', 'label' => 'Agen Penjualan', 'description' => 'Portal agen: lead, penjualan, komisi, statement.'],
             ['name' => 'partner', 'label' => 'Mitra Bisnis', 'description' => 'Portal mitra: proyek, statement bagi hasil, co-selling.'],
+            ['name' => 'treasury', 'label' => 'Treasury Officer', 'description' => 'Mengelola valas, rekening bank, kurs, fasilitas kredit & kas.'],
             ['name' => 'planner', 'label' => 'Perencana Produksi', 'description' => 'Mengelola BOM, routing, formula, dan MPS/MRP.'],
             ['name' => 'operator', 'label' => 'Operator Produksi', 'description' => 'Menjalankan order produksi di pabrik.'],
             ['name' => 'qc_inspector', 'label' => 'Inspektor QC', 'description' => 'Inspeksi mutu di titik pemeriksaan produksi.'],
