@@ -728,3 +728,20 @@
   - Permission grup `pricing.*` ditambahkan (admin mendapat semua; modul lain tidak menambah role baru → jumlah role tetap 23).
 - **Reason:** harga lama tetap jalan (price snapshot order); mesin baru menyediakan lapisan resolusi & audit; prefix `pric_` mencegah tabrakan dengan `prc_` Procurement; kasus precedence `$a ?? $b && …` di PHP menangkap lebih longgar — diperbaiki eksplisit dengan variabel temp.
 - **Tests:** `modules/Pricing/tests/Feature/PricingEngineTest` (7 tes / 44 asersi). Gate: 823 test / 4393 assertion, Pint, Vite, arch (12), semua audit (bank, dist, wms, proc, ast, ctr, lgx, mall, mfg-cost, mfg-qms, pricing) 0 selisih, 10 pilar HEALTHY.
+
+## 2026-10-06: Fase 45 — Agensi: Agen Penjualan & Komisi (Modul `agy_`)
+
+- **Context:** Rantai distribusi membutuhkan peran agensi (sales agent, broker, reseller, affiliate, sole agent) dengan perhitungan komisi berbasis performa, jenjang upline/downline (override), atribusi, periode hold retur, clawback komisi negatif, dan payout periodik ber-approval four-eyes.
+- **Decision:**
+  - Prefix tabel **`agy_`** (8 tabel: `agy_agents`, `agy_contracts`, `agy_commission_schemes`, `agy_attributions`, `agy_commission_accruals`, `agy_payouts`, `agy_payout_items`, `agy_statements`).
+  - **45.1 Hirarki:** `Agent` mendukung `parent_id` (upline wajib `active`), batas level `max_downline_levels` (default 3), state machine `onboarding → active → suspended → terminated`.
+  - **45.2 Kontrak:** `AgentContract` dengan scope teritori, scope produk (JSON), bendera `exclusive` & `non_compete`.
+  - **45.3 Skema Komisi:** basis `flat`, `percent`, `slab`, `target_bonus` + skema override upline (`level >= 1`, basis percent).
+  - **45.4 Atribusi:** Atribusi referral/lead dengan kebijakan konflik `first_touch` (mempertahankan atribusi pertama) vs `last_touch` (update agen), serta pengecekan tanggal kadaluwarsa (`expires_at`).
+  - **45.5 Akrual Komisi & Retur:** Komisi dihitung dari skema langsung + override upline bertingkat, status awal `hold` hingga periode retur lewat (`hold_until = now() + holdDays`), idempoten per `(agent, reference_id, source_type)`. Jurnal: `DR agy:commission_expense:IDR / CR agy:commission_payable:IDR`.
+  - **45.6 Clawback:** Retur penjualan memicu akrual negatif (`amount_idr < 0`) dan membalik sumber akrual (`reversed`). Jurnal: `DR agy:commission_payable:IDR / CR agy:commission_expense:IDR`.
+  - **45.7 Payout Periodik:** Agregasi seluruh akrual payable (termasuk kompensasi clawback negatif), verifikasi total net > 0, PPh 21/23 pemotongan simulasi (`withheld_tax_idr`). Alur four-eyes approval (`AGENCY_PAYOUT` via `ApprovalEngineInterface`). Eksekusi pembayaran memposting ledger net `DR agy:commission_payable / CR clearing:external` dan pajak `DR agy:commission_payable / CR tax:withheld`.
+  - **45.8 Statement & Portal:** `Statement` merekonsiliasi `opening + accrued - clawback - paid = closing balance`. Portal `/agency` dan `/agency/{agent}` dapat diakses role `agent`, `admin`, `procurement`, `auditor`.
+  - **45.9 Audit & Role:** Command `agy:audit` memvalidasi saldo payable ledger = Σ akrual, payout net = gross - tax, payout berstatus paid memiliki transaksi ledger, dan atribusi valid. Role `agent` (role ke-24) didaftarkan di `RbacSeeder`.
+- **Reason:** Penanganan retur/clawback melalui akrual negatif menjaga kepatuhan double-entry buku besar tanpa manipulasi historis data; hold period memastikan komisi tidak dibayar prematur sebelum batas retur customer/distributor usai.
+- **Tests:** `modules/Agency/tests/Feature/AgencyCommissionTest` (9 tes / 54 asersi), RouteSmokeTest (+2 asersi), RbacTest (+24 roles). Gate final Fase 45: **832 tests passed (4446 assertions)**, 0 failures, 0 skipped, Pint lulus, Vite sukses, `bank:reconcile` (140 akun, 0 selisih), `agy:audit` 0 selisih, `super:health-check` 10 pilar HEALTHY.

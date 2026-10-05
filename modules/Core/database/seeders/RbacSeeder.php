@@ -44,6 +44,7 @@ class RbacSeeder extends Seeder
             ['name' => 'supplier', 'label' => 'Pemasok', 'description' => 'Portal pemasok: PO, ASN, sertifikat, pembayaran.'],
             ['name' => 'procurement', 'label' => 'Procurement', 'description' => 'Kualifikasi, RFQ, harga, dan skor pemasok.'],
             ['name' => 'distributor', 'label' => 'Distributor', 'description' => 'Portal distributor: katalog, order, sell-out, tagihan.'],
+            ['name' => 'agent', 'label' => 'Agen Penjualan', 'description' => 'Portal agen: lead, penjualan, komisi, statement.'],
             ['name' => 'planner', 'label' => 'Perencana Produksi', 'description' => 'Mengelola BOM, routing, formula, dan MPS/MRP.'],
             ['name' => 'operator', 'label' => 'Operator Produksi', 'description' => 'Menjalankan order produksi di pabrik.'],
             ['name' => 'qc_inspector', 'label' => 'Inspektor QC', 'description' => 'Inspeksi mutu di titik pemeriksaan produksi.'],
@@ -175,6 +176,12 @@ class RbacSeeder extends Seeder
                 'pricing.view' => 'Lihat price list, diskon & promo',
                 'pricing.manage' => 'Kelola price list, diskon, promo & analitik',
                 'pricing.approve' => 'Menyetujui klaim promo & override harga',
+            ],
+            'agency' => [
+                'agency.view' => 'Lihat jaringan & komisi agen',
+                'agency.manage' => 'Kelola agen, skema komisi, atribusi, payout',
+                'agency.approve' => 'Menyetujui payout & skema komisi',
+                'agency.portal.access' => 'Akses portal agen (lead, komisi, statement)',
             ],
             'manufacturing' => [
                 'manufacturing.view' => 'Lihat master data pabrik',
@@ -308,6 +315,11 @@ class RbacSeeder extends Seeder
             'distributor' => [
                 'core.dashboard.view',
                 'distribution.view', 'distribution.portal.access',
+            ],
+
+            'agent' => [
+                'core.dashboard.view',
+                'agency.view', 'agency.portal.access',
             ],
 
             'planner' => [

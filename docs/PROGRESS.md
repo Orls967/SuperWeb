@@ -565,16 +565,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 44.8 Quality gate Fase 44
 
 ## FASE 45 — AGENSI: AGEN PENJUALAN & KOMISI (MODUL `agy_`)
-- [ ] 45.1 Modul Agency: agen individu/badan (party role), tipe (agen penjualan, broker, reseller, afiliasi, agen tunggal merek), hirarki upline/downline
-- [ ] 45.2 Kontrak keagenan (Fase 28/29): wilayah/produk, eksklusivitas, komisi, masa berlaku, non-compete (flag), penghentian
-- [ ] 45.3 **Skema komisi** fleksibel: flat, persentase, bertingkat (slab), per produk/saluran, bonus target; komisi berjenjang (override upline, maks N level)
-- [ ] 45.4 Atribusi penjualan: kode agen/referral/lead, aturan prioritas bila konflik (last-touch/first-touch), masa atribusi
-- [ ] 45.5 Perhitungan komisi per transaksi (event penjualan terkonfirmasi/dibayar), **hold sampai periode retur lewat**, akrual `agy:commission_payable`
-- [ ] 45.6 **Clawback**: retur/pembatalan/chargeback membalik komisi (saldo agen bisa negatif → dikompensasi periode berikut)
-- [ ] 45.7 Payout periodik: statement komisi, PPh 21/23 dipotong (simulasi), approval, pembayaran via ledger/PaymentGateway, bukti potong
-- [ ] 45.8 Portal agen (role `agent`): lead, penjualan, komisi, statement, materi, target; laporan downline
-- [ ] 45.9 `agy:audit` (komisi akrual = payout + saldo, 0 selisih)
-- [ ] 45.10 Quality gate Fase 45
+- [x] 45.1 Modul Agency: agen individu/badan (party role), tipe (agen penjualan, broker, reseller, afiliasi, agen tunggal merek), hirarki upline/downline
+- [x] 45.2 Kontrak keagenan (Fase 28/29): wilayah/produk, eksklusivitas, komisi, masa berlaku, non-compete (flag), penghentian
+- [x] 45.3 **Skema komisi** fleksibel: flat, persentase, bertingkat (slab), per produk/saluran, bonus target; komisi berjenjang (override upline, maks N level)
+- [x] 45.4 Atribusi penjualan: kode agen/referral/lead, aturan prioritas bila konflik (last-touch/first-touch), masa atribusi
+- [x] 45.5 Perhitungan komisi per transaksi (event penjualan terkonfirmasi/dibayar), **hold sampai periode retur lewat**, akrual `agy:commission_payable`
+- [x] 45.6 **Clawback**: retur/pembatalan/chargeback membalik komisi (saldo agen bisa negatif → dikompensasi periode berikut)
+- [x] 45.7 Payout periodik: statement komisi, PPh 21/23 dipotong (simulasi), approval, pembayaran via ledger/PaymentGateway, bukti potong
+- [x] 45.8 Portal agen (role `agent`): lead, penjualan, komisi, statement, materi, target; laporan downline
+- [x] 45.9 `agy:audit` (komisi akrual = payout + saldo, 0 selisih)
+- [x] 45.10 Quality gate Fase 45
 
 ## FASE 46 — AGENSI: EKOSISTEM, LEAD, TIER & KEPATUHAN
 - [ ] 46.1 CRM ringan: lead/prospek, pipeline, aktivitas, konversi → order; penugasan lead ke agen

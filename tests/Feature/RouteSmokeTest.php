@@ -212,6 +212,7 @@ class RouteSmokeTest extends TestCase
             'supplier.create',
             'supplier.portal.home',
             'procurement.dashboard',
+            'agency.index',
         ];
 
         foreach ($adminRoutes as $route) {
@@ -295,5 +296,21 @@ class RouteSmokeTest extends TestCase
         $this->actingAs($this->customer)->get(route('contract.index'))->assertForbidden();
         $this->actingAs($this->customer)->get(route('contract.obligations'))->assertForbidden();
         $this->actingAs($this->customer)->get(route('party.index'))->assertForbidden();
+    }
+
+    // ============================================================
+    // 7. AGENCY ROLE ACCESS MATRIX
+    // ============================================================
+
+    public function test_agent_role_authorization_matrix(): void
+    {
+        $agent = User::where('role', 'agent')->first()
+            ?? User::factory()->create(['role' => 'agent']);
+
+        // Agent can access agency directory/portal
+        $this->actingAs($agent)->get(route('agency.index'))->assertOk();
+
+        // Customer forbidden from agency portal
+        $this->actingAs($this->customer)->get(route('agency.index'))->assertForbidden();
     }
 }

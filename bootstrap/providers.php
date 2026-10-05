@@ -1,6 +1,7 @@
 <?php
 
 use App\Providers\AppServiceProvider;
+use Modules\Agency\AgencyServiceProvider;
 use Modules\Asset\AssetServiceProvider;
 use Modules\AutoDex\AutoDexServiceProvider;
 use Modules\AutoServe\AutoServeServiceProvider;
@@ -45,6 +46,7 @@ return [
     SupplierServiceProvider::class,
     ProcurementServiceProvider::class,
     ManufacturingServiceProvider::class,
+    AgencyServiceProvider::class,
     DistributionServiceProvider::class,
     PricingServiceProvider::class,
     WmsServiceProvider::class,

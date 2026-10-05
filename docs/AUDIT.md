@@ -552,4 +552,35 @@
 
 > Fase 27 selesai. Siap melanjutkan ke **Fase 28 — Kontrak Inti (Modul `ctr_`)**.
 
+---
+
+## ✅ Quality Gate Fase 45 — PENUTUP FINAL — 2026-10-06
+
+**Cakupan fase:** Fase 45.1 – 45.10 (Agensi: Agen Penjualan & Komisi — Modul `agy_`)
+
+### Ringkasan Capaian Sub-Fase
+
+| Sub-Fase | Komponen & Fitur | Status | Detail Implementasi |
+|---|---|:---:|---|
+| 45.1 | Modul Agency & Hirarki | Selesai | Tabel `agy_agents` (`sales_agent`, `broker`, `reseller`, `affiliate`, `sole_agent`), self-referencing parent/child dengan batas `max_downline_levels`. State machine `onboarding → active → suspended → terminated`. |
+| 45.2 | Kontrak Keagenan | Selesai | Tabel `agy_contracts` terhubung ke Party/Contract, wilayah, cakupan produk, bendera eksklusif & non-compete. |
+| 45.3 | Skema Komisi Fleksibel | Selesai | Tabel `agy_commission_schemes`, basis `flat`, `percent`, `slab`, `target_bonus`, dan override komisi berjenjang ke upline (`level >= 1`). |
+| 45.4 | Atribusi Penjualan | Selesai | Tabel `agy_attributions`, resolusi konflik `first_touch` & `last_touch`, masa kedaluwarsa atribusi (`expires_at`). |
+| 45.5 | Akrual Komisi & Hold Retur | Selesai | Tabel `agy_commission_accruals`, status awal `hold` selama periode retur (`hold_until`), jurnal `DR agy:commission_expense:IDR / CR agy:commission_payable:IDR`. |
+| 45.6 | Clawback Komisi Negatif | Selesai | Akrual negatif otomatis saat retur produk, status sumber diubah menjadi `reversed`, pembalikan jurnal double-entry. |
+| 45.7 | Payout Periodik & Approval | Selesai | Tabel `agy_payouts` & `agy_payout_items`, pemotongan PPh 21/23 simulasi (`tax:withheld:IDR`), approval four-eyes via `ApprovalEngineInterface`, posting jurnal payout net ke kliring eksternal. |
+| 45.8 | Statement & Portal Agen | Selesai | Tabel `agy_statements`, rekonsiliasi `opening + accrued - clawback - paid = closing balance`. Portal `/agency` dan `/agency/{agent}` dapat diakses role `agent`. |
+| 45.9 | Audit Agensi (`agy:audit`) | Selesai | Command `agy:audit` memeriksa kepatuhan saldo buku besar terhadap total akrual payable, keabsahan payout, dan atribusi aktif. |
+| **45.10** | **Quality Gate Fase 45** | **Lulus** | 832 tests / 4446 assertions / 0 failure / 0 skipped. |
+
+### Metrik Kualitas Final Fase 45
+- **Test Suite**: **832 Tests, 4446 Assertions** (100% PASS, 0 Failures, 0 Skipped).
+- **Kenaikan dari baseline Fase 44**: +9 tests, +53 assertions.
+- **Status Build Frontend (Vite):** Sukses (`built in 633ms`).
+- **Status Standar Kode (Pint):** Passed (`{"tool":"pint","result":"passed"}`).
+- **Arch Tests (batas modul):** 12 passed — isolasi domain dan pencegahan akses DB facade langsung di controller.
+- **Audit Buku Besar (`bank:reconcile`):** **140 akun ledger seimbang, 0 selisih**.
+- **Observabilitas Platform (`super:health-check`):** **10/10 pilar HEALTHY**.
+- **Audit Spesifik Modul (`agy:audit`):** Sukses dengan 0 selisih.
+
 
