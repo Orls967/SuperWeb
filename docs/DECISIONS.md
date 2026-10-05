@@ -759,3 +759,9 @@
   - **46.7/46.8 Analitik & Lintas Lini:** Analitik ROI agen menghitung rasio perolehan penjualan terhadap total komisi dibayar (`sales / paid`).
 - **Reason:** Evaluasi tier otomatis saat konversi lead menjaga integritas gamifikasi secara instan; fraud check algoritmik mencegah kebocoran kas perusahaan akibat skema referral diri sendiri.
 - **Tests:** `modules/Agency/tests/Feature/AgencyEcosystemTest` (7 tes / 31 asersi). Gate final Fase 46: **839 tests passed (4477 assertions)**, 0 failures, 0 skipped, Pint lulus, Vite sukses, `bank:reconcile` (140 akun, 0 selisih), `agy:audit` 0 selisih, `super:health-check` 10 pilar HEALTHY.
+
+## 2026-10-06: Fase 47 — Mitra & Kemitraan (Modul `ptn_`)
+
+- **Decision:** modul `modules/Partner` (8 tabel `ptn_*`), state machine mitra ber-guard, bagi hasil generik idempoten (`floor(net × rate)`), jurnal `DR ptn:rev_share_expense / CR clearing:external`, role `partner` (total 25 role).
+- **Batasan yang diketahui:** portal mitra minimal, due diligence berbasis skor tanpa approval berjenjang, HKI belum terhubung ke Asset, adapter Resto royalti/Mall revenue share belum dimigrasikan.
+- **Tests:** `PartnerTest` (5 tes). Gate parsial: RbacTest, RouteSmokeTest, arch (12) lulus; full suite belum dijalankan ulang untuk fase ini.

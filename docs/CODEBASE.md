@@ -4,7 +4,7 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-06 · **Fase selesai terakhir:** 46 (Agensi: Ekosistem, Lead, Tier & Kepatuhan) · **Berjalan:** — · **Berikutnya:** Fase 47 Mitra & Kemitraan
+**Terakhir diperbarui:** 2026-10-06 · **Fase selesai terakhir:** 47 (Mitra & Kemitraan) · **Berjalan:** — · **Berikutnya:** Fase 48 Multi-Currency & Treasury
 **Snapshot gate (akhir Fase 46):** 839 test / 4477 assertion (Fase 45: 832/4446), 0 skipped · `bank:reconcile` 0 selisih (140 akun) · `agy:audit` 0 selisih · `super:health-check` 10 pilar HEALTHY · Pint, Vite, arch (12) lulus.
 
 ---
@@ -263,3 +263,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 - **Audit & Role:** command `agy:audit` (akrual payable = ledger payable, payout net = gross - tax, paid payout wajib ada ledger tx, tidak ada atribusi stale); role `agent` ke-24 di `RbacSeeder` dengan permission `agency.view` & `agency.portal.access`.
 
 - **Fase 46 (ekosistem agensi):** tabel `agy_leads`, `agy_lead_activities`, `agy_certifications`, `agy_agent_tiers`, `agy_brand_agencies`, `agy_compliance_incidents`, `agy_fraud_checks` + kolom `tier_code`, `total_sales_volume_idr`, `total_deals_count` pada `agy_agents`. `AgencyService` diperluas: CRM leads (`createLead`, `recordLeadActivity`, `convertLead`), sertifikasi/lisensi (`addCertification`, `isValidAt`), tiering dinamis (`saveTier`, `evaluateTier`, `getLeaderboard`), APM brand agencies (`registerBrandAgency`), kepatuhan/sanksi (`reportIncident`, suspensi otomatis, `appealIncident`), deteksi kecurangan (`checkFraud`: self-referral blocking & spike detection), analitik performa agen (`calculateAnalytics`: ROI, deal count, commission paid). Rute `/agency/leads`, `/agency/leads/{lead}/convert`, `/agency/{agent}/certifications`, `/agency/{agent}/brand-agencies`, `/agency/{agent}/compliance`, `/agency/{agent}/fraud-checks`.
+
+### Partner (`ptn_`) — Fase 47
+
+- **Tabel:** `ptn_partners`, `ptn_due_diligences`, `ptn_joint_plans`, `ptn_revenue_shares`, `ptn_cosell_listings`, `ptn_scorecards`, `ptn_intellectual_properties`, `ptn_exit_transitions`.
+- **Service:** `PartnerService` — siklus hidup `prospect→due_diligence→negotiation→active⇄review→exit` ber-guard, due diligence (skor ≥70 approved), JBP, bagi hasil idempoten per (mitra, periode) + posting ledger `ptn:rev_share_expense`/`clearing`, scorecard upsert, HKI, co-selling, exit.
+- **Rute:** `/partners` (admin/procurement/auditor); role `partner` (ke-25) + permission `partner.*`; command `ptn:audit`.
+- **Catatan jujur:** portal mitra (47.6) baru direktori/detail minimal; due diligence belum memakai ApprovalEngine (skor otomatis); HKI/aset bersama belum tertaut ke modul Asset.

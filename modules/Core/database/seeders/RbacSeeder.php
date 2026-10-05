@@ -45,6 +45,7 @@ class RbacSeeder extends Seeder
             ['name' => 'procurement', 'label' => 'Procurement', 'description' => 'Kualifikasi, RFQ, harga, dan skor pemasok.'],
             ['name' => 'distributor', 'label' => 'Distributor', 'description' => 'Portal distributor: katalog, order, sell-out, tagihan.'],
             ['name' => 'agent', 'label' => 'Agen Penjualan', 'description' => 'Portal agen: lead, penjualan, komisi, statement.'],
+            ['name' => 'partner', 'label' => 'Mitra Bisnis', 'description' => 'Portal mitra: proyek, statement bagi hasil, co-selling.'],
             ['name' => 'planner', 'label' => 'Perencana Produksi', 'description' => 'Mengelola BOM, routing, formula, dan MPS/MRP.'],
             ['name' => 'operator', 'label' => 'Operator Produksi', 'description' => 'Menjalankan order produksi di pabrik.'],
             ['name' => 'qc_inspector', 'label' => 'Inspektor QC', 'description' => 'Inspeksi mutu di titik pemeriksaan produksi.'],
@@ -183,6 +184,12 @@ class RbacSeeder extends Seeder
                 'agency.approve' => 'Menyetujui payout & skema komisi',
                 'agency.portal.access' => 'Akses portal agen (lead, komisi, statement)',
             ],
+            'partner' => [
+                'partner.view' => 'Lihat direktori & profil mitra',
+                'partner.manage' => 'Kelola mitra, JBP, bagi hasil, co-selling',
+                'partner.approve' => 'Menyetujui bagi hasil & due diligence mitra',
+                'partner.portal.access' => 'Akses portal mitra (proyek, statement)',
+            ],
             'manufacturing' => [
                 'manufacturing.view' => 'Lihat master data pabrik',
                 'manufacturing.manage' => 'Kelola plant, material, BOM, routing, dan formula',
@@ -320,6 +327,11 @@ class RbacSeeder extends Seeder
             'agent' => [
                 'core.dashboard.view',
                 'agency.view', 'agency.portal.access',
+            ],
+
+            'partner' => [
+                'core.dashboard.view',
+                'partner.view', 'partner.portal.access',
             ],
 
             'planner' => [

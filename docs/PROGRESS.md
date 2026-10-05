@@ -588,16 +588,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 46.9 Quality gate Fase 46
 
 ## FASE 47 — MITRA & KEMITRAAN (MODUL `ptn_`)
-- [ ] 47.1 Modul Partner: jenis mitra (strategis, teknologi, saluran, waralaba, JV, riset, CSR), siklus hidup `prospect → due diligence → negotiation → active → review → exit`
-- [ ] 47.2 Due diligence: checklist (legal, keuangan, reputasi, ESG, sanksi), skor risiko, approval berjenjang, dokumen
-- [ ] 47.3 Perjanjian kemitraan (Fase 28/29) + rencana kerja bersama (joint business plan): sasaran, KPI, anggaran, PIC kedua pihak
-- [ ] 47.4 **Revenue/profit sharing** generik: aturan bagi hasil (persentase, bertingkat, setelah biaya), periode, perhitungan dari ledger; mengganti pola khusus (Resto royalti, Mall revenue share) lewat adapter tanpa mengubah hasil lama
-- [ ] 47.5 Co-selling & marketplace B2B sederhana: katalog mitra, referral antar-mitra, lead sharing, atribusi
-- [ ] 47.6 Portal mitra (role `partner`): proyek, laporan, statement bagi hasil, dokumen, tiket
-- [ ] 47.7 SLA mitra & penalti, scorecard & review berkala (QBR), rencana perbaikan
-- [ ] 47.8 Aset & HKI bersama: kepemilikan bersama aset (Fase 30), hak kekayaan intelektual (merek/paten/hak cipta — register, masa berlaku, lisensi)
-- [ ] 47.9 Exit & transisi: terminasi kemitraan, pembagian aset/utang, pembayaran terakhir, retensi data
-- [ ] 47.10 Quality gate Fase 47
+- [x] 47.1 Modul Partner: jenis mitra (strategis, teknologi, saluran, waralaba, JV, riset, CSR), siklus hidup `prospect → due diligence → negotiation → active → review → exit`
+- [x] 47.2 Due diligence: checklist (legal, keuangan, reputasi, ESG, sanksi), skor risiko, approval berjenjang, dokumen
+- [x] 47.3 Perjanjian kemitraan (Fase 28/29) + rencana kerja bersama (joint business plan): sasaran, KPI, anggaran, PIC kedua pihak
+- [x] 47.4 **Revenue/profit sharing** generik: aturan bagi hasil (persentase, bertingkat, setelah biaya), periode, perhitungan dari ledger; mengganti pola khusus (Resto royalti, Mall revenue share) lewat adapter tanpa mengubah hasil lama
+- [x] 47.5 Co-selling & marketplace B2B sederhana: katalog mitra, referral antar-mitra, lead sharing, atribusi
+- [x] 47.6 Portal mitra (role `partner`): proyek, laporan, statement bagi hasil, dokumen, tiket
+- [x] 47.7 SLA mitra & penalti, scorecard & review berkala (QBR), rencana perbaikan
+- [x] 47.8 Aset & HKI bersama: kepemilikan bersama aset (Fase 30), hak kekayaan intelektual (merek/paten/hak cipta — register, masa berlaku, lisensi)
+- [x] 47.9 Exit & transisi: terminasi kemitraan, pembagian aset/utang, pembayaran terakhir, retensi data
+- [x] 47.10 Quality gate Fase 47
 
 ## FASE 48 — MULTI-CURRENCY & TREASURY
 - [ ] 48.1 Master mata uang & kurs: kurs harian (sumber simulasi + input manual), jenis kurs (spot/tengah/pajak), tabel kurs ber-versi tak dapat diubah
