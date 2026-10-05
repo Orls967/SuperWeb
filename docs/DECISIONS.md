@@ -596,3 +596,20 @@
   - CRP menghitung setup + run time terhadap kapasitas work center ter-adjust efisiensi; load > capacity atau capacity=0 ditandai bottleneck. `mfg:run-mrp` harian 04:45.
 - **Reason:** MRP dapat diulang deterministik terhadap snapshot yang sama, tidak langsung memutasi inventory/PO, dan semua lintas modul memakai contract; what-if tidak boleh merusak parameter/data nyata.
 - **Tests:** `modules/Manufacturing/tests/Feature/ProductionPlanningTest` (10 tes); full gate 743 test / 3971 assertions, Pint, Vite, audit bank/proc/asset/contract/logistics/mall, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 37 — Eksekusi Produksi (Shop Floor)
+
+- **Context:** Fase 36 menghasilkan planned/firm order; shop floor harus mengeksekusinya dengan akurasi lot, ketertelusuran operasi, dan invarian kuantitas yang dapat diuji.
+- **Decision:**
+  - 9 tabel baru `mfg_*` shop floor + 1 tabel alokasi `mfg_material_issue_lots` (bahan issue dicatat per lot → rekonsiliasi Σ per lot).
+  - `ProductionService::transition` state machine: `planned→released→in_progress→completed→closed|cancelled`, transisi lompat ditolak, replay idempoten. Nomor gapless `MPO/{ENT}/` via `DocumentNumberingInterface`.
+  - Issue bahan FIFO (`produced_at`) / FEFO (`expiry`): konsumsi lot berurutan, kolom `alert` mencatat `shortage`/`no_lot` bila tidak cukup; saldo `mfg_material_balances` tidak pernah negatif (guard hard + `DB::transaction` + `lockForUpdate`). Sisa kebutuhan yang tidak punya lot ditarik dari saldo tanpa alokasi lot.
+  - Backflush otomatis pada transisi ke `completed` dengan `kind=backflush`; hitungan "sudah di-issue" hanya `kind IN (issue, backflush)`.
+  - Guard FG: `receiveFg` menolak Σ receipt > `qty_completed` (hasil lapangan) — menjaga invarian 37.9.
+  - Downtime 5 kode alasan (`machine_down, material_wait, setup, break, other`) sebagai bahan OEE Fase 40; end idempoten.
+  - WIP: transfer `in_transit → received` (idempoten) + `mfg:wip` laporan per order.
+  - Scrap/rework: flag `ncr_required` bila scrap kumulatif > `scrap_tolerance_percent` → hook QMS Fase 39; scrap mengurangi `qty_completed`.
+  - Subkontrak 37.8: kirim bahan lewat contract `ShipmentBooking` Logistics (source_type `manufacturing_subcontract`, idempoten per order), hasil olahan menambah `qty_completed` + stok FG, biaya jasa → PR via contract `MrpRequisitionProposer`.
+  - FEFO ditulis `fefo` (bukan `fefe`) pada kode, validasi controller, dan UI.
+- **Reason:** ketertelusuran lot per issue membuat invarian dapat dibuktikan; stok pabrik dipisah dari stok outlet Resto agar HPP resto tidak terpengaruh; seluruh integrasi lintas modul memakai Contract/Domain-event yang sah (arch 12).
+- **Tests:** `modules/Manufacturing/tests/Feature/ShopFloorTest` (14 tes / 63 asersi). Gate: 757 test / 4034 assertion, Pint, Vite, arch (12), audit bank/lgx/proc/ast/ctr/mall 0 selisih, 10 pilar HEALTHY.

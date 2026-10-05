@@ -7,7 +7,9 @@ namespace Modules\Manufacturing;
 use Illuminate\Support\ServiceProvider;
 use Modules\Manufacturing\Application\Services\ManufacturingService;
 use Modules\Manufacturing\Application\Services\PlanningService;
+use Modules\Manufacturing\Application\Services\ProductionService;
 use Modules\Manufacturing\Console\Commands\RunMrpCommand;
+use Modules\Manufacturing\Console\Commands\WipReportCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class ManufacturingServiceProvider extends ServiceProvider
@@ -16,6 +18,7 @@ class ManufacturingServiceProvider extends ServiceProvider
     {
         $this->app->singleton(ManufacturingService::class);
         $this->app->singleton(PlanningService::class);
+        $this->app->singleton(ProductionService::class);
     }
 
     public function boot(): void
@@ -31,7 +34,7 @@ class ManufacturingServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            $this->commands([RunMrpCommand::class]);
+            $this->commands([RunMrpCommand::class, WipReportCommand::class]);
         }
 
         $this->registerMenu();

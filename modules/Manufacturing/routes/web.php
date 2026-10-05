@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\Manufacturing\Http\Controllers\ManufacturingController;
 use Modules\Manufacturing\Http\Controllers\PlanningController;
+use Modules\Manufacturing\Http\Controllers\ProductionController;
 
 Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,operator,qc_inspector'])
     ->prefix('manufacturing')
@@ -39,4 +40,21 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,planner'])
         Route::post('/planning/mrp/run', [PlanningController::class, 'runMrp'])->name('planning.mrp.run');
         Route::post('/planning/orders/{order}/firm', [PlanningController::class, 'firmOrder'])->name('planning.orders.firm');
         Route::post('/planning/runs/{run}/propose-purchases', [PlanningController::class, 'proposePurchases'])->name('planning.runs.propose');
+    });
+
+Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,operator,qc_inspector'])
+    ->prefix('manufacturing/production')
+    ->name('manufacturing.production.')
+    ->group(function () {
+        Route::get('/', [ProductionController::class, 'index'])->name('index');
+        Route::post('/orders', [ProductionController::class, 'store'])->middleware('role:admin,planner')->name('orders.store');
+        Route::post('/orders/{order}/transition', [ProductionController::class, 'transition'])->name('orders.transition');
+        Route::post('/orders/{order}/issue', [ProductionController::class, 'issue'])->name('orders.issue');
+        Route::post('/orders/{order}/operations/start', [ProductionController::class, 'startOperation'])->name('operations.start');
+        Route::post('/orders/{order}/operations/finish', [ProductionController::class, 'finishOperation'])->name('operations.finish');
+        Route::post('/orders/{order}/receive-fg', [ProductionController::class, 'receiveFg'])->name('orders.receive-fg');
+        Route::post('/orders/{order}/scrap', [ProductionController::class, 'recordScrap'])->name('orders.scrap');
+        Route::post('/orders/{order}/invariants', [ProductionController::class, 'invariants'])->name('orders.invariants');
+        Route::post('/downtimes', [ProductionController::class, 'startDowntime'])->name('downtimes.store');
+        Route::post('/downtimes/{downtime}/end', [ProductionController::class, 'endDowntime'])->name('downtimes.end');
     });

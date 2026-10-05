@@ -477,16 +477,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 36.9 Quality gate Fase 36
 
 ## FASE 37 — EKSEKUSI PRODUKSI (SHOP FLOOR)
-- [ ] 37.1 **Order produksi** (`mfg_production_orders`): state `planned → released → in_progress → completed → closed|cancelled`; nomor via 26.8
-- [ ] 37.2 Pengeluaran bahan (issue) & backflush; kontrol lot FIFO/FEFO; kekurangan bahan memicu alert; stok tidak boleh negatif
-- [ ] 37.3 Pelaporan operasi: mulai/selesai, qty baik/scrap/rework, operator, mesin, durasi; terminal operator UI responsif (mobile/tablet)
-- [ ] 37.4 Downtime & alasan (mesin rusak, tunggu bahan, setup, istirahat) dengan kode standar → bahan OEE (Fase 40)
-- [ ] 37.5 Penerimaan barang jadi ke gudang (FG receipt), pembuatan lot/serial; by-product masuk stok
-- [ ] 37.6 WIP: persediaan dalam proses per order/operasi; transfer WIP antar-operasi; `mfg:wip` laporan
-- [ ] 37.7 Rework & scrap: order rework, alasan, biaya scrap; scrap melebihi toleransi → NCR (Fase 39)
-- [ ] 37.8 Subkontrak operasi (maklon proses): kirim bahan ke subkon via Logistics, terima barang olahan, biaya subkon → PO jasa
-- [ ] 37.9 Konsistensi: Σ bahan keluar + scrap = input; hasil produksi = BOM × qty ± toleransi (test invarian)
-- [ ] 37.10 Quality gate Fase 37
+- [x] 37.1 **Order produksi** (`mfg_production_orders`): state `planned → released → in_progress → completed → closed|cancelled`; nomor via 26.8
+- [x] 37.2 Pengeluaran bahan (issue) & backflush; kontrol lot FIFO/FEFO; kekurangan bahan memicu alert; stok tidak boleh negatif
+- [x] 37.3 Pelaporan operasi: mulai/selesai, qty baik/scrap/rework, operator, mesin, durasi; terminal operator UI responsif (mobile/tablet)
+- [x] 37.4 Downtime & alasan (mesin rusak, tunggu bahan, setup, istirahat) dengan kode standar → bahan OEE (Fase 40)
+- [x] 37.5 Penerimaan barang jadi ke gudang (FG receipt), pembuatan lot/serial; by-product masuk stok
+- [x] 37.6 WIP: persediaan dalam proses per order/operasi; transfer WIP antar-operasi; `mfg:wip` laporan
+- [x] 37.7 Rework & scrap: order rework, alasan, biaya scrap; scrap melebihi toleransi → NCR (Fase 39)
+- [x] 37.8 Subkontrak operasi (maklon proses): kirim bahan ke subkon via Logistics, terima barang olahan, biaya subkon → PO jasa
+- [x] 37.9 Konsistensi: Σ bahan keluar + scrap = input; hasil produksi = BOM × qty ± toleransi (test invarian)
+- [x] 37.10 Quality gate Fase 37
 
 ## FASE 38 — BIAYA PRODUKSI (COSTING)
 - [ ] 38.1 Standard cost per item (roll-up BOM + routing + overhead), versi biaya, approval perubahan
