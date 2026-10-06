@@ -171,17 +171,23 @@ Pastikan satu baris crontab berikut aktif di server produksi:
 | Harian 02:00 | `resto:post-royalty` | Hitung & posting royalti waralaba holding |
 | Harian 02:30 | `lgx:verify-custody` | Audit integritas kriptografis rantai kustodi resi |
 | Harian 04:00 | `mall:auto-debit` | Eksekusi auto-debit tagihan tenant dari dompet |
+| Harian 04:45 | `mfg:run-mrp` | Eksekusi kalkulasi kebutuhan material MRP harian |
 | Harian 05:00 | `mall:apply-penalties` | Terapkan denda 2% bagi tagihan terlambat |
 | Harian 06:00 | `mall:renew-parking-members` | Perpanjangan otomatis langganan parkir |
 | Harian 06:30 | `mall:generate-pm-orders` | Terbitkan work order pemeliharaan gedung |
+| Harian 06:45 | `sup:scan-risks` | Pemindaian risiko pemasok, sertifikasi & sanksi |
 | Harian 07:00 | `mall:audit-billing` | Audit integritas penagihan mall vs ledger |
+| Harian 07:10 | `sup:remind-certifications` | Kirim pengingat kedaluwarsa sertifikasi pemasok |
 | Harian 07:15 | `lgx:audit-billing` | Audit integritas penagihan logistik vs ledger |
 | Harian 07:30 | `resto:check-stock` | Pantau stok kritis bahan baku & draf PO |
 | Harian 08:30 | `lgx:settle-cod` | Cairkan setoran COD ke dompet shipper (D+N) |
+| Harian 23:50 | `chain:audit-all` | Orkestrasi 18 audit rantai nilai global ekosistem |
 | Harian 23:59 | `resto:close-day --check` | Tutup harian resto, buang waste & ringkasan |
 | Harian 23:59 | `bank:reconcile` | Audit keselarasan saldo buku besar double-entry |
 | Mingguan Senin, 08:00 | `mall:settle-vouchers` | Cairkan klaim voucher belanja tenant |
 | Mingguan Senin, 09:00 | `lgx:pay-carriers` | Bayar tagihan leg carrier subkontrak jatuh tempo |
+| Bulanan Tgl 1, 01:00 | `ast:depreciate` | Perhitungan & posting beban depresiasi aset tetap |
+| Bulanan Tgl 1, 01:30 | `ast:audit` | Audit rekonsiliasi subledger aset tetap vs ledger |
 | Bulanan Tgl 1, 02:00 | `lgx:invoice-shippers` | Terbitkan tagihan bulanan shipper pascabayar B2B |
 | Bulanan Tgl 1, 03:00 | `mall:generate-invoices` | Terbitkan tagihan sewa & utilitas bulanan |
 

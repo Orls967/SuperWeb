@@ -101,8 +101,9 @@ Platform menyediakan rangkaian Artisan Command untuk otomatisasi operasional dan
 ### 1. Diagnosa & Observabilitas
 | Command | Deskripsi |
 |---|---|
-| `php artisan super:health-check` | Memindai kesehatan 9 pilar platform (DB, Cache, Storage, Ledger, Passport, Mall Billing, Resto Shift, Logistik Kustodi & Billing, Aset Subledger & Hash Chain) |
-| `php artisan bank:reconcile` | Memverifikasi seluruh saldo akun buku besar double-entry (0 diskrepansi saldo) |
+| `php artisan chain:audit-all` | Orkestrasi 18 audit rantai nilai global ekosistem secara menyeluruh (0 diskrepansi) |
+| `php artisan super:health-check` | Memindai kesehatan 10 pilar platform (DB, Cache, Storage, Ledger, Passport, Mall Billing, Resto Shift, Logistik Kustodi & Billing, Aset Subledger & Hash Chain, Health Matrix) |
+| `php artisan bank:reconcile` | Memverifikasi seluruh saldo akun buku besar double-entry (140 akun seimbang, 0 diskrepansi saldo) |
 | `php artisan core:verify-passports` | Memvalidasi keabsahan kriptografis rantai hash-chain Paspor Kendaraan |
 | `php artisan mall:audit-billing` | Mengaudit keselarasan seluruh penagihan invoice mall terhadap pendapatan buku besar |
 | `php artisan lgx:audit-billing` | Mengaudit keselarasan 15 titik penagihan logistik vs saldo buku besar (0 selisih) |
@@ -149,7 +150,7 @@ Platform menyediakan rangkaian Artisan Command untuk otomatisasi operasional dan
 
 ## 🧪 Pengujian & Uji Kualitas (Quality Gates)
 
-Platform dilengkapi rangkaian automated test komprehensif (**554 Tests, 3233 Assertions**, 0 skipped):
+Platform dilengkapi rangkaian automated test komprehensif (**931+ Tests, 4778+ Assertions**, 0 skipped):
 
 ```bash
 # 1. Jalankan seluruh test suite
