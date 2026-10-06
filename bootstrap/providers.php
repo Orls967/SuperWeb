@@ -65,6 +65,7 @@ return [
     \Modules\Hcm\HcmServiceProvider::class,
     \Modules\Plm\PlmServiceProvider::class,
     \Modules\Esg\EsgServiceProvider::class,
+    \Modules\B2b\B2bServiceProvider::class,
 ];
 
 

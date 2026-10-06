@@ -34,6 +34,7 @@ class ChainAuditAllCommand extends Command
             'hcm:audit' => 'Human Capital Management Payroll & Labor Costing',
             'plm:audit' => 'Product Lifecycle Management ECO & Hash Chain',
             'esg:audit' => 'ESG Emissions, Carbon Accounting & Sustainability',
+            'b2b:audit' => 'B2B Marketplace, Surplus Auctions & Escrow Balance',
         ];
 
         $failures = 0;

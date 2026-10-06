@@ -993,16 +993,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 60.4 `esg:audit` (Faktor emisi terstandarisasi, neraca kredit karbon = sertifikat aktif, 0 diskrepansi).
 
 ### FASE 61 — MARKETPLACE B2B, SURPLUS ASSET AUCTION & ESCROW
-- [ ] 61.1 **Portal Marketplace B2B Multi-Vendor**:
+- [x] 61.1 **Portal Marketplace B2B Multi-Vendor**:
   - Direktori katalog grosir tertutup: etalase produk distributor dan mitra resmi dengan penetapan harga berbasis kuantitas (*Tiered Pricing*) dan harga kontrak khusus.
   - Alur RFQ (Request for Quotation) publik antar-perusahaan dengan negosiasi termin pembayaran tempo (TOP 30/60).
-- [ ] 61.2 **Balai Lelang Digital Aset Surplus & Peralatan Pabrik**:
+- [x] 61.2 **Balai Lelang Digital Aset Surplus & Peralatan Pabrik**:
   - Pendaftaran barang lelang: unit mobil bekas AutoDex, mesin pabrik idle dari modul Aset, atau surplus persediaan WMS.
   - Mesin lelang real-time (*English Auction & Dutch Auction*): penawaran harga dinamis, waktu perpanjangan otomatis (*anti-sniping*), dan penentuan pemenang deterministik.
-- [ ] 61.3 **Escrow Multi-Pihak Terproteksi**:
+- [x] 61.3 **Escrow Multi-Pihak Terproteksi**:
   - Penguncian dana deposit lelang dan pembayaran transaksi B2B di rekening escrow platform.
   - Rilis dana bertahap ke penjual setelah konfirmasi serah terima fisik (BAST / POD digital) disetujui kedua pihak.
-- [ ] 61.4 `b2b:audit` (Dana rekening escrow = saldo komitmen lelang + transaksi berjalan, 0 diskrepansi).
+- [x] 61.4 `b2b:audit` (Dana rekening escrow = saldo komitmen lelang + transaksi berjalan, 0 diskrepansi).
 
 ### FASE 62 — AGRIBISNIS, KONTRAK PETANI & HULU RANTAI PASOK MAKANAN
 - [ ] 62.1 **Kemitraan Petani, Kebun Plasma & Kontrak Tani (Contract Farming)**:

@@ -935,6 +935,20 @@
   - **60.4 Audit ESG:** Command `esg:audit` memvalidasi faktor emisi terstandarisasi, kuantitas offset tidak melampaui kredit aktif, dengan 0 diskrepansi.
 - **Tests:** `EsgTest` (5 tes / 12 asersi). Sub-suite `EsgTest|ModuleBoundariesTest` (17 passed / 72 assertions), `esg:audit` (0 diskrepansi), `chain:audit-all` (15 audit lulus), Pint lulus.
 
+---
+
+## 2026-10-06: Fase 61 — Marketplace B2B, Surplus Asset Auction & Escrow (Modul `b2b_`)
+
+- **Context:** Direktori katalog grosir B2B multi-vendor tertutup dengan penetapan harga kuantitas bertingkat (*Tiered Pricing Matrix*), alur negosiasi RFQ tempo pembayaran TOP 30/60, balai lelang digital aset surplus pabrik/mesin dengan proteksi perpanjangan waktu otomatis (*anti-sniping*), dan rekening escrow multi-pihak terproteksi pelepasan berbasis verifikasi BAST fisik.
+- **Decision:**
+  - Prefix tabel **`b2b_`** (4 tabel: `b2b_wholesale_catalogs`, `b2b_rfqs`, `b2b_auctions`, `b2b_escrow_accounts`).
+  - **61.1 Marketplace Grosir & RFQ:** Pengelolaan katalog vendor terverifikasi dan siklus penawaran harga B2B transparan.
+  - **61.2 Balai Lelang Digital & Anti-Sniping:** Mesin penawaran harga lelang (English Auction) dengan deteksi penawaran menit-menit akhir untuk memperpanjang durasi penawaran secara adil.
+  - **61.3 Escrow Multi-Pihak Terproteksi:** Kunci dana transaksi di akun escrow dengan pelepasan bertahap berbasis Berita Acara Serah Terima (BAST).
+  - **61.4 Audit B2B:** Command `b2b:audit` memvalidasi neraca rekening escrow (dana keluar tidak melebihi deposit) dan konsistensi lelang dengan 0 diskrepansi.
+- **Tests:** `B2bTest` (5 tes / 16 asersi). Sub-suite `B2bTest|ModuleBoundariesTest` (17 passed / 76 assertions), `b2b:audit` (0 diskrepansi), `chain:audit-all` (16 audit lulus), Pint lulus.
+
+
 
 
 
