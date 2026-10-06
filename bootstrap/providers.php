@@ -67,6 +67,7 @@ return [
     \Modules\Esg\EsgServiceProvider::class,
     \Modules\B2b\B2bServiceProvider::class,
     \Modules\Agri\AgriServiceProvider::class,
+    \Modules\Epc\EpcServiceProvider::class,
 ];
 
 

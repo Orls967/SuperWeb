@@ -1017,16 +1017,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 62.4 `agri:audit` (Stok panen pos pengumpul = penerimaan gudang/CK-01, potongan uang muka bibit tepat, 0 selisih).
 
 ### FASE 63 — KONSTRUKSI EPC, MANAJEMEN PROYEK PROPERTI & ASSET CAPITALIZATION
-- [ ] 63.1 **Work Breakdown Structure (WBS) & Rencana Anggaran Biaya (RAB Proyek)**:
+- [x] 63.1 **Work Breakdown Structure (WBS) & Rencana Anggaran Biaya (RAB Proyek)**:
   - Hierarki proyek konstruksi: Proyek (Mall Ekstensi/Pabrik Baru) → Tahap → Paket Pekerjaan → Butir Aktivitas WBS.
   - Estimasi RAB terperinci: komponen material (beton, baja), upah tenaga kerja kontraktor, dan sewa alat berat.
-- [ ] 63.2 **Manajemen Progres Fisik, Kurva-S & Sertifikat Prestasi Proyek (MC)**:
+- [x] 63.2 **Manajemen Progres Fisik, Kurva-S & Sertifikat Prestasi Proyek (MC)**:
   - Pelacakan deviasi progres aktual vs target kurva-S (bobot persentase penyelesaian fisik).
   - Penerbitan *Monthly Certificate* (MC) berdasarkan verifikasi konsultan pengawas independen dan pengajuan klaim termin penagihan.
-- [ ] 63.3 **Konstruksi Dalam Pengerjaan (CIP) & Kapitalisasi Aset Tetap**:
+- [x] 63.3 **Konstruksi Dalam Pengerjaan (CIP) & Kapitalisasi Aset Tetap**:
   - Akumulasi seluruh biaya proyek ke akun buku besar *Construction in Progress* (`ast:cip_project`).
   - Berita Acara Serah Terima Akhir (BAST 1 & 2): penutupan akun CIP dan reklasifikasi otomatis menjadi Aset Tetap Bangunan, Gedung, dan Instalasi Fasilitas di modul Aset (`Modules\Asset`).
-- [ ] 63.4 `epc:audit` (Realisasi termin tagihan = progres MC terverifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, 0 diskrepansi).
+- [x] 63.4 `epc:audit` (Realisasi termin tagihan = progres MC terverifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, 0 diskrepansi).
 
 ### FASE 64 — ANALITIK PREDIKTIF, AI-DRIVEN REVENUE MANAGEMENT & ANOMALY DETECTION
 - [ ] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:

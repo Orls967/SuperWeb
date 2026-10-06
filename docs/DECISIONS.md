@@ -961,6 +961,20 @@
   - **62.4 Audit Agribisnis:** Command `agri:audit` memvalidasi konsistensi perhitungan pembayaran bersih (`gross - deduction == net`) dan batas potongan tidak melampaui bruto dengan 0 diskrepansi.
 - **Tests:** `AgriTest` (5 tes / 14 asersi). Sub-suite `AgriTest|ModuleBoundariesTest` (17 passed / 74 assertions), `agri:audit` (0 diskrepansi), `chain:audit-all` (17 audit lulus), Pint lulus.
 
+---
+
+## 2026-10-06: Fase 63 — Konstruksi EPC, Manajemen Proyek Properti & Asset Capitalization (Modul `epc_`)
+
+- **Context:** Manajemen hierarki proyek konstruksi EPC (Mall Ekstensi & Pabrik Pengolahan Baru), pemecahan aktivitas Work Breakdown Structure (WBS) dengan kurva-S progres fisik, penerbitan sertifikat prestasi bulanan (*Monthly Certificate - MC*) dengan potongan retensi 5%, akumulasi biaya konstruksi dalam pengerjaan (*Construction in Progress - CIP*), dan reklasifikasi otomatis menjadi Aset Tetap di modul Aset (`ast_`) saat BAST Final diterbitkan.
+- **Decision:**
+  - Prefix tabel **`epc_`** (4 tabel: `epc_projects`, `epc_wbs_nodes`, `epc_progress_certificates`, `epc_cip_capitalizations`).
+  - **63.1 Hierarki WBS & RAB Proyek:** Struktur paket kerja (struktur sipil, MEP, arsitektur, finishing) dengan bobot persentase kurva-S dan alokasi anggaran.
+  - **63.2 Sertifikat Prestasi Fisik (Monthly Certificate - MC):** Sertifikasi kemajuan fisik independen dengan klaim bruto dan pemotongan retensi pemeliharaan 5%.
+  - **63.3 Akumulasi CIP & Kapitalisasi Aset Tetap:** Pencatatan biaya konstruksi dalam pengerjaan dan penutupan akun CIP menjadi Aset Tetap terdaftar saat serah terima BAST final.
+  - **63.4 Audit EPC:** Command `epc:audit` memvalidasi kesesuaian nilai klaim MC dengan akumulasi saldo CIP dan nilai aset terkapitalisasi dengan 0 diskrepansi.
+- **Tests:** `EpcTest` (5 tes / 19 asersi). Sub-suite `EpcTest|ModuleBoundariesTest` (17 passed / 79 assertions), `epc:audit` (0 diskrepansi), `chain:audit-all` (18 audit lulus), Pint lulus.
+
+
 
 
 

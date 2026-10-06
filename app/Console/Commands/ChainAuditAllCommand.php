@@ -36,6 +36,7 @@ class ChainAuditAllCommand extends Command
             'esg:audit' => 'ESG Emissions, Carbon Accounting & Sustainability',
             'b2b:audit' => 'B2B Marketplace, Surplus Auctions & Escrow Balance',
             'agri:audit' => 'Agribusiness Contract Farming Collections & Payouts',
+            'epc:audit' => 'EPC Construction WBS Progress & Asset Capitalization',
         ];
 
         $failures = 0;
