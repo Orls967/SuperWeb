@@ -160,9 +160,12 @@ Dokumen: `README.md` (Logistics + section API v1 sejak 26.2) · `docs/{PROGRESS,
 7. ~~Document numbering & document store~~ **DITUTUP (26.8)** — `core_document_sequences` (gapless, lockForUpdate), `core_documents` (SHA-256 checksum, retensi, mime/extension guard), `DocumentNumberingInterface/Service`, `DocumentStoreInterface/Service`.
 8. ~~Approval engine generik~~ **DITUTUP (26.9)** — `core_approvals`, `core_approval_steps`, `core_approval_histories`, `ApprovalEngineInterface/Service` (four-eyes, multi-level, delegasi, SLA escalation, histori); helper `approval()` di `BaseAction`.
 
-## 13. Rencana ke depan (ringkas; detail di PROGRESS.md)
+## 13. Rencana ke depan & status fase (ringkas; detail di PROGRESS.md)
 
-Fase 20–25 Logistik selesai → **26–57** (detail di PROGRESS.md): 26 utang teknis+RBAC+outbox+approval · 27 Party & badan hukum · 28–29 Kontrak · 30–31 Aset · 32–34 Pemasok/Procurement/AP · 35–40 Blok pabrik · 41 WMS · 42–43 Distributor (selesai) → 44 Harga & Trade Terms · 41 WMS · 42–44 Distributor, distribusi, pricing · 45–46 Agensi · 47 Mitra · 48 Multi-currency/Treasury · 49–50 Ekspor-impor & Trade finance · 51–52 Kerja sama internasional & konsolidasi · 53 S&OP/Control tower · 54 Finance grup/kepatuhan · 55 API v2/EDI · 56 Skala/simulasi · 57 E2E & serah terima. Backlog 58+: SDM, PLM, ESG, marketplace, hulu pertanian, konstruksi, AI, mobile, DR.
+- **Fase 1–25 (Pondasi Bisnis & Logistik):** Core, Bengkel AutoServe, Ensiklopedia AutoDex, Toko Online & Escrow C2C, Dompet Double-Entry Multi-Aset, HODL-to-Drive, Restoran RM Sari Ranah, Supermall Duta Mall, Sari Ranah Express Logistik End-to-End (Fase 20–25) selesai.
+- **Fase 26–57 (Ekosistem Korporat Terpadu):** RBAC multi-role, Party master, Kontrak terstandarisasi, Manajemen Aset PSAK 16/73, Pengadaan Pemasok & 3-way match, Blok Manufaktur 6-fase (MRP/Shop Floor/Costing/QMS/OEE/WMS), Jaringan Distribusi, Dynamic Pricing & Waterfall Diskon, Agensi & Multi-Tier Commission, Kemitraan Strategis, Perbendaharaan Treasury & Revaluasi Valas, Tata Niaga Ekspor-Impor & Landed Cost, Trade Finance UCP 600, Joint Ventures Internasional & P3B, Transaksi Cermin & Konsolidasi Grup Intercompany, Supply Chain Control Tower S&OP, Tata Kelola Finance Grup & SoD, B2B Integration Engine & EDI, Simulasi Skala Besar & Serah Terima Final selesai.
+- **Fase 58–63 (Ekspansi Strategis Konglomerasi Multi-Sektor):** Human Capital Management (HCM & PPh 21 TER), Product Lifecycle Management (PLM & Stage-Gate R&D), ESG & Akuntansi Karbon (GHG Scope 1-3 & IDX Carbon), B2B Marketplace & Lelang Surplus Mesin/Aset, Hulu Agribisnis & Rantai Pasok Petani (Contract Farming & Cold Chain), Konstruksi EPC & Kapitalisasi Aset (WBS Kurva-S & Monthly Certificate MC) selesai.
+- **Backlog Mendatang (Fase 64+):** Fase 64 Analitik Prediktif & AI-Driven Revenue Management, Fase 65 Enterprise Mobile Suite (PWA/Offline-First), Fase 66 Resiliensi Global, Disaster Recovery Multi-Region & Kedaulatan Data.
 
 ## 14. PROTOKOL PEMBARUAN (wajib)
 
@@ -285,6 +288,70 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 - **Service:** `PartnerService` — siklus hidup `prospect→due_diligence→negotiation→active⇄review→exit` ber-guard, due diligence (skor ≥70 approved), JBP, bagi hasil idempoten per (mitra, periode) + posting ledger `ptn:rev_share_expense`/`clearing`, scorecard upsert, HKI, co-selling, exit.
 - **Rute:** `/partners` (admin/procurement/auditor); role `partner` (ke-25) + permission `partner.*`; command `ptn:audit`.
 - **Catatan jujur:** portal mitra (47.6) baru direktori/detail minimal; due diligence belum memakai ApprovalEngine (skor otomatis); HKI/aset bersama belum tertaut ke modul Asset.
+
+### Treasury & Multi-Currency (`trs_`) — Fase 48
+
+- **Tujuan:** perbendaharaan multi-mata uang terpusat, kurs versi immutable berpresisi tinggi (scaled 1e6 integer), revaluasi selisih kurs akhir periode, rekening bank operasional & sweeping kas pool, prakiraan arus kas 13 minggu, lindung nilai valas forward contract mark-to-market, dan monitoring batasan rasio utang/covenant DER.
+- **Tabel:** `trs_currencies`, `trs_exchange_rates`, `trs_revaluations`, `trs_bank_accounts`, `trs_bank_statements`, `trs_cash_forecasts`, `trs_forward_contracts`, `trs_credit_facilities`, `trs_cash_pools`.
+- **Service:** `Modules\Treasury\Application\Services\TreasuryService` — posting kurs harian, revaluasi aset moneter valas, sweeping kas otomatis antar-rekening entitas, pemantauan fasilitas plafon kredit dan debt-to-equity covenant.
+- **Rute:** `/treasury` (role `admin`, `treasury`).
+- **Command:** `treasury:audit` (revaluasi saldo valas vs ledger, batasan covenant, sweeping kas seimbang, 0 diskrepansi).
+
+### Cross-Border Trade & Ekspor-Impor (`trd_`) — Fase 49
+
+- **Tujuan:** otomasi tata niaga ekspor dan impor barang lintas negara, penegakan aturan Incoterms 2020, klasifikasi tarif bea masuk/keluar HS Code, landed cost bertingkat, kepabeanan PEB (Pemberitahuan Ekspor Barang) & PIB (Pemberitahuan Impor Barang), pelacakan hash-chain kargo SHA-256, dan resolusi sengketa dagang internasional.
+- **Tabel:** `trd_countries`, `trd_ports`, `trd_incoterms`, `trd_hs_codes`, `trd_export_orders`, `trd_import_orders`, `trd_trade_documents`, `trd_shipment_legs`, `trd_trade_disputes`.
+- **Service:** `Modules\Trade\Application\Services\TradeService` — kalkulasi bea masuk, PPN impor, PPh 22 impor, FTA duty preferences, transisi status ekspor saat penyerahan risiko Incoterms, pelacakan leg logistik internasional.
+- **Rute:** `/trade` (role `admin`, `procurement`, `logistics_admin`).
+- **Command:** `trade:audit` (integritas hash-chain tracking logistik perbatasan, kalkulasi landed cost, 0 selisih).
+
+### Trade Finance & Supply Chain Financing (`tf_`) — Fase 50
+
+- **Tujuan:** pembiayaan perdagangan internasional terstandarisasi UCP 600, siklus hidup Letter of Credit (L/C: issuance, advising, negotiation, settlement), diskrepansi dokumen ekspor-impor, penagihan dokumenter (D/P, D/A), bank garansi penerbitan jaminan tender/pelaksanaan/retensi, dan pinjaman modal kerja rantai pasok (SCF).
+- **Tabel:** `tf_letters_of_credit`, `tf_lc_documents`, `tf_documentary_collections`, `tf_bank_guarantees`, `tf_trade_loans`.
+- **Service:** `Modules\TradeFinance\Application\Services\TradeFinanceService` — penerbitan L/C, deteksi diskrepansi dan penolakan/waiver dokumen ekspor, monitoring jatuh tempo bank garansi, dan pencairan fasilitas SCF ke pemasok.
+- **Rute:** `/trade-finance` (role `admin`, `treasury`).
+- **Command:** `tf:audit` (rekonsiliasi eksposur komitmen L/C dan bank garansi aktif terhadap saldo agunan fasilitas, 0 diskrepansi).
+
+### International Joint Ventures & Aliansi Global (`intl_`) — Fase 51
+
+- **Tujuan:** kemitraan korporasi multi-yurisdiksi, pembentukan entitas joint venture (equity vs contractual), lisensi alih teknologi internasional dengan royalti dan jaminan minimum tahunan (MAG), kontrak tolling manufaktur OEM/ODM, perjanjian alih teknologi ber-milestone, dan penghindaran pajak berganda P3B/DTA.
+- **Tabel:** `intl_foreign_entities`, `intl_joint_ventures`, `intl_technology_licenses`, `intl_oem_contracts`, `intl_tech_transfers`, `intl_tax_treaties`.
+- **Service:** `Modules\International\Application\Services\InternationalService` — manajemen entitas asing ber-AML check, kalkulasi royalti paten/merek, pemotongan withholding tax (WHT) tarif P3B tereduksi, monitoring tolling fee pabrik.
+- **Rute:** `/international` (role `admin`, `legal`, `treasury`).
+- **Command:** `intl:audit` (verifikasi royalti vs MAG, konsistensi tarif pajak P3B, 0 diskrepansi).
+
+### Intercompany Transactions & Konsolidasi Grup (`ic_`) — Fase 52
+
+- **Tujuan:** konsolidasi keuangan multi-entitas holding & anak perusahaan, transaksi cermin otomatis (Mirror SO ↔ PO dan mirror AP ↔ AR), penetapan harga transfer wajar (*Arm's Length Transfer Pricing* metode CUP/CPM/RPM/TNMM), pinjaman antar-perusahaan, eliminasi saldo resiprokal, dan atribusi laba kepentingan non-pengendali (NCI).
+- **Tabel:** `ic_intercompany_transactions`, `ic_intercompany_loans`, `ic_transfer_pricing_rules`, `ic_elimination_entries`, `ic_subsidiary_ncis`.
+- **Service:** `Modules\Intercompany\Application\Services\IntercompanyService` — penjurnalan mirror transaksi, kalkulasi bunga arm's length pinjaman afiliasi, eliminasi saldo piutang-utang internal saat tutup buku, rekonsiliasi kepemilikan minoritas NCI.
+- **Rute:** `/intercompany` (role `admin`, `auditor`, `treasury`).
+- **Command:** `group:audit` (keseimbangan transaksi cermin PO-SO, eliminasi resiprokal seimbang, 0 selisih).
+
+### Supply Chain Control Tower & S&OP (`sct_`) — Fase 53
+
+- **Tujuan:** menara kendali rantai pasok multi-eselon terpusat, optimalisasi persediaan multi-eselon klasifikasi ABC/XYZ, peramalan permintaan agregat S&OP (Moving Average, Exponential Smoothing) dengan evaluasi MAPE, alokasi janji pemenuhan pesanan bebas janji (ATP) dan kapasitas produksi mampu janji (CTP), serta radar peringatan dini gangguan rantai pasok (*blast radius disruption*).
+- **Tabel:** `sct_echelon_stocks`, `sct_demand_forecasts`, `sct_order_promises`, `sct_disruption_alerts`.
+- **Service:** `Modules\ControlTower\Application\Services\ControlTowerService` — rebalancing safety stock multi-eselon, kalkulasi deviasi perkiraan permintaan S&OP, alokasi stok ATP/CTP tanpa membuat kuota negatif, evaluasi blast radius bencana atau kemacetan pelabuhan.
+- **Rute:** `/control-tower` (role `admin`, `planner`, `logistics_admin`).
+- **Command:** `tower:audit` (invarian kuota pemenuhan pesanan ATP/CTP ≤ saldo bebas fisik, validasi eselon persediaan, 0 diskrepansi).
+
+### Enterprise Finance, Anggaran & Tata Kelola Grup (`ef_`) — Fase 54
+
+- **Tujuan:** tata kelola keuangan korporat skala konglomerasi, kontrol anggaran multi-level (*hard-stop* vs *soft-stop encumbrance*), kepatuhan kalender regulasi perpajakan nasional, rekonsiliasi SPT Masa PPN & PPh grup, penegakan matriks pemisahan tugas (*Segregation of Duties - SoD*) multi-role anti-konflik kepentingan.
+- **Tabel:** `ef_enterprise_budgets`, `ef_enterprise_tax_summaries`, `ef_sod_rules`, `ef_compliance_deadlines`.
+- **Service:** `Modules\EnterpriseFinance\Application\Services\EnterpriseFinanceService` — validasi serapan anggaran unit bisnis, engine deteksi benturan peran SoD (misal pembuat PO dilarang menyetujui pembayaran), kalender kepatuhan pajak dan audit holding.
+- **Rute:** `/enterprise-finance` (role `admin`, `auditor`, `treasury`).
+- **Command:** `enterprise:audit` (verifikasi serapan anggaran tidak melampaui plafon hard-stop, ketiadaan pelanggaran aturan SoD aktif, 0 diskrepansi).
+
+### B2B Integration Engine & EDI Gateway (`intg_`) — Fase 55
+
+- **Tujuan:** pintu gerbang integrasi mitra strategis, distributor besar, dan perbankan via B2B REST API v2 dan Electronic Data Interchange (EDI), pertukaran dokumen standar industri (EDIFACT ORDERS/DESADV/INVOIC & ANSI X12 850/855/856/810), pengiriman event webhook ber-tanda tangan kriptografis HMAC SHA-256 dengan kuota bertingkat (*tiered rate-limiting*).
+- **Tabel:** `intg_webhook_subscriptions`, `intg_webhook_deliveries`, `intg_edi_messages`, `intg_api_clients`.
+- **Service:** `Modules\Integration\Application\Services\IntegrationService` — parsing & generasi pesan EDI, verifikasi kuota API per menit, dispatch webhook outbox dengan retry backoff eksponensial, dan verifikasi hash signature.
+- **Rute:** `/integration` (role `admin`).
+- **Command:** `api:audit` (integritas tanda tangan kriptografis webhook HMAC SHA-256, pelacakan pengiriman dead-letter, 0 diskrepansi).
 
 ### Human Capital Management (`hcm_`) — Fase 58
 

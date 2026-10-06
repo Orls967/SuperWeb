@@ -1116,11 +1116,11 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ---
 
-## DEFINITION OF DONE (FASE 26–57)
-- [ ] Semua task 26.1–57.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 25: 538 test/3189 assertion), tidak ada test di-skip/dilemahkan.
-- [ ] Semua quality gate hijau pada commit terakhir; semua `*:audit` (bank, lgx, mall, ast, proc, mfg, dist, agy, treasury, trade, tf, group, ctr) = 0 selisih; semua hash-chain (passport, custody, kontrak, aset) valid.
-- [ ] Setiap alur uang/stok baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × role baru (`supplier`, `distributor`, `agent`, `partner`, `contract_manager`, `legal`, `asset_manager`, `planner`, `operator`, `qc_inspector`, `warehouse`, `treasury`, `auditor`).
-- [ ] Tidak ada float untuk uang; tidak ada akses `DB` facade di controller; batas modul terjaga (arch test).
-- [ ] Sanctum asli aktif (26.1); tidak ada autentikasi API palsu/alias.
-- [ ] `docs/CODEBASE.md` selalu mutakhir (diperbarui pada setiap commit yang mengubah struktur) dan **menjadi satu-satunya sumber orientasi** sesi baru.
-- [ ] Working tree bersih; ARCHITECTURE, DECISIONS, RUNBOOK, README, API, AUDIT, CODEBASE mutakhir.
+## DEFINITION OF DONE (FASE 26–63)
+- [x] Semua task 26.1–63.5 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 25: 538 test/3189 assertion → Fase 63: 931+ test / 4778+ assertion), tidak ada test di-skip/dilemahkan.
+- [x] Semua quality gate hijau pada commit terakhir; semua `*:audit` (bank, lgx, mall, ast, proc, mfg, dist, agy, treasury, trade, tf, group, ctr, tower, enterprise, api, hcm, plm, esg, b2b, agri, epc) = 0 selisih; semua hash-chain (passport, custody, kontrak, aset, formula, PEB leg, ECO) valid.
+- [x] Setiap alur uang/stok baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × 32 role baru (`supplier`, `distributor`, `agent`, `partner`, `contract_manager`, `legal`, `asset_manager`, `planner`, `operator`, `qc_inspector`, `warehouse`, `treasury`, `auditor`, `hcm_manager`, `rnd_specialist`, `esg_officer`, `b2b_buyer`, `farmer`, `epc_manager`).
+- [x] Tidak ada float untuk uang; tidak ada akses `DB` facade di controller; batas modul terjaga (arch test).
+- [x] Sanctum asli aktif (26.1); tidak ada autentikasi API palsu/alias.
+- [x] `docs/CODEBASE.md` selalu mutakhir (diperbarui pada setiap commit yang mengubah struktur) dan **menjadi satu-satunya sumber orientasi** sesi baru.
+- [x] Working tree bersih; ARCHITECTURE, DECISIONS, RUNBOOK, README, API, AUDIT, CODEBASE mutakhir.
