@@ -31,6 +31,7 @@ class ChainAuditAllCommand extends Command
             'tower:audit' => 'Supply Chain Control Tower ATP/CTP Invariant',
             'enterprise:audit' => 'Enterprise Finance Budgets, Tax & SoD Compliance',
             'api:audit' => 'B2B API & Webhook HMAC Cryptographic Integrity',
+            'hcm:audit' => 'Human Capital Management Payroll & Labor Costing',
         ];
 
         $failures = 0;

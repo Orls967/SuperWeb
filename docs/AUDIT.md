@@ -901,3 +901,26 @@
 - **Observabilitas Sistem (`super:health-check`):** Seluruh 10 pilar sub-sistem HEALTHY (0 error).
 - **Audit Terpadu (`chain:audit-all`):** 12 Perintah Audit Rantai Nilai Lulus dengan 0 Selisih.
 
+---
+
+## ✅ Quality Gate Fase 58 — PENUTUP FINAL — 2026-10-06
+
+**Cakupan fase:** Fase 58.1 – 58.5 (Human Capital Management, Talent & Production Payroll — Modul `hcm_`)
+
+### Ringkasan Capaian Sub-Fase
+
+| Sub-Fase | Komponen & Fitur | Status | Detail Implementasi |
+|---|---|:---:|---|
+| 58.1 | Master Karyawan & Struktur Departemen | Selesai | Tabel `hcm_departments` & `hcm_employees`, NIK terenkripsi hash SHA-256, jenis kontrak (PKWT, PKWTT, casual). |
+| 58.2 | Manajemen Waktu & Jam Kerja Shift | Selesai | Penjadwalan shift kerja terstruktur dan pelacakan jam lembur. |
+| 58.3 | Mesin Penggajian & Perpajakan PPh 21 TER | Selesai | Tabel `hcm_payrolls`, formula pemotongan BPJS Ketenagakerjaan, BPJS Kesehatan, dan PPh 21 TER. |
+| 58.4 | Alokasi Tenaga Kerja Langsung Manufaktur | Selesai | Tabel `hcm_production_labor_allocations`, atribusi biaya jam kerja operator langsung ke referensi Work Order SPK (`mfg_`). |
+| **58.5** | **Quality Gate Fase 58** | **Lulus** | Command `hcm:audit` lulus 0 diskrepansi, `HcmTest` 4 passed (9 assertions), `chain:audit-all` lulus terpadu, Pint passed. |
+
+### Metrik Kualitas Final Fase 58
+- **Test Suite**: **4 Tests di HcmTest (9 assertions)**, ModuleBoundariesTest 12 passed (60 assertions).
+- **Status Standar Kode (Pint):** Passed.
+- **Arch Tests (batas modul):** 12 passed.
+- **Audit Terpadu (`chain:audit-all`):** 13 Perintah Audit Rantai Nilai Lulus dengan 0 Selisih.
+
+

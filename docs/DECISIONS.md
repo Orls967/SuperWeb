@@ -895,6 +895,20 @@
   - **57B.8 Observabilitas 10 Pilar Multi-Domain:** Pengujian kesehatan ekosistem via `super:health-check` menghasilkan status HEALTHY di seluruh subsistem utama.
 - **Tests:** `MaintenanceAndResiliencePhase57BTest` (4 tes / 8 asersi). Sub-suite `MaintenanceAndResiliencePhase57BTest|ModuleBoundariesTest` (16 passed / 68 assertions), `super:health-check` (lulus 100%), `chain:audit-all` (0 selisih), Pint lulus.
 
+---
+
+## 2026-10-06: Fase 58 — Human Capital Management (HCM), Talent & Production Payroll (Modul `hcm_`)
+
+- **Context:** Manajemen sumber daya manusia terpadu, struktur organisasi hierarkis, pemrosesan penggajian terotomasi dengan pemotongan BPJS Ketenagakerjaan/Kesehatan dan PPh 21 TER, serta alokasi langsung biaya tenaga kerja ke perintah kerja manufaktur (*Direct Labor Costing*).
+- **Decision:**
+  - Prefix tabel **`hcm_`** (4 tabel: `hcm_departments`, `hcm_employees`, `hcm_payrolls`, `hcm_production_labor_allocations`).
+  - **58.1 Master Karyawan & Kontrak:** Pengelolaan profil karyawan dengan perlindungan data privasi (NIK di-hash SHA-256), jabatan, dan jenis hubungan kerja (PKWT/PKWTT).
+  - **58.3 Payroll & Kalkulator Pajak PPh 21:** Perhitungan gaji kotor, potongan jaminan sosial, dan penghasilan bersih dengan verifikasi matematis ketat.
+  - **58.4 Direct Labor Costing Manufaktur:** Pencatatan alokasi jam kerja aktual operator pabrik ke referensi nomor SPK manufaktur (`mfg_`).
+  - **58.5 Audit HCM:** Command `hcm:audit` memvalidasi konsistensi gaji kotor - potongan = gaji bersih dan total potongan BPJS/PPh dengan 0 diskrepansi.
+- **Tests:** `HcmTest` (4 tes / 9 asersi). Sub-suite `HcmTest|ModuleBoundariesTest` (16 passed / 69 assertions), `hcm:audit` (0 diskrepansi), `chain:audit-all` (13 audit lulus), Pint lulus.
+
+
 
 
 

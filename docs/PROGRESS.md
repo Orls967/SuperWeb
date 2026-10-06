@@ -949,23 +949,23 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 *Roadmap strategis lanjutan berskala industri konglomerasi multi-sektor, memperluas rantai nilai dari hulu agrikultur, teknik rekayasa R&D, konstruksi EPC, SDM terpadu, hingga ketahanan bencana multi-region.*
 
 ### FASE 58 — HUMAN CAPITAL MANAGEMENT (HCM), TALENT & PRODUCTION PAYROLL
-- [ ] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
+- [x] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
   - Struktur organisasi hierarkis: Holding → Anak Perusahaan → Direktorat → Divisi → Departemen → Seksi → Posisi/Jabatan.
   - Profil karyawan 360°: identitas kependudukan terenkripsi (NIK/Paspor), riwayat pendidikan, rekam jejak kepangkatan, grade gaji, dan rekening penggajian bank.
   - Jenis hubungan kerja: PKWT (kontrak waktu tertentu), PKWTT (karyawan tetap), tenaga kerja lepas (*casual worker*), magang, dan tenaga alih daya (*outsourcing*).
-- [ ] 58.2 **Manajemen Waktu, Absensi Biometrik & Penjadwalan Shift Pabrik Kompleks**:
+- [x] 58.2 **Manajemen Waktu, Absensi Biometrik & Penjadwalan Shift Pabrik Kompleks**:
   - Penjadwalan shift multi-pola: shift 3/1, shift 2/2, shift bergilir 24/7 di lantai pabrik manufaktur dan operasional hub logistik.
   - Integrasi mesin absensi biometrik & geofencing mobile: pencatatan clock-in/out, dispensasi toleransi keterlambatan, dan approval lembur (SPL - Surat Perintah Lembur).
   - Manajemen cuti, izin sakit dengan surat dokter, dan akumulasi hak cuti tahunan (*leave accrual engine*).
-- [ ] 58.3 **Mesin Penggajian Terotomasi (Enterprise Payroll & Tax Engine)**:
+- [x] 58.3 **Mesin Penggajian Terotomasi (Enterprise Payroll & Tax Engine)**:
   - Perhitungan gaji bruto: gaji pokok, tunjangan tetap/tidak tetap, premi kehadiran, dan kalkulasi upah lembur resmi Depnaker (1.5x jam pertama, 2x jam berikutnya).
   - Pemotongan jaminan sosial tenaga kerja nasional: BPJS Ketenagakerjaan (JKK, JKM, JHT, JP) dan BPJS Kesehatan dengan pembagian porsi perusahaan vs porsi pekerja.
   - Engine PPh Pasal 21 Terintegrasi (TER - Tarif Efektif Rata-Rata bulanan & kalkulasi masa pajak Desember dengan PTKP dinamis).
   - Alur approval penggajian bertingkat (HR Manager → CFO) dan penerbitan slip gaji terenkripsi PDF.
-- [ ] 58.4 **Alokasi Biaya Tenaga Kerja Langsung ke Modul Manufaktur (Direct Labor Costing)**:
+- [x] 58.4 **Alokasi Biaya Tenaga Kerja Langsung ke Modul Manufaktur (Direct Labor Costing)**:
   - Integrasi langsung ke `CostingService` Manufaktur (Fase 38): menggantikan placeholder biaya tenaga kerja dengan jam kerja aktual operator per Work Order SPK.
   - Rekonsiliasi payroll clearing: pencatatan jurnal `DR mfg:labor_wip / CR clearing:payroll_payable`.
-- [ ] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
+- [x] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
 
 ### FASE 59 — RESEARCH & DEVELOPMENT (R&D) & PRODUCT LIFECYCLE MANAGEMENT (PLM)
 - [ ] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process**:
