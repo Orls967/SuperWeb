@@ -948,7 +948,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## BACKLOG FASE 58+ (STRATEGIC ENTERPRISE HORIZONS & INDUSTRY EXPANSION)
 *Roadmap strategis lanjutan berskala industri konglomerasi multi-sektor, memperluas rantai nilai dari hulu agrikultur, teknik rekayasa R&D, konstruksi EPC, SDM terpadu, hingga ketahanan bencana multi-region.*
 
-### FASE 58 — HUMAN CAPITAL MANAGEMENT (HCM), TALENT & PRODUCTION PAYROLL
+## FASE 58 — HUMAN CAPITAL MANAGEMENT (HCM), TALENT & PRODUCTION PAYROLL
 - [x] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
   - Struktur organisasi hierarkis: Holding → Anak Perusahaan → Direktorat → Divisi → Departemen → Seksi → Posisi/Jabatan.
   - Profil karyawan 360°: identitas kependudukan terenkripsi (NIK/Paspor), riwayat pendidikan, rekam jejak kepangkatan, grade gaji, dan rekening penggajian bank.
@@ -967,7 +967,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Rekonsiliasi payroll clearing: pencatatan jurnal `DR mfg:labor_wip / CR clearing:payroll_payable`.
 - [x] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
 
-### FASE 59 — RESEARCH & DEVELOPMENT (R&D) & PRODUCT LIFECYCLE MANAGEMENT (PLM)
+## FASE 59 — RESEARCH & DEVELOPMENT (R&D) & PRODUCT LIFECYCLE MANAGEMENT (PLM)
 - [x] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process Enterprise**:
   - Pipeline inovasi produk bertahap (*Stage-Gate Model*): *Ideation → Scoping → Business Case → Development → Testing/Pilot → Commercial Launch*.
   - Matriks penilaian kelayakan: estimasi anggaran R&D (`budget_rd_idr`), proyeksi ROI (`projected_roi_percent`), analisis kanibalisasi portofolio produk, dan penilaian risiko kepatuhan regulasi (BPOM, SNI, Halal).
@@ -989,7 +989,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Web UI `/plm` untuk visibilitas dasbor pipeline riset dan status ECO terkini.
   - Command `plm:audit` (Integritas riwayat revisi ECO hash-chain terverifikasi, sinkronisasi EBOM ke MBOM konsisten 100%, 0 diskrepansi).
 
-### FASE 60 — ESG, EMISI KARBON & SUSTAINABLE VALUE CHAIN
+## FASE 60 — ESG, EMISI KARBON & SUSTAINABLE VALUE CHAIN
 - [x] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol Enterprise)**:
   - Cakupan 1 (Emisi Langsung): kalkulasi konsumsi bahan bakar armada diesel/gasoline logistik (`lgx_fleets`) dan genset/boiler pabrik manufaktur (faktor emisi 2.68 kg CO2e/liter diesel, 2.31 kg CO2e/liter bensin).
   - Cakupan 2 (Emisi Tidak Langsung): pemakaian listrik PLN di seluruh mall, outlet resto, kantor, dan fasilitas gudang (faktor emisi grid Jawa-Madura-Bali 0.79 kg CO2e/kWh).
@@ -1012,7 +1012,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Web UI `/esg` dasbor dekarbonisasi real-time dan rasio kompensasi emisi karbon korporat.
   - Command `esg:audit` (Faktor emisi terstandarisasi, rekonsiliasi total emisi vs pensiun sertifikat, integritas neraca kredit karbon 100%, 0 diskrepansi).
 
-### FASE 61 — MARKETPLACE B2B, SURPLUS ASSET AUCTION & ESCROW
+## FASE 61 — MARKETPLACE B2B, SURPLUS ASSET AUCTION & ESCROW
 - [x] 61.1 **Portal Marketplace B2B Multi-Vendor & Katalog Grosir Tertutup**:
   - Direktori etalase katalog grosir tertutup: produk eksklusif distributor, pabrik, dan mitra resmi terverifikasi.
   - Penetapan harga bertingkat berbasis kuantitas (*Tiered Pricing Matrix* JSON) dan kepatuhan MOQ (*Minimum Order Quantity*).
@@ -1035,7 +1035,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Web UI `/b2b` direktori lelang aktif dan status transaksi grosir.
   - Command `b2b:audit` (Invarian dana rekening escrow = saldo komitmen lelang + transaksi berjalan, validasi tanggal lelang, 0 diskrepansi).
 
-### FASE 62 — AGRIBISNIS, KONTRAK PETANI & HULU RANTAI PASOK MAKANAN
+## FASE 62 — AGRIBISNIS, KONTRAK PETANI & HULU RANTAI PASOK MAKANAN
 - [x] 62.1 **Kemitraan Petani, Kebun Plasma & Pemetaan GIS Lahan**:
   - Registrasi master kelompok tani (Poktan) dan petani plasma mandiri dengan identifikasi kode unik per wilayah.
   - Pencatatan pemetaan poligon spasial lahan (`land_polygon_geojson`), luas hektar garapan, dan profil komoditas tanam unggulan (cabe merah, beras organik, sayuran hidroponik, peternakan).
@@ -1058,7 +1058,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Web UI `/agri` dasbor pemantauan hasil panen, serapan komoditas resto, dan logistik rantai dingin.
   - Command `agri:audit` (Konsistensi pembagian hasil panen, verifikasi pemotongan piutang uang muka tidak over-deducted, 0 diskrepansi).
 
-### FASE 63 — KONSTRUKSI EPC, MANAJEMEN PROYEK PROPERTI & ASSET CAPITALIZATION
+## FASE 63 — KONSTRUKSI EPC, MANAJEMEN PROYEK PROPERTI & ASSET CAPITALIZATION
 - [x] 63.1 **Work Breakdown Structure (WBS) & Rencana Anggaran Biaya (RAB Proyek)**:
   - Struktur hierarki proyek teknik & konstruksi: Proyek (Ekstensi Duta Mall, Pabrik Baru Cikande, Central Kitchen CK-02 Surabaya) → Paket Pekerjaan (Struktur Sipil, Arsitektur, MEP, Infrastruktur) → Node Aktivitas WBS terukur.
   - Alokasi anggaran terperinci: komponen material (beton, baja, tiang pancang), upah subkontraktor, dan sewa alat berat.
@@ -1080,7 +1080,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Web UI `/epc` visualisasi kurva-S progres konstruksi dan status kapitalisasi gedung baru.
   - Command `epc:audit` (Realisasi termin tagihan = klaim MC tersertifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, batas progres maksimal 100%, 0 diskrepansi).
 
-### FASE 64 — ANALITIK PREDIKTIF, AI-DRIVEN REVENUE MANAGEMENT & ANOMALY DETECTION
+## FASE 64 — ANALITIK PREDIKTIF, AI-DRIVEN REVENUE MANAGEMENT & ANOMALY DETECTION
 - [ ] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
   - Algoritma penetapan harga dinamis deterministik: elastisitas harga permintaan, sisa umur simpan produk, dan tingkat keterisian ruang mall/katering.
   - Guardrail keamanan batas harga: proteksi harga batas bawah (*floor price*) dan kepatuhan regulasi HET pemerintah.
@@ -1091,7 +1091,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Analisis tren musiman eksternal (hari libur nasional, musim hujan, tren pasar) menghasilkan usulan rekomendasi revisi safety stock dan rilis PO ke vendor secara otomatis.
 - [ ] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
 
-### FASE 65 — ENTERPRISE MOBILE SUITE (PWA/HYBRID OFFLINE-FIRST ARCHITECTURE)
+## FASE 65 — ENTERPRISE MOBILE SUITE (PWA/HYBRID OFFLINE-FIRST ARCHITECTURE)
 - [ ] 65.1 **Aplikasi Mobile Lapangan Khusus 4 Peran Kunci**:
   - *Operator Pabrik*: scan QR work order, input output produksi, catat downtime mesin.
   - *Petugas WMS*: scanner barcode rak/bin, konfirmasi putaway, picking wave panduan jalur terpendek.
@@ -1102,7 +1102,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Mekanisme rekonsiliasi saat online: transmisi antrean mutasi dengan key idempotensi unik deterministik dan resolusi konflik berbasis *Last-Write-Wins with Timestamp Guard*.
 - [ ] 65.3 `mobile:audit` (Zero duplicate records akibat sync retry, integritas hash tanda tangan e-POD 100% valid).
 
-### FASE 66 — RESILIENSI GLOBAL, DISASTER RECOVERY MULTI-REGION & DATA SOVEREIGNTY
+## FASE 66 — RESILIENSI GLOBAL, DISASTER RECOVERY MULTI-REGION & DATA SOVEREIGNTY
 - [ ] 66.1 **Arsitektur Multi-Region Replikasi Aktif-Pasif**:
   - Replikasi basis data asinkron antar-data center geografis (Region Primer Jakarta vs Region Sekunder Surabaya/Singapura).
   - Mekanisme failover otomatis: pendeteksian kegagalan primer via health-check heartbeat dan pengalihan trafik DNS/Load Balancer tanpa kehilangan data (RPO = 0 untuk transaksi ledger).
@@ -1118,9 +1118,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## DEFINITION OF DONE (FASE 26–63)
 - [x] Semua task 26.1–63.5 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 25: 538 test/3189 assertion → Fase 63: 931+ test / 4778+ assertion), tidak ada test di-skip/dilemahkan.
-- [x] Semua quality gate hijau pada commit terakhir; semua `*:audit` (bank, lgx, mall, ast, proc, mfg, dist, agy, treasury, trade, tf, group, ctr, tower, enterprise, api, hcm, plm, esg, b2b, agri, epc) = 0 selisih; semua hash-chain (passport, custody, kontrak, aset, formula, PEB leg, ECO) valid.
-- [x] Setiap alur uang/stok baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × 32 role baru (`supplier`, `distributor`, `agent`, `partner`, `contract_manager`, `legal`, `asset_manager`, `planner`, `operator`, `qc_inspector`, `warehouse`, `treasury`, `auditor`, `hcm_manager`, `rnd_specialist`, `esg_officer`, `b2b_buyer`, `farmer`, `epc_manager`).
+- [x] Semua quality gate hijau pada commit terakhir; semua `*:audit` (bank, lgx, mall, ast, proc, mfg, wms, dist, pricing, agy, ptn, treasury, trade, tf, group, ctr, tower, enterprise, api, hcm, plm, esg, b2b, agri, epc) = 0 selisih; semua hash-chain (passport, custody, kontrak, aset, formula, PEB leg, ECO) valid.
+- [x] Setiap alur uang/stok baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × 32 role baru (`supplier`, `distributor`, `agent`, `partner`, `contract_manager`, `legal`, `asset_manager`, `planner`, `operator`, `qc_inspector`, `party_manager`, `treasury`, `auditor`, `hcm_manager`, `rnd_specialist`, `esg_officer`, `b2b_buyer`, `farmer`, `epc_manager`).
 - [x] Tidak ada float untuk uang; tidak ada akses `DB` facade di controller; batas modul terjaga (arch test).
 - [x] Sanctum asli aktif (26.1); tidak ada autentikasi API palsu/alias.
 - [x] `docs/CODEBASE.md` selalu mutakhir (diperbarui pada setiap commit yang mengubah struktur) dan **menjadi satu-satunya sumber orientasi** sesi baru.
 - [x] Working tree bersih; ARCHITECTURE, DECISIONS, RUNBOOK, README, API, AUDIT, CODEBASE mutakhir.
+
+## DEFINITION OF DONE (FASE 64–66)
+- [ ] Semua task 64.1–66.4 tercentang, masing-masing di commit sendiri.
+- [ ] Semua prosedur audit (`ai:audit`, `mobile:audit`, `dr:audit`) terverifikasi dengan hasil konsisten 0 diskrepansi atau duplikasi.
+- [ ] Protokol DR failover disimulasikan dan menghasilkan RTO di bawah target dengan data mutlak (0 data loss).
+- [ ] Seluruh dokumentasi platform (*CODEBASE.md*, *ARCHITECTURE.md*) diperbarui mencakup kapabilitas mobile offline, AI, dan multi-region.
