@@ -980,17 +980,17 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 59.4 `plm:audit` (Integritas riwayat revisi ECO hash-chain terverifikasi, sinkronisasi EBOM ke MBOM konsisten 100%).
 
 ### FASE 60 — ESG, EMISI KARBON & SUSTAINABLE VALUE CHAIN
-- [ ] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol)**:
+- [x] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol)**:
   - Cakupan 1 (Emisi Langsung): konsumsi bahan bakar armada logistik (`lgx_fleets`) dan genset/boiler pabrik.
   - Cakupan 2 (Emisi Tidak Langsung): pemakaian listrik PLN di seluruh mall, outlet resto, kantor, dan fasilitas gudang.
   - Cakupan 3 (Rantai Nilai): emisi pengiriman pihak ketiga, perjalanan dinas, dan emisi rantai pasok bahan baku hulu.
-- [ ] 60.2 **Akuntansi Karbon & Pengimbangan Karbon (Carbon Accounting & Offsetting)**:
+- [x] 60.2 **Akuntansi Karbon & Pengimbangan Karbon (Carbon Accounting & Offsetting)**:
   - Kalkulasi jejak karbon per unit produk jadi (CO2e per kg/unit produk).
   - Portofolio kredit karbon: pembelian sertifikat kredit karbon terverifikasi, alokasi penyeimbangan emisi (*carbon offset retirement*), dan jurnal buku besar karbon.
-- [ ] 60.3 **Pelaporan Keberlanjutan Standar GRI & Penilaian Pemasok Hijau**:
+- [x] 60.3 **Pelaporan Keberlanjutan Standar GRI & Penilaian Pemasok Hijau**:
   - Generator draf Laporan Keberlanjutan (GRI Standards & Taksonomi Hijau OJK).
   - Skor audit keberlanjutan pemasok: verifikasi sertifikasi ramah lingkungan (FSC, RSPO, ISO 14001, PROPER Hijau/Emas).
-- [ ] 60.4 `esg:audit` (Faktor emisi terstandarisasi, neraca kredit karbon = sertifikat aktif, 0 diskrepansi).
+- [x] 60.4 `esg:audit` (Faktor emisi terstandarisasi, neraca kredit karbon = sertifikat aktif, 0 diskrepansi).
 
 ### FASE 61 — MARKETPLACE B2B, SURPLUS ASSET AUCTION & ESCROW
 - [ ] 61.1 **Portal Marketplace B2B Multi-Vendor**:

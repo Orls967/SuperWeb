@@ -922,6 +922,20 @@
   - **59.5 Audit PLM:** Command `plm:audit` memvalidasi integritas hash-chain ECO dan stage-gate proyek dengan 0 diskrepansi.
 - **Tests:** `PlmTest` (5 tes / 8 asersi). Sub-suite `PlmTest|ModuleBoundariesTest` (17 passed / 68 assertions), `plm:audit` (0 diskrepansi), `chain:audit-all` (14 audit lulus), Pint lulus.
 
+---
+
+## 2026-10-06: Fase 60 — ESG, Emisi Karbon & Sustainable Value Chain (Modul `esg_`)
+
+- **Context:** Pelacakan emisi gas rumah kaca (GRK) terstandarisasi GHG Protocol (Scope 1, 2, 3), akuntansi portofolio kredit karbon dan offset retirement dengan proteksi over-retirement, serta penilaian kepatuhan ESG mitra/pemasok berstandar GRI.
+- **Decision:**
+  - Prefix tabel **`esg_`** (4 tabel: `esg_emissions`, `esg_carbon_credits`, `esg_offset_retirements`, `esg_supplier_scores`).
+  - **60.1 Pelacak Emisi GRK Scope 1, 2, 3:** Standardisasi faktor emisi bahan bakar, listrik PLN grid, dan pengiriman barang dengan perhitungan presisi matematis.
+  - **60.2 Akuntansi Karbon & Offset Retirement:** Registrasi sertifikat kredit karbon (VERRA, Gold Standard, IDXCarbon) dan alokasi pemensiunan unit offset tanpa risiko klaim ganda (*anti double-counting*).
+  - **60.3 Penilaian Keberlanjutan Pemasok Hijau:** Skoring multi-faktor berbobot (Environmental 40%, Social 30%, Governance 30%) dengan sertifikasi terakreditasi (ISO 14001, FSC, RSPO).
+  - **60.4 Audit ESG:** Command `esg:audit` memvalidasi faktor emisi terstandarisasi, kuantitas offset tidak melampaui kredit aktif, dengan 0 diskrepansi.
+- **Tests:** `EsgTest` (5 tes / 12 asersi). Sub-suite `EsgTest|ModuleBoundariesTest` (17 passed / 72 assertions), `esg:audit` (0 diskrepansi), `chain:audit-all` (15 audit lulus), Pint lulus.
+
+
 
 
 

@@ -33,6 +33,7 @@ class ChainAuditAllCommand extends Command
             'api:audit' => 'B2B API & Webhook HMAC Cryptographic Integrity',
             'hcm:audit' => 'Human Capital Management Payroll & Labor Costing',
             'plm:audit' => 'Product Lifecycle Management ECO & Hash Chain',
+            'esg:audit' => 'ESG Emissions, Carbon Accounting & Sustainability',
         ];
 
         $failures = 0;

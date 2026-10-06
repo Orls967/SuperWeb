@@ -945,5 +945,27 @@
 - **Arch Tests (batas modul):** 12 passed.
 - **Audit Terpadu (`chain:audit-all`):** 14 Perintah Audit Rantai Nilai Lulus dengan 0 Selisih.
 
+---
+
+## ✅ Quality Gate Fase 60 — PENUTUP FINAL — 2026-10-06
+
+**Cakupan fase:** Fase 60.1 – 60.4 (ESG, Emisi Karbon GRK Scope 1-3, Portofolio Kredit Karbon, Offset Retirement & Green Supplier Scoring — Modul `esg_`)
+
+### Ringkasan Capaian Sub-Fase
+
+| Sub-Fase | Komponen & Fitur | Status | Detail Implementasi |
+|---|---|:---:|---|
+| 60.1 | Pelacak Emisi Karbon GRK Scope 1, 2, 3 | Selesai | Tabel `esg_emissions`, standardisasi faktor emisi bahan bakar, listrik grid PLN, dan transportasi. |
+| 60.2 | Akuntansi Karbon & Portofolio Offset Retirement | Selesai | Tabel `esg_carbon_credits` & `esg_offset_retirements`, verifikasi kuantitas terpakai anti double-counting. |
+| 60.3 | Pelaporan Keberlanjutan & Skor Pemasok Hijau | Selesai | Tabel `esg_supplier_scores`, penilaian komposit (Env 40%, Soc 30%, Gov 30%) dan verifikasi sertifikasi hijau. |
+| **60.4** | **Quality Gate Fase 60** | **Lulus** | Command `esg:audit` lulus 0 diskrepansi, `EsgTest` 5 passed (12 assertions), `chain:audit-all` 15 modul lulus terpadu, Pint passed. |
+
+### Metrik Kualitas Final Fase 60
+- **Test Suite**: **5 Tests di EsgTest (12 assertions)**, ModuleBoundariesTest 12 passed (60 assertions).
+- **Status Standar Kode (Pint):** Passed.
+- **Arch Tests (batas modul):** 12 passed.
+- **Audit Terpadu (`chain:audit-all`):** 15 Perintah Audit Rantai Nilai Lulus dengan 0 Selisih.
+
+
 
 

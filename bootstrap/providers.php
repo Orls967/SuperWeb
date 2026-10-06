@@ -64,6 +64,7 @@ return [
     \Modules\Integration\IntegrationServiceProvider::class,
     \Modules\Hcm\HcmServiceProvider::class,
     \Modules\Plm\PlmServiceProvider::class,
+    \Modules\Esg\EsgServiceProvider::class,
 ];
 
 
