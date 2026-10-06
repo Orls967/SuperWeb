@@ -948,6 +948,20 @@
   - **61.4 Audit B2B:** Command `b2b:audit` memvalidasi neraca rekening escrow (dana keluar tidak melebihi deposit) dan konsistensi lelang dengan 0 diskrepansi.
 - **Tests:** `B2bTest` (5 tes / 16 asersi). Sub-suite `B2bTest|ModuleBoundariesTest` (17 passed / 76 assertions), `b2b:audit` (0 diskrepansi), `chain:audit-all` (16 audit lulus), Pint lulus.
 
+---
+
+## 2026-10-06: Fase 62 — Agribisnis, Kontrak Petani & Hulu Rantai Pasok Makanan (Modul `agri_`)
+
+- **Context:** Kemitraan petani plasma hulu rantai pasok makanan, kontrak bagi hasil tani dengan talangan uang muka bibit/pupuk, jaminan harga dasar (*floor price*), operasional pos pengumpul (*collection center*) dengan penimbangan & grading mutu otomatis, serta integrasi rantai dingin (*cold chain*) IoT ke Dapur Sentral Resto CK-01 dan pabrik pengolahan.
+- **Decision:**
+  - Prefix tabel **`agri_`** (4 tabel: `agri_farmers`, `agri_contracts`, `agri_collection_batches`, `agri_cold_chain_logs`).
+  - **62.1 Registrasi Petani & Kontrak Tani:** Pemetaan poligon lahan dan pencatatan uang muka sarana produksi pertanian (saprotan).
+  - **62.2 Grading Sentra Pengumpul & Pemotongan Talangan:** Penentuan harga beli berbasis grade mutu (Grade A 100%, Grade B 90%, Grade C 80%) dan pemotongan otomatis talangan bibit/pupuk pada pembayaran panen bersih.
+  - **62.3 Telemetri Rantai Dingin IoT:** Pemantauan suhu truk reefer berpendingin dengan deteksi pelanggaran batas suhu segar (*fresh produce threshold* 2°C - 8°C).
+  - **62.4 Audit Agribisnis:** Command `agri:audit` memvalidasi konsistensi perhitungan pembayaran bersih (`gross - deduction == net`) dan batas potongan tidak melampaui bruto dengan 0 diskrepansi.
+- **Tests:** `AgriTest` (5 tes / 14 asersi). Sub-suite `AgriTest|ModuleBoundariesTest` (17 passed / 74 assertions), `agri:audit` (0 diskrepansi), `chain:audit-all` (17 audit lulus), Pint lulus.
+
+
 
 
 

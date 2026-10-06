@@ -1005,16 +1005,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 61.4 `b2b:audit` (Dana rekening escrow = saldo komitmen lelang + transaksi berjalan, 0 diskrepansi).
 
 ### FASE 62 — AGRIBISNIS, KONTRAK PETANI & HULU RANTAI PASOK MAKANAN
-- [ ] 62.1 **Kemitraan Petani, Kebun Plasma & Kontrak Tani (Contract Farming)**:
+- [x] 62.1 **Kemitraan Petani, Kebun Plasma & Kontrak Tani (Contract Farming)**:
   - Registrasi kelompok tani/petani plasma: pencatatan koordinat poligon lahan (GIS mapping), sertifikat hak milik, dan jenis komoditas tanam (sayur, padi, ternak).
   - Kontrak bagi hasil tani: penyediaan bibit/pupuk oleh platform sebagai uang muka barang, garansi harga beli minimum (*floor price*), dan jadwal masa panen.
-- [ ] 62.2 **Sentra Pengumpul (Collection Center) & Grading Komoditas**:
+- [x] 62.2 **Sentra Pengumpul (Collection Center) & Grading Komoditas**:
   - Operasional pos pengumpul hasil panen di pedesaan: penerimaan hasil tani harian, penimbangan digital, dan uji mutu (*grading A/B/C* kadar air/kesegaran).
   - Konversi hasil grading ke nota timbang digital dan pelunasan seketika ke rekening dompet petani.
-- [ ] 62.3 **Integrasi Rantai Dingin ke Dapur Sentral Resto & Pabrik Pengolahan**:
+- [x] 62.3 **Integrasi Rantai Dingin ke Dapur Sentral Resto & Pabrik Pengolahan**:
   - Penjadwalan armada logistik berpendingin (*reefer truck*) dari sentra tani langsung ke Dapur Sentral CK-01 Resto Sari Ranah dan pabrik makanan.
   - Pelacakan suhu real-time IoT dan sertifikasi halal dari sumber kebun hingga meja hidang.
-- [ ] 62.4 `agri:audit` (Stok panen pos pengumpul = penerimaan gudang/CK-01, potongan uang muka bibit tepat, 0 selisih).
+- [x] 62.4 `agri:audit` (Stok panen pos pengumpul = penerimaan gudang/CK-01, potongan uang muka bibit tepat, 0 selisih).
 
 ### FASE 63 — KONSTRUKSI EPC, MANAJEMEN PROYEK PROPERTI & ASSET CAPITALIZATION
 - [ ] 63.1 **Work Breakdown Structure (WBS) & Rencana Anggaran Biaya (RAB Proyek)**:
