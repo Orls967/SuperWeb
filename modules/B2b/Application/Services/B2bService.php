@@ -47,6 +47,41 @@ class B2bService
         });
     }
 
+    public function respondToRfq(string $rfqId, int $offeredPriceIdr, string $paymentTerms, ?string $vendorNotes = null): B2bRfq
+    {
+        return DB::transaction(function () use ($rfqId, $offeredPriceIdr, $paymentTerms, $vendorNotes) {
+            $rfq = B2bRfq::where('id', $rfqId)->lockForUpdate()->firstOrFail();
+
+            if (! in_array($rfq->status, ['open', 'negotiating'], true)) {
+                throw new \InvalidArgumentException("Cannot respond to RFQ with status {$rfq->status}");
+            }
+
+            $rfq->update([
+                'target_price_idr' => $offeredPriceIdr,
+                'payment_terms' => $paymentTerms,
+                'status' => 'quoted',
+                'notes' => $vendorNotes ?? $rfq->notes,
+            ]);
+
+            return $rfq;
+        });
+    }
+
+    public function acceptRfq(string $rfqId): B2bRfq
+    {
+        return DB::transaction(function () use ($rfqId) {
+            $rfq = B2bRfq::where('id', $rfqId)->lockForUpdate()->firstOrFail();
+
+            if ($rfq->status !== 'quoted') {
+                throw new \InvalidArgumentException('RFQ can only be accepted when status is quoted.');
+            }
+
+            $rfq->update(['status' => 'accepted']);
+
+            return $rfq;
+        });
+    }
+
     public function createAuction(array $data): SurplusAuction
     {
         return DB::transaction(function () use ($data) {

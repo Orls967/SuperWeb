@@ -968,65 +968,117 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
 
 ### FASE 59 — RESEARCH & DEVELOPMENT (R&D) & PRODUCT LIFECYCLE MANAGEMENT (PLM)
-- [x] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process**:
+- [x] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process Enterprise**:
   - Pipeline inovasi produk bertahap (*Stage-Gate Model*): *Ideation → Scoping → Business Case → Development → Testing/Pilot → Commercial Launch*.
-  - Matriks penilaian kelayakan: estimasi biaya R&D, proyeksi ROI, analisis kanibalisasi produk eksisting, dan penilaian kepatuhan regulasi.
-- [x] 59.2 **Engineering BOM (EBOM) vs Manufacturing BOM (MBOM)**:
-  - Pengelolaan versi rancangan teknik: transisi terkontrol dari purwarupa R&D (EBOM) ke resep produksi massal pabrik (MBOM).
-  - Manajemen Perubahan Teknik (*Engineering Change Order - ECO & ECN*): alur persetujuan perubahan spesifikasi material, dampak biaya, dan disposisi sisa stok lama (*scrap, rework, run-out*).
-- [x] 59.3 **Formulasi Kimia, Uji Stabilitas & Sensori Laboratorium**:
-  - Buku catatan laboratorium elektronik (*Electronic Lab Notebook - ELN*): formula rahasia terenkripsi, uji stabilitas suhu/kelembaban terakselerasi, dan uji organoleptik sensori.
-  - Manajemen sampel R&D dan sertifikasi pra-rilis (uji klinis/lab independen terakreditasi).
-- [x] 59.4 `plm:audit` (Integritas riwayat revisi ECO hash-chain terverifikasi, sinkronisasi EBOM ke MBOM konsisten 100%).
+  - Matriks penilaian kelayakan: estimasi anggaran R&D (`budget_rd_idr`), proyeksi ROI (`projected_roi_percent`), analisis kanibalisasi portofolio produk, dan penilaian risiko kepatuhan regulasi (BPOM, SNI, Halal).
+  - Gate review approval matrix: persetujuan formal R&D Lead, Finance Controller, dan Head of Manufacturing sebelum promosi stage.
+- [x] 59.2 **Engineering BOM (EBOM) vs Manufacturing BOM (MBOM) & Transisi Terkontrol**:
+  - Pengelolaan versi rancangan teknik: transisi terkontrol dari purwarupa R&D (EBOM) ke resep produksi massal pabrik (MBOM di modul Manufacturing).
+  - Komparasi struktur BOM & toleransi komponen: deteksi substitusi bahan baku, analisis variance cost estimasi vs standar pabrik.
+  - Snapshot representasi komponen bertingkat (`components` JSON schema validation) dan status siklus draft/released/superseded.
+- [x] 59.3 **Manajemen Perubahan Teknik Berantai Kriptografis (Engineering Change Order - ECO & ECN)**:
+  - Alur persetujuan perubahan spesifikasi material: peninjauan dampak biaya (`cost_impact_idr`), disposisi sisa stok lama (*scrap, rework, use-as-is, run-out*).
+  - Rantai hash tamper-evident append-only SHA-256 (`prev_hash` → `hash` linking) untuk audit trail otentikasi perubahan rancangan teknis.
+  - Notifikasi otomatis delegasi perubahan rekayasa ke modul Manufacturing, WMS, dan Procurement.
+- [x] 59.4 **Electronic Lab Notebook (ELN), Formulasi Rahasia & Uji Stabilitas**:
+  - Buku catatan laboratorium elektronik: formula rahasia terenkripsi AES/base64 payload untuk perlindungan hak kekayaan intelektual resep inti.
+  - Uji stabilitas suhu & kelembaban terakselerasi (*accelerated shelf-life testing - ASLT*) dengan verdict deterministik (*pass, conditional, fail*).
+  - Evaluasi sensori organoleptik panelis skala 1-10 (aroma, rasa, tekstur, visual) serta pelacakan nomor batch sampel riset.
+- [x] 59.5 **PlmService, Web Interface & Audit Command `plm:audit`**:
+  - Implementasi `Modules\Plm\Application\Services\PlmService` dengan transaksi atomic `DB::transaction`.
+  - Web UI `/plm` untuk visibilitas dasbor pipeline riset dan status ECO terkini.
+  - Command `plm:audit` (Integritas riwayat revisi ECO hash-chain terverifikasi, sinkronisasi EBOM ke MBOM konsisten 100%, 0 diskrepansi).
 
 ### FASE 60 — ESG, EMISI KARBON & SUSTAINABLE VALUE CHAIN
-- [x] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol)**:
-  - Cakupan 1 (Emisi Langsung): konsumsi bahan bakar armada logistik (`lgx_fleets`) dan genset/boiler pabrik.
-  - Cakupan 2 (Emisi Tidak Langsung): pemakaian listrik PLN di seluruh mall, outlet resto, kantor, dan fasilitas gudang.
-  - Cakupan 3 (Rantai Nilai): emisi pengiriman pihak ketiga, perjalanan dinas, dan emisi rantai pasok bahan baku hulu.
-- [x] 60.2 **Akuntansi Karbon & Pengimbangan Karbon (Carbon Accounting & Offsetting)**:
-  - Kalkulasi jejak karbon per unit produk jadi (CO2e per kg/unit produk).
-  - Portofolio kredit karbon: pembelian sertifikat kredit karbon terverifikasi, alokasi penyeimbangan emisi (*carbon offset retirement*), dan jurnal buku besar karbon.
-- [x] 60.3 **Pelaporan Keberlanjutan Standar GRI & Penilaian Pemasok Hijau**:
-  - Generator draf Laporan Keberlanjutan (GRI Standards & Taksonomi Hijau OJK).
-  - Skor audit keberlanjutan pemasok: verifikasi sertifikasi ramah lingkungan (FSC, RSPO, ISO 14001, PROPER Hijau/Emas).
-- [x] 60.4 `esg:audit` (Faktor emisi terstandarisasi, neraca kredit karbon = sertifikat aktif, 0 diskrepansi).
+- [x] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol Enterprise)**:
+  - Cakupan 1 (Emisi Langsung): kalkulasi konsumsi bahan bakar armada diesel/gasoline logistik (`lgx_fleets`) dan genset/boiler pabrik manufaktur (faktor emisi 2.68 kg CO2e/liter diesel, 2.31 kg CO2e/liter bensin).
+  - Cakupan 2 (Emisi Tidak Langsung): pemakaian listrik PLN di seluruh mall, outlet resto, kantor, dan fasilitas gudang (faktor emisi grid Jawa-Madura-Bali 0.79 kg CO2e/kWh).
+  - Cakupan 3 (Rantai Nilai Hulu/Hilir): emisi freight darat/laut pihak ketiga (0.12 kg CO2e/ton-km) dan estimasi emisi pengadaan bahan mentah pertanian.
+  - Pencatatan multi-satuan dengan konversi standar kg CO2e terpresisi tinggi dan pencatatan nomor pelaporan gapless.
+- [x] 60.2 **Akuntansi Karbon, Registrasi Kredit Karbon & Bursa Karbon (IDX Carbon)**:
+  - Registrasi sertifikat kredit karbon terverifikasi (IDX Carbon / Verra / Gold Standard) dengan penatausahaan tahun vintage, volume tonase, dan nilai perolehan IDR.
+  - Neraca buku besar karbon: debit perolehan kredit karbon, kredit pelepasan penyeimbangan emisi (*offset retirement*).
+  - Penguncian kuota kredit karbon idempoten untuk mencegah double-counting atau penarikan melebihi saldo aktif.
+- [x] 60.3 **Mekanisme Pensiun Kredit Karbon (Carbon Offset Retirement) & Net-Zero Target**:
+  - Alur pensiun kredit emisi (*retirement workflow*) spesifik per entitas bisnis (Holding, Mall, Pabrik, Resto, Logistik).
+  - Validasi ketat batas penarikan: larangan mutlak over-retirement melebihi volume sertifikat terbitan.
+  - Penerbitan Berita Acara Pensiun Karbon digital dengan tautan sertifikat pembatalan emisi resmi.
+- [x] 60.4 **Penilaian Pemasok Berkelanjutan (Supplier ESG Scorecard) & Kepatuhan GRI**:
+  - Evaluasi tiga pilar keberlanjutan: Environmental (bobot 40%), Social (bobot 30%), Governance (bobot 30%).
+  - Verifikasi sertifikasi ramah lingkungan pemasok: FSC, RSPO, ISO 14001, PROPER Hijau/Emas dengan rating dinamis (*LEAD, ADVANCED, COMPLIANT, HIGH_RISK*).
+  - Integrasi indikator risiko pemasok ke modul Supplier Management (`Modules\Supplier`).
+- [x] 60.5 **EsgService, Web Portal & Audit Command `esg:audit`**:
+  - Layanan `Modules\Esg\Application\Services\EsgService` dengan enkapsulasi DTO dan isolasi transaksi database.
+  - Web UI `/esg` dasbor dekarbonisasi real-time dan rasio kompensasi emisi karbon korporat.
+  - Command `esg:audit` (Faktor emisi terstandarisasi, rekonsiliasi total emisi vs pensiun sertifikat, integritas neraca kredit karbon 100%, 0 diskrepansi).
 
 ### FASE 61 — MARKETPLACE B2B, SURPLUS ASSET AUCTION & ESCROW
-- [x] 61.1 **Portal Marketplace B2B Multi-Vendor**:
-  - Direktori katalog grosir tertutup: etalase produk distributor dan mitra resmi dengan penetapan harga berbasis kuantitas (*Tiered Pricing*) dan harga kontrak khusus.
-  - Alur RFQ (Request for Quotation) publik antar-perusahaan dengan negosiasi termin pembayaran tempo (TOP 30/60).
-- [x] 61.2 **Balai Lelang Digital Aset Surplus & Peralatan Pabrik**:
-  - Pendaftaran barang lelang: unit mobil bekas AutoDex, mesin pabrik idle dari modul Aset, atau surplus persediaan WMS.
-  - Mesin lelang real-time (*English Auction & Dutch Auction*): penawaran harga dinamis, waktu perpanjangan otomatis (*anti-sniping*), dan penentuan pemenang deterministik.
-- [x] 61.3 **Escrow Multi-Pihak Terproteksi**:
-  - Penguncian dana deposit lelang dan pembayaran transaksi B2B di rekening escrow platform.
-  - Rilis dana bertahap ke penjual setelah konfirmasi serah terima fisik (BAST / POD digital) disetujui kedua pihak.
-- [x] 61.4 `b2b:audit` (Dana rekening escrow = saldo komitmen lelang + transaksi berjalan, 0 diskrepansi).
+- [x] 61.1 **Portal Marketplace B2B Multi-Vendor & Katalog Grosir Tertutup**:
+  - Direktori etalase katalog grosir tertutup: produk eksklusif distributor, pabrik, dan mitra resmi terverifikasi.
+  - Penetapan harga bertingkat berbasis kuantitas (*Tiered Pricing Matrix* JSON) dan kepatuhan MOQ (*Minimum Order Quantity*).
+  - Proteksi privasi harga industri: isolasi visibilitas katalog antar tier pembeli B2B.
+- [x] 61.2 **Alur Negosiasi RFQ (Request for Quotation) Publik & Termin Pembayaran Tempo**:
+  - Alur penerbitan RFQ formal antar-badan usaha dengan spesifikasi target harga dan kuantitas pesanan.
+  - Negosiasi termin pembayaran komersial fleksibel: TOP 30, TOP 60, TOP 90, atau Cash on Delivery.
+  - Transisi status terkelola: *open → quoted → negotiated → accepted → contract_bound*.
+- [x] 61.3 **Balai Lelang Digital Aset Surplus, Mesin Pabrik & Armada Bekas**:
+  - Pendaftaran barang lelang surplus: unit kendaraan bekas AutoDex, mesin pabrik idle modul Asset, atau persediaan lambat gerak (*slow-moving inventory*) WMS.
+  - Mesin lelang real-time (*English Auction*): penetapan harga awal (*starting bid*), batas cadangan rahasia (*reserve price*), dan kelipatan penawaran (*bid increment*).
+  - Fitur perlindungan lelang: perpanjangan waktu otomatis (*anti-sniping protection* 5 menit) saat penawaran masuk di menit-menit akhir penutupan lelang.
+  - Row-level lock (`lockForUpdate`) untuk mencegah race condition penawaran simultan antar peserta lelang.
+- [x] 61.4 **Escrow Multi-Pihak Terproteksi (Multi-Party Escrow Engine)**:
+  - Penguncian dana deposit lelang dan pembayaran pesanan B2B di rekening escrow platform (`B2bEscrowAccount`).
+  - Rekonsiliasi mutasi dana escrow: saldo tersimpan (`deposit_amount_idr`), pencairan bertahap (`released_amount_idr`), dan pengembalian jaminan (`refunded_amount_idr`).
+  - Rilis dana bersyarat aman: hanya dapat dicairkan ke penjual setelah konfirmasi fisik BAST digital atau e-POD resmi disahkan.
+- [x] 61.5 **B2bService, Web Portal & Audit Command `b2b:audit`**:
+  - Layanan `Modules\B2b\Application\Services\B2bService` menangani orkestrasi katalog, lelang, dan escrow.
+  - Web UI `/b2b` direktori lelang aktif dan status transaksi grosir.
+  - Command `b2b:audit` (Invarian dana rekening escrow = saldo komitmen lelang + transaksi berjalan, validasi tanggal lelang, 0 diskrepansi).
 
 ### FASE 62 — AGRIBISNIS, KONTRAK PETANI & HULU RANTAI PASOK MAKANAN
-- [x] 62.1 **Kemitraan Petani, Kebun Plasma & Kontrak Tani (Contract Farming)**:
-  - Registrasi kelompok tani/petani plasma: pencatatan koordinat poligon lahan (GIS mapping), sertifikat hak milik, dan jenis komoditas tanam (sayur, padi, ternak).
-  - Kontrak bagi hasil tani: penyediaan bibit/pupuk oleh platform sebagai uang muka barang, garansi harga beli minimum (*floor price*), dan jadwal masa panen.
-- [x] 62.2 **Sentra Pengumpul (Collection Center) & Grading Komoditas**:
-  - Operasional pos pengumpul hasil panen di pedesaan: penerimaan hasil tani harian, penimbangan digital, dan uji mutu (*grading A/B/C* kadar air/kesegaran).
-  - Konversi hasil grading ke nota timbang digital dan pelunasan seketika ke rekening dompet petani.
-- [x] 62.3 **Integrasi Rantai Dingin ke Dapur Sentral Resto & Pabrik Pengolahan**:
-  - Penjadwalan armada logistik berpendingin (*reefer truck*) dari sentra tani langsung ke Dapur Sentral CK-01 Resto Sari Ranah dan pabrik makanan.
-  - Pelacakan suhu real-time IoT dan sertifikasi halal dari sumber kebun hingga meja hidang.
-- [x] 62.4 `agri:audit` (Stok panen pos pengumpul = penerimaan gudang/CK-01, potongan uang muka bibit tepat, 0 selisih).
+- [x] 62.1 **Kemitraan Petani, Kebun Plasma & Pemetaan GIS Lahan**:
+  - Registrasi master kelompok tani (Poktan) dan petani plasma mandiri dengan identifikasi kode unik per wilayah.
+  - Pencatatan pemetaan poligon spasial lahan (`land_polygon_geojson`), luas hektar garapan, dan profil komoditas tanam unggulan (cabe merah, beras organik, sayuran hidroponik, peternakan).
+  - Riwayat kepatuhan sertifikasi budidaya baik (*Good Agricultural Practices - GAP*).
+- [x] 62.2 **Kontrak Tani Bagi Hasil (Contract Farming) & Pembiayaan Uang Muka Input**:
+  - Penerbitan kontrak budidaya komprehensif: tanggal tanam, proyeksi jadwal panen, estimasi target tonase (*target yield kg*).
+  - Skema uang muka input produksi: penyediaan bibit bersertifikat dan pupuk berkualitas tinggi yang dicatat sebagai piutang uang muka terpotong (*advance deductible*).
+  - Perlindungan harga petani: penetapan jaminan harga dasar minimum (*guaranteed floor price*) untuk memitigasi volatilitas fluktuasi pasar bebas.
+- [x] 62.3 **Sentra Pengumpul (Collection Center) & Grading Mutu Komoditas**:
+  - Operasional pos pengumpul hasil panen pedesaan: penerimaan hasil tani harian, penimbangan akurat digital, dan inspeksi mutu multi-parameter (kadar air, kebersihan, visual).
+  - Matriks penentuan mutu bertingkat: *Grade A (100% floor price), Grade B (90%), Grade C (80%)*.
+  - Mekanisme pemotongan otomatis uang muka: amortisasi piutang bibit/pupuk langsung dari hasil panen bruto dengan jaminan tidak melebihi hasil panen.
+  - Pelunasan seketika (*instant payout*) bersih ke dompet petani atau rekening bank mitra tani.
+- [x] 62.4 **Rantai Dingin Terpadu (Cold Chain IoT) ke Dapur Sentral Resto & Pabrik**:
+  - Alur pengiriman terjadwal armada truk berpendingin (*reefer truck*) dari pos pengumpul langsung ke CK-01 Resto Sari Ranah atau Pabrik Manufaktur Makanan.
+  - Integrasi telemetri sensor IoT suhu dan kelembaban berkala: deteksi status optimal (2°C - 8°C), status peringatan (8°C - 12°C), dan status pelanggaran mutu (*temperature breach*).
+  - Verifikasi sertifikasi rantai pasok halal dari lahan pertanian hingga meja santap.
+- [x] 62.5 **AgriService, Web Portal & Audit Command `agri:audit`**:
+  - Layanan `Modules\Agri\Application\Services\AgriService` mengorkestrasikan kontrak tani, penerimaan panen, dan telemetri suhu.
+  - Web UI `/agri` dasbor pemantauan hasil panen, serapan komoditas resto, dan logistik rantai dingin.
+  - Command `agri:audit` (Konsistensi pembagian hasil panen, verifikasi pemotongan piutang uang muka tidak over-deducted, 0 diskrepansi).
 
 ### FASE 63 — KONSTRUKSI EPC, MANAJEMEN PROYEK PROPERTI & ASSET CAPITALIZATION
 - [x] 63.1 **Work Breakdown Structure (WBS) & Rencana Anggaran Biaya (RAB Proyek)**:
-  - Hierarki proyek konstruksi: Proyek (Mall Ekstensi/Pabrik Baru) → Tahap → Paket Pekerjaan → Butir Aktivitas WBS.
-  - Estimasi RAB terperinci: komponen material (beton, baja), upah tenaga kerja kontraktor, dan sewa alat berat.
-- [x] 63.2 **Manajemen Progres Fisik, Kurva-S & Sertifikat Prestasi Proyek (MC)**:
-  - Pelacakan deviasi progres aktual vs target kurva-S (bobot persentase penyelesaian fisik).
-  - Penerbitan *Monthly Certificate* (MC) berdasarkan verifikasi konsultan pengawas independen dan pengajuan klaim termin penagihan.
-- [x] 63.3 **Konstruksi Dalam Pengerjaan (CIP) & Kapitalisasi Aset Tetap**:
-  - Akumulasi seluruh biaya proyek ke akun buku besar *Construction in Progress* (`ast:cip_project`).
-  - Berita Acara Serah Terima Akhir (BAST 1 & 2): penutupan akun CIP dan reklasifikasi otomatis menjadi Aset Tetap Bangunan, Gedung, dan Instalasi Fasilitas di modul Aset (`Modules\Asset`).
-- [x] 63.4 `epc:audit` (Realisasi termin tagihan = progres MC terverifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, 0 diskrepansi).
+  - Struktur hierarki proyek teknik & konstruksi: Proyek (Ekstensi Duta Mall, Pabrik Baru Cikande, Central Kitchen CK-02 Surabaya) → Paket Pekerjaan (Struktur Sipil, Arsitektur, MEP, Infrastruktur) → Node Aktivitas WBS terukur.
+  - Alokasi anggaran terperinci: komponen material (beton, baja, tiang pancang), upah subkontraktor, dan sewa alat berat.
+  - Penentuan bobot persentase penyelesaian fisik (*weight percentage*) per simpul aktivitas dengan total akumulatif persis 100%.
+- [x] 63.2 **Manajemen Progres Fisik Proyek, Analisis Kurva-S & Monthly Certificate (MC)**:
+  - Pelacakan deviasi progres aktual lapangan vs kurva-S rencana kerja.
+  - Verifikasi progres prestasi kerja oleh Konsultan Pengawas Independen terakreditasi (*PT Virama Karya Konsultan*).
+  - Penerbitan Sertifikat Prestasi Bulanan (*Monthly Certificate - MC*): perhitungan klaim termin bruto (*gross claim amount*), pemotongan retensi pemeliharaan 5% (*retention deduction*), dan penerbitan nilai tagihan bersih (*net payable*).
+- [x] 63.3 **Konstruksi Dalam Pengerjaan (CIP) & Akuntansi Biaya Modal**:
+  - Akumulasi seluruh biaya proyek, jasa konstruksi, dan sertifikat prestasi bulanan ke akun buku besar Konstruksi Dalam Pengerjaan (`accumulated_cip_cost_idr`).
+  - Rekonsiliasi periodik antara realisasi fisik MC konsultan dengan mutasi finansial buku besar CIP.
+  - Guardrail pencegahan kapitalisasi dini sebelum pekerjaan fisik diverifikasi tuntas.
+- [x] 63.4 **Serah Terima Akhir Proyek (BAST 1 & 2) & Kapitalisasi Aset Tetap Modul Asset**:
+  - Pelaksanaan Berita Acara Serah Terima Parsial (BAST 1) dan Berita Acara Serah Terima Final (BAST Final).
+  - Penutupan saldo akun CIP dan reklasifikasi otomatis menjadi Aset Tetap Bangunan, Gedung, Mesin, dan Instalasi Fasilitas di Modul Aset (`Modules\Asset`).
+  - Pemutakhiran nilai buku aset kapitalisasi (`capitalized_asset_value_idr`) dan pengikatan ID register aset tetap baru.
+- [x] 63.5 **EpcService, Web Portal & Audit Command `epc:audit`**:
+  - Layanan `Modules\Epc\Application\Services\EpcService` mengorkestrasikan WBS, sertifikat progres, dan kapitalisasi aset tetap.
+  - Web UI `/epc` visualisasi kurva-S progres konstruksi dan status kapitalisasi gedung baru.
+  - Command `epc:audit` (Realisasi termin tagihan = klaim MC tersertifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, batas progres maksimal 100%, 0 diskrepansi).
 
 ### FASE 64 — ANALITIK PREDIKTIF, AI-DRIVEN REVENUE MANAGEMENT & ANOMALY DETECTION
 - [ ] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:

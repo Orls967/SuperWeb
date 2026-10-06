@@ -38,6 +38,15 @@ class EpcTest extends TestCase
 
         $this->assertInstanceOf(EpcWbsNode::class, $wbs);
         $this->assertEquals(15.0, (float) $wbs->weight_percentage);
+
+        // Cannot add node exceeding remaining weight (100 - 15 = 85%)
+        $this->expectException(\InvalidArgumentException::class);
+        $service->addWbsNode($project->id, [
+            'wbs_code' => 'WBS-EXCESS',
+            'task_name' => 'Overweight Work Package',
+            'weight_percentage' => 90.0,
+            'budget_allocation_idr' => 1000000000,
+        ]);
     }
 
     public function test_can_issue_monthly_progress_certificate(): void

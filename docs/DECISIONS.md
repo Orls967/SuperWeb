@@ -974,6 +974,23 @@
   - **63.4 Audit EPC:** Command `epc:audit` memvalidasi kesesuaian nilai klaim MC dengan akumulasi saldo CIP dan nilai aset terkapitalisasi dengan 0 diskrepansi.
 - **Tests:** `EpcTest` (5 tes / 19 asersi). Sub-suite `EpcTest|ModuleBoundariesTest` (17 passed / 79 assertions), `epc:audit` (0 diskrepansi), `chain:audit-all` (18 audit lulus), Pint lulus.
 
+---
+
+## 2026-10-06: Enterprise Deepening & Architectural Documentation — Fase 59 s/d 63 (PLM, ESG, B2B, Agri, EPC)
+
+- **Context:** Permintaan user untuk mengembangkan rencana Fase 59-63 sedetail mungkin (enterprise-grade granular sub-phases), memperdalam implementasi logika/validasi/pengujian di codebase, serta memeriksa dan melengkapi seluruh bagian `CODEBASE.md` yang belum mencatat modul baru.
+- **Decision:**
+  - **PROGRESS.md Expansion:** Rincian Fase 59 s/d 63 diperluas dari outline ringkas menjadi sub-fase granular (.1 s/d .5) dengan spesifikasi teknis, matriks kelayakan, invarian data, dan flow bisnis komprehensif.
+  - **Logic & Defense Hardening:**
+    - `PlmService`: penambahan alur transisi `advanceStage` dengan proteksi anti-revert dan konversi `releaseEbomToMbom` menjadi resep manufaktur aktif.
+    - `B2bService`: penambahan alur negosiasi formal `respondToRfq` dan persetujuan penawaran `acceptRfq`.
+    - `AgriService`: penguatan pengujian grading bertingkat (Grade B 90%, Grade C 80%) dan amortisasi talangan bibit/pupuk.
+    - `EpcService`: penambahan validasi akumulasi bobot simpul WBS agar tidak melampaui batas absolut 100%.
+  - **Documentation Alignment:**
+    - `docs/CODEBASE.md`: Memperbarui tabel modul (§3) dengan 6 modul baru (`HCM`, `PLM`, `ESG`, `B2B`, `Agri`, `EPC`), memperbarui daftar command audit (§8), memperbarui matriks role RBAC (§4) menjadi 32 role, dan menulis spesifikasi arsitektur modul di §15.
+- **Verification:** Seluruh 38 tes modul 59-63 dan arsitektur boundaries lulus (141 asersi), `chain:audit-all` 18/18 audit lulus, `bank:reconcile` 140 akun seimbang (0 selisih), dan Pint lulus 100%.
+
+
 
 
 

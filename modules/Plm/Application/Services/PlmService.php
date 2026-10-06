@@ -42,6 +42,50 @@ class PlmService
         });
     }
 
+    public function advanceStage(PlmProject $project, string $targetStage): PlmProject
+    {
+        return DB::transaction(function () use ($project, $targetStage) {
+            $validStages = ['ideation', 'scoping', 'business_case', 'development', 'testing', 'commercial_launch'];
+
+            if (! in_array($targetStage, $validStages, true)) {
+                throw new \InvalidArgumentException("Invalid stage: {$targetStage}");
+            }
+
+            $currentIndex = array_search($project->stage, $validStages, true);
+            $targetIndex = array_search($targetStage, $validStages, true);
+
+            if ($targetIndex < $currentIndex) {
+                throw new \InvalidArgumentException("Cannot revert stage from {$project->stage} to {$targetStage}.");
+            }
+
+            $project->update(['stage' => $targetStage]);
+
+            return $project;
+        });
+    }
+
+    public function releaseEbomToMbom(EngineeringBom $ebom): array
+    {
+        return DB::transaction(function () use ($ebom) {
+            if ($ebom->status === 'released') {
+                throw new \InvalidArgumentException('EBOM is already released to MBOM.');
+            }
+
+            $ebom->update(['status' => 'released']);
+
+            // Structured recipe conversion ready for Manufacturing BOM ingestion
+            return [
+                'mbom_code' => 'MBOM-'.$ebom->bom_number,
+                'project_id' => $ebom->project_id,
+                'source_ebom_id' => $ebom->id,
+                'source_version' => $ebom->version,
+                'items_count' => count($ebom->components ?? []),
+                'components' => $ebom->components ?? [],
+                'status' => 'active_production_recipe',
+            ];
+        });
+    }
+
     public function submitEngineeringChangeOrder(EngineeringBom $ebom, string $title, string $reason, int $costImpactIdr, string $disposition = 'scrap'): ChangeOrder
     {
         return DB::transaction(function () use ($ebom, $title, $reason, $costImpactIdr, $disposition) {

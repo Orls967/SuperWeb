@@ -44,6 +44,13 @@ class B2bTest extends TestCase
 
         $this->assertInstanceOf(B2bRfq::class, $rfq);
         $this->assertEquals('open', $rfq->status);
+
+        $quoted = $service->respondToRfq($rfq->id, 2100000, 'TOP_45', 'Best bulk volume rate');
+        $this->assertEquals('quoted', $quoted->status);
+        $this->assertEquals(2100000, $quoted->target_price_idr);
+
+        $accepted = $service->acceptRfq($rfq->id);
+        $this->assertEquals('accepted', $accepted->status);
     }
 
     public function test_can_create_and_bid_surplus_auction(): void

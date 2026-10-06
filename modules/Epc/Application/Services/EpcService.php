@@ -35,13 +35,19 @@ class EpcService
     {
         return DB::transaction(function () use ($projectId, $data) {
             $project = EpcProject::where('id', $projectId)->lockForUpdate()->firstOrFail();
+            $weight = (float) $data['weight_percentage'];
+
+            $currentTotalWeight = (float) EpcWbsNode::where('project_id', $project->id)->sum('weight_percentage');
+            if (($currentTotalWeight + $weight) > 100.001) {
+                throw new \InvalidArgumentException("Cumulative WBS weight exceeds 100% (currently {$currentTotalWeight}%, attempting to add {$weight}%).");
+            }
 
             return EpcWbsNode::create([
                 'project_id' => $project->id,
                 'wbs_code' => $data['wbs_code'],
                 'task_name' => $data['task_name'],
                 'work_package' => $data['work_package'] ?? 'civil_structure',
-                'weight_percentage' => (float) $data['weight_percentage'],
+                'weight_percentage' => $weight,
                 'budget_allocation_idr' => (int) $data['budget_allocation_idr'],
                 'actual_cost_incurred_idr' => (int) ($data['actual_cost_incurred_idr'] ?? 0),
                 'completion_percentage' => (float) ($data['completion_percentage'] ?? 0.00),

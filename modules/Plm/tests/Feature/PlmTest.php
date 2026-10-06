@@ -48,6 +48,29 @@ class PlmTest extends TestCase
         ]);
     }
 
+    public function test_can_advance_stage_and_release_ebom_to_mbom(): void
+    {
+        $project = $this->service->createProject([
+            'code' => 'PRJ-STAGE-01',
+            'name' => 'High Capacity Inverter',
+            'stage' => 'ideation',
+        ]);
+
+        $advanced = $this->service->advanceStage($project, 'development');
+        $this->assertSame('development', $advanced->stage);
+
+        $ebom = $this->service->createEngineeringBom($project, 'EBOM-INV-01', [
+            ['part' => 'MOSFET-ARRAY', 'qty' => 8],
+            ['part' => 'ALUMINUM-HEATSINK', 'qty' => 1],
+        ]);
+
+        $mbomRecipe = $this->service->releaseEbomToMbom($ebom);
+        $this->assertSame('MBOM-EBOM-INV-01', $mbomRecipe['mbom_code']);
+        $this->assertSame('active_production_recipe', $mbomRecipe['status']);
+        $this->assertSame(2, $mbomRecipe['items_count']);
+        $this->assertSame('released', $ebom->fresh()->status);
+    }
+
     public function test_can_submit_change_order_with_hash_chain(): void
     {
         $project = $this->service->createProject(['name' => 'Battery Cooling System']);

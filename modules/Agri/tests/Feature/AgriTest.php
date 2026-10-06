@@ -82,6 +82,17 @@ class AgriTest extends TestCase
         // Advance should now be zero on the contract
         $contract->refresh();
         $this->assertEquals(0, $contract->total_advance_deductible_idr);
+
+        // Receive Grade B (90% of 30.000 = 27.000 / kg)
+        $batchB = $service->receiveHarvestAtCollectionCenter([
+            'collection_center_id' => 'CC-SUBANG-01',
+            'contract_id' => $contract->id,
+            'gross_weight_kg' => 100.0,
+            'grade' => 'GRADE_B',
+        ]);
+        $this->assertEquals(27000, $batchB->buying_price_per_kg);
+        $this->assertEquals(2700000, $batchB->gross_payout_idr);
+        $this->assertEquals(2700000, $batchB->net_payout_idr);
     }
 
     public function test_can_log_cold_chain_iot_telemetry(): void

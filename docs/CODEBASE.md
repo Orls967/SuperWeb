@@ -71,11 +71,17 @@ Gotcha yang sudah pernah menggigit: `event(new X)` bukan `X::dispatch` bila even
 | EnterpriseFinance | `ef_` (4 tabel) | `/enterprise-finance` | Finance Grup & Tata Kelola: `EnterpriseBudget` (hard-stop vs soft-stop encumbrance), `EnterpriseTaxSummary` (rekonsiliasi PPN & PPh), `SodRule` (pemisahan tugas SoD matrix engine), `ComplianceDeadline` (kalender regulasi); `EnterpriseFinanceService`; command `enterprise:audit` |
 | Integration | `intg_` (4 tabel) | `/integration` | B2B API v2 & EDI: `WebhookSubscription` (event publisher), `WebhookDelivery` (HMAC SHA-256 signature), `EdiMessage` (EDIFACT/X12 850/855/856/810 parser), `ApiClient` (tiered quota limit per minute); `IntegrationService`; command `api:audit` |
 | Procurement | `prc_` (25 tabel) | `/procurement` | PR → RFQ → Tender → PO: `BudgetCenter`/`BudgetEncumbrance` (33.6 encumbrance per pusat biaya, warning >100%), `Requisition`+`RequisitionLine` (33.1 approval berjenjang, threshold 50jt), `Rfq`+`RfqInvitation`+`Quote` (33.2 matriks harga/lead/skor, alasan wajib), `Tender`+`TenderBid` (33.3 segel SHA-256 blind, buka bersamaan, evaluasi berbobot), `PurchaseOrder`+`PoLine`+`PoVersion` (33.4 versi via approval, blanket/call-off, close/cancel lepas encumbrance), `ImportProfile` (33.5 Incoterm/kurs/landed cost simulasi), `InboundShipmentService` (33.7 via kontrak `ShipmentBooking`, `source_id` UUID); rute `/procurement` (admin/procurement) + grup supplier untuk quote/seal; RBAC permission `procurement.*`. **Fase 34**: `ReceivingService` (GRN parsial/lot/kedaluwarsa + toleransi over-delivery 5% → `InventoryService` contract, inspeksi karantina → retur debit note, 3-way match PO–GRN–Invoice toleransi harga 2%/qty 5% → held+approval, GR/IR + AP per pemasok + PPN 11% & PPh 2% simulasi + PPV, batch payment run dengan approval + diskon dini, uang muka & kredit memo, alokasi landed cost value/weight/qty dengan baris terakhir menyerap selisih) + 10 tabel `prc_{receiving_reports,receiving_lines,inspections,supplier_returns,supplier_invoices,three_way_matches,ap_entries,payment_batches,payment_items,supplier_advances,credit_memos,landed_costs}`; command `proc:audit` (subledger AP == ledger dgn konvensi kredit = negatif, GR/IR = 0 untuk PO received) |
+| HCM | `hcm_` (4 tabel) | `/hcm` | Human Capital Management: `Employee` (PKWT/PKWTT/freelance, NIK SHA-256 hash, gaji & rekening bank), `Payroll` (gaji kotor, BPJS TK/Kes, PPh 21 TER, gaji bersih), `ProductionLaborAllocation` (jam kerja aktual operator dialokasikan ke SPK Manufaktur); `HcmService`; command `hcm:audit`; role `hcm_manager` | 18 |
+| PLM | `plm_` (4 tabel) | `/plm` | R&D & Product Lifecycle: `PlmProject` (Stage-Gate: ideation s/d launch, budget & ROI), `EngineeringBom` (EBOM vs MBOM components schema), `ChangeOrder` (ECO tamper-evident hash-chain SHA-256, disposisi scrap/rework), `LabNotebook` (ELN formula rahasia terenkripsi, uji stabilitas & sensori); `PlmService`; command `plm:audit`; role `rnd_specialist` | 18 |
+| ESG | `esg_` (4 tabel) | `/esg` | ESG & Emisi Karbon: `EsgEmission` (Scope 1 BBM armada/genset, Scope 2 listrik PLN grid, Scope 3 freight/agri), `CarbonCredit` (IDX Carbon/Verra sertifikat per tonase IDR), `OffsetRetirement` (pensiun kuota emisi per entitas anti-over-retire), `SupplierScore` (skor ESG 3 pilar: Env 40%, Soc 30%, Gov 30% standar GRI); `EsgService`; command `esg:audit`; role `esg_officer` | 18 |
+| B2B | `b2b_` (4 tabel) | `/b2b` | Marketplace B2B & Lelang Surplus: `WholesaleCatalog` (katalog grosir tertutup, tiered pricing matrix, MOQ), `B2bRfq` (RFQ antar-badan usaha, TOP 30/60), `SurplusAuction` (lelang mesin pabrik/armada surplus, anti-sniping 5 mnt, lockForUpdate), `B2bEscrowAccount` (penguncian dana jaminan & rilis BAST bertahap); `B2bService`; command `b2b:audit`; role `b2b_buyer` | 18 |
+| Agri | `agri_` (4 tabel) | `/agri` | Hulu Pertanian & Rantai Dingin: `AgriFarmer` (petani plasma/poktan, GIS poligon lahan, komoditas), `AgriContract` (kontrak budidaya, uang muka bibit/pupuk, garansi floor price), `AgriCollectionBatch` (pos pengumpul, grading A/B/C, amortisasi uang muka, instant payout), `AgriColdChainLog` (telemetri IoT reefer truck 2-8°C ke CK-01/pabrik); `AgriService`; command `agri:audit`; role `farmer` | 18 |
+| EPC | `epc_` (4 tabel) | `/epc` | Konstruksi & Asset Capitalization: `EpcProject` (Mall extension, pabrik baru, RAB budget), `EpcWbsNode` (WBS aktivitas terbobot 100%), `EpcProgressCertificate` (Monthly Certificate MC konsultan pengawas, klaim termin - 5% retensi), `EpcCipCapitalization` (BAST Final, akumulasi CIP direklasifikasi ke modul Asset `ast:fixed_assets`); `EpcService`; command `epc:audit`; role `epc_manager` | 18 |
 Tabel non-prefiks lama: `users`, `bookings`, `spareparts`, `services`, `cars`, `brands`, `garages`, `wishlists`, `platform_*`.
 
 ## 4. Role & akun demo
 
-Role (`users.role` + RBAC tabel `roles`): `admin`, `customer`, `mekanik`, `tenant`, `outlet_manager`, `kitchen`, `cashier`, `shipper`, `driver`, `dispatcher`, `hub_operator`, `logistics_admin`, `party_manager`, `contract_manager`, `legal`, `asset_manager`, `auditor`, `supplier`, `procurement`, `planner`, `operator`, `qc_inspector`, `distributor`, `agent`, `partner`, `treasury`. RBAC mendukung multi-role per user dengan scope entitas (contoh: cashier scoped ke outlet). 26 role tersemai di `RbacSeeder`.
+Role (`users.role` + RBAC tabel `roles`): `admin`, `customer`, `mekanik`, `tenant`, `outlet_manager`, `kitchen`, `cashier`, `shipper`, `driver`, `dispatcher`, `hub_operator`, `logistics_admin`, `party_manager`, `contract_manager`, `legal`, `asset_manager`, `auditor`, `supplier`, `procurement`, `planner`, `operator`, `qc_inspector`, `distributor`, `agent`, `partner`, `treasury`, `hcm_manager`, `rnd_specialist`, `esg_officer`, `b2b_buyer`, `farmer`, `epc_manager`. RBAC mendukung multi-role per user dengan scope entitas (contoh: cashier scoped ke outlet). 32 role tersemai di `RbacSeeder`.
 Seeder: `DatabaseSeeder` → Banking, Platform, Crypto, Mall, Resto, Logistics (+ `LogisticsFinanceSeeder`). Akun demo contoh: `admin@autoserve.test`, `customer@autoserve.test`, `mekanik@autoserve.test` (password `password`). `DemoLargeSeeder` = data besar lintas modul; `LogisticsLargeSeeder` = skala logistik (Fase 25).
 
 ## 5. Ledger & uang (inti sistem)
@@ -129,7 +135,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 
 ## 8. Peta command lengkap
  
-`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (9 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal) · `party:backfill-links` · `party:remind-expiring-docs` · `contracts:verify-chain` · `ctr:remind` · `ctr:audit {--sync}` · `ast:verify-chain` · `ast:backfill-links` · `ast:depreciate {--period} {--book} {--asset}` · `ast:audit {--tco}` · `sup:scan-risks` · `sup:remind-certifications {--days}` · `proc:audit` · `mfg:run-mrp` · `mfg:wip` · `mfg:audit-costing` · `mfg:qms-audit` · (jadwal harian) OEE/K3. `ast:depreciate`/`ast:audit` bulanan (tgl 1), `sup:scan-risks` 06:45 & `sup:remind-certifications` 07:10 harian, `mfg:run-mrp` 04:45 harian.
+`bank:reconcile` · `payment:release-expired-holds` · `store:cancel-stale-orders` · `store:auto-capture-c2c` · `crypto:tick` · `finance:charge-installments` · `resto:expire-display|close-day|post-royalty|check-stock` · `mall:generate-invoices|auto-debit|apply-penalties|renew-parking-members|audit-billing|expire-points|expire-vouchers|settle-vouchers|generate-pm-orders|simulate-footfall` · `core:verify-passports` · `super:health-check` (10 pilar) · `lgx:*` (§6; termasuk `lgx:retry-webhooks`, `lgx:capacity-check`, `lgx:verify-custody` yang kini terjadwal) · `party:backfill-links` · `party:remind-expiring-docs` · `contracts:verify-chain` · `ctr:remind` · `ctr:audit {--sync}` · `ast:verify-chain` · `ast:backfill-links` · `ast:depreciate {--period} {--book} {--asset}` · `ast:audit {--tco}` · `sup:scan-risks` · `sup:remind-certifications {--days}` · `proc:audit` · `mfg:run-mrp` · `mfg:wip` · `mfg:audit-costing` · `mfg:qms-audit` · (jadwal harian) OEE/K3 · `treasury:audit` · `trade:audit` · `tf:audit` · `intl:audit` · `group:audit` · `tower:audit` · `enterprise:audit` · `api:audit` · `hcm:audit` · `plm:audit` · `esg:audit` · `b2b:audit` · `agri:audit` · `epc:audit` · `chain:audit-all` (orkestrasi 18 audit rantai nilai menyeluruh). `ast:depreciate`/`ast:audit` bulanan (tgl 1), `sup:scan-risks` 06:45 & `sup:remind-certifications` 07:10 harian, `mfg:run-mrp` 04:45 harian.
 
 ## 9. Test
 
@@ -279,3 +285,52 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 - **Service:** `PartnerService` — siklus hidup `prospect→due_diligence→negotiation→active⇄review→exit` ber-guard, due diligence (skor ≥70 approved), JBP, bagi hasil idempoten per (mitra, periode) + posting ledger `ptn:rev_share_expense`/`clearing`, scorecard upsert, HKI, co-selling, exit.
 - **Rute:** `/partners` (admin/procurement/auditor); role `partner` (ke-25) + permission `partner.*`; command `ptn:audit`.
 - **Catatan jujur:** portal mitra (47.6) baru direktori/detail minimal; due diligence belum memakai ApprovalEngine (skor otomatis); HKI/aset bersama belum tertaut ke modul Asset.
+
+### Human Capital Management (`hcm_`) — Fase 58
+
+- **Tujuan:** manajemen sumber daya manusia terintegrasi, kompensasi & payroll, pajak PPh 21 TER, jaminan BPJS Ketenagakerjaan/Kesehatan, dan alokasi biaya tenaga kerja langsung ke Work Order SPK Manufaktur.
+- **Tabel:** `hcm_employees`, `hcm_payrolls`, `hcm_production_labor_allocations`, `hcm_time_attendances`.
+- **Service:** `Modules\Hcm\Application\Services\HcmService` — registrasi karyawan (PKWT/PKWTT/freelance, enkripsi NIK SHA-256), komputasi payroll otomatis (gaji pokok, tunjangan, BPJS TK 3%, BPJS Kes 1%, PPh 21 TER 5% simulasi, gaji bersih), alokasi biaya jam kerja aktual operator ke SPK manufaktur (`allocated_cost_idr`).
+- **Rute:** `/hcm` (role `admin`, `hcm_manager`).
+- **Command:** `hcm:audit` (verifikasi invarian gaji kotor − potongan = gaji bersih, Σ komponen potongan = total potongan, 0 selisih).
+
+### Product Lifecycle Management (`plm_`) — Fase 59
+
+- **Tujuan:** tata kelola inovasi riset & pengembangan produk baru, stage-gate review, pemisahan purwarupa R&D (EBOM) ke resep massal pabrik (MBOM), rekayasa perubahan spesifikasi (ECO) berantai hash kriptografis, dan Electronic Lab Notebook (ELN) formula rahasia terenkripsi.
+- **Tabel:** `plm_projects`, `plm_engineering_boms`, `plm_change_orders`, `plm_lab_notebooks`.
+- **Service:** `Modules\Plm\Application\Services\PlmService` — siklus proyek Stage-Gate (`ideation → scoping → business_case → development → testing → commercial_launch`), EBOM JSON schema validation, pengajuan ECO tamper-evident SHA-256 (`prev_hash` → `hash`), pencatatan ELN dengan enkripsi formula base64 & uji stabilitas ASLT.
+- **Rute:** `/plm` (role `admin`, `rnd_specialist`).
+- **Command:** `plm:audit` (verifikasi integritas hash-chain ECO SHA-256, 0 diskrepansi).
+
+### ESG & Carbon Accounting (`esg_`) — Fase 60
+
+- **Tujuan:** akuntansi emisi gas rumah kaca (GHG Protocol Scope 1, 2, dan 3), penatausahaan portofolio kredit karbon (IDX Carbon / Verra), pensiun sertifikat offset emisi net-zero, dan audit keberlanjutan rantai pasok (GRI Standards & OJK Hijau).
+- **Tabel:** `esg_emissions`, `esg_carbon_credits`, `esg_offset_retirements`, `esg_supplier_scores`.
+- **Service:** `Modules\Esg\Application\Services\EsgService` — kalkulasi emisi standar (solar diesel 2.68 kg/L, bensin 2.31 kg/L, listrik PLN 0.79 kg/kWh, freight darat 0.12 kg/ton-km), pencatatan sertifikat kredit karbon, pensiun kuota offset ber-guard anti-over-retire, evaluasi skor ESG pemasok berbobot (Env 40%, Soc 30%, Gov 30%).
+- **Rute:** `/esg` (role `admin`, `esg_officer`).
+- **Command:** `esg:audit` (verifikasi konsistensi kalkulasi emisi CO2e, sertifikat vs pensiun kuota, 0 diskrepansi).
+
+### B2B Marketplace & Surplus Auction (`b2b_`) — Fase 61
+
+- **Tujuan:** direktori marketplace grosir tertutup multi-vendor, alur penerbitan & negosiasi RFQ komersial dengan termin tempo (TOP 30/60), balai lelang digital aset surplus & mesin idle dengan perlindungan anti-sniping, serta rekening escrow platform terproteksi.
+- **Tabel:** `b2b_wholesale_catalogs`, `b2b_rfqs`, `b2b_surplus_auctions`, `b2b_escrow_accounts`.
+- **Service:** `Modules\B2b\Application\Services\B2bService` — katalog grosir bertingkat (*Tiered Pricing Matrix*), RFQ inter-company, lelang mesin pabrik & armada surplus dengan row-level lock (`lockForUpdate`) dan perpanjangan waktu otomatis 5 menit bila ada penawaran di menit akhir, penguncian deposit escrow serta pencairan bersyarat BAST.
+- **Rute:** `/b2b` (role `admin`, `b2b_buyer`, `supplier`, `distributor`).
+- **Command:** `b2b:audit` (verifikasi penahanan deposit escrow = komitmen aktif, timeline lelang valid, 0 diskrepansi).
+
+### Agribusiness & Cold Chain (`agri_`) — Fase 62
+
+- **Tujuan:** digitalisasi hulu pertanian & kemitraan petani plasma (Poktan), pemetaan spasial GIS lahan garapan, kontrak budidaya bagi hasil dengan uang muka bibit/pupuk, pos pengumpul panen pedesaan dengan grading mutu A/B/C & instant payout, serta rantai dingin IoT reefer truck ke Dapur Sentral CK-01 & pabrik pengolahan.
+- **Tabel:** `agri_farmers`, `agri_contracts`, `agri_collection_batches`, `agri_cold_chain_logs`.
+- **Service:** `Modules\Agri\Application\Services\AgriService` — registrasi petani plasma & poligon GeoJSON, penerbitan kontrak tani dengan proteksi guaranteed floor price, penerimaan panen di pos pengumpul dengan pemotongan otomatis piutang uang muka (tanpa melebihi hasil panen), pemantauan telemetri IoT cold chain (2°C - 8°C optimal, deteksi breach).
+- **Rute:** `/agri` (role `admin`, `farmer`, `procurement`).
+- **Command:** `agri:audit` (verifikasi neraca bagi hasil panen, pemotongan piutang bibit tepat, 0 selisih).
+
+### EPC Construction & Asset Capitalization (`epc_`) — Fase 63
+
+- **Tujuan:** manajemen proyek rekayasa konstruksi (ekstensi Duta Mall, pabrik baru, central kitchen), hierarki Work Breakdown Structure (WBS) dengan bobot 100%, kurva-S deviasi progres lapangan, penerbitan sertifikat prestasi bulanan (Monthly Certificate - MC) konsultan pengawas ber-retensi 5%, serta penutupan biaya Konstruksi Dalam Pengerjaan (CIP) menjadi Aset Tetap di modul Asset.
+- **Tabel:** `epc_projects`, `epc_wbs_nodes`, `epc_progress_certificates`, `epc_cip_capitalizations`.
+- **Service:** `Modules\Epc\Application\Services\EpcService` — inisiasi proyek konstruksi & RAB, pemecahan simpul paket pekerjaan WBS, penerbitan sertifikat bulanan MC (gross claim, retensi 5%, net payable), pemutakhiran akumulasi biaya CIP, dan kapitalisasi tuntas ke Aset Tetap (`ast:fixed_assets`) melalui BAST Final.
+- **Rute:** `/epc` (role `admin`, `epc_manager`, `asset_manager`).
+- **Command:** `epc:audit` (verifikasi klaim MC = akumulasi CIP + kapitalisasi, progres fisik ≤ 100%, 0 diskrepansi).
+
