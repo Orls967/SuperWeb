@@ -1,12 +1,15 @@
 # Superwebsite — Enterprise Multi-Business Modular Monolith Platform
 
-Platform terpadu berskala *enterprise* berbasis **Laravel 11, Blade + Tailwind CSS + Alpine.js**, mengintegrasikan 5 pilar lini bisnis konglomerasi modern di atas pondasi **Double-Entry Multi-Asset Ledger** dan **Cryptographic Hash-Chain**:
+Platform ERP terpadu berskala *enterprise* (Ekosistem 38 Modul) berbasis **Laravel 11, Blade + Tailwind CSS + Alpine.js**, mengintegrasikan 8 pilar lini bisnis konglomerasi modern di atas pondasi **Double-Entry Multi-Asset Ledger (Zero-Discrepancy)** dan **Cryptographic Hash-Chain**:
 
-1. **Otomotif & Bengkel**: Bengkel Servis Mobil (*AutoServe*), Ensiklopedia & Garasi (*AutoDex*), Toko Onderdil & Bursa Mobil Bekas C2C (*Store*).
-2. **Keuangan & Kripto**: Core Banking Buku Besar Dua Sisi (*Banking*), Payment Hub (*Payment*), Bursa Kripto Simulasi (*Crypto*), dan Pembiayaan Beragun Kripto *HODL-to-Drive* (*Finance*).
-3. **Kuliner Tradisional Padang (RM Sari Ranah)**: Sistem Masak & Hidang Otentik, Resep Berlapis BOM, Kalkulasi HPP & Varian Produksi, Manajemen Etalase & Resirkulasi, POS Kasir Multi-Shift, Rantai Pasok & Dapur Sentral, Katering & Pengantaran, Royalti Waralaba, serta Analitik Menu Matrix BCG (*Resto*).
-4. **Properti Komersial & Pusat Belanja (Duta Mall)**: Manajemen Tenant & Leasing (*Fixed*, *Revenue Share*, *Greater-Of*), Penagihan Sewa & Utilitas, Sistem Parkir Gate Progresif Terintegrasi Paspor Kendaraan, Program Loyalitas Duta Points (`PTS`), Voucher Belanja Mall (*Breakage Accounting*), Pemesanan Ruang Atrium Event, dan Manajemen Fasilitas (*Preventive Maintenance* & *Work Orders*) (*Mall*).
-5. **Konsolidasi Holding & Observabilitas**: Integrasi omzet tenant otomatis lintas lini, validasi parkir di kasir resto, poin/voucher belanja lintas ekosistem, pembatalan akses parkir otomatis saat kendaraan berpindah tangan, Dashboard P&L Grup Konsolidasi real-time ($\le 30$ query), Navigasi Global `Ctrl+K`, dan Diagnosa Kesehatan Sistem 7 Pilar (`super:health-check`) (*Core* & *Shared*).
+1. **Otomotif & Bengkel (Automotive)**: Bengkel Servis Mobil (*AutoServe*), Ensiklopedia (*AutoDex*), Marketplace Suku Cadang & Bursa Mobil C2C (*Store*), Pembiayaan Beragun Kripto (*Finance*).
+2. **Keuangan & Kripto (FinTech)**: Core Banking Double-Entry (*Banking*), Payment Hub (*Payment*), Bursa Kripto (*Crypto*), Multi-Currency Treasury (*Treasury*), Escrow B2B & Lelang Surplus (*B2B*).
+3. **Kuliner & Waralaba (F&B)**: Sistem Masak & Hidang RM Sari Ranah, BOM/HPP, Dapur Sentral CK-01, POS Kasir, Katering & Royalti Waralaba (*Resto*).
+4. **Properti Komersial & EPC (Real Estate & Construction)**: Manajemen Tenant, Leasing Duta Mall, Parkir Gate & Fasilitas (*Mall*), Manajemen Proyek Konstruksi, WBS & Capitalization (*EPC*).
+5. **Logistik Multimoda & SCM**: Jaringan Sari Ranah Express, Operasi Darat/Laut, Lacak Balak Hash-Chain (*Logistics*), Supply Chain Control Tower (*ControlTower*), WMS Gudang (*Wms*).
+6. **Manufaktur & Distribusi**: Produksi BOM multi-level, Material Requirements Planning (MRP), Kualitas & Pemeliharaan Mesin OEE (*Manufacturing*), Jaringan Distribusi B2B (*Distribution*), Engine Harga & Promosi (*Pricing*).
+7. **B2B Ekspor-Impor & Pengadaan (Trade & Procurement)**: RFQ/Tender Pengadaan (*Procurement*), Manajemen Pemasok (*Supplier*), Perdagangan Lintas Batas (*Trade*), Trade Finance & L/C (*TradeFinance*).
+8. **Tata Kelola, Agrikultur & Integrasi Enterprise (Corporate Services)**: Kontrak Pertanian & Rantai Dingin IoT (*Agri*), Manajemen Kontrak B2B (*Contract*), Manajemen Aset Tetap PSAK (*Asset*), Konsolidasi Intercompany (*Intercompany*), Kepatuhan & Anggaran (*EnterpriseFinance*), Manajemen Agen & Komisi (*Agency*), Mitigasi Emisi Karbon (*ESG*), Product Lifecycle Management (*PLM*), Tata Kelola Mitra (*Partner*), Kerja Sama Internasional (*International*), Manajemen SDM & Payroll (*HCM*), dan B2B API (*Integration*).
 
 ---
 
@@ -15,19 +18,45 @@ Platform terpadu berskala *enterprise* berbasis **Laravel 11, Blade + Tailwind C
 Platform ini dibangun dengan pola **Modular Monolith** yang ketat di direktori `modules/`:
 
 ```
-modules/
-├── AutoServe/      # Operasional bengkel & smart repair escrow
-├── AutoDex/        # Ensiklopedia mobil, garasi virtual, wishlist
-├── Banking/        # Double-entry multi-asset ledger, dompet digital, mutasi
-├── Payment/        # Central Payment Hub (charge, hold, capture, release, refund)
-├── Inventory/      # Pelacak mutasi stok barang dan bahan baku terpusat
-├── Store/          # Marketplace suku cadang & bursa mobil bekas C2C
-├── Crypto/         # Engine kuotasi harga kripto, dompet aset digital & trading
-├── Finance/        # Pembiayaan mobil beragun kripto (HODL-to-Drive), LTV monitor
-├── Resto/          # RM Sari Ranah (Padang hidang, HPP, POS kasir, supply chain)
-├── Mall/           # Duta Mall (leasing, utilitas, parkir, loyalty PTS, fasilitas)
-├── Core/           # Registri kendaraan, paspor hash-chain, notifikasi, observabilitas
-└── Shared/         # UI components, value objects (Money), MenuRegistry
+modules/                     # 38 Modular Monolith Domains
+├── Agency/                  # Manajemen agen, komisi bertingkat, atribusi
+├── Agri/                    # Pertanian kontrak (plasma), grading, log cold-chain IoT
+├── Asset/                   # Aset tetap, depresiasi PSAK 16/73, revaluasi, TCO
+├── AutoDex/                 # Ensiklopedia mobil, garasi virtual, wishlist
+├── AutoServe/               # Operasional bengkel & smart repair escrow
+├── B2b/                     # Katalog grosir, lelang surplus, escrow pembayaran B2B
+├── Banking/                 # Double-entry multi-asset ledger, 140 akun seimbang
+├── Contract/                # Manajemen kontrak, hash-chain clause, addendum
+├── ControlTower/            # S&OP, alokasi ATP/CTP, alert disrupsi rantai pasok
+├── Core/                    # RBAC (32 role), Paspor hash-chain, DocumentStore, Outbox
+├── Crypto/                  # Engine kuotasi harga kripto, dompet aset digital
+├── Distribution/            # Ekosistem B2B distributor, limit kredit, rebate
+├── EnterpriseFinance/       # Anggaran grup, enkumbrans, kepatuhan perpajakan/SoD
+├── Epc/                     # Konstruksi (Engineering, Procurement, Construction), MC
+├── Esg/                     # Emisi karbon GHG, offset trading, skor pemasok
+├── Finance/                 # Pembiayaan HODL-to-Drive, margin call, LTV monitor
+├── Hcm/                     # SDM, penggajian PPh 21, BPJS, alokasi jam kerja manufaktur
+├── Integration/             # B2B API v2, EDIFACT parser, webhook HMAC delivery
+├── Intercompany/            # Transaksi antar-entitas, transfer pricing, eliminasi konsolidasi
+├── International/           # Joint venture lintas yurisdiksi, OEM, royalti tax treaty
+├── Inventory/               # Inventori terpusat, reservasi dua langkah, pergerakan stok
+├── Logistics/               # Sari Ranah Express (multimoda laut/darat), custody lacak balak
+├── Mall/                    # Duta Mall (leasing, utilitas, parkir, loyalty PTS)
+├── Manufacturing/           # Produksi (BOM, Routing, MRP, SPC Quality, OEE Maintenance)
+├── Partner/                 # Mitra strategis, bagi hasil (revenue share), due diligence
+├── Party/                   # Master Data Party, KYC, badan hukum, credit scoring
+├── Payment/                 # Hub pembayaran terpusat (charge, hold, capture, refund)
+├── Plm/                     # Product Lifecycle Management, R&D, Lab Notebook
+├── Pricing/                 # Engine harga dinamis, diskon waterfall, promosi
+├── Procurement/             # PR, RFQ, Tender blind-bidding, PO, GR/IR 3-way match
+├── Resto/                   # RM Sari Ranah (Padang hidang, HPP, dapur sentral, POS)
+├── Shared/                  # UI components, value objects (Money), BaseAction
+├── Store/                   # Marketplace suku cadang & bursa C2C e-commerce
+├── Supplier/                # Sertifikasi, evaluasi kinerja (scorecard), SCAR
+├── Trade/                   # Ekspor-Impor, Incoterms, kalkulasi Landed Cost (HS Code)
+├── TradeFinance/            # Letter of Credit (L/C), Bank Guarantee, SCF
+├── Treasury/                # Hedging kurs, cash pooling, rekonsiliasi mutasi bank
+└── Wms/                     # Manajemen Gudang tingkat lanjut, putaway, wave picking
 ```
 
 ### Prinsip Integritas Moneter & Kriptografis

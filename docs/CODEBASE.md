@@ -204,6 +204,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 
 ## 15. Modul baru (diisi saat dibuat, Fase 26+)
 
+### Party (`pty_`) — Fase 27
+
+- **Tujuan:** Satu sumber kebenaran untuk semua pihak eksternal/internal (pemasok, produsen, distributor, agen, mitra, pelanggan, karyawan, perusahaan), tata kelola hukum, KYC/KYB workflow, penautan non-breaking identitas lintas modul.
+- **Tabel:** `pty_parties`, `pty_legal_entities`, `pty_party_roles`, `pty_party_addresses`, `pty_party_contacts`, `pty_kyc_documents`, `pty_sanction_checks`, `pty_credit_profiles`, `pty_party_bank_accounts`, `pty_merge_logs`.
+- **Service:** `PartyService` — manajemen profil/kontak, workflow KYC (pending→verified), legal entity (induk-anak perusahaan, NPWP, tahun fiskal, mata uang fungsional), deteksi duplikat & merge (reversible via `MergeLog`), credit scoring komposit (simulasi skor risiko/limit lintas modul), dan screening daftar hitam sanksi AML/CFT (menggunakan similar_text threshold & hash-check).
+- **Rute:** `/party` (role `admin`, `party_manager`).
+- **Catatan:** Integrasi backfill idempoten menghubungkan entitas legacy (`Carrier`, `ShipperAccount`, `Tenant`, `Seller`, `Supplier`) ke entitas `pty_parties` melalui kolom `party_id` nullable yang ditambahkan di berbagai tabel lama.
+
 ### Procurement (`prc_`) — Fase 33
 
 - **Tujuan:** siklus pembelian PR → RFQ/Tender → PO dengan penguncian anggaran (encumbrance), versi PO, PO impor simulasi, dan jadwal pengiriman masuk.
@@ -416,4 +424,9 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 - **Service:** `Modules\Epc\Application\Services\EpcService` — inisiasi proyek konstruksi & RAB, pemecahan simpul paket pekerjaan WBS, penerbitan sertifikat bulanan MC (gross claim, retensi 5%, net payable), pemutakhiran akumulasi biaya CIP, dan kapitalisasi tuntas ke Aset Tetap (`ast:fixed_assets`) melalui BAST Final.
 - **Rute:** `/epc` (role `admin`, `epc_manager`, `asset_manager`).
 - **Command:** `epc:audit` (verifikasi klaim MC = akumulasi CIP + kapitalisasi, progres fisik ≤ 100%, 0 diskrepansi).
+
+---
+
+> **Catatan Fase Tanpa Modul Baru:**
+> - **Fase 56** (Stress Testing Skala Ultra) dan **Fase 57** (Deep Audit, Hardening & Security) tidak menambahkan modul baru, melainkan berfokus pada seeder berkapasitas besar (`LogisticsLargeSeeder`), optimasi indeks database, dan pengetatan *Quality Gates*.
 
