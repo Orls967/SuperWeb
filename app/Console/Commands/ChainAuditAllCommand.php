@@ -32,6 +32,7 @@ class ChainAuditAllCommand extends Command
             'enterprise:audit' => 'Enterprise Finance Budgets, Tax & SoD Compliance',
             'api:audit' => 'B2B API & Webhook HMAC Cryptographic Integrity',
             'hcm:audit' => 'Human Capital Management Payroll & Labor Costing',
+            'plm:audit' => 'Product Lifecycle Management ECO & Hash Chain',
         ];
 
         $failures = 0;

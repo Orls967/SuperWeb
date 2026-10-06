@@ -968,16 +968,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
 
 ### FASE 59 — RESEARCH & DEVELOPMENT (R&D) & PRODUCT LIFECYCLE MANAGEMENT (PLM)
-- [ ] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process**:
+- [x] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process**:
   - Pipeline inovasi produk bertahap (*Stage-Gate Model*): *Ideation → Scoping → Business Case → Development → Testing/Pilot → Commercial Launch*.
   - Matriks penilaian kelayakan: estimasi biaya R&D, proyeksi ROI, analisis kanibalisasi produk eksisting, dan penilaian kepatuhan regulasi.
-- [ ] 59.2 **Engineering BOM (EBOM) vs Manufacturing BOM (MBOM)**:
+- [x] 59.2 **Engineering BOM (EBOM) vs Manufacturing BOM (MBOM)**:
   - Pengelolaan versi rancangan teknik: transisi terkontrol dari purwarupa R&D (EBOM) ke resep produksi massal pabrik (MBOM).
   - Manajemen Perubahan Teknik (*Engineering Change Order - ECO & ECN*): alur persetujuan perubahan spesifikasi material, dampak biaya, dan disposisi sisa stok lama (*scrap, rework, run-out*).
-- [ ] 59.3 **Formulasi Kimia, Uji Stabilitas & Sensori Laboratorium**:
+- [x] 59.3 **Formulasi Kimia, Uji Stabilitas & Sensori Laboratorium**:
   - Buku catatan laboratorium elektronik (*Electronic Lab Notebook - ELN*): formula rahasia terenkripsi, uji stabilitas suhu/kelembaban terakselerasi, dan uji organoleptik sensori.
   - Manajemen sampel R&D dan sertifikasi pra-rilis (uji klinis/lab independen terakreditasi).
-- [ ] 59.4 `plm:audit` (Integritas riwayat revisi ECO hash-chain terverifikasi, sinkronisasi EBOM ke MBOM konsisten 100%).
+- [x] 59.4 `plm:audit` (Integritas riwayat revisi ECO hash-chain terverifikasi, sinkronisasi EBOM ke MBOM konsisten 100%).
 
 ### FASE 60 — ESG, EMISI KARBON & SUSTAINABLE VALUE CHAIN
 - [ ] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol)**:

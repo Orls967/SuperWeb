@@ -63,6 +63,7 @@ return [
     \Modules\EnterpriseFinance\EnterpriseFinanceServiceProvider::class,
     \Modules\Integration\IntegrationServiceProvider::class,
     \Modules\Hcm\HcmServiceProvider::class,
+    \Modules\Plm\PlmServiceProvider::class,
 ];
 
 

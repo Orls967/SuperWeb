@@ -908,6 +908,21 @@
   - **58.5 Audit HCM:** Command `hcm:audit` memvalidasi konsistensi gaji kotor - potongan = gaji bersih dan total potongan BPJS/PPh dengan 0 diskrepansi.
 - **Tests:** `HcmTest` (4 tes / 9 asersi). Sub-suite `HcmTest|ModuleBoundariesTest` (16 passed / 69 assertions), `hcm:audit` (0 diskrepansi), `chain:audit-all` (13 audit lulus), Pint lulus.
 
+---
+
+## 2026-10-06: Fase 59 — R&D & Product Lifecycle Management (Modul `plm_`)
+
+- **Context:** Pengelolaan inovasi, rekayasa spesifikasi produk, gerbang tahapan riset (stage-gate), Engineering Bill of Materials (EBOM), Engineering Change Orders (ECO) berantai kriptografis append-only (SHA-256 hash-chain), dan buku catatan laboratorium (Lab Notebook) berformula terlindungi enkripsi.
+- **Decision:**
+  - Prefix tabel **`plm_`** (4 tabel: `plm_projects`, `plm_engineering_boms`, `plm_change_orders`, `plm_lab_notebooks`).
+  - **59.1 Project R&D & Stage-Gate:** Pengelolaan siklus proyek riset (`concept`, `prototype`, `validation`, `pre_production`, `launched`, `cancelled`) dengan persetujuan tahapan.
+  - **59.2 Engineering BOM (EBOM):** Spesifikasi teknis komponen rekayasa sebelum dirilis ke Manufacturing BOM (MBOM).
+  - **59.3 Engineering Change Order (ECO) Hash-Chain:** Perubahan rekayasa dicatat secara berantai append-only menggunakan `prev_hash` dan `hash` SHA-256 kanonik untuk audit trail tidak terbantahkan.
+  - **59.4 Lab Notebook & Formula Enkripsi:** Catatan eksperimen dan formula kimia/rekayasa tersimpan dalam payload aman terenkripsi (AES/Base64 envelope).
+  - **59.5 Audit PLM:** Command `plm:audit` memvalidasi integritas hash-chain ECO dan stage-gate proyek dengan 0 diskrepansi.
+- **Tests:** `PlmTest` (5 tes / 8 asersi). Sub-suite `PlmTest|ModuleBoundariesTest` (17 passed / 68 assertions), `plm:audit` (0 diskrepansi), `chain:audit-all` (14 audit lulus), Pint lulus.
+
+
 
 
 
