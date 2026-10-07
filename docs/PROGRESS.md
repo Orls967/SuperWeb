@@ -1226,12 +1226,12 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 98.6 Quality gate Fase 98
 
 ## FASE 99 — AI & ANALITIK PREDIKTIF TERPADU 12 LINI
-- [ ] 99.1 **Dynamic pricing unified**: satu engine (Fase 81 + 64.1) mengatur harga lintas kanal — tiket venue, room rate hotel, ongkir logistik, suku cadang, harga grosir, tarif EV, royalti komoditas — dengan guardrail & contract-price-wins seragam, `ai:audit` membuktikan determinisme
-- [ ] 99.2 **Forecasting terpadu**: demand resto dari footfall mall & event venue (Fase 75.1), forecast S&OP pabrik (Fase 53.2), forecast okupansi hotel dari kalender event & festival, forecast produksi tambang dari rencana → satu kerangka MAPE & override ter-audit
-- [ ] 99.3 **Anomaly detection & anti-fraud lintas lini** (memperluas Fase 64.2): skor anomali untuk klaim asuransi, transaksi dompet, penjualan venue, tagihan RS, fuel tambang, resale tiket → quarantine transaksi berisiko sebelum settlement
-- [ ] 99.4 **Prescriptive ops**: rekomendasi stok & PO (Fase 64.3), replenishment VMI (Fase 82), blending tambang (Fase 94.2), shift & bounty (Fase 97.1), energy setback (Fase 91.6) — semua berbentuk usulan yang dieksekusi otomatis di bawah ambang / approval di atas ambang
-- [ ] 99.5 **AI bid agent & claim agent** (Fase 84 + 72) diuji ulang terhadap dataset ultra (Fase 98.1) → konsistensi & auditabilitas terbukti pada skala
-- [ ] 99.6 Quality gate Fase 99
+- [x] 99.1 **Dynamic pricing unified**: satu engine (Fase 81 + 64.1) mengatur harga lintas kanal — tiket venue, room rate hotel, ongkir logistik, suku cadang, harga grosir, tarif EV, royalti komoditas — dengan guardrail & contract-price-wins seragam, `ai:audit` membuktikan determinisme
+- [x] 99.2 **Forecasting terpadu**: demand resto dari footfall mall & event venue (Fase 75.1), forecast S&OP pabrik (Fase 53.2), forecast okupansi hotel dari kalender event & festival, forecast produksi tambang dari rencana → satu kerangka MAPE & override ter-audit
+- [x] 99.3 **Anomaly detection & anti-fraud lintas lini** (memperluas Fase 64.2): skor anomali untuk klaim asuransi, transaksi dompet, penjualan venue, tagihan RS, fuel tambang, resale tiket → quarantine transaksi berisiko sebelum settlement
+- [x] 99.4 **Prescriptive ops**: rekomendasi stok & PO (Fase 64.3), replenishment VMI (Fase 82), blending tambang (Fase 94.2), shift & bounty (Fase 97.1), energy setback (Fase 91.6) — semua berbentuk usulan yang dieksekusi otomatis di bawah ambang / approval di atas ambang
+- [x] 99.5 **AI bid agent & claim agent** (Fase 84 + 72) diuji ulang terhadap dataset ultra (Fase 98.1) → konsistensi & auditabilitas terbukti pada skala
+- [x] 99.6 Quality gate Fase 99
 
 ## FASE 100 — KEAMANAN, RBAC 60+ ROLE, KEPATUHAN & OBSERVABILITAS 12 LINI
 - [ ] 100.1 **RBAC 12 lini**: role baru (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`, `front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`, `ev_operator`, `fleet_manager`, `wm_advisor`, dst.) → matriks otorisasi data-driven, RouteSmokeTest & SecurityTest mencakup seluruh rute baru
