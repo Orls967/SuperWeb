@@ -1218,12 +1218,12 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 97.7 Quality gate Fase 97
 
 ## FASE 98 — SKALA ULTRA: SEEDER 12 LINI, QUERY BUDGET & STRESS TEST
-- [ ] 98.1 **TwelveLinesUltraSeeder**: dataset raksasa deterministik idempoten (memperluas Fase 56.1 & 67.4): 10 juta kendaraan berpaspor + telematik 180 hari, 5 juta dompet + ratusan juta mutasi, 5.000 outlet + 730 juta order (12 bulan), 200 properti + 50 ribu lease + 12 bulan billing, 5 juta shipment + 100 juta event kustodi, 100 pabrik + 1 juta SPK, 10 ribu koridor dagang + 50 ribu L/C, 10 juta pasien + 100 juta encounter, 1.000 venue + 50 juta tiket, 5.000 properti hotel + 100 juta room-night, 500 pit + 50 ribu alat berat + miliaran tick telematik; checkpoint/resume, benchmark per etape
-- [ ] 98.2 **Query budget penuh**: endpoint kritis tiap lini (bed board, bed board venue, bed board tambang, RWA orderbook, claims autopilot, rate optimizer, tick feed) diuji p95 latensi & jumlah query di bawah ambang; dokumentasi EXPLAIN tanpa full table scan pada tabel > 100 ribu baris
-- [ ] 98.3 **Race condition ekstrem lintas lini**: 1.000 booking kamar serentak atas 10 kamar sisa, 500 tiket atas 100 kursi, 500 bid atas 10 unit RWA, penarikan saldo massal → alokasi tepat, tak pernah negatif/ganda
-- [ ] 98.4 **Chaos engineering lintas lini**: kegagalan worker di tengah klaim asuransi multi-entri, event spine duplikat, deadlock batch settlement → rollback sempurna/retry idempoten
-- [ ] 98.5 Laporan performa sebelum vs sesudah optimasi (memperluas Fase 56.7) untuk seluruh lini baru
-- [ ] 98.6 Quality gate Fase 98
+- [x] 98.1 **TwelveLinesUltraSeeder**: dataset raksasa deterministik idempoten (memperluas Fase 56.1 & 67.4): 10 juta kendaraan berpaspor + telematik 180 hari, 5 juta dompet + ratusan juta mutasi, 5.000 outlet + 730 juta order (12 bulan), 200 properti + 50 ribu lease + 12 bulan billing, 5 juta shipment + 100 juta event kustodi, 100 pabrik + 1 juta SPK, 10 ribu koridor dagang + 50 ribu L/C, 10 juta pasien + 100 juta encounter, 1.000 venue + 50 juta tiket, 5.000 properti hotel + 100 juta room-night, 500 pit + 50 ribu alat berat + miliaran tick telematik; checkpoint/resume, benchmark per etape
+- [x] 98.2 **Query budget penuh**: endpoint kritis tiap lini (bed board, bed board venue, bed board tambang, RWA orderbook, claims autopilot, rate optimizer, tick feed) diuji p95 latensi & jumlah query di bawah ambang; dokumentasi EXPLAIN tanpa full table scan pada tabel > 100 ribu baris
+- [x] 98.3 **Race condition ekstrem lintas lini**: 1.000 booking kamar serentak atas 10 kamar sisa, 500 tiket atas 100 kursi, 500 bid atas 10 unit RWA, penarikan saldo massal → alokasi tepat, tak pernah negatif/ganda
+- [x] 98.4 **Chaos engineering lintas lini**: kegagalan worker di tengah klaim asuransi multi-entri, event spine duplikat, deadlock batch settlement → rollback sempurna/retry idempoten
+- [x] 98.5 Laporan performa sebelum vs sesudah optimasi (memperluas Fase 56.7) untuk seluruh lini baru
+- [x] 98.6 Quality gate Fase 98
 
 ## FASE 99 — AI & ANALITIK PREDIKTIF TERPADU 12 LINI
 - [ ] 99.1 **Dynamic pricing unified**: satu engine (Fase 81 + 64.1) mengatur harga lintas kanal — tiket venue, room rate hotel, ongkir logistik, suku cadang, harga grosir, tarif EV, royalti komoditas — dengan guardrail & contract-price-wins seragam, `ai:audit` membuktikan determinisme
