@@ -21,6 +21,7 @@ use Modules\Integration\Application\Services\RegulatoryComplianceService;
 use Modules\Integration\Application\Services\ReinsuranceAndCatService;
 use Modules\Integration\Application\Services\ResilienceWave2Service;
 use Modules\Integration\Application\Services\SupplyChainResilienceService;
+use Modules\Integration\Application\Services\TakafulAndAgriService;
 use Modules\Integration\Application\Services\ThreatDetectionService;
 use Modules\Integration\Application\Services\ZeroTrustService;
 use Modules\Integration\Console\Commands\ApiAuditCommand;
@@ -52,6 +53,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(ReinsuranceAndCatService::class);
         $this->app->singleton(EmbeddedInsuranceService::class);
         $this->app->singleton(LifeHealthWellnessService::class);
+        $this->app->singleton(TakafulAndAgriService::class);
     }
 
     public function boot(): void
