@@ -1601,13 +1601,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 109.7 Quality gate Fase 109
 
 ## FASE 110 — KESEHATAN: HEALTH ANALYTICS, RISK & PORTOFOLIO RS GRUP
-- [ ] 110.1 **Clinical analytics**: outcome per diagnosis/tenaga medis (mortality, readmission, komplikasi — risiko terkoreksi), benchmark antar RS dalam grup; mutu → memengaruhi skor RS di health membership & insurance partner
-- [ ] 110.2 **Financial risk RS**: exposure piutang (BPJS+asuransi+self-pay), concentration per insurance partner, covenant internal → early warning ke Treasury (Fase 48.7)
-- [ ] 110.3 **Portofolio RS grup**: 50 RS → P&L per RS, per layanan (bedah, penyakit dalam, IGD), ROI per modalitas alat (CT vs MRI), keputusan investasi alat → link ke RWA (alat medis disewakan/di-tokenisasi Fase 71.1)
-- [ ] 110.4 Prediksi churn & risk member: pola kunjungan → rekomendasi retention program; risk scoring pasien kronis → proactive care outreach (telemedicine Fase 104)
-- [ ] 110.5 Group health scorecard (memperluas ide 97.5): mutu + finansial + kepuasan + kepatuhan → skor gabungan per RS → dasar realokasi alat & talent
-- [ ] 110.6 Tests: (a) outcome metrics = agregasi episode nyata (b) exposure piutang = ledger AR (c) ROI alat dari aset & pendapatan terukur (d) query budget dashboard ≤ ambang (e) `hosp:audit` final = 0 selisih
-- [ ] 110.7 Quality gate Fase 110
+- [x] 110.1 **Clinical analytics**: outcome per diagnosis/tenaga medis (mortality, readmission, komplikasi — risiko terkoreksi), benchmark antar RS dalam grup; mutu → memengaruhi skor RS di health membership & insurance partner
+- [x] 110.2 **Financial risk RS**: exposure piutang (BPJS+asuransi+self-pay), concentration per insurance partner, covenant internal → early warning ke Treasury (Fase 48.7)
+- [x] 110.3 **Portofolio RS grup**: 50 RS → P&L per RS, per layanan (bedah, penyakit dalam, IGD), ROI per modalitas alat (CT vs MRI), keputusan investasi alat → link ke RWA (alat medis disewakan/di-tokenisasi Fase 71.1)
+- [x] 110.4 Prediksi churn & risk member: pola kunjungan → rekomendasi retention program; risk scoring pasien kronis → proactive care outreach (telemedicine Fase 104)
+- [x] 110.5 Group health scorecard (memperluas ide 97.5): mutu + finansial + kepuasan + kepatuhan → skor gabungan per RS → dasar realokasi alat & talent
+- [x] 110.6 Tests: (a) outcome metrics = agregasi episode nyata (b) exposure piutang = ledger AR (c) ROI alat dari aset & pendapatan terukur (d) query budget dashboard ≤ ambang (e) `hosp:audit` final = 0 selisih
+- [x] 110.7 Quality gate Fase 110
 
 ## FASE 111 — HOSPITALITY & ENTERTAINMENT: CHAIN EXPANSION, BRAND STANDARD & FRANCHISE HOTEL
 - [ ] 111.1 Master brand & brand standard checklist (200 butir: kebersihan, fasilitas, SLA) → audit berkala per properti → skor kepatuhan → grade bintang tersimulasi; properti non-konform → action plan → suspensi listing
