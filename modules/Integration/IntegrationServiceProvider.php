@@ -13,6 +13,7 @@ use Modules\Integration\Application\Services\EthicalSourcingService;
 use Modules\Integration\Application\Services\FullInsuranceService;
 use Modules\Integration\Application\Services\GlobalCommandService;
 use Modules\Integration\Application\Services\IntegrationService;
+use Modules\Integration\Application\Services\LifeHealthWellnessService;
 use Modules\Integration\Application\Services\MegaScenarioService;
 use Modules\Integration\Application\Services\PlatformEconomyService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
@@ -50,6 +51,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(FullInsuranceService::class);
         $this->app->singleton(ReinsuranceAndCatService::class);
         $this->app->singleton(EmbeddedInsuranceService::class);
+        $this->app->singleton(LifeHealthWellnessService::class);
     }
 
     public function boot(): void
