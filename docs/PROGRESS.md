@@ -1592,13 +1592,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 108.7 Quality gate Fase 108
 
 ## FASE 109 — KESEHATAN: MEDICAL WASTE, BLOOD BANK & REGULATORY COMPLIANCE
-- [ ] 109.1 **Blood bank**: kantong darah berteknologi (serial, golongan, expiry, donor screening hash) → reservasi untuk jadwal operasi (hold stok) → issue saat operasi → stok terpotong; recall kantong terkontaminasi → tracing penerima (mirip Fase 39.6) → notifikasi klinis darurat
-- [ ] 109.2 **Cold-chain logistik darah khusus**: suhu 2–6°C ketat, breach > 5 menit → kantong quarantine + hold armada (Fase 80.1) → rantai kustodi hash penuh
-- [ ] 109.3 **Regulasi medis**: izin instalasi (reagen, radiologi, narkotika), kalibrasi alat medis (memperluas Fase 39.8) — alat kedaluwarsa memblokir pemeriksaan; sertifikasi dokter & tenaga (masa berlaku, pengingat eskalasi Fase 100.3)
-- [ ] 109.4 **Insiden medis & patient safety**: near-miss/adverse event → investigasi → CAPA (memperluas Fase 39.4) → laporan mutu bulanan ke direksi; korelasi pola insiden → rekomendasi pelatihan staff (HCM)
-- [ ] 109.5 Limbah medis B3 lanjutan: manifest per kategori (tajam, infeksius, farmasi) → reverse logistics (Fase 79.4) → vendor tersertifikasi → sertifikat pembakaran/pengolahan → audit rantai sisa
-- [ ] 109.6 Tests: (a) kantong expired tak bisa dipesan (b) recall blood → daftar penerima instan (c) alat kalibrasi expired ditolak proses (d) manifest limbah gapless & kustodi valid (e) reconcile stok darah = ledger inventory
-- [ ] 109.7 Quality gate Fase 109
+- [x] 109.1 **Blood bank**: kantong darah berteknologi (serial, golongan, expiry, donor screening hash) → reservasi untuk jadwal operasi (hold stok) → issue saat operasi → stok terpotong; recall kantong terkontaminasi → tracing penerima (mirip Fase 39.6) → notifikasi klinis darurat
+- [x] 109.2 **Cold-chain logistik darah khusus**: suhu 2–6°C ketat, breach > 5 menit → kantong quarantine + hold armada (Fase 80.1) → rantai kustodi hash penuh
+- [x] 109.3 **Regulasi medis**: izin instalasi (reagen, radiologi, narkotika), kalibrasi alat medis (memperluas Fase 39.8) — alat kedaluwarsa memblokir pemeriksaan; sertifikasi dokter & tenaga (masa berlaku, pengingat eskalasi Fase 100.3)
+- [x] 109.4 **Insiden medis & patient safety**: near-miss/adverse event → investigasi → CAPA (memperluas Fase 39.4) → laporan mutu bulanan ke direksi; korelasi pola insiden → rekomendasi pelatihan staff (HCM)
+- [x] 109.5 Limbah medis B3 lanjutan: manifest per kategori (tajam, infeksius, farmasi) → reverse logistics (Fase 79.4) → vendor tersertifikasi → sertifikat pembakaran/pengolahan → audit rantai sisa
+- [x] 109.6 Tests: (a) kantong expired tak bisa dipesan (b) recall blood → daftar penerima instan (c) alat kalibrasi expired ditolak proses (d) manifest limbah gapless & kustodi valid (e) reconcile stok darah = ledger inventory
+- [x] 109.7 Quality gate Fase 109
 
 ## FASE 110 — KESEHATAN: HEALTH ANALYTICS, RISK & PORTOFOLIO RS GRUP
 - [ ] 110.1 **Clinical analytics**: outcome per diagnosis/tenaga medis (mortality, readmission, komplikasi — risiko terkoreksi), benchmark antar RS dalam grup; mutu → memengaruhi skor RS di health membership & insurance partner
