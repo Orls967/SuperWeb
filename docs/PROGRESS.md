@@ -1200,13 +1200,13 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 95.8 Quality gate Fase 95
 
 ## FASE 96 — INTEGRASI LINTAS 12 LINI (B): FINTECH, RWA, INSURTECH & PEMBIAYAAN UNTUK SEMUA LINI
-- [ ] 96.1 **RWA lintas lini**: tokenisasi unit hotel/timeshare (Fase 92.5), unit mall (Fase 71), truk logistik (Fase 71), mesin tambang (Fase 94), alat RS medis → satu marketplace RWA, satu orderbook, satu engine dividen; omzet sumber dari lini mana pun mengalir pro-rata ke holder
-- [ ] 96.2 **InsurTech tersemat universal**: trigger dari 12 lini (keterlambatan logistik, kecelakaan kendaraan, cold-chain breach venue/RS/hotel, pembatalan event, cuaca tambang, no-show kontrak) → claims autopilot (Fase 72) satu kerangka, reserve terpusat di Treasury
-- [ ] 96.3 **Pembiayaan lintas lini**: HODL-to-Drive (Fase 5C) → diperluas: pembiayaan alat berat tambang, pembiayaan fit-out tenant, pembiayaan modal tani (Fase 62) & pre-payment petani berbasis NDVI (Fase 86.2) — satu engine kredit dengan credit profile 360° (Fase 27.7)
-- [ ] 96.4 **Stablecoin settlement gr**up: settlement intercompany & cross-border (venue internasional, artist luar negeri, offtake tambang) memakai stablecoin internal (Fase 83) → clear real-time 24/7, kurs terkunci, Σ ledger seimbang
-- [ ] 96.5 **Yield & treasury terpadu**: saldo idle 12 lini → robo-advisor/Treasury yield (Fase 73) → cash pooling antar entitas (Fase 48.8) → group liquidity teroptimasi
-- [ ] 96.6 Test integrasi: pembayaran bundle hotel-venue-resto → settle ke vendor + fee platform + poin loyalty; klaim insuransi lintas 3 lini cair otomatis; Σ semua = 0 selisih
-- [ ] 96.7 Quality gate Fase 96
+- [x] 96.1 **RWA lintas lini**: tokenisasi unit hotel/timeshare (Fase 92.5), unit mall (Fase 71), truk logistik (Fase 71), mesin tambang (Fase 94), alat RS medis → satu marketplace RWA, satu orderbook, satu engine dividen; omzet sumber dari lini mana pun mengalir pro-rata ke holder
+- [x] 96.2 **InsurTech tersemat universal**: trigger dari 12 lini (keterlambatan logistik, kecelakaan kendaraan, cold-chain breach venue/RS/hotel, pembatalan event, cuaca tambang, no-show kontrak) → claims autopilot (Fase 72) satu kerangka, reserve terpusat di Treasury
+- [x] 96.3 **Pembiayaan lintas lini**: HODL-to-Drive (Fase 5C) → diperluas: pembiayaan alat berat tambang, pembiayaan fit-out tenant, pembiayaan modal tani (Fase 62) & pre-payment petani berbasis NDVI (Fase 86.2) — satu engine kredit dengan credit profile 360° (Fase 27.7)
+- [x] 96.4 **Stablecoin settlement gr**up: settlement intercompany & cross-border (venue internasional, artist luar negeri, offtake tambang) memakai stablecoin internal (Fase 83) → clear real-time 24/7, kurs terkunci, Σ ledger seimbang
+- [x] 96.5 **Yield & treasury terpadu**: saldo idle 12 lini → robo-advisor/Treasury yield (Fase 73) → cash pooling antar entitas (Fase 48.8) → group liquidity teroptimasi
+- [x] 96.6 Test integrasi: pembayaran bundle hotel-venue-resto → settle ke vendor + fee platform + poin loyalty; klaim insuransi lintas 3 lini cair otomatis; Σ semua = 0 selisih
+- [x] 96.7 Quality gate Fase 96
 
 ## FASE 97 — INTEGRASI LINTAS 12 LINI (C): TALENT GIG, ESG TERPADU & EVENT SPINE PENUH
 - [ ] 97.1 **Talent marketplace universal**: bounty lintas lini (Resto overload, setup venue, bongkar muat logistik, cuci armada, asistensi RS dadakan, operasional shift hotel, crew tambang kontraktor) → satu papan, aturan upah & K3 konsisten (Fase 85), bayar via Core Banking

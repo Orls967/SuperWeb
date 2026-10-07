@@ -457,10 +457,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 - **Service:** `Modules\Mining\Application\Services\MiningFleetDispatchService`, `Modules\Mining\Application\Services\MiningComplianceAndRoyaltyService` — dispatch haul truck ber-guard ketersediaan, deteksi anomali BBM per ton-km, penerbitan tiket timbangan digital hash-chain append-only, kalkulasi tarif royalti PNBP bulanan dan posting liabilitas ke akun `min:royalty_payable:IDR`, dan evaluasi masa aktif izin kerja HSE (blasting, confined space).
 - **Provider:** `Modules\Mining\MiningServiceProvider`.
 
-### Cross-Line 12-Pillars Ecosystem Integration — Fase 95
+### Cross-Line 12-Pillars Ecosystem Integration — Fase 95 & 96
 
-- **Tujuan:** orkestrasi integrasi silang 12 pilar bisnis (otomotif, EV, logistik, hotel, venue, rumah sakit, tambang, mall, resto, agri, manufaktur, finance), paket wisata medis terpadu (*medical tourism bundle*), posting konsumsi venue/resto langsung ke folio kamar hotel, serta single identity paspor digital lintas lini.
-- **Service:** `Modules\Core\Application\Services\TwelveLinesCrossEcosystemService` — settlement paket wisata medis 3-lini (RS 50%, Hotel 35%, Logistik 15%) ke escrow & revenue ledger dengan $\sum = 0$, integrasi charge antar unit bisnis ke folio hotel tamu (`htl:city_ledger_receivable:IDR` vs `ven:pos_revenue:IDR`).
+- **Tujuan:** orkestrasi integrasi silang 12 pilar bisnis (otomotif, EV, logistik, hotel, venue, rumah sakit, tambang, mall, resto, agri, manufaktur, finance), paket wisata medis terpadu (*medical tourism bundle*), posting konsumsi venue/resto langsung ke folio kamar hotel, klaim asuransi parametrik universal autopilot dari 12 lini (cold-chain breach, cuaca ekstrem tambang), dan kliring stablecoin USDC lintas batas dan intercompany.
+- **Service:** `Modules\Core\Application\Services\TwelveLinesCrossEcosystemService`, `Modules\Core\Application\Services\UniversalCrossLineFintechService` — multi-line settlement ke escrow & revenue ledger dengan $\sum = 0$, klaim asuransi otomatis dari reserve pool, dan kliring instan stablecoin USDC 24/7.
 
 ---
 
