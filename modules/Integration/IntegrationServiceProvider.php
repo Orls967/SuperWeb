@@ -6,7 +6,13 @@ namespace Modules\Integration;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Integration\Application\Services\IntegrationService;
+use Modules\Integration\Application\Services\PrivacyVaultService;
+use Modules\Integration\Application\Services\RegulatoryComplianceService;
+use Modules\Integration\Application\Services\SecurityPenTestService;
+use Modules\Integration\Application\Services\ThreatDetectionService;
+use Modules\Integration\Application\Services\ZeroTrustService;
 use Modules\Integration\Console\Commands\AuditIntegrationCommand;
+use Modules\Integration\Console\Commands\SecurityAuditCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class IntegrationServiceProvider extends ServiceProvider
@@ -14,6 +20,11 @@ class IntegrationServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(IntegrationService::class);
+        $this->app->singleton(ZeroTrustService::class);
+        $this->app->singleton(PrivacyVaultService::class);
+        $this->app->singleton(RegulatoryComplianceService::class);
+        $this->app->singleton(ThreatDetectionService::class);
+        $this->app->singleton(SecurityPenTestService::class);
     }
 
     public function boot(): void
@@ -29,7 +40,10 @@ class IntegrationServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            $this->commands([AuditIntegrationCommand::class]);
+            $this->commands([
+                AuditIntegrationCommand::class,
+                SecurityAuditCommand::class,
+            ]);
         }
 
         $this->registerMenu();
