@@ -1583,13 +1583,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 107.7 Quality gate Fase 107
 
 ## FASE 108 — KESEHATAN: MEDICAL TOURISM, WELLNESS & HEALTH MEMBERSHIP
-- [ ] 108.1 Paket medical tourism (memperluas ide 9E): pemeriksaan menyeluruh/check-up premium, prosedur elektif, second opinion → bundling **RS + Hotel (Fase 92.6) + tiket pesawat/transport (Logistics) + visa dokumen (Trade 49.4)** → satu harga, settlement multi-vendor escrow
-- [ ] 108.2 Concierge health: penjemputan bandara (armada hotel), penerjemah, pendamping keluarga (kamar hotel terhubung folio pasien)
-- [ ] 108.3 **Health membership tahunan**: screening periodik, diskon telemedicine, prioritas bed kelas tertentu, wellness credit (spa hotel, gym venue) — poin PTS lintas ekosistem
-- [ ] 108.4 Wellness & preventif: program berat badan/hipertensi → wearable IoT simulasi data → adherence score → reward poin; hasil masuk Human Passport
-- [ ] 108.5 Settlement paket: deposit escrow saat booking → capture per milestone (check-in RS, prosedur selesai) → sisa refund; insurance direct-billing partner (Fase 72/96.2)
-- [ ] 108.6 Tests: (a) paket multi-vendor Σ settlement = pembayaran (b) capture milestone berurutan, tidak lompat (c) membership benefit tak melebihi kuota (d) data wearable tidak bocor ke role tak berwenang (e) reconcile paket = ledger
-- [ ] 108.7 Quality gate Fase 108
+- [x] 108.1 Paket medical tourism (memperluas ide 9E): pemeriksaan menyeluruh/check-up premium, prosedur elektif, second opinion → bundling **RS + Hotel (Fase 92.6) + tiket pesawat/transport (Logistics) + visa dokumen (Trade 49.4)** → satu harga, settlement multi-vendor escrow
+- [x] 108.2 Concierge health: penjemputan bandara (armada hotel), penerjemah, pendamping keluarga (kamar hotel terhubung folio pasien)
+- [x] 108.3 **Health membership tahunan**: screening periodik, diskon telemedicine, prioritas bed kelas tertentu, wellness credit (spa hotel, gym venue) — poin PTS lintas ekosistem
+- [x] 108.4 Wellness & preventif: program berat badan/hipertensi → wearable IoT simulasi data → adherence score → reward poin; hasil masuk Human Passport
+- [x] 108.5 Settlement paket: deposit escrow saat booking → capture per milestone (check-in RS, prosedur selesai) → sisa refund; insurance direct-billing partner (Fase 72/96.2)
+- [x] 108.6 Tests: (a) paket multi-vendor Σ settlement = pembayaran (b) capture milestone berurutan, tidak lompat (c) membership benefit tak melebihi kuota (d) data wearable tidak bocor ke role tak berwenang (e) reconcile paket = ledger
+- [x] 108.7 Quality gate Fase 108
 
 ## FASE 109 — KESEHATAN: MEDICAL WASTE, BLOOD BANK & REGULATORY COMPLIANCE
 - [ ] 109.1 **Blood bank**: kantong darah berteknologi (serial, golongan, expiry, donor screening hash) → reservasi untuk jadwal operasi (hold stok) → issue saat operasi → stok terpotong; recall kantong terkontaminasi → tracing penerima (mirip Fase 39.6) → notifikasi klinis darurat
