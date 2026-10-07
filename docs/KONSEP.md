@@ -424,9 +424,6 @@ Setiap pilar di bawah didefinisikan dengan 5 bagian: **Skala**, **Operasional**,
 
 ## 11E. Ide Pengembangan Lanjutan
 - **Contactless & Smart Room Digital Twin:** simulasi suhu/lampu/TV per kamar terhubung smart building (Pilar 4) → energi dimatikan saat kosong → ESG per occupied-room-night.
-- **Timeshare & Fractional Ownership:** kepemilikan fractional villa → token (Pilar 2
-The above content was truncated because individual lines are very long. Only a portion of the content is shown.
-
 - **Timeshare & Fractional Ownership:** kepemilikan fractional villa → token (Pilar 2) → jadwal penggunaan & bagi hasil sewa.
 - **Destination Package Engine:** bundling hotel + tiket club/festival + restoran + transport + spa → satu harga, satu pembayaran, satu invoice multi-vendor (setttlement otomatis ke tiap pihak via escrow).
 - **MICE & Wedding Sales:** pipeline B2B konvensi dengan proposal harga berjenjang, deposit milestone, dan koordinasi venue (mall atrium Pilar 4 / beach club Pilar 10).
@@ -535,3 +532,93 @@ The above content was truncated because individual lines are very long. Only a p
 | Skenario Emas 12 Lini & Disaster Recovery | Fase 101 |
 | API V3, Webhook & Portal Mitra | Fase 102 |
 | Dokumentasi Final, Playbook & Serah Terima | Fase 103 |
+
+---
+
+# GELOMBANG 2 — PENDALAMAN, 5 LINI BARU & EKSPANSI SAMPAI FASE 150
+
+> Ekspansi lanjutan: pendalaman 4 lini (Kesehatan, Hospitality & Entertainment, Sumber Daya & Energi) + pembukaan **5 lini baru** — Energi & Utilitas (13), Telekomunikasi & Data Center (14), Media & Kreatif (15), Pendidikan & Talent (16), Ritel & E-Commerce (17) — sehingga total **17 lini bisnis dalam satu monolith**, diakhiri integrasi, skala, AI, keamanan, resilience, dan serah terima final Fase 150.
+
+## 5 LINI BARU (GELOMBANG 2) — SKALA TANPA BATAS
+
+### Lini 13 — Energi & Utilitas (modul `egy_`)
+- **Skala:** 5 juta smart meter (mall, pabrik, RS, hotel, venue), reading tiap 15 menit (200 juta bacaan/hari), 100 unit pembangkit (solar farm, genset, battery storage), district cooling 50 kawasan.
+- **Operasional:** grid dispatch unit-commitment sederhana, tarif time-of-use, net metering & PPA antar-entitas (intercompany billing), EV charging dijadwalkan off-peak (demand response), microgrid dengan islanding prioritas beban (RS > pabrik > mall), arbitrage battery, ESCO performance contract (bayar dari penghematan).
+- **Hasil:** tagihan utilitas terkonsolidasi per properti, PUE & renewable %, resilience scorecard per site, revenue energi hijau.
+- **Lanjutan:** carbon trading internal + REC marketplace, ESG-linked pricing (green lease), water & waste utility, waste-to-energy.
+
+### Lini 14 — Telekomunikasi & Data Center (modul `tlx_`)
+- **Skala:** 10.000 site jaringan, 50.000 link, 10 data center (PUE terukur), 1 juta subscriber SIM, 100 ribu ISP rumah, 100 juta perangkat IoT lintas 17 lini.
+- **Operasional:** IoT backbone terpusat untuk seluruh telematik/sensor platform, billing konektivitas antar-entitas, colocation & cloud chargeback, NOC alarm → ticket → MTTR, smart city services (parkir pintar, CCTV), churn & upsell analytics.
+- **Hasil:** NOC dashboard, DC utilization & PUE, IoT device registry tunggal, revenue B2B/B2C connectivity.
+- **Lanjutan:** edge computing untuk venue & site tambang, white-label ISP.
+
+### Lini 15 — Media & Kreatif (modul `med_`)
+- **Skala:** 500 studio (sound stage, podcast, virtual production), 5.000 proyek produksi/tahun, 100 ribu aset IP (merek, lagu, format), 1 miliar impressions iklan/bulan (OOH mall/venue/hotel + digital).
+- **Operasional:** production lifecycle (brief → shoot → post → delivery, kapitalisasi biaya kreatif), talent contract dengan backend %, IP registry → lisensi otomatis multi-kanal, sponsorship cross-lini gr, yield management inventaris iklan (dynamic price + floor), campaign measurement terverifikasi.
+- **Hasil:** IP portfolio & royalty statement per karya, studio utilization, campaign ROI per advertiser, split settlement multi-pihak.
+- **Lanjutan:** creator economy bridge ke venue (Fase 115), distribution revenue per view.
+
+### Lini 16 — Pendidikan & Talent (modul `edu_`)
+- **Skala:** 10.000 program, 500 ribu enrollment/tahun, 5 juta sertifikat hash-chain, 1 juta talent pool, 100 ribu lowongan lintas lini/tahun.
+- **Operasional:** kurikulum berlapis + prerequisite graph (anti-siklus), assessment → sertifikat hash terverifikasi QR + masa berlaku (prasyarat role kritis: dokter, operator K3, mekanik), corporate L&D B2B (kuota karyawan tenant/pabrik/RS/tambang), talent matching engine deterministik, headhunter fee hold sampai garansi kerja, contingent workforce timesheet.
+- **Hasil:** kompetensi terverifikasi per karyawan, pipeline talenta 17 lini, laporan kepatuhan sertifikasi, revenue edukasi.
+- **Lanjutan:** internal mobility bridge ke gig economy (Fase 85/97), alumni → lowongan otomatis.
+
+### Lini 17 — Ritel & E-Commerce (modul `ret_`)
+- **Skala:** marketplace 3P 1 juta listing, 50 juta order/tahun, 100 dark store q-commerce (30 menit), omnichannel ke seluruh toko 17 lini, 5 juta pengguna super app.
+- **Operasional:** OMS unified inventory anti double-sell (lockForUpdate), split fulfillment (ship-as-store/FDC/dropship/drone/crowdshipping), pricing consistency MAP lintas channel, settlement seller T+N + komisi + chargeback, super app wallet & cashback lintas lini (liability terkendali + anti-abuse), bill payment hub, subscription bundle gr, packaging deposit loop (reverse).
+- **Hasil:** GMV terkonsolidasi, seller performance, unit economics per zone q-commerce, cashback liability = ledger.
+- **Lanjutan:** embedded finance untuk seller, white-label OMS.
+
+## PEMETAAN GELOMBANG 2 → FASE (104–150)
+
+| KONSEP | Fase |
+|--------|------|
+| Kesehatan: telemedicine & e-pharmacy | 104 |
+| Kesehatan: lab & imaging | 105 |
+| Kesehatan: clinical trial & data vault | 106 |
+| Kesehatan: JKN/BPJS & health command center | 107 |
+| Kesehatan: medical tourism & membership | 108 |
+| Kesehatan: blood bank, waste, regulasi | 109 |
+| Kesehatan: analytics & portofolio RS grup | 110 |
+| Hospitality: brand standard & franchise hotel | 111 |
+| Hospitality: global loyalty & travel pass | 112 |
+| Hospitality: travel & itinerary platform | 113 |
+| Hospitality: MICE & wedding engine | 114 |
+| Entertainment: content, creator & IP economy | 115 |
+| Entertainment: secondary ticket & dynamic bundling | 116 |
+| Entertainment: biometric entry & crowd safety AI | 117 |
+| Hospitality/Entertainment: revenue command & portfolio | 118 |
+| Sumber Daya: underground twin, blasting, geotech | 119 |
+| Sumber Daya: HSE leading indicator & contractor safety | 120 |
+| Sumber Daya: smelter & metals trading desk | 121 |
+| Sumber Daya: coal export logistics & demurrage | 122 |
+| Sumber Daya: renewable mining & carbon project | 123 |
+| Sumber Daya: reclamation, water & biodiversity | 124 |
+| Sumber Daya: resource command center | 125 |
+| **Lini 13** Energi: grid & smart metering | 126 |
+| Lini 13 Energi: water, waste & district utilities | 127 |
+| Lini 13 Energi: carbon trading & REC | 128 |
+| Lini 13 Energi: microgrid & resilience | 129 |
+| **Lini 14** Telko: network & IoT backbone | 130 |
+| Lini 14 Telko: data center & cloud | 131 |
+| Lini 14 Telko: ISP, SIM & smart city | 132 |
+| **Lini 15** Media: studio & IP economy | 133 |
+| Lini 15 Media: distribution, ads & sponsorship | 134 |
+| **Lini 16** Edu: academy & sertifikasi | 135 |
+| Lini 16 Edu: talent pipeline & workforce marketplace | 136 |
+| **Lini 17** Ritel: omnichannel marketplace | 137 |
+| Lini 17 Ritel: super app & cashback economy | 138 |
+| Lini 17 Ritel: fulfillment & quick commerce | 139 |
+| Integrasi gelombang 2 (energi, telko, media, edu, ritel) | 140 |
+| Integrasi: holding, capital allocation & M&A | 141 |
+| Skala gelombang 2 (seeder 17 lini & performance) | 142 |
+| AI cross-lini & autonomous operations ladder | 143 |
+| Keamanan gelombang 2 (zero trust & privacy vault) | 144 |
+| Resilience gelombang 2 (active-active & BCP) | 145 |
+| Data platform (lakehouse & MDM 17 lini) | 146 |
+| Platform economy (open API & white-label) | 147 |
+| Skenario konglomerasi 12 bulan & mega-scenario | 148 |
+| Dokumentasi & playbook gelombang 2 | 149 |
+| Final: quality gate penuh & serah terima 17 lini | 150 |
