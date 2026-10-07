@@ -1098,14 +1098,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 # 4 LINI BISNIS TAMBAHAN — RUMAH SAKIT, BEACH CLUB & CLUBS, PERHOTELAN, PERTAMBANGAN
 
 ## FASE 87 — RUMAH SAKIT I: IDENTITAS PASIEN, EMR, BED MANAGEMENT & CLINICAL PATHWAY
-- [ ] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
-- [ ] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
-- [ ] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
-- [ ] 87.4 **Clinical pathway (CPG simulasi)**: order dokter (medis, lab, radiologi, prosedur) dijadwalkan berurutan per diagnosis → keterlambatan order memicu alert ke perawat; status order real-time (pending → in-progress → resulted)
-- [ ] 87.5 IoT critical care simulasi: monitor pasien memancarkan telemetri (SpO2, ECG, suhu) → ambang batas → **code blue alert** prioritas ke perawat via Notification + halaman monitor → seluruh kejadian tercatat hash-chain sebagai bukti review mutu & malpractice defense
-- [ ] 87.6 Seeder skala: 10 juta pasien, 100 juta encounter/tahun (12 bulan riwayat), 500.000 kamar-tempat-tidur, telemetri ICU 1 juta titik/jam; benchmark query antrean IGD & bed board
-- [ ] 87.7 Tests: (a) alokasi bed ganda ditolak (b) paspor pasien hash valid & manipulasi terdeteksi (c) clinical pathway telat memicu alert 1x (d) telemetri ambang → code blue alert idempoten (e) query budget bed board ≤ ambang
-- [ ] 87.8 Quality gate Fase 87
+- [x] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
+- [x] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
+- [x] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
+- [x] 87.4 **Clinical pathway (CPG simulasi)**: order dokter (medis, lab, radiologi, prosedur) dijadwalkan berurutan per diagnosis → keterlambatan order memicu alert ke perawat; status order real-time (pending → in-progress → resulted)
+- [x] 87.5 IoT critical care simulasi: monitor pasien memancarkan telemetri (SpO2, ECG, suhu) → ambang batas → **code blue alert** prioritas ke perawat via Notification + halaman monitor → seluruh kejadian tercatat hash-chain sebagai bukti review mutu & malpractice defense
+- [x] 87.6 Seeder skala: 10 juta pasien, 100 juta encounter/tahun (12 bulan riwayat), 500.000 kamar-tempat-tidur, telemetri ICU 1 juta titik/jam; benchmark query antrean IGD & bed board
+- [x] 87.7 Tests: (a) alokasi bed ganda ditolak (b) paspor pasien hash valid & manipulasi terdeteksi (c) clinical pathway telat memicu alert 1x (d) telemetri ambang → code blue alert idempoten (e) query budget bed board ≤ ambang
+- [x] 87.8 Quality gate Fase 87
 
 ## FASE 88 — RUMAH SAKIT II: ORDER-TO-CASH, FARMASI, LAB, FARMASI SUPPLY CHAIN, KLAIM & REVENUE CYCLE
 - [ ] 88.1 **Billing episode**: seluruh item (bed-day, tindakan, obat, alat habis pakai, lab, radiologi, dokter) tergabung satu folio episode → struktur tarif bertingkat (mirip tarif utilitas mall Fase 13.2) → tagihan akhir saat discharge

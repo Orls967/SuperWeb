@@ -159,6 +159,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 - **AI Contract Bidding Agent:** pemantauan lelang pengadaan otomatis (`trd_bidding_agents`), penentuan harga bid optimal deterministik anti-halusinasi dengan guardrail plafon/lantai, draf klausul komersial, approval four-eyes wajib, dan penerbitan kontrak tender.
 - **Internal Gig Economy & Talent Marketplace:** posting bounty shift operasional dadakan lintas unit bisnis (`gov_bounties`), matching anti-tabrakan jadwal & guardrail UU 8 jam/hari, proof of work supervisor, payout lembur 1.5x otomatis via Ledger.
 - **Precision Agri-Tech & DAO Governance:** pemindaian satelit NDVI per petak plasma lahan (`agri_satellite_scans`), pencairan cicilan pembiayaan bersyarat kualitas NDVI, tata kelola DAO voting berbobot multi-pemangku kepentingan (`gov_proposals`, `gov_votes`) berantai hash SHA-256 dan auto-eksekusi proyek.
+- **Hospital Healthcare I (EMR, Beds, Clinical Pathway):** rekam medis terenkripsi & paspor kesehatan kriptografis (`hsp_patients`), alokasi bed anti-bentrok real-time (`hsp_beds`), penjadwalan alur klinis (CPG alerts), telemetri ICU dengan pemicu Code Blue terverifikasi hash.
 - Detail alasan: `docs/DECISIONS.md` (≈ 48 entri bertanggal).
 
 ## 8. Peta command lengkap

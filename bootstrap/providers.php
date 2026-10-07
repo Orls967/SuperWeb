@@ -96,4 +96,5 @@ return [
     CloudKitchenServiceProvider::class,
     \Modules\Vending\VendingServiceProvider::class,
     \Modules\Proptech\ProptechServiceProvider::class,
+    \Modules\Hospital\HospitalServiceProvider::class,
 ];
