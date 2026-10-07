@@ -30,6 +30,7 @@ use Modules\Core\Application\Services\SimClockService;
 use Modules\Core\Console\Commands\ProcessOutboxCommand;
 use Modules\Core\Console\Commands\RunSimulationCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
+use Modules\Core\Console\Commands\TwelveLinesComprehensiveAuditCommand;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
 use Modules\Core\Contracts\ApprovalEngineInterface;
@@ -192,6 +193,7 @@ class CoreServiceProvider extends ServiceProvider
                 SuperHealthCheckCommand::class,
                 ProcessOutboxCommand::class,
                 RunSimulationCommand::class,
+                TwelveLinesComprehensiveAuditCommand::class,
             ]);
         }
 
