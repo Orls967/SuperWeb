@@ -156,6 +156,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 - **Algorithmic & Surge Pricing Engine:** tick harga berfrekuensi tinggi (`prc_price_ticks`), guardrail floor (HPP + margin) & ceiling (HET), prioritas kontrak B2B mutlak mengalahkan harga dinamis, penguncian harga quote kriptografis immutable (`prc_frozen_quotes`).
 - **VMI & C2M Manufacturing:** pemantauan stok rak WMS oleh pemasok dengan auto-PO ber-plafon (`mfg_vmi_replenishments`) terhubung komitmen anggaran Ledger, konfigurator parametrik 3D C2M dengan roll-up BOM & routing SPK pabrik.
 - **Cross-Border Clearing & CBAM:** kontrak escrow stablecoin lintas-batas anti-duplikasi BL (`tf_crossborder_escrows`), verifikasi POD hash logistik untuk auto-release multi-currency, sertifikasi jejak karbon CBAM kontainer ekspor UE (`tf_cbam_certificates`) & perhitungan retribusi karbon.
+- **AI Contract Bidding Agent:** pemantauan lelang pengadaan otomatis (`trd_bidding_agents`), penentuan harga bid optimal deterministik anti-halusinasi dengan guardrail plafon/lantai, draf klausul komersial, approval four-eyes wajib, dan penerbitan kontrak tender.
 - Detail alasan: `docs/DECISIONS.md` (≈ 48 entri bertanggal).
 
 ## 8. Peta command lengkap

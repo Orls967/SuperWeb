@@ -1061,14 +1061,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 83.7 Quality gate Fase 83
 
 ## FASE 84 — AI CONTRACT BIDDING AGENT (LELANG PENGADAAN OTOMATIS)
-- [ ] 84.1 Tabel `trd_bidding_agents` (konfigurasi per entitas: komoditas, batas harga, margin target, risiko maks), `trd_bid_runs` (lelang yang dipantau), `trd_bid_submissions` (penawaran + jejak persetujuan)
-- [ ] 84.2 **Agent merayapi**: harga komoditas global (feed simulasi), riwayat menang/kalah lelang (Fase 33.3 tender), skor risiko buyer (Party credit Fase 27.7), biaya logistik (Fase 80.5 rate card) → menghitung harga penawaran optimal (deterministik, dapat diulang → selaras `ai:audit` Fase 64)
-- [ ] 84.3 **Draf klausul di modul Contract**: agent menyusun klausul komersial (termin, penalti, force majeure) dari library klausul Fase 28.2 → masuk status draft untuk review
-- [ ] 84.4 **Four-eyes wajib**: staf manusia membaca & menyetujui sebelum submit (ApprovalEngine Fase 26.9); tanpa persetujuan → submit ditolak sistem; batas nilai otomatis per reviewer
-- [ ] 84.5 Pasca-menang: kontrak terbit (state machine Fase 28.3) → commitment anggaran (Fase 54.1) → jadwal pengiriman via Logistics → penagihan sesuai termin; pasca-kalah: umpan balik model (win/loss tercatat)
-- [ ] 84.6 Dashboard bid desk: lelang terpantau, rekomendasi tertunda, win rate, margin vs benchmark, biaya vs kompetitor (simulasi)
-- [ ] 84.7 Tests: (a) submit tanpa approval ditolak (b) harga di luar batas agent ditolak (c) run agent deterministik dua kali identik (d) menang → kontrak + budget commitment konsisten (e) `ai:audit` = keputusan dapat direkonstruksi
-- [ ] 84.8 Quality gate Fase 84
+- [x] 84.1 Tabel `trd_bidding_agents` (konfigurasi per entitas: komoditas, batas harga, margin target, risiko maks), `trd_bid_runs` (lelang yang dipantau), `trd_bid_submissions` (penawaran + jejak persetujuan)
+- [x] 84.2 **Agent merayapi**: harga komoditas global (feed simulasi), riwayat menang/kalah lelang (Fase 33.3 tender), skor risiko buyer (Party credit Fase 27.7), biaya logistik (Fase 80.5 rate card) → menghitung harga penawaran optimal (deterministik, dapat diulang → selaras `ai:audit` Fase 64)
+- [x] 84.3 **Draf klausul di modul Contract**: agent menyusun klausul komersial (termin, penalti, force majeure) dari library klausul Fase 28.2 → masuk status draft untuk review
+- [x] 84.4 **Four-eyes wajib**: staf manusia membaca & menyetujui sebelum submit (ApprovalEngine Fase 26.9); tanpa persetujuan → submit ditolak sistem; batas nilai otomatis per reviewer
+- [x] 84.5 Pasca-menang: kontrak terbit (state machine Fase 28.3) → commitment anggaran (Fase 54.1) → jadwal pengiriman via Logistics → penagihan sesuai termin; pasca-kalah: umpan balik model (win/loss tercatat)
+- [x] 84.6 Dashboard bid desk: lelang terpantau, rekomendasi tertunda, win rate, margin vs benchmark, biaya vs kompetitor (simulasi)
+- [x] 84.7 Tests: (a) submit tanpa approval ditolak (b) harga di luar batas agent ditolak (c) run agent deterministik dua kali identik (d) menang → kontrak + budget commitment konsisten (e) `ai:audit` = keputusan dapat direkonstruksi
+- [x] 84.8 Quality gate Fase 84
 
 ## PILAR 8 — TATA KELOLA, KORPORASI & INTEGRASI ENTERPRISE
 
