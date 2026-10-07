@@ -443,7 +443,12 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 - **Tujuan:** operasional beach club & clubs, ticketing hash-chain non-fungible anti-replay, verifikasi usia & identitas gate access control, crowd safety capacity lockdown per zone, VIP table service dengan escrow deposit & no-show penalty, kontrak artis door-share advance/payout, membership tiered loyalty points, dan festival bundle multi-vendor escrow settlement.
 - **Tabel:** `ven_entertainment_venues`, `ven_entertainment_zones`, `ven_entertainment_events`, `ven_entertainment_tickets`, `ven_entertainment_table_bookings`, `ven_artist_contracts`, `ven_memberships`, `ven_festival_bundles`, `ven_bundle_orders`.
 - **Service:** `Modules\Venue\Application\Services\VenueOperationsService`, `Modules\Venue\Application\Services\VenueEconomyService` — ticketing, crowd safety lockdown, VIP table escrow, kontrak artis door-share minus advance, multi-tier point accrual/redemption, dan penyelesaian bundle festival multi-vendor dengan ledger invariant $\sum = 0$.
-- **Provider:** `Modules\Venue\VenueServiceProvider`.
+### Hotel & Hospitality (`htl_`) — Fase 91
+
+- **Tujuan:** Property Management System (PMS), reservasi sentral anti-oversell, proteksi rate dinamis dengan floor rate & contract rate mutlak, smart lock QR/token akses kamar, HVAC energy twin setback otomatis, dan siklus checkout settlement folio ke Ledger.
+- **Tabel:** `htl_properties`, `htl_rooms`, `htl_reservations`, `htl_folios`.
+- **Service:** `Modules\Hotel\Application\Services\HotelOperationsService` — alokasi kamar anti-oversell, penerbitan token smart-lock valid sepanjang masa inap, sensor energy setback HVAC otomatis saat kamar kosong, penutupan folio dan settlement ke akun `htl:room_revenue:IDR` dan `htl:settlement_clearing:IDR`.
+- **Provider:** `Modules\Hotel\HotelServiceProvider`.
 
 ---
 

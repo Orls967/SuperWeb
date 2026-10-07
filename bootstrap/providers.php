@@ -22,6 +22,7 @@ use Modules\Finance\FinanceServiceProvider;
 use Modules\Fleet\FleetServiceProvider;
 use Modules\Hcm\HcmServiceProvider;
 use Modules\Hospital\HospitalServiceProvider;
+use Modules\Hotel\HotelServiceProvider;
 use Modules\Insurance\InsuranceServiceProvider;
 use Modules\Integration\IntegrationServiceProvider;
 use Modules\Intercompany\IntercompanyServiceProvider;
@@ -102,4 +103,5 @@ return [
     ProptechServiceProvider::class,
     HospitalServiceProvider::class,
     VenueServiceProvider::class,
+    HotelServiceProvider::class,
 ];
