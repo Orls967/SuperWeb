@@ -1850,13 +1850,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 137.7 Quality gate Fase 137
 
 ## FASE 138 — RITEL: SUPER APP, WALLET CROSS-LINI & CASHBACK ECONOMY
-- [ ] 138.1 **Super app hub**: satu aplikasi agregasi 17 lini (naik taksi-simulasi, beli tiket venue, pesan hotel, bayar utilitas, topup EV, booking RS, langganan edukasi) → deeplink/uni-page → satu wallet & satu loyalty identity (Fase 112.1)
-- [ ] 138.2 **Cross-lini cashback**: promo berjenjang (beli di resto → cashback poin → tukar tiket venue → tambah nights hotel) → rules engine anti-abuse (velocity, self-dealing terdeteksi mirip Fase 46.6) → liability cashback terkendali
-- [ ] 138.3 **Bill payment hub**: utilitas (Fase 127.4), pajak simulasi (Fase 54.3), BPJS/insurance premium (Fase 72), cicilan (Fase 5C), sewa tenant → satu kanal pembayaran → fee revenue → receipt gapless
-- [ ] 138.4 **Subscription bundles**: paket gr (mis. Family: hotel nights + streaming-media simulasi + data seluler Fase 132.2 + EV charging credit) → billing bulanan terpusat → komponen dicatat per lini (settlement internal)
-- [ ] 138.5 **Behavioral analytics & offer engine**: gabungan data belanja 17 lini → segmentasi → offer berikutnya (deterministik + `ai:audit`) → opt-out dihormati → konversi terukur → tanpa data leakage antar scope (Fase 55.7 tetap)
-- [ ] 138.6 Tests: (a) cashback Σ issued ≤ earned rules, tak negatif (b) bundle settlement Σ = fee subscription (c) bill payment receipt gapless (d) offer tak melanggar scope/privacy (e) reconcile cashback liability = ledger
-- [ ] 138.7 Quality gate Fase 138
+- [x] 138.1 **Super app hub**: satu aplikasi agregasi 17 lini (naik taksi-simulasi, beli tiket venue, pesan hotel, bayar utilitas, topup EV, booking RS, langganan edukasi) → deeplink/uni-page → satu wallet & satu loyalty identity (Fase 112.1)
+- [x] 138.2 **Cross-lini cashback**: promo berjenjang (beli di resto → cashback poin → tukar tiket venue → tambah nights hotel) → rules engine anti-abuse (velocity, self-dealing terdeteksi mirip Fase 46.6) → liability cashback terkendali
+- [x] 138.3 **Bill payment hub**: utilitas (Fase 127.4), pajak simulasi (Fase 54.3), BPJS/insurance premium (Fase 72), cicilan (Fase 5C), sewa tenant → satu kanal pembayaran → fee revenue → receipt gapless
+- [x] 138.4 **Subscription bundles**: paket gr (mis. Family: hotel nights + streaming-media simulasi + data seluler Fase 132.2 + EV charging credit) → billing bulanan terpusat → komponen dicatat per lini (settlement internal)
+- [x] 138.5 **Behavioral analytics & offer engine**: gabungan data belanja 17 lini → segmentasi → offer berikutnya (deterministik + `ai:audit`) → opt-out dihormati → konversi terukur → tanpa data leakage antar scope (Fase 55.7 tetap)
+- [x] 138.6 Tests: (a) cashback Σ issued ≤ earned rules, tak negatif (b) bundle settlement Σ = fee subscription (c) bill payment receipt gapless (d) offer tak melanggar scope/privacy (e) reconcile cashback liability = ledger
+- [x] 138.7 Quality gate Fase 138
 
 ## FASE 139 — RITEL: FULFILLMENT, QUICK COMMERCE & LAST-MILE GRID
 - [ ] 139.1 **Quick commerce (q-commerce)**: dark store 100 titik (gudang mini WMS) → 30 menit delivery → picking zone terpendek → armada last-mile/motor/drone (Fase 80.3) → radius 3 km → slot density planning
