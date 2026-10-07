@@ -1717,13 +1717,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 122.7 Quality gate Fase 122
 
 ## FASE 123 — SUMBER DAYA: RENEWABLE ENERGY MINING & CARBON PROJECT
-- [ ] 123.1 **Elektrifikasi site**: solar farm (aset Fase 30) + battery storage di site tambang → beban terukur per area → konsumsi hijau vs diesel → pengurangan Scope 1 terhitung (Fase 60.1) → laporan dekarbonisasi tambang
-- [ ] 123.2 **Renewable-as-service internal**: listrik solar dialirkan ke site lain milik grup (pabrik, mall, RS) → meteran antar-entitas → **intercompany billing** (memperluas Fase 52.1) → transfer pricing cost-plus (Fase 52.2)
-- [ ] 123.3 **Carbon project (ARR/reforestation)**: lahan reklamasi (Fase 94.6) → proyek penanaman → verifikasi NDVI satelit (Fase 86.1) → issuance kredit karbon (Fase 60.2) → dijual di bursa karbon / dipakai offset sendiri
-- [ ] 123.4 **Methane & flaring reduction** (gas field simulasi): sensor gas → leak detection → capture → dimanfaatkan energi → emisi turun terukur → kredit tambahan
-- [ ] 123.5 **Green mineral premium**: nikel/hijau bersertifikat battery-grade traceability (Digital Product Passport Fase 6E) → harga premium → pembeli EV (Pilar 1) memprioritaskan → kontrak jangka panjang
-- [ ] 123.6 Tests: (a) intercompany energy billing = meteran antar-entitas (b) issuance karbon ≤ kredit terverifikasi (c) green premium = harga dasar + adder tercatat (d) Σ emisi turun konsisten laporan (e) `esg:audit` = 0 selisih
-- [ ] 123.7 Quality gate Fase 123
+- [x] 123.1 **Elektrifikasi site**: solar farm (aset Fase 30) + battery storage di site tambang → beban terukur per area → konsumsi hijau vs diesel → pengurangan Scope 1 terhitung (Fase 60.1) → laporan dekarbonisasi tambang
+- [x] 123.2 **Renewable-as-service internal**: listrik solar dialirkan ke site lain milik grup (pabrik, mall, RS) → meteran antar-entitas → **intercompany billing** (memperluas Fase 52.1) → transfer pricing cost-plus (Fase 52.2)
+- [x] 123.3 **Carbon project (ARR/reforestation)**: lahan reklamasi (Fase 94.6) → proyek penanaman → verifikasi NDVI satelit (Fase 86.1) → issuance kredit karbon (Fase 60.2) → dijual di bursa karbon / dipakai offset sendiri
+- [x] 123.4 **Methane & flaring reduction** (gas field simulasi): sensor gas → leak detection → capture → dimanfaatkan energi → emisi turun terukur → kredit tambahan
+- [x] 123.5 **Green mineral premium**: nikel/hijau bersertifikat battery-grade traceability (Digital Product Passport Fase 6E) → harga premium → pembeli EV (Pilar 1) memprioritaskan → kontrak jangka panjang
+- [x] 123.6 Tests: (a) intercompany energy billing = meteran antar-entitas (b) issuance karbon ≤ kredit terverifikasi (c) green premium = harga dasar + adder tercatat (d) Σ emisi turun konsisten laporan (e) `esg:audit` = 0 selisih
+- [x] 123.7 Quality gate Fase 123
 
 ## FASE 124 — SUMBER DAYA: RECLAMATION, WATER & BIODIVERSITY COMPLIANCE
 - [ ] 124.1 **Reclamation lifecycle**: rencana pascatambang → budget & provisi (liabilitas, simulasi PSAK) → eksekusi proyek (EPC Fase 63) → verifikasi tumbuh (NDVI) → pelepasan provisi saat达标 → jurnal
