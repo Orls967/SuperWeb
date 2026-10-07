@@ -1957,25 +1957,25 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 149.7 Quality gate Fase 149
 
 ## FASE 150 — FINAL: QUALITY GATE EKSPANSI PENUH & SERAH TERIMA AKHIR
-- [ ] 150.1 **Full regression Fase 0–150**: seluruh test suite (test Fase 0–63 karakterisasi + 64–103 gelombang 1 + 104–149 gelombang 2) 100% hijau, tanpa satu pun di-skip/dilemahkan; jumlah test & assertion tercatat vs baseline setiap fase
-- [ ] 150.2 **Audit massal akhir**: `bank:reconcile` (seluruh aset: IDR, PTS, crypto, stablecoin, token RWA, kredit karbon), seluruh `*:audit` 17 lini, seluruh `verify-*` hash-chain (passport, custody, paspor pasien, tiket venue, weighbridge, kontrak, aset, ECO, RWA, sertifikat edu) → SEMUA 0 selisih
-- [ ] 150.3 **Stress & security final**: seeder ultra gelombang 1+2 berjalan penuh (benchmark tercatat), race condition ekstrem, pen-testing massal (route × role, IDOR, fuzzing), query budget seluruh endpoint kritis hijau
-- [ ] 150.4 **super:health-check final**: seluruh pilar 17 lini + platform = HEALTHY, exit code 0; super:health-check dijalankan 2x berturut hasil identik
-- [ ] 150.5 **Definition of Done Fase 104–150** terpenuhi penuh (lihat DoD di bawah) & working tree bersih
-- [ ] 150.6 **Berita Acara Serah Terima Final — 17 Lini Bisnis dalam Satu Website Monolith** di `docs/PROGRESS.md`: ringkasan metrik akhir (test, assertion, audit, benchmark, query budget, DR), peta 17 lini terintegrasi, status seluruh fase 0–150 tercentang
-- [ ] 150.7 Final commit + tag rilis `v150-17-lines-complete`
+- [x] 150.1 **Full regression Fase 0–150**: seluruh test suite (test Fase 0–63 karakterisasi + 64–103 gelombang 1 + 104–149 gelombang 2) 100% hijau, tanpa satu pun di-skip/dilemahkan; jumlah test & assertion tercatat vs baseline setiap fase
+- [x] 150.2 **Audit massal akhir**: `bank:reconcile` (seluruh aset: IDR, PTS, crypto, stablecoin, token RWA, kredit karbon), seluruh `*:audit` 17 lini, seluruh `verify-*` hash-chain (passport, custody, paspor pasien, tiket venue, weighbridge, kontrak, aset, ECO, RWA, sertifikat edu) → SEMUA 0 selisih
+- [x] 150.3 **Stress & security final**: seeder ultra gelombang 1+2 berjalan penuh (benchmark tercatat), race condition ekstrem, pen-testing massal (route × role, IDOR, fuzzing), query budget seluruh endpoint kritis hijau
+- [x] 150.4 **super:health-check final**: seluruh pilar 17 lini + platform = HEALTHY, exit code 0; super:health-check dijalankan 2x berturut hasil identik
+- [x] 150.5 **Definition of Done Fase 104–150** terpenuhi penuh (lihat DoD di bawah) & working tree bersih
+- [x] 150.6 **Berita Acara Serah Terima Final — 17 Lini Bisnis dalam Satu Website Monolith** di `docs/PROGRESS.md`: ringkasan metrik akhir (test, assertion, audit, benchmark, query budget, DR), peta 17 lini terintegrasi, status seluruh fase 0–150 tercentang
+- [x] 150.7 Final commit + tag rilis `v150-17-lines-complete`
 
 ---
 
 ## DEFINITION OF DONE (FASE 104–150)
-- [ ] Semua task 104.1–150.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 103: seluruh test Fase 0–103 hijau) tanpa ada test di-skip/dilemahkan.
-- [ ] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` (termasuk baru: `egy`, `tlx`, `med`, `edu`, `ret`, `hosp` lanjutan, `venue` lanjutan, `hotel` lanjutan, `mining` lanjutan) = 0 selisih; semua hash-chain valid.
-- [ ] Setiap alur uang/stok/tiket/kamar/klaim/sertifikat/listing baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role (100+ role).
-- [ ] Tidak ada float untuk uang; tidak ada `DB` facade di controller; batas modul 12 modul gelombang 2 baru terjaga (arch test diperluas).
-- [ ] Simulation Kernel, Universal Event Spine, Digital Twin Bus, Scale Provisioner menaungi 17 lini & teruji deterministik.
-- [ ] Seeder ultra gelombang 2 (Fase 142.1) selesai dalam benchmark tercatat; seluruh endpoint kritis dalam query budget p95.
-- [ ] Golden mega-scenario 17 lini (Fase 148.2) hijau end-to-end; DR drill gelombang 2 lulus (RPO 0, RTO per tier).
-- [ ] README, ARCHITECTURE, CODEBASE, DECISIONS, RUNBOOK, API, AUDIT mutakhir & konsisten; working tree bersih; tag rilis final dibuat.
+- [x] Semua task 104.1–150.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 103: seluruh test Fase 0–103 hijau) tanpa ada test di-skip/dilemahkan.
+- [x] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` (termasuk baru: `egy`, `tlx`, `med`, `edu`, `ret`, `hosp` lanjutan, `venue` lanjutan, `hotel` lanjutan, `mining` lanjutan) = 0 selisih; semua hash-chain valid.
+- [x] Setiap alur uang/stok/tiket/kamar/klaim/sertifikat/listing baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role (100+ role).
+- [x] Tidak ada float untuk uang; tidak ada `DB` facade di controller; batas modul 12 modul gelombang 2 baru terjaga (arch test diperluas).
+- [x] Simulation Kernel, Universal Event Spine, Digital Twin Bus, Scale Provisioner menaungi 17 lini & teruji deterministik.
+- [x] Seeder ultra gelombang 2 (Fase 142.1) selesai dalam benchmark tercatat; seluruh endpoint kritis dalam query budget p95.
+- [x] Golden mega-scenario 17 lini (Fase 148.2) hijau end-to-end; DR drill gelombang 2 lulus (RPO 0, RTO per tier).
+- [x] README, ARCHITECTURE, CODEBASE, DECISIONS, RUNBOOK, API, AUDIT mutakhir & konsisten; working tree bersih; tag rilis final dibuat.
 
 ---
 
