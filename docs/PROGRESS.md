@@ -1690,13 +1690,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 119.7 Quality gate Fase 119
 
 ## FASE 120 — SUMBER DAYA: HSE LEADING INDICATOR, MENTAL HEALTH & CONTRACTOR SAFETY
-- [ ] 120.1 **Leading indicator engine**: near-miss rate, safety observation, potensi bahaya (JSA per tugas), kepatuhan PPE (sensor simulasi/simulasi CCTV AI) → skor proaktif per site/shift → indikator mundur (lagging: LTIFR, TRIR) dilaporkan terpisah
-- [ ] 120.2 **Permit-to-work terintegrasi**: hot work, confined space, working at height, energi terkunci (LOTO) → approval + validasi posisi telematik pekerja (harus di area permit) + masa berlaku → kadaluarsa → auto-revoke akses
-- [ ] 120.3 **Fatigue management**: jam kerja + kualitas tidur shift (simulasi) → skor kelelahan operator alat berat → rekomendasi istirahat wajib → heavy equipment critical role fatigue tinggi → dialihkan (UU 22/2009 jam mengemudi konsisten Fase 20.4)
-- [ ] 120.4 **Mental health & sosial**: hotline anonim, pelaporan perilaku tidak aman tanpa balasan, program exit interview tambang → indikator sosial masuk scorecard ESG (Fase 60.4 versi tambang)
-- [ ] 120.5 **Contractor safety management**: 100 ribu kontraktor (Party) → prequal K3 → skor kecelakaan → kontrak berjenjang (preferred/probation/blacklist) → insentif premi asuransi (Fase 72) berbasis skor
-- [ ] 120.6 Tests: (a) permit kedaluwarsa → akses ditolak (b) pekerja di luar area permit → blast/work order ditahan (c) fatigue critical → penugasan ditolak (d) skor contractor memengaruhi eligibility tender (e) reconcile contractor penalty = ledger
-- [ ] 120.7 Quality gate Fase 120
+- [x] 120.1 **Leading indicator engine**: near-miss rate, safety observation, potensi bahaya (JSA per tugas), kepatuhan PPE (sensor simulasi/simulasi CCTV AI) → skor proaktif per site/shift → indikator mundur (lagging: LTIFR, TRIR) dilaporkan terpisah
+- [x] 120.2 **Permit-to-work terintegrasi**: hot work, confined space, working at height, energi terkunci (LOTO) → approval + validasi posisi telematik pekerja (harus di area permit) + masa berlaku → kadaluarsa → auto-revoke akses
+- [x] 120.3 **Fatigue management**: jam kerja + kualitas tidur shift (simulasi) → skor kelelahan operator alat berat → rekomendasi istirahat wajib → heavy equipment critical role fatigue tinggi → dialihkan (UU 22/2009 jam mengemudi konsisten Fase 20.4)
+- [x] 120.4 **Mental health & sosial**: hotline anonim, pelaporan perilaku tidak aman tanpa balasan, program exit interview tambang → indikator sosial masuk scorecard ESG (Fase 60.4 versi tambang)
+- [x] 120.5 **Contractor safety management**: 100 ribu kontraktor (Party) → prequal K3 → skor kecelakaan → kontrak berjenjang (preferred/probation/blacklist) → insentif premi asuransi (Fase 72) berbasis skor
+- [x] 120.6 Tests: (a) permit kedaluwarsa → akses ditolak (b) pekerja di luar area permit → blast/work order ditahan (c) fatigue critical → penugasan ditolak (d) skor contractor memengaruhi eligibility tender (e) reconcile contractor penalty = ledger
+- [x] 120.7 Quality gate Fase 120
 
 ## FASE 121 — SUMBER DAYA: MINERALS PROCESSING, SMELTER & METALS TRADING DESK
 - [ ] 121.1 **Smelter & plant lanjutan** (memperluas 94.3): BOM/routing khusus (ore → concentrate → NPI/matte/copper cathode simulasi), rekoveri per unit pengolahan, energi per ton (listrik/BBM terukur → emisi Scope 1/2)

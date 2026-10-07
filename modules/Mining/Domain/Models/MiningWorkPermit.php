@@ -20,11 +20,21 @@ class MiningWorkPermit extends Model
         'permit_number',
         'permit_type',
         'supervisor_name',
+        'worker_party_id',
+        'allowed_pit_id',
+        'allowed_latitude',
+        'allowed_longitude',
+        'allowed_radius_meters',
+        'valid_from',
         'valid_until',
         'status',
     ];
 
     protected $casts = [
+        'allowed_latitude' => 'float',
+        'allowed_longitude' => 'float',
+        'allowed_radius_meters' => 'float',
+        'valid_from' => 'datetime',
         'valid_until' => 'datetime',
     ];
 }
