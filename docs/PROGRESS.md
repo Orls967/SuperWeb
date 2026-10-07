@@ -1547,13 +1547,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > Konvensi Fase 26+ tetap berlaku penuh tanpa pengecualian.
 
 ## FASE 104 — KESEHATAN: TELEMEDICINE, E-PHARMACY & JARINGAN APOTEK
-- [ ] 104.1 Tabel `hsp_tele_consults` (konsultasi jarak jauh: video/chat simulasi, triase awal), `hsp_epharmacy_orders`, `hsp_pharmacy_branches` (500 apotek jaringan + 5.000 apotek mitra Party)
-- [ ] 104.2 Alur triase → konsultasi → **e-resep digital** (tanda tangan dokter hash) → fulfillment apotek terdekat (stok terpotong via InventoryService, FEFO lot) → pengiriman obat last-mile via Logistics (rentang 2 jam kota besar)
-- [ ] 104.3 Interaksi obat & alergi dicek rule engine terhadap Human Passport (Fase 87.2) sebelum e-resep disahkan; obat keras/psikotropika butuh verifikasi resep fisik (approval dokter kedua)
-- [ ] 104.4 Subscription obat kronis (pasien jantung/diabetes): pengiriman berulang otomatis bulanan, debit wallet, auto-renew resep setelah konsultasi kontrol berikutnya
-- [ ] 104.5 Integrasi BI): konsultasi → rujukan rawat inap → bed booking (Fase 87.3) → episode billing (Fase 88.1) dalam satu identitas pasien
-- [ ] 104.6 Tests: (a) e-resep tanpa tanda tangan dokter ditolak (b) interaksi obat kritis memblokir order (c) stok apotek terpotong = item terkirim (d) pengiriman obat keras wajib POD ber-sign (e) `hosp:audit` tetap 0 selisih
-- [ ] 104.7 Quality gate Fase 104
+- [x] 104.1 Tabel `hsp_tele_consults` (konsultasi jarak jauh: video/chat simulasi, triase awal), `hsp_epharmacy_orders`, `hsp_pharmacy_branches` (500 apotek jaringan + 5.000 apotek mitra Party)
+- [x] 104.2 Alur triase → konsultasi → **e-resep digital** (tanda tangan dokter hash) → fulfillment apotek terdekat (stok terpotong via InventoryService, FEFO lot) → pengiriman obat last-mile via Logistics (rentang 2 jam kota besar)
+- [x] 104.3 Interaksi obat & alergi dicek rule engine terhadap Human Passport (Fase 87.2) sebelum e-resep disahkan; obat keras/psikotropika butuh verifikasi resep fisik (approval dokter kedua)
+- [x] 104.4 Subscription obat kronis (pasien jantung/diabetes): pengiriman berulang otomatis bulanan, debit wallet, auto-renew resep setelah konsultasi kontrol berikutnya
+- [x] 104.5 Integrasi BI): konsultasi → rujukan rawat inap → bed booking (Fase 87.3) → episode billing (Fase 88.1) dalam satu identitas pasien
+- [x] 104.6 Tests: (a) e-resep tanpa tanda tangan dokter ditolak (b) interaksi obat kritis memblokir order (c) stok apotek terpotong = item terkirim (d) pengiriman obat keras wajib POD ber-sign (e) `hosp:audit` tetap 0 selisih
+- [x] 104.7 Quality gate Fase 104
 
 ## FASE 105 — KESEHATAN: JARINGAN LABORATORIUM & DIAGNOSTIK IMAGING
 - [ ] 105.1 Tabel `hsp_lab_catalog` (10.000 parameter tes), `hsp_lab_specimens` (barcode rantai spesimen), `hsp_lab_results` (verifikasi teknisi + pathologist), `hsp_imaging_studies` (simulasi DICOM metadata)
