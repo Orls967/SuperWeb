@@ -7,6 +7,7 @@ namespace Modules\Integration;
 use Illuminate\Support\ServiceProvider;
 use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\IntegrationService;
+use Modules\Integration\Application\Services\MegaScenarioService;
 use Modules\Integration\Application\Services\PlatformEconomyService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
@@ -33,6 +34,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(ResilienceWave2Service::class);
         $this->app->singleton(DataPlatformService::class);
         $this->app->singleton(PlatformEconomyService::class);
+        $this->app->singleton(MegaScenarioService::class);
     }
 
     public function boot(): void
