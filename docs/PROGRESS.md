@@ -1637,13 +1637,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 113.7 Quality gate Fase 113
 
 ## FASE 114 — HOSPITALITY & ENTERTAINMENT: MICE & WEDDING GLOBAL SALES ENGINE
-- [ ] 114.1 Pipeline B2B MICE (konferensi, expo, korporat) & wedding → lead → site visit → proposal multi-komponen (kamar blok + ballroom + F&B + AV + dekorasi + transport) → quotation timelock → kontrak
-- [ ] 114.2 **Kamar blok (block allotment)**: reservasi 100–1.000 kamar untuk tanggal tertentu → release otomatis H-30 bagi yang belum terkonfirmasi → kembali ke inventori umum (anti-oversell Fase 91.3 tetap berlaku)
-- [ ] 114.3 **Banquet production sheet**: BOM event (menu per pax, dekorasi, sewa alat) → konsumsi bahan via Resto batch (Fase 8.2) → vendor pihak ketiga (PA, florist) → PO vendor terhubung → cost actual vs contract value → margin event
-- [ ] 114.4 Wedding-specific: booking 6–12 bulan, payment milestone (20/30/40/10), escalation suite (kamar pengantin), keluarga besar kamar blok, gift registry (Store)
-- [ ] 114.5 **Exhibition & trade show connector**: stand booth dijadikan unit sewa mini (memperluas Fase 78) → peserta bayar stand + listrik + Wi-Fi → footfall per booth (sensor) → laporan ROI eksposur ke peserta
-- [ ] 114.6 Tests: (a) block release tepat H-30, kamar kembali tersedia (b) BOM event = konsumsi batch terpotong (c) margin event = contract − actual terverifikasi (d) milestone wedding berurutan (e) reconcile MICE event = ledger
-- [ ] 114.7 Quality gate Fase 114
+- [x] 114.1 Pipeline B2B MICE (konferensi, expo, korporat) & wedding → lead → site visit → proposal multi-komponen (kamar blok + ballroom + F&B + AV + dekorasi + transport) → quotation timelock → kontrak
+- [x] 114.2 **Kamar blok (block allotment)**: reservasi 100–1.000 kamar untuk tanggal tertentu → release otomatis H-30 bagi yang belum terkonfirmasi → kembali ke inventori umum (anti-oversell Fase 91.3 tetap berlaku)
+- [x] 114.3 **Banquet production sheet**: BOM event (menu per pax, dekorasi, sewa alat) → konsumsi bahan via Resto batch (Fase 8.2) → vendor pihak ketiga (PA, florist) → PO vendor terhubung → cost actual vs contract value → margin event
+- [x] 114.4 Wedding-specific: booking 6–12 bulan, payment milestone (20/30/40/10), escalation suite (kamar pengantin), keluarga besar kamar blok, gift registry (Store)
+- [x] 114.5 **Exhibition & trade show connector**: stand booth dijadikan unit sewa mini (memperluas Fase 78) → peserta bayar stand + listrik + Wi-Fi → footfall per booth (sensor) → laporan ROI eksposur ke peserta
+- [x] 114.6 Tests: (a) block release tepat H-30, kamar kembali tersedia (b) BOM event = konsumsi batch terpotong (c) margin event = contract − actual terverifikasi (d) milestone wedding berurutan (e) reconcile MICE event = ledger
+- [x] 114.7 Quality gate Fase 114
 
 ## FASE 115 — ENTERTAINMENT: CONTENT, CREATOR ECONOMY & MEDIA RIGHTS
 - [ ] 115.1 Tabel `ven_creators` (DJ, band, kreator konten, brand), `ven_content_assets` (video, foto, track — hash + lisensi), `ven_rights_contracts` (royalti per platform/stream)
