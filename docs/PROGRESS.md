@@ -1859,13 +1859,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 138.7 Quality gate Fase 138
 
 ## FASE 139 — RITEL: FULFILLMENT, QUICK COMMERCE & LAST-MILE GRID
-- [ ] 139.1 **Quick commerce (q-commerce)**: dark store 100 titik (gudang mini WMS) → 30 menit delivery → picking zone terpendek → armada last-mile/motor/drone (Fase 80.3) → radius 3 km → slot density planning
-- [ ] 139.2 **Ghost store & hybrid**: area tanpa toko fisik dilayani FDC terdekat → biaya per order terukur → unit economics per zone (revenue vs picking + delivery + packaging)
-- [ ] 139.3 **Crowdshipping (simulasi)**: pekerja/driver yang menuju arah pesanan → tawaran → terima → pickup dari toko → drop → fee fleksibel → rating & verifikasi (POD hash)
-- [ ] 139.4 **Packaging & sustainability**: kemasan dapat dipakai ulang (deposit kemasan → refund saat kembali) → reverse loop (Fase 79) → ESG packaging score per lini
-- [ ] 139.5 **Fulfillment SLA & penalties**: promise time (30/60/jadwal) → keterlambatan → kredit pelanggan otomatis (voucher) → carrier scorecard (Fase 45 pattern untuk 3PL)
-- [ ] 139.6 Tests: (a) promise breach → kredit otomatis 1x (b) deposit kemasan Σ = kemasan beredar (c) crowdshipper fee ≤ order value rules (d) picking time per order tercatat (e) `ret:audit` + `lgx:audit-billing` = 0 selisih
-- [ ] 139.7 Quality gate Fase 139
+- [x] 139.1 **Quick commerce (q-commerce)**: dark store 100 titik (gudang mini WMS) → 30 menit delivery → picking zone terpendek → armada last-mile/motor/drone (Fase 80.3) → radius 3 km → slot density planning
+- [x] 139.2 **Ghost store & hybrid**: area tanpa toko fisik dilayani FDC terdekat → biaya per order terukur → unit economics per zone (revenue vs picking + delivery + packaging)
+- [x] 139.3 **Crowdshipping (simulasi)**: pekerja/driver yang menuju arah pesanan → tawaran → terima → pickup dari toko → drop → fee fleksibel → rating & verifikasi (POD hash)
+- [x] 139.4 **Packaging & sustainability**: kemasan dapat dipakai ulang (deposit kemasan → refund saat kembali) → reverse loop (Fase 79) → ESG packaging score per lini
+- [x] 139.5 **Fulfillment SLA & penalties**: promise time (30/60/jadwal) → keterlambatan → kredit pelanggan otomatis (voucher) → carrier scorecard (Fase 45 pattern untuk 3PL)
+- [x] 139.6 Tests: (a) promise breach → kredit otomatis 1x (b) deposit kemasan Σ = kemasan beredar (c) crowdshipper fee ≤ order value rules (d) picking time per order tercatat (e) `ret:audit` + `lgx:audit-billing` = 0 selisih
+- [x] 139.7 Quality gate Fase 139
 
 ## FASE 140 — INTEGRASI GELOMBANG 2: ENERGI + TELEKOM + MEDIA + EDU + RITEL TERHUBUNG MONOLITH
 - [ ] 140.1 **Energi ↔ semua lini**: smart meter (Fase 126.2) memasok data ESG & tagihan 17 lini; microgrid (Fase 129.1) melindungi RS & DC; solar PPA intercompany (Fase 123.2) menciptakan transaksi ledger antar entitas baru
