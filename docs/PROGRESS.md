@@ -890,14 +890,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 ## PILAR 1 — OTOMOTIF & PEMBIAYAAN KENDARAAN
 
 ## FASE 68 — TELEMATICS & IOT CONNECTED CAR (PREDICTIVE MAINTENANCE)
-- [ ] 68.1 Tabel `oto_telematics_devices` (OBD2/GPS, terikat `core_vehicles`), `oto_telematics_ticks` partisi harian (GPS, RPM, suhu oli, level baterai, kode DTC) — target ingest 500 juta tick/hari pada skala simulasi, retensi hot 30 hari / warm 1 tahun / cold arsip
-- [ ] 68.2 Ingest pipeline idempoten (device_id + seq + ts sebagai key), normalisasi satuan, penolakan tick di luar jendela waktu (anti-replay), dan agregat 5-menitan (avg/max/min) untuk menghemat ruang query
-- [ ] 68.3 Baseline per kendaraan (7 hari rolling) + deteksi anomali deterministik: suhu oli > 15% baseline, DTC kritis, konsumsi BBM menyimpang, baterai voltage drop → event `VehicleAnomalyDetected`
-- [ ] 68.4 **Predictive Maintenance → AutoServe**: listener event anomaly membuat **draf booking servis** + estimasi biaya (harga komponen dari Store) + slot terdekat per outlet; opsi konfirmasi sekali klik (bayar wallet+PIN / tunai / ajukan pembiayaan); DTC kritis menandai unit `grounded` dan menolak dispatch armada
-- [ ] 68.5 KPI & dashboard: MAPE prediksi kerusakan vs aktual (apakah booking benar-benar diperlukan), antrian draf booking, pendapatan preventif per outlet, mean-time-to-service
-- [ ] 68.6 Seeder skala: 10 juta kendaraan berpaspor (subset aktif memancarkan tick), 180 hari riwayat telematik, benchmark ingest & query baseline
-- [ ] 68.7 Tests: (a) anomaly memicu draf booking tepat 1x (b) DTC kritis grounded menolak dispatch (c) tick duplikat idempoten (d) biaya servis ter-posting seimbang ke ledger (e) ingest massal tidak melanggar query budget halaman dashboard
-- [ ] 68.8 Quality gate Fase 68
+- [x] 68.1 Tabel `oto_telematics_devices` (OBD2/GPS, terikat `core_vehicles`), `oto_telematics_ticks` partisi harian (GPS, RPM, suhu oli, level baterai, kode DTC) — target ingest 500 juta tick/hari pada skala simulasi, retensi hot 30 hari / warm 1 tahun / cold arsip
+- [x] 68.2 Ingest pipeline idempoten (device_id + seq + ts sebagai key), normalisasi satuan, penolakan tick di luar jendela waktu (anti-replay), dan agregat 5-menitan (avg/max/min) untuk menghemat ruang query
+- [x] 68.3 Baseline per kendaraan (7 hari rolling) + deteksi anomali deterministik: suhu oli > 15% baseline, DTC kritis, konsumsi BBM menyimpang, baterai voltage drop → event `VehicleAnomalyDetected`
+- [x] 68.4 **Predictive Maintenance → AutoServe**: listener event anomaly membuat **draf booking servis** + estimasi biaya (harga komponen dari Store) + slot terdekat per outlet; opsi konfirmasi sekali klik (bayar wallet+PIN / tunai / ajukan pembiayaan); DTC kritis menandai unit `grounded` dan menolak dispatch armada
+- [x] 68.5 KPI & dashboard: MAPE prediksi kerusakan vs aktual (apakah booking benar-benar diperlukan), antrian draf booking, pendapatan preventif per outlet, mean-time-to-service
+- [x] 68.6 Seeder skala: 10 juta kendaraan berpaspor (subset aktif memancarkan tick), 180 hari riwayat telematik, benchmark ingest & query baseline
+- [x] 68.7 Tests: (a) anomaly memicu draf booking tepat 1x (b) DTC kritis grounded menolak dispatch (c) tick duplikat idempoten (d) biaya servis ter-posting seimbang ke ledger (e) ingest massal tidak melanggar query budget halaman dashboard
+- [x] 68.8 Quality gate Fase 68
 
 ## FASE 69 — EKOSISTEM EV: CHARGING NETWORK & BATTERY PASSPORT
 - [ ] 69.1 Tabel `oto_ev_stations` (SPKLU: lokasi hub/ mall/ resto/ rute logistik), `oto_ev_chargers` (AC/DC, kW, status), `oto_ev_sessions` (booking → plug → meter kWh → selesai → tagih)

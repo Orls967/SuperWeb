@@ -35,6 +35,7 @@ use Modules\Resto\RestoServiceProvider;
 use Modules\Shared\SharedServiceProvider;
 use Modules\Store\StoreServiceProvider;
 use Modules\Supplier\SupplierServiceProvider;
+use Modules\Telematics\TelematicsServiceProvider;
 use Modules\Trade\TradeServiceProvider;
 use Modules\TradeFinance\TradeFinanceServiceProvider;
 use Modules\Treasury\TreasuryServiceProvider;
@@ -80,4 +81,5 @@ return [
     B2bServiceProvider::class,
     AgriServiceProvider::class,
     EpcServiceProvider::class,
+    TelematicsServiceProvider::class,
 ];
