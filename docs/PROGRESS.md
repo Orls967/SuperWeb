@@ -2075,13 +2075,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 160.7 Quality gate Fase 160
 
 ## FASE 161 — LINI 19: KEUANGAN SYARIAH (BANK SYARIAH, MURABAHAH, MUDHARABAH)
-- [ ] 161.1 Modul `Syariah` (`syb_`): provider, MenuRegistry "Keuangan Syariah", roles (`syariah_officer`, `shariah_board`, `muamalah_teller`), policies, arch test; tabel `syb_products` (murabahah, mudharabah, musyarakah, ijarah, qardh), `syb_accounts` (tabungan wadi'ah/yad), `syb_contracts`
-- [ ] 161.2 **Accounting PSAK 102/103 simulasi**: akun terpisah dari ledger konvensional (Fase 1) dengan sign khas (korporasi = akad), markup margin diakui gradual, akad wajib tercatat sebagai kontrak hash
-- [ ] 161.3 **Murabahah pembiayaan**: akad jual beli + markup disepakati di awal → pencairan ke vendor langsung (tidak ke nasabah) → angsuran pokok + margin → keterlambatan: denda disgorgement ke dana amil (bukan ke bank) → meniru pola Fase 5C dengan modifikasi akad
-- [ ] 161.4 **Mudharabah savings**: nasabah sebagai shahibul mal → bank sebagai mudharib → bagi hasil rasio → profit sharing periodik dari pool investasi (link Treasury Fase 73) → withdrawal rules
-- [ ] 161.5 **Shariah board governance**: fatwa internal (dokumen), review produk baru (approval wajib sebelum rilis), compliance audit berkala (aturan: tidak ada riba/gharar/maysir) → laporan annual
-- [ ] 161.6 Tests: (a) dana konvensional & syariah terpisah Σ (b) margin diakui gradual = jadwal (c) denda masuk dana amil, bukan revenue (d) bagi hasil = laba pool × rasio (e) `syb:audit` = 0 selisih
-- [ ] 161.7 Quality gate Fase 161
+- [x] 161.1 Modul `Syariah` (`syb_`): provider, MenuRegistry "Keuangan Syariah", roles (`syariah_officer`, `shariah_board`, `muamalah_teller`), policies, arch test; tabel `syb_products` (murabahah, mudharabah, musyarakah, ijarah, qardh), `syb_accounts` (tabungan wadi'ah/yad), `syb_contracts`
+- [x] 161.2 **Accounting PSAK 102/103 simulasi**: akun terpisah dari ledger konvensional (Fase 1) dengan sign khas (korporasi = akad), markup margin diakui gradual, akad wajib tercatat sebagai kontrak hash
+- [x] 161.3 **Murabahah pembiayaan**: akad jual beli + markup disepakati di awal → pencairan ke vendor langsung (tidak ke nasabah) → angsuran pokok + margin → keterlambatan: denda disgorgement ke dana amil (bukan ke bank) → meniru pola Fase 5C dengan modifikasi akad
+- [x] 161.4 **Mudharabah savings**: nasabah sebagai shahibul mal → bank sebagai mudharib → bagi hasil rasio → profit sharing periodik dari pool investasi (link Treasury Fase 73) → withdrawal rules
+- [x] 161.5 **Shariah board governance**: fatwa internal (dokumen), review produk baru (approval wajib sebelum rilis), compliance audit berkala (aturan: tidak ada riba/gharar/maysir) → laporan annual
+- [x] 161.6 Tests: (a) dana konvensional & syariah terpisah Σ (b) margin diakui gradual = jadwal (c) denda masuk dana amil, bukan revenue (d) bagi hasil = laba pool × rasio (e) `syb:audit` = 0 selisih
+- [x] 161.7 Quality gate Fase 161
 
 ## FASE 162 — LINI 19: SUKUK, IJARAH & WEALTH SYARIAH
 - [ ] 162.1 **Sukuk issuance**: aset riil/ushul maal (gedung, armada) → SPV simulasi → token sukuk (memperluas RWA Fase 71) → periodic distribution (sewa ijarah / bagi hasil) → maturity redemption → dicatat off/on balance sheet (Fase 50.7 pola)
