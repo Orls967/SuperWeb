@@ -1708,13 +1708,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 121.7 Quality gate Fase 121
 
 ## FASE 122 — SUMBER DAYA: COAL & COMMODITY EXPORT LOGISTICS SCALE
-- [ ] 122.1 **Export terminal ops**: stockpile terminal → ship loader schedule → TOS sederhana (traffic order) → tiket muat per voyage (weighbridge terminal hash) → Bill of Lading → chain of custody penuh (Fase 22.5)
-- [ ] 122.2 **Demurrage & laytime komoditas curah**: terms CIF/FOB (Fase 49.1) → laytime calculator (weather working days) → demurrage/despatch otomatis ke invoice (memperluas Fase 23.5)
-- [ ] 122.3 **Quality & quantity dispute**: assay bersama surveyor independen (Party) → selisih > toleransi → sampel independen disegel → klaim → hold pembayaran (Fase 80.1 pola sama)
-- [ ] 122.4 **Coal/reverse-logistics fly ash**: abu pembakaran (pabrik/PLTU simulasi) → dijual ke cement manufacturer (Manufacturing) → circular revenue (Fase 79)
-- [ ] 122.5 **Export compliance lanjutan**: sertifikat asal, ISPS, ISM dokumen kapal (gapless), sanksi negara tujuan screening (Fase 27.6 + 49.8) → blocked party → ekspor ditahan
-- [ ] 122.6 Tests: (a) demurrage = laytime exceeded × rate (b) selisih assay > tolerance → dispute hold 1x (c) terminal stockpile Σ = muat + sisa (d) screening sanksi memblokir ekspor (e) `trade:audit` + `lgx:audit-billing` = 0 selisih
-- [ ] 122.7 Quality gate Fase 122
+- [x] 122.1 **Export terminal ops**: stockpile terminal → ship loader schedule → TOS sederhana (traffic order) → tiket muat per voyage (weighbridge terminal hash) → Bill of Lading → chain of custody penuh (Fase 22.5)
+- [x] 122.2 **Demurrage & laytime komoditas curah**: terms CIF/FOB (Fase 49.1) → laytime calculator (weather working days) → demurrage/despatch otomatis ke invoice (memperluas Fase 23.5)
+- [x] 122.3 **Quality & quantity dispute**: assay bersama surveyor independen (Party) → selisih > toleransi → sampel independen disegel → klaim → hold pembayaran (Fase 80.1 pola sama)
+- [x] 122.4 **Coal/reverse-logistics fly ash**: abu pembakaran (pabrik/PLTU simulasi) → dijual ke cement manufacturer (Manufacturing) → circular revenue (Fase 79)
+- [x] 122.5 **Export compliance lanjutan**: sertifikat asal, ISPS, ISM dokumen kapal (gapless), sanksi negara tujuan screening (Fase 27.6 + 49.8) → blocked party → ekspor ditahan
+- [x] 122.6 Tests: (a) demurrage = laytime exceeded × rate (b) selisih assay > tolerance → dispute hold 1x (c) terminal stockpile Σ = muat + sisa (d) screening sanksi memblokir ekspor (e) `trade:audit` + `lgx:audit-billing` = 0 selisih
+- [x] 122.7 Quality gate Fase 122
 
 ## FASE 123 — SUMBER DAYA: RENEWABLE ENERGY MINING & CARBON PROJECT
 - [ ] 123.1 **Elektrifikasi site**: solar farm (aset Fase 30) + battery storage di site tambang → beban terukur per area → konsumsi hijau vs diesel → pengurangan Scope 1 terhitung (Fase 60.1) → laporan dekarbonisasi tambang
