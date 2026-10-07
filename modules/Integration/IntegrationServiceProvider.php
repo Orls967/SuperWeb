@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Integration;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\IntegrationService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
@@ -28,6 +29,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(ThreatDetectionService::class);
         $this->app->singleton(SecurityPenTestService::class);
         $this->app->singleton(ResilienceWave2Service::class);
+        $this->app->singleton(DataPlatformService::class);
     }
 
     public function boot(): void

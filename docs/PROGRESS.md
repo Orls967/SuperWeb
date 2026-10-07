@@ -1922,13 +1922,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 145.7 Quality gate Fase 145
 
 ## FASE 146 — DATA PLATFORM: LAKEHOUSE, ANALYTICS & MASTER DATA MANAGEMENT 17 LINI
-- [ ] 146.1 **Data lakehouse**: ingest CDC dari seluruh modul (simulasi via outbox) → zona raw/curated/consumption → query analitik tanpa membebani transaksional (query budget transaksional tak terpengaruh) → retention policy (Fase 55.8)
-- [ ] 146.2 **Master Data Management**: satu MDM untuk produk, lokasi, partner, chart of account → golden record per entitas (merge workflow Fase 27.5 diperluas) → distribusi ke seluruh modul via event → duplikat terdeteksi & diresolusi
-- [ ] 146.3 **Semantic metrics layer**: definisi KPI tunggal (GMV, ADR, OTIF, utilization, margin) → semua dashboard pakai definisi yang sama → lineage audit (angka dashboard = query sumber)
-- [ ] 146.4 **Self-service analytics**: dataset ber-peran (role-based row scope Fase 55.7) → eksplorasi terjaga → export terbatas + watermark → query log untuk audit
-- [ ] 146.5 **Data quality engine**: completeness, freshness, referential, outlier → data quality score per domain → bad data → quarantine + owner ticket → dampak ke KPI dilaporkan
-- [ ] 146.6 Tests: (a) CDC tak mengubah data sumber (b) golden record merge reversible (c) metrics layer konsisten dgn ledger (d) export scope ketat anti-leak (e) data quality gate masuk health-check
-- [ ] 146.7 Quality gate Fase 146
+- [x] 146.1 **Data lakehouse**: ingest CDC dari seluruh modul (simulasi via outbox) → zona raw/curated/consumption → query analitik tanpa membebani transaksional (query budget transaksional tak terpengaruh) → retention policy (Fase 55.8)
+- [x] 146.2 **Master Data Management**: satu MDM untuk produk, lokasi, partner, chart of account → golden record per entitas (merge workflow Fase 27.5 diperluas) → distribusi ke seluruh modul via event → duplikat terdeteksi & diresolusi
+- [x] 146.3 **Semantic metrics layer**: definisi KPI tunggal (GMV, ADR, OTIF, utilization, margin) → semua dashboard pakai definisi yang sama → lineage audit (angka dashboard = query sumber)
+- [x] 146.4 **Self-service analytics**: dataset ber-peran (role-based row scope Fase 55.7) → eksplorasi terjaga → export terbatas + watermark → query log untuk audit
+- [x] 146.5 **Data quality engine**: completeness, freshness, referential, outlier → data quality score per domain → bad data → quarantine + owner ticket → dampak ke KPI dilaporkan
+- [x] 146.6 Tests: (a) CDC tak mengubah data sumber (b) golden record merge reversible (c) metrics layer konsisten dgn ledger (d) export scope ketat anti-leak (e) data quality gate masuk health-check
+- [x] 146.7 Quality gate Fase 146
 
 ## FASE 147 — PLATFORM ECONOMY: OPEN API, ECOSYSTEM DEVELOPERS & WHITE-LABEL
 - [ ] 147.1 **Open platform API v3+ untuk ekosistem** (memperluas Fase 102): katalog 1.000 endpoint lintas 17 lini → tier developer (free/pro/enterprise) → sandbox per lini → SDK simulasi → revenue API (usage-based billing Fase 55.5)
