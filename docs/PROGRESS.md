@@ -996,14 +996,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 77.8 Quality gate Fase 77
 
 ## FASE 78 — FLEX-SPACE & CO-WORKING BOOKING ON-DEMAND
-- [ ] 78.1 Tabel `prp_flex_spaces` (area kosong mall / site EPC / roof-top / lobi): tipe (meeting room, booth, co-working desk, studio), kapasitas, fasilitas, tarif per jam/hari
-- [ ] 78.2 Booking time-lock tanpa overlap (memperluas pola `mall_event_bookings` Fase 15.3 & dock appointment Fase 24.5), deposit via Payment Hub (hold → capture saat check-in, no-show fee)
-- [ ] 78.3 **Akses pintar**: check-in via pemindaian **Paspor Kriptografis** (QR identitas dari Core/Party) → pintu terbuka (simulasi) → sesi tercatat; tamu tanpa paspor → verifikasi KTP singkat sementara
-- [ ] 78.4 Penagihan: sewa per jam, paket bulanan (membership), integrasi ke invoice tenant bila flex-space milik tenant (revenue share)
-- [ ] 78.5 Utilitas & kebersihan: sesi flex-space menambah beban listrik zona (masuk tagihan zona Fase 76.3) dan memicu tugas kebersihan pasca-pakai (work order)
-- [ ] 78.6 Dashboard: okupansi per properti per jam, pendapatan per m² kosong, no-show rate, tenant dengan ruang paling produktif
-- [ ] 78.7 Tests: (a) booking bentrok ditolak (b) akses tanpa paspor valid ditolak (c) no-show fee ter-posting (d) sesi menambah konsumsi zona (e) reconcile flex = ledger
-- [ ] 78.8 Quality gate Fase 78
+- [x] 78.1 Tabel `prp_flex_spaces` (area kosong mall / site EPC / roof-top / lobi): tipe (meeting room, booth, co-working desk, studio), kapasitas, fasilitas, tarif per jam/hari
+- [x] 78.2 Booking time-lock tanpa overlap (memperluas pola `mall_event_bookings` Fase 15.3 & dock appointment Fase 24.5), deposit via Payment Hub (hold → capture saat check-in, no-show fee)
+- [x] 78.3 **Akses pintar**: check-in via pemindaian **Paspor Kriptografis** (QR identitas dari Core/Party) → pintu terbuka (simulasi) → sesi tercatat; tamu tanpa paspor → verifikasi KTP singkat sementara
+- [x] 78.4 Penagihan: sewa per jam, paket bulanan (membership), integrasi ke invoice tenant bila flex-space milik tenant (revenue share)
+- [x] 78.5 Utilitas & kebersihan: sesi flex-space menambah beban listrik zona (masuk tagihan zona Fase 76.3) dan memicu tugas kebersihan pasca-pakai (work order)
+- [x] 78.6 Dashboard: okupansi per properti per jam, pendapatan per m² kosong, no-show rate, tenant dengan ruang paling produktif
+- [x] 78.7 Tests: (a) booking bentrok ditolak (b) akses tanpa paspor valid ditolak (c) no-show fee ter-posting (d) sesi menambah konsumsi zona (e) reconcile flex = ledger
+- [x] 78.8 Quality gate Fase 78
 
 ## PILAR 5 — LOGISTIK MULTIMODA, SCM & GUDANG
 

@@ -149,7 +149,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 - **EPC:** manajemen proyek konstruksi rekayasa, hierarki WBS bobot 100%, kurva-S deviasi progres lapangan, Monthly Certificate (MC) konsultan pengawas independen ber-retensi 5%, akumulasi Konstruksi Dalam Pengerjaan (CIP) dan kapitalisasi otomatis ke Aset Tetap modul Asset via BAST final (`epc:audit`).
 - **Cloud Kitchen & Catering:** jaringan 200 satelit, 5 dapur sentral, kuota katering harian, pemotongan payroll HCM otomatis (`hcm:meals_deduction`), guardrail kapasitas harian, integrasi cold-chain, refund saat pembatalan/tutup.
 - **Smart Vending & AI Demand/Waste:** algoritma Holt-Winters forecasting, auto-PO dengan plafon harian, smart vending unit (`ven_vending_units`), anti-duplicate restock task, biometrik/QRIS settlement ke ledger, sensor health maintenance.
-- **Proptech & Smart Building:** ingest sensor idempoten (`prp_building_sensors`), rule engine HVAC/pencahayaan deterministik, penagihan utilitas tenant presisi per kWh aktual terhubung Ledger, kalkulasi emisi GRK real-time faktor grid PLN.
+- **Proptech & Smart Building:** ingest sensor idempoten (`prp_building_sensors`), rule engine HVAC/pencahayaan deterministik, penagihan utilitas tenant presisi per kWh aktual terhubung Ledger, kalkulasi emisi GRK real-time faktor grid PLN, flex-space anti-overlap on-demand (`prp_flex_spaces`), akses paspor kriptografis & no-show penalty ledger.
 - **BIM & Digital Twin Lifecycle:** versi model BIM tamper-evident SHA-256 (`prp_bim_models`), sinkronisasi progres fisik komponen WBS ke kapitalisasi CIP modul EPC/Asset, tagging work order fasilitas ke komponen pipa/kabel, airflow simulation sandbox.
 - Detail alasan: `docs/DECISIONS.md` (≈ 48 entri bertanggal).
 
