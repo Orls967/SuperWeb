@@ -2003,13 +2003,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 152.7 Quality gate Fase 152
 
 ## FASE 153 — GLOBAL: SUPPLY CHAIN RESILIENCE & MULTI-SOURCING STRATEGY
-- [ ] 153.1 **Supplier multi-sourcing**: setiap kritikal item wajib ≥ 2 pemasok lintas region (aturan konsentrasi, memperluas Fase 32.7) → auto-flag single source → rekomendasi dual-source → qualification run (Fase 32.2)
-- [ ] 153.2 **Geopolitical risk feed** (simulasi): sanksi, blokade pelabuhan, tarif perang → blast radius (Fase 53.6) ke pesanan & produksi → alternatif routing otomatis (Fase 22.3 multi-scenario)
-- [ ] 153.3 **Strategic buffer stock**: item kritis → safety stock multi-echelon (Fase 53.5) ditingkatkan berdasar risiko region → biaya buffer vs risiko downtime → approval Treasury (Fase 48)
-- [ ] 153.4 **Near-shoring simulator**: biaya produksi region alternatif (tenaga kerja, logistik, tarif) → rekomendasi realokasi → dampak P&L 5 tahun (sandbox Fase 143.3) → keputusan dewan
-- [ ] 153.5 **Disruption war room**: trigger krisis → task force lintas lini (Event Spine) → playbook → recovery timeline → postmortem masuk risk register (Fase 141.4)
-- [ ] 153.6 Tests: (a) kritikal item single-source → alert berkala (b) routing alternatif tak melanggar kontrak (c) buffer stock = kebijakan terhitung (d) simulator tak mengubah data riil (e) `tower:audit` + `proc:audit` = 0 selisih
-- [ ] 153.7 Quality gate Fase 153
+- [x] 153.1 **Supplier multi-sourcing**: setiap kritikal item wajib ≥ 2 pemasok lintas region (aturan konsentrasi, memperluas Fase 32.7) → auto-flag single source → rekomendasi dual-source → qualification run (Fase 32.2)
+- [x] 153.2 **Geopolitical risk feed** (simulasi): sanksi, blokade pelabuhan, tarif perang → blast radius (Fase 53.6) ke pesanan & produksi → alternatif routing otomatis (Fase 22.3 multi-scenario)
+- [x] 153.3 **Strategic buffer stock**: item kritis → safety stock multi-echelon (Fase 53.5) ditingkatkan berdasar risiko region → biaya buffer vs risiko downtime → approval Treasury (Fase 48)
+- [x] 153.4 **Near-shoring simulator**: biaya produksi region alternatif (tenaga kerja, logistik, tarif) → rekomendasi realokasi → dampak P&L 5 tahun (sandbox Fase 143.3) → keputusan dewan
+- [x] 153.5 **Disruption war room**: trigger krisis → task force lintas lini (Event Spine) → playbook → recovery timeline → postmortem masuk risk register (Fase 141.4)
+- [x] 153.6 Tests: (a) kritikal item single-source → alert berkala (b) routing alternatif tak melanggar kontrak (c) buffer stock = kebijakan terhitung (d) simulator tak mengubah data riil (e) `tower:audit` + `proc:audit` = 0 selisih
+- [x] 153.7 Quality gate Fase 153
 
 ## FASE 154 — GLOBAL: TALENT GLOBAL, IMMIGRANT WORKFORCE & ETHICAL SOURCING
 - [ ] 154.1 **Global talent pool** (memperluas Fase 136.1): kandidat lintas negara → work authorization check → remote/on-site matching → kontrak global (multi-currency comp)

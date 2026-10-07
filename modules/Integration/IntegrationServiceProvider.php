@@ -14,7 +14,7 @@ use Modules\Integration\Application\Services\PlatformEconomyService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
 use Modules\Integration\Application\Services\ResilienceWave2Service;
-use Modules\Integration\Application\Services\SecurityPenTestService;
+use Modules\Integration\Application\Services\SupplyChainResilienceService;
 use Modules\Integration\Application\Services\ThreatDetectionService;
 use Modules\Integration\Application\Services\ZeroTrustService;
 use Modules\Integration\Console\Commands\ApiAuditCommand;
@@ -39,6 +39,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(MegaScenarioService::class);
         $this->app->singleton(GlobalCommandService::class);
         $this->app->singleton(CrossBorderPayrollService::class);
+        $this->app->singleton(SupplyChainResilienceService::class);
     }
 
     public function boot(): void
