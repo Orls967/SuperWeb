@@ -25,6 +25,7 @@ use Modules\Integration\Application\Services\ResilienceWave2Service;
 use Modules\Integration\Application\Services\SukukAndZakatService;
 use Modules\Integration\Application\Services\SupplyChainResilienceService;
 use Modules\Integration\Application\Services\SyariahBankingService;
+use Modules\Integration\Application\Services\SyariahOperationsService;
 use Modules\Integration\Application\Services\TakafulAndAgriService;
 use Modules\Integration\Application\Services\ThreatDetectionService;
 use Modules\Integration\Application\Services\ZeroTrustService;
@@ -62,6 +63,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(SukukAndZakatService::class);
         $this->app->singleton(BmtMicrofinanceService::class);
         $this->app->singleton(IslamicTradeFinanceService::class);
+        $this->app->singleton(SyariahOperationsService::class);
     }
 
     public function boot(): void

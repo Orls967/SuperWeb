@@ -2111,12 +2111,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 164.7 Quality gate Fase 164
 
 ## FASE 165 — LINI 19: SYARIAH OPERATIONS, COMPLIANCE & INTEGRATION 30 LINI
-- [ ] 165.1 **Syariah operations dashboard**: portfolio pembiayaan, NPF (non-performing financing) ratio, bagi hasil pool, zakat terkumpul & terdistribusi, sukuk outstanding
-- [ ] 165.2 **NPF management**: restructuring akad (reschedule tanpa tambahan margin ilegal), tagih, write-off dengan approval shariah board → recovery waterfall
-- [ ] 165.3 **Integration 30 lini**: wallet syariah bisa dipakai di seluruh lini (resto halal Fase 7, hotel Fase 91, venue Fase 89, marketplace Fase 137) → merchant fee mode syariah (tanpa penalty berlebih) → sertifikasi halal lintas produk (Fase 100.3)
-- [ ] 165.4 **Shariah audit command**: `syb:audit` final (dana terpisah, margin schedule, zakat correct, no riba pattern) → masuk `super:health-check` pilar
-- [ ] 165.5 Tests: (a) wallet syariah bayar di 30 lini idempoten (b) NPF calculation = aturan (c) halal certificate gate penjualan produk makanan (d) integration E2E hijau (e) `syb:audit` = 0 selisih
-- [ ] 165.6 Quality gate Fase 165
+- [x] 165.1 **Syariah operations dashboard**: portfolio pembiayaan, NPF (non-performing financing) ratio, bagi hasil pool, zakat terkumpul & terdistribusi, sukuk outstanding
+- [x] 165.2 **NPF management**: restructuring akad (reschedule tanpa tambahan margin ilegal), tagih, write-off dengan approval shariah board → recovery waterfall
+- [x] 165.3 **Integration 30 lini**: wallet syariah bisa dipakai di seluruh lini (resto halal Fase 7, hotel Fase 91, venue Fase 89, marketplace Fase 137) → merchant fee mode syariah (tanpa penalty berlebih) → sertifikasi halal lintas produk (Fase 100.3)
+- [x] 165.4 **Shariah audit command**: `syb:audit` final (dana terpisah, margin schedule, zakat correct, no riba pattern) → masuk `super:health-check` pilar
+- [x] 165.5 Tests: (a) wallet syariah bayar di 30 lini idempoten (b) NPF calculation = aturan (c) halal certificate gate penjualan produk makanan (d) integration E2E hijau (e) `syb:audit` = 0 selisih
+- [x] 165.6 Quality gate Fase 165
 
 ## FASE 166 — LINI 20: PENDIDIKAN FORMAL & SEKOLAH (K-12, VOKASI, KAMPUS)
 - [ ] 166.1 Modul `Campus` (`camp_`): school/campus, academic years, terms, classes, cohorts, subjects, curricula, teachers, learners, guardians; multi-level governance & data scope per institution
