@@ -1726,13 +1726,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 123.7 Quality gate Fase 123
 
 ## FASE 124 — SUMBER DAYA: RECLAMATION, WATER & BIODIVERSITY COMPLIANCE
-- [ ] 124.1 **Reclamation lifecycle**: rencana pascatambang → budget & provisi (liabilitas, simulasi PSAK) → eksekusi proyek (EPC Fase 63) → verifikasi tumbuh (NDVI) → pelepasan provisi saat达标 → jurnal
-- [ ] 124.2 **Water balance**: sumber air → pemakaian (domestik, dust suppression, proses) → pengolahan (IPAL) → pelepasan → kualitas efluen (sensor) → ambang → penalti simulasi; air berulang pakai (recycle %) → insentif
-- [ ] 124.3 **Biodiversity & social**: baseline flora/fauna → monitoring → mitigasi (corridor, relocation simulasi dengan approval) → pelaporan ke regulator; desa binaan → program CSR ter-budit (DMSP ledger memperluas ide 12E)
-- [ ] 124.4 **AMDAL & reporting**: dokumen AMDAL/RKL-RPL gapless → milestone compliance → audit internal → laporan tahunan ESG tambang → dikirim ke regulator (dokumen digital)
-- [ ] 124.5 **Water & waste fee**: biaya air/pengolahan limbah → jurnal beban per site → charge ke unit produksi (costing Fase 38.2)
-- [ ] 124.6 Tests: (a) provisi ≤ akumulasi, pelepasan saat verifikasi (b) efluen > ambang → alert + penalti accrual (c) milestone AMDAL lengkap sebelum izin operasi (d) fee air = meteran × tarif (e) `esg:audit` + `mining:audit` = 0 selisih
-- [ ] 124.7 Quality gate Fase 124
+- [x] 124.1 **Reclamation lifecycle**: rencana pascatambang → budget & provisi (liabilitas, simulasi PSAK) → eksekusi proyek (EPC Fase 63) → verifikasi tumbuh (NDVI) → pelepasan provisi saat达标 → jurnal
+- [x] 124.2 **Water balance**: sumber air → pemakaian (domestik, dust suppression, proses) → pengolahan (IPAL) → pelepasan → kualitas efluen (sensor) → ambang → penalti simulasi; air berulang pakai (recycle %) → insentif
+- [x] 124.3 **Biodiversity & social**: baseline flora/fauna → monitoring → mitigasi (corridor, relocation simulasi dengan approval) → pelaporan ke regulator; desa binaan → program CSR ter-budit (DMSP ledger memperluas ide 12E)
+- [x] 124.4 **AMDAL & reporting**: dokumen AMDAL/RKL-RPL gapless → milestone compliance → audit internal → laporan tahunan ESG tambang → dikirim ke regulator (dokumen digital)
+- [x] 124.5 **Water & waste fee**: biaya air/pengolahan limbah → jurnal beban per site → charge ke unit produksi (costing Fase 38.2)
+- [x] 124.6 Tests: (a) provisi ≤ akumulasi, pelepasan saat verifikasi (b) efluen > ambang → alert + penalti accrual (c) milestone AMDAL lengkap sebelum izin operasi (d) fee air = meteran × tarif (e) `esg:audit` + `mining:audit` = 0 selisih
+- [x] 124.7 Quality gate Fase 124
 
 ## FASE 125 — SUMBER DAYA: INTEGRATED RESOURCE COMMAND CENTER
 - [ ] 125.1 **Resource command center**: produksi pit/plant/terminal + harga komoditas live (Fase 81) + posisi metals desk (Fase 121.3) + okupansi armada → papan terpadu untuk direksi sumber daya
