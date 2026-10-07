@@ -1190,14 +1190,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 # INTEGRASI 12 LINI, SKALA ULTRA, AI, KEAMANAN & PENUTUPAN — FASE 95–103
 
 ## FASE 95 — INTEGRASI LINTAS 12 LINI (A): OTOMOTIF, EV, LOGISTIK, HOTEL, VENUE, RUMAH SAKIT
-- [ ] 95.1 **Otomotif ↔ Logistik**: armada sewa (Fase 70) & haul truck tambang (Fase 93) memakai dispatch & custody Logistik (Fase 22) satu papan; odometer servis (Fase 24.3) berlaku untuk semua armada lintas lini; EV charger hub tersedia di Hub Logistik & Mall
-- [ ] 95.2 **EV ↔ infrastruktur lini**: SPKLU dipasang di Mall (Fase 76), Venue (Fase 89), Hotel (Fase 91), site tambang (Fase 94) → satu jaringan charger, tarif konsisten, kWh masuk ESG masing-masing properti
-- [ ] 95.3 **Hotel ↔ Venue ↔ Resto**: destination package (Fase 92.6) mencakup tiket festival (Fase 90.5) dan dining (Fase 74) → satu pembayaran, settlement multi-vendor escrow; folio hotel menerima charge venue/restaurant
-- [ ] 95.4 **Rumah Sakit ↔ Hotel**: medical tourism package (RS + hotel + transport Logistics) → bundle satu harga; kamar hotel disiapkan untuk pasien pasca-operasi; diet meals RS dikirim dapur sentral Resto (Fase 74.3)
-- [ ] 95.5 **Rumah Sakit ↔ Logistik ↔ Farmasi**: rantai dingin obat/darah (Fase 88.5) memakai cold-chain Logistik (Fase 80) → satu telemetri suhu, satu hash-chain kustodi, hold pembayaran seragam; limbah medis masuk reverse logistics (Fase 79)
-- [ ] 95.6 **Akses & identitas tunggal**: Human Passport (RS Fase 87.2) + Paspor Kendaraan (Fase 5A) + Paspor Digital (DAO Fase 86.4) → satu identitas lintas lini; smart door Hotel/Venue/Flex-Space/RS memindai kredensial yang sama
-- [ ] 95.7 Test integrasi end-to-end satu hari lintas 6 lini (inap hotel → check-in venue → bayar bundle → katering karyawan → servis prediktif mobil → cold-chain obat masuk RS) + reconcile semua ledger terdampak = 0
-- [ ] 95.8 Quality gate Fase 95
+- [x] 95.1 **Otomotif ↔ Logistik**: armada sewa (Fase 70) & haul truck tambang (Fase 93) memakai dispatch & custody Logistik (Fase 22) satu papan; odometer servis (Fase 24.3) berlaku untuk semua armada lintas lini; EV charger hub tersedia di Hub Logistik & Mall
+- [x] 95.2 **EV ↔ infrastruktur lini**: SPKLU dipasang di Mall (Fase 76), Venue (Fase 89), Hotel (Fase 91), site tambang (Fase 94) → satu jaringan charger, tarif konsisten, kWh masuk ESG masing-masing properti
+- [x] 95.3 **Hotel ↔ Venue ↔ Resto**: destination package (Fase 92.6) mencakup tiket festival (Fase 90.5) dan dining (Fase 74) → satu pembayaran, settlement multi-vendor escrow; folio hotel menerima charge venue/restaurant
+- [x] 95.4 **Rumah Sakit ↔ Hotel**: medical tourism package (RS + hotel + transport Logistics) → bundle satu harga; kamar hotel disiapkan untuk pasien pasca-operasi; diet meals RS dikirim dapur sentral Resto (Fase 74.3)
+- [x] 95.5 **Rumah Sakit ↔ Logistik ↔ Farmasi**: rantai dingin obat/darah (Fase 88.5) memakai cold-chain Logistik (Fase 80) → satu telemetri suhu, satu hash-chain kustodi, hold pembayaran seragam; limbah medis masuk reverse logistics (Fase 79)
+- [x] 95.6 **Akses & identitas tunggal**: Human Passport (RS Fase 87.2) + Paspor Kendaraan (Fase 5A) + Paspor Digital (DAO Fase 86.4) → satu identitas lintas lini; smart door Hotel/Venue/Flex-Space/RS memindai kredensial yang sama
+- [x] 95.7 Test integrasi end-to-end satu hari lintas 6 lini (inap hotel → check-in venue → bayar bundle → katering karyawan → servis prediktif mobil → cold-chain obat masuk RS) + reconcile semua ledger terdampak = 0
+- [x] 95.8 Quality gate Fase 95
 
 ## FASE 96 — INTEGRASI LINTAS 12 LINI (B): FINTECH, RWA, INSURTECH & PEMBIAYAAN UNTUK SEMUA LINI
 - [ ] 96.1 **RWA lintas lini**: tokenisasi unit hotel/timeshare (Fase 92.5), unit mall (Fase 71), truk logistik (Fase 71), mesin tambang (Fase 94), alat RS medis → satu marketplace RWA, satu orderbook, satu engine dividen; omzet sumber dari lini mana pun mengalir pro-rata ke holder
