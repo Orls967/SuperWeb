@@ -2012,13 +2012,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 153.7 Quality gate Fase 153
 
 ## FASE 154 — GLOBAL: TALENT GLOBAL, IMMIGRANT WORKFORCE & ETHICAL SOURCING
-- [ ] 154.1 **Global talent pool** (memperluas Fase 136.1): kandidat lintas negara → work authorization check → remote/on-site matching → kontrak global (multi-currency comp)
-- [ ] 154.2 **Ethical sourcing & modern slavery check**: audit rantai pasok hulu (tambang, perkebunan, garmen Fase 181) → kuesioner + dokumen + inspeksi lapangan → skor → pelanggaran → remediation → blacklist (memperluas Fase 60.4)
-- [ ] 154.3 **Living wage benchmark**: perbandingan upah lokal vs benchmark (data simulasi) → gap → action plan → biaya masuk costing → laporan ESG social (Fase 60)
-- [ ] 154.4 **Vendor code of conduct**: perjanjian wajib saat onboarding vendor baru (Fase 32.2 + 47.3) → breach report channel → investigation → contract remedy (Fase 29.2)
-- [ ] 154.5 **Community impact reporting**: CSR/DMSP (Fase 124.3) per wilayah operasi → laporan sosial terkonsolidasi → korelasi dengan lisensi operasi (Fase 151.2)
-- [ ] 154.6 Tests: (a) skor sourcing memengaruhi eligibility tender (b) living wage gap terhitung & dilaporkan (c) CoC wajib sebelum PO besar (d) remediation ter-track sampai selesai (e) `esg:audit` + `supplier:audit` = 0 selisih
-- [ ] 154.7 Quality gate Fase 154
+- [x] 154.1 **Global talent pool** (memperluas Fase 136.1): kandidat lintas negara → work authorization check → remote/on-site matching → kontrak global (multi-currency comp)
+- [x] 154.2 **Ethical sourcing & modern slavery check**: audit rantai pasok hulu (tambang, perkebunan, garmen Fase 181) → kuesioner + dokumen + inspeksi lapangan → skor → pelanggaran → remediation → blacklist (memperluas Fase 60.4)
+- [x] 154.3 **Living wage benchmark**: perbandingan upah lokal vs benchmark (data simulasi) → gap → action plan → biaya masuk costing → laporan ESG social (Fase 60)
+- [x] 154.4 **Vendor code of conduct**: perjanjian wajib saat onboarding vendor baru (Fase 32.2 + 47.3) → breach report channel → investigation → contract remedy (Fase 29.2)
+- [x] 154.5 **Community impact reporting**: CSR/DMSP (Fase 124.3) per wilayah operasi → laporan sosial terkonsolidasi → korelasi dengan lisensi operasi (Fase 151.2)
+- [x] 154.6 Tests: (a) skor sourcing memengaruhi eligibility tender (b) living wage gap terhitung & dilaporkan (c) CoC wajib sebelum PO besar (d) remediation ter-track sampai selesai (e) `esg:audit` + `supplier:audit` = 0 selisih
+- [x] 154.7 Quality gate Fase 154
 
 ## FASE 155 — GLOBAL: PANDEMIC/PUBLIC HEALTH & BUSINESS CONTINUITY LINTAS NEGARA
 - [ ] 155.1 **Global health surveillance bridge** (memperluas Fase 107.3): agregasi lintas negara → peta risiko per wilayah operasi → rekomendasi pembatasan operasional (venue tutup, hotel karantina simulasi, pabrik shift reduksi)

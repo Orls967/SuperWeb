@@ -7,6 +7,7 @@ namespace Modules\Integration;
 use Illuminate\Support\ServiceProvider;
 use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
+use Modules\Integration\Application\Services\EthicalSourcingService;
 use Modules\Integration\Application\Services\GlobalCommandService;
 use Modules\Integration\Application\Services\IntegrationService;
 use Modules\Integration\Application\Services\MegaScenarioService;
@@ -40,6 +41,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(GlobalCommandService::class);
         $this->app->singleton(CrossBorderPayrollService::class);
         $this->app->singleton(SupplyChainResilienceService::class);
+        $this->app->singleton(EthicalSourcingService::class);
     }
 
     public function boot(): void
