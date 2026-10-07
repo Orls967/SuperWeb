@@ -14,6 +14,7 @@ use Modules\Integration\Application\Services\EthicalSourcingService;
 use Modules\Integration\Application\Services\FullInsuranceService;
 use Modules\Integration\Application\Services\GlobalCommandService;
 use Modules\Integration\Application\Services\IntegrationService;
+use Modules\Integration\Application\Services\IslamicTradeFinanceService;
 use Modules\Integration\Application\Services\LifeHealthWellnessService;
 use Modules\Integration\Application\Services\MegaScenarioService;
 use Modules\Integration\Application\Services\PlatformEconomyService;
@@ -60,6 +61,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(SyariahBankingService::class);
         $this->app->singleton(SukukAndZakatService::class);
         $this->app->singleton(BmtMicrofinanceService::class);
+        $this->app->singleton(IslamicTradeFinanceService::class);
     }
 
     public function boot(): void

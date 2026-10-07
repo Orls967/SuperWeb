@@ -2102,13 +2102,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 163.7 Quality gate Fase 163
 
 ## FASE 164 — LINI 19: ISLAMIC TRADE FINANCE & CROSS-BORDER SYARIAH
-- [ ] 164.1 **Islamic LC (istisna' + wakalah)**: LC syariah untuk impor (Fase 50.1 diperluas) → akad istisna' untuk produksi + wakalah bi jualah untuk distribusi → settlement via stablecoin (Fase 83) → fee syariah terpisah
-- [ ] 164.2 **Salam & parallel salam** untuk komoditas agro (Fase 171): pembayaran di muka petani → pengiriman kemudian → hedge via parallel contract → meniru pola forward Fase 48.6 dengan akad sah
-- [ ] 164.3 **Murabahah supply chain finance** (memperluas Fase 50.5): bank beli dari pemasok → jual ke pembeli dengan margin → tenor → settlement → AR/AP terkait tetap tercatat
-- [ ] 164.4 **Commodity murabahah FX**: convert mata uang via tawarruq (transaksi komoditas arbitrase simulasi) → kurs efektif → fee → compliance shariah board
-- [ ] 164.5 **ZIS-rebate untuk ekspor**: eksportir syariah → konsesi zakat/khums tidak masuk revenue → pelaporan terpisah (memperluas Fase 162.4)
-- [ ] 164.6 Tests: (a) istisna' milestone billing berurutan (b) salam + parallel Σ posisi seimbang (c) tawarruq flow tercatat penuh (d) fee syariah ≠ riba pattern (e) `tf:audit` + `syb:audit` = 0 selisih
-- [ ] 164.7 Quality gate Fase 164
+- [x] 164.1 **Islamic LC (istisna' + wakalah)**: LC syariah untuk impor (Fase 50.1 diperluas) → akad istisna' untuk produksi + wakalah bi jualah untuk distribusi → settlement via stablecoin (Fase 83) → fee syariah terpisah
+- [x] 164.2 **Salam & parallel salam** untuk komoditas agro (Fase 171): pembayaran di muka petani → pengiriman kemudian → hedge via parallel contract → meniru pola forward Fase 48.6 dengan akad sah
+- [x] 164.3 **Murabahah supply chain finance** (memperluas Fase 50.5): bank beli dari pemasok → jual ke pembeli dengan margin → tenor → settlement → AR/AP terkait tetap tercatat
+- [x] 164.4 **Commodity murabahah FX**: convert mata uang via tawarruq (transaksi komoditas arbitrase simulasi) → kurs efektif → fee → compliance shariah board
+- [x] 164.5 **ZIS-rebate untuk ekspor**: eksportir syariah → konsesi zakat/khums tidak masuk revenue → pelaporan terpisah (memperluas Fase 162.4)
+- [x] 164.6 Tests: (a) istisna' milestone billing berurutan (b) salam + parallel Σ posisi seimbang (c) tawarruq flow tercatat penuh (d) fee syariah ≠ riba pattern (e) `tf:audit` + `syb:audit` = 0 selisih
+- [x] 164.7 Quality gate Fase 164
 
 ## FASE 165 — LINI 19: SYARIAH OPERATIONS, COMPLIANCE & INTEGRATION 30 LINI
 - [ ] 165.1 **Syariah operations dashboard**: portfolio pembiayaan, NPF (non-performing financing) ratio, bagi hasil pool, zakat terkumpul & terdistribusi, sukuk outstanding
