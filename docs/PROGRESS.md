@@ -1610,13 +1610,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 110.7 Quality gate Fase 110
 
 ## FASE 111 — HOSPITALITY & ENTERTAINMENT: CHAIN EXPANSION, BRAND STANDARD & FRANCHISE HOTEL
-- [ ] 111.1 Master brand & brand standard checklist (200 butir: kebersihan, fasilitas, SLA) → audit berkala per properti → skor kepatuhan → grade bintang tersimulasi; properti non-konform → action plan → suspensi listing
-- [ ] 111.2 **Hotel franchise & management contract**: franchisee (Party) bayar franchise fee + royalti % omzet (memperluas Fase 11.3 & 51.3) atau manajemen contract (grup operasikan, owner terima sewa + bonus performa) → settlement otomatis dari folio harian
-- [ ] 111.3 Expansion engine: studi kota baru (daya beli, kompetitor simulasi, okupansi proyek) → usulan pembukaan → approval DAO (Fase 86.6) → proyek EPC (Fase 63) → soft opening checklist → grand opening
-- [ ] 111.4 **Rate parity & distribution**: tarif konsisten lintas kanal (OTA/walk-in/corporate), deteksi rate parity violation → denda OTA simulasi; commission settlement per OTA (piutang)
-- [ ] 111.5 Housekeeping & linen supply chain: linen dari pabrik/manufaktur → laundry sentral (industrial process via Manufacturing) → distribusi ke properti via Logistics → inventory per properti → replacement cycle terencana
-- [ ] 111.6 Tests: (a) royalti = % × omzet folio, gapless (b) franchise fee milestone ter-bill (c) rate parity violation terdeteksi & denda ter-accrual (d) brand score menentukan status listing (e) `hotel:audit` = 0 selisih
-- [ ] 111.7 Quality gate Fase 111
+- [x] 111.1 Master brand & brand standard checklist (200 butir: kebersihan, fasilitas, SLA) → audit berkala per properti → skor kepatuhan → grade bintang tersimulasi; properti non-konform → action plan → suspensi listing
+- [x] 111.2 **Hotel franchise & management contract**: franchisee (Party) bayar franchise fee + royalti % omzet (memperluas Fase 11.3 & 51.3) atau manajemen contract (grup operasikan, owner terima sewa + bonus performa) → settlement otomatis dari folio harian
+- [x] 111.3 Expansion engine: studi kota baru (daya beli, kompetitor simulasi, okupansi proyek) → usulan pembukaan → approval DAO (Fase 86.6) → proyek EPC (Fase 63) → soft opening checklist → grand opening
+- [x] 111.4 **Rate parity & distribution**: tarif konsisten lintas kanal (OTA/walk-in/corporate), deteksi rate parity violation → denda OTA simulasi; commission settlement per OTA (piutang)
+- [x] 111.5 Housekeeping & linen supply chain: linen dari pabrik/manufaktur → laundry sentral (industrial process via Manufacturing) → distribusi ke properti via Logistics → inventory per properti → replacement cycle terencana
+- [x] 111.6 Tests: (a) royalti = % × omzet folio, gapless (b) franchise fee milestone ter-bill (c) rate parity violation terdeteksi & denda ter-accrual (d) brand score menentukan status listing (e) `hotel:audit` = 0 selisih
+- [x] 111.7 Quality gate Fase 111
 
 ## FASE 112 — HOSPITALITY & ENTERTAINMENT: GLOBAL LOYALTY & TRAVEL PASS
 - [ ] 112.1 **Travel Pass**: satu membership lintas properti hotel + venue + resto + airline partner simulasi + kereta → tier global (Silver/Gold/Platinum/Black) berbasis nights + spend gabungan
