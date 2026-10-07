@@ -14,6 +14,7 @@ use Modules\ControlTower\ControlTowerServiceProvider;
 use Modules\Core\CoreServiceProvider;
 use Modules\Crypto\CryptoServiceProvider;
 use Modules\Distribution\DistributionServiceProvider;
+use Modules\Egy\EgyServiceProvider;
 use Modules\EnterpriseFinance\EnterpriseFinanceServiceProvider;
 use Modules\Epc\EpcServiceProvider;
 use Modules\Esg\EsgServiceProvider;
@@ -106,4 +107,5 @@ return [
     VenueServiceProvider::class,
     HotelServiceProvider::class,
     MiningServiceProvider::class,
+    EgyServiceProvider::class,
 ];
