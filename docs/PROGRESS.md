@@ -1073,14 +1073,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 ## PILAR 8 — TATA KELOLA, KORPORASI & INTEGRASI ENTERPRISE
 
 ## FASE 85 — INTERNAL GIG ECONOMY (TALENT MARKETPLACE & BOUNTY)
-- [ ] 85.1 Tabel `gov_bounties` (pemesan unit bisnis: Resto overload, gudang butuh bongkar muat dadakan, event mall setup, cuci armada), `gov_bounty_claims` (pengambil shift lintas unit), `gov_bounty_pofs` (proof of work: scan lokasi, foto, sign-off supervisor)
-- [ ] 85.2 **Matching**: karyawan eligible (skill, sertifikasi K3, lokasi, tidak tabrakan jadwal shift utama, batas jam kerja UU 22/2009 8 jam/hari) → first-come/berbasis skor; konflik jadwal ditolak sistem
-- [ ] 85.3 **Bayar per jam via Core Banking**: POF disetujui → upah lembur (tarif 1.5x/2x Fase 58.3) terhitung → posting `hcm:bounty_payout` ke dompet karyawan; biaya dibebankan ke pusat biaya unit pemesan (budget encumbrance Fase 54.1)
-- [ ] 85.4 Kepatuhan: batas lembur mingguan, hari libur wajib, keselamatan (izin kerja berisiko Fase 40.6 untuk tugas berbahaya), asuransi kecelakaan kerja tersemat (memperluas Pilar 2)
-- [ ] 85.5 Incentive: skor internal mobility, bonus pengisian bounty cepat, unit pemesan dengan rating pekerja terbaik
-- [ ] 85.6 Dashboard: bounty terbuka/terisi, biaya tenaga kerja fleksibel vs tetap, utilisasi talenta lintas lini, kepuasan karyawan
-- [ ] 85.7 Tests: (a) jadwal bentrok / melebihi jam kerja ditolak (b) POF ganda tidak bayar dua kali (c) payout = jam × tarif lembur, ledger seimbang (d) biaya masuk budget unit pemesan (e) reconcile bounty = ledger + payroll
-- [ ] 85.8 Quality gate Fase 85
+- [x] 85.1 Tabel `gov_bounties` (pemesan unit bisnis: Resto overload, gudang butuh bongkar muat dadakan, event mall setup, cuci armada), `gov_bounty_claims` (pengambil shift lintas unit), `gov_bounty_pofs` (proof of work: scan lokasi, foto, sign-off supervisor)
+- [x] 85.2 **Matching**: karyawan eligible (skill, sertifikasi K3, lokasi, tidak tabrakan jadwal shift utama, batas jam kerja UU 22/2009 8 jam/hari) → first-come/berbasis skor; konflik jadwal ditolak sistem
+- [x] 85.3 **Bayar per jam via Core Banking**: POF disetujui → upah lembur (tarif 1.5x/2x Fase 58.3) terhitung → posting `hcm:bounty_payout` ke dompet karyawan; biaya dibebankan ke pusat biaya unit pemesan (budget encumbrance Fase 54.1)
+- [x] 85.4 Kepatuhan: batas lembur mingguan, hari libur wajib, keselamatan (izin kerja berisiko Fase 40.6 untuk tugas berbahaya), asuransi kecelakaan kerja tersemat (memperluas Pilar 2)
+- [x] 85.5 Incentive: skor internal mobility, bonus pengisian bounty cepat, unit pemesan dengan rating pekerja terbaik
+- [x] 85.6 Dashboard: bounty terbuka/terisi, biaya tenaga kerja fleksibel vs tetap, utilisasi talenta lintas lini, kepuasan karyawan
+- [x] 85.7 Tests: (a) jadwal bentrok / melebihi jam kerja ditolak (b) POF ganda tidak bayar dua kali (c) payout = jam × tarif lembur, ledger seimbang (d) biaya masuk budget unit pemesan (e) reconcile bounty = ledger + payroll
+- [x] 85.8 Quality gate Fase 85
 
 ## FASE 86 — PRECISION AGRI-TECH (NDVI SATELIT) & DAO CORPORATE GOVERNANCE
 - [ ] 86.1 **NDVI satelit** (`agri_satellite_scans` per petak plasma, feed simulasi): indeks kehijauan per poligon lahan (`land_polygon_geojson` Fase 62.1) per 5 hari → tren per musim → deteksi stres tanaman
