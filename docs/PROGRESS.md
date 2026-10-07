@@ -1868,14 +1868,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 139.7 Quality gate Fase 139
 
 ## FASE 140 — INTEGRASI GELOMBANG 2: ENERGI + TELEKOM + MEDIA + EDU + RITEL TERHUBUNG MONOLITH
-- [ ] 140.1 **Energi ↔ semua lini**: smart meter (Fase 126.2) memasok data ESG & tagihan 17 lini; microgrid (Fase 129.1) melindungi RS & DC; solar PPA intercompany (Fase 123.2) menciptakan transaksi ledger antar entitas baru
-- [ ] 140.2 **Telekom ↔ semua lini**: IoT backbone (Fase 130.3) menaung seluruh telematik/sensor; DC (Fase 131) menampung backup & cloud chargeback; ISP memasok konektivitas venue/hotel/tambang
-- [ ] 140.3 **Media ↔ venue/hotel/mall**: OOH inventory (Fase 134.2) menjual layar mall & venue; sponsorship cross-lini (Fase 134.4); content IP (Fase 133.4) mengalirkan royalti ke seluruh touchpoint
-- [ ] 140.4 **Edu ↔ HCM/keselamatan**: sertifikasi (Fase 135.4) jadi prasyarat role kritis (dokter, operator tambang, mekanik); tuition deduction via payroll (memperluas Fase 74.3 pattern); alumni → talent pipeline (Fase 136.1) → kebutuhan staffing 17 lini
-- [ ] 140.5 **Ritel ↔ 16 lini lain**: marketplace menjual sparepart (Store), produk resto kemasan, merch venue, alat medis, merchandise tambang → satu OMS, satu fulfillment grid, wallet & cashback super app (Fase 138) menjadi pemersatu
-- [ ] 140.6 **Event spine penuh 17 lini**: topik `egy.*`, `tlx.*`, `med.*`, `edu.*`, `ret.*` bergabung (Fase 67.2) → contoh alur: pesta venue butuh listrik ekstra (egy.demand_surge) → tarif naik → media live (med.stream_started) → tiket resale (ven.resale) → hotel bundle terkonfirmasi (htl.bundle) → poin cashback terbit (ret.cashback_issued)
-- [ ] 140.7 Test integrasi end-to-end gelombang 2 (satu hari: meteran gedung tagih → ISP bayar → campaign iklan jalan → kelas edukasi selesai → sertifikat terbit → marketplace order → fulfillment drone → wallet cashback → P&L 17 lini konsolidasi) + seluruh `*:audit` = 0
-- [ ] 140.8 Quality gate Fase 140
+- [x] 140.1 **Energi ↔ semua lini**: smart meter (Fase 126.2) memasok data ESG & tagihan 17 lini; microgrid (Fase 129.1) melindungi RS & DC; solar PPA intercompany (Fase 123.2) menciptakan transaksi ledger antar entitas baru
+- [x] 140.2 **Telekom ↔ semua lini**: IoT backbone (Fase 130.3) menaung seluruh telematik/sensor; DC (Fase 131) menampung backup & cloud chargeback; ISP memasok konektivitas venue/hotel/tambang
+- [x] 140.3 **Media ↔ venue/hotel/mall**: OOH inventory (Fase 134.2) menjual layar mall & venue; sponsorship cross-lini (Fase 134.4); content IP (Fase 133.4) mengalirkan royalti ke seluruh touchpoint
+- [x] 140.4 **Edu ↔ HCM/keselamatan**: sertifikasi (Fase 135.4) jadi prasyarat role kritis (dokter, operator tambang, mekanik); tuition deduction via payroll (memperluas Fase 74.3 pattern); alumni → talent pipeline (Fase 136.1) → kebutuhan staffing 17 lini
+- [x] 140.5 **Ritel ↔ 16 lini lain**: marketplace menjual sparepart (Store), produk resto kemasan, merch venue, alat medis, merchandise tambang → satu OMS, satu fulfillment grid, wallet & cashback super app (Fase 138) menjadi pemersatu
+- [x] 140.6 **Event spine penuh 17 lini**: topik `egy.*`, `tlx.*`, `med.*`, `edu.*`, `ret.*` bergabung (Fase 67.2) → contoh alur: pesta venue butuh listrik ekstra (egy.demand_surge) → tarif naik → media live (med.stream_started) → tiket resale (ven.resale) → hotel bundle terkonfirmasi (htl.bundle) → poin cashback terbit (ret.cashback_issued)
+- [x] 140.7 Test integrasi end-to-end gelombang 2 (satu hari: meteran gedung tagih → ISP bayar → campaign iklan jalan → kelas edukasi selesai → sertifikat terbit → marketplace order → fulfillment drone → wallet cashback → P&L 17 lini konsolidasi) + seluruh `*:audit` = 0
+- [x] 140.8 Quality gate Fase 140
 
 ## FASE 141 — INTEGRASI: GROUP CAPITAL, CONGLOMERATE GOVERNANCE & CROSS-LINI CAPITAL ALLOCATION
 - [ ] 141.1 **Holding & subholding structure** (memperluas Fase 27.3): 17 lini → 5 subholding (Otomotif & Hospitality & Resources & Infrastructure & Consumer) → struktur saham token (memperluas Fase 71) → dividen holding dari laba anak (jurnal, simulasi)
