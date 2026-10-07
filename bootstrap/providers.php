@@ -18,6 +18,7 @@ use Modules\Epc\EpcServiceProvider;
 use Modules\Esg\EsgServiceProvider;
 use Modules\Ev\EvServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
+use Modules\Fleet\FleetServiceProvider;
 use Modules\Hcm\HcmServiceProvider;
 use Modules\Integration\IntegrationServiceProvider;
 use Modules\Intercompany\IntercompanyServiceProvider;
@@ -84,4 +85,5 @@ return [
     EpcServiceProvider::class,
     TelematicsServiceProvider::class,
     EvServiceProvider::class,
+    FleetServiceProvider::class,
 ];

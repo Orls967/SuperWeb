@@ -910,14 +910,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 69.8 Quality gate Fase 69
 
 ## FASE 70 — B2B FLEET & CORPORATE LEASING
-- [ ] 70.1 Tabel `oto_fleet_contracts` (perusahaan penyewa = party, durasi 1–5 tahun, jumlah unit, SLA downtime maks, batas km/tahun, opsi perpanjangan/akuisisi), `oto_fleet_contract_units` (unit terikat, odometer baseline)
-- [ ] 70.2 Onboarding B2B: KYB Party (Fase 27), credit profile, deposit/garansi via Payment Hub, approval four-eyes di atas ambang nilai
-- [ ] 70.3 **Amortisasi nilai sewa** (PSAK 73 simulasi): hak guna + liabilitas sewa per kontrak, jurnal bulanan idempoten, bunga vs pokok, perhitungan sisa nilai — terhubung modul Aset (Fase 31.6)
-- [ ] 70.4 **SLA & telematik armada sewa**: tick telematik (Fase 68) + status Maintenance (AutoServe) dihitung menjadi downtime; pelanggaran SLA → kredit/kompensasi otomatis ke invoice penyewa; rute harian armada dipantau via kontrak ke Logistics (Fase 24.3 diperluas)
-- [ ] 70.5 Lifecycle: denda km berlebih, penggantian unit di tengah kontrak, early termination (hitung sisa liabilitas), end-of-lease condition report → unit masuk kembali ke AutoDex/Store sebagai bekas (berpaspor)
-- [ ] 70.6 Dashboard fleet B2B: utilisasi per unit, biaya total kepemilikan (TCO), uptime, jatuh tempo kontrak, eksposur piutang sewa
-- [ ] 70.7 Tests: (a) amortisasi bulan 1..60 Σ = nilai sewa (b) SLA breach menghasilkan kredit yang mengurangi AR (c) lease ganda per unit ditolak (d) end-of-lease transfer unit ke inventaris sah (e) reconcile sewa = ledger
-- [ ] 70.8 Quality gate Fase 70
+- [x] 70.1 Tabel `oto_fleet_contracts` (perusahaan penyewa = party, durasi 1–5 tahun, jumlah unit, SLA downtime maks, batas km/tahun, opsi perpanjangan/akuisisi), `oto_fleet_contract_units` (unit terikat, odometer baseline)
+- [x] 70.2 Onboarding B2B: KYB Party (Fase 27), credit profile, deposit/garansi via Payment Hub, approval four-eyes di atas ambang nilai
+- [x] 70.3 **Amortisasi nilai sewa** (PSAK 73 simulasi): hak guna + liabilitas sewa per kontrak, jurnal bulanan idempoten, bunga vs pokok, perhitungan sisa nilai — terhubung modul Aset (Fase 31.6)
+- [x] 70.4 **SLA & telematik armada sewa**: tick telematik (Fase 68) + status Maintenance (AutoServe) dihitung menjadi downtime; pelanggaran SLA → kredit/kompensasi otomatis ke invoice penyewa; rute harian armada dipantau via kontrak ke Logistics (Fase 24.3 diperluas)
+- [x] 70.5 Lifecycle: denda km berlebih, penggantian unit di tengah kontrak, early termination (hitung sisa liabilitas), end-of-lease condition report → unit masuk kembali ke AutoDex/Store sebagai bekas (berpaspor)
+- [x] 70.6 Dashboard fleet B2B: utilisasi per unit, biaya total kepemilikan (TCO), uptime, jatuh tempo kontrak, eksposur piutang sewa
+- [x] 70.7 Tests: (a) amortisasi bulan 1..60 Σ = nilai sewa (b) SLA breach menghasilkan kredit yang mengurangi AR (c) lease ganda per unit ditolak (d) end-of-lease transfer unit ke inventaris sah (e) reconcile sewa = ledger
+- [x] 70.8 Quality gate Fase 70
 
 ## PILAR 2 — FINTECH, PERBANKAN & KRIPTO
 
