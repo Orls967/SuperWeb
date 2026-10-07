@@ -1258,22 +1258,22 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 102.6 Quality gate Fase 102
 
 ## FASE 103 — DOKUMENTASI FINAL, PLAYBOOK 60+ ROLE & SERAH TERIMA EKSPANSI 12 LINI
-- [ ] 103.1 **README final**: ringkasan 12 lini bisnis dalam satu website monolith, tabel akun demo per role baru, cara menjalankan simulasi kernel & seeder ultra, daftar seluruh command `*:audit`/`verify-*`
-- [ ] 103.2 **docs/ARCHITECTURE.md**: ERD 12 modul baru, peta Universal Event Spine & Digital Twin Bus, sequence diagram integrasi lintas lini, konvensi ledger multi-aset baru (stablecoin, token RWA, reserve asuransi)
-- [ ] 103.3 **docs/CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 67–103 tercatat, peta orientasi sesi baru lengkap
-- [ ] 103.4 **docs/RUNBOOK.md**: SOP operasional 12 lini (bed board, door venue, dispatch tambang, claims autopilot, EV ops, rate optimizer), jadwal scheduler baru, recovery kegagalan, DR drill
-- [ ] 103.5 **Role Playbooks 60+ role**: panduan peran baru (doctor, nurse, pharmacist, front office, housekeeping, revenue manager, venue manager, crowd safety, artist relations, mine planner, fleet dispatcher, hse officer, royalty officer, ev operator, fleet manager, wm advisor, vmi supplier, BPJS/insurance partner, OTA partner, kontraktor tambang, dll.)
-- [ ] 103.6 **Quality gate final ekspansi**: seluruh test suite 100% hijau tanpa test di-skip/dilemahkan (target jumlah test naik drastis dari baseline Fase 63: 931+ test), Pint 100%, build bersih, 0 artefak debug, seluruh `*:audit` = 0 selisih, seluruh hash-chain valid, `super:health-check` HEALTHY untuk seluruh pilar, working tree bersih
-- [ ] 103.7 **Berita Acara Serah Terima Ekspansi 12 Lini** di `docs/PROGRESS.md` + laporan penutup final (metrik test/audit/stress, peta 12 lini terintegrasi dalam satu monolith)
+- [x] 103.1 **README final**: ringkasan 12 lini bisnis dalam satu website monolith, tabel akun demo per role baru, cara menjalankan simulasi kernel & seeder ultra, daftar seluruh command `*:audit`/`verify-*`
+- [x] 103.2 **docs/ARCHITECTURE.md**: ERD 12 modul baru, peta Universal Event Spine & Digital Twin Bus, sequence diagram integrasi lintas lini, konvensi ledger multi-aset baru (stablecoin, token RWA, reserve asuransi)
+- [x] 103.3 **docs/CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 67–103 tercatat, peta orientasi sesi baru lengkap
+- [x] 103.4 **docs/RUNBOOK.md**: SOP operasional 12 lini (bed board, door venue, dispatch tambang, claims autopilot, EV ops, rate optimizer), jadwal scheduler baru, recovery kegagalan, DR drill
+- [x] 103.5 **Role Playbooks 60+ role**: panduan peran baru (doctor, nurse, pharmacist, front office, housekeeping, revenue manager, venue manager, crowd safety, artist relations, mine planner, fleet dispatcher, hse officer, royalty officer, ev operator, fleet manager, wm advisor, vmi supplier, BPJS/insurance partner, OTA partner, kontraktor tambang, dll.)
+- [x] 103.6 **Quality gate final ekspansi**: seluruh test suite 100% hijau tanpa test di-skip/dilemahkan (target jumlah test naik drastis dari baseline Fase 63: 931+ test), Pint 100%, build bersih, 0 artefak debug, seluruh `*:audit` = 0 selisih, seluruh hash-chain valid, `super:health-check` HEALTHY untuk seluruh pilar, working tree bersih
+- [x] 103.7 **Berita Acara Serah Terima Ekspansi 12 Lini** di `docs/PROGRESS.md` + laporan penutup final (metrik test/audit/stress, peta 12 lini terintegrasi dalam satu monolith)
 
 ---
 
 ## DEFINITION OF DONE (FASE 67–103)
-- [ ] Semua task 67.1–103.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 63: 931+ test/4778+ assertion) tanpa ada test di-skip/dilemahkan.
-- [ ] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` baru & lama = 0 selisih; semua hash-chain (passport kendaraan, paspor pasien, tiket venue, custody logistik, weighbridge, kontrak, aset, ECO, RWA supply) valid.
-- [ ] Setiap alur uang/stok/tiket/kamar/klaim/royalti baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role 12 lini.
-- [ ] Tidak ada float untuk uang; tidak ada `DB` facade di controller; batas modul 12 lini baru terjaga (arch test diperluas).
-- [ ] Simulation Kernel, Universal Event Spine, Digital Twin Bus, dan Fictional Scale Provisioner beroperasi & teruji deterministik.
-- [ ] Seeder ultra (Fase 98.1) selesai dalam benchmark tercatat; seluruh endpoint kritis dalam query budget p95.
-- [ ] Golden scenario 12 lini (Fase 101.1) hijau end-to-end; DR drill lulus dengan RPO 0 / RTO < 15 menit.
-- [ ] README, ARCHITECTURE, CODEBASE, DECISIONS, RUNBOOK, API, AUDIT mutakhir & konsisten dengan kode; working tree bersih.
+- [x] Semua task 67.1–103.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 63: 931+ test/4778+ assertion) tanpa ada test di-skip/dilemahkan.
+- [x] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` baru & lama = 0 selisih; semua hash-chain (passport kendaraan, paspor pasien, tiket venue, custody logistik, weighbridge, kontrak, aset, ECO, RWA supply) valid.
+- [x] Setiap alur uang/stok/tiket/kamar/klaim/royalti baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role 12 lini.
+- [x] Tidak ada float untuk uang; tidak ada `DB` facade di controller; batas modul 12 lini baru terjaga (arch test diperluas).
+- [x] Simulation Kernel, Universal Event Spine, Digital Twin Bus, dan Fictional Scale Provisioner beroperasi & teruji deterministik.
+- [x] Seeder ultra (Fase 98.1) selesai dalam benchmark tercatat; seluruh endpoint kritis dalam query budget p95.
+- [x] Golden scenario 12 lini (Fase 101.1) hijau end-to-end; DR drill lulus dengan RPO 0 / RTO < 15 menit.
+- [x] README, ARCHITECTURE, CODEBASE, DECISIONS, RUNBOOK, API, AUDIT mutakhir & konsisten dengan kode; working tree bersih.
