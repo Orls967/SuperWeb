@@ -621,4 +621,65 @@ Setiap pilar di bawah didefinisikan dengan 5 bagian: **Skala**, **Operasional**,
 | Platform economy (open API & white-label) | 147 |
 | Skenario konglomerasi 12 bulan & mega-scenario | 148 |
 | Dokumentasi & playbook gelombang 2 | 149 |
-| Final: quality gate penuh & serah terima 17 lini | 150 |
+| Final gelombang 2 | 150 |
+
+---
+
+# GELOMBANG 3–14 — FASE 151–500: 30 LINI BISNIS & MATURITY
+
+> `PROGRESS.md` mengembangkan roadmap ini sampai **Fase 500** dengan pembukaan 13 lini baru (18–30) dan gelombang integrasi, skala, AI/data, risiko, keuangan, operasi, pelanggan, SDM, keberlanjutan, tata kelola, platform, hingga enterprise maturity.
+
+## DAFTAR 30 LINI BISNIS (SATU MONOLITH)
+
+**Gelombang awal (Fase 0–66):**
+1. Otomotif (AutoDex, AutoServe) · 2. FinTek/Perbankan/Kripto · 3. Kuliner/Resto · 4. Properti Komersial/Mall · 5. Logistik Multimoda · 6. Manufaktur/Distribusi · 7. Perdagangan Internasional · 8. Tata Kelola/Enterprise
+
+**Gelombang 1 (Fase 67–103):**
+9. Rumah Sakit · 10. Beach Club & Clubs · 11. Perhotelan · 12. Pertambangan
+
+**Gelombang 2 (Fase 104–150):**
+13. Energi & Utilitas (`egy_`) · 14. Telekomunikasi & Data Center (`tlx_`) · 15. Media & Kreatif (`med_`) · 16. Pendidikan & Talent (`edu_`) · 17. Ritel & E-Commerce (`ret_`)
+
+**Gelombang 3 (Fase 151–300):**
+18. Asuransi & Reasuransi (`ins_`) · 19. Keuangan Syariah (`syb_`) · 20. Pendidikan Formal/Campus (`camp_`) · 21. Agri-Processing & Food (`food_`) · 22. Perikanan & Aquaculture (`mar_`) · 23. Kehutanan & Forest (`for_`) · 24. Waste & Recycling/Circular (`cir_`) · 25. Professional Services & Legal (`psv_`) · 26. Aviasi & Air Cargo (`avi_`) · 27. Pelabuhan & Marine Fleet (`prt_`/`marinefleet_`) · 28. Fashion & Textile (`fsh_`) · 29. Digital Identity & Telecom Media Services (`identity_`) · 30. City Operations & Smart District (`dst_`)
+
+## STRUKTUR FASE 151–500
+
+| Blok | Fase | Isi |
+|------|------|-----|
+| Pembukaan lini 18–30 | 151–165 | Global ops, Asuransi penuh, Syariah, Campus, Food, dst. |
+| Pendalaman 13 lini baru | 166–185 | Lini 20–30 mendalam + domain model 30 lini |
+| Integrasi & skala 30 lini | 186–200 | Value chain, treasury, identity, data, seeder ultra |
+| AI & risiko | 201–210 | Forecast federation, ERM, cyber, continuity, tax |
+| Keuangan & operasi | 211–220 | Capital, profitability, QMS, maintenance, supply, projects |
+| Pelanggan, SDM, ESG | 221–230 | Subscription, marketing, workforce, ESG fabric, climate |
+| Tata kelola & inovasi | 231–240 | Board, DAO, ethics, venture, DX, design system |
+| Data & komersial | 241–255 | Data governance, real-time, pricing, sales, Q2C, golden scenario |
+| Platform & ekosistem | 256–270 | SLO, CQRS, knowledge graph, partner, autonomous ladder |
+| Keuangan & operasi lanjut | 271–285 | Digital securities, crypto, tax, planning, field service, wellness |
+| ESG, governance, platform | 286–300 | Assurance, climate, policy engine, final 30-line release (**Fase 300**) |
+| **Gelombang Kematangan** | 301–400 | Supply/finance/people intelligence, data & AI platform, global platform, stress wave |
+| **Gelombang Maturity** | 401–500 | Governance/ops/customer/people/platform/finance/sustainability waves, scenario mega, enterprise acceptance (**Fase 500**) |
+
+> Detail tiap fase (skala, operasional, cakupan, hasil, test, quality gate) tercantum di `PROGRESS.md`. Seluruh fase bersifat **belum dikerjakan** (checkbox `[ ]`) kecuali yang sudah ditandai selesai.
+
+---
+
+# MATURITY ROADMAP — FASE 501–1000
+
+> Setelah Fase 500, roadmap dilanjutkan ke **Fase 1000** dengan prinsip yang berbeda: **tidak ada lini bisnis baru** (tetap 30 lini rancangan) dan **setiap fase dipadatkan** menjadi satu hasil terukur + tes/invarian + quality gate. Fase 501–1000 murni pendalaman, integrasi, pengujian, dan pematangan — bukan penambahan ide.
+
+| Gelombang | Fase | Hasil |
+|-----------|------|-------|
+| A | 501–550 | Domain & service maturity 30 lini (katalog, KPI, master data, contract/event hygiene) |
+| B | 551–600 | Keamanan, privasi, DR & recovery |
+| C | 601–650 | Performa, skala, partition & FinOps |
+| D | 651–700 | Operasi harian + audit tiap lini (termasuk overlap Edu/Campus & Port/Logistics diverifikasi) |
+| E | 701–750 | Pengukuran maturity & integritas metrik (anti-gaming) |
+| F | 751–800 | Business outcomes & value realization lintas lini |
+| G | 801–850 | Digital trust, inovasi & ekosistem mitra |
+| H | 851–900 | Platform operating model & sustainability |
+| I | 901–950 | Simulasi deterministik 365 hari + assurance independen |
+| J | 951–1000 | Acceptance, rollout bertahap, post-release review, tag `v1000-30-lines-enterprise-maturity` |
+
+> **Catatan integritas roadmap:** daftar 30 lini adalah jumlah *domain/modul rancangan* — ada irisan yang harus dinyatakan (Pendidikan Formal/Campus bisa menjadi sub-domain Pendidikan & Talent; Pelabuhan/Marine beririsan dengan Logistik). Fase tidak boleh dicentang tanpa bukti; checkbox tetap `[ ]` sampai dikerjakan. File `PROGRESS.md` hasil salinan manual perlu diverifikasi ulang terhadap file asli karena proses penyalinan manual berisiko tidak 100% identik.
