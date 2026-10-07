@@ -2021,13 +2021,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 154.7 Quality gate Fase 154
 
 ## FASE 155 — GLOBAL: PANDEMIC/PUBLIC HEALTH & BUSINESS CONTINUITY LINTAS NEGARA
-- [ ] 155.1 **Global health surveillance bridge** (memperluas Fase 107.3): agregasi lintas negara → peta risiko per wilayah operasi → rekomendasi pembatasan operasional (venue tutup, hotel karantina simulasi, pabrik shift reduksi)
-- [ ] 155.2 **Crisis cost & insurance response**: klaim asuransi bisnis (Fase 72 diperluas: BI interruption) → trigger dari deklarasi krisis → payout → dampak kas terukur
-- [ ] 155.3 **Workforce contingency**: work-from-home shift (role yang bisa remote), cross-training via Edu (Fase 135) → daftar pengganti siap per fungsi kritis
-- [ ] 155.4 **Supply continuity**: buffer stock (Fase 153.3) dilepas saat krisis → prioritas alokasi (RS & pangan > lain) → penalti kontrak ditangguhkan via force majeure (Fase 29.7)
-- [ ] 155.5 **Recovery dashboard**: timeline pemulihan per lini per negara → gating criteria → lessons learned → playbook diperbarui
-- [ ] 155.6 Tests: (a) force majeure activation terdokumentasi & reversible (b) prioritas alokasi dihormati sistem (c) klaim BI payout = aturan polis (d) contingency roster valid (e) seluruh `*:audit` = 0 selisih selama simulasi krisis
-- [ ] 155.7 Quality gate Fase 155
+- [x] 155.1 **Global health surveillance bridge** (memperluas Fase 107.3): agregasi lintas negara → peta risiko per wilayah operasi → rekomendasi pembatasan operasional (venue tutup, hotel karantina simulasi, pabrik shift reduksi)
+- [x] 155.2 **Crisis cost & insurance response**: klaim asuransi bisnis (Fase 72 diperluas: BI interruption) → trigger dari deklarasi krisis → payout → dampak kas terukur
+- [x] 155.3 **Workforce contingency**: work-from-home shift (role yang bisa remote), cross-training via Edu (Fase 135) → daftar pengganti siap per fungsi kritis
+- [x] 155.4 **Supply continuity**: buffer stock (Fase 153.3) dilepas saat krisis → prioritas alokasi (RS & pangan > lain) → penalti kontrak ditangguhkan via force majeure (Fase 29.7)
+- [x] 155.5 **Recovery dashboard**: timeline pemulihan per lini per negara → gating criteria → lessons learned → playbook diperbarui
+- [x] 155.6 Tests: (a) force majeure activation terdokumentasi & reversible (b) prioritas alokasi dihormati sistem (c) klaim BI payout = aturan polis (d) contingency roster valid (e) seluruh `*:audit` = 0 selisih selama simulasi krisis
+- [x] 155.7 Quality gate Fase 155
 
 ## FASE 156 — LINI 18: ASURANSI & REASURANSI PENUH (UNDERWRITING, ACTUARIAL, TREATY)
 - [ ] 156.1 Modul `Ins` (`ins_` lanjutan dari 72): provider, MenuRegistry "Asuransi & Reasuransi", roles (`underwriter`, `actuary`, `claims_adjuster`, `reinsurance_mgr`, `broker_agent`), policies, arch test; tabel `ins_products_penuh` (kendaraan, properti, marine cargo, kesehatan, jiwa, liability, weather index), `ins_policies_penuh`, `ins_premium_schedule`

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Integration;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Integration\Application\Services\CrisisContinuityService;
 use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\EthicalSourcingService;
@@ -42,6 +43,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(CrossBorderPayrollService::class);
         $this->app->singleton(SupplyChainResilienceService::class);
         $this->app->singleton(EthicalSourcingService::class);
+        $this->app->singleton(CrisisContinuityService::class);
     }
 
     public function boot(): void
