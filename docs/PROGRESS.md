@@ -1628,13 +1628,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 112.7 Quality gate Fase 112
 
 ## FASE 113 — HOSPITALITY & ENTERTAINMENT: TRAVEL & ITINERARY PLATFORM
-- [ ] 113.1 **Travel platform**: pencarian bundle (penerbangan simulasi + hotel + mobil sewa (Fase 70) + tiket event + itinerary harian) → harga total dengan komponen multi-vendor → sekali bayar → settlement escrow bertahap
-- [ ] 113.2 **Itinerary engine**: susun hari per kota (attraction, restoran (Fase 74), venue, spa) → booking massal satu aksi → kalender tamu → perubahan/reeschedule dengan aturan penalty per komponen kontrak
-- [ ] 113.3 **Travel insurance tersemat** (Fase 72): pembatalan penerbangan/penyakit di perjalanan → trigger dari feed penerbangan simulasi → auto-claim ke dompet
-- [ ] 113.4 **Corporate travel desk**: perusahaan karyawan (HCM) buat perjalanan dinas → policy limit per jabatan → approval → booking → pemotongan kartu korporat/korporat folio → reimbursement otomatis vs actual
-- [ ] 113.5 Concierge AI (deterministik, `ai:audit`): rekomendasi personal berbasis loyalty tier, budget, riwayat → hanya usulan, konfirmasi manusia untuk booking berbayar
-- [ ] 113.6 Tests: (a) bundle settlement Σ = total bayar (b) reeschedule penalty = aturan kontrak masing-masing komponen (c) corporate travel melebihi policy → tolak/approval (d) travel insurance trigger sah → claim 1x (e) reconcile travel escrow = ledger
-- [ ] 113.7 Quality gate Fase 113
+- [x] 113.1 **Travel platform**: pencarian bundle (penerbangan simulasi + hotel + mobil sewa (Fase 70) + tiket event + itinerary harian) → harga total dengan komponen multi-vendor → sekali bayar → settlement escrow bertahap
+- [x] 113.2 **Itinerary engine**: susun hari per kota (attraction, restoran (Fase 74), venue, spa) → booking massal satu aksi → kalender tamu → perubahan/reeschedule dengan aturan penalty per komponen kontrak
+- [x] 113.3 **Travel insurance tersemat** (Fase 72): pembatalan penerbangan/penyakit di perjalanan → trigger dari feed penerbangan simulasi → auto-claim ke dompet
+- [x] 113.4 **Corporate travel desk**: perusahaan karyawan (HCM) buat perjalanan dinas → policy limit per jabatan → approval → booking → pemotongan kartu korporat/korporat folio → reimbursement otomatis vs actual
+- [x] 113.5 Concierge AI (deterministik, `ai:audit`): rekomendasi personal berbasis loyalty tier, budget, riwayat → hanya usulan, konfirmasi manusia untuk booking berbayar
+- [x] 113.6 Tests: (a) bundle settlement Σ = total bayar (b) reeschedule penalty = aturan kontrak masing-masing komponen (c) corporate travel melebihi policy → tolak/approval (d) travel insurance trigger sah → claim 1x (e) reconcile travel escrow = ledger
+- [x] 113.7 Quality gate Fase 113
 
 ## FASE 114 — HOSPITALITY & ENTERTAINMENT: MICE & WEDDING GLOBAL SALES ENGINE
 - [ ] 114.1 Pipeline B2B MICE (konferensi, expo, korporat) & wedding → lead → site visit → proposal multi-komponen (kamar blok + ballroom + F&B + AV + dekorasi + transport) → quotation timelock → kontrak
