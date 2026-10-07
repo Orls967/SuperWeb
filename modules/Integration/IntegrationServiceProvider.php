@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Integration\Application\Services\CrisisContinuityService;
 use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
+use Modules\Integration\Application\Services\EmbeddedInsuranceService;
 use Modules\Integration\Application\Services\EthicalSourcingService;
 use Modules\Integration\Application\Services\FullInsuranceService;
 use Modules\Integration\Application\Services\GlobalCommandService;
@@ -48,6 +49,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(CrisisContinuityService::class);
         $this->app->singleton(FullInsuranceService::class);
         $this->app->singleton(ReinsuranceAndCatService::class);
+        $this->app->singleton(EmbeddedInsuranceService::class);
     }
 
     public function boot(): void

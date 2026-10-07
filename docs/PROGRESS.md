@@ -2048,13 +2048,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 157.7 Quality gate Fase 157
 
 ## FASE 158 — LINI 18: INSURANCE EMBEDDED 30 LINI & BROKER MARKETPLACE
-- [ ] 158.1 **Embedded insurance matrix**: satu katalog proteksi tertanam di seluruh lini — kredit HODL-to-Drive (Fase 5C), booking hotel (cancellation), tiket venue, pengiriman (cargo Fase 50.6), sewa mall, kontrak EPC (performance bond bridge), tambang (liability), panen tani (weather index Fase 156.2)
-- [ ] 158.2 **Parametric trigger otomatis** (memperluas Fase 72.2): cuaca index (curah hujan < ambang → petani), batal event (Fase 113.3), bencana per region (Fase 157.4) → payout tanpa survey → reserve terukur
-- [ ] 158.3 **Broker & agent marketplace**: broker (Party role, Fase 45 extended) menawarkan produk multi-perusahaan → komisi → penilaian kinerja → settlement via escrow
-- [ ] 158.4 **Customer insurance hub**: satu papan polis aktif per pengguna/entitas (dari 30 lini) → klaim terpusat → riwayat → bundling discount
-- [ ] 158.5 **Fraud detection insurance** (memperluas Fase 72.4): pola klaim lintas polis, telematik kontradiktif, penyakit berulang → skor → SIU investigation workflow → denial + blacklist industry simulasi
-- [ ] 158.6 Tests: (a) embedded offer muncul di konteks benar (b) parametric payout = parameter terukur (c) komisi broker = rate × premium (d) fraud score tinggi → hold (e) `ins:audit` lintas lini = 0 selisih
-- [ ] 158.7 Quality gate Fase 158
+- [x] 158.1 **Embedded insurance matrix**: satu katalog proteksi tertanam di seluruh lini — kredit HODL-to-Drive (Fase 5C), booking hotel (cancellation), tiket venue, pengiriman (cargo Fase 50.6), sewa mall, kontrak EPC (performance bond bridge), tambang (liability), panen tani (weather index Fase 156.2)
+- [x] 158.2 **Parametric trigger otomatis** (memperluas Fase 72.2): cuaca index (curah hujan < ambang → petani), batal event (Fase 113.3), bencana per region (Fase 157.4) → payout tanpa survey → reserve terukur
+- [x] 158.3 **Broker & agent marketplace**: broker (Party role, Fase 45 extended) menawarkan produk multi-perusahaan → komisi → penilaian kinerja → settlement via escrow
+- [x] 158.4 **Customer insurance hub**: satu papan polis aktif per pengguna/entitas (dari 30 lini) → klaim terpusat → riwayat → bundling discount
+- [x] 158.5 **Fraud detection insurance** (memperluas Fase 72.4): pola klaim lintas polis, telematik kontradiktif, penyakit berulang → skor → SIU investigation workflow → denial + blacklist industry simulasi
+- [x] 158.6 Tests: (a) embedded offer muncul di konteks benar (b) parametric payout = parameter terukur (c) komisi broker = rate × premium (d) fraud score tinggi → hold (e) `ins:audit` lintas lini = 0 selisih
+- [x] 158.7 Quality gate Fase 158
 
 ## FASE 159 — LINI 18: LIFE, HEALTH & WELLNESS INSURANCE ADVANCED
 - [ ] 159.1 **Term life & saving plans**: premi periodik → death benefit / maturity → underwriting medis (link ke RS Fase 87 data dengan consent) → beneficiary management (Party) → claim wafat (dokumen + verifikasi)
