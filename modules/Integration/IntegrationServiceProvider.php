@@ -9,6 +9,7 @@ use Modules\Integration\Application\Services\CrisisContinuityService;
 use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\EthicalSourcingService;
+use Modules\Integration\Application\Services\FullInsuranceService;
 use Modules\Integration\Application\Services\GlobalCommandService;
 use Modules\Integration\Application\Services\IntegrationService;
 use Modules\Integration\Application\Services\MegaScenarioService;
@@ -44,6 +45,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(SupplyChainResilienceService::class);
         $this->app->singleton(EthicalSourcingService::class);
         $this->app->singleton(CrisisContinuityService::class);
+        $this->app->singleton(FullInsuranceService::class);
     }
 
     public function boot(): void

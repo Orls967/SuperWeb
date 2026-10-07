@@ -2030,13 +2030,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 155.7 Quality gate Fase 155
 
 ## FASE 156 — LINI 18: ASURANSI & REASURANSI PENUH (UNDERWRITING, ACTUARIAL, TREATY)
-- [ ] 156.1 Modul `Ins` (`ins_` lanjutan dari 72): provider, MenuRegistry "Asuransi & Reasuransi", roles (`underwriter`, `actuary`, `claims_adjuster`, `reinsurance_mgr`, `broker_agent`), policies, arch test; tabel `ins_products_penuh` (kendaraan, properti, marine cargo, kesehatan, jiwa, liability, weather index), `ins_policies_penuh`, `ins_premium_schedule`
-- [ ] 156.2 **Underwriting engine**: risk assessment (data telematik kendaraan Fase 68, gedung Fase 76, kesehatan Fase 87, tambang Fase 93) → rating engine (faktor risiko deterministik) → quote → bind (kontrak asuransi hash) → policy terbit gapless
-- [ ] 156.3 **Actuarial & pricing**: loss triangle simulasi, relasi IBNR, expected loss ratio → harga produk ulang berkala → approval aktuaris → jejak perubahan tarif
-- [ ] 156.4 **Premium collection**: invoice berkala → auto-debit wallet/bank (Fase 13.3 pattern) → grace period → lapse → reinstatement; composite premium lintas lini grup (diskon grup)
-- [ ] 156.5 **Claims full workflow** (memperluas Fase 72): registrasi → adjuster survey (field app) → coverage check → estimasi → approval (four-eyes > ambang) → recovery/subrogation → reserve update → payment → salvage (barang rusak → lelang Fase 61.3)
-- [ ] 156.6 Tests: (a) rating engine deterministik dua run identik (b) reserve ≥ kewajiban (c) claim ganda atas polis sama ditolak (d) subrogation recovery mengurangi loss (e) `ins:audit` = premium + claims = ledger 0 selisih
-- [ ] 156.7 Quality gate Fase 156
+- [x] 156.1 Modul `Ins` (`ins_` lanjutan dari 72): provider, MenuRegistry "Asuransi & Reasuransi", roles (`underwriter`, `actuary`, `claims_adjuster`, `reinsurance_mgr`, `broker_agent`), policies, arch test; tabel `ins_products_penuh` (kendaraan, properti, marine cargo, kesehatan, jiwa, liability, weather index), `ins_policies_penuh`, `ins_premium_schedule`
+- [x] 156.2 **Underwriting engine**: risk assessment (data telematik kendaraan Fase 68, gedung Fase 76, kesehatan Fase 87, tambang Fase 93) → rating engine (faktor risiko deterministik) → quote → bind (kontrak asuransi hash) → policy terbit gapless
+- [x] 156.3 **Actuarial & pricing**: loss triangle simulasi, relasi IBNR, expected loss ratio → harga produk ulang berkala → approval aktuaris → jejak perubahan tarif
+- [x] 156.4 **Premium collection**: invoice berkala → auto-debit wallet/bank (Fase 13.3 pattern) → grace period → lapse → reinstatement; composite premium lintas lini grup (diskon grup)
+- [x] 156.5 **Claims full workflow** (memperluas Fase 72): registrasi → adjuster survey (field app) → coverage check → estimasi → approval (four-eyes > ambang) → recovery/subrogation → reserve update → payment → salvage (barang rusak → lelang Fase 61.3)
+- [x] 156.6 Tests: (a) rating engine deterministik dua run identik (b) reserve ≥ kewajiban (c) claim ganda atas polis sama ditolak (d) subrogation recovery mengurangi loss (e) `ins:audit` = premium + claims = ledger 0 selisih
+- [x] 156.7 Quality gate Fase 156
 
 ## FASE 157 — LINI 18: REASURANSI, KAPITAL & CAT MODELLING
 - [ ] 157.1 **Treaty & facultative reinsurance**: kontrak proporsi (quota share), excess of loss, stop loss → otomatis mengalihkan bagian risiko ke reinsurer (Party) → settlement retrocession → neraca risiko bersih terhitung
