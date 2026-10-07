@@ -95,4 +95,5 @@ return [
     WealthServiceProvider::class,
     CloudKitchenServiceProvider::class,
     \Modules\Vending\VendingServiceProvider::class,
+    \Modules\Proptech\ProptechServiceProvider::class,
 ];

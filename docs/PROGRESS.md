@@ -976,14 +976,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 ## PILAR 4 — PROPERTI KOMERSIAL & EPC
 
 ## FASE 76 — PROPTECH & SMART BUILDING OPERATIONS (IOT + ESG REAL-TIME)
-- [ ] 76.1 Tabel `prp_building_sensors` (suhu, kelembaban, arus, CO2, okupansi CCTV/footfall) per zona gedung → ingest idempoten (memperluas pola telematik Fase 68)
-- [ ] 76.2 **Otomasi HVAC & pencahayaan**: rule engine deterministik (okupansi > ambang → turunkan suhu target; jam non-operasional → setback) → perintah ke simulasi perangkat → penghematan kWh dihitung vs baseline
-- [ ] 76.3 **Tagihan listrik tenant per zona aktual**: meteran per zona (memperluas `mall_utility_readings` Fase 13.2) → tarif bertingkat → invoice tenant presisi bukan estimasi; Overtime AC tetap berlaku
-- [ ] 76.4 **GRK real-time per gedung**: kWh terkonsumsi × faktor grid (Fase 60.1) → dashboard emisi gedung per hari, per tenant, tren → masuk laporan ESG per properti
-- [ ] 76.5 Prescriptive ops: rekomendasi optimasi (mis. setback jam 13.00–15.00) dengan estimasi penghematan & payback; approval opsional sebelum diterapkan
-- [ ] 76.6 Dashboard smart building: denah per lantai dengan status zona live, konsumsi vs baseline, emisi, alarm sensor offline
-- [ ] 76.7 Tests: (a) aturan okupansi memicu perintah tepat 1x (b) tagihan zona = Σ pembacaan × tarif (c) kWh ESG = tagihan utilitas (d) sensor duplikat idempoten (e) reconcile utilitas = ledger (audit-billing hijau)
-- [ ] 76.8 Quality gate Fase 76
+- [x] 76.1 Tabel `prp_building_sensors` (suhu, kelembaban, arus, CO2, okupansi CCTV/footfall) per zona gedung → ingest idempoten (memperluas pola telematik Fase 68)
+- [x] 76.2 **Otomasi HVAC & pencahayaan**: rule engine deterministik (okupansi > ambang → turunkan suhu target; jam non-operasional → setback) → perintah ke simulasi perangkat → penghematan kWh dihitung vs baseline
+- [x] 76.3 **Tagihan listrik tenant per zona aktual**: meteran per zona (memperluas `mall_utility_readings` Fase 13.2) → tarif bertingkat → invoice tenant presisi bukan estimasi; Overtime AC tetap berlaku
+- [x] 76.4 **GRK real-time per gedung**: kWh terkonsumsi × faktor grid (Fase 60.1) → dashboard emisi gedung per hari, per tenant, tren → masuk laporan ESG per properti
+- [x] 76.5 Prescriptive ops: rekomendasi optimasi (mis. setback jam 13.00–15.00) dengan estimasi penghematan & payback; approval opsional sebelum diterapkan
+- [x] 76.6 Dashboard smart building: denah per lantai dengan status zona live, konsumsi vs baseline, emisi, alarm sensor offline
+- [x] 76.7 Tests: (a) aturan okupansi memicu perintah tepat 1x (b) tagihan zona = Σ pembacaan × tarif (c) kWh ESG = tagihan utilitas (d) sensor duplikat idempoten (e) reconcile utilitas = ledger (audit-billing hijau)
+- [x] 76.8 Quality gate Fase 76
 
 ## FASE 77 — DIGITAL TWIN & BIM LIFECYCLE (EPC → OPERASI)
 - [ ] 77.1 Tabel `prp_bim_models` (ber-versi, komponen JSON tervalidasi), `prp_twin_components` (pipa, duct, kabel, chiller — terikat lokasi & aset), `prp_twin_issues`
