@@ -438,11 +438,11 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 - **Rute:** `/epc` (role `admin`, `epc_manager`, `asset_manager`).
 - **Command:** `epc:audit` (verifikasi klaim MC = akumulasi CIP + kapitalisasi, progres fisik ≤ 100%, 0 diskrepansi).
 
-### Venue & Entertainment (`ven_`) — Fase 89
+### Venue & Entertainment (`ven_`) — Fase 89 & 90
 
-- **Tujuan:** operasional beach club & clubs, ticketing hash-chain non-fungible anti-replay, verifikasi usia & identitas gate access control, crowd safety capacity lockdown per zone, dan VIP table service dengan escrow deposit & no-show penalty.
-- **Tabel:** `ven_entertainment_venues`, `ven_entertainment_zones`, `ven_entertainment_events`, `ven_entertainment_tickets`, `ven_entertainment_table_bookings`.
-- **Service:** `Modules\Venue\Application\Services\VenueOperationsService` — penerbitan tiket berantai hash unik SHA-256 dengan guard floor/ceiling harga, verifikasi gate scanner (rejection pada ticket yang sudah di-scan atau usia pengunjung < minimum event), crowd density lockdown saat okupansi zona mencapai limit, reservasi meja VIP dengan penguncian deposit 50% di Ledger (`escrow:venue_deposit:IDR`), dan penegakan denda no-show otomatis.
+- **Tujuan:** operasional beach club & clubs, ticketing hash-chain non-fungible anti-replay, verifikasi usia & identitas gate access control, crowd safety capacity lockdown per zone, VIP table service dengan escrow deposit & no-show penalty, kontrak artis door-share advance/payout, membership tiered loyalty points, dan festival bundle multi-vendor escrow settlement.
+- **Tabel:** `ven_entertainment_venues`, `ven_entertainment_zones`, `ven_entertainment_events`, `ven_entertainment_tickets`, `ven_entertainment_table_bookings`, `ven_artist_contracts`, `ven_memberships`, `ven_festival_bundles`, `ven_bundle_orders`.
+- **Service:** `Modules\Venue\Application\Services\VenueOperationsService`, `Modules\Venue\Application\Services\VenueEconomyService` — ticketing, crowd safety lockdown, VIP table escrow, kontrak artis door-share minus advance, multi-tier point accrual/redemption, dan penyelesaian bundle festival multi-vendor dengan ledger invariant $\sum = 0$.
 - **Provider:** `Modules\Venue\VenueServiceProvider`.
 
 ---

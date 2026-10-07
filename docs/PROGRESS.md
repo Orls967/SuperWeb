@@ -1130,15 +1130,15 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 89.9 Quality gate Fase 89
 
 ## FASE 90 — BEACH CLUB & CLUBS II: ARTIST CONTRACTS, SUPPLY, MEMBERSHIP & FESTIVAL ECONOMY
-- [ ] 90.1 **Artist & talent contracts** (`ven_artist_contracts`): skema bayar advance + backlog + share door (persentase penjualan pintu), terikat modul Contract (Fase 28); performa lintas negara → pembayaran multi-currency (Fase 48) + stablecoin (Fase 83) + withholding tax simulasi (Fase 51.7)
-- [ ] 90.2 **Supply venue**: bar/resto venue memakai modul Resto penuh (HPP, batch, waste Fase 7–8) → bahan F&B dikirim via Logistics cold-chain dari dapur sentral → stok bar (spirit, mixer) terkelola WMS mini-warehouse per venue → **impor spirits** via Trade (Fase 49) dengan cukai simulasi
-- [ ] 90.3 **POS venue & night economics**: penjualan per jam (peak 23.00–03.00), mix per kategori, revenue per available table (RevPAT), waste bar; shift staff venue via HCM (bounty dadakan saat event mendadak, memperluas Fase 85)
-- [ ] 90.4 **Membership & loyalty**: membership beach club tahunan (tier: Sun, Moon, Infinity) → hak akses prioritas, diskon F&B, poin PTS lintas ekosistem (tukar di Resto/Store/hotel Fase 16.3 diperluas ke venue) → NFT membership opsional berbobot suara DAO event (Fase 86.4)
-- [ ] 90.5 **Festival-as-a-platform**: multi-day festival → bundling tiket harian + camping/glamping (terhubung hotel Fase 91) + shuttle transport (Logistics) + beach club day pass → satu bundle harga, settlement multi-vendor via escrow (Fase 61.4)
-- [ ] 90.6 **Sponsorship & brand deals**: paket sponsor (naming rights zone, booth, aktivasi) → kontrak + penagihan milestone → laporan eksposur (footfall venue, impressions simulasi) per sponsor
-- [ ] 90.7 Dashboard: event P&L (tiket + bar + sponsorship + VIP vs biaya artis & operasi dari ledger), artist statement (sisa terbayar, merch share), safety (kapasitas vs aktual, insiden), membership & festival bundle
-- [ ] 90.8 Tests: (a) share door = % × penjualan pintu, dikurangi advance (b) cold-chain supply venue breach → hold (c) membership point earn/redeem lintas modul seimbang (d) bundle festival settlement multi-vendor Σ = pembayaran (e) `venue:audit` = 0 selisih
-- [ ] 90.9 Quality gate Fase 90
+- [x] 90.1 **Artist & talent contracts** (`ven_artist_contracts`): skema bayar advance + backlog + share door (persentase penjualan pintu), terikat modul Contract (Fase 28); performa lintas negara → pembayaran multi-currency (Fase 48) + stablecoin (Fase 83) + withholding tax simulasi (Fase 51.7)
+- [x] 90.2 **Supply venue**: bar/resto venue memakai modul Resto penuh (HPP, batch, waste Fase 7–8) → bahan F&B dikirim via Logistics cold-chain dari dapur sentral → stok bar (spirit, mixer) terkelola WMS mini-warehouse per venue → **impor spirits** via Trade (Fase 49) dengan cukai simulasi
+- [x] 90.3 **POS venue & night economics**: penjualan per jam (peak 23.00–03.00), mix per kategori, revenue per available table (RevPAT), waste bar; shift staff venue via HCM (bounty dadakan saat event mendadak, memperluas Fase 85)
+- [x] 90.4 **Membership & loyalty**: membership beach club tahunan (tier: Sun, Moon, Infinity) → hak akses prioritas, diskon F&B, poin PTS lintas ekosistem (tukar di Resto/Store/hotel Fase 16.3 diperluas ke venue) → NFT membership opsional berbobot suara DAO event (Fase 86.4)
+- [x] 90.5 **Festival-as-a-platform**: multi-day festival → bundling tiket harian + camping/glamping (terhubung hotel Fase 91) + shuttle transport (Logistics) + beach club day pass → satu bundle harga, settlement multi-vendor via escrow (Fase 61.4)
+- [x] 90.6 **Sponsorship & brand deals**: paket sponsor (naming rights zone, booth, aktivasi) → kontrak + penagihan milestone → laporan eksposur (footfall venue, impressions simulasi) per sponsor
+- [x] 90.7 Dashboard: event P&L (tiket + bar + sponsorship + VIP vs biaya artis & operasi dari ledger), artist statement (sisa terbayar, merch share), safety (kapasitas vs aktual, insiden), membership & festival bundle
+- [x] 90.8 Tests: (a) share door = % × penjualan pintu, dikurangi advance (b) cold-chain supply venue breach → hold (c) membership point earn/redeem lintas modul seimbang (d) bundle festival settlement multi-vendor Σ = pembayaran (e) `venue:audit` = 0 selisih
+- [x] 90.9 Quality gate Fase 90
 
 ## FASE 91 — PERHOTELAN I: PMS, CENTRAL RESERVATION, RATE MANAGEMENT & SMART ROOM
 - [ ] 91.1 Modul `Hotel` (`htl_`): provider, MenuRegistry "Perhotelan", roles (`front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `concierge`), policies, arch test; tabel `htl_properties`, `htl_rooms`, `htl_rate_plans`, `htl_reservations`, `htl_folios`
