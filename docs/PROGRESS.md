@@ -2039,13 +2039,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 156.7 Quality gate Fase 156
 
 ## FASE 157 — LINI 18: REASURANSI, KAPITAL & CAT MODELLING
-- [ ] 157.1 **Treaty & facultative reinsurance**: kontrak proporsi (quota share), excess of loss, stop loss → otomatis mengalihkan bagian risiko ke reinsurer (Party) → settlement retrocession → neraca risiko bersih terhitung
-- [ ] 157.2 **Ceded/assumed premium ledger**: jurnal reinsurance (ceded premium, commission, claims recoverable) → subledger terpisah → `ins:reinsurance-audit` = 0 selisih
-- [ ] 157.3 **Capital adequacy model (simulasi C-ROSS/RBC)**: risk-based capital per kelas risiko → rasio solvabilitas → peringatan di bawah ambang → aksi (tambal modal via Fase 141.2, kurangi eksposur, tambah reasuransi)
-- [ ] 157.4 **CAT modelling**: gempa, banjir, wabah, kebakaran (data geospasial simulasi) → MRET/PLET per portofolio → rencana proteksi (limit, deductible, excess layers) → stress test tahunan
-- [ ] 157.5 **Insurance-linked securities simulasi**: catastrophe bond (token RWA Fase 71: aliran premi sebagai dividen, trigger klaim sebagai redemption event) → investor portal
-- [ ] 157.6 Tests: (a) ceded + retained = gross premium (b) solvabilitas deterministik (c) CAT loss tak melebihi layer structure (d) retrocession Σ = expected (e) `ins:reinsurance-audit` = 0 selisih
-- [ ] 157.7 Quality gate Fase 157
+- [x] 157.1 **Treaty & facultative reinsurance**: kontrak proporsi (quota share), excess of loss, stop loss → otomatis mengalihkan bagian risiko ke reinsurer (Party) → settlement retrocession → neraca risiko bersih terhitung
+- [x] 157.2 **Ceded/assumed premium ledger**: jurnal reinsurance (ceded premium, commission, claims recoverable) → subledger terpisah → `ins:reinsurance-audit` = 0 selisih
+- [x] 157.3 **Capital adequacy model (simulasi C-ROSS/RBC)**: risk-based capital per kelas risiko → rasio solvabilitas → peringatan di bawah ambang → aksi (tambal modal via Fase 141.2, kurangi eksposur, tambah reasuransi)
+- [x] 157.4 **CAT modelling**: gempa, banjir, wabah, kebakaran (data geospasial simulasi) → MRET/PLET per portofolio → rencana proteksi (limit, deductible, excess layers) → stress test tahunan
+- [x] 157.5 **Insurance-linked securities simulasi**: catastrophe bond (token RWA Fase 71: aliran premi sebagai dividen, trigger klaim sebagai redemption event) → investor portal
+- [x] 157.6 Tests: (a) ceded + retained = gross premium (b) solvabilitas deterministik (c) CAT loss tak melebihi layer structure (d) retrocession Σ = expected (e) `ins:reinsurance-audit` = 0 selisih
+- [x] 157.7 Quality gate Fase 157
 
 ## FASE 158 — LINI 18: INSURANCE EMBEDDED 30 LINI & BROKER MARKETPLACE
 - [ ] 158.1 **Embedded insurance matrix**: satu katalog proteksi tertanam di seluruh lini — kredit HODL-to-Drive (Fase 5C), booking hotel (cancellation), tiket venue, pengiriman (cargo Fase 50.6), sewa mall, kontrak EPC (performance bond bridge), tambang (liability), panen tani (weather index Fase 156.2)

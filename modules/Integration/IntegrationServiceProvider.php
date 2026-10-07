@@ -16,6 +16,7 @@ use Modules\Integration\Application\Services\MegaScenarioService;
 use Modules\Integration\Application\Services\PlatformEconomyService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
+use Modules\Integration\Application\Services\ReinsuranceAndCatService;
 use Modules\Integration\Application\Services\ResilienceWave2Service;
 use Modules\Integration\Application\Services\SupplyChainResilienceService;
 use Modules\Integration\Application\Services\ThreatDetectionService;
@@ -46,6 +47,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(EthicalSourcingService::class);
         $this->app->singleton(CrisisContinuityService::class);
         $this->app->singleton(FullInsuranceService::class);
+        $this->app->singleton(ReinsuranceAndCatService::class);
     }
 
     public function boot(): void
