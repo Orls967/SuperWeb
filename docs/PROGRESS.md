@@ -1018,14 +1018,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 79.8 Quality gate Fase 79
 
 ## FASE 80 — COLD-CHAIN BLOCKCHAIN AUTONOMOUS, DRONE & LAST-MILE ROBOTICS
-- [ ] 80.1 **Cold-chain enforcement**: pembacaan suhu reefer (Fase 24.4) → breach > 10 menit → event `lgx.temp_breach` → **PaymentGateway otomatis HOLD pembayaran subkontraktor** pengangkut sampai dispute selesai (release setelah investigasi/klaim asuransi Fase 23.4); pembacaan suhu masuk hash-chain sebagai bukti
-- [ ] 80.2 Perluasan monitored goods: farmasi (link Pilar 9), daging wagyu, vaksin, produk beach club (minuman beralkohol butuh suhu), linen hotel (sterilisasi)
-- [ ] 80.3 **Drone & last-mile robotics dispatch** (`lgx_drone_units`, `lgx_drone_missions`): dispatcher menugaskan leg terakhir ke drone/robot dari Hub (radius ≤ 15 km, beban ≤ 5 kg, baterai cukup untuk pulang-pergi + margin) → routing mempertimbangkan no-fly zone simulasi & angin → bahan ringan suku cadang/obat/makanan resto
-- [ ] 80.4 POD drone: foto geo-hash + waktu + tanda terima digital → masuk chain of custody → bila gagal turun → fallback ke driver terdekat
-- [ ] 80.5 **Rate card dinamis**: tarif & kapasitas berubah real-time mengikuti permintaan musiman, harga BBM (feed simulasi), okupansi armada (memperluas Fase 21.3 + dynamic pricing Fase 64.1); kontrak harga B2B immutable tetap menang (Fase 44.4)
-- [ ] 80.6 Dashboard: breach suhu & uang tertahan, misi drone aktif, biaya last-mile per mode, tarif berjalan vs kontrak
-- [ ] 80.7 Tests: (a) breach > 10 menit → hold persis 1x, < 10 menit tidak (b) hold dilepas = dispute selesai, tidak ganda (c) misi drone melewati radius/baterai ditolak (d) POD drone valid di hash chain (e) reconcile hold = ledger escrow
-- [ ] 80.8 Quality gate Fase 80
+- [x] 80.1 **Cold-chain enforcement**: pembacaan suhu reefer (Fase 24.4) → breach > 10 menit → event `lgx.temp_breach` → **PaymentGateway otomatis HOLD pembayaran subkontraktor** pengangkut sampai dispute selesai (release setelah investigasi/klaim asuransi Fase 23.4); pembacaan suhu masuk hash-chain sebagai bukti
+- [x] 80.2 Perluasan monitored goods: farmasi (link Pilar 9), daging wagyu, vaksin, produk beach club (minuman beralkohol butuh suhu), linen hotel (sterilisasi)
+- [x] 80.3 **Drone & last-mile robotics dispatch** (`lgx_drone_units`, `lgx_drone_missions`): dispatcher menugaskan leg terakhir ke drone/robot dari Hub (radius ≤ 15 km, beban ≤ 5 kg, baterai cukup untuk pulang-pergi + margin) → routing mempertimbangkan no-fly zone simulasi & angin → bahan ringan suku cadang/obat/makanan resto
+- [x] 80.4 POD drone: foto geo-hash + waktu + tanda terima digital → masuk chain of custody → bila gagal turun → fallback ke driver terdekat
+- [x] 80.5 **Rate card dinamis**: tarif & kapasitas berubah real-time mengikuti permintaan musiman, harga BBM (feed simulasi), okupansi armada (memperluas Fase 21.3 + dynamic pricing Fase 64.1); kontrak harga B2B immutable tetap menang (Fase 44.4)
+- [x] 80.6 Dashboard: breach suhu & uang tertahan, misi drone aktif, biaya last-mile per mode, tarif berjalan vs kontrak
+- [x] 80.7 Tests: (a) breach > 10 menit → hold persis 1x, < 10 menit tidak (b) hold dilepas = dispute selesai, tidak ganda (c) misi drone melewati radius/baterai ditolak (d) POD drone valid di hash chain (e) reconcile hold = ledger escrow
+- [x] 80.8 Quality gate Fase 80
 
 ## PILAR 6 — MANUFAKTUR, DISTRIBUSI & KEBIJAKAN HARGA
 

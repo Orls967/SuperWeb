@@ -152,6 +152,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 - **Proptech & Smart Building:** ingest sensor idempoten (`prp_building_sensors`), rule engine HVAC/pencahayaan deterministik, penagihan utilitas tenant presisi per kWh aktual terhubung Ledger, kalkulasi emisi GRK real-time faktor grid PLN, flex-space anti-overlap on-demand (`prp_flex_spaces`), akses paspor kriptografis & no-show penalty ledger.
 - **BIM & Digital Twin Lifecycle:** versi model BIM tamper-evident SHA-256 (`prp_bim_models`), sinkronisasi progres fisik komponen WBS ke kapitalisasi CIP modul EPC/Asset, tagging work order fasilitas ke komponen pipa/kabel, airflow simulation sandbox.
 - **Reverse Logistics & Circular Economy:** reverse order otomatis per event domain (`lgx_reverse_orders`), manifest gapless, rantai kustodi limbah/daur ulang hash SHA-256, intake bahan baku daur ulang ke manufaktur terposting ke Ledger (`lgx:circular_revenue`), kalkulasi avoided carbon emission.
+- **Cold-Chain & Autonomous Drone Logistics:** hold pembayaran carrier otomatis di Ledger saat breach suhu > 10 mnt (`lgx_temp_breach_holds`), armada drone (`lgx_drone_units`), dispatch misi dengan guardrail radius/baterai/muatan, POD bertanda-tangan hash digital.
 - Detail alasan: `docs/DECISIONS.md` (≈ 48 entri bertanggal).
 
 ## 8. Peta command lengkap
