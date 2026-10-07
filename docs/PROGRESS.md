@@ -1083,15 +1083,15 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 85.8 Quality gate Fase 85
 
 ## FASE 86 — PRECISION AGRI-TECH (NDVI SATELIT) & DAO CORPORATE GOVERNANCE
-- [ ] 86.1 **NDVI satelit** (`agri_satellite_scans` per petak plasma, feed simulasi): indeks kehijauan per poligon lahan (`land_polygon_geojson` Fase 62.1) per 5 hari → tren per musim → deteksi stres tanaman
-- [ ] 86.2 **Cicilan prestasi**: ratchet kontrak tani Fase 62.2 diperluas — pencairan cicilan modal pembiayaan ke petani **hanya bila NDVI ≥ standar kualitas**; gagal → penundaan + rencana korektif (irigasi/pupuk via Agri), 2x gagal → restrukturisasi via ApprovalEngine
-- [ ] 86.3 Korelasi NDVI vs hasil panen aktual (grade A/B/C Fase 62.3) → validasi model presisi; skor risiko petak → memengaruhi plafon pembiayaan berikutnya
-- [ ] 86.4 **DAO governance** (`gov_proposals`, `gov_votes`, `gov_voter_weights`): pemegang hak suara = karyawan (HCM), pemegang token RWA (Fase 71), franchisee (Resto), partner (Fase 47) → bobot berbasis Paspor Digital/token holdings
-- [ ] 86.5 Voting: masa kampanye → kuartil pemungutan → kuorum minimum → tally weighted hash-chained (jejak tak terubah) → hasil disetujui/ ditolak; kuorum, quorum-weighted, dan aturan abstain terdefinisi per jenis proposal
-- [ ] 86.6 **Eksekusi otomatis bila disetujui**: proposal "buka cabang Resto di kota B" → membuat proyek Contract/EPC/Investasi draft (Fase 63) + budget request; proposal "akuisisi pabrik" → memicu due diligence Party (Fase 47.2); semuanya tetap melewati approval dewan sebelum eksekusi final
-- [ ] 86.7 Dashboard: peta NDVI + status cicilan, proposal aktif, distribusi bobot suara, riwayat keputusan & eksekusinya
-- [ ] 86.8 Tests: (a) NDVI di bawah standar → cicilan tertahan (b) Σ bobot suara = paspor/token terbit (c) vote ganda per pemilih ditolak (d) proposal disetujui → draft proyek terbentuk tepat 1x (e) `governance:audit` + `agri:audit` = 0 selisih
-- [ ] 86.9 Quality gate Fase 86
+- [x] 86.1 **NDVI satelit** (`agri_satellite_scans` per petak plasma, feed simulasi): indeks kehijauan per poligon lahan (`land_polygon_geojson` Fase 62.1) per 5 hari → tren per musim → deteksi stres tanaman
+- [x] 86.2 **Cicilan prestasi**: ratchet kontrak tani Fase 62.2 diperluas — pencairan cicilan modal pembiayaan ke petani **hanya bila NDVI ≥ standar kualitas**; gagal → penundaan + rencana korektif (irigasi/pupuk via Agri), 2x gagal → restrukturisasi via ApprovalEngine
+- [x] 86.3 Korelasi NDVI vs hasil panen aktual (grade A/B/C Fase 62.3) → validasi model presisi; skor risiko petak → memengaruhi plafon pembiayaan berikutnya
+- [x] 86.4 **DAO governance** (`gov_proposals`, `gov_votes`, `gov_voter_weights`): pemegang hak suara = karyawan (HCM), pemegang token RWA (Fase 71), franchisee (Resto), partner (Fase 47) → bobot berbasis Paspor Digital/token holdings
+- [x] 86.5 Voting: masa kampanye → kuartil pemungutan → kuorum minimum → tally weighted hash-chained (jejak tak terubah) → hasil disetujui/ ditolak; kuorum, quorum-weighted, dan aturan abstain terdefinisi per jenis proposal
+- [x] 86.6 **Eksekusi otomatis bila disetujui**: proposal "buka cabang Resto di kota B" → membuat proyek Contract/EPC/Investasi draft (Fase 63) + budget request; proposal "akuisisi pabrik" → memicu due diligence Party (Fase 47.2); semuanya tetap melewati approval dewan sebelum eksekusi final
+- [x] 86.7 Dashboard: peta NDVI + status cicilan, proposal aktif, distribusi bobot suara, riwayat keputusan & eksekusinya
+- [x] 86.8 Tests: (a) NDVI di bawah standar → cicilan tertahan (b) Σ bobot suara = paspor/token terbit (c) vote ganda per pemilih ditolak (d) proposal disetujui → draft proyek terbentuk tepat 1x (e) `governance:audit` + `agri:audit` = 0 selisih
+- [x] 86.9 Quality gate Fase 86
 
 ---
 
