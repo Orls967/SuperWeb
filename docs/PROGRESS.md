@@ -1556,13 +1556,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 104.7 Quality gate Fase 104
 
 ## FASE 105 — KESEHATAN: JARINGAN LABORATORIUM & DIAGNOSTIK IMAGING
-- [ ] 105.1 Tabel `hsp_lab_catalog` (10.000 parameter tes), `hsp_lab_specimens` (barcode rantai spesimen), `hsp_lab_results` (verifikasi teknisi + pathologist), `hsp_imaging_studies` (simulasi DICOM metadata)
-- [ ] 105.2 Rantai spesimen hash-chain: ambil → kirim (Logistics cold-chain) → terima lab → proses → hasil — setiap pindah tangan di-scan, waktu & suhu tercatat; spesimen hilang/putus rantai → auto-reject & minta ulang
-- [ ] 105.3 Hasil bertingkat: auto-verify untuk nilai normal (rule range), nilai kritis → hold pathologist → notifikasi dokter penulis order; hasil masuk Human Passport & memicu alert clinical pathway bila diagnosis berubah
-- [ ] 105.4 Lab outsourcing (1.000 lab mitra): tarif kontrak, piutang pihak ketiga, SLA turnaround time, scorecard lab mitra
-- [ ] 105.5 Imaging center: booking slot modality (CT/MRI/USG), kapasitas mesin, radiologist read time, biaya ter-charge episode; aset mesin terdaftar & depresiasi (Fase 31)
-- [ ] 105.6 Tests: (a) rantai spesimen putus → hasil tidak bisa disahkan (b) nilai kritis wajib verifikasi manual (c) turnaround breach → kredit piutang lab mitra (d) hasil duplikat idempoten (e) billing hasil lab = Σ order terverifikasi
-- [ ] 105.7 Quality gate Fase 105
+- [x] 105.1 Tabel `hsp_lab_catalog` (10.000 parameter tes), `hsp_lab_specimens` (barcode rantai spesimen), `hsp_lab_results` (verifikasi teknisi + pathologist), `hsp_imaging_studies` (simulasi DICOM metadata)
+- [x] 105.2 Rantai spesimen hash-chain: ambil → kirim (Logistics cold-chain) → terima lab → proses → hasil — setiap pindah tangan di-scan, waktu & suhu tercatat; spesimen hilang/putus rantai → auto-reject & minta ulang
+- [x] 105.3 Hasil bertingkat: auto-verify untuk nilai normal (rule range), nilai kritis → hold pathologist → notifikasi dokter penulis order; hasil masuk Human Passport & memicu alert clinical pathway bila diagnosis berubah
+- [x] 105.4 Lab outsourcing (1.000 lab mitra): tarif kontrak, piutang pihak ketiga, SLA turnaround time, scorecard lab mitra
+- [x] 105.5 Imaging center: booking slot modality (CT/MRI/USG), kapasitas mesin, radiologist read time, biaya ter-charge episode; aset mesin terdaftar & depresiasi (Fase 31)
+- [x] 105.6 Tests: (a) rantai spesimen putus → hasil tidak bisa disahkan (b) nilai kritis wajib verifikasi manual (c) turnaround breach → kredit piutang lab mitra (d) hasil duplikat idempoten (e) billing hasil lab = Σ order terverifikasi
+- [x] 105.7 Quality gate Fase 105
 
 ## FASE 106 — KESEHATAN: CLINICAL TRIAL, RESEARCH & DATA VAULT
 - [ ] 106.1 Tabel `hsp_trials` (studi, fase I–IV simulasi), `hsp_trial_sites` (RS pelaksana), `hsp_trial_subjects` (subjek terdaftar, informed consent hash), `hsp_trial_endpoints`
