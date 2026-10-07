@@ -1565,13 +1565,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 105.7 Quality gate Fase 105
 
 ## FASE 106 — KESEHATAN: CLINICAL TRIAL, RESEARCH & DATA VAULT
-- [ ] 106.1 Tabel `hsp_trials` (studi, fase I–IV simulasi), `hsp_trial_sites` (RS pelaksana), `hsp_trial_subjects` (subjek terdaftar, informed consent hash), `hsp_trial_endpoints`
-- [ ] 106.2 Recruitment engine: pencocokan kriteria inklusi/exklusi terhadap Human Passport (anonimisasi identifier) → undangan ke pasien eligible → consent digital hash-chain → randomisasi terstruktur (deterministik ber-seed)
-- [ ] 106.3 Pengumpulan data endpoint (efikasi, keamanan) → database lock per analisis → laporan studi; **data vault terenkripsi** (Genomic & Personalized Medicine Vault) — akses riset via approval & audit ketat, di-tokenisasi anonim untuk mitra riset (memperluas RWA Fase 71 ke aset data)
-- [ ] 106.4 Biaya riset: kontrak study sponsor (modul Contract), penagihan milestone per enrollment/visit completion → pendapatan RS mitra; aeaman (adverse event) → reporting ke otoritas simulasi + integrasi klaim asuransi (Fase 72)
-- [ ] 106.5 Integrasi PLM (Fase 59): kandidat molekul/formula dari R&D pabrik farmasi → fase pra-klinis → trial → launch ke Farmasi/Store (satu pipeline hulu-hilir)
-- [ ] 106.6 Tests: (a) subjek ganda dalam 1 studi kriteria sama ditolak (b) randomisasi deterministik dua run identik (c) data vault akses tanpa approval ditolak (d) milestone sponsor ter-bill tepat (e) reconcile trial cost = ledger
-- [ ] 106.7 Quality gate Fase 106
+- [x] 106.1 Tabel `hsp_trials` (studi, fase I–IV simulasi), `hsp_trial_sites` (RS pelaksana), `hsp_trial_subjects` (subjek terdaftar, informed consent hash), `hsp_trial_endpoints`
+- [x] 106.2 Recruitment engine: pencocokan kriteria inklusi/exklusi terhadap Human Passport (anonimisasi identifier) → undangan ke pasien eligible → consent digital hash-chain → randomisasi terstruktur (deterministik ber-seed)
+- [x] 106.3 Pengumpulan data endpoint (efikasi, keamanan) → database lock per analisis → laporan studi; **data vault terenkripsi** (Genomic & Personalized Medicine Vault) — akses riset via approval & audit ketat, di-tokenisasi anonim untuk mitra riset (memperluas RWA Fase 71 ke aset data)
+- [x] 106.4 Biaya riset: kontrak study sponsor (modul Contract), penagihan milestone per enrollment/visit completion → pendapatan RS mitra; aeaman (adverse event) → reporting ke otoritas simulasi + integrasi klaim asuransi (Fase 72)
+- [x] 106.5 Integrasi PLM (Fase 59): kandidat molekul/formula dari R&D pabrik farmasi → fase pra-klinis → trial → launch ke Farmasi/Store (satu pipeline hulu-hilir)
+- [x] 106.6 Tests: (a) subjek ganda dalam 1 studi kriteria sama ditolak (b) randomisasi deterministik dua run identik (c) data vault akses tanpa approval ditolak (d) milestone sponsor ter-bill tepat (e) reconcile trial cost = ledger
+- [x] 106.7 Quality gate Fase 106
 
 ## FASE 107 — KESEHATAN: PUBLIC HEALTH, JKN/BPJS & HEALTH COMMAND CENTER
 - [ ] 107.1 **Klaim JKN/BPJS batch engine**: gabungan episode eligible → grouping DRG simulasi (kamar, tindakan, obat) → berkas klaim → status (submitted → verifikasi → paid/denied) → aging & provision; denial → alasan → koreksi → resubmit (gapless number per berkas)
