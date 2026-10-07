@@ -1814,13 +1814,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 133.7 Quality gate Fase 133
 
 ## FASE 134 — MEDIA & KREATIF: DISTRIBUTION, ADVERTISING & SPONSORSHIP PLATFORM
-- [ ] 134.1 **Distribution platform simulasi**: katalog konten (video, podcast, acara live) → kanal (app, social simulasi, in-venue screen) → views/impressions terukur → revenue share per view (formula per kontrak) → pembukuan per kanal per konten
-- [ ] 134.2 **Advertising & sponsorship platform**: inventory iklan digital (banner app/portal) + OOH (layar mall, venue, hotel) → booking campaign (slot waktu, impressions target) → **yield management** (harga dinamis okupansi inventaris, floor price) → verifikasi impressions (sensor footfall + analytics simulasi)
-- [ ] 134.3 **Campaign measurement**: awareness lift (survey simulasi), conversion attribution (kode referral Fase 45.4) → laporan ke advertiser → billing berbasis impressions/CPM/campaign flat
-- [ ] 134.4 **Sponsorship cross-lini**: brand sponsor event venue (Fase 90.6), team esports simulasi, program RS (health talk), liga olahraga → satu pipeline sponsorship gr → paket bundling lintas media (spot TV simulasi + digital + venue) → kontrak gabungan
-- [ ] 134.5 **Ad-tech settlement**: agency (Fase 45) sebagai intermediary → komisi agency → split antara publisher (venue/hotel/media) dan platform → ledger multi-pihak via escrow (Fase 61.4)
-- [ ] 134.6 Tests: (a) yield tak di bawah floor (b) impressions terverifikasi ≠ klaim → tagihan menyesuaikan (c) split Σ = revenue campaign (d) komisi agency = rate × spend (e) `med:audit` + `agy:audit` = 0 selisih
-- [ ] 134.7 Quality gate Fase 134
+- [x] 134.1 **Distribution platform simulasi**: katalog konten (video, podcast, acara live) → kanal (app, social simulasi, in-venue screen) → views/impressions terukur → revenue share per view (formula per kontrak) → pembukuan per kanal per konten
+- [x] 134.2 **Advertising & sponsorship platform**: inventory iklan digital (banner app/portal) + OOH (layar mall, venue, hotel) → booking campaign (slot waktu, impressions target) → **yield management** (harga dinamis okupansi inventaris, floor price) → verifikasi impressions (sensor footfall + analytics simulasi)
+- [x] 134.3 **Campaign measurement**: awareness lift (survey simulasi), conversion attribution (kode referral Fase 45.4) → laporan ke advertiser → billing berbasis impressions/CPM/campaign flat
+- [x] 134.4 **Sponsorship cross-lini**: brand sponsor event venue (Fase 90.6), team esports simulasi, program RS (health talk), liga olahraga → satu pipeline sponsorship gr → paket bundling lintas media (spot TV simulasi + digital + venue) → kontrak gabungan
+- [x] 134.5 **Ad-tech settlement**: agency (Fase 45) sebagai intermediary → komisi agency → split antara publisher (venue/hotel/media) dan platform → ledger multi-pihak via escrow (Fase 61.4)
+- [x] 134.6 Tests: (a) yield tak di bawah floor (b) impressions terverifikasi ≠ klaim → tagihan menyesuaikan (c) split Σ = revenue campaign (d) komisi agency = rate × spend (e) `med:audit` + `agy:audit` = 0 selisih
+- [x] 134.7 Quality gate Fase 134
 
 ## FASE 135 — PENDIDIKAN & TALENT: ACADEMY, UPskilling & CERTIFICATION (LINI 16)
 - [ ] 135.1 Modul `Edu` (`edu_`): provider, MenuRegistry "Pendidikan & Talent", roles (`instructor`, `edu_admin`, `cert_officer`, `corp_lnd`), policies, arch test; tabel `edu_programs` (kelas teknis bisnis: mekanik AutoServe, barista, HSE tambang, chef, front office, perawat), `edu_cohorts`, `edu_enrollments`
