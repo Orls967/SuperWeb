@@ -46,6 +46,7 @@ use Modules\Shared\SharedServiceProvider;
 use Modules\Store\StoreServiceProvider;
 use Modules\Supplier\SupplierServiceProvider;
 use Modules\Telematics\TelematicsServiceProvider;
+use Modules\Tlx\TlxServiceProvider;
 use Modules\Trade\TradeServiceProvider;
 use Modules\TradeFinance\TradeFinanceServiceProvider;
 use Modules\Treasury\TreasuryServiceProvider;
@@ -108,4 +109,5 @@ return [
     HotelServiceProvider::class,
     MiningServiceProvider::class,
     EgyServiceProvider::class,
+    TlxServiceProvider::class,
 ];

@@ -1778,13 +1778,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 129.6 Quality gate Fase 129
 
 ## FASE 130 — TELEKOMUNIKASI & DATA CENTER: NETWORK, IoT BACKBONE & ISP (LINI 14)
-- [ ] 130.1 Modul `Tlx` (`tlx_`): provider, MenuRegistry "Telekomunikasi & Data", roles (`noc_engineer`, `dc_operator`, `iot_platform_mgr`, `network_planner`), policies, arch test; tabel `tlx_sites` (tower, POP, data center), `tlx_links` (fiber, microwave), `tlx_sim_subscribers`
-- [ ] 130.2 **Network inventory & capacity**: 10.000 site, 50.000 link → kapasitas per link → penjadwalan perpanjangan (contract vendor tower) → SLA uptime 99.x% → penalti/insentif vendor (memperluas Fase 47.7)
-- [ ] 130.3 **IoT backbone untuk 17 lini**: satu platform ingest perangkat (telematik kendaraan Fase 68, sensor gedung Fase 76, meter energi Fase 126, sensor tambang Fase 93.5, monitor pasien Fase 87.5) → device registry, OTA update simulasi, per-device data plan billing ke entitas pemilik
-- [ ] 130.4 **IoT connectivity billing**: kuota & frekuensi kirim per device → tagihan bulanan antar entitas (intercompany Fase 52.1) → cost allocation ke lini operasional
-- [ ] 130.5 **NOC & observabilitas jaringan**: alarm (link down, latency spike) → ticket → engineer dispatch → MTTR terukur → korelasi dengan insiden lini (link down → EV charger offline → alert gabungan)
-- [ ] 130.6 Tests: (a) capacity oversubscription ditolak sistem (b) SLA uptime = Σ downtime / total terukur (c) device billing = kuota × tarif (d) alarm → ticket 1x idempoten (e) `tlx:audit` = 0 selisih vs ledger
-- [ ] 130.7 Quality gate Fase 130
+- [x] 130.1 Modul `Tlx` (`tlx_`): provider, MenuRegistry "Telekomunikasi & Data", roles (`noc_engineer`, `dc_operator`, `iot_platform_mgr`, `network_planner`), policies, arch test; tabel `tlx_sites` (tower, POP, data center), `tlx_links` (fiber, microwave), `tlx_sim_subscribers`
+- [x] 130.2 **Network inventory & capacity**: 10.000 site, 50.000 link → kapasitas per link → penjadwalan perpanjangan (contract vendor tower) → SLA uptime 99.x% → penalti/insentif vendor (memperluas Fase 47.7)
+- [x] 130.3 **IoT backbone untuk 17 lini**: satu platform ingest perangkat (telematik kendaraan Fase 68, sensor gedung Fase 76, meter energi Fase 126, sensor tambang Fase 93.5, monitor pasien Fase 87.5) → device registry, OTA update simulasi, per-device data plan billing ke entitas pemilik
+- [x] 130.4 **IoT connectivity billing**: kuota & frekuensi kirim per device → tagihan bulanan antar entitas (intercompany Fase 52.1) → cost allocation ke lini operasional
+- [x] 130.5 **NOC & observabilitas jaringan**: alarm (link down, latency spike) → ticket → engineer dispatch → MTTR terukur → korelasi dengan insiden lini (link down → EV charger offline → alert gabungan)
+- [x] 130.6 Tests: (a) capacity oversubscription ditolak sistem (b) SLA uptime = Σ downtime / total terukur (c) device billing = kuota × tarif (d) alarm → ticket 1x idempoten (e) `tlx:audit` = 0 selisih vs ledger
+- [x] 130.7 Quality gate Fase 130
 
 ## FASE 131 — TELEKOMUNIKASI & DATA CENTER: DC OPERATIONS, CLOUD & COLOCATION
 - [ ] 131.1 **Data center ops**: 10 DC (Jakarta, Surabaya, Singapura simulasi) → rack/inventory → PUE terukur (daya total / IT load) → cooling optimization (memperluas Fase 76.2) → ESG DC (emisi)
