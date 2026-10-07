@@ -1823,13 +1823,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 134.7 Quality gate Fase 134
 
 ## FASE 135 — PENDIDIKAN & TALENT: ACADEMY, UPskilling & CERTIFICATION (LINI 16)
-- [ ] 135.1 Modul `Edu` (`edu_`): provider, MenuRegistry "Pendidikan & Talent", roles (`instructor`, `edu_admin`, `cert_officer`, `corp_lnd`), policies, arch test; tabel `edu_programs` (kelas teknis bisnis: mekanik AutoServe, barista, HSE tambang, chef, front office, perawat), `edu_cohorts`, `edu_enrollments`
-- [ ] 135.2 **Katalog & kurikulum**: silabus berlapis (modul → sesi → asesmen), prerequisite graph (deteksi siklus), instruktur (staff HCM atau ahli eksternal Party) → jadwal & ruang (booking aset/flex-space Fase 78)
-- [ ] 135.3 **Pendaftaran & pembayaran**: enrollment → biaya (diskon beasiswa/CSR/employee benefit dari HCM training budget) → bayar via wallet/Payment Hub → cicilan (memperluas Fase 5C pattern) → refund pro-rata batal di tengah
-- [ ] 135.4 **Assessment & sertifikasi**: kuis (auto-grade), praktik (penilaian instruktur), ujian akhir → **sertifikat hash-chain** (terverifikasi publik via QR, mirip Vehicle Passport) → masa berlaku → perpanjangan dengan CPD points
-- [ ] 135.5 **Corporate L&D**: perusahaan (tenant mall, pabrik, RS, tambang) → paket pelatihan karyawan → kontrak B2B → konsumsi kuota → laporan kepatuhan kompetensi (mis. operator wajib bersertifikat K3 sebelum penugasan Fase 120.2)
-- [ ] 135.6 Tests: (a) prerequisite tak terpenuhi → enrollment ditolak (b) sertifikat hash valid & QR terverifikasi (c) refund pro-rata = § × sisa sesi (d) sertifikat expired memblokir penugasan role kritis (e) `edu:audit` = 0 selisih
-- [ ] 135.7 Quality gate Fase 135
+- [x] 135.1 Modul `Edu` (`edu_`): provider, MenuRegistry "Pendidikan & Talent", roles (`instructor`, `edu_admin`, `cert_officer`, `corp_lnd`), policies, arch test; tabel `edu_programs` (kelas teknis bisnis: mekanik AutoServe, barista, HSE tambang, chef, front office, perawat), `edu_cohorts`, `edu_enrollments`
+- [x] 135.2 **Katalog & kurikulum**: silabus berlapis (modul → sesi → asesmen), prerequisite graph (deteksi siklus), instruktur (staff HCM atau ahli eksternal Party) → jadwal & ruang (booking aset/flex-space Fase 78)
+- [x] 135.3 **Pendaftaran & pembayaran**: enrollment → biaya (diskon beasiswa/CSR/employee benefit dari HCM training budget) → bayar via wallet/Payment Hub → cicilan (memperluas Fase 5C pattern) → refund pro-rata batal di tengah
+- [x] 135.4 **Assessment & sertifikasi**: kuis (auto-grade), praktik (penilaian instruktur), ujian akhir → **sertifikat hash-chain** (terverifikasi publik via QR, mirip Vehicle Passport) → masa berlaku → perpanjangan dengan CPD points
+- [x] 135.5 **Corporate L&D**: perusahaan (tenant mall, pabrik, RS, tambang) → paket pelatihan karyawan → kontrak B2B → konsumsi kuota → laporan kepatuhan kompetensi (mis. operator wajib bersertifikat K3 sebelum penugasan Fase 120.2)
+- [x] 135.6 Tests: (a) prerequisite tak terpenuhi → enrollment ditolak (b) sertifikat hash valid & QR terverifikasi (c) refund pro-rata = § × sisa sesi (d) sertifikat expired memblokir penugasan role kritis (e) `edu:audit` = 0 selisih
+- [x] 135.7 Quality gate Fase 135
 
 ## FASE 136 — PENDIDIKAN & TALENT: TALENT PIPELINE, HEADHUNTING & WORKFORCE MARKETPLACE
 - [ ] 136.1 **Talent pool 360°**: alumni edu (Fase 135) + karyawan internal + kandidat eksternal → profil skill (ontologi skill memperluas ide 8E), riwayat sertifikat, pengalaman → lowongan lintas 17 lini (formal job, kontrak proyek EPC, shift gig Fase 85)

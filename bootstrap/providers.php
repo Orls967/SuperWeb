@@ -111,4 +111,5 @@ return [
     EgyServiceProvider::class,
     TlxServiceProvider::class,
     \Modules\Med\MedServiceProvider::class,
+    \Modules\Edu\EduServiceProvider::class,
 ];
