@@ -2119,13 +2119,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 165.6 Quality gate Fase 165
 
 ## FASE 166 — LINI 20: PENDIDIKAN FORMAL & SEKOLAH (K-12, VOKASI, KAMPUS)
-- [ ] 166.1 Modul `Campus` (`camp_`): school/campus, academic years, terms, classes, cohorts, subjects, curricula, teachers, learners, guardians; multi-level governance & data scope per institution
-- [ ] 166.2 Admission lifecycle: application → document verification → entrance assessment → offer → enrollment → tuition plan; scholarships/aid via approval, waitlist & capacity allocation
-- [ ] 166.3 Academic operations: timetable conflict detection, attendance, gradebook, exam & rubric, transcript, graduation eligibility; certificate/transcript hash-chain verify command
-- [ ] 166.4 Tuition billing: per-term invoice, installments, scholarship allocation, late fee policy, refunds/withdrawal proration via ledger; sponsor/corporate payer support
-- [ ] 166.5 Guardian portal, consent management, safeguarding incident workflow, staff background-check simulation, age-appropriate access rules
-- [ ] 166.6 Tests: no timetable overlap, grades immutable after lock except approved amendment, scholarship ≤ tuition, student data access scoped, `campus:audit` = 0 variance
-- [ ] 166.7 Quality gate Fase 166
+- [x] 166.1 Modul `Campus` (`camp_`): school/campus, academic years, terms, classes, cohorts, subjects, curricula, teachers, learners, guardians; multi-level governance & data scope per institution
+- [x] 166.2 Admission lifecycle: application → document verification → entrance assessment → offer → enrollment → tuition plan; scholarships/aid via approval, waitlist & capacity allocation
+- [x] 166.3 Academic operations: timetable conflict detection, attendance, gradebook, exam & rubric, transcript, graduation eligibility; certificate/transcript hash-chain verify command
+- [x] 166.4 Tuition billing: per-term invoice, installments, scholarship allocation, late fee policy, refunds/withdrawal proration via ledger; sponsor/corporate payer support
+- [x] 166.5 Guardian portal, consent management, safeguarding incident workflow, staff background-check simulation, age-appropriate access rules
+- [x] 166.6 Tests: no timetable overlap, grades immutable after lock except approved amendment, scholarship ≤ tuition, student data access scoped, `campus:audit` = 0 variance
+- [x] 166.7 Quality gate Fase 166
 
 ## FASE 167 — LINI 20: LEARNING PLATFORM, DIGITAL CONTENT & CREDENTIALS
 - [ ] 167.1 Learning management system: course versioning, enrollment, lessons, assignments, discussion, accessibility metadata, multilingual content
