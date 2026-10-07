@@ -20,6 +20,7 @@ use Modules\Integration\Application\Services\PrivacyVaultService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
 use Modules\Integration\Application\Services\ReinsuranceAndCatService;
 use Modules\Integration\Application\Services\ResilienceWave2Service;
+use Modules\Integration\Application\Services\SukukAndZakatService;
 use Modules\Integration\Application\Services\SupplyChainResilienceService;
 use Modules\Integration\Application\Services\SyariahBankingService;
 use Modules\Integration\Application\Services\TakafulAndAgriService;
@@ -56,6 +57,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(LifeHealthWellnessService::class);
         $this->app->singleton(TakafulAndAgriService::class);
         $this->app->singleton(SyariahBankingService::class);
+        $this->app->singleton(SukukAndZakatService::class);
     }
 
     public function boot(): void
