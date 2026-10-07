@@ -2,15 +2,25 @@
 
 use App\Providers\AppServiceProvider;
 use Modules\Agency\AgencyServiceProvider;
+use Modules\Agri\AgriServiceProvider;
 use Modules\Asset\AssetServiceProvider;
 use Modules\AutoDex\AutoDexServiceProvider;
 use Modules\AutoServe\AutoServeServiceProvider;
+use Modules\B2b\B2bServiceProvider;
 use Modules\Banking\BankingServiceProvider;
 use Modules\Contract\ContractServiceProvider;
+use Modules\ControlTower\ControlTowerServiceProvider;
 use Modules\Core\CoreServiceProvider;
 use Modules\Crypto\CryptoServiceProvider;
 use Modules\Distribution\DistributionServiceProvider;
+use Modules\EnterpriseFinance\EnterpriseFinanceServiceProvider;
+use Modules\Epc\EpcServiceProvider;
+use Modules\Esg\EsgServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
+use Modules\Hcm\HcmServiceProvider;
+use Modules\Integration\IntegrationServiceProvider;
+use Modules\Intercompany\IntercompanyServiceProvider;
+use Modules\International\InternationalServiceProvider;
 use Modules\Inventory\InventoryServiceProvider;
 use Modules\Logistics\LogisticsServiceProvider;
 use Modules\Mall\MallServiceProvider;
@@ -18,6 +28,7 @@ use Modules\Manufacturing\ManufacturingServiceProvider;
 use Modules\Partner\PartnerServiceProvider;
 use Modules\Party\PartyServiceProvider;
 use Modules\Payment\PaymentServiceProvider;
+use Modules\Plm\PlmServiceProvider;
 use Modules\Pricing\PricingServiceProvider;
 use Modules\Procurement\ProcurementServiceProvider;
 use Modules\Resto\RestoServiceProvider;
@@ -25,6 +36,7 @@ use Modules\Shared\SharedServiceProvider;
 use Modules\Store\StoreServiceProvider;
 use Modules\Supplier\SupplierServiceProvider;
 use Modules\Trade\TradeServiceProvider;
+use Modules\TradeFinance\TradeFinanceServiceProvider;
 use Modules\Treasury\TreasuryServiceProvider;
 use Modules\Wms\WmsServiceProvider;
 
@@ -56,21 +68,16 @@ return [
     WmsServiceProvider::class,
     TreasuryServiceProvider::class,
     TradeServiceProvider::class,
-    \Modules\TradeFinance\TradeFinanceServiceProvider::class,
-    \Modules\International\InternationalServiceProvider::class,
-    \Modules\Intercompany\IntercompanyServiceProvider::class,
-    \Modules\ControlTower\ControlTowerServiceProvider::class,
-    \Modules\EnterpriseFinance\EnterpriseFinanceServiceProvider::class,
-    \Modules\Integration\IntegrationServiceProvider::class,
-    \Modules\Hcm\HcmServiceProvider::class,
-    \Modules\Plm\PlmServiceProvider::class,
-    \Modules\Esg\EsgServiceProvider::class,
-    \Modules\B2b\B2bServiceProvider::class,
-    \Modules\Agri\AgriServiceProvider::class,
-    \Modules\Epc\EpcServiceProvider::class,
+    TradeFinanceServiceProvider::class,
+    InternationalServiceProvider::class,
+    IntercompanyServiceProvider::class,
+    ControlTowerServiceProvider::class,
+    EnterpriseFinanceServiceProvider::class,
+    IntegrationServiceProvider::class,
+    HcmServiceProvider::class,
+    PlmServiceProvider::class,
+    EsgServiceProvider::class,
+    B2bServiceProvider::class,
+    AgriServiceProvider::class,
+    EpcServiceProvider::class,
 ];
-
-
-
-
-
