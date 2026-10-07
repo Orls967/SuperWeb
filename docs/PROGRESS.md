@@ -1008,14 +1008,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 ## PILAR 5 — LOGISTIK MULTIMODA, SCM & GUDANG
 
 ## FASE 79 — REVERSE LOGISTICS & CIRCULAR ECONOMY ENGINE
-- [ ] 79.1 Tabel `lgx_reverse_orders` (jenis: retur Store, oli bekas AutoServe, jelantah Resto, limbah B3 medis, scrap Manufacturing, e-waste) + `lgx_reverse_items` (komposisi, kondisi, tujuan daur ulang)
-- [ ] 79.2 Reverse shipment otomatis dari event (`store.return`, `auto.oil_used`, `resto.waste_bulk`, `hsp.bio_waste`) → assign armada (satu armada dengan forward, muatan balik/backhaul) → terhubung chain of custody hash
-- [ ] 79.3 **Nilai sirkular**: barang terkumpul dinilai ulang → menjadi bahan baku Manufacturing (biodiesel jelantah, remanufaktur oli, remould sparepart) dengan harga dari Pricing Engine → posting ledger `lgx:circular_revenue` / `mfg:scrap_inbound`
-- [ ] 79.4 **Skor ESG sirkularitas**: tonase diselamatkan vs dibuang, penghematan emisi (avoided landfill emission faktor) → kredit ESG naik (Fase 60), laporan per lini bisnis
-- [ ] 79.5 Compliance limbah: manifest pembuangan (dokumen gapless), vendor pengolah tersertifikasi (Party role), audit rantai kustodi limbah sampai TPA/pabrik pengolah
-- [ ] 79.6 Dashboard circular economy: tonase per jenis, revenue daur ulang, biaya vs manfaat, kredit ESG terkumpul, kustodi limbah valid
-- [ ] 79.7 Tests: (a) reverse order terpicu tepat 1x per event (b) nilai daur ulang = ledger & stok bahan baku naik (c) manifest tanpa celah (d) rantai kustodi limbah valid (e) reconcile circular = ledger
-- [ ] 79.8 Quality gate Fase 79
+- [x] 79.1 Tabel `lgx_reverse_orders` (jenis: retur Store, oli bekas AutoServe, jelantah Resto, limbah B3 medis, scrap Manufacturing, e-waste) + `lgx_reverse_items` (komposisi, kondisi, tujuan daur ulang)
+- [x] 79.2 Reverse shipment otomatis dari event (`store.return`, `auto.oil_used`, `resto.waste_bulk`, `hsp.bio_waste`) → assign armada (satu armada dengan forward, muatan balik/backhaul) → terhubung chain of custody hash
+- [x] 79.3 **Nilai sirkular**: barang terkumpul dinilai ulang → menjadi bahan baku Manufacturing (biodiesel jelantah, remanufaktur oli, remould sparepart) dengan harga dari Pricing Engine → posting ledger `lgx:circular_revenue` / `mfg:scrap_inbound`
+- [x] 79.4 **Skor ESG sirkularitas**: tonase diselamatkan vs dibuang, penghematan emisi (avoided landfill emission faktor) → kredit ESG naik (Fase 60), laporan per lini bisnis
+- [x] 79.5 Compliance limbah: manifest pembuangan (dokumen gapless), vendor pengolah tersertifikasi (Party role), audit rantai kustodi limbah sampai TPA/pabrik pengolah
+- [x] 79.6 Dashboard circular economy: tonase per jenis, revenue daur ulang, biaya vs manfaat, kredit ESG terkumpul, kustodi limbah valid
+- [x] 79.7 Tests: (a) reverse order terpicu tepat 1x per event (b) nilai daur ulang = ledger & stok bahan baku naik (c) manifest tanpa celah (d) rantai kustodi limbah valid (e) reconcile circular = ledger
+- [x] 79.8 Quality gate Fase 79
 
 ## FASE 80 — COLD-CHAIN BLOCKCHAIN AUTONOMOUS, DRONE & LAST-MILE ROBOTICS
 - [ ] 80.1 **Cold-chain enforcement**: pembacaan suhu reefer (Fase 24.4) → breach > 10 menit → event `lgx.temp_breach` → **PaymentGateway otomatis HOLD pembayaran subkontraktor** pengangkut sampai dispute selesai (release setelah investigasi/klaim asuransi Fase 23.4); pembacaan suhu masuk hash-chain sebagai bukti
