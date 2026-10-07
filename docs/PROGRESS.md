@@ -1752,13 +1752,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 126.7 Quality gate Fase 126
 
 ## FASE 127 — ENERGI & UTILITAS: WATER, WASTE & DISTRICT UTILITIES
-- [ ] 127.1 **Water utility**: instalasi pengolahan air (aset) → produksi m³ terukur → distribusi ke properti (meter, leak detection via pressure sensor) → tagihan per m³ tiered → limbah cair terolah → efluen compliant (Fase 124.2 pola)
-- [ ] 127.2 **Waste-to-energy & recycling plant**: sampah organik → biogas/listrik; anorganik → recycling line (Manufacturing ringan) → revenue bahan daur ulang + tipping fee dari pemerintah simulasi → mengurangi landfill (ESG Fase 79)
-- [ ] 127.3 **District cooling/heating** (mall & kawasan): central plant → distribusi pipa → meter per gedung → biaya per kWh thermal → koefisien COP terukur → efisien vs AC individual (penghematan tenant)
-- [ ] 127.4 **Utility billing consolidation**: satu invoice per properti (listrik + air + gas + district cooling) → alokasi ke tenant (properti komersial) / beban biaya (pabrik) → aging & auto-debit (Fase 13.3 pola)
-- [ ] 127.5 **Energy audit & ESCO model**: audit konsumsi → usulan efisiensi → kontrak performa (ESCO: bayar dari penghematan) → measurement & verification → split saving
-- [ ] 127.6 Tests: (a) water balance input − loss − output terjelaskan (b) district cooling = meter × tarif (c) ESCO split = % × saving terverifikasi (d) consolidasi bill = Σ komponen (e) `egy:audit` + `mall:audit-billing` = 0 selisih
-- [ ] 127.7 Quality gate Fase 127
+- [x] 127.1 **Water utility**: instalasi pengolahan air (aset) → produksi m³ terukur → distribusi ke properti (meter, leak detection via pressure sensor) → tagihan per m³ tiered → limbah cair terolah → efluen compliant (Fase 124.2 pola)
+- [x] 127.2 **Waste-to-energy & recycling plant**: sampah organik → biogas/listrik; anorganik → recycling line (Manufacturing ringan) → revenue bahan daur ulang + tipping fee dari pemerintah simulasi → mengurangi landfill (ESG Fase 79)
+- [x] 127.3 **District cooling/heating** (mall & kawasan): central plant → distribusi pipa → meter per gedung → biaya per kWh thermal → koefisien COP terukur → efisien vs AC individual (penghematan tenant)
+- [x] 127.4 **Utility billing consolidation**: satu invoice per properti (listrik + air + gas + district cooling) → alokasi ke tenant (properti komersial) / beban biaya (pabrik) → aging & auto-debit (Fase 13.3 pola)
+- [x] 127.5 **Energy audit & ESCO model**: audit konsumsi → usulan efisiensi → kontrak performa (ESCO: bayar dari penghematan) → measurement & verification → split saving
+- [x] 127.6 Tests: (a) water balance input − loss − output terjelaskan (b) district cooling = meter × tarif (c) ESCO split = % × saving terverifikasi (d) consolidasi bill = Σ komponen (e) `egy:audit` + `mall:audit-billing` = 0 selisih
+- [x] 127.7 Quality gate Fase 127
 
 ## FASE 128 — ENERGI & UTILITAS: CARBON TRADING, REC & ESG MARKETPLACE
 - [ ] 128.1 **Carbon exchange internal**: kredit karbon 17 lini (Fase 60 + 123.3) diperdagangkan antar entitas grup & mitra eksternal → orderbook (mirip Fase 71.3) → settlement ledger → retensi sebelum penjualan (kedaluwarsa vintage terhitung)
