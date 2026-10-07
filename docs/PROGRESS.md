@@ -1574,13 +1574,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 106.7 Quality gate Fase 106
 
 ## FASE 107 — KESEHATAN: PUBLIC HEALTH, JKN/BPJS & HEALTH COMMAND CENTER
-- [ ] 107.1 **Klaim JKN/BPJS batch engine**: gabungan episode eligible → grouping DRG simulasi (kamar, tindakan, obat) → berkas klaim → status (submitted → verifikasi → paid/denied) → aging & provision; denial → alasan → koreksi → resubmit (gapless number per berkas)
-- [ ] 107.2 Dashboard capitation & kas: populasi terdaftar, kunjungan per kapita, utilization rate, forecast cash BPJS bulanan → memengaruhi arus kas RS (Fase 48.5)
-- [ ] 107.3 **Epidemic & public health surveillance** (simulasi): agregasi gejala/ diagnosis anonim per wilayah → deteksi klaster (threshold rule) → early warning ke puskesmas mitra & Kemenkes simulasi → trigger stok P3K/obat darurat via Procurement
-- [ ] 107.4 **Health Command Center**: prediksi pasien masuk 7 hari (model Holt-Winters memperluas Fase 53.2, input: musim, wabah simulasi, kalender) → rekomendasi shift tenaga kesehatan (HCM), kamar disiapkan, stok darah & obat kritis → eksekusi via bounty/shift engine (Fase 85)
-- [ ] 107.5 KPI: LOS, BOR, TOI, average revenue per bed-day, denial rate, cash collection — seluruhnya dari ledger tanpa query budget breach
-- [ ] 107.6 Tests: (a) klaim denied → tidak ter-accrual pendapatan (b) klaster wabah terdeteksi tepat pada threshold (c) forecast shift ≤ kapasitas tenaga kerja (d) berkas klaim gapless (e) `hosp:audit` = 0 selisih
-- [ ] 107.7 Quality gate Fase 107
+- [x] 107.1 **Klaim JKN/BPJS batch engine**: gabungan episode eligible → grouping DRG simulasi (kamar, tindakan, obat) → berkas klaim → status (submitted → verifikasi → paid/denied) → aging & provision; denial → alasan → koreksi → resubmit (gapless number per berkas)
+- [x] 107.2 Dashboard capitation & kas: populasi terdaftar, kunjungan per kapita, utilization rate, forecast cash BPJS bulanan → memengaruhi arus kas RS (Fase 48.5)
+- [x] 107.3 **Epidemic & public health surveillance** (simulasi): agregasi gejala/ diagnosis anonim per wilayah → deteksi klaster (threshold rule) → early warning ke puskesmas mitra & Kemenkes simulasi → trigger stok P3K/obat darurat via Procurement
+- [x] 107.4 **Health Command Center**: prediksi pasien masuk 7 hari (model Holt-Winters memperluas Fase 53.2, input: musim, wabah simulasi, kalender) → rekomendasi shift tenaga kesehatan (HCM), kamar disiapkan, stok darah & obat kritis → eksekusi via bounty/shift engine (Fase 85)
+- [x] 107.5 KPI: LOS, BOR, TOI, average revenue per bed-day, denial rate, cash collection — seluruhnya dari ledger tanpa query budget breach
+- [x] 107.6 Tests: (a) klaim denied → tidak ter-accrual pendapatan (b) klaster wabah terdeteksi tepat pada threshold (c) forecast shift ≤ kapasitas tenaga kerja (d) berkas klaim gapless (e) `hosp:audit` = 0 selisih
+- [x] 107.7 Quality gate Fase 107
 
 ## FASE 108 — KESEHATAN: MEDICAL TOURISM, WELLNESS & HEALTH MEMBERSHIP
 - [ ] 108.1 Paket medical tourism (memperluas ide 9E): pemeriksaan menyeluruh/check-up premium, prosedur elektif, second opinion → bundling **RS + Hotel (Fase 92.6) + tiket pesawat/transport (Logistics) + visa dokumen (Trade 49.4)** → satu harga, settlement multi-vendor escrow
