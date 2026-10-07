@@ -457,10 +457,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 - **Service:** `Modules\Mining\Application\Services\MiningFleetDispatchService`, `Modules\Mining\Application\Services\MiningComplianceAndRoyaltyService` — dispatch haul truck ber-guard ketersediaan, deteksi anomali BBM per ton-km, penerbitan tiket timbangan digital hash-chain append-only, kalkulasi tarif royalti PNBP bulanan dan posting liabilitas ke akun `min:royalty_payable:IDR`, dan evaluasi masa aktif izin kerja HSE (blasting, confined space).
 - **Provider:** `Modules\Mining\MiningServiceProvider`.
 
-### Cross-Line 12-Pillars Ecosystem Integration — Fase 95 & 96
+### Cross-Line 12-Pillars Ecosystem Integration — Fase 95, 96 & 97
 
-- **Tujuan:** orkestrasi integrasi silang 12 pilar bisnis (otomotif, EV, logistik, hotel, venue, rumah sakit, tambang, mall, resto, agri, manufaktur, finance), paket wisata medis terpadu (*medical tourism bundle*), posting konsumsi venue/resto langsung ke folio kamar hotel, klaim asuransi parametrik universal autopilot dari 12 lini (cold-chain breach, cuaca ekstrem tambang), dan kliring stablecoin USDC lintas batas dan intercompany.
-- **Service:** `Modules\Core\Application\Services\TwelveLinesCrossEcosystemService`, `Modules\Core\Application\Services\UniversalCrossLineFintechService` — multi-line settlement ke escrow & revenue ledger dengan $\sum = 0$, klaim asuransi otomatis dari reserve pool, dan kliring instan stablecoin USDC 24/7.
+- **Tujuan:** orkestrasi integrasi silang 12 pilar bisnis (otomotif, EV, logistik, hotel, venue, rumah sakit, tambang, mall, resto, agri, manufaktur, finance), paket wisata medis terpadu (*medical tourism bundle*), posting konsumsi venue/resto langsung ke folio kamar hotel, klaim asuransi parametrik universal autopilot dari 12 lini (cold-chain breach, cuaca ekstrem tambang), kliring stablecoin USDC lintas batas dan intercompany, neraca emisi karbon ESG grup 12 lini (Scope 1, 2, 3), dan skor kesehatan ekosistem komposit.
+- **Service:** `Modules\Core\Application\Services\TwelveLinesCrossEcosystemService`, `Modules\Core\Application\Services\UniversalCrossLineFintechService`, `Modules\Core\Application\Services\TwelveLinesCommandCenterService` — multi-line settlement ke escrow & revenue ledger dengan $\sum = 0$, klaim asuransi otomatis dari reserve pool, kliring instan stablecoin USDC 24/7, agregasi emisi Scope 1-3 seluruh lini bisnis, serta evaluasi kesehatan 4 pilar (finansial, operasional, ESG, compliance).
 
 ---
 

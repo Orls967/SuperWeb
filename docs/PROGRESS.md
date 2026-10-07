@@ -1209,13 +1209,13 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 96.7 Quality gate Fase 96
 
 ## FASE 97 — INTEGRASI LINTAS 12 LINI (C): TALENT GIG, ESG TERPADU & EVENT SPINE PENUH
-- [ ] 97.1 **Talent marketplace universal**: bounty lintas lini (Resto overload, setup venue, bongkar muat logistik, cuci armada, asistensi RS dadakan, operasional shift hotel, crew tambang kontraktor) → satu papan, aturan upah & K3 konsisten (Fase 85), bayar via Core Banking
-- [ ] 97.2 **ESG terpadu 12 lini**: agregasi emisi Scope 1–3 dari armada (Fase 60), gedung/hotel/venue (Fase 76), pabrik & tambang (Fase 94.8), limbah sirkular (Fase 79) → neraca karbon grup → kredit karbon pensiun → laporan GRI per lini & konsolidasi grup
-- [ ] 97.3 **Universal Event Spine penuh** (Fase 67.2): seluruh event 12 lini terbit & terkonsumsi lintas pilar — contoh: `min.ore_shipped` → `lgx.container_loaded` → `trade.bl_issued` → `fintech.escrow_released`; `ven.event_ticket_sold` → `htl.bundle_confirmed` → `resto.catering_ready`
-- [ ] 97.4 **Group command center 12 lini** (memperluas Fase 57.4/16.5): P&L per lini, arus kas, kesehatan seluruh `*:audit` (kini 40+ perintah), status event spine (lag, dead-letter), twin health per entitas — dalam batas query budget
-- [ ] 97.5 **Skor kesehatan ekosistem** per entitas & per lini (finansial, talenta, ESG, risiko — memperluas ide 8E) → dasar keputusan alokasi modal & prioritas ekspansi
-- [ ] 97.6 Tests: (a) event lintas lini diproses idempoten saat replay (b) ESG grup = Σ emisi lini (c) P&L 12 lini = ledger konsolidasi (d) gig payout lintas lini konsisten payroll (e) query budget command center terpenuhi
-- [ ] 97.7 Quality gate Fase 97
+- [x] 97.1 **Talent marketplace universal**: bounty lintas lini (Resto overload, setup venue, bongkar muat logistik, cuci armada, asistensi RS dadakan, operasional shift hotel, crew tambang kontraktor) → satu papan, aturan upah & K3 konsisten (Fase 85), bayar via Core Banking
+- [x] 97.2 **ESG terpadu 12 lini**: agregasi emisi Scope 1–3 dari armada (Fase 60), gedung/hotel/venue (Fase 76), pabrik & tambang (Fase 94.8), limbah sirkular (Fase 79) → neraca karbon grup → kredit karbon pensiun → laporan GRI per lini & konsolidasi grup
+- [x] 97.3 **Universal Event Spine penuh** (Fase 67.2): seluruh event 12 lini terbit & terkonsumsi lintas pilar — contoh: `min.ore_shipped` → `lgx.container_loaded` → `trade.bl_issued` → `fintech.escrow_released`; `ven.event_ticket_sold` → `htl.bundle_confirmed` → `resto.catering_ready`
+- [x] 97.4 **Group command center 12 lini** (memperluas Fase 57.4/16.5): P&L per lini, arus kas, kesehatan seluruh `*:audit` (kini 40+ perintah), status event spine (lag, dead-letter), twin health per entitas — dalam batas query budget
+- [x] 97.5 **Skor kesehatan ekosistem** per entitas & per lini (finansial, talenta, ESG, risiko — memperluas ide 8E) → dasar keputusan alokasi modal & prioritas ekspansi
+- [x] 97.6 Tests: (a) event lintas lini diproses idempoten saat replay (b) ESG grup = Σ emisi lini (c) P&L 12 lini = ledger konsolidasi (d) gig payout lintas lini konsisten payroll (e) query budget command center terpenuhi
+- [x] 97.7 Quality gate Fase 97
 
 ## FASE 98 — SKALA ULTRA: SEEDER 12 LINI, QUERY BUDGET & STRESS TEST
 - [ ] 98.1 **TwelveLinesUltraSeeder**: dataset raksasa deterministik idempoten (memperluas Fase 56.1 & 67.4): 10 juta kendaraan berpaspor + telematik 180 hari, 5 juta dompet + ratusan juta mutasi, 5.000 outlet + 730 juta order (12 bulan), 200 properti + 50 ribu lease + 12 bulan billing, 5 juta shipment + 100 juta event kustodi, 100 pabrik + 1 juta SPK, 10 ribu koridor dagang + 50 ribu L/C, 10 juta pasien + 100 juta encounter, 1.000 venue + 50 juta tiket, 5.000 properti hotel + 100 juta room-night, 500 pit + 50 ribu alat berat + miliaran tick telematik; checkpoint/resume, benchmark per etape
