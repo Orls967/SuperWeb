@@ -1619,13 +1619,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 111.7 Quality gate Fase 111
 
 ## FASE 112 — HOSPITALITY & ENTERTAINMENT: GLOBAL LOYALTY & TRAVEL PASS
-- [ ] 112.1 **Travel Pass**: satu membership lintas properti hotel + venue + resto + airline partner simulasi + kereta → tier global (Silver/Gold/Platinum/Black) berbasis nights + spend gabungan
-- [ ] 112.2 Poin lintas-batas: earn di 17 lini, redeem (room upgrade, tiket festival, dining, spa, health check-up) dengan **redemption matrix** terpusat & liability poin terkendali (memperluas Fase 15.1) → breakage & expiry FIFO
-- [ ] 112.3 Airline/hotel alliance simulasi: transfer poin ke mitra (fee conversion), co-brand card (limit kredit via Fase 96.3) → cashback masuk dompet
-- [ ] 112.4 **Dynamic award pricing**: kamar award night berfluktuasi okupansi (memperluas Fase 81) → guardrail minimum nights per tier
-- [ ] 112.5 Personalization engine: riwayat 360° → rekomendasi tujuan (event venue mendatang, festival, medical check-up season) → campaign ter-audit, unsubscribe respected
-- [ ] 112.6 Tests: (a) Σ poin issued = earned − redeemed − expired (b) liability poin = ledger PTS (c) transfer poin fee akurat (d) award dynamic tak di bawah floor (e) reconcile loyalty multi-lini = 0 selisih
-- [ ] 112.7 Quality gate Fase 112
+- [x] 112.1 **Travel Pass**: satu membership lintas properti hotel + venue + resto + airline partner simulasi + kereta → tier global (Silver/Gold/Platinum/Black) berbasis nights + spend gabungan
+- [x] 112.2 Poin lintas-batas: earn di 17 lini, redeem (room upgrade, tiket festival, dining, spa, health check-up) dengan **redemption matrix** terpusat & liability poin terkendali (memperluas Fase 15.1) → breakage & expiry FIFO
+- [x] 112.3 Airline/hotel alliance simulasi: transfer poin ke mitra (fee conversion), co-brand card (limit kredit via Fase 96.3) → cashback masuk dompet
+- [x] 112.4 **Dynamic award pricing**: kamar award night berfluktuasi okupansi (memperluas Fase 81) → guardrail minimum nights per tier
+- [x] 112.5 Personalization engine: riwayat 360° → rekomendasi tujuan (event venue mendatang, festival, medical check-up season) → campaign ter-audit, unsubscribe respected
+- [x] 112.6 Tests: (a) Σ poin issued = earned − redeemed − expired (b) liability poin = ledger PTS (c) transfer poin fee akurat (d) award dynamic tak di bawah floor (e) reconcile loyalty multi-lini = 0 selisih
+- [x] 112.7 Quality gate Fase 112
 
 ## FASE 113 — HOSPITALITY & ENTERTAINMENT: TRAVEL & ITINERARY PLATFORM
 - [ ] 113.1 **Travel platform**: pencarian bundle (penerbangan simulasi + hotel + mobil sewa (Fase 70) + tiket event + itinerary harian) → harga total dengan komponen multi-vendor → sekali bayar → settlement escrow bertahap
