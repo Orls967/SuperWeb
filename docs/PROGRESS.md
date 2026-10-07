@@ -1250,12 +1250,12 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 101.6 Quality gate Fase 101
 
 ## FASE 102 — API V3, WEBHOOK & PORTAL MITRA 12 LINI
-- [ ] 102.1 **API v3**: endpoint untuk lini baru (telematik ingest, EV session, RWA orderbook, claims API, ticketing & check-in, PMS reservation, mine dispatch, weighbridge) — OpenAPI 3.1 lengkap, Sanctum abilities per lini, Idempotency-Key wajib, RFC 7807
-- [ ] 102.2 **Webhook event spine untuk mitra eksternal**: OTA hotel, payment aggregator venue, sistem tambang pihak ketiga, DHI/insurance partner, asuransi RS → HMAC-SHA256, retry, DLQ, replay (memperluas Fase 55.2)
-- [ ] 102.3 **Portal mitra baru**: supplier VMI (Fase 82), BPJS/insurance (klaim RS), OTA & corporate travel (hotel), artist management (venue), kontraktor tambang & off-taker, EV charge point operator → masing-masing dengan scope ketat & rate limit tier (Fase 55.5)
-- [ ] 102.4 **Mobile offline-first untuk peran lapangan baru** (memperluas Fase 65): perawat/doctor rounds (order offline), housekeeping & front office, venue door staff (scan tiket offline + sync), mine weighbridge & dispatch, EV field tech, driver & driver drone → sync engine idempoten, zero-duplicate
-- [ ] 102.5 `api:audit` diperluas: seluruh endpoint v3 vs OpenAPI, webhook signature 100% valid, portal scope terisolasi
-- [ ] 102.6 Quality gate Fase 102
+- [x] 102.1 **API v3**: endpoint untuk lini baru (telematik ingest, EV session, RWA orderbook, claims API, ticketing & check-in, PMS reservation, mine dispatch, weighbridge) — OpenAPI 3.1 lengkap, Sanctum abilities per lini, Idempotency-Key wajib, RFC 7807
+- [x] 102.2 **Webhook event spine untuk mitra eksternal**: OTA hotel, payment aggregator venue, sistem tambang pihak ketiga, DHI/insurance partner, asuransi RS → HMAC-SHA256, retry, DLQ, replay (memperluas Fase 55.2)
+- [x] 102.3 **Portal mitra baru**: supplier VMI (Fase 82), BPJS/insurance (klaim RS), OTA & corporate travel (hotel), artist management (venue), kontraktor tambang & off-taker, EV charge point operator → masing-masing dengan scope ketat & rate limit tier (Fase 55.5)
+- [x] 102.4 **Mobile offline-first untuk peran lapangan baru** (memperluas Fase 65): perawat/doctor rounds (order offline), housekeeping & front office, venue door staff (scan tiket offline + sync), mine weighbridge & dispatch, EV field tech, driver & driver drone → sync engine idempoten, zero-duplicate
+- [x] 102.5 `api:audit` diperluas: seluruh endpoint v3 vs OpenAPI, webhook signature 100% valid, portal scope terisolasi
+- [x] 102.6 Quality gate Fase 102
 
 ## FASE 103 — DOKUMENTASI FINAL, PLAYBOOK 60+ ROLE & SERAH TERIMA EKSPANSI 12 LINI
 - [ ] 103.1 **README final**: ringkasan 12 lini bisnis dalam satu website monolith, tabel akun demo per role baru, cara menjalankan simulasi kernel & seeder ultra, daftar seluruh command `*:audit`/`verify-*`
