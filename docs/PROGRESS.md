@@ -1878,13 +1878,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 140.8 Quality gate Fase 140
 
 ## FASE 141 — INTEGRASI: GROUP CAPITAL, CONGLOMERATE GOVERNANCE & CROSS-LINI CAPITAL ALLOCATION
-- [ ] 141.1 **Holding & subholding structure** (memperluas Fase 27.3): 17 lini → 5 subholding (Otomotif & Hospitality & Resources & Infrastructure & Consumer) → struktur saham token (memperluas Fase 71) → dividen holding dari laba anak (jurnal, simulasi)
-- [ ] 141.2 **Capital allocation engine**: proposal capex per lini (buka pabrik, 100 RS baru, 500 venue, solar farm) → scoring (IRR/NPV simulasi + skor strategis + ESG) → prioritas → dialokasi dana dari Treasury (Fase 48.5) → monitoring post-investment actual vs business case
-- [ ] 141.3 **M&A workflow**: target identification → due diligence (Fase 47.2 diperluas: financial, legal, tech, ESG) → valuation → offer → financing (debt via Fase 48.7 + equity token) → closing → integration playbook (migrasi data ke modul monolith, backfill idempoten)
-- [ ] 141.4 **Conglomerate risk register**: risiko lintas lini (konsentrasi komoditas, FX, regulasi, cyber) → heat map → mitigation owner → pelaporan ke DAO/dewan (Fase 86.6) → korelasi dengan insurance portfolio (Fase 72)
-- [ ] 141.5 **Investor & analyst portal**: laporan segmen 17 lini (Fase 52.6 diperluas) → kuartalan (simulasi PSAK konsolidasi) → Q&A → materi paparan publik (dokumen, gapless)
-- [ ] 141.6 Tests: (a) dividen holding = laba anak × porsi terverifikasi (b) capex tak melebihi alokasi Treasury (c) M&A integration backfill idempoten & tak duplikat (d) segmen 17 lini Σ = konsolidasi grup (e) `group:audit` = 0 selisih
-- [ ] 141.7 Quality gate Fase 141
+- [x] 141.1 **Holding & subholding structure** (memperluas Fase 27.3): 17 lini → 5 subholding (Otomotif & Hospitality & Resources & Infrastructure & Consumer) → struktur saham token (memperluas Fase 71) → dividen holding dari laba anak (jurnal, simulasi)
+- [x] 141.2 **Capital allocation engine**: proposal capex per lini (buka pabrik, 100 RS baru, 500 venue, solar farm) → scoring (IRR/NPV simulasi + skor strategis + ESG) → prioritas → dialokasi dana dari Treasury (Fase 48.5) → monitoring post-investment actual vs business case
+- [x] 141.3 **M&A workflow**: target identification → due diligence (Fase 47.2 diperluas: financial, legal, tech, ESG) → valuation → offer → financing (debt via Fase 48.7 + equity token) → closing → integration playbook (migrasi data ke modul monolith, backfill idempoten)
+- [x] 141.4 **Conglomerate risk register**: risiko lintas lini (konsentrasi komoditas, FX, regulasi, cyber) → heat map → mitigation owner → pelaporan ke DAO/dewan (Fase 86.6) → korelasi dengan insurance portfolio (Fase 72)
+- [x] 141.5 **Investor & analyst portal**: laporan segmen 17 lini (Fase 52.6 diperluas) → kuartalan (simulasi PSAK konsolidasi) → Q&A → materi paparan publik (dokumen, gapless)
+- [x] 141.6 Tests: (a) dividen holding = laba anak × porsi terverifikasi (b) capex tak melebihi alokasi Treasury (c) M&A integration backfill idempoten & tak duplikat (d) segmen 17 lini Σ = konsolidasi grup (e) `group:audit` = 0 selisih
+- [x] 141.7 Quality gate Fase 141
 
 ## FASE 142 — SKALA GELOMBANG 2: SEEDER 17 LINI & PERFORMANCE ENFORCEMENT
 - [ ] 142.1 **SeventeenLinesUltraSeeder**: lanjutan Fase 98.1 — tambahan: 5 juta smart meter 15-menit × 90 hari, 1 juta subscriber telekom, 100 ribu enrollment edukasi + 500 ribu sertifikat, 1 juta listing marketplace + 50 juta order ritel, 500 proyek media + 100 ribu IP license, 5 juta meteran/telemetri DC & grid; total dataset miliaran baris — checkpoint/resume, benchmark per etape, idempoten mutlak
