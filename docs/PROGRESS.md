@@ -1948,13 +1948,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 148.6 Quality gate Fase 148
 
 ## FASE 149 — DOKUMENTASI & PLAYBOOK GELOMBANG 2
-- [ ] 149.1 **README final 17 lini**: ringkasan seluruh lini, akun demo per role baru, cara menjalankan kernel simulasi + seeder ultra gelombang 2, daftar lengkap `*:audit`/`verify-*`
-- [ ] 149.2 **ARCHITECTURE.md**: ERD 12 modul gelombang 2 (Egy, Tlx, Med, Edu, Ret + perluasan Hosp/Ven/Htl/Min), peta energy/telco/data flow, sequence diagram super app & marketplace settlement
-- [ ] 149.3 **CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 104–149 tercatat; orientasi sesi baru lengkap
-- [ ] 149.4 **RUNBOOK.md**: SOP energi (grid dispatch, microgrid), telco (NOC), media (production), edukasi (cohorts), ritel (OMS & q-commerce), plus update seluruh SOP gelombang 1
-- [ ] 149.5 **Role playbooks 100+ role**: role gelombang 2 (grid_operator, noc_engineer, dc_operator, producer, instructor, marketplace_mgr, retail_ops, cert_officer, energy_auditor, dll.) + pemutakhiran playbook gelombang 1
-- [ ] 149.6 **Laporan audit gelombang 2**: konsolidasi metrik (test count, assertion, seluruh hasil audit, benchmark seeder, query budget, DR drill) → dokumen serah terima
-- [ ] 149.7 Quality gate Fase 149
+- [x] 149.1 **README final 17 lini**: ringkasan seluruh lini, akun demo per role baru, cara menjalankan kernel simulasi + seeder ultra gelombang 2, daftar lengkap `*:audit`/`verify-*`
+- [x] 149.2 **ARCHITECTURE.md**: ERD 12 modul gelombang 2 (Egy, Tlx, Med, Edu, Ret + perluasan Hosp/Ven/Htl/Min), peta energy/telco/data flow, sequence diagram super app & marketplace settlement
+- [x] 149.3 **CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 104–149 tercatat; orientasi sesi baru lengkap
+- [x] 149.4 **RUNBOOK.md**: SOP energi (grid dispatch, microgrid), telco (NOC), media (production), edukasi (cohorts), ritel (OMS & q-commerce), plus update seluruh SOP gelombang 1
+- [x] 149.5 **Role playbooks 100+ role**: role gelombang 2 (grid_operator, noc_engineer, dc_operator, producer, instructor, marketplace_mgr, retail_ops, cert_officer, energy_auditor, dll.) + pemutakhiran playbook gelombang 1
+- [x] 149.6 **Laporan audit gelombang 2**: konsolidasi metrik (test count, assertion, seluruh hasil audit, benchmark seeder, query budget, DR drill) → dokumen serah terima
+- [x] 149.7 Quality gate Fase 149
 
 ## FASE 150 — FINAL: QUALITY GATE EKSPANSI PENUH & SERAH TERIMA AKHIR
 - [ ] 150.1 **Full regression Fase 0–150**: seluruh test suite (test Fase 0–63 karakterisasi + 64–103 gelombang 1 + 104–149 gelombang 2) 100% hijau, tanpa satu pun di-skip/dilemahkan; jumlah test & assertion tercatat vs baseline setiap fase

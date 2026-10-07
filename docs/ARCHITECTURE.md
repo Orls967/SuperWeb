@@ -82,8 +82,16 @@ Untuk mencegah *tight coupling* ("spaghetti monolith"):
 | **PLM** | `plm_` | Product Lifecycle Management, pipeline riset Stage-Gate, konversi EBOM ke MBOM resep pabrik, ECO berantai hash SHA-256, ELN lab. |
 | **ESG** | `esg_` | Pengukuran emisi GRK GHG Protocol Scope 1-3, bursa karbon IDX Carbon / Verra, offset retirement net-zero, ESG supplier scorecard GRI. |
 | **B2B** | `b2b_` | Marketplace grosir tertutup, alur negosiasi RFQ komersial, balai lelang digital aset surplus & mesin pabrik anti-sniping, escrow akun. |
-| **Agri** | `agri_` | Agribisnis hulu pangan, GIS poligon lahan kelompok tani, contract farming & talangan saprotan, pos pengumpul grading mutu, cold chain IoT. |
 | **EPC** | `epc_` | Rekayasa konstruksi proyek properti & pabrik, hierarki WBS bobot 100%, kurva-S, Monthly Certificate MC retensi 5%, kapitalisasi CIP ke Aset. |
+| **Hospital** | `hosp_` | Layanan kesehatan & farmasi, EMR paspor pasien hash-chain, ketersediaan bed rawat inap & ICU, contraindication engine, BPJS/asuransi billing. |
+| **Venue** | `ven_` | Entertainment & beach club, ticketing non-fungible hash-chain, access control RFID/QR gate, zone crowd safety, VIP table escrow, festival bundle. |
+| **Hotel** | `htl_` | Hospitality PMS, alokasi kamar anti-oversell, dynamic rate protection, smart lock keyless QR, HVAC energy twin setback, timeshare yield. |
+| **Mining** | `min_` | Pertambangan & alat berat, mine planning, fleet dispatch, weighbridge digital hash-chain, akrual royalti PNBP, HSE work permit. |
+| **Energy** | `egy_` | Pembangkit EBT/Fosil, transmisi SCADA, automated grid dispatch, microgrid islanding, SPKLU smart metering, sertifikat REC hash-chain. |
+| **Telecom** | `tlx_` | Jaringan ISP & fiber optic, NOC monitoring, tower sharing, data center rack leasing & PUE cooling twin, RADIUS bandwidth throttling. |
+| **Media** | `med_` | Stage-gate produksi film/musik, DRM watermark tamper-evident, distribusi SVOD/broadcast, royalti kreator, sponsorship escrow. |
+| **Education** | `edu_` | Student cohort class, grading engine, sertifikasi kompetensi digital hash-chain, akreditasi kurikulum, tuition split & scholarship fee. |
+| **Retail** | `ret_` | Omnichannel OMS, inventory allocation, dark store picking wave, q-commerce ultra-fast dispatch, dynamic loyalty sync. |
 
 ---
 

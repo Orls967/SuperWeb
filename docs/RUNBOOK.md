@@ -217,7 +217,42 @@ tar -czvf backups/storage_$(date +%Y%m%d_%H%M%S).tar.gz storage/app/public
    ```bash
    php artisan super:health-check
    ```
-4. Jika seluruh 9 pilar lolos verifikasi, aktifkan kembali server:
+4. Jika seluruh pilar lolos verifikasi, aktifkan kembali server:
    ```bash
    php artisan up
    ```
+
+---
+
+## 5. SOP Operasional 17 Lini Bisnis & Gelombang 2
+
+### 5.1 Energi & Smart Grid (`egy_`)
+- **Automated Grid Dispatch**: Pantau kestabilan frekuensi ($50 \pm 0.2$ Hz) dan beban merit-order generation.
+- **Microgrid Emergency Islanding**: Saat grid blackout terjadi, isolasi microgrid RS dan fasilitas darurat secara otomatis dalam waktu $< 5$ detik.
+- **Audit Rutin**: `php artisan egy:audit` (0 deviasi metering / settling).
+
+### 5.2 Telekomunikasi & Network Operations Center (`tlx_`)
+- **NOC Incident Protocol**: Pantau ketersediaan SLA tower dan latency link fiber backhaul ($< 15$ ms).
+- **Data Center PUE Management**: Awasi rasio PUE pendinginan rack server agar tetap $\le 1.35$.
+- **Audit Rutin**: `php artisan tlx:audit` (verifikasi SLA rebate & IP transit balance).
+
+### 5.3 Media & Hak Cipta (`med_`)
+- **DRM & Watermark Traceability**: Setiap aset video/audio streaming wajib disisipkan watermark digital hash-chain sebelum dipublikasikan ke kanal SVOD atau broadcast.
+- **Royalty Attribution**: Penagihan royalti streaming per play diakumulasi dan dicairkan sesuai kontrak pembagian revenue creator.
+- **Audit Rutin**: `php artisan med:audit`.
+
+### 5.4 Pendidikan & Cohorts (`edu_`)
+- **Student Certification Hash-Chain**: Terbitkan sertifikat kelulusan kompetensi dengan verifikasi hash SHA-256 yang dapat divalidasi publik.
+- **Tuition Escrow**: Biaya kelas ditahan di escrow hingga milestone pembelajaran selesai, kemudian dibagi pro-rata ke instruktur dan platform.
+- **Audit Rutin**: `php artisan edu:audit`.
+
+### 5.5 Ritel Omnichannel & Q-Commerce (`ret_`)
+- **Order Management System (OMS)**: Alokasi inventori dari multi-channel (store, app, marketplace) dengan perlindungan anti-double-sell.
+- **Dark Store Picking Waves**: Dispatch wave picking berurutan untuk pesanan instan target kirim $< 30$ menit.
+- **Audit Rutin**: `php artisan ret:audit`.
+
+### 5.6 Multi-Region Active-Active DR Drill (`dr:audit`)
+- **Langkah Simulasi DR**:
+  1. Jalankan `php artisan dr:audit` untuk memvalidasi replikasi Jakarta $\to$ Singapore (SG-2).
+  2. Pastikan RPO = 0 (zero ledger discrepancy) dan RTO $< 15$ menit untuk lini critical (RS, Energi, Pembayaran).
+  3. Periksa kepatuhan residensi data kedaulatan data lokal.

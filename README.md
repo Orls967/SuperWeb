@@ -1,6 +1,6 @@
 # Superwebsite — Enterprise Multi-Business Modular Monolith Platform
 
-Platform ERP terpadu berskala *enterprise* (Ekosistem 38 Modul) berbasis **Laravel 11, Blade + Tailwind CSS + Alpine.js**, mengintegrasikan 8 pilar lini bisnis konglomerasi modern di atas pondasi **Double-Entry Multi-Asset Ledger (Zero-Discrepancy)** dan **Cryptographic Hash-Chain**:
+Platform ERP terpadu berskala *enterprise* (Ekosistem 45+ Modul) berbasis **Laravel 11, Blade + Tailwind CSS + Alpine.js**, mengintegrasikan 17 lini bisnis konglomerasi modern di atas pondasi **Double-Entry Multi-Asset Ledger (Zero-Discrepancy)**, **Cryptographic Hash-Chain**, dan **Universal Event Spine**:
 
 1. **Otomotif & Bengkel (Automotive)**: Bengkel Servis Mobil (*AutoServe*), Ensiklopedia (*AutoDex*), Marketplace Suku Cadang & Bursa Mobil C2C (*Store*), Pembiayaan Beragun Kripto (*Finance*).
 2. **Keuangan & Kripto (FinTech)**: Core Banking Double-Entry (*Banking*), Payment Hub (*Payment*), Bursa Kripto (*Crypto*), Multi-Currency Treasury (*Treasury*), Escrow B2B & Lelang Surplus (*B2B*).
@@ -10,6 +10,15 @@ Platform ERP terpadu berskala *enterprise* (Ekosistem 38 Modul) berbasis **Larav
 6. **Manufaktur & Distribusi**: Produksi BOM multi-level, Material Requirements Planning (MRP), Kualitas & Pemeliharaan Mesin OEE (*Manufacturing*), Jaringan Distribusi B2B (*Distribution*), Engine Harga & Promosi (*Pricing*).
 7. **B2B Ekspor-Impor & Pengadaan (Trade & Procurement)**: RFQ/Tender Pengadaan (*Procurement*), Manajemen Pemasok (*Supplier*), Perdagangan Lintas Batas (*Trade*), Trade Finance & L/C (*TradeFinance*).
 8. **Tata Kelola, Agrikultur & Integrasi Enterprise (Corporate Services)**: Kontrak Pertanian & Rantai Dingin IoT (*Agri*), Manajemen Kontrak B2B (*Contract*), Manajemen Aset Tetap PSAK (*Asset*), Konsolidasi Intercompany (*Intercompany*), Kepatuhan & Anggaran (*EnterpriseFinance*), Manajemen Agen & Komisi (*Agency*), Mitigasi Emisi Karbon (*ESG*), Product Lifecycle Management (*PLM*), Tata Kelola Mitra (*Partner*), Kerja Sama Internasional (*International*), Manajemen SDM & Payroll (*HCM*), dan B2B API (*Integration*).
+9. **Kesehatan & Farmasi (Healthcare - Hosp)**: Paspor Rekam Medis (EMR) hash-chain, ketersediaan bed isolasi & ICU, dispensing farmasi berbasis contraindication engine, tagihan terpadu BPJS/asuransi/pasien, dan medical tourism packages.
+10. **Hiburan & Venue (Entertainment & Venue - Ven)**: Ticketing digital non-fungible hash-chain, access control RFID/QR gate, manajemen kapasitas zona crowd safety, VIP table escrow, festival bundle packages, dan door-share artist settlement.
+11. **Perhotelan & Resort (Hospitality & Hotel - Htl)**: Property Management System (PMS) multi-properti, dynamic rate protection, smart lock keyless QR, HVAC energy digital twin setback, folio addon checkout, dan timeshare fractional ownership yield.
+12. **Pertambangan & Alat Berat (Mining - Min)**: Rencana tambang, automated fleet dispatch, telemetri payload sensor, timbangan jembatan weighbridge hash-chain, akrual royalti PNBP komoditas, dan audit izin kerja HSE berisiko tinggi.
+13. **Energi & Utilitas Listrik (Energy - Egy)**: Pembangkit EBT (PLTS/PLTB/PLTU), transmisi SCADA, Automated Grid Dispatch, microgrid islanding darurat, SPKLU smart metering kWh, dan sertifikat energi hijau REC hash-chain.
+14. **Telekomunikasi & Jaringan (Telecom & ISP - Tlx)**: Network Operations Center (NOC), fiber & 5G tower, data center rack space leasing, PUE cooling twin, RADIUS bandwidth throttling, dan wholesale IP transit carrier settlement.
+15. **Media & Industri Kreatif (Media & Content - Med)**: Stage-gate pipeline produksi konten, DRM watermark tamper-evident, distribusi multi-channel SVOD/linear broadcast, atribusi royalti artis/kreator, dan sponsorship escrow.
+16. **Pendidikan & Sertifikasi (Education & EdTech - Edu)**: Student lifecycle, cohort live batch class, grading engine, credential sertifikasi digital hash-chain, evaluasi akreditasi kurikulum, dan tuition split scholarship fee.
+17. **Ritel Omnichannel & Q-Commerce (Retail & Store - Ret)**: Multi-channel Order Management System (OMS), smart replenishment inventory allocation, dark store picker wave dispatch, q-commerce delivery routing, dan loyalty points sync.
 
 ---
 
@@ -167,15 +176,37 @@ Platform menyediakan rangkaian Artisan Command untuk otomatisasi operasional dan
 | `php artisan lgx:detect-late` | Deteksi pengiriman yang berpotensi atau telah melewati target SLA |
 | `php artisan lgx:retry-webhooks` | Kirim ulang webhook outbox yang gagal dengan exponential backoff |
 
-### 5. Otomotif, Toko & Finansial
+### 6. Audit & Kepatuhan 17 Lini Bisnis (`*:audit` & `verify-*`)
 | Command | Deskripsi |
 |---|---|
-| `php artisan crypto:tick` | Simulasikan fluktuasi harga pasar kripto real-time |
-| `php artisan finance:monitor-risk` | Pantau LTV pinjaman agunan kripto, kirim peringatan margin call, dan eksekusi likuidasi |
-| `php artisan store:cancel-stale-orders` | Batalkan reservasi pesanan e-commerce yang tidak dibayar dalam 2 jam |
-| `php artisan payment:release-expired-holds` | Lepaskan dana escrow yang kedaluwarsa kembali ke dompet pembeli |
+| `php artisan bank:reconcile` | Rekonsiliasi buku besar double-entry 0 selisih |
+| `php artisan super:health-check` | Pengecekan komprehensif kesehatan seluruh pilar sistem |
+| `php artisan core:verify-passports` | Verifikasi kriptografis hash-chain paspor kendaraan |
+| `php artisan mall:audit-billing` | Audit integrasi tagihan tenant Duta Mall vs ledger |
+| `php artisan lgx:audit-billing` & `lgx:verify-custody` | Audit freight billing dan integritas lacak balak Logistik |
+| `php artisan egy:audit` | Audit kestabilan grid dispatch, frekuensi, & smart meter |
+| `php artisan tlx:audit` | Audit availability SLA telko, SLA credit, & transit margin |
+| `php artisan med:audit` | Audit royalti media, DRM watermark chain, & sponsorship escrow |
+| `php artisan edu:audit` | Audit integritas sertifikat digital hash-chain & tuition split |
+| `php artisan ret:audit` | Audit multi-channel OMS, dark store picking wave, & stock leak |
+| `php artisan security:audit` | Audit Zero Trust service registry & least-privilege token |
+| `php artisan dr:audit` | Audit ketahanan multi-region DR drill & data residency |
+| `php artisan api:audit` | Audit Platform Economy: API usage billing & embedded finance |
+| `php artisan ecosystem:audit-12-lines` | Audit lintas lini ekosistem terpadu 0 diskrepansi |
 
 ---
+
+## 🚀 Kernel Simulasi & Seeder Ultra Gelombang 2
+
+Platform menyediakan kernel simulasi kompresi waktu 365 hari dan seeder deterministik berkapasitas ultra:
+
+```bash
+# Seeder Skala Penuh 17 Lini Bisnis
+php artisan db:seed --class="Database\Seeders\SeventeenLinesUltraSeeder"
+
+# Jalankan Kompresi Waktu Simulasi 12 Bulan Konglomerasi
+php artisan test modules/Integration/tests/Feature/MegaScenarioTest.php
+```
 
 ## 🧪 Pengujian & Uji Kualitas (Quality Gates)
 
