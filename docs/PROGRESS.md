@@ -1664,13 +1664,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 116.7 Quality gate Fase 116
 
 ## FASE 117 — ENTERTAINMENT: GUEST EXPERIENCE AI, BIOMETRIC ENTRY & CROWD SAFETY
-- [ ] 117.1 **Face-ID door entry** (token biometrik simulasi Fase 75.5): member → gate tanpa tiket fisik; liveness check → anti-share; biometrik disimpan sebagai template hash (bukan mentah) → compliance privasi
-- [ ] 117.2 **Peta orang dalam venue real-time**: agregasi scan masuk/keluar + sensor density → hitung okupansi per zona akurat → heatmap live → kapasitas ditolak otomatis (memperluas Fase 89.4)
-- [ ] 117.3 **Crowd safety AI**: prediksi kepadatan 15 menit ke depan (trend rule deterministik) → rekomendasi buka gate sekunder / slow entry / arahkan ke zona kosong → eksekusi oleh crowd_safety dengan konfirmasi
-- [ ] 117.4 **Guest experience scoring**: antrean bar (sensor), WPS (wait per service) per zona, NPS post-event via Notification → skor per venue/malam → masuk brand scorecard (Fase 111.1 versi venue)
-- [ ] 117.5 Personalized offers on-site: member di zona VIP → promo F&B tersembul via app (poin/price hook) → konversi terukur → learning loop ke personalization (Fase 112.5)
-- [ ] 117.6 Tests: (a) biometrik template tak bisa direkonstruksi (b) okupansi zona = Σ scan aktif (c) prediksi density + aksi tercatat (d) promo ganda tidak dikirim dobel (e) query budget live map ≤ ambang
-- [ ] 117.7 Quality gate Fase 117
+- [x] 117.1 **Face-ID door entry** (token biometrik simulasi Fase 75.5): member → gate tanpa tiket fisik; liveness check → anti-share; biometrik disimpan sebagai template hash (bukan mentah) → compliance privasi
+- [x] 117.2 **Peta orang dalam venue real-time**: agregasi scan masuk/keluar + sensor density → hitung okupansi per zona akurat → heatmap live → kapasitas ditolak otomatis (memperluas Fase 89.4)
+- [x] 117.3 **Crowd safety AI**: prediksi kepadatan 15 menit ke depan (trend rule deterministik) → rekomendasi buka gate sekunder / slow entry / arahkan ke zona kosong → eksekusi oleh crowd_safety dengan konfirmasi
+- [x] 117.4 **Guest experience scoring**: antrean bar (sensor), WPS (wait per service) per zona, NPS post-event via Notification → skor per venue/malam → masuk brand scorecard (Fase 111.1 versi venue)
+- [x] 117.5 Personalized offers on-site: member di zona VIP → promo F&B tersembul via app (poin/price hook) → konversi terukur → learning loop ke personalization (Fase 112.5)
+- [x] 117.6 Tests: (a) biometrik template tak bisa direkonstruksi (b) okupansi zona = Σ scan aktif (c) prediksi density + aksi tercatat (d) promo ganda tidak dikirim dobel (e) query budget live map ≤ ambang
+- [x] 117.7 Quality gate Fase 117
 
 ## FASE 118 — HOSPITALITY & ENTERTAINMENT: REVENUE COMMAND & PORTOFOLIO GLOBAL
 - [ ] 118.1 **Revenue command center lintas jaringan**: ADR/RevPAR/okupansi 5.000 properti + GMV tiket 1.000 venue + bundle travel → satu papan, drill-down per kota/properti/event
