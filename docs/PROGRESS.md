@@ -1646,13 +1646,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 114.7 Quality gate Fase 114
 
 ## FASE 115 — ENTERTAINMENT: CONTENT, CREATOR ECONOMY & MEDIA RIGHTS
-- [ ] 115.1 Tabel `ven_creators` (DJ, band, kreator konten, brand), `ven_content_assets` (video, foto, track — hash + lisensi), `ven_rights_contracts` (royalti per platform/stream)
-- [ ] 115.2 **Creator contract & payout**: kontrak eksklusif/non-eksklusif (Fase 28) → komisi per event/performa/streams → hold sampai periode klaim lewat (memperluas Fase 45.5) → payout multi-currency (Fase 48) + WHT simulasi (Fase 51.7)
-- [ ] 115.3 **Konten event lifecycle**: rekaman set festival → editing → distribusi (channel simulasi) → revenue share per view (formula kontrak) → pembukuan per konten
-- [ ] 115.4 **IP & rights registry** (memperluas Fase 47.8): merek klub (SUNSET, PULSE — simulasi), lagu anthem, format festival → lisensi ke venue lain/mitra → royalti terhitung otomatis
-- [ ] 115.5 Merch economy: desain merch artis → produksi via Manufacturing/C2M (Fase 82.4) → jual di venue & online Store → split revenue artis/platform
-- [ ] 115.6 Tests: (a) royalty stream = formula × revenue terverifikasi (b) hold payout sampai window klaim lewat (c) lisensi IP ganda tidak overlap teritori (d) split merch Σ = penjualan (e) `venue:audit`/`agy:audit` tetap 0 selisih
-- [ ] 115.7 Quality gate Fase 115
+- [x] 115.1 Tabel `ven_creators` (DJ, band, kreator konten, brand), `ven_content_assets` (video, foto, track — hash + lisensi), `ven_rights_contracts` (royalti per platform/stream)
+- [x] 115.2 **Creator contract & payout**: kontrak eksklusif/non-eksklusif (Fase 28) → komisi per event/performa/streams → hold sampai periode klaim lewat (memperluas Fase 45.5) → payout multi-currency (Fase 48) + WHT simulasi (Fase 51.7)
+- [x] 115.3 **Konten event lifecycle**: rekaman set festival → editing → distribusi (channel simulasi) → revenue share per view (formula kontrak) → pembukuan per konten
+- [x] 115.4 **IP & rights registry** (memperluas Fase 47.8): merek klub (SUNSET, PULSE — simulasi), lagu anthem, format festival → lisensi ke venue lain/mitra → royalti terhitung otomatis
+- [x] 115.5 Merch economy: desain merch artis → produksi via Manufacturing/C2M (Fase 82.4) → jual di venue & online Store → split revenue artis/platform
+- [x] 115.6 Tests: (a) royalty stream = formula × revenue terverifikasi (b) hold payout sampai window klaim lewat (c) lisensi IP ganda tidak overlap teritori (d) split merch Σ = penjualan (e) `venue:audit`/`agy:audit` tetap 0 selisih
+- [x] 115.7 Quality gate Fase 115
 
 ## FASE 116 — ENTERTAINMENT: SECONDARY TICKET MARKET & DYNAMIC BUNDLING
 - [ ] 116.1 **Resale marketplace resmi**: tiket dijual kembali dengan hash transfer terkontrol (1 transfer maks, price cap 120% harga perdana anti-scalping) → platform fee → penjual wajib wallet terverifikasi
