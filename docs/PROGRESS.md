@@ -1761,13 +1761,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 127.7 Quality gate Fase 127
 
 ## FASE 128 — ENERGI & UTILITAS: CARBON TRADING, REC & ESG MARKETPLACE
-- [ ] 128.1 **Carbon exchange internal**: kredit karbon 17 lini (Fase 60 + 123.3) diperdagangkan antar entitas grup & mitra eksternal → orderbook (mirip Fase 71.3) → settlement ledger → retensi sebelum penjualan (kedaluwarsa vintage terhitung)
-- [ ] 128.2 **REC (Renewable Energy Certificate)**: listrik hijau solar site → REC per MWh → dijual/dipakai agar properti (hotel, mall, venue) klaim 100% renewable → laporan ke green customer & tenant
-- [ ] 128.3 **CBAM & carbon border connector** (memperluas Fase 83.3): emisi produk ekspor dari pabrik → sertifikat → harga karbon per kontainer → dikurangi dari margin atau ditagih ke buyer (sesuai terms)
-- [ ] 128.4 **ESG marketplace**: kredit, REC, sirkularitas (tonase limbah) diperdagangkan → pembeli: mitra, tenant mall (green lease), hotel (carbon-neutral stay package) → laporan dampak terverifikasi
-- [ ] 128.5 **ESG-linked pricing**: tenant/hotel/vendor dengan skor ESG bagus → diskon tarif utilitas/sewa (green lease) → akun insentif tercatat → mendorong perilaku hijau
-- [ ] 128.6 Tests: (a) Σ kredit di exchange = neraca karbon grup terverifikasi (b) REC tak double-count antar pembeli (c) CBAM = emisi × tarif tercatat (d) green discount = ledger contra-revenue (e) `esg:audit` = 0 selisih
-- [ ] 128.7 Quality gate Fase 128
+- [x] 128.1 **Carbon exchange internal**: kredit karbon 17 lini (Fase 60 + 123.3) diperdagangkan antar entitas grup & mitra eksternal → orderbook (mirip Fase 71.3) → settlement ledger → retensi sebelum penjualan (kedaluwarsa vintage terhitung)
+- [x] 128.2 **REC (Renewable Energy Certificate)**: listrik hijau solar site → REC per MWh → dijual/dipakai agar properti (hotel, mall, venue) klaim 100% renewable → laporan ke green customer & tenant
+- [x] 128.3 **CBAM & carbon border connector** (memperluas Fase 83.3): emisi produk ekspor dari pabrik → sertifikat → harga karbon per kontainer → dikurangi dari margin atau ditagih ke buyer (sesuai terms)
+- [x] 128.4 **ESG marketplace**: kredit, REC, sirkularitas (tonase limbah) diperdagangkan → pembeli: mitra, tenant mall (green lease), hotel (carbon-neutral stay package) → laporan dampak terverifikasi
+- [x] 128.5 **ESG-linked pricing**: tenant/hotel/vendor dengan skor ESG bagus → diskon tarif utilitas/sewa (green lease) → akun insentif tercatat → mendorong perilaku hijau
+- [x] 128.6 Tests: (a) Σ kredit di exchange = neraca karbon grup terverifikasi (b) REC tak double-count antar pembeli (c) CBAM = emisi × tarif tercatat (d) green discount = ledger contra-revenue (e) `esg:audit` = 0 selisih
+- [x] 128.7 Quality gate Fase 128
 
 ## FASE 129 — ENERGI & UTILITAS: MICROGRID, STORAGE & RESILIENCE
 - [ ] 129.1 **Microgrid per site**: solar + battery + genset → islanding mode simulasi saat grid down → prioritas beban (RS > pabrik kritis > mall > umum) → ketersediaan terukur (SAIDI/SAIFI)
