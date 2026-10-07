@@ -1108,15 +1108,15 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 87.8 Quality gate Fase 87
 
 ## FASE 88 — RUMAH SAKIT II: ORDER-TO-CASH, FARMASI, LAB, FARMASI SUPPLY CHAIN, KLAIM & REVENUE CYCLE
-- [ ] 88.1 **Billing episode**: seluruh item (bed-day, tindakan, obat, alat habis pakai, lab, radiologi, dokter) tergabung satu folio episode → struktur tarif bertingkat (mirip tarif utilitas mall Fase 13.2) → tagihan akhir saat discharge
-- [ ] 88.2 **Pembayaran campuran**: BPJS simulasi (klaim batch), insurance copay (via escrow/marketplace asuransi), self-pay wallet+PIN (Payment Hub Fase 2) → alokasi urut & split payment; bedah besar memakai **escrow deposit** (hold saat masuk → capture saat pulang → sisa refund)
-- [ ] 88.3 **e-Prescription → Farmasi**: resep digital → farmasi menyiap → stok obat terpotong via InventoryService (FEFO lot/kedaluwarsa) → item masuk tagihan pasien; interaksi obat terdeteksi (rule engine deterministik) → peringatan apoteker
-- [ ] 88.4 **Lab & radiologi**: order lab → hasil terverifikasi (teknisi sign-off) → hasil masuk rekam medis paspor → biaya ter-charge; lab outsourcing (Party) → piutang pihak ketiga
-- [ ] 88.5 **Cold-chain medis & supply**: darah, vaksin, obat sitostatik disimpan di fridge IoT → breach suhu → quarantine lot + recall internal + **hold pembayaran pemasok** (memperluas Fase 80.1); rantai dingin Logistics dari pemasok ke farmasi RS
-- [ ] 88.6 **Limbah medis B3**: pengumpulan terpisah → armada Logistics khusus dengan rantai kustodi hash (memperluas reverse logistics Fase 79) → vendor pengolah tersertifikasi → kredit ESG limbah medis
-- [ ] 88.7 **Revenue cycle dashboard**: pemungutan per unit (rawat jalan, rawat inap, bedah, lab, farmasi), aging klaim BPJS/insurance, denial rate, LOS rata-rata, cash collection time
-- [ ] 88.8 Tests: (a) episode tagihan = Σ item order (b) escrow deposit → capture/refund seimbang (c) stok obat terpotong = item ter-charge (d) fridge breach → quarantine + hold 1x (e) `hosp:audit` = 0 selisih vs ledger
-- [ ] 88.9 Quality gate Fase 88
+- [x] 88.1 **Billing episode**: seluruh item (bed-day, tindakan, obat, alat habis pakai, lab, radiologi, dokter) tergabung satu folio episode → struktur tarif bertingkat (mirip tarif utilitas mall Fase 13.2) → tagihan akhir saat discharge
+- [x] 88.2 **Pembayaran campuran**: BPJS simulasi (klaim batch), insurance copay (via escrow/marketplace asuransi), self-pay wallet+PIN (Payment Hub Fase 2) → alokasi urut & split payment; bedah besar memakai **escrow deposit** (hold saat masuk → capture saat pulang → sisa refund)
+- [x] 88.3 **e-Prescription → Farmasi**: resep digital → farmasi menyiap → stok obat terpotong via InventoryService (FEFO lot/kedaluwarsa) → item masuk tagihan pasien; interaksi obat terdeteksi (rule engine deterministik) → peringatan apoteker
+- [x] 88.4 **Lab & radiologi**: order lab → hasil terverifikasi (teknisi sign-off) → hasil masuk rekam medis paspor → biaya ter-charge; lab outsourcing (Party) → piutang pihak ketiga
+- [x] 88.5 **Cold-chain medis & supply**: darah, vaksin, obat sitostatik disimpan di fridge IoT → breach suhu → quarantine lot + recall internal + **hold pembayaran pemasok** (memperluas Fase 80.1); rantai dingin Logistics dari pemasok ke farmasi RS
+- [x] 88.6 **Limbah medis B3**: pengumpulan terpisah → armada Logistics khusus dengan rantai kustodi hash (memperluas reverse logistics Fase 79) → vendor pengolah tersertifikasi → kredit ESG limbah medis
+- [x] 88.7 **Revenue cycle dashboard**: pemungutan per unit (rawat jalan, rawat inap, bedah, lab, farmasi), aging klaim BPJS/insurance, denial rate, LOS rata-rata, cash collection time
+- [x] 88.8 Tests: (a) episode tagihan = Σ item order (b) escrow deposit → capture/refund seimbang (c) stok obat terpotong = item ter-charge (d) fridge breach → quarantine + hold 1x (e) `hosp:audit` = 0 selisih vs ledger
+- [x] 88.9 Quality gate Fase 88
 
 ## FASE 89 — BEACH CLUB & CLUBS I: TICKETING, ACCESS CONTROL, USIA & VENUE OPERATIONS
 - [ ] 89.1 Modul `Venue` (`ven_`): provider, MenuRegistry "Venue & Entertainment", roles (`venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`), policies, arch test; tabel `ven_venues`, `ven_zones` (pool/beach/dance floor/VIP/garden), `ven_tables`, `ven_events`, `ven_tickets`
