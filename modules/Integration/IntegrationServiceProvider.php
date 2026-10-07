@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Integration;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Integration\Application\Services\BmtMicrofinanceService;
 use Modules\Integration\Application\Services\CrisisContinuityService;
 use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
@@ -58,6 +59,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(TakafulAndAgriService::class);
         $this->app->singleton(SyariahBankingService::class);
         $this->app->singleton(SukukAndZakatService::class);
+        $this->app->singleton(BmtMicrofinanceService::class);
     }
 
     public function boot(): void
