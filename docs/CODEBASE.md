@@ -147,6 +147,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 - **B2B:** katalog grosir tertutup dengan Tiered Pricing Matrix & MOQ, negosiasi formal RFQ antar-badan usaha (TOP 30/45/60), balai lelang digital aset surplus & mesin pabrik dengan perlindungan anti-sniping 5 mnt, rekening escrow multi-pihak terproteksi rilis BAST (`b2b:audit`).
 - **Agri:** kemitraan kelompok tani (Poktan), pemetaan poligon GIS lahan, kontrak tani bagi hasil (Contract Farming) ber-talangan bibit/pupuk & guaranteed floor price, pos pengumpul grading mutu A/B/C dengan amortisasi uang muka & instant payout, cold chain telemetri IoT reefer truck ke CK-01/pabrik (`agri:audit`).
 - **EPC:** manajemen proyek konstruksi rekayasa, hierarki WBS bobot 100%, kurva-S deviasi progres lapangan, Monthly Certificate (MC) konsultan pengawas independen ber-retensi 5%, akumulasi Konstruksi Dalam Pengerjaan (CIP) dan kapitalisasi otomatis ke Aset Tetap modul Asset via BAST final (`epc:audit`).
+- **Cloud Kitchen & Catering:** jaringan 200 satelit, 5 dapur sentral, kuota katering harian, pemotongan payroll HCM otomatis (`hcm:meals_deduction`), guardrail kapasitas harian, integrasi cold-chain, refund saat pembatalan/tutup.
 - Detail alasan: `docs/DECISIONS.md` (≈ 48 entri bertanggal).
 
 ## 8. Peta command lengkap

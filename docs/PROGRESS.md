@@ -954,14 +954,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 ## PILAR 3 — KULINER, RESTORAN & WARALABA
 
 ## FASE 74 — CLOUD KITCHEN, DELIVERY AGGREGATOR INTERNAL & KATERING PAYROLL DEDUCTION
-- [ ] 74.1 Modul cloud kitchen (`resto_ck_kitchens`): 200 satelit + 5 dapur sentral + 300 outlet berlisensi, masing-masing dengan kapasitas produksi/jam, menu subset, dan radius layanan
-- [ ] 74.2 **Delivery aggregator internal**: order dari kanal mana pun di-assign ke kitchen/ outlet terdekat berdasarkan kapasitas & ETA (algoritma deterministik), armada Logistics sendiri (Fase 22 last-mile) → satu tracking number untuk pelanggan, ongkir tiered
-- [ ] 74.3 **Katering payroll deduction**: langganan harian/mingguan karyawan EPC/pabrik & tenant Mall → debit otomatis dari gaji bulanan HCM (akun `hcm:meals_deduction`) kuota harian, menu rotasi mingguan, opt-out via self-service; potongan dikompensasi jika outlet tutup (refund ledger)
-- [ ] 74.4 Subscription management: paket (2x/hari, 5 hari/minggu), upgrade/downgrade berlaku bulan depan, suspended jika gaji/tunjangan berhenti
-- [ ] 74.5 Integrasi cold-chain: bahan segar dari Agri → dapur sentral → satelit via Logistics reefer dengan telemetri suhu (sudah Fase 24.4, diperluas cakupan 200 satelit)
-- [ ] 74.6 Dashboard: okupansi dapur per jam, delivery ETA real-time, deduction payroll tersinkron HCM, katering aktif per entitas
-- [ ] 74.7 Tests: (a) kuota harian habis → tolak order berikutnya (b) deduction payroll = konsumsi tercatat (c) refund outlet tutup masuk gaji berikutnya (d) assign kitchen tidak melebihi kapasitas (e) reconcile deduction = ledger
-- [ ] 74.8 Quality gate Fase 74
+- [x] 74.1 Modul cloud kitchen (`resto_ck_kitchens`): 200 satelit + 5 dapur sentral + 300 outlet berlisensi, masing-masing dengan kapasitas produksi/jam, menu subset, dan radius layanan
+- [x] 74.2 **Delivery aggregator internal**: order dari kanal mana pun di-assign ke kitchen/ outlet terdekat berdasarkan kapasitas & ETA (algoritma deterministik), armada Logistics sendiri (Fase 22 last-mile) → satu tracking number untuk pelanggan, ongkir tiered
+- [x] 74.3 **Katering payroll deduction**: langganan harian/mingguan karyawan EPC/pabrik & tenant Mall → debit otomatis dari gaji bulanan HCM (akun `hcm:meals_deduction`) kuota harian, menu rotasi mingguan, opt-out via self-service; potongan dikompensasi jika outlet tutup (refund ledger)
+- [x] 74.4 Subscription management: paket (2x/hari, 5 hari/minggu), upgrade/downgrade berlaku bulan depan, suspended jika gaji/tunjangan berhenti
+- [x] 74.5 Integrasi cold-chain: bahan segar dari Agri → dapur sentral → satelit via Logistics reefer dengan telemetri suhu (sudah Fase 24.4, diperluas cakupan 200 satelit)
+- [x] 74.6 Dashboard: okupansi dapur per jam, delivery ETA real-time, deduction payroll tersinkron HCM, katering aktif per entitas
+- [x] 74.7 Tests: (a) kuota harian habis → tolak order berikutnya (b) deduction payroll = konsumsi tercatat (c) refund outlet tutup masuk gaji berikutnya (d) assign kitchen tidak melebihi kapasitas (e) reconcile deduction = ledger
+- [x] 74.8 Quality gate Fase 74
 
 ## FASE 75 — AI DEMAND & WASTE FORECASTING, AUTO-PO, SMART VENDING
 - [ ] 75.1 **Demand forecasting per outlet 7 hari**: input = footfall mall (Fase 14.4), kalender event Duta Mall/event venue, cuaca (feed simulasi), tren lalu lintas (telematik Pilar 1), hari besar nasional, riwayat sales 24 bulan → algoritma Holt-Winters (memperluas Fase 53.2) → MAPE per outlet terukur
