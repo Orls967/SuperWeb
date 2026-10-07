@@ -1699,13 +1699,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 120.7 Quality gate Fase 120
 
 ## FASE 121 — SUMBER DAYA: MINERALS PROCESSING, SMELTER & METALS TRADING DESK
-- [ ] 121.1 **Smelter & plant lanjutan** (memperluas 94.3): BOM/routing khusus (ore → concentrate → NPI/matte/copper cathode simulasi), rekoveri per unit pengolahan, energi per ton (listrik/BBM terukur → emisi Scope 1/2)
-- [ ] 121.2 **Quality assay & LME-linked pricing**: kadar Ni/Co/Cu per lot → formula harga (index komoditas global simulasi + adjust kadar) → invoice offtaker → settlement bertingkat (Fase 94.7 lanjutan)
-- [ ] 121.3 **Metals trading desk**: posisi long/short komoditas (tangguh simulasi) → mark-to-market harian → margin call counterparty → hedging exposure produksi (memperluas Fase 48.6) → treasury metals account terpisah
-- [ ] 121.4 **Warehouse receipt & collateral**: logam di gudang berlisensi (WMS Fase 41 khusus valuable) → receipt digital (hash) → dijadikan kolateral pembiayaan (memperluas Fase 50.5 SCF) → release saat pelunasan
-- [ ] 121.5 **By-product & residue**: sulfur, slag, dust logam → dijual sebagai bahan baku industri lain (memperluas Fase 79 circular) → revenue by-product diakui proporsional
-- [ ] 121.6 Tests: (a) recoveri ≤ input, konservasi massa (b) invoice = tonase × kadar × index ± adjust (c) MT metals = mark-to-market ter-audit, Σ posisi konsisten (d) receipt collateral = stok gudang (e) `mfg:audit-costing` + `mining:audit` = 0 selisih
-- [ ] 121.7 Quality gate Fase 121
+- [x] 121.1 **Smelter & plant lanjutan** (memperluas 94.3): BOM/routing khusus (ore → concentrate → NPI/matte/copper cathode simulasi), rekoveri per unit pengolahan, energi per ton (listrik/BBM terukur → emisi Scope 1/2)
+- [x] 121.2 **Quality assay & LME-linked pricing**: kadar Ni/Co/Cu per lot → formula harga (index komoditas global simulasi + adjust kadar) → invoice offtaker → settlement bertingkat (Fase 94.7 lanjutan)
+- [x] 121.3 **Metals trading desk**: posisi long/short komoditas (tangguh simulasi) → mark-to-market harian → margin call counterparty → hedging exposure produksi (memperluas Fase 48.6) → treasury metals account terpisah
+- [x] 121.4 **Warehouse receipt & collateral**: logam di gudang berlisensi (WMS Fase 41 khusus valuable) → receipt digital (hash) → dijadikan kolateral pembiayaan (memperluas Fase 50.5 SCF) → release saat pelunasan
+- [x] 121.5 **By-product & residue**: sulfur, slag, dust logam → dijual sebagai bahan baku industri lain (memperluas Fase 79 circular) → revenue by-product diakui proporsional
+- [x] 121.6 Tests: (a) recoveri ≤ input, konservasi massa (b) invoice = tonase × kadar × index ± adjust (c) MT metals = mark-to-market ter-audit, Σ posisi konsisten (d) receipt collateral = stok gudang (e) `mfg:audit-costing` + `mining:audit` = 0 selisih
+- [x] 121.7 Quality gate Fase 121
 
 ## FASE 122 — SUMBER DAYA: COAL & COMMODITY EXPORT LOGISTICS SCALE
 - [ ] 122.1 **Export terminal ops**: stockpile terminal → ship loader schedule → TOS sederhana (traffic order) → tiket muat per voyage (weighbridge terminal hash) → Bill of Lading → chain of custody penuh (Fase 22.5)
