@@ -1242,12 +1242,12 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 100.6 Quality gate Fase 100
 
 ## FASE 101 — SKENARIO EMAS 12 LINI & KETAHANAN (DISASTER RECOVERY)
-- [ ] 101.1 **Golden scenario lintas 12 lini**: satu skenario otomatis merajut semuanya — petani menanam (NDVI memicu cicilan) → bahan baku dikirim cold-chain → pabrik memproduksi → dikirim logistik → sampai resto/hotel/venue dijual → bagian ke RS sebagai produk farmasi → armada diisi daya EV → tambang mengirim ore via LC stablecoin → seluruhnya terkonsolidasi di group close → **semua `*:audit` serentak = 0 selisih**
-- [ ] 101.2 **Golden scenario krisis**: recall produk lintas lini (obat RS + F&B venue + produk pabrik) → ketertelusuran lot maju-mundur instan → quarantine + notifikasi + klaim asuransi autopilot + kredit vendor → ESG impact tercatat
-- [ ] 101.3 **Disaster recovery multi-region 12 lini** (memperluas Fase 66): failover replika dengan RPO = 0 untuk ledger semua aset (termasuk stablecoin, token RWA, escrow venue/hotel), RTO < 15 menit, drill terjadwal + `dr:audit`
-- [ ] 101.4 **Post-quantum readiness** (Fase 66.3): audit hash-chain 12 lini (passport kendaraan, paspor pasien, tiket venue, custody logistik, kontrak, aset, weighbridge) terhadap rencana migrasi algoritma
-- [ ] 101.5 Tests: (a) golden scenario hijau end-to-end (b) recall lintas lini terlacak (c) failover drill → reconcile semua aset = 0 (d) RPO/RTO terukur (e) seluruh verify-* chain valid paska-recovery
-- [ ] 101.6 Quality gate Fase 101
+- [x] 101.1 **Golden scenario lintas 12 lini**: satu skenario otomatis merajut semuanya — petani menanam (NDVI memicu cicilan) → bahan baku dikirim cold-chain → pabrik memproduksi → dikirim logistik → sampai resto/hotel/venue dijual → bagian ke RS sebagai produk farmasi → armada diisi daya EV → tambang mengirim ore via LC stablecoin → seluruhnya terkonsolidasi di group close → **semua `*:audit` serentak = 0 selisih**
+- [x] 101.2 **Golden scenario krisis**: recall produk lintas lini (obat RS + F&B venue + produk pabrik) → ketertelusuran lot maju-mundur instan → quarantine + notifikasi + klaim asuransi autopilot + kredit vendor → ESG impact tercatat
+- [x] 101.3 **Disaster recovery multi-region 12 lini** (memperluas Fase 66): failover replika dengan RPO = 0 untuk ledger semua aset (termasuk stablecoin, token RWA, escrow venue/hotel), RTO < 15 menit, drill terjadwal + `dr:audit`
+- [x] 101.4 **Post-quantum readiness** (Fase 66.3): audit hash-chain 12 lini (passport kendaraan, paspor pasien, tiket venue, custody logistik, kontrak, aset, weighbridge) terhadap rencana migrasi algoritma
+- [x] 101.5 Tests: (a) golden scenario hijau end-to-end (b) recall lintas lini terlacak (c) failover drill → reconcile semua aset = 0 (d) RPO/RTO terukur (e) seluruh verify-* chain valid paska-recovery
+- [x] 101.6 Quality gate Fase 101
 
 ## FASE 102 — API V3, WEBHOOK & PORTAL MITRA 12 LINI
 - [ ] 102.1 **API v3**: endpoint untuk lini baru (telematik ingest, EV session, RWA orderbook, claims API, ticketing & check-in, PMS reservation, mine dispatch, weighbridge) — OpenAPI 3.1 lengkap, Sanctum abilities per lini, Idempotency-Key wajib, RFC 7807
