@@ -481,322 +481,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 37.2 Pengeluaran bahan (issue) & backflush; kontrol lot FIFO/FEFO; kekurangan bahan memicu alert; stok tidak boleh negatif
 - [x] 37.3 Pelaporan operasi: mulai/selesai, qty baik/scrap/rework, operator, mesin, durasi; terminal operator UI responsif (mobile/tablet)
 - [x] 37.4 Downtime & alasan (mesin rusak, tunggu bahan, setup, istirahat) dengan kode standar → bahan OEE (Fase 40)
-- [x] 37.5 Penerimaan barang jadi ke gudang (FG receipt), pembuatan lot/serial; by-product masuk stok
-- [x] 37.6 WIP: persediaan dalam proses per order/operasi; transfer WIP antar-operasi; `mfg:wip` laporan
-- [x] 37.7 Rework & scrap: order rework, alasan, biaya scrap; scrap melebihi toleransi → NCR (Fase 39)
-- [x] 37.8 Subkontrak operasi (maklon proses): kirim bahan ke subkon via Logistics, terima barang olahan, biaya subkon → PO jasa
-- [x] 37.9 Konsistensi: Σ bahan keluar + scrap = input; hasil produksi = BOM × qty ± toleransi (test invarian)
-- [x] 37.10 Quality gate Fase 37
-
-## FASE 38 — BIAYA PRODUKSI (COSTING)
-- [x] 38.1 Standard cost per item (roll-up BOM + routing + overhead), versi biaya, approval perubahan
-- [x] 38.2 Actual costing per order: bahan (MAC/FIFO), tenaga kerja (jam × tarif), mesin (jam × tarif), overhead (alokasi by driver), subkon
-- [x] 38.3 Jurnal produksi: bahan → WIP (`mfg:wip`), konversi → WIP, FG receipt WIP → persediaan barang jadi; **konvensi tanda sesuai ledger (kredit +/debit −)** dicatat di DECISIONS
-- [x] 38.4 Varians: harga bahan, penggunaan, efisiensi tenaga/mesin, volume overhead, yield; posting ke akun varians atau capitalize sesuai kebijakan
-- [x] 38.5 Harga pokok produksi (COGM) & HPP penjualan (COGS) saat barang jadi dijual (Store/Distribusi) — integrasi event
-- [x] 38.6 Biaya by-product/co-product (alokasi nilai relatif), reprosesing
-- [x] 38.7 Laporan: margin per produk/line/plant, tren biaya, drill-down ke order
-- [x] 38.8 `mfg:audit-costing` (WIP + FG = ledger, 0 selisih; semua order closed tidak punya sisa WIP)
-- [x] 38.9 Quality gate Fase 38
-
-## FASE 39 — MUTU & KETERTELUSURAN (QMS, LOT, RECALL)
-- [x] 39.1 Rencana inspeksi: karakteristik (atribut/variabel), batas spesifikasi, sampling (AQL simulasi), frekuensi
-- [x] 39.2 Inspeksi: penerimaan (GRN), in-process (operasi), akhir (FG); hasil lulus/gagal/dispensasi (approval); pelepasan lot
-- [x] 39.3 Statistical process control sederhana (X-bar/R, Cp/Cpk), alarm di luar kendali
-- [x] 39.4 **NCR** (ketidaksesuaian) → investigasi → **CAPA** (korektif/preventif) dengan tenggat, efektivitas, status; terhubung ke SCAR pemasok (Fase 32)
-- [x] 39.5 **Ketertelusuran lot maju-mundur**: dari lot FG ke bahan baku & pemasok, dan sebaliknya ke semua pelanggan/distributor penerima; waktu respons ≤ ambang (query budget)
-- [x] 39.6 **Recall**: pilih lot terdampak → daftar penerima (distributor/agen/pelanggan) → notifikasi, kuarantina stok, retur & penghancuran bersertifikat, laporan akhir; jurnal biaya recall
-- [x] 39.7 Sertifikat (COA/COC) per lot, dokumen kepatuhan (SNI/Halal/BPOM/GMP — **data simulasi**), kedaluwarsa sertifikat memblokir rilis
-- [x] 39.8 Kalibrasi alat ukur (jadwal, bukti), alat kedaluwarsa memblokir inspeksi
-- [x] 39.9 Quality gate Fase 39
-
-## FASE 40 — PEMELIHARAAN PABRIK, OEE & K3
-- [x] 40.1 **OEE** per mesin/line (Availability × Performance × Quality) dari downtime/produksi nyata; dasbor shift/harian
-- [x] 40.2 Pemeliharaan korektif/preventif/prediktif (aturan ambang sensor **simulasi**), work order mesin memakai modul Aset (31.5)
-- [x] 40.3 Suku cadang pabrik: BOM peralatan, stok minimum, penggunaan per WO, biaya → TCO aset
-- [x] 40.4 Simulasi sensor IoT (`mfg_sensor_readings`): suhu/getaran/arus; alarm → WO otomatis (idempoten)
-- [x] 40.5 Pareto downtime, MTBF/MTTR, backlog pemeliharaan
-- [x] 40.6 K3/HSE: insiden & near-miss, investigasi, tindakan, izin kerja berisiko (hot work/confined space) dengan approval & masa berlaku
-- [x] 40.7 Lingkungan & energi: pemakaian listrik/air/limbah per order, intensitas per unit (dasar ESG di backlog)
-- [x] 40.8 Quality gate Fase 40
-
-## FASE 41 — GUDANG & PUSAT DISTRIBUSI (WMS, MODUL `wms_`)
-- [x] 41.1 Multi-gudang/DC: hirarki gudang → zona → rak → bin; tipe (bahan, FG, karantina, transit, konsinyasi, reefer)
-- [x] 41.2 Stok per bin/lot/serial/status (tersedia, karantina, blokir) di atas `InventoryService` (kontrak diperluas, tetap kompatibel)
-- [x] 41.3 Putaway (aturan zona/kapasitas), pick (FEFO/FIFO, wave/batch/zone), pack, staging; tugas gudang untuk operator mobile
-- [x] 41.4 Transfer antar-gudang & in-transit (akuntansi transit seperti Resto), cross-dock
-- [x] 41.5 Cycle counting & penyesuaian (approval), selisih → jurnal; akurasi stok KPI
-- [x] 41.6 Replenishment pick-face, slotting sederhana (ABC)
-- [x] 41.7 Integrasi Logistics: outbound DC → shipment otomatis; inbound dock appointment; label resi & packing list
-- [x] 41.8 `wms:audit` (Σ stok bin = saldo `inv_`; tidak ada stok negatif)
-- [x] 41.9 Quality gate Fase 41
-
-## FASE 42 — JARINGAN DISTRIBUTOR (MODUL `dist_`)
-- [x] 42.1 Modul Distribution: distributor / sub-distributor / agen grosir / dealer (party role), hirarki jaringan, kode toko/outlet
-- [x] 42.2 Teritori & coverage: wilayah eksklusif/non-eksklusif, peta wilayah (provinsi→kota→kecamatan), konflik teritori terdeteksi
-- [x] 42.3 Onboarding distributor: KYB (27), kontrak distribusi (28/29), jaminan (bank garansi/deposit), limit kredit, termin
-- [x] 42.4 Kredit & piutang distributor: limit, eksposur, blokir otomatis saat lewat limit/jatuh tempo, aging, denda; `dist:ar` subledger
-- [x] 42.5 Target penjualan & performa: target bulanan/kuartal per produk, capaian, tier (Gold/Silver/Bronze) dengan hak diskon
-- [x] 42.6 Portal distributor (role `distributor`): harga sesuai tier, tagihan+aging, target, outlet, status akun; order/klaim/laporan stok lanjut di Fase 43
-- [x] 42.7 Master outlet/pelanggan distributor (sell-out) & segmentasi
-- [x] 42.8 Kinerja & scorecard distributor: sell-in vs sell-out, DSO, fill rate, kepatuhan harga
-- [x] 42.9 Quality gate Fase 42
-
-## FASE 43 — DISTRIBUSI: ORDER, SELL-IN/SELL-OUT, KONSINYASI, RETUR, REBATE
-- [x] 43.1 Order distributor: validasi limit kredit & stok (ATP), alokasi (prioritas/fair-share saat langka), backorder & pecah kirim
-- [x] 43.2 Pemenuhan: pick di WMS → shipment Logistics (FTL/LTL/multimoda) → POD → pengakuan penjualan; faktur pajak **simulasi** (nomor seri, PPN 11%)
-- [x] 43.3 Sell-out reporting: distributor melaporkan penjualan & stok (unggah/API), validasi, deteksi anomali (stuffing, diversi, harga)
-- [x] 43.4 **Konsinyasi**: stok milik prinsipal di lokasi distributor, laporan penjualan memicu faktur & transfer kepemilikan, rekonsiliasi stok konsinyasi
-- [x] 43.5 Retur & klaim: kedaluwarsa, rusak, salah kirim; kebijakan retur per kontrak; kredit nota; restock/kuarantina/musnahkan
-- [x] 43.6 **Rebate & insentif**: program volume/pertumbuhan/bertingkat, akrual per transaksi (`dist:rebate_payable`), penyelesaian periodik via approval; breakage
-- [x] 43.7 Perhitungan margin distributor & price compliance (harga tebus vs HET simulasi)
-- [x] 43.8 Stok kritis distributor → saran replenishment (VMI sederhana)
-- [x] 43.9 `dist:audit` (AR distributor, rebate, konsinyasi = ledger/stok, 0 selisih)
-- [x] 43.10 Quality gate Fase 43
-
-## FASE 44 — HARGA, PROMO & TRADE TERMS (PRICING ENGINE)
-- [x] 44.1 Price list engine: daftar harga per segmen/saluran/wilayah/mata uang, berlaku-dari/sampai tanpa overlap, prioritas
-- [x] 44.2 Diskon bertingkat: volume, paket (bundle), kombinasi, kupon; urutan penerapan deterministik & dapat diaudit (price waterfall)
-- [x] 44.3 Promo dagang (trade promotion): anggaran promo, mekanik, klaim distributor dengan bukti, validasi, settlement
-- [x] 44.4 Harga kontrak (Fase 29.3) mengalahkan price list; kunci harga di dokumen saat order (immutable)
-- [x] 44.5 Aturan margin minimum & approval override harga
-- [x] 44.6 Integrasi ke Store (harga produk produksi sendiri), Distribusi, Agensi; perubahan harga bersifat event idempoten
-- [x] 44.7 Analitik: realisasi harga vs list, kebocoran diskon, efektivitas promo
-- [x] 44.8 Quality gate Fase 44
-
-## FASE 45 — AGENSI: AGEN PENJUALAN & KOMISI (MODUL `agy_`)
-- [x] 45.1 Modul Agency: agen individu/badan (party role), tipe (agen penjualan, broker, reseller, afiliasi, agen tunggal merek), hirarki upline/downline
-- [x] 45.2 Kontrak keagenan (Fase 28/29): wilayah/produk, eksklusivitas, komisi, masa berlaku, non-compete (flag), penghentian
-- [x] 45.3 **Skema komisi** fleksibel: flat, persentase, bertingkat (slab), per produk/saluran, bonus target; komisi berjenjang (override upline, maks N level)
-- [x] 45.4 Atribusi penjualan: kode agen/referral/lead, aturan prioritas bila konflik (last-touch/first-touch), masa atribusi
-- [x] 45.5 Perhitungan komisi per transaksi (event penjualan terkonfirmasi/dibayar), **hold sampai periode retur lewat**, akrual `agy:commission_payable`
-- [x] 45.6 **Clawback**: retur/pembatalan/chargeback membalik komisi (saldo agen bisa negatif → dikompensasi periode berikut)
-- [x] 45.7 Payout periodik: statement komisi, PPh 21/23 dipotong (simulasi), approval, pembayaran via ledger/PaymentGateway, bukti potong
-- [x] 45.8 Portal agen (role `agent`): lead, penjualan, komisi, statement, materi, target; laporan downline
-- [x] 45.9 `agy:audit` (komisi akrual = payout + saldo, 0 selisih)
-- [x] 45.10 Quality gate Fase 45
-
-## FASE 46 — AGENSI: EKOSISTEM, LEAD, TIER & KEPATUHAN
-- [x] 46.1 CRM ringan: lead/prospek, pipeline, aktivitas, konversi → order; penugasan lead ke agen
-- [x] 46.2 Rekrutmen & onboarding agen: pendaftaran, KYC (27.2), pelatihan/sertifikasi internal, lisensi (mis. agen asuransi/properti — data simulasi) dengan masa berlaku
-- [x] 46.3 Tier & gamifikasi: level agen, syarat naik/turun, benefit; leaderboard (privasi dijaga)
-- [x] 46.4 Agensi merek/keagenan impor: agen tunggal pemegang merek (APM-style) → hak impor, garansi, purna jual terhubung AutoServe (kontrak)
-- [x] 46.5 Kepatuhan agen: pelanggaran (diskon liar, klaim palsu), sanksi bertingkat, suspensi komisi, banding
-- [x] 46.6 Deteksi kecurangan: pola self-referral, penjualan palsu, anomali komisi (aturan + skor simulasi)
-- [x] 46.7 Integrasi lintas lini: agen properti Mall (leasing unit), agen kendaraan Store/AutoDex, agen katering Resto
-- [x] 46.8 Analitik: ROI agen, biaya akuisisi, retensi, kontribusi downline
-- [x] 46.9 Quality gate Fase 46
-
-## FASE 47 — MITRA & KEMITRAAN (MODUL `ptn_`)
-- [x] 47.1 Modul Partner: jenis mitra (strategis, teknologi, saluran, waralaba, JV, riset, CSR), siklus hidup `prospect → due diligence → negotiation → active → review → exit`
-- [x] 47.2 Due diligence: checklist (legal, keuangan, reputasi, ESG, sanksi), skor risiko, approval berjenjang, dokumen
-- [x] 47.3 Perjanjian kemitraan (Fase 28/29) + rencana kerja bersama (joint business plan): sasaran, KPI, anggaran, PIC kedua pihak
-- [x] 47.4 **Revenue/profit sharing** generik: aturan bagi hasil (persentase, bertingkat, setelah biaya), periode, perhitungan dari ledger; mengganti pola khusus (Resto royalti, Mall revenue share) lewat adapter tanpa mengubah hasil lama
-- [x] 47.5 Co-selling & marketplace B2B sederhana: katalog mitra, referral antar-mitra, lead sharing, atribusi
-- [x] 47.6 Portal mitra (role `partner`): proyek, laporan, statement bagi hasil, dokumen, tiket
-- [x] 47.7 SLA mitra & penalti, scorecard & review berkala (QBR), rencana perbaikan
-- [x] 47.8 Aset & HKI bersama: kepemilikan bersama aset (Fase 30), hak kekayaan intelektual (merek/paten/hak cipta — register, masa berlaku, lisensi)
-- [x] 47.9 Exit & transisi: terminasi kemitraan, pembagian aset/utang, pembayaran terakhir, retensi data
-- [x] 47.10 Quality gate Fase 47
-
-## FASE 48 — MULTI-CURRENCY & TREASURY
-- [x] 48.1 Master mata uang & kurs: kurs harian (sumber simulasi + input manual), jenis kurs (spot/tengah/pajak), tabel kurs ber-versi tak dapat diubah
-- [x] 48.2 Ledger multi-currency: transaksi dalam mata uang asing dengan nilai fungsional tersimpan (minor unit), **tanpa float**; Σ per mata uang & Σ fungsional seimbang
-- [x] 48.3 Revaluasi piutang/utang/kas valas akhir periode, laba/rugi kurs terealisasi & belum terealisasi, jurnal pembalik otomatis
-- [x] 48.4 Rekening bank perusahaan & kas: saldo, rekonsiliasi bank (impor mutasi simulasi, pencocokan otomatis, selisih), kas kecil
-- [x] 48.5 Forecast arus kas (AR/AP/PO/payroll-placeholder/pajak), horizon 13 minggu, skenario
-- [x] 48.6 Lindung nilai sederhana (forward contract simulasi): eksposur, kontrak, mark-to-market, penyelesaian
-- [x] 48.7 Pinjaman & fasilitas bank: plafon, penarikan, bunga, covenant (rasio) & peringatan pelanggaran
-- [x] 48.8 Pooling kas antar-entitas (Fase 52 intercompany loan)
-- [x] 48.9 `treasury:audit` (0 selisih), pilar health-check
-- [x] 48.10 Quality gate Fase 48
-
-## FASE 49 — EKSPOR–IMPOR (TRADE OPERATIONS)
-- [x] 49.1 Master negara/pelabuhan/zona, **Incoterms 2020** (tanggung jawab biaya/risiko per istilah), HS code ber-versi (memperluas `HsTariff` Logistics), larangan/pembatasan (lartas — simulasi)
-- [x] 49.2 **Order ekspor**: proforma → commercial invoice → packing list → booking kapal/pesawat (Logistics) → dokumen ekspor (PEB simulasi) → pengakuan pendapatan saat risiko berpindah (sesuai Incoterm)
-- [x] 49.3 **Order impor**: PO impor (33.5) → ASN → dokumen (BL/AWB, invoice) → PIB simulasi (BM/PPN/PPh 22 via `CustomsDutyCalculator`) → penerimaan; **landed cost** otomatis ke persediaan
-- [x] 49.4 Dokumen perdagangan: Certificate of Origin (Form E/D/AANZ… data referensi), fumigasi, Phytosanitary, Halal/BPOM lintas negara (simulasi), checklist per negara & produk
-- [x] 49.5 Kuota & preferensi tarif (FTA — simulasi): tarif preferensial bila CoO valid, penghematan dilaporkan
-- [x] 49.6 Pelacakan lintas batas: status tiap leg internasional (origin → port → transit → customs → destination) memakai tracking Logistik hash-chain
-- [x] 49.7 Sengketa & klaim dagang internasional (barang rusak/selisih/keterlambatan), asuransi kargo (Fase 23.4) & subrogasi
-- [x] 49.8 Kepatuhan: kontrol ekspor/dual-use (daftar simulasi), sanksi (27.6), pelaporan ekspor-impor bulanan
-- [x] 49.9 `trade:audit` (invoice ekspor/impor ↔ ledger ↔ stok, 0 selisih)
-- [x] 49.10 Quality gate Fase 49
-
-## FASE 50 — TRADE FINANCE (L/C, GARANSI, KOLEKSI DOKUMEN & PEMBIAYAAN SUPPLY CHAIN)
-- [x] 50.1 **Letter of Credit Engine (UCP 600 Simulasi Lanjutan)**:
-  - Siklus penuh L/C: *Application → Issuance → Advising → Amendment → Document Presentation → Examination → Acceptance → Payment / Usance Settlement*.
-  - Klasifikasi instrumen: Sight L/C, Usance L/C (deferred payment/tenor 30/60/90/180 hari), Revolving L/C, Transferable L/C, dan Standby L/C (SBLC).
-  - Alur amandemen: pelacakan versi amandemen gapless, rekonsiliasi selisih nilai notional, dan persetujuan formal kedua belah pihak via ApprovalEngine.
-- [x] 50.2 **Pemeriksaan Dokumen L/C & Otomasi Deteksi Diskrepansi (Document Checking Engine)**:
-  - Checklist otomatis kesesuaian dokumen dagang (Commercial Invoice, Bill of Lading / Air Waybill, Packing List, Certificate of Origin, Insurance Certificate) terhadap klausul L/C.
-  - Aturan deteksi diskrepansi otomatis: ketidakcocokan nilai nominal, perbedaan deskripsi barang (toleransi ketat UCP 600), pelabuhan muat/tujuan tidak sesuai, tanggal dokumen melebihi masa berlaku (*stale documents*).
-  - Workflow *Discrepancy Notice* & alur waiver persetujuan applicant (four-eyes approval) sebelum bank melakukan akseptasi/pembayaran.
-- [x] 50.3 **Documentary Collection (D/P, D/A) & Open Account Monitoring**:
-  - Instrumen Dokumen Inkaso: *Documents against Payment* (D/P) dan *Documents against Acceptance* (D/A) dengan pelacakan jatuh tempo bill of exchange/wesel.
-  - Manajemen Open Account dengan batasan limit eksposur kredit perdagangan per mitra buyer/seller, pemantauan batas waktu penagihan, dan mitigasi risiko default.
-- [x] 50.4 **Garansi Bank & Obligasi Kontrak Terpadu (Bank Guarantee & Surety Bonds)**:
-  - Pengelolaan tipe garansi: *Bid Bond* (Jaminan Tender), *Performance Bond* (Jaminan Pelaksanaan), *Advance Payment Guarantee* (Jaminan Uang Muka), dan *Retention Bond* (Jaminan Pemeliharaan).
-  - Integrasi dua arah: terhubung langsung ke modul Procurement Tender (Fase 33.3) dan Kontrak Bisnis (Fase 28/29.1).
-  - Siklus penjaminan: penerbitan, perpanjangan masa berlaku otomatis, pengajuan klaim default, penyelesaian arbitrase, dan pelepasan formal jaminan (*guarantee release*).
-- [x] 50.5 **Pembiayaan Perdagangan & Supply Chain Finance (SCF) Multi-Fasilitas**:
-  - *Pre-Shipment Export Financing* (kredit modal kerja ekspor berbasis Purchase Order terkonfirmasi).
-  - *Post-Shipment Financing & Invoice Discounting* (pencairan piutang dagang segera sebelum jatuh tempo pembayaran buyer).
-  - *Dynamic Discounting Pemasok*: pembiayaan rantai pasok berbasis skala waktu pelunasan lebih awal dengan potongan harga dinamis.
-  - Anjak Piutang (*Factoring*) simulasi: *with recourse* vs *without recourse*, cadangan retensi, dan biaya administrasi diskonto.
-- [x] 50.6 **Asuransi Kargo Internasional & Integrasi Klaim Logistik**:
-  - Polis kargo laut/udara berbasis Institute Cargo Clauses (ICC A/B/C): perhitungan premi terintegrasi CIF, klausul perils laut, perang, pemogokan.
-  - Integrasi klaim asuransi kargo ke insiden kerusakan logistik (Fase 23.4) & sengketa perdagangan (Fase 49.7), lengkap dengan alur subrogasi hukum.
-- [x] 50.7 **Akuntansi Trade Finance, Biaya Bank & Jurnal Double-Entry Terintegrasi**:
-  - Akun memorandum kontinjensi: pencatatan komitmen off-balance-sheet untuk L/C dan Garansi Bank aktif (`DR tf:contingent_lc:IDR / CR tf:contra_lc:IDR`).
-  - Pembebanan biaya administrasi, provisi bank, komisi advising/akseptasi, dan margin deposit yang ditahan di bank (`bank_accounts`).
-  - Integrasi selisih kurs valas (Fase 48): pengakuan untung/rugi kurs pada tanggal penyelesaian wesel usance vs tanggal akseptasi.
-- [x] 50.8 **Portal & Observabilitas Trade Finance**:
-  - Portal role `treasury` dan `procurement`: pemantauan plafon fasilitas trade finance, kalender jatuh tempo L/C, monitoring dokumen inkaso, dan dashboard eksposur per bank mitra.
-- [x] 50.9 `tf:audit` (Plafon garansi = subledger, saldo komitmen memorandum L/C = transaksi aktif, klaim <= plafon, 0 selisih diskrepansi).
-- [x] 50.10 Quality gate Fase 50.
-
-
-## FASE 51 — KERJA SAMA INTERNASIONAL I: JV, LISENSI, OEM/ODM & ALIH TEKNOLOGI
-- [x] 51.1 **Master Entitas Mitra Asing & Tata Kelola Multi-Yurisdiksi**:
-  - Perluasan modul Party (`pty_`): registrasi entitas hukum asing, nomor registrasi bisnis yurisdiksi asal, legalisasi dokumen / Apostille Convention, dan kuasa hukum/wakil sah di Indonesia.
-  - Penentuan mata uang fungsional, regulasi anti-pencucian uang (AML/Sanction screening internasional), dan yurisdiksi hukum penyelesaian sengketa (Arbitrase BANI/SIAC/ICC).
-- [x] 51.2 **Struktur Usaha Patungan (Joint Venture - JV Management)**:
-  - Struktur Equity JV vs Contractual JV: porsi kepemilikan modal saham, jadwal setoran modal bertahap (*capital calls*), dan pencatatan kepemilikan saham di entitas anak (`pty_legal_entities`).
-  - Tata kelola dewan: klausul hak veto pemegang saham minoritas, kuorum rapat pemegang saham, dan pembagian dividen bersyarat KPI performa.
-- [x] 51.3 **Lisensi Hak Cipta, Merek & Waralaba Internasional**:
-  - Registrasi lisensi teknologi dan merek (HKI Fase 47.8): cakupan teritori geografis, hak eksklusif vs non-eksklusif, sub-lisensi, dan masa berlaku.
-  - Kalkulasi royalti otomatis: basis persentase penjualan kotor/bersih, *minimum annual guarantee* (MAG), slab berjenjang, dan audit keselarasan laporan royalti terhadap sell-out Store/Distribusi.
-- [x] 51.4 **OEM/ODM & Contract Manufacturing Lintas Batas**:
-  - Pabrik platform memproduksi barang untuk merek prinsipal global (OEM) atau sebaliknya menerima pasokan barang ber-desain khusus (ODM).
-  - Pengelolaan bahan baku konsinyasi milik prinsipal: persediaan terpisah tanpa pengakuan hutang dagang, biaya konversi manufaktur (*conversion cost/tolling fee*), dan klausul kerahasiaan desain (NDA).
-  - Integrasi ke modul Manufaktur (`mfg_`): routing khusus OEM, pengawasan mutu bersama (*joint QA/QC*), dan sertifikasi kepatuhan pabrik (*social compliance audit*).
-- [x] 51.5 **Alih Teknologi, R&D Bersama & Milestone Delivery**:
-  - Paket alih teknologi: blueprint teknis, formula terenkripsi, program pelatihan teknisi, dan asistensi teknis lapangan.
-  - Alur pembayaran bertahap berbasis milestone penerimaan (*acceptance testing sign-off*) via approval four-eyes lintas direksi.
-  - Klausul hak kekayaan intelektual turunan (*derivative IP*): pembagian hak kepemilikan atas paten/invensi baru hasil pengembangan bersama.
-- [x] 51.6 **Kontrak Lintas Yurisdiksi & Perjanjian Dwi-Bahasa (Bilingual Legal Contracts)**:
-  - Pembuatan kontrak bisnis dua bahasa (Bahasa Indonesia & Bahasa Inggris) otomatis via modul Contract (`ctr_`) dengan klausul *prevailing language*.
-  - Klausul standar internasional: *Force Majeure*, pembatasan liabilitas (*limitation of liability*), sanksi kepatuhan ekspor dual-use, dan klausul anti-suap/korupsi (FCPA / UK Bribery Act / UU Tipikor).
-- [x] 51.7 **Perpajakan Lintas Negara Simulasi (Tax Treaty / P3B & Withholding Tax)**:
-  - Pemotongan PPh Pasal 26 / WHT atas royalti, bunga, dividen, dan jasa teknik luar negeri.
-  - Engine P3B (Perjanjian Penghindaran Pajak Berganda) ber-versi: validasi *Certificate of Domicile* (Form DGT simulasi) untuk menentukan tarif pajak efektif yang berlaku (misal: 10% vs tarif normal 20%).
-  - Penerbitan bukti potong pajak luar negeri simulasi dan pencatatan kredit pajak luar negeri.
-- [x] 51.8 **Audit Kepatuhan Internasional (Compliance & Anti-Bribery Checklists)**:
-  - Kuesioner uji tuntas (*due diligence*) kepatuhan mitra asing: verifikasi *Beneficial Ownership*, deklarasi non-suap, dan screening daftar sanksi PBB/OFAC.
-- [x] 51.9 Dashboard portofolio kerja sama internasional: visualisasi proyek JV, aliran royalti global, status transfer teknologi, dan eksposur nilai tukar.
-- [x] 51.10 Quality gate Fase 51.
-
-
-## FASE 52 — KERJA SAMA INTERNASIONAL II: INTERCOMPANY, TRANSFER PRICING & KONSOLIDASI
-- [x] 52.1 **Arsitektur Transaksi Antar-Entitas Grup (Intercompany Transactions Engine)**:
-  - Transaksi otomatis *Mirror Transaction*: penjualan barang/jasa dari Entitas A ke Entitas B menghasilkan otomatis Sales Order/Invoice di A dan Purchase Order/Bill di B secara atomik.
-  - Pengelolaan pinjaman antar-perusahaan (*Intercompany Loans*): jadwal amortisasi bunga arm's length, penarikan dana, dan integrasi cash pooling Treasury (Fase 48.8).
-  - Skema penagihan biaya bersama (*Cost Sharing / Management Fee Allocation*) berdasarkan porsi headcount atau omzet entitas.
-- [x] 52.2 **Transfer Pricing Engine & Dokumentasi Simulasi (OECD & PMK Compliance)**:
-  - Penerapan metode transfer pricing: *Comparable Uncontrolled Price* (CUP), *Cost Plus Method* (CPM), *Resale Price Method* (RPM), dan *Transactional Net Margin Method* (TNMM).
-  - Penegakan prinsip kewajaran dan kelaziman usaha (*Arm's Length Principle*): rentang margin intercompany terverifikasi otomatis terhadap benchmark industri simulasi.
-  - Generator draf Local File & Master File TP Doc simulasi: analisis fungsi, aset, dan risiko (FAR) per entitas grup.
-  - Penyesuaian transfer pricing akhir tahun (*Year-End TP True-up Adjustments*) dengan jurnal penyesuaian otomatis.
-- [x] 52.3 **Perpindahan Aset & Logistik Antar-Entitas/Negara**:
-  - Mutasi aset tetap antar-entitas: transfer nilai buku, transfer akumulasi depresiasi, dan faktur pengalihan aset.
-  - Pengiriman stok antar-entitas lintas batas: integrasi ke modul Logistik (`lgx_`) dan dokumen kepabeanan ekspor-impor (PEB/PIB), penanganan PPN/bea masuk antar-anak perusahaan.
-- [x] 52.4 **Mesin Eliminasi Intercompany & Konsolidasi Keuangan Otomatis**:
-  - Eliminasi saldo akun timbal balik (*Reciprocal Balances*): eliminasi piutang-hutang intercompany (`ic:ar` vs `ic:ap`).
-  - Eliminasi transaksi penjualan/pembelian intercompany agar omzet grup tidak terhitung ganda (*double-counting*).
-  - Eliminasi laba antar-perusahaan yang belum terealisasi (*Unrealized Profit in Ending Inventory*).
-  - Translasi laporan keuangan mata uang asing ke mata uang pelaporan IDR sesuai standar akuntansi: pos neraca memakai kurs penutupan (*closing rate*), pos laba rugi memakai kurs rata-rata (*average rate*), dan selisih kurs translasi dicatat pada akun Ekuitas (*Foreign Currency Translation Reserve*).
-- [x] 52.5 **Kepemilikan Kepentingan Non-Pengendali (Non-Controlling Interest - NCI)**:
-  - Perhitungan porsi laba/rugi bersih dan ekuitas yang diatribusikan kepada pemegang saham minoritas pada anak perusahaan / JV parsial.
-  - Pencatatan pembagian dividen kepada pihak ketiga non-pengendali.
-- [x] 52.6 **Pelaporan Segmen Usaha Terkonsolidasi (Segment Reporting)**:
-  - Laporan laba rugi dan neraca per segmen operasi (Manufaktur, Logistik, Retail/Store, Resto, Mall) dan per wilayah geografis.
-  - Fitur drill-down dari laporan konsolidasi grup hingga ke level voucher jurnal sumber di entitas anak.
-- [x] 52.7 `group:audit` (Invarian eliminasi: Σ Eliminasi debit = Σ Eliminasi kredit, selisih rekonsiliasi IC = 0, translasi matematis konsisten 100%).
-- [x] 52.8 Quality gate Fase 52.
-
-
-## FASE 53 — SUPPLY CHAIN CONTROL TOWER & SALES AND OPERATIONS PLANNING (S&OP)
-- [x] 53.1 **Menara Pengawas Rantai Pasok Terpadu (Supply Chain Control Tower)**:
-  - Peta aliran nilai digital end-to-end: pelacakan visual status pasokan dari Pemasok Tier-1/2 → Pelabuhan → Pabrik Manufaktur → Gudang Sentral (DC) → Distributor → Toko/Konsumen.
-  - Indikator visibilitas inventori multi-eselon (*Multi-Echelon Inventory Visibility*): stok di tangan, stok dalam perjalanan (*in-transit*), stok terreservasi, dan stok komitmen.
-- [x] 53.2 **Mesin Prediksi Permintaan Multi-Model (Demand Forecasting Engine)**:
-  - Algoritma proyeksi kuantitatif deterministik: *Weighted Moving Average*, *Exponential Smoothing*, *Holt-Winters Trend & Seasonality*, dan *Linear Regression*.
-  - Metrik evaluasi akurasi forecast: *Mean Absolute Percentage Error* (MAPE), *Mean Absolute Deviation* (MAD), dan *Forecast Bias Tracking Signal*.
-  - Mekanisme override forecast kolaboratif oleh tim penjualan dengan audit trail alasan perubahan.
-- [x] 53.3 **Proses Siklus Bulanan S&OP Kolaboratif (Sales & Operations Planning Workflow)**:
-  - 4 Tahap S&OP terstruktur: (1) *Demand Review* → (2) *Supply & Capacity Review* → (3) *Pre-S&OP Financial Balancing* → (4) *Executive S&OP Sign-off*.
-  - Skenario perbandingan rencana pasokan: skenario konservatif, moderat, dan agresif lengkap dengan proyeksi dampak laba kotor dan arus kas.
-- [x] 53.4 **Mesin Janji Pesanan Berbasis Kapasitas Nyata (ATP & CTP Engine)**:
-  - *Available-to-Promise* (ATP): perhitungan alokasi stok bebas janji per periode waktu tanpa mengorbankan reservasi yang sudah ada.
-  - *Capable-to-Promise* (CTP): jika stok fisik tidak mencukupi, sistem secara dinamis mengecek ketersediaan bahan baku di MRP dan kapasitas mesin kosong di pabrik untuk menetapkan tanggal pengiriman realistis ke pelanggan.
-- [x] 53.5 **Optimalisasi Kebijakan Persediaan Multi-Eselon & Klasifikasi Material**:
-  - Matriks analisis gabungan ABC/XYZ (berdasarkan nilai pemakaian dan variabilitas permintaan).
-  - Formula stok pengaman dinamis (*Dynamic Safety Stock*) berbasis tingkat layanan target (*Service Level* 90%/95%/99%) dan variabilitas lead time pemasok.
-  - Deteksi dini barang bergerak lambat (*Slow Moving*), barang usang (*Dead Stock*), dan produk mendekati masa kedaluwarsa (*Shelf-Life Expiry Warning*).
-- [x] 53.6 **Sistem Manajemen Anomali & Deteksi Dampak Rantai Pasok (Disruption Alert & Impact Analysis)**:
-  - Peringatan dini otomatis: keterlambatan kedatangan bahan baku impor, mesin pabrik breakdown kritis, kemacetan rute logistik ekspres, atau lonjakan pesanan mendadak.
-  - Analisis dampak berantai (*Blast Radius Impact Analysis*): kalkulasi instan pesanan distributor/konsumen mana saja yang berisiko terlambat akibat gangguan di hulu.
-- [x] 53.7 **Eksekutif Dashboard KPI Kinerja Pasokan Kelas Dunia**:
-  - Metrik performa kunci: *On-Time In-Full* (OTIF) end-to-end, *Cash-to-Cash Cycle Time*, *Inventory Days of Supply* (DOS), *Order Fulfillment Lead Time*, dan rasio biaya logistik terhadap penjualan.
-- [x] 53.8 **Digital Twin Simulasi Skenario Rantai Pasok (What-If Simulation Twin)**:
-  - Fasilitas sandbox tanpa mengubah database riil: simulasi penutupan pelabuhan utama selama 14 hari, kenaikan harga bahan baku 20%, atau penambahan lini pabrik baru terhadap profitabilitas grup.
-- [x] 53.9 `tower:audit` (Invarian alokasi ATP tidak melebihi stok fisik + jadwal rilis PO, integritas pohon perhitungan CTP konsisten 100%).
-- [x] 53.10 Quality gate Fase 53.
-
-
-## FASE 54 — FINANCE GRUP, ANGGARAN, AUDIT TRAIL & KEPATUHAN
-- [x] 54.1 **Sistem Perencanaan & Pengendalian Anggaran (Enterprise Budgeting & Encumbrance)**:
-  - Struktur anggaran hierarkis: Anggaran per Entitas → Direktorat → Pusat Biaya (*Cost Center*) → Mata Anggaran (Akun Beban).
-  - Mekanisme kontrol anggaran ketat: *Hard-Stop* (menolak transaksi jika melebihi plafon) vs *Soft-Stop* (peringatan & eskalasi approval ke Direktur Keuangan).
-  - Alur komitmen anggaran (*Budget Encumbrance*): penguncian dana sejak PR/PO disetujui hingga realisasi invoice pelunasan.
-  - Pelaporan *Budget vs Actual vs Encumbrance* secara real-time dan mekanisme revisi anggaran resmi ber-versi.
-- [x] 54.2 **Laporan Keuangan Standar Enterprise & Prosedur Tutup Buku Periode (Financial Close)**:
-  - Penerbitan otomatis Laporan Neraca (*Balance Sheet*), Laporan Laba Rugi Komprehensif (*Income Statement*), dan Laporan Arus Kas Metode Langsung & Tidak Langsung.
-  - Checklist tutup buku akhir bulan/tahun (*Month-End Close Workflow*): penyesuaian depresiasi, rekonsiliasi subledger, penutupan akun nominal, dan penguncian periode akuntansi (*Period Lock*) anti-backdating.
-- [x] 54.3 **Simulator Kepatuhan Perpajakan Nasional (Tax Engine & e-Faktur Simulation)**:
-  - Rekonsiliasi PPN Masukan vs PPN Keluaran, pembuatan draf pelaporan SPT Masa PPN 1111 dengan nomor seri faktur pajak gapless.
-  - Agregasi pemotongan pajak penghasilan: PPh Pasal 21 (karyawan/agen), PPh 23 (jasa/sewa), PPh 4 ayat 2 (final sewa Mall/properti), dan PPh 22 (impor/pengadaan).
-  - Ekspor format CSV siap impor simulator e-Faktur dan e-Bupot DJP.
-- [x] 54.4 **Penegakan Pemisahan Tugas Mutlak (Segregation of Duties - SoD Matrix Engine)**:
-  - Matriks konflik wewenang: larangan satu akun memiliki dua role bertentangan (misal: Pembuat PO dilarang menyetujui PO; Penginput Invoice dilarang mengeksekusi pembayaran bank; Kasir POS dilarang melakukan void tanpa persetujuan SPV).
-  - Deteksi dan pelaporan otomatis pelanggaran SoD dalam log audit keamanan.
-- [x] 54.5 **Kerangka Pengendalian Internal & Risk Control Matrix (RCM)**:
-  - Katalog titik kendali internal operasional: verifikasi approval ganda, pencocokan 3-way match, validasi batas toleransi timbangan logistik, dan batas margin harga tebus.
-  - Pengujian kontrol otomatis harian: sistem mencatat temuan anomali (*control exception*) dan menugaskan tindakan korektif ke manajer terkait.
-- [x] 54.6 **Kalender Kepatuhan Regulasi & Pengingat Kedaluwarsa Hukum**:
-  - Penjadwalan pemenuhan kewajiban: pelaporan pajak bulanan, perpanjangan izin edar BPOM/Halal, kedaluwarsa polis asuransi aset, dan masa berlaku kontrak perjanjian kemitraan.
-  - Eskalasi bertingkat via notifikasi outbox kepada penanggung jawab hukum sebelum jatuh tempo.
-- [x] 54.7 **Paket Bukti Audit Eksternal Terpadu (Auditor Data Pack Generator)**:
-  - Satu-klik ekspor bukti audit untuk KAP: buku besar, neraca saldo, daftar mutasi bank terverifikasi, register aset tetap, serta laporan verifikasi integritas hash-chain sistem.
-- [x] 54.8 Perluasan pilar observabilitas `super:health-check` ke seluruh 16 domain arsitektur platform.
-- [x] 54.9 `enterprise:audit` (Buku besar = subledger AR/AP/Aset/Persediaan/Pajak, selisih fiskal terjelaskan, saldo kas = bank statement, 0 diskrepansi).
-- [x] 54.10 Quality gate Fase 54.
-
-
-## FASE 55 — INTEGRASI API V2, B2B ELECTRONIC DATA INTERCHANGE (EDI) & MULTI-TENANCY
-- [x] 55.1 **Enterprise RESTful & GraphQL API v2 Terstandarisasi**:
-  - Spesifikasi kontrak OpenAPI 3.1 publik lengkap untuk seluruh modul ekosistem (Procurement, WMS, Logistics, Trade, Treasury, Finance).
-  - Autentikasi berbasis token Sanctum asli dengan enforcement granular abilities (`tokenCan`).
-  - Standarisasi format envelope JSON: pagination terstandarisasi, sorting multi-kolom, filter dinamis, dan error payload RFC 7807 (*Problem Details for HTTP APIs*).
-  - Penegakan header wajib `Idempotency-Key` pada seluruh endpoint HTTP berbobot mutasi state/uang.
-- [x] 55.2 **Mesin Webhook B2B Andal Berbasis Transaksional Outbox**:
-  - Katalog event domain kaya untuk konsumsi mitra eksternal: perubahan status pesanan, notifikasi pembayaran, perubahan status tracking kontainer, dan peluncuran PO baru.
-  - Keamanan transmisi webhook: penandatanganan payload dengan signature kriptografis HMAC-SHA256 (`X-Signature`).
-  - Mekanisme pengiriman andal: antrean pengiriman asinkron, retry eksponensial otomatis dengan jitter, penanganan sirkuit terputus (*circuit breaker*), dan *Dead-Letter Queue* (DLQ) untuk pengiriman gagal.
-- [x] 55.3 **Subsistem Electronic Data Interchange (EDI) Otomotif & Ritel (EDIFACT / X12 Simulasi)**:
-  - Penerjemah pesan bisnis standar EDI:
-    - EDI 850 / ORDERS: Purchase Order dari mitra pembeli.
-    - EDI 855 / ORDRSP: Purchase Order Acknowledgment.
-    - EDI 856 / DESADV: Advance Shipping Notice (ASN) dengan hierarki packing list terstruktur.
-    - EDI 810 / INVOIC: Faktur tagihan elektronik terverifikasi.
-  - Parser dan generator dokumen EDI dengan validasi skema ketat serta penerbitan Functional Acknowledgment (EDI 997 / CONTRL).
-- [x] 55.4 **Mesin Ekspor/Impor Data Massal Berperforma Tinggi**:
-  - Upload file spreadsheet massal (CSV/XLSX) berbasis streaming memory: validasi baris demi baris, pratinjau kesalahan komprehensif, dan eksekusi batch transaksional terisolasi.
-  - Ekspor asynchronous untuk dataset ratusan ribu baris dengan kompresi ZIP otomatis dan link unduh kedaluwarsa terproteksi tanda tangan token.
-- [x] 55.5 **Pengelolaan Klien B2B, Kuota API & Keamanan Gateway**:
-  - Portal manajemen API Key per badan hukum mitra dengan fitur rotasi kunci rahasia (*secret rotation*) tanpa downtime.
-  - Pembatasan tingkat penggunaan bertingkat (*Tiered Rate Limiting*) berbasis kuota harian/menit per tier mitra (Silver, Gold, Platinum).
+- [x] 37.5 Penerimaan barang jadi ke gudang (FG receipt), pembua
 - [x] 55.6 **Portal Pengembang Interaktif (Developer Hub & Mock Sandbox)**:
   - Halaman dokumentasi interaktif dengan konsol uji coba langsung (*API Playground*), skema data interaktif, dan contoh kode curl/SDK terverifikasi.
   - Lingkungan *Sandbox* dengan data terisolasi untuk pengujian integrasi pihak ketiga tanpa risiko merusak data produksi.
@@ -808,7 +493,6 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Prosedur validasi integritas backup basis data berkala dengan uji pemulihan (*disaster recovery drill*) terukur.
 - [x] 55.9 `api:audit` (Validasi skema OpenAPI vs implementasi rute aktual, uji integritas signature HMAC webhook 100% cocok).
 - [x] 55.10 Quality gate Fase 55.
-
 
 ## FASE 56 — STRESS TESTING SKALA ULTRA, SIMULASI 12 BULAN & RESILIENCE
 - [x] 56.1 **ValueChainUltraSeeder: Dataset Skala Enterprise 12 Bulan Transaksi**:
@@ -844,7 +528,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 56.6 **Penetrasi Keamanan & Uji Fuzzing Input Massal**:
   - Uji otomatisasi matriks otorisasi: ribuan kombinasi seluruh rute sistem terhadap 26+ role untuk memastikan tidak ada celah eskalasi hak akses (*Privilege Escalation*).
   - Pengujian IDOR massal: skrip otomatis mencoba mengakses data transaksi milik entitas lain menggunakan token entitas yang berbeda; wajib menghasilkan respon HTTP 403 Forbidden.
-  - Fuzzing input: pengiriman payload berukuran sangat besar, karakter injeksi SQL, tag XSS bersarang, dan format angka abnormal ke seluruh formulir input.
+  - Fuzzing input: pengiriman payload ukuran sangat besar, karakter injeksi SQL, tag XSS bersarang, dan format angka abnormal ke seluruh formulir input.
 - [x] 56.7 Laporan komprehensif profil performa sistem sebelum vs sesudah optimasi indeks dan refactoring kueri.
 - [x] 56.8 Quality gate Fase 56.
 
@@ -945,8 +629,24 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ---
 
-## BACKLOG FASE 58+ (STRATEGIC ENTERPRISE HORIZONS & INDUSTRY EXPANSION)
-*Roadmap strategis lanjutan berskala industri konglomerasi multi-sektor, memperluas rantai nilai dari hulu agrikultur, teknik rekayasa R&D, konstruksi EPC, SDM terpadu, hingga ketahanan bencana multi-region.*
+## 🏆 LAPORAN PENUTUP FASE 57B (Maintenance, Hardening & Deep Audit Final)
+
+Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur mendalam, penguatan keamanan, standarisasi DTO, pengayaan seeder, dan ekspansi health-check platform:
+
+- **Test Suite**: 931+ test / 4778+ assertion — 0 failure, 0 skip; jumlah test naik setiap fase dari baseline 538 test (Fase 25).
+- **Audit Rantai Nilai Menyeluruh**: `chain:audit-all` (18 modul diaudit, 0 selisih), `bank:reconcile` (140 akun, Σ=0 untuk seluruh aset).
+- **Semua `*:audit`**: `bank`, `mall:audit-billing`, `lgx:audit-billing`, `lgx:verify-custody`, `ast:audit`, `ctr:audit`, `proc:audit`, `mfg:audit-costing`, `wms:audit`, `dist:audit`, `pricing:audit`, `agy:audit`, `ptn:audit`, `treasury:audit`, `trade:audit`, `tf:audit`, `intl:audit`, `group:audit`, `tower:audit`, `enterprise:audit`, `api:audit`, `hcm:audit`, `plm:audit`, `esg:audit`, `b2b:audit`, `agri:audit`, `epc:audit` — **semua = 0 selisih**.
+- **Super Health-Check**: `super:health-check` → 10 pilar platform HEALTHY (DB, Cache, Storage, Ledger, Passport, Mall Billing, Resto Shift, Logistik Kustodi & Billing, Aset Subledger & Hash Chain, Health Matrix).
+- **Security**: 0 IDOR, 0 SQL injection, rate limiter aktif untuk 4 kategori endpoint (transfer, PIN, login, export); RBAC granular 32 role.
+- **Dokumentasi**: `CODEBASE.md`, `DECISIONS.md`, `AUDIT.md`, `RUNBOOK.md` mutakhir dan sinkron.
+
+---
+
+## BACKLOG FASE 58–63 (STRATEGIC ENTERPRISE HORIZONS: HCM, PLM, ESG, B2B, AGRI, EPC)
+*Ekspansi rantai nilai dari hulu agrikultur, teknik rekayasa R&D, konstruksi EPC, SDM terpadu, hingga ketahanan bencana multi-region. Semua fase ini sudah selesai dikerjakan (✅) dan termasuk dalam Definition of Done Fase 26–63.*
+
+> **Konvensi Fase 58–63:** Menggunakan konvensi yang sama dengan Fase 26+ (modular monolith, integer IDR, idempotensi key, test (a)–(e), quality gate). Fase 64–66 adalah roadmap lanjutan yang belum dimulai.
+
 
 ## FASE 58 — HUMAN CAPITAL MANAGEMENT (HCM), TALENT & PRODUCTION PAYROLL
 - [x] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
@@ -1054,7 +754,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Integrasi telemetri sensor IoT suhu dan kelembaban berkala: deteksi status optimal (2°C - 8°C), status peringatan (8°C - 12°C), dan status pelanggaran mutu (*temperature breach*).
   - Verifikasi sertifikasi rantai pasok halal dari lahan pertanian hingga meja santap.
 - [x] 62.5 **AgriService, Web Portal & Audit Command `agri:audit`**:
-  - Layanan `Modules\Agri\Application\Services\AgriService` mengorkestrasikan kontrak tani, penerimaan panen, dan telemetri suhu.
+  - Layanan `Modules\Agri\Application\Services\AgriService` mengorkestrasi kontrak tani, penerimaan panen, dan telemetri suhu.
   - Web UI `/agri` dasbor pemantauan hasil panen, serapan komoditas resto, dan logistik rantai dingin.
   - Command `agri:audit` (Konsistensi pembagian hasil panen, verifikasi pemotongan piutang uang muka tidak over-deducted, 0 diskrepansi).
 
@@ -1070,51 +770,68 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 63.3 **Konstruksi Dalam Pengerjaan (CIP) & Akuntansi Biaya Modal**:
   - Akumulasi seluruh biaya proyek, jasa konstruksi, dan sertifikat prestasi bulanan ke akun buku besar Konstruksi Dalam Pengerjaan (`accumulated_cip_cost_idr`).
   - Rekonsiliasi periodik antara realisasi fisik MC konsultan dengan mutasi finansial buku besar CIP.
-  - Guardrail pencegahan kapitalisasi dini sebelum pekerjaan fisik diverifikasi tuntas.
+  - Guardrail pencegah kapitalisasi dini sebelum pekerjaan fisik diverifikasi tuntas.
 - [x] 63.4 **Serah Terima Akhir Proyek (BAST 1 & 2) & Kapitalisasi Aset Tetap Modul Asset**:
   - Pelaksanaan Berita Acara Serah Terima Parsial (BAST 1) dan Berita Acara Serah Terima Final (BAST Final).
   - Penutupan saldo akun CIP dan reklasifikasi otomatis menjadi Aset Tetap Bangunan, Gedung, Mesin, dan Instalasi Fasilitas di Modul Aset (`Modules\Asset`).
   - Pemutakhiran nilai buku aset kapitalisasi (`capitalized_asset_value_idr`) dan pengikatan ID register aset tetap baru.
 - [x] 63.5 **EpcService, Web Portal & Audit Command `epc:audit`**:
-  - Layanan `Modules\Epc\Application\Services\EpcService` mengorkestrasikan WBS, sertifikat progres, dan kapitalisasi aset tetap.
+  - Layanan `Modules\Epc\Application\Services\EpcService` mengorkestrasi WBS, sertifikat progres, dan kapitalisasi aset tetap.
   - Web UI `/epc` visualisasi kurva-S progres konstruksi dan status kapitalisasi gedung baru.
   - Command `epc:audit` (Realisasi termin tagihan = klaim MC tersertifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, batas progres maksimal 100%, 0 diskrepansi).
 
 ## FASE 64 — ANALITIK PREDIKTIF, AI-DRIVEN REVENUE MANAGEMENT & ANOMALY DETECTION
 - [ ] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
-  - Algoritma penetapan harga dinamis deterministik: elastisitas harga permintaan, sisa umur simpan produk, dan tingkat keterisian ruang mall/katering.
-  - Guardrail keamanan batas harga: proteksi harga batas bawah (*floor price*) dan kepatuhan regulasi HET pemerintah.
-- [ ] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
-  - Skor anomali transaksi real-time: pola belanja abnormal, split bill mencurigakan, order fiktif agen, atau deviasi konsumsi bahan bakar logistik.
-  - Trigger otomatis karantina transaksi berisiko tinggi sebelum settlement bank dieksekusi.
+  - Algoritma penetapan harga dinamis deterministik: elastisitas harga permintaan, sisa umur simpan produk (`resto_display_trays.expires_at`), dan tingkat keterisian ruang mall/katering.
+  - Guardrail keamanan batas harga: proteksi harga batas bawah (*floor price* = HPP + margin minimum) dan kepatuhan regulasi HET pemerintah (menolak lebih dari 120% HET simulasi).
+  - Harga dinamis tidak mengubah dokumen order yang sudah dibuat (immutable saat dibuat — memperluas Fase 44.4 price freeze); log setiap perubahan harga di `pric_price_ticks`.
+  - Integrasi kanal: Pricing Engine memperbarui harga di Store B2C, portal Distributor, B2B Marketplace, dan tarif EV (Fase 69) secara koheren.
+- [ ] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud (Deterministik)**:
+  - Skor anomali transaksi real-time: pola belanja abnormal (frekuensi top-up berlebih, mutasi wallet melebihi 3σ dari rata-rata 30 hari), split bill mencurigakan (≥5 transaksi kecil dalam 5 menit), order fiktif agen (akrual komisi tanpa penjualan aktual), dan deviasi konsumsi bahan bakar logistik (melebihi baseline ton-km).
+  - Trigger otomatis karantina transaksi berisiko tinggi (`AnomalyQuarantine`): hold 24 jam → four-eyes manual review → release/reject; bukti quarantine tercatat audit trail.
+  - Engine bersifat deterministik (threshold + rule-based, bukan black-box ML) sehingga dapat diaudit ulang dengan input yang sama.
 - [ ] 64.3 **Rekomendasi Preskriptif Perencanaan Stok & Pengadaan Cerdas**:
-  - Analisis tren musiman eksternal (hari libur nasional, musim hujan, tren pasar) menghasilkan usulan rekomendasi revisi safety stock dan rilis PO ke vendor secara otomatis.
-- [ ] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
+  - Analisis tren musiman eksternal (hari libur nasional, musim hujan, tren pasar — feed simulasi) menghasilkan usulan rekomendasi revisi safety stock dan rilis PO ke vendor secara otomatis.
+  - Rekomendasi disimpan sebagai proposal (`ai_stock_recommendations`) dengan status *pending/approved/rejected*; di bawah plafon nilai → auto-approve menjadi PR Procurement; di atas plafon → approval manual.
+  - Keputusan model tersimpan bersama input parameter sehingga dapat direkonstruksi ulang untuk audit (audit trail lengkap).
+- [ ] 64.4 Tests: (a) harga dinamis tidak pernah di bawah floor / di atas ceiling (b) anomaly score tinggi → quarantine 1x (c) quarantine duplikat idempoten (d) rekomendasi stok di bawah plafon → PR otomatis terbentuk (e) `ai:audit` membuktikan determinisme: rekonstruksi keputusan dari log = output saat ini
+- [ ] 64.5 `ai:audit` command: verifikasi determinisme keputusan model (rerunning same input params = same output), semua rekomendasi stok memiliki jejak parameter historis, semua anomaly yang ter-quarantine dapat direkonstruksi, 0 diskrepansi.
+- [ ] 64.6 Quality gate Fase 64
 
 ## FASE 65 — ENTERPRISE MOBILE SUITE (PWA/HYBRID OFFLINE-FIRST ARCHITECTURE)
 - [ ] 65.1 **Aplikasi Mobile Lapangan Khusus 4 Peran Kunci**:
-  - *Operator Pabrik*: scan QR work order, input output produksi, catat downtime mesin.
-  - *Petugas WMS*: scanner barcode rak/bin, konfirmasi putaway, picking wave panduan jalur terpendek.
-  - *Driver Logistik*: navigasi rute optimal, bukti serah terima foto + tanda tangan digital (e-POD offline-capable).
-  - *Sales Agen Lapangan*: katalog mobile offline, pembuatan pesanan di lokasi pelanggan, dan pengecekan komisi.
+  - *Operator Pabrik* (`operator`): scan QR work order, input output produksi aktual (qty produced/scrap/rework), catat downtime mesin dengan kode alasan — data masuk `mfg_operation_reports` via sync idempoten.
+  - *Petugas WMS* (`warehouse`): scanner barcode rak/bin, konfirmasi putaway task (bin tujuan, qty), picking wave dengan panduan jalur terpendek (algoritma deterministik) — memakai WMS Task API.
+  - *Driver Logistik* (`driver`): navigasi rute optimal, konfirmasi pick-up + delivery, bukti serah terima foto + tanda tangan digital (e-POD) — hash e-POD ter-posting ke chain of custody; bekerja offline-capable.
+  - *Sales Agen Lapangan* (`agent`): katalog mobile offline (price list + stock level dari sesi sebelumnya), pembuatan pesanan di lokasi pelanggan (terhubung DistributionFulfilmentService), dan pengecekan komisi real-time.
 - [ ] 65.2 **Sinkronisasi Data Dua Arah Berbasis Idempotensi (Offline-First Sync Engine)**:
-  - Penyimpanan lokal perangkat (SQLite / IndexedDB): operasional tetap berjalan tanpa koneksi internet di area terpencil/gudang bawah tanah.
-  - Mekanisme rekonsiliasi saat online: transmisi antrean mutasi dengan key idempotensi unik deterministik dan resolusi konflik berbasis *Last-Write-Wins with Timestamp Guard*.
-- [ ] 65.3 `mobile:audit` (Zero duplicate records akibat sync retry, integritas hash tanda tangan e-POD 100% valid).
+  - Penyimpanan lokal perangkat (SQLite / IndexedDB): operasional tetap berjalan penuh tanpa koneksi internet di area terpencil/gudang bawah tanah.
+  - Antrean mutasi lokal: setiap aksi offline disimpan dengan idempotency key deterministik (user_id + action_type + local_seq).
+  - Mekanisme rekonsiliasi saat online: transmisi antrean ke server dengan idempotency key, resolusi konflik berbasis *Last-Write-Wins with Timestamp Guard* (server selalu menang untuk data uang/stok; local data valid untuk aksi lapangan).
+  - Konflik stok (mis. bin sudah di-putaway oleh orang lain saat offline) → notifikasi konflik ke petugas untuk resolusi manual; transaksi uang tidak pernah diselesaikan secara offline-only.
+- [ ] 65.3 Tests: (a) mutasi offline ter-submit → idempoten bila submit ulang (b) hash e-POD valid di chain of custody setelah sync (c) konflik stok offline → notifikasi konflik tanpa data corrupt (d) zero duplicate records setelah 100 sync retry (e) query budget sync endpoint ≤ ambang
+- [ ] 65.4 `mobile:audit` command: verifikasi 0 duplicate records akibat sync retry (cek via idempotency key uniqueness), integritas hash tanda tangan e-POD 100% valid (semua e-POD ter-verifikasi di chain of custody), 0 transaksi uang/stok yang diselesaikan di luar ledger.
+- [ ] 65.5 Quality gate Fase 65
 
 ## FASE 66 — RESILIENSI GLOBAL, DISASTER RECOVERY MULTI-REGION & DATA SOVEREIGNTY
 - [ ] 66.1 **Arsitektur Multi-Region Replikasi Aktif-Pasif**:
-  - Replikasi basis data asinkron antar-data center geografis (Region Primer Jakarta vs Region Sekunder Surabaya/Singapura).
-  - Mekanisme failover otomatis: pendeteksian kegagalan primer via health-check heartbeat dan pengalihan trafik DNS/Load Balancer tanpa kehilangan data (RPO = 0 untuk transaksi ledger).
+  - Replikasi basis data asinkron antar-data center geografis: Region Primer Jakarta (read/write) vs Region Sekunder Surabaya/Singapura (read-only replica, standby failover).
+  - Mekanisme failover otomatis: pendeteksian kegagalan primer via health-check heartbeat (interval 30 detik, threshold 3 kali gagal) dan pengalihan trafik DNS/Load Balancer tanpa kehilangan data (RPO = 0 untuk transaksi ledger via sync binlog).
+  - Semua transaksi ledger menggunakan `bank:reconcile` di kedua region untuk validasi konsistensi paska-failover.
 - [ ] 66.2 **Drill Pemulihan Bencana Berkala (Disaster Recovery Simulation Drill)**:
-  - Prosedur simulasi darurat pemadaman data center utama: pengukuran waktu pemulihan aktual (*Recovery Time Objective - RTO*) target < 15 menit.
-  - Validasi konsistensi integritas ledger paska-failover: eksekusi otomatis `bank:reconcile` dan verifikasi hash-chain di data center cadangan.
+  - Prosedur simulasi darurat pemadaman data center utama: pengukuran waktu pemulihan aktual (*Recovery Time Objective - RTO*) target < 15 menit dari deteksi kegagalan sampai trafik berjalan di region sekunder.
+  - Validasi konsistensi integritas ledger paska-failover: eksekusi otomatis `bank:reconcile` dan verifikasi hash-chain (Vehicle Passport, kontrak, aset, custody logistik) di region cadangan — wajib = 0 diskrepansi.
+  - Dokumentasi runbook DR: prosedur langkah-demi-langkah, daftar periksa (checklist), eskalasi kontak, dan RTO/RPO aktual tercatat per drill.
 - [ ] 66.3 **Kedaulatan Data & Enkripsi Tingkat Tinggi (Data Sovereignty & Post-Quantum Readiness)**:
-  - Klasifikasi data residensi: data sensitif keuangan dan NIK/NPWP diisolasi strictly di yurisdiksi Indonesia (PP 71/2019).
-  - Enkripsi end-to-end data at rest (AES-256 GCM) dan data in transit (TLS 1.3), serta audit rotasi kunci master KMS berkala.
-- [ ] 66.4 `dr:audit` (Kesiapan failover drill terverifikasi, integritas sinkronisasi replika 100%, 0 paket data hilang).
+  - Klasifikasi data residensi: data sensitif keuangan (`ledger_entries`, `wallet_pins`) dan PII (`NIK`, `NPWP`, rekam medis simulasi) diisolasi strictly di yurisdiksi Indonesia (PP 71/2019 — simulasi).
+  - Enkripsi end-to-end data at rest (AES-256 GCM untuk field sensitif, sudah diterapkan Fase 57B.5) dan data in transit (TLS 1.3), serta audit rotasi kunci master KMS berkala (log rotasi tersimpan).
+  - Rencana migrasi algoritma hash post-quantum: inventarisasi seluruh hash-chain (18 rantai: passport, custody, kontrak, aset, ECO, weighbridge, dll.) dan dokumentasi langkah migrasi bila diperlukan.
+- [ ] 66.4 Tests: (a) failover drill → `bank:reconcile` = 0 di region sekunder (b) hash-chain semua entitas valid paska-failover (c) RTO terukur < 15 menit dalam simulasi (d) data PII tidak tersimpan di region internasional (e) rotasi kunci tidak mengubah data terenkripsi yang sudah ada
+- [ ] 66.5 `dr:audit` command: verifikasi kesiapan failover drill (last drill timestamp < 30 hari, RTO tercatat), integritas sinkronisasi replika (lag < threshold), 0 paket data transaksi ledger hilang, inventarisasi hash-chain lengkap.
+- [ ] 66.6 Quality gate Fase 66
 
 ---
+
 
 ## DEFINITION OF DONE (FASE 26–63)
 - [x] Semua task 26.1–63.5 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 25: 538 test/3189 assertion → Fase 63: 931+ test / 4778+ assertion), tidak ada test di-skip/dilemahkan.
@@ -1126,7 +843,436 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] Working tree bersih; ARCHITECTURE, DECISIONS, RUNBOOK, README, API, AUDIT, CODEBASE mutakhir.
 
 ## DEFINITION OF DONE (FASE 64–66)
-- [ ] Semua task 64.1–66.4 tercentang, masing-masing di commit sendiri.
+- [ ] Semua task 64.1–66.6 tercentang, masing-masing di commit sendiri.
 - [ ] Semua prosedur audit (`ai:audit`, `mobile:audit`, `dr:audit`) terverifikasi dengan hasil konsisten 0 diskrepansi atau duplikasi.
-- [ ] Protokol DR failover disimulasikan dan menghasilkan RTO di bawah target dengan data mutlak (0 data loss).
-- [ ] Seluruh dokumentasi platform (*CODEBASE.md*, *ARCHITECTURE.md*) diperbarui mencakup kapabilitas mobile offline, AI, dan multi-region.
+- [ ] Protokol DR failover disimulasikan dan menghasilkan RTO < 15 menit dengan data mutlak (0 data loss untuk ledger).
+- [ ] Seluruh dokumentasi platform (*CODEBASE.md*, *ARCHITECTURE.md*, *RUNBOOK.md*) diperbarui mencakup kapabilitas mobile offline, AI deterministik, dan multi-region DR.
+- [ ] Test suite naik dari baseline Fase 63 (931+ test); tidak ada test di-skip/dilemahkan.
+
+
+---
+
+# EKSPANSI 12 LINI BISNIS — FASE 67–103 (KONSEP.md)
+
+> Implementasi cetak biru di `KONSEP.md`: 8 pilar awal yang dikembangkan high-scale + 4 lini bisnis tambahan (Rumah Sakit, Beach Club & Clubs, Perhotelan, Pertambangan), semuanya tetap dalam satu website monolith terpadu.
+> Konvensi Fase 26+ tetap berlaku penuh: modul baru `modules/{Nama}` + prefix tabel sendiri, komunikasi hanya via Contract/Event/Ledger/PaymentGateway, uang integer tanpa float, test (a)–(e), quality gate + `*:audit` = 0 selisih, setiap fitur bisa diklik oleh role yang berhak.
+
+## KONVENSI WAJIB UNTUK SEMUA FASE 67+ (EKSPANSI 12 LINI)
+1. **Awal sesi baca `docs/CODEBASE.md`** terlebih dahulu; **akhir tiap tugas perbarui `docs/CODEBASE.md`** (protokol §14) pada commit yang sama.
+2. Setiap modul baru (`Hosp`, `Venue`, `Hotel`, `Mining`, `Oto`, `Rwa`, `Ins`, `Gov`) mengikuti struktur `modules/{Nama}` dengan prefix tabel sendiri, ServiceProvider, menu via `MenuRegistry`. Antar-modul **hanya lewat Contract / Domain Event / Ledger / PaymentGateway / Outbox Bus**; arch test diperluas untuk tiap modul baru.
+3. Uang = integer IDR / Brick Money (`HalfUp`), multi-currency pakai minor unit + kurs ters
+## KONVENSI WAJIB UNTUK SEMUA FASE 67+ (EKSPANSI 12 LINI)
+1. **Awal sesi baca `docs/CODEBASE.md`** terlebih dahulu; **akhir tiap tugas perbarui `docs/CODEBASE.md`** (protokol §14) pada commit yang sama.
+2. Setiap modul baru (`Hosp`, `Venue`, `Hotel`, `Mining`, `Oto`, `Rwa`, `Ins`, `Gov`) mengikuti struktur `modules/{Nama}` dengan prefix tabel sendiri, ServiceProvider, menu via `MenuRegistry`. Antar-modul **hanya lewat Contract / Domain Event / Ledger / PaymentGateway / Outbox Bus**; arch test diperluas untuk tiap modul baru.
+3. Uang = integer IDR / Brick Money (`HalfUp`), multi-currency pakai minor unit + kurs tersimpan; **tanpa float**. Semua posting ledger idempoten (key deterministik). Dokumen bisnis bernomor gapless per entitas/tahun (pola 26.8).
+4. Setiap tugas wajib punya test: **(a)** happy path **(b)** validasi/otorisasi **(c)** idempotensi/retry **(d)** invarian ledger/stok (Σ=0, tidak negatif) **(e)** edge case/konkurensi. Tidak ada test di-skip/dilemahkan.
+5. Setiap mutasi multi-tabel dalam `DB::transaction`; event/notifikasi `afterCommit`; state machine lewat enum + guard; entitas bernilai tinggi memakai four-eyes approval (pola 26.9).
+6. Tiap fase ditutup dengan **quality gate** (pest 0 gagal/0 skip, pint, vite, arch, `bank:reconcile`, semua `*:audit`, `super:health-check`) lalu catat di `docs/AUDIT.md`, `docs/DECISIONS.md`, `docs/CODEBASE.md`.
+7. Setiap fitur dapat dicapai lewat klik oleh role yang berhak (menu + `RouteSmokeTest` + matriks `SecurityTest`); halaman operasional responsif 375 px.
+8. Satu commit bermakna per sub-tugas; branch `feature/...`; PR hanya bila diminta.
+9. **Simulation Kernel** (Fase 67.1): semua scheduler menggunakan clock virtual yang dapat diinjeksi, bukan `now()` langsung, sehingga `sim:run --days=N` dapat memaju waktu secara deterministik.
+10. **Universal Event Spine** (Fase 67.2): semua event domain baru diterbitkan via outbox ber-topik, bukan method call langsung, agar dapat di-replay dan diaudit lintas pilar.
+
+---
+
+## KONSEP BERSAMA — ENABLER LINTAS PILAR
+
+
+## FASE 67 — SIMULATION KERNEL, UNIVERSAL EVENT SPINE, DIGITAL TWIN BUS & SCALE PROVISIONER
+- [ ] 67.1 **Simulation Kernel**: lapisan orkestrasi waktu `sim:run --days=N` menjalankan seluruh modul maju N hari kompresi (event time, bukan wall clock); clock virtual terpusat disuntikkan ke scheduler/scheduler-idempoten sehingga penyusutan aset, jatuh tempo kontrak, siklus S&OP, expiry poin, dan tenure berjalan bertahun-tahun dalam hitungan menit; deterministik (seed sama → hasil sama)
+- [ ] 67.2 **Universal Event Spine**: generalisasi `core_outbox` menjadi tulang punggung event ber-topik per pilar (`auto.*`, `fintech.*`, `resto.*`, `proptech.*`, `lgx.*`, `mfg.*`, `trade.*`, `gov.*`, `hsp.*`, `ven.*`, `htl.*`, `min.*`), schema registry ber-versi, consumer group idempoten, dan replay dari offset tertentu — setiap pilar dapat "menyaksikan" kejadian pilar lain tanpa coupling
+- [ ] 67.3 **Digital Twin Bus**: kontrak `TwinState` generik (entity_type, entity_id, state JSON, valid_from, hash prev) untuk entitas bernilai tinggi (kendaraan, gedung, kontainer, pabrik, petak lahan, kamar hotel, alat berat, pasien-episode, venue zone); update twin idempoten & teraudit, simulasi what-if berjalan di sandbox tanpa menyentuh ledger riil
+- [ ] 67.4 **Fictional Scale Provisioner**: kerangka seeder deterministik per pilar (memperluas pola `EnterpriseUniverseSeeder`) dengan checkpoint/resume, chunk streaming bulk-insert, benchmark per etape, dan target volume raksasa (jutaan baris) yang tetap idempoten
+- [ ] 67.5 Arch test untuk kerangka baru: modul manapun hanya boleh subscribe event spine via Contract; twin state tidak boleh menjadi sumber kebenaran uang/stok; kernel waktu tidak diakses langsung dari controller
+- [ ] 67.6 Tests: (a) simulasi 365 hari identik dua kali berjalan (deterministik) (b) replay event spine dari offset N idempoten (c) twin update ganda tidak duplikat (d) ledger tetap Σ=0 selama simulasi (e) checkpoint resume seeder tanpa duplikasi
+- [ ] 67.7 Quality gate Fase 67
+
+## PILAR 1 — OTOMOTIF & PEMBIAYAAN KENDARAAN
+
+## FASE 68 — TELEMATICS & IOT CONNECTED CAR (PREDICTIVE MAINTENANCE)
+- [ ] 68.1 Tabel `oto_telematics_devices` (OBD2/GPS, terikat `core_vehicles`), `oto_telematics_ticks` partisi harian (GPS, RPM, suhu oli, level baterai, kode DTC) — target ingest 500 juta tick/hari pada skala simulasi, retensi hot 30 hari / warm 1 tahun / cold arsip
+- [ ] 68.2 Ingest pipeline idempoten (device_id + seq + ts sebagai key), normalisasi satuan, penolakan tick di luar jendela waktu (anti-replay), dan agregat 5-menitan (avg/max/min) untuk menghemat ruang query
+- [ ] 68.3 Baseline per kendaraan (7 hari rolling) + deteksi anomali deterministik: suhu oli > 15% baseline, DTC kritis, konsumsi BBM menyimpang, baterai voltage drop → event `VehicleAnomalyDetected`
+- [ ] 68.4 **Predictive Maintenance → AutoServe**: listener event anomaly membuat **draf booking servis** + estimasi biaya (harga komponen dari Store) + slot terdekat per outlet; opsi konfirmasi sekali klik (bayar wallet+PIN / tunai / ajukan pembiayaan); DTC kritis menandai unit `grounded` dan menolak dispatch armada
+- [ ] 68.5 KPI & dashboard: MAPE prediksi kerusakan vs aktual (apakah booking benar-benar diperlukan), antrian draf booking, pendapatan preventif per outlet, mean-time-to-service
+- [ ] 68.6 Seeder skala: 10 juta kendaraan berpaspor (subset aktif memancarkan tick), 180 hari riwayat telematik, benchmark ingest & query baseline
+- [ ] 68.7 Tests: (a) anomaly memicu draf booking tepat 1x (b) DTC kritis grounded menolak dispatch (c) tick duplikat idempoten (d) biaya servis ter-posting seimbang ke ledger (e) ingest massal tidak melanggar query budget halaman dashboard
+- [ ] 68.8 Quality gate Fase 68
+
+## FASE 69 — EKOSISTEM EV: CHARGING NETWORK & BATTERY PASSPORT
+- [ ] 69.1 Tabel `oto_ev_stations` (SPKLU: lokasi hub/ mall/ resto/ rute logistik), `oto_ev_chargers` (AC/DC, kW, status), `oto_ev_sessions` (booking → plug → meter kWh → selesai → tagih)
+- [ ] 69.2 Booking slot time-lock dari garasi AutoDex/portal: reservasi 30 menit, no-show fee, anti-overlap per charger; check-in via scan QR charger
+- [ ] 69.3 Meteran kWh presisi (integer Wh) → tagihan otomatis via Payment Hub (tarif per kWh bertingkat per jam sibuk/non-sibuk, saldo wallet atau stablecoin) → posting ledger `oto:ev_revenue`
+- [ ] 69.4 **Battery Passport hash-chain**: siklus charge, suhu sel, SoC/SoH dihitung per sesi → ditulis append-only ke passport kendaraan; degradasi SoH < 70% memicu event tukar-tambah (link ke Store/AutoDex) dan rekomendasi HODL-to-Drive untuk unit pengganti
+- [ ] 69.5 Grid ops simulasi: okupansi charger real-time, antrian, beban puncak (load balancing simulasi — session non-kritis ditunda 15 menit), laporan energi & margin per stasiun
+- [ ] 69.6 Integrasi ESG: kWh dari grid terkonversi emisi Scope 2 (faktor Fase 60.1) per sesi → dashboard EV "green km"
+- [ ] 69.7 Tests: (a) booking bentrok ditolak (b) kWh meteran = tagihan ledger (c) SoH turun tercatat valid di hash-chain (d) no-show fee ter-posting (e) simulasi load balancing tidak membuat sesi dibatalkan sepihak
+- [ ] 69.8 Quality gate Fase 69
+
+## FASE 70 — B2B FLEET & CORPORATE LEASING
+- [ ] 70.1 Tabel `oto_fleet_contracts` (perusahaan penyewa = party, durasi 1–5 tahun, jumlah unit, SLA downtime maks, batas km/tahun, opsi perpanjangan/akuisisi), `oto_fleet_contract_units` (unit terikat, odometer baseline)
+- [ ] 70.2 Onboarding B2B: KYB Party (Fase 27), credit profile, deposit/garansi via Payment Hub, approval four-eyes di atas ambang nilai
+- [ ] 70.3 **Amortisasi nilai sewa** (PSAK 73 simulasi): hak guna + liabilitas sewa per kontrak, jurnal bulanan idempoten, bunga vs pokok, perhitungan sisa nilai — terhubung modul Aset (Fase 31.6)
+- [ ] 70.4 **SLA & telematik armada sewa**: tick telematik (Fase 68) + status Maintenance (AutoServe) dihitung menjadi downtime; pelanggaran SLA → kredit/kompensasi otomatis ke invoice penyewa; rute harian armada dipantau via kontrak ke Logistics (Fase 24.3 diperluas)
+- [ ] 70.5 Lifecycle: denda km berlebih, penggantian unit di tengah kontrak, early termination (hitung sisa liabilitas), end-of-lease condition report → unit masuk kembali ke AutoDex/Store sebagai bekas (berpaspor)
+- [ ] 70.6 Dashboard fleet B2B: utilisasi per unit, biaya total kepemilikan (TCO), uptime, jatuh tempo kontrak, eksposur piutang sewa
+- [ ] 70.7 Tests: (a) amortisasi bulan 1..60 Σ = nilai sewa (b) SLA breach menghasilkan kredit yang mengurangi AR (c) lease ganda per unit ditolak (d) end-of-lease transfer unit ke inventaris sah (e) reconcile sewa = ledger
+- [ ] 70.8 Quality gate Fase 70
+
+## PILAR 2 — FINTECH, PERBANKAN & KRIPTO
+
+## FASE 71 — TOKENISASI ASET RIIL (RWA) & DIVIDEN OTOMATIS
+- [ ] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
+- [ ] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
+- [ ] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
+- [ ] 71.4 **Dividen harian otomatis**: omzet sumber aset (mis. pendapatan logistik per truk dari Core Banking, sewa unit mall dari invoice) → dihitung pro-rata per holder → batch posting idempoten per hari ke dompet holder; gagal payout → antrean retry + alert
+- [ ] 71.5 Corporate action: redemsi parsial (aset dijual → token ditebus pro-rata), dilusi, pembatalan token; seluruh perubahan supply tercatat hash-chain
+- [ ] 71.6 Dashboard RWA: katalog aset, orderbook, kepemilikan, riwayat dividen, exposure per holder; guardrail konsentrasi (maks X% aset per holder)
+- [ ] 71.7 Tests: (a) Σ token terbit = Σ holdings (b) dividen harian = omzet × pro-rata (dibulatkan, sisa ke rounding reserve) (c) double-settlement orderbook ditolak (d) redemsi menurunkan supply konsisten (e) reconcile aset ledger = holdings
+- [ ] 71.8 Quality gate Fase 71
+
+## FASE 72 — INSURTECH: MICRO-INSURANCE TERSEMAT & CLAIMS AUTOPILOT
+- [ ] 72.1 Tabel `ins_products` (premi mikro: keterlambatan logistik, kerusakan kendaraan, cold-chain breach, pembatalan event, cuti sakit karyawan), `ins_policies` (tersemat otomatis ke dompet pengguna/shipment/kontrak), `ins_claims`
+- [ ] 72.2 **Trigger otomatis tanpa formulir**: event spine (`lgx.late>4h`, `auto.collision_dtc`, `lgx.temp_breach>10m`, `ven.event_cancelled`) → smart-contract simulasi memvalidasi bukti hash-chain → klaim **cair langsung ke dompet dalam detik** (posting ledger `ins:claims_paid`)
+- [ ] 72.3 Akuntansi premi: akrual premi harian/bulanan dari saldo, reserve klaim (akun liabilitas), loss ratio & combined ratio per produk; batas payout per polis & per hari (anti-fraud)
+- [ ] 72.4 Fraud guard: skor anomali klaim (klaim beruntun, polis baru langsung klaim) → hold manual four-eyes sebelum cair; audit trail penuh
+- [ ] 72.5 Reinstatement & cancellation, grace period premi, dan klaim manual (unggah bukti) untuk kasus non-tersemat
+- [ ] 72.6 Dashboard: claims autopilot (days-to-pay = detik), loss ratio per produk, reserve vs kewajiban, top trigger
+- [ ] 72.7 Tests: (a) trigger sah → klaim cair 1x, ganda ditolak (b) reserve ≥ kewajiban terbayar (c) fraud score tinggi masuk hold (d) premi gagal bayar → polis lapse + notifikasi (e) reconcile reserve = ledger
+- [ ] 72.8 Quality gate Fase 72
+
+## FASE 73 — ROBO-ADVISOR WEALTH MANAGEMENT & TREASURY YIELD
+- [ ] 73.1 Tabel `wm_profiles` (profil risiko konservatif/agresif, tujuan, horizon), `wm_plans` (alokasi bulanan), `wm_orders` (reksadana simulasi, emas digital, kripto), `wm_holdings`
+- [ ] 73.2 **Surplus detector**: membaca pola gaji (HCM payroll event) dan pengeluaran (mutasi wallet 3 bulan) → menghitung surplus bulanan yang aman; guardrail wajib: likuiditas minimum 2 bulan pengeluaran TIDAK boleh diinvestasikan, dana darurat tetap cair
+- [ ] 73.3 Eksekusi alokasi bulanan otomatis (opt-in per pengguna): split ke reksadana/emas/kripto sesuai profil → order via PriceFeed Fase 4 → posting ledger; penarikan kembali 1-klik (T+0 simulasi)
+- [ ] 73.4 **Yield ke Treasury**: saldo mengendap platform & hasil investasi dana kelolaan mengalir ke akun `treasury:pool` (Fase 48) → likuiditas grup terjaga; laporan kontribusi yield per bulan
+- [ ] 73.5 Rebalancing berkala (drift > 5% target → rebalance), performance vs benchmark, fee dana kelolaan (accrual harian)
+- [ ] 73.6 Dashboard: kinerja portofolio vs benchmark, rekomendasi bulanan, dampak ke Treasury, cash-flow pengguna
+- [ ] 73.7 Tests: (a) alokasi tidak pernah menembus guardrail likuiditas (b) order terdividasi = dana terpotong (c) rebalance deterministik (d) fee akurat 6 desimal (e) reconcile holdings = ledger
+- [ ] 73.8 Quality gate Fase 73
+
+## PILAR 3 — KULINER, RESTORAN & WARALABA
+
+## FASE 74 — CLOUD KITCHEN, DELIVERY AGGREGATOR INTERNAL & KATERING PAYROLL DEDUCTION
+- [ ] 74.1 Modul cloud kitchen (`resto_ck_kitchens`): 200 satelit + 5 dapur sentral + 300 outlet berlisensi, masing-masing dengan kapasitas produksi/jam, menu subset, dan radius layanan
+- [ ] 74.2 **Delivery aggregator internal**: order dari kanal mana pun di-assign ke kitchen/ outlet terdekat berdasarkan kapasitas & ETA (algoritma deterministik), armada Logistics sendiri (Fase 22 last-mile) → satu tracking number untuk pelanggan, ongkir tiered
+- [ ] 74.3 **Katering payroll deduction**: langganan harian/mingguan karyawan EPC/pabrik & tenant Mall → debit otomatis dari gaji bulanan HCM (akun `hcm:meals_deduction`) kuota harian, menu rotasi mingguan, opt-out via self-service; potongan dikompensasi jika outlet tutup (refund ledger)
+- [ ] 74.4 Subscription management: paket (2x/hari, 5 hari/minggu), upgrade/downgrade berlaku bulan depan, suspended jika gaji/tunjangan berhenti
+- [ ] 74.5 Integrasi cold-chain: bahan segar dari Agri → dapur sentral → satelit via Logistics reefer dengan telemetri suhu (sudah Fase 24.4, diperluas cakupan 200 satelit)
+- [ ] 74.6 Dashboard: okupansi dapur per jam, delivery ETA real-time, deduction payroll tersinkron HCM, katering aktif per entitas
+- [ ] 74.7 Tests: (a) kuota harian habis → tolak order berikutnya (b) deduction payroll = konsumsi tercatat (c) refund outlet tutup masuk gaji berikutnya (d) assign kitchen tidak melebihi kapasitas (e) reconcile deduction = ledger
+- [ ] 74.8 Quality gate Fase 74
+
+## FASE 75 — AI DEMAND & WASTE FORECASTING, AUTO-PO, SMART VENDING
+- [ ] 75.1 **Demand forecasting per outlet 7 hari**: input = footfall mall (Fase 14.4), kalender event Duta Mall/event venue, cuaca (feed simulasi), tren lalu lintas (telematik Pilar 1), hari besar nasional, riwayat sales 24 bulan → algoritma Holt-Winters (memperluas Fase 53.2) → MAPE per outlet terukur
+- [ ] 75.2 **Auto-PO bahan segar**: forecast → kebutuhan bahan (resep HPP Fase 7.3) → terhadap stok & lead time → **Purchase Order otomatis ke Agri/Supplier** melewati approval engine sebagai auto-PR (dengan plafon nilai harian; di atas plafon → approval manual); tanpa intervensi manusia di bawah plafon
+- [ ] 75.3 **Waste forecasting & guardrail**: proyeksi waste berdasarkan pola etalase (Fase 8.3) → sistem menyarankan scale-down batch berikutnya; waste aktual vs forecast → MAPE waste dilaporkan, digunakan memperbaiki model
+- [ ] 75.4 **Smart vending & unmanned kiosks** (`ven_vending_units`, 1 juta unit simulasi): tiap unit node inventori mini terhubung WMS → level kritis memicu tugas restock terjadwal (WMS pick + Logistics route, Fase 41.7)
+- [ ] 75.5 Pembayaran vending via Payment Hub: QR + face-recognition simulasi (token biometrik one-time) → stok terpotong via InventoryService → settlement harian per unit (reconcile omzet vs stok terpotong)
+- [ ] 75.6 Health vending: sensor koin/kasa/pintu → alert perawatan → work order (Fase 31.5)
+- [ ] 75.7 Tests: (a) forecast MAPE masuk toleransi pada seed (b) auto-PO idempoten & plafon dihormati (c) vending sale = stok terpotong (d) restock task tidak ganda (e) reconcile vending = ledger + inventory
+- [ ] 75.8 Quality gate Fase 75
+
+## PILAR 4 — PROPERTI KOMERSIAL & EPC
+
+## FASE 76 — PROPTECH & SMART BUILDING OPERATIONS (IOT + ESG REAL-TIME)
+- [ ] 76.1 Tabel `prp_building_sensors` (suhu, kelembaban, arus, CO2, okupansi CCTV/footfall) per zona gedung → ingest idempoten (memperluas pola telematik Fase 68)
+- [ ] 76.2 **Otomasi HVAC & pencahayaan**: rule engine deterministik (okupansi > ambang → turunkan suhu target; jam non-operasional → setback) → perintah ke simulasi perangkat → penghematan kWh dihitung vs baseline
+- [ ] 76.3 **Tagihan listrik tenant per zona aktual**: meteran per zona (memperluas `mall_utility_readings` Fase 13.2) → tarif bertingkat → invoice tenant presisi bukan estimasi; Overtime AC tetap berlaku
+- [ ] 76.4 **GRK real-time per gedung**: kWh terkonsumsi × faktor grid (Fase 60.1) → dashboard emisi gedung per hari, per tenant, tren → masuk laporan ESG per properti
+- [ ] 76.5 Prescriptive ops: rekomendasi optimasi (mis. setback jam 13.00–15.00) dengan estimasi penghematan & payback; approval opsional sebelum diterapkan
+- [ ] 76.6 Dashboard smart building: denah per lantai dengan status zona live, konsumsi vs baseline, emisi, alarm sensor offline
+- [ ] 76.7 Tests: (a) aturan okupansi memicu perintah tepat 1x (b) tagihan zona = Σ pembacaan × tarif (c) kWh ESG = tagihan utilitas (d) sensor duplikat idempoten (e) reconcile utilitas = ledger (audit-billing hijau)
+- [ ] 76.8 Quality gate Fase 76
+
+## FASE 77 — DIGITAL TWIN & BIM LIFECYCLE (EPC → OPERASI)
+- [ ] 77.1 Tabel `prp_bim_models` (ber-versi, komponen JSON tervalidasi), `prp_twin_components` (pipa, duct, kabel, chiller — terikat lokasi & aset), `prp_twin_issues`
+- [ ] 77.2 **BIM saat konstruksi**: modul EPC (Fase 63) mengunggah model per milestone → tiap node WBS terikat komponen BIM → **progres fisik diverifikasi dari komponen selesai** → memicu MC, CIP, dan kapitalisasi (Fase 63.4) otomatis
+- [ ] 77.3 **Twin saat operasi**: komponen terhubung sensor (Fase 76) + work order facility (Fase 15.4) menandai komponen terdampak di twin → teknisi melihat letak pipa/kabel SEBELUM membongkar tembok (preview 2.5D/3D di browser)
+- [ ] 77.4 **Simulasi twin**: analisis aliran udara, skenario kebakaran/banjir, dampak penambahan tenant terhadap beban HVAC — berjalan di sandbox (Digital Twin Bus Fase 67.3), tidak mengubah data riil
+- [ ] 77.5 Change management: revisi BIM ber-versi dengan approval + hash-chain (memperluas ECO Fase 59.3 ke gedung), diff antar versi
+- [ ] 77.6 Dashboard: pohon komponen, issue terbuka, korelasi progres konstruksi vs rencana, twin health (komponen tanpa sensor = gap)
+- [ ] 77.7 Tests: (a) progres WBS = komponen selesai (maks 100%) (b) revisi BIM ganda → versi berurutan tanpa gap (c) simulasi tidak mengubah tabel riil (d) work order menandai komponen tepat (e) reconcile CIP = twin progress value
+- [ ] 77.8 Quality gate Fase 77
+
+## FASE 78 — FLEX-SPACE & CO-WORKING BOOKING ON-DEMAND
+- [ ] 78.1 Tabel `prp_flex_spaces` (area kosong mall / site EPC / roof-top / lobi): tipe (meeting room, booth, co-working desk, studio), kapasitas, fasilitas, tarif per jam/hari
+- [ ] 78.2 Booking time-lock tanpa overlap (memperluas pola `mall_event_bookings` Fase 15.3 & dock appointment Fase 24.5), deposit via Payment Hub (hold → capture saat check-in, no-show fee)
+- [ ] 78.3 **Akses pintar**: check-in via pemindaian **Paspor Kriptografis** (QR identitas dari Core/Party) → pintu terbuka (simulasi) → sesi tercatat; tamu tanpa paspor → verifikasi KTP singkat sementara
+- [ ] 78.4 Penagihan: sewa per jam, paket bulanan (membership), integrasi ke invoice tenant bila flex-space milik tenant (revenue share)
+- [ ] 78.5 Utilitas & kebersihan: sesi flex-space menambah beban listrik zona (masuk tagihan zona Fase 76.3) dan memicu tugas kebersihan pasca-pakai (work order)
+- [ ] 78.6 Dashboard: okupansi per properti per jam, pendapatan per m² kosong, no-show rate, tenant dengan ruang paling produktif
+- [ ] 78.7 Tests: (a) booking bentrok ditolak (b) akses tanpa paspor valid ditolak (c) no-show fee ter-posting (d) sesi menambah konsumsi zona (e) reconcile flex = ledger
+- [ ] 78.8 Quality gate Fase 78
+
+## PILAR 5 — LOGISTIK MULTIMODA, SCM & GUDANG
+
+## FASE 79 — REVERSE LOGISTICS & CIRCULAR ECONOMY ENGINE
+- [ ] 79.1 Tabel `lgx_reverse_orders` (jenis: retur Store, oli bekas AutoServe, jelantah Resto, limbah B3 medis, scrap Manufacturing, e-waste) + `lgx_reverse_items` (komposisi, kondisi, tujuan daur ulang)
+- [ ] 79.2 Reverse shipment otomatis dari event (`store.return`, `auto.oil_used`, `resto.waste_bulk`, `hsp.bio_waste`) → assign armada (satu armada dengan forward, muatan balik/backhaul) → terhubung chain of custody hash
+- [ ] 79.3 **Nilai sirkular**: barang terkumpul dinilai ulang → menjadi bahan baku Manufacturing (biodiesel jelantah, remanufaktur oli, remould sparepart) dengan harga dari Pricing Engine → posting ledger `lgx:circular_revenue` / `mfg:scrap_inbound`
+- [ ] 79.4 **Skor ESG sirkularitas**: tonase diselamatkan vs dibuang, penghematan emisi (avoided landfill emission faktor) → kredit ESG naik (Fase 60), laporan per lini bisnis
+- [ ] 79.5 Compliance limbah: manifest pembuangan (dokumen gapless), vendor pengolah tersertifikasi (Party role), audit rantai kustodi limbah sampai TPA/pabrik pengolah
+- [ ] 79.6 Dashboard circular economy: tonase per jenis, revenue daur ulang, biaya vs manfaat, kredit ESG terkumpul, kustodi limbah valid
+- [ ] 79.7 Tests: (a) reverse order terpicu tepat 1x per event (b) nilai daur ulang = ledger & stok bahan baku naik (c) manifest tanpa celah (d) rantai kustodi limbah valid (e) reconcile circular = ledger
+- [ ] 79.8 Quality gate Fase 79
+
+## FASE 80 — COLD-CHAIN BLOCKCHAIN AUTONOMOUS, DRONE & LAST-MILE ROBOTICS
+- [ ] 80.1 **Cold-chain enforcement**: pembacaan suhu reefer (Fase 24.4) → breach > 10 menit → event `lgx.temp_breach` → **PaymentGateway otomatis HOLD pembayaran subkontraktor** pengangkut sampai dispute selesai (release setelah investigasi/klaim asuransi Fase 23.4); pembacaan suhu masuk hash-chain sebagai bukti
+- [ ] 80.2 Perluasan monitored goods: farmasi (link Pilar 9), daging wagyu, vaksin, produk beach club (minuman beralkohol butuh suhu), linen hotel (sterilisasi)
+- [ ] 80.3 **Drone & last-mile robotics dispatch** (`lgx_drone_units`, `lgx_drone_missions`): dispatcher menugaskan leg terakhir ke drone/robot dari Hub (radius ≤ 15 km, beban ≤ 5 kg, baterai cukup untuk pulang-pergi + margin) → routing mempertimbangkan no-fly zone simulasi & angin → bahan ringan suku cadang/obat/makanan resto
+- [ ] 80.4 POD drone: foto geo-hash + waktu + tanda terima digital → masuk chain of custody → bila gagal turun → fallback ke driver terdekat
+- [ ] 80.5 **Rate card dinamis**: tarif & kapasitas berubah real-time mengikuti permintaan musiman, harga BBM (feed simulasi), okupansi armada (memperluas Fase 21.3 + dynamic pricing Fase 64.1); kontrak harga B2B immutable tetap menang (Fase 44.4)
+- [ ] 80.6 Dashboard: breach suhu & uang tertahan, misi drone aktif, biaya last-mile per mode, tarif berjalan vs kontrak
+- [ ] 80.7 Tests: (a) breach > 10 menit → hold persis 1x, < 10 menit tidak (b) hold dilepas = dispute selesai, tidak ganda (c) misi drone melewati radius/baterai ditolak (d) POD drone valid di hash chain (e) reconcile hold = ledger escrow
+- [ ] 80.8 Quality gate Fase 80
+
+## PILAR 6 — MANUFAKTUR, DISTRIBUSI & KEBIJAKAN HARGA
+
+## FASE 81 — ALGORITHMIC & SURGE PRICING ENGINE (DETIK-PER-DETIK)
+- [ ] 81.1 Tabel `prc_price_ticks` partisi (SKU, detik, harga, sumber penggerak: demand index, stok WMS, harga komoditas global feed, musim, okupansi gudang) — target 1 miliar tick/tahun pada skala simulasi, agregat per menit untuk query
+- [ ] 81.2 **Mesin harga detik-per-detik**: harga suku cadang Store, ongkir logistik (Fase 80.5), bahan baku grosir Distributor → elastisitas & aturan surge deterministik → harga berfluktuasi real-time layaknya tiket pesawat
+- [ ] 81.3 **Guardrail mutlak**: floor price (HPP + margin minimum), ceiling (HET simulasi), band maksimal per hari; kontrak harga (Fase 44.4) & price list bertingkat (Fase 44.1) selalu mengalahkan harga dinamis; setiap perubahan tercatat di price waterfall audit
+- [ ] 81.4 **Dokumen immutable**: harga "dikunci" saat quote/order dibuat (quote hash timelock) → meski tick berubah, dokumen tetap harga saat itu (memperluas lgx_quotes & price freeze Fase 44.4)
+- [ ] 81.5 Integrasi kanal: Store B2C, portal grosir Distributor, B2B Marketplace, ekspor (formula harga kontrak impor/ekspor), vending (Fase 75.5)
+- [ ] 81.6 Analitik: realisasi vs list per tick, penyimpangan guardrail (harus 0), margin per transaksi, harga efektif per wilayah
+- [ ] 81.7 Tests: (a) harga tak pernah di bawah floor / di atas ceiling (b) harga kontrak menang atas dinamis (c) order membekukan harga tick saat itu (d) tick ganda idempoten (e) `pricing:audit` = 0 selisih vs dokumen order
+- [ ] 81.8 Quality gate Fase 81
+
+## FASE 82 — VENDOR-MANAGED INVENTORY (VMI) & C2M (CONSUMER-TO-MANUFACTURER)
+- [ ] 82.1 **VMI**: akses khusus pemasok via API v2 (Fase 55, ability `vmi:read` + `vmi:po`) → mereka memantau stok rak WMS milik kita (read-only + scope partikel per SKU mereka) → menyentuh titik pesan ulang → **PO otomatis terbit tanpa staf pengadaan** (plafon per kontrak kerangka Fase 32.4; di atas plafon → approval)
+- [ ] 82.2 Penerimaan VMI: ASN dari pemasok → GRN → 3-way match (Fase 34.3) → kredit terms → siklus P2P penuh; performance pemasok masuk supplier scorecard (Fase 32.6)
+- [ ] 82.3 **C2M configurator 3D**: pembeli Store B2C mendesain suku cadang modifikasi mobil (parametric: ukuran, bahan, finishing) → validasi kelayakan (toleransi, beban) → harga live dari BOM + complexity factor
+- [ ] 82.4 **Routing instruksi pabrik**: desain → dikonversi menjadi BOM khusus + routing operasi (memperluas PLM EBOM/MBOM Fase 59.2) → planned order di MRP → konversi ke SPK → produksi → QC (Fase 39) → pengiriman via Logistics
+- [ ] 82.5 Lead time C2M dihitung dari beban work center (CRP Fase 36.4) → ETA real-time ke pembeli; pembatalan setelah produksi dimulai dikenakan biaya material
+- [ ] 82.6 Dashboard: stok per rak pemasok, auto-PO terbit, fill rate VMI; papan produksi C2M (desain → status SPK → biaya aktual vs penawaran)
+- [ ] 82.7 Tests: (a) titik pesan ulang → PO 1x idempoten (b) PO di atas plafon butuh approval (c) desain C2M menghasilkan BOM valid tanpa siklus (d) harga C2M = roll-up BOM + complexity (e) reconcile auto-PO komitmen anggaran
+- [ ] 82.8 Quality gate Fase 82
+
+## PILAR 7 — PERDAGANGAN INTERNASIONAL & PENGADAAN
+
+## FASE 83 — CROSS-BORDER CLEARING HOUSE BERBASIS KRIPTO & CBAM COMPLIANCE
+- [ ] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
+- [ ] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
+- [ ] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
+- [ ] 83.4 Biaya bea karbon: simulasi nilai CBAM per kontainer → mengurangi margin ekspor → masuk perhitungan landed cost & pricing ekspor (Fase 49.3)
+- [ ] 83.5 Dashboard: posisi dana escrow per koridor, BL menunggu verifikasi, sertifikat karbon per kontainer, exposure CBAM
+- [ ] 83.6 Tests: (a) BL valid → release 1x, duplikat ditolak (b) escrow = komitmen aktif + dispute (c) sertifikat karbon konsisten dengan emisi ESG sumber (d) release multi-currency Σ seimbang (e) `clearing:audit` = 0 selisih
+- [ ] 83.7 Quality gate Fase 83
+
+## FASE 84 — AI CONTRACT BIDDING AGENT (LELANG PENGADAAN OTOMATIS)
+- [ ] 84.1 Tabel `trd_bidding_agents` (konfigurasi per entitas: komoditas, batas harga, margin target, risiko maks), `trd_bid_runs` (lelang yang dipantau), `trd_bid_submissions` (penawaran + jejak persetujuan)
+- [ ] 84.2 **Agent merayapi**: harga komoditas global (feed simulasi), riwayat menang/kalah lelang (Fase 33.3 tender), skor risiko buyer (Party credit Fase 27.7), biaya logistik (Fase 80.5 rate card) → menghitung harga penawaran optimal (deterministik, dapat diulang → selaras `ai:audit` Fase 64)
+- [ ] 84.3 **Draf klausul di modul Contract**: agent menyusun klausul komersial (termin, penalti, force majeure) dari library klausul Fase 28.2 → masuk status draft untuk review
+- [ ] 84.4 **Four-eyes wajib**: staf manusia membaca & menyetujui sebelum submit (ApprovalEngine Fase 26.9); tanpa persetujuan → submit ditolak sistem; batas nilai otomatis per reviewer
+- [ ] 84.5 Pasca-menang: kontrak terbit (state machine Fase 28.3) → commitment anggaran (Fase 54.1) → jadwal pengiriman via Logistics → penagihan sesuai termin; pasca-kalah: umpan balik model (win/loss tercatat)
+- [ ] 84.6 Dashboard bid desk: lelang terpantau, rekomendasi tertunda, win rate, margin vs benchmark, biaya vs kompetitor (simulasi)
+- [ ] 84.7 Tests: (a) submit tanpa approval ditolak (b) harga di luar batas agent ditolak (c) run agent deterministik dua kali identik (d) menang → kontrak + budget commitment konsisten (e) `ai:audit` = keputusan dapat direkonstruksi
+- [ ] 84.8 Quality gate Fase 84
+
+## PILAR 8 — TATA KELOLA, KORPORASI & INTEGRASI ENTERPRISE
+
+## FASE 85 — INTERNAL GIG ECONOMY (TALENT MARKETPLACE & BOUNTY)
+- [ ] 85.1 Tabel `gov_bounties` (pemesan unit bisnis: Resto overload, gudang butuh bongkar muat dadakan, event mall setup, cuci armada), `gov_bounty_claims` (pengambil shift lintas unit), `gov_bounty_pofs` (proof of work: scan lokasi, foto, sign-off supervisor)
+- [ ] 85.2 **Matching**: karyawan eligible (skill, sertifikasi K3, lokasi, tidak tabrakan jadwal shift utama, batas jam kerja UU 22/2009 8 jam/hari) → first-come/berbasis skor; konflik jadwal ditolak sistem
+- [ ] 85.3 **Bayar per jam via Core Banking**: POF disetujui → upah lembur (tarif 1.5x/2x Fase 58.3) terhitung → posting `hcm:bounty_payout` ke dompet karyawan; biaya dibebankan ke pusat biaya unit pemesan (budget encumbrance Fase 54.1)
+- [ ] 85.4 Kepatuhan: batas lembur mingguan, hari libur wajib, keselamatan (izin kerja berisiko Fase 40.6 untuk tugas berbahaya), asuransi kecelakaan kerja tersemat (memperluas Pilar 2)
+- [ ] 85.5 Incentive: skor internal mobility, bonus pengisian bounty cepat, unit pemesan dengan rating pekerja terbaik
+- [ ] 85.6 Dashboard: bounty terbuka/terisi, biaya tenaga kerja fleksibel vs tetap, utilisasi talenta lintas lini, kepuasan karyawan
+- [ ] 85.7 Tests: (a) jadwal bentrok / melebihi jam kerja ditolak (b) POF ganda tidak bayar dua kali (c) payout = jam × tarif lembur, ledger seimbang (d) biaya masuk budget unit pemesan (e) reconcile bounty = ledger + payroll
+- [ ] 85.8 Quality gate Fase 85
+
+## FASE 86 — PRECISION AGRI-TECH (NDVI SATELIT) & DAO CORPORATE GOVERNANCE
+- [ ] 86.1 **NDVI satelit** (`agri_satellite_scans` per petak plasma, feed simulasi): indeks kehijauan per poligon lahan (`land_polygon_geojson` Fase 62.1) per 5 hari → tren per musim → deteksi stres tanaman
+- [ ] 86.2 **Cicilan prestasi**: ratchet kontrak tani Fase 62.2 diperluas — pencairan cicilan modal pembiayaan ke petani **hanya bila NDVI ≥ standar kualitas**; gagal → penundaan + rencana korektif (irigasi/pupuk via Agri), 2x gagal → restrukturisasi via ApprovalEngine
+- [ ] 86.3 Korelasi NDVI vs hasil panen aktual (grade A/B/C Fase 62.3) → validasi model presisi; skor risiko petak → memengaruhi plafon pembiayaan berikutnya
+- [ ] 86.4 **DAO governance** (`gov_proposals`, `gov_votes`, `gov_voter_weights`): pemegang hak suara = karyawan (HCM), pemegang token RWA (Fase 71), franchisee (Resto), partner (Fase 47) → bobot berbasis Paspor Digital/token holdings
+- [ ] 86.5 Voting: masa kampanye → kuartil pemungutan → kuorum minimum → tally weighted hash-chained (jejak tak terubah) → hasil disetujui/ ditolak; kuorum, quorum-weighted, dan aturan abstain terdefinisi per jenis proposal
+- [ ] 86.6 **Eksekusi otomatis bila disetujui**: proposal "buka cabang Resto di kota B" → membuat proyek Contract/EPC/Investasi draft (Fase 63) + budget request; proposal "akuisisi pabrik" → memicu due diligence Party (Fase 47.2); semuanya tetap melewati approval dewan sebelum eksekusi final
+- [ ] 86.7 Dashboard: peta NDVI + status cicilan, proposal aktif, distribusi bobot suara, riwayat keputusan & eksekusinya
+- [ ] 86.8 Tests: (a) NDVI di bawah standar → cicilan tertahan (b) Σ bobot suara = paspor/token terbit (c) vote ganda per pemilih ditolak (d) proposal disetujui → draft proyek terbentuk tepat 1x (e) `governance:audit` + `agri:audit` = 0 selisih
+- [ ] 86.9 Quality gate Fase 86
+
+---
+
+# 4 LINI BISNIS TAMBAHAN — RUMAH SAKIT, BEACH CLUB & CLUBS, PERHOTELAN, PERTAMBANGAN
+
+## FASE 87 — RUMAH SAKIT I: IDENTITAS PASIEN, EMR, BED MANAGEMENT & CLINICAL PATHWAY
+- [ ] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
+- [ ] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
+- [ ] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
+- [ ] 87.4 **Clinical pathway (CPG simulasi)**: order dokter (medis, lab, radiologi, prosedur) dijadwalkan berurutan per diagnosis → keterlambatan order memicu alert ke perawat; status order real-time (pending → in-progress → resulted)
+- [ ] 87.5 IoT critical care simulasi: monitor pasien memancarkan telemetri (SpO2, ECG, suhu) → ambang batas → **code blue alert** prioritas ke perawat via Notification + halaman monitor → seluruh kejadian tercatat hash-chain sebagai bukti review mutu & malpractice defense
+- [ ] 87.6 Seeder skala: 10 juta pasien, 100 juta encounter/tahun (12 bulan riwayat), 500.000 kamar-tempat-tidur, telemetri ICU 1 juta titik/jam; benchmark query antrean IGD & bed board
+- [ ] 87.7 Tests: (a) alokasi bed ganda ditolak (b) paspor pasien hash valid & manipulasi terdeteksi (c) clinical pathway telat memicu alert 1x (d) telemetri ambang → code blue alert idempoten (e) query budget bed board ≤ ambang
+- [ ] 87.8 Quality gate Fase 87
+
+## FASE 88 — RUMAH SAKIT II: ORDER-TO-CASH, FARMASI, LAB, FARMASI SUPPLY CHAIN, KLAIM & REVENUE CYCLE
+- [ ] 88.1 **Billing episode**: seluruh item (bed-day, tindakan, obat, alat habis pakai, lab, radiologi, dokter) tergabung satu folio episode → struktur tarif bertingkat (mirip tarif utilitas mall Fase 13.2) → tagihan akhir saat discharge
+- [ ] 88.2 **Pembayaran campuran**: BPJS simulasi (klaim batch), insurance copay (via escrow/marketplace asuransi), self-pay wallet+PIN (Payment Hub Fase 2) → alokasi urut & split payment; bedah besar memakai **escrow deposit** (hold saat masuk → capture saat pulang → sisa refund)
+- [ ] 88.3 **e-Prescription → Farmasi**: resep digital → farmasi menyiap → stok obat terpotong via InventoryService (FEFO lot/kedaluwarsa) → item masuk tagihan pasien; interaksi obat terdeteksi (rule engine deterministik) → peringatan apoteker
+- [ ] 88.4 **Lab & radiologi**: order lab → hasil terverifikasi (teknisi sign-off) → hasil masuk rekam medis paspor → biaya ter-charge; lab outsourcing (Party) → piutang pihak ketiga
+- [ ] 88.5 **Cold-chain medis & supply**: darah, vaksin, obat sitostatik disimpan di fridge IoT → breach suhu → quarantine lot + recall internal + **hold pembayaran pemasok** (memperluas Fase 80.1); rantai dingin Logistics dari pemasok ke farmasi RS
+- [ ] 88.6 **Limbah medis B3**: pengumpulan terpisah → armada Logistics khusus dengan rantai kustodi hash (memperluas reverse logistics Fase 79) → vendor pengolah tersertifikasi → kredit ESG limbah medis
+- [ ] 88.7 **Revenue cycle dashboard**: pemungutan per unit (rawat jalan, rawat inap, bedah, lab, farmasi), aging klaim BPJS/insurance, denial rate, LOS rata-rata, cash collection time
+- [ ] 88.8 Tests: (a) episode tagihan = Σ item order (b) escrow deposit → capture/refund seimbang (c) stok obat terpotong = item ter-charge (d) fridge breach → quarantine + hold 1x (e) `hosp:audit` = 0 selisih vs ledger
+- [ ] 88.9 Quality gate Fase 88
+
+## FASE 89 — BEACH CLUB & CLUBS I: TICKETING, ACCESS CONTROL, USIA & VENUE OPERATIONS
+- [ ] 89.1 Modul `Venue` (`ven_`): provider, MenuRegistry "Venue & Entertainment", roles (`venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`), policies, arch test; tabel `ven_venues`, `ven_zones` (pool/beach/dance floor/VIP/garden), `ven_tables`, `ven_events`, `ven_tickets`
+- [ ] 89.2 **Skala**: 1.000 venue global (500 Indonesia + 500 internasional simulasi), 100 ribu event/tahun, 50 juta tiket/tahun, kapasitas puncak 1 juta pengunjung/hari (festival); venue terikat properti (Mall/properti grup Fase 12) atau lahan mandiri
+- [ ] 89.3 **Ticketing hash-chain non-fungible**: tiket digital dengan hash unik + anti-replay; transfer sekali (secondary market resmi dengan fee), QR scan di gate → **verifikasi identitas & usia** via Human Passport/KYC (umur min 21 club / 18+ tertentu) → gate terbuka (integrasi smart door seperti flex-space Fase 78.3); tiket ganda/replay ditolak
+- [ ] 89.4 **Kapasitas & keselamatan kerumunan**: density sensor per zone → ambang kapasitas ditolak masuk (mirip parkir Fase 14.3), heatmap density live, protokol crowd crush simulasi (lock gate zona, arah evakuasi), ambulans on-standby tercatat
+- [ ] 89.5 **Table/bottle service & VIP**: pemesanan meja dengan minimum spend → deposit escrow (hold saat booking → capture saat hadir → no-show fee) → konsumsi tercatat POS venue (memperluas modul Resto Fase 9) → tagihan akhir ke dompet
+- [ ] 89.6 **Dynamic pricing tiket**: harga real-time mengikuti countdown tier (early bird → GA → door), demand forecast, cuaca pesisir (feed simulasi), okupansi — memakai Pricing Engine Fase 81 dengan floor (harga dasar artis) & ceiling
+- [ ] 89.7 Izin & compliance: izin keramaian (dokumen gapless 26.8), kapasitas max legal, kebijakan substance screening simulasi (pemeriksaan acak tercatat, tanpa detail medis), asuransi event tersemat (Pilar 2 Fase 72)
+- [ ] 89.8 Tests: (a) tiket replay/ganda ditolak (b) usia di bawah minimum ditolak (c) zona penuh → gate tolak (d) escrow meja → capture/no-show konsisten (e) harga tiket tak keluar dari band floor/ceiling
+- [ ] 89.9 Quality gate Fase 89
+
+## FASE 90 — BEACH CLUB & CLUBS II: ARTIST CONTRACTS, SUPPLY, MEMBERSHIP & FESTIVAL ECONOMY
+- [ ] 90.1 **Artist & talent contracts** (`ven_artist_contracts`): skema bayar advance + backlog + share door (persentase penjualan pintu), terikat modul Contract (Fase 28); performa lintas negara → pembayaran multi-currency (Fase 48) + stablecoin (Fase 83) + withholding tax simulasi (Fase 51.7)
+- [ ] 90.2 **Supply venue**: bar/resto venue memakai modul Resto penuh (HPP, batch, waste Fase 7–8) → bahan F&B dikirim via Logistics cold-chain dari dapur sentral → stok bar (spirit, mixer) terkelola WMS mini-warehouse per venue → **impor spirits** via Trade (Fase 49) dengan cukai simulasi
+- [ ] 90.3 **POS venue & night economics**: penjualan per jam (peak 23.00–03.00), mix per kategori, revenue per available table (RevPAT), waste bar; shift staff venue via HCM (bounty dadakan saat event mendadak, memperluas Fase 85)
+- [ ] 90.4 **Membership & loyalty**: membership beach club tahunan (tier: Sun, Moon, Infinity) → hak akses prioritas, diskon F&B, poin PTS lintas ekosistem (tukar di Resto/Store/hotel Fase 16.3 diperluas ke venue) → NFT membership opsional berbobot suara DAO event (Fase 86.4)
+- [ ] 90.5 **Festival-as-a-platform**: multi-day festival → bundling tiket harian + camping/glamping (terhubung hotel Fase 91) + shuttle transport (Logistics) + beach club day pass → satu bundle harga, settlement multi-vendor via escrow (Fase 61.4)
+- [ ] 90.6 **Sponsorship & brand deals**: paket sponsor (naming rights zone, booth, aktivasi) → kontrak + penagihan milestone → laporan eksposur (footfall venue, impressions simulasi) per sponsor
+- [ ] 90.7 Dashboard: event P&L (tiket + bar + sponsorship + VIP vs biaya artis & operasi dari ledger), artist statement (sisa terbayar, merch share), safety (kapasitas vs aktual, insiden), membership & festival bundle
+- [ ] 90.8 Tests: (a) share door = % × penjualan pintu, dikurangi advance (b) cold-chain supply venue breach → hold (c) membership point earn/redeem lintas modul seimbang (d) bundle festival settlement multi-vendor Σ = pembayaran (e) `venue:audit` = 0 selisih
+- [ ] 90.9 Quality gate Fase 90
+
+## FASE 91 — PERHOTELAN I: PMS, CENTRAL RESERVATION, RATE MANAGEMENT & SMART ROOM
+- [ ] 91.1 Modul `Hotel` (`htl_`): provider, MenuRegistry "Perhotelan", roles (`front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `concierge`), policies, arch test; tabel `htl_properties`, `htl_rooms`, `htl_rate_plans`, `htl_reservations`, `htl_folios`
+- [ ] 91.2 **Skala**: 5.000 properti (city hotel, resort, villa, serviced apartment, kapsul, glamping) × 500.000 kamar, 100 juta room-night/tahun, 200 juta booking channel/tahun; properti terikat aset (Fase 30) & sewa (mall/ruko)
+- [ ] 91.3 **Central reservation & anti-oversell**: kanal (web, app, OTA simulasi, corporate, walk-in) memakai inventori kamar terpusat dengan lock kapasitas (memperluas Fase 22.2) → overbooking bertingkat (mis. 3% dengan konfirmasi ulang) → konversi ke properti tetangga bila penuh
+- [ ] 91.4 **Check-in/out & smart lock**: identitas via Human Passport/KYC → kamar diberi smart-lock QR/biometrik (sesi berlaku masa inap) → early check-in/late checkout berbayar masuk folio → folio terbuka selama inap → check-out settlement (kartu/wallet/escrow corporate) → posting ledger
+- [ ] 91.5 **Rate & revenue management**: tarif per kamar per hari per channel mengikuti demand, event kota (mall event Fase 15.3, festival Fase 90.5, konvensi EPC), lead time, okupansi — **dynamic rate** real-time (memperluas Fase 81) dengan guardrail: corporate/contract rate immutable (Fase 44.4), floor = variable cost per malam
+- [ ] 91.6 **Smart room & energy twin**: occupancy sensor + status TV → "make-up on request" → kamar kosong → HVAC setback otomatis (memperluas smart building Fase 76.2) → energi per occupied-room-night terhitung ESG (Fase 60) → digital twin kamar via Twin Bus (Fase 67.3)
+- [ ] 91.7 **Housekeeping & maintenance IoT**: tugas kebersihan terdistribusi (rute terpendek ala pick WMS Fase 41.3), inspect quality score; kerusakan (AC, shower) → work order otomatis (Fase 31.5) → SLA durasi → gangguan > jam → kompensasi tamu otomatis (voucher)
+- [ ] 91.8 Tests: (a) oversell berada di batas % & konfirmasi ulang berjalan (b) smart lock ganda/kadaluarsa ditolak (c) rate dinamis tak menembus floor & contract rate menang (d) kamar kosong → setback terpicu (e) `hotel:audit` = room-night revenue = ledger
+- [ ] 91.9 Quality gate Fase 91
+
+## FASE 92 — PERHOTELAN II: FOLIO, F&B/BANQUET, LOYALTY NIGHTS, TIMESHARE & DESTINATION PACKAGE
+- [ ] 92.1 **Folio & upsell**: seluruh item inap (kamar, F&B room service, spa, laundry, minibar, parkir valet) masuk satu folio → split settlement, corporate billing (invoicing bulanan ke perusahaan = piutang), deposit & city ledger per tamu
+- [ ] 92.2 **F&B & banquet**: restoran hotel memakai modul Resto penuh (HPP, batch, shift Fase 7–9) + banquet multi-event (memperluas katering Fase 11.2) → kitchen terhubung cold-chain Logistics; konsumsi room service ter-charge ke folio otomatis
+- [ ] 92.3 **Spa & wellness**: katalog treatment, booking terapis (HCM gig via bounty Fase 85), konsumsi produk ter-charge; treatment medis ringan terhubung konsultasi RS (Pilar 9)
+- [ ] 92.4 **Stay passport & loyalty nights**: riwayat menginap, preferensi (lantai, bantal, alergi), poin per room-night (PTS lintas ekosistem: tukar tiket venue, diskon Resto, spa) → tier Silver/Gold/Platinum dengan benefit upgrade & night gratis → churn risk scoring
+- [ ] 92.5 **Timeshare & fractional ownership**: unit villa/kamar tertentu di-tokenisasi (memperluas RWA Fase 71) → pemilik dapat hak jadwal inap + bagi hasil sewa saat tidak dipakai → jadwal penggunaan via booking engine → dividen harian dari okupansi
+- [ ] 92.6 **Destination package engine**: bundling hotel + tiket festival/club + restoran + transport + spa → **satu harga, satu pembayaran, satu invoice multi-vendor** → settlement otomatis ke tiap pihak via escrow (Fase 61.4) + fee platform
+- [ ] 92.7 **MICE & wedding sales**: pipeline B2B (konvensi, wedding, corporate retreat) → proposal harga berjenjang → deposit milestone → koordinasi venue (atrium mall Fase 15.3 / beach club Fase 89 / hall hotel) → kontrak via modul Contract
+- [ ] 92.8 Tests: (a) folio item = Σ order terkait (b) bundle settlement Σ = pembayaran tamu (c) timeshare Σ token = unit terdaftar & dividen pro-rata akurat (d) corporate bi
+
+## FASE 93 — PERTAMBANGAN I: MINE PLANNING, FLEET DISPATCH & FUEL MANAGEMENT
+- [ ] 93.1 Modul `Mining` (`min_`): provider, MenuRegistry "Pertambangan", roles (`mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`), policies, arch test; tabel `min_sites`, `min_pits`, `min_equipment`, `min_dispatch_runs`, `min_weighbridge_tickets`
+- [ ] 93.2 **Skala**: 500 pit & 1.000 kawasan pengolahan (smelter, crushing, quarry) di 30 wilayah, 50.000 unit alat berat (haul truck 400 ton, excavator, drill, conveyor, dredger), 1 juta perjalanan angkut/hari, 100 juta ton material/bulan; seluruh alat berat terdaftar sebagai aset (Fase 30) & armada (terhubung Vehicle Passport diperluas ke alat berat)
+- [ ] 93.3 **Mine planning**: rencana bulanan cut & fill, grade target, produksi harian per pit → time-phased ke shift → target dipecah ke shovel/truck allocation; deviasi aktual vs rencana tercatat (kurva-S produksi)
+- [ ] 93.4 **Fleet dispatch engine**: algoritma assignment deterministik (haul distance, payload target, waiting time, fuel) → menugaskan haul truck ke shovels & stockpile → telematik memantau payload aktual vs target → **payload variance & efisiensi** dihitung per shift; dispatcher override dengan alasan tercatat
+- [ ] 93.5 **Telematik IoT alat berat**: 500 juta titik telemetri/hari (GPS, fuel rate, payload, vibration, engine hours) — ingest memperluas Fase 68.1 dengan skema equipment-specific; agregat per shift untuk OEE alat berat (memperluas Fase 40.1)
+- [ ] 93.6 **Fleet maintenance prediktif**: engine hours + oil analysis + vibration → work order otomatis (Fase 31.5) → suku cadang dipesan via MRP equipment (Fase 36.6) → downtime mengurangi forecast produksi → terhubung S&OP (Fase 53) & AutoServe sebagai adapter bengkel alat berat
+- [ ] 93.7 **Fuel management & anti-theft**: konsumsi BBM per 100 ton-km vs baseline → anomali > ambang → alarm + verifikasi telematik + **hold bayaran kontraktor** (memperluas Fase 80.1) → selisih masuk cost variance; meteran tangki IoT per site
+- [ ] 93.8 Tests: (a) dispatch tak melebihi jumlah unit tersedia (b) payload variance = aktual − target, konsisten shift (c) engine hours > ambang → WO 1x (d) fuel anomaly → hold persis 1x (e) query budget dispatch board ≤ ambang
+- [ ] 93.9 Quality gate Fase 93
+
+## FASE 94 — PERTAMBANGAN II: WEIGHBRIDGE, GRADE RECONCILIATION, ROYALTY, HSE & OFFTAKE
+- [ ] 94.1 **Weighbridge & stockpile**: timbangan digital tercatat hash-chain per truck load (plat, muatan, tujuan, waktu) → stockpile model 3D (digital twin via Fase 67.3) → **rekonsiliasi ore vs concentrate vs shipment** (yang masuk smelter/ekspor = yang dicatat) → selisih > toleransi → investigasi otomatis + approval
+- [ ] 94.2 **Grade control**: sampling & assay lab per stockpile/load (hasil terverifikasi teknisi) → blending optimization (AI deterministik teraudit) agar feed smelter stabil → recovery % per unit pengolahan → assay bias dilaporkan
+- [ ] 94.3 **Smelter & hilirisasi**: ore → concentrate → bahan jadi (nickel pig iron, tembaga katoda simulasi) → memakai modul Manufacturing (BOM, costing Fase 35–38 dengan routing khusus pertambangan) → produk jadi masuk Store/Trade
+- [ ] 94.4 **Royalty & pajak komoditas (simulasi)**: produksi bulanan × tarif royalti per komoditas → jurnal kewajiban (`min:royalty_payable`) → pembayaran ke pemerintah (dokumen gapless) + PPN/PPh final; IUP/IUPK masa berlaku → pengingat & perpanjangan via ApprovalEngine (Fase 54.6)
+- [ ] 94.5 **HSE & lingkungan**: izin kerja berisiko (memperluas Fase 40.6: blasting, ketinggian, confined space) dengan approval & masa berlaku; incident & near-miss → investigasi → CAPA; IoT lingkungan (debu, noise, tremor, kualitas air) → ambang → shutdown area + notifikasi; kepatuhan AMDAL simulasi
+- [ ] 94.6 **Reklamasi & pascatambang**: jadwal reklamasi sebagai proyek EPC (Fase 63) → biaya capitalisasi + provisi liabilitas pascatambang (simulasi PSAK) → track progress vs amdal
+- [ ] 94.7 **Offtake & komoditas trading**: kontrak penjualan ore/coal ke smelter/mitra dengan formula harga (index komoditas + kalori/grade adjustment) → settlement bertingkat + assay final → LC/SCF via Trade Finance (Fase 50) → ekspor via Fase 49 dengan B2B marketplace (Fase 61)
+- [ ] 94.8 **Emisi & ESG tambang**: Scope 1 (BBM alat berat, blasting) & Scope 2 (listrik plant) → kredit karbon (Fase 60) → rencana elektrifikasi fleet & solar plant → laporan ESG per konsesi; HSE dashboard (jam tanpa kecelakaan, permit aktif, ambang lingkungan)
+- [ ] 94.9 Tests: (a) weighbridge Σ = stockpile movement = shipment (b) royalti = produksi × tarif (c) assay bias di luar toleransi → investigasi (d) izin kedaluwarsa → kerja ditolak (e) `mining:audit` = 0 selisih
+- [ ] 94.10 Quality gate Fase 94
+
+---
+
+# INTEGRASI 12 LINI, SKALA ULTRA, AI, KEAMANAN & PENUTUPAN — FASE 95–103
+
+## FASE 95 — INTEGRASI LINTAS 12 LINI (A): OTOMOTIF, EV, LOGISTIK, HOTEL, VENUE, RUMAH SAKIT
+- [ ] 95.1 **Otomotif ↔ Logistik**: armada sewa (Fase 70) & haul truck tambang (Fase 93) memakai dispatch & custody Logistik (Fase 22) satu papan; odometer servis (Fase 24.3) berlaku untuk semua armada lintas lini; EV charger hub tersedia di Hub Logistik & Mall
+- [ ] 95.2 **EV ↔ infrastruktur lini**: SPKLU dipasang di Mall (Fase 76), Venue (Fase 89), Hotel (Fase 91), site tambang (Fase 94) → satu jaringan charger, tarif konsisten, kWh masuk ESG masing-masing properti
+- [ ] 95.3 **Hotel ↔ Venue ↔ Resto**: destination package (Fase 92.6) mencakup tiket festival (Fase 90.5) dan dining (Fase 74) → satu pembayaran, settlement multi-vendor escrow; folio hotel menerima charge venue/restaurant
+- [ ] 95.4 **Rumah Sakit ↔ Hotel**: medical tourism package (RS + hotel + transport Logistics) → bundle satu harga; kamar hotel disiapkan untuk pasien pasca-operasi; diet meals RS dikirim dapur sentral Resto (Fase 74.3)
+- [ ] 95.5 **Rumah Sakit ↔ Logistik ↔ Farmasi**: rantai dingin obat/darah (Fase 88.5) memakai cold-chain Logistik (Fase 80) → satu telemetri suhu, satu hash-chain kustodi, hold pembayaran seragam; limbah medis masuk reverse logistics (Fase 79)
+- [ ] 95.6 **Akses & identitas tunggal**: Human Passport (RS Fase 87.2) + Paspor Kendaraan (Fase 5A) + Paspor Digital (DAO Fase 86.4) → satu identitas lintas lini; smart door Hotel/Venue/Flex-Space/RS memindai kredensial yang sama
+- [ ] 95.7 Test integrasi end-to-end satu hari lintas 6 lini (inap hotel → check-in venue → bayar bundle → katering karyawan → servis prediktif mobil → cold-chain obat masuk RS) + reconcile semua ledger terdampak = 0
+- [ ] 95.8 Quality gate Fase 95
+
+## FASE 96 — INTEGRASI LINTAS 12 LINI (B): FINTECH, RWA, INSURTECH & PEMBIAYAAN UNTUK SEMUA LINI
+- [ ] 96.1 **RWA lintas lini**: tokenisasi unit hotel/timeshare (Fase 92.5), unit mall (Fase 71), truk logistik (Fase 71), mesin tambang (Fase 94), alat RS medis → satu marketplace RWA, satu orderbook, satu engine dividen; omzet sumber dari lini mana pun mengalir pro-rata ke holder
+- [ ] 96.2 **InsurTech tersemat universal**: trigger dari 12 lini (keterlambatan logistik, kecelakaan kendaraan, cold-chain breach venue/RS/hotel, pembatalan event, cuaca tambang, no-show kontrak) → claims autopilot (Fase 72) satu kerangka, reserve terpusat di Treasury
+- [ ] 96.3 **Pembiayaan lintas lini**: HODL-to-Drive (Fase 5C) → diperluas: pembiayaan alat berat tambang, pembiayaan fit-out tenant, pembiayaan modal tani (Fase 62) & pre-payment petani berbasis NDVI (Fase 86.2) — satu engine kredit dengan credit profile 360° (Fase 27.7)
+- [ ] 96.4 **Stablecoin settlement gr**up: settlement intercompany & cross-border (venue internasional, artist luar negeri, offtake tambang) memakai stablecoin internal (Fase 83) → clear real-time 24/7, kurs terkunci, Σ ledger seimbang
+- [ ] 96.5 **Yield & treasury terpadu**: saldo idle 12 lini → robo-advisor/Treasury yield (Fase 73) → cash pooling antar entitas (Fase 48.8) → group liquidity teroptimasi
+- [ ] 96.6 Test integrasi: pembayaran bundle hotel-venue-resto → settle ke vendor + fee platform + poin loyalty; klaim insuransi lintas 3 lini cair otomatis; Σ semua = 0 selisih
+- [ ] 96.7 Quality gate Fase 96
+
+## FASE 97 — INTEGRASI LINTAS 12 LINI (C): TALENT GIG, ESG TERPADU & EVENT SPINE PENUH
+- [ ] 97.1 **Talent marketplace universal**: bounty lintas lini (Resto overload, setup venue, bongkar muat logistik, cuci armada, asistensi RS dadakan, operasional shift hotel, crew tambang kontraktor) → satu papan, aturan upah & K3 konsisten (Fase 85), bayar via Core Banking
+- [ ] 97.2 **ESG terpadu 12 lini**: agregasi emisi Scope 1–3 dari armada (Fase 60), gedung/hotel/venue (Fase 76), pabrik & tambang (Fase 94.8), limbah sirkular (Fase 79) → neraca karbon grup → kredit karbon pensiun → laporan GRI per lini & konsolidasi grup
+- [ ] 97.3 **Universal Event Spine penuh** (Fase 67.2): seluruh event 12 lini terbit & terkonsumsi lintas pilar — contoh: `min.ore_shipped` → `lgx.container_loaded` → `trade.bl_issued` → `fintech.escrow_released`; `ven.event_ticket_sold` → `htl.bundle_confirmed` → `resto.catering_ready`
+- [ ] 97.4 **Group command center 12 lini** (memperluas Fase 57.4/16.5): P&L per lini, arus kas, kesehatan seluruh `*:audit` (kini 40+ perintah), status event spine (lag, dead-letter), twin health per entitas — dalam batas query budget
+- [ ] 97.5 **Skor kesehatan ekosistem** per entitas & per lini (finansial, talenta, ESG, risiko — memperluas ide 8E) → dasar keputusan alokasi modal & prioritas ekspansi
+- [ ] 97.6 Tests: (a) event lintas lini diproses idempoten saat replay (b) ESG grup = Σ emisi lini (c) P&L 12 lini = ledger konsolidasi (d) gig payout lintas lini konsisten payroll (e) query budget command center terpenuhi
+- [ ] 97.7 Quality gate Fase 97
+
+## FASE 98 — SKALA ULTRA: SEEDER 12 LINI, QUERY BUDGET & STRESS TEST
+- [ ] 98.1 **TwelveLinesUltraSeeder**: dataset raksasa deterministik idempoten (memperluas Fase 56.1 & 67.4): 10 juta kendaraan berpaspor + telematik 180 hari, 5 juta dompet + ratusan juta mutasi, 5.000 outlet + 730 juta order (12 bulan), 200 properti + 50 ribu lease + 12 bulan billing, 5 juta shipment + 100 juta event kustodi, 100 pabrik + 1 juta SPK, 10 ribu koridor dagang + 50 ribu L/C, 10 juta pasien + 100 juta encounter, 1.000 venue + 50 juta tiket, 5.000 properti hotel + 100 juta room-night, 500 pit + 50 ribu alat berat + miliaran tick telematik; checkpoint/resume, benchmark per etape
+- [ ] 98.2 **Query budget penuh**: endpoint kritis tiap lini (bed board, bed board venue, bed board tambang, RWA orderbook, claims autopilot, rate optimizer, tick feed) diuji p95 latensi & jumlah query di bawah ambang; dokumentasi EXPLAIN tanpa full table scan pada tabel > 100 ribu baris
+- [ ] 98.3 **Race condition ekstrem lintas lini**: 1.000 booking kamar serentak atas 10 kamar sisa, 500 tiket atas 100 kursi, 500 bid atas 10 unit RWA, penarikan saldo massal → alokasi tepat, tak pernah negatif/ganda
+- [ ] 98.4 **Chaos engineering lintas lini**: kegagalan worker di tengah klaim asuransi multi-entri, event spine duplikat, deadlock batch settlement → rollback sempurna/retry idempoten
+- [ ] 98.5 Laporan performa sebelum vs sesudah optimasi (memperluas Fase 56.7) untuk seluruh lini baru
+- [ ] 98.6 Quality gate Fase 98
+
+## FASE 99 — AI & ANALITIK PREDIKTIF TERPADU 12 LINI
+- [ ] 99.1 **Dynamic pricing unified**: satu engine (Fase 81 + 64.1) mengatur harga lintas kanal — tiket venue, room rate hotel, ongkir logistik, suku cadang, harga grosir, tarif EV, royalti komoditas — dengan guardrail & contract-price-wins seragam, `ai:audit` membuktikan determinisme
+- [ ] 99.2 **Forecasting terpadu**: demand resto dari footfall mall & event venue (Fase 75.1), forecast S&OP pabrik (Fase 53.2), forecast okupansi hotel dari kalender event & festival, forecast produksi tambang dari rencana → satu kerangka MAPE & override ter-audit
+- [ ] 99.3 **Anomaly detection & anti-fraud lintas lini** (memperluas Fase 64.2): skor anomali untuk klaim asuransi, transaksi dompet, penjualan venue, tagihan RS, fuel tambang, resale tiket → quarantine transaksi berisiko sebelum settlement
+- [ ] 99.4 **Prescriptive ops**: rekomendasi stok & PO (Fase 64.3), replenishment VMI (Fase 82), blending tambang (Fase 94.2), shift & bounty (Fase 97.1), energy setback (Fase 91.6) — semua berbentuk usulan yang dieksekusi otomatis di bawah ambang / approval di atas ambang
+- [ ] 99.5 **AI bid agent & claim agent** (Fase 84 + 72) diuji ulang terhadap dataset ultra (Fase 98.1) → konsistensi & auditabilitas terbukti pada skala
+- [ ] 99.6 Quality gate Fase 99
+
+## FASE 100 — KEAMANAN, RBAC 60+ ROLE, KEPATUHAN & OBSERVABILITAS 12 LINI
+- [ ] 100.1 **RBAC 12 lini**: role baru (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`, `front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`, `ev_operator`, `fleet_manager`, `wm_advisor`, dst.) → matriks otorisasi data-driven, RouteSmokeTest & SecurityTest mencakup seluruh rute baru
+- [ ] 100.2 **Privacy & PII khusus**: data medis (rekam medis, telemetri pasien) ter-encrypt field-level + audit akses ketat (siapa membaca apa), data tamu hotel/venue (ID, kebiasaan) ter-scope ketat anti-IDOR lintas properti; PII minimization di pelacakan publik
+- [ ] 100.3 **Compliance kalender 12 lini**: izin RS (izin praktik, radiologi), izin venue (keramaian, minuman keras), izin hotel (pariwisata, kebakaran), izin tambang (IUP, AMDAL), sertifikasi halal/BPOM lintas F&B, CBAM lintas ekspor → pengingat & eskalasi terpusat (memperluas Fase 54.6)
+- [ ] 100.4 **Health-check & audit 12 lini**: `super:health-check` mencakup pilar baru (hsp, ven, htl, min, rwa, ins, wm, otelematics, prc, gov); seluruh `*:audit` baru (hosp:audit, venue:audit, hotel:audit, mining:audit, clearing:audit, pricing:audit, governance:audit, dll.) masuk quality gate default
+- [ ] 100.5 Rate limit & anti-abuse khusus: verifikasi usia venue (biometrik simulasi), akses IGD (anti-bruteforce berbeda dari login normal), booking massal (anti-scalping tiket & kamar), telematik ingest (device token rotation)
+- [ ] 100.6 Quality gate Fase 100
+
+## FASE 101 — SKENARIO EMAS 12 LINI & KETAHANAN (DISASTER RECOVERY)
+- [ ] 101.1 **Golden scenario lintas 12 lini**: satu skenario otomatis merajut semuanya — petani menanam (NDVI memicu cicilan) → bahan baku dikirim cold-chain → pabrik memproduksi → dikirim logistik → sampai resto/hotel/venue dijual → bagian ke RS sebagai produk farmasi → armada diisi daya EV → tambang mengirim ore via LC stablecoin → seluruhnya terkonsolidasi di group close → **semua `*:audit` serentak = 0 selisih**
+- [ ] 101.2 **Golden scenario krisis**: recall produk lintas lini (obat RS + F&B venue + produk pabrik) → ketertelusuran lot maju-mundur instan → quarantine + notifikasi + klaim asuransi autopilot + kredit vendor → ESG impact tercatat
+- [ ] 101.3 **Disaster recovery multi-region 12 lini** (memperluas Fase 66): failover replika dengan RPO = 0 untuk ledger semua aset (termasuk stablecoin, token RWA, escrow venue/hotel), RTO < 15 menit, drill terjadwal + `dr:audit`
+- [ ] 101.4 **Post-quantum readiness** (Fase 66.3): audit hash-chain 12 lini (passport kendaraan, paspor pasien, tiket venue, custody logistik, kontrak, aset, weighbridge) terhadap rencana migrasi algoritma
+- [ ] 101.5 Tests: (a) golden scenario hijau end-to-end (b) recall lintas lini terlacak (c) failover drill → reconcile semua aset = 0 (d) RPO/RTO terukur (e) seluruh verify-* chain valid paska-recovery
+- [ ] 101.6 Quality gate Fase 101
+
+## FASE 102 — API V3, WEBHOOK & PORTAL MITRA 12 LINI
+- [ ] 102.1 **API v3**: endpoint untuk lini baru (telematik ingest, EV session, RWA orderbook, claims API, ticketing & check-in, PMS reservation, mine dispatch, weighbridge) — OpenAPI 3.1 lengkap, Sanctum abilities per lini, Idempotency-Key wajib, RFC 7807
+- [ ] 102.2 **Webhook event spine untuk mitra eksternal**: OTA hotel, payment aggregator venue, sistem tambang pihak ketiga, DHI/insurance partner, asuransi RS → HMAC-SHA256, retry, DLQ, replay (memperluas Fase 55.2)
+- [ ] 102.3 **Portal mitra baru**: supplier VMI (Fase 82), BPJS/insurance (klaim RS), OTA & corporate travel (hotel), artist management (venue), kontraktor tambang & off-taker, EV charge point operator → masing-masing dengan scope ketat & rate limit tier (Fase 55.5)
+- [ ] 102.4 **Mobile offline-first untuk peran lapangan baru** (memperluas Fase 65): perawat/doctor rounds (order offline), housekeeping & front office, venue door staff (scan tiket offline + sync), mine weighbridge & dispatch, EV field tech, driver & driver drone → sync engine idempoten, zero-duplicate
+- [ ] 102.5 `api:audit` diperluas: seluruh endpoint v3 vs OpenAPI, webhook signature 100% valid, portal scope terisolasi
+- [ ] 102.6 Quality gate Fase 102
+
+## FASE 103 — DOKUMENTASI FINAL, PLAYBOOK 60+ ROLE & SERAH TERIMA EKSPANSI 12 LINI
+- [ ] 103.1 **README final**: ringkasan 12 lini bisnis dalam satu website monolith, tabel akun demo per role baru, cara menjalankan simulasi kernel & seeder ultra, daftar seluruh command `*:audit`/`verify-*`
+- [ ] 103.2 **docs/ARCHITECTURE.md**: ERD 12 modul baru, peta Universal Event Spine & Digital Twin Bus, sequence diagram integrasi lintas lini, konvensi ledger multi-aset baru (stablecoin, token RWA, reserve asuransi)
+- [ ] 103.3 **docs/CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 67–103 tercatat, peta orientasi sesi baru lengkap
+- [ ] 103.4 **docs/RUNBOOK.md**: SOP operasional 12 lini (bed board, door venue, dispatch tambang, claims autopilot, EV ops, rate optimizer), jadwal scheduler baru, recovery kegagalan, DR drill
+- [ ] 103.5 **Role Playbooks 60+ role**: panduan peran baru (doctor, nurse, pharmacist, front office, housekeeping, revenue manager, venue manager, crowd safety, artist relations, mine planner, fleet dispatcher, hse officer, royalty officer, ev operator, fleet manager, wm advisor, vmi supplier, BPJS/insurance partner, OTA partner, kontraktor tambang, dll.)
+- [ ] 103.6 **Quality gate final ekspansi**: seluruh test suite 100% hijau tanpa test di-skip/dilemahkan (target jumlah test naik drastis dari baseline Fase 63: 931+ test), Pint 100%, build bersih, 0 artefak debug, seluruh `*:audit` = 0 selisih, seluruh hash-chain valid, `super:health-check` HEALTHY untuk seluruh pilar, working tree bersih
+- [ ] 103.7 **Berita Acara Serah Terima Ekspansi 12 Lini** di `docs/PROGRESS.md` + laporan penutup final (metrik test/audit/stress, peta 12 lini terintegrasi dalam satu monolith)
+
+---
+
+## DEFINITION OF DONE (FASE 67–103)
+- [ ] Semua task 67.1–103.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 63: 931+ test/4778+ assertion) tanpa ada test di-skip/dilemahkan.
+- [ ] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` baru & lama = 0 selisih; semua hash-chain (passport kendaraan, paspor pasien, tiket venue, custody logistik, weighbridge, kontrak, aset, ECO, RWA supply) valid.
+- [ ] Setiap alur uang/stok/tiket/kamar/klaim/royalti baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role 12 lini.
+- [ ] Tidak ada float untuk uang; tidak ada `DB` facade di controller; batas modul 12 lini baru terjaga (arch test diperluas).
+- [ ] Simulation Kernel, Universal Event Spine, Digital Twin Bus, dan Fictional Scale Provisioner beroperasi & teruji deterministik.
+- [ ] Seeder ultra (Fase 98.1) selesai dalam benchmark tercatat; seluruh endpoint kritis dalam query budget p95.
+- [ ] Golden scenario 12 lini (Fase 101.1) hijau end-to-end; DR drill lulus dengan RPO 0 / RTO < 15 menit.
+- [ ] README, ARCHITECTURE, CODEBASE, DECISIONS, RUNBOOK, API, AUDIT mutakhir & konsisten dengan kode; working tree bersih.
