@@ -1796,13 +1796,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 131.7 Quality gate Fase 131
 
 ## FASE 132 — TELEKOMUNIKASI: ISP RETAIL, SIM/5G & SMART CITY SERVICES
-- [ ] 132.1 **ISP retail & fixed wireless**: paket rumah/B2B (100 ribu subscriber simulasi) → billing cycle (prabayar topup / pascabayar invoice) → usage cap → throttle/pause saat telat bayar → denda keterlambatan → provisioning otomatis ke network (Fase 130.2)
-- [ ] 132.2 **SIM/eSIM & mobile plan**: 1 juta subscriber → paket data bulanan/robobin (auto-renew dari wallet) → rollover → family plan (akun induk–anak) → roaming partner settlement (interconnect antar operator simulasi)
-- [ ] 132.3 **Smart city services**: konektivitas untuk parkir pintar (Fase 14), lampu jalan IoT, CCTV traffic → layanan ke pemerintah daerah (kontrak B2G simulasi) → SLA & laporan bulanan
-- [ ] 132.4 **B2B connectivity bundle**: warehouse/DC (Fase 41), site tambang (Fase 93), venue event (Fase 89) → paket link dedicated + backup → terhubung kontrak sewa masing-masing properti
-- [ ] 132.5 **Churn & upsell analytics**: pola pemakaian → risiko churn → rekomendasi upgrade/perpanjangan → campaign via Notification → konversi terukur
-- [ ] 132.6 Tests: (a) auto-renew gagal saldo → layanan pause, bukan gratis (b) usage cap dihormati (c) interconnect settlement Σ antar operator seimbang (d) churn prediction deterministik (e) `tlx:audit` = 0 selisih
-- [ ] 132.7 Quality gate Fase 132
+- [x] 132.1 **ISP retail & fixed wireless**: paket rumah/B2B (100 ribu subscriber simulasi) → billing cycle (prabayar topup / pascabayar invoice) → usage cap → throttle/pause saat telat bayar → denda keterlambatan → provisioning otomatis ke network (Fase 130.2)
+- [x] 132.2 **SIM/eSIM & mobile plan**: 1 juta subscriber → paket data bulanan/robobin (auto-renew dari wallet) → rollover → family plan (akun induk–anak) → roaming partner settlement (interconnect antar operator simulasi)
+- [x] 132.3 **Smart city services**: konektivitas untuk parkir pintar (Fase 14), lampu jalan IoT, CCTV traffic → layanan ke pemerintah daerah (kontrak B2G simulasi) → SLA & laporan bulanan
+- [x] 132.4 **B2B connectivity bundle**: warehouse/DC (Fase 41), site tambang (Fase 93), venue event (Fase 89) → paket link dedicated + backup → terhubung kontrak sewa masing-masing properti
+- [x] 132.5 **Churn & upsell analytics**: pola pemakaian → risiko churn → rekomendasi upgrade/perpanjangan → campaign via Notification → konversi terukur
+- [x] 132.6 Tests: (a) auto-renew gagal saldo → layanan pause, bukan gratis (b) usage cap dihormati (c) interconnect settlement Σ antar operator seimbang (d) churn prediction deterministik (e) `tlx:audit` = 0 selisih
+- [x] 132.7 Quality gate Fase 132
 
 ## FASE 133 — MEDIA & KREATIF: STUDIOS, CONTENT PRODUCTION & IP ECONOMY (LINI 15)
 - [ ] 133.1 Modul `Med` (`med_`): provider, MenuRegistry "Media & Kreatif", roles (`producer`, `studio_ops`, `ip_manager`, `talent_mgmt`), policies, arch test; tabel `med_studios` (sound stage, virtual production, podcast room — fasilitas disewakan), `med_projects` (produksi: konten, iklan, event doc), `med_ip_assets`
