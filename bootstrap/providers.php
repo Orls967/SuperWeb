@@ -43,6 +43,7 @@ use Modules\Telematics\TelematicsServiceProvider;
 use Modules\Trade\TradeServiceProvider;
 use Modules\TradeFinance\TradeFinanceServiceProvider;
 use Modules\Treasury\TreasuryServiceProvider;
+use Modules\Wealth\WealthServiceProvider;
 use Modules\Wms\WmsServiceProvider;
 
 return [
@@ -90,4 +91,5 @@ return [
     FleetServiceProvider::class,
     RwaServiceProvider::class,
     InsuranceServiceProvider::class,
+    WealthServiceProvider::class,
 ];

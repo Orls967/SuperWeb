@@ -942,14 +942,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 72.8 Quality gate Fase 72
 
 ## FASE 73 — ROBO-ADVISOR WEALTH MANAGEMENT & TREASURY YIELD
-- [ ] 73.1 Tabel `wm_profiles` (profil risiko konservatif/agresif, tujuan, horizon), `wm_plans` (alokasi bulanan), `wm_orders` (reksadana simulasi, emas digital, kripto), `wm_holdings`
-- [ ] 73.2 **Surplus detector**: membaca pola gaji (HCM payroll event) dan pengeluaran (mutasi wallet 3 bulan) → menghitung surplus bulanan yang aman; guardrail wajib: likuiditas minimum 2 bulan pengeluaran TIDAK boleh diinvestasikan, dana darurat tetap cair
-- [ ] 73.3 Eksekusi alokasi bulanan otomatis (opt-in per pengguna): split ke reksadana/emas/kripto sesuai profil → order via PriceFeed Fase 4 → posting ledger; penarikan kembali 1-klik (T+0 simulasi)
-- [ ] 73.4 **Yield ke Treasury**: saldo mengendap platform & hasil investasi dana kelolaan mengalir ke akun `treasury:pool` (Fase 48) → likuiditas grup terjaga; laporan kontribusi yield per bulan
-- [ ] 73.5 Rebalancing berkala (drift > 5% target → rebalance), performance vs benchmark, fee dana kelolaan (accrual harian)
-- [ ] 73.6 Dashboard: kinerja portofolio vs benchmark, rekomendasi bulanan, dampak ke Treasury, cash-flow pengguna
-- [ ] 73.7 Tests: (a) alokasi tidak pernah menembus guardrail likuiditas (b) order terdividasi = dana terpotong (c) rebalance deterministik (d) fee akurat 6 desimal (e) reconcile holdings = ledger
-- [ ] 73.8 Quality gate Fase 73
+- [x] 73.1 Tabel `wm_profiles` (profil risiko konservatif/agresif, tujuan, horizon), `wm_plans` (alokasi bulanan), `wm_orders` (reksadana simulasi, emas digital, kripto), `wm_holdings`
+- [x] 73.2 **Surplus detector**: membaca pola gaji (HCM payroll event) dan pengeluaran (mutasi wallet 3 bulan) → menghitung surplus bulanan yang aman; guardrail wajib: likuiditas minimum 2 bulan pengeluaran TIDAK boleh diinvestasikan, dana darurat tetap cair
+- [x] 73.3 Eksekusi alokasi bulanan otomatis (opt-in per pengguna): split ke reksadana/emas/kripto sesuai profil → order via PriceFeed Fase 4 → posting ledger; penarikan kembali 1-klik (T+0 simulasi)
+- [x] 73.4 **Yield ke Treasury**: saldo mengendap platform & hasil investasi dana kelolaan mengalir ke akun `treasury:pool` (Fase 48) → likuiditas grup terjaga; laporan kontribusi yield per bulan
+- [x] 73.5 Rebalancing berkala (drift > 5% target → rebalance), performance vs benchmark, fee dana kelolaan (accrual harian)
+- [x] 73.6 Dashboard: kinerja portofolio vs benchmark, rekomendasi bulanan, dampak ke Treasury, cash-flow pengguna
+- [x] 73.7 Tests: (a) alokasi tidak pernah menembus guardrail likuiditas (b) order terdividasi = dana terpotong (c) rebalance deterministik (d) fee akurat 6 desimal (e) reconcile holdings = ledger
+- [x] 73.8 Quality gate Fase 73
 
 ## PILAR 3 — KULINER, RESTORAN & WARALABA
 
