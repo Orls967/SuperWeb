@@ -34,6 +34,7 @@ use Modules\Plm\PlmServiceProvider;
 use Modules\Pricing\PricingServiceProvider;
 use Modules\Procurement\ProcurementServiceProvider;
 use Modules\Resto\RestoServiceProvider;
+use Modules\Rwa\RwaServiceProvider;
 use Modules\Shared\SharedServiceProvider;
 use Modules\Store\StoreServiceProvider;
 use Modules\Supplier\SupplierServiceProvider;
@@ -86,4 +87,5 @@ return [
     TelematicsServiceProvider::class,
     EvServiceProvider::class,
     FleetServiceProvider::class,
+    RwaServiceProvider::class,
 ];

@@ -922,14 +922,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 ## PILAR 2 — FINTECH, PERBANKAN & KRIPTO
 
 ## FASE 71 — TOKENISASI ASET RIIL (RWA) & DIVIDEN OTOMATIS
-- [ ] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
-- [ ] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
-- [ ] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
-- [ ] 71.4 **Dividen harian otomatis**: omzet sumber aset (mis. pendapatan logistik per truk dari Core Banking, sewa unit mall dari invoice) → dihitung pro-rata per holder → batch posting idempoten per hari ke dompet holder; gagal payout → antrean retry + alert
-- [ ] 71.5 Corporate action: redemsi parsial (aset dijual → token ditebus pro-rata), dilusi, pembatalan token; seluruh perubahan supply tercatat hash-chain
-- [ ] 71.6 Dashboard RWA: katalog aset, orderbook, kepemilikan, riwayat dividen, exposure per holder; guardrail konsentrasi (maks X% aset per holder)
-- [ ] 71.7 Tests: (a) Σ token terbit = Σ holdings (b) dividen harian = omzet × pro-rata (dibulatkan, sisa ke rounding reserve) (c) double-settlement orderbook ditolak (d) redemsi menurunkan supply konsisten (e) reconcile aset ledger = holdings
-- [ ] 71.8 Quality gate Fase 71
+- [x] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
+- [x] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
+- [x] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
+- [x] 71.4 **Dividen harian otomatis**: omzet sumber aset (mis. pendapatan logistik per truk dari Core Banking, sewa unit mall dari invoice) → dihitung pro-rata per holder → batch posting idempoten per hari ke dompet holder; gagal payout → antrean retry + alert
+- [x] 71.5 Corporate action: redemsi parsial (aset dijual → token ditebus pro-rata), dilusi, pembatalan token; seluruh perubahan supply tercatat hash-chain
+- [x] 71.6 Dashboard RWA: katalog aset, orderbook, kepemilikan, riwayat dividen, exposure per holder; guardrail konsentrasi (maks X% aset per holder)
+- [x] 71.7 Tests: (a) Σ token terbit = Σ holdings (b) dividen harian = omzet × pro-rata (dibulatkan, sisa ke rounding reserve) (c) double-settlement orderbook ditolak (d) redemsi menurunkan supply konsisten (e) reconcile aset ledger = holdings
+- [x] 71.8 Quality gate Fase 71
 
 ## FASE 72 — INSURTECH: MICRO-INSURANCE TERSEMAT & CLAIMS AUTOPILOT
 - [ ] 72.1 Tabel `ins_products` (premi mikro: keterlambatan logistik, kerusakan kendaraan, cold-chain breach, pembatalan event, cuti sakit karyawan), `ins_policies` (tersemat otomatis ke dompet pengguna/shipment/kontrak), `ins_claims`
