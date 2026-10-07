@@ -986,14 +986,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 76.8 Quality gate Fase 76
 
 ## FASE 77 — DIGITAL TWIN & BIM LIFECYCLE (EPC → OPERASI)
-- [ ] 77.1 Tabel `prp_bim_models` (ber-versi, komponen JSON tervalidasi), `prp_twin_components` (pipa, duct, kabel, chiller — terikat lokasi & aset), `prp_twin_issues`
-- [ ] 77.2 **BIM saat konstruksi**: modul EPC (Fase 63) mengunggah model per milestone → tiap node WBS terikat komponen BIM → **progres fisik diverifikasi dari komponen selesai** → memicu MC, CIP, dan kapitalisasi (Fase 63.4) otomatis
-- [ ] 77.3 **Twin saat operasi**: komponen terhubung sensor (Fase 76) + work order facility (Fase 15.4) menandai komponen terdampak di twin → teknisi melihat letak pipa/kabel SEBELUM membongkar tembok (preview 2.5D/3D di browser)
-- [ ] 77.4 **Simulasi twin**: analisis aliran udara, skenario kebakaran/banjir, dampak penambahan tenant terhadap beban HVAC — berjalan di sandbox (Digital Twin Bus Fase 67.3), tidak mengubah data riil
-- [ ] 77.5 Change management: revisi BIM ber-versi dengan approval + hash-chain (memperluas ECO Fase 59.3 ke gedung), diff antar versi
-- [ ] 77.6 Dashboard: pohon komponen, issue terbuka, korelasi progres konstruksi vs rencana, twin health (komponen tanpa sensor = gap)
-- [ ] 77.7 Tests: (a) progres WBS = komponen selesai (maks 100%) (b) revisi BIM ganda → versi berurutan tanpa gap (c) simulasi tidak mengubah tabel riil (d) work order menandai komponen tepat (e) reconcile CIP = twin progress value
-- [ ] 77.8 Quality gate Fase 77
+- [x] 77.1 Tabel `prp_bim_models` (ber-versi, komponen JSON tervalidasi), `prp_twin_components` (pipa, duct, kabel, chiller — terikat lokasi & aset), `prp_twin_issues`
+- [x] 77.2 **BIM saat konstruksi**: modul EPC (Fase 63) mengunggah model per milestone → tiap node WBS terikat komponen BIM → **progres fisik diverifikasi dari komponen selesai** → memicu MC, CIP, dan kapitalisasi (Fase 63.4) otomatis
+- [x] 77.3 **Twin saat operasi**: komponen terhubung sensor (Fase 76) + work order facility (Fase 15.4) menandai komponen terdampak di twin → teknisi melihat letak pipa/kabel SEBELUM membongkar tembok (preview 2.5D/3D di browser)
+- [x] 77.4 **Simulasi twin**: analisis aliran udara, skenario kebakaran/banjir, dampak penambahan tenant terhadap beban HVAC — berjalan di sandbox (Digital Twin Bus Fase 67.3), tidak mengubah data riil
+- [x] 77.5 Change management: revisi BIM ber-versi dengan approval + hash-chain (memperluas ECO Fase 59.3 ke gedung), diff antar versi
+- [x] 77.6 Dashboard: pohon komponen, issue terbuka, korelasi progres konstruksi vs rencana, twin health (komponen tanpa sensor = gap)
+- [x] 77.7 Tests: (a) progres WBS = komponen selesai (maks 100%) (b) revisi BIM ganda → versi berurutan tanpa gap (c) simulasi tidak mengubah tabel riil (d) work order menandai komponen tepat (e) reconcile CIP = twin progress value
+- [x] 77.8 Quality gate Fase 77
 
 ## FASE 78 — FLEX-SPACE & CO-WORKING BOOKING ON-DEMAND
 - [ ] 78.1 Tabel `prp_flex_spaces` (area kosong mall / site EPC / roof-top / lobi): tipe (meeting room, booth, co-working desk, studio), kapasitas, fasilitas, tarif per jam/hari

@@ -150,6 +150,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 - **Cloud Kitchen & Catering:** jaringan 200 satelit, 5 dapur sentral, kuota katering harian, pemotongan payroll HCM otomatis (`hcm:meals_deduction`), guardrail kapasitas harian, integrasi cold-chain, refund saat pembatalan/tutup.
 - **Smart Vending & AI Demand/Waste:** algoritma Holt-Winters forecasting, auto-PO dengan plafon harian, smart vending unit (`ven_vending_units`), anti-duplicate restock task, biometrik/QRIS settlement ke ledger, sensor health maintenance.
 - **Proptech & Smart Building:** ingest sensor idempoten (`prp_building_sensors`), rule engine HVAC/pencahayaan deterministik, penagihan utilitas tenant presisi per kWh aktual terhubung Ledger, kalkulasi emisi GRK real-time faktor grid PLN.
+- **BIM & Digital Twin Lifecycle:** versi model BIM tamper-evident SHA-256 (`prp_bim_models`), sinkronisasi progres fisik komponen WBS ke kapitalisasi CIP modul EPC/Asset, tagging work order fasilitas ke komponen pipa/kabel, airflow simulation sandbox.
 - Detail alasan: `docs/DECISIONS.md` (≈ 48 entri bertanggal).
 
 ## 8. Peta command lengkap
