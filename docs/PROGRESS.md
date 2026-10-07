@@ -1832,13 +1832,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 135.7 Quality gate Fase 135
 
 ## FASE 136 — PENDIDIKAN & TALENT: TALENT PIPELINE, HEADHUNTING & WORKFORCE MARKETPLACE
-- [ ] 136.1 **Talent pool 360°**: alumni edu (Fase 135) + karyawan internal + kandidat eksternal → profil skill (ontologi skill memperluas ide 8E), riwayat sertifikat, pengalaman → lowongan lintas 17 lini (formal job, kontrak proyek EPC, shift gig Fase 85)
-- [ ] 136.2 **Matching engine**: kecocokan skill/lokasi/gaji expectation (deterministik, `ai:audit`) → shortlist → interview scheduling (kalender) → offer → onboarding (Party KYC Fase 27 + HCM record)
-- [ ] 136.3 **Headhunter & agency fee**: rekruter eksternal → kontrak fee (% gaji pertama, staged) → hold sampai masa garansi kerja lewat (mirip clawback Fase 45.6) → payout
-- [ ] 136.4 **Contingent workforce**: pekerja lepas/outsource untuk proyek EPC, event venue, audit → kontrak jasa → timesheet → invoice per deliverable → compliance (BPJS simulasi Fase 58.3)
-- [ ] 136.5 **Internal mobility & gig bridge** (memperluas Fase 85): career path antar lini (waiter → trainer edu → supervisor resto) → transfer antar entitas (intercompany HR) → payroll konsisten → retensi terukur
-- [ ] 136.6 Tests: (a) matching deterministik dua run identik (b) agency fee hold sampai garansi lewat (c) contingent timesheet > durasi kontrak ditolak (d) transfer antar entitas tak ganda hitung payroll (e) `hcm:audit` + `edu:audit` = 0 selisih
-- [ ] 136.7 Quality gate Fase 136
+- [x] 136.1 **Talent pool 360°**: alumni edu (Fase 135) + karyawan internal + kandidat eksternal → profil skill (ontologi skill memperluas ide 8E), riwayat sertifikat, pengalaman → lowongan lintas 17 lini (formal job, kontrak proyek EPC, shift gig Fase 85)
+- [x] 136.2 **Matching engine**: kecocokan skill/lokasi/gaji expectation (deterministik, `ai:audit`) → shortlist → interview scheduling (kalender) → offer → onboarding (Party KYC Fase 27 + HCM record)
+- [x] 136.3 **Headhunter & agency fee**: rekruter eksternal → kontrak fee (% gaji pertama, staged) → hold sampai masa garansi kerja lewat (mirip clawback Fase 45.6) → payout
+- [x] 136.4 **Contingent workforce**: pekerja lepas/outsource untuk proyek EPC, event venue, audit → kontrak jasa → timesheet → invoice per deliverable → compliance (BPJS simulasi Fase 58.3)
+- [x] 136.5 **Internal mobility & gig bridge** (memperluas Fase 85): career path antar lini (waiter → trainer edu → supervisor resto) → transfer antar entitas (intercompany HR) → payroll konsisten → retensi terukur
+- [x] 136.6 Tests: (a) matching deterministik dua run identik (b) agency fee hold sampai garansi lewat (c) contingent timesheet > durasi kontrak ditolak (d) transfer antar entitas tak ganda hitung payroll (e) `hcm:audit` + `edu:audit` = 0 selisih
+- [x] 136.7 Quality gate Fase 136
 
 ## FASE 137 — RITEL & E-COMMERCE: OMNICHANNEL MARKETPLACE GROUP (LINI 17)
 - [ ] 137.1 Modul `Ret` (`ret_`): provider, MenuRegistry "Ritel & E-Commerce", roles (`retail_ops`, `marketplace_mgr`, `category_mgr`, `last_mile_cs`), policies, arch test; tabel `ret_channels` (toko fisik 17 lini, web/app, marketplace 3P), `ret_listings`, `ret_fulfillment_centers`
