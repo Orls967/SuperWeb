@@ -450,11 +450,11 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 - **Service:** `Modules\Hotel\Application\Services\HotelOperationsService`, `Modules\Hotel\Application\Services\HotelFolioAndPackageService` — alokasi kamar anti-oversell, smart lock QR verification, energy setback automation, roll-up biaya folio, distribusi dividen timeshare ber-invarian $\sum = \text{total supply}$, dan paket destinasi multi-vendor escrow settlement.
 - **Provider:** `Modules\Hotel\HotelServiceProvider`.
 
-### Mining & Heavy Fleet (`min_`) — Fase 93
+### Mining & Heavy Fleet (`min_`) — Fase 93 & 94
 
-- **Tujuan:** perencanaan tambang (mine planning cut & fill), penugasan cerdas armada alat berat (fleet dispatch engine deterministik), telemetri payload aktual vs target, dan deteksi anomali konsumsi BBM/pencurian bahan bakar dengan penahanan pembayaran kontraktor otomatis.
-- **Tabel:** `min_sites`, `min_pits`, `min_equipment`, `min_dispatch_runs`.
-- **Service:** `Modules\Mining\Application\Services\MiningFleetDispatchService` — alokasi haul truck ke pit tambang ber-status availability guard, kalkulasi payload variance dan fuel consumption per ton-km, deteksi lonjakan bahan bakar anomali >50% dari ekspektasi dengan flag `contractor_payment_held`.
+- **Tujuan:** perencanaan tambang (mine planning cut & fill), penugasan cerdas armada alat berat (fleet dispatch engine deterministik), telemetri payload aktual vs target, deteksi anomali konsumsi BBM/pencurian bahan bakar dengan penahanan pembayaran kontraktor otomatis, timbangan jembatan weighbridge digital berantai hash unik SHA-256, perhitungan dan akrual royalti PNBP komoditas ke Ledger, serta verifikasi izin kerja berisiko HSE valid.
+- **Tabel:** `min_sites`, `min_pits`, `min_equipment`, `min_dispatch_runs`, `min_weighbridge_tickets`, `min_royalty_calculations`, `min_work_permits`.
+- **Service:** `Modules\Mining\Application\Services\MiningFleetDispatchService`, `Modules\Mining\Application\Services\MiningComplianceAndRoyaltyService` — dispatch haul truck ber-guard ketersediaan, deteksi anomali BBM per ton-km, penerbitan tiket timbangan digital hash-chain append-only, kalkulasi tarif royalti PNBP bulanan dan posting liabilitas ke akun `min:royalty_payable:IDR`, dan evaluasi masa aktif izin kerja HSE (blasting, confined space).
 - **Provider:** `Modules\Mining\MiningServiceProvider`.
 
 ---

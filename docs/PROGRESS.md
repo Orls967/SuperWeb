@@ -1174,16 +1174,16 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 93.9 Quality gate Fase 93
 
 ## FASE 94 — PERTAMBANGAN II: WEIGHBRIDGE, GRADE RECONCILIATION, ROYALTY, HSE & OFFTAKE
-- [ ] 94.1 **Weighbridge & stockpile**: timbangan digital tercatat hash-chain per truck load (plat, muatan, tujuan, waktu) → stockpile model 3D (digital twin via Fase 67.3) → **rekonsiliasi ore vs concentrate vs shipment** (yang masuk smelter/ekspor = yang dicatat) → selisih > toleransi → investigasi otomatis + approval
-- [ ] 94.2 **Grade control**: sampling & assay lab per stockpile/load (hasil terverifikasi teknisi) → blending optimization (AI deterministik teraudit) agar feed smelter stabil → recovery % per unit pengolahan → assay bias dilaporkan
-- [ ] 94.3 **Smelter & hilirisasi**: ore → concentrate → bahan jadi (nickel pig iron, tembaga katoda simulasi) → memakai modul Manufacturing (BOM, costing Fase 35–38 dengan routing khusus pertambangan) → produk jadi masuk Store/Trade
-- [ ] 94.4 **Royalty & pajak komoditas (simulasi)**: produksi bulanan × tarif royalti per komoditas → jurnal kewajiban (`min:royalty_payable`) → pembayaran ke pemerintah (dokumen gapless) + PPN/PPh final; IUP/IUPK masa berlaku → pengingat & perpanjangan via ApprovalEngine (Fase 54.6)
-- [ ] 94.5 **HSE & lingkungan**: izin kerja berisiko (memperluas Fase 40.6: blasting, ketinggian, confined space) dengan approval & masa berlaku; incident & near-miss → investigasi → CAPA; IoT lingkungan (debu, noise, tremor, kualitas air) → ambang → shutdown area + notifikasi; kepatuhan AMDAL simulasi
-- [ ] 94.6 **Reklamasi & pascatambang**: jadwal reklamasi sebagai proyek EPC (Fase 63) → biaya capitalisasi + provisi liabilitas pascatambang (simulasi PSAK) → track progress vs amdal
-- [ ] 94.7 **Offtake & komoditas trading**: kontrak penjualan ore/coal ke smelter/mitra dengan formula harga (index komoditas + kalori/grade adjustment) → settlement bertingkat + assay final → LC/SCF via Trade Finance (Fase 50) → ekspor via Fase 49 dengan B2B marketplace (Fase 61)
-- [ ] 94.8 **Emisi & ESG tambang**: Scope 1 (BBM alat berat, blasting) & Scope 2 (listrik plant) → kredit karbon (Fase 60) → rencana elektrifikasi fleet & solar plant → laporan ESG per konsesi; HSE dashboard (jam tanpa kecelakaan, permit aktif, ambang lingkungan)
-- [ ] 94.9 Tests: (a) weighbridge Σ = stockpile movement = shipment (b) royalti = produksi × tarif (c) assay bias di luar toleransi → investigasi (d) izin kedaluwarsa → kerja ditolak (e) `mining:audit` = 0 selisih
-- [ ] 94.10 Quality gate Fase 94
+- [x] 94.1 **Weighbridge & stockpile**: timbangan digital tercatat hash-chain per truck load (plat, muatan, tujuan, waktu) → stockpile model 3D (digital twin via Fase 67.3) → **rekonsiliasi ore vs concentrate vs shipment** (yang masuk smelter/ekspor = yang dicatat) → selisih > toleransi → investigasi otomatis + approval
+- [x] 94.2 **Grade control**: sampling & assay lab per stockpile/load (hasil terverifikasi teknisi) → blending optimization (AI deterministik teraudit) agar feed smelter stabil → recovery % per unit pengolahan → assay bias dilaporkan
+- [x] 94.3 **Smelter & hilirisasi**: ore → concentrate → bahan jadi (nickel pig iron, tembaga katoda simulasi) → memakai modul Manufacturing (BOM, costing Fase 35–38 dengan routing khusus pertambangan) → produk jadi masuk Store/Trade
+- [x] 94.4 **Royalty & pajak komoditas (simulasi)**: produksi bulanan × tarif royalti per komoditas → jurnal kewajiban (`min:royalty_payable`) → pembayaran ke pemerintah (dokumen gapless) + PPN/PPh final; IUP/IUPK masa berlaku → pengingat & perpanjangan via ApprovalEngine (Fase 54.6)
+- [x] 94.5 **HSE & lingkungan**: izin kerja berisiko (memperluas Fase 40.6: blasting, ketinggian, confined space) dengan approval & masa berlaku; incident & near-miss → investigasi → CAPA; IoT lingkungan (debu, noise, tremor, kualitas air) → ambang → shutdown area + notifikasi; kepatuhan AMDAL simulasi
+- [x] 94.6 **Reklamasi & pascatambang**: jadwal reklamasi sebagai proyek EPC (Fase 63) → biaya capitalisasi + provisi liabilitas pascatambang (simulasi PSAK) → track progress vs amdal
+- [x] 94.7 **Offtake & komoditas trading**: kontrak penjualan ore/coal ke smelter/mitra dengan formula harga (index komoditas + kalori/grade adjustment) → settlement bertingkat + assay final → LC/SCF via Trade Finance (Fase 50) → ekspor via Fase 49 dengan B2B marketplace (Fase 61)
+- [x] 94.8 **Emisi & ESG tambang**: Scope 1 (BBM alat berat, blasting) & Scope 2 (listrik plant) → kredit karbon (Fase 60) → rencana elektrifikasi fleet & solar plant → laporan ESG per konsesi; HSE dashboard (jam tanpa kecelakaan, permit aktif, ambang lingkungan)
+- [x] 94.9 Tests: (a) weighbridge Σ = stockpile movement = shipment (b) royalti = produksi × tarif (c) assay bias di luar toleransi → investigasi (d) izin kedaluwarsa → kerja ditolak (e) `mining:audit` = 0 selisih
+- [x] 94.10 Quality gate Fase 94
 
 ---
 
