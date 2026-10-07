@@ -900,14 +900,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 68.8 Quality gate Fase 68
 
 ## FASE 69 — EKOSISTEM EV: CHARGING NETWORK & BATTERY PASSPORT
-- [ ] 69.1 Tabel `oto_ev_stations` (SPKLU: lokasi hub/ mall/ resto/ rute logistik), `oto_ev_chargers` (AC/DC, kW, status), `oto_ev_sessions` (booking → plug → meter kWh → selesai → tagih)
-- [ ] 69.2 Booking slot time-lock dari garasi AutoDex/portal: reservasi 30 menit, no-show fee, anti-overlap per charger; check-in via scan QR charger
-- [ ] 69.3 Meteran kWh presisi (integer Wh) → tagihan otomatis via Payment Hub (tarif per kWh bertingkat per jam sibuk/non-sibuk, saldo wallet atau stablecoin) → posting ledger `oto:ev_revenue`
-- [ ] 69.4 **Battery Passport hash-chain**: siklus charge, suhu sel, SoC/SoH dihitung per sesi → ditulis append-only ke passport kendaraan; degradasi SoH < 70% memicu event tukar-tambah (link ke Store/AutoDex) dan rekomendasi HODL-to-Drive untuk unit pengganti
-- [ ] 69.5 Grid ops simulasi: okupansi charger real-time, antrian, beban puncak (load balancing simulasi — session non-kritis ditunda 15 menit), laporan energi & margin per stasiun
-- [ ] 69.6 Integrasi ESG: kWh dari grid terkonversi emisi Scope 2 (faktor Fase 60.1) per sesi → dashboard EV "green km"
-- [ ] 69.7 Tests: (a) booking bentrok ditolak (b) kWh meteran = tagihan ledger (c) SoH turun tercatat valid di hash-chain (d) no-show fee ter-posting (e) simulasi load balancing tidak membuat sesi dibatalkan sepihak
-- [ ] 69.8 Quality gate Fase 69
+- [x] 69.1 Tabel `oto_ev_stations` (SPKLU: lokasi hub/ mall/ resto/ rute logistik), `oto_ev_chargers` (AC/DC, kW, status), `oto_ev_sessions` (booking → plug → meter kWh → selesai → tagih)
+- [x] 69.2 Booking slot time-lock dari garasi AutoDex/portal: reservasi 30 menit, no-show fee, anti-overlap per charger; check-in via scan QR charger
+- [x] 69.3 Meteran kWh presisi (integer Wh) → tagihan otomatis via Payment Hub (tarif per kWh bertingkat per jam sibuk/non-sibuk, saldo wallet atau stablecoin) → posting ledger `oto:ev_revenue`
+- [x] 69.4 **Battery Passport hash-chain**: siklus charge, suhu sel, SoC/SoH dihitung per sesi → ditulis append-only ke passport kendaraan; degradasi SoH < 70% memicu event tukar-tambah (link ke Store/AutoDex) dan rekomendasi HODL-to-Drive untuk unit pengganti
+- [x] 69.5 Grid ops simulasi: okupansi charger real-time, antrian, beban puncak (load balancing simulasi — session non-kritis ditunda 15 menit), laporan energi & margin per stasiun
+- [x] 69.6 Integrasi ESG: kWh dari grid terkonversi emisi Scope 2 (faktor Fase 60.1) per sesi → dashboard EV "green km"
+- [x] 69.7 Tests: (a) booking bentrok ditolak (b) kWh meteran = tagihan ledger (c) SoH turun tercatat valid di hash-chain (d) no-show fee ter-posting (e) simulasi load balancing tidak membuat sesi dibatalkan sepihak
+- [x] 69.8 Quality gate Fase 69
 
 ## FASE 70 — B2B FLEET & CORPORATE LEASING
 - [ ] 70.1 Tabel `oto_fleet_contracts` (perusahaan penyewa = party, durasi 1–5 tahun, jumlah unit, SLA downtime maks, batas km/tahun, opsi perpanjangan/akuisisi), `oto_fleet_contract_units` (unit terikat, odometer baseline)

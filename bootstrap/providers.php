@@ -16,6 +16,7 @@ use Modules\Distribution\DistributionServiceProvider;
 use Modules\EnterpriseFinance\EnterpriseFinanceServiceProvider;
 use Modules\Epc\EpcServiceProvider;
 use Modules\Esg\EsgServiceProvider;
+use Modules\Ev\EvServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
 use Modules\Hcm\HcmServiceProvider;
 use Modules\Integration\IntegrationServiceProvider;
@@ -82,4 +83,5 @@ return [
     AgriServiceProvider::class,
     EpcServiceProvider::class,
     TelematicsServiceProvider::class,
+    EvServiceProvider::class,
 ];
