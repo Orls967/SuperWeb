@@ -1841,13 +1841,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 136.7 Quality gate Fase 136
 
 ## FASE 137 — RITEL & E-COMMERCE: OMNICHANNEL MARKETPLACE GROUP (LINI 17)
-- [ ] 137.1 Modul `Ret` (`ret_`): provider, MenuRegistry "Ritel & E-Commerce", roles (`retail_ops`, `marketplace_mgr`, `category_mgr`, `last_mile_cs`), policies, arch test; tabel `ret_channels` (toko fisik 17 lini, web/app, marketplace 3P), `ret_listings`, `ret_fulfillment_centers`
-- [ ] 137.2 **Marketplace 3P multi-vendor**: penjual eksternal (menambah seller ke Party) → onboarding KYB → listing dengan moderasi kategori → komisi per kategori + biaya fulfillment opsional → settlement T+N via Payment Hub → chargeback & seller penalty
-- [ ] 137.3 **Unified inventory & OMS**: stok tersedia lintas channel (toko, web, marketplace) via InventoryService → reservasi anti double-sell (lockForUpdate) → backorder → pre-order (batas waktu & pembayaran penuh)
-- [ ] 137.4 **OMS → fulfillment**: split per lokasi terdekat (toko terdekat ship-as-store, FDC, dropship) → picking WMS → Logistics (Fase 22 last-mile) → POD → returns engine (reverse logistics Fase 79.1)
-- [ ] 137.5 **Pricing consistency** (memperluas Fase 81): harga web vs toko vs marketplace diselaraskan (MAP policy simulasi) → pelanggaran seller → warning/denda; promo lintas channel (kupon Fase 44.2) idempoten
-- [ ] 137.6 Tests: (a) stok channel ganda → 1 unit hanya terjual 1x (b) komisi settlement = % × GMV terverifikasi (c) split fulfillment Σ = item order (d) kupon multi-channel tak dobel pakai (e) `ret:audit` = 0 selisih vs ledger
-- [ ] 137.7 Quality gate Fase 137
+- [x] 137.1 Modul `Ret` (`ret_`): provider, MenuRegistry "Ritel & E-Commerce", roles (`retail_ops`, `marketplace_mgr`, `category_mgr`, `last_mile_cs`), policies, arch test; tabel `ret_channels` (toko fisik 17 lini, web/app, marketplace 3P), `ret_listings`, `ret_fulfillment_centers`
+- [x] 137.2 **Marketplace 3P multi-vendor**: penjual eksternal (menambah seller ke Party) → onboarding KYB → listing dengan moderasi kategori → komisi per kategori + biaya fulfillment opsional → settlement T+N via Payment Hub → chargeback & seller penalty
+- [x] 137.3 **Unified inventory & OMS**: stok tersedia lintas channel (toko, web, marketplace) via InventoryService → reservasi anti double-sell (lockForUpdate) → backorder → pre-order (batas waktu & pembayaran penuh)
+- [x] 137.4 **OMS → fulfillment**: split per lokasi terdekat (toko terdekat ship-as-store, FDC, dropship) → picking WMS → Logistics (Fase 22 last-mile) → POD → returns engine (reverse logistics Fase 79.1)
+- [x] 137.5 **Pricing consistency** (memperluas Fase 81): harga web vs toko vs marketplace diselaraskan (MAP policy simulasi) → pelanggaran seller → warning/denda; promo lintas channel (kupon Fase 44.2) idempoten
+- [x] 137.6 Tests: (a) stok channel ganda → 1 unit hanya terjual 1x (b) komisi settlement = % × GMV terverifikasi (c) split fulfillment Σ = item order (d) kupon multi-channel tak dobel pakai (e) `ret:audit` = 0 selisih vs ledger
+- [x] 137.7 Quality gate Fase 137
 
 ## FASE 138 — RITEL: SUPER APP, WALLET CROSS-LINI & CASHBACK ECONOMY
 - [ ] 138.1 **Super app hub**: satu aplikasi agregasi 17 lini (naik taksi-simulasi, beli tiket venue, pesan hotel, bayar utilitas, topup EV, booking RS, langganan edukasi) → deeplink/uni-page → satu wallet & satu loyalty identity (Fase 112.1)

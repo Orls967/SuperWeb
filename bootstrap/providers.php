@@ -112,4 +112,5 @@ return [
     TlxServiceProvider::class,
     \Modules\Med\MedServiceProvider::class,
     \Modules\Edu\EduServiceProvider::class,
+    \Modules\Ret\RetServiceProvider::class,
 ];
