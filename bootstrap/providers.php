@@ -21,6 +21,7 @@ use Modules\Ev\EvServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
 use Modules\Fleet\FleetServiceProvider;
 use Modules\Hcm\HcmServiceProvider;
+use Modules\Hospital\HospitalServiceProvider;
 use Modules\Insurance\InsuranceServiceProvider;
 use Modules\Integration\IntegrationServiceProvider;
 use Modules\Intercompany\IntercompanyServiceProvider;
@@ -35,6 +36,7 @@ use Modules\Payment\PaymentServiceProvider;
 use Modules\Plm\PlmServiceProvider;
 use Modules\Pricing\PricingServiceProvider;
 use Modules\Procurement\ProcurementServiceProvider;
+use Modules\Proptech\ProptechServiceProvider;
 use Modules\Resto\RestoServiceProvider;
 use Modules\Rwa\RwaServiceProvider;
 use Modules\Shared\SharedServiceProvider;
@@ -44,6 +46,8 @@ use Modules\Telematics\TelematicsServiceProvider;
 use Modules\Trade\TradeServiceProvider;
 use Modules\TradeFinance\TradeFinanceServiceProvider;
 use Modules\Treasury\TreasuryServiceProvider;
+use Modules\Vending\VendingServiceProvider;
+use Modules\Venue\VenueServiceProvider;
 use Modules\Wealth\WealthServiceProvider;
 use Modules\Wms\WmsServiceProvider;
 
@@ -94,7 +98,8 @@ return [
     InsuranceServiceProvider::class,
     WealthServiceProvider::class,
     CloudKitchenServiceProvider::class,
-    \Modules\Vending\VendingServiceProvider::class,
-    \Modules\Proptech\ProptechServiceProvider::class,
-    \Modules\Hospital\HospitalServiceProvider::class,
+    VendingServiceProvider::class,
+    ProptechServiceProvider::class,
+    HospitalServiceProvider::class,
+    VenueServiceProvider::class,
 ];

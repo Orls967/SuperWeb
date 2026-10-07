@@ -1119,15 +1119,15 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 88.9 Quality gate Fase 88
 
 ## FASE 89 — BEACH CLUB & CLUBS I: TICKETING, ACCESS CONTROL, USIA & VENUE OPERATIONS
-- [ ] 89.1 Modul `Venue` (`ven_`): provider, MenuRegistry "Venue & Entertainment", roles (`venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`), policies, arch test; tabel `ven_venues`, `ven_zones` (pool/beach/dance floor/VIP/garden), `ven_tables`, `ven_events`, `ven_tickets`
-- [ ] 89.2 **Skala**: 1.000 venue global (500 Indonesia + 500 internasional simulasi), 100 ribu event/tahun, 50 juta tiket/tahun, kapasitas puncak 1 juta pengunjung/hari (festival); venue terikat properti (Mall/properti grup Fase 12) atau lahan mandiri
-- [ ] 89.3 **Ticketing hash-chain non-fungible**: tiket digital dengan hash unik + anti-replay; transfer sekali (secondary market resmi dengan fee), QR scan di gate → **verifikasi identitas & usia** via Human Passport/KYC (umur min 21 club / 18+ tertentu) → gate terbuka (integrasi smart door seperti flex-space Fase 78.3); tiket ganda/replay ditolak
-- [ ] 89.4 **Kapasitas & keselamatan kerumunan**: density sensor per zone → ambang kapasitas ditolak masuk (mirip parkir Fase 14.3), heatmap density live, protokol crowd crush simulasi (lock gate zona, arah evakuasi), ambulans on-standby tercatat
-- [ ] 89.5 **Table/bottle service & VIP**: pemesanan meja dengan minimum spend → deposit escrow (hold saat booking → capture saat hadir → no-show fee) → konsumsi tercatat POS venue (memperluas modul Resto Fase 9) → tagihan akhir ke dompet
-- [ ] 89.6 **Dynamic pricing tiket**: harga real-time mengikuti countdown tier (early bird → GA → door), demand forecast, cuaca pesisir (feed simulasi), okupansi — memakai Pricing Engine Fase 81 dengan floor (harga dasar artis) & ceiling
-- [ ] 89.7 Izin & compliance: izin keramaian (dokumen gapless 26.8), kapasitas max legal, kebijakan substance screening simulasi (pemeriksaan acak tercatat, tanpa detail medis), asuransi event tersemat (Pilar 2 Fase 72)
-- [ ] 89.8 Tests: (a) tiket replay/ganda ditolak (b) usia di bawah minimum ditolak (c) zona penuh → gate tolak (d) escrow meja → capture/no-show konsisten (e) harga tiket tak keluar dari band floor/ceiling
-- [ ] 89.9 Quality gate Fase 89
+- [x] 89.1 Modul `Venue` (`ven_`): provider, MenuRegistry "Venue & Entertainment", roles (`venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`), policies, arch test; tabel `ven_venues`, `ven_zones` (pool/beach/dance floor/VIP/garden), `ven_tables`, `ven_events`, `ven_tickets`
+- [x] 89.2 **Skala**: 1.000 venue global (500 Indonesia + 500 internasional simulasi), 100 ribu event/tahun, 50 juta tiket/tahun, kapasitas puncak 1 juta pengunjung/hari (festival); venue terikat properti (Mall/properti grup Fase 12) atau lahan mandiri
+- [x] 89.3 **Ticketing hash-chain non-fungible**: tiket digital dengan hash unik + anti-replay; transfer sekali (secondary market resmi dengan fee), QR scan di gate → **verifikasi identitas & usia** via Human Passport/KYC (umur min 21 club / 18+ tertentu) → gate terbuka (integrasi smart door seperti flex-space Fase 78.3); tiket ganda/replay ditolak
+- [x] 89.4 **Kapasitas & keselamatan kerumunan**: density sensor per zone → ambang kapasitas ditolak masuk (mirip parkir Fase 14.3), heatmap density live, protokol crowd crush simulasi (lock gate zona, arah evakuasi), ambulans on-standby tercatat
+- [x] 89.5 **Table/bottle service & VIP**: pemesanan meja dengan minimum spend → deposit escrow (hold saat booking → capture saat hadir → no-show fee) → konsumsi tercatat POS venue (memperluas modul Resto Fase 9) → tagihan akhir ke dompet
+- [x] 89.6 **Dynamic pricing tiket**: harga real-time mengikuti countdown tier (early bird → GA → door), demand forecast, cuaca pesisir (feed simulasi), okupansi — memakai Pricing Engine Fase 81 dengan floor (harga dasar artis) & ceiling
+- [x] 89.7 Izin & compliance: izin keramaian (dokumen gapless 26.8), kapasitas max legal, kebijakan substance screening simulasi (pemeriksaan acak tercatat, tanpa detail medis), asuransi event tersemat (Pilar 2 Fase 72)
+- [x] 89.8 Tests: (a) tiket replay/ganda ditolak (b) usia di bawah minimum ditolak (c) zona penuh → gate tolak (d) escrow meja → capture/no-show konsisten (e) harga tiket tak keluar dari band floor/ceiling
+- [x] 89.9 Quality gate Fase 89
 
 ## FASE 90 — BEACH CLUB & CLUBS II: ARTIST CONTRACTS, SUPPLY, MEMBERSHIP & FESTIVAL ECONOMY
 - [ ] 90.1 **Artist & talent contracts** (`ven_artist_contracts`): skema bayar advance + backlog + share door (persentase penjualan pintu), terikat modul Contract (Fase 28); performa lintas negara → pembayaran multi-currency (Fase 48) + stablecoin (Fase 83) + withholding tax simulasi (Fase 51.7)
