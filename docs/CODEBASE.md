@@ -155,6 +155,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 - **Cold-Chain & Autonomous Drone Logistics:** hold pembayaran carrier otomatis di Ledger saat breach suhu > 10 mnt (`lgx_temp_breach_holds`), armada drone (`lgx_drone_units`), dispatch misi dengan guardrail radius/baterai/muatan, POD bertanda-tangan hash digital.
 - **Algorithmic & Surge Pricing Engine:** tick harga berfrekuensi tinggi (`prc_price_ticks`), guardrail floor (HPP + margin) & ceiling (HET), prioritas kontrak B2B mutlak mengalahkan harga dinamis, penguncian harga quote kriptografis immutable (`prc_frozen_quotes`).
 - **VMI & C2M Manufacturing:** pemantauan stok rak WMS oleh pemasok dengan auto-PO ber-plafon (`mfg_vmi_replenishments`) terhubung komitmen anggaran Ledger, konfigurator parametrik 3D C2M dengan roll-up BOM & routing SPK pabrik.
+- **Cross-Border Clearing & CBAM:** kontrak escrow stablecoin lintas-batas anti-duplikasi BL (`tf_crossborder_escrows`), verifikasi POD hash logistik untuk auto-release multi-currency, sertifikasi jejak karbon CBAM kontainer ekspor UE (`tf_cbam_certificates`) & perhitungan retribusi karbon.
 - Detail alasan: `docs/DECISIONS.md` (≈ 48 entri bertanggal).
 
 ## 8. Peta command lengkap

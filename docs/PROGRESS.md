@@ -1052,13 +1052,13 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 ## PILAR 7 — PERDAGANGAN INTERNASIONAL & PENGADAAN
 
 ## FASE 83 — CROSS-BORDER CLEARING HOUSE BERBASIS KRIPTO & CBAM COMPLIANCE
-- [ ] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
-- [ ] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
-- [ ] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
-- [ ] 83.4 Biaya bea karbon: simulasi nilai CBAM per kontainer → mengurangi margin ekspor → masuk perhitungan landed cost & pricing ekspor (Fase 49.3)
-- [ ] 83.5 Dashboard: posisi dana escrow per koridor, BL menunggu verifikasi, sertifikat karbon per kontainer, exposure CBAM
-- [ ] 83.6 Tests: (a) BL valid → release 1x, duplikat ditolak (b) escrow = komitmen aktif + dispute (c) sertifikat karbon konsisten dengan emisi ESG sumber (d) release multi-currency Σ seimbang (e) `clearing:audit` = 0 selisih
-- [ ] 83.7 Quality gate Fase 83
+- [x] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
+- [x] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
+- [x] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
+- [x] 83.4 Biaya bea karbon: simulasi nilai CBAM per kontainer → mengurangi margin ekspor → masuk perhitungan landed cost & pricing ekspor (Fase 49.3)
+- [x] 83.5 Dashboard: posisi dana escrow per koridor, BL menunggu verifikasi, sertifikat karbon per kontainer, exposure CBAM
+- [x] 83.6 Tests: (a) BL valid → release 1x, duplikat ditolak (b) escrow = komitmen aktif + dispute (c) sertifikat karbon konsisten dengan emisi ESG sumber (d) release multi-currency Σ seimbang (e) `clearing:audit` = 0 selisih
+- [x] 83.7 Quality gate Fase 83
 
 ## FASE 84 — AI CONTRACT BIDDING AGENT (LELANG PENGADAAN OTOMATIS)
 - [ ] 84.1 Tabel `trd_bidding_agents` (konfigurasi per entitas: komoditas, batas harga, margin target, risiko maks), `trd_bid_runs` (lelang yang dipantau), `trd_bid_submissions` (penawaran + jejak persetujuan)
