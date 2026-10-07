@@ -110,4 +110,5 @@ return [
     MiningServiceProvider::class,
     EgyServiceProvider::class,
     TlxServiceProvider::class,
+    \Modules\Med\MedServiceProvider::class,
 ];

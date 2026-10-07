@@ -1805,13 +1805,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 132.7 Quality gate Fase 132
 
 ## FASE 133 — MEDIA & KREATIF: STUDIOS, CONTENT PRODUCTION & IP ECONOMY (LINI 15)
-- [ ] 133.1 Modul `Med` (`med_`): provider, MenuRegistry "Media & Kreatif", roles (`producer`, `studio_ops`, `ip_manager`, `talent_mgmt`), policies, arch test; tabel `med_studios` (sound stage, virtual production, podcast room — fasilitas disewakan), `med_projects` (produksi: konten, iklan, event doc), `med_ip_assets`
-- [ ] 133.2 **Production lifecycle**: brief → pre-production (budget, schedule, cast) → shoot (booking studio + crew HCM gig Fase 85) → post → delivery → **akuisisi biaya sebagai aset** (capitalization simulasi bila memenuhi kriteria) atau expense → P&L proyek
-- [ ] 133.3 **Talent & creator contract**: aktor, sutradara, kreator → kontrak (Fase 28) dengan backend % (box office/revenue share) → audit royalty per karya → payout hold (memperluas Fase 45.5 & 115.2)
-- [ ] 133.4 **IP registry & monetization**: merek, lagu, format acara, karakter → daftar (Fase 47.8 diperluas) → lisensi ke venue (Fase 115.4), hotel (in-room content), Store (merch) → royalti otomatis per kanal
-- [ ] 133.5 **Studio utilization**: okupansi stage/hari, rate per jam (dynamic peak pricing Fase 81), paket full-day → idle capacity disewakan ke mitra produksi luar → revenue tambahan
-- [ ] 133.6 Tests: (a) backend % = revenue audited × rate (b) IP double-license teritori overlap ditolak (c) studio booking bentrok ditolak (d) biaya proyek = Σ crew + vendor + studio (e) `med:audit` = 0 selisih vs ledger
-- [ ] 133.7 Quality gate Fase 133
+- [x] 133.1 Modul `Med` (`med_`): provider, MenuRegistry "Media & Kreatif", roles (`producer`, `studio_ops`, `ip_manager`, `talent_mgmt`), policies, arch test; tabel `med_studios` (sound stage, virtual production, podcast room — fasilitas disewakan), `med_projects` (produksi: konten, iklan, event doc), `med_ip_assets`
+- [x] 133.2 **Production lifecycle**: brief → pre-production (budget, schedule, cast) → shoot (booking studio + crew HCM gig Fase 85) → post → delivery → **akuisisi biaya sebagai aset** (capitalization simulasi bila memenuhi kriteria) atau expense → P&L proyek
+- [x] 133.3 **Talent & creator contract**: aktor, sutradara, kreator → kontrak (Fase 28) dengan backend % (box office/revenue share) → audit royalty per karya → payout hold (memperluas Fase 45.5 & 115.2)
+- [x] 133.4 **IP registry & monetization**: merek, lagu, format acara, karakter → daftar (Fase 47.8 diperluas) → lisensi ke venue (Fase 115.4), hotel (in-room content), Store (merch) → royalti otomatis per kanal
+- [x] 133.5 **Studio utilization**: okupansi stage/hari, rate per jam (dynamic peak pricing Fase 81), paket full-day → idle capacity disewakan ke mitra produksi luar → revenue tambahan
+- [x] 133.6 Tests: (a) backend % = revenue audited × rate (b) IP double-license teritori overlap ditolak (c) studio booking bentrok ditolak (d) biaya proyek = Σ crew + vendor + studio (e) `med:audit` = 0 selisih vs ledger
+- [x] 133.7 Quality gate Fase 133
 
 ## FASE 134 — MEDIA & KREATIF: DISTRIBUTION, ADVERTISING & SPONSORSHIP PLATFORM
 - [ ] 134.1 **Distribution platform simulasi**: katalog konten (video, podcast, acara live) → kanal (app, social simulasi, in-venue screen) → views/impressions terukur → revenue share per view (formula per kontrak) → pembukuan per kanal per konten
