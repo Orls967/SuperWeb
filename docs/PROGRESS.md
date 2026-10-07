@@ -1735,12 +1735,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 124.7 Quality gate Fase 124
 
 ## FASE 125 — SUMBER DAYA: INTEGRATED RESOURCE COMMAND CENTER
-- [ ] 125.1 **Resource command center**: produksi pit/plant/terminal + harga komoditas live (Fase 81) + posisi metals desk (Fase 121.3) + okupansi armada → papan terpadu untuk direksi sumber daya
-- [ ] 125.2 **Mine-to-market margin**: revenue realized (setelah quality adjust) − biaya pit − processing − logistics − royalti → margin per ton per produk → drill-down ke voucher (Fase 52.6 pola)
-- [ ] 125.3 **Reserve & life-of-mine model**: sumber daya terbukti (statis 3D) → run-rate produksi → life of mine tahun → keputusan capex (pembukaan pit baru → proyek EPC → DAO approval Fase 86.6)
-- [ ] 125.4 **Integrated risk heatmap**: harga komoditas turun >X% → covenant Treasury (Fase 48.7) + cover royalty + kontrak offtake → early warning otomatis ke C-suite (Group Command Fase 97.4)
-- [ ] 125.5 Tests: (a) mine-to-market margin = ledger revenue − cost terverifikasi (b) LoM calculation deterministik (c) risk trigger → alert tepat threshold (d) query budget command center ≤ ambang (e) seluruh `*:audit` sumber daya = 0 selisih
-- [ ] 125.6 Quality gate Fase 125
+- [x] 125.1 **Resource command center**: produksi pit/plant/terminal + harga komoditas live (Fase 81) + posisi metals desk (Fase 121.3) + okupansi armada → papan terpadu untuk direksi sumber daya
+- [x] 125.2 **Mine-to-market margin**: revenue realized (setelah quality adjust) − biaya pit − processing − logistics − royalti → margin per ton per produk → drill-down ke voucher (Fase 52.6 pola)
+- [x] 125.3 **Reserve & life-of-mine model**: sumber daya terbukti (statis 3D) → run-rate produksi → life of mine tahun → keputusan capex (pembukaan pit baru → proyek EPC → DAO approval Fase 86.6)
+- [x] 125.4 **Integrated risk heatmap**: harga komoditas turun >X% → covenant Treasury (Fase 48.7) + cover royalty + kontrak offtake → early warning otomatis ke C-suite (Group Command Fase 97.4)
+- [x] 125.5 Tests: (a) mine-to-market margin = ledger revenue − cost terverifikasi (b) LoM calculation deterministik (c) risk trigger → alert tepat threshold (d) query budget command center ≤ ambang (e) seluruh `*:audit` sumber daya = 0 selisih
+- [x] 125.6 Quality gate Fase 125
 
 ## FASE 126 — ENERGI & UTILITAS: GENCO, GRID & SMART METERING (LINI 13)
 - [ ] 126.1 Modul `Egy` (`egy_`): provider, MenuRegistry "Energi & Utilitas", roles (`grid_operator`, `genco_trader`, `energy_auditor`, `renewable_dev`), policies, arch test; tabel `egy_generation_assets` (PLTU simulasi, solar farm Fase 123.1, battery, genset) , `egy_grid_nodes`, `egy_smart_meters`
