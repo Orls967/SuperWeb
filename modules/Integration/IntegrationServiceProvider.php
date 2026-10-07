@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Integration;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\GlobalCommandService;
 use Modules\Integration\Application\Services\IntegrationService;
@@ -37,6 +38,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(PlatformEconomyService::class);
         $this->app->singleton(MegaScenarioService::class);
         $this->app->singleton(GlobalCommandService::class);
+        $this->app->singleton(CrossBorderPayrollService::class);
     }
 
     public function boot(): void

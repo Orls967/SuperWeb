@@ -1994,13 +1994,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 151.7 Quality gate Fase 151
 
 ## FASE 152 — GLOBAL: CROSS-BORDER PAYROLL, MOBILITY & IMMIGRATION COMPLIANCE
-- [ ] 152.1 **Global payroll engine**: 30 negara simulasi (pajak, THR/13th month, BPJS-ekuivalen) → per-country rule table ber-versi → pay run paralel → consolidated cost ke entitas induk (intercompany Fase 52.1)
-- [ ] 152.2 **Assignment contracts**: expatriate (Fase 151.4) → kontrak penugasan (durasi, benefit, repatriation clause) → termination benefit terhitung → link ke Contract & HCM
-- [ ] 152.3 **Immigration compliance**: visa/permit kerja per negara → masa berlaku → pengingat eskalasi (Fase 100.3) → kerja tanpa permit → blokir sistem penugasan
-- [ ] 152.4 **Tax equalization & shadow payroll**: simulasi pajak tujuan vs Indonesia → selisih ditanggung perusahaan (expense) → bukti potong lintas negara (Fase 51.7)
-- [ ] 152.5 **Global benefits**: asuransi kesehatan expatriate (Fase 72 diperluas), pensiun portabel, evacuation coverage (medis → RS jaringan Fase 87)
-- [ ] 152.6 Tests: (a) pay run 30 negara Σ = biaya konsolidasi (b) shadow payroll ≠ replace payroll asli (c) permit expired → penugasan ditolak (d) equalization deterministik (e) `hcm:audit` multi-negara = 0 selisih
-- [ ] 152.7 Quality gate Fase 152
+- [x] 152.1 **Global payroll engine**: 30 negara simulasi (pajak, THR/13th month, BPJS-ekuivalen) → per-country rule table ber-versi → pay run paralel → consolidated cost ke entitas induk (intercompany Fase 52.1)
+- [x] 152.2 **Assignment contracts**: expatriate (Fase 151.4) → kontrak penugasan (durasi, benefit, repatriation clause) → termination benefit terhitung → link ke Contract & HCM
+- [x] 152.3 **Immigration compliance**: visa/permit kerja per negara → masa berlaku → pengingat eskalasi (Fase 100.3) → kerja tanpa permit → blokir sistem penugasan
+- [x] 152.4 **Tax equalization & shadow payroll**: simulasi pajak tujuan vs Indonesia → selisih ditanggung perusahaan (expense) → bukti potong lintas negara (Fase 51.7)
+- [x] 152.5 **Global benefits**: asuransi kesehatan expatriate (Fase 72 diperluas), pensiun portabel, evacuation coverage (medis → RS jaringan Fase 87)
+- [x] 152.6 Tests: (a) pay run 30 negara Σ = biaya konsolidasi (b) shadow payroll ≠ replace payroll asli (c) permit expired → penugasan ditolak (d) equalization deterministik (e) `hcm:audit` multi-negara = 0 selisih
+- [x] 152.7 Quality gate Fase 152
 
 ## FASE 153 — GLOBAL: SUPPLY CHAIN RESILIENCE & MULTI-SOURCING STRATEGY
 - [ ] 153.1 **Supplier multi-sourcing**: setiap kritikal item wajib ≥ 2 pemasok lintas region (aturan konsentrasi, memperluas Fase 32.7) → auto-flag single source → rekomendasi dual-source → qualification run (Fase 32.2)
