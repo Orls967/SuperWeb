@@ -932,14 +932,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 71.8 Quality gate Fase 71
 
 ## FASE 72 — INSURTECH: MICRO-INSURANCE TERSEMAT & CLAIMS AUTOPILOT
-- [ ] 72.1 Tabel `ins_products` (premi mikro: keterlambatan logistik, kerusakan kendaraan, cold-chain breach, pembatalan event, cuti sakit karyawan), `ins_policies` (tersemat otomatis ke dompet pengguna/shipment/kontrak), `ins_claims`
-- [ ] 72.2 **Trigger otomatis tanpa formulir**: event spine (`lgx.late>4h`, `auto.collision_dtc`, `lgx.temp_breach>10m`, `ven.event_cancelled`) → smart-contract simulasi memvalidasi bukti hash-chain → klaim **cair langsung ke dompet dalam detik** (posting ledger `ins:claims_paid`)
-- [ ] 72.3 Akuntansi premi: akrual premi harian/bulanan dari saldo, reserve klaim (akun liabilitas), loss ratio & combined ratio per produk; batas payout per polis & per hari (anti-fraud)
-- [ ] 72.4 Fraud guard: skor anomali klaim (klaim beruntun, polis baru langsung klaim) → hold manual four-eyes sebelum cair; audit trail penuh
-- [ ] 72.5 Reinstatement & cancellation, grace period premi, dan klaim manual (unggah bukti) untuk kasus non-tersemat
-- [ ] 72.6 Dashboard: claims autopilot (days-to-pay = detik), loss ratio per produk, reserve vs kewajiban, top trigger
-- [ ] 72.7 Tests: (a) trigger sah → klaim cair 1x, ganda ditolak (b) reserve ≥ kewajiban terbayar (c) fraud score tinggi masuk hold (d) premi gagal bayar → polis lapse + notifikasi (e) reconcile reserve = ledger
-- [ ] 72.8 Quality gate Fase 72
+- [x] 72.1 Tabel `ins_products` (premi mikro: keterlambatan logistik, kerusakan kendaraan, cold-chain breach, pembatalan event, cuti sakit karyawan), `ins_policies` (tersemat otomatis ke dompet pengguna/shipment/kontrak), `ins_claims`
+- [x] 72.2 **Trigger otomatis tanpa formulir**: event spine (`lgx.late>4h`, `auto.collision_dtc`, `lgx.temp_breach>10m`, `ven.event_cancelled`) → smart-contract simulasi memvalidasi bukti hash-chain → klaim **cair langsung ke dompet dalam detik** (posting ledger `ins:claims_paid`)
+- [x] 72.3 Akuntansi premi: akrual premi harian/bulanan dari saldo, reserve klaim (akun liabilitas), loss ratio & combined ratio per produk; batas payout per polis & per hari (anti-fraud)
+- [x] 72.4 Fraud guard: skor anomali klaim (klaim beruntun, polis baru langsung klaim) → hold manual four-eyes sebelum cair; audit trail penuh
+- [x] 72.5 Reinstatement & cancellation, grace period premi, dan klaim manual (unggah bukti) untuk kasus non-tersemat
+- [x] 72.6 Dashboard: claims autopilot (days-to-pay = detik), loss ratio per produk, reserve vs kewajiban, top trigger
+- [x] 72.7 Tests: (a) trigger sah → klaim cair 1x, ganda ditolak (b) reserve ≥ kewajiban terbayar (c) fraud score tinggi masuk hold (d) premi gagal bayar → polis lapse + notifikasi (e) reconcile reserve = ledger
+- [x] 72.8 Quality gate Fase 72
 
 ## FASE 73 — ROBO-ADVISOR WEALTH MANAGEMENT & TREASURY YIELD
 - [ ] 73.1 Tabel `wm_profiles` (profil risiko konservatif/agresif, tujuan, horizon), `wm_plans` (alokasi bulanan), `wm_orders` (reksadana simulasi, emas digital, kripto), `wm_holdings`

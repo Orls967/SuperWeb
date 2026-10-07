@@ -20,6 +20,7 @@ use Modules\Ev\EvServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
 use Modules\Fleet\FleetServiceProvider;
 use Modules\Hcm\HcmServiceProvider;
+use Modules\Insurance\InsuranceServiceProvider;
 use Modules\Integration\IntegrationServiceProvider;
 use Modules\Intercompany\IntercompanyServiceProvider;
 use Modules\International\InternationalServiceProvider;
@@ -88,4 +89,5 @@ return [
     EvServiceProvider::class,
     FleetServiceProvider::class,
     RwaServiceProvider::class,
+    InsuranceServiceProvider::class,
 ];
