@@ -148,6 +148,7 @@ Fase 20–25 selesai. Config: `config/logistics.php` (vat_rate, cancellation_fee
 - **Agri:** kemitraan kelompok tani (Poktan), pemetaan poligon GIS lahan, kontrak tani bagi hasil (Contract Farming) ber-talangan bibit/pupuk & guaranteed floor price, pos pengumpul grading mutu A/B/C dengan amortisasi uang muka & instant payout, cold chain telemetri IoT reefer truck ke CK-01/pabrik (`agri:audit`).
 - **EPC:** manajemen proyek konstruksi rekayasa, hierarki WBS bobot 100%, kurva-S deviasi progres lapangan, Monthly Certificate (MC) konsultan pengawas independen ber-retensi 5%, akumulasi Konstruksi Dalam Pengerjaan (CIP) dan kapitalisasi otomatis ke Aset Tetap modul Asset via BAST final (`epc:audit`).
 - **Cloud Kitchen & Catering:** jaringan 200 satelit, 5 dapur sentral, kuota katering harian, pemotongan payroll HCM otomatis (`hcm:meals_deduction`), guardrail kapasitas harian, integrasi cold-chain, refund saat pembatalan/tutup.
+- **Smart Vending & AI Demand/Waste:** algoritma Holt-Winters forecasting, auto-PO dengan plafon harian, smart vending unit (`ven_vending_units`), anti-duplicate restock task, biometrik/QRIS settlement ke ledger, sensor health maintenance.
 - Detail alasan: `docs/DECISIONS.md` (≈ 48 entri bertanggal).
 
 ## 8. Peta command lengkap

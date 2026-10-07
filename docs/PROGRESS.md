@@ -964,14 +964,14 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 74.8 Quality gate Fase 74
 
 ## FASE 75 — AI DEMAND & WASTE FORECASTING, AUTO-PO, SMART VENDING
-- [ ] 75.1 **Demand forecasting per outlet 7 hari**: input = footfall mall (Fase 14.4), kalender event Duta Mall/event venue, cuaca (feed simulasi), tren lalu lintas (telematik Pilar 1), hari besar nasional, riwayat sales 24 bulan → algoritma Holt-Winters (memperluas Fase 53.2) → MAPE per outlet terukur
-- [ ] 75.2 **Auto-PO bahan segar**: forecast → kebutuhan bahan (resep HPP Fase 7.3) → terhadap stok & lead time → **Purchase Order otomatis ke Agri/Supplier** melewati approval engine sebagai auto-PR (dengan plafon nilai harian; di atas plafon → approval manual); tanpa intervensi manusia di bawah plafon
-- [ ] 75.3 **Waste forecasting & guardrail**: proyeksi waste berdasarkan pola etalase (Fase 8.3) → sistem menyarankan scale-down batch berikutnya; waste aktual vs forecast → MAPE waste dilaporkan, digunakan memperbaiki model
-- [ ] 75.4 **Smart vending & unmanned kiosks** (`ven_vending_units`, 1 juta unit simulasi): tiap unit node inventori mini terhubung WMS → level kritis memicu tugas restock terjadwal (WMS pick + Logistics route, Fase 41.7)
-- [ ] 75.5 Pembayaran vending via Payment Hub: QR + face-recognition simulasi (token biometrik one-time) → stok terpotong via InventoryService → settlement harian per unit (reconcile omzet vs stok terpotong)
-- [ ] 75.6 Health vending: sensor koin/kasa/pintu → alert perawatan → work order (Fase 31.5)
-- [ ] 75.7 Tests: (a) forecast MAPE masuk toleransi pada seed (b) auto-PO idempoten & plafon dihormati (c) vending sale = stok terpotong (d) restock task tidak ganda (e) reconcile vending = ledger + inventory
-- [ ] 75.8 Quality gate Fase 75
+- [x] 75.1 **Demand forecasting per outlet 7 hari**: input = footfall mall (Fase 14.4), kalender event Duta Mall/event venue, cuaca (feed simulasi), tren lalu lintas (telematik Pilar 1), hari besar nasional, riwayat sales 24 bulan → algoritma Holt-Winters (memperluas Fase 53.2) → MAPE per outlet terukur
+- [x] 75.2 **Auto-PO bahan segar**: forecast → kebutuhan bahan (resep HPP Fase 7.3) → terhadap stok & lead time → **Purchase Order otomatis ke Agri/Supplier** melewati approval engine sebagai auto-PR (dengan plafon nilai harian; di atas plafon → approval manual); tanpa intervensi manusia di bawah plafon
+- [x] 75.3 **Waste forecasting & guardrail**: proyeksi waste berdasarkan pola etalase (Fase 8.3) → sistem menyarankan scale-down batch berikutnya; waste aktual vs forecast → MAPE waste dilaporkan, digunakan memperbaiki model
+- [x] 75.4 **Smart vending & unmanned kiosks** (`ven_vending_units`, 1 juta unit simulasi): tiap unit node inventori mini terhubung WMS → level kritis memicu tugas restock terjadwal (WMS pick + Logistics route, Fase 41.7)
+- [x] 75.5 Pembayaran vending via Payment Hub: QR + face-recognition simulasi (token biometrik one-time) → stok terpotong via InventoryService → settlement harian per unit (reconcile omzet vs stok terpotong)
+- [x] 75.6 Health vending: sensor koin/kasa/pintu → alert perawatan → work order (Fase 31.5)
+- [x] 75.7 Tests: (a) forecast MAPE masuk toleransi pada seed (b) auto-PO idempoten & plafon dihormati (c) vending sale = stok terpotong (d) restock task tidak ganda (e) reconcile vending = ledger + inventory
+- [x] 75.8 Quality gate Fase 75
 
 ## PILAR 4 — PROPERTI KOMERSIAL & EPC
 

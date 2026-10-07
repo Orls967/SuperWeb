@@ -94,4 +94,5 @@ return [
     InsuranceServiceProvider::class,
     WealthServiceProvider::class,
     CloudKitchenServiceProvider::class,
+    \Modules\Vending\VendingServiceProvider::class,
 ];
