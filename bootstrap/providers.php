@@ -31,6 +31,7 @@ use Modules\Inventory\InventoryServiceProvider;
 use Modules\Logistics\LogisticsServiceProvider;
 use Modules\Mall\MallServiceProvider;
 use Modules\Manufacturing\ManufacturingServiceProvider;
+use Modules\Mining\MiningServiceProvider;
 use Modules\Partner\PartnerServiceProvider;
 use Modules\Party\PartyServiceProvider;
 use Modules\Payment\PaymentServiceProvider;
@@ -104,4 +105,5 @@ return [
     HospitalServiceProvider::class,
     VenueServiceProvider::class,
     HotelServiceProvider::class,
+    MiningServiceProvider::class,
 ];

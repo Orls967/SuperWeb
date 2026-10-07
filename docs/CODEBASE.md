@@ -450,6 +450,13 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 - **Service:** `Modules\Hotel\Application\Services\HotelOperationsService`, `Modules\Hotel\Application\Services\HotelFolioAndPackageService` — alokasi kamar anti-oversell, smart lock QR verification, energy setback automation, roll-up biaya folio, distribusi dividen timeshare ber-invarian $\sum = \text{total supply}$, dan paket destinasi multi-vendor escrow settlement.
 - **Provider:** `Modules\Hotel\HotelServiceProvider`.
 
+### Mining & Heavy Fleet (`min_`) — Fase 93
+
+- **Tujuan:** perencanaan tambang (mine planning cut & fill), penugasan cerdas armada alat berat (fleet dispatch engine deterministik), telemetri payload aktual vs target, dan deteksi anomali konsumsi BBM/pencurian bahan bakar dengan penahanan pembayaran kontraktor otomatis.
+- **Tabel:** `min_sites`, `min_pits`, `min_equipment`, `min_dispatch_runs`.
+- **Service:** `Modules\Mining\Application\Services\MiningFleetDispatchService` — alokasi haul truck ke pit tambang ber-status availability guard, kalkulasi payload variance dan fuel consumption per ton-km, deteksi lonjakan bahan bakar anomali >50% dari ekspektasi dengan flag `contractor_payment_held`.
+- **Provider:** `Modules\Mining\MiningServiceProvider`.
+
 ---
 
 > **Catatan Fase Tanpa Modul Baru:**
