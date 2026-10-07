@@ -1913,13 +1913,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 144.7 Quality gate Fase 144
 
 ## FASE 145 — RESILIENCE GELOMBANG 2: MULTI-REGION ACTIVE-ACTIVE, EDGE & BUSINESS CONTINUITY
-- [ ] 145.1 **Active-active multi-region** (memperluas Fase 101.3): Jakarta primari + Singapura/SG-2 untuk lini internasional (venue/hotel mancanegara, metals trading, ISP) → routing DNS geo → conflict resolution ledger (idempotency key global) → RPO 0 untuk seluruh aset
-- [ ] 145.2 **Edge compute & local DC** (Fase 131.3 diperluas): edge node di venue/event & site tambang (bandwidth terbatas) → processing lokal → sync ke core saat online (memperluas offline-first Fase 65.2 ke lini baru)
-- [ ] 145.3 **Business continuity plan 17 lini**: BIA (business impact analysis) per lini → RTO/RPO tiered (RS/energi/pembayaran = critical < 15m; media/edukasi = standard) → DR drill otomatis per quarter → laporan
-- [ ] 145.4 **Failover drill otomatis** (memperluas Fase 101.3): chaos injection → failover → `bank:reconcile` + seluruh `*:audit` + `verify-*` di region cadangan → 0 selisih → RTO/RPO terukur tercatat
-- [ ] 145.5 **Data sovereignty**: data medis/warga Indonesia residensi lokal (PP 71/2019 simulasi) → rule placement otomatis → audit residensi per dataset → cross-border transfer via consent + contractual clauses (Fase 51.6)
-- [ ] 145.6 Tests: (a) failover tanpa data loss pada ledger (b) conflict resolution idempoten (c) edge sync zero-duplicate (d) RTO terukur < target per tier (e) `dr:audit` = 0 selisih
-- [ ] 145.7 Quality gate Fase 145
+- [x] 145.1 **Active-active multi-region** (memperluas Fase 101.3): Jakarta primari + Singapura/SG-2 untuk lini internasional (venue/hotel mancanegara, metals trading, ISP) → routing DNS geo → conflict resolution ledger (idempotency key global) → RPO 0 untuk seluruh aset
+- [x] 145.2 **Edge compute & local DC** (Fase 131.3 diperluas): edge node di venue/event & site tambang (bandwidth terbatas) → processing lokal → sync ke core saat online (memperluas offline-first Fase 65.2 ke lini baru)
+- [x] 145.3 **Business continuity plan 17 lini**: BIA (business impact analysis) per lini → RTO/RPO tiered (RS/energi/pembayaran = critical < 15m; media/edukasi = standard) → DR drill otomatis per quarter → laporan
+- [x] 145.4 **Failover drill otomatis** (memperluas Fase 101.3): chaos injection → failover → `bank:reconcile` + seluruh `*:audit` + `verify-*` di region cadangan → 0 selisih → RTO/RPO terukur tercatat
+- [x] 145.5 **Data sovereignty**: data medis/warga Indonesia residensi lokal (PP 71/2019 simulasi) → rule placement otomatis → audit residensi per dataset → cross-border transfer via consent + contractual clauses (Fase 51.6)
+- [x] 145.6 Tests: (a) failover tanpa data loss pada ledger (b) conflict resolution idempoten (c) edge sync zero-duplicate (d) RTO terukur < target per tier (e) `dr:audit` = 0 selisih
+- [x] 145.7 Quality gate Fase 145
 
 ## FASE 146 — DATA PLATFORM: LAKEHOUSE, ANALYTICS & MASTER DATA MANAGEMENT 17 LINI
 - [ ] 146.1 **Data lakehouse**: ingest CDC dari seluruh modul (simulasi via outbox) → zona raw/curated/consumption → query analitik tanpa membebani transaksional (query budget transaksional tak terpengaruh) → retention policy (Fase 55.8)
