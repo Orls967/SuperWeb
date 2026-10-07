@@ -1152,14 +1152,15 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 - [x] 91.9 Quality gate Fase 91
 
 ## FASE 92 — PERHOTELAN II: FOLIO, F&B/BANQUET, LOYALTY NIGHTS, TIMESHARE & DESTINATION PACKAGE
-- [ ] 92.1 **Folio & upsell**: seluruh item inap (kamar, F&B room service, spa, laundry, minibar, parkir valet) masuk satu folio → split settlement, corporate billing (invoicing bulanan ke perusahaan = piutang), deposit & city ledger per tamu
-- [ ] 92.2 **F&B & banquet**: restoran hotel memakai modul Resto penuh (HPP, batch, shift Fase 7–9) + banquet multi-event (memperluas katering Fase 11.2) → kitchen terhubung cold-chain Logistics; konsumsi room service ter-charge ke folio otomatis
-- [ ] 92.3 **Spa & wellness**: katalog treatment, booking terapis (HCM gig via bounty Fase 85), konsumsi produk ter-charge; treatment medis ringan terhubung konsultasi RS (Pilar 9)
-- [ ] 92.4 **Stay passport & loyalty nights**: riwayat menginap, preferensi (lantai, bantal, alergi), poin per room-night (PTS lintas ekosistem: tukar tiket venue, diskon Resto, spa) → tier Silver/Gold/Platinum dengan benefit upgrade & night gratis → churn risk scoring
-- [ ] 92.5 **Timeshare & fractional ownership**: unit villa/kamar tertentu di-tokenisasi (memperluas RWA Fase 71) → pemilik dapat hak jadwal inap + bagi hasil sewa saat tidak dipakai → jadwal penggunaan via booking engine → dividen harian dari okupansi
-- [ ] 92.6 **Destination package engine**: bundling hotel + tiket festival/club + restoran + transport + spa → **satu harga, satu pembayaran, satu invoice multi-vendor** → settlement otomatis ke tiap pihak via escrow (Fase 61.4) + fee platform
-- [ ] 92.7 **MICE & wedding sales**: pipeline B2B (konvensi, wedding, corporate retreat) → proposal harga berjenjang → deposit milestone → koordinasi venue (atrium mall Fase 15.3 / beach club Fase 89 / hall hotel) → kontrak via modul Contract
-- [ ] 92.8 Tests: (a) folio item = Σ order terkait (b) bundle settlement Σ = pembayaran tamu (c) timeshare Σ token = unit terdaftar & dividen pro-rata akurat (d) corporate bi
+- [x] 92.1 **Folio & upsell**: seluruh item inap (kamar, F&B room service, spa, laundry, minibar, parkir valet) masuk satu folio → split settlement, corporate billing (invoicing bulanan ke perusahaan = piutang), deposit & city ledger per tamu
+- [x] 92.2 **F&B & banquet**: restoran hotel memakai modul Resto penuh (HPP, batch, shift Fase 7–9) + banquet multi-event (memperluas katering Fase 11.2) → kitchen terhubung cold-chain Logistics; konsumsi room service ter-charge ke folio otomatis
+- [x] 92.3 **Spa & wellness**: katalog treatment, booking terapis (HCM gig via bounty Fase 85), konsumsi produk ter-charge; treatment medis ringan terhubung konsultasi RS (Pilar 9)
+- [x] 92.4 **Stay passport & loyalty nights**: riwayat menginap, preferensi (lantai, bantal, alergi), poin per room-night (PTS lintas ekosistem: tukar tiket venue, diskon Resto, spa) → tier Silver/Gold/Platinum dengan benefit upgrade & night gratis → churn risk scoring
+- [x] 92.5 **Timeshare & fractional ownership**: unit villa/kamar tertentu di-tokenisasi (memperluas RWA Fase 71) → pemilik dapat hak jadwal inap + bagi hasil sewa saat tidak dipakai → jadwal penggunaan via booking engine → dividen harian dari okupansi
+- [x] 92.6 **Destination package engine**: bundling hotel + tiket festival/club + restoran + transport + spa → **satu harga, satu pembayaran, satu invoice multi-vendor** → settlement otomatis ke tiap pihak via escrow (Fase 61.4) + fee platform
+- [x] 92.7 **MICE & wedding sales**: pipeline B2B (konvensi, wedding, corporate retreat) → proposal harga berjenjang → deposit milestone → koordinasi venue (atrium mall Fase 15.3 / beach club Fase 89 / hall hotel) → kontrak via modul Contract
+- [x] 92.8 Tests: (a) folio item = Σ order terkait (b) bundle settlement Σ = pembayaran tamu (c) timeshare Σ token = unit terdaftar & dividen pro-rata akurat (d) corporate bi
+- [x] 92.9 Quality gate Fase 92
 
 ## FASE 93 — PERTAMBANGAN I: MINE PLANNING, FLEET DISPATCH & FUEL MANAGEMENT
 - [ ] 93.1 Modul `Mining` (`min_`): provider, MenuRegistry "Pertambangan", roles (`mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`), policies, arch test; tabel `min_sites`, `min_pits`, `min_equipment`, `min_dispatch_runs`, `min_weighbridge_tickets`
