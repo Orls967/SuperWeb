@@ -1985,13 +1985,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > Konvensi Fase 26+ tetap berlaku penuh tanpa pengecualian.
 
 ## FASE 151 — GLOBAL COMMAND: OPERASI MULTI-NEGARA & REGIONAL HQ
-- [ ] 151.1 Tabel `grp_regions` (APAC, EMEA, Americas simulasi), `grp_regional_hqs` (entitas hukum per wilayah, Fase 27.3 diperluas), `grp_country_ops` (status operasi per negara: study → entry → live → exit)
-- [ ] 151.2 **Market entry playbook otomatis**: checklist per negara (izin, pajak, tenaga kerja, data residency) → ApprovalEngine bertingkat → task force terbentuk (bounty Fase 85) → progress tracking → go-live gate
-- [ ] 151.3 **Regional consolidation**: mata uang lokal → fungsional IDR (Fase 48.2) → translasi (Fase 52.4) → laporan regional → konsolidasi grup; hedging exposure per region (Fase 48.6)
-- [ ] 151.4 **Expatriate & global mobility**: penempatan karyawan antar negara (visa, cost-of-living allowance, tax equalization simulasi Fase 51.7) → payroll multi-negara (Fase 58.3 diperluas) → repatriation
-- [ ] 151.5 **Global trade desk komoditas**: posisi lintas benua (Fase 121.3 diperluas) → arbitrage antar-region → settlement stablecoin (Fase 83) → hedging konsolidasi
-- [ ] 151.6 Tests: (a) translasi regional Σ = konsolidasi (b) tax equalization konsisten aturan (c) entry playbook gate tak bisa dilewati (d) FX exposure = Σ posisi regional (e) `group:audit` = 0 selisih
-- [ ] 151.7 Quality gate Fase 151
+- [x] 151.1 Tabel `grp_regions` (APAC, EMEA, Americas simulasi), `grp_regional_hqs` (entitas hukum per wilayah, Fase 27.3 diperluas), `grp_country_ops` (status operasi per negara: study → entry → live → exit)
+- [x] 151.2 **Market entry playbook otomatis**: checklist per negara (izin, pajak, tenaga kerja, data residency) → ApprovalEngine bertingkat → task force terbentuk (bounty Fase 85) → progress tracking → go-live gate
+- [x] 151.3 **Regional consolidation**: mata uang lokal → fungsional IDR (Fase 48.2) → translasi (Fase 52.4) → laporan regional → konsolidasi grup; hedging exposure per region (Fase 48.6)
+- [x] 151.4 **Expatriate & global mobility**: penempatan karyawan antar negara (visa, cost-of-living allowance, tax equalization simulasi Fase 51.7) → payroll multi-negara (Fase 58.3 diperluas) → repatriation
+- [x] 151.5 **Global trade desk komoditas**: posisi lintas benua (Fase 121.3 diperluas) → arbitrage antar-region → settlement stablecoin (Fase 83) → hedging konsolidasi
+- [x] 151.6 Tests: (a) translasi regional Σ = konsolidasi (b) tax equalization konsisten aturan (c) entry playbook gate tak bisa dilewati (d) FX exposure = Σ posisi regional (e) `group:audit` = 0 selisih
+- [x] 151.7 Quality gate Fase 151
 
 ## FASE 152 — GLOBAL: CROSS-BORDER PAYROLL, MOBILITY & IMMIGRATION COMPLIANCE
 - [ ] 152.1 **Global payroll engine**: 30 negara simulasi (pajak, THR/13th month, BPJS-ekuivalen) → per-country rule table ber-versi → pay run paralel → consolidated cost ke entitas induk (intercompany Fase 52.1)

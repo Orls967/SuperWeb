@@ -6,6 +6,7 @@ namespace Modules\Integration;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Integration\Application\Services\DataPlatformService;
+use Modules\Integration\Application\Services\GlobalCommandService;
 use Modules\Integration\Application\Services\IntegrationService;
 use Modules\Integration\Application\Services\MegaScenarioService;
 use Modules\Integration\Application\Services\PlatformEconomyService;
@@ -35,6 +36,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(DataPlatformService::class);
         $this->app->singleton(PlatformEconomyService::class);
         $this->app->singleton(MegaScenarioService::class);
+        $this->app->singleton(GlobalCommandService::class);
     }
 
     public function boot(): void
