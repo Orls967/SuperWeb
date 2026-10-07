@@ -1673,12 +1673,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 117.7 Quality gate Fase 117
 
 ## FASE 118 — HOSPITALITY & ENTERTAINMENT: REVENUE COMMAND & PORTOFOLIO GLOBAL
-- [ ] 118.1 **Revenue command center lintas jaringan**: ADR/RevPAR/okupansi 5.000 properti + GMV tiket 1.000 venue + bundle travel → satu papan, drill-down per kota/properti/event
-- [ ] 118.2 **Portfolio strategy simulator**: buka cabang (Fase 111.3) → simulasi 5 tahun (P&L, payback, cannibalization terhadap properti tetangga) di sandbox Digital Twin (Fase 67.3) → usulan ke DAO (Fase 86.6)
-- [ ] 118.3 **Syndication & JV properti**: properti baru didanai mitra (Fase 47) → investor hospitality token (memperluas RWA Fase 71: unit hotel disindikasi) → bagi hasil sewa per okupansi → reporting ke investor portal
-- [ ] 118.4 **FX & multi-country exposure**: properti mancanegara (50 kota internasional simulasi) → revaluasi valas (Fase 48.3) → translasi konsolidasi (Fase 52.4) → hedging exposure hospitality
-- [ ] 118.5 Tests: (a) RevPAR = ADR × okupansi konsisten (b) simulasi tak mengubah data riil (c) bagi hasil investor = ledger okupansi (d) translasi FX konsisten (e) `hotel:audit` + `venue:audit` = 0 selisih
-- [ ] 118.6 Quality gate Fase 118
+- [x] 118.1 **Revenue command center lintas jaringan**: ADR/RevPAR/okupansi 5.000 properti + GMV tiket 1.000 venue + bundle travel → satu papan, drill-down per kota/properti/event
+- [x] 118.2 **Portfolio strategy simulator**: buka cabang (Fase 111.3) → simulasi 5 tahun (P&L, payback, cannibalization terhadap properti tetangga) di sandbox Digital Twin (Fase 67.3) → usulan ke DAO (Fase 86.6)
+- [x] 118.3 **Syndication & JV properti**: properti baru didanai mitra (Fase 47) → investor hospitality token (memperluas RWA Fase 71: unit hotel disindikasi) → bagi hasil sewa per okupansi → reporting ke investor portal
+- [x] 118.4 **FX & multi-country exposure**: properti mancanegara (50 kota internasional simulasi) → revaluasi valas (Fase 48.3) → translasi konsolidasi (Fase 52.4) → hedging exposure hospitality
+- [x] 118.5 Tests: (a) RevPAR = ADR × okupansi konsisten (b) simulasi tak mengubah data riil (c) bagi hasil investor = ledger okupansi (d) translasi FX konsisten (e) `hotel:audit` + `venue:audit` = 0 selisih
+- [x] 118.6 Quality gate Fase 118
 
 ## FASE 119 — SUMBER DAYA: UNDERGROUND & QUARRY DIGITAL TWIN, BLASTING, GEOTECH
 - [ ] 119.1 **Digital twin tambang bawah tanah**: model 3D terowongan & ventilasi (stope, decline, ventilation network) via Twin Bus (Fase 67.3) → simulasi aliran udara, jalur evakuasi, titik kritis runtuh → rencana pengeboran/blasting aman
