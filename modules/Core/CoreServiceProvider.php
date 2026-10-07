@@ -19,20 +19,27 @@ use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
 use Modules\Core\Application\Services\ActivityLogger;
 use Modules\Core\Application\Services\ApprovalEngineService;
 use Modules\Core\Application\Services\AuditTrailService;
+use Modules\Core\Application\Services\DigitalTwinService;
 use Modules\Core\Application\Services\DocumentNumberingService;
 use Modules\Core\Application\Services\DocumentStoreService;
+use Modules\Core\Application\Services\EventSpineService;
 use Modules\Core\Application\Services\NotificationService;
 use Modules\Core\Application\Services\OutboxBusService;
 use Modules\Core\Application\Services\RbacService;
+use Modules\Core\Application\Services\SimClockService;
 use Modules\Core\Console\Commands\ProcessOutboxCommand;
+use Modules\Core\Console\Commands\RunSimulationCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\AuditTrailInterface;
+use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Core\Contracts\DocumentStoreInterface;
+use Modules\Core\Contracts\EventSpineInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
+use Modules\Core\Contracts\SimClockInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Core\Domain\Events\VehicleAcquired;
 use Modules\Core\Domain\Models\Vehicle;
@@ -79,6 +86,21 @@ class CoreServiceProvider extends ServiceProvider
             ApprovalEngineService::class
         );
 
+        $this->app->bind(
+            SimClockInterface::class,
+            SimClockService::class
+        );
+
+        $this->app->bind(
+            EventSpineInterface::class,
+            EventSpineService::class
+        );
+
+        $this->app->bind(
+            DigitalTwinInterface::class,
+            DigitalTwinService::class
+        );
+
         // Platform services — singletons so they can be injected anywhere
         $this->app->singleton(NotificationService::class);
         $this->app->singleton(ActivityLogger::class);
@@ -88,6 +110,9 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(DocumentNumberingService::class);
         $this->app->singleton(DocumentStoreService::class);
         $this->app->singleton(ApprovalEngineService::class);
+        $this->app->singleton(SimClockService::class);
+        $this->app->singleton(EventSpineService::class);
+        $this->app->singleton(DigitalTwinService::class);
     }
 
     public function boot(): void
@@ -166,6 +191,7 @@ class CoreServiceProvider extends ServiceProvider
                 VerifyPassportsCommand::class,
                 SuperHealthCheckCommand::class,
                 ProcessOutboxCommand::class,
+                RunSimulationCommand::class,
             ]);
         }
 

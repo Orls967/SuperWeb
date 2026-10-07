@@ -149,3 +149,21 @@ arch('Contract does not import Logistics or Mall Domain directly')
         'Modules\Mall\Domain',
         'Modules\Resto\Domain',
     ]);
+
+arch('controllers do not access SimClockInterface or models directly')
+    ->expect([
+        'Modules\AutoServe\Http\Controllers',
+        'Modules\Banking\Http\Controllers',
+        'Modules\Store\Http\Controllers',
+    ])
+    ->not->toUse([
+        'Modules\Core\Contracts\SimClockInterface',
+        'Modules\Core\Domain\Models\SimRun',
+    ]);
+
+arch('DigitalTwin state does not directly touch LedgerAccount or balance')
+    ->expect('Modules\Core\Application\Services\DigitalTwinService')
+    ->not->toUse([
+        'Modules\Banking\Domain\Models\LedgerAccount',
+        'Modules\Banking\Domain\Models\LedgerEntry',
+    ]);

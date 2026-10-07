@@ -879,13 +879,13 @@ Pada akhir Fase 57B, seluruh codebase Fase 0–63 telah melalui audit arsitektur
 
 
 ## FASE 67 — SIMULATION KERNEL, UNIVERSAL EVENT SPINE, DIGITAL TWIN BUS & SCALE PROVISIONER
-- [ ] 67.1 **Simulation Kernel**: lapisan orkestrasi waktu `sim:run --days=N` menjalankan seluruh modul maju N hari kompresi (event time, bukan wall clock); clock virtual terpusat disuntikkan ke scheduler/scheduler-idempoten sehingga penyusutan aset, jatuh tempo kontrak, siklus S&OP, expiry poin, dan tenure berjalan bertahun-tahun dalam hitungan menit; deterministik (seed sama → hasil sama)
-- [ ] 67.2 **Universal Event Spine**: generalisasi `core_outbox` menjadi tulang punggung event ber-topik per pilar (`auto.*`, `fintech.*`, `resto.*`, `proptech.*`, `lgx.*`, `mfg.*`, `trade.*`, `gov.*`, `hsp.*`, `ven.*`, `htl.*`, `min.*`), schema registry ber-versi, consumer group idempoten, dan replay dari offset tertentu — setiap pilar dapat "menyaksikan" kejadian pilar lain tanpa coupling
-- [ ] 67.3 **Digital Twin Bus**: kontrak `TwinState` generik (entity_type, entity_id, state JSON, valid_from, hash prev) untuk entitas bernilai tinggi (kendaraan, gedung, kontainer, pabrik, petak lahan, kamar hotel, alat berat, pasien-episode, venue zone); update twin idempoten & teraudit, simulasi what-if berjalan di sandbox tanpa menyentuh ledger riil
-- [ ] 67.4 **Fictional Scale Provisioner**: kerangka seeder deterministik per pilar (memperluas pola `EnterpriseUniverseSeeder`) dengan checkpoint/resume, chunk streaming bulk-insert, benchmark per etape, dan target volume raksasa (jutaan baris) yang tetap idempoten
-- [ ] 67.5 Arch test untuk kerangka baru: modul manapun hanya boleh subscribe event spine via Contract; twin state tidak boleh menjadi sumber kebenaran uang/stok; kernel waktu tidak diakses langsung dari controller
-- [ ] 67.6 Tests: (a) simulasi 365 hari identik dua kali berjalan (deterministik) (b) replay event spine dari offset N idempoten (c) twin update ganda tidak duplikat (d) ledger tetap Σ=0 selama simulasi (e) checkpoint resume seeder tanpa duplikasi
-- [ ] 67.7 Quality gate Fase 67
+- [x] 67.1 **Simulation Kernel**: lapisan orkestrasi waktu `sim:run --days=N` menjalankan seluruh modul maju N hari kompresi (event time, bukan wall clock); clock virtual terpusat disuntikkan ke scheduler/scheduler-idempoten sehingga penyusutan aset, jatuh tempo kontrak, siklus S&OP, expiry poin, dan tenure berjalan bertahun-tahun dalam hitungan menit; deterministik (seed sama → hasil sama)
+- [x] 67.2 **Universal Event Spine**: generalisasi `core_outbox` menjadi tulang punggung event ber-topik per pilar (`auto.*`, `fintech.*`, `resto.*`, `proptech.*`, `lgx.*`, `mfg.*`, `trade.*`, `gov.*`, `hsp.*`, `ven.*`, `htl.*`, `min.*`), schema registry ber-versi, consumer group idempoten, dan replay dari offset tertentu — setiap pilar dapat "menyaksikan" kejadian pilar lain tanpa coupling
+- [x] 67.3 **Digital Twin Bus**: kontrak `TwinState` generik (entity_type, entity_id, state JSON, valid_from, hash prev) untuk entitas bernilai tinggi (kendaraan, gedung, kontainer, pabrik, petak lahan, kamar hotel, alat berat, pasien-episode, venue zone); update twin idempoten & teraudit, simulasi what-if berjalan di sandbox tanpa menyentuh ledger riil
+- [x] 67.4 **Fictional Scale Provisioner**: kerangka seeder deterministik per pilar (memperluas pola `EnterpriseUniverseSeeder`) dengan checkpoint/resume, chunk streaming bulk-insert, benchmark per etape, dan target volume raksasa (jutaan baris) yang tetap idempoten
+- [x] 67.5 Arch test untuk kerangka baru: modul manapun hanya boleh subscribe event spine via Contract; twin state tidak boleh menjadi sumber kebenaran uang/stok; kernel waktu tidak diakses langsung dari controller
+- [x] 67.6 Tests: (a) simulasi 365 hari identik dua kali berjalan (deterministik) (b) replay event spine dari offset N idempoten (c) twin update ganda tidak duplikat (d) ledger tetap Σ=0 selama simulasi (e) checkpoint resume seeder tanpa duplikasi
+- [x] 67.7 Quality gate Fase 67
 
 ## PILAR 1 — OTOMOTIF & PEMBIAYAAN KENDARAAN
 
