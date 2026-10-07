@@ -1931,13 +1931,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 146.7 Quality gate Fase 146
 
 ## FASE 147 — PLATFORM ECONOMY: OPEN API, ECOSYSTEM DEVELOPERS & WHITE-LABEL
-- [ ] 147.1 **Open platform API v3+ untuk ekosistem** (memperluas Fase 102): katalog 1.000 endpoint lintas 17 lini → tier developer (free/pro/enterprise) → sandbox per lini → SDK simulasi → revenue API (usage-based billing Fase 55.5)
-- [ ] 147.2 **App store & marketplace mitra**: integrasi pihak ketiga (POS vendor, HRIS, accounting eksternal) → listing → review → certification (regression suite otomatis) → revenue share platform
-- [ ] 147.3 **White-label solusi**: salah satu lini (mis. PMS hotel Fase 91, POS resto, health EMR) ditawarkan ke operator eksternal → instance multi-tenant terisolasi (Fase 55.7) → billing per tenant → upgrade path ke full suite
-- [ ] 147.4 **Embedded finance**: mitra integrasi menyematkan payment/escrow/insurance (Fase 2/72/61.4) via API → fee split → compliance ringan (KYC tetap di platform utama)
-- [ ] 147.5 **Developer relations**: changelog, deprecation policy (versi API bertahap, sunset notice), status page, program bug bounty simulasi → insentif temuan (ledger payout)
-- [ ] 147.6 Tests: (a) tier rate limit dihormati (b) white-label instance zero cross-tenant leak (c) revenue API = usage × tarif (d) deprecation lama → client v2 masih jalan dalam window (e) `api:audit` = 0 selisih
-- [ ] 147.7 Quality gate Fase 147
+- [x] 147.1 **Open platform API v3+ untuk ekosistem** (memperluas Fase 102): katalog 1.000 endpoint lintas 17 lini → tier developer (free/pro/enterprise) → sandbox per lini → SDK simulasi → revenue API (usage-based billing Fase 55.5)
+- [x] 147.2 **App store & marketplace mitra**: integrasi pihak ketiga (POS vendor, HRIS, accounting eksternal) → listing → review → certification (regression suite otomatis) → revenue share platform
+- [x] 147.3 **White-label solusi**: salah satu lini (mis. PMS hotel Fase 91, POS resto, health EMR) ditawarkan ke operator eksternal → instance multi-tenant terisolasi (Fase 55.7) → billing per tenant → upgrade path ke full suite
+- [x] 147.4 **Embedded finance**: mitra integrasi menyematkan payment/escrow/insurance (Fase 2/72/61.4) via API → fee split → compliance ringan (KYC tetap di platform utama)
+- [x] 147.5 **Developer relations**: changelog, deprecation policy (versi API bertahap, sunset notice), status page, program bug bounty simulasi → insentif temuan (ledger payout)
+- [x] 147.6 Tests: (a) tier rate limit dihormati (b) white-label instance zero cross-tenant leak (c) revenue API = usage × tarif (d) deprecation lama → client v2 masih jalan dalam window (e) `api:audit` = 0 selisih
+- [x] 147.7 Quality gate Fase 147
 
 ## FASE 148 — SCENARIO: KONGLOMERASI SIMULASI 12 BULAN & GOLDEN MEGA-SCENARIO
 - [ ] 148.1 **Conglomerate 12-month simulation**: Simulation Kernel (Fase 67.1) menjalankan 17 lini 365 hari kompresi — siklus penuh: kontrak → produksi → logistik → penjualan → payroll → depresiasi → klaim → royalti → dividen token → konsolidasi grup → **seluruh `*:audit` 40+ = 0 selisih di akhir simulasikan**

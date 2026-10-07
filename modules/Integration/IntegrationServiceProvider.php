@@ -7,12 +7,14 @@ namespace Modules\Integration;
 use Illuminate\Support\ServiceProvider;
 use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\IntegrationService;
+use Modules\Integration\Application\Services\PlatformEconomyService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
 use Modules\Integration\Application\Services\ResilienceWave2Service;
 use Modules\Integration\Application\Services\SecurityPenTestService;
 use Modules\Integration\Application\Services\ThreatDetectionService;
 use Modules\Integration\Application\Services\ZeroTrustService;
+use Modules\Integration\Console\Commands\ApiAuditCommand;
 use Modules\Integration\Console\Commands\AuditIntegrationCommand;
 use Modules\Integration\Console\Commands\DrAuditCommand;
 use Modules\Integration\Console\Commands\SecurityAuditCommand;
@@ -30,6 +32,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(SecurityPenTestService::class);
         $this->app->singleton(ResilienceWave2Service::class);
         $this->app->singleton(DataPlatformService::class);
+        $this->app->singleton(PlatformEconomyService::class);
     }
 
     public function boot(): void
@@ -49,6 +52,7 @@ class IntegrationServiceProvider extends ServiceProvider
                 AuditIntegrationCommand::class,
                 SecurityAuditCommand::class,
                 DrAuditCommand::class,
+                ApiAuditCommand::class,
             ]);
         }
 
