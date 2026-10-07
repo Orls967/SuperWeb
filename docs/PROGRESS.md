@@ -1787,13 +1787,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 130.7 Quality gate Fase 130
 
 ## FASE 131 — TELEKOMUNIKASI & DATA CENTER: DC OPERATIONS, CLOUD & COLOCATION
-- [ ] 131.1 **Data center ops**: 10 DC (Jakarta, Surabaya, Singapura simulasi) → rack/inventory → PUE terukur (daya total / IT load) → cooling optimization (memperluas Fase 76.2) → ESG DC (emisi)
-- [ ] 131.2 **Colocation & tenancy**: unit rak/rackspace disewakan (B2B) → kontrak colo (Contract) → meteran listrik per cage → billing bulanan → cross-connect fee antar tenant → escape hatch jika telat bayar (suspend port)
-- [ ] 131.3 **Cloud & compute service internal**: VM/container simulasi untuk divisi & mitra → katalog SKU (CPU/RAM/storage) → provisioning otomatis → metering pemakaian jam → chargeback per entitas/proyek (menghubungkan biaya AI Fase 99 & backup Fase 66)
-- [ ] 131.4 **Backup & DR as a service**: replika data lini ke DC sekunder (Fase 101.3 multi-region) → SLA RPO/RTO per kelas data → uji restore terjadwal → laporan
-- [ ] 131.5 **Network security & SOC simulasi**: firewall rules, IDS alert, sandbox malware → incident response workflow (mirip CAPA) → pelaporan insiden cyber ke compliance (Fase 100.3)
-- [ ] 131.6 Tests: (a) chargeback cloud = metering tercatat (b) PUE konsisten pengukuran (c) colo suspend saat telat bayar → port down tercatat (d) restore drill lolos RPO/RTO (e) `tlx:audit` = 0 selisih
-- [ ] 131.7 Quality gate Fase 131
+- [x] 131.1 **Data center ops**: 10 DC (Jakarta, Surabaya, Singapura simulasi) → rack/inventory → PUE terukur (daya total / IT load) → cooling optimization (memperluas Fase 76.2) → ESG DC (emisi)
+- [x] 131.2 **Colocation & tenancy**: unit rak/rackspace disewakan (B2B) → kontrak colo (Contract) → meteran listrik per cage → billing bulanan → cross-connect fee antar tenant → escape hatch jika telat bayar (suspend port)
+- [x] 131.3 **Cloud & compute service internal**: VM/container simulasi untuk divisi & mitra → katalog SKU (CPU/RAM/storage) → provisioning otomatis → metering pemakaian jam → chargeback per entitas/proyek (menghubungkan biaya AI Fase 99 & backup Fase 66)
+- [x] 131.4 **Backup & DR as a service**: replika data lini ke DC sekunder (Fase 101.3 multi-region) → SLA RPO/RTO per kelas data → uji restore terjadwal → laporan
+- [x] 131.5 **Network security & SOC simulasi**: firewall rules, IDS alert, sandbox malware → incident response workflow (mirip CAPA) → pelaporan insiden cyber ke compliance (Fase 100.3)
+- [x] 131.6 Tests: (a) chargeback cloud = metering tercatat (b) PUE konsisten pengukuran (c) colo suspend saat telat bayar → port down tercatat (d) restore drill lolos RPO/RTO (e) `tlx:audit` = 0 selisih
+- [x] 131.7 Quality gate Fase 131
 
 ## FASE 132 — TELEKOMUNIKASI: ISP RETAIL, SIM/5G & SMART CITY SERVICES
 - [ ] 132.1 **ISP retail & fixed wireless**: paket rumah/B2B (100 ribu subscriber simulasi) → billing cycle (prabayar topup / pascabayar invoice) → usage cap → throttle/pause saat telat bayar → denda keterlambatan → provisioning otomatis ke network (Fase 130.2)
