@@ -1770,12 +1770,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 128.7 Quality gate Fase 128
 
 ## FASE 129 — ENERGI & UTILITAS: MICROGRID, STORAGE & RESILIENCE
-- [ ] 129.1 **Microgrid per site**: solar + battery + genset → islanding mode simulasi saat grid down → prioritas beban (RS > pabrik kritis > mall > umum) → ketersediaan terukur (SAIDI/SAIFI)
-- [ ] 129.2 **Battery storage arbitrage**: charge saat tarif murah → discharge saat puncak → selisih = revenue → siklus baterai tercatat → degradation → replacement via Asset (Fase 31)
-- [ ] 129.3 **Backup power compliance**: RS/venue/data center (Fase 134) wajib cadangan → uji beban berkala terjadwal → laporan kepatuhan → gagal uji → work order → alert compliance (Fase 100.3)
-- [ ] 129.4 **Energy resilience scorecard**: ketersediaan per site, biaya per kWh effective, % renewable, resilience readiness → masuk health-check site → perbandingan antar lini
-- [ ] 129.5 Tests: (a) islanding prioritas beban dihormati (b) arbitrage revenue = (tarif jual − beli) × kWh (c) siklus baterai ≥ aktual pengisian (d) uji backup terjadwal & hasil tercatat (e) `egy:audit` = 0 selisih
-- [ ] 129.6 Quality gate Fase 129
+- [x] 129.1 **Microgrid per site**: solar + battery + genset → islanding mode simulasi saat grid down → prioritas beban (RS > pabrik kritis > mall > umum) → ketersediaan terukur (SAIDI/SAIFI)
+- [x] 129.2 **Battery storage arbitrage**: charge saat tarif murah → discharge saat puncak → selisih = revenue → siklus baterai tercatat → degradation → replacement via Asset (Fase 31)
+- [x] 129.3 **Backup power compliance**: RS/venue/data center (Fase 134) wajib cadangan → uji beban berkala terjadwal → laporan kepatuhan → gagal uji → work order → alert compliance (Fase 100.3)
+- [x] 129.4 **Energy resilience scorecard**: ketersediaan per site, biaya per kWh effective, % renewable, resilience readiness → masuk health-check site → perbandingan antar lini
+- [x] 129.5 Tests: (a) islanding prioritas beban dihormati (b) arbitrage revenue = (tarif jual − beli) × kWh (c) siklus baterai ≥ aktual pengisian (d) uji backup terjadwal & hasil tercatat (e) `egy:audit` = 0 selisih
+- [x] 129.6 Quality gate Fase 129
 
 ## FASE 130 — TELEKOMUNIKASI & DATA CENTER: NETWORK, IoT BACKBONE & ISP (LINI 14)
 - [ ] 130.1 Modul `Tlx` (`tlx_`): provider, MenuRegistry "Telekomunikasi & Data", roles (`noc_engineer`, `dc_operator`, `iot_platform_mgr`, `network_planner`), policies, arch test; tabel `tlx_sites` (tower, POP, data center), `tlx_links` (fiber, microwave), `tlx_sim_subscribers`
