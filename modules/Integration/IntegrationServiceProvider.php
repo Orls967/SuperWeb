@@ -309,6 +309,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\CustomerServiceAgenticCommerceService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\FederatedEdgeAiOperationsService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\EdgeModelRegistryRolloutService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\ModelIncidentSafetyCaseService::class);
     }
 
     public function boot(): void
