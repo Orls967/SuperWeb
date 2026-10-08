@@ -2681,15 +2681,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 227.8 Quality gate Fase 227
 
 ## FASE 228 — KEBERLANJUTAN: ESG DATA FABRIC & DOUBLE MATERIALITY
-- [ ] 228.1 ESG data fabric: pengumpulan metrik E-S-G dari 30 lini (emisi Fase 60, air, limbah, energi, keragaman, safety Fase 120, governance) → quality score per metric → provenance
-- [ ] 228.2 Double materiality assessment: impact materiality (dampak lini ke dunia) + financial materiality (dampak dunia ke lini) → material topic per lini → scope laporan
-- [ ] 228.3 Reporting standards bridge (GRI/ISSB simulasi): mapping internal metric → disclosure requirement → evidence attachment → gap report
-- [ ] 228.4 Assurance readiness: audit trail per angka ESG (dari sensor/ledger) → sampling export → mock assurance → findings → remediation
-- [ ] 228.5 Tests: Σ metrik lini = agregasi grup, evidence terhubung sumber, gap tak tercatat sebagai comply, `esg:audit` clean
-- [ ] 228.5 Edge case: metrik ESG gagal terkumpul (sensor mati) → jangan estimate diam-diam; tandai data gap + alert
-- [ ] 228.6 Materiality change: topik naik/turun materialitas → review komite → scope laporan disesuaikan
-- [ ] 228.7 Data quality score ESG per metrik → metrik skor rendah tak boleh dipakai untuk klaim publik
-- [ ] 228.8 Quality gate Fase 228
+- [x] 228.1 ESG data fabric: pengumpulan metrik E-S-G dari 30 lini (emisi Fase 60, air, limbah, energi, keragaman, safety Fase 120, governance) → quality score per metric → provenance
+- [x] 228.2 Double materiality assessment: impact materiality (dampak lini ke dunia) + financial materiality (dampak dunia ke lini) → material topic per lini → scope laporan
+- [x] 228.3 Reporting standards bridge (GRI/ISSB simulasi): mapping internal metric → disclosure requirement → evidence attachment → gap report
+- [x] 228.4 Assurance readiness: audit trail per angka ESG (dari sensor/ledger) → sampling export → mock assurance → findings → remediation
+- [x] 228.5 Tests: Σ metrik lini = agregasi grup, evidence terhubung sumber, gap tak tercatat sebagai comply, `esg:audit` clean
+- [x] 228.5 Edge case: metrik ESG gagal terkumpul (sensor mati) → jangan estimate diam-diam; tandai data gap + alert
+- [x] 228.6 Materiality change: topik naik/turun materialitas → review komite → scope laporan disesuaikan
+- [x] 228.7 Data quality score ESG per metrik → metrik skor rendah tak boleh dipakai untuk klaim publik
+- [x] 228.8 Quality gate Fase 228
 
 ## FASE 229 — KEBERLANJUTAN: CLIMATE, ENERGY TRANSITION & DECARBONIZATION ROADMAP
 - [ ] 229.1 Net-zero roadmap per lini: baseline → target interim → levers (efisiensi, elektrifikasi, bahan hijau, offset) → capex & savings → tracking actual vs jalur
