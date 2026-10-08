@@ -2702,14 +2702,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 229.8 Quality gate Fase 229
 
 ## FASE 230 — KEBERLANJUTAN: CIRCULARITY, WATER STRESS & NATURE POSITIVE SCALE
-- [ ] 230.1 Circularity targets 30 lini: recycled content, waste diversion, product take-back, packaging reuse → per lini → pipeline inisiatif → tracking mass balance (Fase 174)
-- [ ] 230.2 Water stewardship: baseline per site → withdrawal/recycle/discharge → water-stressed area flag → reduction projects → quality compliance (Fase 124.2 scale)
-- [ ] 230.3 Nature-positive portfolio: proyek restorasi (Fase 173) dikaitkan footprint operasi → target nature-positive per entitas → verification cycle
-- [ ] 230.4 Green procurement policy: kriteria wajib dalam tender (Fase 33.3 + 60.4) → skor mempengaruhi award → supplier improvement program
-- [ ] 230.5 Tests: circular metrics = mass balance nyata, water target terhitung dari meteran, green criteria terpakai di evaluation, `esg:audit` clean
-- [ ] 230.6 Edge case: target air di lokasi water-stressed → prioritas proyek + capex disetujui lebih awal
-- [ ] 230.7 Green premium diklaim hanya bila data produk terverifikasi (Fase 289) → anti-greenwashing
-- [ ] 230.8 Quality gate Fase 230
+- [x] 230.1 Circularity targets 30 lini: recycled content, waste diversion, product take-back, packaging reuse → per lini → pipeline inisiatif → tracking mass balance (Fase 174)
+- [x] 230.2 Water stewardship: baseline per site → withdrawal/recycle/discharge → water-stressed area flag → reduction projects → quality compliance (Fase 124.2 scale)
+- [x] 230.3 Nature-positive portfolio: proyek restorasi (Fase 173) dikaitkan footprint operasi → target nature-positive per entitas → verification cycle
+- [x] 230.4 Green procurement policy: kriteria wajib dalam tender (Fase 33.3 + 60.4) → skor mempengaruhi award → supplier improvement program
+- [x] 230.5 Tests: circular metrics = mass balance nyata, water target terhitung dari meteran, green criteria terpakai di evaluation, `esg:audit` clean
+- [x] 230.6 Edge case: target air di lokasi water-stressed → prioritas proyek + capex disetujui lebih awal
+- [x] 230.7 Green premium diklaim hanya bila data produk terverifikasi (Fase 289) → anti-greenwashing
+- [x] 230.8 Quality gate Fase 230
 
 ## FASE 231 — TATA KELOLA: BOARD, COMMITTEE & DELEGATION SYSTEM
 - [ ] 231.1 Board composition & committees (audit, risk, nomrem/gov, sustainability, comp) → charter → meeting cycle → agenda & paper (dokumen 26.8) → minutes → decision register
