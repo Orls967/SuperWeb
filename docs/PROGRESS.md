@@ -4192,14 +4192,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 375.8 Quality gate Fase 375
 
 ## FASE 376 — INTEGRASI GELOMBANG 3: GLOBAL FINANCE, RISK & TREASURY CONTROL
-- [ ] 376.1 Treasury, insurance, syariah, token securities, commodity desk and regional finance share exposure taxonomy and authoritative position feeds
-- [ ] 376.2 Consolidated counterparty exposure net of eligible collateral, intercompany balances and reinsurance recoverables; explainable drill-down
-- [ ] 376.3 Group funding waterfall under stress: cash pool → committed facilities → market issuance → bounded emergency actions, with approval thresholds
-- [ ] 376.4 Tests: exposure aggregate matches subledgers, collateral eligibility enforced, waterfall deterministic and never overdraws, `group:audit` clean
-- [ ] 376.5 Edge case: exposure melebihi limit → approval board sebelum transaksi lanjut, tak override diam-diam
-- [ ] 376.6 Risiko: collateral value turun → haircuts berkala & revaluation wajib sebelum diandalkan
-- [ ] 376.7 Evidence: consolidated exposure report, waterfall decision, dan drill-down trace tercatat
-- [ ] 376.8 Quality gate Fase 376
+- [x] 376.1 Treasury, insurance, syariah, token securities, commodity desk and regional finance share exposure taxonomy and authoritative position feeds
+- [x] 376.2 Consolidated counterparty exposure net of eligible collateral, intercompany balances and reinsurance recoverables; explainable drill-down
+- [x] 376.3 Group funding waterfall under stress: cash pool → committed facilities → market issuance → bounded emergency actions, with approval thresholds
+- [x] 376.4 Tests: exposure aggregate matches subledgers, collateral eligibility enforced, waterfall deterministic and never overdraws, `group:audit` clean
+- [x] 376.5 Edge case: exposure melebihi limit → approval board sebelum transaksi lanjut, tak override diam-diam
+- [x] 376.6 Risiko: collateral value turun → haircuts berkala & revaluation wajib sebelum diandalkan
+- [x] 376.7 Evidence: consolidated exposure report, waterfall decision, dan drill-down trace tercatat
+- [x] 376.8 Quality gate Fase 376
 
 ## FASE 377 — INTEGRASI GELOMBANG 3: ASSET, PROJECT & CAPITAL LIFECYCLE
 - [ ] 377.1 Asset lifecycle common events from project capitalization → operation → maintenance → impairment/revaluation → disposal across all 30 lines
