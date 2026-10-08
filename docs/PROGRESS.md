@@ -2842,14 +2842,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 243.8 Quality gate Fase 243
 
 ## FASE 244 — DATA: DATA PRODUCTS, SHARING & EXTERNAL MONETIZATION
-- [ ] 244.1 Data products eksternal: agregat pasar (harga komoditas, indeks footfall, benchmark industri simulasi) → subscription → API (Fase 147) → privacy kohort check wajib (Fase 189.3)
-- [ ] 244.2 Data sharing agreements: mitra (kontrak Fase 28) → field-level scope → audit trail pemakaian → retention & deletion → compliance (consent & regulation bridge Fase 207)
-- [ ] 244.3 Data clean room simulasi: dua pihak hitung bersama tanpa saling melihat raw data → hasil di-approve sebelum keluar → anti-re-identification check
-- [ ] 244.4 Monetization accounting: revenue data product → COGS (compute) → margin → kontrak & billing via Payment → ledger
-- [ ] 244.5 Tests: clean room tak membocor raw row, sharing scope enforced per-field, consent revocation memutus sharing, `data:audit` clean
-- [ ] 244.6 Edge case: mitra menyalahgunakan data → akses dicabut + audit pemakaian + konsekuensi kontraktual
-- [ ] 244.7 Data product dihentikan → consumer migrate + archive, revenue & COGS ditutup rapi
-- [ ] 244.8 Quality gate Fase 244
+- [x] 244.1 Data products eksternal: agregat pasar (harga komoditas, indeks footfall, benchmark industri simulasi) → subscription → API (Fase 147) → privacy kohort check wajib (Fase 189.3)
+- [x] 244.2 Data sharing agreements: mitra (kontrak Fase 28) → field-level scope → audit trail pemakaian → retention & deletion → compliance (consent & regulation bridge Fase 207)
+- [x] 244.3 Data clean room simulasi: dua pihak hitung bersama tanpa saling melihat raw data → hasil di-approve sebelum keluar → anti-re-identification check
+- [x] 244.4 Monetization accounting: revenue data product → COGS (compute) → margin → kontrak & billing via Payment → ledger
+- [x] 244.5 Tests: clean room tak membocor raw row, sharing scope enforced per-field, consent revocation memutus sharing, `data:audit` clean
+- [x] 244.6 Edge case: mitra menyalahgunakan data → akses dicabut + audit pemakaian + konsekuensi kontraktual
+- [x] 244.7 Data product dihentikan → consumer migrate + archive, revenue & COGS ditutup rapi
+- [x] 244.8 Quality gate Fase 244
 
 ## FASE 245 — KOMERSIAL: PRICING SCIENCE & REVENUE OPTIMIZATION 30 LINI
 - [ ] 245.1 Pricing architecture unified: cost-plus, value-based, dynamic (Fase 81), contract, promo (Fase 44), tariff public (utilitas, parkir, port) → framework per domain dengan guardrail seragam
