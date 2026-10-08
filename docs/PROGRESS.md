@@ -2411,14 +2411,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 200.8 Quality gate Fase 200
 
 ## FASE 201 — AI: FORECASTING FEDERATION & S&OP 30 LINI
-- [ ] 201.1 Registry forecast per domain (demand resto, room, tiket, listrik, bahan baku, talent, klaim) → model per domain dengan backtest → MAPE tercatat per model
-- [ ] 201.2 Hierarki forecast: agregat nasional → region → entitas → SKU/unit → reconciliasi bottom-up/top-down (forecast konsisten di semua level)
-- [ ] 201.3 Executive S&OP lintas lini: demand review → supply & capacity → financial balancing → sign-off (Fase 53.3 diperluas ke 30 lini termasuk tenaga kerja, energi, kamar, seat)
-- [ ] 201.4 Scenario forecasting: baseline / konservatif / agresif + shock (wabah, krisis komoditas, blackout) → dampak P&L & kas per lini dalam sandbox
-- [ ] 201.5 Tests: rekonsiliasi hierarki tepat, backtest deterministik, scenario tak mengubah data riil, sign-off butuh approval, `tower:audit` clean
-- [ ] 201.6 Edge case: data historis tak cukup untuk model → fallback ke metode sederhana + confidence label rendah, bukan angka palsu
-- [ ] 201.7 Risiko: forecast terlalu akurat dihargai berlebihan → override manual selalu dicatat dengan alasan (Fase 53.2)
-- [ ] 201.8 Quality gate Fase 201
+- [x] 201.1 Registry forecast per domain (demand resto, room, tiket, listrik, bahan baku, talent, klaim) → model per domain dengan backtest → MAPE tercatat per model
+- [x] 201.2 Hierarki forecast: agregat nasional → region → entitas → SKU/unit → reconciliasi bottom-up/top-down (forecast konsisten di semua level)
+- [x] 201.3 Executive S&OP lintas lini: demand review → supply & capacity → financial balancing → sign-off (Fase 53.3 diperluas ke 30 lini termasuk tenaga kerja, energi, kamar, seat)
+- [x] 201.4 Scenario forecasting: baseline / konservatif / agresif + shock (wabah, krisis komoditas, blackout) → dampak P&L & kas per lini dalam sandbox
+- [x] 201.5 Tests: rekonsiliasi hierarki tepat, backtest deterministik, scenario tak mengubah data riil, sign-off butuh approval, `tower:audit` clean
+- [x] 201.6 Edge case: data historis tak cukup untuk model → fallback ke metode sederhana + confidence label rendah, bukan angka palsu
+- [x] 201.7 Risiko: forecast terlalu akurat dihargai berlebihan → override manual selalu dicatat dengan alasan (Fase 53.2)
+- [x] 201.8 Quality gate Fase 201
 
 ## FASE 202 — RISIKO: ENTERPRISE RISK MANAGEMENT FRAMEWORK
 - [ ] 202.1 Risk taxonomy 30 lini (strategis, operasional, keuangan, kepatuhan, teknologi, reputasi, lingkungan, sumber daya) → register risiko dengan pemilik, inherent score, control set, residual score

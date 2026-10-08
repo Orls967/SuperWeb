@@ -7,6 +7,7 @@ namespace Modules\Integration;
 use Illuminate\Support\ServiceProvider;
 use Modules\Integration\Application\Services\AgentHitlOrchestrationService;
 use Modules\Integration\Application\Services\AiDecisionAuditService;
+use Modules\Integration\Application\Services\AiForecastingSopService;
 use Modules\Integration\Application\Services\AiFraudAmlMeshService;
 use Modules\Integration\Application\Services\AiGenerativeCopilotService;
 use Modules\Integration\Application\Services\AiModelGuardrailService;
@@ -134,6 +135,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(AiGenerativeCopilotService::class);
         $this->app->singleton(AiOptimizationEngineService::class);
         $this->app->singleton(AiFraudAmlMeshService::class);
+        $this->app->singleton(AiForecastingSopService::class);
     }
 
     public function boot(): void
