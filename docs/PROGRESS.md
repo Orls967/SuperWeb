@@ -3004,14 +3004,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 259.8 Quality gate Fase 259
 
 ## FASE 260 — EKOSISTEM: PARTNER API, CO-SELL & AFFILIATE NETWORK SCALE
-- [ ] 260.1 Partner tiering & benefits: bronze/silver/gold/platinum → rate card, support SLA, sandbox, co-marketing fund → upgrade criteria otomatis
-- [ ] 260.2 Co-sell motion: partner register deal → attribution rule (Fase 45.4) → shared pipeline → revenue share settlement (Fase 47.4) → payout statement
-- [ ] 260.3 Affiliate & referral massal (B2C): creator/agen/UMKM jadi affiliate → link tracking → atribusi cookie/id deterministik → komisi bulk payout → anti-fraud (Fase 46.6)
-- [ ] 260.4 Tests: attribution tak dobel antar partner, tier upgrade deterministik, affiliate payout bulk Σ = ledger, `ptn:audit` clean
-- [ ] 260.5 Edge case: affiliate fraud (self-dealing) → deteksi pola + hold payout → investigasi (Fase 46.6)
-- [ ] 260.6 Attribution konflik antar partner → aturan prioritas terdokumentasi, keputusan tercatat
-- [ ] 260.7 Tier downgrade → benefit dicabut bertahap dengan notice period
-- [ ] 260.8 Quality gate Fase 260
+- [x] 260.1 Partner tiering & benefits: bronze/silver/gold/platinum → rate card, support SLA, sandbox, co-marketing fund → upgrade criteria otomatis
+- [x] 260.2 Co-sell motion: partner register deal → attribution rule (Fase 45.4) → shared pipeline → revenue share settlement (Fase 47.4) → payout statement
+- [x] 260.3 Affiliate & referral massal (B2C): creator/agen/UMKM jadi affiliate → link tracking → atribusi cookie/id deterministik → komisi bulk payout → anti-fraud (Fase 46.6)
+- [x] 260.4 Tests: attribution tak dobel antar partner, tier upgrade deterministik, affiliate payout bulk Σ = ledger, `ptn:audit` clean
+- [x] 260.5 Edge case: affiliate fraud (self-dealing) → deteksi pola + hold payout → investigasi (Fase 46.6)
+- [x] 260.6 Attribution konflik antar partner → aturan prioritas terdokumentasi, keputusan tercatat
+- [x] 260.7 Tier downgrade → benefit dicabut bertahap dengan notice period
+- [x] 260.8 Quality gate Fase 260
 
 ## FASE 261 — EKOSISTEM: SUPPLIER FINANCE & COLLABORATIVE PLANNING SCALE
 - [ ] 261.1 Supplier portal v2: forecast sharing (rolling 12 bulan) → capacity confirmation → ASN automation (Fase 55.3 bridge) → scorecard live
