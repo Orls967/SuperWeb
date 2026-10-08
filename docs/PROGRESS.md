@@ -2692,14 +2692,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 228.8 Quality gate Fase 228
 
 ## FASE 229 — KEBERLANJUTAN: CLIMATE, ENERGY TRANSITION & DECARBONIZATION ROADMAP
-- [ ] 229.1 Net-zero roadmap per lini: baseline → target interim → levers (efisiensi, elektrifikasi, bahan hijau, offset) → capex & savings → tracking actual vs jalur
-- [ ] 229.2 Energy transition portfolio: proyek solar/wind/biomass/storage (Fase 123/126) → IRR + carbon benefit → prioritization → funding (Fase 210.2)
-- [ ] 229.3 Carbon price internal (shadow price): keputusan investasi dinilai dengan biaya karbon internal → proyek tinggi emisi butuh mitigasi → konsisten dengan roadmap
-- [ ] 229.4 Climate risk physical & transition: risiko lokasi (banjir, panas, regulasi) per aset → adaptation plan → insurance alignment (Fase 157.4) → disclosure
-- [ ] 229.5 Tests: roadmap tracking konsisten metrik, shadow price terpakai di appraisal, adaptation plan terhubung aset & polis, `esg:audit` clean
-- [ ] 229.6 Edge case: offset dipakai sebelum reduksi prioritas → kebijakan tidak mengizinkan offset menggantikan abatement wajib
-- [ ] 229.7 Scope 3 estimasi: faktor emisi versi tercatat; angka estimasi dilabeli, bukan diklaim terukur
-- [ ] 229.8 Quality gate Fase 229
+- [x] 229.1 Net-zero roadmap per lini: baseline → target interim → levers (efisiensi, elektrifikasi, bahan hijau, offset) → capex & savings → tracking actual vs jalur
+- [x] 229.2 Energy transition portfolio: proyek solar/wind/biomass/storage (Fase 123/126) → IRR + carbon benefit → prioritization → funding (Fase 210.2)
+- [x] 229.3 Carbon price internal (shadow price): keputusan investasi dinilai dengan biaya karbon internal → proyek tinggi emisi butuh mitigasi → konsisten dengan roadmap
+- [x] 229.4 Climate risk physical & transition: risiko lokasi (banjir, panas, regulasi) per aset → adaptation plan → insurance alignment (Fase 157.4) → disclosure
+- [x] 229.5 Tests: roadmap tracking konsisten metrik, shadow price terpakai di appraisal, adaptation plan terhubung aset & polis, `esg:audit` clean
+- [x] 229.6 Edge case: offset dipakai sebelum reduksi prioritas → kebijakan tidak mengizinkan offset menggantikan abatement wajib
+- [x] 229.7 Scope 3 estimasi: faktor emisi versi tercatat; angka estimasi dilabeli, bukan diklaim terukur
+- [x] 229.8 Quality gate Fase 229
 
 ## FASE 230 — KEBERLANJUTAN: CIRCULARITY, WATER STRESS & NATURE POSITIVE SCALE
 - [ ] 230.1 Circularity targets 30 lini: recycled content, waste diversion, product take-back, packaging reuse → per lini → pipeline inisiatif → tracking mass balance (Fase 174)
