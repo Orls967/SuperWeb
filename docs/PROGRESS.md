@@ -3361,15 +3361,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 294.9 Quality gate Fase 294
 
 ## FASE 295 — PLATFORM: MIGRATION & MODULAR MONOLITH LONG-TERM EVOLUTION
-- [ ] 295.1 Architecture fitness functions: module boundaries, no direct cross-domain DB, Contract/Event only, no circular dependencies → enforced in CI
-- [ ] 295.2 Schema evolution playbook: expand-contract, dual-read/write, backfill, cutover, cleanup → rehearsal on ultra-seeded DB (Fase 191)
-- [ ] 295.3 Modular monolith scaling strategy: read replicas, queue isolation, process pools, database partitioning; extraction to services only if evidence warrants (document ADR, not default)
-- [ ] 295.4 Compatibility matrix: PHP/Laravel/database/browser dependencies → upgrade cadence → regression gate → rollback path
-- [ ] 295.5 Tests: fitness violation fails CI, migration rehearsal data loss = 0, dependency upgrade regression suite green, ADR approval required for boundary change
-- [ ] 295.6 Edge case: ketergantungan upgrade merusak fitness → diuji di staging dengan dataset ultra
-- [ ] 295.7 Extract ke service hanya dengan ADR + bukti, bukan karena tren
-- [ ] 295.8 Compatibility matrix diuji otomatis tiap rilis dependency
-- [ ] 295.9 Quality gate Fase 295
+- [x] 295.1 Architecture fitness functions: module boundaries, no direct cross-domain DB, Contract/Event only, no circular dependencies → enforced in CI
+- [x] 295.2 Schema evolution playbook: expand-contract, dual-read/write, backfill, cutover, cleanup → rehearsal on ultra-seeded DB (Fase 191)
+- [x] 295.3 Modular monolith scaling strategy: read replicas, queue isolation, process pools, database partitioning; extraction to services only if evidence warrants (document ADR, not default)
+- [x] 295.4 Compatibility matrix: PHP/Laravel/database/browser dependencies → upgrade cadence → regression gate → rollback path
+- [x] 295.5 Tests: fitness violation fails CI, migration rehearsal data loss = 0, dependency upgrade regression suite green, ADR approval required for boundary change
+- [x] 295.6 Edge case: ketergantungan upgrade merusak fitness → diuji di staging dengan dataset ultra
+- [x] 295.7 Extract ke service hanya dengan ADR + bukti, bukan karena tren
+- [x] 295.8 Compatibility matrix diuji otomatis tiap rilis dependency
+- [x] 295.9 Quality gate Fase 295
 
 ## FASE 296 — PLATFORM: CONFIGURATION, FEATURE FLAGS & ENVIRONMENT PARITY
 - [ ] 296.1 Configuration registry per environment (dev/test/staging/prod-sim) → typed schema → secret references only → validation at boot; invalid config prevents startup

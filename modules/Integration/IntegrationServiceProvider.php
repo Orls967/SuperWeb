@@ -248,6 +248,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\GovTrustServicesSignaturesService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\GovInternalAuditAssuranceService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\GovEthicsAiBiometricsService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\PlatformMonolithEvolutionService::class);
     }
 
     public function boot(): void
