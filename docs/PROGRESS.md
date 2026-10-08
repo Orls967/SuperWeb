@@ -4372,14 +4372,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 393.8 Quality gate Fase 393
 
 ## FASE 394 — STRESS WAVE: QUEUE, SCHEDULER & BATCH PROCESSING
-- [ ] 394.1 Queue isolation by priority/domain; fairness and tenant quotas; poison message quarantine; retry budgets
-- [ ] 394.2 Batch framework: chunk checkpoint, resumability, idempotency, progress metrics, cancellation and safe restart
-- [ ] 394.3 Scheduler overlap policy, missed-run detection, dependency graph, time-zone/DST correctness
-- [ ] 394.4 Tests: poison job isolated, restart no duplicate posting, scheduler DST cases deterministic, queue starvation prevented
-- [ ] 394.5 Edge case: batch dibatalkan di tengah → rollback parsial konsisten, tak meninggalkan state setengah jadi
-- [ ] 394.6 Risiko: retry budget habis → DLQ + alert, bukan infinite loop memakan resource
-- [ ] 394.7 Evidence: queue metrics, checkpoint log, dan scheduler test result tercatat
-- [ ] 394.8 Quality gate Fase 394
+- [x] 394.1 Queue isolation by priority/domain; fairness and tenant quotas; poison message quarantine; retry budgets
+- [x] 394.2 Batch framework: chunk checkpoint, resumability, idempotency, progress metrics, cancellation and safe restart
+- [x] 394.3 Scheduler overlap policy, missed-run detection, dependency graph, time-zone/DST correctness
+- [x] 394.4 Tests: poison job isolated, restart no duplicate posting, scheduler DST cases deterministic, queue starvation prevented
+- [x] 394.5 Edge case: batch dibatalkan di tengah → rollback parsial konsisten, tak meninggalkan state setengah jadi
+- [x] 394.6 Risiko: retry budget habis → DLQ + alert, bukan infinite loop memakan resource
+- [x] 394.7 Evidence: queue metrics, checkpoint log, dan scheduler test result tercatat
+- [x] 394.8 Quality gate Fase 394
 
 ## FASE 395 — STRESS WAVE: READ/WRITE ISOLATION & REPLICA LAG
 - [ ] 395.1 Read routing rules distinguish authoritative money/availability reads from eventual analytics; stale-read label for permitted views
