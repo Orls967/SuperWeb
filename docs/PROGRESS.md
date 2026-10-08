@@ -3512,14 +3512,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 307.8 Quality gate Fase 307
 
 ## FASE 308 — ADVANCED OPERATIONS: NETWORK RESILIENCE & ANTI-FRAGILITY
-- [ ] 308.1 Redundancy mapping: dependency kritikal (supplier, link, route, power, DC) → N-1 analysis (hilang satu komponen) → celah terdeteksi → redundancy investment
-- [ ] 308.2 Chaos game days terjadwal: injeksi kegagalan terkontrol (node mati, region down, vendor hilang) → response time terukur → gap → remediasi → re-test
-- [ ] 308.3 Adaptive routing/allocation: saat gangguan → re-optimize otomatis (Fase 199) dengan constraint safety → recovery time objective per jenis gangguan
-- [ ] 308.4 Tests: N-1 analysis deterministik, chaos exercise tak mengganggu data uang, recovery RTO terukur, `risk:audit` clean
-- [ ] 308.5 Edge case: chaos exercise gagal memulihkan dalam target → jadikan temuan blocker, bukan diulang sampai lulus saja
-- [ ] 308.6 Risiko: redundansi berlebihan membebani biaya → trade-off resilience vs cost dievaluasi & disetujui
-- [ ] 308.7 Evidence: hasil tiap game day (durasi, RTO, temuan, remediasi) diarsipkan dan direview berkala
-- [ ] 308.8 Quality gate Fase 308
+- [x] 308.1 Redundancy mapping: dependency kritikal (supplier, link, route, power, DC) → N-1 analysis (hilang satu komponen) → celah terdeteksi → redundancy investment
+- [x] 308.2 Chaos game days terjadwal: injeksi kegagalan terkontrol (node mati, region down, vendor hilang) → response time terukur → gap → remediasi → re-test
+- [x] 308.3 Adaptive routing/allocation: saat gangguan → re-optimize otomatis (Fase 199) dengan constraint safety → recovery time objective per jenis gangguan
+- [x] 308.4 Tests: N-1 analysis deterministik, chaos exercise tak mengganggu data uang, recovery RTO terukur, `risk:audit` clean
+- [x] 308.5 Edge case: chaos exercise gagal memulihkan dalam target → jadikan temuan blocker, bukan diulang sampai lulus saja
+- [x] 308.6 Risiko: redundansi berlebihan membebani biaya → trade-off resilience vs cost dievaluasi & disetujui
+- [x] 308.7 Evidence: hasil tiap game day (durasi, RTO, temuan, remediasi) diarsipkan dan direview berkala
+- [x] 308.8 Quality gate Fase 308
 
 ## FASE 309 — ADVANCED FINANCE: TREASURY ALGORITHMIC & MARKET RISK
 - [ ] 309.1 Market risk engine: posisi FX, komoditas, rates → sensitivitas (delta simulasi) → VaR/CVaR per portofolio → limit per meja → breach alert
