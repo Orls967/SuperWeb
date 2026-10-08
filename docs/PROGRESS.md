@@ -3682,14 +3682,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 324.8 Quality gate Fase 324
 
 ## FASE 325 — INTEGRASI PEOPLE: TALENT VALUE & ORGANIZATIONAL OUTCOMES
-- [ ] 325.1 Link learning/skill/mobility → project performance, safety, quality and retention outcomes (causal claims guarded; correlation labeled)
-- [ ] 325.2 Human capital report: workforce cost, capability readiness, vacancy risk, internal fill, engagement aggregate → financial & ESG disclosures
-- [ ] 325.3 Investment prioritization: training vs hire vs automation → cost-benefit with uncertainty → post-investment review
-- [ ] 325.4 Tests: metric lineage to HCM ledger/data, small cohorts suppressed, comparison method documented, `hcm:audit` clean
-- [ ] 325.5 Edge case: outcome tak terukur → methodology review, jangan klaim manfaat tanpa bukti
-- [ ] 325.6 Risiko: metrik human capital mengekspos kelompok kecil → privacy threshold k-anonimitas ditegakkan
-- [ ] 325.7 Evidence: baseline human capital, investment decision, dan outcome tercatat dengan confidence
-- [ ] 325.8 Quality gate Fase 325
+- [x] 325.1 Link learning/skill/mobility → project performance, safety, quality and retention outcomes (causal claims guarded; correlation labeled)
+- [x] 325.2 Human capital report: workforce cost, capability readiness, vacancy risk, internal fill, engagement aggregate → financial & ESG disclosures
+- [x] 325.3 Investment prioritization: training vs hire vs automation → cost-benefit with uncertainty → post-investment review
+- [x] 325.4 Tests: metric lineage to HCM ledger/data, small cohorts suppressed, comparison method documented, `hcm:audit` clean
+- [x] 325.5 Edge case: outcome tak terukur → methodology review, jangan klaim manfaat tanpa bukti
+- [x] 325.6 Risiko: metrik human capital mengekspos kelompok kecil → privacy threshold k-anonimitas ditegakkan
+- [x] 325.7 Evidence: baseline human capital, investment decision, dan outcome tercatat dengan confidence
+- [x] 325.8 Quality gate Fase 325
 
 ## FASE 326 — KEBERLANJUTAN: CLIMATE TRANSITION FINANCE & INTERNAL CARBON PRICE
 - [ ] 326.1 Internal carbon price scenarios per sector/site → capex appraisal adjusted → shadow-cost separate from actual tax/ledger

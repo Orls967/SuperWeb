@@ -278,6 +278,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\GlobalPayrollCloseReconciliationService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\SafetyCertifiedPermitAccessService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\CriticalLeadershipCoverageService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\TalentValueOrganizationalOutcomesService::class);
     }
 
     public function boot(): void
