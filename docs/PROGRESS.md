@@ -3383,15 +3383,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 296.9 Quality gate Fase 296
 
 ## FASE 297 — PLATFORM: AUTOMATED OPERATIONS, RUNBOOK EXECUTION & FINOPS
-- [ ] 297.1 Runbook automation: approved operational task (replay DLQ, restore cache, rerun report) → dry-run → approval if material → execute → evidence log
-- [ ] 297.2 Scheduled job registry: owner, cadence, expected duration, idempotency, overlap guard, last success, next run; missed job alerts
-- [ ] 297.3 FinOps: unit cost per transaction/customer/order/model inference/storage GB → budget vs actual → anomaly → rightsizing suggestion → savings verified
-- [ ] 297.4 Operational readiness review for new feature: on-call, dashboard, runbook, rollback, ownership, cost estimate → release gate
-- [ ] 297.5 Tests: runbook action idempotent & authorized, overlapping schedule blocked, FinOps attribution reconciles usage, readiness missing item blocks release
-- [ ] 297.6 Edge case: runbook gagal dijalankan operator → runbook dianggap basi → diperbarui & diuji ulang
-- [ ] 297.7 Job gagal berulang tanpa action → alert ke owner, jangan silent retry forever
-- [ ] 297.8 Readiness review gagal → rilis tertahan sampai runbook/dashboard/rollback ada
-- [ ] 297.9 Quality gate Fase 297
+- [x] 297.1 Runbook automation: approved operational task (replay DLQ, restore cache, rerun report) → dry-run → approval if material → execute → evidence log
+- [x] 297.2 Scheduled job registry: owner, cadence, expected duration, idempotency, overlap guard, last success, next run; missed job alerts
+- [x] 297.3 FinOps: unit cost per transaction/customer/order/model inference/storage GB → budget vs actual → anomaly → rightsizing suggestion → savings verified
+- [x] 297.4 Operational readiness review for new feature: on-call, dashboard, runbook, rollback, ownership, cost estimate → release gate
+- [x] 297.5 Tests: runbook action idempotent & authorized, overlapping schedule blocked, FinOps attribution reconciles usage, readiness missing item blocks release
+- [x] 297.6 Edge case: runbook gagal dijalankan operator → runbook dianggap basi → diperbarui & diuji ulang
+- [x] 297.7 Job gagal berulang tanpa action → alert ke owner, jangan silent retry forever
+- [x] 297.8 Readiness review gagal → rilis tertahan sampai runbook/dashboard/rollback ada
+- [x] 297.9 Quality gate Fase 297
 
 ## FASE 298 — PLATFORM: FINAL 30-LINI STRESS, SECURITY & BUSINESS SIMULATION
 - [ ] 298.1 Full ultra seed 30 lini (Fase 191) plus 12 months simulation: repeatable duration/memory benchmark; checkpoint/resume from each stage; totals stored in AUDIT
