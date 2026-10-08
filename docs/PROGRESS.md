@@ -4292,14 +4292,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 385.8 Quality gate Fase 385
 
 ## FASE 386 — INTEGRASI GELOMBANG 3: MINING, PORT, AVIATION & GLOBAL COMMODITY FLOW
-- [ ] 386.1 Mine output → terminal weighbridge → port yard/berth → vessel voyage → customs/export → buyer receipt → payment/LC release, one traceable commodity chain
-- [ ] 386.2 Assay/quantity disputes pause only related settlement, isolate affected lots and preserve independent evidence; unaffected shipments continue
-- [ ] 386.3 Commodity hedge and insurance correlate to shipment exposure without duplicate positions
-- [ ] 386.4 Tests: quantity balance at every handoff, dispute scope isolated, hedge exposure matches shipment book, `mining:audit` + `port:audit` clean
-- [ ] 386.5 Edge case: assay dispute di tengah voyage → isolation lot, LC hold parsial, shipments lain lanjut
-- [ ] 386.6 Risiko: hedge posisi > eksposur nyata → limit posisi + reconciliation berkala exposure vs hedge
-- [ ] 386.7 Evidence: chain balance per handoff, dispute record, dan hedge-exposure match tercatat
-- [ ] 386.8 Quality gate Fase 386
+- [x] 386.1 Mine output → terminal weighbridge → port yard/berth → vessel voyage → customs/export → buyer receipt → payment/LC release, one traceable commodity chain
+- [x] 386.2 Assay/quantity disputes pause only related settlement, isolate affected lots and preserve independent evidence; unaffected shipments continue
+- [x] 386.3 Commodity hedge and insurance correlate to shipment exposure without duplicate positions
+- [x] 386.4 Tests: quantity balance at every handoff, dispute scope isolated, hedge exposure matches shipment book, `mining:audit` + `port:audit` clean
+- [x] 386.5 Edge case: assay dispute di tengah voyage → isolation lot, LC hold parsial, shipments lain lanjut
+- [x] 386.6 Risiko: hedge posisi > eksposur nyata → limit posisi + reconciliation berkala exposure vs hedge
+- [x] 386.7 Evidence: chain balance per handoff, dispute record, dan hedge-exposure match tercatat
+- [x] 386.8 Quality gate Fase 386
 
 ## FASE 387 — INTEGRASI GELOMBANG 3: CROSS-LINE EVENT AND PROCESS MESH
 - [ ] 387.1 Canonical business process events across 30 lines with source, correlation, causation, schema version, tenant scope and lifecycle state
