@@ -4162,14 +4162,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 372.8 Quality gate Fase 372
 
 ## FASE 373 — EKOSISTEM: MARKETPLACE TRUST, DISPUTE & BUYER PROTECTION
-- [ ] 373.1 Standard dispute taxonomy, evidence checklist, neutral reviewer assignment, timelines and escalation across B2B/B2C/venue/hotel services
-- [ ] 373.2 Buyer protection: escrow/hold rules per category, partial fulfillment, refund/repair/replacement remedy, appeal
-- [ ] 373.3 Seller quality tiers and sanctions: progressive warnings, listing restrictions, suspension, reinstatement after remediation
-- [ ] 373.4 Tests: evidence required by dispute type, hold release only after outcome, reviewer conflict blocked, `marketplace:audit` clean
-- [ ] 373.5 Edge case: reviewer berkonflik → diganti otomatis, keputusan tak boleh dari pihak terkait
-- [ ] 373.6 Risiko: seller fund hold terlalu lama → SLA dispute + kompensasi bila platform yang lambat
-- [ ] 373.7 Evidence: dispute aging, remedy execution, dan seller tier change tercatat per kasus
-- [ ] 373.8 Quality gate Fase 373
+- [x] 373.1 Standard dispute taxonomy, evidence checklist, neutral reviewer assignment, timelines and escalation across B2B/B2C/venue/hotel services
+- [x] 373.2 Buyer protection: escrow/hold rules per category, partial fulfillment, refund/repair/replacement remedy, appeal
+- [x] 373.3 Seller quality tiers and sanctions: progressive warnings, listing restrictions, suspension, reinstatement after remediation
+- [x] 373.4 Tests: evidence required by dispute type, hold release only after outcome, reviewer conflict blocked, `marketplace:audit` clean
+- [x] 373.5 Edge case: reviewer berkonflik → diganti otomatis, keputusan tak boleh dari pihak terkait
+- [x] 373.6 Risiko: seller fund hold terlalu lama → SLA dispute + kompensasi bila platform yang lambat
+- [x] 373.7 Evidence: dispute aging, remedy execution, dan seller tier change tercatat per kasus
+- [x] 373.8 Quality gate Fase 373
 
 ## FASE 374 — EKOSISTEM: TRUST & SAFETY, MODERATION & USER PROTECTION
 - [ ] 374.1 Unified trust operations across reviews, forums, tickets, creator content and marketplace listings; risk tiers and moderation SLA
