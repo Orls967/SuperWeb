@@ -4352,14 +4352,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 391.8 Quality gate Fase 391
 
 ## FASE 392 — STRESS WAVE: DOMAIN-SPECIFIC LOAD & CAPACITY ENVELOPES
-- [ ] 392.1 Define supported envelope per domain (peak TPS, concurrent users, device events, batch size, retention) with tested operating limits
-- [ ] 392.2 Load profiles for healthcare peak, festival ticket drop, hotel check-in wave, mine dispatch shift, retail flash sale and month-end close
-- [ ] 392.3 Graceful degradation policy per endpoint: queue, shed, stale-read, manual fallback, or reject with retry guidance
-- [ ] 392.4 Tests: each profile stays within envelope, breach gives documented response, no ledger/data invariant failure
-- [ ] 392.5 Edge case: load melebihi envelope tanpa persiapan → admission control menolak dengan pesan jelas, invarian tetap utuh
-- [ ] 392.6 Risiko: envelope diambil dari peak sesaat → envelope pakai sustainable 24-hour load, bukan spike sesaat
-- [ ] 392.7 Evidence: envelope document per domain, degradation policy, dan load result tercatat
-- [ ] 392.8 Quality gate Fase 392
+- [x] 392.1 Define supported envelope per domain (peak TPS, concurrent users, device events, batch size, retention) with tested operating limits
+- [x] 392.2 Load profiles for healthcare peak, festival ticket drop, hotel check-in wave, mine dispatch shift, retail flash sale and month-end close
+- [x] 392.3 Graceful degradation policy per endpoint: queue, shed, stale-read, manual fallback, or reject with retry guidance
+- [x] 392.4 Tests: each profile stays within envelope, breach gives documented response, no ledger/data invariant failure
+- [x] 392.5 Edge case: load melebihi envelope tanpa persiapan → admission control menolak dengan pesan jelas, invarian tetap utuh
+- [x] 392.6 Risiko: envelope diambil dari peak sesaat → envelope pakai sustainable 24-hour load, bukan spike sesaat
+- [x] 392.7 Evidence: envelope document per domain, degradation policy, dan load result tercatat
+- [x] 392.8 Quality gate Fase 392
 
 ## FASE 393 — STRESS WAVE: DATABASE PARTITION & ARCHIVE SCALE
 - [ ] 393.1 Partition strategy by event date/tenant/domain for largest append-only tables; ownership and retention clearly declared
