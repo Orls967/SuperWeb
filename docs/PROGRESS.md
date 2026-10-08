@@ -4052,14 +4052,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 361.8 Quality gate Fase 361
 
 ## FASE 362 — GLOBAL PLATFORM: ENTERPRISE SERVICE MANAGEMENT & CONFIGURATION DATABASE
-- [ ] 362.1 Service/asset configuration registry (CMDB): applications, modules, queues, database, vendors, sites, owners, dependencies, criticality
-- [ ] 362.2 Incident/problem/change/request lifecycle integrated with release & risk controls (Fase 238, 204); correlation ID joins customer issue to technical incident
-- [ ] 362.3 Configuration drift detection against approved baseline; unauthorized change → alert and remediation workflow
-- [ ] 362.4 Tests: service dependency map resolves, drift alert reproducible, incident link preserved, `platform:audit` clean
-- [ ] 362.5 Edge case: unauthorized change terdeteksi → alert + rollback/dokumentasi, jangan dibiarkan drift
-- [ ] 362.6 Risiko: CMDB tak lengkap → dependency discovery otomatis menutup gap
-- [ ] 362.7 Evidence: drift report, incident correlation, dan registry completeness tercatat
-- [ ] 362.8 Quality gate Fase 362
+- [x] 362.1 Service/asset configuration registry (CMDB): applications, modules, queues, database, vendors, sites, owners, dependencies, criticality
+- [x] 362.2 Incident/problem/change/request lifecycle integrated with release & risk controls (Fase 238, 204); correlation ID joins customer issue to technical incident
+- [x] 362.3 Configuration drift detection against approved baseline; unauthorized change → alert and remediation workflow
+- [x] 362.4 Tests: service dependency map resolves, drift alert reproducible, incident link preserved, `platform:audit` clean
+- [x] 362.5 Edge case: unauthorized change terdeteksi → alert + rollback/dokumentasi, jangan dibiarkan drift
+- [x] 362.6 Risiko: CMDB tak lengkap → dependency discovery otomatis menutup gap
+- [x] 362.7 Evidence: drift report, incident correlation, dan registry completeness tercatat
+- [x] 362.8 Quality gate Fase 362
 
 ## FASE 363 — GLOBAL PLATFORM: SERVICE OWNERSHIP, ON-CALL & SLO GOVERNANCE
 - [ ] 363.1 Named owner, deputy, on-call rotation and escalation policy for every critical service/domain
