@@ -3174,14 +3174,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 276.8 Quality gate Fase 276
 
 ## FASE 277 — OPERASI: PLANNING & SCHEDULING UNIFICATION (AP, CRP, WORKFORCE)
-- [ ] 277.1 Unified planning stack: demand (Fase 201) → supply network (Fase 215) → capacity (Fase 36.4 generalized) → workforce (Fase 223.2) → financial plan (Fase 54.1) → satu consistent plan number
-- [ ] 277.2 Finite scheduling lintas sumber daya (mesin, orang, ruang, kapal, seat): constraint solver (Fase 199) → schedule → shop-floor execution feedback → reschedule trigger rules
-- [ ] 277.3 S&OP cadence terintegrasi dengan financial close & capital cycle → plan-actual-review dalam kalender tunggal
-- [ ] 277.4 Tests: schedule feasibility 100% (tak overbook), plan number konsisten lintas fungsi, reschedule deterministik, `tower:audit` clean
-- [ ] 277.5 Edge case: plan number berubah setelah sign-off → versi baru + approval, plan lama diarsipkan
-- [ ] 277.6 Reschedule tak boleh melanggar hard constraint (jam kerja, kapasitas, permit) → diuji
-- [ ] 277.7 Kalender close/plan diselaraskan dengan periode fiskal & holiday lintas negara
-- [ ] 277.8 Quality gate Fase 277
+- [x] 277.1 Unified planning stack: demand (Fase 201) → supply network (Fase 215) → capacity (Fase 36.4 generalized) → workforce (Fase 223.2) → financial plan (Fase 54.1) → satu consistent plan number
+- [x] 277.2 Finite scheduling lintas sumber daya (mesin, orang, ruang, kapal, seat): constraint solver (Fase 199) → schedule → shop-floor execution feedback → reschedule trigger rules
+- [x] 277.3 S&OP cadence terintegrasi dengan financial close & capital cycle → plan-actual-review dalam kalender tunggal
+- [x] 277.4 Tests: schedule feasibility 100% (tak overbook), plan number konsisten lintas fungsi, reschedule deterministik, `tower:audit` clean
+- [x] 277.5 Edge case: plan number berubah setelah sign-off → versi baru + approval, plan lama diarsipkan
+- [x] 277.6 Reschedule tak boleh melanggar hard constraint (jam kerja, kapasitas, permit) → diuji
+- [x] 277.7 Kalender close/plan diselaraskan dengan periode fiskal & holiday lintas negara
+- [x] 277.8 Quality gate Fase 277
 
 ## FASE 278 — OPERASI: FLEET & ASSET UTILIZATION OPTIMIZATION 30 LINI
 - [ ] 278.1 Asset utilization framework: semua aset bergerak & stasioner (truk, kapal, pesawat, alat berat, CT scanner, kapasitas pabrik, kamar, seat, crane) → utilization, idle cost, revenue per asset-hour
