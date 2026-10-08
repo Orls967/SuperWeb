@@ -25,6 +25,7 @@ use Modules\Integration\Application\Services\CircularEconomyService;
 use Modules\Integration\Application\Services\ConcurrencyLockingService;
 use Modules\Integration\Application\Services\CrisisContinuityService;
 use Modules\Integration\Application\Services\CrossBorderPayrollService;
+use Modules\Integration\Application\Services\CustomerCrm360Service;
 use Modules\Integration\Application\Services\CyberResilienceService;
 use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\DomainGovernanceService;
@@ -170,6 +171,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(FieldServiceSlaService::class);
         $this->app->singleton(ProjectPortfolioManagementService::class);
         $this->app->singleton(RndTechTransferService::class);
+        $this->app->singleton(CustomerCrm360Service::class);
     }
 
     public function boot(): void
