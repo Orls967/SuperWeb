@@ -4402,14 +4402,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 396.8 Quality gate Fase 396
 
 ## FASE 397 — STRESS WAVE: DATA QUALITY & DRIFT UNDER LOAD
-- [ ] 397.1 Continuous DQ checks sampled vs full scans based on risk; ensure production checks don't create load spikes
-- [ ] 397.2 Drift monitors on master data, telemetry, price feeds and model inputs; thresholds and owner action defined
-- [ ] 397.3 Quarantine/repair pipelines preserve source records, track correction lineage and prevent bad data propagation
-- [ ] 397.4 Tests: injected bad data quarantined, repair reversible/audited, DQ scan budget respected
-- [ ] 397.5 Edge case: drift terdeteksi pada feed harga → freeze harga otomatis hingga feed diverifikasi
-- [ ] 397.6 Risiko: DQ check sendiri membebani DB → sampling berkala, bukan full scan di peak hours
-- [ ] 397.7 Evidence: DQ score per domain, quarantine log, dan repair lineage tercatat
-- [ ] 397.8 Quality gate Fase 397
+- [x] 397.1 Continuous DQ checks sampled vs full scans based on risk; ensure production checks don't create load spikes
+- [x] 397.2 Drift monitors on master data, telemetry, price feeds and model inputs; thresholds and owner action defined
+- [x] 397.3 Quarantine/repair pipelines preserve source records, track correction lineage and prevent bad data propagation
+- [x] 397.4 Tests: injected bad data quarantined, repair reversible/audited, DQ scan budget respected
+- [x] 397.5 Edge case: drift terdeteksi pada feed harga → freeze harga otomatis hingga feed diverifikasi
+- [x] 397.6 Risiko: DQ check sendiri membebani DB → sampling berkala, bukan full scan di peak hours
+- [x] 397.7 Evidence: DQ score per domain, quarantine log, dan repair lineage tercatat
+- [x] 397.8 Quality gate Fase 397
 
 ## FASE 398 — STRESS WAVE: SECURITY, PRIVACY & PENETRATION REGRESSION 30 LINI
 - [ ] 398.1 Automated auth matrix across route × role × tenant × region × data classification; test role escalation and object-level scope
