@@ -4412,14 +4412,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 397.8 Quality gate Fase 397
 
 ## FASE 398 — STRESS WAVE: SECURITY, PRIVACY & PENETRATION REGRESSION 30 LINI
-- [ ] 398.1 Automated auth matrix across route × role × tenant × region × data classification; test role escalation and object-level scope
-- [ ] 398.2 Abuse cases: replay, webhook spoof, credential rotation race, mass export, ticket scalping, API scraping, payment race
-- [ ] 398.3 Privacy regression: PII in logs/traces/exports, consent revocation, retention and legal hold conflicts, data residency
-- [ ] 398.4 Tests: no critical/high finding, all known regressions have permanent test, independent reviewer sign-off
-- [ ] 398.5 Edge case: penetration test menemukan celah critical → release diblokir sampai fix + retest
-- [ ] 398.6 Risiko: regression suite lambat → tiered suite (smoke di CI penuh, full nightly) dengan coverage tercatat
-- [ ] 398.7 Evidence: matrix result, abuse case log, dan privacy scan report terarsip
-- [ ] 398.8 Quality gate Fase 398
+- [x] 398.1 Automated auth matrix across route × role × tenant × region × data classification; test role escalation and object-level scope
+- [x] 398.2 Abuse cases: replay, webhook spoof, credential rotation race, mass export, ticket scalping, API scraping, payment race
+- [x] 398.3 Privacy regression: PII in logs/traces/exports, consent revocation, retention and legal hold conflicts, data residency
+- [x] 398.4 Tests: no critical/high finding, all known regressions have permanent test, independent reviewer sign-off
+- [x] 398.5 Edge case: penetration test menemukan celah critical → release diblokir sampai fix + retest
+- [x] 398.6 Risiko: regression suite lambat → tiered suite (smoke di CI penuh, full nightly) dengan coverage tercatat
+- [x] 398.7 Evidence: matrix result, abuse case log, dan privacy scan report terarsip
+- [x] 398.8 Quality gate Fase 398
 
 ## FASE 399 — STRESS WAVE: DISASTER RECOVERY, FAILOVER & RESTORE PROOF
 - [ ] 399.1 Quarterly DR drill across active regions, queues, document store, object archive, keys and event spine; measure RPO/RTO per tier
