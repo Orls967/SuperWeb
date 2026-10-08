@@ -4142,14 +4142,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 370.8 Quality gate Fase 370
 
 ## FASE 371 — EKOSISTEM: PARTNER ONBOARDING & ECOSYSTEM QUALITY
-- [ ] 371.1 Unified onboarding: KYB, due diligence, API sandbox, contract, billing, training, certification and go-live checklist per partner class
-- [ ] 371.2 Partner health score: delivery, quality, compliance, support, data accuracy and financial standing; action bands and appeal process
-- [ ] 371.3 Offboarding and data portability: revoke access, settle balances, transfer open cases, export partner-owned data, retain required audit evidence
-- [ ] 371.4 Tests: go-live blocked until required gates pass, score explainable, offboarding access removed, `ptn:audit` clean
-- [ ] 371.5 Edge case: partner gagal onboarding → status rejected dengan alasan, bisa apply ulang setelah remediasi
-- [ ] 371.6 Risiko: offboarding meninggalkan akses → revoke proof wajib sebelum penutupan kontrak
-- [ ] 371.7 Evidence: checklist completion, scorecard, dan offboarding evidence tercatat
-- [ ] 371.8 Quality gate Fase 371
+- [x] 371.1 Unified onboarding: KYB, due diligence, API sandbox, contract, billing, training, certification and go-live checklist per partner class
+- [x] 371.2 Partner health score: delivery, quality, compliance, support, data accuracy and financial standing; action bands and appeal process
+- [x] 371.3 Offboarding and data portability: revoke access, settle balances, transfer open cases, export partner-owned data, retain required audit evidence
+- [x] 371.4 Tests: go-live blocked until required gates pass, score explainable, offboarding access removed, `ptn:audit` clean
+- [x] 371.5 Edge case: partner gagal onboarding → status rejected dengan alasan, bisa apply ulang setelah remediasi
+- [x] 371.6 Risiko: offboarding meninggalkan akses → revoke proof wajib sebelum penutupan kontrak
+- [x] 371.7 Evidence: checklist completion, scorecard, dan offboarding evidence tercatat
+- [x] 371.8 Quality gate Fase 371
 
 ## FASE 372 — EKOSISTEM: API ECONOMICS, BILLING & PARTNER SETTLEMENT
 - [ ] 372.1 Meter API usage by endpoint, tenant, tier, latency class and successful outcome; billable event rules versioned

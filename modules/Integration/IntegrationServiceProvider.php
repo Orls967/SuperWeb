@@ -324,6 +324,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\DocumentRecordAutomationService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\EventSpineReplayCenterService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\ArchitectureFitnessMonolithHealthService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\PartnerOnboardingEcosystemService::class);
     }
 
     public function boot(): void
