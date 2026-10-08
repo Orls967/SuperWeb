@@ -2371,14 +2371,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 196.8 Quality gate Fase 196
 
 ## FASE 197 — AI: DECISION LOG, EXPLAINABILITY & MODEL AUDIT
-- [ ] 197.1 Decision log: setiap keputusan otomatis menyimpan input snapshot, versi model, output, dan tindakan yang diambil → bisa di-replay identik (audit Fase 64.4 diperluas ke 30 lini)
-- [ ] 197.2 Explainability view: alasan faktor utama (feature contribution simulasi) per keputusan penting → tersedia untuk reviewer & regulator simulasi
-- [ ] 197.3 Fairness & bias check: hasil tidak boleh berbeda berdasarkan atribut terlindungi (uji statistik) → temuan → koreksi → tercatat
-- [ ] 197.4 `ai:audit` final: coverage (keputusan tercatat / keputusan dibuat = 100%), rekonstruksi identik, drift policy dipatuhi → masuk health-check
-- [ ] 197.5 Tests: replay identik 100% pada sampel, bias test punya threshold & fail saat melanggar, decision log append-only
-- [ ] 197.6 Edge case: log keputusan tak bisa direplay (data dihapus) → tanda "unreproducible" → audit gagal → kontrol diperkuat
-- [ ] 197.7 Bias remediation: temuan bias → perbaikan model → re-test fairness sebelum rilis ulang
-- [ ] 197.8 Quality gate Fase 197
+- [x] 197.1 Decision log: setiap keputusan otomatis menyimpan input snapshot, versi model, output, dan tindakan yang diambil → bisa di-replay identik (audit Fase 64.4 diperluas ke 30 lini)
+- [x] 197.2 Explainability view: alasan faktor utama (feature contribution simulasi) per keputusan penting → tersedia untuk reviewer & regulator simulasi
+- [x] 197.3 Fairness & bias check: hasil tidak boleh berbeda berdasarkan atribut terlindungi (uji statistik) → temuan → koreksi → tercatat
+- [x] 197.4 `ai:audit` final: coverage (keputusan tercatat / keputusan dibuat = 100%), rekonstruksi identik, drift policy dipatuhi → masuk health-check
+- [x] 197.5 Tests: replay identik 100% pada sampel, bias test punya threshold & fail saat melanggar, decision log append-only
+- [x] 197.6 Edge case: log keputusan tak bisa direplay (data dihapus) → tanda "unreproducible" → audit gagal → kontrol diperkuat
+- [x] 197.7 Bias remediation: temuan bias → perbaikan model → re-test fairness sebelum rilis ulang
+- [x] 197.8 Quality gate Fase 197
 
 ## FASE 198 — AI: GENERATIVE CONTENT, KNOWLEDGE ASSISTANT & SOP COPILOT
 - [ ] 198.1 Knowledge assistant internal: menjawab dari dokumen terverifikasi saja (ARCHITECTURE, RUNBOOK, kontrak, kebijakan) → sitasi wajib ke sumber → tanpa sitasi = tidak ditampilkan

@@ -6,6 +6,7 @@ namespace Modules\Integration;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Integration\Application\Services\AgentHitlOrchestrationService;
+use Modules\Integration\Application\Services\AiDecisionAuditService;
 use Modules\Integration\Application\Services\AiModelGuardrailService;
 use Modules\Integration\Application\Services\AirlineNetworkService;
 use Modules\Integration\Application\Services\AnalyticsFederationService;
@@ -126,6 +127,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(GlobalSearchService::class);
         $this->app->singleton(AiModelGuardrailService::class);
         $this->app->singleton(AgentHitlOrchestrationService::class);
+        $this->app->singleton(AiDecisionAuditService::class);
     }
 
     public function boot(): void
