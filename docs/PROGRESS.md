@@ -2792,14 +2792,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 238.8 Quality gate Fase 238
 
 ## FASE 239 — PLATFORM: PERFORMANCE ENGINEERING & COST OPTIMIZATION
-- [ ] 239.1 Performance observability per endpoint: p50/p95/p99, throughput, slow query, N+1 detection otomatis → regression gate CI (memperluas Fase 192.4)
-- [ ] 239.2 Cost-to-serve per modul & per transaksi (infra simulasi: compute, storage, queue) → trend → hotspots → optimasi (query, cache, partition) → saving terukur
-- [ ] 239.3 Capacity planning: pertumbuhan data & trafik 12 bulan → proyeksi → scaling plan (shard, read replica, archive) → capex/opex proposal ke Treasury (Fase 210.2)
-- [ ] 239.4 Efficiency culture: performance budget per fitur baru (query & latensi) → review saat design → mencegah degradasi kumulatif
-- [ ] 239.5 Tests: budget regresi gagal CI, cost attribution konsisten dengan usage, projection model deterministik, efficiency budget enforced pada template PR
-- [ ] 239.6 Edge case: optimasi kinerja memperlambat write → trade-off ditimbang & dicatat keputusannya
-- [ ] 239.7 Regresi biaya dari fitur baru → performance budget CI menangkap sebelum produksi
-- [ ] 239.8 Quality gate Fase 239
+- [x] 239.1 Performance observability per endpoint: p50/p95/p99, throughput, slow query, N+1 detection otomatis → regression gate CI (memperluas Fase 192.4)
+- [x] 239.2 Cost-to-serve per modul & per transaksi (infra simulasi: compute, storage, queue) → trend → hotspots → optimasi (query, cache, partition) → saving terukur
+- [x] 239.3 Capacity planning: pertumbuhan data & trafik 12 bulan → proyeksi → scaling plan (shard, read replica, archive) → capex/opex proposal ke Treasury (Fase 210.2)
+- [x] 239.4 Efficiency culture: performance budget per fitur baru (query & latensi) → review saat design → mencegah degradasi kumulatif
+- [x] 239.5 Tests: budget regresi gagal CI, cost attribution konsisten dengan usage, projection model deterministik, efficiency budget enforced pada template PR
+- [x] 239.6 Edge case: optimasi kinerja memperlambat write → trade-off ditimbang & dicatat keputusannya
+- [x] 239.7 Regresi biaya dari fitur baru → performance budget CI menangkap sebelum produksi
+- [x] 239.8 Quality gate Fase 239
 
 ## FASE 240 — PLATFORM: EXPERIENCE DESIGN SYSTEM & ACCESSIBILITY
 - [ ] 240.1 Design system lintas 30 lini: komponen, token warna/tipografi/spacing, pola (form, table, flow) → satu library → konsistensi visual & interaksi lintas modul
