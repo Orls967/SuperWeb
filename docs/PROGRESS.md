@@ -3372,15 +3372,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 295.9 Quality gate Fase 295
 
 ## FASE 296 — PLATFORM: CONFIGURATION, FEATURE FLAGS & ENVIRONMENT PARITY
-- [ ] 296.1 Configuration registry per environment (dev/test/staging/prod-sim) → typed schema → secret references only → validation at boot; invalid config prevents startup
-- [ ] 296.2 Feature flag service: per tenant/region/role rollout, expiry owner, kill switch, audit; remove stale flag after adoption window
-- [ ] 296.3 Environment parity: seeded fixtures and service stubs consistent; drift detection for schema/config/queues; staging promotion gate
-- [ ] 296.4 Secrets lifecycle: vault, rotation, least privilege, no secret in logs/source; rotation simulation without downtime
-- [ ] 296.5 Tests: invalid config fails fast, flag scope enforced, stale flag report, secret scan CI clean
-- [ ] 296.6 Edge case: flag basi ditemukan → owner diberi deadline hapus; lewat → dihapus otomatis + log
-- [ ] 296.7 Drift environment → alert sebelum berdampak pada perilaku test/release
-- [ ] 296.8 Secret scan CI membersihkan source dari material sensitif
-- [ ] 296.9 Quality gate Fase 296
+- [x] 296.1 Configuration registry per environment (dev/test/staging/prod-sim) → typed schema → secret references only → validation at boot; invalid config prevents startup
+- [x] 296.2 Feature flag service: per tenant/region/role rollout, expiry owner, kill switch, audit; remove stale flag after adoption window
+- [x] 296.3 Environment parity: seeded fixtures and service stubs consistent; drift detection for schema/config/queues; staging promotion gate
+- [x] 296.4 Secrets lifecycle: vault, rotation, least privilege, no secret in logs/source; rotation simulation without downtime
+- [x] 296.5 Tests: invalid config fails fast, flag scope enforced, stale flag report, secret scan CI clean
+- [x] 296.6 Edge case: flag basi ditemukan → owner diberi deadline hapus; lewat → dihapus otomatis + log
+- [x] 296.7 Drift environment → alert sebelum berdampak pada perilaku test/release
+- [x] 296.8 Secret scan CI membersihkan source dari material sensitif
+- [x] 296.9 Quality gate Fase 296
 
 ## FASE 297 — PLATFORM: AUTOMATED OPERATIONS, RUNBOOK EXECUTION & FINOPS
 - [ ] 297.1 Runbook automation: approved operational task (replay DLQ, restore cache, rerun report) → dry-run → approval if material → execute → evidence log
