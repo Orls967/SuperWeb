@@ -2511,14 +2511,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 210.8 Quality gate Fase 210
 
 ## FASE 211 — KEUANGAN: INVESTOR RELATIONS & MARKET DISCIPLINE
-- [ ] 211.1 Earnings cycle: guidance (internal), actual vs guidance variance root-cause, press release draf (approval), investor FAQ knowledge base (Fase 198.1)
-- [ ] 211.2 KPI & non-GAAP reconciliation: setiap metrik non-standar punya bridge ke standar → konsistensi definisi (Fase 189.2) → auditor simulasi puas
-- [ ] 211.3 Market data & valuation: harga token/sukuk/RWA (orderbook Fase 71/162) → fair value assessment periodik → disclosure jika deviasi signifikan
-- [ ] 211.4 Shareholder register & corporate actions: dilusi, stock split simulasi token, right issue, voting record date → terintegrasi DAO (Fase 86)
-- [ ] 211.5 Tests: guidance cycle terdokumentasi, non-GAAP bridge konsisten, corporate action Σ token tetap seimbang, `group:audit` clean
-- [ ] 211.6 Edge case: market data tak tersedia (private asset) → fair value pakai valuation model dengan range ketidakpastian
-- [ ] 211.7 Disclosure event material → approval legal + board → publikasi serentak ke semua pemegang saham
-- [ ] 211.8 Quality gate Fase 211
+- [x] 211.1 Earnings cycle: guidance (internal), actual vs guidance variance root-cause, press release draf (approval), investor FAQ knowledge base (Fase 198.1)
+- [x] 211.2 KPI & non-GAAP reconciliation: setiap metrik non-standar punya bridge ke standar → konsistensi definisi (Fase 189.2) → auditor simulasi puas
+- [x] 211.3 Market data & valuation: harga token/sukuk/RWA (orderbook Fase 71/162) → fair value assessment periodik → disclosure jika deviasi signifikan
+- [x] 211.4 Shareholder register & corporate actions: dilusi, stock split simulasi token, right issue, voting record date → terintegrasi DAO (Fase 86)
+- [x] 211.5 Tests: guidance cycle terdokumentasi, non-GAAP bridge konsisten, corporate action Σ token tetap seimbang, `group:audit` clean
+- [x] 211.6 Edge case: market data tak tersedia (private asset) → fair value pakai valuation model dengan range ketidakpastian
+- [x] 211.7 Disclosure event material → approval legal + board → publikasi serentak ke semua pemegang saham
+- [x] 211.8 Quality gate Fase 211
 
 ## FASE 212 — KEUANGAN: PROFITABILITY, TRANSFER PRICING & COST INTELLIGENCE
 - [ ] 212.1 Profitability hierarchy: entitas → lini → unit → produk/kanal/proyek → pelanggan/kontrak → channel profitability sejati (biaya layanan, fulfillment, akuisisi ter-allocate)

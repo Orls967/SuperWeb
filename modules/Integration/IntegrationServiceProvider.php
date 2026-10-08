@@ -43,6 +43,7 @@ use Modules\Integration\Application\Services\GroupCommandCenterService;
 use Modules\Integration\Application\Services\IdentityTenancyService;
 use Modules\Integration\Application\Services\IntegrationService;
 use Modules\Integration\Application\Services\InternalControlSodService;
+use Modules\Integration\Application\Services\InvestorRelationsService;
 use Modules\Integration\Application\Services\IslamicTradeFinanceService;
 use Modules\Integration\Application\Services\LearningPlatformService;
 use Modules\Integration\Application\Services\LegalOperationsService;
@@ -154,6 +155,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(TaxCustomsTradeService::class);
         $this->app->singleton(FinanceCloseAgilityService::class);
         $this->app->singleton(CapitalFundingStrategyService::class);
+        $this->app->singleton(InvestorRelationsService::class);
     }
 
     public function boot(): void
