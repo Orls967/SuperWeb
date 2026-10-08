@@ -3572,14 +3572,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 313.8 Quality gate Fase 313
 
 ## FASE 314 — ADVANCED COMMERCE: SUBSCRIPTION COMMERCE & INSTANT REPLENISHMENT
-- [ ] 314.1 Subscribe-and-save lintas lini: bahan grocery (Fase 75), sparepart fleet (Fase 70), hotel loyalty nights, media content, telecom data → satu engine plan dengan discount ladder
-- [ ] 314.2 Predictive replenishment: consumption pattern → auto-ship sebelum habis (consumable) → skip/edit window → forecast accuracy per subscriber → waste rendah
-- [ ] 314.3 Membership tiers commerce: benefit (free shipping, early access, bundle price) → cost of benefit terukur → LTV cohort comparison → price tiering optimal
-- [ ] 314.4 Tests: auto-ship idempoten & user control bekerja, discount ladder benar, LTV cohort akurat, `billing:audit` clean
-- [ ] 314.5 Edge case: auto-ship gagal (stok kosong/gagal bayar) → notice + pilihan skip/pause, tanpa surprise charge
-- [ ] 314.6 Risiko: churn subscriber tinggi → cohort retention dianalisis, win-back flow aktif
-- [ ] 314.7 Evidence: subscriber growth, churn, dan net revenue retention tercatat per kuartal
-- [ ] 314.8 Quality gate Fase 314
+- [x] 314.1 Subscribe-and-save lintas lini: bahan grocery (Fase 75), sparepart fleet (Fase 70), hotel loyalty nights, media content, telecom data → satu engine plan dengan discount ladder
+- [x] 314.2 Predictive replenishment: consumption pattern → auto-ship sebelum habis (consumable) → skip/edit window → forecast accuracy per subscriber → waste rendah
+- [x] 314.3 Membership tiers commerce: benefit (free shipping, early access, bundle price) → cost of benefit terukur → LTV cohort comparison → price tiering optimal
+- [x] 314.4 Tests: auto-ship idempoten & user control bekerja, discount ladder benar, LTV cohort akurat, `billing:audit` clean
+- [x] 314.5 Edge case: auto-ship gagal (stok kosong/gagal bayar) → notice + pilihan skip/pause, tanpa surprise charge
+- [x] 314.6 Risiko: churn subscriber tinggi → cohort retention dianalisis, win-back flow aktif
+- [x] 314.7 Evidence: subscriber growth, churn, dan net revenue retention tercatat per kuartal
+- [x] 314.8 Quality gate Fase 314
 
 ## FASE 315 — ADVANCED ECOSYSTEM: SUPER APP ECOSYSTEM & MINI-APP PLATFORM
 - [ ] 315.1 Mini-app platform: mitra/lini membangun modul UI ringan di dalam super app (Fase 138) → SDK, sandbox, review → discovery → analytics → revenue share usage
