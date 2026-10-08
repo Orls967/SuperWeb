@@ -2421,14 +2421,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 201.8 Quality gate Fase 201
 
 ## FASE 202 — RISIKO: ENTERPRISE RISK MANAGEMENT FRAMEWORK
-- [ ] 202.1 Risk taxonomy 30 lini (strategis, operasional, keuangan, kepatuhan, teknologi, reputasi, lingkungan, sumber daya) → register risiko dengan pemilik, inherent score, control set, residual score
-- [ ] 202.2 Risk assessment cycle: identifikasi → analisis (likelihood × impact finansial simulasi) → treatment (avoid/mitigate/transfer/accept) → monitoring → review berkala
-- [ ] 202.3 Key risk indicators (KRI) otomatis dari sistem (ratio konsentrasi, downtime, NPF, denial klaim, siklus kas, insiden safety) → breach → eskalasi pemilik risiko
-- [ ] 202.4 Risk appetite statement per lini → keputusan besar (capex, ekspansi, kontrak) dicek terhadap appetite → melanggar = approval dewan wajib
-- [ ] 202.5 Tests: KRI terhitung dari data nyata, appetite breach memblokir/escalate, review cycle terjadwal, `risk:audit` clean
-- [ ] 202.6 Taxonomy versioned: risk owner bisa mengusulkan kategori baru → review komite → migrasi register lama
-- [ ] 202.7 Scenario linkage: risiko material diuji lewat stress scenario Fase 243 → hasil memperbarui residual score
-- [ ] 202.8 Quality gate Fase 202
+- [x] 202.1 Risk taxonomy 30 lini (strategis, operasional, keuangan, kepatuhan, teknologi, reputasi, lingkungan, sumber daya) → register risiko dengan pemilik, inherent score, control set, residual score
+- [x] 202.2 Risk assessment cycle: identifikasi → analisis (likelihood × impact finansial simulasi) → treatment (avoid/mitigate/transfer/accept) → monitoring → review berkala
+- [x] 202.3 Key risk indicators (KRI) otomatis dari sistem (ratio konsentrasi, downtime, NPF, denial klaim, siklus kas, insiden safety) → breach → eskalasi pemilik risiko
+- [x] 202.4 Risk appetite statement per lini → keputusan besar (capex, ekspansi, kontrak) dicek terhadap appetite → melanggar = approval dewan wajib
+- [x] 202.5 Tests: KRI terhitung dari data nyata, appetite breach memblokir/escalate, review cycle terjadwal, `risk:audit` clean
+- [x] 202.6 Taxonomy versioned: risk owner bisa mengusulkan kategori baru → review komite → migrasi register lama
+- [x] 202.7 Scenario linkage: risiko material diuji lewat stress scenario Fase 243 → hasil memperbarui residual score
+- [x] 202.8 Quality gate Fase 202
 
 ## FASE 203 — RISIKO: INTERNAL CONTROL, SoD 30 LINI & CONTROL TESTING
 - [ ] 203.1 Pemetaan kontrol per proses kritikal 30 lini (preventive/detective) → kontrol otomatis (system-enforced) vs manual (dengan bukti) → control matrix

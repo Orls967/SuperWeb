@@ -25,6 +25,7 @@ use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\DomainGovernanceService;
 use Modules\Integration\Application\Services\EmbeddedInsuranceService;
+use Modules\Integration\Application\Services\EnterpriseRiskService;
 use Modules\Integration\Application\Services\EthicalSourcingService;
 use Modules\Integration\Application\Services\FashionRetailCircularService;
 use Modules\Integration\Application\Services\FashionSourcingService;
@@ -136,6 +137,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(AiOptimizationEngineService::class);
         $this->app->singleton(AiFraudAmlMeshService::class);
         $this->app->singleton(AiForecastingSopService::class);
+        $this->app->singleton(EnterpriseRiskService::class);
     }
 
     public function boot(): void
