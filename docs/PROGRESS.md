@@ -3074,14 +3074,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 266.8 Quality gate Fase 266
 
 ## FASE 267 — DATA: DATA MESH FEDERATED GOVERNANCE (30 DOMAIN PRODUCT)
-- [ ] 267.1 Domain-owned data products (Fase 189.1) dengan federated computational policy: setiap domain menjalankan policy engine sendiri (akses, quality, schema) → platform menegakkan minimum bar
-- [ ] 267.2 Self-serve data platform: domain dapat publish product sendiri (template, CI policy, virtualisasi) → time-to-data product turun → metric terukur
-- [ ] 267.3 Interoperability contracts: konsumen berkontrak dengan producer (SLA data) → billing usage data product internal (Fase 235) → marketplace data internal
-- [ ] 267.4 Tests: policy minimum ditegakkan lintas domain, contract SLA breach alert, data product billing = usage
-- [ ] 267.5 Edge case: domain melanggar policy minimum → platform memblokir publish hingga diperbaiki
-- [ ] 267.6 Data product quality SLA breach → konsumen diberi notice + kompensasi/kredit usage
-- [ ] 267.7 Onboarding domain baru → template wajib, governance tak bisa di-skip
-- [ ] 267.8 Quality gate Fase 267
+- [x] 267.1 Domain-owned data products (Fase 189.1) dengan federated computational policy: setiap domain menjalankan policy engine sendiri (akses, quality, schema) → platform menegakkan minimum bar
+- [x] 267.2 Self-serve data platform: domain dapat publish product sendiri (template, CI policy, virtualisasi) → time-to-data product turun → metric terukur
+- [x] 267.3 Interoperability contracts: konsumen berkontrak dengan producer (SLA data) → billing usage data product internal (Fase 235) → marketplace data internal
+- [x] 267.4 Tests: policy minimum ditegakkan lintas domain, contract SLA breach alert, data product billing = usage
+- [x] 267.5 Edge case: domain melanggar policy minimum → platform memblokir publish hingga diperbaiki
+- [x] 267.6 Data product quality SLA breach → konsumen diberi notice + kompensasi/kredit usage
+- [x] 267.7 Onboarding domain baru → template wajib, governance tak bisa di-skip
+- [x] 267.8 Quality gate Fase 267
 
 ## FASE 268 — AI: AUTONOMOUS ENTERPRISE LADDER LEVEL 4
 - [ ] 268.1 Formalisasi 4 level otonomi (Fase 143.2) per proses: level 4 (full autonomous + human audit sampling) hanya untuk proses berisiko rendah & terukur → daftar proses eligible → kontrol sampling 5%
