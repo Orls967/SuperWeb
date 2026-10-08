@@ -3214,14 +3214,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 280.8 Quality gate Fase 280
 
 ## FASE 281 — PELANGGAN: OMNI-CHANNEL SERVICE CONSISTENCY & SLA
-- [ ] 281.1 Service level framework per segment (consumer, SMB, enterprise, government): janji layanan (respons time, resolusi, uptime) → kontrak/kebijakan → measurement → credit otomatis (Fase 216.2 generalized)
-- [ ] 281.2 Channel parity: jawaban & harga konsisten lintas chat, app, store, call simulasi → knowledge base tunggal (Fase 198.1) → divergensi terdeteksi → correction
-- [ ] 281.3 Escalation graph: tier1 → tier2 → specialist → lini terkait (case bridge Fase 220.2) → warm handoff dengan konteks penuh → no-repeat-customer policy (riwayat terlihat)
-- [ ] 281.4 Tests: SLA credit post saat breach, channel parity check pada sampel, handoff tak kehilangan data, `crm:audit` clean
-- [ ] 281.5 Edge case: SLA conflict antar janji (kontrak vs publik) → kontrak menang, komunikasi transparan
-- [ ] 281.6 Handoff kecil tak kehilangan konteks → template konteks wajib, bukan "silakan hubungi X"
-- [ ] 281.7 Repeat-contact metric: pelanggan menghubungi 3× untuk masalah sama → alert ke supervisor
-- [ ] 281.8 Quality gate Fase 281
+- [x] 281.1 Service level framework per segment (consumer, SMB, enterprise, government): janji layanan (respons time, resolusi, uptime) → kontrak/kebijakan → measurement → credit otomatis (Fase 216.2 generalized)
+- [x] 281.2 Channel parity: jawaban & harga konsisten lintas chat, app, store, call simulasi → knowledge base tunggal (Fase 198.1) → divergensi terdeteksi → correction
+- [x] 281.3 Escalation graph: tier1 → tier2 → specialist → lini terkait (case bridge Fase 220.2) → warm handoff dengan konteks penuh → no-repeat-customer policy (riwayat terlihat)
+- [x] 281.4 Tests: SLA credit post saat breach, channel parity check pada sampel, handoff tak kehilangan data, `crm:audit` clean
+- [x] 281.5 Edge case: SLA conflict antar janji (kontrak vs publik) → kontrak menang, komunikasi transparan
+- [x] 281.6 Handoff kecil tak kehilangan konteks → template konteks wajib, bukan "silakan hubungi X"
+- [x] 281.7 Repeat-contact metric: pelanggan menghubungi 3× untuk masalah sama → alert ke supervisor
+- [x] 281.8 Quality gate Fase 281
 
 ## FASE 282 — PELANGGAN: COMMUNITY, UGC & SOCIAL COMMERCE
 - [ ] 282.1 Community platform per lini (review, forum, Q&A) → moderation pipeline (auto + human) → guideline → escalation pelanggaran → trust score kontributor
