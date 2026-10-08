@@ -4002,14 +4002,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 356.8 Quality gate Fase 356
 
 ## FASE 357 — AI PLATFORM: KNOWLEDGE GRAPH & SEMANTIC ENTERPRISE COPILOT
-- [ ] 357.1 Build permission-aware enterprise graph over parties, contracts, products, sites, assets, lots, risks, staff skills and events
-- [ ] 357.2 Query planner returns provenance and source records; answers requiring current financial/stock values must query authoritative services, never infer from stale embeddings
-- [ ] 357.3 Knowledge freshness SLA per source; stale source marked and excluded or disclosed; graph rebuild/replay reconciles to source
-- [ ] 357.4 Tests: graph access scope mirrors source, provenance complete, stale values cannot be presented as current, rebuild produces equivalent graph
-- [ ] 357.5 Edge case: graph query menampilkan nilai stale sebagai current → ditolak, hanya menampilkan data authoritative segar
-- [ ] 357.6 Risiko: provenance tak lengkap → provenance completeness jadi gate sebelum jawaban disajikan
-- [ ] 357.7 Evidence: freshness SLA per sumber, rebuild reconciliation, dan access scope test tercatat
-- [ ] 357.8 Quality gate Fase 357
+- [x] 357.1 Build permission-aware enterprise graph over parties, contracts, products, sites, assets, lots, risks, staff skills and events
+- [x] 357.2 Query planner returns provenance and source records; answers requiring current financial/stock values must query authoritative services, never infer from stale embeddings
+- [x] 357.3 Knowledge freshness SLA per source; stale source marked and excluded or disclosed; graph rebuild/replay reconciles to source
+- [x] 357.4 Tests: graph access scope mirrors source, provenance complete, stale values cannot be presented as current, rebuild produces equivalent graph
+- [x] 357.5 Edge case: graph query menampilkan nilai stale sebagai current → ditolak, hanya menampilkan data authoritative segar
+- [x] 357.6 Risiko: provenance tak lengkap → provenance completeness jadi gate sebelum jawaban disajikan
+- [x] 357.7 Evidence: freshness SLA per sumber, rebuild reconciliation, dan access scope test tercatat
+- [x] 357.8 Quality gate Fase 357
 
 ## FASE 358 — AI PLATFORM: AGENT MARKETPLACE & GOVERNED REUSABLE TOOLS
 - [ ] 358.1 Catalog of approved agents/tools with owner, purpose, data scope, risk tier, cost, version, SLA and retirement date
