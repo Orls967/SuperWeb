@@ -4252,14 +4252,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 381.8 Quality gate Fase 381
 
 ## FASE 382 — INTEGRASI GELOMBANG 3: HEALTH, INSURANCE & WORKFORCE WELLBEING
-- [ ] 382.1 Employee/patient care journeys share referrals and coverage status through scoped contracts, never unrestricted medical record sharing
-- [ ] 382.2 Health claims, provider billing, wellness benefits and employee programs reconcile across insurer, employer and care provider
-- [ ] 382.3 Occupational health offers aggregate prevention insights; identifiable clinical data remains in privacy vault and clinician scope
-- [ ] 382.4 Tests: claim/episode settlement balanced, medical data scope enforced, wellness rewards consented, `hosp:audit` + `ins:audit` clean
-- [ ] 382.5 Edge case: klaim ditolak insurer tapi klinis sah → appeal workflow + escrow sementara, tanpa klinik rugi
-- [ ] 382.6 Risiko: cross-lini sharing membocorkan medis → contract-scoped access + audit ketat (Fase 585)
-- [ ] 382.7 Evidence: settlement reconciliation, scope access log, dan consent record tercatat
-- [ ] 382.8 Quality gate Fase 382
+- [x] 382.1 Employee/patient care journeys share referrals and coverage status through scoped contracts, never unrestricted medical record sharing
+- [x] 382.2 Health claims, provider billing, wellness benefits and employee programs reconcile across insurer, employer and care provider
+- [x] 382.3 Occupational health offers aggregate prevention insights; identifiable clinical data remains in privacy vault and clinician scope
+- [x] 382.4 Tests: claim/episode settlement balanced, medical data scope enforced, wellness rewards consented, `hosp:audit` + `ins:audit` clean
+- [x] 382.5 Edge case: klaim ditolak insurer tapi klinis sah → appeal workflow + escrow sementara, tanpa klinik rugi
+- [x] 382.6 Risiko: cross-lini sharing membocorkan medis → contract-scoped access + audit ketat (Fase 585)
+- [x] 382.7 Evidence: settlement reconciliation, scope access log, dan consent record tercatat
+- [x] 382.8 Quality gate Fase 382
 
 ## FASE 383 — INTEGRASI GELOMBANG 3: ENERGY, DATA CENTER & DIGITAL SERVICE RESILIENCE
 - [ ] 383.1 DC workload placement considers energy price, renewable availability, data residency, latency and criticality
