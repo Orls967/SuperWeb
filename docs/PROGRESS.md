@@ -2952,15 +2952,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 254.8 Quality gate Fase 254
 
 ## FASE 255 — INTEGRASI AKHIR E: GOLDEN SCENARIO 30 LINI + MEGA AUDIT
-- [ ] 255.1 Golden scenario 30 lini: satu skenario otomatis 180 hari simulasi merangkai seluruh rantai: tambang → smelter → baterai → EV dijual → dikirim → diisi → hotel+venue bundle → RS merawat → sekolah mengajar → telko terkoneksi → energi terbarukan → asuransi melindungi → syariah membiayai → ritel mendistribusikan → media meliput → pelabuhan mengapung → konsolidasi grup
-- [ ] 255.2 Verifikasi masal: seluruh `*:audit` (target 80+ perintah) serentak 0 selisih di akhir simulasi; seluruh `verify-*` hash-chain valid; seluruh reconcile multi-aset = 0
-- [ ] 255.3 Crisis mega-scenario 30 lini: krisis berlapis (banjir + blackout + wabah + krisis komoditas) → continuity plans (Fase 206) → recovery → audit tetap 0 selisih
-- [ ] 255.4 M&A mega-scenario: akuisisi perusahaan eksternal 3 modul → integrasi (backfill, migration) → laporan konsolidasi → audit bersih
-- [ ] 255.5 Tests: determinisme (dua run identik), audit masal hijau, query budget terpenuhi selama 180 hari sim, zero leak selama integrasi
-- [ ] 255.6 Edge case: audit gagal di tengah simulasi → stop → investigasi → jangan lanjut menutup fase
-- [ ] 255.7 Simulasi 180 hari deterministik → fingerprint identik dua run → tercatat
-- [ ] 255.8 Event spine selama sim: lag p95 dalam SLA, DLQ kosong di akhir
-- [ ] 255.9 Quality gate Fase 255
+- [x] 255.1 Golden scenario 30 lini: satu skenario otomatis 180 hari simulasi merangkai seluruh rantai: tambang → smelter → baterai → EV dijual → dikirim → diisi → hotel+venue bundle → RS merawat → sekolah mengajar → telko terkoneksi → energi terbarukan → asuransi melindungi → syariah membiayai → ritel mendistribusikan → media meliput → pelabuhan mengapung → konsolidasi grup
+- [x] 255.2 Verifikasi masal: seluruh `*:audit` (target 80+ perintah) serentak 0 selisih di akhir simulasi; seluruh `verify-*` hash-chain valid; seluruh reconcile multi-aset = 0
+- [x] 255.3 Crisis mega-scenario 30 lini: krisis berlapis (banjir + blackout + wabah + krisis komoditas) → continuity plans (Fase 206) → recovery → audit tetap 0 selisih
+- [x] 255.4 M&A mega-scenario: akuisisi perusahaan eksternal 3 modul → integrasi (backfill, migration) → laporan konsolidasi → audit bersih
+- [x] 255.5 Tests: determinisme (dua run identik), audit masal hijau, query budget terpenuhi selama 180 hari sim, zero leak selama integrasi
+- [x] 255.6 Edge case: audit gagal di tengah simulasi → stop → investigasi → jangan lanjut menutup fase
+- [x] 255.7 Simulasi 180 hari deterministik → fingerprint identik dua run → tercatat
+- [x] 255.8 Event spine selama sim: lag p95 dalam SLA, DLQ kosong di akhir
+- [x] 255.9 Quality gate Fase 255
 
 ## FASE 256 — PLATFORM: OBSERVABILITY & SLO ECONOMY 30 LINI
 - [ ] 256.1 SLO/SLI per layanan kritikal (payment, booking, claim, dispatch, billing): error budget → burn rate → alert → postmortem wajib saat budget habis
