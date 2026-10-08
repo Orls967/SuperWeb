@@ -2631,14 +2631,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 222.8 Quality gate Fase 222
 
 ## FASE 223 — SDM: ORGANIZATION DESIGN & WORKFORCE PLANNING 30 LINI
-- [ ] 223.1 Org design: struktur 30 lini lintas negara (Fase 58.1) → position management (jabatan, grade, reporting line, budget headcount) → perubahan org via approval → impact simulation
-- [ ] 223.2 Workforce planning: demand per fungsi (dari S&OP & proyek Fase 201/217) → supply internal (skill, capacity, attrition forecast) → gap → build/buy/borrow/gig (Fase 85/136)
-- [ ] 223.3 Succession & bench: posisi kritikal → kandidat pengganti → readiness → development plan (Edu Fase 135) → risiko single-point-of-failure SDM terdeteksi
-- [ ] 223.4 Headcount governance: requisition → org fit → budget check → approval chain → offer → onboarding → cost tercatat dari hari pertama
-- [ ] 223.5 Tests: headcount over budget ditolak, succession coverage terukur, org change tak memutus reporting structure aktif, `hcm:audit` clean
-- [ ] 223.6 Edge case: hiring freeze mendadak → requisition tertahan dengan alasan, pipeline tak hilang
-- [ ] 223.7 Org change berdampak ke sistem (role/scope) → integrasi ke RBAC & access provisioning (Fase 225.3)
-- [ ] 223.8 Quality gate Fase 223
+- [x] 223.1 Org design: struktur 30 lini lintas negara (Fase 58.1) → position management (jabatan, grade, reporting line, budget headcount) → perubahan org via approval → impact simulation
+- [x] 223.2 Workforce planning: demand per fungsi (dari S&OP & proyek Fase 201/217) → supply internal (skill, capacity, attrition forecast) → gap → build/buy/borrow/gig (Fase 85/136)
+- [x] 223.3 Succession & bench: posisi kritikal → kandidat pengganti → readiness → development plan (Edu Fase 135) → risiko single-point-of-failure SDM terdeteksi
+- [x] 223.4 Headcount governance: requisition → org fit → budget check → approval chain → offer → onboarding → cost tercatat dari hari pertama
+- [x] 223.5 Tests: headcount over budget ditolak, succession coverage terukur, org change tak memutus reporting structure aktif, `hcm:audit` clean
+- [x] 223.6 Edge case: hiring freeze mendadak → requisition tertahan dengan alasan, pipeline tak hilang
+- [x] 223.7 Org change berdampak ke sistem (role/scope) → integrasi ke RBAC & access provisioning (Fase 225.3)
+- [x] 223.8 Quality gate Fase 223
 
 ## FASE 224 — SDM: COMPENSATION, BENEFITS & TOTAL REWARDS
 - [ ] 224.1 Job architecture: job family, level, grade band (market data simulasi) → pay structure lintas negara (Fase 152.1) → compression/equity check
