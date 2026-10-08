@@ -2852,14 +2852,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 244.8 Quality gate Fase 244
 
 ## FASE 245 — KOMERSIAL: PRICING SCIENCE & REVENUE OPTIMIZATION 30 LINI
-- [ ] 245.1 Pricing architecture unified: cost-plus, value-based, dynamic (Fase 81), contract, promo (Fase 44), tariff public (utilitas, parkir, port) → framework per domain dengan guardrail seragam
-- [ ] 245.2 Elasticity & willingness-to-pay research: data historis + experiment → curve per segmen → price ladders → revenue lift terukur
-- [ ] 245.3 Price governance: price floor/ceiling, approval matrix per margin impact, MAP/parity enforcement lintas channel (Fase 111.4) → violation → action
-- [ ] 245.4 Profit pool analysis: siapa untung di mana (lini × segmen × channel) → strategi (grow/hold/harvest) → realokasi komersial → impact ke P&L
-- [ ] 245.5 Tests: guardrail tak pernah dilanggar pada seed, elasticity deterministik, price change event idempotent, profit pool Σ = laba, `pricing:audit` clean
-- [ ] 245.6 Edge case: harga anjlok tak wajar → circuit breaker harga → tahan perubahan → review
-- [ ] 245.7 Perubahan harga massal → batch approval + notice period ke pelanggan terdampak
-- [ ] 245.8 Quality gate Fase 245
+- [x] 245.1 Pricing architecture unified: cost-plus, value-based, dynamic (Fase 81), contract, promo (Fase 44), tariff public (utilitas, parkir, port) → framework per domain dengan guardrail seragam
+- [x] 245.2 Elasticity & willingness-to-pay research: data historis + experiment → curve per segmen → price ladders → revenue lift terukur
+- [x] 245.3 Price governance: price floor/ceiling, approval matrix per margin impact, MAP/parity enforcement lintas channel (Fase 111.4) → violation → action
+- [x] 245.4 Profit pool analysis: siapa untung di mana (lini × segmen × channel) → strategi (grow/hold/harvest) → realokasi komersial → impact ke P&L
+- [x] 245.5 Tests: guardrail tak pernah dilanggar pada seed, elasticity deterministik, price change event idempotent, profit pool Σ = laba, `pricing:audit` clean
+- [x] 245.6 Edge case: harga anjlok tak wajar → circuit breaker harga → tahan perubahan → review
+- [x] 245.7 Perubahan harga massal → batch approval + notice period ke pelanggan terdampak
+- [x] 245.8 Quality gate Fase 245
 
 ## FASE 246 — KOMERSIAL: SALES FORCE EXCELLENCE & PIPELINE 30 LINI
 - [ ] 246.1 Sales process unified (B2B lini: asuransi, hotel corporate, MICE, PPA, colo, telekom enterprise, proyek EPC, jasa) → stage definitions → exit criteria → forecast berbobot
