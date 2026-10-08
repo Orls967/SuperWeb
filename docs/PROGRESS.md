@@ -3154,14 +3154,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 274.8 Quality gate Fase 274
 
 ## FASE 275 — KEUANGAN: CASH FORECASTING & LIQUIDITY AT COMMAND
-- [ ] 275.1 13-minggu rolling forecast (Fase 48.5) diperluas 30 lini + scenario engine (best/base/worst) → accuracy tracking → bias correction otomatis
-- [ ] 275.2 Intraday cash position: real-time balance semua rekening & escrow → projected EOD → sweep decisions (Fase 187.4) → funding actions
-- [ ] 275.3 Liquidity stress test: skenario (loss of major customer, market freeze, disaster) → survival days per entity → contingency (credit line draw Fase 210.2) → board alert
-- [ ] 275.4 Tests: forecast accuracy tercatat, sweep tak membuat negatif, stress test deterministik, `treasury:audit` clean
-- [ ] 275.5 Edge case: forecast terus meleset → model review (bias correction) → forecast accuracy jadi KPI
-- [ ] 275.6 Intraday position butuh data real-time → freshness SLA ditegakkan, stale tak dipakai untuk keputusan
-- [ ] 275.7 Stress survival → rencana aksi disetujui sebelum dibutuhkan (bukan reaktif)
-- [ ] 275.8 Quality gate Fase 275
+- [x] 275.1 13-minggu rolling forecast (Fase 48.5) diperluas 30 lini + scenario engine (best/base/worst) → accuracy tracking → bias correction otomatis
+- [x] 275.2 Intraday cash position: real-time balance semua rekening & escrow → projected EOD → sweep decisions (Fase 187.4) → funding actions
+- [x] 275.3 Liquidity stress test: skenario (loss of major customer, market freeze, disaster) → survival days per entity → contingency (credit line draw Fase 210.2) → board alert
+- [x] 275.4 Tests: forecast accuracy tercatat, sweep tak membuat negatif, stress test deterministik, `treasury:audit` clean
+- [x] 275.5 Edge case: forecast terus meleset → model review (bias correction) → forecast accuracy jadi KPI
+- [x] 275.6 Intraday position butuh data real-time → freshness SLA ditegakkan, stale tak dipakai untuk keputusan
+- [x] 275.7 Stress survival → rencana aksi disetujui sebelum dibutuhkan (bukan reaktif)
+- [x] 275.8 Quality gate Fase 275
 
 ## FASE 276 — OPERASI: OPERATIONS EXCELLENCE (LEAN, SIX SIGMA, CI)
 - [ ] 276.1 CI pipeline terpusat: improvement idea → DMAIC project (define, measure, analyze, improve, control) → owner → baseline → target → hasil terverifikasi finansial → standarisasi SOP (Fase 198.2)
