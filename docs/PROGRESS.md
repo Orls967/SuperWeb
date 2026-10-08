@@ -2381,14 +2381,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 197.8 Quality gate Fase 197
 
 ## FASE 198 — AI: GENERATIVE CONTENT, KNOWLEDGE ASSISTANT & SOP COPILOT
-- [ ] 198.1 Knowledge assistant internal: menjawab dari dokumen terverifikasi saja (ARCHITECTURE, RUNBOOK, kontrak, kebijakan) → sitasi wajib ke sumber → tanpa sitasi = tidak ditampilkan
-- [ ] 198.2 SOP copilot: dari prosedur tertulis → checklist eksekusi terpandu → bukti langkah (foto, scan, tanda tangan) → audit kepatuhan SOP
-- [ ] 198.3 Content generation terkontrol: draf kontrak dari template (Fase 28.2), laporan insiden, ringkasan meeting → selalu draft, approval manusia, hash dokumen saat disimpan
-- [ ] 198.4 Hallucination guard: jawaban angka wajib berasal dari query sistem (bukan model) → angka tanpa sumber query = reject
-- [ ] 198.5 Tests: jawaban tanpa sitasi ditolak, angka tak dari query ditolak, SOP checklist lengkap sebelum close, draf tak bisa terbit tanpa approval
-- [ ] 198.6 Edge case: dokumen sumber diubah setelah jawaban dibuat → jawaban ditandai stale & di-refresh
-- [ ] 198.7 Sumber tak ada → assistant jawab "tidak ada di korpus", tidak mengarang (grounding strict)
-- [ ] 198.8 Quality gate Fase 198
+- [x] 198.1 Knowledge assistant internal: menjawab dari dokumen terverifikasi saja (ARCHITECTURE, RUNBOOK, kontrak, kebijakan) → sitasi wajib ke sumber → tanpa sitasi = tidak ditampilkan
+- [x] 198.2 SOP copilot: dari prosedur tertulis → checklist eksekusi terpandu → bukti langkah (foto, scan, tanda tangan) → audit kepatuhan SOP
+- [x] 198.3 Content generation terkontrol: draf kontrak dari template (Fase 28.2), laporan insiden, ringkasan meeting → selalu draft, approval manusia, hash dokumen saat disimpan
+- [x] 198.4 Hallucination guard: jawaban angka wajib berasal dari query sistem (bukan model) → angka tanpa sumber query = reject
+- [x] 198.5 Tests: jawaban tanpa sitasi ditolak, angka tak dari query ditolak, SOP checklist lengkap sebelum close, draf tak bisa terbit tanpa approval
+- [x] 198.6 Edge case: dokumen sumber diubah setelah jawaban dibuat → jawaban ditandai stale & di-refresh
+- [x] 198.7 Sumber tak ada → assistant jawab "tidak ada di korpus", tidak mengarang (grounding strict)
+- [x] 198.8 Quality gate Fase 198
 
 ## FASE 199 — AI: OPTIMIZATION ENGINE (ROUTING, SCHEDULING, ALLOCATION)
 - [ ] 199.1 Optimizer terpusat: objective + constraints dideklarasikan per masalah (rute armada, jadwal shift, alokasi seat/kamar/kursi, kapasitas pabrik, portofolio investasi) → solver deterministik (greedy + local search ber-seed)
