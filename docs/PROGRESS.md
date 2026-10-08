@@ -2802,14 +2802,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 239.8 Quality gate Fase 239
 
 ## FASE 240 — PLATFORM: EXPERIENCE DESIGN SYSTEM & ACCESSIBILITY
-- [ ] 240.1 Design system lintas 30 lini: komponen, token warna/tipografi/spacing, pola (form, table, flow) → satu library → konsistensi visual & interaksi lintas modul
-- [ ] 240.2 Accessibility standard (WCAG simulasi): keyboard navigation, contrast, screen reader labels → automated check CI → audit manual per rilis besar → remediation
-- [ ] 240.3 Responsive & mobile-first governance: semua halaman uji lebar 375px (Fase standar diperluas 30 lini) → gate RouteSmoke responsive
-- [ ] 240.4 UX research loop: usability test simulasi → temuan → backlog perbaikan → metrik task success rate → iterasi
-- [ ] 240.5 Tests: component library dipakai modul baru (arch check), a11y lint hijau, responsive screenshot test pada sampel, research backlog tercatat
-- [ ] 240.6 Edge case: modul butuh komponen khusus → request ke tim design system, review sebelum custom fork
-- [ ] 240.7 Dark mode / high contrast: didukung komponen inti bila dinyatakan sebagai kebutuhan
-- [ ] 240.8 Quality gate Fase 240
+- [x] 240.1 Design system lintas 30 lini: komponen, token warna/tipografi/spacing, pola (form, table, flow) → satu library → konsistensi visual & interaksi lintas modul
+- [x] 240.2 Accessibility standard (WCAG simulasi): keyboard navigation, contrast, screen reader labels → automated check CI → audit manual per rilis besar → remediation
+- [x] 240.3 Responsive & mobile-first governance: semua halaman uji lebar 375px (Fase standar diperluas 30 lini) → gate RouteSmoke responsive
+- [x] 240.4 UX research loop: usability test simulasi → temuan → backlog perbaikan → metrik task success rate → iterasi
+- [x] 240.5 Tests: component library dipakai modul baru (arch check), a11y lint hijau, responsive screenshot test pada sampel, research backlog tercatat
+- [x] 240.6 Edge case: modul butuh komponen khusus → request ke tim design system, review sebelum custom fork
+- [x] 240.7 Dark mode / high contrast: didukung komponen inti bila dinyatakan sebagai kebutuhan
+- [x] 240.8 Quality gate Fase 240
 
 ## FASE 241 — DATA: DATA GOVERNANCE, QUALITY & LINEAGE 30 LINI
 - [ ] 241.1 Data governance council & stewardship: per domain (produk, pelanggan, finansial, medis, energi, komoditas) → data owner → policy (definisi, kualitas, retensi, akses) → enforcement
