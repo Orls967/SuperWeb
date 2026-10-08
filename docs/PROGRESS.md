@@ -4232,14 +4232,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 379.8 Quality gate Fase 379
 
 ## FASE 380 — INTEGRASI GELOMBANG 3: SUSTAINABILITY, PRODUCT & FINANCE DATA
-- [ ] 380.1 Product/site/contract carbon and circularity evidence links to procurement, pricing, export, finance and public disclosure
-- [ ] 380.2 Prevent double counting across carbon credits, REC, product claims and ESG statements with unique evidence identifiers
-- [ ] 380.3 Transition plan capex, benefits and actual emissions tracked consistently in project/asset/ledger views
-- [ ] 380.4 Tests: unique evidence prevents duplicate claim, public metric reconciles to source, investment benefit tracked, `esg:audit` clean
-- [ ] 380.5 Edge case: evidence ganda → identifier unique menolak klaim kedua, jangan double count
-- [ ] 380.6 Risiko: transisi plan tak terhubung ke capex → project/asset/ledger view wajib terintegrasi
-- [ ] 380.7 Evidence: unique evidence ID, public metric reconciliation, dan benefit link tercatat
-- [ ] 380.8 Quality gate Fase 380
+- [x] 380.1 Product/site/contract carbon and circularity evidence links to procurement, pricing, export, finance and public disclosure
+- [x] 380.2 Prevent double counting across carbon credits, REC, product claims and ESG statements with unique evidence identifiers
+- [x] 380.3 Transition plan capex, benefits and actual emissions tracked consistently in project/asset/ledger views
+- [x] 380.4 Tests: unique evidence prevents duplicate claim, public metric reconciles to source, investment benefit tracked, `esg:audit` clean
+- [x] 380.5 Edge case: evidence ganda → identifier unique menolak klaim kedua, jangan double count
+- [x] 380.6 Risiko: transisi plan tak terhubung ke capex → project/asset/ledger view wajib terintegrasi
+- [x] 380.7 Evidence: unique evidence ID, public metric reconciliation, dan benefit link tercatat
+- [x] 380.8 Quality gate Fase 380
 
 ## FASE 381 — INTEGRASI GELOMBANG 3: SUPPLY CHAIN, TRADE & CIRCULAR MATERIAL FLOWS
 - [ ] 381.1 One shipment/material identity flows from source lot through processing, trade documents, custody, customer delivery and returns
