@@ -4102,14 +4102,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 366.8 Quality gate Fase 366
 
 ## FASE 367 — GLOBAL PLATFORM: BUSINESS PROCESS AUTOMATION & CASE ORCHESTRATION
-- [ ] 367.1 BPMN-like process catalog for high-volume workflows (claim, onboarding, PO, booking, recall, permit) with versioned state machine definitions
-- [ ] 367.2 Human task inbox: role routing, SLA, delegation, escalation, evidence attachment, four-eyes segregation
-- [ ] 367.3 Process mining from event spine: actual path vs designed path → bottlenecks, rework loops, compliance deviations → improvement tasks
-- [ ] 367.4 Tests: invalid transitions rejected, delegation scope enforced, process mining reproducible, `workflow:audit` clean
-- [ ] 367.5 Edge case: workflow butuh kompensasi lintas domain → saga/contract bridge, bukan langsung tulis ke modul lain
-- [ ] 367.6 Risiko: drift antara proses desain vs eksekusi → process mining periodik menemukan gap
-- [ ] 367.7 Evidence: process catalog version, human task SLA, dan mining report tercatat
-- [ ] 367.8 Quality gate Fase 367
+- [x] 367.1 BPMN-like process catalog for high-volume workflows (claim, onboarding, PO, booking, recall, permit) with versioned state machine definitions
+- [x] 367.2 Human task inbox: role routing, SLA, delegation, escalation, evidence attachment, four-eyes segregation
+- [x] 367.3 Process mining from event spine: actual path vs designed path → bottlenecks, rework loops, compliance deviations → improvement tasks
+- [x] 367.4 Tests: invalid transitions rejected, delegation scope enforced, process mining reproducible, `workflow:audit` clean
+- [x] 367.5 Edge case: workflow butuh kompensasi lintas domain → saga/contract bridge, bukan langsung tulis ke modul lain
+- [x] 367.6 Risiko: drift antara proses desain vs eksekusi → process mining periodik menemukan gap
+- [x] 367.7 Evidence: process catalog version, human task SLA, dan mining report tercatat
+- [x] 367.8 Quality gate Fase 367
 
 ## FASE 368 — GLOBAL PLATFORM: DOCUMENT & RECORD AUTOMATION
 - [ ] 368.1 Document lifecycle templates for 30 lines: create, review, sign, issue, supersede, archive; gapless numbering where legally required by simulation policy
