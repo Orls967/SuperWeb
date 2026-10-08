@@ -3542,14 +3542,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 310.8 Quality gate Fase 310
 
 ## FASE 311 — ADVANCED FINANCE: CONTINUOUS CONTROLS & TRANSACTION MONITORING
-- [ ] 311.1 Continuous transaction monitoring: 100% transaksi material melewati rule engine (split payment, round amount, unusual counterparty, velocity) → alert quality tuning (precision/recall)
-- [ ] 311.2 Payment fraud prevention: device/behavior fingerprint (simulasi), step-up auth untuk risk tinggi, payee allowlist untuk transfer besar → fraud loss terukur turun
-- [ ] 311.3 Reconciliation excellence: automated matching (fuzzy reference, amount window) → exception aging → straight-through rate target → manual touch minim
-- [ ] 311.4 Tests: true fraud ditangkap seed case, false positive ≤ ambang, STP rate terukur, `bank:reconcile` clean
-- [ ] 311.5 Edge case: alert fraud massal menahan transaksi sah → circuit breaker rule + appeal cepat SLA
-- [ ] 311.6 Risiko: monitoring terlalu ketat menurunkan conversion → tuning precision/recall berkala dengan Finance
-- [ ] 311.7 Evidence: fraud loss trend, STP rate, dan exception aging tercatat per periode untuk review
-- [ ] 311.8 Quality gate Fase 311
+- [x] 311.1 Continuous transaction monitoring: 100% transaksi material melewati rule engine (split payment, round amount, unusual counterparty, velocity) → alert quality tuning (precision/recall)
+- [x] 311.2 Payment fraud prevention: device/behavior fingerprint (simulasi), step-up auth untuk risk tinggi, payee allowlist untuk transfer besar → fraud loss terukur turun
+- [x] 311.3 Reconciliation excellence: automated matching (fuzzy reference, amount window) → exception aging → straight-through rate target → manual touch minim
+- [x] 311.4 Tests: true fraud ditangkap seed case, false positive ≤ ambang, STP rate terukur, `bank:reconcile` clean
+- [x] 311.5 Edge case: alert fraud massal menahan transaksi sah → circuit breaker rule + appeal cepat SLA
+- [x] 311.6 Risiko: monitoring terlalu ketat menurunkan conversion → tuning precision/recall berkala dengan Finance
+- [x] 311.7 Evidence: fraud loss trend, STP rate, dan exception aging tercatat per periode untuk review
+- [x] 311.8 Quality gate Fase 311
 
 ## FASE 312 — ADVANCED FINANCE: FP&A, DRIVER-BASED PLANNING & AGILE BUDGET
 - [ ] 312.1 Driver-based model: revenue = traffic × conversion × price; cost = volume × rate; headcount driver → planning cepat (ubah driver → seluruh model recompute) → konsistensi dengan ledger
