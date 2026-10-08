@@ -3772,14 +3772,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 333.8 Quality gate Fase 333
 
 ## FASE 334 — SUSTAINABILITY INTEGRATION: CIRCULAR BUSINESS MODELS & REVENUE
-- [ ] 334.1 Product-as-a-service, lease, take-back, refurbishment and resale business models → contract templates, asset ownership, usage metering, end-of-life
-- [ ] 334.2 Circular revenue accounting: lease/subscription vs sale recognition, residual value, refurbishment cost, resale proceeds → policy-controlled journals
-- [ ] 334.3 Customer incentives for returns/reuse → deposit/credit → reverse flow → material recovery verification
-- [ ] 334.4 Tests: ownership state transitions valid, deposit liability reconciles, recovered mass evidenced, `circular:audit` clean
-- [ ] 334.5 Edge case: model bisnis sirkular tak profitable → evaluasi & redesign, jangan dipertahankan karena "hijau"
-- [ ] 334.6 Risiko: ownership aset rancu saat lease/take-back → ledger treatment PSAK 73 ditegakkan
-- [ ] 334.7 Evidence: deposit liability, recovery mass, dan circular revenue terkonsiliasi ke ledger
-- [ ] 334.8 Quality gate Fase 334
+- [x] 334.1 Product-as-a-service, lease, take-back, refurbishment and resale business models → contract templates, asset ownership, usage metering, end-of-life
+- [x] 334.2 Circular revenue accounting: lease/subscription vs sale recognition, residual value, refurbishment cost, resale proceeds → policy-controlled journals
+- [x] 334.3 Customer incentives for returns/reuse → deposit/credit → reverse flow → material recovery verification
+- [x] 334.4 Tests: ownership state transitions valid, deposit liability reconciles, recovered mass evidenced, `circular:audit` clean
+- [x] 334.5 Edge case: model bisnis sirkular tak profitable → evaluasi & redesign, jangan dipertahankan karena "hijau"
+- [x] 334.6 Risiko: ownership aset rancu saat lease/take-back → ledger treatment PSAK 73 ditegakkan
+- [x] 334.7 Evidence: deposit liability, recovery mass, dan circular revenue terkonsiliasi ke ledger
+- [x] 334.8 Quality gate Fase 334
 
 ## FASE 335 — SUSTAINABILITY INTEGRATION: COMMUNITY VALUE & SOCIAL PROCUREMENT
 - [ ] 335.1 Local supplier development programs → capability grant/training (Edu) → tender eligibility earned through objective milestones
