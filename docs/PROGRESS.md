@@ -2218,12 +2218,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 177.6 Quality gate Fase 177
 
 ## FASE 178 — LINI 26: AIRLINE NETWORK, LOYALTY & REVENUE MANAGEMENT
-- [ ] 178.1 Route network, schedule, fare classes, seat inventory, codeshare partner contracts and disruption handling (simulation)
-- [ ] 178.2 Yield management by demand/season/lead time with immutable quoted fare and contract/floor guardrails
-- [ ] 178.3 Loyalty miles connect to group Travel Pass with conversion rates and liability ledger; prevent duplicate earning across codeshare
-- [ ] 178.4 Irregular operations: delay/cancellation → rebooking, passenger care vouchers, insurance trigger, hotel/ground transport coordination
-- [ ] 178.5 Tests: no oversell beyond defined policy, miles liability reconciles, cancellation settlement correct, disruption reroute capacity valid, `avi:audit` clean
-- [ ] 178.6 Quality gate Fase 178
+- [x] 178.1 Route network, schedule, fare classes, seat inventory, codeshare partner contracts and disruption handling (simulation)
+- [x] 178.2 Yield management by demand/season/lead time with immutable quoted fare and contract/floor guardrails
+- [x] 178.3 Loyalty miles connect to group Travel Pass with conversion rates and liability ledger; prevent duplicate earning across codeshare
+- [x] 178.4 Irregular operations: delay/cancellation → rebooking, passenger care vouchers, insurance trigger, hotel/ground transport coordination
+- [x] 178.5 Tests: no oversell beyond defined policy, miles liability reconciles, cancellation settlement correct, disruption reroute capacity valid, `avi:audit` clean
+- [x] 178.6 Quality gate Fase 178
 
 ## FASE 179 — LINI 27: PORTS, MARINE TERMINALS & TRADE FACILITATION
 - [ ] 179.1 Modul `PortOps` (`prt_`): berth windows, vessel calls, cranes, yards, gate appointments, manifests and terminal charges
