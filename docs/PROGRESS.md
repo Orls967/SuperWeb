@@ -4122,14 +4122,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 368.8 Quality gate Fase 368
 
 ## FASE 369 — GLOBAL PLATFORM: EVENT SPINE OPERATIONS & REPLAY CENTER
-- [ ] 369.1 Consumer lag/SLA dashboard per event topic, partition, tenant and owner; backlog prediction and capacity guidance
-- [ ] 369.2 Replay console: scoped event selection, dry-run impact diff, approval, idempotency verification, replay execution and post-reconcile
-- [ ] 369.3 DLQ triage with reason classification, safe payload redaction, retry policy, quarantine and closure owner
-- [ ] 369.4 Tests: replay preview matches actual diff, unauthorized replay denied, PII redacted in logs, replay cannot double-post ledger
-- [ ] 369.5 Edge case: replay memicu side-effect eksternal → mode replay menonaktifkan side-effect eksternal
-- [ ] 369.6 Risiko: DLQ menumpuk tanpa owner → aging alert + eskalasi sebelum menumpuk parah
-- [ ] 369.7 Evidence: lag dashboard, dry-run diff, dan replay execution log tercatat
-- [ ] 369.8 Quality gate Fase 369
+- [x] 369.1 Consumer lag/SLA dashboard per event topic, partition, tenant and owner; backlog prediction and capacity guidance
+- [x] 369.2 Replay console: scoped event selection, dry-run impact diff, approval, idempotency verification, replay execution and post-reconcile
+- [x] 369.3 DLQ triage with reason classification, safe payload redaction, retry policy, quarantine and closure owner
+- [x] 369.4 Tests: replay preview matches actual diff, unauthorized replay denied, PII redacted in logs, replay cannot double-post ledger
+- [x] 369.5 Edge case: replay memicu side-effect eksternal → mode replay menonaktifkan side-effect eksternal
+- [x] 369.6 Risiko: DLQ menumpuk tanpa owner → aging alert + eskalasi sebelum menumpuk parah
+- [x] 369.7 Evidence: lag dashboard, dry-run diff, dan replay execution log tercatat
+- [x] 369.8 Quality gate Fase 369
 
 ## FASE 370 — GLOBAL PLATFORM: ARCHITECTURE FITNESS & MODULAR MONOLITH HEALTH
 - [ ] 370.1 Fitness tests for module boundaries, naming, migration prefix, provider registration, menu/policy coverage and audit command existence
