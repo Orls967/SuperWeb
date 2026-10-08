@@ -341,6 +341,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\MediaCommerceContentRightsService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\MiningPortCommodityFlowService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\CrossLineProcessMeshService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\UnifiedControlTowerDecisionService::class);
     }
 
     public function boot(): void
