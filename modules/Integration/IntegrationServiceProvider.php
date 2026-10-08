@@ -67,6 +67,7 @@ use Modules\Integration\Application\Services\ResilienceWave2Service;
 use Modules\Integration\Application\Services\ScaleBenchmarkService;
 use Modules\Integration\Application\Services\SmartDistrictService;
 use Modules\Integration\Application\Services\SukukAndZakatService;
+use Modules\Integration\Application\Services\SupplyChainNetworkService;
 use Modules\Integration\Application\Services\SupplyChainResilienceService;
 use Modules\Integration\Application\Services\SyariahBankingService;
 use Modules\Integration\Application\Services\SyariahOperationsService;
@@ -162,6 +163,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(ProfitabilityCostIntelligenceService::class);
         $this->app->singleton(QualityManagementSystemService::class);
         $this->app->singleton(AssetReliabilityService::class);
+        $this->app->singleton(SupplyChainNetworkService::class);
     }
 
     public function boot(): void

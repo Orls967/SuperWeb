@@ -2551,14 +2551,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 214.8 Quality gate Fase 214
 
 ## FASE 215 — OPERASI: SUPPLY CHAIN EXECUTION & WAREHOUSE NETWORK 30 LINI
-- [ ] 215.1 Network design: lokasi DC/gudang/kitchen/dark store/port → service coverage vs cost → simulator optimasi lokasi (Fase 199.1) → rekomendasi capex
-- [ ] 215.2 Multi-echelon execution: allocation & deployment otomatis (stok pusat → regional → forward) berdasar forecast (Fase 201) & safety stock (Fase 53.5) → in-transit visibility
-- [ ] 215.3 Yard & dock scheduling 30 lokasi: appointment window, equipment & labor availability → no-show policy → throughput KPI (memperluas Fase 24.5)
-- [ ] 215.4 Freight procurement: tender pengangkutan berkala (Fase 33.3) → lane pricing → mode split (road/rail/sea/air simulasi) → cost-to-serve per order
-- [ ] 215.5 Tests: allocation tak melebihi supply, appointment conflict ditolak, tender evaluation reproducible, cost-to-serve = biaya nyata, `wms:audit` + `lgx:audit-billing` clean
-- [ ] 215.6 Edge case: jaringan berubah (site baru/tutup) → model desain dijalankan ulang → rekomendasi capex disetujui
-- [ ] 215.7 In-transit inventory: stok dalam perjalanan tetap terlihat & insured → hilang = klaim (Fase 23.4)
-- [ ] 215.8 Quality gate Fase 215
+- [x] 215.1 Network design: lokasi DC/gudang/kitchen/dark store/port → service coverage vs cost → simulator optimasi lokasi (Fase 199.1) → rekomendasi capex
+- [x] 215.2 Multi-echelon execution: allocation & deployment otomatis (stok pusat → regional → forward) berdasar forecast (Fase 201) & safety stock (Fase 53.5) → in-transit visibility
+- [x] 215.3 Yard & dock scheduling 30 lokasi: appointment window, equipment & labor availability → no-show policy → throughput KPI (memperluas Fase 24.5)
+- [x] 215.4 Freight procurement: tender pengangkutan berkala (Fase 33.3) → lane pricing → mode split (road/rail/sea/air simulasi) → cost-to-serve per order
+- [x] 215.5 Tests: allocation tak melebihi supply, appointment conflict ditolak, tender evaluation reproducible, cost-to-serve = biaya nyata, `wms:audit` + `lgx:audit-billing` clean
+- [x] 215.6 Edge case: jaringan berubah (site baru/tutup) → model desain dijalankan ulang → rekomendasi capex disetujui
+- [x] 215.7 In-transit inventory: stok dalam perjalanan tetap terlihat & insured → hilang = klaim (Fase 23.4)
+- [x] 215.8 Quality gate Fase 215
 
 ## FASE 216 — OPERASI: FIELD SERVICE, WORKFORCE MOBILITY & SLA ENGINE
 - [ ] 216.1 Field service unification: teknisi (AutoServe, facility, media crew, medical equipment, network, mining maintenance) → skill & sertifikasi → scheduling → dispatch → mobile app → POD
