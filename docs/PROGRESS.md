@@ -2321,11 +2321,11 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 190.5 Quality gate Fase 190
 
 ## FASE 191 — SKALA GELOMBANG 3: SEEDER 30 LINI ULTRA & BENCHMARK
-- [ ] 191.1 ThirtyLinesUltraSeeder: dataset 12 bulan untuk 30 lini — termasuk asuransi (polis + klaim), syariah (akad + bagi hasil), pendidikan (sekolah + enrollment), seafood/forest/textile (lot + trace), aviation (flight + seat), port (vessel call + yard), district (request + SLA) — miliaran baris, chunked, checkpoint/resume, deterministik
-- [ ] 191.2 Benchmark per domain: ingest telematik, billing batch, settlement, learning progress, insurance claims, port yard op → waktu & puncak memori tercatat
-- [ ] 191.3 Skalability forecast: proyeksi 3× volume → rekomendasi partisi/indeks sebelum diperlukan (dokumentasi EXPLAIN)
-- [ ] 191.4 Tests: seeder idempoten dua kali, data relasi utuh (FK), ledger seluruh aset = 0 selisih setelah seeder, benchmark tercatat di AUDIT
-- [ ] 191.5 Quality gate Fase 191
+- [x] 191.1 ThirtyLinesUltraSeeder: dataset 12 bulan untuk 30 lini — termasuk asuransi (polis + klaim), syariah (akad + bagi hasil), pendidikan (sekolah + enrollment), seafood/forest/textile (lot + trace), aviation (flight + seat), port (vessel call + yard), district (request + SLA) — miliaran baris, chunked, checkpoint/resume, deterministik
+- [x] 191.2 Benchmark per domain: ingest telematik, billing batch, settlement, learning progress, insurance claims, port yard op → waktu & puncak memori tercatat
+- [x] 191.3 Skalability forecast: proyeksi 3× volume → rekomendasi partisi/indeks sebelum diperlukan (dokumentasi EXPLAIN)
+- [x] 191.4 Tests: seeder idempoten dua kali, data relasi utuh (FK), ledger seluruh aset = 0 selisih setelah seeder, benchmark tercatat di AUDIT
+- [x] 191.5 Quality gate Fase 191
 
 ## FASE 192 — SKALA: PARTISI, ARSIP & QUERY BUDGET 30 LINI
 - [ ] 192.1 Partisi time-based untuk tabel transaksional terbesar (telematik, meteran, order, booking, klaim, tiket) → strategi attach/detach per bulan

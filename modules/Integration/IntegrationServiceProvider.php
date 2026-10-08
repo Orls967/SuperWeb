@@ -43,6 +43,7 @@ use Modules\Integration\Application\Services\ProfessionalServicesService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
 use Modules\Integration\Application\Services\ReinsuranceAndCatService;
 use Modules\Integration\Application\Services\ResilienceWave2Service;
+use Modules\Integration\Application\Services\ScaleBenchmarkService;
 use Modules\Integration\Application\Services\SmartDistrictService;
 use Modules\Integration\Application\Services\SukukAndZakatService;
 use Modules\Integration\Application\Services\SupplyChainResilienceService;
@@ -114,6 +115,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(IdentityTenancyService::class);
         $this->app->singleton(AnalyticsFederationService::class);
         $this->app->singleton(GroupCommandCenterService::class);
+        $this->app->singleton(ScaleBenchmarkService::class);
     }
 
     public function boot(): void
