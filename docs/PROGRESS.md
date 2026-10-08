@@ -4302,14 +4302,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 386.8 Quality gate Fase 386
 
 ## FASE 387 — INTEGRASI GELOMBANG 3: CROSS-LINE EVENT AND PROCESS MESH
-- [ ] 387.1 Canonical business process events across 30 lines with source, correlation, causation, schema version, tenant scope and lifecycle state
-- [ ] 387.2 Process mesh monitors end-to-end completion, orphaned saga, duplicated command and SLA across domain boundaries
-- [ ] 387.3 Business replay can rebuild operational read models while explicitly preventing replay of irreversible external actions
-- [ ] 387.4 Tests: causation chain complete, external side effect not replayed, orphan saga alert, `event:audit` clean
-- [ ] 387.5 Edge case: duplicate command terdeteksi → dedup oleh idempotency key, tak dieksekusi dua kali
-- [ ] 387.6 Risiko: replay tak sengaja memicu eksternal action → whitelist side-effect-free handler untuk replay
-- [ ] 387.7 Evidence: mesh health report, causation trace, dan orphan resolution tercatat
-- [ ] 387.8 Quality gate Fase 387
+- [x] 387.1 Canonical business process events across 30 lines with source, correlation, causation, schema version, tenant scope and lifecycle state
+- [x] 387.2 Process mesh monitors end-to-end completion, orphaned saga, duplicated command and SLA across domain boundaries
+- [x] 387.3 Business replay can rebuild operational read models while explicitly preventing replay of irreversible external actions
+- [x] 387.4 Tests: causation chain complete, external side effect not replayed, orphan saga alert, `event:audit` clean
+- [x] 387.5 Edge case: duplicate command terdeteksi → dedup oleh idempotency key, tak dieksekusi dua kali
+- [x] 387.6 Risiko: replay tak sengaja memicu eksternal action → whitelist side-effect-free handler untuk replay
+- [x] 387.7 Evidence: mesh health report, causation trace, dan orphan resolution tercatat
+- [x] 387.8 Quality gate Fase 387
 
 ## FASE 388 — INTEGRASI GELOMBANG 3: UNIFIED CONTROL TOWER & EXECUTIVE DECISION LOOP
 - [ ] 388.1 Consolidated operating picture (finance, customer, supply, people, safety, climate, technology) with metric lineage and owner
