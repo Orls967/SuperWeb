@@ -3329,14 +3329,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 291.9 Quality gate Fase 291
 
 ## FASE 292 — GOVERNANCE: RECORDS SIGNATURE, TRUST SERVICES & VERIFIABLE CREDENTIALS
-- [ ] 292.1 Enterprise signing service: approval chain → signer identity → document hash → timestamp → certificate simulation → validation & revocation
-- [ ] 292.2 Verifiable credentials: staff certification (Edu), supplier qualification, medical license, product passport → issuer/schema/expiry/revocation registry
-- [ ] 292.3 Trust registry per jurisdiction: approved trust anchors, signature policy, archive evidence; cross-border contract workflow uses accepted policy
-- [ ] 292.4 Tests: modified document invalidates signature, revoked credential rejected, signer authority checked, timestamp integrity verifiable
-- [ ] 292.5 Edge case: credential dicabut saat sesi berjalan → akses berhenti pada transaksi berikutnya
-- [ ] 292.6 Trust anchor lintas yurisdiksi beda → policy per koridor, tak asumsi satu standar universal
-- [ ] 292.7 Dokumen ditandatangani saat sistem down → antre tanda tangan, jangan tunda ke dokumen lama
-- [ ] 292.8 Quality gate Fase 292
+- [x] 292.1 Enterprise signing service: approval chain → signer identity → document hash → timestamp → certificate simulation → validation & revocation
+- [x] 292.2 Verifiable credentials: staff certification (Edu), supplier qualification, medical license, product passport → issuer/schema/expiry/revocation registry
+- [x] 292.3 Trust registry per jurisdiction: approved trust anchors, signature policy, archive evidence; cross-border contract workflow uses accepted policy
+- [x] 292.4 Tests: modified document invalidates signature, revoked credential rejected, signer authority checked, timestamp integrity verifiable
+- [x] 292.5 Edge case: credential dicabut saat sesi berjalan → akses berhenti pada transaksi berikutnya
+- [x] 292.6 Trust anchor lintas yurisdiksi beda → policy per koridor, tak asumsi satu standar universal
+- [x] 292.7 Dokumen ditandatangani saat sistem down → antre tanda tangan, jangan tunda ke dokumen lama
+- [x] 292.8 Quality gate Fase 292
 
 ## FASE 293 — GOVERNANCE: INTERNAL AUDIT MANAGEMENT & CONTINUOUS ASSURANCE
 - [ ] 293.1 Risk-based annual audit plan: risk score (Fase 202) → auditable entities → resources → calendar → board audit committee approval
