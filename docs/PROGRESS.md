@@ -2782,14 +2782,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 237.8 Quality gate Fase 237
 
 ## FASE 238 — PLATFORM: RELEASE TRAIN, CHANGE MANAGEMENT & DEPLOYMENT SAFETY
-- [ ] 238.1 Release train terjadwal (mis. mingguan) + hotfix path (approval terpisah) → release notes otomatis dari commit/flag → stakeholder notified
-- [ ] 238.2 Change advisory: risk score per change (blast radius: money/PII/availability) → risk tinggi butuh CAB simulasi → rollback plan wajib → post-deploy verification
-- [ ] 238.3 Database migration safety: expand-contract pattern, backfill idempoten di background, lint schema (tanpa breaking tanpa approval), dual-write bila perlu
-- [ ] 238.4 Canary & blue-green simulasi: rollout bertahap → error rate monitor → auto-rollback → metrik deploy tercatat (change failure rate, MTTR deploy)
-- [ ] 238.5 Tests: breaking migration ditolak lint, canary rollback otomatis saat error spike, release notes lengkap, rollback plan teruji, `platform:audit` clean
-- [ ] 238.6 Edge case: hotfix mendadak → approval terpisah + post-merge review wajib sebelum normal train
-- [ ] 238.7 Rollback data: schema yang sudah berisi data → expand-contract, tak bisa revert kasar
-- [ ] 238.8 Quality gate Fase 238
+- [x] 238.1 Release train terjadwal (mis. mingguan) + hotfix path (approval terpisah) → release notes otomatis dari commit/flag → stakeholder notified
+- [x] 238.2 Change advisory: risk score per change (blast radius: money/PII/availability) → risk tinggi butuh CAB simulasi → rollback plan wajib → post-deploy verification
+- [x] 238.3 Database migration safety: expand-contract pattern, backfill idempoten di background, lint schema (tanpa breaking tanpa approval), dual-write bila perlu
+- [x] 238.4 Canary & blue-green simulasi: rollout bertahap → error rate monitor → auto-rollback → metrik deploy tercatat (change failure rate, MTTR deploy)
+- [x] 238.5 Tests: breaking migration ditolak lint, canary rollback otomatis saat error spike, release notes lengkap, rollback plan teruji, `platform:audit` clean
+- [x] 238.6 Edge case: hotfix mendadak → approval terpisah + post-merge review wajib sebelum normal train
+- [x] 238.7 Rollback data: schema yang sudah berisi data → expand-contract, tak bisa revert kasar
+- [x] 238.8 Quality gate Fase 238
 
 ## FASE 239 — PLATFORM: PERFORMANCE ENGINEERING & COST OPTIMIZATION
 - [ ] 239.1 Performance observability per endpoint: p50/p95/p99, throughput, slow query, N+1 detection otomatis → regression gate CI (memperluas Fase 192.4)
