@@ -3782,14 +3782,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 334.8 Quality gate Fase 334
 
 ## FASE 335 — SUSTAINABILITY INTEGRATION: COMMUNITY VALUE & SOCIAL PROCUREMENT
-- [ ] 335.1 Local supplier development programs → capability grant/training (Edu) → tender eligibility earned through objective milestones
-- [ ] 335.2 Community procurement spend & employment metrics with privacy-safe aggregation → regional impact report
-- [ ] 335.3 Grievance feedback loop (Fase 288.2) to project/contract change → remedy budget → closure confirmed by community representative
-- [ ] 335.4 Tests: eligibility milestone evidence required, spend aggregates reconcile to AP, grievance closure needs independent confirmation
-- [ ] 335.5 Edge case: program sosial tak punya outcome terukur → jangan klaim impact, hanya aktivitas
-- [ ] 335.6 Risiko: procurement lokal menaikkan biaya → trade-off disetujui & didokumentasikan (Fase 729)
-- [ ] 335.7 Evidence: spend lokal, kemitraan komunitas, dan grievance closure tercatat
-- [ ] 335.8 Quality gate Fase 335
+- [x] 335.1 Local supplier development programs → capability grant/training (Edu) → tender eligibility earned through objective milestones
+- [x] 335.2 Community procurement spend & employment metrics with privacy-safe aggregation → regional impact report
+- [x] 335.3 Grievance feedback loop (Fase 288.2) to project/contract change → remedy budget → closure confirmed by community representative
+- [x] 335.4 Tests: eligibility milestone evidence required, spend aggregates reconcile to AP, grievance closure needs independent confirmation
+- [x] 335.5 Edge case: program sosial tak punya outcome terukur → jangan klaim impact, hanya aktivitas
+- [x] 335.6 Risiko: procurement lokal menaikkan biaya → trade-off disetujui & didokumentasikan (Fase 729)
+- [x] 335.7 Evidence: spend lokal, kemitraan komunitas, dan grievance closure tercatat
+- [x] 335.8 Quality gate Fase 335
 
 ## FASE 336 — GOVERNANCE: ENTERPRISE POLICY SIMULATION & IMPACT TESTING
 - [ ] 336.1 Policy simulation engine: jalankan rule baru terhadap historical data seed → dampak (transaksi terblokir, approval volume, revenue effect) → report sebelum aktivasi
