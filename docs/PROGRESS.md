@@ -3482,14 +3482,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 304.8 Quality gate Fase 304
 
 ## FASE 305 — ADVANCED DEMAND: COMMERCIAL PLANNING & REVENUE GROWTH MANAGEMENT
-- [ ] 305.1 Revenue growth management: price-pack architecture, promo portfolio optimization, mix steering → dampak net revenue per lini → guardrails margin
-- [ ] 305.2 Trade promo effectiveness (Fase 44.3 scale): incremental lift vs baseline (holdout control group simulasi) → ROI per promo → pembelajaran ke planner
-- [ ] 305.3 Forecast value of information: kapan forecast layak diperbaiki (biaya perbaikan vs error cost) → human override hanya saat VOI positif → tercatat
-- [ ] 305.4 Tests: lift calculation method tercatat, promo ROI deterministik, override policy ditegakkan, `pricing:audit` clean
-- [ ] 305.5 Edge case: promo menggerus margin bersih (volume naik, laba turun) → guard margin minimum aktif, promo dihentikan
-- [ ] 305.6 Risiko: VOI dihitung tanpa biaya perbaikan nyata → data biaya override wajib dari Finance
-- [ ] 305.7 Evidence: uplift per promo & hasil rekomendasi forecast tersimpan untuk pembelajaran periode berikut
-- [ ] 305.8 Quality gate Fase 305
+- [x] 305.1 Revenue growth management: price-pack architecture, promo portfolio optimization, mix steering → dampak net revenue per lini → guardrails margin
+- [x] 305.2 Trade promo effectiveness (Fase 44.3 scale): incremental lift vs baseline (holdout control group simulasi) → ROI per promo → pembelajaran ke planner
+- [x] 305.3 Forecast value of information: kapan forecast layak diperbaiki (biaya perbaikan vs error cost) → human override hanya saat VOI positif → tercatat
+- [x] 305.4 Tests: lift calculation method tercatat, promo ROI deterministik, override policy ditegakkan, `pricing:audit` clean
+- [x] 305.5 Edge case: promo menggerus margin bersih (volume naik, laba turun) → guard margin minimum aktif, promo dihentikan
+- [x] 305.6 Risiko: VOI dihitung tanpa biaya perbaikan nyata → data biaya override wajib dari Finance
+- [x] 305.7 Evidence: uplift per promo & hasil rekomendasi forecast tersimpan untuk pembelajaran periode berikut
+- [x] 305.8 Quality gate Fase 305
 
 ## FASE 306 — ADVANCED OPERATIONS: AUTONOMOUS FIELD FLEET (MINE, PORT, WAREHOUSE)
 - [ ] 306.1 Autonomous vehicle simulation lane: haul truck/AGV/AMR beroperasi di koridor designated → teleop fallback → telematik penuh → safety cage rules (geofence, speed cap)
