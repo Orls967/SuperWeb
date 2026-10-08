@@ -4452,14 +4452,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 401.8 Quality gate Fase 401
 
 ## FASE 402 — GOVERNANCE WAVE: FRAUD RISK ASSESSMENT & CONTINUOUS DETECTION
-- [ ] 402.1 Fraud risk assessment per business cycle (procure-to-pay, order-to-cash, payroll, treasury, claims, royalties, tenders, insurance, loyalty)
-- [ ] 402.2 Detection rulebook with scenario coverage, tuning to balance false positive/negative, challenger rules and periodic validation
-- [ ] 402.3 Red-team fraud exercise: seeded schemes (split invoice, vendor collusion, loyalty abuse, claim stacking) must be detected or documented gap
-- [ ] 402.4 Tests: seeded scheme detection ≥ target, false-positive rate within policy, gap remediation tracked, `fraud:audit` clean
-- [ ] 402.5 Edge case: red-team menemukan celah tak terdeteksi → rule baru + regression test permanen
-- [ ] 402.6 Risiko: false positive berlebih → fraud ops kelelahan → tuning precision/recall berkala
-- [ ] 402.7 Evidence: rulebook version, red-team result, dan detection rate tercatat per skenario
-- [ ] 402.8 Quality gate Fase 402
+- [x] 402.1 Fraud risk assessment per business cycle (procure-to-pay, order-to-cash, payroll, treasury, claims, royalties, tenders, insurance, loyalty)
+- [x] 402.2 Detection rulebook with scenario coverage, tuning to balance false positive/negative, challenger rules and periodic validation
+- [x] 402.3 Red-team fraud exercise: seeded schemes (split invoice, vendor collusion, loyalty abuse, claim stacking) must be detected or documented gap
+- [x] 402.4 Tests: seeded scheme detection ≥ target, false-positive rate within policy, gap remediation tracked, `fraud:audit` clean
+- [x] 402.5 Edge case: red-team menemukan celah tak terdeteksi → rule baru + regression test permanen
+- [x] 402.6 Risiko: false positive berlebih → fraud ops kelelahan → tuning precision/recall berkala
+- [x] 402.7 Evidence: rulebook version, red-team result, dan detection rate tercatat per skenario
+- [x] 402.8 Quality gate Fase 402
 
 ## FASE 403 — GOVERNANCE WAVE: THIRD-PARTY ECOSYSTEM RESILIENCE
 - [ ] 403.1 Critical vendor concentration analysis across lines and regions; alternate qualification costed and time-bound
