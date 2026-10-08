@@ -2282,12 +2282,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 185.6 Quality gate Fase 185
 
 ## FASE 186 — INTEGRASI 30 LINI A: END-TO-END VALUE CHAIN SIMULATION
-- [ ] 186.1 Peta aliran nilai 30 lini: hulu (tambang, perikanan, hutan, agro) → manufaktur (pangan, tekstil, mineral) → energi/telekom infrastruktur → distribusi/ritel/AV → hospitality/hiburan/edukasi/kesehatan → jasa profesional/keuangan → internasional
-- [ ] 186.2 Simulasi rantai penuh via Simulation Kernel: 90 hari kompresi menjalankan rantai utuh (pupuk → petani → food processing → resto → retail → pelanggan) dengan seluruh ledger tetap Σ=0
-- [ ] 186.3 Bridge kontrak lintas lini: setiap jenis kontrak (sewa, distribusi, Jasa, offtake, franchise, colo, PPA) punya adapter ke Contract core tanpa duplikasi state
-- [ ] 186.4 Identifier policy: setiap entitas lintas lini punya global ID + local reference; resolve service tanpa pelanggaran modul boundary
-- [ ] 186.5 Tests: chain sim 90 hari semua `*:audit` = 0, adapter tidak duplikat kontrak, identifier resolve deterministik, event spine replay lintas 30 lini idempoten
-- [ ] 186.6 Quality gate Fase 186
+- [x] 186.1 Peta aliran nilai 30 lini: hulu (tambang, perikanan, hutan, agro) → manufaktur (pangan, tekstil, mineral) → energi/telekom infrastruktur → distribusi/ritel/AV → hospitality/hiburan/edukasi/kesehatan → jasa profesional/keuangan → internasional
+- [x] 186.2 Simulasi rantai penuh via Simulation Kernel: 90 hari kompresi menjalankan rantai utuh (pupuk → petani → food processing → resto → retail → pelanggan) dengan seluruh ledger tetap Σ=0
+- [x] 186.3 Bridge kontrak lintas lini: setiap jenis kontrak (sewa, distribusi, Jasa, offtake, franchise, colo, PPA) punya adapter ke Contract core tanpa duplikasi state
+- [x] 186.4 Identifier policy: setiap entitas lintas lini punya global ID + local reference; resolve service tanpa pelanggaran modul boundary
+- [x] 186.5 Tests: chain sim 90 hari semua `*:audit` = 0, adapter tidak duplikat kontrak, identifier resolve deterministik, event spine replay lintas 30 lini idempoten
+- [x] 186.6 Quality gate Fase 186
 
 ## FASE 187 — INTEGRASI 30 LINI B: PAYMENT, SETTLEMENT & TREASURY UNIFICATION
 - [ ] 187.1 Satu payment hub untuk 30 lini: wallet, kartu simulasi, QR, stablecoin, escrow, auto-debit, split settlement, settlement T+N per vertical

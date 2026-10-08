@@ -48,6 +48,7 @@ use Modules\Integration\Application\Services\SyariahOperationsService;
 use Modules\Integration\Application\Services\TakafulAndAgriService;
 use Modules\Integration\Application\Services\TelecomIdentityService;
 use Modules\Integration\Application\Services\ThreatDetectionService;
+use Modules\Integration\Application\Services\ValueChainSimulationService;
 use Modules\Integration\Application\Services\ZeroTrustService;
 use Modules\Integration\Console\Commands\ApiAuditCommand;
 use Modules\Integration\Console\Commands\AuditIntegrationCommand;
@@ -104,6 +105,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(TelecomIdentityService::class);
         $this->app->singleton(SmartDistrictService::class);
         $this->app->singleton(DomainGovernanceService::class);
+        $this->app->singleton(ValueChainSimulationService::class);
     }
 
     public function boot(): void
