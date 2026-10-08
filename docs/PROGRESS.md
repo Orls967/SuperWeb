@@ -2531,14 +2531,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 212.8 Quality gate Fase 212
 
 ## FASE 213 — OPERASI: QUALITY MANAGEMENT SYSTEM 30 LINI
-- [ ] 213.1 QMS framework lintas lini: standar mutu per domain (medis JCI simulasi, food HACCP, manufacturing ISO 9001 simulasi, hotel star standard Fase 111.1, port ISPS) → policy terpusat, eksekusi per lini
-- [ ] 213.2 Nonconformance & CAPA unified: temuan → root cause (5-Why/fishbone terstruktur) → tindakan → verifikasi efektivitas → jadwal audit lanjutan
-- [ ] 213.3 Audit program: audit internal terjadwal (internalisasi, eksternal, pihak ketiga) → temuan → rating kesiapan → gate sertifikasi
-- [ ] 213.4 Customer/partner complaint unified: intake multi-kanal → klasifikasi → investigasi → root cause → kredit/klaim jika perlu → closure satisfaction
-- [ ] 213.5 Tests: CAPA overdue tereskalasi, audit finding punya action plan, complaint terhubung ledger jika ada kompensasi, `quality:audit` clean
-- [ ] 213.6 Edge case: temuan audit lintas domain → pemilik bersama + CAPA tunggal dengan sub-tindakan per lini
-- [ ] 213.7 Sertifikasi lini (ISO/JCI simulasi) → evidence pack otomatis dari QMS → gate kelulusan
-- [ ] 213.8 Quality gate Fase 213
+- [x] 213.1 QMS framework lintas lini: standar mutu per domain (medis JCI simulasi, food HACCP, manufacturing ISO 9001 simulasi, hotel star standard Fase 111.1, port ISPS) → policy terpusat, eksekusi per lini
+- [x] 213.2 Nonconformance & CAPA unified: temuan → root cause (5-Why/fishbone terstruktur) → tindakan → verifikasi efektivitas → jadwal audit lanjutan
+- [x] 213.3 Audit program: audit internal terjadwal (internalisasi, eksternal, pihak ketiga) → temuan → rating kesiapan → gate sertifikasi
+- [x] 213.4 Customer/partner complaint unified: intake multi-kanal → klasifikasi → investigasi → root cause → kredit/klaim jika perlu → closure satisfaction
+- [x] 213.5 Tests: CAPA overdue tereskalasi, audit finding punya action plan, complaint terhubung ledger jika ada kompensasi, `quality:audit` clean
+- [x] 213.6 Edge case: temuan audit lintas domain → pemilik bersama + CAPA tunggal dengan sub-tindakan per lini
+- [x] 213.7 Sertifikasi lini (ISO/JCI simulasi) → evidence pack otomatis dari QMS → gate kelulusan
+- [x] 213.8 Quality gate Fase 213
 
 ## FASE 214 — OPERASI: MAINTENANCE, RELIABILITY & ASSET PERFORMANCE 30 LINI
 - [ ] 214.1 Unified asset reliability: mesin pabrik, alat berat, armada, alat medis, gedung, kapal, pesawat, transformer → strategy per kelas (corrective/preventive/predictive) → work order terpusat
