@@ -3592,14 +3592,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 315.8 Quality gate Fase 315
 
 ## FASE 316 — ADVANCED ECOSYSTEM: B2B ECOSYSTEM & INDUSTRY PLATFORM
-- [ ] 316.1 Industry vertical platform: terbuka penuh untuk industri tertentu (mis. tambang: vendor alat berat, logistics contractor, smelter buyer) → katalog, tender, settlement, financing → fees
-- [ ] 316.2 Network effects measurement: liquidity metrics (buyer/seller aktif, time-to-match, repeat rate) → growth interventions → anti-chicken-egg strategy (subsidy ber-bounded)
-- [ ] 316.3 Platform governance: quality standards, KYB tiering, dispute resolution, SLA platform → trust index publik (aggregate rating)
-- [ ] 316.4 Tests: settlement multi-pihak konsisten, trust index deterministik, subsidy tak melebihi anggaran, `b2b:audit` clean
-- [ ] 316.5 Edge case: trust index rendah menurunkan kepercayaan mitra → remediation plan + transparency report
-- [ ] 316.6 Risiko: platform fee terlalu tinggi menekan mitra kecil → tiering fee dengan cap sesuai skala
-- [ ] 316.7 Evidence: liquidity metrics, fee revenue, dan trust index trend terpublikasi ke governance
-- [ ] 316.8 Quality gate Fase 316
+- [x] 316.1 Industry vertical platform: terbuka penuh untuk industri tertentu (mis. tambang: vendor alat berat, logistics contractor, smelter buyer) → katalog, tender, settlement, financing → fees
+- [x] 316.2 Network effects measurement: liquidity metrics (buyer/seller aktif, time-to-match, repeat rate) → growth interventions → anti-chicken-egg strategy (subsidy ber-bounded)
+- [x] 316.3 Platform governance: quality standards, KYB tiering, dispute resolution, SLA platform → trust index publik (aggregate rating)
+- [x] 316.4 Tests: settlement multi-pihak konsisten, trust index deterministik, subsidy tak melebihi anggaran, `b2b:audit` clean
+- [x] 316.5 Edge case: trust index rendah menurunkan kepercayaan mitra → remediation plan + transparency report
+- [x] 316.6 Risiko: platform fee terlalu tinggi menekan mitra kecil → tiering fee dengan cap sesuai skala
+- [x] 316.7 Evidence: liquidity metrics, fee revenue, dan trust index trend terpublikasi ke governance
+- [x] 316.8 Quality gate Fase 316
 
 ## FASE 317 — ADVANCED PEOPLE: SKILLS ECONOMY & INTERNAL MOBILITY AT SCALE
 - [ ] 317.1 Internal talent exchange: proyek/kontrak singkat diposting → karyawan apply (dengan manager visibility & approval) → assignment → feedback → skill graph ter-update → mobility KPI
