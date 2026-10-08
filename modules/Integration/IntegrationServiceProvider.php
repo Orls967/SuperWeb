@@ -55,6 +55,7 @@ use Modules\Integration\Application\Services\PortOperationsService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
 use Modules\Integration\Application\Services\ProfessionalServicesService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
+use Modules\Integration\Application\Services\RegulatoryPolicyLifecycleService;
 use Modules\Integration\Application\Services\ReinsuranceAndCatService;
 use Modules\Integration\Application\Services\ResilienceWave2Service;
 use Modules\Integration\Application\Services\ScaleBenchmarkService;
@@ -146,6 +147,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(CyberResilienceService::class);
         $this->app->singleton(ThirdPartyRiskService::class);
         $this->app->singleton(BusinessContinuityCrisisService::class);
+        $this->app->singleton(RegulatoryPolicyLifecycleService::class);
     }
 
     public function boot(): void

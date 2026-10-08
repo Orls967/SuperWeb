@@ -2471,14 +2471,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 206.8 Quality gate Fase 206
 
 ## FASE 207 — RISIKO: REGULATORY INTELLIGENCE & POLICY LIFECYCLE
-- [ ] 207.1 Regulatory change feed (simulasi per yurisdiksi) → impact analysis per modul (apa yang berubah: tarif, batas, pelaporan) → tugas perubahan ke tim terkait
-- [ ] 207.2 Policy & procedure lifecycle: draft → review hukum → approval → publish → training (Edu Fase 135) → acknowledgment karyawan → attestation → review periodik
-- [ ] 207.3 Rule-to-code translation: regulasi yang bisa diotomasi → jadi guardrail sistem (mis. batas suku bunga, jam kerja, kapasitas) → uji kepatuhan otomatis
-- [ ] 207.4 Examination readiness: paket bukti per regulator (Fase 54.7 diperluas per sektor) → ekspor terstruktur → mock audit internal
-- [ ] 207.5 Tests: regulatory change menciptakan tugas, guardrail baru aktif & teruji, acknowledgment wajib sebelum shift role kritis, `compliance:audit` clean
-- [ ] 207.6 Edge case: regulasi berubah retroaktif → kalkulasi ulang periode terdampak dengan approval, jejak audit jelas
-- [ ] 207.7 Policy conflict: kebijakan baru bertentangan lama → resolusi eksplisit sebelum publish, bukan dua kebijakan hidup
-- [ ] 207.8 Quality gate Fase 207
+- [x] 207.1 Regulatory change feed (simulasi per yurisdiksi) → impact analysis per modul (apa yang berubah: tarif, batas, pelaporan) → tugas perubahan ke tim terkait
+- [x] 207.2 Policy & procedure lifecycle: draft → review hukum → approval → publish → training (Edu Fase 135) → acknowledgment karyawan → attestation → review periodik
+- [x] 207.3 Rule-to-code translation: regulasi yang bisa diotomasi → jadi guardrail sistem (mis. batas suku bunga, jam kerja, kapasitas) → uji kepatuhan otomatis
+- [x] 207.4 Examination readiness: paket bukti per regulator (Fase 54.7 diperluas per sektor) → ekspor terstruktur → mock audit internal
+- [x] 207.5 Tests: regulatory change menciptakan tugas, guardrail baru aktif & teruji, acknowledgment wajib sebelum shift role kritis, `compliance:audit` clean
+- [x] 207.6 Edge case: regulasi berubah retroaktif → kalkulasi ulang periode terdampak dengan approval, jejak audit jelas
+- [x] 207.7 Policy conflict: kebijakan baru bertentangan lama → resolusi eksplisit sebelum publish, bukan dua kebijakan hidup
+- [x] 207.8 Quality gate Fase 207
 
 ## FASE 208 — RISIKO: TAX, CUSTOMS & TRADE COMPLIANCE 30 LINI
 - [ ] 208.1 Consolidated indirect tax engine 30 lini: PPN per yurisdiksi, e-faktur simulasi, withholding (PPh 21/23/26/4(2)), transfer pricing documentation (Fase 52.2) lintas entitas baru
