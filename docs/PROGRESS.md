@@ -2641,14 +2641,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 223.8 Quality gate Fase 223
 
 ## FASE 224 — SDM: COMPENSATION, BENEFITS & TOTAL REWARDS
-- [ ] 224.1 Job architecture: job family, level, grade band (market data simulasi) → pay structure lintas negara (Fase 152.1) → compression/equity check
-- [ ] 224.2 Variable pay: bonus kinerja (per entitas/lini/individu, scorecard) → payout saat capai → clawback saat restatement → komisi sales/agensi (bridge Fase 45)
-- [ ] 224.3 Benefits administration: asuransi kesehatan/jiwa (Fase 159), pensiun, wellness (Fase 159.3), flexible benefit → enrollment → cost payroll & intercompany
-- [ ] 224.4 Pay equity audit berkala: statistik gap terkoreksi faktor sah → temuan → remediasi plan → laporan ke governance (Fase 141.4)
-- [ ] 224.5 Tests: pay band dihormati, bonus Σ = pool, benefit enrollment valid saat kejadian, pay equity method tercatat, `hcm:audit` clean
-- [ ] 224.6 Edge case: karyawan pindah negara → pay structure & benefit berubah efektif tanggal, historis tak diubah
-- [ ] 224.7 Retroactive pay correction → approval + jurnal adjustment tercatat, bukan edit slip lama
-- [ ] 224.8 Quality gate Fase 224
+- [x] 224.1 Job architecture: job family, level, grade band (market data simulasi) → pay structure lintas negara (Fase 152.1) → compression/equity check
+- [x] 224.2 Variable pay: bonus kinerja (per entitas/lini/individu, scorecard) → payout saat capai → clawback saat restatement → komisi sales/agensi (bridge Fase 45)
+- [x] 224.3 Benefits administration: asuransi kesehatan/jiwa (Fase 159), pensiun, wellness (Fase 159.3), flexible benefit → enrollment → cost payroll & intercompany
+- [x] 224.4 Pay equity audit berkala: statistik gap terkoreksi faktor sah → temuan → remediasi plan → laporan ke governance (Fase 141.4)
+- [x] 224.5 Tests: pay band dihormati, bonus Σ = pool, benefit enrollment valid saat kejadian, pay equity method tercatat, `hcm:audit` clean
+- [x] 224.6 Edge case: karyawan pindah negara → pay structure & benefit berubah efektif tanggal, historis tak diubah
+- [x] 224.7 Retroactive pay correction → approval + jurnal adjustment tercatat, bukan edit slip lama
+- [x] 224.8 Quality gate Fase 224
 
 ## FASE 225 — SDM: TALENT ACQUISITION, ONBOARDING & OFFBOARDING LIFECYCLE
 - [ ] 225.1 Recruitment pipeline: requisition → sourcing (talent pool Fase 136.1) → screening otomatis (skill match, Fase 199) → interview → offer → background check → accept
