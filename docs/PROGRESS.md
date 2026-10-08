@@ -3318,15 +3318,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 290.9 Quality gate Fase 290
 
 ## FASE 291 — GOVERNANCE: DATA RETENTION, RECORDS & E-DISCOVERY
-- [ ] 291.1 Record classes per jurisdiction/sector: legal hold, retention duration, archival format, disposal method → policy catalog → automated classification
-- [ ] 291.2 Legal hold workflow (Fase 176): hold prevents deletion/archive mutation → scope by matter/person/date → release approved by legal
-- [ ] 291.3 Retention jobs: eligible records archived/deleted/anonymized with proof of execution; financial ledger immutable; PII minimized when retention expires
-- [ ] 291.4 E-discovery: query corpus (documents, events, emails simulasi) by date/party/topic → privilege filter → export hash-verified & redacted
-- [ ] 291.5 Tests: legal hold prevents disposition, ledger never deleted, expired PII anonymization respects legal hold, discovery scope & audit complete
-- [ ] 291.6 Edge case: legal hold aktif saat retention job jalan → job skip record tersebut & logging
-- [ ] 291.7 E-discovery export terbatas scope & ber-timestamp, penerima dicatat
-- [ ] 291.8 Record class salah klasifikasi → audit periodik & koreksi dengan alasan
-- [ ] 291.9 Quality gate Fase 291
+- [x] 291.1 Record classes per jurisdiction/sector: legal hold, retention duration, archival format, disposal method → policy catalog → automated classification
+- [x] 291.2 Legal hold workflow (Fase 176): hold prevents deletion/archive mutation → scope by matter/person/date → release approved by legal
+- [x] 291.3 Retention jobs: eligible records archived/deleted/anonymized with proof of execution; financial ledger immutable; PII minimized when retention expires
+- [x] 291.4 E-discovery: query corpus (documents, events, emails simulasi) by date/party/topic → privilege filter → export hash-verified & redacted
+- [x] 291.5 Tests: legal hold prevents disposition, ledger never deleted, expired PII anonymization respects legal hold, discovery scope & audit complete
+- [x] 291.6 Edge case: legal hold aktif saat retention job jalan → job skip record tersebut & logging
+- [x] 291.7 E-discovery export terbatas scope & ber-timestamp, penerima dicatat
+- [x] 291.8 Record class salah klasifikasi → audit periodik & koreksi dengan alasan
+- [x] 291.9 Quality gate Fase 291
 
 ## FASE 292 — GOVERNANCE: RECORDS SIGNATURE, TRUST SERVICES & VERIFIABLE CREDENTIALS
 - [ ] 292.1 Enterprise signing service: approval chain → signer identity → document hash → timestamp → certificate simulation → validation & revocation
