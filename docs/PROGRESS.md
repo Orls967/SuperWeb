@@ -4502,14 +4502,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 406.8 Quality gate Fase 406
 
 ## FASE 407 — GOVERNANCE WAVE: ESG & CLIMATE DISCLOSURE CONTROL
-- [ ] 407.1 Disclosure control framework: data points, owner, system source, calculation, evidence, review, sign-off, publication and correction
-- [ ] 407.2 Assurance pack: sampling-ready evidence bundles, methodology notes, boundary mapping and reconciliation to financials
-- [ ] 407.3 Restatement & correction policy for ESG figures with stakeholder notification simulation
-- [ ] 407.4 Tests: unsupported figure blocked, evidence bundle verifiable, correction preserves audit trail, `esg:audit` clean
-- [ ] 407.5 Edge case: angka ESG tak punya sumber → block publish, bukan estimate diam-diam
-- [ ] 407.6 Risiko: disclosure beda dari data internal → reconciliation wajib sebelum tayang
-- [ ] 407.7 Evidence: disclosure checklist, assurance bundle, dan correction record tercatat
-- [ ] 407.8 Quality gate Fase 407
+- [x] 407.1 Disclosure control framework: data points, owner, system source, calculation, evidence, review, sign-off, publication and correction
+- [x] 407.2 Assurance pack: sampling-ready evidence bundles, methodology notes, boundary mapping and reconciliation to financials
+- [x] 407.3 Restatement & correction policy for ESG figures with stakeholder notification simulation
+- [x] 407.4 Tests: unsupported figure blocked, evidence bundle verifiable, correction preserves audit trail, `esg:audit` clean
+- [x] 407.5 Edge case: angka ESG tak punya sumber → block publish, bukan estimate diam-diam
+- [x] 407.6 Risiko: disclosure beda dari data internal → reconciliation wajib sebelum tayang
+- [x] 407.7 Evidence: disclosure checklist, assurance bundle, dan correction record tercatat
+- [x] 407.8 Quality gate Fase 407
 
 ## FASE 408 — OPERATIONS WAVE: OPERATIONS EXCELLENCE PROGRAM GOVERNANCE
 - [ ] 408.1 Improvement portfolio: initiatives with baseline, benefit hypothesis, owner, milestones, dependency and adoption plan
