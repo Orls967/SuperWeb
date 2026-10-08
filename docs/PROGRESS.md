@@ -3962,14 +3962,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 352.8 Quality gate Fase 352
 
 ## FASE 353 — AI PLATFORM: AI-ENABLED CUSTOMER SERVICE & AGENTIC COMMERCE
-- [ ] 353.1 Service agent: resolve tier-1 intents (status, FAQ, simple change) autonomously → escalate with full context → CSAT & resolution rate tracked → no autonomous refund above limit
-- [ ] 353.2 Shopping/booking agent: user intent → search across lines → quote → confirm price/availability (Fase 249) → human confirm payment → order placed idempotently
-- [ ] 353.3 Agent trust controls: disclosure, consent for data use, easy opt-out to human, transaction audit trail, complaint linkage
-- [ ] 353.4 Tests: escalation works, price/availability not stale at checkout, refund limit enforced, CSAT measurable, `crm:audit` clean
-- [ ] 353.5 Edge case: agent gagal resolve → handoff ke manusia dengan konteks penuh, tanpa data hilang
-- [ ] 353.6 Risiko: pelanggan tak sadar sedang dilayai AI → disclosure wajib + opt-out ke manusia
-- [ ] 353.7 Evidence: resolution rate, refund limit enforcement, dan CSAT per channel tercatat
-- [ ] 353.8 Quality gate Fase 353
+- [x] 353.1 Service agent: resolve tier-1 intents (status, FAQ, simple change) autonomously → escalate with full context → CSAT & resolution rate tracked → no autonomous refund above limit
+- [x] 353.2 Shopping/booking agent: user intent → search across lines → quote → confirm price/availability (Fase 249) → human confirm payment → order placed idempotently
+- [x] 353.3 Agent trust controls: disclosure, consent for data use, easy opt-out to human, transaction audit trail, complaint linkage
+- [x] 353.4 Tests: escalation works, price/availability not stale at checkout, refund limit enforced, CSAT measurable, `crm:audit` clean
+- [x] 353.5 Edge case: agent gagal resolve → handoff ke manusia dengan konteks penuh, tanpa data hilang
+- [x] 353.6 Risiko: pelanggan tak sadar sedang dilayai AI → disclosure wajib + opt-out ke manusia
+- [x] 353.7 Evidence: resolution rate, refund limit enforcement, dan CSAT per channel tercatat
+- [x] 353.8 Quality gate Fase 353
 
 ## FASE 354 — AI PLATFORM: FEDERATED & EDGE AI OPERATIONS
 - [ ] 354.1 Edge inference for venue/site (Fase 145.2): local model, offline capability, sync insights → central → model update distribution with rollback
