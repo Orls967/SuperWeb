@@ -4012,14 +4012,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 357.8 Quality gate Fase 357
 
 ## FASE 358 — AI PLATFORM: AGENT MARKETPLACE & GOVERNED REUSABLE TOOLS
-- [ ] 358.1 Catalog of approved agents/tools with owner, purpose, data scope, risk tier, cost, version, SLA and retirement date
-- [ ] 358.2 Reusable tools (quote, schedule, reconciliation, document lookup) expose typed contracts and idempotency; no unrestricted database or filesystem access
-- [ ] 358.3 Agent composition requires explicit dependency & permission graph; tool outputs treated as untrusted input; secrets never exposed to agent context
-- [ ] 358.4 Tests: unregistered agent cannot run, tool permission checked at runtime, composition cannot elevate privilege, `ai:audit` clean
-- [ ] 358.5 Edge case: tool berubah perilaku tak terduga → regression eval suite → quarantine agent sementara
-- [ ] 358.6 Risiko: secrets bocor ke konteks agent → secret masking di enforced runtime + audit
-- [ ] 358.7 Evidence: registry version, permission graph, dan runtime check log tercatat
-- [ ] 358.8 Quality gate Fase 358
+- [x] 358.1 Catalog of approved agents/tools with owner, purpose, data scope, risk tier, cost, version, SLA and retirement date
+- [x] 358.2 Reusable tools (quote, schedule, reconciliation, document lookup) expose typed contracts and idempotency; no unrestricted database or filesystem access
+- [x] 358.3 Agent composition requires explicit dependency & permission graph; tool outputs treated as untrusted input; secrets never exposed to agent context
+- [x] 358.4 Tests: unregistered agent cannot run, tool permission checked at runtime, composition cannot elevate privilege, `ai:audit` clean
+- [x] 358.5 Edge case: tool berubah perilaku tak terduga → regression eval suite → quarantine agent sementara
+- [x] 358.6 Risiko: secrets bocor ke konteks agent → secret masking di enforced runtime + audit
+- [x] 358.7 Evidence: registry version, permission graph, dan runtime check log tercatat
+- [x] 358.8 Quality gate Fase 358
 
 ## FASE 359 — AI PLATFORM: SYNTHETIC DATA, PRIVACY & MODEL TRAINING GOVERNANCE
 - [ ] 359.1 Training data catalog: purpose, consent/legal basis simulation, lineage, retention, exclusions, quality and snapshot checksum
