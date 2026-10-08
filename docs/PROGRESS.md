@@ -3014,14 +3014,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 260.8 Quality gate Fase 260
 
 ## FASE 261 — EKOSISTEM: SUPPLIER FINANCE & COLLABORATIVE PLANNING SCALE
-- [ ] 261.1 Supplier portal v2: forecast sharing (rolling 12 bulan) → capacity confirmation → ASN automation (Fase 55.3 bridge) → scorecard live
-- [ ] 261.2 Supply chain finance scale (memperluas Fase 50.5): early payment dari investor pool (tokenized SCF Fase 71) → discount curve → supplier cash conversion terukur
-- [ ] 261.3 Collaborative quality: supplier masuk quality system (Fase 213) → SPC data sharing → joint improvement → cost of quality turun terukur
-- [ ] 261.4 Tests: forecast sharing scope ketat, SCF early payment ≤ invoice, supplier access expired saat kontrak berakhir, `proc:audit` clean
-- [ ] 261.5 Edge case: supplier menolak sharing forecast → tier kemitraan turun, bukan akses dipaksa
-- [ ] 261.6 SCF investor pool tak cukup → pro-rata / antrean kebijakan, bukan tolak diam-diam
-- [ ] 261.7 Data quality supplier feed buruk → skor → feedback → improvement plan
-- [ ] 261.8 Quality gate Fase 261
+- [x] 261.1 Supplier portal v2: forecast sharing (rolling 12 bulan) → capacity confirmation → ASN automation (Fase 55.3 bridge) → scorecard live
+- [x] 261.2 Supply chain finance scale (memperluas Fase 50.5): early payment dari investor pool (tokenized SCF Fase 71) → discount curve → supplier cash conversion terukur
+- [x] 261.3 Collaborative quality: supplier masuk quality system (Fase 213) → SPC data sharing → joint improvement → cost of quality turun terukur
+- [x] 261.4 Tests: forecast sharing scope ketat, SCF early payment ≤ invoice, supplier access expired saat kontrak berakhir, `proc:audit` clean
+- [x] 261.5 Edge case: supplier menolak sharing forecast → tier kemitraan turun, bukan akses dipaksa
+- [x] 261.6 SCF investor pool tak cukup → pro-rata / antrean kebijakan, bukan tolak diam-diam
+- [x] 261.7 Data quality supplier feed buruk → skor → feedback → improvement plan
+- [x] 261.8 Quality gate Fase 261
 
 ## FASE 262 — EKOSISTEM: DISTRIBUTOR & RETAILER COLLABORATION 30 LINI
 - [ ] 262.1 Joint business planning digital: target bersama per produk/wilayah → aktivitas → review → settlement insentif (bridge Fase 43.6)
