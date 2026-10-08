@@ -3842,14 +3842,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 340.8 Quality gate Fase 340
 
 ## FASE 341 — DATA PLATFORM: DATA PRODUCTS SCALE & PRIVACY ENGINEERING
-- [ ] 341.1 Privacy by design templates: data minimization, purpose limitation, retention default, encryption at field, access pattern reviewed at design
-- [ ] 341.2 Consent orchestration across 30 lini: purpose-scoped consent, downstream propagation of revocation, proof-of-consent at processing time
-- [ ] 341.3 Privacy incident drill: simulated data leak → containment (key revoke, access freeze), notification workflow, remediation, lessons
-- [ ] 341.4 Tests: revocation propagates < SLA, processing without proof blocked, drill completes, `privacy:audit` clean
-- [ ] 341.5 Edge case: revocation lambat menyebar → SLA propagation ditegakkan + alert saat consumer tertinggal
-- [ ] 341.6 Risiko: consent proof hilang → processing diblokir sampai proof dipulihkan (fail-closed)
-- [ ] 341.7 Evidence: drill report, propagation timing, dan blocked-process log tercatat
-- [ ] 341.8 Quality gate Fase 341
+- [x] 341.1 Privacy by design templates: data minimization, purpose limitation, retention default, encryption at field, access pattern reviewed at design
+- [x] 341.2 Consent orchestration across 30 lini: purpose-scoped consent, downstream propagation of revocation, proof-of-consent at processing time
+- [x] 341.3 Privacy incident drill: simulated data leak → containment (key revoke, access freeze), notification workflow, remediation, lessons
+- [x] 341.4 Tests: revocation propagates < SLA, processing without proof blocked, drill completes, `privacy:audit` clean
+- [x] 341.5 Edge case: revocation lambat menyebar → SLA propagation ditegakkan + alert saat consumer tertinggal
+- [x] 341.6 Risiko: consent proof hilang → processing diblokir sampai proof dipulihkan (fail-closed)
+- [x] 341.7 Evidence: drill report, propagation timing, dan blocked-process log tercatat
+- [x] 341.8 Quality gate Fase 341
 
 ## FASE 342 — DATA PLATFORM: DATA VALUE MEASUREMENT & COST TRANSPARENCY
 - [ ] 342.1 Data asset inventory: dataset, consumer, criticality, refresh, cost, revenue contribution (if any) → steward → refresh priority
