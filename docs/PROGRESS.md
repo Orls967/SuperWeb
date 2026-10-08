@@ -3872,14 +3872,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 343.8 Quality gate Fase 343
 
 ## FASE 344 — DATA PLATFORM: DATA ACCESS, CONSUMER & DOMAIN SELF-SERVICE
-- [ ] 344.1 Consumer workspace: explore catalog, request access with justification, auto-approve policy-compliant, human review for sensitive → time-bound grant
-- [ ] 344.2 Domain data product templates: schema, quality rules, owner, SLA, deprecation notice → publish pipeline with CI checks
-- [ ] 344.3 Data literacy program: analyst/engineer training (Edu), certification → access tiers linked to training completion for sensitive domain
-- [ ] 344.4 Tests: grant expiry enforced, template CI gate, untrained user blocked for sensitive tier, `data:audit` clean
-- [ ] 344.5 Edge case: domain tak punya template → governance council menetapkan, bukan domain membuat sendiri
-- [ ] 344.6 Risiko: grant akses terlalu luas → time-bound + least-privilege default + review periodik
-- [ ] 344.7 Evidence: template compliance, training completion, dan grant expiry tercatat
-- [ ] 344.8 Quality gate Fase 344
+- [x] 344.1 Consumer workspace: explore catalog, request access with justification, auto-approve policy-compliant, human review for sensitive → time-bound grant
+- [x] 344.2 Domain data product templates: schema, quality rules, owner, SLA, deprecation notice → publish pipeline with CI checks
+- [x] 344.3 Data literacy program: analyst/engineer training (Edu), certification → access tiers linked to training completion for sensitive domain
+- [x] 344.4 Tests: grant expiry enforced, template CI gate, untrained user blocked for sensitive tier, `data:audit` clean
+- [x] 344.5 Edge case: domain tak punya template → governance council menetapkan, bukan domain membuat sendiri
+- [x] 344.6 Risiko: grant akses terlalu luas → time-bound + least-privilege default + review periodik
+- [x] 344.7 Evidence: template compliance, training completion, dan grant expiry tercatat
+- [x] 344.8 Quality gate Fase 344
 
 ## FASE 345 — DATA PLATFORM: ADVANCED ANALYTICS OPERATIONS & MODEL MONITORING
 - [ ] 345.1 MLOps-lite: model artifacts versioned, training data snapshot, performance dashboards, retraining triggers, rollback to prior model
