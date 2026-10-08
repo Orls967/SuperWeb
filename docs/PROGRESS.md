@@ -3922,14 +3922,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 348.8 Quality gate Fase 348
 
 ## FASE 349 — AI PLATFORM: AI COST, ENERGY & SUSTAINABILITY GOVERNANCE
-- [ ] 349.1 AI cost attribution: per agent/model/query/dashboard → budget per domain → over-budget alert → efficiency measures (cache, smaller model tier)
-- [ ] 349.2 Energy estimation: inference volume → estimated energy & emissions factor → report to ESG (scope boundary documented)
-- [ ] 349.3 Model tiering policy: high-stakes decisions use reviewed model tier; low-risk tasks use efficient tier → policy enforced at runtime
-- [ ] 349.4 Tests: cost attribution reconciles usage, emissions method versioned, tier policy enforced, `ai:audit` clean
-- [ ] 349.5 Edge case: cost AI meledak karena loop agent → circuit breaker + alert sebelum budget habis
-- [ ] 349.6 Risiko: emissions method tak konsisten dengan ESG → registry faktor dipakai bersama (Fase 60.1)
-- [ ] 349.7 Evidence: cost attribution, energy estimate, dan tier policy enforcement tercatat
-- [ ] 349.8 Quality gate Fase 349
+- [x] 349.1 AI cost attribution: per agent/model/query/dashboard → budget per domain → over-budget alert → efficiency measures (cache, smaller model tier)
+- [x] 349.2 Energy estimation: inference volume → estimated energy & emissions factor → report to ESG (scope boundary documented)
+- [x] 349.3 Model tiering policy: high-stakes decisions use reviewed model tier; low-risk tasks use efficient tier → policy enforced at runtime
+- [x] 349.4 Tests: cost attribution reconciles usage, emissions method versioned, tier policy enforced, `ai:audit` clean
+- [x] 349.5 Edge case: cost AI meledak karena loop agent → circuit breaker + alert sebelum budget habis
+- [x] 349.6 Risiko: emissions method tak konsisten dengan ESG → registry faktor dipakai bersama (Fase 60.1)
+- [x] 349.7 Evidence: cost attribution, energy estimate, dan tier policy enforcement tercatat
+- [x] 349.8 Quality gate Fase 349
 
 ## FASE 350 — AI PLATFORM: HUMAN ACCOUNTABILITY & ETHICAL REVIEW BOARD
 - [ ] 350.1 AI use-case register with impact classification (Fase 294.3), human accountable owner, review dates, retirement plan
