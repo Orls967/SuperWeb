@@ -4022,14 +4022,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 358.8 Quality gate Fase 358
 
 ## FASE 359 — AI PLATFORM: SYNTHETIC DATA, PRIVACY & MODEL TRAINING GOVERNANCE
-- [ ] 359.1 Training data catalog: purpose, consent/legal basis simulation, lineage, retention, exclusions, quality and snapshot checksum
-- [ ] 359.2 Synthetic dataset generation by domain with distribution fidelity checks and re-identification risk tests; real PII never copied to test/training fixtures
-- [ ] 359.3 Data deletion/consent revocation propagates to eligible derived datasets and future training; immutable financial records are minimized/anonymized under policy rather than altered
-- [ ] 359.4 Tests: dataset without lineage blocked, synthetic data passes privacy threshold, revocation propagation logged, model retraining excludes prohibited records
-- [ ] 359.5 Edge case: synthetic data gagal privacy check → regenerasi dengan seed/parameter berbeda, jangan dipakai
-- [ ] 359.6 Risiko: lineage tak tercatat → dataset tanpa lineage diblokir dari training pipeline
-- [ ] 359.7 Evidence: catalog lineage, distribution check, dan revocation propagation log tercatat
-- [ ] 359.8 Quality gate Fase 359
+- [x] 359.1 Training data catalog: purpose, consent/legal basis simulation, lineage, retention, exclusions, quality and snapshot checksum
+- [x] 359.2 Synthetic dataset generation by domain with distribution fidelity checks and re-identification risk tests; real PII never copied to test/training fixtures
+- [x] 359.3 Data deletion/consent revocation propagates to eligible derived datasets and future training; immutable financial records are minimized/anonymized under policy rather than altered
+- [x] 359.4 Tests: dataset without lineage blocked, synthetic data passes privacy threshold, revocation propagation logged, model retraining excludes prohibited records
+- [x] 359.5 Edge case: synthetic data gagal privacy check → regenerasi dengan seed/parameter berbeda, jangan dipakai
+- [x] 359.6 Risiko: lineage tak tercatat → dataset tanpa lineage diblokir dari training pipeline
+- [x] 359.7 Evidence: catalog lineage, distribution check, dan revocation propagation log tercatat
+- [x] 359.8 Quality gate Fase 359
 
 ## FASE 360 — AI PLATFORM: ENTERPRISE AI GOVERNANCE OPERATING MODEL
 - [ ] 360.1 AI governance council, domain model owners, independent risk reviewers and escalation route; decision rights and cadence documented
