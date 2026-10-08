@@ -2571,14 +2571,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 216.8 Quality gate Fase 216
 
 ## FASE 217 — OPERASI: PROJECT & PORTFOLIO MANAGEMENT (EPC, MEDIA, TRANSFORMATION)
-- [ ] 217.1 PPM platform: proyek (konstruksi, event, media, implementasi sistem, kampanye) → WBS → resource → cost → schedule → risk → change → close
-- [ ] 217.2 Gantt & critical path (deterministik) → dependency violation detection → leveling resource lintas lini (talent sharing Fase 97.1)
-- [ ] 217.3 Portfolio view: kumpulan proyek → skor strategis + IRR + kapasitas → prioritas → kapitalisasi realokasi (memperluas Fase 141.2) → benefit realization terukur setelah go-live
-- [ ] 217.4 Change request & ECO bridge: perubahan ruang lingkup → dampak biaya/jadwal → approval → kontrak/PO/amandemen terhubung (Fase 29.4)
-- [ ] 217.5 Tests: dependency cycle ditolak, resource overallocation terdeteksi, change tak dieksekusi tanpa approval, benefit tracking tercatat, `ppm:audit` clean
-- [ ] 217.6 Edge case: proyek over budget → escalation approval sebelum lanjut; tak ada biaya terpendam diam-diam
-- [ ] 217.7 Close-out proyek: benefit review, lessons, resource dilepas, kontrak ditutup, dokumen diarsip
-- [ ] 217.8 Quality gate Fase 217
+- [x] 217.1 PPM platform: proyek (konstruksi, event, media, implementasi sistem, kampanye) → WBS → resource → cost → schedule → risk → change → close
+- [x] 217.2 Gantt & critical path (deterministik) → dependency violation detection → leveling resource lintas lini (talent sharing Fase 97.1)
+- [x] 217.3 Portfolio view: kumpulan proyek → skor strategis + IRR + kapasitas → prioritas → kapitalisasi realokasi (memperluas Fase 141.2) → benefit realization terukur setelah go-live
+- [x] 217.4 Change request & ECO bridge: perubahan ruang lingkup → dampak biaya/jadwal → approval → kontrak/PO/amandemen terhubung (Fase 29.4)
+- [x] 217.5 Tests: dependency cycle ditolak, resource overallocation terdeteksi, change tak dieksekusi tanpa approval, benefit tracking tercatat, `ppm:audit` clean
+- [x] 217.6 Edge case: proyek over budget → escalation approval sebelum lanjut; tak ada biaya terpendam diam-diam
+- [x] 217.7 Close-out proyek: benefit review, lessons, resource dilepas, kontrak ditutup, dokumen diarsip
+- [x] 217.8 Quality gate Fase 217
 
 ## FASE 218 — OPERASI: INNOVATION R&D OPS, IP PORTFOLIO & TECH TRANSFER
 - [ ] 218.1 R&D portfolio (memperluas Fase 59): ide → hipotesis → eksperimen → hasil → stage gate → lab-to-plant transfer → benefit tracking → kill/scale decision

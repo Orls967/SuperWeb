@@ -60,6 +60,7 @@ use Modules\Integration\Application\Services\PortOperationsService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
 use Modules\Integration\Application\Services\ProfessionalServicesService;
 use Modules\Integration\Application\Services\ProfitabilityCostIntelligenceService;
+use Modules\Integration\Application\Services\ProjectPortfolioManagementService;
 use Modules\Integration\Application\Services\QualityManagementSystemService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
 use Modules\Integration\Application\Services\RegulatoryPolicyLifecycleService;
@@ -166,6 +167,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(AssetReliabilityService::class);
         $this->app->singleton(SupplyChainNetworkService::class);
         $this->app->singleton(FieldServiceSlaService::class);
+        $this->app->singleton(ProjectPortfolioManagementService::class);
     }
 
     public function boot(): void
