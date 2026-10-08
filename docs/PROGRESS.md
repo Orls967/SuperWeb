@@ -3732,14 +3732,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 329.8 Quality gate Fase 329
 
 ## FASE 330 — KEBERLANJUTAN: NATURE, WATER & COMMUNITY FINANCE SCALE
-- [ ] 330.1 Nature project marketplace scale: verified baseline, additionality, permanence, leakage, community rights → issuance gate & benefit share
-- [ ] 330.2 Water stewardship financing: project capex, meter baseline, verified savings → payment by performance (Fase 127/286)
-- [ ] 330.3 Community investment fund per operating region → participatory allocation, procurement transparency, outcome verification
-- [ ] 330.4 Tests: additionality assessment versioned, benefit share reconciles, water savings independently measured, `nature:audit` clean
-- [ ] 330.5 Edge case: komunitas menolak proyek → remediasi sosial wajib sebelum proyek lanjut
-- [ ] 330.6 Risiko: nature credit tanpa tambahan (additionality) → verifier menolak issuance
-- [ ] 330.7 Evidence: baseline, benefit share payments, dan water savings terverifikasi tercatat
-- [ ] 330.8 Quality gate Fase 330
+- [x] 330.1 Nature project marketplace scale: verified baseline, additionality, permanence, leakage, community rights → issuance gate & benefit share
+- [x] 330.2 Water stewardship financing: project capex, meter baseline, verified savings → payment by performance (Fase 127/286)
+- [x] 330.3 Community investment fund per operating region → participatory allocation, procurement transparency, outcome verification
+- [x] 330.4 Tests: additionality assessment versioned, benefit share reconciles, water savings independently measured, `nature:audit` clean
+- [x] 330.5 Edge case: komunitas menolak proyek → remediasi sosial wajib sebelum proyek lanjut
+- [x] 330.6 Risiko: nature credit tanpa tambahan (additionality) → verifier menolak issuance
+- [x] 330.7 Evidence: baseline, benefit share payments, dan water savings terverifikasi tercatat
+- [x] 330.8 Quality gate Fase 330
 
 ## FASE 331 — KEBERLANJUTAN: ESG ASSURANCE & DISCLOSURE CONTROL
 - [ ] 331.1 Disclosure workflow: reporting boundary → datapoint owner → evidence → control sign-off → assurance → publication → restatement process
