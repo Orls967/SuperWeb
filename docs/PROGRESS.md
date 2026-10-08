@@ -2401,14 +2401,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 199.8 Quality gate Fase 199
 
 ## FASE 200 — AI: FRAUD, AML & ANOMALY DETECTION MESH 30 LINI
-- [ ] 200.1 Signal mesh: gabung sinyal lintas lini (pembayaran mencurigakan, klaim beruntun, resale tiket, selisih timbangan, meteran dimanipulasi, retur berulang, komisi aneh) → skor gabungan per entitas
-- [ ] 200.2 Case management: alert → case → bukti (link ke voucher/telematik/dokumen) → investigasi → keputusan (freeze/block/chargeback/flag regulator simulasi) → appeal
-- [ ] 200.3 AML workflow: KYC refresh, PEP/sanctions screening periodik, transaction monitoring rulebook, SAR filing simulasi gapless
-- [ ] 200.4 Feedback loop: case closed → label → evaluasi model (precision pada sampel) → guardrail false-positive rate (tidak boleh menahan transaksi sah > ambang)
-- [ ] 200.5 Tests: true positive terdeteksi pada seed, false positive rate ≤ ambang, freeze membutuhkan approval, SAR numbering gapless, `fraud:audit` clean
-- [ ] 200.6 Edge case: false positive massal saat rule baru → circuit breaker rule → rollback rule, review tuning
-- [ ] 200.7 Due process: terduga fraud diberi hak pembelaan internal → keputusan freeze tidak final tanpa review
-- [ ] 200.8 Quality gate Fase 200
+- [x] 200.1 Signal mesh: gabung sinyal lintas lini (pembayaran mencurigakan, klaim beruntun, resale tiket, selisih timbangan, meteran dimanipulasi, retur berulang, komisi aneh) → skor gabungan per entitas
+- [x] 200.2 Case management: alert → case → bukti (link ke voucher/telematik/dokumen) → investigasi → keputusan (freeze/block/chargeback/flag regulator simulasi) → appeal
+- [x] 200.3 AML workflow: KYC refresh, PEP/sanctions screening periodik, transaction monitoring rulebook, SAR filing simulasi gapless
+- [x] 200.4 Feedback loop: case closed → label → evaluasi model (precision pada sampel) → guardrail false-positive rate (tidak boleh menahan transaksi sah > ambang)
+- [x] 200.5 Tests: true positive terdeteksi pada seed, false positive rate ≤ ambang, freeze membutuhkan approval, SAR numbering gapless, `fraud:audit` clean
+- [x] 200.6 Edge case: false positive massal saat rule baru → circuit breaker rule → rollback rule, review tuning
+- [x] 200.7 Due process: terduga fraud diberi hak pembelaan internal → keputusan freeze tidak final tanpa review
+- [x] 200.8 Quality gate Fase 200
 
 ## FASE 201 — AI: FORECASTING FEDERATION & S&OP 30 LINI
 - [ ] 201.1 Registry forecast per domain (demand resto, room, tiket, listrik, bahan baku, talent, klaim) → model per domain dengan backtest → MAPE tercatat per model
