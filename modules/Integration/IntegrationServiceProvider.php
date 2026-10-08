@@ -39,6 +39,7 @@ use Modules\Integration\Application\Services\ProfessionalServicesService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
 use Modules\Integration\Application\Services\ReinsuranceAndCatService;
 use Modules\Integration\Application\Services\ResilienceWave2Service;
+use Modules\Integration\Application\Services\SmartDistrictService;
 use Modules\Integration\Application\Services\SukukAndZakatService;
 use Modules\Integration\Application\Services\SupplyChainResilienceService;
 use Modules\Integration\Application\Services\SyariahBankingService;
@@ -100,6 +101,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(FashionSourcingService::class);
         $this->app->singleton(FashionRetailCircularService::class);
         $this->app->singleton(TelecomIdentityService::class);
+        $this->app->singleton(SmartDistrictService::class);
     }
 
     public function boot(): void

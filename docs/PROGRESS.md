@@ -2266,12 +2266,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 183.6 Quality gate Fase 183
 
 ## FASE 184 — LINI 30: CITY OPERATIONS, SMART DISTRICTS & PUBLIC-PRIVATE SERVICES
-- [ ] 184.1 Modul `District` (`dst_`): districts, public assets, service requests, permits, utility networks, mobility/parking, emergency response interfaces
-- [ ] 184.2 B2G service contracts: SLA, procurement, milestone acceptance, public billing and transparency reports; segregated public-sector tenant scope
-- [ ] 184.3 Smart district twin links buildings, utilities, traffic and public realm; what-if traffic/energy/waste scenarios in sandbox
-- [ ] 184.4 Community reporting channel: issue → verified location → responsible operator → SLA → closeout evidence; privacy-protected public dashboards
-- [ ] 184.5 Tests: tenant isolation, SLA timing deterministic, public view excludes PII, contract payment needs acceptance, `district:audit` clean
-- [ ] 184.6 Quality gate Fase 184
+- [x] 184.1 Modul `District` (`dst_`): districts, public assets, service requests, permits, utility networks, mobility/parking, emergency response interfaces
+- [x] 184.2 B2G service contracts: SLA, procurement, milestone acceptance, public billing and transparency reports; segregated public-sector tenant scope
+- [x] 184.3 Smart district twin links buildings, utilities, traffic and public realm; what-if traffic/energy/waste scenarios in sandbox
+- [x] 184.4 Community reporting channel: issue → verified location → responsible operator → SLA → closeout evidence; privacy-protected public dashboards
+- [x] 184.5 Tests: tenant isolation, SLA timing deterministic, public view excludes PII, contract payment needs acceptance, `district:audit` clean
+- [x] 184.6 Quality gate Fase 184
 
 ## FASE 185 — 30-LINI DOMAIN MODEL, MASTER DATA & EVENT CONTRACT FREEZE
 - [ ] 185.1 Inventory seluruh domain, contracts, events, identifiers, currencies, units, statuses and ownership; publish versioned canonical registry
