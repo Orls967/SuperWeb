@@ -3602,14 +3602,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 316.8 Quality gate Fase 316
 
 ## FASE 317 — ADVANCED PEOPLE: SKILLS ECONOMY & INTERNAL MOBILITY AT SCALE
-- [ ] 317.1 Internal talent exchange: proyek/kontrak singkat diposting → karyawan apply (dengan manager visibility & approval) → assignment → feedback → skill graph ter-update → mobility KPI
-- [ ] 317.2 Gig-to-permanent pathway: kinerja gig luar biasa → penawaran permanen → onboarding fast-track → conversion rate terukur → biaya rekrutmen turun
-- [ ] 317.3 Expertise marketplace: konsultasi internal berbayar per jam antar unit (mis. engineer tambang bantu EPC) → knowledge transfer terdokumentasi → fee internal ledger
-- [ ] 317.4 Tests: assignment tak melanggar kapasitas asli, conversion mematuhi headcount approval, fee internal Σ = biaya proyek, `hcm:audit` clean
-- [ ] 317.5 Edge case: talent dipindah antar unit saat kritis → continuity plan & handover wajib, bukan cabut tiba-tiba
-- [ ] 317.6 Risiko: internal marketplace mengabaikan workload asli → guardrail kapasitas & approval manager ditegakkan
-- [ ] 317.7 Evidence: mobility KPI, conversion rate, dan fee internal tercatat per periode
-- [ ] 317.8 Quality gate Fase 317
+- [x] 317.1 Internal talent exchange: proyek/kontrak singkat diposting → karyawan apply (dengan manager visibility & approval) → assignment → feedback → skill graph ter-update → mobility KPI
+- [x] 317.2 Gig-to-permanent pathway: kinerja gig luar biasa → penawaran permanen → onboarding fast-track → conversion rate terukur → biaya rekrutmen turun
+- [x] 317.3 Expertise marketplace: konsultasi internal berbayar per jam antar unit (mis. engineer tambang bantu EPC) → knowledge transfer terdokumentasi → fee internal ledger
+- [x] 317.4 Tests: assignment tak melanggar kapasitas asli, conversion mematuhi headcount approval, fee internal Σ = biaya proyek, `hcm:audit` clean
+- [x] 317.5 Edge case: talent dipindah antar unit saat kritis → continuity plan & handover wajib, bukan cabut tiba-tiba
+- [x] 317.6 Risiko: internal marketplace mengabaikan workload asli → guardrail kapasitas & approval manager ditegakkan
+- [x] 317.7 Evidence: mobility KPI, conversion rate, dan fee internal tercatat per periode
+- [x] 317.8 Quality gate Fase 317
 
 ## FASE 318 — ADVANCED PEOPLE: LEADERSHIP PIPELINE & EXECUTIVE DEVELOPMENT
 - [ ] 318.1 Leadership competency model per level (first line → C-suite) → assessment center simulasi → readiness score → development plan dengan coaching & rotation
