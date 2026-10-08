@@ -4112,14 +4112,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 367.8 Quality gate Fase 367
 
 ## FASE 368 — GLOBAL PLATFORM: DOCUMENT & RECORD AUTOMATION
-- [ ] 368.1 Document lifecycle templates for 30 lines: create, review, sign, issue, supersede, archive; gapless numbering where legally required by simulation policy
-- [ ] 368.2 Document extraction/validation pipeline (AI Fase 351): source hash, field confidence, human verification for material values, exception queue
-- [ ] 368.3 Records schedule classification and legal hold connection (Fase 291); immutable evidence bundles for disputes/audit
-- [ ] 368.4 Tests: source hash retained, low-confidence financial field cannot auto-post, legal hold prevents deletion, `document:audit` clean
-- [ ] 368.5 Edge case: extraction salah pada dokumen finansial → wajib human verify sebelum posting
-- [ ] 368.6 Risiko: legal hold tak terhubung ke retention job → integration test memastikan hold menghalangi disposal
-- [ ] 368.7 Evidence: document hash, extraction confidence, dan legal hold linkage tercatat
-- [ ] 368.8 Quality gate Fase 368
+- [x] 368.1 Document lifecycle templates for 30 lines: create, review, sign, issue, supersede, archive; gapless numbering where legally required by simulation policy
+- [x] 368.2 Document extraction/validation pipeline (AI Fase 351): source hash, field confidence, human verification for material values, exception queue
+- [x] 368.3 Records schedule classification and legal hold connection (Fase 291); immutable evidence bundles for disputes/audit
+- [x] 368.4 Tests: source hash retained, low-confidence financial field cannot auto-post, legal hold prevents deletion, `document:audit` clean
+- [x] 368.5 Edge case: extraction salah pada dokumen finansial → wajib human verify sebelum posting
+- [x] 368.6 Risiko: legal hold tak terhubung ke retention job → integration test memastikan hold menghalangi disposal
+- [x] 368.7 Evidence: document hash, extraction confidence, dan legal hold linkage tercatat
+- [x] 368.8 Quality gate Fase 368
 
 ## FASE 369 — GLOBAL PLATFORM: EVENT SPINE OPERATIONS & REPLAY CENTER
 - [ ] 369.1 Consumer lag/SLA dashboard per event topic, partition, tenant and owner; backlog prediction and capacity guidance
