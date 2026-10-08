@@ -2922,14 +2922,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 251.8 Quality gate Fase 251
 
 ## FASE 252 — INTEGRASI AKHIR B: END-TO-END FINANCE 30 LINI (PLAN-FUND-REPORT)
-- [ ] 252.1 Finance process unification: plan (budget Fase 54.1) → fund (Treasury Fase 187/210) → transact (AP/AR/payroll/billing 30 lini) → close (Fase 209) → control (Fase 203) → report (Fase 141.5/211) → tax (Fase 208) dalam siklus tunggal dengan checklist otomatis
-- [ ] 252.2 Statutory + management + ESG reporting dari satu ledger truth (tanpa angka berbeda antar laporan) → reconciliation otomatis antar output
-- [ ] 252.3 Finance shared service: proses transaksional volume tinggi (AP, billing, cash app, payroll ops) → SLA internal → cost allocation → quality sampling
-- [ ] 252.4 Tests: angka management = statutory = ledger, checklist close wajib lengkap, shared service SLA terukur, `enterprise:audit` + `group:audit` clean
-- [ ] 252.5 Edge case: management report beda dari statutory → rekonsiliasi wajib dijelaskan (timing/estimasi), bukan dibiarkan
-- [ ] 252.6 Shared service SLA breach → capacity review (bukan menurunkan mutu diam-diam)
-- [ ] 252.7 Close task dependency: gagal di satu task → eskalasi sebelum lock terlanjur
-- [ ] 252.8 Quality gate Fase 252
+- [x] 252.1 Finance process unification: plan (budget Fase 54.1) → fund (Treasury Fase 187/210) → transact (AP/AR/payroll/billing 30 lini) → close (Fase 209) → control (Fase 203) → report (Fase 141.5/211) → tax (Fase 208) dalam siklus tunggal dengan checklist otomatis
+- [x] 252.2 Statutory + management + ESG reporting dari satu ledger truth (tanpa angka berbeda antar laporan) → reconciliation otomatis antar output
+- [x] 252.3 Finance shared service: proses transaksional volume tinggi (AP, billing, cash app, payroll ops) → SLA internal → cost allocation → quality sampling
+- [x] 252.4 Tests: angka management = statutory = ledger, checklist close wajib lengkap, shared service SLA terukur, `enterprise:audit` + `group:audit` clean
+- [x] 252.5 Edge case: management report beda dari statutory → rekonsiliasi wajib dijelaskan (timing/estimasi), bukan dibiarkan
+- [x] 252.6 Shared service SLA breach → capacity review (bukan menurunkan mutu diam-diam)
+- [x] 252.7 Close task dependency: gagal di satu task → eskalasi sebelum lock terlanjur
+- [x] 252.8 Quality gate Fase 252
 
 ## FASE 253 — INTEGRASI AKHIR C: END-TO-END RISK 30 LINI (IDENTIFY-CONTROL-REPORT)
 - [ ] 253.1 Risk process unification: identify (register Fase 202) → assess (scoring) → treat (control Fase 203) → monitor (KRI) → incident bridge (Fase 204/206) → report (board pack Fase 231) → learning (postmortem masuk register)
