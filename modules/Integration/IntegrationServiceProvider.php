@@ -33,6 +33,7 @@ use Modules\Integration\Application\Services\EnterpriseRiskService;
 use Modules\Integration\Application\Services\EthicalSourcingService;
 use Modules\Integration\Application\Services\FashionRetailCircularService;
 use Modules\Integration\Application\Services\FashionSourcingService;
+use Modules\Integration\Application\Services\FieldServiceSlaService;
 use Modules\Integration\Application\Services\FinanceCloseAgilityService;
 use Modules\Integration\Application\Services\FoodBrandNutritionService;
 use Modules\Integration\Application\Services\FoodProcessingService;
@@ -164,6 +165,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(QualityManagementSystemService::class);
         $this->app->singleton(AssetReliabilityService::class);
         $this->app->singleton(SupplyChainNetworkService::class);
+        $this->app->singleton(FieldServiceSlaService::class);
     }
 
     public function boot(): void

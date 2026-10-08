@@ -2561,14 +2561,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 215.8 Quality gate Fase 215
 
 ## FASE 216 — OPERASI: FIELD SERVICE, WORKFORCE MOBILITY & SLA ENGINE
-- [ ] 216.1 Field service unification: teknisi (AutoServe, facility, media crew, medical equipment, network, mining maintenance) → skill & sertifikasi → scheduling → dispatch → mobile app → POD
-- [ ] 216.2 SLA engine terpusat: definisi SLA per kontrak/lini (response, resolution, uptime) → timer → breach detection → credit/penalty otomatis (Fase 47.7, 29.2) → laporan ke mitra
-- [ ] 216.3 Parts van inventory & tooling: stok di kendaraan teknisi → reserve/consume → restock route → rekonsiliasi
-- [ ] 216.4 First-time fix optimization: diagnosis knowledge base (Fase 198.2) → check list benar → bring right part → FTF rate naik → biaya turun
-- [ ] 216.5 Tests: technician tanpa sertifikasi valid ditolak tugas kritikal, SLA timer deterministik, credit post tepat saat breach, van inventory = konsumsi, `field:audit` clean
-- [ ] 216.6 Edge case: teknisi tak punya suku cadang saat tugas → fallback ke gudang terdekat + revisi jadwal, SLA timer jalan
-- [ ] 216.7 Subkontrak field service → kontrak jasa + SLA + skor vendor (Fase 47.7 bridge)
-- [ ] 216.8 Quality gate Fase 216
+- [x] 216.1 Field service unification: teknisi (AutoServe, facility, media crew, medical equipment, network, mining maintenance) → skill & sertifikasi → scheduling → dispatch → mobile app → POD
+- [x] 216.2 SLA engine terpusat: definisi SLA per kontrak/lini (response, resolution, uptime) → timer → breach detection → credit/penalty otomatis (Fase 47.7, 29.2) → laporan ke mitra
+- [x] 216.3 Parts van inventory & tooling: stok di kendaraan teknisi → reserve/consume → restock route → rekonsiliasi
+- [x] 216.4 First-time fix optimization: diagnosis knowledge base (Fase 198.2) → check list benar → bring right part → FTF rate naik → biaya turun
+- [x] 216.5 Tests: technician tanpa sertifikasi valid ditolak tugas kritikal, SLA timer deterministik, credit post tepat saat breach, van inventory = konsumsi, `field:audit` clean
+- [x] 216.6 Edge case: teknisi tak punya suku cadang saat tugas → fallback ke gudang terdekat + revisi jadwal, SLA timer jalan
+- [x] 216.7 Subkontrak field service → kontrak jasa + SLA + skor vendor (Fase 47.7 bridge)
+- [x] 216.8 Quality gate Fase 216
 
 ## FASE 217 — OPERASI: PROJECT & PORTFOLIO MANAGEMENT (EPC, MEDIA, TRANSFORMATION)
 - [ ] 217.1 PPM platform: proyek (konstruksi, event, media, implementasi sistem, kampanye) → WBS → resource → cost → schedule → risk → change → close
