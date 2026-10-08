@@ -3224,14 +3224,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 281.8 Quality gate Fase 281
 
 ## FASE 282 — PELANGGAN: COMMUNITY, UGC & SOCIAL COMMERCE
-- [ ] 282.1 Community platform per lini (review, forum, Q&A) → moderation pipeline (auto + human) → guideline → escalation pelanggaran → trust score kontributor
-- [ ] 282.2 UGC commerce: review terverifikasi pembelian → influence ranking → UGC-terkait penjualan teratribusi (Fase 222.4) → insentif kreator (poin ledger)
-- [ ] 282.3 Social commerce (live selling simulasi): sesi live → order masuk OMS (Fase 137.3) → stok real-time → fulfillment biasa → komisi host & affiliate (Fase 260.3)
-- [ ] 282.4 Tests: review terverifikasi butuh order, moderation audit trail, live order idempoten, UGC incentive anti-abuse, `ret:audit` clean
-- [ ] 282.5 Edge case: UGC berisi data pribadi orang lain → moderasi hapus + report, retention jejak
-- [ ] 282.6 Live selling gagal (stok habis saat live) → auto-cancel & refund cepat dengan notice
-- [ ] 282.7 Trust score kontributor → penempatan konten, anti-manipulasi rating
-- [ ] 282.8 Quality gate Fase 282
+- [x] 282.1 Community platform per lini (review, forum, Q&A) → moderation pipeline (auto + human) → guideline → escalation pelanggaran → trust score kontributor
+- [x] 282.2 UGC commerce: review terverifikasi pembelian → influence ranking → UGC-terkait penjualan teratribusi (Fase 222.4) → insentif kreator (poin ledger)
+- [x] 282.3 Social commerce (live selling simulasi): sesi live → order masuk OMS (Fase 137.3) → stok real-time → fulfillment biasa → komisi host & affiliate (Fase 260.3)
+- [x] 282.4 Tests: review terverifikasi butuh order, moderation audit trail, live order idempoten, UGC incentive anti-abuse, `ret:audit` clean
+- [x] 282.5 Edge case: UGC berisi data pribadi orang lain → moderasi hapus + report, retention jejak
+- [x] 282.6 Live selling gagal (stok habis saat live) → auto-cancel & refund cepat dengan notice
+- [x] 282.7 Trust score kontributor → penempatan konten, anti-manipulasi rating
+- [x] 282.8 Quality gate Fase 282
 
 ## FASE 283 — PELANGGAN: LOYALTY ECONOMY ADVANCED (COALITION, BREAKAGE, PARTNERS)
 - [ ] 283.1 Coalition loyalty lintas industri (maskapai, hotel, retail, asuransi, telko simulasi): earning rules per partner → interchange fee model → settlement multi-issuer → liability governance (Fase 220.3)
