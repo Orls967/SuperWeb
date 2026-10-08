@@ -4152,14 +4152,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 371.8 Quality gate Fase 371
 
 ## FASE 372 — EKOSISTEM: API ECONOMICS, BILLING & PARTNER SETTLEMENT
-- [ ] 372.1 Meter API usage by endpoint, tenant, tier, latency class and successful outcome; billable event rules versioned
-- [ ] 372.2 Partner invoice, credit, disputes, tax simulation, revenue share and collection integrated to ledger
-- [ ] 372.3 API credits/promotional quotas with budget encumbrance, expiry and fraud limits
-- [ ] 372.4 Tests: billable usage = metering, retries not double-charged, credit ≤ approved budget, `api:audit` clean
-- [ ] 372.5 Edge case: usage melebihi kuota tier → rate limit + notice upgrade, jangan layanan terpotong mendadak
-- [ ] 372.6 Risiko: billing tak match metering → reconciliation harian menemukan selisih sebelum invoice terbit
-- [ ] 372.7 Evidence: usage metering, credit issuance, dan settlement ledger tercatat per partner
-- [ ] 372.8 Quality gate Fase 372
+- [x] 372.1 Meter API usage by endpoint, tenant, tier, latency class and successful outcome; billable event rules versioned
+- [x] 372.2 Partner invoice, credit, disputes, tax simulation, revenue share and collection integrated to ledger
+- [x] 372.3 API credits/promotional quotas with budget encumbrance, expiry and fraud limits
+- [x] 372.4 Tests: billable usage = metering, retries not double-charged, credit ≤ approved budget, `api:audit` clean
+- [x] 372.5 Edge case: usage melebihi kuota tier → rate limit + notice upgrade, jangan layanan terpotong mendadak
+- [x] 372.6 Risiko: billing tak match metering → reconciliation harian menemukan selisih sebelum invoice terbit
+- [x] 372.7 Evidence: usage metering, credit issuance, dan settlement ledger tercatat per partner
+- [x] 372.8 Quality gate Fase 372
 
 ## FASE 373 — EKOSISTEM: MARKETPLACE TRUST, DISPUTE & BUYER PROTECTION
 - [ ] 373.1 Standard dispute taxonomy, evidence checklist, neutral reviewer assignment, timelines and escalation across B2B/B2C/venue/hotel services
