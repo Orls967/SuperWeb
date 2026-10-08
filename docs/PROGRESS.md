@@ -2812,14 +2812,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 240.8 Quality gate Fase 240
 
 ## FASE 241 — DATA: DATA GOVERNANCE, QUALITY & LINEAGE 30 LINI
-- [ ] 241.1 Data governance council & stewardship: per domain (produk, pelanggan, finansial, medis, energi, komoditas) → data owner → policy (definisi, kualitas, retensi, akses) → enforcement
-- [ ] 241.2 Data quality rules registry: completeness, timeliness, validity, consistency, uniqueness → runtime checks → DQ score per domain → bad data quarantine + owner ticket (memperluas Fase 146.5)
-- [ ] 241.3 Lineage graph: column-level lineage dari source → transform → dashboard → keputusan → dampak analysis (ubah kolom → tahu siapa terpengaruh) → change gate
-- [ ] 241.4 Data catalog & glossary: istilah bisnis tunggal (artikel tunggal per konsep) → semantik layer (Fase 146.3) → onboarding data baru wajib daftar
-- [ ] 241.5 Tests: lineage completeness pada sampel, DQ failure membuat quarantine, glossary duplicate terdeteksi, steward approval wajib perubahan definisi
-- [ ] 241.6 Edge case: data tanpa steward → tak boleh onboarding; ketiadaan pemilik = temuan governance
-- [ ] 241.7 Lineage break saat refactor schema → CI deteksi consumer terpengaruh sebelum merge
-- [ ] 241.8 Quality gate Fase 241
+- [x] 241.1 Data governance council & stewardship: per domain (produk, pelanggan, finansial, medis, energi, komoditas) → data owner → policy (definisi, kualitas, retensi, akses) → enforcement
+- [x] 241.2 Data quality rules registry: completeness, timeliness, validity, consistency, uniqueness → runtime checks → DQ score per domain → bad data quarantine + owner ticket (memperluas Fase 146.5)
+- [x] 241.3 Lineage graph: column-level lineage dari source → transform → dashboard → keputusan → dampak analysis (ubah kolom → tahu siapa terpengaruh) → change gate
+- [x] 241.4 Data catalog & glossary: istilah bisnis tunggal (artikel tunggal per konsep) → semantik layer (Fase 146.3) → onboarding data baru wajib daftar
+- [x] 241.5 Tests: lineage completeness pada sampel, DQ failure membuat quarantine, glossary duplicate terdeteksi, steward approval wajib perubahan definisi
+- [x] 241.6 Edge case: data tanpa steward → tak boleh onboarding; ketiadaan pemilik = temuan governance
+- [x] 241.7 Lineage break saat refactor schema → CI deteksi consumer terpengaruh sebelum merge
+- [x] 241.8 Quality gate Fase 241
 
 ## FASE 242 — DATA: REAL-TIME PIPELINE, STREAM PROCESSING & CDC 30 LINI
 - [ ] 242.1 CDC dari seluruh modul (via outbox Fase 26.7) → stream processing (window aggregation, enrichment) → real-time store untuk operational dashboards (Fase 190)
