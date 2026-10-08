@@ -4212,14 +4212,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 377.8 Quality gate Fase 377
 
 ## FASE 378 — INTEGRASI GELOMBANG 3: CUSTOMER, LOYALTY & SUBSCRIPTION ECONOMY
-- [ ] 378.1 One customer-facing identity and consent-aware entitlement service for loyalty, subscription, insurance, wallet and service plans across 30 lines
-- [ ] 378.2 Unified benefits liability and fulfillment ledger; redemption split among participating entities settles intercompany automatically
-- [ ] 378.3 Cohort retention, LTV and service cost harmonized; incentives evaluated by incremental outcome, not gross redemption
-- [ ] 378.4 Tests: entitlement is current and consented, liability reconciles, intercompany split balances, `crm:audit` clean
-- [ ] 378.5 Edge case: entitlement conflict lintas lini → resolusi kebijakan tunggal, bukan aturan per lini yang bertabrakan
-- [ ] 378.6 Risiko: liability melebihi proyeksi → forecast redemption berbasis data aktual & cap sesuai reserve
-- [ ] 378.7 Evidence: liability reconcile, intercompany split, dan LTV cohort tercatat per periode
-- [ ] 378.8 Quality gate Fase 378
+- [x] 378.1 One customer-facing identity and consent-aware entitlement service for loyalty, subscription, insurance, wallet and service plans across 30 lines
+- [x] 378.2 Unified benefits liability and fulfillment ledger; redemption split among participating entities settles intercompany automatically
+- [x] 378.3 Cohort retention, LTV and service cost harmonized; incentives evaluated by incremental outcome, not gross redemption
+- [x] 378.4 Tests: entitlement is current and consented, liability reconciles, intercompany split balances, `crm:audit` clean
+- [x] 378.5 Edge case: entitlement conflict lintas lini → resolusi kebijakan tunggal, bukan aturan per lini yang bertabrakan
+- [x] 378.6 Risiko: liability melebihi proyeksi → forecast redemption berbasis data aktual & cap sesuai reserve
+- [x] 378.7 Evidence: liability reconcile, intercompany split, dan LTV cohort tercatat per periode
+- [x] 378.8 Quality gate Fase 378
 
 ## FASE 379 — INTEGRASI GELOMBANG 3: WORKFORCE, SKILLS & OPERATING CAPACITY
 - [ ] 379.1 Workforce schedule, competency credentials, labor cost and bounty assignment integrated with finite capacity planning (Fase 277)
