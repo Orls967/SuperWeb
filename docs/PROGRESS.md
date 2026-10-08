@@ -3254,14 +3254,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 284.8 Quality gate Fase 284
 
 ## FASE 285 — SDM: WELLNESS, OCCUPATIONAL HEALTH & EMPLOYEE ASSISTANCE
-- [ ] 285.1 Occupational health surveillance: pemeriksaan berkala (terutama tambang Fase 94, pabrik, radiologi RS) → hasil medis ter-encrypt terpisah (vault Fase 144.2) → fitness-for-duty terbatas (hanya status, bukan detail)
-- [ ] 285.2 EAP (Employee Assistance): konseling anonim → referral (link RS/telemedicine Fase 104) → utilization agregat tanpa identitas → program perbaikan workplace
-- [ ] 285.3 Ergonomics & wellbeing program: risk assessment per role → intervention → incident musculoskeletal turun terukur → biaya vs avoided cost
-- [ ] 285.4 Tests: medical record access ketat (bocor = incident), fitness status tanpa detail medis, EAP anonymized, `hcm:audit` clean
-- [ ] 285.5 Edge case: karyawan menolak pemeriksaan → keputusan fitness-of-duty via prosedur, bukan akses data dipaksa
-- [ ] 285.6 EAP anonymity: tak ada data individual ke HR, hanya agregat
-- [ ] 285.7 Ergonomics remediation → diukur turunnya incident, bukan hanya dilaporkan
-- [ ] 285.8 Quality gate Fase 285
+- [x] 285.1 Occupational health surveillance: pemeriksaan berkala (terutama tambang Fase 94, pabrik, radiologi RS) → hasil medis ter-encrypt terpisah (vault Fase 144.2) → fitness-for-duty terbatas (hanya status, bukan detail)
+- [x] 285.2 EAP (Employee Assistance): konseling anonim → referral (link RS/telemedicine Fase 104) → utilization agregat tanpa identitas → program perbaikan workplace
+- [x] 285.3 Ergonomics & wellbeing program: risk assessment per role → intervention → incident musculoskeletal turun terukur → biaya vs avoided cost
+- [x] 285.4 Tests: medical record access ketat (bocor = incident), fitness status tanpa detail medis, EAP anonymized, `hcm:audit` clean
+- [x] 285.5 Edge case: karyawan menolak pemeriksaan → keputusan fitness-of-duty via prosedur, bukan akses data dipaksa
+- [x] 285.6 EAP anonymity: tak ada data individual ke HR, hanya agregat
+- [x] 285.7 Ergonomics remediation → diukur turunnya incident, bukan hanya dilaporkan
+- [x] 285.8 Quality gate Fase 285
 
 ## FASE 286 — ESG: NATURE, CLIMATE & SOCIAL IMPACT AUDIT AT SCALE
 - [ ] 286.1 Impact measurement framework: baseline/counterfactual, attribution, leakage/permanence risk → applies carbon, biodiversity, community, health, education projects
