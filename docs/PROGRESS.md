@@ -3024,14 +3024,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 261.8 Quality gate Fase 261
 
 ## FASE 262 — EKOSISTEM: DISTRIBUTOR & RETAILER COLLABORATION 30 LINI
-- [ ] 262.1 Joint business planning digital: target bersama per produk/wilayah → aktivitas → review → settlement insentif (bridge Fase 43.6)
-- [ ] 262.2 Sell-out data feed otomatis (POS retailer via API Fase 147) → data quality scoring → forecast akurasi naik → stock accuracy incentive
-- [ ] 262.3 Shelf & space analytics (simulasi): compliance planogram → penalti insentif → promo effectiveness per outlet
-- [ ] 262.4 Tests: sell-out feed idempoten, insentif = formula terverifikasi, data quality fee adil, `dist:audit` clean
-- [ ] 262.5 Edge case: sell-out feed terlambat/bermasalah → forecast fallback ke proxy, dilabeli confidence
-- [ ] 262.6 Planogram compliance menyangkal penjualan → dispute → evidence foto → keputusan tercatat
-- [ ] 262.7 Insentif data quality dihitung objektif dari metrik feed
-- [ ] 262.8 Quality gate Fase 262
+- [x] 262.1 Joint business planning digital: target bersama per produk/wilayah → aktivitas → review → settlement insentif (bridge Fase 43.6)
+- [x] 262.2 Sell-out data feed otomatis (POS retailer via API Fase 147) → data quality scoring → forecast akurasi naik → stock accuracy incentive
+- [x] 262.3 Shelf & space analytics (simulasi): compliance planogram → penalti insentif → promo effectiveness per outlet
+- [x] 262.4 Tests: sell-out feed idempoten, insentif = formula terverifikasi, data quality fee adil, `dist:audit` clean
+- [x] 262.5 Edge case: sell-out feed terlambat/bermasalah → forecast fallback ke proxy, dilabeli confidence
+- [x] 262.6 Planogram compliance menyangkal penjualan → dispute → evidence foto → keputusan tercatat
+- [x] 262.7 Insentif data quality dihitung objektif dari metrik feed
+- [x] 262.8 Quality gate Fase 262
 
 ## FASE 263 — EKOSISTEM: GOVERNMENT & REGULATORY DIGITAL SERVICES
 - [ ] 263.1 e-Gov integration gateway: pelaporan elektronik per regulasi (pajak, ketenagakerjaan, lingkungan, keselamatan) → template resmi simulasi → submit → acknowledgement → tracking
