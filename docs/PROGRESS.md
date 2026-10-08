@@ -2974,14 +2974,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 256.9 Quality gate Fase 256
 
 ## FASE 257 — PLATFORM: EVENT-DRIVEN ARCHITECTURE MATURITY & CQRS
-- [ ] 257.1 CQRS untuk domain berat (booking, inventory, portfolio, control tower): read model terpisah → projection idempoten → rebuild dari event → konsistensi terverifikasi
-- [ ] 257.2 Saga orchestration lintas modul: transaksi bisnis panjang (bundle travel, supply chain, M&A integration) → orchestrator + compensation action → state terlihat ke user
-- [ ] 257.3 Event schema evolution & consumer compatibility gates (memperluas Fase 185.3) → deprecation window → consumer inventory report
-- [ ] 257.4 Tests: projection rebuild = state asli, saga compensation bersih pada kegagalan titik mana pun, compatibility gate memblokir breaking change
-- [ ] 257.5 Edge case: projection gagal → rebuild dari event → divergensi terdeteksi & dilaporkan (bukan silent drift)
-- [ ] 257.6 Consumer versi lama masih jalan selama window → compatibility test CI
-- [ ] 257.7 Saga timeout policy versioned → perubahan butuh approval owner
-- [ ] 257.8 Quality gate Fase 257
+- [x] 257.1 CQRS untuk domain berat (booking, inventory, portfolio, control tower): read model terpisah → projection idempoten → rebuild dari event → konsistensi terverifikasi
+- [x] 257.2 Saga orchestration lintas modul: transaksi bisnis panjang (bundle travel, supply chain, M&A integration) → orchestrator + compensation action → state terlihat ke user
+- [x] 257.3 Event schema evolution & consumer compatibility gates (memperluas Fase 185.3) → deprecation window → consumer inventory report
+- [x] 257.4 Tests: projection rebuild = state asli, saga compensation bersih pada kegagalan titik mana pun, compatibility gate memblokir breaking change
+- [x] 257.5 Edge case: projection gagal → rebuild dari event → divergensi terdeteksi & dilaporkan (bukan silent drift)
+- [x] 257.6 Consumer versi lama masih jalan selama window → compatibility test CI
+- [x] 257.7 Saga timeout policy versioned → perubahan butuh approval owner
+- [x] 257.8 Quality gate Fase 257
 
 ## FASE 258 — PLATFORM: MULTI-REGION DATA ARCHITECTURE & EDGE PATTERNS
 - [ ] 258.1 Topologi data multi-region (memperluas Fase 145.1): primary per domain (komoditas internasional di SG, operasi domestik di Jakarta) → replicasi → conflict policy per data class (uang = strict serialisasi)
