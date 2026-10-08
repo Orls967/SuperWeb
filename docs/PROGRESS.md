@@ -4362,14 +4362,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 392.8 Quality gate Fase 392
 
 ## FASE 393 — STRESS WAVE: DATABASE PARTITION & ARCHIVE SCALE
-- [ ] 393.1 Partition strategy by event date/tenant/domain for largest append-only tables; ownership and retention clearly declared
-- [ ] 393.2 Partition maintenance automation with dry-run, lock budget, rollback and audit evidence
-- [ ] 393.3 Archive/restore at scale with checksum, referential manifest and sample query compatibility
-- [ ] 393.4 Tests: partition switch preserves row counts, restore checksum valid, maintenance avoids critical lock window
-- [ ] 393.5 Edge case: partition switch gagal → rollback partition, data tak pernah di state parsial
-- [ ] 393.6 Risiko: archive menghilangkan data legal-hold → policy engine memeriksa hold sebelum archive
-- [ ] 393.7 Evidence: partition strategy doc, dry-run result, dan restore checksum tercatat
-- [ ] 393.8 Quality gate Fase 393
+- [x] 393.1 Partition strategy by event date/tenant/domain for largest append-only tables; ownership and retention clearly declared
+- [x] 393.2 Partition maintenance automation with dry-run, lock budget, rollback and audit evidence
+- [x] 393.3 Archive/restore at scale with checksum, referential manifest and sample query compatibility
+- [x] 393.4 Tests: partition switch preserves row counts, restore checksum valid, maintenance avoids critical lock window
+- [x] 393.5 Edge case: partition switch gagal → rollback partition, data tak pernah di state parsial
+- [x] 393.6 Risiko: archive menghilangkan data legal-hold → policy engine memeriksa hold sebelum archive
+- [x] 393.7 Evidence: partition strategy doc, dry-run result, dan restore checksum tercatat
+- [x] 393.8 Quality gate Fase 393
 
 ## FASE 394 — STRESS WAVE: QUEUE, SCHEDULER & BATCH PROCESSING
 - [ ] 394.1 Queue isolation by priority/domain; fairness and tenant quotas; poison message quarantine; retry budgets

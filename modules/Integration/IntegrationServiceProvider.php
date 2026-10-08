@@ -346,6 +346,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\CrossLineServiceBundlesService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\StressBenchmarkBaselineService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\DomainCapacityEnvelopesService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\DatabasePartitionScaleService::class);
     }
 
     public function boot(): void
