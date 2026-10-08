@@ -275,6 +275,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\WorkforceAutomationRoleDesignService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\TotalWellbeingSustainabilityService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\StrategicWorkforceCapabilityService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\GlobalPayrollCloseReconciliationService::class);
     }
 
     public function boot(): void

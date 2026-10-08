@@ -3652,14 +3652,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 321.8 Quality gate Fase 321
 
 ## FASE 322 — INTEGRASI PEOPLE: GLOBAL PAYROLL, TIME & BENEFITS CLOSE
-- [ ] 322.1 Unified people close calendar: time approval → payroll calculation → tax withholding → benefits → payment → GL allocation → reconciliation lintas 30 lini
-- [ ] 322.2 Exception handling: missing time, duplicate employee, bank rejection, tax rule change → exception queue dengan owner & SLA
-- [ ] 322.3 Payroll simulation rehearsal (dry run) sebelum live run → compare prior period → material variance approval
-- [ ] 322.4 Tests: payroll dry/live result reproducible, rejected payments remain payable not expensed, headcount-to-payroll match, `hcm:audit` clean
-- [ ] 322.5 Edge case: payroll dry-run gagal → live run ditahan hingga masalah terselesaikan
-- [ ] 322.6 Risiko: exception menumpuk → SLA exception queue dengan eskalasi otomatis
-- [ ] 322.7 Evidence: close checklist, variance report, dan reconciliation terarsip per periode
-- [ ] 322.8 Quality gate Fase 322
+- [x] 322.1 Unified people close calendar: time approval → payroll calculation → tax withholding → benefits → payment → GL allocation → reconciliation lintas 30 lini
+- [x] 322.2 Exception handling: missing time, duplicate employee, bank rejection, tax rule change → exception queue dengan owner & SLA
+- [x] 322.3 Payroll simulation rehearsal (dry run) sebelum live run → compare prior period → material variance approval
+- [x] 322.4 Tests: payroll dry/live result reproducible, rejected payments remain payable not expensed, headcount-to-payroll match, `hcm:audit` clean
+- [x] 322.5 Edge case: payroll dry-run gagal → live run ditahan hingga masalah terselesaikan
+- [x] 322.6 Risiko: exception menumpuk → SLA exception queue dengan eskalasi otomatis
+- [x] 322.7 Evidence: close checklist, variance report, dan reconciliation terarsip per periode
+- [x] 322.8 Quality gate Fase 322
 
 ## FASE 323 — INTEGRASI PEOPLE: SAFETY-CERTIFIED ACCESS & PERMIT-TO-WORK
 - [ ] 323.1 Credential-to-access bridge: valid certificate (Edu Fase 167) + role + permit + site induction → akses alat/area dibuka, semua syarat expiry-aware
