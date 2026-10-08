@@ -3692,14 +3692,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 325.8 Quality gate Fase 325
 
 ## FASE 326 — KEBERLANJUTAN: CLIMATE TRANSITION FINANCE & INTERNAL CARBON PRICE
-- [ ] 326.1 Internal carbon price scenarios per sector/site → capex appraisal adjusted → shadow-cost separate from actual tax/ledger
-- [ ] 326.2 Transition finance instruments (green loan, sustainability-linked sukuk, carbon-linked facility simulation) → KPI, pricing step-up/down, verification & covenant
-- [ ] 326.3 Portfolio transition alignment: emissions trajectory vs sector pathway → outliers → transition plan → finance approvals (Fase 210)
-- [ ] 326.4 Tests: shadow price never posts as cash without transaction, KPI adjustment formula reproducible, trajectory source evidenced, `esg:audit` clean
-- [ ] 326.5 Edge case: KPI tak tercapai → pricing step-up dihitung otomatis sesuai kontrak, bukan dinegosiasi ulang diam-diam
-- [ ] 326.6 Risiko: transition finance tanpa transisi nyata → disebut greenwashing → wajib evidence abatement plan
-- [ ] 326.7 Evidence: trajectory per entitas, KPI financing, dan shadow price tercatat untuk board
-- [ ] 326.8 Quality gate Fase 326
+- [x] 326.1 Internal carbon price scenarios per sector/site → capex appraisal adjusted → shadow-cost separate from actual tax/ledger
+- [x] 326.2 Transition finance instruments (green loan, sustainability-linked sukuk, carbon-linked facility simulation) → KPI, pricing step-up/down, verification & covenant
+- [x] 326.3 Portfolio transition alignment: emissions trajectory vs sector pathway → outliers → transition plan → finance approvals (Fase 210)
+- [x] 326.4 Tests: shadow price never posts as cash without transaction, KPI adjustment formula reproducible, trajectory source evidenced, `esg:audit` clean
+- [x] 326.5 Edge case: KPI tak tercapai → pricing step-up dihitung otomatis sesuai kontrak, bukan dinegosiasi ulang diam-diam
+- [x] 326.6 Risiko: transition finance tanpa transisi nyata → disebut greenwashing → wajib evidence abatement plan
+- [x] 326.7 Evidence: trajectory per entitas, KPI financing, dan shadow price tercatat untuk board
+- [x] 326.8 Quality gate Fase 326
 
 ## FASE 327 — KEBERLANJUTAN: SUPPLY CHAIN TRACEABILITY & RESPONSIBLE SOURCING
 - [ ] 327.1 End-to-end provenance for critical inputs (minerals, timber, seafood, food, textiles, pharma) → origin, transformation, custody, certification, emissions
