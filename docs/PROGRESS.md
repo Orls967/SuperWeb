@@ -2661,14 +2661,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 225.8 Quality gate Fase 225
 
 ## FASE 226 — SDM: PERFORMANCE, ENGAGEMENT & PEOPLE ANALYTICS
-- [ ] 226.1 Performance cycle: goal (OKR/KPI terhubung business plan) → check-in berkala → review (self/peer/manager) → calibration lintas divisi → rating → link ke bonus (Fase 224.2)
-- [ ] 226.2 Engagement survey: pulse berkala → analisis driver → action plan per tim → follow-up effectiveness → attrition correlation
-- [ ] 226.3 People analytics: turnover, regretted attrition, time-to-fill, productivity per FTE, overtime exposure, safety incident rate per populasi → prediksi risiko attrition → retention outreach
-- [ ] 226.4 Manager effectiveness: score tim (engagement, growth, retention, delivery) → development program → promosi berbasis data + judgment terdokumentasi
-- [ ] 226.5 Tests: calibration tak mengubah aturan tersembunyi, survey anonimitas (grup < n ditolak), predictive metric deterministik, `hcm:audit` clean
-- [ ] 226.6 Edge case: calibration mengubah rating massal → butuh justifikasi & monitoring bias per tim
-- [ ] 226.7 Survey anonymity: threshold kelompok kecil ditegakkan (Fase 584) agar responden aman
-- [ ] 226.8 Quality gate Fase 226
+- [x] 226.1 Performance cycle: goal (OKR/KPI terhubung business plan) → check-in berkala → review (self/peer/manager) → calibration lintas divisi → rating → link ke bonus (Fase 224.2)
+- [x] 226.2 Engagement survey: pulse berkala → analisis driver → action plan per tim → follow-up effectiveness → attrition correlation
+- [x] 226.3 People analytics: turnover, regretted attrition, time-to-fill, productivity per FTE, overtime exposure, safety incident rate per populasi → prediksi risiko attrition → retention outreach
+- [x] 226.4 Manager effectiveness: score tim (engagement, growth, retention, delivery) → development program → promosi berbasis data + judgment terdokumentasi
+- [x] 226.5 Tests: calibration tak mengubah aturan tersembunyi, survey anonimitas (grup < n ditolak), predictive metric deterministik, `hcm:audit` clean
+- [x] 226.6 Edge case: calibration mengubah rating massal → butuh justifikasi & monitoring bias per tim
+- [x] 226.7 Survey anonymity: threshold kelompok kecil ditegakkan (Fase 584) agar responden aman
+- [x] 226.8 Quality gate Fase 226
 
 ## FASE 227 — SDM: LEARNING CLOUD, ACADEMY SCALE & SKILL INTELLIGENCE
 - [ ] 227.1 Learning cloud 30 lini: katalog gabungan (formal Fase 166, micro Fase 135, on-job, compliance) → rekomendasi per role & career path → learning hour tracking
