@@ -2902,14 +2902,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 249.8 Quality gate Fase 249
 
 ## FASE 250 — PELANGGAN: CX METRICS, VOICE OF CUSTOMER & EXPERIENCE ORCHESTRATION
-- [ ] 250.1 VoC aggregation: survey (post-interaction, NPS periodik), review publik simulasi, komplain, social listening simulasi → sentimen & tema terklasifikasi → closed-loop follow-up untuk promoter/detractor
-- [ ] 250.2 CX journey mapping digital: journey utama (buy, stay, heal, learn, entertain) → instrumentasi step-level → drop-off detection → improvement backlog → impact measurement
-- [ ] 250.3 Experience orchestration: personalization (Fase 112.5 generalized) lintas titik sentuh → konsistensi pesan → frequency governance → hasil terukur
-- [ ] 250.4 CX financial link: korelasi NPS/CSAT vs retention/spend (model deterministik) → value of experience → investasi perbaikan diprioritaskan dari dampak
-- [ ] 250.5 Tests: closed-loop tercatat sampai selesai, journey metric = agregasi nyata, personalization respect consent, correlation method tercatat, `crm:audit` clean
-- [ ] 250.6 Edge case: NPS rendah tanpa follow-up → case terbuka otomatis, tak hanya tercatat angka
-- [ ] 250.7 Korelasi ≠ sebab: laporan eksplisit menyebut korelasi, bukan klaim kausal tanpa uji
-- [ ] 250.8 Quality gate Fase 250
+- [x] 250.1 VoC aggregation: survey (post-interaction, NPS periodik), review publik simulasi, komplain, social listening simulasi → sentimen & tema terklasifikasi → closed-loop follow-up untuk promoter/detractor
+- [x] 250.2 CX journey mapping digital: journey utama (buy, stay, heal, learn, entertain) → instrumentasi step-level → drop-off detection → improvement backlog → impact measurement
+- [x] 250.3 Experience orchestration: personalization (Fase 112.5 generalized) lintas titik sentuh → konsistensi pesan → frequency governance → hasil terukur
+- [x] 250.4 CX financial link: korelasi NPS/CSAT vs retention/spend (model deterministik) → value of experience → investasi perbaikan diprioritaskan dari dampak
+- [x] 250.5 Tests: closed-loop tercatat sampai selesai, journey metric = agregasi nyata, personalization respect consent, correlation method tercatat, `crm:audit` clean
+- [x] 250.6 Edge case: NPS rendah tanpa follow-up → case terbuka otomatis, tak hanya tercatat angka
+- [x] 250.7 Korelasi ≠ sebab: laporan eksplisit menyebut korelasi, bukan klaim kausal tanpa uji
+- [x] 250.8 Quality gate Fase 250
 
 ## FASE 251 — INTEGRASI AKHIR A: END-TO-END SUPPLY CHAIN 30 LINI (PLAN-DELIVER)
 - [ ] 251.1 Plan-to-serve unification: S&OP (Fase 201) → planning jaringan (Fase 215) → procurement (Fase 33/82) → make (Fase 36-38) → move (Fase 22/80/177/179) → store (Fase 41) → sell (Fase 137) → return (Fase 79/174) → satu peta kontrol dengan KPI chain (OTIF, DOS, cash-to-cash)

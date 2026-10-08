@@ -203,6 +203,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\KamPartnershipRevenueService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\TenderBidManagementService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\CpqOrderToCashService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\CxMetricsVocOrchestrationService::class);
     }
 
     public function boot(): void
