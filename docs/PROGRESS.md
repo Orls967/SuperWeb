@@ -4222,14 +4222,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 378.8 Quality gate Fase 378
 
 ## FASE 379 — INTEGRASI GELOMBANG 3: WORKFORCE, SKILLS & OPERATING CAPACITY
-- [ ] 379.1 Workforce schedule, competency credentials, labor cost and bounty assignment integrated with finite capacity planning (Fase 277)
-- [ ] 379.2 Cross-line workforce deployment requires qualification, availability, rest rule, budget and employee consent where applicable
-- [ ] 379.3 Staffing shortages feed service capacity promises (beds, tables, rooms, shifts, machines) with transparent constraints
-- [ ] 379.4 Tests: qualification gate universal, rest rules consistent, capacity promise reflects staffing, `hcm:audit` clean
-- [ ] 379.5 Edge case: staffing shortage mendadak → capacity promise turun dengan notice, jadi janji palsu
-- [ ] 379.6 Risiko: overtime berlebih saat shortage → fatigue control (Fase 886) aktif berlaku lintas lini
-- [ ] 379.7 Evidence: qualification coverage, capacity constraint, dan deployment log tercatat
-- [ ] 379.8 Quality gate Fase 379
+- [x] 379.1 Workforce schedule, competency credentials, labor cost and bounty assignment integrated with finite capacity planning (Fase 277)
+- [x] 379.2 Cross-line workforce deployment requires qualification, availability, rest rule, budget and employee consent where applicable
+- [x] 379.3 Staffing shortages feed service capacity promises (beds, tables, rooms, shifts, machines) with transparent constraints
+- [x] 379.4 Tests: qualification gate universal, rest rules consistent, capacity promise reflects staffing, `hcm:audit` clean
+- [x] 379.5 Edge case: staffing shortage mendadak → capacity promise turun dengan notice, jadi janji palsu
+- [x] 379.6 Risiko: overtime berlebih saat shortage → fatigue control (Fase 886) aktif berlaku lintas lini
+- [x] 379.7 Evidence: qualification coverage, capacity constraint, dan deployment log tercatat
+- [x] 379.8 Quality gate Fase 379
 
 ## FASE 380 — INTEGRASI GELOMBANG 3: SUSTAINABILITY, PRODUCT & FINANCE DATA
 - [ ] 380.1 Product/site/contract carbon and circularity evidence links to procurement, pricing, export, finance and public disclosure
