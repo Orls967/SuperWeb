@@ -2872,14 +2872,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 246.8 Quality gate Fase 246
 
 ## FASE 247 — KOMERSIAL: KEY ACCOUNT MANAGEMENT & PARTNERSHIP REVENUE
-- [ ] 247.1 KAM workspace: akun besar (kontrak multi-lini: grup hotel eksternal, operator telko, retailer, pemerintah simulasi) → cross-lini solution → deal room kolaboratif
-- [ ] 247.2 Solution bundling engine: komponen dari lini berbeda → harga paket (tetap floor guardrail) → margin per komponen → settlement internal saat kontrak jalan
-- [ ] 247.3 QBR & value realization: review berkala dengan klien → KPI terkontrak vs aktual (SLA engine Fase 216.2) → renewal/expansion proposal
-- [ ] 247.4 Partnership revenue share: deal referral antar mitra (Fase 47.5) → attribution → revenue share payout → dispute resolution
-- [ ] 247.5 Tests: bundle settlement internal Σ = margin kontrak, SLA scorecard dari data nyata, share payout = formula, `ptn:audit` clean
-- [ ] 247.6 Edge case: kontrak multi-lini batal di satu lini → impact ke bundle sisanya dihitung ulang, bukan semua batal otomatis
-- [ ] 247.7 Renewal gap: kontrak berakhir tak diperpanjang → peringatan 90/60/30 hari + owner tugas menindaklanjuti
-- [ ] 247.8 Quality gate Fase 247
+- [x] 247.1 KAM workspace: akun besar (kontrak multi-lini: grup hotel eksternal, operator telko, retailer, pemerintah simulasi) → cross-lini solution → deal room kolaboratif
+- [x] 247.2 Solution bundling engine: komponen dari lini berbeda → harga paket (tetap floor guardrail) → margin per komponen → settlement internal saat kontrak jalan
+- [x] 247.3 QBR & value realization: review berkala dengan klien → KPI terkontrak vs aktual (SLA engine Fase 216.2) → renewal/expansion proposal
+- [x] 247.4 Partnership revenue share: deal referral antar mitra (Fase 47.5) → attribution → revenue share payout → dispute resolution
+- [x] 247.5 Tests: bundle settlement internal Σ = margin kontrak, SLA scorecard dari data nyata, share payout = formula, `ptn:audit` clean
+- [x] 247.6 Edge case: kontrak multi-lini batal di satu lini → impact ke bundle sisanya dihitung ulang, bukan semua batal otomatis
+- [x] 247.7 Renewal gap: kontrak berakhir tak diperpanjang → peringatan 90/60/30 hari + owner tugas menindaklanjuti
+- [x] 247.8 Quality gate Fase 247
 
 ## FASE 248 — KOMERSIAL: TENDER & BID MANAGEMENT SCALE 30 LINI
 - [ ] 248.1 Bid desk enterprise: lelang dari pelanggan B2B/B2G lintas lini (supply produk, sewa, jasa, PPA, project) → qualification (bid/no-bid scoring) → resource assignment → timeline → submission
