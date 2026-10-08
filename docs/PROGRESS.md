@@ -3472,14 +3472,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 303.8 Quality gate Fase 303
 
 ## FASE 304 — ADVANCED SUPPLY: DEMAND-SIDE FLEXIBILITY & FULFILLMENT ORCHESTRATION
-- [ ] 304.1 Promise-to-fulfill engine: ATP/CTP (Fase 53.4) terluas — real-time komitmen lintas kanal (toko, web, marketplace, B2B) dengan buffer safety → promise accuracy KPI
-- [ ] 304.2 Order orchestration rules: source selection (toko vs DC vs dropship), substitution, split, bundling, backorder → rules versioned & testable → cost-to-serve aware
-- [ ] 304.3 Post-purchase experience: proactive delay notification, self-service reschedule, compensation policy otomatis → CSAT recovery terukur
-- [ ] 304.4 Tests: promise accuracy ≥ target pada seed, rules deterministik, compensation policy dihormati, `ret:audit` clean
-- [ ] 304.5 Edge case: promise terlanjur diberikan lalu stok hilang → kebijakan kompensasi otomatis + re-quote alternatif
-- [ ] 304.6 Risiko: orchestrasi mengabaikan kontrak harga (price freeze) → guardrail kontrak selalu menang, diuji
-- [ ] 304.7 Evidence: promise accuracy & failure rate per channel dilaporkan berkala ke owner
-- [ ] 304.8 Quality gate Fase 304
+- [x] 304.1 Promise-to-fulfill engine: ATP/CTP (Fase 53.4) terluas — real-time komitmen lintas kanal (toko, web, marketplace, B2B) dengan buffer safety → promise accuracy KPI
+- [x] 304.2 Order orchestration rules: source selection (toko vs DC vs dropship), substitution, split, bundling, backorder → rules versioned & testable → cost-to-serve aware
+- [x] 304.3 Post-purchase experience: proactive delay notification, self-service reschedule, compensation policy otomatis → CSAT recovery terukur
+- [x] 304.4 Tests: promise accuracy ≥ target pada seed, rules deterministik, compensation policy dihormati, `ret:audit` clean
+- [x] 304.5 Edge case: promise terlanjur diberikan lalu stok hilang → kebijakan kompensasi otomatis + re-quote alternatif
+- [x] 304.6 Risiko: orchestrasi mengabaikan kontrak harga (price freeze) → guardrail kontrak selalu menang, diuji
+- [x] 304.7 Evidence: promise accuracy & failure rate per channel dilaporkan berkala ke owner
+- [x] 304.8 Quality gate Fase 304
 
 ## FASE 305 — ADVANCED DEMAND: COMMERCIAL PLANNING & REVENUE GROWTH MANAGEMENT
 - [ ] 305.1 Revenue growth management: price-pack architecture, promo portfolio optimization, mix steering → dampak net revenue per lini → guardrails margin
