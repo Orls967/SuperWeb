@@ -2274,12 +2274,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 184.6 Quality gate Fase 184
 
 ## FASE 185 — 30-LINI DOMAIN MODEL, MASTER DATA & EVENT CONTRACT FREEZE
-- [ ] 185.1 Inventory seluruh domain, contracts, events, identifiers, currencies, units, statuses and ownership; publish versioned canonical registry
-- [ ] 185.2 Master data model: product, service, site, party, asset, account, unit-of-measure, geographic hierarchy and classification; backward-compatible adapters only
-- [ ] 185.3 Event contract governance: schema compatibility (additive-only by default), deprecation windows, consumer inventory and replay compatibility checks
-- [ ] 185.4 Cross-domain lifecycle map and responsibility matrix: single source of truth for each business fact (no duplicate ledger or stock authorities)
-- [ ] 185.5 Tests: schema breaking change blocked, duplicate authority detected by architecture test, old consumers replay successfully, registry completeness audit
-- [ ] 185.6 Quality gate Fase 185
+- [x] 185.1 Inventory seluruh domain, contracts, events, identifiers, currencies, units, statuses and ownership; publish versioned canonical registry
+- [x] 185.2 Master data model: product, service, site, party, asset, account, unit-of-measure, geographic hierarchy and classification; backward-compatible adapters only
+- [x] 185.3 Event contract governance: schema compatibility (additive-only by default), deprecation windows, consumer inventory and replay compatibility checks
+- [x] 185.4 Cross-domain lifecycle map and responsibility matrix: single source of truth for each business fact (no duplicate ledger or stock authorities)
+- [x] 185.5 Tests: schema breaking change blocked, duplicate authority detected by architecture test, old consumers replay successfully, registry completeness audit
+- [x] 185.6 Quality gate Fase 185
 
 ## FASE 186 — INTEGRASI 30 LINI A: END-TO-END VALUE CHAIN SIMULATION
 - [ ] 186.1 Peta aliran nilai 30 lini: hulu (tambang, perikanan, hutan, agro) → manufaktur (pangan, tekstil, mineral) → energi/telekom infrastruktur → distribusi/ritel/AV → hospitality/hiburan/edukasi/kesehatan → jasa profesional/keuangan → internasional

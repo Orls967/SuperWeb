@@ -14,6 +14,7 @@ use Modules\Integration\Application\Services\CircularEconomyService;
 use Modules\Integration\Application\Services\CrisisContinuityService;
 use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
+use Modules\Integration\Application\Services\DomainGovernanceService;
 use Modules\Integration\Application\Services\EmbeddedInsuranceService;
 use Modules\Integration\Application\Services\EthicalSourcingService;
 use Modules\Integration\Application\Services\FashionRetailCircularService;
@@ -102,6 +103,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(FashionRetailCircularService::class);
         $this->app->singleton(TelecomIdentityService::class);
         $this->app->singleton(SmartDistrictService::class);
+        $this->app->singleton(DomainGovernanceService::class);
     }
 
     public function boot(): void
