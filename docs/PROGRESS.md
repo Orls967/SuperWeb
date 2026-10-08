@@ -3404,16 +3404,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 298.8 Quality gate Fase 298
 
 ## FASE 299 — FINAL DOCUMENTATION, OPERATIONS PLAYBOOK & RELEASE CANDIDATE
-- [ ] 299.1 README final 30 lini, all commands, role matrix, simulation & seed guides, integration map
-- [ ] 299.2 ARCHITECTURE/CODEBASE/DECISIONS: 30-line ERD, boundaries, event registry, ledger conventions, twin architecture, ADRs complete
-- [ ] 299.3 RUNBOOK: every scheduled job, critical operations, recovery, DR, incident response, audit/reconciliation, data restore, health-check
-- [ ] 299.4 API docs, OpenAPI, webhooks, partner onboarding, sandbox guide, deprecation/versioning policy
-- [ ] 299.5 Playbooks 200+ roles: operations, health, energy, telco, education, media, retail, mining, finance, governance, platform; scenario-based drills
-- [ ] 299.6 Release candidate checklist: all tests/audits, benchmark, security review, accessibility, cost estimate, data migration, rollback, sign-off
-- [ ] 299.6 Edge case: dokumentasi menyebut fitur tak ada → drift check menandai → status dikoreksi
-- [ ] 299.7 Release candidate diuji dari commit bersih (bisa dibangun ulang dari nol)
-- [ ] 299.8 Checklist RC lengkap → baru masuk proses sign-off gelombang 300
-- [ ] 299.9 Quality gate Fase 299
+- [x] 299.1 README final 30 lini, all commands, role matrix, simulation & seed guides, integration map
+- [x] 299.2 ARCHITECTURE/CODEBASE/DECISIONS: 30-line ERD, boundaries, event registry, ledger conventions, twin architecture, ADRs complete
+- [x] 299.3 RUNBOOK: every scheduled job, critical operations, recovery, DR, incident response, audit/reconciliation, data restore, health-check
+- [x] 299.4 API docs, OpenAPI, webhooks, partner onboarding, sandbox guide, deprecation/versioning policy
+- [x] 299.5 Playbooks 200+ roles: operations, health, energy, telco, education, media, retail, mining, finance, governance, platform; scenario-based drills
+- [x] 299.6 Release candidate checklist: all tests/audits, benchmark, security review, accessibility, cost estimate, data migration, rollback, sign-off
+- [x] 299.6 Edge case: dokumentasi menyebut fitur tak ada → drift check menandai → status dikoreksi
+- [x] 299.7 Release candidate diuji dari commit bersih (bisa dibangun ulang dari nol)
+- [x] 299.8 Checklist RC lengkap → baru masuk proses sign-off gelombang 300
+- [x] 299.9 Quality gate Fase 299
 
 ## FASE 300 — RELEASE 30 LINI: FINAL ACCEPTANCE & HANDOVER
 - [ ] 300.1 Full regression Fase 0–299: 100% green, zero skipped/weakened tests; test/assertion trend published
