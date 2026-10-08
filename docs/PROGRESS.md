@@ -2128,13 +2128,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 166.7 Quality gate Fase 166
 
 ## FASE 167 — LINI 20: LEARNING PLATFORM, DIGITAL CONTENT & CREDENTIALS
-- [ ] 167.1 Learning management system: course versioning, enrollment, lessons, assignments, discussion, accessibility metadata, multilingual content
-- [ ] 167.2 Assessment integrity: question bank versioning, randomized forms deterministic by seed, proctoring simulation, appeals, regrade audit trail
-- [ ] 167.3 Digital credentials: competency-based micro-credential, prerequisite graph, expiration/renewal, portable QR verification, revoke/supersede without deleting history
-- [ ] 167.4 Corporate learning paths from job competencies (HCM) → mandatory learning → certificate prerequisite for critical task (mining/HSE/healthcare)
-- [ ] 167.5 Offline learning sync for remote sites; idempotent progress reconciliation and conflict audit
-- [ ] 167.6 Tests: course version snapshot immutable, prerequisite cycle rejected, duplicate completion idempotent, revoked credential rejected, `campus:audit` reconciliation clean
-- [ ] 167.7 Quality gate Fase 167
+- [x] 167.1 Learning management system: course versioning, enrollment, lessons, assignments, discussion, accessibility metadata, multilingual content
+- [x] 167.2 Assessment integrity: question bank versioning, randomized forms deterministic by seed, proctoring simulation, appeals, regrade audit trail
+- [x] 167.3 Digital credentials: competency-based micro-credential, prerequisite graph, expiration/renewal, portable QR verification, revoke/supersede without deleting history
+- [x] 167.4 Corporate learning paths from job competencies (HCM) → mandatory learning → certificate prerequisite for critical task (mining/HSE/healthcare)
+- [x] 167.5 Offline learning sync for remote sites; idempotent progress reconciliation and conflict audit
+- [x] 167.6 Tests: course version snapshot immutable, prerequisite cycle rejected, duplicate completion idempotent, revoked credential rejected, `campus:audit` reconciliation clean
+- [x] 167.7 Quality gate Fase 167
 
 ## FASE 168 — LINI 21: AGRI-PROCESSING, FOOD COMMODITIES & EXPORT GRADE
 - [ ] 168.1 Modul `FoodProcessing` (`food_`): collection, grading, mill/packing plants, food-safety plans, lots, yield, co-products, traceability to Agri Fase 62
