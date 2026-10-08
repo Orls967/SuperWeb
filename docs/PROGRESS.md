@@ -3672,14 +3672,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 323.8 Quality gate Fase 323
 
 ## FASE 324 — INTEGRASI PEOPLE: LEADERSHIP SUCCESSION & CRITICAL ROLE COVERAGE
-- [ ] 324.1 Critical-role registry per lini/site → single-person dependency → deputy & readiness → emergency cover roster
-- [ ] 324.2 Succession simulation: vacancy mendadak → candidate availability, certification, consent & workload checked → acting appointment approval
-- [ ] 324.3 Leadership pipeline diversity & skill coverage aggregated with privacy thresholds → board committee dashboard
-- [ ] 324.4 Tests: unqualified successor rejected, acting appointment bounded/time-limited, coverage metric reproducible, `hcm:audit` clean
-- [ ] 324.5 Edge case: tak ada kandidat layak → hire eksternal dengan justifikasi terdokumentasi
-- [ ] 324.6 Risiko: coverage kosong di role strategis → risk register menandai sebagai organizational risk
-- [ ] 324.7 Evidence: succession matrix, readiness scores, dan coverage metric terpublikasi ke board
-- [ ] 324.8 Quality gate Fase 324
+- [x] 324.1 Critical-role registry per lini/site → single-person dependency → deputy & readiness → emergency cover roster
+- [x] 324.2 Succession simulation: vacancy mendadak → candidate availability, certification, consent & workload checked → acting appointment approval
+- [x] 324.3 Leadership pipeline diversity & skill coverage aggregated with privacy thresholds → board committee dashboard
+- [x] 324.4 Tests: unqualified successor rejected, acting appointment bounded/time-limited, coverage metric reproducible, `hcm:audit` clean
+- [x] 324.5 Edge case: tak ada kandidat layak → hire eksternal dengan justifikasi terdokumentasi
+- [x] 324.6 Risiko: coverage kosong di role strategis → risk register menandai sebagai organizational risk
+- [x] 324.7 Evidence: succession matrix, readiness scores, dan coverage metric terpublikasi ke board
+- [x] 324.8 Quality gate Fase 324
 
 ## FASE 325 — INTEGRASI PEOPLE: TALENT VALUE & ORGANIZATIONAL OUTCOMES
 - [ ] 325.1 Link learning/skill/mobility → project performance, safety, quality and retention outcomes (causal claims guarded; correlation labeled)
