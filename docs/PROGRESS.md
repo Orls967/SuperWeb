@@ -3902,14 +3902,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 346.8 Quality gate Fase 346
 
 ## FASE 347 — AI PLATFORM: KNOWLEDGE GROUNDING, RETRIEVAL & CITATION INTEGRITY
-- [ ] 347.1 Grounded retrieval index: policies, SOP, contracts, runbooks with access control mirroring source → answer only from retrieved + citations
-- [ ] 347.2 Staleness control: source updated → re-index SLA → stale answer detection (version mismatch) → warn user
-- [ ] 347.3 Citation verification: automated spot-check that cited passage supports claim → fail → rephrase or refuse
-- [ ] 347.4 Tests: citation mismatch rate ≤ threshold on sample, stale doc detection works, access-filtered retrieval no leak
-- [ ] 347.5 Edge case: korpus tak punya jawaban → assistant jawab "tidak ada di sumber", bukan mengarang
-- [ ] 347.6 Risiko: index tak tersinkron → freshness SLA + stale detection wajib sebelum jawaban disajikan
-- [ ] 347.7 Evidence: citation spot-check result, staleness log, dan access-filter test tercatat
-- [ ] 347.8 Quality gate Fase 347
+- [x] 347.1 Grounded retrieval index: policies, SOP, contracts, runbooks with access control mirroring source → answer only from retrieved + citations
+- [x] 347.2 Staleness control: source updated → re-index SLA → stale answer detection (version mismatch) → warn user
+- [x] 347.3 Citation verification: automated spot-check that cited passage supports claim → fail → rephrase or refuse
+- [x] 347.4 Tests: citation mismatch rate ≤ threshold on sample, stale doc detection works, access-filtered retrieval no leak
+- [x] 347.5 Edge case: korpus tak punya jawaban → assistant jawab "tidak ada di sumber", bukan mengarang
+- [x] 347.6 Risiko: index tak tersinkron → freshness SLA + stale detection wajib sebelum jawaban disajikan
+- [x] 347.7 Evidence: citation spot-check result, staleness log, dan access-filter test tercatat
+- [x] 347.8 Quality gate Fase 347
 
 ## FASE 348 — AI PLATFORM: DECISION SUPPORT, SIMULATION & OPTIMIZATION GOVERNANCE
 - [ ] 348.1 Optimization problem registry: problem, objective, constraints, data inputs, solver version, owner, approval, outcome tracking
