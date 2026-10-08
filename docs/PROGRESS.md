@@ -3144,14 +3144,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 273.8 Quality gate Fase 273
 
 ## FASE 274 — KEUANGAN: CORPORATE TAX ENGINE GLOBAL SCALE
-- [ ] 274.1 Tax engine 30 negara: indirect tax, withholding, transfer pricing (Fase 52.2), Pillar Two simulasi (top-up tax global minimum) → provision otomatis → review tax director
-- [ ] 274.2 Tax data lineage: setiap angka pajak → sumber voucher → evidence pack → audit trail (bridge Fase 54.7) → perubahan aturan (Fase 207.1) → recompute
-- [ ] 274.3 Tax controversy readiness: posisi per isu → dokumentasi pendukung → defense pack → menang/kalah tercatat → learning ke pricing & structure
-- [ ] 274.4 Tests: Pillar Two calc deterministik, lineage penuh, recompute setelah rule change konsisten, `enterprise:audit` clean
-- [ ] 274.5 Edge case: aturan pajak berubah retroaktif → periode terdampak dihitung ulang dengan approval, jejak jelas
-- [ ] 274.6 Tax provision tak disetujui sebelum close → block close, bukan angka setengah jadi
-- [ ] 274.7 Dokumentasi posisi pajak tersimpan & siap untuk pemeriksaan (Fase 438.3)
-- [ ] 274.8 Quality gate Fase 274
+- [x] 274.1 Tax engine 30 negara: indirect tax, withholding, transfer pricing (Fase 52.2), Pillar Two simulasi (top-up tax global minimum) → provision otomatis → review tax director
+- [x] 274.2 Tax data lineage: setiap angka pajak → sumber voucher → evidence pack → audit trail (bridge Fase 54.7) → perubahan aturan (Fase 207.1) → recompute
+- [x] 274.3 Tax controversy readiness: posisi per isu → dokumentasi pendukung → defense pack → menang/kalah tercatat → learning ke pricing & structure
+- [x] 274.4 Tests: Pillar Two calc deterministik, lineage penuh, recompute setelah rule change konsisten, `enterprise:audit` clean
+- [x] 274.5 Edge case: aturan pajak berubah retroaktif → periode terdampak dihitung ulang dengan approval, jejak jelas
+- [x] 274.6 Tax provision tak disetujui sebelum close → block close, bukan angka setengah jadi
+- [x] 274.7 Dokumentasi posisi pajak tersimpan & siap untuk pemeriksaan (Fase 438.3)
+- [x] 274.8 Quality gate Fase 274
 
 ## FASE 275 — KEUANGAN: CASH FORECASTING & LIQUIDITY AT COMMAND
 - [ ] 275.1 13-minggu rolling forecast (Fase 48.5) diperluas 30 lini + scenario engine (best/base/worst) → accuracy tracking → bias correction otomatis
