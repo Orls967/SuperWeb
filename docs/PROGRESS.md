@@ -2942,14 +2942,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 253.8 Quality gate Fase 253
 
 ## FASE 254 — INTEGRASI AKHIR D: END-TO-END TALENT 30 LINI (PLAN-ATOMIC-DEVELOP-RETAIN)
-- [ ] 254.1 Talent process unification: plan (workforce Fase 223) → attract (Fase 225) → select → develop (Fase 227) → deploy (gig Fase 85, mobility Fase 152) → perform (Fase 226) → reward (Fase 224) → retain/exit (Fase 225.4) → satu employee journey dengan stage gate
-- [ ] 254.2 Skills-based organization: posisi didesain dari skill graph (Fase 227.2) → staffing (internal marketplace first) → gap → learning → deploy → productivity terukur → closed loop
-- [ ] 254.3 Future workforce scenarios: automation impact per role (Fase 199/236) → reskilling plan → headcount projection → cost trajectory → decision papan direksi
-- [ ] 254.4 Tests: journey completeness per karyawan aktif, internal marketplace priority dihormati, scenario projection deterministik, `hcm:audit` clean
-- [ ] 254.5 Edge case: market menawarkan kandidat eksternal lebih baik → tetap wajib tawar internal dulu (fair process tercatat)
-- [ ] 254.6 Scenario automation → dampak ke skill requirement → trigger learning plan (Fase 227)
-- [ ] 254.7 Journey completeness: setiap karyawan aktif punya stage saat ini + next action terlihat
-- [ ] 254.8 Quality gate Fase 254
+- [x] 254.1 Talent process unification: plan (workforce Fase 223) → attract (Fase 225) → select → develop (Fase 227) → deploy (gig Fase 85, mobility Fase 152) → perform (Fase 226) → reward (Fase 224) → retain/exit (Fase 225.4) → satu employee journey dengan stage gate
+- [x] 254.2 Skills-based organization: posisi didesain dari skill graph (Fase 227.2) → staffing (internal marketplace first) → gap → learning → deploy → productivity terukur → closed loop
+- [x] 254.3 Future workforce scenarios: automation impact per role (Fase 199/236) → reskilling plan → headcount projection → cost trajectory → decision papan direksi
+- [x] 254.4 Tests: journey completeness per karyawan aktif, internal marketplace priority dihormati, scenario projection deterministik, `hcm:audit` clean
+- [x] 254.5 Edge case: market menawarkan kandidat eksternal lebih baik → tetap wajib tawar internal dulu (fair process tercatat)
+- [x] 254.6 Scenario automation → dampak ke skill requirement → trigger learning plan (Fase 227)
+- [x] 254.7 Journey completeness: setiap karyawan aktif punya stage saat ini + next action terlihat
+- [x] 254.8 Quality gate Fase 254
 
 ## FASE 255 — INTEGRASI AKHIR E: GOLDEN SCENARIO 30 LINI + MEGA AUDIT
 - [ ] 255.1 Golden scenario 30 lini: satu skenario otomatis 180 hari simulasi merangkai seluruh rantai: tambang → smelter → baterai → EV dijual → dikirim → diisi → hotel+venue bundle → RS merawat → sekolah mengajar → telko terkoneksi → energi terbarukan → asuransi melindungi → syariah membiayai → ritel mendistribusikan → media meliput → pelabuhan mengapung → konsolidasi grup
