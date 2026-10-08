@@ -3832,14 +3832,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 339.8 Quality gate Fase 339
 
 ## FASE 340 — GOVERNANCE: BUSINESS ETHICS & ANTI-CORRUPTION OPERATIONS
-- [ ] 340.1 Corruption risk assessment per activity (licensing, tender, expedite, sponsor) → control design (payments, gifts, intermediaries) → testing
-- [ ] 340.2 Gifts/hospitality registry with threshold & pre-approval → high-risk request blocked → sampling audit
-- [ ] 340.3 Intermediary & agent due diligence (Fase 45/175) → payment reasonableness → performance-only incentive review → termination playbook
-- [ ] 340.4 Tests: threshold enforcement, unapproved gift rejected, intermediary payment needs rationale, `ethics:audit` clean
-- [ ] 340.5 Edge case: suap/kolusi terdeteksi → investigasi independen + remediasi + disclosure bila material
-- [ ] 340.6 Risiko: intermediary fee tak wajar → benchmark & approval sebelum pembayaran
-- [ ] 340.7 Evidence: risk assessment, gift registry, dan intermediary DD terarsip
-- [ ] 340.8 Quality gate Fase 340
+- [x] 340.1 Corruption risk assessment per activity (licensing, tender, expedite, sponsor) → control design (payments, gifts, intermediaries) → testing
+- [x] 340.2 Gifts/hospitality registry with threshold & pre-approval → high-risk request blocked → sampling audit
+- [x] 340.3 Intermediary & agent due diligence (Fase 45/175) → payment reasonableness → performance-only incentive review → termination playbook
+- [x] 340.4 Tests: threshold enforcement, unapproved gift rejected, intermediary payment needs rationale, `ethics:audit` clean
+- [x] 340.5 Edge case: suap/kolusi terdeteksi → investigasi independen + remediasi + disclosure bila material
+- [x] 340.6 Risiko: intermediary fee tak wajar → benchmark & approval sebelum pembayaran
+- [x] 340.7 Evidence: risk assessment, gift registry, dan intermediary DD terarsip
+- [x] 340.8 Quality gate Fase 340
 
 ## FASE 341 — DATA PLATFORM: DATA PRODUCTS SCALE & PRIVACY ENGINEERING
 - [ ] 341.1 Privacy by design templates: data minimization, purpose limitation, retention default, encryption at field, access pattern reviewed at design
