@@ -3184,14 +3184,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 277.8 Quality gate Fase 277
 
 ## FASE 278 — OPERASI: FLEET & ASSET UTILIZATION OPTIMIZATION 30 LINI
-- [ ] 278.1 Asset utilization framework: semua aset bergerak & stasioner (truk, kapal, pesawat, alat berat, CT scanner, kapasitas pabrik, kamar, seat, crane) → utilization, idle cost, revenue per asset-hour
-- [ ] 278.2 Allocation optimizer (memperluas Fase 199): assignment asset ↔ demand (kontrak, order, booking) → revenue maximize dgn constraint maintenance & crew
-- [ ] 278.3 Lifecycle decision engine: repair-or-replace (TCO Fase 31.7 + residual value) → recommendation → approval → capex routing (Fase 210.2)
-- [ ] 278.4 Tests: allocation feasible, utilization metric = data nyata, replace recommendation reproducible, `ast:audit` clean
-- [ ] 278.5 Edge case: utilitas naik tapi revenue turun → net contribution menjadi ukuran, bukan utilization saja
-- [ ] 278.6 Replace decision → financing approval (Fase 210) & budget encumbrance terlebih dulu
-- [ ] 278.7 Aset sewa → opsi akhir sewa masuk perhitungan replace-vs-renew
-- [ ] 278.8 Quality gate Fase 278
+- [x] 278.1 Asset utilization framework: semua aset bergerak & stasioner (truk, kapal, pesawat, alat berat, CT scanner, kapasitas pabrik, kamar, seat, crane) → utilization, idle cost, revenue per asset-hour
+- [x] 278.2 Allocation optimizer (memperluas Fase 199): assignment asset ↔ demand (kontrak, order, booking) → revenue maximize dgn constraint maintenance & crew
+- [x] 278.3 Lifecycle decision engine: repair-or-replace (TCO Fase 31.7 + residual value) → recommendation → approval → capex routing (Fase 210.2)
+- [x] 278.4 Tests: allocation feasible, utilization metric = data nyata, replace recommendation reproducible, `ast:audit` clean
+- [x] 278.5 Edge case: utilitas naik tapi revenue turun → net contribution menjadi ukuran, bukan utilization saja
+- [x] 278.6 Replace decision → financing approval (Fase 210) & budget encumbrance terlebih dulu
+- [x] 278.7 Aset sewa → opsi akhir sewa masuk perhitungan replace-vs-renew
+- [x] 278.8 Quality gate Fase 278
 
 ## FASE 279 — OPERASI: WAREHOUSE AUTOMATION & ROBOTICS SIMULATION
 - [ ] 279.1 Automation planning: per DC → pick method (man, AMR simulasi, conveyor) → kapasitas → biaya → ROI → phased implementation
