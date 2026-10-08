@@ -3054,14 +3054,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 264.8 Quality gate Fase 264
 
 ## FASE 265 — EKOSISTEM: ACADEMIC & INDUSTRY RESEARCH NETWORK
-- [ ] 265.1 Riset bersama universitas/institusi (Fase 106 bridge + Fase 218): proposal → ethics & IP agreement → funding tranche → data sandbox (Fase 244.3) → output (publikasi/paten)
-- [ ] 265.2 Talent dual-track: akademisi jadi affiliate researcher (kontrak jasa) → mahasiswa magang (Edu Fase 166) → penyerapan alumni (Fase 136)
-- [ ] 265.3 Innovation challenge platform: brief masalah terbuka → submission → evaluasi (four-eyes) → hadiah via ledger → implementasi jika menang
-- [ ] 265.4 Tests: IP ownership jelas & tercatat, sandbox tak bocor data produksi, challenge evaluation reproducible, `plm:audit` clean
-- [ ] 265.5 Edge case: IP bersama tak terdefinisi jelas → jangan mulai riset; perjanjian IP jadi prasyarat
-- [ ] 265.6 Data sandbox riset: dataset ter-scope + berakhir otomatis → tak bocor ke produksi
-- [ ] 265.7 Kandidat menang challenge tapi gagal implementasi → evaluasi follow-through sebelum bayar penuh
-- [ ] 265.8 Quality gate Fase 265
+- [x] 265.1 Riset bersama universitas/institusi (Fase 106 bridge + Fase 218): proposal → ethics & IP agreement → funding tranche → data sandbox (Fase 244.3) → output (publikasi/paten)
+- [x] 265.2 Talent dual-track: akademisi jadi affiliate researcher (kontrak jasa) → mahasiswa magang (Edu Fase 166) → penyerapan alumni (Fase 136)
+- [x] 265.3 Innovation challenge platform: brief masalah terbuka → submission → evaluasi (four-eyes) → hadiah via ledger → implementasi jika menang
+- [x] 265.4 Tests: IP ownership jelas & tercatat, sandbox tak bocor data produksi, challenge evaluation reproducible, `plm:audit` clean
+- [x] 265.5 Edge case: IP bersama tak terdefinisi jelas → jangan mulai riset; perjanjian IP jadi prasyarat
+- [x] 265.6 Data sandbox riset: dataset ter-scope + berakhir otomatis → tak bocor ke produksi
+- [x] 265.7 Kandidat menang challenge tapi gagal implementasi → evaluasi follow-through sebelum bayar penuh
+- [x] 265.8 Quality gate Fase 265
 
 ## FASE 266 — DATA: DECISION INTELLIGENCE PLATFORM
 - [ ] 266.1 Decision catalog: keputusan kritikal per lini (pricing, allocation, staffing, capital, risk) → owner → data & model dipakai → outcome terukur → review cycle
