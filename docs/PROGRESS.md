@@ -4262,14 +4262,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 382.8 Quality gate Fase 382
 
 ## FASE 383 — INTEGRASI GELOMBANG 3: ENERGY, DATA CENTER & DIGITAL SERVICE RESILIENCE
-- [ ] 383.1 DC workload placement considers energy price, renewable availability, data residency, latency and criticality
-- [ ] 383.2 Grid events trigger workload/operations continuity plans; priority services (payment, health, safety) protected first
-- [ ] 383.3 Carbon-aware compute scheduling reports avoided emissions and service impact; never delays safety/critical transactions
-- [ ] 383.4 Tests: residency constraint enforced, critical priority honored, energy chargeback reconciles, `egy:audit` + `tlx:audit` clean
-- [ ] 383.5 Edge case: grid event mendesak → workload kritikal di-shelter dulu, non-kritis di-throttle dengan notice
-- [ ] 383.6 Risiko: carbon-aware scheduling menunda job non-kritis → SLA non-kritis tetap dikomunikasikan ke consumer
-- [ ] 383.7 Evidence: placement decision, priority log, dan avoided emission tercatat per workload
-- [ ] 383.8 Quality gate Fase 383
+- [x] 383.1 DC workload placement considers energy price, renewable availability, data residency, latency and criticality
+- [x] 383.2 Grid events trigger workload/operations continuity plans; priority services (payment, health, safety) protected first
+- [x] 383.3 Carbon-aware compute scheduling reports avoided emissions and service impact; never delays safety/critical transactions
+- [x] 383.4 Tests: residency constraint enforced, critical priority honored, energy chargeback reconciles, `egy:audit` + `tlx:audit` clean
+- [x] 383.5 Edge case: grid event mendesak → workload kritikal di-shelter dulu, non-kritis di-throttle dengan notice
+- [x] 383.6 Risiko: carbon-aware scheduling menunda job non-kritis → SLA non-kritis tetap dikomunikasikan ke consumer
+- [x] 383.7 Evidence: placement decision, priority log, dan avoided emission tercatat per workload
+- [x] 383.8 Quality gate Fase 383
 
 ## FASE 384 — INTEGRASI GELOMBANG 3: EDUCATION, CERTIFICATION & OPERATIONAL AUTHORIZATION
 - [ ] 384.1 Credential lifecycle is authoritative for role eligibility across healthcare, aviation, mine, energy, port, food safety and finance control
