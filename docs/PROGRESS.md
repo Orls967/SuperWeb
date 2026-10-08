@@ -4482,14 +4482,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 404.8 Quality gate Fase 404
 
 ## FASE 405 — GOVERNANCE WAVE: BOARD & MANAGEMENT REPORTING INTEGRITY
-- [ ] 405.1 Management reporting pack: metric definitions registry, reconciliation to ledger/data, variance commentary workflow and submission deadlines
-- [ ] 405.2 Report certification: preparer/reviewer/approver segregation, materiality thresholds for commentary, restatement procedure
-- [ ] 405.3 Narrative analytics linked to numbers (variance explanation from source drill-down), with narrative versioning
-- [ ] 405.4 Tests: uncertified pack cannot publish, metric lineage complete, restatement preserves prior version, `group:audit` clean
-- [ ] 405.5 Edge case: narasi laporan tak cocok angka → diverifikasi sebelum publish, mismatch = blocker
-- [ ] 405.6 Risiko: comment material tanpa analisis → materiality threshold mewajibkan commentary berbasis drill-down
-- [ ] 405.7 Evidence: certification record, metric lineage, dan restatement log tercatat
-- [ ] 405.8 Quality gate Fase 405
+- [x] 405.1 Management reporting pack: metric definitions registry, reconciliation to ledger/data, variance commentary workflow and submission deadlines
+- [x] 405.2 Report certification: preparer/reviewer/approver segregation, materiality thresholds for commentary, restatement procedure
+- [x] 405.3 Narrative analytics linked to numbers (variance explanation from source drill-down), with narrative versioning
+- [x] 405.4 Tests: uncertified pack cannot publish, metric lineage complete, restatement preserves prior version, `group:audit` clean
+- [x] 405.5 Edge case: narasi laporan tak cocok angka → diverifikasi sebelum publish, mismatch = blocker
+- [x] 405.6 Risiko: comment material tanpa analisis → materiality threshold mewajibkan commentary berbasis drill-down
+- [x] 405.7 Evidence: certification record, metric lineage, dan restatement log tercatat
+- [x] 405.8 Quality gate Fase 405
 
 ## FASE 406 — GOVERNANCE WAVE: WHISTLEBLOWING, ETHICS & SPEAK-UP AT GLOBAL SCALE
 - [ ] 406.1 Multi-channel intake (web, mobile, phone simulation) across regions with local-language handling and anonymization
