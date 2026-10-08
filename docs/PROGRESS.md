@@ -2137,13 +2137,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 167.7 Quality gate Fase 167
 
 ## FASE 168 — LINI 21: AGRI-PROCESSING, FOOD COMMODITIES & EXPORT GRADE
-- [ ] 168.1 Modul `FoodProcessing` (`food_`): collection, grading, mill/packing plants, food-safety plans, lots, yield, co-products, traceability to Agri Fase 62
-- [ ] 168.2 Procurement contracts with farmer groups; forecast intake from NDVI/harvest estimates; capacity reservation; quality-based price & transparent deductions
-- [ ] 168.3 Processing orders: raw material → WIP → finished goods, mass-balance invariant, waste/by-product recovery, manufacturing costing adapter
-- [ ] 168.4 Food-safety controls: temperature, moisture, allergen segregation, lab sampling, hold/release, recall forward/backward trace within query budget
-- [ ] 168.5 Export pack: grade certificate, origin, halal, phytosanitary simulation, CBAM/emission profile where applicable; Trade/Logistics handoff
-- [ ] 168.6 Tests: mass balance within defined tolerance, quarantined lot cannot ship, farmer settlement matches grade/weight, trace recall complete, `food:audit` = 0
-- [ ] 168.7 Quality gate Fase 168
+- [x] 168.1 Modul `FoodProcessing` (`food_`): collection, grading, mill/packing plants, food-safety plans, lots, yield, co-products, traceability to Agri Fase 62
+- [x] 168.2 Procurement contracts with farmer groups; forecast intake from NDVI/harvest estimates; capacity reservation; quality-based price & transparent deductions
+- [x] 168.3 Processing orders: raw material → WIP → finished goods, mass-balance invariant, waste/by-product recovery, manufacturing costing adapter
+- [x] 168.4 Food-safety controls: temperature, moisture, allergen segregation, lab sampling, hold/release, recall forward/backward trace within query budget
+- [x] 168.5 Export pack: grade certificate, origin, halal, phytosanitary simulation, CBAM/emission profile where applicable; Trade/Logistics handoff
+- [x] 168.6 Tests: mass balance within defined tolerance, quarantined lot cannot ship, farmer settlement matches grade/weight, trace recall complete, `food:audit` = 0
+- [x] 168.7 Quality gate Fase 168
 
 ## FASE 169 — LINI 21: FOOD BRAND, PRIVATE LABEL & NUTRITION PROGRAMS
 - [ ] 169.1 Brand/product lifecycle: formulation via PLM, nutrition/allergen label versioning, packaging approvals, shelf-life validation, market launch gates

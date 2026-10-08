@@ -12,6 +12,7 @@ use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\EmbeddedInsuranceService;
 use Modules\Integration\Application\Services\EthicalSourcingService;
+use Modules\Integration\Application\Services\FoodProcessingService;
 use Modules\Integration\Application\Services\FullInsuranceService;
 use Modules\Integration\Application\Services\GlobalCommandService;
 use Modules\Integration\Application\Services\IntegrationService;
@@ -68,6 +69,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(SyariahOperationsService::class);
         $this->app->singleton(CampusEducationService::class);
         $this->app->singleton(LearningPlatformService::class);
+        $this->app->singleton(FoodProcessingService::class);
     }
 
     public function boot(): void
