@@ -3339,15 +3339,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 292.8 Quality gate Fase 292
 
 ## FASE 293 — GOVERNANCE: INTERNAL AUDIT MANAGEMENT & CONTINUOUS ASSURANCE
-- [ ] 293.1 Risk-based annual audit plan: risk score (Fase 202) → auditable entities → resources → calendar → board audit committee approval
-- [ ] 293.2 Audit engagement lifecycle: scope → request list → fieldwork → sample selection (AI suggestion with human approval) → finding → management response → issue closure
-- [ ] 293.3 Continuous audit analytics: journal anomaly, duplicate vendor, split PO, unusual override, stock variance → exception queue → audit follow-up
-- [ ] 293.4 External auditor read-only portal: scoped evidence packages, immutable access log, Q&A, issue response deadline
-- [ ] 293.5 Tests: sample reproducible, auditor role read-only, issue cannot close without evidence, `audit:audit` clean
-- [ ] 293.6 Edge case: auditor menemukan hal di luar scope → dicatat sebagai observation, tak diabaikan
-- [ ] 293.7 Management response wajib pada setiap finding → tanpa response, temuan tak bisa closed
-- [ ] 293.8 Sample selection diproduksi deterministik (ber-seed) → bisa direproduksi saat replay
-- [ ] 293.9 Quality gate Fase 293
+- [x] 293.1 Risk-based annual audit plan: risk score (Fase 202) → auditable entities → resources → calendar → board audit committee approval
+- [x] 293.2 Audit engagement lifecycle: scope → request list → fieldwork → sample selection (AI suggestion with human approval) → finding → management response → issue closure
+- [x] 293.3 Continuous audit analytics: journal anomaly, duplicate vendor, split PO, unusual override, stock variance → exception queue → audit follow-up
+- [x] 293.4 External auditor read-only portal: scoped evidence packages, immutable access log, Q&A, issue response deadline
+- [x] 293.5 Tests: sample reproducible, auditor role read-only, issue cannot close without evidence, `audit:audit` clean
+- [x] 293.6 Edge case: auditor menemukan hal di luar scope → dicatat sebagai observation, tak diabaikan
+- [x] 293.7 Management response wajib pada setiap finding → tanpa response, temuan tak bisa closed
+- [x] 293.8 Sample selection diproduksi deterministik (ber-seed) → bisa direproduksi saat replay
+- [x] 293.9 Quality gate Fase 293
 
 ## FASE 294 — GOVERNANCE: ETHICS OF DATA, AI & BIOMETRIC SYSTEMS
 - [ ] 294.1 Ethics impact assessment before new sensitive processing (medical, location, biometrics, child/student data) → necessity/proportionality → approval & review date
