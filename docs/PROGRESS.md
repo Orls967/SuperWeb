@@ -3164,14 +3164,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 275.8 Quality gate Fase 275
 
 ## FASE 276 — OPERASI: OPERATIONS EXCELLENCE (LEAN, SIX SIGMA, CI)
-- [ ] 276.1 CI pipeline terpusat: improvement idea → DMAIC project (define, measure, analyze, improve, control) → owner → baseline → target → hasil terverifikasi finansial → standarisasi SOP (Fase 198.2)
-- [ ] 276.2 Operational KPI tree per lini: dari strategi → OKR → process KPI → dashboard → review cadence (memperluas Fase 231) → KPI hijau/merah objective
-- [ ] 276.3 Standard work library: best practice lintas outlet/site → playbook → adoption tracking (siapa sudah pakai) → variance dari standar → justification
-- [ ] 276.4 Tests: benefit CI terverifikasi ledger (bukan klaim), KPI source = data sistem, adoption metric akurat, `quality:audit` clean
-- [ ] 276.5 Edge case: standarisasi gagal di satu site → variant dengan justifikasi & review, bukan diam-diam beda
-- [ ] 276.6 Benefit CI diverifikasi Finance → klaim manfaat tanpa bukti tidak diakui
-- [ ] 276.7 KPI hijau tapi pelanggan mengeluh → counter-metric (complaint rate) mencegah gaming
-- [ ] 276.8 Quality gate Fase 276
+- [x] 276.1 CI pipeline terpusat: improvement idea → DMAIC project (define, measure, analyze, improve, control) → owner → baseline → target → hasil terverifikasi finansial → standarisasi SOP (Fase 198.2)
+- [x] 276.2 Operational KPI tree per lini: dari strategi → OKR → process KPI → dashboard → review cadence (memperluas Fase 231) → KPI hijau/merah objective
+- [x] 276.3 Standard work library: best practice lintas outlet/site → playbook → adoption tracking (siapa sudah pakai) → variance dari standar → justification
+- [x] 276.4 Tests: benefit CI terverifikasi ledger (bukan klaim), KPI source = data sistem, adoption metric akurat, `quality:audit` clean
+- [x] 276.5 Edge case: standarisasi gagal di satu site → variant dengan justifikasi & review, bukan diam-diam beda
+- [x] 276.6 Benefit CI diverifikasi Finance → klaim manfaat tanpa bukti tidak diakui
+- [x] 276.7 KPI hijau tapi pelanggan mengeluh → counter-metric (complaint rate) mencegah gaming
+- [x] 276.8 Quality gate Fase 276
 
 ## FASE 277 — OPERASI: PLANNING & SCHEDULING UNIFICATION (AP, CRP, WORKFORCE)
 - [ ] 277.1 Unified planning stack: demand (Fase 201) → supply network (Fase 215) → capacity (Fase 36.4 generalized) → workforce (Fase 223.2) → financial plan (Fase 54.1) → satu consistent plan number
