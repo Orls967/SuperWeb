@@ -2621,14 +2621,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 221.8 Quality gate Fase 221
 
 ## FASE 222 — PELANGGAN: MARKETING AUTOMATION & ATTRIBUTION
-- [ ] 222.1 Segment engine: RFM, behavior, lifecycle, value tier → segment dinamis (update real-time) → membership campaign ke segmen
-- [ ] 222.2 Campaign orchestration: journey builder (multi-step, kondisi, split) → eksekusi kanal (push, in-app, email simulasi) → frequency cap → opt-out dihormati
-- [ ] 222.3 Promotion governance: budget per kampanye (encumbrance Fase 54.1) → approval melewati budget → redemption control → effective cost = ledger
-- [ ] 222.4 Attribution model: first/last/multi-touch (deterministik) → kontribusi kanal ke konversi → ROI per kampanye → feed ke budget allocation (Fase 141.2)
-- [ ] 222.5 Tests: segment konsisten, frequency cap dihormati, promo budget tak terlampaui tanpa approval, attribution Σ konversi = 100%, `marketing:audit` clean
-- [ ] 222.6 Edge case: frequency cap lintas channel → cap global per subjek, bukan per channel (menghindari spam)
-- [ ] 222.7 Fatigue & suppression: subjek komplain → campaign berhenti → case service desk terkait
-- [ ] 222.8 Quality gate Fase 222
+- [x] 222.1 Segment engine: RFM, behavior, lifecycle, value tier → segment dinamis (update real-time) → membership campaign ke segmen
+- [x] 222.2 Campaign orchestration: journey builder (multi-step, kondisi, split) → eksekusi kanal (push, in-app, email simulasi) → frequency cap → opt-out dihormati
+- [x] 222.3 Promotion governance: budget per kampanye (encumbrance Fase 54.1) → approval melewati budget → redemption control → effective cost = ledger
+- [x] 222.4 Attribution model: first/last/multi-touch (deterministik) → kontribusi kanal ke konversi → ROI per kampanye → feed ke budget allocation (Fase 141.2)
+- [x] 222.5 Tests: segment konsisten, frequency cap dihormati, promo budget tak terlampaui tanpa approval, attribution Σ konversi = 100%, `marketing:audit` clean
+- [x] 222.6 Edge case: frequency cap lintas channel → cap global per subjek, bukan per channel (menghindari spam)
+- [x] 222.7 Fatigue & suppression: subjek komplain → campaign berhenti → case service desk terkait
+- [x] 222.8 Quality gate Fase 222
 
 ## FASE 223 — SDM: ORGANIZATION DESIGN & WORKFORCE PLANNING 30 LINI
 - [ ] 223.1 Org design: struktur 30 lini lintas negara (Fase 58.1) → position management (jabatan, grade, reporting line, budget headcount) → perubahan org via approval → impact simulation

@@ -175,6 +175,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(CustomerCrm360Service::class);
         $this->app->singleton(CaseLoyaltyUnificationService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\SubscriptionBillingRetentionService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\MarketingAutomationAttributionService::class);
     }
 
     public function boot(): void
