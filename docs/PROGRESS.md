@@ -3742,14 +3742,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 330.8 Quality gate Fase 330
 
 ## FASE 331 — KEBERLANJUTAN: ESG ASSURANCE & DISCLOSURE CONTROL
-- [ ] 331.1 Disclosure workflow: reporting boundary → datapoint owner → evidence → control sign-off → assurance → publication → restatement process
-- [ ] 331.2 Estimate vs measured classification; uncertainty range & methodology disclosed; no unsupported claim promoted as verified
-- [ ] 331.3 Sustainability statement reconciliation to finance (energy spend, carbon liabilities, provisions, green capex) → audit pack
-- [ ] 331.4 Tests: unsubstantiated value blocked, restatement preserves old publication, source evidence traceable, `esg:audit` clean
-- [ ] 331.5 Edge case: disclosure material salah → restatement proses (Fase 795) dijalankan, bukan ditutup diam-diam
-- [ ] 331.6 Risiko: estimate mendominasi report → disclosure methodology & uncertainty per figure
-- [ ] 331.7 Evidence: disclosure checklist, assurance findings, dan reconciliation ke finance terarsip
-- [ ] 331.8 Quality gate Fase 331
+- [x] 331.1 Disclosure workflow: reporting boundary → datapoint owner → evidence → control sign-off → assurance → publication → restatement process
+- [x] 331.2 Estimate vs measured classification; uncertainty range & methodology disclosed; no unsupported claim promoted as verified
+- [x] 331.3 Sustainability statement reconciliation to finance (energy spend, carbon liabilities, provisions, green capex) → audit pack
+- [x] 331.4 Tests: unsubstantiated value blocked, restatement preserves old publication, source evidence traceable, `esg:audit` clean
+- [x] 331.5 Edge case: disclosure material salah → restatement proses (Fase 795) dijalankan, bukan ditutup diam-diam
+- [x] 331.6 Risiko: estimate mendominasi report → disclosure methodology & uncertainty per figure
+- [x] 331.7 Evidence: disclosure checklist, assurance findings, dan reconciliation ke finance terarsip
+- [x] 331.8 Quality gate Fase 331
 
 ## FASE 332 — KEBERLANJUTAN: ESG-LINKED PROCUREMENT, LEASE & CUSTOMER CHOICE
 - [ ] 332.1 Green supplier award criteria in RFQ with minimum compliance gates and transparent weighted scores (Fase 230.4)
