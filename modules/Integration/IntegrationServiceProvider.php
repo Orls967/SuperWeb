@@ -226,6 +226,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\HumanAiCollaborationWorkflowsService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\DigitalSecuritiesCapitalMarketsService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\CryptoNativeDefiSimulationService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\FinancialCrimeSanctionsService::class);
     }
 
     public function boot(): void

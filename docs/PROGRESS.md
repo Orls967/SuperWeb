@@ -3134,14 +3134,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 272.8 Quality gate Fase 272
 
 ## FASE 273 — KEUANGAN: FINANCIAL CRIME & SANCTIONS AT GLOBAL SCALE
-- [ ] 273.1 Sanctions graph screening: screening entitas baru + re-screen berkala + ownership chain (UBO) → hit confidence → escalation → blocking operational (transaksi & kontrak)
-- [ ] 273.2 Trade-based AML lanjut (Fase 208.4): pricing anomaly vs indeks, circular trade, dual-use goods check (Fase 49.8) → case → reporting
-- [ ] 273.3 Crypto AML: wallet analytics simulasi (clustering, exposure risk) → travel rule bridge → high-risk wallet → hold
-- [ ] 273.4 Tests: UBO chain screening menemukan hit seed, re-screen periodik terjadwal, high-risk wallet blocked, `fraud:audit` clean
-- [ ] 273.5 Edge case: false-positive screening menahan transaksi sah → jalur appeal cepat + SLA review
-- [ ] 273.6 Perubahan daftar sanksi → re-screen massal dalam SLA → exception aging
-- [ ] 273.7 Structuring detection (split transaksi di bawah threshold) → flag gabungan lintas waktu
-- [ ] 273.8 Quality gate Fase 273
+- [x] 273.1 Sanctions graph screening: screening entitas baru + re-screen berkala + ownership chain (UBO) → hit confidence → escalation → blocking operational (transaksi & kontrak)
+- [x] 273.2 Trade-based AML lanjut (Fase 208.4): pricing anomaly vs indeks, circular trade, dual-use goods check (Fase 49.8) → case → reporting
+- [x] 273.3 Crypto AML: wallet analytics simulasi (clustering, exposure risk) → travel rule bridge → high-risk wallet → hold
+- [x] 273.4 Tests: UBO chain screening menemukan hit seed, re-screen periodik terjadwal, high-risk wallet blocked, `fraud:audit` clean
+- [x] 273.5 Edge case: false-positive screening menahan transaksi sah → jalur appeal cepat + SLA review
+- [x] 273.6 Perubahan daftar sanksi → re-screen massal dalam SLA → exception aging
+- [x] 273.7 Structuring detection (split transaksi di bawah threshold) → flag gabungan lintas waktu
+- [x] 273.8 Quality gate Fase 273
 
 ## FASE 274 — KEUANGAN: CORPORATE TAX ENGINE GLOBAL SCALE
 - [ ] 274.1 Tax engine 30 negara: indirect tax, withholding, transfer pricing (Fase 52.2), Pillar Two simulasi (top-up tax global minimum) → provision otomatis → review tax director
