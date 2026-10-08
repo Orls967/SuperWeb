@@ -4062,14 +4062,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 362.8 Quality gate Fase 362
 
 ## FASE 363 — GLOBAL PLATFORM: SERVICE OWNERSHIP, ON-CALL & SLO GOVERNANCE
-- [ ] 363.1 Named owner, deputy, on-call rotation and escalation policy for every critical service/domain
-- [ ] 363.2 Error-budget policy: freeze risky releases when SLO budget exhausted, exception via accountable approval, resume after reliability improvement
-- [ ] 363.3 On-call load and alert quality review; fatigue controls, deduplication, actionable alerts only
-- [ ] 363.4 Tests: ownerless critical service fails readiness, budget exhaustion blocks release, escalation reaches current rota
-- [ ] 363.5 Edge case: service kritis tanpa on-call → gate readiness gagal, tak bisa rilis
-- [ ] 363.6 Risiko: error budget terus habis → reliability engineering project wajib sebelum thaw
-- [ ] 363.7 Evidence: owner/deputy registry, budget consumption, dan fatigue metrics tercatat
-- [ ] 363.8 Quality gate Fase 363
+- [x] 363.1 Named owner, deputy, on-call rotation and escalation policy for every critical service/domain
+- [x] 363.2 Error-budget policy: freeze risky releases when SLO budget exhausted, exception via accountable approval, resume after reliability improvement
+- [x] 363.3 On-call load and alert quality review; fatigue controls, deduplication, actionable alerts only
+- [x] 363.4 Tests: ownerless critical service fails readiness, budget exhaustion blocks release, escalation reaches current rota
+- [x] 363.5 Edge case: service kritis tanpa on-call → gate readiness gagal, tak bisa rilis
+- [x] 363.6 Risiko: error budget terus habis → reliability engineering project wajib sebelum thaw
+- [x] 363.7 Evidence: owner/deputy registry, budget consumption, dan fatigue metrics tercatat
+- [x] 363.8 Quality gate Fase 363
 
 ## FASE 364 — GLOBAL PLATFORM: AUTOMATION CONTROL PLANE & SAFE REMEDIATION
 - [ ] 364.1 Approved automation catalog (restart worker, replay DLQ, scale queue, failover) with precondition, blast radius, rollback and evidence requirements
