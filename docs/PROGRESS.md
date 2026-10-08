@@ -2234,12 +2234,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 179.6 Quality gate Fase 179
 
 ## FASE 180 — LINI 27: OCEAN FLEET, SHIP MANAGEMENT & MARINE SERVICES
-- [ ] 180.1 Vessel asset register: class, dry-dock schedule, crew, fuel/emissions, maintenance, charter and voyage profitability
-- [ ] 180.2 Voyage planning: port sequence, bunker simulation, weather risk feed, cargo compatibility, laytime and charter-party obligations
-- [ ] 180.3 Marine insurance, claims, hull maintenance and environmental incident reporting integrate Insurance/ESG/PortOps
-- [ ] 180.4 Digital vessel passport with append-only maintenance, custody, certificate and ownership events
-- [ ] 180.5 Tests: invalid voyage capacity rejected, overdue certificate blocks dispatch, fuel/emission reconciliation, charter settlement follows terms, `marinefleet:audit` clean
-- [ ] 180.6 Quality gate Fase 180
+- [x] 180.1 Vessel asset register: class, dry-dock schedule, crew, fuel/emissions, maintenance, charter and voyage profitability
+- [x] 180.2 Voyage planning: port sequence, bunker simulation, weather risk feed, cargo compatibility, laytime and charter-party obligations
+- [x] 180.3 Marine insurance, claims, hull maintenance and environmental incident reporting integrate Insurance/ESG/PortOps
+- [x] 180.4 Digital vessel passport with append-only maintenance, custody, certificate and ownership events
+- [x] 180.5 Tests: invalid voyage capacity rejected, overdue certificate blocks dispatch, fuel/emission reconciliation, charter settlement follows terms, `marinefleet:audit` clean
+- [x] 180.6 Quality gate Fase 180
 
 ## FASE 181 — LINI 28: APPAREL, TEXTILE & FASHION SOURCING
 - [ ] 181.1 Modul `Fashion` (`fsh_`): design collections, size/color matrix, BOM, seasonal buy plan, supplier factories, purchase commitments and sample approval
