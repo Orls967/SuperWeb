@@ -4182,14 +4182,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 374.8 Quality gate Fase 374
 
 ## FASE 375 — EKOSISTEM: ECOSYSTEM HEALTH & NETWORK EFFECTS GOVERNANCE
-- [ ] 375.1 Measure partner liquidity, buyer/seller balance, match rates, concentration, dispute levels and ecosystem value by vertical
-- [ ] 375.2 Fair access policies: avoid self-preferencing where marketplace platform also sells; ranking criteria transparent and audited
-- [ ] 375.3 Network health interventions (onboard underserved supplier, buyer guarantee, training) with bounded subsidy and outcome tracking
-- [ ] 375.4 Tests: ranking reproducible, self-preferencing audit detects seeded violation, subsidy capped, `ecosystem:audit` clean
-- [ ] 375.5 Edge case: intervensi justru menimbulkan distorsi pasar → evaluasi & hentikan bila net negative
-- [ ] 375.6 Risiko: konsentrasi partner terlalu tinggi → concentration limit + diversifikasi wajib
-- [ ] 375.7 Evidence: liquidity metrics, fairness audit, dan intervention outcome terpublikasi internal
-- [ ] 375.8 Quality gate Fase 375
+- [x] 375.1 Measure partner liquidity, buyer/seller balance, match rates, concentration, dispute levels and ecosystem value by vertical
+- [x] 375.2 Fair access policies: avoid self-preferencing where marketplace platform also sells; ranking criteria transparent and audited
+- [x] 375.3 Network health interventions (onboard underserved supplier, buyer guarantee, training) with bounded subsidy and outcome tracking
+- [x] 375.4 Tests: ranking reproducible, self-preferencing audit detects seeded violation, subsidy capped, `ecosystem:audit` clean
+- [x] 375.5 Edge case: intervensi justru menimbulkan distorsi pasar → evaluasi & hentikan bila net negative
+- [x] 375.6 Risiko: konsentrasi partner terlalu tinggi → concentration limit + diversifikasi wajib
+- [x] 375.7 Evidence: liquidity metrics, fairness audit, dan intervention outcome terpublikasi internal
+- [x] 375.8 Quality gate Fase 375
 
 ## FASE 376 — INTEGRASI GELOMBANG 3: GLOBAL FINANCE, RISK & TREASURY CONTROL
 - [ ] 376.1 Treasury, insurance, syariah, token securities, commodity desk and regional finance share exposure taxonomy and authoritative position feeds
