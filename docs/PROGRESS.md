@@ -4092,14 +4092,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 365.8 Quality gate Fase 365
 
 ## FASE 366 — GLOBAL PLATFORM: SERVICE LIFECYCLE, DEPRECATION & SUNSET
-- [ ] 366.1 API/event/data-product lifecycle states (experimental → supported → deprecated → sunset) with notice windows and migration guide
-- [ ] 366.2 Consumer inventory acknowledgment before sunset; compatibility dashboard; exception waiver bounded by date
-- [ ] 366.3 Safe retirement: usage zero proof, data retention satisfied, credentials revoked, route removed, archived evidence retained
-- [ ] 366.4 Tests: active consumer blocks sunset absent waiver, sunset revokes credential, archive evidence verifies, `api:audit` clean
-- [ ] 366.5 Edge case: consumer aktif tak bisa migrasi → waiver resmi ber-tanggal, sunset tak dipaksakan
-- [ ] 366.6 Risiko: sunset meninggalkan data tanpa arsip → archiving evidence wajib sebelum endpoint dihapus
-- [ ] 366.7 Evidence: lifecycle states, consumer inventory, dan migration evidence tercatat
-- [ ] 366.8 Quality gate Fase 366
+- [x] 366.1 API/event/data-product lifecycle states (experimental → supported → deprecated → sunset) with notice windows and migration guide
+- [x] 366.2 Consumer inventory acknowledgment before sunset; compatibility dashboard; exception waiver bounded by date
+- [x] 366.3 Safe retirement: usage zero proof, data retention satisfied, credentials revoked, route removed, archived evidence retained
+- [x] 366.4 Tests: active consumer blocks sunset absent waiver, sunset revokes credential, archive evidence verifies, `api:audit` clean
+- [x] 366.5 Edge case: consumer aktif tak bisa migrasi → waiver resmi ber-tanggal, sunset tak dipaksakan
+- [x] 366.6 Risiko: sunset meninggalkan data tanpa arsip → archiving evidence wajib sebelum endpoint dihapus
+- [x] 366.7 Evidence: lifecycle states, consumer inventory, dan migration evidence tercatat
+- [x] 366.8 Quality gate Fase 366
 
 ## FASE 367 — GLOBAL PLATFORM: BUSINESS PROCESS AUTOMATION & CASE ORCHESTRATION
 - [ ] 367.1 BPMN-like process catalog for high-volume workflows (claim, onboarding, PO, booking, recall, permit) with versioned state machine definitions
