@@ -4042,14 +4042,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 360.8 Quality gate Fase 360
 
 ## FASE 361 — GLOBAL PLATFORM: SERVICE CATALOG & INTERNAL DEVELOPER PORTAL
-- [ ] 361.1 Catalog of 30-line capabilities, APIs, events, data products, owners, consumers, SLO, lifecycle and support channel
-- [ ] 361.2 Self-service onboarding: request sandbox, sample data, token scopes, webhook endpoint, test harness; approval and expiration built in
-- [ ] 361.3 Dependency map and impact view: proposed API/event/schema change lists affected consumers and migration actions
-- [ ] 361.4 Tests: deprecated capability warning reaches all consumers, sandbox scope isolated, dependency inventory complete
-- [ ] 361.5 Edge case: capability baru tanpa catalog entry → CI menolak publish sampai terdaftar
-- [ ] 361.6 Risiko: dependency map basi → di-refresh otomatis dari registry tiap release
-- [ ] 361.7 Evidence: catalog completeness, sandbox isolation test, dan dependency snapshot tercatat
-- [ ] 361.8 Quality gate Fase 361
+- [x] 361.1 Catalog of 30-line capabilities, APIs, events, data products, owners, consumers, SLO, lifecycle and support channel
+- [x] 361.2 Self-service onboarding: request sandbox, sample data, token scopes, webhook endpoint, test harness; approval and expiration built in
+- [x] 361.3 Dependency map and impact view: proposed API/event/schema change lists affected consumers and migration actions
+- [x] 361.4 Tests: deprecated capability warning reaches all consumers, sandbox scope isolated, dependency inventory complete
+- [x] 361.5 Edge case: capability baru tanpa catalog entry → CI menolak publish sampai terdaftar
+- [x] 361.6 Risiko: dependency map basi → di-refresh otomatis dari registry tiap release
+- [x] 361.7 Evidence: catalog completeness, sandbox isolation test, dan dependency snapshot tercatat
+- [x] 361.8 Quality gate Fase 361
 
 ## FASE 362 — GLOBAL PLATFORM: ENTERPRISE SERVICE MANAGEMENT & CONFIGURATION DATABASE
 - [ ] 362.1 Service/asset configuration registry (CMDB): applications, modules, queues, database, vendors, sites, owners, dependencies, criticality
