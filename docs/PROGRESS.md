@@ -2481,14 +2481,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 207.8 Quality gate Fase 207
 
 ## FASE 208 — RISIKO: TAX, CUSTOMS & TRADE COMPLIANCE 30 LINI
-- [ ] 208.1 Consolidated indirect tax engine 30 lini: PPN per yurisdiksi, e-faktur simulasi, withholding (PPh 21/23/26/4(2)), transfer pricing documentation (Fase 52.2) lintas entitas baru
-- [ ] 208.2 Customs compliance lanjut: classification QA (HS code review), valuation support, origin management, drawback/restitution, free trade zone (simulasi)
-- [ ] 208.3 Tax provision & effective rate: laba kena pajak per entitas → beban pajak → rekonsiliasi buku vs fiskal (temporary/permanent difference) → pelaporan
-- [ ] 208.4 Trade-based money laundering guard: invoice mismatch detection, round-trip trade flag → hold & review (bridge ke Fase 200)
-- [ ] 208.5 Tests: Σ pajak = perhitungan aturan per yurisdiksi, reconciliation buku-fiskal konsisten, gapless numbering, `enterprise:audit` + `trade:audit` clean
-- [ ] 208.6 Edge case: aturan pajak berubah di tengah periode → split period kalkulasi, effective dating aturan
-- [ ] 208.7 Position paper: setiap posisi pajak material punya justifikasi hukum + approval sebelum pelaporan
-- [ ] 208.8 Quality gate Fase 208
+- [x] 208.1 Consolidated indirect tax engine 30 lini: PPN per yurisdiksi, e-faktur simulasi, withholding (PPh 21/23/26/4(2)), transfer pricing documentation (Fase 52.2) lintas entitas baru
+- [x] 208.2 Customs compliance lanjut: classification QA (HS code review), valuation support, origin management, drawback/restitution, free trade zone (simulasi)
+- [x] 208.3 Tax provision & effective rate: laba kena pajak per entitas → beban pajak → rekonsiliasi buku vs fiskal (temporary/permanent difference) → pelaporan
+- [x] 208.4 Trade-based money laundering guard: invoice mismatch detection, round-trip trade flag → hold & review (bridge ke Fase 200)
+- [x] 208.5 Tests: Σ pajak = perhitungan aturan per yurisdiksi, reconciliation buku-fiskal konsisten, gapless numbering, `enterprise:audit` + `trade:audit` clean
+- [x] 208.6 Edge case: aturan pajak berubah di tengah periode → split period kalkulasi, effective dating aturan
+- [x] 208.7 Position paper: setiap posisi pajak material punya justifikasi hukum + approval sebelum pelaporan
+- [x] 208.8 Quality gate Fase 208
 
 ## FASE 209 — KEUANGAN: GROUP FINANCE OPERATIONS & CLOSE AGILITY
 - [ ] 209.1 Continuous close: subledger reconciliation otomatis harian (bukan bulanan) → variance alert → adjust sebelum periode berakhir → lock period ketat (Fase 54.2)
