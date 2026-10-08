@@ -3942,14 +3942,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 350.8 Quality gate Fase 350
 
 ## FASE 351 — AI PLATFORM: MULTI-MODAL & VISION INTEGRATION (SIMULASI)
-- [ ] 351.1 Document understanding: invoice, contract, lab report, BOL upload → extraction → structured fields → human verify for material fields → link to source doc
-- [ ] 351.2 Vision inspection (simulated): QC visual defects, PPE compliance, occupancy counting → result with confidence → human confirm for consequential action
-- [ ] 351.3 Audio analytics (simulated): call center intent tagging (privacy-safe), safety sound detection → routing/alert → retention limited
-- [ ] 351.4 Tests: low-confidence results require human review, source document linkage preserved, privacy retention enforced
-- [ ] 351.5 Edge case: extraction salah pada dokumen finansial → human verify wajib sebelum posting ledger
-- [ ] 351.6 Risiko: audio recording menyimpan data sensitif → retention pendek + redaction + consent
-- [ ] 351.7 Evidence: confidence threshold, source linkage, dan privacy retention tercatat per modality
-- [ ] 351.8 Quality gate Fase 351
+- [x] 351.1 Document understanding: invoice, contract, lab report, BOL upload → extraction → structured fields → human verify for material fields → link to source doc
+- [x] 351.2 Vision inspection (simulated): QC visual defects, PPE compliance, occupancy counting → result with confidence → human confirm for consequential action
+- [x] 351.3 Audio analytics (simulated): call center intent tagging (privacy-safe), safety sound detection → routing/alert → retention limited
+- [x] 351.4 Tests: low-confidence results require human review, source document linkage preserved, privacy retention enforced
+- [x] 351.5 Edge case: extraction salah pada dokumen finansial → human verify wajib sebelum posting ledger
+- [x] 351.6 Risiko: audio recording menyimpan data sensitif → retention pendek + redaction + consent
+- [x] 351.7 Evidence: confidence threshold, source linkage, dan privacy retention tercatat per modality
+- [x] 351.8 Quality gate Fase 351
 
 ## FASE 352 — AI PLATFORM: GENERATIVE DESIGN & ENGINEERING COPILOT
 - [ ] 352.1 Design copilot (PLM): component suggestion, BOM variant generation, cost/weight trade-off → engineer review → ECO workflow if adopted
