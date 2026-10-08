@@ -31,6 +31,7 @@ use Modules\Integration\Application\Services\EnterpriseRiskService;
 use Modules\Integration\Application\Services\EthicalSourcingService;
 use Modules\Integration\Application\Services\FashionRetailCircularService;
 use Modules\Integration\Application\Services\FashionSourcingService;
+use Modules\Integration\Application\Services\FinanceCloseAgilityService;
 use Modules\Integration\Application\Services\FoodBrandNutritionService;
 use Modules\Integration\Application\Services\FoodProcessingService;
 use Modules\Integration\Application\Services\ForestryTimberService;
@@ -150,6 +151,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(BusinessContinuityCrisisService::class);
         $this->app->singleton(RegulatoryPolicyLifecycleService::class);
         $this->app->singleton(TaxCustomsTradeService::class);
+        $this->app->singleton(FinanceCloseAgilityService::class);
     }
 
     public function boot(): void

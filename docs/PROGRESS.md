@@ -2491,14 +2491,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 208.8 Quality gate Fase 208
 
 ## FASE 209 — KEUANGAN: GROUP FINANCE OPERATIONS & CLOSE AGILITY
-- [ ] 209.1 Continuous close: subledger reconciliation otomatis harian (bukan bulanan) → variance alert → adjust sebelum periode berakhir → lock period ketat (Fase 54.2)
-- [ ] 209.2 Journal automation: recurring, accrual, allocation, revaluation → template ber-versi → auto-post dengan parameter tercatat → review sampel berkala
-- [ ] 209.3 Intercompany maturation: matching otomatis invoice vs bill antar entitas → mismatch report → resolusi dalam SLA → eliminasi lebih bersih (Fase 52.4)
-- [ ] 209.4 Statutory reporting pack per negara: neraca, laba rugi, arus kas, catatan → format regulator simulasi → gapless & sign-off
-- [ ] 209.5 Tests: close checklist lengkap sebelum lock, accrual reverse tepat periode, IC matching ≥ target, statutory pack konsisten dengan ledger, `enterprise:audit` clean
-- [ ] 209.6 Edge case: close gagal di tengah (entitas belum siap) → period tetap terbuka dengan status terlihat, tak di-lock paksa
-- [ ] 209.7 Materiality threshold: variance kecil di-bypass dengan alasan tercatat, bukan disembunyikan
-- [ ] 209.8 Quality gate Fase 209
+- [x] 209.1 Continuous close: subledger reconciliation otomatis harian (bukan bulanan) → variance alert → adjust sebelum periode berakhir → lock period ketat (Fase 54.2)
+- [x] 209.2 Journal automation: recurring, accrual, allocation, revaluation → template ber-versi → auto-post dengan parameter tercatat → review sampel berkala
+- [x] 209.3 Intercompany maturation: matching otomatis invoice vs bill antar entitas → mismatch report → resolusi dalam SLA → eliminasi lebih bersih (Fase 52.4)
+- [x] 209.4 Statutory reporting pack per negara: neraca, laba rugi, arus kas, catatan → format regulator simulasi → gapless & sign-off
+- [x] 209.5 Tests: close checklist lengkap sebelum lock, accrual reverse tepat periode, IC matching ≥ target, statutory pack konsisten dengan ledger, `enterprise:audit` clean
+- [x] 209.6 Edge case: close gagal di tengah (entitas belum siap) → period tetap terbuka dengan status terlihat, tak di-lock paksa
+- [x] 209.7 Materiality threshold: variance kecil di-bypass dengan alasan tercatat, bukan disembunyikan
+- [x] 209.8 Quality gate Fase 209
 
 ## FASE 210 — KEUANGAN: CAPITAL MANAGEMENT & FUNDING STRATEGY
 - [ ] 210.1 Capital structure model: debt/equity per entitas, covenant ratio (Fase 48.7) lintas 30 lini → headroom → early warning → opsi (refinancing, equity via RWA/sukuk Fase 162, dividen policy)
