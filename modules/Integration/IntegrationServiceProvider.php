@@ -20,6 +20,7 @@ use Modules\Integration\Application\Services\IntegrationService;
 use Modules\Integration\Application\Services\IslamicTradeFinanceService;
 use Modules\Integration\Application\Services\LearningPlatformService;
 use Modules\Integration\Application\Services\LifeHealthWellnessService;
+use Modules\Integration\Application\Services\MarineAquacultureService;
 use Modules\Integration\Application\Services\MegaScenarioService;
 use Modules\Integration\Application\Services\PlatformEconomyService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
@@ -72,6 +73,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(LearningPlatformService::class);
         $this->app->singleton(FoodProcessingService::class);
         $this->app->singleton(FoodBrandNutritionService::class);
+        $this->app->singleton(MarineAquacultureService::class);
     }
 
     public function boot(): void

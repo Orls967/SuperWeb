@@ -2154,12 +2154,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 169.6 Quality gate Fase 169
 
 ## FASE 170 — LINI 22: PERIKANAN, AQUACULTURE & MARINE SUPPLY CHAIN
-- [ ] 170.1 Modul `MarineAgri` (`mar_`): farms/cages/vessels, species, stock cohorts, feed, growth sampling, mortality, harvest lots, water-quality sensors
-- [ ] 170.2 Feed and seedling procurement, batch traceability, feeding plan, biomass estimate, harvest forecast linked to Agri/food processing
-- [ ] 170.3 Catch/harvest chain of custody: landing, weighbridge, grade, cold-chain, vessel/zone provenance, sustainable quota simulation
-- [ ] 170.4 Disease event → quarantine affected cohort, veterinary review, disposal workflow, insurance/parametric claim where covered
-- [ ] 170.5 Tests: biomass conservation tolerance, harvest cannot exceed available cohort, cold-chain breach quarantines lot, quota enforced, `marine:audit` = 0
-- [ ] 170.6 Quality gate Fase 170
+- [x] 170.1 Modul `MarineAgri` (`mar_`): farms/cages/vessels, species, stock cohorts, feed, growth sampling, mortality, harvest lots, water-quality sensors
+- [x] 170.2 Feed and seedling procurement, batch traceability, feeding plan, biomass estimate, harvest forecast linked to Agri/food processing
+- [x] 170.3 Catch/harvest chain of custody: landing, weighbridge, grade, cold-chain, vessel/zone provenance, sustainable quota simulation
+- [x] 170.4 Disease event → quarantine affected cohort, veterinary review, disposal workflow, insurance/parametric claim where covered
+- [x] 170.5 Tests: biomass conservation tolerance, harvest cannot exceed available cohort, cold-chain breach quarantines lot, quota enforced, `marine:audit` = 0
+- [x] 170.6 Quality gate Fase 170
 
 ## FASE 171 — LINI 22: AQUACULTURE EXPORT, SEAFOOD TRACEABILITY & BLUE ESG
 - [ ] 171.1 End-to-end lot passport from hatchery/feed/farm/harvest/processing/container/buyer; immutable lineage and public verification with sensitive location redacted
