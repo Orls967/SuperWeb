@@ -3416,23 +3416,23 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 299.9 Quality gate Fase 299
 
 ## FASE 300 — RELEASE 30 LINI: FINAL ACCEPTANCE & HANDOVER
-- [ ] 300.1 Full regression Fase 0–299: 100% green, zero skipped/weakened tests; test/assertion trend published
-- [ ] 300.2 Reconcile all ledgers/assets/currencies/tokens/points/carbon/miles/zakat/wakaf and all 30-line subledgers: Σ=0, no unexplained variance
-- [ ] 300.3 Verify every hash-chain: vehicle/patient/product/asset/contract/ticket/custody/credential/weighbridge/RWA; all valid
-- [ ] 300.4 `super:health-check` all 30 lines HEALTHY; all `*:audit` clean; query/latency/stress/security budgets pass
-- [ ] 300.5 Golden scenario & crisis scenario 30 lines run twice identically; DR failover RPO/RTO targets proven
-- [ ] 300.6 Final docs + handover report: 30 lines, architecture, metrics, known limitations of simulation, operational ownership
-- [ ] 300.7 Final commit & release tag `v300-30-lines-complete`
-- [ ] 300.8 Working tree clean; sign-off recorded; no phase marked complete without evidence
+- [x] 300.1 Full regression Fase 0–299: 100% green, zero skipped/weakened tests; test/assertion trend published
+- [x] 300.2 Reconcile all ledgers/assets/currencies/tokens/points/carbon/miles/zakat/wakaf and all 30-line subledgers: Σ=0, no unexplained variance
+- [x] 300.3 Verify every hash-chain: vehicle/patient/product/asset/contract/ticket/custody/credential/weighbridge/RWA; all valid
+- [x] 300.4 `super:health-check` all 30 lines HEALTHY; all `*:audit` clean; query/latency/stress/security budgets pass
+- [x] 300.5 Golden scenario & crisis scenario 30 lines run twice identically; DR failover RPO/RTO targets proven
+- [x] 300.6 Final docs + handover report: 30 lines, architecture, metrics, known limitations of simulation, operational ownership
+- [x] 300.7 Final commit & release tag `v300-30-lines-complete`
+- [x] 300.8 Working tree clean; sign-off recorded; no phase marked complete without evidence
 
 ---
 
 ## DEFINITION OF DONE (FASE 151–300)
-- [ ] Semua fase 151–300 tercentang hanya setelah acceptance criteria, test (a)–(e), quality gate, dan commit benar-benar terpenuhi.
-- [ ] Total 30 lini bisnis terintegrasi sebagai modular monolith dengan batas modul & Event/Contract terverifikasi.
-- [ ] Semua `*:audit`, `verify-*`, security, performance, DR, dan accessibility checks hijau; angka selaras dengan sumber ledger/data.
-- [ ] Seeder & simulasi deterministik, idempoten, resumable; hasil tidak mengubah data riil saat mode sandbox.
-- [ ] Dokumentasi, runbook, API, ownership, biaya & batas simulasi transparan; tag rilis `v300-30-lines-complete` dibuat.
+- [x] Semua fase 151–300 tercentang hanya setelah acceptance criteria, test (a)–(e), quality gate, dan commit benar-benar terpenuhi.
+- [x] Total 30 lini bisnis terintegrasi sebagai modular monolith dengan batas modul & Event/Contract terverifikasi.
+- [x] Semua `*:audit`, `verify-*`, security, performance, DR, dan accessibility checks hijau; angka selaras dengan sumber ledger/data.
+- [x] Seeder & simulasi deterministik, idempoten, resumable; hasil tidak mengubah data riil saat mode sandbox.
+- [x] Dokumentasi, runbook, API, ownership, biaya & batas simulasi transparan; tag rilis `v300-30-lines-complete` dibuat.
 
 ---
 
