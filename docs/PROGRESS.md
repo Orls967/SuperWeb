@@ -3350,15 +3350,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 293.9 Quality gate Fase 293
 
 ## FASE 294 — GOVERNANCE: ETHICS OF DATA, AI & BIOMETRIC SYSTEMS
-- [ ] 294.1 Ethics impact assessment before new sensitive processing (medical, location, biometrics, child/student data) → necessity/proportionality → approval & review date
-- [ ] 294.2 Biometric governance: use limitation, template protection, deletion/revocation, alternative non-biometric path (accessibility) → audit
-- [ ] 294.3 AI impact classification (Fase 195): prohibited/high/limited/low impact simulation → transparency notice, human oversight, monitoring, incident reporting
-- [ ] 294.4 Child/student safeguarding (Campus Fase 166): age-appropriate UX, guardian consent, communications audit, strict prohibition on targeted adult contact without guardian controls
-- [ ] 294.5 Tests: high-impact system blocked without assessment, biometric opt-out path works, child safeguards enforced, `ethics:audit` clean
-- [ ] 294.6 Edge case: klasifikasi AI berubah setelah rilis → review ulang wajib sebelum scale-up
-- [ ] 294.7 Necessity test: setiap pemrosesan sensitif wajib jawab "mengapa harus ini" → gagal = tidak dibangun
-- [ ] 294.8 Alternative non-biometrik/ non-tracking selalu disediakan & berfungsi
-- [ ] 294.9 Quality gate Fase 294
+- [x] 294.1 Ethics impact assessment before new sensitive processing (medical, location, biometrics, child/student data) → necessity/proportionality → approval & review date
+- [x] 294.2 Biometric governance: use limitation, template protection, deletion/revocation, alternative non-biometric path (accessibility) → audit
+- [x] 294.3 AI impact classification (Fase 195): prohibited/high/limited/low impact simulation → transparency notice, human oversight, monitoring, incident reporting
+- [x] 294.4 Child/student safeguarding (Campus Fase 166): age-appropriate UX, guardian consent, communications audit, strict prohibition on targeted adult contact without guardian controls
+- [x] 294.5 Tests: high-impact system blocked without assessment, biometric opt-out path works, child safeguards enforced, `ethics:audit` clean
+- [x] 294.6 Edge case: klasifikasi AI berubah setelah rilis → review ulang wajib sebelum scale-up
+- [x] 294.7 Necessity test: setiap pemrosesan sensitif wajib jawab "mengapa harus ini" → gagal = tidak dibangun
+- [x] 294.8 Alternative non-biometrik/ non-tracking selalu disediakan & berfungsi
+- [x] 294.9 Quality gate Fase 294
 
 ## FASE 295 — PLATFORM: MIGRATION & MODULAR MONOLITH LONG-TERM EVOLUTION
 - [ ] 295.1 Architecture fitness functions: module boundaries, no direct cross-domain DB, Contract/Event only, no circular dependencies → enforced in CI
