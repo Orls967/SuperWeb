@@ -266,6 +266,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\WorkingCapitalScfService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\ContinuousControlsMonitoringService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\FpaDriverBasedBudgetingService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\DynamicMarketplaceC2cCommerceService::class);
     }
 
     public function boot(): void

@@ -3562,14 +3562,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 312.8 Quality gate Fase 312
 
 ## FASE 313 — ADVANCED COMMERCE: MARKETPLACE DYNAMIC & C2B/C2C FLOWS
-- [ ] 313.1 C2C marketplace: consumer jual ke consumer (bekas kendaraan Fase 5A, fashion Fase 182, elektronik) → listing, escrow (Fase 61.4), autentikasi barang, rating, fulfillment offer
-- [ ] 313.2 C2B buyback: platform menawar barang bekas (trade-in EV baterai Fase 69.4) → harga berbasis kondisi & telematik → bayar ke wallet → stok masuk refurbish/recommerce
-- [ ] 313.3 Marketplace trust & safety: listing review (foto, deskripsi), dispute mediation, scam detection (Fase 200), seller fund hold saat dispute → resolution SLA
-- [ ] 313.4 Tests: escrow release hanya setelah penerimaan/dispute selesai, buyback price deterministik, dispute SLA terukur, `ret:audit` + `b2b:audit` clean
-- [ ] 313.5 Edge case: skala berulang pada penjualan bekas → velocity limit + verifikasi identitas wajib sebelum listing aktif
-- [ ] 313.6 Risiko: barang bekas tidak sesuai deskripsi → mediasi berbasis bukti foto & escrow hold hingga keputusan
-- [ ] 313.7 Evidence: dispute resolution rate, buyback margin, dan trust score terukur per periode
-- [ ] 313.8 Quality gate Fase 313
+- [x] 313.1 C2C marketplace: consumer jual ke consumer (bekas kendaraan Fase 5A, fashion Fase 182, elektronik) → listing, escrow (Fase 61.4), autentikasi barang, rating, fulfillment offer
+- [x] 313.2 C2B buyback: platform menawar barang bekas (trade-in EV baterai Fase 69.4) → harga berbasis kondisi & telematik → bayar ke wallet → stok masuk refurbish/recommerce
+- [x] 313.3 Marketplace trust & safety: listing review (foto, deskripsi), dispute mediation, scam detection (Fase 200), seller fund hold saat dispute → resolution SLA
+- [x] 313.4 Tests: escrow release hanya setelah penerimaan/dispute selesai, buyback price deterministik, dispute SLA terukur, `ret:audit` + `b2b:audit` clean
+- [x] 313.5 Edge case: skala berulang pada penjualan bekas → velocity limit + verifikasi identitas wajib sebelum listing aktif
+- [x] 313.6 Risiko: barang bekas tidak sesuai deskripsi → mediasi berbasis bukti foto & escrow hold hingga keputusan
+- [x] 313.7 Evidence: dispute resolution rate, buyback margin, dan trust score terukur per periode
+- [x] 313.8 Quality gate Fase 313
 
 ## FASE 314 — ADVANCED COMMERCE: SUBSCRIPTION COMMERCE & INSTANT REPLENISHMENT
 - [ ] 314.1 Subscribe-and-save lintas lini: bahan grocery (Fase 75), sparepart fleet (Fase 70), hotel loyalty nights, media content, telecom data → satu engine plan dengan discount ladder
