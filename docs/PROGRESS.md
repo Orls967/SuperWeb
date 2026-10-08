@@ -2752,14 +2752,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 234.8 Quality gate Fase 234
 
 ## FASE 235 — INOVASI: MARKETPLACE OF CAPABILITIES & INTERNAL API PRODUCTS
-- [ ] 235.1 Capability-as-a-product: kemampuan platform (payment, identity, logistics, data, AI, loyalty) dikatalogkan sebagai produk internal → unit cost → chargeback/flywheel pricing → konsumen internal memilih
-- [ ] 235.2 Internal API marketplace: tim lini menemukan & memakai capability lain tanpa build ulang → usage metering → quality SLA → feedback → roadmap capability
-- [ ] 235.3 Build-vs-buy-vs-use decision framework: setiap inisiatif teknologi melewati framework (biaya, kecepatan, kontrol) → keputusan tercatat → review post-implementation
-- [ ] 235.4 Platform adoption metrics: reuse rate, time-to-integrate, cost avoidance → dorong arsitektur monolith terpadu tetap dimanfaatkan penuh
-- [ ] 235.5 Tests: chargeback = usage × tarif konsisten, capability SLA terukur, reuse metric akurat, `platform:audit` clean
-- [ ] 235.6 Edge case: capability baru duplikat yang sudah ada → review wajib sebelum build, wajib pakai yang lama bila memadai
-- [ ] 235.7 Sunset capability lama → consumer inventory + migrasi dulu, jangan matikan mendadak
-- [ ] 235.8 Quality gate Fase 235
+- [x] 235.1 Capability-as-a-product: kemampuan platform (payment, identity, logistics, data, AI, loyalty) dikatalogkan sebagai produk internal → unit cost → chargeback/flywheel pricing → konsumen internal memilih
+- [x] 235.2 Internal API marketplace: tim lini menemukan & memakai capability lain tanpa build ulang → usage metering → quality SLA → feedback → roadmap capability
+- [x] 235.3 Build-vs-buy-vs-use decision framework: setiap inisiatif teknologi melewati framework (biaya, kecepatan, kontrol) → keputusan tercatat → review post-implementation
+- [x] 235.4 Platform adoption metrics: reuse rate, time-to-integrate, cost avoidance → dorong arsitektur monolith terpadu tetap dimanfaatkan penuh
+- [x] 235.5 Tests: chargeback = usage × tarif konsisten, capability SLA terukur, reuse metric akurat, `platform:audit` clean
+- [x] 235.6 Edge case: capability baru duplikat yang sudah ada → review wajib sebelum build, wajib pakai yang lama bila memadai
+- [x] 235.7 Sunset capability lama → consumer inventory + migrasi dulu, jangan matikan mendadak
+- [x] 235.8 Quality gate Fase 235
 
 ## FASE 236 — INOVASI: DIGITAL PRODUCT FACTORY & EXPERIMENTATION
 - [ ] 236.1 Product ops: discovery (customer problem → hypothesis) → experiment design → build increment → release → measure → iterate → sunset → terhubung PPM (Fase 217)
