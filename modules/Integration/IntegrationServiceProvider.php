@@ -12,6 +12,7 @@ use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\EmbeddedInsuranceService;
 use Modules\Integration\Application\Services\EthicalSourcingService;
+use Modules\Integration\Application\Services\FoodBrandNutritionService;
 use Modules\Integration\Application\Services\FoodProcessingService;
 use Modules\Integration\Application\Services\FullInsuranceService;
 use Modules\Integration\Application\Services\GlobalCommandService;
@@ -70,6 +71,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(CampusEducationService::class);
         $this->app->singleton(LearningPlatformService::class);
         $this->app->singleton(FoodProcessingService::class);
+        $this->app->singleton(FoodBrandNutritionService::class);
     }
 
     public function boot(): void

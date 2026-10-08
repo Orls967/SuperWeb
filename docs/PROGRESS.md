@@ -2146,12 +2146,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 168.7 Quality gate Fase 168
 
 ## FASE 169 — LINI 21: FOOD BRAND, PRIVATE LABEL & NUTRITION PROGRAMS
-- [ ] 169.1 Brand/product lifecycle: formulation via PLM, nutrition/allergen label versioning, packaging approvals, shelf-life validation, market launch gates
-- [ ] 169.2 Private-label production for Resto/Retail/Hotel/Hospital: contract manufacturing, customer-owned materials, conversion cost, quality agreement
-- [ ] 169.3 Nutrition program catalogs (school meals, hospital diets, corporate catering): dietitian-approved recipe, allergen and restriction validation, menu substitution workflow
-- [ ] 169.4 Demand planning & distribution: forecast by institution/site, cold-chain logistics, batch/expiry FEFO, consumption confirmation
-- [ ] 169.5 Tests: released formulation immutable, allergen conflict blocks order, private-label ownership separated, FEFO selection correct, `food:audit` reconciles inventory and ledger
-- [ ] 169.6 Quality gate Fase 169
+- [x] 169.1 Brand/product lifecycle: formulation via PLM, nutrition/allergen label versioning, packaging approvals, shelf-life validation, market launch gates
+- [x] 169.2 Private-label production for Resto/Retail/Hotel/Hospital: contract manufacturing, customer-owned materials, conversion cost, quality agreement
+- [x] 169.3 Nutrition program catalogs (school meals, hospital diets, corporate catering): dietitian-approved recipe, allergen and restriction validation, menu substitution workflow
+- [x] 169.4 Demand planning & distribution: forecast by institution/site, cold-chain logistics, batch/expiry FEFO, consumption confirmation
+- [x] 169.5 Tests: released formulation immutable, allergen conflict blocks order, private-label ownership separated, FEFO selection correct, `food:audit` reconciles inventory and ledger
+- [x] 169.6 Quality gate Fase 169
 
 ## FASE 170 — LINI 22: PERIKANAN, AQUACULTURE & MARINE SUPPLY CHAIN
 - [ ] 170.1 Modul `MarineAgri` (`mar_`): farms/cages/vessels, species, stock cohorts, feed, growth sampling, mortality, harvest lots, water-quality sensors
