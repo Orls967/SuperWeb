@@ -3982,14 +3982,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 354.8 Quality gate Fase 354
 
 ## FASE 355 — AI PLATFORM: EDGE MODEL REGISTRY & DEVICE FLEET ROLLOUT
-- [ ] 355.1 Edge device registry per site (venue, mine, hospital, warehouse): hardware class, model version, connectivity, owner, criticality, update window
-- [ ] 355.2 Staged model rollout: canary device group → health & quality checks → progressive expansion → automatic rollback on error/drift → audit trail
-- [ ] 355.3 Deterministic fallback: sensor/AI unavailable → established rules/manual mode; safety-critical decisions never depend solely on edge model
-- [ ] 355.4 Tests: incompatible model blocked, rollback restores prior version, offline device queues update safely, fallback behavior tested
-- [ ] 355.5 Edge case: model tak kompatibel dengan device → rollback otomatis ke versi sebelumnya
-- [ ] 355.6 Risiko: device offline lama → update ditunda hingga kembali; safety tak bergantung edge model
-- [ ] 355.7 Evidence: rollout audit trail, device registry, dan fallback test result tercatat
-- [ ] 355.8 Quality gate Fase 355
+- [x] 355.1 Edge device registry per site (venue, mine, hospital, warehouse): hardware class, model version, connectivity, owner, criticality, update window
+- [x] 355.2 Staged model rollout: canary device group → health & quality checks → progressive expansion → automatic rollback on error/drift → audit trail
+- [x] 355.3 Deterministic fallback: sensor/AI unavailable → established rules/manual mode; safety-critical decisions never depend solely on edge model
+- [x] 355.4 Tests: incompatible model blocked, rollback restores prior version, offline device queues update safely, fallback behavior tested
+- [x] 355.5 Edge case: model tak kompatibel dengan device → rollback otomatis ke versi sebelumnya
+- [x] 355.6 Risiko: device offline lama → update ditunda hingga kembali; safety tak bergantung edge model
+- [x] 355.7 Evidence: rollout audit trail, device registry, dan fallback test result tercatat
+- [x] 355.8 Quality gate Fase 355
 
 ## FASE 356 — AI PLATFORM: MODEL INCIDENT & SAFETY CASE MANAGEMENT
 - [ ] 356.1 Model incident lifecycle: detect → severity/classification → containment (disable/version rollback) → impact scope → notification → remediation → independent closure
