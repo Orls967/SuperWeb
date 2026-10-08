@@ -12,6 +12,7 @@ use Modules\Integration\Application\Services\AviationService;
 use Modules\Integration\Application\Services\BmtMicrofinanceService;
 use Modules\Integration\Application\Services\CampusEducationService;
 use Modules\Integration\Application\Services\CircularEconomyService;
+use Modules\Integration\Application\Services\ConcurrencyLockingService;
 use Modules\Integration\Application\Services\CrisisContinuityService;
 use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
@@ -118,6 +119,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(GroupCommandCenterService::class);
         $this->app->singleton(ScaleBenchmarkService::class);
         $this->app->singleton(PartitionArchiveService::class);
+        $this->app->singleton(ConcurrencyLockingService::class);
     }
 
     public function boot(): void
