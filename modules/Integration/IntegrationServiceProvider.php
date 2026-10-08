@@ -212,6 +212,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\ObservabilitySloEconomyService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\EventDrivenCqrsSagaService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\MultiRegionEdgeArchitectureService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\EnterpriseSearchKnowledgeGraphService::class);
     }
 
     public function boot(): void

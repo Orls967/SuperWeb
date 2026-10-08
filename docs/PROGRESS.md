@@ -2994,14 +2994,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 258.8 Quality gate Fase 258
 
 ## FASE 259 — PLATFORM: ENTERPRISE SEARCH & KNOWLEDGE GRAPH
-- [ ] 259.1 Knowledge graph lintas entitas: hubungan (pelanggan ↔ kontrak ↔ aset ↔ proyek ↔ risiko ↔ pihak) → traversal query terkontrol akses → insight graph (mis. eksposur konsentrasi via graph)
-- [ ] 259.2 Semantic search 30 lini: intent → entity resolution → hasil terkaya (dokumen + record + orang + produk) → permission-aware ranking
-- [ ] 259.3 Knowledge lifecycle: artikel SOP/prosedur → review periodik → expiry → versi lama tetap untuk audit → link dari keputusan masa lalu
-- [ ] 259.4 Tests: traversal tak menembus scope, entity resolution deterministik, knowledge expiry alert terpicu
-- [ ] 259.5 Edge case: traversal panjang → batas depth & cost query → di-limit sebelum membebani DB
-- [ ] 259.6 Entity resolution false-positive → anjuran merge manual, jangan otomatis untuk entitas penting
-- [ ] 259.7 Knowledge article kedaluwarsa → tanda basi & tidak disajikan sebagai current
-- [ ] 259.8 Quality gate Fase 259
+- [x] 259.1 Knowledge graph lintas entitas: hubungan (pelanggan ↔ kontrak ↔ aset ↔ proyek ↔ risiko ↔ pihak) → traversal query terkontrol akses → insight graph (mis. eksposur konsentrasi via graph)
+- [x] 259.2 Semantic search 30 lini: intent → entity resolution → hasil terkaya (dokumen + record + orang + produk) → permission-aware ranking
+- [x] 259.3 Knowledge lifecycle: artikel SOP/prosedur → review periodik → expiry → versi lama tetap untuk audit → link dari keputusan masa lalu
+- [x] 259.4 Tests: traversal tak menembus scope, entity resolution deterministik, knowledge expiry alert terpicu
+- [x] 259.5 Edge case: traversal panjang → batas depth & cost query → di-limit sebelum membebani DB
+- [x] 259.6 Entity resolution false-positive → anjuran merge manual, jangan otomatis untuk entitas penting
+- [x] 259.7 Knowledge article kedaluwarsa → tanda basi & tidak disajikan sebagai current
+- [x] 259.8 Quality gate Fase 259
 
 ## FASE 260 — EKOSISTEM: PARTNER API, CO-SELL & AFFILIATE NETWORK SCALE
 - [ ] 260.1 Partner tiering & benefits: bronze/silver/gold/platinum → rate card, support SLA, sandbox, co-marketing fund → upgrade criteria otomatis
