@@ -2290,12 +2290,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 186.6 Quality gate Fase 186
 
 ## FASE 187 — INTEGRASI 30 LINI B: PAYMENT, SETTLEMENT & TREASURY UNIFICATION
-- [ ] 187.1 Satu payment hub untuk 30 lini: wallet, kartu simulasi, QR, stablecoin, escrow, auto-debit, split settlement, settlement T+N per vertical
-- [ ] 187.2 Settlement network internal: clearing harian antar entitas (intercompany AR/AP → netting → payment run) → mengurangi gross flow, fee internal tercatat
-- [ ] 187.3 Multi-currency + multi-aset unified statement: IDR, valas, PTS, kripto, stablecoin, token RWA, kredit karbon, miles, zakat/wakaf fund → satu konsolidasi kesehatan kas
-- [ ] 187.4 Treasury cash pool 30 lini: forecasting 13 minggu diperluas (payroll 30 negara, tiket event musiman, royalti, klaim) → sweep otomatis antar entitas dengan batas & approval
-- [ ] 187.5 Tests: netting Σ = gross tersisa, pooling tak membuat saldo negatif, multi-aset Σ per aset = 0, settlement T+N idempoten, `treasury:audit` + `bank:reconcile` = 0 selisih
-- [ ] 187.6 Quality gate Fase 187
+- [x] 187.1 Satu payment hub untuk 30 lini: wallet, kartu simulasi, QR, stablecoin, escrow, auto-debit, split settlement, settlement T+N per vertical
+- [x] 187.2 Settlement network internal: clearing harian antar entitas (intercompany AR/AP → netting → payment run) → mengurangi gross flow, fee internal tercatat
+- [x] 187.3 Multi-currency + multi-aset unified statement: IDR, valas, PTS, kripto, stablecoin, token RWA, kredit karbon, miles, zakat/wakaf fund → satu konsolidasi kesehatan kas
+- [x] 187.4 Treasury cash pool 30 lini: forecasting 13 minggu diperluas (payroll 30 negara, tiket event musiman, royalti, klaim) → sweep otomatis antar entitas dengan batas & approval
+- [x] 187.5 Tests: netting Σ = gross tersisa, pooling tak membuat saldo negatif, multi-aset Σ per aset = 0, settlement T+N idempoten, `treasury:audit` + `bank:reconcile` = 0 selisih
+- [x] 187.6 Quality gate Fase 187
 
 ## FASE 188 — INTEGRASI 30 LINI C: IDENTITY, ACCESS & TENANCY 30 MODUL
 - [ ] 188.1 RBAC + ABAC gabungan: role, permission, scope (entity/region/site/project/time) → evaluasi gabungan terpusat → matriks uji otomatis seluruh route × role × scope
