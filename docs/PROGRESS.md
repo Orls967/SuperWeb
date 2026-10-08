@@ -2361,14 +2361,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 195.8 Quality gate Fase 195
 
 ## FASE 196 — AI: AGENT ORCHESTRATION & HUMAN-IN-THE-LOOP
-- [ ] 196.1 Agent runtime: setiap agen (bid Fase 84, claim Fase 72, ops Fase 143, concierge Fase 113.5) memakai kerangka sama — tool whitelist per peran, budget langkah, audit tiap aksi
-- [ ] 196.2 Human-in-the-loop queues: aksi berisiko (uang besar, medis, kontrak, pemilihan talent) → antrean review per role → approve/reject/edit dengan alasan → masuk audit trail
-- [ ] 196.3 Multi-agent collaboration: orkestrator menggabungkan agen (procurement + logistics + finance) untuk satu tujuan → rencana disetujui manusia sebelum eksekusi → hasil dilaporkan
-- [ ] 196.4 Kill-switch & incident AI: matikan satu agen/semua agen dalam 1 detik → pending action dibatalkan bersih (tanpa potong uang setengah jalan) → postmortem
-- [ ] 196.5 Tests: aksi di luar whitelist ditolak, budget langkah dihormati, kill-switch bersih pada 100 percobaan, alasan review tersimpan penuh
-- [ ] 196.6 Edge case: agen stuck menunggu review → timeout + eskalasi, tak memblokir antrian review lain
-- [ ] 196.7 Audit sampling agen level rendah: 5% aksi ditinjau manusia → temuan memicu pengetatan whitelist
-- [ ] 196.8 Quality gate Fase 196
+- [x] 196.1 Agent runtime: setiap agen (bid Fase 84, claim Fase 72, ops Fase 143, concierge Fase 113.5) memakai kerangka sama — tool whitelist per peran, budget langkah, audit tiap aksi
+- [x] 196.2 Human-in-the-loop queues: aksi berisiko (uang besar, medis, kontrak, pemilihan talent) → antrean review per role → approve/reject/edit dengan alasan → masuk audit trail
+- [x] 196.3 Multi-agent collaboration: orkestrator menggabungkan agen (procurement + logistics + finance) untuk satu tujuan → rencana disetujui manusia sebelum eksekusi → hasil dilaporkan
+- [x] 196.4 Kill-switch & incident AI: matikan satu agen/semua agen dalam 1 detik → pending action dibatalkan bersih (tanpa potong uang setengah jalan) → postmortem
+- [x] 196.5 Tests: aksi di luar whitelist ditolak, budget langkah dihormati, kill-switch bersih pada 100 percobaan, alasan review tersimpan penuh
+- [x] 196.6 Edge case: agen stuck menunggu review → timeout + eskalasi, tak memblokir antrian review lain
+- [x] 196.7 Audit sampling agen level rendah: 5% aksi ditinjau manusia → temuan memicu pengetatan whitelist
+- [x] 196.8 Quality gate Fase 196
 
 ## FASE 197 — AI: DECISION LOG, EXPLAINABILITY & MODEL AUDIT
 - [ ] 197.1 Decision log: setiap keputusan otomatis menyimpan input snapshot, versi model, output, dan tindakan yang diambil → bisa di-replay identik (audit Fase 64.4 diperluas ke 30 lini)
