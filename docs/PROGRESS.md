@@ -3952,14 +3952,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 351.8 Quality gate Fase 351
 
 ## FASE 352 — AI PLATFORM: GENERATIVE DESIGN & ENGINEERING COPILOT
-- [ ] 352.1 Design copilot (PLM): component suggestion, BOM variant generation, cost/weight trade-off → engineer review → ECO workflow if adopted
-- [ ] 352.2 Code copilot (platform): code suggestions, test generation, review assist → human approval mandatory, no direct production write → quality metrics
-- [ ] 352.3 Engineering simulation assist: run FEA/CFD-style simulations (simulated) → results validation against known cases → decision support only
-- [ ] 352.4 Tests: generated design passes validation before ECO, code suggestion cannot merge without review+CI, simulation confidence labeled
-- [ ] 352.5 Edge case: design copilot menyarankan komponen tak lolos FTO → ditolak sampai review IP (Fase 816)
-- [ ] 352.6 Risiko: code copilot menyuntik kode tak teruji → coverage & arch test tetap wajib sebelum merge
-- [ ] 352.7 Evidence: ECO adoption rate, review pass rate, dan simulation confidence tercatat
-- [ ] 352.8 Quality gate Fase 352
+- [x] 352.1 Design copilot (PLM): component suggestion, BOM variant generation, cost/weight trade-off → engineer review → ECO workflow if adopted
+- [x] 352.2 Code copilot (platform): code suggestions, test generation, review assist → human approval mandatory, no direct production write → quality metrics
+- [x] 352.3 Engineering simulation assist: run FEA/CFD-style simulations (simulated) → results validation against known cases → decision support only
+- [x] 352.4 Tests: generated design passes validation before ECO, code suggestion cannot merge without review+CI, simulation confidence labeled
+- [x] 352.5 Edge case: design copilot menyarankan komponen tak lolos FTO → ditolak sampai review IP (Fase 816)
+- [x] 352.6 Risiko: code copilot menyuntik kode tak teruji → coverage & arch test tetap wajib sebelum merge
+- [x] 352.7 Evidence: ECO adoption rate, review pass rate, dan simulation confidence tercatat
+- [x] 352.8 Quality gate Fase 352
 
 ## FASE 353 — AI PLATFORM: AI-ENABLED CUSTOMER SERVICE & AGENTIC COMMERCE
 - [ ] 353.1 Service agent: resolve tier-1 intents (status, FAQ, simple change) autonomously → escalate with full context → CSAT & resolution rate tracked → no autonomous refund above limit
