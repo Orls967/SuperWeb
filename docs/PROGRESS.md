@@ -3852,14 +3852,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 341.8 Quality gate Fase 341
 
 ## FASE 342 — DATA PLATFORM: DATA VALUE MEASUREMENT & COST TRANSPARENCY
-- [ ] 342.1 Data asset inventory: dataset, consumer, criticality, refresh, cost, revenue contribution (if any) → steward → refresh priority
-- [ ] 342.2 Cost transparency per query/dashboard/model → budget owner → efficiency optimizations (index, cache, aggregate) → savings tracked
-- [ ] 342.3 Value realization: use case → metric move (e.g., forecast error ↓) → business value attribution (conservative method) → investment decision
-- [ ] 342.4 Tests: attribution method documented, cost per consumer accurate, priority recompute deterministic
-- [ ] 342.5 Edge case: cost per query melonjak karena usage tak terkontrol → budget alert per domain aktif
-- [ ] 342.6 Risiko: value attribution tak konsisten → method registry, review Finance sebelum dipakai keputusan
-- [ ] 342.7 Evidence: asset inventory, cost breakdown, dan value realization tercatat per domain
-- [ ] 342.8 Quality gate Fase 342
+- [x] 342.1 Data asset inventory: dataset, consumer, criticality, refresh, cost, revenue contribution (if any) → steward → refresh priority
+- [x] 342.2 Cost transparency per query/dashboard/model → budget owner → efficiency optimizations (index, cache, aggregate) → savings tracked
+- [x] 342.3 Value realization: use case → metric move (e.g., forecast error ↓) → business value attribution (conservative method) → investment decision
+- [x] 342.4 Tests: attribution method documented, cost per consumer accurate, priority recompute deterministic
+- [x] 342.5 Edge case: cost per query melonjak karena usage tak terkontrol → budget alert per domain aktif
+- [x] 342.6 Risiko: value attribution tak konsisten → method registry, review Finance sebelum dipakai keputusan
+- [x] 342.7 Evidence: asset inventory, cost breakdown, dan value realization tercatat per domain
+- [x] 342.8 Quality gate Fase 342
 
 ## FASE 343 — DATA PLATFORM: DATA RESILIENCE, CHANGE & MIGRATION
 - [ ] 343.1 Data integrity controls: checksum, row counts, referential invariants, reconciliation jobs → tamper/drift detection → alert
