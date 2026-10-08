@@ -3307,15 +3307,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 289.9 Quality gate Fase 289
 
 ## FASE 290 — GOVERNANCE: ENTERPRISE POLICY ENGINE & DELEGATED CONTROLS
-- [ ] 290.1 Policy-as-code catalog: approval, pricing, risk, data, retention, safety rules → versioned expression → staged rollout → simulation test before activation
-- [ ] 290.2 Policy decision point shared API → enforcement points in modules (RBAC, price floor, credit, age, capacity, residency) → decision trace & explainability
-- [ ] 290.3 Emergency override (break-glass) restricted, dual approval, time-bound, auto-expiry, post-review; cannot bypass ledger invariants or safety-critical guardrails
-- [ ] 290.4 Policy conflict detection: incompatible rules (regional vs global, contract vs floor) → precedence graph → ambiguity blocks deployment
-- [ ] 290.5 Tests: untested policy cannot activate, conflict detected, override expires, decision deterministic, `policy:audit` clean
-- [ ] 290.6 Edge case: policy conflict saat runtime → precedence graph menentukan; ambiguity → fail-closed (tolak) + alert
-- [ ] 290.7 Emergency override punya auto-expiry & post-review wajib → tak jadi backdoor permanen
-- [ ] 290.8 Ledger invarian tidak bisa di-bypass override → dijamin arsitektur, bukan kebijakan saja
-- [ ] 290.9 Quality gate Fase 290
+- [x] 290.1 Policy-as-code catalog: approval, pricing, risk, data, retention, safety rules → versioned expression → staged rollout → simulation test before activation
+- [x] 290.2 Policy decision point shared API → enforcement points in modules (RBAC, price floor, credit, age, capacity, residency) → decision trace & explainability
+- [x] 290.3 Emergency override (break-glass) restricted, dual approval, time-bound, auto-expiry, post-review; cannot bypass ledger invariants or safety-critical guardrails
+- [x] 290.4 Policy conflict detection: incompatible rules (regional vs global, contract vs floor) → precedence graph → ambiguity blocks deployment
+- [x] 290.5 Tests: untested policy cannot activate, conflict detected, override expires, decision deterministic, `policy:audit` clean
+- [x] 290.6 Edge case: policy conflict saat runtime → precedence graph menentukan; ambiguity → fail-closed (tolak) + alert
+- [x] 290.7 Emergency override punya auto-expiry & post-review wajib → tak jadi backdoor permanen
+- [x] 290.8 Ledger invarian tidak bisa di-bypass override → dijamin arsitektur, bukan kebijakan saja
+- [x] 290.9 Quality gate Fase 290
 
 ## FASE 291 — GOVERNANCE: DATA RETENTION, RECORDS & E-DISCOVERY
 - [ ] 291.1 Record classes per jurisdiction/sector: legal hold, retention duration, archival format, disposal method → policy catalog → automated classification
