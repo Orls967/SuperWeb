@@ -4332,14 +4332,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 389.8 Quality gate Fase 389
 
 ## FASE 390 — INTEGRASI GELOMBANG 3: END-TO-END CROSS-LINE SERVICE BUNDLES
-- [ ] 390.1 Bundle catalog for business journeys: travel, health, fleet, event, industrial site, education, energy-as-a-service; versioned components and terms
-- [ ] 390.2 Bundle orchestration handles capacity, partial fulfillment, cancellations, substitutions, refunds and partner payout rules
-- [ ] 390.3 Bundle margin & customer promise computed from component economics and service constraints, quoted price immutable
-- [ ] 390.4 Tests: partial cancellation prorates correctly, vendor settlements sum to customer payment, component capacity reserved atomically, `bundle:audit` clean
-- [ ] 390.5 Edge case: satu komponen bundle gagal → re-quote alternatif atau pro-rata refund dengan notice, bukan batal total diam-diam
-- [ ] 390.6 Risiko: margin bundle tak terlihat komponen → komponen-level margin dihitung & dilaporkan ke finance
-- [ ] 390.7 Evidence: bundle version, atomic reservation proof, dan settlement Σ tercatat per transaksi
-- [ ] 390.8 Quality gate Fase 390
+- [x] 390.1 Bundle catalog for business journeys: travel, health, fleet, event, industrial site, education, energy-as-a-service; versioned components and terms
+- [x] 390.2 Bundle orchestration handles capacity, partial fulfillment, cancellations, substitutions, refunds and partner payout rules
+- [x] 390.3 Bundle margin & customer promise computed from component economics and service constraints, quoted price immutable
+- [x] 390.4 Tests: partial cancellation prorates correctly, vendor settlements sum to customer payment, component capacity reserved atomically, `bundle:audit` clean
+- [x] 390.5 Edge case: satu komponen bundle gagal → re-quote alternatif atau pro-rata refund dengan notice, bukan batal total diam-diam
+- [x] 390.6 Risiko: margin bundle tak terlihat komponen → komponen-level margin dihitung & dilaporkan ke finance
+- [x] 390.7 Evidence: bundle version, atomic reservation proof, dan settlement Σ tercatat per transaksi
+- [x] 390.8 Quality gate Fase 390
 
 ## FASE 391 — STRESS WAVE: 30-LINE BASELINE, DATASET & REPRODUCIBLE BENCHMARK
 - [ ] 391.1 Publish benchmark profile, hardware assumptions, synthetic-data distribution, seed values, run commands and expected variance bands

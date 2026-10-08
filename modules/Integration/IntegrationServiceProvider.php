@@ -343,6 +343,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\CrossLineProcessMeshService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\UnifiedControlTowerDecisionService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\CommonAuditReconciliationService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\CrossLineServiceBundlesService::class);
     }
 
     public function boot(): void
