@@ -2521,14 +2521,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 211.8 Quality gate Fase 211
 
 ## FASE 212 — KEUANGAN: PROFITABILITY, TRANSFER PRICING & COST INTELLIGENCE
-- [ ] 212.1 Profitability hierarchy: entitas → lini → unit → produk/kanal/proyek → pelanggan/kontrak → channel profitability sejati (biaya layanan, fulfillment, akuisisi ter-allocate)
-- [ ] 212.2 Full costing 30 lini: ABC (activity-based) untuk overhead kompleks → driver per aktivitas → biaya benar per objek → keputusan price/make/buy
-- [ ] 212.3 Transfer pricing optimization (dalam batas arm's length Fase 52.2): simulasi struktur → dampak pajak & motivasi manajer → implementation via intercompany contract
-- [ ] 212.4 Margin bridge & drill-to-voucher: laba periode ini vs lalu → volume/mix/price/cost/FX → setiap komponen terjelaskan hingga voucher sumber
-- [ ] 212.5 Tests: profitability Σ unit = entitas = konsolidasi, driver allocation deterministik, TP method konsisten dokumentasi, margin bridge balance, `group:audit` clean
-- [ ] 212.6 Edge case: biaya shared services dialokasikan tanpa driver tepat → akun unallocated transparan + metodologi diperbaiki
-- [ ] 212.7 Transfer pricing adjustment akhir tahun → jurnal true-up idempoten & dokumentasi alasan
-- [ ] 212.8 Quality gate Fase 212
+- [x] 212.1 Profitability hierarchy: entitas → lini → unit → produk/kanal/proyek → pelanggan/kontrak → channel profitability sejati (biaya layanan, fulfillment, akuisisi ter-allocate)
+- [x] 212.2 Full costing 30 lini: ABC (activity-based) untuk overhead kompleks → driver per aktivitas → biaya benar per objek → keputusan price/make/buy
+- [x] 212.3 Transfer pricing optimization (dalam batas arm's length Fase 52.2): simulasi struktur → dampak pajak & motivasi manajer → implementation via intercompany contract
+- [x] 212.4 Margin bridge & drill-to-voucher: laba periode ini vs lalu → volume/mix/price/cost/FX → setiap komponen terjelaskan hingga voucher sumber
+- [x] 212.5 Tests: profitability Σ unit = entitas = konsolidasi, driver allocation deterministik, TP method konsisten dokumentasi, margin bridge balance, `group:audit` clean
+- [x] 212.6 Edge case: biaya shared services dialokasikan tanpa driver tepat → akun unallocated transparan + metodologi diperbaiki
+- [x] 212.7 Transfer pricing adjustment akhir tahun → jurnal true-up idempoten & dokumentasi alasan
+- [x] 212.8 Quality gate Fase 212
 
 ## FASE 213 — OPERASI: QUALITY MANAGEMENT SYSTEM 30 LINI
 - [ ] 213.1 QMS framework lintas lini: standar mutu per domain (medis JCI simulasi, food HACCP, manufacturing ISO 9001 simulasi, hotel star standard Fase 111.1, port ISPS) → policy terpusat, eksekusi per lini

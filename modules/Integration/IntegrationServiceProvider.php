@@ -57,6 +57,7 @@ use Modules\Integration\Application\Services\PlatformEconomyService;
 use Modules\Integration\Application\Services\PortOperationsService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
 use Modules\Integration\Application\Services\ProfessionalServicesService;
+use Modules\Integration\Application\Services\ProfitabilityCostIntelligenceService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
 use Modules\Integration\Application\Services\RegulatoryPolicyLifecycleService;
 use Modules\Integration\Application\Services\ReinsuranceAndCatService;
@@ -156,6 +157,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(FinanceCloseAgilityService::class);
         $this->app->singleton(CapitalFundingStrategyService::class);
         $this->app->singleton(InvestorRelationsService::class);
+        $this->app->singleton(ProfitabilityCostIntelligenceService::class);
     }
 
     public function boot(): void
