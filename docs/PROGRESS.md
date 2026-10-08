@@ -2431,14 +2431,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 202.8 Quality gate Fase 202
 
 ## FASE 203 — RISIKO: INTERNAL CONTROL, SoD 30 LINI & CONTROL TESTING
-- [ ] 203.1 Pemetaan kontrol per proses kritikal 30 lini (preventive/detective) → kontrol otomatis (system-enforced) vs manual (dengan bukti) → control matrix
-- [ ] 203.2 SoD matrix diperluas ke seluruh lini (Fase 54.4): konflik role per domain → deteksi pengguna punya konflik → remediation (reassign/compensating control)
-- [ ] 203.3 Automated control testing harian: contoh 3-way match, approval limit, capacity cap, pin/OTP enforcement → pass/fail → fail → issue → CAPA
-- [ ] 203.4 Segregation of privileged access: admin sistem tak boleh menyetujui transaksi uang → break-glass procedure tercatat & diaudit berkala
-- [ ] 203.5 Tests: SoD conflict terdeteksi pada seed, control test gagal membuat issue, break-glass memicu audit, `enterprise:audit` clean
-- [ ] 203.6 Compensating control: jika konflik SoD tak bisa dihindari (tim kecil) → pengawasan tambahan + review independen
-- [ ] 203.7 Control evidence retention: bukti kontrol tersimpan sesuai jadwal, searchable auditor
-- [ ] 203.8 Quality gate Fase 203
+- [x] 203.1 Pemetaan kontrol per proses kritikal 30 lini (preventive/detective) → kontrol otomatis (system-enforced) vs manual (dengan bukti) → control matrix
+- [x] 203.2 SoD matrix diperluas ke seluruh lini (Fase 54.4): konflik role per domain → deteksi pengguna punya konflik → remediation (reassign/compensating control)
+- [x] 203.3 Automated control testing harian: contoh 3-way match, approval limit, capacity cap, pin/OTP enforcement → pass/fail → fail → issue → CAPA
+- [x] 203.4 Segregation of privileged access: admin sistem tak boleh menyetujui transaksi uang → break-glass procedure tercatat & diaudit berkala
+- [x] 203.5 Tests: SoD conflict terdeteksi pada seed, control test gagal membuat issue, break-glass memicu audit, `enterprise:audit` clean
+- [x] 203.6 Compensating control: jika konflik SoD tak bisa dihindari (tim kecil) → pengawasan tambahan + review independen
+- [x] 203.7 Control evidence retention: bukti kontrol tersimpan sesuai jadwal, searchable auditor
+- [x] 203.8 Quality gate Fase 203
 
 ## FASE 204 — RISIKO: CYBER, DATA BREACH & OPERATIONAL RESILIENCE
 - [ ] 204.1 Asset & threat inventory: sistem, dependency, data kelas risiko → attack surface map → prioritas hardening

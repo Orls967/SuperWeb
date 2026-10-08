@@ -38,6 +38,7 @@ use Modules\Integration\Application\Services\GlobalSearchService;
 use Modules\Integration\Application\Services\GroupCommandCenterService;
 use Modules\Integration\Application\Services\IdentityTenancyService;
 use Modules\Integration\Application\Services\IntegrationService;
+use Modules\Integration\Application\Services\InternalControlSodService;
 use Modules\Integration\Application\Services\IslamicTradeFinanceService;
 use Modules\Integration\Application\Services\LearningPlatformService;
 use Modules\Integration\Application\Services\LegalOperationsService;
@@ -138,6 +139,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(AiFraudAmlMeshService::class);
         $this->app->singleton(AiForecastingSopService::class);
         $this->app->singleton(EnterpriseRiskService::class);
+        $this->app->singleton(InternalControlSodService::class);
     }
 
     public function boot(): void
