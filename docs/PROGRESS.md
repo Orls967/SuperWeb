@@ -3712,14 +3712,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 327.8 Quality gate Fase 327
 
 ## FASE 328 — KEBERLANJUTAN: PRODUCT LIFECYCLE CARBON & CIRCULAR DESIGN
-- [ ] 328.1 Product lifecycle assessment per version: BOM + manufacturing energy + transport + use + end-of-life → boundary & factors versioned
-- [ ] 328.2 Design alternatives compare material, durability, repairability and emissions → PLM ECO approval → released product passport update
-- [ ] 328.3 Take-back economics: repair/refurbish/recycle hierarchy → recovery yield, cost, resale value → design feedback loop
-- [ ] 328.4 Tests: factor provenance recorded, version change creates new assessment, end-of-life mass reconciles, no duplicate carbon claims
-- [ ] 328.5 Edge case: LCA data tak lengkap → klasifikasi "estimasi", jangan diklaim presisi
-- [ ] 328.6 Risiko: desain hijau tak menurunkan emisi nyata → post-launch LCA aktual dibandingkan rencana
-- [ ] 328.7 Evidence: LCA per versi produk, ECO approval, dan recovery yield tercatat
-- [ ] 328.8 Quality gate Fase 328
+- [x] 328.1 Product lifecycle assessment per version: BOM + manufacturing energy + transport + use + end-of-life → boundary & factors versioned
+- [x] 328.2 Design alternatives compare material, durability, repairability and emissions → PLM ECO approval → released product passport update
+- [x] 328.3 Take-back economics: repair/refurbish/recycle hierarchy → recovery yield, cost, resale value → design feedback loop
+- [x] 328.4 Tests: factor provenance recorded, version change creates new assessment, end-of-life mass reconciles, no duplicate carbon claims
+- [x] 328.5 Edge case: LCA data tak lengkap → klasifikasi "estimasi", jangan diklaim presisi
+- [x] 328.6 Risiko: desain hijau tak menurunkan emisi nyata → post-launch LCA aktual dibandingkan rencana
+- [x] 328.7 Evidence: LCA per versi produk, ECO approval, dan recovery yield tercatat
+- [x] 328.8 Quality gate Fase 328
 
 ## FASE 329 — KEBERLANJUTAN: CLIMATE RISK INSURANCE & RESILIENCE INVESTMENT
 - [ ] 329.1 Link climate exposure (Fase 287) to policy pricing, deductibles and risk mitigation credits (Fase 156) → actuarial review required
