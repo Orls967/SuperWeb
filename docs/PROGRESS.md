@@ -4442,14 +4442,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 400.8 Quality gate Fase 400
 
 ## FASE 401 — GOVERNANCE WAVE: INTERNAL CONTROL MATURITY AT SCALE
-- [ ] 401.1 Control inventory: every control has design documentation, frequency, owner, evidence source, test plan and dependency map
-- [ ] 401.2 Automated control monitoring: continuous/system-enabled controls sampled with statistical approach; manual controls with attestation and sample testing
-- [ ] 401.3 Deficiency rating (design vs operating), root-cause analysis, remediation plan, effectiveness retest and issue aging
-- [ ] 401.4 Tests: control design change requires retest, deficiency rating criteria versioned, false pass impossible on seeded failure, `enterprise:audit` clean
-- [ ] 401.5 Edge case: control gagal terus-menerus → redesign control, bukan hanya ulangi test
-- [ ] 401.6 Risiko: manual control bergantung orang → dual review & sampling berkala wajib
-- [ ] 401.7 Evidence: control inventory, test result, dan deficiency aging tercatat per periode
-- [ ] 401.8 Quality gate Fase 401
+- [x] 401.1 Control inventory: every control has design documentation, frequency, owner, evidence source, test plan and dependency map
+- [x] 401.2 Automated control monitoring: continuous/system-enabled controls sampled with statistical approach; manual controls with attestation and sample testing
+- [x] 401.3 Deficiency rating (design vs operating), root-cause analysis, remediation plan, effectiveness retest and issue aging
+- [x] 401.4 Tests: control design change requires retest, deficiency rating criteria versioned, false pass impossible on seeded failure, `enterprise:audit` clean
+- [x] 401.5 Edge case: control gagal terus-menerus → redesign control, bukan hanya ulangi test
+- [x] 401.6 Risiko: manual control bergantung orang → dual review & sampling berkala wajib
+- [x] 401.7 Evidence: control inventory, test result, dan deficiency aging tercatat per periode
+- [x] 401.8 Quality gate Fase 401
 
 ## FASE 402 — GOVERNANCE WAVE: FRAUD RISK ASSESSMENT & CONTINUOUS DETECTION
 - [ ] 402.1 Fraud risk assessment per business cycle (procure-to-pay, order-to-cash, payroll, treasury, claims, royalties, tenders, insurance, loyalty)
