@@ -3296,15 +3296,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 288.9 Quality gate Fase 288
 
 ## FASE 289 — ESG: PRODUCT STEWARDSHIP, REPAIRABILITY & EXTENDED PRODUCER RESPONSIBILITY
-- [ ] 289.1 Product lifecycle passport (Fase 6E): materials, carbon, repair, take-back, recyclability, end-of-life instructions → QR public view with verified claims
-- [ ] 289.2 Repairability scoring per SKU → spare-part availability (AutoServe/Store) → warranty/repair network → feed to design teams (PLM Fase 59)
-- [ ] 289.3 EPR simulation: packaging/product sold → obligation quantity → collection/recycling evidence (Fase 174) → fee liability → compliance report
-- [ ] 289.4 Product recall & safety notices: event from QMS Fase 39 → affected consumer graph (Fase 219) → notice, remedy (repair/replacement/refund) → closure proof
-- [ ] 289.5 Tests: passport data matches BOM/ESG source, EPR obligation = sales volume × rate, recall reaches affected parties, remedy ledger reconciles
-- [ ] 289.6 Edge case: produk gagal recall (pemilik tak terjangkau) → upaya notice terdokumentasi → liability diakui
-- [ ] 289.7 EPR obligation naik → dampak biaya ke pricing & margin terhitung, bukan disembunyikan
-- [ ] 289.8 Repairability score pakai data komponen nyata dari BOM/Store, bukan klaim marketing
-- [ ] 289.9 Quality gate Fase 289
+- [x] 289.1 Product lifecycle passport (Fase 6E): materials, carbon, repair, take-back, recyclability, end-of-life instructions → QR public view with verified claims
+- [x] 289.2 Repairability scoring per SKU → spare-part availability (AutoServe/Store) → warranty/repair network → feed to design teams (PLM Fase 59)
+- [x] 289.3 EPR simulation: packaging/product sold → obligation quantity → collection/recycling evidence (Fase 174) → fee liability → compliance report
+- [x] 289.4 Product recall & safety notices: event from QMS Fase 39 → affected consumer graph (Fase 219) → notice, remedy (repair/replacement/refund) → closure proof
+- [x] 289.5 Tests: passport data matches BOM/ESG source, EPR obligation = sales volume × rate, recall reaches affected parties, remedy ledger reconciles
+- [x] 289.6 Edge case: produk gagal recall (pemilik tak terjangkau) → upaya notice terdokumentasi → liability diakui
+- [x] 289.7 EPR obligation naik → dampak biaya ke pricing & margin terhitung, bukan disembunyikan
+- [x] 289.8 Repairability score pakai data komponen nyata dari BOM/Store, bukan klaim marketing
+- [x] 289.9 Quality gate Fase 289
 
 ## FASE 290 — GOVERNANCE: ENTERPRISE POLICY ENGINE & DELEGATED CONTROLS
 - [ ] 290.1 Policy-as-code catalog: approval, pricing, risk, data, retention, safety rules → versioned expression → staged rollout → simulation test before activation
