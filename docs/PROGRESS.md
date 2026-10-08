@@ -2210,12 +2210,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 176.6 Quality gate Fase 176
 
 ## FASE 177 — LINI 26: AVIATION, AIRPORT SERVICES & AIR CARGO
-- [ ] 177.1 Modul `Aviation` (`avi_`): aircraft, operators, airports, slots, routes, maintenance cycles, ground handling and cargo manifests
-- [ ] 177.2 Passenger/charter booking simulation with capacity/time-lock, identity verification, baggage and refund rules; integrate Hotel/Travel/Payment
-- [ ] 177.3 Air cargo integrates Logistics multimodal; dangerous-goods eligibility, temperature control and customs documentation
-- [ ] 177.4 Aircraft maintenance records link Asset and AutoServe-style service workflow; airworthiness expiry blocks dispatch in simulation
-- [ ] 177.5 Tests: slot and aircraft capacity enforced, expired maintenance blocks flight, cargo custody complete, refund idempotent, `avi:audit` clean
-- [ ] 177.6 Quality gate Fase 177
+- [x] 177.1 Modul `Aviation` (`avi_`): aircraft, operators, airports, slots, routes, maintenance cycles, ground handling and cargo manifests
+- [x] 177.2 Passenger/charter booking simulation with capacity/time-lock, identity verification, baggage and refund rules; integrate Hotel/Travel/Payment
+- [x] 177.3 Air cargo integrates Logistics multimodal; dangerous-goods eligibility, temperature control and customs documentation
+- [x] 177.4 Aircraft maintenance records link Asset and AutoServe-style service workflow; airworthiness expiry blocks dispatch in simulation
+- [x] 177.5 Tests: slot and aircraft capacity enforced, expired maintenance blocks flight, cargo custody complete, refund idempotent, `avi:audit` clean
+- [x] 177.6 Quality gate Fase 177
 
 ## FASE 178 — LINI 26: AIRLINE NETWORK, LOYALTY & REVENUE MANAGEMENT
 - [ ] 178.1 Route network, schedule, fare classes, seat inventory, codeshare partner contracts and disruption handling (simulation)

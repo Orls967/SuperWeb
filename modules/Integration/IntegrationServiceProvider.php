@@ -6,6 +6,7 @@ namespace Modules\Integration;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Integration\Application\Services\AquacultureExportService;
+use Modules\Integration\Application\Services\AviationService;
 use Modules\Integration\Application\Services\BmtMicrofinanceService;
 use Modules\Integration\Application\Services\CampusEducationService;
 use Modules\Integration\Application\Services\CircularEconomyService;
@@ -86,6 +87,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(CircularEconomyService::class);
         $this->app->singleton(ProfessionalServicesService::class);
         $this->app->singleton(LegalOperationsService::class);
+        $this->app->singleton(AviationService::class);
     }
 
     public function boot(): void
