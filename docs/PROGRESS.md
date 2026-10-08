@@ -4432,14 +4432,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 399.8 Quality gate Fase 399
 
 ## FASE 400 — STRESS WAVE: CAPACITY CERTIFICATION & OPERATIONAL READINESS
-- [ ] 400.1 Certify domain envelopes using benchmark Fase 391–399; owners sign expected load, known constraints and scaling actions
-- [ ] 400.2 Release readiness pack per domain: SLO, monitoring, runbook, rollback, data recovery, support rota, security and cost
-- [ ] 400.3 Executive capacity review: projected growth vs tested envelope → funded remediation roadmap, no unsupported production claim
-- [ ] 400.4 Tests: no domain marked certified without passing evidence, all capacity claims reproducible, `super:health-check` clean
-- [ ] 400.5 Edge case: domain gagal certifikasi → tak boleh rilis; capacity funding diajukan dulu
-- [ ] 400.6 Risiko: envelope cepat basi setelah growth → re-certification periodik dijadwalkan
-- [ ] 400.7 Evidence: certification pack, readiness checklist, dan capacity roadmap tercatat
-- [ ] 400.8 Quality gate Fase 400
+- [x] 400.1 Certify domain envelopes using benchmark Fase 391–399; owners sign expected load, known constraints and scaling actions
+- [x] 400.2 Release readiness pack per domain: SLO, monitoring, runbook, rollback, data recovery, support rota, security and cost
+- [x] 400.3 Executive capacity review: projected growth vs tested envelope → funded remediation roadmap, no unsupported production claim
+- [x] 400.4 Tests: no domain marked certified without passing evidence, all capacity claims reproducible, `super:health-check` clean
+- [x] 400.5 Edge case: domain gagal certifikasi → tak boleh rilis; capacity funding diajukan dulu
+- [x] 400.6 Risiko: envelope cepat basi setelah growth → re-certification periodik dijadwalkan
+- [x] 400.7 Evidence: certification pack, readiness checklist, dan capacity roadmap tercatat
+- [x] 400.8 Quality gate Fase 400
 
 ## FASE 401 — GOVERNANCE WAVE: INTERNAL CONTROL MATURITY AT SCALE
 - [ ] 401.1 Control inventory: every control has design documentation, frequency, owner, evidence source, test plan and dependency map
