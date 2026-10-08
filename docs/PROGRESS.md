@@ -3194,14 +3194,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 278.8 Quality gate Fase 278
 
 ## FASE 279 — OPERASI: WAREHOUSE AUTOMATION & ROBOTICS SIMULATION
-- [ ] 279.1 Automation planning: per DC → pick method (man, AMR simulasi, conveyor) → kapasitas → biaya → ROI → phased implementation
-- [ ] 279.2 Robot fleet management (simulasi): task allocation, traffic (zone reservation anti-tabrakan), charging schedule, failure → fallback manual → throughput KPI
-- [ ] 279.3 Wave planning otomatis: order → wave (cutoff, carrier, priority) → pick path optimization (Fase 41.3) → pack → dispatch → SLA on-time terukur
-- [ ] 279.4 Tests: zone reservation tak konflik, fallback manual aktif saat robot down, wave feasibility (kapasitas pick), `wms:audit` clean
-- [ ] 279.5 Edge case: robot gagal di tengah wave → fallback manual + wave re-plan, SLA terjaga
-- [ ] 279.6 Safety interlock: zona manusia+robot → kecepatan & area dibatasi, kegagalan → stop
-- [ ] 279.7 Biaya automasi vs man-power → ROI terukur sebelum rollout lanjutan
-- [ ] 279.8 Quality gate Fase 279
+- [x] 279.1 Automation planning: per DC → pick method (man, AMR simulasi, conveyor) → kapasitas → biaya → ROI → phased implementation
+- [x] 279.2 Robot fleet management (simulasi): task allocation, traffic (zone reservation anti-tabrakan), charging schedule, failure → fallback manual → throughput KPI
+- [x] 279.3 Wave planning otomatis: order → wave (cutoff, carrier, priority) → pick path optimization (Fase 41.3) → pack → dispatch → SLA on-time terukur
+- [x] 279.4 Tests: zone reservation tak konflik, fallback manual aktif saat robot down, wave feasibility (kapasitas pick), `wms:audit` clean
+- [x] 279.5 Edge case: robot gagal di tengah wave → fallback manual + wave re-plan, SLA terjaga
+- [x] 279.6 Safety interlock: zona manusia+robot → kecepatan & area dibatasi, kegagalan → stop
+- [x] 279.7 Biaya automasi vs man-power → ROI terukur sebelum rollout lanjutan
+- [x] 279.8 Quality gate Fase 279
 
 ## FASE 280 — OPERASI: FOOD SERVICE, HOSPITALITY & VENUE OPERATIONS PLAYBOOK SCALE
 - [ ] 280.1 Multi-outlet operations bible: SOP lintas 5.000 outlet resto, 5.000 hotel, 1.000 venue (service sequence, opening/closing, crisis) → versioned → training attested (Fase 167.4)
