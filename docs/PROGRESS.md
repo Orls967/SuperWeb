@@ -2892,14 +2892,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 248.8 Quality gate Fase 248
 
 ## FASE 249 — KOMERSIAL: CATALOG, CONFIGURATION & QUOTE-TO-CASH 30 LINI
-- [ ] 249.1 Unified CPQ: product/service catalog lintas lini (complex: bundel asuransi, paket hotel+event, kontrak telko, solusi EPC) → configurator valid → pricing → quote → approval → contract → order → fulfillment → invoice → cash
-- [ ] 249.2 Quote lifecycle: versioning, expiry (timelock Fase 21.4), conversion rate analytics → konversi quote → order dihitung → bottleneck analysis
-- [ ] 249.3 Order-to-cash unification: credit check (Fase 42.4 generalized) → order acceptance → fulfillment → delivery evidence → invoice → dunning → collection → cash application (Fase 209.3 bridge)
-- [ ] 249.4 Revenue recognition bridge: contract vs fulfillment → pengakuan bertahap/di titik waktu (simulasi IFRS 15) → deferred/revenue schedule → audit trail
-- [ ] 249.5 Tests: configurator menolak kombinasi invalid, quote expiry enforce, revenue recognition schedule benar, O2C Σ cash = invoice, `enterprise:audit` clean
-- [ ] 249.6 Edge case: credit check lolos tapi gagal bayar kemudian → escalation collection + blokir order berikut sesuai kebijakan
-- [ ] 249.7 Revenue recognition vs cash mismatch → deferred/revenue schedule tercatat & direkonsiliasi
-- [ ] 249.8 Quality gate Fase 249
+- [x] 249.1 Unified CPQ: product/service catalog lintas lini (complex: bundel asuransi, paket hotel+event, kontrak telko, solusi EPC) → configurator valid → pricing → quote → approval → contract → order → fulfillment → invoice → cash
+- [x] 249.2 Quote lifecycle: versioning, expiry (timelock Fase 21.4), conversion rate analytics → konversi quote → order dihitung → bottleneck analysis
+- [x] 249.3 Order-to-cash unification: credit check (Fase 42.4 generalized) → order acceptance → fulfillment → delivery evidence → invoice → dunning → collection → cash application (Fase 209.3 bridge)
+- [x] 249.4 Revenue recognition bridge: contract vs fulfillment → pengakuan bertahap/di titik waktu (simulasi IFRS 15) → deferred/revenue schedule → audit trail
+- [x] 249.5 Tests: configurator menolak kombinasi invalid, quote expiry enforce, revenue recognition schedule benar, O2C Σ cash = invoice, `enterprise:audit` clean
+- [x] 249.6 Edge case: credit check lolos tapi gagal bayar kemudian → escalation collection + blokir order berikut sesuai kebijakan
+- [x] 249.7 Revenue recognition vs cash mismatch → deferred/revenue schedule tercatat & direkonsiliasi
+- [x] 249.8 Quality gate Fase 249
 
 ## FASE 250 — PELANGGAN: CX METRICS, VOICE OF CUSTOMER & EXPERIENCE ORCHESTRATION
 - [ ] 250.1 VoC aggregation: survey (post-interaction, NPS periodik), review publik simulasi, komplain, social listening simulasi → sentimen & tema terklasifikasi → closed-loop follow-up untuk promoter/detractor
