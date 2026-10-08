@@ -2772,14 +2772,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 236.8 Quality gate Fase 236
 
 ## FASE 237 — PLATFORM: DEVELOPER EXPERIENCE, DX TOOLING & QUALITY AUTOMATION
-- [ ] 237.1 Developer portal: environment provisioning (sandbox/staging), seed data snapshot, docs otomatis dari code (OpenAPI, events), changelog → kontribusi lintas modul mudah
-- [ ] 237.2 Quality pipeline otomatis: lint → typecheck → unit → arch test → integration → security scan → performance smoke → deploy gate → setiap PR wajib hijau
-- [ ] 237.3 Test data management: synthetic data generator (ber-seed), data masking untuk staging, referential integrity → test realistis tanpa PII nyata
-- [ ] 237.4 Observability developer: distributed trace lintas modul (correlation id Fase 26.6), error budget per layanan → SLO → alert → postmortem
-- [ ] 237.5 Tests: pipeline menolak merge saat merah, masking efektif (no PII in staging), trace lintas 2 modul utuh, observability coverage terukur
-- [ ] 237.6 Edge case: test butuh data nyata → proses anonymization resmi, dilarang copy mentah
-- [ ] 237.7 Coverage gap lintas modul baru → ditutup sebelum feature complete
-- [ ] 237.8 Quality gate Fase 237
+- [x] 237.1 Developer portal: environment provisioning (sandbox/staging), seed data snapshot, docs otomatis dari code (OpenAPI, events), changelog → kontribusi lintas modul mudah
+- [x] 237.2 Quality pipeline otomatis: lint → typecheck → unit → arch test → integration → security scan → performance smoke → deploy gate → setiap PR wajib hijau
+- [x] 237.3 Test data management: synthetic data generator (ber-seed), data masking untuk staging, referential integrity → test realistis tanpa PII nyata
+- [x] 237.4 Observability developer: distributed trace lintas modul (correlation id Fase 26.6), error budget per layanan → SLO → alert → postmortem
+- [x] 237.5 Tests: pipeline menolak merge saat merah, masking efektif (no PII in staging), trace lintas 2 modul utuh, observability coverage terukur
+- [x] 237.6 Edge case: test butuh data nyata → proses anonymization resmi, dilarang copy mentah
+- [x] 237.7 Coverage gap lintas modul baru → ditutup sebelum feature complete
+- [x] 237.8 Quality gate Fase 237
 
 ## FASE 238 — PLATFORM: RELEASE TRAIN, CHANGE MANAGEMENT & DEPLOYMENT SAFETY
 - [ ] 238.1 Release train terjadwal (mis. mingguan) + hotfix path (approval terpisah) → release notes otomatis dari commit/flag → stakeholder notified
