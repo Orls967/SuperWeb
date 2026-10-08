@@ -2611,14 +2611,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 220.8 Quality gate Fase 220
 
 ## FASE 221 — PELANGGAN: SUBSCRIPTION, BILLING LIFECYCLE & RETENTION
-- [ ] 221.1 Subscription engine lintas lini: membership hotel, ISP, edukasi, cloud, asuransi berkala, langganan konten → plan/version/price grandfather/trial/pause/cancel/reactivate
-- [ ] 221.2 Billing lifecycle: invoice → dunning (reminder bertahap) → grace → suspend (layanan berhenti otomatis) → retry → collect → write-off approval → reactivation
-- [ ] 221.3 Retention intelligence: churn risk score (pola usage, komplain, telat bayar) → playbook retensi (tawaran, diskon berizin, escalation human) → churn prevented terukur → biaya retensi vs LTV
-- [ ] 221.4 Win-back: pelanggan berhenti → campaign reaktivasi → penawaran spesifik → konversi → cohort analysis
-- [ ] 221.5 Tests: suspend otomatis menghentikan layanan (bukan tagih gratis), dunning schedule deterministik, retention offer tak melanggar margin guard, churn cohort akurat, `billing:audit` clean
-- [ ] 221.6 Edge case: dunning gagal semua kanal → escalation ke collection, bukan infinite retry diam-diam
-- [ ] 221.7 Pause vs cancel: pause mempertahankan benefit terbatas; cancel menghapus → aturan jelas & diuji
-- [ ] 221.8 Quality gate Fase 221
+- [x] 221.1 Subscription engine lintas lini: membership hotel, ISP, edukasi, cloud, asuransi berkala, langganan konten → plan/version/price grandfather/trial/pause/cancel/reactivate
+- [x] 221.2 Billing lifecycle: invoice → dunning (reminder bertahap) → grace → suspend (layanan berhenti otomatis) → retry → collect → write-off approval → reactivation
+- [x] 221.3 Retention intelligence: churn risk score (pola usage, komplain, telat bayar) → playbook retensi (tawaran, diskon berizin, escalation human) → churn prevented terukur → biaya retensi vs LTV
+- [x] 221.4 Win-back: pelanggan berhenti → campaign reaktivasi → penawaran spesifik → konversi → cohort analysis
+- [x] 221.5 Tests: suspend otomatis menghentikan layanan (bukan tagih gratis), dunning schedule deterministik, retention offer tak melanggar margin guard, churn cohort akurat, `billing:audit` clean
+- [x] 221.6 Edge case: dunning gagal semua kanal → escalation ke collection, bukan infinite retry diam-diam
+- [x] 221.7 Pause vs cancel: pause mempertahankan benefit terbatas; cancel menghapus → aturan jelas & diuji
+- [x] 221.8 Quality gate Fase 221
 
 ## FASE 222 — PELANGGAN: MARKETING AUTOMATION & ATTRIBUTION
 - [ ] 222.1 Segment engine: RFM, behavior, lifecycle, value tier → segment dinamis (update real-time) → membership campaign ke segmen
