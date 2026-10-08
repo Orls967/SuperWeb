@@ -26,6 +26,7 @@ use Modules\Integration\Application\Services\FoodProcessingService;
 use Modules\Integration\Application\Services\ForestryTimberService;
 use Modules\Integration\Application\Services\FullInsuranceService;
 use Modules\Integration\Application\Services\GlobalCommandService;
+use Modules\Integration\Application\Services\GlobalSearchService;
 use Modules\Integration\Application\Services\GroupCommandCenterService;
 use Modules\Integration\Application\Services\IdentityTenancyService;
 use Modules\Integration\Application\Services\IntegrationService;
@@ -120,6 +121,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(ScaleBenchmarkService::class);
         $this->app->singleton(PartitionArchiveService::class);
         $this->app->singleton(ConcurrencyLockingService::class);
+        $this->app->singleton(GlobalSearchService::class);
     }
 
     public function boot(): void

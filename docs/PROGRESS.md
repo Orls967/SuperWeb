@@ -2344,11 +2344,11 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 193.6 Quality gate Fase 193
 
 ## FASE 194 — SKALA: SEARCH, DISCOVERY & GLOBAL NAVIGATION
-- [ ] 194.1 Indeks pencarian global (produk, dokumen, pelanggan berizin, resi, kamar, program, kelas, aset, kontrak) → parsial, scope-aware (hanya hasil yang boleh dilihat pengguna)
-- [ ] 194.2 Search-as-you-type & global command palette diperluas (Ctrl+K Fase 16.6) → lintas 30 lini, peran menentukan hasil
-- [ ] 194.3 Full-text dokumen (kontrak, PO, invoice, sertifikat) dengan highlight → link ke sumber asli → akses policy dokumen ditegakkan saat preview
-- [ ] 194.4 Tests: hasil tak pernah menembus scope (uji IDOR massal pada search), indeks sinkron ≤ SLA, highlight tak mengekspos PII yang disensor, relevansi deterministik
-- [ ] 194.5 Quality gate Fase 194
+- [x] 194.1 Indeks pencarian global (produk, dokumen, pelanggan berizin, resi, kamar, program, kelas, aset, kontrak) → parsial, scope-aware (hanya hasil yang boleh dilihat pengguna)
+- [x] 194.2 Search-as-you-type & global command palette diperluas (Ctrl+K Fase 16.6) → lintas 30 lini, peran menentukan hasil
+- [x] 194.3 Full-text dokumen (kontrak, PO, invoice, sertifikat) dengan highlight → link ke sumber asli → akses policy dokumen ditegakkan saat preview
+- [x] 194.4 Tests: hasil tak pernah menembus scope (uji IDOR massal pada search), indeks sinkron ≤ SLA, highlight tak mengekspos PII yang disensor, relevansi deterministik
+- [x] 194.5 Quality gate Fase 194
 
 ## FASE 195 — AI GELOMBANG 3: MODEL REGISTRY, EVALUATION & GUARDRAILS
 - [ ] 195.1 Model registry pusat: setiap model/aturan punya versi, pemilik, data latih snapshot hash, metrik evaluasi, approval rilis, rollback pointer
