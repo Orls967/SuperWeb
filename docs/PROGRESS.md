@@ -3802,14 +3802,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 336.8 Quality gate Fase 336
 
 ## FASE 337 — GOVERNANCE: ETHICS & COMPLIANCE PROGRAM MATURITY
-- [ ] 337.1 Compliance program scorecard per lini: risk assessment, training completion, monitoring, reporting, remediation → maturity level → improvement plan
-- [ ] 337.2 Third-party ethics: code adherence assessment, speak-up access untuk vendor, joint remediation → termination right exercised with evidence
-- [ ] 337.3 Board ethics report cycle: case themes, systemic root causes, program effectiveness, resource adequacy → board acknowledgement
-- [ ] 337.4 Tests: scorecard criteria weighted & versioned, vendor speak-up tested, board pack complete, `ethics:audit` clean
-- [ ] 337.5 Edge case: maturity score tinggi tapi incident sering → investigasi konsistensi, jangan percaya skor saja
-- [ ] 337.6 Risiko: program compliance jadi formalitas → sampling efektivitas kontrol, bukan hanya kehadiran dokumen
-- [ ] 337.7 Evidence: scorecard, training completion, dan board report terarsip per periode
-- [ ] 337.8 Quality gate Fase 337
+- [x] 337.1 Compliance program scorecard per lini: risk assessment, training completion, monitoring, reporting, remediation → maturity level → improvement plan
+- [x] 337.2 Third-party ethics: code adherence assessment, speak-up access untuk vendor, joint remediation → termination right exercised with evidence
+- [x] 337.3 Board ethics report cycle: case themes, systemic root causes, program effectiveness, resource adequacy → board acknowledgement
+- [x] 337.4 Tests: scorecard criteria weighted & versioned, vendor speak-up tested, board pack complete, `ethics:audit` clean
+- [x] 337.5 Edge case: maturity score tinggi tapi incident sering → investigasi konsistensi, jangan percaya skor saja
+- [x] 337.6 Risiko: program compliance jadi formalitas → sampling efektivitas kontrol, bukan hanya kehadiran dokumen
+- [x] 337.7 Evidence: scorecard, training completion, dan board report terarsip per periode
+- [x] 337.8 Quality gate Fase 337
 
 ## FASE 338 — GOVERNANCE: LEGAL & REGULATORY CHANGE EXECUTION
 - [ ] 338.1 Change-to-control pipeline: regulatory update → interpretation memo (legal) → control gap → build/test/deploy → evidence → close → monitor
