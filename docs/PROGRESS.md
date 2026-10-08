@@ -4082,14 +4082,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 364.8 Quality gate Fase 364
 
 ## FASE 365 — GLOBAL PLATFORM: COST, CAPACITY & VALUE GOVERNANCE
-- [ ] 365.1 Unit economics per capability (cost per booking, claim, shipment, room-night, model inference) and owner budget
-- [ ] 365.2 Capacity demand forecast ties to seeder/simulation growth and procurement/capex; trigger thresholds actionable
-- [ ] 365.3 Value realization register: approved business case → cost baseline → benefit owner → measured result → variance and lessons
-- [ ] 365.4 Tests: cost allocation reconciles usage, capex trigger reproducible, claimed benefit traces to evidence, `platform:audit` clean
-- [ ] 365.5 Edge case: readiness review gagal → rilis tertahan sampai runbook/dashboard/rollback ada
-- [ ] 365.6 Risiko: chargeback tak akurat → driver attribution di-review Finance berkala
-- [ ] 365.7 Evidence: cost attribution, job registry, dan readiness review tercatat per service
-- [ ] 365.8 Quality gate Fase 365
+- [x] 365.1 Unit economics per capability (cost per booking, claim, shipment, room-night, model inference) and owner budget
+- [x] 365.2 Capacity demand forecast ties to seeder/simulation growth and procurement/capex; trigger thresholds actionable
+- [x] 365.3 Value realization register: approved business case → cost baseline → benefit owner → measured result → variance and lessons
+- [x] 365.4 Tests: cost allocation reconciles usage, capex trigger reproducible, claimed benefit traces to evidence, `platform:audit` clean
+- [x] 365.5 Edge case: readiness review gagal → rilis tertahan sampai runbook/dashboard/rollback ada
+- [x] 365.6 Risiko: chargeback tak akurat → driver attribution di-review Finance berkala
+- [x] 365.7 Evidence: cost attribution, job registry, dan readiness review tercatat per service
+- [x] 365.8 Quality gate Fase 365
 
 ## FASE 366 — GLOBAL PLATFORM: SERVICE LIFECYCLE, DEPRECATION & SUNSET
 - [ ] 366.1 API/event/data-product lifecycle states (experimental → supported → deprecated → sunset) with notice windows and migration guide
