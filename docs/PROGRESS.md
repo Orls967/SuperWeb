@@ -3532,14 +3532,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 309.8 Quality gate Fase 309
 
 ## FASE 310 — ADVANCED FINANCE: WORKING CAPITAL MASTERY & SCF SCALE
-- [ ] 310.1 Cash conversion cycle program per lini: DSO/DPO/DIO → target → levers (invoicing otomatis, dynamic discount, factoring Fase 50.5, inventory policy) → cash released terukur
-- [ ] 310.2 Dynamic discounting marketplace: buyer early payment → supplier yield curve → investor pool internal (Fase 261.2) → settlement otomatis saat invoice jatuh tempo
-- [ ] 310.3 AR risk scoring: skor piutang per pelanggan (bayar historis + external sim) → limit & terms → collection priority → bad debt provision model
-- [ ] 310.4 Tests: CCC calculation konsisten ledger, discount yield akurat, scoring deterministik, provision model terdokumentasi, `treasury:audit` clean
-- [ ] 310.5 Edge case: investor pool SCF tak cukup saat volume tinggi → pro-rata/antrean dengan kebijakan eksplisit, bukan tolak diam-diam
-- [ ] 310.6 Risiko: AR scoring memakai data historis pendek → confidence label rendah, keputusan limit konservatif
-- [ ] 310.7 Evidence: cash released, yield discount, dan bad debt provision terhitung dari ledger dengan metode terdokumentasi
-- [ ] 310.8 Quality gate Fase 310
+- [x] 310.1 Cash conversion cycle program per lini: DSO/DPO/DIO → target → levers (invoicing otomatis, dynamic discount, factoring Fase 50.5, inventory policy) → cash released terukur
+- [x] 310.2 Dynamic discounting marketplace: buyer early payment → supplier yield curve → investor pool internal (Fase 261.2) → settlement otomatis saat invoice jatuh tempo
+- [x] 310.3 AR risk scoring: skor piutang per pelanggan (bayar historis + external sim) → limit & terms → collection priority → bad debt provision model
+- [x] 310.4 Tests: CCC calculation konsisten ledger, discount yield akurat, scoring deterministik, provision model terdokumentasi, `treasury:audit` clean
+- [x] 310.5 Edge case: investor pool SCF tak cukup saat volume tinggi → pro-rata/antrean dengan kebijakan eksplisit, bukan tolak diam-diam
+- [x] 310.6 Risiko: AR scoring memakai data historis pendek → confidence label rendah, keputusan limit konservatif
+- [x] 310.7 Evidence: cash released, yield discount, dan bad debt provision terhitung dari ledger dengan metode terdokumentasi
+- [x] 310.8 Quality gate Fase 310
 
 ## FASE 311 — ADVANCED FINANCE: CONTINUOUS CONTROLS & TRANSACTION MONITORING
 - [ ] 311.1 Continuous transaction monitoring: 100% transaksi material melewati rule engine (split payment, round amount, unusual counterparty, velocity) → alert quality tuning (precision/recall)
