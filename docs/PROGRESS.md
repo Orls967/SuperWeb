@@ -3642,14 +3642,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 320.8 Quality gate Fase 320
 
 ## FASE 321 — INTEGRASI PEOPLE: STRATEGIC WORKFORCE & BUSINESS CAPABILITY
-- [ ] 321.1 Capability map: strategi 30 lini → kapabilitas → proses → skill → role → headcount & technology dependencies → gap analysis tahunan
-- [ ] 321.2 Workforce scenario: baseline/growth/automation/disruption → staffing & cost projection → linked financial model Fase 312
-- [ ] 321.3 Labor productivity tree: output per FTE / shift / site → quality & safety guardrail → improvement plan, bukan target volume semata
-- [ ] 321.4 Tests: capability links valid, scenario deterministik, productivity denominator konsisten, `hcm:audit` clean
-- [ ] 321.5 Edge case: kapasitas tak cukup untuk semua role → prioritaskan kritikal, sisanya tunda dengan rencana tercatat
-- [ ] 321.6 Risiko: gap antara strategi dan keahlian → investment ke learning/training terencana & didanai
-- [ ] 321.7 Evidence: workforce scenarios, staffing projection, dan productivity baseline terdokumentasi
-- [ ] 321.8 Quality gate Fase 321
+- [x] 321.1 Capability map: strategi 30 lini → kapabilitas → proses → skill → role → headcount & technology dependencies → gap analysis tahunan
+- [x] 321.2 Workforce scenario: baseline/growth/automation/disruption → staffing & cost projection → linked financial model Fase 312
+- [x] 321.3 Labor productivity tree: output per FTE / shift / site → quality & safety guardrail → improvement plan, bukan target volume semata
+- [x] 321.4 Tests: capability links valid, scenario deterministik, productivity denominator konsisten, `hcm:audit` clean
+- [x] 321.5 Edge case: kapasitas tak cukup untuk semua role → prioritaskan kritikal, sisanya tunda dengan rencana tercatat
+- [x] 321.6 Risiko: gap antara strategi dan keahlian → investment ke learning/training terencana & didanai
+- [x] 321.7 Evidence: workforce scenarios, staffing projection, dan productivity baseline terdokumentasi
+- [x] 321.8 Quality gate Fase 321
 
 ## FASE 322 — INTEGRASI PEOPLE: GLOBAL PAYROLL, TIME & BENEFITS CLOSE
 - [ ] 322.1 Unified people close calendar: time approval → payroll calculation → tax withholding → benefits → payment → GL allocation → reconciliation lintas 30 lini
