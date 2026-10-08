@@ -3752,14 +3752,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 331.8 Quality gate Fase 331
 
 ## FASE 332 — KEBERLANJUTAN: ESG-LINKED PROCUREMENT, LEASE & CUSTOMER CHOICE
-- [ ] 332.1 Green supplier award criteria in RFQ with minimum compliance gates and transparent weighted scores (Fase 230.4)
-- [ ] 332.2 Green lease / utility incentives tied to measured performance; baseline adjustment and tenant appeal process
-- [ ] 332.3 Customer product choice labels (repairable, low-carbon, recycled content) linked to verified passport data, not marketing-only claims
-- [ ] 332.4 Tests: criteria reproducible, incentive equals verified performance, label source matches passport, `esg:audit` clean
-- [ ] 332.5 Edge case: green lease tenant menolak target → negosiasi atau tier layanan berbeda, tak dipaksakan diam-diam
-- [ ] 332.6 Risiko: label hijau tanpa data → hanya menampilkan angka terverifikasi, tanpa narasi berlebihan
-- [ ] 332.7 Evidence: criteria scoring, incentive settlement, dan passport data link tercatat
-- [ ] 332.8 Quality gate Fase 332
+- [x] 332.1 Green supplier award criteria in RFQ with minimum compliance gates and transparent weighted scores (Fase 230.4)
+- [x] 332.2 Green lease / utility incentives tied to measured performance; baseline adjustment and tenant appeal process
+- [x] 332.3 Customer product choice labels (repairable, low-carbon, recycled content) linked to verified passport data, not marketing-only claims
+- [x] 332.4 Tests: criteria reproducible, incentive equals verified performance, label source matches passport, `esg:audit` clean
+- [x] 332.5 Edge case: green lease tenant menolak target → negosiasi atau tier layanan berbeda, tak dipaksakan diam-diam
+- [x] 332.6 Risiko: label hijau tanpa data → hanya menampilkan angka terverifikasi, tanpa narasi berlebihan
+- [x] 332.7 Evidence: criteria scoring, incentive settlement, dan passport data link tercatat
+- [x] 332.8 Quality gate Fase 332
 
 ## FASE 333 — SUSTAINABILITY INTEGRATION: TRANSITION PLANS ACROSS 30 LINI
 - [ ] 333.1 Per-lini transition plan with owner, levers, budget, milestones, dependencies and annual review → consolidated trajectory
