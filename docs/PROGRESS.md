@@ -3492,14 +3492,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 305.8 Quality gate Fase 305
 
 ## FASE 306 — ADVANCED OPERATIONS: AUTONOMOUS FIELD FLEET (MINE, PORT, WAREHOUSE)
-- [ ] 306.1 Autonomous vehicle simulation lane: haul truck/AGV/AMR beroperasi di koridor designated → teleop fallback → telematik penuh → safety cage rules (geofence, speed cap)
-- [ ] 306.2 Remote operation center: operator mengawasi banyak unit → intervention log → utilisasi & biaya vs manned baseline → ROI terukur
-- [ ] 306.3 Mixed traffic protocol: unit otonom & manual berbagi area → right-of-way rules → near-miss monitoring → continuous safety case review
-- [ ] 306.4 Tests: geofence violation menghentikan unit, fallback manual tersedia & teruji, intervention tercatat, safety metrics terukur
-- [ ] 306.5 Edge case: unit otonom berhenti di area padat manusia → stop aman + intervensi operator wajib, bukan lanjut sendiri
-- [ ] 306.6 Risiko: kegagalan deteksi lingkungan → safety cage (geofence, speed cap) jadi pengaman terakhir yang tak bisa dimatikan
-- [ ] 306.7 Evidence: seluruh intervensi operator & near-miss tercatat untuk review keselamatan
-- [ ] 306.8 Quality gate Fase 306
+- [x] 306.1 Autonomous vehicle simulation lane: haul truck/AGV/AMR beroperasi di koridor designated → teleop fallback → telematik penuh → safety cage rules (geofence, speed cap)
+- [x] 306.2 Remote operation center: operator mengawasi banyak unit → intervention log → utilisasi & biaya vs manned baseline → ROI terukur
+- [x] 306.3 Mixed traffic protocol: unit otonom & manual berbagi area → right-of-way rules → near-miss monitoring → continuous safety case review
+- [x] 306.4 Tests: geofence violation menghentikan unit, fallback manual tersedia & teruji, intervention tercatat, safety metrics terukur
+- [x] 306.5 Edge case: unit otonom berhenti di area padat manusia → stop aman + intervensi operator wajib, bukan lanjut sendiri
+- [x] 306.6 Risiko: kegagalan deteksi lingkungan → safety cage (geofence, speed cap) jadi pengaman terakhir yang tak bisa dimatikan
+- [x] 306.7 Evidence: seluruh intervensi operator & near-miss tercatat untuk review keselamatan
+- [x] 306.8 Quality gate Fase 306
 
 ## FASE 307 — ADVANCED OPERATIONS: PREDICTIVE OPERATIONS & DIGITAL TWIN CONTROL
 - [ ] 307.1 Twin-based control loop: twin (Fase 67.3) memprediksi state → controller menyarankan aksi (setpoint HVAC, jadwal maintenance, dispatch) → human approve atau auto bila level 4 (Fase 268) → hasil diverifikasi
