@@ -2832,14 +2832,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 242.8 Quality gate Fase 242
 
 ## FASE 243 — DATA: ADVANCED ANALYTICS, GRAPH & OPTIMIZATION RESEARCH
-- [ ] 243.1 Graph analytics: jaringan (supply chain, distribusi, franchise, ownership, payment flow) → centrality, konsentrasi risiko, deteksi pola mencurigakan (money flow) → insight terverifikasi
-- [ ] 243.2 Simulation & digital twin at scale (memperluas Fase 143.3): Monte Carlo simulasi risiko (weather, demand, outage) → distribusi hasil → VaR-like metrik per lini → keputusan berbasis probabilistik
-- [ ] 243.3 Prescriptive analytics: optimization result masuk sebagai rekomendasi (Fase 199) + expected impact → A/B shadow → actual impact terukur → model diperbaiki
-- [ ] 243.4 Research governance: eksperimen data → IRB-like review jika pakai data sensitif → ethical use checklist → publication/internal share policy
-- [ ] 243.5 Tests: graph result deterministik, MC simulasi ber-seed identik, impact measurement tercatat, research approval wajib pada data sensitif
-- [ ] 243.6 Edge case: simulasi menghasilkan rekomendasi ekstrem → sanity check + batas keputusan wajib
-- [ ] 243.7 Model research pindah ke produksi → melewati review governance AI (Fase 195/360)
-- [ ] 243.8 Quality gate Fase 243
+- [x] 243.1 Graph analytics: jaringan (supply chain, distribusi, franchise, ownership, payment flow) → centrality, konsentrasi risiko, deteksi pola mencurigakan (money flow) → insight terverifikasi
+- [x] 243.2 Simulation & digital twin at scale (memperluas Fase 143.3): Monte Carlo simulasi risiko (weather, demand, outage) → distribusi hasil → VaR-like metrik per lini → keputusan berbasis probabilistik
+- [x] 243.3 Prescriptive analytics: optimization result masuk sebagai rekomendasi (Fase 199) + expected impact → A/B shadow → actual impact terukur → model diperbaiki
+- [x] 243.4 Research governance: eksperimen data → IRB-like review jika pakai data sensitif → ethical use checklist → publication/internal share policy
+- [x] 243.5 Tests: graph result deterministik, MC simulasi ber-seed identik, impact measurement tercatat, research approval wajib pada data sensitif
+- [x] 243.6 Edge case: simulasi menghasilkan rekomendasi ekstrem → sanity check + batas keputusan wajib
+- [x] 243.7 Model research pindah ke produksi → melewati review governance AI (Fase 195/360)
+- [x] 243.8 Quality gate Fase 243
 
 ## FASE 244 — DATA: DATA PRODUCTS, SHARING & EXTERNAL MONETIZATION
 - [ ] 244.1 Data products eksternal: agregat pasar (harga komoditas, indeks footfall, benchmark industri simulasi) → subscription → API (Fase 147) → privacy kohort check wajib (Fase 189.3)
