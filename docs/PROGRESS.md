@@ -2742,14 +2742,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 233.8 Quality gate Fase 233
 
 ## FASE 234 — INOVASI: CORPORATE VENTURE, INCUBATION & ACCELERATION
-- [ ] 234.1 Venture pipeline: ide internal/startup → due diligence ringan → opsi (build in-house, incubate, JV Fase 51.2, investasi token) → stage gate funding bertahap (seed → series simulasi)
-- [ ] 234.2 Incubation platform: aset bersama (marketplace, data, logistik, payment) disediakan ke venture → usage metering → cost/revenue share → tata kelola terpisah tapi terintegrasi ledger
-- [ ] 234.3 Corporate venture portfolio dashboard: invested, valuation (mark-to-market periodik), strategic option value, kill/scale decision → exit (secondary sale token, acquisition sim)
-- [ ] 234.4 Innovation funnel metrics: ideas → experiments → pilots → scaled → time & conversion per tahap → benchmark internal → investasi R&D berbasis funnel
-- [ ] 234.5 Tests: funding staged tak melebihi approved, venture accounting terpisah lalu konsolidasi (Fase 52), kill decision menutup akses data, `ppm:audit` clean
-- [ ] 234.6 Edge case: venture menjadi kompetitor internal → kebijakan non-compete & data isolation ditegakkan
-- [ ] 234.7 Write-off venture → keputusan terdokumentasi, sisa nilai diakui di ledger
-- [ ] 234.8 Quality gate Fase 234
+- [x] 234.1 Venture pipeline: ide internal/startup → due diligence ringan → opsi (build in-house, incubate, JV Fase 51.2, investasi token) → stage gate funding bertahap (seed → series simulasi)
+- [x] 234.2 Incubation platform: aset bersama (marketplace, data, logistik, payment) disediakan ke venture → usage metering → cost/revenue share → tata kelola terpisah tapi terintegrasi ledger
+- [x] 234.3 Corporate venture portfolio dashboard: invested, valuation (mark-to-market periodik), strategic option value, kill/scale decision → exit (secondary sale token, acquisition sim)
+- [x] 234.4 Innovation funnel metrics: ideas → experiments → pilots → scaled → time & conversion per tahap → benchmark internal → investasi R&D berbasis funnel
+- [x] 234.5 Tests: funding staged tak melebihi approved, venture accounting terpisah lalu konsolidasi (Fase 52), kill decision menutup akses data, `ppm:audit` clean
+- [x] 234.6 Edge case: venture menjadi kompetitor internal → kebijakan non-compete & data isolation ditegakkan
+- [x] 234.7 Write-off venture → keputusan terdokumentasi, sisa nilai diakui di ledger
+- [x] 234.8 Quality gate Fase 234
 
 ## FASE 235 — INOVASI: MARKETPLACE OF CAPABILITIES & INTERNAL API PRODUCTS
 - [ ] 235.1 Capability-as-a-product: kemampuan platform (payment, identity, logistics, data, AI, loyalty) dikatalogkan sebagai produk internal → unit cost → chargeback/flywheel pricing → konsumen internal memilih
