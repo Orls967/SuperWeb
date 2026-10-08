@@ -15,6 +15,7 @@ use Modules\Integration\Application\Services\EmbeddedInsuranceService;
 use Modules\Integration\Application\Services\EthicalSourcingService;
 use Modules\Integration\Application\Services\FoodBrandNutritionService;
 use Modules\Integration\Application\Services\FoodProcessingService;
+use Modules\Integration\Application\Services\ForestryTimberService;
 use Modules\Integration\Application\Services\FullInsuranceService;
 use Modules\Integration\Application\Services\GlobalCommandService;
 use Modules\Integration\Application\Services\IntegrationService;
@@ -76,6 +77,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(FoodBrandNutritionService::class);
         $this->app->singleton(MarineAquacultureService::class);
         $this->app->singleton(AquacultureExportService::class);
+        $this->app->singleton(ForestryTimberService::class);
     }
 
     public function boot(): void

@@ -2170,12 +2170,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 171.6 Quality gate Fase 171
 
 ## FASE 172 — LINI 23: KEHUTANAN, TIMBER & RESTORATION VALUE CHAIN
-- [ ] 172.1 Modul `Forest` (`for_`): concessions/simulation plots, species, inventory, harvest plans, permits, restoration polygons, geospatial history
-- [ ] 172.2 Sustainable harvest quota and chain-of-custody tickets from stump/plot → mill → finished timber → buyer; permit, volume and location checks
-- [ ] 172.3 Restoration operations: nursery procurement, planting tasks, survival monitoring via satellite/field checks, maintenance cost and outcome evidence
-- [ ] 172.4 Timber processing integrates Manufacturing; by-products (sawdust) routed to board/biomass; export documentation via Trade
-- [ ] 172.5 Tests: harvest ≤ quota, volume reconciliation at every custody handoff, restoration survival evidence required for claims, `forest:audit` = 0
-- [ ] 172.6 Quality gate Fase 172
+- [x] 172.1 Modul `Forest` (`for_`): concessions/simulation plots, species, inventory, harvest plans, permits, restoration polygons, geospatial history
+- [x] 172.2 Sustainable harvest quota and chain-of-custody tickets from stump/plot → mill → finished timber → buyer; permit, volume and location checks
+- [x] 172.3 Restoration operations: nursery procurement, planting tasks, survival monitoring via satellite/field checks, maintenance cost and outcome evidence
+- [x] 172.4 Timber processing integrates Manufacturing; by-products (sawdust) routed to board/biomass; export documentation via Trade
+- [x] 172.5 Tests: harvest ≤ quota, volume reconciliation at every custody handoff, restoration survival evidence required for claims, `forest:audit` = 0
+- [x] 172.6 Quality gate Fase 172
 
 ## FASE 173 — LINI 23: NATURE FINANCE, BIODIVERSITY & ECOSYSTEM SERVICES
 - [ ] 173.1 Ecosystem-service project registry (carbon, watershed, biodiversity) with baseline, methodology version, monitoring period and independent verifier
