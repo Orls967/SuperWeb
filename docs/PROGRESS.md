@@ -3204,14 +3204,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 279.8 Quality gate Fase 279
 
 ## FASE 280 — OPERASI: FOOD SERVICE, HOSPITALITY & VENUE OPERATIONS PLAYBOOK SCALE
-- [ ] 280.1 Multi-outlet operations bible: SOP lintas 5.000 outlet resto, 5.000 hotel, 1.000 venue (service sequence, opening/closing, crisis) → versioned → training attested (Fase 167.4)
-- [ ] 280.2 Shift playbook engine: demand forecast (Fase 75.1/201) → staffing plan → task board per shift → completion evidence → variance report
-- [ ] 280.3 Quality audit mystery guest (simulasi): scoring terjadwal → gap → coaching → re-audit → outlet grade → dampak ke brand scorecard (Fase 111.1)
-- [ ] 280.4 Tests: attestation wajib sebelum shift mandiri, mystery audit deterministik, grade = formula, playbook version immutable saat aktif
-- [ ] 280.5 Edge case: mystery guest menilai buruk → action plan → re-audit; grade turun → dampak brand scorecard
-- [ ] 280.6 SOP berubah saat shift berjalan → notice & acknowledgment, jangan tiba-tiba beda aturan
-- [ ] 280.7 Multi-bahasa SOP untuk tenaga kerja lintas negara → versi tersinkron
-- [ ] 280.8 Quality gate Fase 280
+- [x] 280.1 Multi-outlet operations bible: SOP lintas 5.000 outlet resto, 5.000 hotel, 1.000 venue (service sequence, opening/closing, crisis) → versioned → training attested (Fase 167.4)
+- [x] 280.2 Shift playbook engine: demand forecast (Fase 75.1/201) → staffing plan → task board per shift → completion evidence → variance report
+- [x] 280.3 Quality audit mystery guest (simulasi): scoring terjadwal → gap → coaching → re-audit → outlet grade → dampak ke brand scorecard (Fase 111.1)
+- [x] 280.4 Tests: attestation wajib sebelum shift mandiri, mystery audit deterministik, grade = formula, playbook version immutable saat aktif
+- [x] 280.5 Edge case: mystery guest menilai buruk → action plan → re-audit; grade turun → dampak brand scorecard
+- [x] 280.6 SOP berubah saat shift berjalan → notice & acknowledgment, jangan tiba-tiba beda aturan
+- [x] 280.7 Multi-bahasa SOP untuk tenaga kerja lintas negara → versi tersinkron
+- [x] 280.8 Quality gate Fase 280
 
 ## FASE 281 — PELANGGAN: OMNI-CHANNEL SERVICE CONSISTENCY & SLA
 - [ ] 281.1 Service level framework per segment (consumer, SMB, enterprise, government): janji layanan (respons time, resolusi, uptime) → kontrak/kebijakan → measurement → credit otomatis (Fase 216.2 generalized)
