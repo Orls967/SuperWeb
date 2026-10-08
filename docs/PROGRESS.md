@@ -4492,14 +4492,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 405.8 Quality gate Fase 405
 
 ## FASE 406 — GOVERNANCE WAVE: WHISTLEBLOWING, ETHICS & SPEAK-UP AT GLOBAL SCALE
-- [ ] 406.1 Multi-channel intake (web, mobile, phone simulation) across regions with local-language handling and anonymization
-- [ ] 406.2 Case management: triage, investigation plan, evidence handling, interim protective measures, outcome, discipline bridge to HCM
-- [ ] 406.3 Quality assurance: independent review of case outcomes, trend analysis, systemic action tracking to closure
-- [ ] 406.4 Tests: retaliation indicator investigation triggered, case privacy maintained, trend reporting aggregates without identity, `ethics:audit` clean
-- [ ] 406.5 Edge case: pelapor takut identitas bocor → anonymization ketat + anti-retaliation monitoring
-- [ ] 406.6 Risiko: case menumpuk tanpa tindak lanjut → aging SLA + eskalasi ke komite etik
-- [ ] 406.7 Evidence: intake log, investigation record, dan systemic action tercatat per case
-- [ ] 406.8 Quality gate Fase 406
+- [x] 406.1 Multi-channel intake (web, mobile, phone simulation) across regions with local-language handling and anonymization
+- [x] 406.2 Case management: triage, investigation plan, evidence handling, interim protective measures, outcome, discipline bridge to HCM
+- [x] 406.3 Quality assurance: independent review of case outcomes, trend analysis, systemic action tracking to closure
+- [x] 406.4 Tests: retaliation indicator investigation triggered, case privacy maintained, trend reporting aggregates without identity, `ethics:audit` clean
+- [x] 406.5 Edge case: pelapor takut identitas bocor → anonymization ketat + anti-retaliation monitoring
+- [x] 406.6 Risiko: case menumpuk tanpa tindak lanjut → aging SLA + eskalasi ke komite etik
+- [x] 406.7 Evidence: intake log, investigation record, dan systemic action tercatat per case
+- [x] 406.8 Quality gate Fase 406
 
 ## FASE 407 — GOVERNANCE WAVE: ESG & CLIMATE DISCLOSURE CONTROL
 - [ ] 407.1 Disclosure control framework: data points, owner, system source, calculation, evidence, review, sign-off, publication and correction
