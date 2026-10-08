@@ -4472,14 +4472,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 403.8 Quality gate Fase 403
 
 ## FASE 404 — GOVERNANCE WAVE: LEGAL, REGULATORY & TAX OPERATIONS AT SCALE
-- [ ] 404.1 Obligation calendar across 30 jurisdictions/lines with submission evidence, approvers and late-filing controls
-- [ ] 404.2 Regulatory reporting pack generator: source lineage per figure, sign-off workflow, versioned historical submissions
-- [ ] 404.3 Tax provision governance: estimate quality review, uncertain tax position register, audit trail for positions taken
-- [ ] 404.4 Tests: submission evidence complete, lineage per figure verified, provision review approval recorded, `compliance:audit` clean
-- [ ] 404.5 Edge case: filing terlambat → koreksi cepat + root cause + penalti bila perlu, tercatat
-- [ ] 404.6 Risiko: provisi pajak tak material → review materiality & uncertain position berkala
-- [ ] 404.7 Evidence: obligation calendar, submission evidence, dan provision approval tercatat
-- [ ] 404.8 Quality gate Fase 404
+- [x] 404.1 Obligation calendar across 30 jurisdictions/lines with submission evidence, approvers and late-filing controls
+- [x] 404.2 Regulatory reporting pack generator: source lineage per figure, sign-off workflow, versioned historical submissions
+- [x] 404.3 Tax provision governance: estimate quality review, uncertain tax position register, audit trail for positions taken
+- [x] 404.4 Tests: submission evidence complete, lineage per figure verified, provision review approval recorded, `compliance:audit` clean
+- [x] 404.5 Edge case: filing terlambat → koreksi cepat + root cause + penalti bila perlu, tercatat
+- [x] 404.6 Risiko: provisi pajak tak material → review materiality & uncertain position berkala
+- [x] 404.7 Evidence: obligation calendar, submission evidence, dan provision approval tercatat
+- [x] 404.8 Quality gate Fase 404
 
 ## FASE 405 — GOVERNANCE WAVE: BOARD & MANAGEMENT REPORTING INTEGRITY
 - [ ] 405.1 Management reporting pack: metric definitions registry, reconciliation to ledger/data, variance commentary workflow and submission deadlines
