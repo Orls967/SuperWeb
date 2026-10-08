@@ -2862,14 +2862,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 245.8 Quality gate Fase 245
 
 ## FASE 246 — KOMERSIAL: SALES FORCE EXCELLENCE & PIPELINE 30 LINI
-- [ ] 246.1 Sales process unified (B2B lini: asuransi, hotel corporate, MICE, PPA, colo, telekom enterprise, proyek EPC, jasa) → stage definitions → exit criteria → forecast berbobot
-- [ ] 246.2 Account planning: strategic account map (multi-stakeholder), whitespace analysis, coverage model → activity plan → progress review
-- [ ] 246.3 Quota & territory: quota allocation (bottom-up capacity + top-down target) → territory design (Fase 42.2 extended) → conflict rule → payout (bridge Fase 45)
-- [ ] 246.4 Sales content & proposal factory: template kontrak/penawaran (Fase 28.2) → configurator harga → discount approval → win/loss analysis terstruktur
-- [ ] 246.5 Tests: forecast accuracy terukur, quota Σ = target, territory overlap terdeteksi, win/loss data lengkap, `agy:audit` + sales metrics clean
-- [ ] 246.6 Edge case: forecast dilebih-lebihkan demi quota → model forecast independen dari input sales, tak bisa dimanipulasi
-- [ ] 246.7 Teritory dispute → rule terdokumentasi + keputusan tercatat, tidak negosiasi diam-diam
-- [ ] 246.8 Quality gate Fase 246
+- [x] 246.1 Sales process unified (B2B lini: asuransi, hotel corporate, MICE, PPA, colo, telekom enterprise, proyek EPC, jasa) → stage definitions → exit criteria → forecast berbobot
+- [x] 246.2 Account planning: strategic account map (multi-stakeholder), whitespace analysis, coverage model → activity plan → progress review
+- [x] 246.3 Quota & territory: quota allocation (bottom-up capacity + top-down target) → territory design (Fase 42.2 extended) → conflict rule → payout (bridge Fase 45)
+- [x] 246.4 Sales content & proposal factory: template kontrak/penawaran (Fase 28.2) → configurator harga → discount approval → win/loss analysis terstruktur
+- [x] 246.5 Tests: forecast accuracy terukur, quota Σ = target, territory overlap terdeteksi, win/loss data lengkap, `agy:audit` + sales metrics clean
+- [x] 246.6 Edge case: forecast dilebih-lebihkan demi quota → model forecast independen dari input sales, tak bisa dimanipulasi
+- [x] 246.7 Teritory dispute → rule terdokumentasi + keputusan tercatat, tidak negosiasi diam-diam
+- [x] 246.8 Quality gate Fase 246
 
 ## FASE 247 — KOMERSIAL: KEY ACCOUNT MANAGEMENT & PARTNERSHIP REVENUE
 - [ ] 247.1 KAM workspace: akun besar (kontrak multi-lini: grup hotel eksternal, operator telko, retailer, pemerintah simulasi) → cross-lini solution → deal room kolaboratif
