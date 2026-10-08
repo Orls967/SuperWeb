@@ -4072,14 +4072,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 363.8 Quality gate Fase 363
 
 ## FASE 364 — GLOBAL PLATFORM: AUTOMATION CONTROL PLANE & SAFE REMEDIATION
-- [ ] 364.1 Approved automation catalog (restart worker, replay DLQ, scale queue, failover) with precondition, blast radius, rollback and evidence requirements
-- [ ] 364.2 Policy-based execution: dry-run → risk classification → approval when material → bounded action → post-check; financial/medical data mutations excluded from generic remediation
-- [ ] 364.3 Automation effectiveness & false-action monitoring; kill switch and manual takeover
-- [ ] 364.4 Tests: failed precondition prevents action, rollback tested, kill switch blocks pending actions, actions fully auditable
-- [ ] 364.5 Edge case: automation gagal mid-action → kill switch + manual takeover, tak ada aksi menggantung
-- [ ] 364.6 Risiko: blast radius salah klasifikasi → review classification berkala + audit hasil eksekusi
-- [ ] 364.7 Evidence: catalog version, execution log, dan effectiveness metric tercatat
-- [ ] 364.8 Quality gate Fase 364
+- [x] 364.1 Approved automation catalog (restart worker, replay DLQ, scale queue, failover) with precondition, blast radius, rollback and evidence requirements
+- [x] 364.2 Policy-based execution: dry-run → risk classification → approval when material → bounded action → post-check; financial/medical data mutations excluded from generic remediation
+- [x] 364.3 Automation effectiveness & false-action monitoring; kill switch and manual takeover
+- [x] 364.4 Tests: failed precondition prevents action, rollback tested, kill switch blocks pending actions, actions fully auditable
+- [x] 364.5 Edge case: automation gagal mid-action → kill switch + manual takeover, tak ada aksi menggantung
+- [x] 364.6 Risiko: blast radius salah klasifikasi → review classification berkala + audit hasil eksekusi
+- [x] 364.7 Evidence: catalog version, execution log, dan effectiveness metric tercatat
+- [x] 364.8 Quality gate Fase 364
 
 ## FASE 365 — GLOBAL PLATFORM: COST, CAPACITY & VALUE GOVERNANCE
 - [ ] 365.1 Unit economics per capability (cost per booking, claim, shipment, room-night, model inference) and owner budget

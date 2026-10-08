@@ -317,6 +317,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\ServiceCatalogDeveloperPortalService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\EnterpriseServiceManagementCmdbService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\ServiceOncallSloGovernanceService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\AutomationControlPlaneRemediationService::class);
     }
 
     public function boot(): void
