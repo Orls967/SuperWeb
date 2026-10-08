@@ -2194,12 +2194,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 174.6 Quality gate Fase 174
 
 ## FASE 175 — LINI 25: PROFESSIONAL SERVICES, CONSULTING & PROJECT MARKETPLACE
-- [ ] 175.1 Modul `ProServices` (`psv_`): service catalog, firms/consultants, statements of work, milestones, timesheets, deliverables, acceptance and disputes
-- [ ] 175.2 Procurement marketplace: RFP → proposals sealed → weighted evaluation → award approval → Contract → budget encumbrance → milestone payment
-- [ ] 175.3 Consultant access is least-privilege and time-bound to assigned project records; deliverables checksum stored via DocumentStore
-- [ ] 175.4 Outcome metrics and fee models: fixed, time-and-materials, capped, success fee with explicit acceptance and clawback rules
-- [ ] 175.5 Tests: sealed proposals hidden until opening, milestone cannot pay before acceptance, access expires at contract end, fee formula auditable, `psv:audit` clean
-- [ ] 175.6 Quality gate Fase 175
+- [x] 175.1 Modul `ProServices` (`psv_`): service catalog, firms/consultants, statements of work, milestones, timesheets, deliverables, acceptance and disputes
+- [x] 175.2 Procurement marketplace: RFP → proposals sealed → weighted evaluation → award approval → Contract → budget encumbrance → milestone payment
+- [x] 175.3 Consultant access is least-privilege and time-bound to assigned project records; deliverables checksum stored via DocumentStore
+- [x] 175.4 Outcome metrics and fee models: fixed, time-and-materials, capped, success fee with explicit acceptance and clawback rules
+- [x] 175.5 Tests: sealed proposals hidden until opening, milestone cannot pay before acceptance, access expires at contract end, fee formula auditable, `psv:audit` clean
+- [x] 175.6 Quality gate Fase 175
 
 ## FASE 176 — LINI 25: LEGAL OPERATIONS, DISPUTES & KNOWLEDGE MANAGEMENT
 - [ ] 176.1 Matter management: case, counterparties, deadlines, privilege classification, counsel, evidence store and retention policy

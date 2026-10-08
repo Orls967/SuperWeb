@@ -28,6 +28,7 @@ use Modules\Integration\Application\Services\MegaScenarioService;
 use Modules\Integration\Application\Services\NatureFinanceService;
 use Modules\Integration\Application\Services\PlatformEconomyService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
+use Modules\Integration\Application\Services\ProfessionalServicesService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
 use Modules\Integration\Application\Services\ReinsuranceAndCatService;
 use Modules\Integration\Application\Services\ResilienceWave2Service;
@@ -82,6 +83,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(ForestryTimberService::class);
         $this->app->singleton(NatureFinanceService::class);
         $this->app->singleton(CircularEconomyService::class);
+        $this->app->singleton(ProfessionalServicesService::class);
     }
 
     public function boot(): void
