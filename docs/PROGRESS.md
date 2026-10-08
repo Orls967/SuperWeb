@@ -3064,14 +3064,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 265.8 Quality gate Fase 265
 
 ## FASE 266 — DATA: DECISION INTELLIGENCE PLATFORM
-- [ ] 266.1 Decision catalog: keputusan kritikal per lini (pricing, allocation, staffing, capital, risk) → owner → data & model dipakai → outcome terukur → review cycle
-- [ ] 266.2 Decision quality scoring: konsistensi, outcome vs prediksi, bias terdeteksi → training manager (Fase 226.4) → perbaikan budaya keputusan
-- [ ] 266.3 Scenario workbench: eksekutif menyusun what-if sendiri (data sandbox, drag komponen) → hasil deterministik → disimpan & dibandingkan → feed ke board paper (Fase 231.4)
-- [ ] 266.4 Tests: scenario workbench tak menyentuh data riil, decision outcome rekonstruksi, scoring deterministik
-- [ ] 266.5 Edge case: keputusan diambil tanpa melewati workbench penting → catat sebagai exception governance
-- [ ] 266.6 Outcome scoring: keputusan dievaluasi setelah jangka waktu → learning loop ke decision quality
-- [ ] 266.7 Data sandbox tak boleh menyentuh data riil → enforced secara arsitektur
-- [ ] 266.8 Quality gate Fase 266
+- [x] 266.1 Decision catalog: keputusan kritikal per lini (pricing, allocation, staffing, capital, risk) → owner → data & model dipakai → outcome terukur → review cycle
+- [x] 266.2 Decision quality scoring: konsistensi, outcome vs prediksi, bias terdeteksi → training manager (Fase 226.4) → perbaikan budaya keputusan
+- [x] 266.3 Scenario workbench: eksekutif menyusun what-if sendiri (data sandbox, drag komponen) → hasil deterministik → disimpan & dibandingkan → feed ke board paper (Fase 231.4)
+- [x] 266.4 Tests: scenario workbench tak menyentuh data riil, decision outcome rekonstruksi, scoring deterministik
+- [x] 266.5 Edge case: keputusan diambil tanpa melewati workbench penting → catat sebagai exception governance
+- [x] 266.6 Outcome scoring: keputusan dievaluasi setelah jangka waktu → learning loop ke decision quality
+- [x] 266.7 Data sandbox tak boleh menyentuh data riil → enforced secara arsitektur
+- [x] 266.8 Quality gate Fase 266
 
 ## FASE 267 — DATA: DATA MESH FEDERATED GOVERNANCE (30 DOMAIN PRODUCT)
 - [ ] 267.1 Domain-owned data products (Fase 189.1) dengan federated computational policy: setiap domain menjalankan policy engine sendiri (akses, quality, schema) → platform menegakkan minimum bar
