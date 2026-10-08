@@ -2722,14 +2722,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 231.8 Quality gate Fase 231
 
 ## FASE 232 — TATA KELOLA: ETHICS, WHISTLEBLOWING & SPEAK-UP CULTURE
-- [ ] 232.1 Speak-up channel: laporan anonim (token pelapor opsional) → case terenkripsi → investigator assigned (four-eyes) → triage → investigation → outcome → feedback pelapor
-- [ ] 232.2 Anti-retaliation policy & monitoring: proteksi pelapor → perubahan treatment terdeteksi → investigasi terpisah → sanksi
-- [ ] 232.3 Ethics case management: code of conduct violation → hearing simulasi → sanction matrix konsisten → appeal → record terpisah dari HR data dengan akses ketat
-- [ ] 232.4 Fraud referral bridge: temuan ethics → jika ada indikasi fraud → case di Fraud mesh (Fase 200) → koordinasi tanpa duplikasi penyelidikan
-- [ ] 232.5 Tests: anonimitas pelapor terjaga (analisis metadata tidak membocorkan), case access terbatas, retaliation flag memicu investigasi, `ethics:audit` clean
-- [ ] 232.6 Edge case: pelapor identitasnya bocor → investigasi tersendiri + sanksi; proses tak berhenti
-- [ ] 232.7 Anti-SLAPP: gugatan terhadap pelapor → dukungan hukum simulasi + log kebenaran fakta
-- [ ] 232.8 Quality gate Fase 232
+- [x] 232.1 Speak-up channel: laporan anonim (token pelapor opsional) → case terenkripsi → investigator assigned (four-eyes) → triage → investigation → outcome → feedback pelapor
+- [x] 232.2 Anti-retaliation policy & monitoring: proteksi pelapor → perubahan treatment terdeteksi → investigasi terpisah → sanksi
+- [x] 232.3 Ethics case management: code of conduct violation → hearing simulasi → sanction matrix konsisten → appeal → record terpisah dari HR data dengan akses ketat
+- [x] 232.4 Fraud referral bridge: temuan ethics → jika ada indikasi fraud → case di Fraud mesh (Fase 200) → koordinasi tanpa duplikasi penyelidikan
+- [x] 232.5 Tests: anonimitas pelapor terjaga (analisis metadata tidak membocorkan), case access terbatas, retaliation flag memicu investigasi, `ethics:audit` clean
+- [x] 232.6 Edge case: pelapor identitasnya bocor → investigasi tersendiri + sanksi; proses tak berhenti
+- [x] 232.7 Anti-SLAPP: gugatan terhadap pelapor → dukungan hukum simulasi + log kebenaran fakta
+- [x] 232.8 Quality gate Fase 232
 
 ## FASE 233 — TATA KELOLA: ECO SYSTEM GOVERNANCE, DAO EVOLUTION & STAKEHOLDER VOTING
 - [ ] 233.1 Governance model evolution (memperluas Fase 86): proposal classes (strategis, operasional, sosial, teknis) → kelas berbeda bobot pemilih & quorum → delegation (pemilih boleh wakilkan suara) → liquid democracy simulasi
