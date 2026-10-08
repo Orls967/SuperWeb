@@ -24,6 +24,7 @@ use Modules\Integration\Application\Services\LearningPlatformService;
 use Modules\Integration\Application\Services\LifeHealthWellnessService;
 use Modules\Integration\Application\Services\MarineAquacultureService;
 use Modules\Integration\Application\Services\MegaScenarioService;
+use Modules\Integration\Application\Services\NatureFinanceService;
 use Modules\Integration\Application\Services\PlatformEconomyService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
@@ -78,6 +79,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(MarineAquacultureService::class);
         $this->app->singleton(AquacultureExportService::class);
         $this->app->singleton(ForestryTimberService::class);
+        $this->app->singleton(NatureFinanceService::class);
     }
 
     public function boot(): void

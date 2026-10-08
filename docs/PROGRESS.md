@@ -2178,12 +2178,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 172.6 Quality gate Fase 172
 
 ## FASE 173 — LINI 23: NATURE FINANCE, BIODIVERSITY & ECOSYSTEM SERVICES
-- [ ] 173.1 Ecosystem-service project registry (carbon, watershed, biodiversity) with baseline, methodology version, monitoring period and independent verifier
-- [ ] 173.2 Credit issuance only after evidence/approval; unique serials prevent double counting; retirement/transfer ledger mirrors carbon Fase 60 controls
-- [ ] 173.3 Corporate nature-positive procurement: buyer obligations, claims wording guardrails, project benefit sharing to local communities via ledger
-- [ ] 173.4 Portfolio dashboard: hectares, verified outcomes, credit vintages, revenue and community share; scenario twin without changing actual records
-- [ ] 173.5 Tests: issued credits ≤ verified outcomes, retired credits cannot resell, benefit share sums to proceeds, `nature:audit` clean
-- [ ] 173.6 Quality gate Fase 173
+- [x] 173.1 Ecosystem-service project registry (carbon, watershed, biodiversity) with baseline, methodology version, monitoring period and independent verifier
+- [x] 173.2 Credit issuance only after evidence/approval; unique serials prevent double counting; retirement/transfer ledger mirrors carbon Fase 60 controls
+- [x] 173.3 Corporate nature-positive procurement: buyer obligations, claims wording guardrails, project benefit sharing to local communities via ledger
+- [x] 173.4 Portfolio dashboard: hectares, verified outcomes, credit vintages, revenue and community share; scenario twin without changing actual records
+- [x] 173.5 Tests: issued credits ≤ verified outcomes, retired credits cannot resell, benefit share sums to proceeds, `nature:audit` clean
+- [x] 173.6 Quality gate Fase 173
 
 ## FASE 174 — LINI 24: WASTE, RECYCLING & INDUSTRIAL CIRCULARITY MARKETPLACE
 - [ ] 174.1 Modul `Circular` (`cir_`): waste streams, by-product specifications, testing, permits, recycler facilities, manifests, weighbridge records
