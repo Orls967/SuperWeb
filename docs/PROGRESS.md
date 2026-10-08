@@ -3912,14 +3912,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 347.8 Quality gate Fase 347
 
 ## FASE 348 — AI PLATFORM: DECISION SUPPORT, SIMULATION & OPTIMIZATION GOVERNANCE
-- [ ] 348.1 Optimization problem registry: problem, objective, constraints, data inputs, solver version, owner, approval, outcome tracking
-- [ ] 348.2 Constraint review: regulatory/contract/safety constraints owned by responsible function → change control → solver config versioned
-- [ ] 348.3 Outcome audit: actual vs recommended → adoption, deviation, result → model improvement backlog (Fase 195)
-- [ ] 348.4 Tests: unregistered problem cannot deploy solver, constraint change needs owner approval, outcome audit complete
-- [ ] 348.5 Edge case: solver menghasilkan rekomendasi ekstrem → sanity check & batas keputusan wajib
-- [ ] 348.6 Risiko: constraint dilanggar tanpa approval → change control pada solver config terdokumentasi
-- [ ] 348.7 Evidence: problem registry, constraint version, dan outcome audit per domain tercatat
-- [ ] 348.8 Quality gate Fase 348
+- [x] 348.1 Optimization problem registry: problem, objective, constraints, data inputs, solver version, owner, approval, outcome tracking
+- [x] 348.2 Constraint review: regulatory/contract/safety constraints owned by responsible function → change control → solver config versioned
+- [x] 348.3 Outcome audit: actual vs recommended → adoption, deviation, result → model improvement backlog (Fase 195)
+- [x] 348.4 Tests: unregistered problem cannot deploy solver, constraint change needs owner approval, outcome audit complete
+- [x] 348.5 Edge case: solver menghasilkan rekomendasi ekstrem → sanity check & batas keputusan wajib
+- [x] 348.6 Risiko: constraint dilanggar tanpa approval → change control pada solver config terdokumentasi
+- [x] 348.7 Evidence: problem registry, constraint version, dan outcome audit per domain tercatat
+- [x] 348.8 Quality gate Fase 348
 
 ## FASE 349 — AI PLATFORM: AI COST, ENERGY & SUSTAINABILITY GOVERNANCE
 - [ ] 349.1 AI cost attribution: per agent/model/query/dashboard → budget per domain → over-budget alert → efficiency measures (cache, smaller model tier)
