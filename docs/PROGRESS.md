@@ -3044,14 +3044,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 263.8 Quality gate Fase 263
 
 ## FASE 264 — EKOSISTEM: INSURTECH & FINTECH PARTNER INTEGRATION
-- [ ] 264.1 Partner gateway fintech (payment aggregator, e-wallet, bank simulasi) → routing terbaik per negara (cost/success rate) → failover → settlement reconciliation harian
-- [ ] 264.2 Insurance partner markets: placement ke reinsurer/market external (Fase 157) → API submission → status → billing → regulatory reporting
-- [ ] 264.3 Open finance consent (simulasi): pengguna izinkan mitra baca data (agregat) untuk penawaran → consent ledger → revoke instan → audit akses mitra
-- [ ] 264.4 Tests: routing failover otomatis, settlement partner 0 selisih, consent revoke memutus akses mitra, `treasury:audit` clean
-- [ ] 264.5 Edge case: semua partner down → degraded mode (hold transaksi) → notice, jangan data loss
-- [ ] 264.6 Rate limit partner → tiered handling, tambah partner bila volume naik
-- [ ] 264.7 Rekonsiliasi settlement partner harian → mismatch jadi exception dengan aging
-- [ ] 264.8 Quality gate Fase 264
+- [x] 264.1 Partner gateway fintech (payment aggregator, e-wallet, bank simulasi) → routing terbaik per negara (cost/success rate) → failover → settlement reconciliation harian
+- [x] 264.2 Insurance partner markets: placement ke reinsurer/market external (Fase 157) → API submission → status → billing → regulatory reporting
+- [x] 264.3 Open finance consent (simulasi): pengguna izinkan mitra baca data (agregat) untuk penawaran → consent ledger → revoke instan → audit akses mitra
+- [x] 264.4 Tests: routing failover otomatis, settlement partner 0 selisih, consent revoke memutus akses mitra, `treasury:audit` clean
+- [x] 264.5 Edge case: semua partner down → degraded mode (hold transaksi) → notice, jangan data loss
+- [x] 264.6 Rate limit partner → tiered handling, tambah partner bila volume naik
+- [x] 264.7 Rekonsiliasi settlement partner harian → mismatch jadi exception dengan aging
+- [x] 264.8 Quality gate Fase 264
 
 ## FASE 265 — EKOSISTEM: ACADEMIC & INDUSTRY RESEARCH NETWORK
 - [ ] 265.1 Riset bersama universitas/institusi (Fase 106 bridge + Fase 218): proposal → ethics & IP agreement → funding tranche → data sandbox (Fase 244.3) → output (publikasi/paten)
