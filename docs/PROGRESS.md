@@ -2762,15 +2762,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 235.8 Quality gate Fase 235
 
 ## FASE 236 — INOVASI: DIGITAL PRODUCT FACTORY & EXPERIMENTATION
-- [ ] 236.1 Product ops: discovery (customer problem → hypothesis) → experiment design → build increment → release → measure → iterate → sunset → terhubung PPM (Fase 217)
-- [ ] 236.2 Experimentation platform: A/B test deterministik (user bucketing by hash seed) → sample size & sequential test guard → metric terpisah dari noise → decision framework
-- [ ] 236.3 Feature flag & release engineering: flag per environment → gradual rollout → kill flag instan → usage analytics per flag → tech debt retirement saat flag matang
-- [ ] 236.4 Product analytics: funnel, retention cohort, engagement per lini → insight → roadmap evidence-based → link ke customer KPI (Fase 226)
-- [ ] 236.5 Tests: bucketing konsisten & tak bias, flag kill efektif dalam 1 detik, experiment metric rekonstruksi, sunset menutup akses, `platform:audit` clean
-- [ ] 236.5 Tests: bucketing konsisten & tak bias, flag kill efektif dalam 1 detik, experiment metric rekonstruksi, sunset menutup akses, `platform:audit` clean
-- [ ] 236.6 Experiment preregistration: hypothesis, primary metric, sample size & stopping rule dicatat sebelum run
-- [ ] 236.7 Guardrail: experiment tak boleh mengubah harga/eligibility kritis tanpa approval policy
-- [ ] 236.8 Quality gate Fase 236
+- [x] 236.1 Product ops: discovery (customer problem → hypothesis) → experiment design → build increment → release → measure → iterate → sunset → terhubung PPM (Fase 217)
+- [x] 236.2 Experimentation platform: A/B test deterministik (user bucketing by hash seed) → sample size & sequential test guard → metric terpisah dari noise → decision framework
+- [x] 236.3 Feature flag & release engineering: flag per environment → gradual rollout → kill flag instan → usage analytics per flag → tech debt retirement saat flag matang
+- [x] 236.4 Product analytics: funnel, retention cohort, engagement per lini → insight → roadmap evidence-based → link ke customer KPI (Fase 226)
+- [x] 236.5 Tests: bucketing konsisten & tak bias, flag kill efektif dalam 1 detik, experiment metric rekonstruksi, sunset menutup akses, `platform:audit` clean
+- [x] 236.6 Experiment preregistration: hypothesis, primary metric, sample size & stopping rule dicatat sebelum run
+- [x] 236.7 Guardrail: experiment tak boleh mengubah harga/eligibility kritis tanpa approval policy
+- [x] 236.8 Quality gate Fase 236
 
 ## FASE 237 — PLATFORM: DEVELOPER EXPERIENCE, DX TOOLING & QUALITY AUTOMATION
 - [ ] 237.1 Developer portal: environment provisioning (sandbox/staging), seed data snapshot, docs otomatis dari code (OpenAPI, events), changelog → kontribusi lintas modul mudah
