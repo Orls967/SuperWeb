@@ -4202,14 +4202,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 376.8 Quality gate Fase 376
 
 ## FASE 377 — INTEGRASI GELOMBANG 3: ASSET, PROJECT & CAPITAL LIFECYCLE
-- [ ] 377.1 Asset lifecycle common events from project capitalization → operation → maintenance → impairment/revaluation → disposal across all 30 lines
-- [ ] 377.2 Capital project actuals, forecast-at-completion, benefits realization and asset register link in one traceable graph
-- [ ] 377.3 Capex portfolio prioritization considers capacity, risk, climate, strategic fit and financing; delegated approval limits enforced
-- [ ] 377.4 Tests: CIP-to-asset transitions reconcile, benefits trace to business case, no double capitalization, `ast:audit` + `epc:audit` clean
-- [ ] 377.5 Edge case: benefit tak terealisasi setelah capex → post-investment review menandai gagal → learning
-- [ ] 377.6 Risiko: double capitalization → authority map asset terdokumentasi & arch test memantau
-- [ ] 377.7 Evidence: asset lifecycle graph, benefit trace, dan delegated approval record tercatat
-- [ ] 377.8 Quality gate Fase 377
+- [x] 377.1 Asset lifecycle common events from project capitalization → operation → maintenance → impairment/revaluation → disposal across all 30 lines
+- [x] 377.2 Capital project actuals, forecast-at-completion, benefits realization and asset register link in one traceable graph
+- [x] 377.3 Capex portfolio prioritization considers capacity, risk, climate, strategic fit and financing; delegated approval limits enforced
+- [x] 377.4 Tests: CIP-to-asset transitions reconcile, benefits trace to business case, no double capitalization, `ast:audit` + `epc:audit` clean
+- [x] 377.5 Edge case: benefit tak terealisasi setelah capex → post-investment review menandai gagal → learning
+- [x] 377.6 Risiko: double capitalization → authority map asset terdokumentasi & arch test memantau
+- [x] 377.7 Evidence: asset lifecycle graph, benefit trace, dan delegated approval record tercatat
+- [x] 377.8 Quality gate Fase 377
 
 ## FASE 378 — INTEGRASI GELOMBANG 3: CUSTOMER, LOYALTY & SUBSCRIPTION ECONOMY
 - [ ] 378.1 One customer-facing identity and consent-aware entitlement service for loyalty, subscription, insurance, wallet and service plans across 30 lines
