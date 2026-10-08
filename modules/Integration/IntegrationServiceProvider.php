@@ -303,6 +303,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\KnowledgeGroundingCitationService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\DecisionOptimizationGovernanceService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\AiCostSustainabilityService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\AiHumanAccountabilityService::class);
     }
 
     public function boot(): void
