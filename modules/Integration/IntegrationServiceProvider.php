@@ -15,6 +15,7 @@ use Modules\Integration\Application\Services\AiOptimizationEngineService;
 use Modules\Integration\Application\Services\AirlineNetworkService;
 use Modules\Integration\Application\Services\AnalyticsFederationService;
 use Modules\Integration\Application\Services\AquacultureExportService;
+use Modules\Integration\Application\Services\AssetReliabilityService;
 use Modules\Integration\Application\Services\AviationService;
 use Modules\Integration\Application\Services\BmtMicrofinanceService;
 use Modules\Integration\Application\Services\BusinessContinuityCrisisService;
@@ -160,6 +161,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(InvestorRelationsService::class);
         $this->app->singleton(ProfitabilityCostIntelligenceService::class);
         $this->app->singleton(QualityManagementSystemService::class);
+        $this->app->singleton(AssetReliabilityService::class);
     }
 
     public function boot(): void

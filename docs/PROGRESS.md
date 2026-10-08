@@ -2541,14 +2541,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 213.8 Quality gate Fase 213
 
 ## FASE 214 — OPERASI: MAINTENANCE, RELIABILITY & ASSET PERFORMANCE 30 LINI
-- [ ] 214.1 Unified asset reliability: mesin pabrik, alat berat, armada, alat medis, gedung, kapal, pesawat, transformer → strategy per kelas (corrective/preventive/predictive) → work order terpusat
-- [ ] 214.2 Condition monitoring: sensor (vibration, thermography, oil, ultrasound simulasi) → health index → prediction → part ordering terhubung MRP (Fase 82.1)
-- [ ] 214.3 Reliability metrics: MTBF, MTTR, availability, PM compliance, backlog aging, wrench time → target per kelas aset → improvement project
-- [ ] 214.4 Spare parts strategy: criticality × lead time → stocking level, consignment dengan vendor, emergency sourcing → biaya inventory vs downtime ter-optimal
-- [ ] 214.5 Tests: prediction trigger WO sekali, part availability gate repair, metrics = agregasi nyata, TCO konsisten (Fase 31.7), `ast:audit` clean
-- [ ] 214.6 Edge case: prediksi kegagalan keliru (false positive) → WO dibatalkan dengan alasan, model dikoreksi
-- [ ] 214.7 Critical spare single-source → dual-source qualification atau buffer stok sesuai criticality matrix
-- [ ] 214.8 Quality gate Fase 214
+- [x] 214.1 Unified asset reliability: mesin pabrik, alat berat, armada, alat medis, gedung, kapal, pesawat, transformer → strategy per kelas (corrective/preventive/predictive) → work order terpusat
+- [x] 214.2 Condition monitoring: sensor (vibration, thermography, oil, ultrasound simulasi) → health index → prediction → part ordering terhubung MRP (Fase 82.1)
+- [x] 214.3 Reliability metrics: MTBF, MTTR, availability, PM compliance, backlog aging, wrench time → target per kelas aset → improvement project
+- [x] 214.4 Spare parts strategy: criticality × lead time → stocking level, consignment dengan vendor, emergency sourcing → biaya inventory vs downtime ter-optimal
+- [x] 214.5 Tests: prediction trigger WO sekali, part availability gate repair, metrics = agregasi nyata, TCO konsisten (Fase 31.7), `ast:audit` clean
+- [x] 214.6 Edge case: prediksi kegagalan keliru (false positive) → WO dibatalkan dengan alasan, model dikoreksi
+- [x] 214.7 Critical spare single-source → dual-source qualification atau buffer stok sesuai criticality matrix
+- [x] 214.8 Quality gate Fase 214
 
 ## FASE 215 — OPERASI: SUPPLY CHAIN EXECUTION & WAREHOUSE NETWORK 30 LINI
 - [ ] 215.1 Network design: lokasi DC/gudang/kitchen/dark store/port → service coverage vs cost → simulator optimasi lokasi (Fase 199.1) → rekomendasi capex
