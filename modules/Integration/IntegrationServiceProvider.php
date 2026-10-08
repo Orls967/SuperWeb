@@ -223,6 +223,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\DataMeshFederatedGovernanceService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\AutonomousEnterpriseLadderService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\SimulationSyntheticFactoryService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\HumanAiCollaborationWorkflowsService::class);
     }
 
     public function boot(): void
