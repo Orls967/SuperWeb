@@ -2984,14 +2984,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 257.8 Quality gate Fase 257
 
 ## FASE 258 — PLATFORM: MULTI-REGION DATA ARCHITECTURE & EDGE PATTERNS
-- [ ] 258.1 Topologi data multi-region (memperluas Fase 145.1): primary per domain (komoditas internasional di SG, operasi domestik di Jakarta) → replicasi → conflict policy per data class (uang = strict serialisasi)
-- [ ] 258.2 Edge patterns per lini venue/tambang/kapal (Fase 145.2) → sync protocol formal: op selection, tombstone, version vector simulasi → convergence test
-- [ ] 258.3 Data gravity routing: query dievaluasi dekat sumber → federated query planner → biaya transfer data terkontrol → cost attribution per region
-- [ ] 258.4 Tests: convergence edge setelah partition healing (Jepsen-style sim), serialisasi ledger multi-region, data gravity tak melanggar residency (Fase 145.5)
-- [ ] 258.5 Edge case: conflict pada data kritis (dua region menulis) → primary epoch menentukan pemenang, loser rollback
-- [ ] 258.6 Data gravity: query planner pilih region → biaya transfer terukur & dioptimasi
-- [ ] 258.7 Residency constraint tetap berlaku walau failover (mode lokal read-only bila diperlukan)
-- [ ] 258.8 Quality gate Fase 258
+- [x] 258.1 Topologi data multi-region (memperluas Fase 145.1): primary per domain (komoditas internasional di SG, operasi domestik di Jakarta) → replicasi → conflict policy per data class (uang = strict serialisasi)
+- [x] 258.2 Edge patterns per lini venue/tambang/kapal (Fase 145.2) → sync protocol formal: op selection, tombstone, version vector simulasi → convergence test
+- [x] 258.3 Data gravity routing: query dievaluasi dekat sumber → federated query planner → biaya transfer data terkontrol → cost attribution per region
+- [x] 258.4 Tests: convergence edge setelah partition healing (Jepsen-style sim), serialisasi ledger multi-region, data gravity tak melanggar residency (Fase 145.5)
+- [x] 258.5 Edge case: conflict pada data kritis (dua region menulis) → primary epoch menentukan pemenang, loser rollback
+- [x] 258.6 Data gravity: query planner pilih region → biaya transfer terukur & dioptimasi
+- [x] 258.7 Residency constraint tetap berlaku walau failover (mode lokal read-only bila diperlukan)
+- [x] 258.8 Quality gate Fase 258
 
 ## FASE 259 — PLATFORM: ENTERPRISE SEARCH & KNOWLEDGE GRAPH
 - [ ] 259.1 Knowledge graph lintas entitas: hubungan (pelanggan ↔ kontrak ↔ aset ↔ proyek ↔ risiko ↔ pihak) → traversal query terkontrol akses → insight graph (mis. eksposur konsentrasi via graph)
