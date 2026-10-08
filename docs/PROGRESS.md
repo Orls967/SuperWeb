@@ -3762,14 +3762,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 332.8 Quality gate Fase 332
 
 ## FASE 333 — SUSTAINABILITY INTEGRATION: TRANSITION PLANS ACROSS 30 LINI
-- [ ] 333.1 Per-lini transition plan with owner, levers, budget, milestones, dependencies and annual review → consolidated trajectory
-- [ ] 333.2 Capital allocation climate screen integrated to portfolio office (Fase 141.2) → high transition risk requires plan before approval
-- [ ] 333.3 Progress-to-target dashboard with variance attribution, countermeasures, and board escalation
-- [ ] 333.4 Tests: consolidated target = sum of entity targets under boundary, capex link verified, missed milestone escalates, `esg:audit` clean
-- [ ] 333.5 Edge case: lini tak punya jalur transisi → jangan klaim "transition" kosong; buat rencana atau tarik klaim
-- [ ] 333.6 Risiko: capex hijau menunggu approval lama → milestone terikat funding approval eksplisit
-- [ ] 333.7 Evidence: per-entitas trajectory, capex link, dan escalation tercatat per kuartal
-- [ ] 333.8 Quality gate Fase 333
+- [x] 333.1 Per-lini transition plan with owner, levers, budget, milestones, dependencies and annual review → consolidated trajectory
+- [x] 333.2 Capital allocation climate screen integrated to portfolio office (Fase 141.2) → high transition risk requires plan before approval
+- [x] 333.3 Progress-to-target dashboard with variance attribution, countermeasures, and board escalation
+- [x] 333.4 Tests: consolidated target = sum of entity targets under boundary, capex link verified, missed milestone escalates, `esg:audit` clean
+- [x] 333.5 Edge case: lini tak punya jalur transisi → jangan klaim "transition" kosong; buat rencana atau tarik klaim
+- [x] 333.6 Risiko: capex hijau menunggu approval lama → milestone terikat funding approval eksplisit
+- [x] 333.7 Evidence: per-entitas trajectory, capex link, dan escalation tercatat per kuartal
+- [x] 333.8 Quality gate Fase 333
 
 ## FASE 334 — SUSTAINABILITY INTEGRATION: CIRCULAR BUSINESS MODELS & REVENUE
 - [ ] 334.1 Product-as-a-service, lease, take-back, refurbishment and resale business models → contract templates, asset ownership, usage metering, end-of-life
