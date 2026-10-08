@@ -2501,14 +2501,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 209.8 Quality gate Fase 209
 
 ## FASE 210 — KEUANGAN: CAPITAL MANAGEMENT & FUNDING STRATEGY
-- [ ] 210.1 Capital structure model: debt/equity per entitas, covenant ratio (Fase 48.7) lintas 30 lini → headroom → early warning → opsi (refinancing, equity via RWA/sukuk Fase 162, dividen policy)
-- [ ] 210.2 Funding pipeline: kebutuhan proyek (EPC, ekspansi) → sumber (kas, bank, sukuk, investor syndication Fase 118.3, ILS Fase 157.5) → biaya & tenor → keputusan Treasury
-- [ ] 210.3 Dividend & distribution policy: per entitas (suku bagi hasil syariah, dividen token, payout RWA) → test profit & solvabilitas → approval → jurnal → withholding
-- [ ] 210.4 Credit rating simulation: faktor (leverage, coverage, diversifikasi, governance) → skor → hubungan ke biaya dana (interest spread) → aksi perbaikan terukur
-- [ ] 210.5 Tests: covenant breach terdeteksi sebelum jatuh tempo, distribusi tak melebihi profit tersedia, funding cost = actual terbayar, `treasury:audit` clean
-- [ ] 210.6 Edge case: covenant terancam breach → aksi cepat (jual aset/refinance/penyertaan) via approval darurat, bukan menunggu laporan
-- [ ] 210.7 Kapasitas utang agregat: exposure gabungan seluruh entitas vs total ekuitas → guardrail grup
-- [ ] 210.8 Quality gate Fase 210
+- [x] 210.1 Capital structure model: debt/equity per entitas, covenant ratio (Fase 48.7) lintas 30 lini → headroom → early warning → opsi (refinancing, equity via RWA/sukuk Fase 162, dividen policy)
+- [x] 210.2 Funding pipeline: kebutuhan proyek (EPC, ekspansi) → sumber (kas, bank, sukuk, investor syndication Fase 118.3, ILS Fase 157.5) → biaya & tenor → keputusan Treasury
+- [x] 210.3 Dividend & distribution policy: per entitas (suku bagi hasil syariah, dividen token, payout RWA) → test profit & solvabilitas → approval → jurnal → withholding
+- [x] 210.4 Credit rating simulation: faktor (leverage, coverage, diversifikasi, governance) → skor → hubungan ke biaya dana (interest spread) → aksi perbaikan terukur
+- [x] 210.5 Tests: covenant breach terdeteksi sebelum jatuh tempo, distribusi tak melebihi profit tersedia, funding cost = actual terbayar, `treasury:audit` clean
+- [x] 210.6 Edge case: covenant terancam breach → aksi cepat (jual aset/refinance/penyertaan) via approval darurat, bukan menunggu laporan
+- [x] 210.7 Kapasitas utang agregat: exposure gabungan seluruh entitas vs total ekuitas → guardrail grup
+- [x] 210.8 Quality gate Fase 210
 
 ## FASE 211 — KEUANGAN: INVESTOR RELATIONS & MARKET DISCIPLINE
 - [ ] 211.1 Earnings cycle: guidance (internal), actual vs guidance variance root-cause, press release draf (approval), investor FAQ knowledge base (Fase 198.1)

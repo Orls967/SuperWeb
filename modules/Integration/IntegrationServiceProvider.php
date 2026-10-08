@@ -19,6 +19,7 @@ use Modules\Integration\Application\Services\AviationService;
 use Modules\Integration\Application\Services\BmtMicrofinanceService;
 use Modules\Integration\Application\Services\BusinessContinuityCrisisService;
 use Modules\Integration\Application\Services\CampusEducationService;
+use Modules\Integration\Application\Services\CapitalFundingStrategyService;
 use Modules\Integration\Application\Services\CircularEconomyService;
 use Modules\Integration\Application\Services\ConcurrencyLockingService;
 use Modules\Integration\Application\Services\CrisisContinuityService;
@@ -152,6 +153,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(RegulatoryPolicyLifecycleService::class);
         $this->app->singleton(TaxCustomsTradeService::class);
         $this->app->singleton(FinanceCloseAgilityService::class);
+        $this->app->singleton(CapitalFundingStrategyService::class);
     }
 
     public function boot(): void
