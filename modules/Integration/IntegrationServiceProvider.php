@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Integration\Application\Services\AquacultureExportService;
 use Modules\Integration\Application\Services\BmtMicrofinanceService;
 use Modules\Integration\Application\Services\CampusEducationService;
+use Modules\Integration\Application\Services\CircularEconomyService;
 use Modules\Integration\Application\Services\CrisisContinuityService;
 use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
@@ -80,6 +81,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(AquacultureExportService::class);
         $this->app->singleton(ForestryTimberService::class);
         $this->app->singleton(NatureFinanceService::class);
+        $this->app->singleton(CircularEconomyService::class);
     }
 
     public function boot(): void

@@ -2186,12 +2186,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 173.6 Quality gate Fase 173
 
 ## FASE 174 — LINI 24: WASTE, RECYCLING & INDUSTRIAL CIRCULARITY MARKETPLACE
-- [ ] 174.1 Modul `Circular` (`cir_`): waste streams, by-product specifications, testing, permits, recycler facilities, manifests, weighbridge records
-- [ ] 174.2 B2B marketplace matches seller by-product (manufacturing/mining/hotel/healthcare) to buyer input; price, quality, distance and compliance filters
-- [ ] 174.3 Reverse logistics booking + custody + treatment certificate; hazardous streams require eligible licensed operator and stricter approval
-- [ ] 174.4 Circularity accounting: material input/output, recycled content, avoided disposal, revenue/fee and ESG evidence linked to lots
-- [ ] 174.5 Tests: hazardous waste cannot route to unqualified party, mass balance reconciles, manifest chain complete, no double-counted ESG claim, `circular:audit` clean
-- [ ] 174.6 Quality gate Fase 174
+- [x] 174.1 Modul `Circular` (`cir_`): waste streams, by-product specifications, testing, permits, recycler facilities, manifests, weighbridge records
+- [x] 174.2 B2B marketplace matches seller by-product (manufacturing/mining/hotel/healthcare) to buyer input; price, quality, distance and compliance filters
+- [x] 174.3 Reverse logistics booking + custody + treatment certificate; hazardous streams require eligible licensed operator and stricter approval
+- [x] 174.4 Circularity accounting: material input/output, recycled content, avoided disposal, revenue/fee and ESG evidence linked to lots
+- [x] 174.5 Tests: hazardous waste cannot route to unqualified party, mass balance reconciles, manifest chain complete, no double-counted ESG claim, `circular:audit` clean
+- [x] 174.6 Quality gate Fase 174
 
 ## FASE 175 — LINI 25: PROFESSIONAL SERVICES, CONSULTING & PROJECT MARKETPLACE
 - [ ] 175.1 Modul `ProServices` (`psv_`): service catalog, firms/consultants, statements of work, milestones, timesheets, deliverables, acceptance and disputes
