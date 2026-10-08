@@ -4272,14 +4272,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 383.8 Quality gate Fase 383
 
 ## FASE 384 — INTEGRASI GELOMBANG 3: EDUCATION, CERTIFICATION & OPERATIONAL AUTHORIZATION
-- [ ] 384.1 Credential lifecycle is authoritative for role eligibility across healthcare, aviation, mine, energy, port, food safety and finance control
-- [ ] 384.2 Renewal forecast, refresher learning, examination, revocation and employer notification integrated with scheduling
-- [ ] 384.3 Credential audit dashboard lists active assignments relying on each certification and impact of expiry
-- [ ] 384.4 Tests: expired/revoked credential blocks new assignment, in-progress task gets safe handoff, `campus:audit` clean
-- [ ] 384.5 Edge case: kredensial dicabut saat tugas berjalan → handover aman + tugas baru tertahan, tanpa risiko keselamatan
-- [ ] 384.6 Risiko: renewal terlambat → forecast reminder berjenjang + supervisor visibility sejak 90 hari
-- [ ] 384.7 Evidence: credential coverage, expiry forecast, dan assignment block tercatat
-- [ ] 384.8 Quality gate Fase 384
+- [x] 384.1 Credential lifecycle is authoritative for role eligibility across healthcare, aviation, mine, energy, port, food safety and finance control
+- [x] 384.2 Renewal forecast, refresher learning, examination, revocation and employer notification integrated with scheduling
+- [x] 384.3 Credential audit dashboard lists active assignments relying on each certification and impact of expiry
+- [x] 384.4 Tests: expired/revoked credential blocks new assignment, in-progress task gets safe handoff, `campus:audit` clean
+- [x] 384.5 Edge case: kredensial dicabut saat tugas berjalan → handover aman + tugas baru tertahan, tanpa risiko keselamatan
+- [x] 384.6 Risiko: renewal terlambat → forecast reminder berjenjang + supervisor visibility sejak 90 hari
+- [x] 384.7 Evidence: credential coverage, expiry forecast, dan assignment block tercatat
+- [x] 384.8 Quality gate Fase 384
 
 ## FASE 385 — INTEGRASI GELOMBANG 3: MEDIA, COMMERCE & CONTENT RIGHTS
 - [ ] 385.1 Content rights registry links media asset → campaign → venue/hotel screen → marketplace merch → revenue split and territory/window
