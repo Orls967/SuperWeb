@@ -3812,14 +3812,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 337.8 Quality gate Fase 337
 
 ## FASE 338 — GOVERNANCE: LEGAL & REGULATORY CHANGE EXECUTION
-- [ ] 338.1 Change-to-control pipeline: regulatory update → interpretation memo (legal) → control gap → build/test/deploy → evidence → close → monitor
-- [ ] 338.2 Jurisdiction rule matrix: per negara/lini → applicability → owner → status → deadline → escalation → proof of compliance
-- [ ] 338.3 Litigation & enforcement tracking: cases, provisions (accounting estimate), settlement terms, disclosure materiality check
-- [ ] 338.4 Tests: gap closure evidence required, provision review approval, materiality determination documented, `compliance:audit` clean
-- [ ] 338.5 Edge case: regulasi baru membutuhkan perubahan sistem besar → replan dengan approval, bukan push sembunyi
-- [ ] 338.6 Risiko: litigation provision tak materialitas → review materiality threshold berkala
-- [ ] 338.7 Evidence: gap closure, provision review, dan disclosure decision tercatat
-- [ ] 338.8 Quality gate Fase 338
+- [x] 338.1 Change-to-control pipeline: regulatory update → interpretation memo (legal) → control gap → build/test/deploy → evidence → close → monitor
+- [x] 338.2 Jurisdiction rule matrix: per negara/lini → applicability → owner → status → deadline → escalation → proof of compliance
+- [x] 338.3 Litigation & enforcement tracking: cases, provisions (accounting estimate), settlement terms, disclosure materiality check
+- [x] 338.4 Tests: gap closure evidence required, provision review approval, materiality determination documented, `compliance:audit` clean
+- [x] 338.5 Edge case: regulasi baru membutuhkan perubahan sistem besar → replan dengan approval, bukan push sembunyi
+- [x] 338.6 Risiko: litigation provision tak materialitas → review materiality threshold berkala
+- [x] 338.7 Evidence: gap closure, provision review, dan disclosure decision tercatat
+- [x] 338.8 Quality gate Fase 338
 
 ## FASE 339 — GOVERNANCE: PUBLIC AFFAIRS, STAKEHOLDER & LICENSE TO OPERATE
 - [ ] 339.1 Stakeholder map per lini/region: influence & interest → engagement plan → sentiment tracking (aggregated) → action items → license risk index
