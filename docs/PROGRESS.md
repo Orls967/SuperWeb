@@ -3862,14 +3862,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 342.8 Quality gate Fase 342
 
 ## FASE 343 — DATA PLATFORM: DATA RESILIENCE, CHANGE & MIGRATION
-- [ ] 343.1 Data integrity controls: checksum, row counts, referential invariants, reconciliation jobs → tamper/drift detection → alert
-- [ ] 343.2 Schema change governance: proposal → compatibility analysis (Fase 185.3) → backfill plan → cutover → verification → cleanup
-- [ ] 343.3 Restore data drill: point-in-time restore → validation suite → RPO/RTO measured → gap remediation
-- [ ] 343.4 Tests: tamper detected, restore drill passes, incompatible migration blocked
-- [ ] 343.5 Edge case: restore drill gagal → blocker; capacity & DR plan diperbarui sebelum RPO/RTO diandalkan
-- [ ] 343.6 Risiko: schema change tanpa backfill plan → CI menolak migrasi yang tak punya plan
-- [ ] 343.7 Evidence: integrity report, migration rehearsal log, dan restore drill result terarsip
-- [ ] 343.8 Quality gate Fase 343
+- [x] 343.1 Data integrity controls: checksum, row counts, referential invariants, reconciliation jobs → tamper/drift detection → alert
+- [x] 343.2 Schema change governance: proposal → compatibility analysis (Fase 185.3) → backfill plan → cutover → verification → cleanup
+- [x] 343.3 Restore data drill: point-in-time restore → validation suite → RPO/RTO measured → gap remediation
+- [x] 343.4 Tests: tamper detected, restore drill passes, incompatible migration blocked
+- [x] 343.5 Edge case: restore drill gagal → blocker; capacity & DR plan diperbarui sebelum RPO/RTO diandalkan
+- [x] 343.6 Risiko: schema change tanpa backfill plan → CI menolak migrasi yang tak punya plan
+- [x] 343.7 Evidence: integrity report, migration rehearsal log, dan restore drill result terarsip
+- [x] 343.8 Quality gate Fase 343
 
 ## FASE 344 — DATA PLATFORM: DATA ACCESS, CONSUMER & DOMAIN SELF-SERVICE
 - [ ] 344.1 Consumer workspace: explore catalog, request access with justification, auto-approve policy-compliant, human review for sensitive → time-bound grant
