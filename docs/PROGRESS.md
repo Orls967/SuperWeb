@@ -2162,12 +2162,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 170.6 Quality gate Fase 170
 
 ## FASE 171 — LINI 22: AQUACULTURE EXPORT, SEAFOOD TRACEABILITY & BLUE ESG
-- [ ] 171.1 End-to-end lot passport from hatchery/feed/farm/harvest/processing/container/buyer; immutable lineage and public verification with sensitive location redacted
-- [ ] 171.2 Export documents (health certificate, origin, customs simulation), Trade Finance and multimodal Logistics integration
-- [ ] 171.3 Blue ESG: water quality, mangrove restoration, feed conversion, bycatch/waste, scope emissions; verified credit issuance guardrails
-- [ ] 171.4 Buyer procurement portal: contracted volume, grade tolerances, shipment slots, assay disputes, escrow settlement
-- [ ] 171.5 Tests: lineage completeness, no duplicate origin certificate, export quantity ≤ verified harvest, ESG claims tied to evidence, `marine:audit` clean
-- [ ] 171.6 Quality gate Fase 171
+- [x] 171.1 End-to-end lot passport from hatchery/feed/farm/harvest/processing/container/buyer; immutable lineage and public verification with sensitive location redacted
+- [x] 171.2 Export documents (health certificate, origin, customs simulation), Trade Finance and multimodal Logistics integration
+- [x] 171.3 Blue ESG: water quality, mangrove restoration, feed conversion, bycatch/waste, scope emissions; verified credit issuance guardrails
+- [x] 171.4 Buyer procurement portal: contracted volume, grade tolerances, shipment slots, assay disputes, escrow settlement
+- [x] 171.5 Tests: lineage completeness, no duplicate origin certificate, export quantity ≤ verified harvest, ESG claims tied to evidence, `marine:audit` clean
+- [x] 171.6 Quality gate Fase 171
 
 ## FASE 172 — LINI 23: KEHUTANAN, TIMBER & RESTORATION VALUE CHAIN
 - [ ] 172.1 Modul `Forest` (`for_`): concessions/simulation plots, species, inventory, harvest plans, permits, restoration polygons, geospatial history
