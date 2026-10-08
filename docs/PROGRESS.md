@@ -4282,14 +4282,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 384.8 Quality gate Fase 384
 
 ## FASE 385 — INTEGRASI GELOMBANG 3: MEDIA, COMMERCE & CONTENT RIGHTS
-- [ ] 385.1 Content rights registry links media asset → campaign → venue/hotel screen → marketplace merch → revenue split and territory/window
-- [ ] 385.2 Ad delivery uses verified inventory/impressions, consent and frequency caps across app, venue, mall and hotel
-- [ ] 385.3 Rights expiry automatically stops distribution and future billing; historical reports remain auditable
-- [ ] 385.4 Tests: expired license blocks serving, campaign impressions reconcile, revenue split balances, `med:audit` clean
-- [ ] 385.5 Edge case: content dilayani setelah hak habis → auto-stop + kompensasi ke pemegang hak, tercatat sebagai incident
-- [ ] 385.6 Risiko: impression overclaimed → metering independen + reconciliation sebelum invoice advertiser
-- [ ] 385.7 Evidence: rights window, impression evidence, dan split settlement tercatat per aset
-- [ ] 385.8 Quality gate Fase 385
+- [x] 385.1 Content rights registry links media asset → campaign → venue/hotel screen → marketplace merch → revenue split and territory/window
+- [x] 385.2 Ad delivery uses verified inventory/impressions, consent and frequency caps across app, venue, mall and hotel
+- [x] 385.3 Rights expiry automatically stops distribution and future billing; historical reports remain auditable
+- [x] 385.4 Tests: expired license blocks serving, campaign impressions reconcile, revenue split balances, `med:audit` clean
+- [x] 385.5 Edge case: content dilayani setelah hak habis → auto-stop + kompensasi ke pemegang hak, tercatat sebagai incident
+- [x] 385.6 Risiko: impression overclaimed → metering independen + reconciliation sebelum invoice advertiser
+- [x] 385.7 Evidence: rights window, impression evidence, dan split settlement tercatat per aset
+- [x] 385.8 Quality gate Fase 385
 
 ## FASE 386 — INTEGRASI GELOMBANG 3: MINING, PORT, AVIATION & GLOBAL COMMODITY FLOW
 - [ ] 386.1 Mine output → terminal weighbridge → port yard/berth → vessel voyage → customs/export → buyer receipt → payment/LC release, one traceable commodity chain
