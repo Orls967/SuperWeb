@@ -3552,14 +3552,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 311.8 Quality gate Fase 311
 
 ## FASE 312 — ADVANCED FINANCE: FP&A, DRIVER-BASED PLANNING & AGILE BUDGET
-- [ ] 312.1 Driver-based model: revenue = traffic × conversion × price; cost = volume × rate; headcount driver → planning cepat (ubah driver → seluruh model recompute) → konsistensi dengan ledger
-- [ ] 312.2 Rolling forecast 12 bulan (menggantikan annual static) → reforecast bulanan → accuracy tracking → variance driver attribution otomatis
-- [ ] 312.3 Zero-based review cycle: per pusat biaya periodik justifikasi belanja dari nol → eliminations → savings terverifikasi → budaya biaya
-- [ ] 312.4 Tests: model recompute deterministik, forecast accuracy terukur, ZBB approval lengkap, `enterprise:audit` clean
-- [ ] 312.5 Edge case: driver forecast meleset besar → reforecast dengan justifikasi, jangan diamkan variance
-- [ ] 312.6 Risiko: ZBB menekan investasi jangka panjang → carve-out disetujui board untuk inisiatif strategis
-- [ ] 312.7 Evidence: model version, reforecast accuracy, dan savings ZBB terverifikasi Finance
-- [ ] 312.8 Quality gate Fase 312
+- [x] 312.1 Driver-based model: revenue = traffic × conversion × price; cost = volume × rate; headcount driver → planning cepat (ubah driver → seluruh model recompute) → konsistensi dengan ledger
+- [x] 312.2 Rolling forecast 12 bulan (menggantikan annual static) → reforecast bulanan → accuracy tracking → variance driver attribution otomatis
+- [x] 312.3 Zero-based review cycle: per pusat biaya periodik justifikasi belanja dari nol → eliminations → savings terverifikasi → budaya biaya
+- [x] 312.4 Tests: model recompute deterministik, forecast accuracy terukur, ZBB approval lengkap, `enterprise:audit` clean
+- [x] 312.5 Edge case: driver forecast meleset besar → reforecast dengan justifikasi, jangan diamkan variance
+- [x] 312.6 Risiko: ZBB menekan investasi jangka panjang → carve-out disetujui board untuk inisiatif strategis
+- [x] 312.7 Evidence: model version, reforecast accuracy, dan savings ZBB terverifikasi Finance
+- [x] 312.8 Quality gate Fase 312
 
 ## FASE 313 — ADVANCED COMMERCE: MARKETPLACE DYNAMIC & C2B/C2C FLOWS
 - [ ] 313.1 C2C marketplace: consumer jual ke consumer (bekas kendaraan Fase 5A, fashion Fase 182, elektronik) → listing, escrow (Fase 61.4), autentikasi barang, rating, fulfillment offer
