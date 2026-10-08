@@ -4392,14 +4392,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 395.8 Quality gate Fase 395
 
 ## FASE 396 — STRESS WAVE: GLOBAL CONCURRENCY & DISTRIBUTED TRANSACTION SAFETY
-- [ ] 396.1 Global idempotency namespace and conflict behavior across region failover; key retention policy and client replay semantics
-- [ ] 396.2 Saga timeout/recovery matrix for each multi-step workflow; compensation owners and unresolvable state escalation
-- [ ] 396.3 Lock contention metrics, deterministic lock ordering, bounded deadlock retry and user-facing conflict responses
-- [ ] 396.4 Tests: region failover repeated command posts once, saga recovery converges, contention load yields no invariant breach
-- [ ] 396.5 Edge case: saga tak terpecahkan setelah timeout → escalate ke owner manual dengan checklist, bukan loop
-- [ ] 396.6 Risiko: lock contention tinggi → tuning urutan lock & partition, jangan hanya menaikkan timeout
-- [ ] 396.7 Evidence: idempotency policy, saga matrix, dan contention metrics tercatat
-- [ ] 396.8 Quality gate Fase 396
+- [x] 396.1 Global idempotency namespace and conflict behavior across region failover; key retention policy and client replay semantics
+- [x] 396.2 Saga timeout/recovery matrix for each multi-step workflow; compensation owners and unresolvable state escalation
+- [x] 396.3 Lock contention metrics, deterministic lock ordering, bounded deadlock retry and user-facing conflict responses
+- [x] 396.4 Tests: region failover repeated command posts once, saga recovery converges, contention load yields no invariant breach
+- [x] 396.5 Edge case: saga tak terpecahkan setelah timeout → escalate ke owner manual dengan checklist, bukan loop
+- [x] 396.6 Risiko: lock contention tinggi → tuning urutan lock & partition, jangan hanya menaikkan timeout
+- [x] 396.7 Evidence: idempotency policy, saga matrix, dan contention metrics tercatat
+- [x] 396.8 Quality gate Fase 396
 
 ## FASE 397 — STRESS WAVE: DATA QUALITY & DRIFT UNDER LOAD
 - [ ] 397.1 Continuous DQ checks sampled vs full scans based on risk; ensure production checks don't create load spikes

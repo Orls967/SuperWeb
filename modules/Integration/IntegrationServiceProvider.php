@@ -349,6 +349,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\DatabasePartitionScaleService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\QueueSchedulerBatchService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\ReadWriteReplicaLagService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\DistributedTransactionSafetyService::class);
     }
 
     public function boot(): void
