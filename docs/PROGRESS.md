@@ -3264,15 +3264,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 285.8 Quality gate Fase 285
 
 ## FASE 286 — ESG: NATURE, CLIMATE & SOCIAL IMPACT AUDIT AT SCALE
-- [ ] 286.1 Impact measurement framework: baseline/counterfactual, attribution, leakage/permanence risk → applies carbon, biodiversity, community, health, education projects
-- [ ] 286.2 Independent verification marketplace: verifier qualification, sampling plan, evidence review, conflict-of-interest control, assurance statement → payout only after approval
-- [ ] 286.3 Impact-linked financing: loan/sukuk interest/margin adjusts by verified KPI (water, emissions, jobs, training) → threshold & calculation immutable → audit
-- [ ] 286.4 ESG claims governance: public claim must map to evidence & boundary → legal approval → expiry/revalidation → prevent greenwashing
-- [ ] 286.5 Tests: counterfactual method versioned, verifier conflict blocked, finance adjustment = metric formula, claim evidence required, `esg:audit` clean
-- [ ] 286.6 Edge case: verifier independence konflik → diganti, hasil sebelumnya ditinjau ulang
-- [ ] 286.7 KPI financing tak tercapai → step-down dihitung otomatis sesuai formula kontrak
-- [ ] 286.8 Klaim ESG publik wajib melewati disclosure control (Fase 331), bukan langsung dari proyek
-- [ ] 286.9 Quality gate Fase 286
+- [x] 286.1 Impact measurement framework: baseline/counterfactual, attribution, leakage/permanence risk → applies carbon, biodiversity, community, health, education projects
+- [x] 286.2 Independent verification marketplace: verifier qualification, sampling plan, evidence review, conflict-of-interest control, assurance statement → payout only after approval
+- [x] 286.3 Impact-linked financing: loan/sukuk interest/margin adjusts by verified KPI (water, emissions, jobs, training) → threshold & calculation immutable → audit
+- [x] 286.4 ESG claims governance: public claim must map to evidence & boundary → legal approval → expiry/revalidation → prevent greenwashing
+- [x] 286.5 Tests: counterfactual method versioned, verifier conflict blocked, finance adjustment = metric formula, claim evidence required, `esg:audit` clean
+- [x] 286.6 Edge case: verifier independence konflik → diganti, hasil sebelumnya ditinjau ulang
+- [x] 286.7 KPI financing tak tercapai → step-down dihitung otomatis sesuai formula kontrak
+- [x] 286.8 Klaim ESG publik wajib melewati disclosure control (Fase 331), bukan langsung dari proyek
+- [x] 286.9 Quality gate Fase 286
 
 ## FASE 287 — ESG: CLIMATE ADAPTATION & PHYSICAL RISK RESILIENCE 30 LINI
 - [ ] 287.1 Asset geospatial climate exposure: heat, flood, storm, drought (simulasi layers) → risk score per site/asset → financial impact estimation (damage, downtime, insurance)
