@@ -3622,14 +3622,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 318.8 Quality gate Fase 318
 
 ## FASE 319 — ADVANCED PEOPLE: WORKFORCE AUTOMATION & HUMAN-AI ROLE DESIGN
-- [ ] 319.1 Role automation assessment: per fungsi → automatable task % → redesign role (human + AI copilot Fase 270) → training gap → redeployment plan → productivity target
-- [ ] 319.2 Labor-automation governance: keputusan otomasi besar → dampak pekerja (Fase 288.3 just transition) → stakeholder consultation → timeline humanis → dampak biaya & KPI
-- [ ] 319.3 New role creation lifecycle: role baru dari otomasi (mis. AI auditor, robot fleet manager) → job architecture update (Fase 224.1) → hiring/transfer → fill rate
-- [ ] 319.4 Tests: automation assessment reproducible, governance approval wajib, role architecture versioned, `hcm:audit` clean
-- [ ] 319.5 Edge case: otomasi menurunkan kebutuhan tenaga → redeployment & reskilling wajib sebelum PHK (just transition)
-- [ ] 319.6 Risiko: productivity target menekan kualitas → counter-metric kualitas/safety dipasang (Fase 727)
-- [ ] 319.7 Evidence: automation %, redeployment rate, dan role baru terisi tercatat
-- [ ] 319.8 Quality gate Fase 319
+- [x] 319.1 Role automation assessment: per fungsi → automatable task % → redesign role (human + AI copilot Fase 270) → training gap → redeployment plan → productivity target
+- [x] 319.2 Labor-automation governance: keputusan otomasi besar → dampak pekerja (Fase 288.3 just transition) → stakeholder consultation → timeline humanis → dampak biaya & KPI
+- [x] 319.3 New role creation lifecycle: role baru dari otomasi (mis. AI auditor, robot fleet manager) → job architecture update (Fase 224.1) → hiring/transfer → fill rate
+- [x] 319.4 Tests: automation assessment reproducible, governance approval wajib, role architecture versioned, `hcm:audit` clean
+- [x] 319.5 Edge case: otomasi menurunkan kebutuhan tenaga → redeployment & reskilling wajib sebelum PHK (just transition)
+- [x] 319.6 Risiko: productivity target menekan kualitas → counter-metric kualitas/safety dipasang (Fase 727)
+- [x] 319.7 Evidence: automation %, redeployment rate, dan role baru terisi tercatat
+- [x] 319.8 Quality gate Fase 319
 
 ## FASE 320 — ADVANCED PEOPLE: TOTAL WELLBEING & PERFORMANCE SUSTAINABILITY
 - [ ] 320.1 Sustainable performance model: workload metrics (overtime, on-call, utilization) → burnout risk indicator → workload balancing action → attrition/absence correlation terukur
