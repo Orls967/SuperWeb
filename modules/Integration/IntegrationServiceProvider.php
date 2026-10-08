@@ -186,6 +186,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\CircularityWaterNatureService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\BoardGovernanceDoaService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\WhistleblowingEthicsService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\EcosystemDaoGovernanceService::class);
     }
 
     public function boot(): void
