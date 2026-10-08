@@ -3114,14 +3114,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 270.8 Quality gate Fase 270
 
 ## FASE 271 — KEUANGAN: INNOVATIVE CAPITAL MARKETS & DIGITAL SECURITIES
-- [ ] 271.1 Digital securities desk: penerbitan token ekuitas/utang (simulasi PSAK, Fase 162/71) → bookbuilding → allocation → secondary trading terbatas → corporate action → reporting
-- [ ] 271.2 Investor onboarding digital: KYC/AML tiered (Fase 27.2 + 200.3) → suitability check → subscription → custody entry (wallet institutional) → statement berkala
-- [ ] 271.3 Market making simulasi: liquidity provider internal (spread rules, inventory limit) → orderbook sehat (depth metric) → fee revenue → disturbance guard
-- [ ] 271.4 Tests: issuance Σ = terbit, suitability gate menolak investor tak memenuhi, market maker inventory limit dihormati, `rwa:audit` clean
-- [ ] 271.5 Edge case: orderbook tipis (liquidity rendah) → spread melebar otomatis + warning, tak paksa harga
-- [ ] 271.6 Investor suitability change → suspend akses instrumen berisiko hingga review ulang
-- [ ] 271.7 Corporate action notice period dihormati, tak ada eksekusi mendadak
-- [ ] 271.8 Quality gate Fase 271
+- [x] 271.1 Digital securities desk: penerbitan token ekuitas/utang (simulasi PSAK, Fase 162/71) → bookbuilding → allocation → secondary trading terbatas → corporate action → reporting
+- [x] 271.2 Investor onboarding digital: KYC/AML tiered (Fase 27.2 + 200.3) → suitability check → subscription → custody entry (wallet institutional) → statement berkala
+- [x] 271.3 Market making simulasi: liquidity provider internal (spread rules, inventory limit) → orderbook sehat (depth metric) → fee revenue → disturbance guard
+- [x] 271.4 Tests: issuance Σ = terbit, suitability gate menolak investor tak memenuhi, market maker inventory limit dihormati, `rwa:audit` clean
+- [x] 271.5 Edge case: orderbook tipis (liquidity rendah) → spread melebar otomatis + warning, tak paksa harga
+- [x] 271.6 Investor suitability change → suspend akses instrumen berisiko hingga review ulang
+- [x] 271.7 Corporate action notice period dihormati, tak ada eksekusi mendadak
+- [x] 271.8 Quality gate Fase 271
 
 ## FASE 272 — KEUANGAN: CRYPTO NATIVE OPERATIONS & DEFI SIMULATION
 - [ ] 272.1 Treasury on-chain (simulasi): stablecoin/vault management → multi-sig approval (m-of-n role) → policy engine (limit harian, allowlist destination) → cold/hot wallet split
