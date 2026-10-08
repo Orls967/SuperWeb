@@ -2328,12 +2328,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 191.5 Quality gate Fase 191
 
 ## FASE 192 — SKALA: PARTISI, ARSIP & QUERY BUDGET 30 LINI
-- [ ] 192.1 Partisi time-based untuk tabel transaksional terbesar (telematik, meteran, order, booking, klaim, tiket) → strategi attach/detach per bulan
-- [ ] 192.2 Cold archive & recall (memperluas Fase 55.8): data > 5 tahun → archive store dengan checksum → query berseleksi tetap bisa tarik → tidak membebani indeks aktif
-- [ ] 192.3 Materialized summary per domain (rollup harian/bulanan) → dashboard memakai rollup → drill-down hanya saat diminta
-- [ ] 192.4 Query budget registry: setiap endpoint kritis punya anggaran query & latensi p95 → dijalankan pada CI → regresi = gate merah
-- [ ] 192.5 Tests: attach/detach tak menghilang data, archive recall checksum valid, rollup = agregasi mentah, budget CI terpasang & gagal saat melanggar
-- [ ] 192.6 Quality gate Fase 192
+- [x] 192.1 Partisi time-based untuk tabel transaksional terbesar (telematik, meteran, order, booking, klaim, tiket) → strategi attach/detach per bulan
+- [x] 192.2 Cold archive & recall (memperluas Fase 55.8): data > 5 tahun → archive store dengan checksum → query berseleksi tetap bisa tarik → tidak membebani indeks aktif
+- [x] 192.3 Materialized summary per domain (rollup harian/bulanan) → dashboard memakai rollup → drill-down hanya saat diminta
+- [x] 192.4 Query budget registry: setiap endpoint kritis punya anggaran query & latensi p95 → dijalankan pada CI → regresi = gate merah
+- [x] 192.5 Tests: attach/detach tak menghilang data, archive recall checksum valid, rollup = agregasi mentah, budget CI terpasang & gagal saat melanggar
+- [x] 192.6 Quality gate Fase 192
 
 ## FASE 193 — SKALA: CONCURRENCY, LOCKING & CONTENTION MANAGEMENT
 - [ ] 193.1 Peta kontensi: akun ledger, seat/tiket/kamar, stok OMS, kapasitas armada, kuota kelas → lock order policy global (urutan ID selalu konsisten) → anti-deadlock

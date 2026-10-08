@@ -36,6 +36,7 @@ use Modules\Integration\Application\Services\MarineAquacultureService;
 use Modules\Integration\Application\Services\MegaScenarioService;
 use Modules\Integration\Application\Services\NatureFinanceService;
 use Modules\Integration\Application\Services\OceanFleetService;
+use Modules\Integration\Application\Services\PartitionArchiveService;
 use Modules\Integration\Application\Services\PlatformEconomyService;
 use Modules\Integration\Application\Services\PortOperationsService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
@@ -116,6 +117,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(AnalyticsFederationService::class);
         $this->app->singleton(GroupCommandCenterService::class);
         $this->app->singleton(ScaleBenchmarkService::class);
+        $this->app->singleton(PartitionArchiveService::class);
     }
 
     public function boot(): void
