@@ -2912,14 +2912,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 250.8 Quality gate Fase 250
 
 ## FASE 251 — INTEGRASI AKHIR A: END-TO-END SUPPLY CHAIN 30 LINI (PLAN-DELIVER)
-- [ ] 251.1 Plan-to-serve unification: S&OP (Fase 201) → planning jaringan (Fase 215) → procurement (Fase 33/82) → make (Fase 36-38) → move (Fase 22/80/177/179) → store (Fase 41) → sell (Fase 137) → return (Fase 79/174) → satu peta kontrol dengan KPI chain (OTIF, DOS, cash-to-cash)
-- [ ] 251.2 Control tower eksekutif 30 lini: status chain live, disruption feed (Fase 53.6) → blast radius → rencana mitigasi → eksekusi via optimizer (Fase 199) → hasil terukur
-- [ ] 251.3 End-to-end cost visibility: cost-to-serve chain per order (manufacture + move + sell + service) → identifikasi pemborosan → improvement project (Fase 217)
-- [ ] 251.4 Tests: chain simulation penuh 90 hari semua audit 0 selisih, KPI chain = agregasi, mitigation execution tercatat, query budget tower terpenuhi
-- [ ] 251.5 Edge case: chain KPI tak konsisten (OTIF naik tapi cash-to-cash memburuk) → review trade-off, jangan rayakan satu metrik
-- [ ] 251.6 Bottleneck chain pindah domain → re-prioritaskan investasi lintas lini (portfolio review)
-- [ ] 251.7 Supply chain ESG: emisi per shipment → link ke green shipping option (Fase 80.6)
-- [ ] 251.8 Quality gate Fase 251
+- [x] 251.1 Plan-to-serve unification: S&OP (Fase 201) → planning jaringan (Fase 215) → procurement (Fase 33/82) → make (Fase 36-38) → move (Fase 22/80/177/179) → store (Fase 41) → sell (Fase 137) → return (Fase 79/174) → satu peta kontrol dengan KPI chain (OTIF, DOS, cash-to-cash)
+- [x] 251.2 Control tower eksekutif 30 lini: status chain live, disruption feed (Fase 53.6) → blast radius → rencana mitigasi → eksekusi via optimizer (Fase 199) → hasil terukur
+- [x] 251.3 End-to-end cost visibility: cost-to-serve chain per order (manufacture + move + sell + service) → identifikasi pemborosan → improvement project (Fase 217)
+- [x] 251.4 Tests: chain simulation penuh 90 hari semua audit 0 selisih, KPI chain = agregasi, mitigation execution tercatat, query budget tower terpenuhi
+- [x] 251.5 Edge case: chain KPI tak konsisten (OTIF naik tapi cash-to-cash memburuk) → review trade-off, jangan rayakan satu metrik
+- [x] 251.6 Bottleneck chain pindah domain → re-prioritaskan investasi lintas lini (portfolio review)
+- [x] 251.7 Supply chain ESG: emisi per shipment → link ke green shipping option (Fase 80.6)
+- [x] 251.8 Quality gate Fase 251
 
 ## FASE 252 — INTEGRASI AKHIR B: END-TO-END FINANCE 30 LINI (PLAN-FUND-REPORT)
 - [ ] 252.1 Finance process unification: plan (budget Fase 54.1) → fund (Treasury Fase 187/210) → transact (AP/AR/payroll/billing 30 lini) → close (Fase 209) → control (Fase 203) → report (Fase 141.5/211) → tax (Fase 208) dalam siklus tunggal dengan checklist otomatis
