@@ -4342,14 +4342,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 390.8 Quality gate Fase 390
 
 ## FASE 391 — STRESS WAVE: 30-LINE BASELINE, DATASET & REPRODUCIBLE BENCHMARK
-- [ ] 391.1 Publish benchmark profile, hardware assumptions, synthetic-data distribution, seed values, run commands and expected variance bands
-- [ ] 391.2 Create tiered stress suites (developer, CI, nightly, extreme) with deterministic data and checkpoint/resume
-- [ ] 391.3 Record per-module ingest, query, memory, queue lag, ledger posting and reconciliation performance
-- [ ] 391.4 Tests: same profile reproducible, benchmark result includes environment, no silently omitted workload, audit clean after run
-- [ ] 391.5 Edge case: hasil benchmark di environment beda → fingerprint environment disimpan, perbandingan hanya dalam band toleransi
-- [ ] 391.6 Risiko: workload terlewat dari suite → completeness checklist suite vs domain registry dicek otomatis
-- [ ] 391.7 Evidence: benchmark profile doc, variance band, dan per-module result terarsip
-- [ ] 391.8 Quality gate Fase 391
+- [x] 391.1 Publish benchmark profile, hardware assumptions, synthetic-data distribution, seed values, run commands and expected variance bands
+- [x] 391.2 Create tiered stress suites (developer, CI, nightly, extreme) with deterministic data and checkpoint/resume
+- [x] 391.3 Record per-module ingest, query, memory, queue lag, ledger posting and reconciliation performance
+- [x] 391.4 Tests: same profile reproducible, benchmark result includes environment, no silently omitted workload, audit clean after run
+- [x] 391.5 Edge case: hasil benchmark di environment beda → fingerprint environment disimpan, perbandingan hanya dalam band toleransi
+- [x] 391.6 Risiko: workload terlewat dari suite → completeness checklist suite vs domain registry dicek otomatis
+- [x] 391.7 Evidence: benchmark profile doc, variance band, dan per-module result terarsip
+- [x] 391.8 Quality gate Fase 391
 
 ## FASE 392 — STRESS WAVE: DOMAIN-SPECIFIC LOAD & CAPACITY ENVELOPES
 - [ ] 392.1 Define supported envelope per domain (peak TPS, concurrent users, device events, batch size, retention) with tested operating limits

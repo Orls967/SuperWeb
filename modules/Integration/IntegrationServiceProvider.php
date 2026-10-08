@@ -344,6 +344,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\UnifiedControlTowerDecisionService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\CommonAuditReconciliationService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\CrossLineServiceBundlesService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\StressBenchmarkBaselineService::class);
     }
 
     public function boot(): void
