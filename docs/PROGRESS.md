@@ -3612,14 +3612,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 317.8 Quality gate Fase 317
 
 ## FASE 318 — ADVANCED PEOPLE: LEADERSHIP PIPELINE & EXECUTIVE DEVELOPMENT
-- [ ] 318.1 Leadership competency model per level (first line → C-suite) → assessment center simulasi → readiness score → development plan dengan coaching & rotation
-- [ ] 318.2 Executive rotation lintas lini/negara (Fase 152.4) → assignment contract → performance di lingkungan baru → succession readiness naik → bench strength metric
-- [ ] 318.3 Leadership bench risk: posisi tanpa pengganti siap → alert ke board comp committee (Fase 231) → emergency succession plan → diversity slate wajib
-- [ ] 318.4 Tests: readiness deterministik & reviewable, bench alert terpicu, rotation contract lengkap, `hcm:audit` clean
-- [ ] 318.5 Edge case: kandidat pengganti tak siap → readiness plan dengan tenggat, bukan langsung promosi
-- [ ] 318.6 Risiko: bench strength tipis di role kritikal → alert otomatis ke comp committee sebelum kekosongan
-- [ ] 318.7 Evidence: readiness score, succession coverage, dan rotation outcome tercatat
-- [ ] 318.8 Quality gate Fase 318
+- [x] 318.1 Leadership competency model per level (first line → C-suite) → assessment center simulasi → readiness score → development plan dengan coaching & rotation
+- [x] 318.2 Executive rotation lintas lini/negara (Fase 152.4) → assignment contract → performance di lingkungan baru → succession readiness naik → bench strength metric
+- [x] 318.3 Leadership bench risk: posisi tanpa pengganti siap → alert ke board comp committee (Fase 231) → emergency succession plan → diversity slate wajib
+- [x] 318.4 Tests: readiness deterministik & reviewable, bench alert terpicu, rotation contract lengkap, `hcm:audit` clean
+- [x] 318.5 Edge case: kandidat pengganti tak siap → readiness plan dengan tenggat, bukan langsung promosi
+- [x] 318.6 Risiko: bench strength tipis di role kritikal → alert otomatis ke comp committee sebelum kekosongan
+- [x] 318.7 Evidence: readiness score, succession coverage, dan rotation outcome tercatat
+- [x] 318.8 Quality gate Fase 318
 
 ## FASE 319 — ADVANCED PEOPLE: WORKFORCE AUTOMATION & HUMAN-AI ROLE DESIGN
 - [ ] 319.1 Role automation assessment: per fungsi → automatable task % → redesign role (human + AI copilot Fase 270) → training gap → redeployment plan → productivity target
