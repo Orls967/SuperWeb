@@ -44,6 +44,7 @@ use Modules\Integration\Application\Services\SupplyChainResilienceService;
 use Modules\Integration\Application\Services\SyariahBankingService;
 use Modules\Integration\Application\Services\SyariahOperationsService;
 use Modules\Integration\Application\Services\TakafulAndAgriService;
+use Modules\Integration\Application\Services\TelecomIdentityService;
 use Modules\Integration\Application\Services\ThreatDetectionService;
 use Modules\Integration\Application\Services\ZeroTrustService;
 use Modules\Integration\Console\Commands\ApiAuditCommand;
@@ -98,6 +99,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(OceanFleetService::class);
         $this->app->singleton(FashionSourcingService::class);
         $this->app->singleton(FashionRetailCircularService::class);
+        $this->app->singleton(TelecomIdentityService::class);
     }
 
     public function boot(): void
