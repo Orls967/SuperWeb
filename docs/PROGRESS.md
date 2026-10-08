@@ -3822,14 +3822,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 338.8 Quality gate Fase 338
 
 ## FASE 339 — GOVERNANCE: PUBLIC AFFAIRS, STAKEHOLDER & LICENSE TO OPERATE
-- [ ] 339.1 Stakeholder map per lini/region: influence & interest → engagement plan → sentiment tracking (aggregated) → action items → license risk index
-- [ ] 339.2 Issue management: early warning → response team → holding statement (approved) → resolution → post-issue learning
-- [ ] 339.3 Government relations: engagement log, transparency register (siapa bertemu siapa tentang apa — simulasi), conflict screening
-- [ ] 339.4 Tests: sentiment privacy threshold, statement approval required, engagement log complete, `ethics:audit` clean
-- [ ] 339.5 Edge case: isu publik menyebar cepat → crisis comms (Fase 466) diaktifkan sebelum berita liar
-- [ ] 339.6 Risiko: sentiment data tak representatif → sample size & confidence dilaporkan
-- [ ] 339.7 Evidence: stakeholder map, engagement log, dan license risk index terpublikasi internal
-- [ ] 339.8 Quality gate Fase 339
+- [x] 339.1 Stakeholder map per lini/region: influence & interest → engagement plan → sentiment tracking (aggregated) → action items → license risk index
+- [x] 339.2 Issue management: early warning → response team → holding statement (approved) → resolution → post-issue learning
+- [x] 339.3 Government relations: engagement log, transparency register (siapa bertemu siapa tentang apa — simulasi), conflict screening
+- [x] 339.4 Tests: sentiment privacy threshold, statement approval required, engagement log complete, `ethics:audit` clean
+- [x] 339.5 Edge case: isu publik menyebar cepat → crisis comms (Fase 466) diaktifkan sebelum berita liar
+- [x] 339.6 Risiko: sentiment data tak representatif → sample size & confidence dilaporkan
+- [x] 339.7 Evidence: stakeholder map, engagement log, dan license risk index terpublikasi internal
+- [x] 339.8 Quality gate Fase 339
 
 ## FASE 340 — GOVERNANCE: BUSINESS ETHICS & ANTI-CORRUPTION OPERATIONS
 - [ ] 340.1 Corruption risk assessment per activity (licensing, tender, expedite, sponsor) → control design (payments, gifts, intermediaries) → testing
