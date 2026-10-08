@@ -2242,12 +2242,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 180.6 Quality gate Fase 180
 
 ## FASE 181 — LINI 28: APPAREL, TEXTILE & FASHION SOURCING
-- [ ] 181.1 Modul `Fashion` (`fsh_`): design collections, size/color matrix, BOM, seasonal buy plan, supplier factories, purchase commitments and sample approval
-- [ ] 181.2 Ethical sourcing audit integrates Supplier ESG (Fase 154); factory capacity, labor standard evidence and corrective action gates before PO
-- [ ] 181.3 Production orders integrate Manufacturing; lot-level fiber/dye provenance, quality inspection, defect/rework and costing
-- [ ] 181.4 Channel allocation: Store/Retail/Marketplace/Hotel/Venue merch, markdown calendar, returns and end-of-season liquidation auction
-- [ ] 181.5 Tests: size-color SKU allocation exact, unapproved factory blocked, lot provenance complete, markdown respects margin approval, `fashion:audit` clean
-- [ ] 181.6 Quality gate Fase 181
+- [x] 181.1 Modul `Fashion` (`fsh_`): design collections, size/color matrix, BOM, seasonal buy plan, supplier factories, purchase commitments and sample approval
+- [x] 181.2 Ethical sourcing audit integrates Supplier ESG (Fase 154); factory capacity, labor standard evidence and corrective action gates before PO
+- [x] 181.3 Production orders integrate Manufacturing; lot-level fiber/dye provenance, quality inspection, defect/rework and costing
+- [x] 181.4 Channel allocation: Store/Retail/Marketplace/Hotel/Venue merch, markdown calendar, returns and end-of-season liquidation auction
+- [x] 181.5 Tests: size-color SKU allocation exact, unapproved factory blocked, lot provenance complete, markdown respects margin approval, `fashion:audit` clean
+- [x] 181.6 Quality gate Fase 181
 
 ## FASE 182 — LINI 28: FASHION RETAIL, PERSONALIZATION & CIRCULAR TEXTILES
 - [ ] 182.1 Omnichannel fashion store: inventory per size/color, fit/availability, reserve-in-store, click-and-collect, returns and exchange

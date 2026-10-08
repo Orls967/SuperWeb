@@ -16,6 +16,7 @@ use Modules\Integration\Application\Services\CrossBorderPayrollService;
 use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\EmbeddedInsuranceService;
 use Modules\Integration\Application\Services\EthicalSourcingService;
+use Modules\Integration\Application\Services\FashionSourcingService;
 use Modules\Integration\Application\Services\FoodBrandNutritionService;
 use Modules\Integration\Application\Services\FoodProcessingService;
 use Modules\Integration\Application\Services\ForestryTimberService;
@@ -94,6 +95,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(AirlineNetworkService::class);
         $this->app->singleton(PortOperationsService::class);
         $this->app->singleton(OceanFleetService::class);
+        $this->app->singleton(FashionSourcingService::class);
     }
 
     public function boot(): void
