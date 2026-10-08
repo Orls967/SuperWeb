@@ -24,6 +24,7 @@ use Modules\Integration\Application\Services\FoodProcessingService;
 use Modules\Integration\Application\Services\ForestryTimberService;
 use Modules\Integration\Application\Services\FullInsuranceService;
 use Modules\Integration\Application\Services\GlobalCommandService;
+use Modules\Integration\Application\Services\IdentityTenancyService;
 use Modules\Integration\Application\Services\IntegrationService;
 use Modules\Integration\Application\Services\IslamicTradeFinanceService;
 use Modules\Integration\Application\Services\LearningPlatformService;
@@ -108,6 +109,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(DomainGovernanceService::class);
         $this->app->singleton(ValueChainSimulationService::class);
         $this->app->singleton(TreasuryUnificationService::class);
+        $this->app->singleton(IdentityTenancyService::class);
     }
 
     public function boot(): void
