@@ -17,6 +17,7 @@ use Modules\Integration\Application\Services\AnalyticsFederationService;
 use Modules\Integration\Application\Services\AquacultureExportService;
 use Modules\Integration\Application\Services\AviationService;
 use Modules\Integration\Application\Services\BmtMicrofinanceService;
+use Modules\Integration\Application\Services\BusinessContinuityCrisisService;
 use Modules\Integration\Application\Services\CampusEducationService;
 use Modules\Integration\Application\Services\CircularEconomyService;
 use Modules\Integration\Application\Services\ConcurrencyLockingService;
@@ -144,6 +145,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(InternalControlSodService::class);
         $this->app->singleton(CyberResilienceService::class);
         $this->app->singleton(ThirdPartyRiskService::class);
+        $this->app->singleton(BusinessContinuityCrisisService::class);
     }
 
     public function boot(): void

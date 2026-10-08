@@ -2461,14 +2461,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 205.8 Quality gate Fase 205
 
 ## FASE 206 — RISIKO: BUSINESS CONTINUITY 30 LINI & CRISIS COMMAND
-- [ ] 206.1 Business impact analysis per lini per negara: proses kritikal → RTO/RPO tier → dependency map (yang harus jalan agar yang lain jalan)
-- [ ] 206.2 Continuity plans: workarounds, alternate suppliers, alternate site, workforce redeployment (gig bridge Fase 85) → terhubung playbook per modul
-- [ ] 206.3 Crisis command center: incident kelas krisis → war room virtual (peran: komunikasi, operasi, legal, keuangan) → timeline keputusan tercatat → media statement (approval)
-- [ ] 206.4 Annual full-scale drill: simulasi multi-lini (mis. blackout + banjir wilayah) → jalankan continuity → recovery → audit bersih → lessons → plan update
-- [ ] 206.5 Tests: drill menghasilkan RTO terukur per tier, continuity tak melanggar control (mis. bayar manual tetap approval), playbook update tercatat
-- [ ] 206.6 Edge case: krisis menyentuh banyak lini sekaligus → prioritas service (RS/pembayaran/keselamatan) menang, lainnya degraded
-- [ ] 206.7 Komunikasi krisis: holding statement template per skenario, approval chain, satu sumber kebenaran publik
-- [ ] 206.8 Quality gate Fase 206
+- [x] 206.1 Business impact analysis per lini per negara: proses kritikal → RTO/RPO tier → dependency map (yang harus jalan agar yang lain jalan)
+- [x] 206.2 Continuity plans: workarounds, alternate suppliers, alternate site, workforce redeployment (gig bridge Fase 85) → terhubung playbook per modul
+- [x] 206.3 Crisis command center: incident kelas krisis → war room virtual (peran: komunikasi, operasi, legal, keuangan) → timeline keputusan tercatat → media statement (approval)
+- [x] 206.4 Annual full-scale drill: simulasi multi-lini (mis. blackout + banjir wilayah) → jalankan continuity → recovery → audit bersih → lessons → plan update
+- [x] 206.5 Tests: drill menghasilkan RTO terukur per tier, continuity tak melanggar control (mis. bayar manual tetap approval), playbook update tercatat
+- [x] 206.6 Edge case: krisis menyentuh banyak lini sekaligus → prioritas service (RS/pembayaran/keselamatan) menang, lainnya degraded
+- [x] 206.7 Komunikasi krisis: holding statement template per skenario, approval chain, satu sumber kebenaran publik
+- [x] 206.8 Quality gate Fase 206
 
 ## FASE 207 — RISIKO: REGULATORY INTELLIGENCE & POLICY LIFECYCLE
 - [ ] 207.1 Regulatory change feed (simulasi per yurisdiksi) → impact analysis per modul (apa yang berubah: tarif, batas, pelaporan) → tugas perubahan ke tim terkait
