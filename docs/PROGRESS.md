@@ -4242,14 +4242,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 380.8 Quality gate Fase 380
 
 ## FASE 381 — INTEGRASI GELOMBANG 3: SUPPLY CHAIN, TRADE & CIRCULAR MATERIAL FLOWS
-- [ ] 381.1 One shipment/material identity flows from source lot through processing, trade documents, custody, customer delivery and returns
-- [ ] 381.2 Customs, sanctions, sustainability evidence, insurance and payment-release gates share consistent shipment state
-- [ ] 381.3 Reverse flows (returns, by-products, waste, reusable packaging) reconnect to inventory/procurement with ownership and quality checks
-- [ ] 381.4 Tests: material quantity conservation, trade hold gates consistent, return ownership valid, `trade:audit` + `lgx:audit-billing` clean
-- [ ] 381.5 Edge case: material tak lolos quality gate saat transit → quarantine + trade hold, jangan lanjut ke penerima
-- [ ] 381.6 Risiko: reverse flow tanpa ownership jelas → kontrak & manifest wajib sebelum pickup
-- [ ] 381.7 Evidence: shipment identity trail, hold decisions, dan ownership transfer tercatat per lot
-- [ ] 381.8 Quality gate Fase 381
+- [x] 381.1 One shipment/material identity flows from source lot through processing, trade documents, custody, customer delivery and returns
+- [x] 381.2 Customs, sanctions, sustainability evidence, insurance and payment-release gates share consistent shipment state
+- [x] 381.3 Reverse flows (returns, by-products, waste, reusable packaging) reconnect to inventory/procurement with ownership and quality checks
+- [x] 381.4 Tests: material quantity conservation, trade hold gates consistent, return ownership valid, `trade:audit` + `lgx:audit-billing` clean
+- [x] 381.5 Edge case: material tak lolos quality gate saat transit → quarantine + trade hold, jangan lanjut ke penerima
+- [x] 381.6 Risiko: reverse flow tanpa ownership jelas → kontrak & manifest wajib sebelum pickup
+- [x] 381.7 Evidence: shipment identity trail, hold decisions, dan ownership transfer tercatat per lot
+- [x] 381.8 Quality gate Fase 381
 
 ## FASE 382 — INTEGRASI GELOMBANG 3: HEALTH, INSURANCE & WORKFORCE WELLBEING
 - [ ] 382.1 Employee/patient care journeys share referrals and coverage status through scoped contracts, never unrestricted medical record sharing
