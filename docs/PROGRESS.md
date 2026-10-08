@@ -3124,14 +3124,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 271.8 Quality gate Fase 271
 
 ## FASE 272 — KEUANGAN: CRYPTO NATIVE OPERATIONS & DEFI SIMULATION
-- [ ] 272.1 Treasury on-chain (simulasi): stablecoin/vault management → multi-sig approval (m-of-n role) → policy engine (limit harian, allowlist destination) → cold/hot wallet split
-- [ ] 272.2 DeFi pool simulasi: liquidity pool internal (token komoditas/poin) → AMM constant-product sederhana → fee → impermanent loss tercatat → risk limit
-- [ ] 272.3 Staking/yield program: token platform di-stake → reward emission terkontrol (tokenomics tercatat) → anti-whale rules → dilution terukur
-- [ ] 272.4 Tests: multi-sig wajib untuk transaksi besar, pool invariant terjaga (x*y), emission ≤ schedule tercatat, `treasury:audit` clean
-- [ ] 272.5 Edge case: pool invariant terganggu (kembar dikurangi) → halt pool → investigasi → restore dengan approval
-- [ ] 272.6 Multi-sig quorum tak tercapai saat darurat → break-glass procedure dengan post-review
-- [ ] 272.7 Yield program ditutup → payout berjalan sampai selesai, tak dipotong mendadak
-- [ ] 272.8 Quality gate Fase 272
+- [x] 272.1 Treasury on-chain (simulasi): stablecoin/vault management → multi-sig approval (m-of-n role) → policy engine (limit harian, allowlist destination) → cold/hot wallet split
+- [x] 272.2 DeFi pool simulasi: liquidity pool internal (token komoditas/poin) → AMM constant-product sederhana → fee → impermanent loss tercatat → risk limit
+- [x] 272.3 Staking/yield program: token platform di-stake → reward emission terkontrol (tokenomics tercatat) → anti-whale rules → dilution terukur
+- [x] 272.4 Tests: multi-sig wajib untuk transaksi besar, pool invariant terjaga (x*y), emission ≤ schedule tercatat, `treasury:audit` clean
+- [x] 272.5 Edge case: pool invariant terganggu (kembar dikurangi) → halt pool → investigasi → restore dengan approval
+- [x] 272.6 Multi-sig quorum tak tercapai saat darurat → break-glass procedure dengan post-review
+- [x] 272.7 Yield program ditutup → payout berjalan sampai selesai, tak dipotong mendadak
+- [x] 272.8 Quality gate Fase 272
 
 ## FASE 273 — KEUANGAN: FINANCIAL CRIME & SANCTIONS AT GLOBAL SCALE
 - [ ] 273.1 Sanctions graph screening: screening entitas baru + re-screen berkala + ownership chain (UBO) → hit confidence → escalation → blocking operational (transaksi & kontrak)
