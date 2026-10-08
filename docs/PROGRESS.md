@@ -2601,14 +2601,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 219.8 Quality gate Fase 219
 
 ## FASE 220 — PELANGGAN: SERVICE DESK, CASE MANAGEMENT & LOYALTY UNIFICATION
-- [ ] 220.1 Unified service desk: tiket multi-kanal (app, telepon simulasi, chat, email, walk-in) → routing skill-based → SLA → escalation → CSAT → root cause analytics
-- [ ] 220.2 Case management lintas lini: satu kasus bisa menyentuh RS+hotel+logistik (mis. klaim perjalanan) → sub-case per lini → orkestrasi → solusi terpadu
-- [ ] 220.3 Loyalty unification final (memperluas Fase 112): satu mata uang poin untuk 30 lini → earning/redeem rules registry → liability terkendali → anti-fraud → breakage policy konsisten
-- [ ] 220.4 Tier & benefits engine: benefit multi-lini (upgrade, fast track, diskon, akses) → entitlement check terpusat → fulfillment tercatat → cost benefit = ledger
-- [ ] 220.5 Tests: kasus lintas lini ter-orchestrate tanpa double refund, poin Σ seimbang, entitlement tak bisa di-abuse, CSAT terkumpul, `crm:audit` + loyalty reconcile clean
-- [ ] 220.6 Edge case: kasus lintas lini gagal di satu sub-case → orchestrator tak menutup kasus induk sampai semua sub-case selesai
-- [ ] 220.7 Poin economy abuse: velocity & pattern score → freeze poin sementara → investigasi (bridge Fase 200)
-- [ ] 220.8 Quality gate Fase 220
+- [x] 220.1 Unified service desk: tiket multi-kanal (app, telepon simulasi, chat, email, walk-in) → routing skill-based → SLA → escalation → CSAT → root cause analytics
+- [x] 220.2 Case management lintas lini: satu kasus bisa menyentuh RS+hotel+logistik (mis. klaim perjalanan) → sub-case per lini → orkestrasi → solusi terpadu
+- [x] 220.3 Loyalty unification final (memperluas Fase 112): satu mata uang poin untuk 30 lini → earning/redeem rules registry → liability terkendali → anti-fraud → breakage policy konsisten
+- [x] 220.4 Tier & benefits engine: benefit multi-lini (upgrade, fast track, diskon, akses) → entitlement check terpusat → fulfillment tercatat → cost benefit = ledger
+- [x] 220.5 Tests: kasus lintas lini ter-orchestrate tanpa double refund, poin Σ seimbang, entitlement tak bisa di-abuse, CSAT terkumpul, `crm:audit` + loyalty reconcile clean
+- [x] 220.6 Edge case: kasus lintas lini gagal di satu sub-case → orchestrator tak menutup kasus induk sampai semua sub-case selesai
+- [x] 220.7 Poin economy abuse: velocity & pattern score → freeze poin sementara → investigasi (bridge Fase 200)
+- [x] 220.8 Quality gate Fase 220
 
 ## FASE 221 — PELANGGAN: SUBSCRIPTION, BILLING LIFECYCLE & RETENTION
 - [ ] 221.1 Subscription engine lintas lini: membership hotel, ISP, edukasi, cloud, asuransi berkala, langganan konten → plan/version/price grandfather/trial/pause/cancel/reactivate
