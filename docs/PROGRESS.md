@@ -3892,14 +3892,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 345.8 Quality gate Fase 345
 
 ## FASE 346 — AI PLATFORM: AGENT SAFETY, GUARDRAILS & EVALUATION AT SCALE
-- [ ] 346.1 Safety eval suite: prompt injection, jailbreak, data exfiltration attempt, harmful content, tool misuse → agent blocked & logged → regression run per release
-- [ ] 346.2 Tool permission matrix per agent (Fase 196.1) with runtime enforcement → least privilege verified by test → change approval for permission expansion
-- [ ] 346.3 Agent observability: tool calls, tokens, decisions, human approvals, outcome → cost & quality per agent → retire ineffective agents
-- [ ] 346.4 Tests: injection blocked in seed set, permission expansion needs approval, observability completeness = 100%
-- [ ] 346.5 Edge case: safety eval gagal pada seed baru → rilis tertahan, agent lama tetap dipakai
-- [ ] 346.6 Risiko: permission expansion tak terdeteksi → change approval wajib di CI (bukan runtime saja)
-- [ ] 346.7 Evidence: eval suite result, permission matrix version, dan cost/quality per agent tercatat
-- [ ] 346.8 Quality gate Fase 346
+- [x] 346.1 Safety eval suite: prompt injection, jailbreak, data exfiltration attempt, harmful content, tool misuse → agent blocked & logged → regression run per release
+- [x] 346.2 Tool permission matrix per agent (Fase 196.1) with runtime enforcement → least privilege verified by test → change approval for permission expansion
+- [x] 346.3 Agent observability: tool calls, tokens, decisions, human approvals, outcome → cost & quality per agent → retire ineffective agents
+- [x] 346.4 Tests: injection blocked in seed set, permission expansion needs approval, observability completeness = 100%
+- [x] 346.5 Edge case: safety eval gagal pada seed baru → rilis tertahan, agent lama tetap dipakai
+- [x] 346.6 Risiko: permission expansion tak terdeteksi → change approval wajib di CI (bukan runtime saja)
+- [x] 346.7 Evidence: eval suite result, permission matrix version, dan cost/quality per agent tercatat
+- [x] 346.8 Quality gate Fase 346
 
 ## FASE 347 — AI PLATFORM: KNOWLEDGE GROUNDING, RETRIEVAL & CITATION INTEGRITY
 - [ ] 347.1 Grounded retrieval index: policies, SOP, contracts, runbooks with access control mirroring source → answer only from retrieved + citations
