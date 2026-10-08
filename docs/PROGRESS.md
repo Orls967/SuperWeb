@@ -4382,14 +4382,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 394.8 Quality gate Fase 394
 
 ## FASE 395 — STRESS WAVE: READ/WRITE ISOLATION & REPLICA LAG
-- [ ] 395.1 Read routing rules distinguish authoritative money/availability reads from eventual analytics; stale-read label for permitted views
-- [ ] 395.2 Replica lag monitoring with bounded fallback to primary for critical workflows; protect primary with admission control
-- [ ] 395.3 Consistency token/correlation mechanism for read-after-write where user needs immediate confirmation
-- [ ] 395.4 Tests: payment confirmation never reads stale balance, replica outage fallback bounded, analytics tolerates lag with visible timestamp
-- [ ] 395.5 Edge case: semua replica lambat → redirect kritis ke primary dengan admission control, analytics tetap pakai replica
-- [ ] 395.6 Risiko: user kira data stale adalah current → label freshness pada setiap tampilan data eventual
-- [ ] 395.7 Evidence: routing rules doc, lag metrics, dan consistency token test tercatat
-- [ ] 395.8 Quality gate Fase 395
+- [x] 395.1 Read routing rules distinguish authoritative money/availability reads from eventual analytics; stale-read label for permitted views
+- [x] 395.2 Replica lag monitoring with bounded fallback to primary for critical workflows; protect primary with admission control
+- [x] 395.3 Consistency token/correlation mechanism for read-after-write where user needs immediate confirmation
+- [x] 395.4 Tests: payment confirmation never reads stale balance, replica outage fallback bounded, analytics tolerates lag with visible timestamp
+- [x] 395.5 Edge case: semua replica lambat → redirect kritis ke primary dengan admission control, analytics tetap pakai replica
+- [x] 395.6 Risiko: user kira data stale adalah current → label freshness pada setiap tampilan data eventual
+- [x] 395.7 Evidence: routing rules doc, lag metrics, dan consistency token test tercatat
+- [x] 395.8 Quality gate Fase 395
 
 ## FASE 396 — STRESS WAVE: GLOBAL CONCURRENCY & DISTRIBUTED TRANSACTION SAFETY
 - [ ] 396.1 Global idempotency namespace and conflict behavior across region failover; key retention policy and client replay semantics
