@@ -2581,14 +2581,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 217.8 Quality gate Fase 217
 
 ## FASE 218 — OPERASI: INNOVATION R&D OPS, IP PORTFOLIO & TECH TRANSFER
-- [ ] 218.1 R&D portfolio (memperluas Fase 59): ide → hipotesis → eksperimen → hasil → stage gate → lab-to-plant transfer → benefit tracking → kill/scale decision
-- [ ] 218.2 IP portfolio management: paten, merek, rahasia dagang, lisensi masuk/keluar → biaya, tenggat, territorial coverage → freedom-to-operate check sebelum launch
-- [ ] 218.3 Tech transfer playbook: prototipe → proses terdokumentasi → pilot line → quality validation → mass production release → knowledge capture ke SOP copilot
-- [ ] 218.4 Researcher mobility & collaboration: riset lintas lini/entitas/negara → cost sharing (Fase 52.1) → data & IP sharing agreement → kredit publikasi (media simulasi)
-- [ ] 218.5 Tests: stage gate tak bisa dilewati, IP deadline tak terlewat (alert), transfer butuh quality sign-off, cost sharing Σ = biaya riil, `plm:audit` clean
-- [ ] 218.6 Edge case: riset gagal → kill decision terdokumentasi, data & IP diarsipkan untuk pembelajaran
-- [ ] 218.7 Publication/paten overlap: deteksi duplikasi riset antar unit → kolaborasi, bukan duplikasi biaya
-- [ ] 218.8 Quality gate Fase 218
+- [x] 218.1 R&D portfolio (memperluas Fase 59): ide → hipotesis → eksperimen → hasil → stage gate → lab-to-plant transfer → benefit tracking → kill/scale decision
+- [x] 218.2 IP portfolio management: paten, merek, rahasia dagang, lisensi masuk/keluar → biaya, tenggat, territorial coverage → freedom-to-operate check sebelum launch
+- [x] 218.3 Tech transfer playbook: prototipe → proses terdokumentasi → pilot line → quality validation → mass production release → knowledge capture ke SOP copilot
+- [x] 218.4 Researcher mobility & collaboration: riset lintas lini/entitas/negara → cost sharing (Fase 52.1) → data & IP sharing agreement → kredit publikasi (media simulasi)
+- [x] 218.5 Tests: stage gate tak bisa dilewati, IP deadline tak terlewat (alert), transfer butuh quality sign-off, cost sharing Σ = biaya riil, `plm:audit` clean
+- [x] 218.6 Edge case: riset gagal → kill decision terdokumentasi, data & IP diarsipkan untuk pembelajaran
+- [x] 218.7 Publication/paten overlap: deteksi duplikasi riset antar unit → kolaborasi, bukan duplikasi biaya
+- [x] 218.8 Quality gate Fase 218
 
 ## FASE 219 — PELANGGAN: UNIFIED CRM & CUSTOMER 360 (30 LINI)
 - [ ] 219.1 Customer master & golden record: pencocokan (NIK/NPWP/email/telepon ter-encrypt) → merge reversible (Fase 27.5) → profil 360 (transaksi lintas lini dengan consent)

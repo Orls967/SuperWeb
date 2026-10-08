@@ -66,6 +66,7 @@ use Modules\Integration\Application\Services\RegulatoryComplianceService;
 use Modules\Integration\Application\Services\RegulatoryPolicyLifecycleService;
 use Modules\Integration\Application\Services\ReinsuranceAndCatService;
 use Modules\Integration\Application\Services\ResilienceWave2Service;
+use Modules\Integration\Application\Services\RndTechTransferService;
 use Modules\Integration\Application\Services\ScaleBenchmarkService;
 use Modules\Integration\Application\Services\SmartDistrictService;
 use Modules\Integration\Application\Services\SukukAndZakatService;
@@ -168,6 +169,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(SupplyChainNetworkService::class);
         $this->app->singleton(FieldServiceSlaService::class);
         $this->app->singleton(ProjectPortfolioManagementService::class);
+        $this->app->singleton(RndTechTransferService::class);
     }
 
     public function boot(): void
