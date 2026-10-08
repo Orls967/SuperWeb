@@ -2651,14 +2651,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 224.8 Quality gate Fase 224
 
 ## FASE 225 — SDM: TALENT ACQUISITION, ONBOARDING & OFFBOARDING LIFECYCLE
-- [ ] 225.1 Recruitment pipeline: requisition → sourcing (talent pool Fase 136.1) → screening otomatis (skill match, Fase 199) → interview → offer → background check → accept
-- [ ] 225.2 Candidate experience & compliance: consent data pelamar → retensi data → anonymized reporting → anti-bias check pada screening (Fase 197.3)
-- [ ] 225.3 Onboarding: pre-day tasks → day-1 access provisioning (scoped, Fase 188) → training path (Fase 167.4) → probation review → confirm
-- [ ] 225.4 Offboarding: resignation → knowledge transfer checklist → asset return (Fase 30) → account deprovision dalam ambang waktu → final settlement (leave, bonus pro-rata) → alumni pool opsional
-- [ ] 225.5 Tests: access hilang tepat waktu setelah offboarding, asset return gate final pay, onboarding gate sebelum shift mandiri, candidate data tak bocor, `hcm:audit` clean
-- [ ] 225.6 Edge case: kandidat gagal background check → keputusan terdokumentasi, data di-retention sesuai kebijakan
-- [ ] 225.7 Rehire policy: alumni/blacklist → aturan eligibilitas terdokumentasi, tak discretionary diam-diam
-- [ ] 225.8 Quality gate Fase 225
+- [x] 225.1 Recruitment pipeline: requisition → sourcing (talent pool Fase 136.1) → screening otomatis (skill match, Fase 199) → interview → offer → background check → accept
+- [x] 225.2 Candidate experience & compliance: consent data pelamar → retensi data → anonymized reporting → anti-bias check pada screening (Fase 197.3)
+- [x] 225.3 Onboarding: pre-day tasks → day-1 access provisioning (scoped, Fase 188) → training path (Fase 167.4) → probation review → confirm
+- [x] 225.4 Offboarding: resignation → knowledge transfer checklist → asset return (Fase 30) → account deprovision dalam ambang waktu → final settlement (leave, bonus pro-rata) → alumni pool opsional
+- [x] 225.5 Tests: access hilang tepat waktu setelah offboarding, asset return gate final pay, onboarding gate sebelum shift mandiri, candidate data tak bocor, `hcm:audit` clean
+- [x] 225.6 Edge case: kandidat gagal background check → keputusan terdokumentasi, data di-retention sesuai kebijakan
+- [x] 225.7 Rehire policy: alumni/blacklist → aturan eligibilitas terdokumentasi, tak discretionary diam-diam
+- [x] 225.8 Quality gate Fase 225
 
 ## FASE 226 — SDM: PERFORMANCE, ENGAGEMENT & PEOPLE ANALYTICS
 - [ ] 226.1 Performance cycle: goal (OKR/KPI terhubung business plan) → check-in berkala → review (self/peer/manager) → calibration lintas divisi → rating → link ke bonus (Fase 224.2)
