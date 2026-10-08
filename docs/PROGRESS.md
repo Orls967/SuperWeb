@@ -3702,14 +3702,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 326.8 Quality gate Fase 326
 
 ## FASE 327 — KEBERLANJUTAN: SUPPLY CHAIN TRACEABILITY & RESPONSIBLE SOURCING
-- [ ] 327.1 End-to-end provenance for critical inputs (minerals, timber, seafood, food, textiles, pharma) → origin, transformation, custody, certification, emissions
-- [ ] 327.2 Supplier due diligence refresh based on risk signals (sanction, quality, labor, environmental events) → corrective action / suspend / alternate source
-- [ ] 327.3 Product-level verified claims and chain-of-custody credentials → buyer portal, export documentation and recall trace
-- [ ] 327.4 Tests: trace gaps block claim, certificate expiry blocks shipment, supplier suspension prevents PO, `supplier:audit` clean
-- [ ] 327.5 Edge case: supplier menolak traceability → suspend dari sourcing, jangan klaim chain terverifikasi
-- [ ] 327.6 Risiko: klaim produk tanpa provenance lengkap → diklaim "partial verified" dengan disclaimer
-- [ ] 327.7 Evidence: coverage traceability, corrective action closure, dan credential validity terukur
-- [ ] 327.8 Quality gate Fase 327
+- [x] 327.1 End-to-end provenance for critical inputs (minerals, timber, seafood, food, textiles, pharma) → origin, transformation, custody, certification, emissions
+- [x] 327.2 Supplier due diligence refresh based on risk signals (sanction, quality, labor, environmental events) → corrective action / suspend / alternate source
+- [x] 327.3 Product-level verified claims and chain-of-custody credentials → buyer portal, export documentation and recall trace
+- [x] 327.4 Tests: trace gaps block claim, certificate expiry blocks shipment, supplier suspension prevents PO, `supplier:audit` clean
+- [x] 327.5 Edge case: supplier menolak traceability → suspend dari sourcing, jangan klaim chain terverifikasi
+- [x] 327.6 Risiko: klaim produk tanpa provenance lengkap → diklaim "partial verified" dengan disclaimer
+- [x] 327.7 Evidence: coverage traceability, corrective action closure, dan credential validity terukur
+- [x] 327.8 Quality gate Fase 327
 
 ## FASE 328 — KEBERLANJUTAN: PRODUCT LIFECYCLE CARBON & CIRCULAR DESIGN
 - [ ] 328.1 Product lifecycle assessment per version: BOM + manufacturing energy + transport + use + end-of-life → boundary & factors versioned
