@@ -4132,14 +4132,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 369.8 Quality gate Fase 369
 
 ## FASE 370 — GLOBAL PLATFORM: ARCHITECTURE FITNESS & MODULAR MONOLITH HEALTH
-- [ ] 370.1 Fitness tests for module boundaries, naming, migration prefix, provider registration, menu/policy coverage and audit command existence
-- [ ] 370.2 Coupling score dashboard and dependency graph; new direct cross-module persistence access fails CI
-- [ ] 370.3 Domain ownership review: every table/model/action has owning module; orphan/dead code detection and remediation backlog
-- [ ] 370.4 Tests: intentionally violating sample fails fitness test, dependency graph deterministic, all modules accounted for
-- [ ] 370.5 Edge case: pelanggaran fitness function → CI gagal, tak bisa merge tanpa remediation
-- [ ] 370.6 Risiko: coupling tak terdeteksi tanpa arsitektur review berkala → schedule review per kuartal
-- [ ] 370.7 Evidence: fitness test results, dependency graph snapshot, dan ownership map tercatat
-- [ ] 370.8 Quality gate Fase 370
+- [x] 370.1 Fitness tests for module boundaries, naming, migration prefix, provider registration, menu/policy coverage and audit command existence
+- [x] 370.2 Coupling score dashboard and dependency graph; new direct cross-module persistence access fails CI
+- [x] 370.3 Domain ownership review: every table/model/action has owning module; orphan/dead code detection and remediation backlog
+- [x] 370.4 Tests: intentionally violating sample fails fitness test, dependency graph deterministic, all modules accounted for
+- [x] 370.5 Edge case: pelanggaran fitness function → CI gagal, tak bisa merge tanpa remediation
+- [x] 370.6 Risiko: coupling tak terdeteksi tanpa arsitektur review berkala → schedule review per kuartal
+- [x] 370.7 Evidence: fitness test results, dependency graph snapshot, dan ownership map tercatat
+- [x] 370.8 Quality gate Fase 370
 
 ## FASE 371 — EKOSISTEM: PARTNER ONBOARDING & ECOSYSTEM QUALITY
 - [ ] 371.1 Unified onboarding: KYB, due diligence, API sandbox, contract, billing, training, certification and go-live checklist per partner class
