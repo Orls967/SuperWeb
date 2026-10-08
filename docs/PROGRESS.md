@@ -3285,15 +3285,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 287.8 Quality gate Fase 287
 
 ## FASE 288 — ESG: HUMAN RIGHTS, COMMUNITY & JUST TRANSITION
-- [ ] 288.1 Human rights due diligence across operations/supply chain: risk mapping → consultation → impact assessment → remediation → effectiveness check
-- [ ] 288.2 Community grievance mechanism: accessible intake, non-retaliation, case owner, remedy, appeal, community satisfaction
-- [ ] 288.3 Just transition: workforce affected by automation/energy transition → reskilling (Edu Fase 227), redeployment (Fase 254), income protection simulation → outcome tracking
-- [ ] 288.4 Community benefit-sharing for mining/forest/energy projects: formula (revenue/production) → fund → project allocation by community vote (Fase 233) → transparent ledger
-- [ ] 288.5 Tests: grievance case privacy respected, remediation closure requires affected-party verification, fund distribution Σ = allocation, `esg:audit` clean
-- [ ] 288.6 Edge case: grievance terhadap manajemen lokal → jalur eskalasi independen, pelapor terproteksi
-- [ ] 288.7 Just transition budget termasuk biaya pelatihan & penggantian pendapatan, terukur realisasinya
-- [ ] 288.8 Community fund ≠ CSR marketing → transparansi penggunaan dana ke publik (agregat)
-- [ ] 288.9 Quality gate Fase 288
+- [x] 288.1 Human rights due diligence across operations/supply chain: risk mapping → consultation → impact assessment → remediation → effectiveness check
+- [x] 288.2 Community grievance mechanism: accessible intake, non-retaliation, case owner, remedy, appeal, community satisfaction
+- [x] 288.3 Just transition: workforce affected by automation/energy transition → reskilling (Edu Fase 227), redeployment (Fase 254), income protection simulation → outcome tracking
+- [x] 288.4 Community benefit-sharing for mining/forest/energy projects: formula (revenue/production) → fund → project allocation by community vote (Fase 233) → transparent ledger
+- [x] 288.5 Tests: grievance case privacy respected, remediation closure requires affected-party verification, fund distribution Σ = allocation, `esg:audit` clean
+- [x] 288.6 Edge case: grievance terhadap manajemen lokal → jalur eskalasi independen, pelapor terproteksi
+- [x] 288.7 Just transition budget termasuk biaya pelatihan & penggantian pendapatan, terukur realisasinya
+- [x] 288.8 Community fund ≠ CSR marketing → transparansi penggunaan dana ke publik (agregat)
+- [x] 288.9 Quality gate Fase 288
 
 ## FASE 289 — ESG: PRODUCT STEWARDSHIP, REPAIRABILITY & EXTENDED PRODUCER RESPONSIBILITY
 - [ ] 289.1 Product lifecycle passport (Fase 6E): materials, carbon, repair, take-back, recyclability, end-of-life instructions → QR public view with verified claims
