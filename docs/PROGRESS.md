@@ -3275,14 +3275,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 286.9 Quality gate Fase 286
 
 ## FASE 287 — ESG: CLIMATE ADAPTATION & PHYSICAL RISK RESILIENCE 30 LINI
-- [ ] 287.1 Asset geospatial climate exposure: heat, flood, storm, drought (simulasi layers) → risk score per site/asset → financial impact estimation (damage, downtime, insurance)
-- [ ] 287.2 Adaptation measures: flood barrier, cooling, elevated DC, water storage, backup power → EPC project (Fase 63) → cost/benefit → resilience improvement tracked
-- [ ] 287.3 Supply chain climate exposure: supplier/route/crop/site exposure → alternative source/routing → S&OP scenario (Fase 201) → action plan
-- [ ] 287.4 Tests: risk map tied to asset location, adaptation ROI reproducible, high-risk supplier triggers mitigation, `risk:audit` + `esg:audit` clean
-- [ ] 287.5 Edge case: sensor data cuaca hilang → fallback data resmi + label uncertainty, bukan angka pasti palsu
-- [ ] 287.6 Adaptation project gagal → lessons masuk risk register, biaya tercatat
-- [ ] 287.7 Adaptation mitigation wajib sebelum klaim asuransi "resilience credit" diberikan
-- [ ] 287.8 Quality gate Fase 287
+- [x] 287.1 Asset geospatial climate exposure: heat, flood, storm, drought (simulasi layers) → risk score per site/asset → financial impact estimation (damage, downtime, insurance)
+- [x] 287.2 Adaptation measures: flood barrier, cooling, elevated DC, water storage, backup power → EPC project (Fase 63) → cost/benefit → resilience improvement tracked
+- [x] 287.3 Supply chain climate exposure: supplier/route/crop/site exposure → alternative source/routing → S&OP scenario (Fase 201) → action plan
+- [x] 287.4 Tests: risk map tied to asset location, adaptation ROI reproducible, high-risk supplier triggers mitigation, `risk:audit` + `esg:audit` clean
+- [x] 287.5 Edge case: sensor data cuaca hilang → fallback data resmi + label uncertainty, bukan angka pasti palsu
+- [x] 287.6 Adaptation project gagal → lessons masuk risk register, biaya tercatat
+- [x] 287.7 Adaptation mitigation wajib sebelum klaim asuransi "resilience credit" diberikan
+- [x] 287.8 Quality gate Fase 287
 
 ## FASE 288 — ESG: HUMAN RIGHTS, COMMUNITY & JUST TRANSITION
 - [ ] 288.1 Human rights due diligence across operations/supply chain: risk mapping → consultation → impact assessment → remediation → effectiveness check
