@@ -22,6 +22,7 @@ use Modules\Integration\Application\Services\CircularEconomyService;
 use Modules\Integration\Application\Services\ConcurrencyLockingService;
 use Modules\Integration\Application\Services\CrisisContinuityService;
 use Modules\Integration\Application\Services\CrossBorderPayrollService;
+use Modules\Integration\Application\Services\CyberResilienceService;
 use Modules\Integration\Application\Services\DataPlatformService;
 use Modules\Integration\Application\Services\DomainGovernanceService;
 use Modules\Integration\Application\Services\EmbeddedInsuranceService;
@@ -140,6 +141,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(AiForecastingSopService::class);
         $this->app->singleton(EnterpriseRiskService::class);
         $this->app->singleton(InternalControlSodService::class);
+        $this->app->singleton(CyberResilienceService::class);
     }
 
     public function boot(): void

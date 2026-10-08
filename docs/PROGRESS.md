@@ -2441,14 +2441,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 203.8 Quality gate Fase 203
 
 ## FASE 204 — RISIKO: CYBER, DATA BREACH & OPERATIONAL RESILIENCE
-- [ ] 204.1 Asset & threat inventory: sistem, dependency, data kelas risiko → attack surface map → prioritas hardening
-- [ ] 204.2 Vulnerability management: scan simulasi → temuan → severity SLA perbaikan → verifikasi close → aging report
-- [ ] 204.3 Incident response playbook (memperluas Fase 144.4): deteksi → containment (isolate modul/token) → eradication → recovery → postmortem → regulatory notification simulasi
-- [ ] 204.4 Resilience testing: backup integrity, failover, ransomware recovery drill (rekonstruksi ledger dari backup + replay → Σ=0), tabletop exercise terjadwal
-- [ ] 204.5 Tests: containment memutus akses dalam ambang waktu, restore drill lolos tanpa data loss, vulnerability SLA terukur, `dr:audit` + health-check clean
-- [ ] 204.6 Asset inventory update: service/dependency baru otomatis menambah attack surface map
-- [ ] 204.7 Tabletop ransomware tiap lini kritikal → lessons masuk control backlog
-- [ ] 204.8 Quality gate Fase 204
+- [x] 204.1 Asset & threat inventory: sistem, dependency, data kelas risiko → attack surface map → prioritas hardening
+- [x] 204.2 Vulnerability management: scan simulasi → temuan → severity SLA perbaikan → verifikasi close → aging report
+- [x] 204.3 Incident response playbook (memperluas Fase 144.4): deteksi → containment (isolate modul/token) → eradication → recovery → postmortem → regulatory notification simulasi
+- [x] 204.4 Resilience testing: backup integrity, failover, ransomware recovery drill (rekonstruksi ledger dari backup + replay → Σ=0), tabletop exercise terjadwal
+- [x] 204.5 Tests: containment memutus akses dalam ambang waktu, restore drill lolos tanpa data loss, vulnerability SLA terukur, `dr:audit` + health-check clean
+- [x] 204.6 Asset inventory update: service/dependency baru otomatis menambah attack surface map
+- [x] 204.7 Tabletop ransomware tiap lini kritikal → lessons masuk control backlog
+- [x] 204.8 Quality gate Fase 204
 
 ## FASE 205 — RISIKO: THIRD-PARTY & SUPPLY CHAIN RISK
 - [ ] 205.1 Vendor criticality tiering (50.000 pihak ketiga: pemasok, carrier, cloud, broker, outsourcer) → due diligence depth per tier → monitoring periodik
