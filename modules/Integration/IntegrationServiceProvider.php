@@ -9,6 +9,7 @@ use Modules\Integration\Application\Services\AgentHitlOrchestrationService;
 use Modules\Integration\Application\Services\AiDecisionAuditService;
 use Modules\Integration\Application\Services\AiGenerativeCopilotService;
 use Modules\Integration\Application\Services\AiModelGuardrailService;
+use Modules\Integration\Application\Services\AiOptimizationEngineService;
 use Modules\Integration\Application\Services\AirlineNetworkService;
 use Modules\Integration\Application\Services\AnalyticsFederationService;
 use Modules\Integration\Application\Services\AquacultureExportService;
@@ -130,6 +131,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(AgentHitlOrchestrationService::class);
         $this->app->singleton(AiDecisionAuditService::class);
         $this->app->singleton(AiGenerativeCopilotService::class);
+        $this->app->singleton(AiOptimizationEngineService::class);
     }
 
     public function boot(): void
