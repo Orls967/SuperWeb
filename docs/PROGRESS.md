@@ -2202,12 +2202,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 175.6 Quality gate Fase 175
 
 ## FASE 176 — LINI 25: LEGAL OPERATIONS, DISPUTES & KNOWLEDGE MANAGEMENT
-- [ ] 176.1 Matter management: case, counterparties, deadlines, privilege classification, counsel, evidence store and retention policy
-- [ ] 176.2 Dispute lifecycle: notice → negotiation → mediation/arbitration simulation → award → settlement/payment or appeal; connect Contract, Insurance and Treasury
-- [ ] 176.3 Legal obligation calendar and clause library versioning; approved templates only; deviations require counsel approval
-- [ ] 176.4 Evidence bundle generator: hash-verified documents, event timeline, ledger references, access log; export redacted by role
-- [ ] 176.5 Tests: privileged documents inaccessible to non-counsel, limitation dates deterministic, evidence checksum verifies, settlement posts once, `legal:audit` clean
-- [ ] 176.6 Quality gate Fase 176
+- [x] 176.1 Matter management: case, counterparties, deadlines, privilege classification, counsel, evidence store and retention policy
+- [x] 176.2 Dispute lifecycle: notice → negotiation → mediation/arbitration simulation → award → settlement/payment or appeal; connect Contract, Insurance and Treasury
+- [x] 176.3 Legal obligation calendar and clause library versioning; approved templates only; deviations require counsel approval
+- [x] 176.4 Evidence bundle generator: hash-verified documents, event timeline, ledger references, access log; export redacted by role
+- [x] 176.5 Tests: privileged documents inaccessible to non-counsel, limitation dates deterministic, evidence checksum verifies, settlement posts once, `legal:audit` clean
+- [x] 176.6 Quality gate Fase 176
 
 ## FASE 177 — LINI 26: AVIATION, AIRPORT SERVICES & AIR CARGO
 - [ ] 177.1 Modul `Aviation` (`avi_`): aircraft, operators, airports, slots, routes, maintenance cycles, ground handling and cargo manifests

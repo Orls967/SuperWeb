@@ -22,6 +22,7 @@ use Modules\Integration\Application\Services\GlobalCommandService;
 use Modules\Integration\Application\Services\IntegrationService;
 use Modules\Integration\Application\Services\IslamicTradeFinanceService;
 use Modules\Integration\Application\Services\LearningPlatformService;
+use Modules\Integration\Application\Services\LegalOperationsService;
 use Modules\Integration\Application\Services\LifeHealthWellnessService;
 use Modules\Integration\Application\Services\MarineAquacultureService;
 use Modules\Integration\Application\Services\MegaScenarioService;
@@ -84,6 +85,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(NatureFinanceService::class);
         $this->app->singleton(CircularEconomyService::class);
         $this->app->singleton(ProfessionalServicesService::class);
+        $this->app->singleton(LegalOperationsService::class);
     }
 
     public function boot(): void
