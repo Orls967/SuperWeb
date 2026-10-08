@@ -3522,14 +3522,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 308.8 Quality gate Fase 308
 
 ## FASE 309 — ADVANCED FINANCE: TREASURY ALGORITHMIC & MARKET RISK
-- [ ] 309.1 Market risk engine: posisi FX, komoditas, rates → sensitivitas (delta simulasi) → VaR/CVaR per portofolio → limit per meja → breach alert
-- [ ] 309.2 Hedging policy automation: exposure terdeteksi → hedge ratio per kebijakan → order hedging (Fase 48.6/121.3) → effectiveness testing berkala → mark-to-market harian
-- [ ] 309.3 Counterparty credit: exposure per bank/broker/partner → limit → rating sim → settlement risk (pre-fund vs credit line) → daily position report
-- [ ] 309.4 Tests: VaR deterministik ber-seed, hedge effectiveness terukur, limit breach terdeteksi sebelum eksekusi, `treasury:audit` clean
-- [ ] 309.5 Edge case: VaR breach mendadak saat pasar bergejolak → hedge emergency dengan approval, posisi tercatat penuh
-- [ ] 309.6 Risiko: model VaR memakai data volatilitas basi → freshness feed dikontrol, backtest berkala
-- [ ] 309.7 Evidence: laporan posisi harian, hedge effectiveness, dan breach resolution terarsip dengan timestamp
-- [ ] 309.8 Quality gate Fase 309
+- [x] 309.1 Market risk engine: posisi FX, komoditas, rates → sensitivitas (delta simulasi) → VaR/CVaR per portofolio → limit per meja → breach alert
+- [x] 309.2 Hedging policy automation: exposure terdeteksi → hedge ratio per kebijakan → order hedging (Fase 48.6/121.3) → effectiveness testing berkala → mark-to-market harian
+- [x] 309.3 Counterparty credit: exposure per bank/broker/partner → limit → rating sim → settlement risk (pre-fund vs credit line) → daily position report
+- [x] 309.4 Tests: VaR deterministik ber-seed, hedge effectiveness terukur, limit breach terdeteksi sebelum eksekusi, `treasury:audit` clean
+- [x] 309.5 Edge case: VaR breach mendadak saat pasar bergejolak → hedge emergency dengan approval, posisi tercatat penuh
+- [x] 309.6 Risiko: model VaR memakai data volatilitas basi → freshness feed dikontrol, backtest berkala
+- [x] 309.7 Evidence: laporan posisi harian, hedge effectiveness, dan breach resolution terarsip dengan timestamp
+- [x] 309.8 Quality gate Fase 309
 
 ## FASE 310 — ADVANCED FINANCE: WORKING CAPITAL MASTERY & SCF SCALE
 - [ ] 310.1 Cash conversion cycle program per lini: DSO/DPO/DIO → target → levers (invoicing otomatis, dynamic discount, factoring Fase 50.5, inventory policy) → cash released terukur
