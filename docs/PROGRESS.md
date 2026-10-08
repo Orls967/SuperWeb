@@ -3582,14 +3582,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 314.8 Quality gate Fase 314
 
 ## FASE 315 — ADVANCED ECOSYSTEM: SUPER APP ECOSYSTEM & MINI-APP PLATFORM
-- [ ] 315.1 Mini-app platform: mitra/lini membangun modul UI ringan di dalam super app (Fase 138) → SDK, sandbox, review → discovery → analytics → revenue share usage
-- [ ] 315.2 Universal deep-link & session: satu login, konteks terbawa antar mini-app (consent-aware) → handoff mulus → audit trail integrasi
-- [ ] 315.3 Ecosystem growth loop: acquisition (referral Fase 260.3) → engagement (loyalty Fase 283) → retention (subscription Fase 314) → monetization (ads/commerce/fee) → metrik loop per lini
-- [ ] 315.4 Tests: mini-app tak menembus scope, session handoff aman, revenue share Σ = usage fee, `platform:audit` clean
-- [ ] 315.5 Edge case: mini-app gagal/crash → isolation memastikan tak merusak super app; rollback tersedia
-- [ ] 315.6 Risiko: platform lock-in mitra → data portability & contract exit clause dijamin (Fase 848)
-- [ ] 315.7 Evidence: growth loop metrics, revenue share statement, dan adoption per mini-app tercatat
-- [ ] 315.8 Quality gate Fase 315
+- [x] 315.1 Mini-app platform: mitra/lini membangun modul UI ringan di dalam super app (Fase 138) → SDK, sandbox, review → discovery → analytics → revenue share usage
+- [x] 315.2 Universal deep-link & session: satu login, konteks terbawa antar mini-app (consent-aware) → handoff mulus → audit trail integrasi
+- [x] 315.3 Ecosystem growth loop: acquisition (referral Fase 260.3) → engagement (loyalty Fase 283) → retention (subscription Fase 314) → monetization (ads/commerce/fee) → metrik loop per lini
+- [x] 315.4 Tests: mini-app tak menembus scope, session handoff aman, revenue share Σ = usage fee, `platform:audit` clean
+- [x] 315.5 Edge case: mini-app gagal/crash → isolation memastikan tak merusak super app; rollback tersedia
+- [x] 315.6 Risiko: platform lock-in mitra → data portability & contract exit clause dijamin (Fase 848)
+- [x] 315.7 Evidence: growth loop metrics, revenue share statement, dan adoption per mini-app tercatat
+- [x] 315.8 Quality gate Fase 315
 
 ## FASE 316 — ADVANCED ECOSYSTEM: B2B ECOSYSTEM & INDUSTRY PLATFORM
 - [ ] 316.1 Industry vertical platform: terbuka penuh untuk industri tertentu (mis. tambang: vendor alat berat, logistics contractor, smelter buyer) → katalog, tender, settlement, financing → fees

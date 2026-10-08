@@ -268,6 +268,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\FpaDriverBasedBudgetingService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\DynamicMarketplaceC2cCommerceService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\SubscriptionCommerceReplenishmentService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\SuperAppMiniAppPlatformService::class);
     }
 
     public function boot(): void
