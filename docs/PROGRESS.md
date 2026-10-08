@@ -2250,12 +2250,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 181.6 Quality gate Fase 181
 
 ## FASE 182 — LINI 28: FASHION RETAIL, PERSONALIZATION & CIRCULAR TEXTILES
-- [ ] 182.1 Omnichannel fashion store: inventory per size/color, fit/availability, reserve-in-store, click-and-collect, returns and exchange
-- [ ] 182.2 Made-to-measure workflow: measurement consent, configurable design, production routing and delivery (C2M Fase 82 extended)
-- [ ] 182.3 Textile take-back: used garment collection → grading → resale/repair/recycle via Circular Fase 174 → customer credit via loyalty ledger
-- [ ] 182.4 Product passport: fiber origin, care, repair, resale chain and verified sustainability claims
-- [ ] 182.5 Tests: return/exchange stock and refund reconcile, measurement data privacy scoped, take-back credit issued once, textile claim evidence required, `fashion:audit` clean
-- [ ] 182.6 Quality gate Fase 182
+- [x] 182.1 Omnichannel fashion store: inventory per size/color, fit/availability, reserve-in-store, click-and-collect, returns and exchange
+- [x] 182.2 Made-to-measure workflow: measurement consent, configurable design, production routing and delivery (C2M Fase 82 extended)
+- [x] 182.3 Textile take-back: used garment collection → grading → resale/repair/recycle via Circular Fase 174 → customer credit via loyalty ledger
+- [x] 182.4 Product passport: fiber origin, care, repair, resale chain and verified sustainability claims
+- [x] 182.5 Tests: return/exchange stock and refund reconcile, measurement data privacy scoped, take-back credit issued once, textile claim evidence required, `fashion:audit` clean
+- [x] 182.6 Quality gate Fase 182
 
 ## FASE 183 — LINI 29: TELECOM MEDIA SERVICES, CONTENT CONNECTIVITY & DIGITAL ID
 - [ ] 183.1 Secure digital identity federation across 30 lines: consented SSO, scoped claims, revocation, session risk and audit (no shared credentials)
