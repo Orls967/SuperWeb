@@ -4422,14 +4422,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 398.8 Quality gate Fase 398
 
 ## FASE 399 — STRESS WAVE: DISASTER RECOVERY, FAILOVER & RESTORE PROOF
-- [ ] 399.1 Quarterly DR drill across active regions, queues, document store, object archive, keys and event spine; measure RPO/RTO per tier
-- [ ] 399.2 Ledger recovery: restore snapshot + replay outbox/events → reconcile all assets → hash-chain verification → sign evidence pack
-- [ ] 399.3 Business service recovery order validated against dependency graph; stakeholder communication and degraded-mode practice
-- [ ] 399.4 Tests: restore drill produces zero unexplained discrepancy, RPO/RTO within documented tier targets, failback tested
-- [ ] 399.5 Edge case: RPO/RTO melebihi target → temuan blocker, rencana infrastruktur baru wajib
-- [ ] 399.6 Risiko: drill tak realistis (tim tahu jadwal) → drill surprise berkala + sebagian anonim
-- [ ] 399.7 Evidence: drill timeline, restore output, dan stakeholder communication tercatat
-- [ ] 399.8 Quality gate Fase 399
+- [x] 399.1 Quarterly DR drill across active regions, queues, document store, object archive, keys and event spine; measure RPO/RTO per tier
+- [x] 399.2 Ledger recovery: restore snapshot + replay outbox/events → reconcile all assets → hash-chain verification → sign evidence pack
+- [x] 399.3 Business service recovery order validated against dependency graph; stakeholder communication and degraded-mode practice
+- [x] 399.4 Tests: restore drill produces zero unexplained discrepancy, RPO/RTO within documented tier targets, failback tested
+- [x] 399.5 Edge case: RPO/RTO melebihi target → temuan blocker, rencana infrastruktur baru wajib
+- [x] 399.6 Risiko: drill tak realistis (tim tahu jadwal) → drill surprise berkala + sebagian anonim
+- [x] 399.7 Evidence: drill timeline, restore output, dan stakeholder communication tercatat
+- [x] 399.8 Quality gate Fase 399
 
 ## FASE 400 — STRESS WAVE: CAPACITY CERTIFICATION & OPERATIONAL READINESS
 - [ ] 400.1 Certify domain envelopes using benchmark Fase 391–399; owners sign expected load, known constraints and scaling actions

@@ -352,6 +352,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\DistributedTransactionSafetyService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\DataQualityDriftLoadService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\SecurityPenetrationRegressionService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\DisasterRecoveryProofService::class);
     }
 
     public function boot(): void
