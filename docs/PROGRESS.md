@@ -2822,14 +2822,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 241.8 Quality gate Fase 241
 
 ## FASE 242 — DATA: REAL-TIME PIPELINE, STREAM PROCESSING & CDC 30 LINI
-- [ ] 242.1 CDC dari seluruh modul (via outbox Fase 26.7) → stream processing (window aggregation, enrichment) → real-time store untuk operational dashboards (Fase 190)
-- [ ] 242.2 Stream quality: exactly-once semantics (idempotent consumer), ordering per key, late data handling → metrics: lag, drop rate → SLA per consumer
-- [ ] 242.3 Event replay & time travel: rebuild agregat dari offset → verifikasi konsistensi dengan batch → mismatch = incident
-- [ ] 242.4 Backpressure & degradation: saat stream lambat → prioritaskan event uang vs analytics → buffer policy → alert → tanpa kehilangan event moneter
-- [ ] 242.5 Tests: replay menghasilkan state identik, lag alert terpicu, event moneter tak pernah drop pada simulasi overload, backpressure policy dihormati
-- [ ] 242.6 Edge case: consumer ketinggalan jauh → resync dari snapshot, bukan streaming seluruh backlog penuh
-- [ ] 242.7 Skema event berubah → consumer kompatibel lama dulu (Fase 509), baru versi baru
-- [ ] 242.8 Quality gate Fase 242
+- [x] 242.1 CDC dari seluruh modul (via outbox Fase 26.7) → stream processing (window aggregation, enrichment) → real-time store untuk operational dashboards (Fase 190)
+- [x] 242.2 Stream quality: exactly-once semantics (idempotent consumer), ordering per key, late data handling → metrics: lag, drop rate → SLA per consumer
+- [x] 242.3 Event replay & time travel: rebuild agregat dari offset → verifikasi konsistensi dengan batch → mismatch = incident
+- [x] 242.4 Backpressure & degradation: saat stream lambat → prioritaskan event uang vs analytics → buffer policy → alert → tanpa kehilangan event moneter
+- [x] 242.5 Tests: replay menghasilkan state identik, lag alert terpicu, event moneter tak pernah drop pada simulasi overload, backpressure policy dihormati
+- [x] 242.6 Edge case: consumer ketinggalan jauh → resync dari snapshot, bukan streaming seluruh backlog penuh
+- [x] 242.7 Skema event berubah → consumer kompatibel lama dulu (Fase 509), baru versi baru
+- [x] 242.8 Quality gate Fase 242
 
 ## FASE 243 — DATA: ADVANCED ANALYTICS, GRAPH & OPTIMIZATION RESEARCH
 - [ ] 243.1 Graph analytics: jaringan (supply chain, distribusi, franchise, ownership, payment flow) → centrality, konsentrasi risiko, deteksi pola mencurigakan (money flow) → insight terverifikasi
