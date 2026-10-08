@@ -2963,15 +2963,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 255.9 Quality gate Fase 255
 
 ## FASE 256 — PLATFORM: OBSERVABILITY & SLO ECONOMY 30 LINI
-- [ ] 256.1 SLO/SLI per layanan kritikal (payment, booking, claim, dispatch, billing): error budget → burn rate → alert → postmortem wajib saat budget habis
-- [ ] 256.2 Unified observability plane: logs, metrics, traces, audit trail (Fase 26.6) dalam satu korrelasi → drill dari insiden bisnis ke kode dalam hitungan detik
-- [ ] 256.3 Business observability: monitor invarian bisnis real-time (ledger Σ, stok negatif, escrow mismatch, seat oversell) → anomali = incident prioritas tinggi
-- [ ] 256.4 Capacity & availability reporting otomatis ke health-check (Fase 100.4) → uptime per lini → laporan ke mitra (SLA proof)
-- [ ] 256.5 Tests: SLO breach memicu workflow benar, business invariant monitor teruji dengan seed anomaly, korrelasi trace lintas 3 modul utuh
-- [ ] 256.6 Edge case: business invariant monitor sendiri gagal → meta-alert, jangan diam (monitor tak boleh silent-fail)
-- [ ] 256.7 SLO evidence dipakai untuk SLA ke mitra (bukan klaim tanpa data)
-- [ ] 256.8 Error budget terpakai → dicatat sebagai konsumsi reliabilitas, bisa diaudit
-- [ ] 256.9 Quality gate Fase 256
+- [x] 256.1 SLO/SLI per layanan kritikal (payment, booking, claim, dispatch, billing): error budget → burn rate → alert → postmortem wajib saat budget habis
+- [x] 256.2 Unified observability plane: logs, metrics, traces, audit trail (Fase 26.6) dalam satu korrelasi → drill dari insiden bisnis ke kode dalam hitungan detik
+- [x] 256.3 Business observability: monitor invarian bisnis real-time (ledger Σ, stok negatif, escrow mismatch, seat oversell) → anomali = incident prioritas tinggi
+- [x] 256.4 Capacity & availability reporting otomatis ke health-check (Fase 100.4) → uptime per lini → laporan ke mitra (SLA proof)
+- [x] 256.5 Tests: SLO breach memicu workflow benar, business invariant monitor teruji dengan seed anomaly, korrelasi trace lintas 3 modul utuh
+- [x] 256.6 Edge case: business invariant monitor sendiri gagal → meta-alert, jangan diam (monitor tak boleh silent-fail)
+- [x] 256.7 SLO evidence dipakai untuk SLA ke mitra (bukan klaim tanpa data)
+- [x] 256.8 Error budget terpakai → dicatat sebagai konsumsi reliabilitas, bisa diaudit
+- [x] 256.9 Quality gate Fase 256
 
 ## FASE 257 — PLATFORM: EVENT-DRIVEN ARCHITECTURE MATURITY & CQRS
 - [ ] 257.1 CQRS untuk domain berat (booking, inventory, portfolio, control tower): read model terpisah → projection idempoten → rebuild dari event → konsistensi terverifikasi

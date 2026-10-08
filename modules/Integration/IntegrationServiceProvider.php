@@ -209,6 +209,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\EndToEndRiskService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\EndToEndTalentService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\GoldenScenarioMegaAuditService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\ObservabilitySloEconomyService::class);
     }
 
     public function boot(): void
