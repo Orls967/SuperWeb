@@ -3442,14 +3442,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > Konvensi Fase 26+ tetap berlaku tanpa kecuali.
 
 ## FASE 301 — ADVANCED SUPPLY INTELLIGENCE: MULTI-ECHELON OPTIMIZATION 30 LINI
-- [ ] 301.1 Dynamic network optimization: biaya transport, lead time, tarif, risiko region → solver (Fase 199) → rencana deployment bulanan → dampak service & cost terukur → implementasi bertahap
-- [ ] 301.2 Multi-echelon inventory policy otomatis: safety stock & reorder point dihitung per lokasi dengan konsesi anggaran → buffer bukan hanya biaya tapi service level → policy simulation sandbox
-- [ ] 301.3 Demand shaping: promo, pricing, allocation saat langka → fairness rules → dampak revenue & margin terukur vs baseline (Fase 266 scenario)
-- [ ] 301.4 Tests: policy deterministik, simulasi tak mengubah data riil, service level tercapai pada seed, `wms:audit` + `tower:audit` clean
-- [ ] 301.5 Edge case: permintaan musiman tak terduga → buffer & prioritas alokasi ditentukan aturan, bukan adu cepat manual
-- [ ] 301.6 Risiko: optimasi menekan safety stock terlalu jauh → guardrail service level minimum ditegakkan solver
-- [ ] 301.7 Evidence: hasil optimasi & rencana deployment tercatat dengan baseline before/after
-- [ ] 301.8 Quality gate Fase 301
+- [x] 301.1 Dynamic network optimization: biaya transport, lead time, tarif, risiko region → solver (Fase 199) → rencana deployment bulanan → dampak service & cost terukur → implementasi bertahap
+- [x] 301.2 Multi-echelon inventory policy otomatis: safety stock & reorder point dihitung per lokasi dengan konsesi anggaran → buffer bukan hanya biaya tapi service level → policy simulation sandbox
+- [x] 301.3 Demand shaping: promo, pricing, allocation saat langka → fairness rules → dampak revenue & margin terukur vs baseline (Fase 266 scenario)
+- [x] 301.4 Tests: policy deterministik, simulasi tak mengubah data riil, service level tercapai pada seed, `wms:audit` + `tower:audit` clean
+- [x] 301.5 Edge case: permintaan musiman tak terduga → buffer & prioritas alokasi ditentukan aturan, bukan adu cepat manual
+- [x] 301.6 Risiko: optimasi menekan safety stock terlalu jauh → guardrail service level minimum ditegakkan solver
+- [x] 301.7 Evidence: hasil optimasi & rencana deployment tercatat dengan baseline before/after
+- [x] 301.8 Quality gate Fase 301
 
 ## FASE 302 — ADVANCED SUPPLY: SUPPLIER COLLABORATIVE DESIGN & INNOVATION SOURCING
 - [ ] 302.1 Supplier co-development program: brief desain → proposal pemasok → joint development contract (Fase 28) → milestone → kualifikasi → produksi → skor inovasi

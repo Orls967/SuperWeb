@@ -254,6 +254,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\PlatformFinalStressSecuritySimulationService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\PlatformReleaseCandidateDocsService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\PlatformRelease300HandoverService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\AdvancedSupplyOptimizationService::class);
     }
 
     public function boot(): void
