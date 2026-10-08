@@ -206,6 +206,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\CxMetricsVocOrchestrationService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\EndToEndSupplyChainService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\EndToEndFinanceService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\EndToEndRiskService::class);
     }
 
     public function boot(): void

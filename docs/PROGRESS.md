@@ -2932,14 +2932,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 252.8 Quality gate Fase 252
 
 ## FASE 253 — INTEGRASI AKHIR C: END-TO-END RISK 30 LINI (IDENTIFY-CONTROL-REPORT)
-- [ ] 253.1 Risk process unification: identify (register Fase 202) → assess (scoring) → treat (control Fase 203) → monitor (KRI) → incident bridge (Fase 204/206) → report (board pack Fase 231) → learning (postmortem masuk register)
-- [ ] 253.2 Aggregate risk view: korelasi risiko lintas lini (mis. komoditas + FX + kredit pelanggan) → concentration & tail risk (simulasi MC Fase 243.2) → capital implication (Fase 157.3 generalized)
-- [ ] 253.3 Assurance map: audit internal + eksternal + control testing + compliance → coverage map → gap dijamin → efficiency (hindari duplikasi audit area sama)
-- [ ] 253.4 Tests: incident → register update otomatis, coverage map lengkap, aggregate risk deterministik, `risk:audit` clean
-- [ ] 253.5 Edge case: coverage map menemukan proses material tanpa assurance → remediation sebelum sign-off
-- [ ] 253.6 Incident → risk register update otomatis via event, tak menunggu review manual
-- [ ] 253.7 Assurance sampler independen dari pemilik proses yang diuji (self-review dilarang)
-- [ ] 253.8 Quality gate Fase 253
+- [x] 253.1 Risk process unification: identify (register Fase 202) → assess (scoring) → treat (control Fase 203) → monitor (KRI) → incident bridge (Fase 204/206) → report (board pack Fase 231) → learning (postmortem masuk register)
+- [x] 253.2 Aggregate risk view: korelasi risiko lintas lini (mis. komoditas + FX + kredit pelanggan) → concentration & tail risk (simulasi MC Fase 243.2) → capital implication (Fase 157.3 generalized)
+- [x] 253.3 Assurance map: audit internal + eksternal + control testing + compliance → coverage map → gap dijamin → efficiency (hindari duplikasi audit area sama)
+- [x] 253.4 Tests: incident → register update otomatis, coverage map lengkap, aggregate risk deterministik, `risk:audit` clean
+- [x] 253.5 Edge case: coverage map menemukan proses material tanpa assurance → remediation sebelum sign-off
+- [x] 253.6 Incident → risk register update otomatis via event, tak menunggu review manual
+- [x] 253.7 Assurance sampler independen dari pemilik proses yang diuji (self-review dilarang)
+- [x] 253.8 Quality gate Fase 253
 
 ## FASE 254 — INTEGRASI AKHIR D: END-TO-END TALENT 30 LINI (PLAN-ATOMIC-DEVELOP-RETAIN)
 - [ ] 254.1 Talent process unification: plan (workforce Fase 223) → attract (Fase 225) → select → develop (Fase 227) → deploy (gig Fase 85, mobility Fase 152) → perform (Fase 226) → reward (Fase 224) → retain/exit (Fase 225.4) → satu employee journey dengan stage gate
