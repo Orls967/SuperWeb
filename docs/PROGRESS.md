@@ -2226,12 +2226,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 178.6 Quality gate Fase 178
 
 ## FASE 179 — LINI 27: PORTS, MARINE TERMINALS & TRADE FACILITATION
-- [ ] 179.1 Modul `PortOps` (`prt_`): berth windows, vessel calls, cranes, yards, gate appointments, manifests and terminal charges
-- [ ] 179.2 Port community workflow: carrier, customs, shipper, terminal and inspector share scoped event/status data via API/Event Spine
-- [ ] 179.3 Yard/berth capacity planning, container dwell/demurrage, reefer plug-in monitoring, dangerous cargo separation
-- [ ] 179.4 Terminal billing and port dues reconcile to vessel calls, moves and dwell; integrate Logistics/Trade/Payment
-- [ ] 179.5 Tests: berth overlap rejected, yard capacity enforced, reefer excursion alerts, tariff invoice reproducible, `port:audit` clean
-- [ ] 179.6 Quality gate Fase 179
+- [x] 179.1 Modul `PortOps` (`prt_`): berth windows, vessel calls, cranes, yards, gate appointments, manifests and terminal charges
+- [x] 179.2 Port community workflow: carrier, customs, shipper, terminal and inspector share scoped event/status data via API/Event Spine
+- [x] 179.3 Yard/berth capacity planning, container dwell/demurrage, reefer plug-in monitoring, dangerous cargo separation
+- [x] 179.4 Terminal billing and port dues reconcile to vessel calls, moves and dwell; integrate Logistics/Trade/Payment
+- [x] 179.5 Tests: berth overlap rejected, yard capacity enforced, reefer excursion alerts, tariff invoice reproducible, `port:audit` clean
+- [x] 179.6 Quality gate Fase 179
 
 ## FASE 180 — LINI 27: OCEAN FLEET, SHIP MANAGEMENT & MARINE SERVICES
 - [ ] 180.1 Vessel asset register: class, dry-dock schedule, crew, fuel/emissions, maintenance, charter and voyage profitability

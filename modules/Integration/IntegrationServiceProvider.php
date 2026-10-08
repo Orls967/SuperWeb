@@ -30,6 +30,7 @@ use Modules\Integration\Application\Services\MarineAquacultureService;
 use Modules\Integration\Application\Services\MegaScenarioService;
 use Modules\Integration\Application\Services\NatureFinanceService;
 use Modules\Integration\Application\Services\PlatformEconomyService;
+use Modules\Integration\Application\Services\PortOperationsService;
 use Modules\Integration\Application\Services\PrivacyVaultService;
 use Modules\Integration\Application\Services\ProfessionalServicesService;
 use Modules\Integration\Application\Services\RegulatoryComplianceService;
@@ -90,6 +91,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(LegalOperationsService::class);
         $this->app->singleton(AviationService::class);
         $this->app->singleton(AirlineNetworkService::class);
+        $this->app->singleton(PortOperationsService::class);
     }
 
     public function boot(): void
