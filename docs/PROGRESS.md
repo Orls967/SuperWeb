@@ -3452,14 +3452,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 301.8 Quality gate Fase 301
 
 ## FASE 302 — ADVANCED SUPPLY: SUPPLIER COLLABORATIVE DESIGN & INNOVATION SOURCING
-- [ ] 302.1 Supplier co-development program: brief desain → proposal pemasok → joint development contract (Fase 28) → milestone → kualifikasi → produksi → skor inovasi
-- [ ] 302.2 Cost breakdown analysis: pemasok membuka struktur biaya (ransum simulasi) → value engineering bersama → target cost → savings terbagi adil (kontrak)
-- [ ] 302.3 Strategic sourcing event: reverse auction multi-loten (segel penawaran Fase 33.3) → evaluasi TCO (harga + risiko + logistik + kualitas) → award → knowledge retention
-- [ ] 302.4 Tests: auction fair (urutan buka seragam, tak bocor), TCO formula terdokumentasi, savings terverifikasi ledger, `proc:audit` clean
-- [ ] 302.5 Edge case: pemasok menolak membuka struktur biaya → tetap lanjut dengan biaya estimasi + catat risiko, tanpa menghukum otomatis
-- [ ] 302.6 Risiko: reverse auction menekan harga hingga margin tak layak → floor price & skor kualitas wajib ikut evaluasi
-- [ ] 302.7 Evidence: skor TCO & keputusan award terdokumentasi dengan alasan, siap ditinjau ulang
-- [ ] 302.8 Quality gate Fase 302
+- [x] 302.1 Supplier co-development program: brief desain → proposal pemasok → joint development contract (Fase 28) → milestone → kualifikasi → produksi → skor inovasi
+- [x] 302.2 Cost breakdown analysis: pemasok membuka struktur biaya (ransum simulasi) → value engineering bersama → target cost → savings terbagi adil (kontrak)
+- [x] 302.3 Strategic sourcing event: reverse auction multi-loten (segel penawaran Fase 33.3) → evaluasi TCO (harga + risiko + logistik + kualitas) → award → knowledge retention
+- [x] 302.4 Tests: auction fair (urutan buka seragam, tak bocor), TCO formula terdokumentasi, savings terverifikasi ledger, `proc:audit` clean
+- [x] 302.5 Edge case: pemasok menolak membuka struktur biaya → tetap lanjut dengan biaya estimasi + catat risiko, tanpa menghukum otomatis
+- [x] 302.6 Risiko: reverse auction menekan harga hingga margin tak layak → floor price & skor kualitas wajib ikut evaluasi
+- [x] 302.7 Evidence: skor TCO & keputusan award terdokumentasi dengan alasan, siap ditinjau ulang
+- [x] 302.8 Quality gate Fase 302
 
 ## FASE 303 — ADVANCED SUPPLY: COLD CHAIN, PHARMA & HIGH-VALUE LOGISTICS EXCELLENCE
 - [ ] 303.1 Cold chain excellence program: sensor coverage 100% lane kritikal → excursion root cause (door open, unit rusak, route) → corrective action → excursion rate target
