@@ -4032,14 +4032,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 359.8 Quality gate Fase 359
 
 ## FASE 360 — AI PLATFORM: ENTERPRISE AI GOVERNANCE OPERATING MODEL
-- [ ] 360.1 AI governance council, domain model owners, independent risk reviewers and escalation route; decision rights and cadence documented
-- [ ] 360.2 Annual inventory attestation for every model/agent, including shadow/embedded models; unknown model use triggers remediation
-- [ ] 360.3 Consolidated performance, fairness, privacy, security, cost and sustainability dashboard with evidence-linked metrics
-- [ ] 360.4 Tests: unowned model flagged, annual attestation expiry blocks high-risk inference, council actions tracked, `ai:audit` clean
-- [ ] 360.5 Edge case: shadow model tak terdaftar ditemukan → remediation wajib sebelum dipakai keputusan
-- [ ] 360.6 Risiko: council hanya jadi forum tanpa otoritas → decision rights & escalation terdokumentasi & diuji
-- [ ] 360.7 Evidence: inventory attestation, dashboard metrics, dan council action tracking tercatat
-- [ ] 360.8 Quality gate Fase 360
+- [x] 360.1 AI governance council, domain model owners, independent risk reviewers and escalation route; decision rights and cadence documented
+- [x] 360.2 Annual inventory attestation for every model/agent, including shadow/embedded models; unknown model use triggers remediation
+- [x] 360.3 Consolidated performance, fairness, privacy, security, cost and sustainability dashboard with evidence-linked metrics
+- [x] 360.4 Tests: unowned model flagged, annual attestation expiry blocks high-risk inference, council actions tracked, `ai:audit` clean
+- [x] 360.5 Edge case: shadow model tak terdaftar ditemukan → remediation wajib sebelum dipakai keputusan
+- [x] 360.6 Risiko: council hanya jadi forum tanpa otoritas → decision rights & escalation terdokumentasi & diuji
+- [x] 360.7 Evidence: inventory attestation, dashboard metrics, dan council action tracking tercatat
+- [x] 360.8 Quality gate Fase 360
 
 ## FASE 361 — GLOBAL PLATFORM: SERVICE CATALOG & INTERNAL DEVELOPER PORTAL
 - [ ] 361.1 Catalog of 30-line capabilities, APIs, events, data products, owners, consumers, SLO, lifecycle and support channel
