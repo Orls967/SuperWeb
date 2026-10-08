@@ -3034,14 +3034,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 262.8 Quality gate Fase 262
 
 ## FASE 263 — EKOSISTEM: GOVERNMENT & REGULATORY DIGITAL SERVICES
-- [ ] 263.1 e-Gov integration gateway: pelaporan elektronik per regulasi (pajak, ketenagakerjaan, lingkungan, keselamatan) → template resmi simulasi → submit → acknowledgement → tracking
-- [ ] 263.2 License & permit lifecycle per lini (Fase 144.3 → operasional): perpanjangan otomatis, dokumen, biaya, blocking rule bila kedaluwarsa
-- [ ] 263.3 Public disclosure dashboard: data wajib publik (emisi, ketenagakerjaan, CSR) → siap unggah → versi tercatat → konsisten dengan laporan internal
-- [ ] 263.4 Tests: submission gapless & idempotent, expired permit blocks operation, disclosure numbers = ledger/ESG source
-- [ ] 263.5 Edge case: template regulator berubah → versi template → resubmit prosedur, bukan edit data lama
-- [ ] 263.6 Gagal submission → retry dengan backoff + escalation, status terlihat ke owner
-- [ ] 263.7 Acknowledgement resmi tersimpan sebagai evidence compliance
-- [ ] 263.8 Quality gate Fase 263
+- [x] 263.1 e-Gov integration gateway: pelaporan elektronik per regulasi (pajak, ketenagakerjaan, lingkungan, keselamatan) → template resmi simulasi → submit → acknowledgement → tracking
+- [x] 263.2 License & permit lifecycle per lini (Fase 144.3 → operasional): perpanjangan otomatis, dokumen, biaya, blocking rule bila kedaluwarsa
+- [x] 263.3 Public disclosure dashboard: data wajib publik (emisi, ketenagakerjaan, CSR) → siap unggah → versi tercatat → konsisten dengan laporan internal
+- [x] 263.4 Tests: submission gapless & idempotent, expired permit blocks operation, disclosure numbers = ledger/ESG source
+- [x] 263.5 Edge case: template regulator berubah → versi template → resubmit prosedur, bukan edit data lama
+- [x] 263.6 Gagal submission → retry dengan backoff + escalation, status terlihat ke owner
+- [x] 263.7 Acknowledgement resmi tersimpan sebagai evidence compliance
+- [x] 263.8 Quality gate Fase 263
 
 ## FASE 264 — EKOSISTEM: INSURTECH & FINTECH PARTNER INTEGRATION
 - [ ] 264.1 Partner gateway fintech (payment aggregator, e-wallet, bank simulasi) → routing terbaik per negara (cost/success rate) → failover → settlement reconciliation harian
