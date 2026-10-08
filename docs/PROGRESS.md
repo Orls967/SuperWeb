@@ -4322,14 +4322,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 388.8 Quality gate Fase 388
 
 ## FASE 389 — INTEGRASI GELOMBANG 3: COMMON AUDIT, RECONCILIATION & EVIDENCE SERVICE
-- [ ] 389.1 Standard audit result contract: scope, period, population, checks, exceptions, evidence, reproducible run ID, exit code
-- [ ] 389.2 Central reconciliation scheduler runs domain audits by dependency order; downstream audit waits for upstream completeness
-- [ ] 389.3 Evidence pack builds source-linked records with checksum, privacy redaction and retention class
-- [ ] 389.4 Tests: audit rerun identical, dependency order enforced, evidence checksum verifies, sensitive data redacted, all domain audit contracts registered
-- [ ] 389.5 Edge case: upstream audit gagal → downstream ditahan, jangan lulus dengan data tak lengkap
-- [ ] 389.6 Risiko: evidence bocor PII → redaction policy dipaksa sebelum pack dibagikan
-- [ ] 389.7 Evidence: contract registry, dependency graph audit, dan evidence checksum log tercatat
-- [ ] 389.8 Quality gate Fase 389
+- [x] 389.1 Standard audit result contract: scope, period, population, checks, exceptions, evidence, reproducible run ID, exit code
+- [x] 389.2 Central reconciliation scheduler runs domain audits by dependency order; downstream audit waits for upstream completeness
+- [x] 389.3 Evidence pack builds source-linked records with checksum, privacy redaction and retention class
+- [x] 389.4 Tests: audit rerun identical, dependency order enforced, evidence checksum verifies, sensitive data redacted, all domain audit contracts registered
+- [x] 389.5 Edge case: upstream audit gagal → downstream ditahan, jangan lulus dengan data tak lengkap
+- [x] 389.6 Risiko: evidence bocor PII → redaction policy dipaksa sebelum pack dibagikan
+- [x] 389.7 Evidence: contract registry, dependency graph audit, dan evidence checksum log tercatat
+- [x] 389.8 Quality gate Fase 389
 
 ## FASE 390 — INTEGRASI GELOMBANG 3: END-TO-END CROSS-LINE SERVICE BUNDLES
 - [ ] 390.1 Bundle catalog for business journeys: travel, health, fleet, event, industrial site, education, energy-as-a-service; versioned components and terms
