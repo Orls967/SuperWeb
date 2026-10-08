@@ -2712,14 +2712,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 230.8 Quality gate Fase 230
 
 ## FASE 231 — TATA KELOLA: BOARD, COMMITTEE & DELEGATION SYSTEM
-- [ ] 231.1 Board composition & committees (audit, risk, nomrem/gov, sustainability, comp) → charter → meeting cycle → agenda & paper (dokumen 26.8) → minutes → decision register
-- [ ] 231.2 Delegation of authority matrix (DoA): per jenis keputusan (capex, kontrak, hiring, pricing, disclosure) → level (direksi, komite, CEO, unit) → batas nilai → enforcement di sistem (approval engine read matrix)
-- [ ] 231.3 Conflict of interest register: deklarasi → screening transaksi terkait → abstain wajib → disclosure simulation
-- [ ] 231.4 Decision traceability: setiap keputusan besar → paper, alternatif dinilai, dissent tercatat → archive → searchable oleh auditor (Fase 176.4)
-- [ ] 231.5 Tests: approval di luar DoA ditolak, abstain mengubah quorum calculation, decision register append-only, `gov:audit` clean
-- [ ] 231.6 Edge case: quorum tak tercapai → rapat ditunda dengan aturan quorum minoritas terdokumentasi
-- [ ] 231.7 Direskan anggota berkonflik → pengganti sementara dari alternatif yang telah ditetapkan
-- [ ] 231.8 Quality gate Fase 231
+- [x] 231.1 Board composition & committees (audit, risk, nomrem/gov, sustainability, comp) → charter → meeting cycle → agenda & paper (dokumen 26.8) → minutes → decision register
+- [x] 231.2 Delegation of authority matrix (DoA): per jenis keputusan (capex, kontrak, hiring, pricing, disclosure) → level (direksi, komite, CEO, unit) → batas nilai → enforcement di sistem (approval engine read matrix)
+- [x] 231.3 Conflict of interest register: deklarasi → screening transaksi terkait → abstain wajib → disclosure simulation
+- [x] 231.4 Decision traceability: setiap keputusan besar → paper, alternatif dinilai, dissent tercatat → archive → searchable oleh auditor (Fase 176.4)
+- [x] 231.5 Tests: approval di luar DoA ditolak, abstain mengubah quorum calculation, decision register append-only, `gov:audit` clean
+- [x] 231.6 Edge case: quorum tak tercapai → rapat ditunda dengan aturan quorum minoritas terdokumentasi
+- [x] 231.7 Direskan anggota berkonflik → pengganti sementara dari alternatif yang telah ditetapkan
+- [x] 231.8 Quality gate Fase 231
 
 ## FASE 232 — TATA KELOLA: ETHICS, WHISTLEBLOWING & SPEAK-UP CULTURE
 - [ ] 232.1 Speak-up channel: laporan anonim (token pelapor opsional) → case terenkripsi → investigator assigned (four-eyes) → triage → investigation → outcome → feedback pelapor

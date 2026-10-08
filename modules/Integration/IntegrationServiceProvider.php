@@ -184,6 +184,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\EsgDataFabricService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\ClimateDecarbonizationRoadmapService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\CircularityWaterNatureService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\BoardGovernanceDoaService::class);
     }
 
     public function boot(): void
