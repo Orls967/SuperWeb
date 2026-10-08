@@ -3662,14 +3662,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 322.8 Quality gate Fase 322
 
 ## FASE 323 — INTEGRASI PEOPLE: SAFETY-CERTIFIED ACCESS & PERMIT-TO-WORK
-- [ ] 323.1 Credential-to-access bridge: valid certificate (Edu Fase 167) + role + permit + site induction → akses alat/area dibuka, semua syarat expiry-aware
-- [ ] 323.2 Permit workflow lintas tambang/pabrik/port/RS: JSA, isolasi energi, gas test simulasi, supervisor sign-off, emergency contact → expiry/revoke
-- [ ] 323.3 Stop-work authority: pekerja dapat hentikan tugas berisiko tanpa penalty → investigation & restart approval → trend learning
-- [ ] 323.4 Tests: satu syarat hilang memblokir akses, expired cert mencabut akses, stop-work tercatat tanpa retaliatory HR action
-- [ ] 323.5 Edge case: pekerjaan darurat di luar permit → jalur permit darurat dengan approval & post-review, bukan ilegal
-- [ ] 323.6 Risiko: kredensial lupa diperbarui → renew reminder berjenjang + supervisor visibility
-- [ ] 323.7 Evidence: stop-work incidents, permit coverage, dan retraining tercatat per site
-- [ ] 323.8 Quality gate Fase 323
+- [x] 323.1 Credential-to-access bridge: valid certificate (Edu Fase 167) + role + permit + site induction → akses alat/area dibuka, semua syarat expiry-aware
+- [x] 323.2 Permit workflow lintas tambang/pabrik/port/RS: JSA, isolasi energi, gas test simulasi, supervisor sign-off, emergency contact → expiry/revoke
+- [x] 323.3 Stop-work authority: pekerja dapat hentikan tugas berisiko tanpa penalty → investigation & restart approval → trend learning
+- [x] 323.4 Tests: satu syarat hilang memblokir akses, expired cert mencabut akses, stop-work tercatat tanpa retaliatory HR action
+- [x] 323.5 Edge case: pekerjaan darurat di luar permit → jalur permit darurat dengan approval & post-review, bukan ilegal
+- [x] 323.6 Risiko: kredensial lupa diperbarui → renew reminder berjenjang + supervisor visibility
+- [x] 323.7 Evidence: stop-work incidents, permit coverage, dan retraining tercatat per site
+- [x] 323.8 Quality gate Fase 323
 
 ## FASE 324 — INTEGRASI PEOPLE: LEADERSHIP SUCCESSION & CRITICAL ROLE COVERAGE
 - [ ] 324.1 Critical-role registry per lini/site → single-person dependency → deputy & readiness → emergency cover roster
