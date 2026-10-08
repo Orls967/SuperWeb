@@ -2351,14 +2351,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 194.5 Quality gate Fase 194
 
 ## FASE 195 — AI GELOMBANG 3: MODEL REGISTRY, EVALUATION & GUARDRAILS
-- [ ] 195.1 Model registry pusat: setiap model/aturan punya versi, pemilik, data latih snapshot hash, metrik evaluasi, approval rilis, rollback pointer
-- [ ] 195.2 Evaluation harness: benchmark internal per domain (forecast MAPE, klaim fraud AUC simulasi, match quality) → gate rilis: skor tak boleh turun > ambang
-- [ ] 195.3 Guardrails input/output: validasi schema, penolakan prompt injection pada konten user-generated (media/forum), redaksi PII sebelum inferensi eksternal
-- [ ] 195.4 Model drift monitoring: distribusi input berubah → alert → retrain proposal → approval → rilis ber-versi → keputusan lama tetap ter-rekonstruksi dengan versi lama
-- [ ] 195.5 Tests: rilis tanpa evaluasi ditolak, rollback memulihkan keputusan versi lama persis, drift alert terpicu pada data sintetis, PII tak terkirim ke sink eksternal
-- [ ] 195.6 Edge case: rilis model gagal evaluasi → diblokir CI, bukan rilis dengan "deviasi kecil" tanpa approval
-- [ ] 195.7 Data train berubah karena kebijakan privasi → model retrain wajib, versi lama diarsipkan
-- [ ] 195.8 Quality gate Fase 195
+- [x] 195.1 Model registry pusat: setiap model/aturan punya versi, pemilik, data latih snapshot hash, metrik evaluasi, approval rilis, rollback pointer
+- [x] 195.2 Evaluation harness: benchmark internal per domain (forecast MAPE, klaim fraud AUC simulasi, match quality) → gate rilis: skor tak boleh turun > ambang
+- [x] 195.3 Guardrails input/output: validasi schema, penolakan prompt injection pada konten user-generated (media/forum), redaksi PII sebelum inferensi eksternal
+- [x] 195.4 Model drift monitoring: distribusi input berubah → alert → retrain proposal → approval → rilis ber-versi → keputusan lama tetap ter-rekonstruksi dengan versi lama
+- [x] 195.5 Tests: rilis tanpa evaluasi ditolak, rollback memulihkan keputusan versi lama persis, drift alert terpicu pada data sintetis, PII tak terkirim ke sink eksternal
+- [x] 195.6 Edge case: rilis model gagal evaluasi → diblokir CI, bukan rilis dengan "deviasi kecil" tanpa approval
+- [x] 195.7 Data train berubah karena kebijakan privasi → model retrain wajib, versi lama diarsipkan
+- [x] 195.8 Quality gate Fase 195
 
 ## FASE 196 — AI: AGENT ORCHESTRATION & HUMAN-IN-THE-LOOP
 - [ ] 196.1 Agent runtime: setiap agen (bid Fase 84, claim Fase 72, ops Fase 143, concierge Fase 113.5) memakai kerangka sama — tool whitelist per peran, budget langkah, audit tiap aksi

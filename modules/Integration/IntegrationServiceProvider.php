@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Integration;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Integration\Application\Services\AiModelGuardrailService;
 use Modules\Integration\Application\Services\AirlineNetworkService;
 use Modules\Integration\Application\Services\AnalyticsFederationService;
 use Modules\Integration\Application\Services\AquacultureExportService;
@@ -122,6 +123,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(PartitionArchiveService::class);
         $this->app->singleton(ConcurrencyLockingService::class);
         $this->app->singleton(GlobalSearchService::class);
+        $this->app->singleton(AiModelGuardrailService::class);
     }
 
     public function boot(): void
