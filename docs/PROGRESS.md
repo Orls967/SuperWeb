@@ -3722,14 +3722,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 328.8 Quality gate Fase 328
 
 ## FASE 329 — KEBERLANJUTAN: CLIMATE RISK INSURANCE & RESILIENCE INVESTMENT
-- [ ] 329.1 Link climate exposure (Fase 287) to policy pricing, deductibles and risk mitigation credits (Fase 156) → actuarial review required
-- [ ] 329.2 Adaptation project portfolio → avoided loss estimate → insurance premium impact → measure actual resilience after event/drill
-- [ ] 329.3 Parametric trigger data governance: authoritative sensor/feed, outage fallback, dispute protocol → payout evidence immutable
-- [ ] 329.4 Tests: premium credit only for verified measure, sensor outage triggers fallback not false claim, `ins:audit` + `esg:audit` clean
-- [ ] 329.5 Edge case: sensor data hilang saat bencana → fallback manual + label uncertainty, klaim pakai data resmi
-- [ ] 329.6 Risiko: avoidance loss overclaimed → metode kontrafaktual terdokumentasi & direview asuransi
-- [ ] 329.7 Evidence: exposure map, adaptation ROI, dan premium credits tercatat per site
-- [ ] 329.8 Quality gate Fase 329
+- [x] 329.1 Link climate exposure (Fase 287) to policy pricing, deductibles and risk mitigation credits (Fase 156) → actuarial review required
+- [x] 329.2 Adaptation project portfolio → avoided loss estimate → insurance premium impact → measure actual resilience after event/drill
+- [x] 329.3 Parametric trigger data governance: authoritative sensor/feed, outage fallback, dispute protocol → payout evidence immutable
+- [x] 329.4 Tests: premium credit only for verified measure, sensor outage triggers fallback not false claim, `ins:audit` + `esg:audit` clean
+- [x] 329.5 Edge case: sensor data hilang saat bencana → fallback manual + label uncertainty, klaim pakai data resmi
+- [x] 329.6 Risiko: avoidance loss overclaimed → metode kontrafaktual terdokumentasi & direview asuransi
+- [x] 329.7 Evidence: exposure map, adaptation ROI, dan premium credits tercatat per site
+- [x] 329.8 Quality gate Fase 329
 
 ## FASE 330 — KEBERLANJUTAN: NATURE, WATER & COMMUNITY FINANCE SCALE
 - [ ] 330.1 Nature project marketplace scale: verified baseline, additionality, permanence, leakage, community rights → issuance gate & benefit share
