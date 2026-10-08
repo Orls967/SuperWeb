@@ -3972,14 +3972,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 353.8 Quality gate Fase 353
 
 ## FASE 354 — AI PLATFORM: FEDERATED & EDGE AI OPERATIONS
-- [ ] 354.1 Edge inference for venue/site (Fase 145.2): local model, offline capability, sync insights → central → model update distribution with rollback
-- [ ] 354.2 Federated pattern: train/aggregate insights without raw data leaving domain (simulated) → privacy check → performance evaluation
-- [ ] 354.3 Device fleet model management: version per device group, staged rollout, health telemetry, fail-safe to deterministic rules
-- [ ] 354.4 Tests: model update rollback tested, privacy check passes, edge fail-safe engages on model error, `ai:audit` clean
-- [ ] 354.5 Edge case: edge model salah → fail-safe ke rules deterministik, alert ke central
-- [ ] 354.6 Risiko: federated aggregation bocor info → privacy check sebelum model dirilis
-- [ ] 354.7 Evidence: rollback proof, privacy evaluation, dan fail-safe log tercatat per device group
-- [ ] 354.8 Quality gate Fase 354
+- [x] 354.1 Edge inference for venue/site (Fase 145.2): local model, offline capability, sync insights → central → model update distribution with rollback
+- [x] 354.2 Federated pattern: train/aggregate insights without raw data leaving domain (simulated) → privacy check → performance evaluation
+- [x] 354.3 Device fleet model management: version per device group, staged rollout, health telemetry, fail-safe to deterministic rules
+- [x] 354.4 Tests: model update rollback tested, privacy check passes, edge fail-safe engages on model error, `ai:audit` clean
+- [x] 354.5 Edge case: edge model salah → fail-safe ke rules deterministik, alert ke central
+- [x] 354.6 Risiko: federated aggregation bocor info → privacy check sebelum model dirilis
+- [x] 354.7 Evidence: rollback proof, privacy evaluation, dan fail-safe log tercatat per device group
+- [x] 354.8 Quality gate Fase 354
 
 ## FASE 355 — AI PLATFORM: EDGE MODEL REGISTRY & DEVICE FLEET ROLLOUT
 - [ ] 355.1 Edge device registry per site (venue, mine, hospital, warehouse): hardware class, model version, connectivity, owner, criticality, update window
