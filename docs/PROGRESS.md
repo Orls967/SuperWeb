@@ -2451,14 +2451,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 204.8 Quality gate Fase 204
 
 ## FASE 205 — RISIKO: THIRD-PARTY & SUPPLY CHAIN RISK
-- [ ] 205.1 Vendor criticality tiering (50.000 pihak ketiga: pemasok, carrier, cloud, broker, outsourcer) → due diligence depth per tier → monitoring periodik
-- [ ] 205.2 Fourth-party risk: dependency pemasok atas sub-vendor → konsentrasi terdeteksi (mis. semua butuh 1 penyedia logistik) → rekomendasi diversifikasi
-- [ ] 205.3 Concentration dashboard: exposure gabungan per pihak (Fase 27.7) lintas lini → batas wajar → melanggar → approval sebelum transaksi baru
-- [ ] 205.4 Exit & continuity per vendor: kontrak exit clause, data return, re-kualifikasi pemasok pengganti playbook → diuji berkala
-- [ ] 205.5 Tests: concentration breach terdeteksi, tier menentukan kedalaman due diligence, exit playbook lengkap, `vendor:audit` clean
-- [ ] 205.6 Edge case: vendor gagal mendadak (bangkrut/terkena sanksi) → continuity playbook dieksekusi dalam SLA, transaksi terblokir sementara
-- [ ] 205.7 Risiko: konsentrasi geografis (semua vendor di satu region) → peta risiko region + alternatif kualifikasi
-- [ ] 205.8 Quality gate Fase 205
+- [x] 205.1 Vendor criticality tiering (50.000 pihak ketiga: pemasok, carrier, cloud, broker, outsourcer) → due diligence depth per tier → monitoring periodik
+- [x] 205.2 Fourth-party risk: dependency pemasok atas sub-vendor → konsentrasi terdeteksi (mis. semua butuh 1 penyedia logistik) → rekomendasi diversifikasi
+- [x] 205.3 Concentration dashboard: exposure gabungan per pihak (Fase 27.7) lintas lini → batas wajar → melanggar → approval sebelum transaksi baru
+- [x] 205.4 Exit & continuity per vendor: kontrak exit clause, data return, re-kualifikasi pemasok pengganti playbook → diuji berkala
+- [x] 205.5 Tests: concentration breach terdeteksi, tier menentukan kedalaman due diligence, exit playbook lengkap, `vendor:audit` clean
+- [x] 205.6 Edge case: vendor gagal mendadak (bangkrut/terkena sanksi) → continuity playbook dieksekusi dalam SLA, transaksi terblokir sementara
+- [x] 205.7 Risiko: konsentrasi geografis (semua vendor di satu region) → peta risiko region + alternatif kualifikasi
+- [x] 205.8 Quality gate Fase 205
 
 ## FASE 206 — RISIKO: BUSINESS CONTINUITY 30 LINI & CRISIS COMMAND
 - [ ] 206.1 Business impact analysis per lini per negara: proses kritikal → RTO/RPO tier → dependency map (yang harus jalan agar yang lain jalan)

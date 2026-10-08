@@ -64,6 +64,7 @@ use Modules\Integration\Application\Services\SyariahBankingService;
 use Modules\Integration\Application\Services\SyariahOperationsService;
 use Modules\Integration\Application\Services\TakafulAndAgriService;
 use Modules\Integration\Application\Services\TelecomIdentityService;
+use Modules\Integration\Application\Services\ThirdPartyRiskService;
 use Modules\Integration\Application\Services\ThreatDetectionService;
 use Modules\Integration\Application\Services\TreasuryUnificationService;
 use Modules\Integration\Application\Services\ValueChainSimulationService;
@@ -142,6 +143,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(EnterpriseRiskService::class);
         $this->app->singleton(InternalControlSodService::class);
         $this->app->singleton(CyberResilienceService::class);
+        $this->app->singleton(ThirdPartyRiskService::class);
     }
 
     public function boot(): void
