@@ -4172,14 +4172,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 373.8 Quality gate Fase 373
 
 ## FASE 374 — EKOSISTEM: TRUST & SAFETY, MODERATION & USER PROTECTION
-- [ ] 374.1 Unified trust operations across reviews, forums, tickets, creator content and marketplace listings; risk tiers and moderation SLA
-- [ ] 374.2 Safety reporting and urgent escalation; content decision appeal; audit reasons without exposing reporter identity
-- [ ] 374.3 Vulnerable user safeguards for health/education/community flows; age-appropriate access and contact restrictions
-- [ ] 374.4 Tests: reporter privacy preserved, urgent report meets SLA, moderation action appealable, `trust:audit` clean
-- [ ] 374.5 Edge case: reporter berisiko → jalur proteksi & anonymisasi ketat, identitas tak pernah bocor
-- [ ] 374.6 Risiko: moderasi massal tak terkontrol → sampling quality review + appeal effectiveness diukur
-- [ ] 374.7 Evidence: moderation SLA, appeal outcome, dan vulnerable-user safeguard tercatat
-- [ ] 374.8 Quality gate Fase 374
+- [x] 374.1 Unified trust operations across reviews, forums, tickets, creator content and marketplace listings; risk tiers and moderation SLA
+- [x] 374.2 Safety reporting and urgent escalation; content decision appeal; audit reasons without exposing reporter identity
+- [x] 374.3 Vulnerable user safeguards for health/education/community flows; age-appropriate access and contact restrictions
+- [x] 374.4 Tests: reporter privacy preserved, urgent report meets SLA, moderation action appealable, `trust:audit` clean
+- [x] 374.5 Edge case: reporter berisiko → jalur proteksi & anonymisasi ketat, identitas tak pernah bocor
+- [x] 374.6 Risiko: moderasi massal tak terkontrol → sampling quality review + appeal effectiveness diukur
+- [x] 374.7 Evidence: moderation SLA, appeal outcome, dan vulnerable-user safeguard tercatat
+- [x] 374.8 Quality gate Fase 374
 
 ## FASE 375 — EKOSISTEM: ECOSYSTEM HEALTH & NETWORK EFFECTS GOVERNANCE
 - [ ] 375.1 Measure partner liquidity, buyer/seller balance, match rates, concentration, dispute levels and ecosystem value by vertical
