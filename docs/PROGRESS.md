@@ -3792,14 +3792,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 335.8 Quality gate Fase 335
 
 ## FASE 336 — GOVERNANCE: ENTERPRISE POLICY SIMULATION & IMPACT TESTING
-- [ ] 336.1 Policy simulation engine: jalankan rule baru terhadap historical data seed → dampak (transaksi terblokir, approval volume, revenue effect) → report sebelum aktivasi
-- [ ] 336.2 Policy regression suite: aturan aktif diuji berkala terhadap skenario tetap → drift perilaku terdeteksi → change ticket wajib
-- [ ] 336.3 Stakeholder impact review: policy berdampak besar pada pelanggan/mitra/karyawan → consultation simulation → mitigasi komunikasi & transisi
-- [ ] 336.4 Tests: simulation tak mengubah data, regression suite gate aktivasi, impact review lengkap, `policy:audit` clean
-- [ ] 336.5 Edge case: policy baru diuji pada data historis dan ternyata menghambat operasi → revisi sebelum aktivasi, bukan aktif dulu lalu diperbaiki
-- [ ] 336.6 Risiko: simulation tak mewakili kondisi puncak → pakai dataset peak, bukan rata-rata
-- [ ] 336.7 Evidence: simulation result, regression suite, dan stakeholder review tercatat
-- [ ] 336.8 Quality gate Fase 336
+- [x] 336.1 Policy simulation engine: jalankan rule baru terhadap historical data seed → dampak (transaksi terblokir, approval volume, revenue effect) → report sebelum aktivasi
+- [x] 336.2 Policy regression suite: aturan aktif diuji berkala terhadap skenario tetap → drift perilaku terdeteksi → change ticket wajib
+- [x] 336.3 Stakeholder impact review: policy berdampak besar pada pelanggan/mitra/karyawan → consultation simulation → mitigasi komunikasi & transisi
+- [x] 336.4 Tests: simulation tak mengubah data, regression suite gate aktivasi, impact review lengkap, `policy:audit` clean
+- [x] 336.5 Edge case: policy baru diuji pada data historis dan ternyata menghambat operasi → revisi sebelum aktivasi, bukan aktif dulu lalu diperbaiki
+- [x] 336.6 Risiko: simulation tak mewakili kondisi puncak → pakai dataset peak, bukan rata-rata
+- [x] 336.7 Evidence: simulation result, regression suite, dan stakeholder review tercatat
+- [x] 336.8 Quality gate Fase 336
 
 ## FASE 337 — GOVERNANCE: ETHICS & COMPLIANCE PROGRAM MATURITY
 - [ ] 337.1 Compliance program scorecard per lini: risk assessment, training completion, monitoring, reporting, remediation → maturity level → improvement plan
