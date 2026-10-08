@@ -2882,14 +2882,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 247.8 Quality gate Fase 247
 
 ## FASE 248 — KOMERSIAL: TENDER & BID MANAGEMENT SCALE 30 LINI
-- [ ] 248.1 Bid desk enterprise: lelang dari pelanggan B2B/B2G lintas lini (supply produk, sewa, jasa, PPA, project) → qualification (bid/no-bid scoring) → resource assignment → timeline → submission
-- [ ] 248.2 Bid cost accounting: biaya persiapan (engineering, legal, riset) → capitalize vs expense kebijakan → ROI bid terukur (win rate × contract value vs cost)
-- [ ] 248.3 AI bid agent federation (memperluas Fase 84): banyak agen per domain berbagi riset harga → konsolidasi → human approval per bid class → submission compliance
-- [ ] 248.4 Post-award mobilisasi: kontrak → project (Fase 217) → resource mobilization → first 90 days checklist → health index proyek
-- [ ] 248.5 Tests: bid/no-bid deterministik, bid cost tercatat, approval wajib sebelum submit, mobilisasi gate lengkap, `psv:audit` clean
-- [ ] 248.6 Edge case: lelang dibatalkan setelah submit → biaya bid tetap tercatat, ROI bid tetap terukur
-- [ ] 248.7 Conflict of interest lelang internal → screening pihak terkait sebelum evaluasi
-- [ ] 248.8 Quality gate Fase 248
+- [x] 248.1 Bid desk enterprise: lelang dari pelanggan B2B/B2G lintas lini (supply produk, sewa, jasa, PPA, project) → qualification (bid/no-bid scoring) → resource assignment → timeline → submission
+- [x] 248.2 Bid cost accounting: biaya persiapan (engineering, legal, riset) → capitalize vs expense kebijakan → ROI bid terukur (win rate × contract value vs cost)
+- [x] 248.3 AI bid agent federation (memperluas Fase 84): banyak agen per domain berbagi riset harga → konsolidasi → human approval per bid class → submission compliance
+- [x] 248.4 Post-award mobilisasi: kontrak → project (Fase 217) → resource mobilization → first 90 days checklist → health index proyek
+- [x] 248.5 Tests: bid/no-bid deterministik, bid cost tercatat, approval wajib sebelum submit, mobilisasi gate lengkap, `psv:audit` clean
+- [x] 248.6 Edge case: lelang dibatalkan setelah submit → biaya bid tetap tercatat, ROI bid tetap terukur
+- [x] 248.7 Conflict of interest lelang internal → screening pihak terkait sebelum evaluasi
+- [x] 248.8 Quality gate Fase 248
 
 ## FASE 249 — KOMERSIAL: CATALOG, CONFIGURATION & QUOTE-TO-CASH 30 LINI
 - [ ] 249.1 Unified CPQ: product/service catalog lintas lini (complex: bundel asuransi, paket hotel+event, kontrak telko, solusi EPC) → configurator valid → pricing → quote → approval → contract → order → fulfillment → invoice → cash
