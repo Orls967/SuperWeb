@@ -3632,14 +3632,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 319.8 Quality gate Fase 319
 
 ## FASE 320 — ADVANCED PEOPLE: TOTAL WELLBEING & PERFORMANCE SUSTAINABILITY
-- [ ] 320.1 Sustainable performance model: workload metrics (overtime, on-call, utilization) → burnout risk indicator → workload balancing action → attrition/absence correlation terukur
-- [ ] 320.2 Wellbeing program portfolio: physical, mental, financial (link Fase 163.4 literacy), social → engagement per program → cost per outcome → reallocation tahunan
-- [ ] 320.3 Safety culture leading index (Fase 120.1 generalized): reporting rate, near-miss quality, stop-work authority usage → leadership scorecard → incentive alignment
-- [ ] 320.4 Tests: workload metrics dari data shift nyata, program outcome terukur, safety index deterministik, `hcm:audit` clean
-- [ ] 320.5 Edge case: burnout indicator merah → workload redistribution + mandatory break, bukan target diturunkan diam-diam
-- [ ] 320.6 Risiko: wellbeing program mahal tanpa outcome → cost-per-outcome diukur, program tak efektif dihentikan (Fase 724)
-- [ ] 320.7 Evidence: attrition correlation, safety culture index, dan program ROI tercatat per periode
-- [ ] 320.8 Quality gate Fase 320
+- [x] 320.1 Sustainable performance model: workload metrics (overtime, on-call, utilization) → burnout risk indicator → workload balancing action → attrition/absence correlation terukur
+- [x] 320.2 Wellbeing program portfolio: physical, mental, financial (link Fase 163.4 literacy), social → engagement per program → cost per outcome → reallocation tahunan
+- [x] 320.3 Safety culture leading index (Fase 120.1 generalized): reporting rate, near-miss quality, stop-work authority usage → leadership scorecard → incentive alignment
+- [x] 320.4 Tests: workload metrics dari data shift nyata, program outcome terukur, safety index deterministik, `hcm:audit` clean
+- [x] 320.5 Edge case: burnout indicator merah → workload redistribution + mandatory break, bukan target diturunkan diam-diam
+- [x] 320.6 Risiko: wellbeing program mahal tanpa outcome → cost-per-outcome diukur, program tak efektif dihentikan (Fase 724)
+- [x] 320.7 Evidence: attrition correlation, safety culture index, dan program ROI tercatat per periode
+- [x] 320.8 Quality gate Fase 320
 
 ## FASE 321 — INTEGRASI PEOPLE: STRATEGIC WORKFORCE & BUSINESS CAPABILITY
 - [ ] 321.1 Capability map: strategi 30 lini → kapabilitas → proses → skill → role → headcount & technology dependencies → gap analysis tahunan
