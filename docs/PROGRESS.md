@@ -5172,14 +5172,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 473.8 Quality gate Fase 473
 
 ## FASE 474 — PLATFORM WAVE: ENTERPRISE TEST DATA MANAGEMENT & COMPLIANCE
-- [ ] 474.1 Test data policy: synthetic for dev/test, masked for staging, production never copied without approval
-- [ ] 474.2 Data subsetting: representative slices per scenario with referential integrity → faster test cycles
-- [ ] 474.3 Compliance verification: scan test environments for PII leakage → remediate → evidence
-- [ ] 474.4 Tests: PII scan clean in test env, subset integrity valid, production copy needs approval, `privacy:audit` clean
-- [ ] 474.5 Edge case: PII ditemukan di staging → purge + regenerate + investigasi sumber
-- [ ] 474.6 Risiko: subsetting tak representatif → distribution check vs production profile
-- [ ] 474.7 Evidence: data policy, subsetting manifest, dan PII scan result tercatat
-- [ ] 474.8 Quality gate Fase 474
+- [x] 474.1 Test data policy: synthetic for dev/test, masked for staging, production never copied without approval
+- [x] 474.2 Data subsetting: representative slices per scenario with referential integrity → faster test cycles
+- [x] 474.3 Compliance verification: scan test environments for PII leakage → remediate → evidence
+- [x] 474.4 Tests: PII scan clean in test env, subset integrity valid, production copy needs approval, `privacy:audit` clean
+- [x] 474.5 Edge case: PII ditemukan di staging → purge + regenerate + investigasi sumber
+- [x] 474.6 Risiko: subsetting tak representatif → distribution check vs production profile
+- [x] 474.7 Evidence: data policy, subsetting manifest, dan PII scan result tercatat
+- [x] 474.8 Quality gate Fase 474
 
 ## FASE 475 — PLATFORM WAVE: ENTERPRISE MONITORING & BUSINESS KPI OBSERVABILITY
 - [ ] 475.1 Business KPI as first-class observable: revenue rate, order rate, claim rate, booking rate, payment success → real-time with lineage
