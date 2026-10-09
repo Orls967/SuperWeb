@@ -4802,14 +4802,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 436.8 Quality gate Fase 436
 
 ## FASE 437 — GLOBAL FINANCE WAVE: CAPITAL ALLOCATION & PORTFOLIO OPTIMIZATION
-- [ ] 437.1 Investment scoring: financial (NPV/IRR/payback), strategic fit, risk, capability, sustainability, dependency → weighted score versioned
-- [ ] 437.2 Portfolio optimizer: constraint (budget, capacity, risk appetite) → recommended allocation → human approval → funding release
-- [ ] 437.3 Post-investment review: actual vs case, lessons, go/no-go for continuation, write-off path with approval
-- [ ] 437.4 Tests: scoring reproducible, optimizer respects constraints, funding ≤ approved budget, review completes before next tranche, `group:audit` clean
-- [ ] 437.5 Edge case: proyek melampaui budget → escalation approval sebelum lanjut, tak biaya terpendam
-- [ ] 437.6 Risiko: scoring bias ke proyek favorit → reviewer independen & sensitivity analysis
-- [ ] 437.7 Evidence: scoring rubric, allocation decision, dan post-investment review tercatat
-- [ ] 437.8 Quality gate Fase 437
+- [x] 437.1 Investment scoring: financial (NPV/IRR/payback), strategic fit, risk, capability, sustainability, dependency → weighted score versioned
+- [x] 437.2 Portfolio optimizer: constraint (budget, capacity, risk appetite) → recommended allocation → human approval → funding release
+- [x] 437.3 Post-investment review: actual vs case, lessons, go/no-go for continuation, write-off path with approval
+- [x] 437.4 Tests: scoring reproducible, optimizer respects constraints, funding ≤ approved budget, review completes before next tranche, `group:audit` clean
+- [x] 437.5 Edge case: proyek melampaui budget → escalation approval sebelum lanjut, tak biaya terpendam
+- [x] 437.6 Risiko: scoring bias ke proyek favorit → reviewer independen & sensitivity analysis
+- [x] 437.7 Evidence: scoring rubric, allocation decision, dan post-investment review tercatat
+- [x] 437.8 Quality gate Fase 437
 
 ## FASE 438 — GLOBAL FINANCE WAVE: TAX, CUSTOMS & TRANSFER PRICING OPERATIONS
 - [ ] 438.1 Transfer pricing documentation automation: comparability search (simulasi), method application, master/local file draft, adjustment proposals
