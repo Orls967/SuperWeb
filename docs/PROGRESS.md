@@ -4672,14 +4672,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 423.8 Quality gate Fase 423
 
 ## FASE 424 — PEOPLE WAVE: LEARNING OPERATIONS & EFFECTIVENESS
-- [ ] 424.1 Learning operations: catalog governance, capacity/session scheduling, instructor qualification, materials version control
-- [ ] 424.2 Effectiveness measurement: Kirkpatrick-style levels (reaction, learning, behavior, result) where feasible; correlation labeled
-- [ ] 424.3 Compliance learning engine: mandatory assignments by role/risk, deadline escalation, blocked assignments on overdue
-- [ ] 424.4 Tests: overdue compliance blocks role activity, effectiveness data source-linked, session conflict rejected, `campus:audit` clean
-- [ ] 424.5 Edge case: instructor tak memenuhi kualifikasi → diganti sebelum sesi, bukan setelah komplain
-- [ ] 424.6 Risiko: effectiveness level 3/4 tak terukur → label korelasi, jangan klaim kausal tanpa bukti
-- [ ] 424.7 Evidence: catalog governance, effectiveness data, dan compliance completion tercatat
-- [ ] 424.8 Quality gate Fase 424
+- [x] 424.1 Learning operations: catalog governance, capacity/session scheduling, instructor qualification, materials version control
+- [x] 424.2 Effectiveness measurement: Kirkpatrick-style levels (reaction, learning, behavior, result) where feasible; correlation labeled
+- [x] 424.3 Compliance learning engine: mandatory assignments by role/risk, deadline escalation, blocked assignments on overdue
+- [x] 424.4 Tests: overdue compliance blocks role activity, effectiveness data source-linked, session conflict rejected, `campus:audit` clean
+- [x] 424.5 Edge case: instructor tak memenuhi kualifikasi → diganti sebelum sesi, bukan setelah komplain
+- [x] 424.6 Risiko: effectiveness level 3/4 tak terukur → label korelasi, jangan klaim kausal tanpa bukti
+- [x] 424.7 Evidence: catalog governance, effectiveness data, dan compliance completion tercatat
+- [x] 424.8 Quality gate Fase 424
 
 ## FASE 425 — PEOPLE WAVE: ORGANIZATION DESIGN & CHANGE MANAGEMENT
 - [ ] 425.1 Org design scenarios: structure alternatives with span of control, cost, decision-path analysis → approval → migration plan
