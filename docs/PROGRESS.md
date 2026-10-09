@@ -4932,14 +4932,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 449.8 Quality gate Fase 449
 
 ## FASE 450 — GOVERNANCE WAVE: ENTERPRISE RISK APPETITE & BOARD RISK REPORTING
-- [ ] 450.1 Risk appetite statement quantified per category (credit, market, operational, compliance, strategic, climate) with KRIs
-- [ ] 450.2 Appetite breach workflow: KRI breach → owner response → time-bound remediation → board risk committee escalation
-- [ ] 450.3 Board risk pack: aggregate exposure, trend, scenario stress (Fase 243.2), top risks with mitigation status
-- [ ] 450.4 Tests: appetite quantified & testable, breach triggers workflow, pack numbers lineage to risk register, `risk:audit` clean
-- [ ] 450.5 Edge case: appetite breach berulang → keputusan dewan mengubah appetite atau strategy, bukan abaikan
-- [ ] 450.6 Risiko: KRI tak mencerminkan risiko nyata → validasi KRI dengan incident history berkala
-- [ ] 450.7 Evidence: appetite document, breach log, dan board risk pack tercatat
-- [ ] 450.8 Quality gate Fase 450
+- [x] 450.1 Risk appetite statement quantified per category (credit, market, operational, compliance, strategic, climate) with KRIs
+- [x] 450.2 Appetite breach workflow: KRI breach → owner response → time-bound remediation → board risk committee escalation
+- [x] 450.3 Board risk pack: aggregate exposure, trend, scenario stress (Fase 243.2), top risks with mitigation status
+- [x] 450.4 Tests: appetite quantified & testable, breach triggers workflow, pack numbers lineage to risk register, `risk:audit` clean
+- [x] 450.5 Edge case: appetite breach berulang → keputusan dewan mengubah appetite atau strategy, bukan abaikan
+- [x] 450.6 Risiko: KRI tak mencerminkan risiko nyata → validasi KRI dengan incident history berkala
+- [x] 450.7 Evidence: appetite document, breach log, dan board risk pack tercatat
+- [x] 450.8 Quality gate Fase 450
 
 ## FASE 451 — GOVERNANCE WAVE: POLICY COMPLIANCE TESTING & REMEDIATION
 - [ ] 451.1 Compliance test plan: sample transactions/records against policy → evidence → finding → owner → due date → verify
