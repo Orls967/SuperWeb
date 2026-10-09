@@ -1,5 +1,7 @@
 # CODEBASE.md — Peta Codebase Superwebsite (BACA INI DULU)
 
+> ⚠️ **Re-baseline 10 Oktober 2026:** baris "Fase selesai terakhir" dan "Snapshot gate" di bawah **tidak lagi valid** (contoh: `*:audit` 17 lini dan RBAC 60+ role tidak ada di kode; versi framework Laravel 13, PHP ≥ 8.4.1 sesuai `composer.lock`). Status nyata per fase ada di `docs/PROGRESS.md` (baris "Status audit" + Protokol P1–P6 + Fase R) dan hasil audit lengkap di `docs/KNOWLEDGE.md`. Pembaruan bagian faktual dokumen ini dijadwalkan di PROGRESS R0.5 dan R5.1.
+
 > **Fungsi dokumen:** satu-satunya pintu masuk untuk memahami kode. Sesi baru **membaca file ini, bukan memindai seluruh codebase**. Buka file sumber hanya untuk bagian yang akan diubah.
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
