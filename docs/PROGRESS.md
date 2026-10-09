@@ -5152,14 +5152,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 471.8 Quality gate Fase 471
 
 ## FASE 472 — PLATFORM WAVE: ENTERPRISE ARCHITECTURE GOVERNANCE
-- [ ] 472.1 Architecture principles & standards (modular monolith, event-driven, ledger-first, privacy-first) with compliance assessment
-- [ ] 472.2 Architecture review board: proposal → impact assessment → decision → conditions → post-implementation verification
-- [ ] 472.3 Technology radar: adopt/trial/assess/hold per technology with owner and review cycle → no uncontrolled tech adoption
-- [ ] 472.4 Tests: principles testable (arch test), ADR required for deviation, radar review scheduled, `platform:audit` clean
-- [ ] 472.5 Edge case: proposal luar radar butuh speed → tetap ADR wajib, walaupun fast-track
-- [ ] 472.6 Risiko: principles tak diuji → arch test menegakkan, bukan sekadar dokumen
-- [ ] 472.7 Evidence: board decision, radar version, dan compliance assessment tercatat
-- [ ] 472.8 Quality gate Fase 472
+- [x] 472.1 Architecture principles & standards (modular monolith, event-driven, ledger-first, privacy-first) with compliance assessment
+- [x] 472.2 Architecture review board: proposal → impact assessment → decision → conditions → post-implementation verification
+- [x] 472.3 Technology radar: adopt/trial/assess/hold per technology with owner and review cycle → no uncontrolled tech adoption
+- [x] 472.4 Tests: principles testable (arch test), ADR required for deviation, radar review scheduled, `platform:audit` clean
+- [x] 472.5 Edge case: proposal luar radar butuh speed → tetap ADR wajib, walaupun fast-track
+- [x] 472.6 Risiko: principles tak diuji → arch test menegakkan, bukan sekadar dokumen
+- [x] 472.7 Evidence: board decision, radar version, dan compliance assessment tercatat
+- [x] 472.8 Quality gate Fase 472
 
 ## FASE 473 — PLATFORM WAVE: ENTERPRISE DATA MIGRATION & LEGACY RETIREMENT
 - [ ] 473.1 Migration inventory: source systems, data domains, cutover strategy (big-bang/phased), rollback plan, dual-run period
