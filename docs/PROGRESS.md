@@ -4522,14 +4522,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 408.8 Quality gate Fase 408
 
 ## FASE 409 — OPERATIONS WAVE: END-TO-END ORDER & SERVICE ORCHESTRATION
-- [ ] 409.1 Cross-line order orchestration for bundles: reservation, dependency check, partial success semantics, rollback and notification
-- [ ] 409.2 Consistency model documented: what must be atomic vs eventually consistent; user-facing state machine reflects reality
-- [ ] 409.3 Exception handling: failed component → clear user outcome (refund, alternative, escalation) with SLA and audit
-- [ ] 409.4 Tests: partial failure converges correctly, no orphan reservations, user state machine accurate, `bundle:audit` clean
-- [ ] 409.5 Edge case: state user tak mencerminkan konsistensi nyata → state machine diperbaiki, jangan menipu UI
-- [ ] 409.6 Risiko: rollback gagal meninggalkan reservation orphan → reconciliasi periodik menutup celah
-- [ ] 409.7 Evidence: consistency model doc, exception handling log, dan convergence proof tercatat
-- [ ] 409.8 Quality gate Fase 409
+- [x] 409.1 Cross-line order orchestration for bundles: reservation, dependency check, partial success semantics, rollback and notification
+- [x] 409.2 Consistency model documented: what must be atomic vs eventually consistent; user-facing state machine reflects reality
+- [x] 409.3 Exception handling: failed component → clear user outcome (refund, alternative, escalation) with SLA and audit
+- [x] 409.4 Tests: partial failure converges correctly, no orphan reservations, user state machine accurate, `bundle:audit` clean
+- [x] 409.5 Edge case: state user tak mencerminkan konsistensi nyata → state machine diperbaiki, jangan menipu UI
+- [x] 409.6 Risiko: rollback gagal meninggalkan reservation orphan → reconciliasi periodik menutup celah
+- [x] 409.7 Evidence: consistency model doc, exception handling log, dan convergence proof tercatat
+- [x] 409.8 Quality gate Fase 409
 
 ## FASE 410 — OPERATIONS WAVE: INVENTORY, ASSET & EQUIPMENT AVAILABILITY PROGRAM
 - [ ] 410.1 Availability commitment by asset class (truck, crane, bed, room, machine, charger) with maintenance reserve and priority rules
