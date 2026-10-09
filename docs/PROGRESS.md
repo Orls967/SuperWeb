@@ -5042,14 +5042,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 460.8 Quality gate Fase 460
 
 ## FASE 461 — INTEGRASI AKHIR: ENTERPRISE SUPPLY CHAIN GOVERNANCE
-- [ ] 461.1 Supply chain strategy: network design, make-vs-buy, dual-sourcing policy, inventory strategy per category → reviewed annually
-- [ ] 461.2 Category management: strategic/tactical/operational categories with sourcing strategy, supplier panel, negotiation plan
-- [ ] 461.3 Supply chain risk register with mitigation portfolio and residual risk reporting
-- [ ] 461.4 Tests: strategy reviewed annually, category strategy applied in sourcing, residual risk reported, `proc:audit` + `tower:audit` clean
-- [ ] 461.5 Edge case: kebijakan sourcing tak diikuti proses → compliance monitoring menandai deviation
-- [ ] 461.6 Risiko: risk register basi → review berkala + update dari incident & market feed
-- [ ] 461.7 Evidence: strategy review, category decision, dan residual risk report tercatat
-- [ ] 461.8 Quality gate Fase 461
+- [x] 461.1 Supply chain strategy: network design, make-vs-buy, dual-sourcing policy, inventory strategy per category → reviewed annually
+- [x] 461.2 Category management: strategic/tactical/operational categories with sourcing strategy, supplier panel, negotiation plan
+- [x] 461.3 Supply chain risk register with mitigation portfolio and residual risk reporting
+- [x] 461.4 Tests: strategy reviewed annually, category strategy applied in sourcing, residual risk reported, `proc:audit` + `tower:audit` clean
+- [x] 461.5 Edge case: kebijakan sourcing tak diikuti proses → compliance monitoring menandai deviation
+- [x] 461.6 Risiko: risk register basi → review berkala + update dari incident & market feed
+- [x] 461.7 Evidence: strategy review, category decision, dan residual risk report tercatat
+- [x] 461.8 Quality gate Fase 461
 
 ## FASE 462 — INTEGRASI AKHIR: ENTERPRISE QUALITY MANAGEMENT GOVERNANCE
 - [ ] 462.1 Quality policy and objectives per line with management review cycle
