@@ -4892,14 +4892,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 445.8 Quality gate Fase 445
 
 ## FASE 446 — SUSTAINABILITY WAVE: WATER STEWARDSHIP & ENERGY MANAGEMENT OPERATIONS
-- [ ] 446.1 Site water balance and energy baseline with normalized intensity (production, occupancy) → target setting
-- [ ] 446.2 Efficiency project pipeline: audit → measure → implement → verify (M&V) → sustain → replicate
-- [ ] 446.3 Utility procurement optimization: tariff structure, demand response participation (Fase 126.5), renewable PPAs → savings verified
-- [ ] 446.4 Tests: M&V baseline correct, savings verified not assumed, procurement savings reconcile to invoices, `egy:audit` + `esg:audit` clean
-- [ ] 446.5 Edge case: savings hilang setelah proyek → sustainment review 6/12 bulan wajib
-- [ ] 446.6 Risiko: baseline energy tak dinormalisasi → intensity per unit produksi/occupancy, bukan absolut
-- [ ] 446.7 Evidence: baseline doc, M&V report, dan procurement saving tercatat
-- [ ] 446.8 Quality gate Fase 446
+- [x] 446.1 Site water balance and energy baseline with normalized intensity (production, occupancy) → target setting
+- [x] 446.2 Efficiency project pipeline: audit → measure → implement → verify (M&V) → sustain → replicate
+- [x] 446.3 Utility procurement optimization: tariff structure, demand response participation (Fase 126.5), renewable PPAs → savings verified
+- [x] 446.4 Tests: M&V baseline correct, savings verified not assumed, procurement savings reconcile to invoices, `egy:audit` + `esg:audit` clean
+- [x] 446.5 Edge case: savings hilang setelah proyek → sustainment review 6/12 bulan wajib
+- [x] 446.6 Risiko: baseline energy tak dinormalisasi → intensity per unit produksi/occupancy, bukan absolut
+- [x] 446.7 Evidence: baseline doc, M&V report, dan procurement saving tercatat
+- [x] 446.8 Quality gate Fase 446
 
 ## FASE 447 — SUSTAINABILITY WAVE: GREEN PROCUREMENT & SUPPLIER DEVELOPMENT
 - [ ] 447.1 Supplier sustainability questionnaire, evidence, risk tier and improvement plans integrated to sourcing events
