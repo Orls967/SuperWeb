@@ -4722,14 +4722,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 428.8 Quality gate Fase 428
 
 ## FASE 429 — PLATFORM WAVE: API & INTEGRATION QUALITY GATES
-- [ ] 429.1 Contract testing between provider and consumer before deploy (schema compatibility, semantics, error model)
-- [ ] 429.2 Integration certification: sandbox scenario suite for new partner → certificate with scope & expiry → production enablement
-- [ ] 429.3 Integration monitoring: latency, error rate, data volume anomaly per partner endpoint → partner-facing status
-- [ ] 429.4 Tests: breaking contract fails before deploy, certificate expiry disables production, anomaly detected in seed, `api:audit` clean
-- [ ] 429.5 Edge case: partner certification gagal → production key tak diterbitkan sampai remediation
-- [ ] 429.6 Risiko: schema kompatibel teknis tapi berubah makna → semantic contract test & approval
-- [ ] 429.7 Evidence: certification report, contract test result, dan integration monitor tercatat
-- [ ] 429.8 Quality gate Fase 429
+- [x] 429.1 Contract testing between provider and consumer before deploy (schema compatibility, semantics, error model)
+- [x] 429.2 Integration certification: sandbox scenario suite for new partner → certificate with scope & expiry → production enablement
+- [x] 429.3 Integration monitoring: latency, error rate, data volume anomaly per partner endpoint → partner-facing status
+- [x] 429.4 Tests: breaking contract fails before deploy, certificate expiry disables production, anomaly detected in seed, `api:audit` clean
+- [x] 429.5 Edge case: partner certification gagal → production key tak diterbitkan sampai remediation
+- [x] 429.6 Risiko: schema kompatibel teknis tapi berubah makna → semantic contract test & approval
+- [x] 429.7 Evidence: certification report, contract test result, dan integration monitor tercatat
+- [x] 429.8 Quality gate Fase 429
 
 ## FASE 430 — PLATFORM WAVE: SECURITY ENGINEERING & SUPPLY CHAIN INTTEGRITY
 - [ ] 430.1 Dependency & artifact integrity: pinned versions, checksum verification, vulnerability scan gating build, license compliance
