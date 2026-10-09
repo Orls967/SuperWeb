@@ -4542,14 +4542,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 410.8 Quality gate Fase 410
 
 ## FASE 411 — OPERATIONS WAVE: FIELD & REMOTE SITE OPERATIONS INTEGRITY
-- [ ] 411.1 Remote site operating kit: procedures, credential check, equipment check, safety permit, communication check → digital pre-start gate
-- [ ] 411.2 Offline operations protocol: local buffer, conflict resolution, mandatory sync window, escalation when connectivity lost beyond threshold
-- [ ] 411.3 Post-operation verification: evidence (photo, signature, reading) uploaded → reviewer → records sealed
-- [ ] 411.4 Tests: pre-start gate blocks on missing credential/permit, offline sync zero-duplicate, post-op evidence required to close, `field:audit` clean
-- [ ] 411.5 Edge case: koneksi hilang melewati threshold → ops berhenti aman + eskalasi, bukan lanjut buta
-- [ ] 411.6 Risiko: pre-start gate di-skip karena tekanan jadwal → gate non-bypassable oleh role operasional
-- [ ] 411.7 Evidence: pre-start record, offline sync log, dan post-op evidence tercatat per tugas
-- [ ] 411.8 Quality gate Fase 411
+- [x] 411.1 Remote site operating kit: procedures, credential check, equipment check, safety permit, communication check → digital pre-start gate
+- [x] 411.2 Offline operations protocol: local buffer, conflict resolution, mandatory sync window, escalation when connectivity lost beyond threshold
+- [x] 411.3 Post-operation verification: evidence (photo, signature, reading) uploaded → reviewer → records sealed
+- [x] 411.4 Tests: pre-start gate blocks on missing credential/permit, offline sync zero-duplicate, post-op evidence required to close, `field:audit` clean
+- [x] 411.5 Edge case: koneksi hilang melewati threshold → ops berhenti aman + eskalasi, bukan lanjut buta
+- [x] 411.6 Risiko: pre-start gate di-skip karena tekanan jadwal → gate non-bypassable oleh role operasional
+- [x] 411.7 Evidence: pre-start record, offline sync log, dan post-op evidence tercatat per tugas
+- [x] 411.8 Quality gate Fase 411
 
 ## FASE 412 — OPERATIONS WAVE: QUALITY ASSURANCE & INSPECTION PROGRAM
 - [ ] 412.1 Risk-based inspection plan: frequency by risk, method, sampling plan, acceptance criteria and inspector qualification
