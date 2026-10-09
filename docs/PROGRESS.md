@@ -5102,14 +5102,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 466.8 Quality gate Fase 466
 
 ## FASE 467 — SCENARIO WAVE: M&A MEGA-SCENARIO & GROUP RESTRUCTURING
-- [ ] 467.1 Acquire simulated external entity (3 modules) → DD findings → integration (data migration, org, systems) → consolidation → divestment path
-- [ ] 467.2 Verification: backfill idempotent, no duplicate master data, consolidated statements correct, all audits clean
-- [ ] 467.3 Restructuring: intercompany reorganization (entity merge/split) → ledger migration → audit trail preserved
-- [ ] 467.4 Tests: migration idempotent, consolidated correct, reorganization preserves audit trail, `group:audit` clean
-- [ ] 467.5 Edge case: migration gagal → rollback bersih, tak meninggalkan duplikasi master data
-- [ ] 467.6 Risiko: reorganization menghapus audit trail → trail wajib dipertahankan, tak ada hard delete
-- [ ] 467.7 Evidence: DD pack, migration log, dan consolidation output tercatat
-- [ ] 467.8 Quality gate Fase 467
+- [x] 467.1 Acquire simulated external entity (3 modules) → DD findings → integration (data migration, org, systems) → consolidation → divestment path
+- [x] 467.2 Verification: backfill idempotent, no duplicate master data, consolidated statements correct, all audits clean
+- [x] 467.3 Restructuring: intercompany reorganization (entity merge/split) → ledger migration → audit trail preserved
+- [x] 467.4 Tests: migration idempotent, consolidated correct, reorganization preserves audit trail, `group:audit` clean
+- [x] 467.5 Edge case: migration gagal → rollback bersih, tak meninggalkan duplikasi master data
+- [x] 467.6 Risiko: reorganization menghapus audit trail → trail wajib dipertahankan, tak ada hard delete
+- [x] 467.7 Evidence: DD pack, migration log, dan consolidation output tercatat
+- [x] 467.8 Quality gate Fase 467
 
 ## FASE 468 — SCENARIO WAVE: REGULATORY CHANGE MEGA-SCENARIO
 - [ ] 468.1 Major regulatory change affecting multiple lines (e.g., carbon border + data localization + payment regulation) → impact analysis → control build → compliance evidence
