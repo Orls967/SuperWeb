@@ -4752,14 +4752,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 431.8 Quality gate Fase 431
 
 ## FASE 432 — PLATFORM WAVE: DATA & MODEL OPS GOVERNANCE (DOM)
-- [ ] 432.1 Unified pipeline for data + model changes: proposal → compatibility → test → approval → deploy → monitor → rollback
-- [ ] 432.2 Lineage-based impact analysis: change to field/model flags affected dashboards, agents and decisions
-- [ ] 432.3 Operational dashboards for data freshness, model drift, pipeline failure with owner and SLA
-- [ ] 432.4 Tests: impact analysis completeness, rollback restores prior state, drift threshold triggers workflow, `data:audit` clean
-- [ ] 432.5 Edge case: data/model change tak punya rollback plan → CI menolak deploy
-- [ ] 432.6 Risiko: impact analysis tak lengkap → lineage-based gate sebelum perubahan di-approve
-- [ ] 432.7 Evidence: pipeline log, impact report, dan drift monitoring result tercatat
-- [ ] 432.8 Quality gate Fase 432
+- [x] 432.1 Unified pipeline for data + model changes: proposal → compatibility → test → approval → deploy → monitor → rollback
+- [x] 432.2 Lineage-based impact analysis: change to field/model flags affected dashboards, agents and decisions
+- [x] 432.3 Operational dashboards for data freshness, model drift, pipeline failure with owner and SLA
+- [x] 432.4 Tests: impact analysis completeness, rollback restores prior state, drift threshold triggers workflow, `data:audit` clean
+- [x] 432.5 Edge case: data/model change tak punya rollback plan → CI menolak deploy
+- [x] 432.6 Risiko: impact analysis tak lengkap → lineage-based gate sebelum perubahan di-approve
+- [x] 432.7 Evidence: pipeline log, impact report, dan drift monitoring result tercatat
+- [x] 432.8 Quality gate Fase 432
 
 ## FASE 433 — PLATFORM WAVE: ENTERPRISE SEARCH, KNOWLEDGE & DOCUMENT OPS
 - [ ] 433.1 Index governance: source of truth per corpus, refresh SLA, ACL mirror, stale-content detection
