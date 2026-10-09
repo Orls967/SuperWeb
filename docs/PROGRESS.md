@@ -4922,14 +4922,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 448.8 Quality gate Fase 448
 
 ## FASE 449 — SUSTAINABILITY WAVE: ESG DATA, ASSURANCE & DIGITAL REPORTING
-- [ ] 449.1 Digital disclosure pipeline: datapoint ingestion → validation → evidence linkage → sign-off → XBRL-like tagging (simulasi) → publication
-- [ ] 449.2 Assurance readiness: internal audit sample → external assessor portal (Fase 293.4) → findings → remediation → statement
-- [ ] 449.3 Restatement & comparative update procedure with versioned historical reports and stakeholder notice
-- [ ] 449.4 Tests: tagging matches datapoint, unsupported figure blocked, restatement preserves history, `esg:audit` clean
-- [ ] 449.5 Edge case: tagging mismatch dengan datapoint → publish ditahan sampai diperbaiki
-- [ ] 449.6 Risiko: assurance findings tak ditutup → statement qualified, bukan dipublikasikan bersih
-- [ ] 449.7 Evidence: pipeline log, assurance findings, dan restatement record tercatat
-- [ ] 449.8 Quality gate Fase 449
+- [x] 449.1 Digital disclosure pipeline: datapoint ingestion → validation → evidence linkage → sign-off → XBRL-like tagging (simulasi) → publication
+- [x] 449.2 Assurance readiness: internal audit sample → external assessor portal (Fase 293.4) → findings → remediation → statement
+- [x] 449.3 Restatement & comparative update procedure with versioned historical reports and stakeholder notice
+- [x] 449.4 Tests: tagging matches datapoint, unsupported figure blocked, restatement preserves history, `esg:audit` clean
+- [x] 449.5 Edge case: tagging mismatch dengan datapoint → publish ditahan sampai diperbaiki
+- [x] 449.6 Risiko: assurance findings tak ditutup → statement qualified, bukan dipublikasikan bersih
+- [x] 449.7 Evidence: pipeline log, assurance findings, dan restatement record tercatat
+- [x] 449.8 Quality gate Fase 449
 
 ## FASE 450 — GOVERNANCE WAVE: ENTERPRISE RISK APPETITE & BOARD RISK REPORTING
 - [ ] 450.1 Risk appetite statement quantified per category (credit, market, operational, compliance, strategic, climate) with KRIs
