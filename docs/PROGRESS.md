@@ -4612,14 +4612,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 417.8 Quality gate Fase 417
 
 ## FASE 418 — CUSTOMER WAVE: SERVICE RECOVERY & LOYALTY PROTECTION
-- [ ] 418.1 Service failure taxonomy with expected remedies (goodwill, refund, repair, escalation) and authority matrix
-- [ ] 418.2 Proactive recovery: detect failure from system events → offer remedy before customer complains → measure recovery rate and cost
-- [ ] 418.3 Loyalty protection: high-value/at-risk customer handling rules, win-back offers with margin guard, no-discriminatory treatment audit
-- [ ] 418.4 Tests: remedy within authority matrix, proactive recovery idempotent, fairness audit passes, `crm:audit` clean
-- [ ] 418.5 Edge case: proactive recovery berlebih → abuse detection (klaim berulang) sebelum kompensasi
-- [ ] 418.6 Risiko: remedy tak sesuai kebijakan → authority matrix ditegakkan sistem, bukan diskresi kasir
-- [ ] 418.7 Evidence: recovery rate, cost per recovery, dan fairness audit result tercatat
-- [ ] 418.8 Quality gate Fase 418
+- [x] 418.1 Service failure taxonomy with expected remedies (goodwill, refund, repair, escalation) and authority matrix
+- [x] 418.2 Proactive recovery: detect failure from system events → offer remedy before customer complains → measure recovery rate and cost
+- [x] 418.3 Loyalty protection: high-value/at-risk customer handling rules, win-back offers with margin guard, no-discriminatory treatment audit
+- [x] 418.4 Tests: remedy within authority matrix, proactive recovery idempotent, fairness audit passes, `crm:audit` clean
+- [x] 418.5 Edge case: proactive recovery berlebih → abuse detection (klaim berulang) sebelum kompensasi
+- [x] 418.6 Risiko: remedy tak sesuai kebijakan → authority matrix ditegakkan sistem, bukan diskresi kasir
+- [x] 418.7 Evidence: recovery rate, cost per recovery, dan fairness audit result tercatat
+- [x] 418.8 Quality gate Fase 418
 
 ## FASE 419 — CUSTOMER WAVE: PRICING & PROMOTION CUSTOMER FAIRNESS REVIEW
 - [ ] 419.1 Fairness review: price differentiation criteria documented (cost, timing, volume, segment); prohibited basis flagged
