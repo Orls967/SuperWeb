@@ -4702,14 +4702,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 426.8 Quality gate Fase 426
 
 ## FASE 427 — PLATFORM WAVE: RELEASE MANAGEMENT & CHANGE ADVISORY
-- [ ] 427.1 Change risk classification (standard/normal/emergency) with required artifacts, approvers and post-implementation review
-- [ ] 427.2 Release train metrics: frequency, lead time, change failure rate, MTTR → improvement targets
-- [ ] 427.3 Coordinate multi-team releases: dependency freeze windows, compatibility checks, launch communication
-- [ ] 427.4 Tests: change classification enforced, emergency change retrospective required, dependency conflict detected pre-release, `platform:audit` clean
-- [ ] 427.5 Edge case: emergency change tanpa CAB → post-merge review wajib + dokumentasi alasan
-- [ ] 427.6 Risiko: release train menumpuk → WIP limit per train, tak semua fitur harus masuk
-- [ ] 427.7 Evidence: change classification, DORA metrics, dan coordination log tercatat
-- [ ] 427.8 Quality gate Fase 427
+- [x] 427.1 Change risk classification (standard/normal/emergency) with required artifacts, approvers and post-implementation review
+- [x] 427.2 Release train metrics: frequency, lead time, change failure rate, MTTR → improvement targets
+- [x] 427.3 Coordinate multi-team releases: dependency freeze windows, compatibility checks, launch communication
+- [x] 427.4 Tests: change classification enforced, emergency change retrospective required, dependency conflict detected pre-release, `platform:audit` clean
+- [x] 427.5 Edge case: emergency change tanpa CAB → post-merge review wajib + dokumentasi alasan
+- [x] 427.6 Risiko: release train menumpuk → WIP limit per train, tak semua fitur harus masuk
+- [x] 427.7 Evidence: change classification, DORA metrics, dan coordination log tercatat
+- [x] 427.8 Quality gate Fase 427
 
 ## FASE 428 — PLATFORM WAVE: PROBLEM MANAGEMENT & ROOT CAUSE OPERATIONS
 - [ ] 428.1 Incident → problem linkage: major incidents create problem records; error budget breach triggers problem review
