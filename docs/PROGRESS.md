@@ -5112,14 +5112,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 467.8 Quality gate Fase 467
 
 ## FASE 468 — SCENARIO WAVE: REGULATORY CHANGE MEGA-SCENARIO
-- [ ] 468.1 Major regulatory change affecting multiple lines (e.g., carbon border + data localization + payment regulation) → impact analysis → control build → compliance evidence
-- [ ] 468.2 Verification: all affected controls implemented & tested, no operation blocked unexpectedly, evidence complete
-- [ ] 468.3 Lessons: regulatory intelligence improvement → faster detection → better playbook
-- [ ] 468.4 Tests: impact analysis complete, controls tested, evidence gathered, `compliance:audit` clean
-- [ ] 468.5 Edge case: regulasi berlaku efektif segera → emergency change + priority build, bukan menunggu siklus
-- [ ] 468.6 Risiko: compliance gap tersembunyi → gap report wajib & terbuka ke auditor
-- [ ] 468.7 Evidence: impact analysis, control evidence, dan lessons learned tercatat
-- [ ] 468.8 Quality gate Fase 468
+- [x] 468.1 Major regulatory change affecting multiple lines (e.g., carbon border + data localization + payment regulation) → impact analysis → control build → compliance evidence
+- [x] 468.2 Verification: all affected controls implemented & tested, no operation blocked unexpectedly, evidence complete
+- [x] 468.3 Lessons: regulatory intelligence improvement → faster detection → better playbook
+- [x] 468.4 Tests: impact analysis complete, controls tested, evidence gathered, `compliance:audit` clean
+- [x] 468.5 Edge case: regulasi berlaku efektif segera → emergency change + priority build, bukan menunggu siklus
+- [x] 468.6 Risiko: compliance gap tersembunyi → gap report wajib & terbuka ke auditor
+- [x] 468.7 Evidence: impact analysis, control evidence, dan lessons learned tercatat
+- [x] 468.8 Quality gate Fase 468
 
 ## FASE 469 — SCENARIO WAVE: MARKET DISRUPTION & COMPETITIVE RESPONSE SIMULATION
 - [ ] 469.1 Disruption scenario: new competitor, demand collapse, technology shift → strategic response options → simulation of financial/operational impact
