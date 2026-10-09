@@ -4682,14 +4682,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 424.8 Quality gate Fase 424
 
 ## FASE 425 — PEOPLE WAVE: ORGANIZATION DESIGN & CHANGE MANAGEMENT
-- [ ] 425.1 Org design scenarios: structure alternatives with span of control, cost, decision-path analysis → approval → migration plan
-- [ ] 425.2 Change impact assessment: affected roles, processes, systems, communications → readiness score → intervention plan
-- [ ] 425.3 Restructuring execution: position freeze/unfreeze, employee consultation simulation, redeployment offers, severance simulation, timeline
-- [ ] 425.4 Tests: org change preserves reporting integrity, position lifecycle complete, consultation gate enforced, `hcm:audit` clean
-- [ ] 425.5 Edge case: org change mengganggu operasi kritikal → phased transition + continuity coverage wajib
-- [ ] 425.6 Risiko: workforce plan tak sinkron dengan anggaran headcount → encumbrance check sebelum offer
-- [ ] 425.7 Evidence: org change approval, impact simulation, dan migration progress tercatat
-- [ ] 425.8 Quality gate Fase 425
+- [x] 425.1 Org design scenarios: structure alternatives with span of control, cost, decision-path analysis → approval → migration plan
+- [x] 425.2 Change impact assessment: affected roles, processes, systems, communications → readiness score → intervention plan
+- [x] 425.3 Restructuring execution: position freeze/unfreeze, employee consultation simulation, redeployment offers, severance simulation, timeline
+- [x] 425.4 Tests: org change preserves reporting integrity, position lifecycle complete, consultation gate enforced, `hcm:audit` clean
+- [x] 425.5 Edge case: org change mengganggu operasi kritikal → phased transition + continuity coverage wajib
+- [x] 425.6 Risiko: workforce plan tak sinkron dengan anggaran headcount → encumbrance check sebelum offer
+- [x] 425.7 Evidence: org change approval, impact simulation, dan migration progress tercatat
+- [x] 425.8 Quality gate Fase 425
 
 ## FASE 426 — PLATFORM WAVE: QUALITY ENGINEERING AUTOMATION
 - [ ] 426.1 Test pyramid enforcement: unit/contract/integration/e2e coverage gates per module; flaky test quarantine with owner
