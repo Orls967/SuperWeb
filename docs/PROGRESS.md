@@ -5072,14 +5072,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 463.8 Quality gate Fase 463
 
 ## FASE 464 — INTEGRASI AKHIR: ENTERPRISE SUSTAINABILITY GOVERNANCE
-- [ ] 464.1 Sustainability steering: cross-line priorities, trade-off decisions (cost vs carbon vs social) with documented rationale
-- [ ] 464.2 Sustainability risk & opportunity integration into enterprise risk (Fase 202) and strategy (Fase 454)
-- [ ] 464.3 Sustainability performance in leadership scorecard (Fase 441.3) with verified metrics only
-- [ ] 464.4 Tests: trade-off decision documented, sustainability in risk register, scorecard uses verified metric, `esg:audit` clean
-- [ ] 464.5 Edge case: sustainability target bertabrak dengan financial target → trade-off board, bukan disembunyikan
-- [ ] 464.6 Risiko: steering tak ada eksekusi → action item dengan owner & due date wajib dari tiap review
-- [ ] 464.7 Evidence: steering minutes, risk integration, dan scorecard metric tercatat
-- [ ] 464.8 Quality gate Fase 464
+- [x] 464.1 Sustainability steering: cross-line priorities, trade-off decisions (cost vs carbon vs social) with documented rationale
+- [x] 464.2 Sustainability risk & opportunity integration into enterprise risk (Fase 202) and strategy (Fase 454)
+- [x] 464.3 Sustainability performance in leadership scorecard (Fase 441.3) with verified metrics only
+- [x] 464.4 Tests: trade-off decision documented, sustainability in risk register, scorecard uses verified metric, `esg:audit` clean
+- [x] 464.5 Edge case: sustainability target bertabrak dengan financial target → trade-off board, bukan disembunyikan
+- [x] 464.6 Risiko: steering tak ada eksekusi → action item dengan owner & due date wajib dari tiap review
+- [x] 464.7 Evidence: steering minutes, risk integration, dan scorecard metric tercatat
+- [x] 464.8 Quality gate Fase 464
 
 ## FASE 465 — SCENARIO WAVE: CONGLOMERATE SIMULATION 365 HARI, 30 LINI
 - [ ] 465.1 Full-year simulation via Simulation Kernel: all 30 lines run 365 compressed days — contracts, production, logistics, sales, payroll, depreciation, claims, royalties, dividends, consolidation
