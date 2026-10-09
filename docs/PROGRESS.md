@@ -4562,14 +4562,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 412.8 Quality gate Fase 412
 
 ## FASE 413 — OPERATIONS WAVE: MAINTENANCE & RELIABILITY PROGRAM GOVERNANCE
-- [ ] 413.1 Asset criticality ranking and maintenance strategy selection (RCM-lite) per class with documented rationale
-- [ ] 413.2 PM compliance, backlog aging, schedule adherence and wrench-time metrics with accountable owner
-- [ ] 413.3 Reliability improvement: chronic failure analysis → design/operating change (ECO/contract) → effectiveness verification
-- [ ] 413.4 Tests: strategy selection reproducible, PM compliance measurable, improvement verifies against baseline, `ast:audit` clean
-- [ ] 413.5 Edge case: PM terus terlewat → eskalasi ke supervisor area + kapasitas maintenance review
-- [ ] 413.6 Risiko: backlog maintenance menumpuk → aging threshold + prioritas risiko kegagalan
-- [ ] 413.7 Evidence: criticality ranking, PM compliance, dan improvement verification tercatat
-- [ ] 413.8 Quality gate Fase 413
+- [x] 413.1 Asset criticality ranking and maintenance strategy selection (RCM-lite) per class with documented rationale
+- [x] 413.2 PM compliance, backlog aging, schedule adherence and wrench-time metrics with accountable owner
+- [x] 413.3 Reliability improvement: chronic failure analysis → design/operating change (ECO/contract) → effectiveness verification
+- [x] 413.4 Tests: strategy selection reproducible, PM compliance measurable, improvement verifies against baseline, `ast:audit` clean
+- [x] 413.5 Edge case: PM terus terlewat → eskalasi ke supervisor area + kapasitas maintenance review
+- [x] 413.6 Risiko: backlog maintenance menumpuk → aging threshold + prioritas risiko kegagalan
+- [x] 413.7 Evidence: criticality ranking, PM compliance, dan improvement verification tercatat
+- [x] 413.8 Quality gate Fase 413
 
 ## FASE 414 — OPERATIONS WAVE: SUPPLY CHAIN PROGRAM GOVERNANCE & SCORECARDS
 - [ ] 414.1 End-to-end supply scorecard: supplier, manufacturing, warehouse, logistics, channel, customer with common definitions
