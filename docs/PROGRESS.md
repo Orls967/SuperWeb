@@ -4732,14 +4732,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 429.8 Quality gate Fase 429
 
 ## FASE 430 — PLATFORM WAVE: SECURITY ENGINEERING & SUPPLY CHAIN INTTEGRITY
-- [ ] 430.1 Dependency & artifact integrity: pinned versions, checksum verification, vulnerability scan gating build, license compliance
-- [ ] 430.2 Secret management & key rotation drills (Fase 296.4) with zero-downtime rotation and detection of leaked secrets
-- [ ] 430.3 Threat modeling for new domains (health, finance, energy, venue) before go-live → security requirements → verification
-- [ ] 430.4 Tests: tampered artifact rejected, rotated key path tested, leaked secret detected in scan, threat model sign-off required, security suite clean
-- [ ] 430.5 Edge case: threat model baru belum selesai saat go-live → rilis tertahan untuk domain high-impact
-- [ ] 430.6 Risiko: secret bocor ke repo → secret scanning di CI pre-commit + rotasi otomatis
-- [ ] 430.7 Evidence: SBOM/vulnerability report, rotation drill, dan threat model sign-off tercatat
-- [ ] 430.8 Quality gate Fase 430
+- [x] 430.1 Dependency & artifact integrity: pinned versions, checksum verification, vulnerability scan gating build, license compliance
+- [x] 430.2 Secret management & key rotation drills (Fase 296.4) with zero-downtime rotation and detection of leaked secrets
+- [x] 430.3 Threat modeling for new domains (health, finance, energy, venue) before go-live → security requirements → verification
+- [x] 430.4 Tests: tampered artifact rejected, rotated key path tested, leaked secret detected in scan, threat model sign-off required, security suite clean
+- [x] 430.5 Edge case: threat model baru belum selesai saat go-live → rilis tertahan untuk domain high-impact
+- [x] 430.6 Risiko: secret bocor ke repo → secret scanning di CI pre-commit + rotasi otomatis
+- [x] 430.7 Evidence: SBOM/vulnerability report, rotation drill, dan threat model sign-off tercatat
+- [x] 430.8 Quality gate Fase 430
 
 ## FASE 431 — PLATFORM WAVE: OBSERVABILITY, SLO & CAPACITY INTELLIGENCE
 - [ ] 431.1 Golden signals per service (traffic, errors, latency, saturation) with business overlay (orders, claims, bookings)
