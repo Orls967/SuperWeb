@@ -5122,14 +5122,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 468.8 Quality gate Fase 468
 
 ## FASE 469 — SCENARIO WAVE: MARKET DISRUPTION & COMPETITIVE RESPONSE SIMULATION
-- [ ] 469.1 Disruption scenario: new competitor, demand collapse, technology shift → strategic response options → simulation of financial/operational impact
-- [ ] 469.2 Response playbook: pricing, cost, portfolio, partnership levers → decision under constraints (risk appetite Fase 450)
-- [ ] 469.3 Verification: sandbox only (no real data change), decision quality review, learning captured
-- [ ] 469.4 Tests: simulation deterministic, no real data touched, decision documented, learning recorded
-- [ ] 469.5 Edge case: scenario menunjukkan kerugian besar → risiko register + rencana mitigasi wajib
-- [ ] 469.6 Risiko: scenario asumsi tak realistis → data sumber & asumsi dinyatakan, confidence label
-- [ ] 469.7 Evidence: scenario input, decision record, dan learning capture tercatat
-- [ ] 469.8 Quality gate Fase 469
+- [x] 469.1 Disruption scenario: new competitor, demand collapse, technology shift → strategic response options → simulation of financial/operational impact
+- [x] 469.2 Response playbook: pricing, cost, portfolio, partnership levers → decision under constraints (risk appetite Fase 450)
+- [x] 469.3 Verification: sandbox only (no real data change), decision quality review, learning captured
+- [x] 469.4 Tests: simulation deterministic, no real data touched, decision documented, learning recorded
+- [x] 469.5 Edge case: scenario menunjukkan kerugian besar → risiko register + rencana mitigasi wajib
+- [x] 469.6 Risiko: scenario asumsi tak realistis → data sumber & asumsi dinyatakan, confidence label
+- [x] 469.7 Evidence: scenario input, decision record, dan learning capture tercatat
+- [x] 469.8 Quality gate Fase 469
 
 ## FASE 470 — SCENARIO WAVE: CYBER ATTACK & RANSOMWARE FULL RECOVERY DRILL
 - [ ] 470.1 Simulated ransomware: encrypted systems → containment (isolate, credential revoke) → forensic timeline → recovery from clean backup + event replay → reconcile
