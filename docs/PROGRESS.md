@@ -4782,14 +4782,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 434.8 Quality gate Fase 434
 
 ## FASE 435 — PLATFORM WAVE: USER RESEARCH, DESIGN SYSTEM & ACCESSIBILITY AT SCALE
-- [ ] 435.1 Research repository: studies, findings, decisions linked to backlog; evidence requirement for major UX change
-- [ ] 435.2 Design system adoption: component usage report per module, debt detection for custom components, migration path
-- [ ] 435.3 Accessibility conformance program: automated + manual testing per line, remediation SLA, public accessibility statement
-- [ ] 435.4 Tests: component adoption measured, a11y gate on new routes, research-backed decision recorded, responsive checks pass
-- [ ] 435.5 Edge case: komponen custom menumpuk → debt register + migrasi path wajib
-- [ ] 435.6 Risiko: research tak terpakai → tiap major UX change wajib punya evidence dari research
-- [ ] 435.7 Evidence: research repository, adoption report, dan a11y conformance result tercatat
-- [ ] 435.8 Quality gate Fase 435
+- [x] 435.1 Research repository: studies, findings, decisions linked to backlog; evidence requirement for major UX change
+- [x] 435.2 Design system adoption: component usage report per module, debt detection for custom components, migration path
+- [x] 435.3 Accessibility conformance program: automated + manual testing per line, remediation SLA, public accessibility statement
+- [x] 435.4 Tests: component adoption measured, a11y gate on new routes, research-backed decision recorded, responsive checks pass
+- [x] 435.5 Edge case: komponen custom menumpuk → debt register + migrasi path wajib
+- [x] 435.6 Risiko: research tak terpakai → tiap major UX change wajib punya evidence dari research
+- [x] 435.7 Evidence: research repository, adoption report, dan a11y conformance result tercatat
+- [x] 435.8 Quality gate Fase 435
 
 ## FASE 436 — GLOBAL FINANCE WAVE: GROUP FINANCE OPERATING MODEL
 - [ ] 436.1 Finance service catalog per entity/line: close, reporting, tax, treasury, controlling, shared services → SLA and cost allocation
