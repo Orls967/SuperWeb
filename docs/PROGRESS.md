@@ -5092,14 +5092,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 465.8 Quality gate Fase 465
 
 ## FASE 466 — SCENARIO WAVE: CRISIS MEGA-SCENARIO MULTI-LINI BERLAPIS
-- [ ] 466.1 Layered crisis: flood + blackout + health event + commodity shock + cyber incident simultaneously → priority service protection → continuity execution → recovery
-- [ ] 466.2 Verification: money/stock/asset invariants hold throughout; all audits clean after recovery; RTO measured per tier
-- [ ] 466.3 After-action: gap analysis → plan updates → re-test → evidence pack
-- [ ] 466.4 Tests: invariants hold during crisis, recovery converges, gap remediation tracked, audits clean post-crisis
-- [ ] 466.5 Edge case: recovery gagal → escalation ke war room + plan B, bukan berhenti di tengah
-- [ ] 466.6 Risiko: crisis simulation merusak data baseline → sandbox terisolasi, baseline diproteksi
-- [ ] 466.7 Evidence: crisis timeline, invariant proof, dan gap remediation tercatat
-- [ ] 466.8 Quality gate Fase 466
+- [x] 466.1 Layered crisis: flood + blackout + health event + commodity shock + cyber incident simultaneously → priority service protection → continuity execution → recovery
+- [x] 466.2 Verification: money/stock/asset invariants hold throughout; all audits clean after recovery; RTO measured per tier
+- [x] 466.3 After-action: gap analysis → plan updates → re-test → evidence pack
+- [x] 466.4 Tests: invariants hold during crisis, recovery converges, gap remediation tracked, audits clean post-crisis
+- [x] 466.5 Edge case: recovery gagal → escalation ke war room + plan B, bukan berhenti di tengah
+- [x] 466.6 Risiko: crisis simulation merusak data baseline → sandbox terisolasi, baseline diproteksi
+- [x] 466.7 Evidence: crisis timeline, invariant proof, dan gap remediation tercatat
+- [x] 466.8 Quality gate Fase 466
 
 ## FASE 467 — SCENARIO WAVE: M&A MEGA-SCENARIO & GROUP RESTRUCTURING
 - [ ] 467.1 Acquire simulated external entity (3 modules) → DD findings → integration (data migration, org, systems) → consolidation → divestment path
