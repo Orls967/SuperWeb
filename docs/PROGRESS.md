@@ -4842,14 +4842,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 440.8 Quality gate Fase 440
 
 ## FASE 441 — SUSTAINABILITY WAVE: ESG OPERATING MODEL & OWNERSHIP
-- [ ] 441.1 ESG data owners, metric stewards, control owners and assurance provider responsibilities formalized per topic
-- [ ] 441.2 ESG management system: policy → objectives → programs → monitoring → management review → continual improvement
-- [ ] 441.3 ESG incentive linkage: leadership scorecard includes verified sustainability outcomes with guardrails against gaming
-- [ ] 441.4 Tests: metric has named owner, management review minutes complete, incentive uses verified metric only, `esg:audit` clean
-- [ ] 441.5 Edge case: incentive ESG memicu gaming → guardrail + counter-metric (Fase 726) ditegakkan
-- [ ] 441.6 Risiko: metric steward ganti → ownership transfer tercatat, tak ada metric yatim
-- [ ] 441.7 Evidence: ownership matrix, management review, dan incentive rule tercatat
-- [ ] 441.8 Quality gate Fase 441
+- [x] 441.1 ESG data owners, metric stewards, control owners and assurance provider responsibilities formalized per topic
+- [x] 441.2 ESG management system: policy → objectives → programs → monitoring → management review → continual improvement
+- [x] 441.3 ESG incentive linkage: leadership scorecard includes verified sustainability outcomes with guardrails against gaming
+- [x] 441.4 Tests: metric has named owner, management review minutes complete, incentive uses verified metric only, `esg:audit` clean
+- [x] 441.5 Edge case: incentive ESG memicu gaming → guardrail + counter-metric (Fase 726) ditegakkan
+- [x] 441.6 Risiko: metric steward ganti → ownership transfer tercatat, tak ada metric yatim
+- [x] 441.7 Evidence: ownership matrix, management review, dan incentive rule tercatat
+- [x] 441.8 Quality gate Fase 441
 
 ## FASE 442 — SUSTAINABILITY WAVE: CLIMATE METRICS, TARGETS & ALLOCATION
 - [ ] 442.1 Science-aligned target setting process (simulasi): baseline, pathway, interim milestones, scope 3 category inclusion
