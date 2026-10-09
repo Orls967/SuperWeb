@@ -4622,14 +4622,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 418.8 Quality gate Fase 418
 
 ## FASE 419 — CUSTOMER WAVE: PRICING & PROMOTION CUSTOMER FAIRNESS REVIEW
-- [ ] 419.1 Fairness review: price differentiation criteria documented (cost, timing, volume, segment); prohibited basis flagged
-- [ ] 419.2 Personalized offer governance: eligibility rules, discount depth caps, exclusion of vulnerable segments where policy requires
-- [ ] 419.3 Transparency: customer-visible price components, promo terms clear, complaint linkage for pricing disputes
-- [ ] 419.4 Tests: prohibited basis blocked, offer within caps, transparency fields present, `pricing:audit` clean
-- [ ] 419.5 Edge case: personalization terdetekas diskriminatif → review fairness → koreksi rule
-- [ ] 419.6 Risiko: harga berbeda tanpa penjelasan jelas → transparency field wajib & complaint channel aktif
-- [ ] 419.7 Evidence: fairness review doc, offer governance log, dan complaint linkage tercatat
-- [ ] 419.8 Quality gate Fase 419
+- [x] 419.1 Fairness review: price differentiation criteria documented (cost, timing, volume, segment); prohibited basis flagged
+- [x] 419.2 Personalized offer governance: eligibility rules, discount depth caps, exclusion of vulnerable segments where policy requires
+- [x] 419.3 Transparency: customer-visible price components, promo terms clear, complaint linkage for pricing disputes
+- [x] 419.4 Tests: prohibited basis blocked, offer within caps, transparency fields present, `pricing:audit` clean
+- [x] 419.5 Edge case: personalization terdetekas diskriminatif → review fairness → koreksi rule
+- [x] 419.6 Risiko: harga berbeda tanpa penjelasan jelas → transparency field wajib & complaint channel aktif
+- [x] 419.7 Evidence: fairness review doc, offer governance log, dan complaint linkage tercatat
+- [x] 419.8 Quality gate Fase 419
 
 ## FASE 420 — CUSTOMER WAVE: ENTERPRISE ACCOUNT & RELATIONSHIP GOVERNANCE
 - [ ] 420.1 Strategic account plans with executive sponsor, coverage model, mutual business review and renewal strategy
