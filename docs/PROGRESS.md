@@ -5132,14 +5132,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 469.8 Quality gate Fase 469
 
 ## FASE 470 — SCENARIO WAVE: CYBER ATTACK & RANSOMWARE FULL RECOVERY DRILL
-- [ ] 470.1 Simulated ransomware: encrypted systems → containment (isolate, credential revoke) → forensic timeline → recovery from clean backup + event replay → reconcile
-- [ ] 470.2 Verification: RPO/RTO proven, ledger Σ=0 after recovery, hash-chains valid, all services restored in documented order
-- [ ] 470.3 Post-incident: root cause, control improvement, regulator/customer notification workflow, lessons to threat model
-- [ ] 470.4 Tests: recovery achieves RPO/RTO, reconcile clean, notification workflow executed, `dr:audit` clean
-- [ ] 470.5 Edge case: recovery gagal di tengah → escalation war room, drill tak dianggap lulus
-- [ ] 470.6 Risiko: drill merusak baseline → sandbox isolasi + backup verification sebelum drill
-- [ ] 470.7 Evidence: forensic timeline, restore output, dan reconcile bersih tercatat
-- [ ] 470.8 Quality gate Fase 470
+- [x] 470.1 Simulated ransomware: encrypted systems → containment (isolate, credential revoke) → forensic timeline → recovery from clean backup + event replay → reconcile
+- [x] 470.2 Verification: RPO/RTO proven, ledger Σ=0 after recovery, hash-chains valid, all services restored in documented order
+- [x] 470.3 Post-incident: root cause, control improvement, regulator/customer notification workflow, lessons to threat model
+- [x] 470.4 Tests: recovery achieves RPO/RTO, reconcile clean, notification workflow executed, `dr:audit` clean
+- [x] 470.5 Edge case: recovery gagal di tengah → escalation war room, drill tak dianggap lulus
+- [x] 470.6 Risiko: drill merusak baseline → sandbox isolasi + backup verification sebelum drill
+- [x] 470.7 Evidence: forensic timeline, restore output, dan reconcile bersih tercatat
+- [x] 470.8 Quality gate Fase 470
 
 ## FASE 471 — PLATFORM WAVE: DEVELOPER PRODUCTIVITY & ENGINEERING EXCELLENCE
 - [ ] 471.1 Engineering metrics: lead time, deployment frequency, change failure rate, MTTR (DORA-style) per team with targets

@@ -423,6 +423,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\MnaMegaScenarioRestructuringService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\RegulatoryChangeMegaScenarioService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\MarketDisruptionSimulationService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\CyberRansomwareRecoveryDrillService::class);
     }
 
     public function boot(): void
