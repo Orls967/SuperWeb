@@ -4662,14 +4662,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 422.8 Quality gate Fase 422
 
 ## FASE 423 — PEOPLE WAVE: PERFORMANCE, REWARDS & TALENT DECISIONS
-- [ ] 423.1 Goal alignment cascade: strategy → business unit → team → individual; goal change requires approval after period start
-- [ ] 423.2 Performance rating calibration across lines with bias checks; final rating approved before linking to reward
-- [ ] 423.3 Talent segmentation (9-box style) with development/retention actions; differentiation decisions reviewed for consistency
-- [ ] 423.4 Tests: rating locked before payout, cascade alignment complete, talent action documented, `hcm:audit` clean
-- [ ] 423.5 Edge case: goal berubah di tengah periode → approval + re-baseline, bukan diam-diam menyesuaikan target
-- [ ] 423.6 Risiko: rating bias antar manager → calibration dengan distribusi & evidence wajib
-- [ ] 423.7 Evidence: cascade alignment, rating lock, dan talent decision record tercatat
-- [ ] 423.8 Quality gate Fase 423
+- [x] 423.1 Goal alignment cascade: strategy → business unit → team → individual; goal change requires approval after period start
+- [x] 423.2 Performance rating calibration across lines with bias checks; final rating approved before linking to reward
+- [x] 423.3 Talent segmentation (9-box style) with development/retention actions; differentiation decisions reviewed for consistency
+- [x] 423.4 Tests: rating locked before payout, cascade alignment complete, talent action documented, `hcm:audit` clean
+- [x] 423.5 Edge case: goal berubah di tengah periode → approval + re-baseline, bukan diam-diam menyesuaikan target
+- [x] 423.6 Risiko: rating bias antar manager → calibration dengan distribusi & evidence wajib
+- [x] 423.7 Evidence: cascade alignment, rating lock, dan talent decision record tercatat
+- [x] 423.8 Quality gate Fase 423
 
 ## FASE 424 — PEOPLE WAVE: LEARNING OPERATIONS & EFFECTIVENESS
 - [ ] 424.1 Learning operations: catalog governance, capacity/session scheduling, instructor qualification, materials version control
