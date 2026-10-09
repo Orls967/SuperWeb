@@ -4642,14 +4642,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 420.8 Quality gate Fase 420
 
 ## FASE 421 — PEOPLE WAVE: TALENT ACQUISITION AT SCALE & EMPLOYER BRAND
-- [ ] 421.1 High-volume hiring engine: batch requisitions, assessment automation with fairness checks, interview scheduling optimization, offer pipeline
-- [ ] 421.2 Source channel effectiveness: cost per hire, quality of hire, time to fill by role family → budget reallocation
-- [ ] 421.3 Candidate experience: status transparency, feedback for finalists, privacy retention and deletion policy
-- [ ] 421.4 Tests: fairness check on automated screening, channel attribution reproducible, candidate data retention enforced, `hcm:audit` clean
-- [ ] 421.5 Edge case: automated screening bias → fairness check wajib & audit hasil penolakan
-- [ ] 421.6 Risiko: quality of hire tak terukur → post-hire performance link untuk mengevaluasi channel
-- [ ] 421.7 Evidence: channel effectiveness, candidate retention, dan fairness audit tercatat per periode
-- [ ] 421.8 Quality gate Fase 421
+- [x] 421.1 High-volume hiring engine: batch requisitions, assessment automation with fairness checks, interview scheduling optimization, offer pipeline
+- [x] 421.2 Source channel effectiveness: cost per hire, quality of hire, time to fill by role family → budget reallocation
+- [x] 421.3 Candidate experience: status transparency, feedback for finalists, privacy retention and deletion policy
+- [x] 421.4 Tests: fairness check on automated screening, channel attribution reproducible, candidate data retention enforced, `hcm:audit` clean
+- [x] 421.5 Edge case: automated screening bias → fairness check wajib & audit hasil penolakan
+- [x] 421.6 Risiko: quality of hire tak terukur → post-hire performance link untuk mengevaluasi channel
+- [x] 421.7 Evidence: channel effectiveness, candidate retention, dan fairness audit tercatat per periode
+- [x] 421.8 Quality gate Fase 421
 
 ## FASE 422 — PEOPLE WAVE: COMPENSATION GOVERNANCE & PAY EQUITY
 - [ ] 422.1 Market benchmark refresh cycle with provider data (simulasi), job matching review, peer group definition and approval
