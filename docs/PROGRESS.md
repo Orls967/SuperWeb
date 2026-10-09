@@ -4602,14 +4602,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 416.8 Quality gate Fase 416
 
 ## FASE 417 — CUSTOMER WAVE: JOURNEY ANALYTICS & CONVERSION OPTIMIZATION
-- [ ] 417.1 Instrument key journeys across lines (book→stay→dine, buy→deliver→return, admit→treat→bill, enroll→learn→credential)
-- [ ] 417.2 Funnel metrics with defined denominators, cohort comparison and statistical guardrails for tests
-- [ ] 417.3 Friction prioritization: drop-off analysis → hypothesis → experiment (Fase 236.2) → outcome → standardize
-- [ ] 417.4 Tests: metric definitions registry applied, experiment guardrails prevent wrong conclusion, funnel reproducible, `crm:audit` clean
-- [ ] 417.5 Edge case: funnel metric berubah definisi → versioned metric, perbandingan lintas versi dilarang tanpa koreksi
-- [ ] 417.6 Risiko: optimasi satu langkah merusak langkah lain → journey-level impact check sebelum standardize
-- [ ] 417.7 Evidence: instrumentasi map, experiment log, dan standardization record tercatat
-- [ ] 417.8 Quality gate Fase 417
+- [x] 417.1 Instrument key journeys across lines (book→stay→dine, buy→deliver→return, admit→treat→bill, enroll→learn→credential)
+- [x] 417.2 Funnel metrics with defined denominators, cohort comparison and statistical guardrails for tests
+- [x] 417.3 Friction prioritization: drop-off analysis → hypothesis → experiment (Fase 236.2) → outcome → standardize
+- [x] 417.4 Tests: metric definitions registry applied, experiment guardrails prevent wrong conclusion, funnel reproducible, `crm:audit` clean
+- [x] 417.5 Edge case: funnel metric berubah definisi → versioned metric, perbandingan lintas versi dilarang tanpa koreksi
+- [x] 417.6 Risiko: optimasi satu langkah merusak langkah lain → journey-level impact check sebelum standardize
+- [x] 417.7 Evidence: instrumentasi map, experiment log, dan standardization record tercatat
+- [x] 417.8 Quality gate Fase 417
 
 ## FASE 418 — CUSTOMER WAVE: SERVICE RECOVERY & LOYALTY PROTECTION
 - [ ] 418.1 Service failure taxonomy with expected remedies (goodwill, refund, repair, escalation) and authority matrix
