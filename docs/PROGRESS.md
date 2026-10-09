@@ -4832,14 +4832,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 439.8 Quality gate Fase 439
 
 ## FASE 440 — GLOBAL FINANCE WAVE: INSURANCE, SYARIAH & SECURITIES FINANCE OPERATIONS
-- [ ] 440.1 Insurance portfolio operations: premium collection, reserve review cycle, reinsurance settlement, regulatory returns (simulasi)
-- [ ] 440.2 Syariah product operations: akad renewal, profit-sharing settlement, shariah board review calendar, NPF resolution
-- [ ] 440.3 Digital securities operations: issuance calendar, distribution to investors, corporate action execution, holder register reconciliation
-- [ ] 440.4 Tests: reserve review evidence, akad compliance checklist, securities register Σ balanced, `ins:audit` + `syb:audit` + `rwa:audit` clean
-- [ ] 440.5 Edge case: reserve review menemukan under-reserve → top-up dengan approval sebelum laporan
-- [ ] 440.6 Risiko: akad renewal terlambat → reminder otomatis sebelum masa berlaku habis
-- [ ] 440.7 Evidence: portfolio review, akad checklist, dan securities reconciliation tercatat
-- [ ] 440.8 Quality gate Fase 440
+- [x] 440.1 Insurance portfolio operations: premium collection, reserve review cycle, reinsurance settlement, regulatory returns (simulasi)
+- [x] 440.2 Syariah product operations: akad renewal, profit-sharing settlement, shariah board review calendar, NPF resolution
+- [x] 440.3 Digital securities operations: issuance calendar, distribution to investors, corporate action execution, holder register reconciliation
+- [x] 440.4 Tests: reserve review evidence, akad compliance checklist, securities register Σ balanced, `ins:audit` + `syb:audit` + `rwa:audit` clean
+- [x] 440.5 Edge case: reserve review menemukan under-reserve → top-up dengan approval sebelum laporan
+- [x] 440.6 Risiko: akad renewal terlambat → reminder otomatis sebelum masa berlaku habis
+- [x] 440.7 Evidence: portfolio review, akad checklist, dan securities reconciliation tercatat
+- [x] 440.8 Quality gate Fase 440
 
 ## FASE 441 — SUSTAINABILITY WAVE: ESG OPERATING MODEL & OWNERSHIP
 - [ ] 441.1 ESG data owners, metric stewards, control owners and assurance provider responsibilities formalized per topic
