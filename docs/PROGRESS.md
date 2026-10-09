@@ -5032,14 +5032,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 459.8 Quality gate Fase 459
 
 ## FASE 460 — INTEGRASI AKHIR: ENTERPRISE INNOVATION & R&D GOVERNANCE
-- [ ] 460.1 Innovation funnel metrics: idea → experiment → pilot → scale, with kill criteria and resource reallocation
-- [ ] 460.2 R&D portfolio balance: exploratory vs exploitative, horizon 1/2/3, capital allocation per horizon → board innovation report
-- [ ] 460.3 Intellectual property portfolio management: filing, maintenance, licensing, enforcement strategy, competitive landscape
-- [ ] 460.4 Tests: funnel conversion measured, IP deadlines tracked, portfolio balance within policy, `plm:audit` clean
-- [ ] 460.5 Edge case: IP deadline terlewat → alert otomatis + remediasi (renew atau abandon dengan alasan)
-- [ ] 460.6 Risiko: portfolio terlalu konservatif → horizon balance review mendorong eksplorasi terukur
-- [ ] 460.7 Evidence: funnel metrics, portfolio balance, dan IP portfolio tercatat
-- [ ] 460.8 Quality gate Fase 460
+- [x] 460.1 Innovation funnel metrics: idea → experiment → pilot → scale, with kill criteria and resource reallocation
+- [x] 460.2 R&D portfolio balance: exploratory vs exploitative, horizon 1/2/3, capital allocation per horizon → board innovation report
+- [x] 460.3 Intellectual property portfolio management: filing, maintenance, licensing, enforcement strategy, competitive landscape
+- [x] 460.4 Tests: funnel conversion measured, IP deadlines tracked, portfolio balance within policy, `plm:audit` clean
+- [x] 460.5 Edge case: IP deadline terlewat → alert otomatis + remediasi (renew atau abandon dengan alasan)
+- [x] 460.6 Risiko: portfolio terlalu konservatif → horizon balance review mendorong eksplorasi terukur
+- [x] 460.7 Evidence: funnel metrics, portfolio balance, dan IP portfolio tercatat
+- [x] 460.8 Quality gate Fase 460
 
 ## FASE 461 — INTEGRASI AKHIR: ENTERPRISE SUPPLY CHAIN GOVERNANCE
 - [ ] 461.1 Supply chain strategy: network design, make-vs-buy, dual-sourcing policy, inventory strategy per category → reviewed annually
