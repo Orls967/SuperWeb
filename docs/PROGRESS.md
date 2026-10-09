@@ -4512,14 +4512,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 407.8 Quality gate Fase 407
 
 ## FASE 408 — OPERATIONS WAVE: OPERATIONS EXCELLENCE PROGRAM GOVERNANCE
-- [ ] 408.1 Improvement portfolio: initiatives with baseline, benefit hypothesis, owner, milestones, dependency and adoption plan
-- [ ] 408.2 Benefit validation: finance-verified actuals, attribution method, sustainment review at 6/12 months
-- [ ] 408.3 Standardization rollout: proven practice → playbook → training → compliance audit → deviation management
-- [ ] 408.4 Tests: benefit validated by finance, sustainment review scheduled, deviation requires justification, `quality:audit` clean
-- [ ] 408.5 Edge case: program memberi dampak pada kualitas/safety → dihentikan meski benefit finansial nyata
-- [ ] 408.6 Risiko: sustainment terlewat setelah 6/12 bulan → reminder otomatis + verifikasi praktik masih dipakai
-- [ ] 408.7 Evidence: improvement portfolio, benefit validation, dan deviation log tercatat
-- [ ] 408.8 Quality gate Fase 408
+- [x] 408.1 Improvement portfolio: initiatives with baseline, benefit hypothesis, owner, milestones, dependency and adoption plan
+- [x] 408.2 Benefit validation: finance-verified actuals, attribution method, sustainment review at 6/12 months
+- [x] 408.3 Standardization rollout: proven practice → playbook → training → compliance audit → deviation management
+- [x] 408.4 Tests: benefit validated by finance, sustainment review scheduled, deviation requires justification, `quality:audit` clean
+- [x] 408.5 Edge case: program memberi dampak pada kualitas/safety → dihentikan meski benefit finansial nyata
+- [x] 408.6 Risiko: sustainment terlewat setelah 6/12 bulan → reminder otomatis + verifikasi praktik masih dipakai
+- [x] 408.7 Evidence: improvement portfolio, benefit validation, dan deviation log tercatat
+- [x] 408.8 Quality gate Fase 408
 
 ## FASE 409 — OPERATIONS WAVE: END-TO-END ORDER & SERVICE ORCHESTRATION
 - [ ] 409.1 Cross-line order orchestration for bundles: reservation, dependency check, partial success semantics, rollback and notification
