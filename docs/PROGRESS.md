@@ -5182,14 +5182,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 474.8 Quality gate Fase 474
 
 ## FASE 475 — PLATFORM WAVE: ENTERPRISE MONITORING & BUSINESS KPI OBSERVABILITY
-- [ ] 475.1 Business KPI as first-class observable: revenue rate, order rate, claim rate, booking rate, payment success → real-time with lineage
-- [ ] 475.2 Anomaly detection on business metrics: sudden drop → triage (technical vs business cause) → owner → resolution
-- [ ] 475.3 KPI freshness SLA: stale KPI flagged, consumers warned, root cause of staleness tracked
-- [ ] 475.4 Tests: business anomaly detected in seed, lineage to ledger, freshness flag works, `observability:audit` clean
-- [ ] 475.5 Edge case: KPI business stale saat krisis → freshness flag + triage wajib, jangan andalkan KPI basi
-- [ ] 475.6 Risiko: anomaly detection false positive → tuning & suppression rules, jangan redupkan signal penting
-- [ ] 475.7 Evidence: anomaly detection log, lineage trace, dan freshness SLA tercatat
-- [ ] 475.8 Quality gate Fase 475
+- [x] 475.1 Business KPI as first-class observable: revenue rate, order rate, claim rate, booking rate, payment success → real-time with lineage
+- [x] 475.2 Anomaly detection on business metrics: sudden drop → triage (technical vs business cause) → owner → resolution
+- [x] 475.3 KPI freshness SLA: stale KPI flagged, consumers warned, root cause of staleness tracked
+- [x] 475.4 Tests: business anomaly detected in seed, lineage to ledger, freshness flag works, `observability:audit` clean
+- [x] 475.5 Edge case: KPI business stale saat krisis → freshness flag + triage wajib, jangan andalkan KPI basi
+- [x] 475.6 Risiko: anomaly detection false positive → tuning & suppression rules, jangan redupkan signal penting
+- [x] 475.7 Evidence: anomaly detection log, lineage trace, dan freshness SLA tercatat
+- [x] 475.8 Quality gate Fase 475
 
 ## FASE 476 — FINAL: ENTERPRISE KNOWLEDGE, DOCUMENTATION & INSTITUTIONAL MEMORY
 - [ ] 476.1 Decision log repository: strategic and architectural decisions with context, alternatives, outcome, review date → searchable
