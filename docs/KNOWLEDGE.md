@@ -239,7 +239,7 @@ Format tiap temuan: **Prioritas** (P0 = merusak kebenaran uang/keamanan/kepercay
 
 **Seharusnya:** audit membandingkan **dua sumber yang dipelihara terpisah** (subledger vs ledger, stok fisik vs movement, tagihan vs posting, hash-chain vs isi), membaca data secara chunk, dan **setiap audit punya test negatif** yang sengaja merusak data lalu memastikan audit melaporkan selisih > 0. Laporan hanya boleh memuat output command yang benar-benar dijalankan (tempel output asli + tanggal + commit).
 
-**Cara mengunci:** test kontrak `AuditCommandContractTest` (Fase R5): untuk setiap command `*:audit` terdaftar → (1) exit 0 pada data seed bersih, (2) exit ≠ 0 setelah fixture korupsi khusus command tersebut. Tambahkan pengecekan signature unik di arch test.
+**Cara mengunci:** test kontrak `AuditCommandContractTest` (dipasang di Fase R0.10 dengan baseline, dilengkapi untuk semua audit di R5.2; spesifikasi `KONSEP.md` §A14.4): untuk setiap command `*:audit` terdaftar → (1) exit 0 pada data seed bersih, (2) exit ≠ 0 setelah fixture korupsi khusus command tersebut. Tambahkan pengecekan signature unik di arch test.
 
 #### K-03 — Dokumentasi basi & saling bertentangan (P1 · R5)
 
@@ -455,8 +455,8 @@ $entries = Posting::lines()
 
 #### K-30 — Penyederhanaan domain yang menyesatkan (P2 · R6, R7)
 
-**Bukti:** HCM pajak/BPJS datar (K-01); `ClinicalTrialAndResearchService::enrollSubject()` menyebut "block randomization" tetapi memakai paritas `crc32 % 2` (tidak menjamin keseimbangan lengan); `PlmService::advanceStage()` mengizinkan lompat tahap tanpa gate review; Fleet "PSAK 73" hanya mengakui sewa bulanan (tanpa PV/ROU); Telematics menganggap **semua** DTC "critical" sementara grounding hanya untuk `P0*`; ESG/B2B/EPC tanpa ledger (§4.6).
-**Seharusnya:** setiap penyederhanaan dinyatakan eksplisit sebagai "simulasi tingkat-X" di `KONSEP.md` dan di nama/komentar kode; aturan yang diklaim (gate, randomisasi blok, PV sewa) diimplementasikan sesuai definisi atau klaimnya diturunkan.
+**Bukti:** HCM pajak/BPJS datar (K-01); `ClinicalTrialAndResearchService::enrollSubject()` menyebut "block randomization" tetapi memakai paritas `crc32 % 2` (tidak menjamin keseimbangan lengan); `PlmService::advanceStage()` mengizinkan lompat tahap tanpa gate review; Fleet "PSAK 73" hanya mengakui sewa bulanan (tanpa PV/ROU); Telematics menganggap **semua** DTC "critical" sementara grounding hanya untuk `P0*`; ESG/B2B/EPC tanpa ledger (§4.6). Nilai default diam-diam menutupi data yang hilang: `EsgService::recordEmission()` memakai faktor emisi 1.0 untuk jenis aktivitas tak dikenal; `HcmService::registerEmployee()` mengisi gaji pokok Rp5 jt, tunjangan Rp1 jt, bank "Bank Mandiri", dan nomor rekening `1230004567890` bila tidak dikirim; `TelematicsIngestService::ingestTick()` mengisi suhu oli 90 °C, tegangan 12,6 V, dan BBM 100% bila sensor tidak mengirim nilai.
+**Seharusnya:** setiap penyederhanaan dinyatakan eksplisit sebagai "simulasi tingkat-X" di `KONSEP.md` dan di nama/komentar kode; aturan yang diklaim (gate, randomisasi blok, PV sewa) diimplementasikan sesuai definisi atau klaimnya diturunkan lewat aturan lingkup (`PROGRESS.md` §P10). Data wajib yang hilang ditolak dengan galat validasi, bukan diganti nilai default (larangan X25).
 
 #### K-31 — Status "sukses" tanpa aksi (P0 · R2.5, R6)
 
@@ -626,13 +626,17 @@ modules/{Nama}/
   tests/Feature/
 ```
 
-### 7.7 Protokol bukti per item (dipakai di PROGRESS.md mulai Fase R)
+### 7.7 Protokol bukti per item (format resmi di `PROGRESS.md` §P2, divalidasi `ProgressIntegrityTest`)
 
 ```
 - [x] R2.1 Hitung tagihan hidang idempoten
-  Bukti: commit abc1234 · file modules/Resto/Application/Actions/CalculateHidangBillAction.php
-         test modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::test_double_calculate_posts_cogs_once
-         gate: composer gate → 0 failed (output di docs/AUDIT.md#gate-r2)
+  Bukti:
+    - commit: abc1234
+    - file: modules/Resto/Application/Actions/CalculateHidangBillAction.php
+    - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::menghitung tagihan dua kali memposting HPP sekali
+    - akses: route POST /resto/pos/session/{session}/bill [role: cashier,outlet_manager]
+    - audit: resto:audit
+    - gate: docs/gates/fase-R2.md
 ```
 
 ---
@@ -643,7 +647,7 @@ Detail tugas, kriteria terima, dan test ada di `PROGRESS.md` bagian **FASE R**. 
 
 | Fase | Fokus | Kenapa urutan ini |
 |---|---|---|
-| **R0** | Lingkungan & gate yang bisa direproduksi (PHP 8.4, CI, `composer gate`, `ProgressIntegrityTest`, cabut klaim palsu) | tanpa gate yang jujur, semua perbaikan berikutnya tidak bisa dibuktikan |
+| **R0** | Lingkungan, gate & **pagar otomatis**: PHP 8.4, CI, `composer gate` + `gate:report`, `ProgressIntegrityTest`, `arch:scan` dengan baseline ratchet, matriks rute × role, kontrak audit & ledger, freeze `Integration`, higiene test, mutation testing, cabut klaim palsu | tanpa gate yang jujur, semua perbaikan berikutnya tidak bisa dibuktikan |
 | **R1** | Ledger & uang (konvensi tanda, chart of accounts, guard LedgerService, idempotency, refund, split, float, presisi, reconcile) | kebenaran uang adalah invarian inti seluruh sistem |
 | **R2** | Bug terverifikasi (hidang bill, tender, `back()->errors()`, inventory, outbox, fleet, telematics) | bug konkret dengan skenario jelas — cepat dan berdampak |
 | **R3** | Otorisasi & data sensitif (matriks rute×role, PII, rahasia, flag-sebagai-kontrol) | menutup akses customer ke fungsi admin |
@@ -653,6 +657,17 @@ Detail tugas, kriteria terima, dan test ada di `PROGRESS.md` bagian **FASE R**. 
 | **R7** | Vertical slice untuk lini Gelombang 1 (RS, Venue, Hotel, Tambang, pilar 1–8 skala) | menjadikan modul yang sudah ditulis benar-benar terpakai |
 | **R8** | Event spine & simulation kernel nyata | enabler integrasi lintas lini |
 | **R9** | Skala bertingkat T1/T2 + benchmark di MySQL/PostgreSQL | baru setelah fungsi benar, ukur skala |
+
+**Mekanisme anti jalan pintas yang kini tertanam di `PROGRESS.md` dan `KONSEP.md`:**
+
+1. **Pagar otomatis lebih dulu (R0):** setiap temuan K-01…K-32 punya detektor (peta di `PROGRESS.md` §"Peta Solusi"; spesifikasi di `KONSEP.md` §A14). Detektor memakai *baseline ratchet* — pelanggaran lama dicatat, pelanggaran baru langsung membuat gate merah.
+2. **Bukti yang dibaca mesin (§P2):** centang tanpa commit/file/test/rute yang benar-benar ada ditolak `ProgressIntegrityTest`.
+3. **Verifikasi silang (§P7):** pelaksana berhenti di 🔵; hanya sesi verifikator (checklist C1–C14) atau pemilik yang memberi ✅.
+4. **Definition of Ready (§P8):** fase tidak boleh dimulai sebelum spesifikasi siap-kerja disetujui pemilik; fase tema (185–500) wajib diterjemahkan ke perubahan nyata atau ditunda.
+5. **Register Minus (§P9):** setiap kekurangan wajib tertulis; minus P0/P1 terbuka memblokir ✅.
+6. **Aturan lingkup (§P10):** teks item adalah kontrak; penurunan klaim hanya dengan `⬇️` + DECISIONS + persetujuan pemilik.
+7. **Kriteria wajib per fase:** setiap fase 55, 58, 64–500 punya modul pemilik, prasyarat, acuan KONSEP, dan daftar jalan pintas terlarang khusus fase itu; setiap pilar/lini di KONSEP punya "Jalan pintas terlarang" dan "Bukti selesai minimum".
+8. **Template prompt (§P13):** prompt pelaksana dan verifikator siap salin sehingga setiap agent yang dijalankan membawa aturan yang sama.
 
 Setelah R selesai: kerjakan ulang 64–66, lalu fase 67+ **satu lini per siklus** dengan definisi vertical slice (§7.5). Roadmap 485–1000 dibekukan sampai 30 lini rancangan punya status ✅ minimal untuk MVP-nya.
 
@@ -751,7 +766,7 @@ grep -rn "back()->errors()" modules --include=*.php
 grep -L "role:" modules/*/routes/web.php
 ```
 
-Pemindaian yang lebih kompleks (import Domain lintas modul, `DB::table` ke tabel modul lain, akun ledger yang hanya ada di test, arah tanda pendapatan, keterjangkauan service Integration) dilakukan dengan skrip Python sederhana atas `modules/**.php`; logikanya: (1) petakan prefiks tabel → modul dari `Schema::create`, (2) cari `use Modules\X\Domain\` di modul Y≠X, (3) cari `DB::table('p_…')` di modul selain pemilik prefiks `p`, (4) kumpulkan literal `forCode('…')` di kode non-test lalu cek kemunculannya di seeder/migrasi/service lain vs hanya di test, (5) untuk tiap service Integration cari referensi nama kelasnya di luar file itu, test-nya, dan provider. Skrip ini sebaiknya dijadikan command `php artisan arch:scan` di Fase R4 agar bisa dijalankan siapa pun.
+Pemindaian yang lebih kompleks (import Domain lintas modul, `DB::table` ke tabel modul lain, akun ledger yang hanya ada di test, arah tanda pendapatan, keterjangkauan service Integration) dilakukan dengan skrip Python sederhana atas `modules/**.php`; logikanya: (1) petakan prefiks tabel → modul dari `Schema::create`, (2) cari `use Modules\X\Domain\` di modul Y≠X, (3) cari `DB::table('p_…')` di modul selain pemilik prefiks `p`, (4) kumpulkan literal `forCode('…')` di kode non-test lalu cek kemunculannya di seeder/migrasi/service lain vs hanya di test, (5) untuk tiap service Integration cari referensi nama kelasnya di luar file itu, test-nya, dan provider. Skrip ini dijadikan command `php artisan arch:scan` di Fase R0.8 (aturan A1–A13 di `KONSEP.md` §A14) agar bisa dijalankan siapa pun dan menjadi bagian gate.
 
 ### 9.3 Linimasa: cara menghitung & sampel commit
 

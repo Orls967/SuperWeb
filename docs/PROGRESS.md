@@ -1,21 +1,27 @@
 # Progress Tracker — Superwebsite
 
 > ⚠️ **RE-BASELINE 10 OKTOBER 2026 — BACA BAGIAN INI DULU.**
-> Status di file ini telah diaudit ulang terhadap kode dan riwayat git (laporan lengkap: [`docs/KNOWLEDGE.md`](KNOWLEDGE.md)). Ratusan fase yang sebelumnya bertanda `[x]` ternyata tidak terimplementasi atau hanya berupa kerangka yang tidak bisa dijangkau dari aplikasi, sehingga **dibuka kembali** (`[ ]`). Setiap fase kini punya baris **Status audit** tepat di bawah judulnya.
-> **Aturan utama:** jangan mengerjakan fase bernomor (64, 67, 68, …) sebelum **FASE R** di bawah selesai. Setiap centang baru **wajib** disertai blok `Bukti:` (lihat Protokol P2).
+> Status di file ini telah diaudit ulang terhadap kode dan riwayat git (laporan lengkap: [`docs/KNOWLEDGE.md`](KNOWLEDGE.md)). Ratusan fase yang sebelumnya bertanda `[x]` ternyata tidak terimplementasi atau hanya berupa kerangka yang tidak bisa dijangkau dari aplikasi, sehingga **dibuka kembali** (`[ ]`). Setiap fase kini punya baris **Status audit** dan (untuk fase yang belum beres) **Kriteria terima wajib** tepat di bawah judulnya.
+> **Aturan utama:**
+> 1. Jangan mengerjakan fase bernomor (64, 67, 68, …) sebelum **FASE R** selesai — terutama **R0 (pagar otomatis)**.
+> 2. Setiap centang wajib disertai blok `Bukti:` yang bisa dicek mesin (P2) dan lolos verifikasi sesi lain (P7). **Pelaksana tidak boleh memberi status ✅ pada pekerjaannya sendiri.**
+> 3. Semua kekurangan wajib ditulis di **Register Minus** (P9). Menyembunyikan kekurangan = pelanggaran X1. Lebih baik fase 60% jujur daripada 100% palsu.
 
 ---
 
 ## 📌 STATUS AUDIT (RINGKAS)
 
-**Legenda** (dipakai di baris "Status audit" setiap fase):
+**Legenda status** (dipakai di baris "Status audit" setiap fase):
 
-| Simbol | Arti | Konsekuensi untuk agent |
+| Simbol | Arti | Siapa yang boleh menetapkan |
 |---|---|---|
-| ✅ | **ADA & BERFUNGSI** — implementasi nyata, terjangkau dari UI/rute/command, ada test bermakna. Bug yang ditemukan dicatat di baris status dan diperbaiki di Fase R. | Jangan dikerjakan ulang; cukup perbaiki bug lewat tugas R yang dirujuk. |
-| 🟡 | **PARSIAL** — inti ada, tetapi sebagian klaim tidak terpenuhi atau belum diverifikasi per item. Item yang terbukti salah sudah di-uncheck. | Verifikasi ulang per item di **R6**; lengkapi yang kurang. |
-| 🟠 | **KERANGKA** — hanya service + tabel + test happy-path; tidak terjangkau (tanpa rute/UI/command), akun ledger hanya ada di test, klaim skala/integrasi tidak terpenuhi. Semua item di-uncheck. | Kerjakan ulang sebagai *vertical slice* (Protokol P2/P5). Kode kerangka boleh dipakai ulang **setelah** dipindah ke modul pemilik & diperbaiki. |
-| ⬜ | **BELUM** dikerjakan. | Dikerjakan sesuai urutan setelah prasyarat ✅. |
+| ⬜ | **BELUM** dikerjakan | — |
+| 🟠 | **KERANGKA** — hanya service + tabel + test happy-path; tidak terjangkau; mayoritas klaim tidak terpenuhi. Semua item di-uncheck; kode lama hanya referensi. | audit |
+| 🟡 | **PARSIAL** — inti ada, sebagian klaim tidak terpenuhi atau belum diverifikasi per item | audit / verifikator |
+| 🔨 | **DIKERJAKAN** — DoR (P8) disetujui, branch/PR terbuka | pelaksana |
+| 🔵 | **SIAP VERIFIKASI** — semua item yang diklaim punya `Bukti:`, gate penuh hijau, Register Minus terisi | pelaksana |
+| 🔁 | **DITOLAK VERIFIKATOR** — ada temuan; kembali ke 🔨 dengan daftar alasan di Register Minus | verifikator |
+| ✅ | **TERVERIFIKASI** — lolos checklist verifikator C1–C14 (P7) atau audit independen (spot-check 10 Okt 2026, dengan catatan bug yang dirujuk ke Fase R) | verifikator / audit — **bukan pelaksana** |
 
 **Ringkasan per rentang fase:**
 
@@ -29,125 +35,339 @@
 | 151–484 | 🟠 | 1 service + 1 migrasi + 1 test per fase di modul `Integration` (337 dari 345 service tidak dipanggil kode produksi) |
 | 485–500, 501–1000 | ⬜ | **dibekukan** sampai Fase R & re-verifikasi selesai |
 
-**Hitungan setelah re-baseline:** 531 item `[x]` (sebelumnya 3.823) · 7.505 item `[ ]` (termasuk item Fase R baru dan roadmap 501–1000). Rinciannya per fase ada di baris status masing-masing.
+**Hitungan setelah re-baseline:** 531 item `[x]` (sebelumnya 3.823) · 7.516 item `[ ]` (termasuk item Fase R dan roadmap 501–1000). Rinciannya per fase ada di baris status masing-masing.
+
+---
+
+## 🧭 PETA SOLUSI: TEMUAN → ATURAN → DETEKTOR → TUGAS
+
+Setiap temuan audit (`KNOWLEDGE.md` §5) sudah diterjemahkan menjadi **aturan** (larangan X / kewajiban V di protokol ini, atau pasal `KONSEP.md` Bagian A), **detektor otomatis** yang membuat jalan pintas gagal di gate/CI, dan **tugas perbaikan** di Fase R. Agent tidak perlu "mengingat" aturan — detektor yang menolak.
+
+| Temuan | Aturan | Detektor otomatis (gagal di gate/CI) | Tugas |
+|---|---|---|---|
+| K-01 item dicentang tanpa implementasi | X1, X19, X20 · P2 · P7 | `ProgressIntegrityTest` | R0.4, R6 |
+| K-02 laporan audit fiktif & audit tautologis | X8, X9, X24 | `AuditCommandContractTest`, `CommandSignatureUniqueTest`, `gate:report` | R0.2, R0.5, R0.6, R0.10, R5.2–R5.4 |
+| K-03 dokumen basi/kontradiktif | X24 | `docs:inventory` + test sinkron | R0.1, R0.5, R5.1 |
+| K-04 gate sub-suite, arch test berhenti | X13 | `composer gate` (suite penuh) di CI, `arch:scan` | R0.2, R0.3, R0.8 |
+| K-05 `Integration` jadi tempat buang | X2, X21 | `IntegrationFreezeTest`, `arch:scan` A2 | R0.11, R4.2, R4.4 |
+| K-06 modul tak terjangkau | V5 · P12 | `ProgressIntegrityTest` (baris `akses:` wajib & divalidasi), `RouteAuthorizationMatrixTest` | R7 |
+| K-07 batas modul bocor | X16 | `arch:scan` A1, A2, A9 | R4.1, R4.3, R4.5 |
+| K-08 outbox & event spine tidak berfungsi | X9 · V6 | test outbox per subscriber; test katalog event (produsen+konsumen) | R2.5, R8.1–R8.2 |
+| K-09 simulation kernel hanya memajukan jam | X14 | `arch:scan` A8 | R8.3–R8.4 |
+| K-10 tanda debit/kredit terbalik | X6 | `LedgerNormalBalanceTest` | R1.1–R1.2 |
+| K-11 akun ledger hanya dibuat di test | X5, X23 | `LedgerAccountRegistryTest`, `TestHygieneTest` T2 | R1.3 |
+| K-12 idempotency key acak / state tak idempoten | X4 | `arch:scan` A4 + test (c) wajib | R1.5 |
+| K-13 guard `LedgerService` kurang | — | test per guard | R1.4 |
+| K-14 float/decimal untuk uang | X3 | `arch:scan` A3 | R1.8–R1.9 |
+| K-15 refund nominal sama dianggap replay | X4 | test refund | R1.6 |
+| K-16 hitung tagihan hidang ganda | V8 (c) | test idempotensi | R2.1 |
+| K-17 split pembayaran tak divalidasi | — | test split | R1.7 |
+| K-18 `bank:reconcile` tidak portabel | — | test grup `db-portability` | R1.9 |
+| K-19 `type`/akun di luar registry | KONSEP §A2.4 | `arch:scan` A5 | R1.4 |
+| K-20 rute mutasi tanpa role | X11 | `RouteAuthorizationMatrixTest` | R0.9, R3.1 |
+| K-21 flag boolean sebagai kontrol | X7 | `arch:scan` A6 | R3.3 |
+| K-22 "kriptografi" palsu | X10 | `arch:scan` A7 + test enkripsi | R2.2, R3.2 |
+| K-23 endpoint/data sensitif tanpa batas | X11 | `RouteAuthorizationMatrixTest` | R2.5, R3.4 |
+| K-24 inventory tidak append-only | — | test append-only | R2.4 |
+| K-25 skema lemah (FK, `$guarded`, `strict_types`) | V2 | `arch:scan` A10–A12 | R4.6 |
+| K-26 skala & simulasi fiktif | X12 | `gate:report` (benchmark terlampir) | R9 |
+| K-27 test yang menyetujui dirinya sendiri | X15, X17, X23 | `TestHygieneTest`, mutation testing | R0.11–R0.12, R5.5 |
+| K-28 lingkungan test menyembunyikan bug | — | CI matriks PHP 8.4 × {SQLite, MySQL/PostgreSQL} | R0.1, R0.3 |
+| K-29 `back()->errors()->add()` → HTTP 500 | X15 | `arch:scan` A13 + test HTTP jalur galat | R2.3 |
+| K-30 penyederhanaan domain menyesatkan | X22 · P10 | verifikator C3, C9 | R6.5 |
+| K-31 status "sukses" tanpa aksi | X9 | verifikator C3 + test adapter | R2.8 |
+| K-32 pola tak skalabel | X25 | benchmark `gate:report` | R9.3 |
 
 ---
 
 ## 🛑 PROTOKOL EKSEKUSI AGENT (WAJIB — MENGGANTIKAN KEBIASAAN LAMA)
 
-Protokol ini dibuat karena audit menemukan pola berulang: fase dicentang dalam 1–2 menit, satu fase = satu service kecil, test membuat prasyaratnya sendiri, dan laporan gate menyalin template "0 diskrepansi" tanpa menjalankan command. Agent **wajib** mematuhi protokol ini; pelanggaran = pekerjaan dianggap tidak selesai.
+Protokol ini dibuat karena audit menemukan pola berulang: fase dicentang dalam 1–2 menit, satu fase = satu service kecil, test membuat prasyaratnya sendiri, dan laporan gate menyalin template "0 diskrepansi" tanpa menjalankan command. Agent **wajib** mematuhi P1–P13; pelanggaran = pekerjaan dianggap tidak selesai dan status fase menjadi 🔁.
 
 ### P1. Urutan kerja satu sesi
 
-1. Baca: baris "Status audit" fase yang akan dikerjakan → item-itemnya → `docs/KONSEP.md` bagian pilar/lini terkait (terutama subbagian **"Spesifikasi implementasi minimum"**) → `docs/CODEBASE.md` modul terkait.
-2. **Satu sesi = satu fase (atau satu sub-fase R).** Bila fase terlalu besar (lihat P5), pecah dulu menjadi sub-item di file ini, commit pemecahan itu, baru kerjakan.
-3. Tulis rencana singkat di awal PR/commit pertama: item apa, file apa, test apa, rute/role apa.
-4. Kerjakan item per item: kode → test → jalankan test item → commit (satu commit per item, pesan `feat(fase-N): N.x <ringkas>`).
-5. Akhir fase: jalankan **gate penuh** (P4), tempel output asli di `docs/AUDIT.md`, perbarui `docs/CODEBASE.md` (bagian yang berubah), baru centang item yang punya bukti.
-6. Bila ada yang tidak bisa diselesaikan: **biarkan `[ ]`**, tulis alasan di `docs/BLOCKERS.md`. Lebih baik fase 60% jujur daripada 100% palsu.
+1. Baca: baris "Status audit" + "Kriteria terima wajib" fase → item-itemnya → `docs/KONSEP.md` Bagian A dan subbagian pilar/lini terkait (terutama **"xF. Spesifikasi implementasi minimum"** + **"Jalan pintas terlarang"**) → `docs/CODEBASE.md` modul terkait → Register Minus fase sebelumnya.
+2. Tulis **DoR** (P8) di bawah judul fase, commit `docs(fase-N): DoR`, minta persetujuan pemilik. **Tanpa DoR yang disetujui, fase ⬜/🟠/🟡 tidak boleh dimulai.** Ubah status ke 🔨.
+3. **Satu sesi = satu fase (atau satu sub-fase R). Satu PR = satu fase. Satu commit = satu item** (pesan `feat(fase-N): N.x <ringkas>`). Dilarang mencentang item fase lain.
+4. Kerjakan item per item: test lebih dulu bila memungkinkan → kode → jalankan test item → `arch:scan` (tidak boleh menambah baseline) → commit.
+5. Akhir fase: `composer gate` + `php artisan gate:report --fase=N` (P4) → isi blok `Bukti:` per item (P2) → isi Register Minus (P9) → perbarui `CODEBASE.md` lewat `docs:inventory` → ubah status ke 🔵 → buka PR dengan checklist P7.
+6. Minta **verifikasi silang** (P7, sesi/agent lain atau pemilik). Hanya verifikator yang boleh mengubah 🔵 → ✅ atau 🔁.
+7. Item yang tidak selesai: **biarkan `[ ]`**, catat di Register Minus (dan `docs/BLOCKERS.md` bila terblokir).
 
-### P2. Definisi selesai per item (blok `Bukti:`)
+### P2. Blok `Bukti:` (format wajib, dibaca mesin)
 
-Sebuah item **hanya boleh** `[x]` bila di bawahnya ada blok berikut dan semua rujukannya benar-benar ada:
+Sebuah item **hanya boleh** `[x]` bila di bawahnya ada blok berikut. Format baris persis seperti contoh (kunci huruf kecil, satu rujukan per baris) agar `ProgressIntegrityTest` bisa memvalidasinya:
 
 ```
-- [x] N.x Judul item
-  Bukti: commit <hash> · file <path1>, <path2>
-         test <path>::<nama_test> (lulus)
-         akses: rute <METHOD /path> (role: a,b) | command <signature> | listener <Event→Listener>
-         gate: docs/AUDIT.md#gate-fase-N
+- [x] 87.3 Admisi & alokasi tempat tidur
+  Bukti:
+    - commit: 1a2b3c4
+    - file: modules/Hospital/Application/Actions/AdmitPatientAction.php
+    - file: modules/Hospital/Http/Controllers/AdmissionController.php
+    - test: modules/Hospital/tests/Feature/AdmissionTest.php::bed yang sama tidak bisa dialokasikan dua kali
+    - test: modules/Hospital/tests/Feature/AdmissionTest.php::nurse tidak boleh membatalkan admisi
+    - akses: route POST /hospital/admissions [role: rs_admin,nurse]
+    - audit: hosp:audit
+    - gate: docs/gates/fase-87.md
 ```
 
-Syarat isi:
-- **Terjangkau:** setiap fitur punya minimal satu jalan masuk nyata (rute + view/menu, endpoint API, command terjadwal, atau listener event yang benar-benar dipancarkan kode produksi). Fitur "headless" wajib alasan di `DECISIONS.md`.
-- **Uang:** akun ledger yang dipakai terdaftar di chart of accounts modul (`modules/{M}/Ledger/{M}Accounts.php`) dan diprovisi seeder — **bukan dibuat di test**. Tanda posting mengikuti konvensi tunggal (`KONSEP.md` §A2).
-- **Test (a)–(e) bermakna:** (a) happy path **lewat HTTP** sebagai role berhak; (b) role tak berhak → 403 dan input salah → 422; (c) retry/klik ganda tidak menggandakan efek (ledger **dan** state); (d) invarian ledger/stok setelah aksi; (e) satu edge case/konkurensi yang relevan.
-- **Audit:** bila item memegang uang/stok/dokumen bernilai, ada `{prefix}:audit` yang membandingkan **dua sumber berbeda** + test negatif (data dirusak → audit gagal).
+Kunci yang diizinkan: `commit`, `file`, `test`, `akses` (`route METHOD /uri [role: a,b]` · `command signature` · `listener Event -> Listener`), `audit`, `event`, `seeder`, `keputusan` (anchor `DECISIONS.md`), `gate`, `minus` (ID Register Minus).
 
-Test `tests/Architecture/ProgressIntegrityTest.php` (dibuat di R0.4) menolak centang tanpa blok bukti untuk fase R dan seterusnya.
+Aturan validasi (`ProgressIntegrityTest`, R0.4):
+- `commit` ada di riwayat git **dan** mengubah minimal satu `file` yang disebut item tersebut.
+- `file` ada; `test` ada dan nama test-nya ditemukan; test itu tercatat **lulus** di laporan `gate`.
+- `akses route` ada di `route:list --json` dengan method & URI yang sama **dan** middleware `role:`/`can:` yang memuat role tersebut; `akses command` terdaftar di `Artisan::all()`; `akses listener` terdaftar.
+- `audit` terdaftar dan punya fixture korupsi di `AuditCommandContractTest`.
+- Item fitur (bukan dokumen) wajib punya minimal satu `akses` dan minimal satu `test` yang melakukan request HTTP/command.
+- `gate` menunjuk laporan hasil `gate:report` untuk commit terakhir fase.
 
 ### P3. Anti-pola yang DILARANG (semua pernah terjadi di repo ini)
 
 | # | Dilarang | Ganti dengan |
 |---|---|---|
-| X1 | Mencentang item tanpa kode/test/jalan masuk yang bisa ditunjuk | biarkan `[ ]`, catat di BLOCKERS |
+| X1 | Mencentang item tanpa kode/test/jalan masuk yang bisa ditunjuk; menyembunyikan kekurangan | biarkan `[ ]`, catat di Register Minus/BLOCKERS |
 | X2 | Menaruh fitur domain di modul `Integration` atau menulis tabel dengan prefiks modul lain | taruh di modul pemilik; prefiks dari registry `KONSEP.md` §A1 |
 | X3 | `float` untuk uang; `decimal` untuk IDR; `Money::of(float)` | integer minor unit (`bigInteger`), `intdiv` + aturan pembulatan eksplisit |
 | X4 | `Str::uuid()`/`Str::random()`/`now()` di idempotency key | key dari identitas bisnis (`{prefix}:{aksi}:{id}`) + guard state |
 | X5 | Membuat `LedgerAccount` di test | seeder chart of accounts yang sama dengan produksi (`$this->seed(...)`) |
 | X6 | Menulis tanda debit/kredit manual / pendapatan negatif | helper `Posting::debit()/credit()`; kredit = +, debit = − |
 | X7 | Parameter `bool $approved/$verified/$passed/...` dari pemanggil sebagai kontrol | turunkan dari data: record ApprovalEngine, hasil pemeriksaan tersimpan, bukti di DocumentStore |
-| X8 | `audit()` yang memeriksa kondisi yang sudah dicegah saat insert | audit dua sumber + test negatif |
+| X8 | `audit()` yang memeriksa kondisi yang sudah dicegah saat insert | audit dua sumber + fixture korupsi (test negatif) |
 | X9 | Status sukses tanpa aksi (`delivered`, `accepted`, `published_verified`, `HEALTHY`) | status diisi dari hasil aksi nyata; adapter simulasi diberi status `simulated_*` |
 | X10 | `base64`/`sha256` tanpa kunci disebut "enkripsi" | `encrypted` cast / envelope encryption; blind index HMAC untuk pencarian |
-| X11 | Rute grup hanya `auth` untuk fitur operasional/keuangan | `role:`/Policy per rute + test matriks 403 |
-| X12 | Mengklaim skala ("jutaan", "partisi", "multi-region") tanpa benchmark | tier skala jujur (`KONSEP.md` §A9); angka benchmark ditempel di AUDIT |
-| X13 | Laporan gate hasil salin-tempel / sub-suite saja | output asli `composer gate` (suite penuh) + tanggal + commit |
+| X11 | Rute grup hanya `auth` untuk fitur operasional/keuangan | `role:`/Policy per rute + entri di `route-roles` + test matriks 403 |
+| X12 | Mengklaim skala ("jutaan", "partisi", "multi-region") tanpa benchmark | tier skala jujur (`KONSEP.md` §A9); output benchmark terlampir di laporan gate |
+| X13 | Laporan gate hasil salin-tempel / sub-suite saja | `composer gate` (suite penuh) + `gate:report` |
 | X14 | `Carbon::setTestNow()` di kode produksi; `now()` langsung di logika yang perlu disimulasikan | `ClockInterface` yang diinjeksi |
 | X15 | `back()->errors()->add()`; `assertTrue(true)` | `back()->withErrors([...])->withInput()`; assertion efek nyata / `expectNotToPerformAssertions()` |
 | X16 | Import `Modules\{Lain}\Domain\*` atau `DB::table('{prefiks lain}_...')` | Contract/Query milik modul lain, event, Ledger, PaymentGateway |
+| X17 | Melemahkan, menghapus, atau mengubah ekspektasi test lama agar lulus | perubahan test lama wajib dicantumkan di Bukti (`keputusan:`) + alasan; verifikator memeriksa |
+| X18 | Mengubah teks item / menurunkan lingkup diam-diam | aturan lingkup P10 (`⬇️ diturunkan` + DECISIONS + persetujuan pemilik) |
+| X19 | Menggabungkan beberapa fase/item dalam satu commit; mencentang item fase lain (kasus Fase 143) | satu commit per item; satu PR per fase |
+| X20 | Pelaksana memberi status ✅ pada pekerjaannya sendiri | pelaksana berhenti di 🔵; ✅ hanya oleh verifikator (P7) |
+| X21 | Menyalin kode kerangka `Integration` ke modul baru tanpa memperbaiki pola terlarang | tulis ulang mengikuti template `KONSEP.md` §A15; kerangka hanya referensi |
+| X22 | Memakai label "simulasi" untuk melonggarkan invarian internal (uang, otorisasi, idempotensi, enkripsi, audit) | "simulasi" hanya untuk aturan eksternal/regulasi & pihak luar (`KONSEP.md` §A0) |
+| X23 | Data/akun/konfigurasi yang hanya ada di test (fixture menutupi kekurangan produksi) | seeder/migrasi/config produksi; test memakai seeder yang sama |
+| X24 | Menulis dokumen klaim (laporan, AUDIT, bagian faktual CODEBASE) yang tidak dihasilkan command | `gate:report`, `docs:inventory` |
+| X25 | Menghindari kegagalan dengan nilai default diam-diam, `try/catch` kosong, atau `?->` pada data wajib (contoh nyata: faktor emisi 1.0, gaji default 5 jt, rekening default, suhu oli default 90 °C) | validasi eksplisit + galat yang jelas; nilai default hanya bila dinyatakan di spesifikasi |
 
-### P4. Gate wajib sebelum mencentang (jalankan, jangan disalin)
+### P4. Gate wajib sebelum status 🔵 (jalankan, jangan disalin)
 
 ```bash
-composer gate            # = pest (suite PENUH) + pint --test + arch + npm run build
+composer gate                       # pest SUITE PENUH + pint --test + arch + npm run build (R0.2)
+php artisan arch:scan               # aturan A1–A13; gagal bila pelanggaran > baseline (R0.8)
 php artisan bank:reconcile
+php artisan chain:audit-all         # semua audit terdaftar
 php artisan super:health-check
-php artisan arch:scan    # (dibuat di R4) import lintas modul, DB::table lintas prefiks, float uang, key acak, rute tanpa role
-php artisan <prefix>:audit   # untuk setiap modul yang disentuh
+vendor/bin/pest --mutate ...        # mutation testing kelas yang disentuh, skor ≥ 60% (R0.12)
+php artisan gate:report --fase=N    # menulis docs/gates/fase-N.md dari output asli (R0.2)
 ```
-Tempel ringkasan output asli (jumlah test/assertion, durasi, exit code tiap command) ke `docs/AUDIT.md` di bawah judul `## Gate Fase N — <tanggal> — <commit>`.
+`docs/AUDIT.md` hanya memuat tautan ke `docs/gates/fase-N.md` + ringkasan yang **dihasilkan** command, bukan ketikan tangan.
 
 ### P5. Ukuran fase & cara memecah
 
-- Satu item ≈ satu vertical slice yang bisa diselesaikan dan diuji dalam satu sesi (±200–800 baris termasuk test). Item yang memuat banyak kata kerja ("dashboard + engine + seeder 10 juta + audit") **wajib dipecah** sebelum dikerjakan.
-- Angka skala di deskripsi fase (jutaan baris, ribuan outlet) adalah **visi (tier T3)**, bukan kriteria centang. Kriteria centang = tier T0/T1 (`KONSEP.md` §A9); tier T2 hanya bila benchmark dijalankan di MySQL/PostgreSQL dan hasilnya dicatat.
-- Prasyarat harus ✅ dulu. Contoh: Fase 99 (AI terpadu) menunggu 64; Fase 101/145 (DR) menunggu 66; integrasi lini menunggu lini sumbernya ✅.
+- Satu item ≈ satu vertical slice yang bisa diselesaikan dan diuji dalam satu sesi (±200–800 baris termasuk test). Item yang memuat banyak kata kerja ("dashboard + engine + seeder 10 juta + audit") **wajib dipecah** menjadi sub-item `N.x.a`, `N.x.b`, … tanpa menghilangkan isinya.
+- Angka skala di deskripsi fase (jutaan baris, ribuan outlet) adalah **visi (tier T3)**, bukan kriteria centang. Kriteria centang = tier T0/T1 (`KONSEP.md` §A9); tier T2 hanya bila benchmark dijalankan di MySQL/PostgreSQL dan hasilnya terlampir.
+- Prasyarat harus ✅ (terverifikasi), bukan sekadar 🔵. Contoh: Fase 99 menunggu 64; Fase 101/145 menunggu 66; integrasi lini menunggu lini sumbernya ✅; fase HCM lanjutan menunggu R6.3.
 
 ### P6. Kapan berhenti
 
-Hentikan dan tulis `docs/BLOCKERS.md` bila: gate gagal dan penyebabnya di luar fase; butuh dependensi/paket baru (wajib izin pemilik); butuh keputusan desain yang belum ada di `KONSEP.md`/`DECISIONS.md`; atau item ternyata bergantung pada fase yang belum ✅.
+Hentikan, tulis `docs/BLOCKERS.md`, dan catat di Register Minus bila: gate gagal karena penyebab di luar fase; butuh dependensi/paket baru (wajib izin pemilik); butuh keputusan desain yang belum ada di `KONSEP.md`/`DECISIONS.md`; prasyarat belum ✅; atau satu-satunya cara "menyelesaikan" adalah salah satu anti-pola X1–X25.
+
+### P7. Alur status & verifikasi silang
+
+Alur: `⬜/🟠/🟡 → (DoR disetujui) 🔨 → (gate + bukti + minus) 🔵 → verifikator → ✅ atau 🔁 → 🔨`.
+
+**Verifikator** = sesi agent baru yang tidak ikut mengerjakan fase (pakai prompt P13), atau pemilik. Verifikator **tidak menulis fitur**; ia hanya membuktikan/menolak klaim. Checklist wajib:
+
+| # | Pemeriksaan |
+|---|---|
+| C1 | `ProgressIntegrityTest` hijau untuk fase ini (semua blok `Bukti:` valid). |
+| C2 | Jalankan sendiri `composer gate`, `arch:scan`, `bank:reconcile`, audit modul yang disentuh — jangan percaya laporan. |
+| C3 | Untuk setiap item: baca teks item lalu file bukti; implementasi sesuai **teks asli** item (bukan versi yang dipersempit); tidak ada status sukses tanpa aksi (X9). |
+| C4 | Jalan masuk: rute bukti diakses sebagai role berhak (berhasil) dan tak berhak (403); menu muncul. |
+| C5 | Uang: akun di `{M}Accounts` & seeder; arah posting sesuai `KONSEP.md` §A2.1; panggil aksi 2× → satu efek ledger **dan** satu efek state. |
+| C6 | Audit: jalankan pada seed bersih (exit 0), rusak satu baris data sumber (exit ≠ 0). |
+| C7 | Test: tidak ada X15/X17/X23; komentari satu baris inti implementasi → test bukti harus gagal (atau skor `--mutate` ≥ ambang). |
+| C8 | `arch:scan` & semua baseline tidak naik; tidak ada file baru di `modules/Integration` di luar allowlist. |
+| C9 | Lingkup: teks item tidak berubah kecuali dengan `⬇️ diturunkan` + DECISIONS + persetujuan pemilik (P10). |
+| C10 | `php artisan migrate:fresh --seed` lalu fitur terlihat dan bisa dipakai sebagai role terkait (seeder T1). |
+| C11 | Register Minus lengkap & jujur; verifikator **menambahkan** minus yang ditemukan. Ada minus P0/P1 terbuka → 🔁. |
+| C12 | Dokumen: bagian otomatis `CODEBASE.md` sinkron; keputusan baru ada di DECISIONS. |
+| C13 | Riwayat commit: satu commit per item; tidak ada item fase lain yang dicentang. |
+| C14 | Red flags P12 diperiksa; setiap red flag punya penjelasan yang dapat diterima. |
+
+Hasil verifikasi ditulis di `docs/gates/fase-N.md` bagian **Verifikasi** (tanggal, commit, C1–C14 lulus/gagal, alasan) lalu status fase diubah ke ✅ atau 🔁.
+
+### P8. Definition of Ready (DoR) & kriteria vertical slice V1–V12
+
+**Template DoR** (ditulis tepat di bawah baris status fase sebelum coding):
+
+```
+#### DoR Fase N — <judul>
+- Disetujui pemilik: [ ]   (tanggal / komentar)
+- Tujuan bisnis (1–2 kalimat):
+- Modul pemilik & prefiks (KONSEP §A1) — bukan Integration:
+- Prasyarat & statusnya (harus ✅):
+- Item yang dikerjakan sesi ini & yang ditunda (→ Register Minus):
+- Entitas/tabel + state machine:
+- Posting ledger (kejadian → debit/kredit, akun di {M}Accounts):
+- Event (produce/consume; katalog KONSEP §A4.2):
+- Rute/UI/menu + role & policy:
+- Command/jadwal/tick handler:
+- Audit dua-sumber + fixture korupsi:
+- Nama test (a)–(e) yang akan ditulis:
+- Tingkat simulasi (S1/S2/S3) & tier skala (T0/T1/T2):
+- Jalan pintas yang harus dihindari (dari KONSEP xF & baris "Kriteria terima wajib"):
+```
+
+**Kriteria vertical slice V1–V12** (semua wajib untuk item fitur; item dokumen/riset cukup V10–V12):
+
+| # | Kriteria |
+|---|---|
+| V1 | Modul pemilik & prefiks sesuai registry `KONSEP.md` §A1 (bukan `Integration`, bukan prefiks modul lain). |
+| V2 | Migrasi dengan FK + index; model `$fillable` eksplisit; `declare(strict_types=1)`. |
+| V3 | Action/service: `DB::transaction` + `lockForUpdate` + guard state machine + idempotency key deterministik. |
+| V4 | Uang: akun di `{M}Accounts` + seeder; posting via helper `Posting`; tanda sesuai §A2.1; tanpa float. |
+| V5 | Jalan masuk: rute + controller tipis + view + menu + role/policy (atau command/listener terdaftar bila headless + alasan di DECISIONS). |
+| V6 | Lintas modul: event di katalog + produsen + **konsumen nyata** + test end-to-end; atau Contract milik modul pemilik. |
+| V7 | Audit dua-sumber + fixture korupsi (bila memegang uang/stok/dokumen bernilai). |
+| V8 | Test (a)–(e) sesuai `KONSEP.md` §A8, minimal satu lewat HTTP/command. |
+| V9 | Seeder T1: fitur terlihat setelah `migrate:fresh --seed`. |
+| V10 | Gate penuh hijau; `arch:scan` & baseline tidak naik; mutation score ≥ ambang. |
+| V11 | Blok `Bukti:` per item + Register Minus terisi. |
+| V12 | Verifikasi silang (P7) lulus → baru ✅. |
+
+**Aturan khusus fase tema (185–500, mis. "Governance Wave", "Platform Wave", "Final: Enterprise …"):** tema **wajib** diterjemahkan di DoR menjadi perubahan nyata pada modul domain yang sudah ada (rute/aksi/audit/test yang bisa ditunjuk) **atau** dinyatakan tidak berlaku/ditunda dengan `⬇️` + persetujuan pemilik. Dilarang mengimplementasikan tema sebagai service "skor/flag/maturity" baru yang menyimpan angka masukan pemanggil — itulah pola Fase 151–484 yang dibuka kembali.
+
+### P9. Register Minus (wajib setiap fase 🔵/✅/🔁)
+
+Ditulis di bawah item fase:
+
+```
+#### Register Minus Fase N
+| ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| M-N-1 | N.3 | contoh: daftar admisi belum dipaginasi | lambat > 1 rb baris | P2 | R9.3 |
+```
+
+- **Prioritas:** P0 = uang/keamanan/data bisa salah · P1 = fitur inti tidak berfungsi atau tidak terjangkau · P2 = kualitas/kinerja/UX minor.
+- Ada minus **P0/P1 terbuka → fase tidak boleh ✅** (verifikator memberi 🔁).
+- Minus P2 boleh dibawa dengan rencana (fase/tugas tujuan) yang jelas.
+- Bila tidak ada minus, tulis "Tidak ada minus yang diketahui" — verifikator wajib mengonfirmasi atau menambah.
+- Minus yang ditutup dicoret (`~~...~~`) dengan rujukan commit/test penutupnya; tidak boleh dihapus.
+
+### P10. Aturan lingkup (scope)
+
+- Teks item adalah **kontrak**. Pelaksana tidak boleh mengubah, memperhalus, atau menafsirkannya menjadi lebih kecil.
+- Item terlalu besar → pecah menjadi sub-item (`N.x.a`, `N.x.b`, …) dengan isi lengkap; sub-item yang belum dikerjakan tetap `[ ]` + Register Minus.
+- Penurunan klaim (contoh: "PPh 21 TER + PTKP dinamis" → "PPh 21 tarif tetap 5% (S1)") hanya sah bila: penanda `⬇️ diturunkan: <alasan>` di item **+** entri `DECISIONS.md` **+** persetujuan pemilik tercatat di DoR. Tanpa ketiganya = X18.
+- Klaim tier T3 (angka visi) tidak perlu diturunkan tetapi tidak boleh dinyatakan tercapai.
+
+### P11. Pagar otomatis (dipasang di R0, wajib hijau di setiap gate)
+
+| Detektor | Menolak | Dipasang | Target |
+|---|---|---|---|
+| `ProgressIntegrityTest` | centang tanpa blok `Bukti:` valid (P2) | R0.4 | permanen |
+| `CommandSignatureUniqueTest` | signature command ganda | R0.6 | permanen |
+| `arch:scan` (aturan A1–A13, `KONSEP.md` §A14) | pola X2–X4, X6–X7, X10, X14–X16, X25, skema lemah | R0.8 | baseline turun ke 0 di R1–R5 |
+| `RouteAuthorizationMatrixTest` + `tests/Architecture/route-roles.php` | rute tanpa entri peta role; akses role tak berhak tidak 403 | R0.9 | rute baru wajib terdaftar; rute lama → 0 di R3.1 |
+| `AuditCommandContractTest` | `*:audit`/`verify-*` tanpa fixture korupsi atau tidak bisa gagal | R0.10 | → 0 di R5.2 |
+| `LedgerAccountRegistryTest` | kode akun tanpa definisi `{M}Accounts`/seeder | R0.10 | → 0 di R1.3 |
+| `LedgerNormalBalanceTest` | saldo akun berlawanan sisi normal | R0.10 | → 0 di R1.2 |
+| `IntegrationFreezeTest` | file/tabel baru di `modules/Integration` di luar allowlist adapter | R0.11 | permanen |
+| `TestHygieneTest` | `assertTrue(true)`, `LedgerAccount::create` di test, skip tanpa rujukan BLOCKERS | R0.11 | → 0 di R5.5 |
+| Mutation testing Pest (`--mutate`) | test yang tidak mendeteksi perubahan logika kelas yang disentuh | R0.12 | skor ≥ 60% |
+
+**Mekanisme ratchet:** pelanggaran yang sudah ada dicatat sebagai baseline di `tests/Architecture/baselines/*.json`. Gate gagal bila jumlah pelanggaran suatu aturan **naik**; bila turun, PR yang sama wajib menurunkan angka baseline. Menaikkan baseline hanya boleh dengan entri `DECISIONS.md` + persetujuan pemilik (selain itu = X1).
+
+### P12. Red flags (otomatis memicu pemeriksaan ketat verifikator)
+
+- Fase selesai < 30 menit, atau commit item fitur < ±50 baris non-test.
+- Item fitur tanpa perubahan di `routes/`, `Http/`, atau `resources/views` (kecuali headless dengan DECISIONS).
+- Test bukti hanya memanggil service langsung (tanpa HTTP/command), atau tidak ada satu pun test negatif (403/422/retry/audit gagal).
+- Semua test baru hijau sejak run pertama tanpa pernah ada test merah tercatat (indikasi test ditulis menyesuaikan kode).
+- File baru di `modules/Integration`; tabel dengan prefiks modul lain; kata "simulasi" pada invarian internal.
+- Diff menghapus/mengubah assertion test lama; baseline `arch:scan` disentuh.
+- Angka di laporan (jumlah test, durasi) tidak cocok dengan output gate; laporan tanpa hash commit.
+- Item dicentang yang tidak punya commit dengan nomor item tersebut.
+
+### P13. Template prompt untuk menjalankan agent
+
+**Prompt pelaksana** (salin, ganti `{N}`):
+
+```
+Kamu mengerjakan FASE {N} di docs/PROGRESS.md pada repo ini.
+Wajib dibaca dulu: PROGRESS.md bagian "STATUS AUDIT", "PETA SOLUSI", Protokol P1–P13, baris status & "Kriteria terima wajib" FASE {N};
+KONSEP.md Bagian A (A0–A17) dan subbagian pilar/lini terkait (xF + "Jalan pintas terlarang").
+Langkah:
+1) Tulis DoR (P8) di bawah judul FASE {N}, commit, lalu BERHENTI dan minta persetujuan pemilik.
+2) Setelah disetujui: kerjakan item satu per satu (satu commit per item), test lebih dulu, patuhi V1–V12, jangan memakai anti-pola X1–X25.
+3) Jangan mengubah teks item; bila terlalu besar, pecah menjadi sub-item. Penurunan lingkup hanya lewat P10.
+4) Akhir fase: jalankan gate P4 (suite penuh), isi blok Bukti per item (format P2), isi Register Minus (P9), ubah status ke 🔵, buka PR.
+5) JANGAN memberi status ✅ dan jangan mencentang item yang tidak punya bukti. Lebih baik jujur parsial daripada palsu lengkap.
+```
+
+**Prompt verifikator** (sesi baru, salin, ganti `{N}` dan `{PR}`):
+
+```
+Kamu VERIFIKATOR independen untuk FASE {N} (PR #{PR}). Jangan menulis fitur baru.
+Tugasmu membuktikan atau menolak setiap klaim di docs/PROGRESS.md FASE {N} memakai checklist P7 (C1–C14).
+Jalankan sendiri semua command gate; jangan percaya laporan. Buka setiap file bukti dan bandingkan dengan TEKS ASLI item.
+Uji akses dengan role berhak dan tak berhak; panggil aksi uang dua kali; rusak satu baris data lalu jalankan audit (harus gagal);
+komentari satu baris inti implementasi dan pastikan test bukti gagal.
+Tambahkan setiap kekurangan yang kamu temukan ke Register Minus fase.
+Jika ada pemeriksaan gagal atau minus P0/P1 terbuka: ubah status ke 🔁 dengan daftar alasan.
+Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gates/fase-{N}.md.
+```
 
 ---
 
 ## FASE R — REMEDIASI & RE-BASELINE (WAJIB SEBELUM FASE BARU)
 
-> Urutan R0 → R9 mengikuti dependensi. Setiap sub-fase ditutup gate penuh (P4). Rujukan temuan `K-xx` ada di `docs/KNOWLEDGE.md` §5.
+> Urutan R0 → R9 mengikuti dependensi. **R0 memasang pagar otomatis lebih dulu** sehingga sejak perbaikan pertama, jalan pintas langsung membuat gate merah. Setiap sub-fase R mengikuti P1–P13 (DoR boleh singkat karena tugas R sudah rinci) dan ditutup gate penuh + verifikasi silang. Rujukan temuan `K-xx` ada di `docs/KNOWLEDGE.md` §5.
 
-### FASE R0 — LINGKUNGAN & GATE YANG BISA DIREPRODUKSI
-> **Status audit:** ⬜ BELUM · Prasyarat semua fase R lain.
+### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS (ANTI JALAN PINTAS)
+> **Status audit:** ⬜ BELUM · Prasyarat semua fase R lain. Semua detektor di R0 dipasang dengan baseline (ratchet) sehingga bisa langsung aktif walau kode lama masih melanggar.
 - [ ] R0.1 **Selaraskan versi PHP** (K-28): `composer.json` → `"php": "^8.4"` (sesuai `composer.lock` yang mewajibkan ≥ 8.4.1); dokumentasikan di README & CODEBASE; hapus instruksi "jangan commit composer.lock" atau sebaliknya keluarkan lock dari repo — pilih satu dan catat di DECISIONS.
   - Kriteria terima: `composer install` bersih di PHP 8.4 tanpa `--ignore-platform-reqs`.
-- [ ] R0.2 **`composer gate`** (K-04): script composer yang menjalankan `pest` (suite penuh, `--parallel` boleh), `pint --test`, test arsitektur, `npm run build`; exit ≠ 0 bila salah satu gagal.
-  - Kriteria terima: satu perintah, output ringkas jumlah test/assertion/durasi.
-- [ ] R0.3 **CI GitHub Actions** (K-04, K-28): workflow PR → PHP 8.4 × {SQLite, MySQL 8 *atau* PostgreSQL 16}; job kedua menjalankan test bertanda `@group db-portability` (presisi decimal, panjang kolom, `lockForUpdate` dua koneksi).
+- [ ] R0.2 **`composer gate` + `gate:report`** (K-02, K-04): script composer yang menjalankan `pest` (suite penuh, `--parallel` boleh, `--log-junit`), `pint --test`, test arsitektur, `npm run build`; exit ≠ 0 bila salah satu gagal. Command `php artisan gate:report --fase=N` menulis `docs/gates/fase-N.md` dari output asli: hash commit, tanggal, versi PHP/DB, jumlah test/assertion/durasi, exit code tiap command P4, status setiap test yang disebut di blok `Bukti:` fase N (dari JUnit), ringkasan `arch:scan`.
+  - Kriteria terima: laporan tidak bisa dibuat bila gate gagal; test membandingkan isi laporan dengan JUnit fixture.
+- [ ] R0.3 **CI GitHub Actions** (K-04, K-28): workflow PR → PHP 8.4 × {SQLite, MySQL 8 *atau* PostgreSQL 16}; job kedua menjalankan test bertanda `@group db-portability` (presisi decimal, panjang kolom, `lockForUpdate` dua koneksi); unggah laporan gate sebagai artefak. Folder `.github/` baru → minta izin pemilik (CLAUDE.md).
   - Kriteria terima: PR tidak bisa di-merge bila CI merah (branch protection — minta pemilik mengaktifkan).
-- [ ] R0.4 **`ProgressIntegrityTest`** (K-01): parse `docs/PROGRESS.md`; untuk Fase R dan fase yang dikerjakan setelah re-baseline, setiap `[x]` wajib punya blok `Bukti:`; setiap path yang disebut harus ada; setiap `file::test` harus ditemukan; setiap command harus terdaftar (`Artisan::all()`).
-  - Test wajib: fixture markdown dengan item tanpa bukti → test gagal; item dengan bukti valid → lulus.
+- [ ] R0.4 **`ProgressIntegrityTest`** (K-01; spesifikasi `KONSEP.md` §A14.2): parse `docs/PROGRESS.md` dan validasi blok `Bukti:` sesuai aturan P2 (commit ada & menyentuh file yang disebut; file/test ada; test lulus di laporan gate; rute ada dengan middleware role yang sesuai; command/listener terdaftar; item fitur wajib punya `akses` + test HTTP/command). Juga gagal bila: status ✅ tanpa bagian **Verifikasi** di `docs/gates/fase-N.md`; fase ✅ masih punya minus P0/P1 terbuka; teks item berubah tanpa penanda `⬇️ diturunkan` (dibandingkan snapshot teks item di baseline). Berlaku untuk: semua item Fase R, semua fase yang statusnya berubah setelah 2026-10-10, dan seluruh fase setelah R6 selesai.
+  - Test wajib: fixture markdown — item tanpa bukti → gagal; commit tidak menyentuh file → gagal; rute tanpa role → gagal; ✅ tanpa verifikasi → gagal; teks item diubah tanpa ⬇️ → gagal; bukti valid → lulus.
 - [ ] R0.5 **Cabut klaim palsu di dokumen** (K-02, K-03): *(banner sementara sudah dipasang di `LAPORAN_AUDIT_GELOMBANG_2.md` & `CODEBASE.md` pada re-baseline)* tandai/arsipkan `docs/LAPORAN_AUDIT_GELOMBANG_2.md`; perbaiki versi Laravel/PHP di `README.md` & `docs/ARCHITECTURE.md`; header `CODEBASE.md` diganti status jujur; hapus akun yang tidak ada (`agri:farmer_advance_receivable`, `ast:cip_project:*`) dari CODEBASE §5.
-- [ ] R0.6 **Duplikat command** (K-02): hanya satu kelas untuk `api:audit`; tambahkan test yang memastikan setiap signature command unik.
-- [ ] R0.7 Quality gate Fase R0 (P4) tercatat di `docs/AUDIT.md`.
+- [ ] R0.6 **Duplikat command** (K-02): hanya satu kelas untuk `api:audit`; `CommandSignatureUniqueTest` memastikan setiap signature unik.
+- [ ] R0.7 **Template PR & penutupan fase**: `.github/pull_request_template.md` (izin pemilik) memuat checklist V1–V12 & C1–C14; folder `docs/gates/` dengan README cara membaca laporan.
+- [ ] R0.8 **`php artisan arch:scan` + baseline ratchet** (K-04, K-05, K-07, K-12, K-14, K-19, K-21, K-22, K-25, K-29): aturan A1–A13 sesuai `KONSEP.md` §A14; keluaran JSON per aturan; baseline awal di `tests/Architecture/baselines/arch-scan.json`; gagal bila jumlah suatu aturan naik.
+  - Test wajib: fixture kode per aturan (positif & negatif); kenaikan baseline → gagal.
+- [ ] R0.9 **`RouteAuthorizationMatrixTest`** (K-20, K-23): `tests/Architecture/route-roles.php` memetakan setiap nama rute → role yang boleh; test membaca `Route::getRoutes()`: rute baru tanpa entri → gagal; role berhak → bukan 403; role tak berhak → 403. Rute lama yang belum dibatasi masuk baseline.
+- [ ] R0.10 **Test kontrak dengan baseline**: `AuditCommandContractTest` (setiap `*:audit`/`verify-*` punya fixture korupsi: bersih → exit 0, rusak → exit ≠ 0), `LedgerAccountRegistryTest` (setiap kode akun produksi terdefinisi & terseed), `LedgerNormalBalanceTest` (pemetaan sisi normal sementara di test; dipindah ke `AccountKind::normalSide()` di R1.1). Pelanggaran lama → baseline.
+- [ ] R0.11 **`IntegrationFreezeTest` & `TestHygieneTest`** (K-05, K-27): (1) tidak ada file/migrasi baru di `modules/Integration` selain allowlist adapter (`Adapters/`, `Webhooks/`, `Edi/`); (2) larang `assertTrue(true)`, `LedgerAccount::create|firstOrCreate` di test, `markTestSkipped`/`->skip()` tanpa rujukan BLOCKERS. Pelanggaran lama → baseline.
+- [ ] R0.12 **Mutation testing & coverage** (K-27): job CI menjalankan mutation testing Pest pada kelas Action/Service yang diubah PR (verifikasi opsi CLI via `vendor/bin/pest --help`; butuh driver coverage PCOV/Xdebug di CI — bukan dependensi composer); ambang skor 60%.
+- [ ] R0.13 Quality gate Fase R0 (P4) + verifikasi silang (P7).
 
 ### FASE R1 — LEDGER & UANG (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.
-- [ ] R1.1 **Konvensi tanda tunggal** (K-10): `AccountKind::normalSide()` + helper `Posting::lines()->debit()->credit()` (kredit = +, debit = −); dokumentasikan tabel normal balance (`KONSEP.md` §A2).
-  - Test wajib: `LedgerNormalBalanceTest` — setelah `migrate:fresh --seed` + seluruh skenario golden, setiap akun memenuhi tanda sisi normalnya (daftar pengecualian eksplisit untuk `clearing`/`exchange`).
-- [ ] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif).
-  - Kriteria terima: `LedgerNormalBalanceTest` hijau; tidak ada literal pendapatan dengan nilai negatif kecuali transaksi pembalik (refund/void/contra) yang bertipe jelas.
+- [ ] R1.1 **Konvensi tanda tunggal** (K-10): `AccountKind::normalSide()` + helper `Posting::lines()->debit()->credit()` (kredit = +, debit = −); dokumentasikan tabel normal balance (`KONSEP.md` §A2); pindahkan pemetaan sementara dari `LedgerNormalBalanceTest`.
+  - Test wajib: `LedgerNormalBalanceTest` — setelah `migrate:fresh --seed` + seluruh skenario golden, setiap akun memenuhi tanda sisi normalnya (pengecualian eksplisit untuk `clearing`/`exchange`).
+- [ ] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif) — dicatat sebagai `keputusan:` di Bukti (X17).
+  - Kriteria terima: baseline `LedgerNormalBalanceTest` = 0.
 - [ ] R1.3 **Chart of accounts sebagai kode** (K-11): `modules/{M}/Ledger/{M}Accounts.php` (konstanta + definisi kind/aset/allow_negative/normal side) untuk setiap modul yang memposting; `LedgerAccountsSeeder` memprovisi semuanya secara idempoten; hapus `LedgerAccount::create` dari 44 file test (ganti `$this->seed(LedgerAccountsSeeder::class)`).
-  - Test wajib: `LedgerAccountRegistryTest` — kumpulkan semua literal `forCode('…')`/konstanta akun di kode non-test → setiap kode ada setelah seed dan kind-nya cocok dengan sisi normal.
-- [ ] R1.4 **Guard `LedgerService`** (K-13, K-19): (1) tolak entri yang `asset_code`-nya ≠ aset akun; (2) simpan `payload_hash` di `bank_ledger_transactions` dan tolak key sama-payload beda (`IdempotencyConflictException`); (3) tangkap unique violation → kembalikan transaksi pemenang; (4) migrasi `restrictOnDelete` + model `LedgerEntry`/`LedgerTransaction` melempar exception pada `updating`/`deleting`; (5) `type` wajib dari `TransactionType` (atau registry per modul) dan ≤ 32 karakter — perbaiki 12 type yang terlalu panjang.
+  - Kriteria terima: baseline `LedgerAccountRegistryTest` = 0 dan baseline `TestHygieneTest` aturan T2 = 0.
+- [ ] R1.4 **Guard `LedgerService`** (K-13, K-19): (1) tolak entri yang `asset_code`-nya ≠ aset akun; (2) simpan `payload_hash` di `bank_ledger_transactions` dan tolak key sama-payload beda (`IdempotencyConflictException`); (3) tangkap unique violation → kembalikan transaksi pemenang; (4) migrasi `restrictOnDelete` + model `LedgerEntry`/`LedgerTransaction` melempar exception pada `updating`/`deleting`; (5) `type` wajib dari `TransactionType` (atau registry per modul) dan ≤ 32 karakter — perbaiki 12 type yang terlalu panjang (baseline `arch:scan` A5 = 0).
   - Test wajib: satu test per guard; test konkurensi dua koneksi (grup `db-portability`).
-- [ ] R1.5 **Idempotency key deterministik** (K-12): ganti 27 lokasi `Str::uuid()/Str::random()/now()` (daftar: `grep -rnE "idempotencyKey:\s*[^,]*(Str::random|Str::uuid|uniqid|random_bytes|now\(\))" modules`) dengan key identitas bisnis; perbaiki `FleetLeasingService::amortizeMonthly()` (kunci kontrak, marker per bulan, akumulasi hanya bila posting baru).
+- [ ] R1.5 **Idempotency key deterministik** (K-12): ganti 27 lokasi `Str::uuid()/Str::random()/now()` dengan key identitas bisnis (baseline `arch:scan` A4 = 0); perbaiki `FleetLeasingService::amortizeMonthly()` (kunci kontrak, marker per bulan, akumulasi hanya bila posting baru).
   - Test wajib: per lokasi, panggil dua kali → satu transaksi ledger & state tidak bergeser.
 - [ ] R1.6 **Refund sebagai entitas** (K-15): tabel `pay_refunds` (id, intent, nominal, alasan, status); key `refund:{refund_id}`; API `refund()` wajib menerima id permintaan.
   - Test wajib: dua refund parsial bernominal sama → dua transaksi; retry refund yang sama → satu transaksi.
 - [ ] R1.7 **Validasi split pembayaran** (K-17): `charge()`/`capture()` memvalidasi Σsplits == nominal (atau menskalakan proporsional seperti `refund()`); split ≤ 0 → galat eksplisit.
 - [ ] R1.8 **Hapus float dari uang** (K-14): `Money`/`PostingEntryDTO` tidak menerima `float`; kolom `decimal` bernilai IDR → `bigInteger`; HCM & PB1 Resto memakai aritmetika integer; parameter `float` uang di modul lain diganti `int`.
-  - Kriteria terima: `arch:scan` melaporkan 0 parameter float uang.
+  - Kriteria terima: baseline `arch:scan` A3 = 0.
 - [ ] R1.9 **Presisi & rekonsiliasi portabel** (K-14, K-18): tentukan penyimpanan aset non-IDR (integer minor unit per aset **atau** DB produksi MySQL/PostgreSQL dengan `DECIMAL(36,18)` eksak) dan catat di DECISIONS; `bank:reconcile` tanpa `group_concat` (SUM native di MySQL/PostgreSQL, `chunkById` + BigDecimal di SQLite) dan mendukung checkpoint inkremental.
   - Test wajib: nilai 18 desimal bertahan utuh pulang-pergi DB (grup `db-portability`); reconcile mendeteksi selisih 1 unit terkecil.
-- [ ] R1.10 Quality gate Fase R1.
+- [ ] R1.10 Quality gate Fase R1 + verifikasi silang.
 
 ### FASE R2 — BUG FUNGSIONAL TERVERIFIKASI
 > **Status audit:** ⬜ BELUM · Prasyarat: R1.
@@ -155,77 +375,83 @@ Hentikan dan tulis `docs/BLOCKERS.md` bila: gate gagal dan penyebabnya di luar f
   - Test wajib: panggil 2× → HPP terposting sekali, porsi etalase berkurang sekali, item `RETURNED` tidak diresirkulasi ulang.
 - [ ] R2.2 **Tender benar-benar tersegel** (K-22): skema commit–reveal atau isi penawaran terenkripsi sampai `openBids()`; perbaiki `TenderBid::isSealIntact()` (formula hash sama dengan saat menyegel) dan panggil saat pembukaan; tolak bid yang segelnya tidak cocok.
   - Test wajib: isi penawaran tidak terbaca sebelum dibuka; manipulasi isi setelah segel → ditolak saat open.
-- [ ] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()`.
+- [ ] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
   - Test wajib: test HTTP per jalur galat → redirect + session error (bukan 500).
 - [ ] R2.4 **Inventory benar-benar append-only** (K-24): `commit()`/`release()` membuat movement baru yang menautkan reservasi (tanpa mengubah baris lama); unique index `(outlet_id, ingredient_id)` + upsert atomik; akses tabel `resto_*` dipindah ke Contract milik Resto.
 - [ ] R2.5 **Outbox yang benar** (K-08, K-23, K-31): status dispatch per subscriber (retry hanya yang gagal); klaim pesan atomik antar-worker; target non-webhook dieksekusi lewat handler terdaftar (bukan ditandai sukses); allowlist host + tolak IP privat/link-local; `IntegrationService::dispatchWebhook()` lewat outbox nyata (atau diganti status `simulated_*`).
   - Test wajib: subscriber A sukses + B gagal → retry hanya ke B; dua worker paralel → satu pengiriman; URL `http://169.254.169.254` ditolak.
 - [ ] R2.6 **Telematics** (K-26, K-30): baseline rolling 7 hari dari tick nyata; hanya DTC dari daftar kritis yang `critical`/`grounded`; event domain dipancarkan `afterCommit` dan dedup per jam sama seperti publish spine.
 - [ ] R2.7 **ESG faktor emisi**: `recordEmission()` menolak jenis aktivitas tak dikenal (sekarang diam-diam faktor 1.0); nomor dokumen lewat `DocumentNumberingInterface` (bukan `Str::random`).
-- [ ] R2.8 Quality gate Fase R2.
+- [ ] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
+  - Test wajib: adapter gagal → status gagal tercatat (bukan sukses).
+- [ ] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
+- [ ] R2.10 Quality gate Fase R2 + verifikasi silang.
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0 (boleh paralel dengan R1/R2).
-- [ ] R3.1 **Matriks rute × role otomatis** (K-20): test membaca `Route::getRoutes()`, untuk setiap rute non-publik menguji role berhak (2xx/3xx) dan tak berhak (403). Perbaiki minimal: Mall (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants, utilities, parking admin), Resto (menu, ingredients, outlets, purchases + `pay`, transfers, stock counts, POS), HCM, Treasury, Trade, Trade Finance, International, Intercompany, Control Tower, Enterprise Finance, ESG, B2B, Agri, EPC, PLM, Integration; tambah pemeriksaan role di Action uang (`MallAutoDebitAction`, `PaySupplierAction`).
-  - Kriteria terima: tidak ada rute mutasi/keuangan yang hanya `auth`.
-- [ ] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin`.
+- [ ] R3.1 **Tutup rute tanpa role** (K-20): isi `route-roles.php` untuk semua rute dan perbaiki minimal: Mall (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants, utilities, parking admin), Resto (menu, ingredients, outlets, purchases + `pay`, transfers, stock counts, POS), HCM, Treasury, Trade, Trade Finance, International, Intercompany, Control Tower, Enterprise Finance, ESG, B2B, Agri, EPC, PLM, Integration; tambah pemeriksaan role di Action uang (`MallAutoDebitAction`, `PaySupplierAction`).
+  - Kriteria terima: baseline `RouteAuthorizationMatrixTest` = 0; tidak ada rute mutasi/keuangan yang hanya `auth`.
+- [ ] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin` (baseline `arch:scan` A7 = 0).
   - Test wajib: nilai di DB tidak sama dengan plaintext; pencarian via blind index bekerja.
-- [ ] R3.3 **Hapus flag-sebagai-kontrol** (K-21) pada jalur yang menyentuh uang, akses data, atau kepatuhan: status diturunkan dari ApprovalEngine/DocumentStore/hasil pemeriksaan tersimpan. Daftar awal: `grep -rnE "bool \\\$(\w*(Verified|Approved|Passed|Compliant|Signed|Consent|Evidence|Attested|Certified))" modules`.
+- [ ] R3.3 **Hapus flag-sebagai-kontrol** (K-21) pada jalur yang menyentuh uang, akses data, atau kepatuhan: status diturunkan dari ApprovalEngine/DocumentStore/hasil pemeriksaan tersimpan (baseline `arch:scan` A6 untuk modul non-Integration = 0; sisanya mengikuti R4.4).
 - [ ] R3.4 **Kuota API ditegakkan** (K-23): `RateLimiter` per klien API dari `rate_limit_per_minute`; halaman `/integration` hanya role admin/integrasi.
-- [ ] R3.5 Quality gate Fase R3.
+- [ ] R3.5 Quality gate Fase R3 + verifikasi silang.
 
 ### FASE R4 — BATAS MODUL & KEPEMILIKAN DATA
 > **Status audit:** ⬜ BELUM · Prasyarat: R1.
 - [ ] R4.1 **Arch test generik** (K-07): untuk setiap pasangan modul A≠B, `Modules\A` tidak boleh memakai `Modules\B\Domain` kecuali shared kernel yang ditetapkan (mis. `Shared\Ledger\*`); `Shared` & `Core` tidak boleh bergantung ke modul bisnis; seluruh `modules/` wajib `declare(strict_types=1)`.
-  - Kriteria terima: aturan berbasis daftar modul dinamis (bukan pasangan manual); pelanggaran yang tersisa tercatat sebagai allowlist ber-tanggal-kedaluwarsa.
-- [ ] R4.2 **Registry prefiks tabel** (K-05): `config/modules.php` (atau setara) memetakan prefiks → modul; arch test menolak `Schema::create` dengan prefiks milik modul lain dan `DB::table('{prefiks lain}_…')`. Selesaikan bentrokan: `prc_` (Pricing → `pric_`), `ven_` (Vending → `vnd_`), `resto_` di CloudKitchen → `ckt_`, `oto_` (pilih pemilik), serta tabel `esg_/hcm_/fin_/ins_/gov_/platform_/sim_/…` buatan Integration → pindah ke modul pemilik.
-- [ ] R4.3 **Putus dependensi terbalik**: `Shared\Application\Queries\GlobalSearchQuery` tidak mengimpor Mall (pakai registry pencarian yang diisi modul); `Core\…\TwelveLinesCrossEcosystemService` tidak mengimpor Hotel; `InventoryService` tidak mengimpor `Store\Domain\Models\Product`.
-- [ ] R4.4 **Pecah modul Integration** (K-05, K-06): buat tabel klasifikasi 345 service → {pertahankan di Integration (adapter eksternal), pindah ke modul X, arsipkan/hapus}; kosongkan `IntegrationServiceProvider` dari singleton tanpa konfigurasi (auto-resolve). Pindahkan bertahap per lini sesuai R7.
-- [ ] R4.5 **`php artisan arch:scan`**: command yang menjalankan pemindaian K-07/K-12/K-14/K-20 dan mencetak ringkasan; dipakai di gate.
-- [ ] R4.6 Quality gate Fase R4.
+  - Kriteria terima: aturan berbasis daftar modul dinamis (bukan pasangan manual); pelanggaran yang tersisa hanya di baseline ber-tanggal-kedaluwarsa.
+- [ ] R4.2 **Registry prefiks tabel** (K-05): `config/modules.php` (atau setara) memetakan prefiks → modul; `arch:scan` A2 menolak `Schema::create` dengan prefiks milik modul lain dan `DB::table('{prefiks lain}_…')`. Selesaikan bentrokan: `prc_` (Pricing → `pric_`), `ven_` (Vending → `vnd_`), `resto_` di CloudKitchen → `ckt_`, `oto_` (gabung Telematics/Ev/Fleet jadi modul Mobility), serta tabel `esg_/hcm_/fin_/ins_/gov_/platform_/sim_/…` buatan Integration → pindah ke modul pemilik.
+- [ ] R4.3 **Putus dependensi terbalik**: `Shared\Application\Queries\GlobalSearchQuery` tidak mengimpor Mall (pakai registry pencarian yang diisi modul); `Core\…\TwelveLinesCrossEcosystemService` tidak mengimpor Hotel; `InventoryService` tidak mengimpor `Store\Domain\Models\Product` (baseline `arch:scan` A9 = 0).
+- [ ] R4.4 **Pecah modul Integration** (K-05, K-06): tabel klasifikasi 345 service → {pertahankan di Integration (adapter eksternal), pindah ke modul X, arsipkan/hapus (izin pemilik)}; kosongkan `IntegrationServiceProvider` dari singleton tanpa konfigurasi (auto-resolve). Pindahkan bertahap per lini sesuai R7.
+- [ ] R4.5 **Turunkan baseline batas modul**: `arch:scan` A1 (Domain lintas modul) & A2 (DB::table lintas prefiks) = 0 di luar allowlist shared kernel yang tercatat di DECISIONS.
+- [ ] R4.6 **Skema** (K-25): FK + index untuk setiap `*_id` intra-modul; ganti `$guarded = []` dengan `$fillable`; `strict_types` di semua file (baseline `arch:scan` A10–A12 = 0).
+- [ ] R4.7 Quality gate Fase R4 + verifikasi silang.
 
-### FASE R5 — DOKUMENTASI & AUDIT YANG JUJUR
+### FASE R5 — DOKUMENTASI, AUDIT & TEST YANG JUJUR
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.
 - [ ] R5.1 **CODEBASE otomatis** (K-03): `php artisan docs:inventory` menghasilkan bagian faktual `CODEBASE.md` (modul, prefiks, jumlah tabel, rute per modul + middleware, command & jadwal, akun ledger per modul); test gagal bila hasil generate ≠ isi file.
-- [ ] R5.2 **Kontrak audit** (K-02): `AuditCommandContractTest` — setiap `*:audit` terdaftar: exit 0 pada seed bersih, exit ≠ 0 pada fixture korupsi khusus command tsb.
+- [ ] R5.2 **Fixture korupsi untuk semua audit** (K-02): baseline `AuditCommandContractTest` = 0 — setiap `*:audit` terdaftar membandingkan dua sumber dan punya fixture yang membuatnya gagal.
 - [ ] R5.3 **`super:health-check` jujur**: hanya melaporkan pilar yang benar-benar dicek; tambahkan pilar baru hanya bersama audit dua-sumbernya.
-- [ ] R5.4 **Format gate di AUDIT.md**: template baru (P4) + hapus/annotasi entri lama yang hanya sub-suite.
-- [ ] R5.5 Quality gate Fase R5.
+- [ ] R5.4 **Format gate di AUDIT.md**: hanya tautan ke `docs/gates/fase-N.md` hasil `gate:report`; entri lama yang hanya sub-suite diberi catatan "tidak representatif".
+- [ ] R5.5 **Higiene test** (K-27): baseline `TestHygieneTest` = 0; setiap modul yang punya rute memiliki test HTTP (role berhak & tak berhak); setiap fitur uang punya test (c) retry dan (d) invarian.
+- [ ] R5.6 Quality gate Fase R5 + verifikasi silang.
 
 ### FASE R6 — VERIFIKASI ULANG ITEM FASE 26–63
 > **Status audit:** ⬜ BELUM · Prasyarat: R1–R5.
-- [ ] R6.1 Untuk setiap item fase 26–46 bertanda ✅: tambahkan blok `Bukti:` (file, test, rute/command). Item yang ternyata tidak terbukti → `[ ]` + catatan.
-- [ ] R6.2 Untuk fase 🟡 (41, 47–54, 56, 57, 57B, 59–63): verifikasi per item; lengkapi yang kurang sebagai vertical slice atau turunkan klaim item (ubah teks item, catat di DECISIONS).
+- [ ] R6.1 Untuk setiap item fase 26–46 bertanda ✅: tambahkan blok `Bukti:` (P2). Item yang ternyata tidak terbukti → `[ ]` + Register Minus.
+- [ ] R6.2 Untuk fase 🟡 (41, 47–54, 56, 57, 57B, 59–63): verifikasi per item; lengkapi yang kurang sebagai vertical slice atau turunkan klaim item lewat P10.
 - [ ] R6.3 Kerjakan ulang Fase 55 (API v2, webhook nyata, EDI parser minimal, scoping multi-entitas) dan Fase 58 (HCM: shift & absensi, payroll dengan aturan pajak/BPJS yang dinyatakan eksplisit, jurnal payroll & alokasi biaya ke Manufaktur) sesuai item aslinya.
 - [ ] R6.4 Lengkapi integrasi uang 60–63: ESG (akun inventaris kredit karbon), B2B (escrow via ledger/PaymentGateway), Agri (payout petani via ledger), EPC (CIP di ledger + kapitalisasi lewat Contract modul Asset).
-- [ ] R6.5 Quality gate Fase R6.
+- [ ] R6.5 **Koreksi kebenaran domain** (K-30): setiap klaim berikut diimplementasikan sesuai definisi **atau** diturunkan lewat P10 — randomisasi blok uji klinis (sekarang paritas `crc32 % 2`), gate review PLM (sekarang bisa lompat tahap), "PSAK 73" sewa armada (sekarang tanpa PV/ROU), klasifikasi DTC kritis Telematics, aturan pajak/BPJS HCM (R6.3).
+- [ ] R6.6 Quality gate Fase R6 + verifikasi silang.
 
 ### FASE R7 — VERTICAL SLICE LINI GELOMBANG 1 (67–94)
-> **Status audit:** ⬜ BELUM · Prasyarat: R1–R4. Kerjakan **satu lini per siklus**, urutan saran: Rumah Sakit → Hotel → Venue → Tambang → Telematics/EV/Fleet → RWA/Insurance/Wealth → CloudKitchen/Vending → Proptech.
-- [ ] R7.1 Per lini: rute + controller + view minimal + menu + role (dari `KONSEP.md` "Spesifikasi implementasi minimum"), chart of accounts + seeder T1, `{prefix}:audit` dua-sumber + test negatif, test HTTP (a)–(e). Centang ulang item fase 87–94 / 68–86 yang terpenuhi dengan blok bukti.
-- [ ] R7.2 Pindahkan service lini tersebut yang masih di `Integration` ke modulnya (R4.4).
-- [ ] R7.3 Quality gate per lini.
+> **Status audit:** ⬜ BELUM · Prasyarat: R1–R4. Kerjakan **satu lini per siklus** (DoR → slice → 🔵 → verifikasi → ✅), urutan saran: Rumah Sakit → Hotel → Venue → Tambang → Mobility (Telematics/EV/Fleet) → RWA/Insurance/Wealth → CloudKitchen/Vending → Proptech.
+- [ ] R7.1 Per lini: rute + controller + view minimal + menu + role (dari `KONSEP.md` xF), chart of accounts + seeder T1, `{prefix}:audit` dua-sumber + fixture korupsi, test HTTP (a)–(e). Centang ulang item fase 87–94 / 68–86 yang terpenuhi dengan blok bukti.
+- [ ] R7.2 Pindahkan service lini tersebut yang masih di `Integration` ke modulnya (R4.4), ditulis ulang mengikuti template `KONSEP.md` §A15 (X21).
+- [ ] R7.3 Verifikasi silang per lini (P7) — lini tidak dianggap selesai sebelum ✅.
+- [ ] R7.4 Quality gate per lini.
 
 ### FASE R8 — EVENT SPINE & SIMULATION KERNEL NYATA
 > **Status audit:** ⬜ BELUM · Prasyarat: R2.5, R4.
-- [ ] R8.1 **Katalog event** (`KONSEP.md` §A4): nama ber-versi, skema payload, produsen, konsumen; minimal satu konsumen nyata untuk setiap event lintas modul yang diklaim di KONSEP.
+- [ ] R8.1 **Katalog event** (`KONSEP.md` §A4): nama ber-versi, skema payload, produsen, konsumen; test katalog gagal bila ada event lintas modul tanpa konsumen nyata.
 - [ ] R8.2 **Consumer group & replay**: worker `core:consume-spine {group}` dengan offset tersimpan; replay dari offset N idempoten.
-- [ ] R8.3 **ClockInterface** (K-09): semua action peka waktu memakai jam terinjeksi; hapus `Carbon::setTestNow()` dari kode produksi.
+- [ ] R8.3 **ClockInterface** (K-09): semua action peka waktu memakai jam terinjeksi; hapus `Carbon::setTestNow()` dari kode produksi (baseline `arch:scan` A8 = 0).
 - [ ] R8.4 **`sim:run --days=N --resume`**: loop per hari virtual menjalankan *tick handler* terdaftar (depresiasi, cicilan, tagihan, expiry poin/voucher, MRP, D&D, royalti) dengan checkpoint; test: dua run identik → hash state identik.
-- [ ] R8.5 Quality gate Fase R8.
+- [ ] R8.5 Quality gate Fase R8 + verifikasi silang.
 
 ### FASE R9 — SKALA BERTINGKAT & BENCHMARK
 > **Status audit:** ⬜ BELUM · Prasyarat: R1–R8.
 - [ ] R9.1 Seeder T1 (demo ribuan baris) per lini yang ✅; seeder T2 (ratusan ribu–jutaan) dengan chunk + checkpoint, hanya dijalankan di MySQL/PostgreSQL.
-- [ ] R9.2 Benchmark: waktu seed, p95 halaman kritis, durasi `bank:reconcile` & audit utama; hasil ditempel di AUDIT.md.
+- [ ] R9.2 Benchmark: waktu seed, p95 halaman kritis, durasi `bank:reconcile` & audit utama; hasil dilampirkan oleh `gate:report`.
 - [ ] R9.3 Ganti pola tidak skalabel (K-32): `::all()` di audit, filter subscription di PHP, sampel `limit(50)` tanpa urutan, screening sanksi O(n·m).
-- [ ] R9.4 Quality gate Fase R9.
+- [ ] R9.4 Quality gate Fase R9 + verifikasi silang.
 
 ### DEFINITION OF DONE (FASE R)
-- [ ] Semua item R0–R9 `[x]` dengan blok `Bukti:` yang lolos `ProgressIntegrityTest`.
-- [ ] CI hijau di PHP 8.4 × {SQLite, MySQL/PostgreSQL}; `composer gate` hijau pada commit terakhir.
-- [ ] `arch:scan`: 0 import Domain lintas modul di luar allowlist, 0 akses tabel lintas prefiks, 0 float uang, 0 key acak, 0 rute mutasi tanpa role.
-- [ ] `LedgerNormalBalanceTest`, `LedgerAccountRegistryTest`, `AuditCommandContractTest` hijau.
+- [ ] Semua item R0–R9 `[x]` dengan blok `Bukti:` yang lolos `ProgressIntegrityTest`, dan setiap sub-fase R berstatus ✅ dari verifikator.
+- [ ] CI hijau di PHP 8.4 × {SQLite, MySQL/PostgreSQL}; `composer gate` hijau pada commit terakhir; mutation score ≥ ambang.
+- [ ] Semua baseline = 0: `arch:scan` A1–A13 (kecuali allowlist shared kernel di DECISIONS), `RouteAuthorizationMatrixTest`, `AuditCommandContractTest`, `LedgerAccountRegistryTest`, `LedgerNormalBalanceTest`, `TestHygieneTest`.
 - [ ] `CODEBASE.md` bagian otomatis sinkron; `KNOWLEDGE.md` diperbarui dengan status temuan K-01…K-32 (ditutup/terbuka).
 
 ---
@@ -799,6 +1025,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 41 — GUDANG & PUSAT DISTRIBUSI (WMS, MODUL `wms_`)
 > **Status audit 2026-10-10:** 🟡 PARSIAL — 15 tabel tetapi 1 service & 1 file test; klaim wave/slotting/dock/packing belum diverifikasi per item → **R6.2**. Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 41.1 Multi-gudang/DC: hirarki gudang → zona → rak → bin; tipe (bahan, FG, karantina, transit, konsinyasi, reefer)
 - [x] 41.2 Stok per bin/lot/serial/status (tersedia, karantina, blokir) di atas `InventoryService` (kontrak diperluas, tetap kompatibel)
 - [x] 41.3 Putaway (aturan zona/kapasitas), pick (FEFO/FIFO, wave/batch/zone), pack, staging; tugas gudang untuk operator mobile
@@ -872,6 +1099,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 47 — MITRA & KEMITRAAN (MODUL `ptn_`)
 > **Status audit 2026-10-10:** 🟡 PARSIAL — 1 service (±1.000 baris) & 1 file test untuk 10 item; belum diverifikasi per item → **R6.2**. Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 47.1 Modul Partner: jenis mitra (strategis, teknologi, saluran, waralaba, JV, riset, CSR), siklus hidup `prospect → due diligence → negotiation → active → review → exit`
 - [x] 47.2 Due diligence: checklist (legal, keuangan, reputasi, ESG, sanksi), skor risiko, approval berjenjang, dokumen
 - [x] 47.3 Perjanjian kemitraan (Fase 28/29) + rencana kerja bersama (joint business plan): sasaran, KPI, anggaran, PIC kedua pihak
@@ -885,6 +1113,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 48 — MULTI-CURRENCY & TREASURY
 > **Status audit 2026-10-10:** 🟡 PARSIAL — 1 service & 1 file test; halaman `/treasury` hanya `auth` → **R3.1**; verifikasi per item → **R6.2**. Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 48.1 Master mata uang & kurs: kurs harian (sumber simulasi + input manual), jenis kurs (spot/tengah/pajak), tabel kurs ber-versi tak dapat diubah
 - [x] 48.2 Ledger multi-currency: transaksi dalam mata uang asing dengan nilai fungsional tersimpan (minor unit), **tanpa float**; Σ per mata uang & Σ fungsional seimbang
 - [x] 48.3 Revaluasi piutang/utang/kas valas akhir periode, laba/rugi kurs terealisasi & belum terealisasi, jurnal pembalik otomatis
@@ -898,6 +1127,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 49 — EKSPOR–IMPOR (TRADE OPERATIONS)
 > **Status audit 2026-10-10:** 🟡 PARSIAL — 2 service & 2 file test; halaman hanya `auth` → **R3.1**; verifikasi per item → **R6.2**. Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 49.1 Master negara/pelabuhan/zona, **Incoterms 2020** (tanggung jawab biaya/risiko per istilah), HS code ber-versi (memperluas `HsTariff` Logistics), larangan/pembatasan (lartas — simulasi)
 - [x] 49.2 **Order ekspor**: proforma → commercial invoice → packing list → booking kapal/pesawat (Logistics) → dokumen ekspor (PEB simulasi) → pengakuan pendapatan saat risiko berpindah (sesuai Incoterm)
 - [x] 49.3 **Order impor**: PO impor (33.5) → ASN → dokumen (BL/AWB, invoice) → PIB simulasi (BM/PPN/PPh 22 via `CustomsDutyCalculator`) → penerimaan; **landed cost** otomatis ke persediaan
@@ -911,6 +1141,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 50 — TRADE FINANCE (L/C, GARANSI, KOLEKSI DOKUMEN & PEMBIAYAAN SUPPLY CHAIN)
 > **Status audit 2026-10-10:** 🟡 PARSIAL — 2 service & 2 file test; halaman hanya `auth` → **R3.1**; verifikasi per item → **R6.2**. Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 50.1 **Letter of Credit Engine (UCP 600 Simulasi Lanjutan)**:
   - Siklus penuh L/C: *Application → Issuance → Advising → Amendment → Document Presentation → Examination → Acceptance → Payment / Usance Settlement*.
   - Klasifikasi instrumen: Sight L/C, Usance L/C (deferred payment/tenor 30/60/90/180 hari), Revolving L/C, Transferable L/C, dan Standby L/C (SBLC).
@@ -946,6 +1177,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 51 — KERJA SAMA INTERNASIONAL I: JV, LISENSI, OEM/ODM & ALIH TEKNOLOGI
 > **Status audit 2026-10-10:** 🟡 PARSIAL — 1 service & 1 file test; halaman hanya `auth` → **R3.1**; verifikasi per item → **R6.2**. Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 51.1 **Master Entitas Mitra Asing & Tata Kelola Multi-Yurisdiksi**:
   - Perluasan modul Party (`pty_`): registrasi entitas hukum asing, nomor registrasi bisnis yurisdiksi asal, legalisasi dokumen / Apostille Convention, dan kuasa hukum/wakil sah di Indonesia.
   - Penentuan mata uang fungsional, regulasi anti-pencucian uang (AML/Sanction screening internasional), dan yurisdiksi hukum penyelesaian sengketa (Arbitrase BANI/SIAC/ICC).
@@ -978,6 +1210,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 52 — KERJA SAMA INTERNASIONAL II: INTERCOMPANY, TRANSFER PRICING & KONSOLIDASI
 > **Status audit 2026-10-10:** 🟡 PARSIAL — 1 service & 1 file test; halaman hanya `auth` → **R3.1**; verifikasi per item → **R6.2**. Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 52.1 **Arsitektur Transaksi Antar-Entitas Grup (Intercompany Transactions Engine)**:
   - Transaksi otomatis *Mirror Transaction*: penjualan barang/jasa dari Entitas A ke Entitas B menghasilkan otomatis Sales Order/Invoice di A dan Purchase Order/Bill di B secara atomik.
   - Pengelolaan pinjaman antar-perusahaan (*Intercompany Loans*): jadwal amortisasi bunga arm's length, penarikan dana, dan integrasi cash pooling Treasury (Fase 48.8).
@@ -1007,6 +1240,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 53 — SUPPLY CHAIN CONTROL TOWER & SALES AND OPERATIONS PLANNING (S&OP)
 > **Status audit 2026-10-10:** 🟡 PARSIAL — 1 service & 1 file test (683 baris modul); halaman hanya `auth` → **R3.1**; verifikasi per item → **R6.2**. Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 53.1 **Menara Pengawas Rantai Pasok Terpadu (Supply Chain Control Tower)**:
   - Peta aliran nilai digital end-to-end: pelacakan visual status pasokan dari Pemasok Tier-1/2 → Pelabuhan → Pabrik Manufaktur → Gudang Sentral (DC) → Distributor → Toko/Konsumen.
   - Indikator visibilitas inventori multi-eselon (*Multi-Echelon Inventory Visibility*): stok di tangan, stok dalam perjalanan (*in-transit*), stok terreservasi, dan stok komitmen.
@@ -1037,6 +1271,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 54 — FINANCE GRUP, ANGGARAN, AUDIT TRAIL & KEPATUHAN
 > **Status audit 2026-10-10:** 🟡 PARSIAL — 2 service & 2 file test; halaman hanya `auth` → **R3.1**; verifikasi per item → **R6.2**. Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 54.1 **Sistem Perencanaan & Pengendalian Anggaran (Enterprise Budgeting & Encumbrance)**:
   - Struktur anggaran hierarkis: Anggaran per Entitas → Direktorat → Pusat Biaya (*Cost Center*) → Mata Anggaran (Akun Beban).
   - Mekanisme kontrol anggaran ketat: *Hard-Stop* (menolak transaksi jika melebihi plafon) vs *Soft-Stop* (peringatan & eskalasi approval ke Direktur Keuangan).
@@ -1067,6 +1302,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 55 — INTEGRASI API V2, B2B ELECTRONIC DATA INTERCHANGE (EDI) & MULTI-TENANCY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — tidak ada rute API v2/GraphQL; `IntegrationService::dispatchWebhook()` mencatat `delivered`/HTTP 200 tanpa request; `processEdiMessage()` menandai `accepted` tanpa parsing; global scope multi-tenant = 0; tidak ada rotasi API key, ekspor ZIP, partisi/retensi; `api:audit` didaftarkan dua kelas. Dikerjakan ulang di **R6.3**. Tidak ditemukan commit khusus fase ini. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Integration (`intg_`) — **hanya** adapter API/webhook/EDI; logika bisnis tetap di modul pemilik · **Prasyarat:** R0–R3 ✅ · **Acuan:** KONSEP §A4.5, §A6
+> **Jalan pintas terlarang di fase ini:** rute API tanpa Sanctum/`Idempotency-Key`/rate limit; webhook berstatus `delivered` tanpa request; EDI `accepted` tanpa parsing; 'multi-tenant' tanpa global scope yang diuji — ditambah seluruh X1–X25.
 - [ ] 55.1 **Enterprise RESTful & GraphQL API v2 Terstandarisasi**:
   - Spesifikasi kontrak OpenAPI 3.1 publik lengkap untuk seluruh modul ekosistem (Procurement, WMS, Logistics, Trade, Treasury, Finance).
   - Autentikasi berbasis token Sanctum asli dengan enforcement granular abilities (`tokenCan`).
@@ -1103,6 +1341,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 56 — STRESS TESTING SKALA ULTRA, SIMULASI 12 BULAN & RESILIENCE
 > **Status audit 2026-10-10:** 🟡 PARSIAL — seeder 'ultra' kecil (50 vendor/20 work center/30 distributor/40 agen, tanpa 12 bulan transaksi); tidak ada chaos engineering, fuzzing, maupun laporan profil performa — **56.1, 56.4, 56.6, 56.7 dibuka kembali**. Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [ ] 56.1 **ValueChainUltraSeeder: Dataset Skala Enterprise 12 Bulan Transaksi**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
   - Seeder raksasa deterministik dengan eksekusi chunk streaming bulk-insert:
     - ≥ 2.500 Pemasok/Vendor terverifikasi dengan data legalitas, sertifikasi ISO/Halal, dan rekening bank.
@@ -1142,6 +1381,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 57 — SKENARIO EMAS END-TO-END, DOKUMENTASI FINAL & SERAH TERIMA
 > **Status audit 2026-10-10:** 🟡 PARSIAL — golden scenario = 3 test; 'role playbook 26+ role' tidak ada (RUNBOOK hanya playbook insiden); dokumentasi final kini basi — **57.5, 57.6 dibuka kembali**. Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 57.1 **Skenario Emas Lintas Ekosistem (The Golden Value Chain Mega-Integration Test)**:
   - Satu skenario pengujian otomatis tunggal yang merajut seluruh rantai nilai hulu ke hilir tanpa terputus:
     1. Perusahaan menandatangani Kontrak Pengadaan bahan baku global dengan Pemasok Asing via modul Kontrak.
@@ -1176,6 +1416,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 57B — DEEP AUDIT CODEBASE, HARDENING, KEAMANAN, VALIDASI KETAT & ENRICHED UNIQUE SEEDERS (MAINTENANCE & RESILIENCE)
 > **Status audit 2026-10-10:** 🟡 PARSIAL — rate limiter ada; tetapi banyak rute mutasi hanya `auth` dan anti-IDOR tidak menyeluruh — **57B.4 dibuka kembali** (→ R3.1). Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 *Fase pemeliharaan menyeluruh, pengerasan arsitektur, pengetatan validasi, dan pembesaran dataset unik sebelum backlog ekspansi.*
 - [x] 57B.1 **Analisis & Audit Arsitektur Seluruh Codebase**:
   - Audit kepatuhan arsitektur modular monolith (`modules/*`) terhadap 10 aturan batas modul (`ModuleBoundariesTest`): isolasi domain, pencegahan coupling langsung, dan komunikasi lintas modul murni via Contract, Domain Events, Ledger, atau Outbox Bus.
@@ -1244,6 +1485,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 58 — HUMAN CAPITAL MANAGEMENT (HCM), TALENT & PRODUCTION PAYROLL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — hanya 4 tabel (`hcm_departments/employees/payrolls/production_labor_allocations`). 58.2 (shift/absensi/cuti/lembur) **tidak ada**; PPh 21 = gross×5%, BPJS datar 3%+1%, status payroll di-hard-code `approved`; alokasi ke Manufaktur tanpa jurnal; `hcm:audit` tautologis; `/hcm` menampilkan gaji ke semua user login. Dikerjakan ulang di **R6.3** (+ R3.1/R3.2). Tidak ditemukan commit khusus fase ini. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) · **Prasyarat:** R1, R3 ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** pajak/BPJS tarif datar tanpa label simulasi & persetujuan P10; payroll tanpa jurnal; status payroll di-hard-code; gaji/rekening default diam-diam (X25); halaman gaji tanpa role — ditambah seluruh X1–X25.
 - [ ] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
   - Struktur organisasi hierarkis: Holding → Anak Perusahaan → Direktorat → Divisi → Departemen → Seksi → Posisi/Jabatan.
   - Profil karyawan 360°: identitas kependudukan terenkripsi (NIK/Paspor), riwayat pendidikan, rekam jejak kepangkatan, grade gaji, dan rekening penggajian bank.
@@ -1264,6 +1508,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 59 — RESEARCH & DEVELOPMENT (R&D) & PRODUCT LIFECYCLE MANAGEMENT (PLM)
 > **Status audit 2026-10-10:** 🟡 PARSIAL — stage-gate bisa lompat tahap tanpa approval; EBOM→MBOM hanya mengubah status (tidak membuat BOM Manufaktur); notifikasi ECO tidak ada; 'enkripsi' formula = `base64_encode` — **59.1–59.4 dibuka kembali** (→ R3.2, R6.2). Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [ ] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process Enterprise**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
   - Pipeline inovasi produk bertahap (*Stage-Gate Model*): *Ideation → Scoping → Business Case → Development → Testing/Pilot → Commercial Launch*.
   - Matriks penilaian kelayakan: estimasi anggaran R&D (`budget_rd_idr`), proyeksi ROI (`projected_roi_percent`), analisis kanibalisasi portofolio produk, dan penilaian risiko kepatuhan regulasi (BPOM, SNI, Halal).
@@ -1287,6 +1532,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 60 — ESG, EMISI KARBON & SUSTAINABLE VALUE CHAIN
 > **Status audit 2026-10-10:** 🟡 PARSIAL — faktor emisi ada; nomor dokumen acak (bukan gapless) & jenis aktivitas tak dikenal diam-diam memakai faktor 1.0; tidak ada posting ledger karbon; tidak ada integrasi ke modul Supplier — **60.1, 60.2, 60.4 dibuka kembali** (→ R2.7, R6.4). Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [ ] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol Enterprise)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
   - Cakupan 1 (Emisi Langsung): kalkulasi konsumsi bahan bakar armada diesel/gasoline logistik (`lgx_fleets`) dan genset/boiler pabrik manufaktur (faktor emisi 2.68 kg CO2e/liter diesel, 2.31 kg CO2e/liter bensin).
   - Cakupan 2 (Emisi Tidak Langsung): pemakaian listrik PLN di seluruh mall, outlet resto, kantor, dan fasilitas gudang (faktor emisi grid Jawa-Madura-Bali 0.79 kg CO2e/kWh).
@@ -1311,6 +1557,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 61 — MARKETPLACE B2B, SURPLUS ASSET AUCTION & ESCROW
 > **Status audit 2026-10-10:** 🟡 PARSIAL — katalog/RFQ/lelang ada; isolasi visibilitas per tier tidak ada; escrow hanya angka di tabel (tanpa ledger/PaymentGateway) — **61.1, 61.4 dibuka kembali** (→ R6.4). Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [ ] 61.1 **Portal Marketplace B2B Multi-Vendor & Katalog Grosir Tertutup**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
   - Direktori etalase katalog grosir tertutup: produk eksklusif distributor, pabrik, dan mitra resmi terverifikasi.
   - Penetapan harga bertingkat berbasis kuantitas (*Tiered Pricing Matrix* JSON) dan kepatuhan MOQ (*Minimum Order Quantity*).
@@ -1335,6 +1582,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 62 — AGRIBISNIS, KONTRAK PETANI & HULU RANTAI PASOK MAKANAN
 > **Status audit 2026-10-10:** 🟡 PARSIAL — registrasi/kontrak/grading ada; payout petani tanpa ledger — **62.3 dibuka kembali** (→ R6.4). Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 62.1 **Kemitraan Petani, Kebun Plasma & Pemetaan GIS Lahan**:
   - Registrasi master kelompok tani (Poktan) dan petani plasma mandiri dengan identifikasi kode unik per wilayah.
   - Pencatatan pemetaan poligon spasial lahan (`land_polygon_geojson`), luas hektar garapan, dan profil komoditas tanam unggulan (cabe merah, beras organik, sayuran hidroponik, peternakan).
@@ -1359,6 +1607,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 63 — KONSTRUKSI EPC, MANAJEMEN PROYEK PROPERTI & ASSET CAPITALIZATION
 > **Status audit 2026-10-10:** 🟡 PARSIAL — WBS/MC ada; CIP & kapitalisasi tanpa ledger dan tanpa integrasi modul Asset — **63.3, 63.4 dibuka kembali** (→ R6.4). Sisanya diverifikasi ulang per item di **R6**.
+> **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [x] 63.1 **Work Breakdown Structure (WBS) & Rencana Anggaran Biaya (RAB Proyek)**:
   - Struktur hierarki proyek teknik & konstruksi: Proyek (Ekstensi Duta Mall, Pabrik Baru Cikande, Central Kitchen CK-02 Surabaya) → Paket Pekerjaan (Struktur Sipil, Arsitektur, MEP, Infrastruktur) → Node Aktivitas WBS terukur.
   - Alokasi anggaran terperinci: komponen material (beton, baja, tiang pancang), upah subkontraktor, dan sewa alat berat.
@@ -1382,6 +1631,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 64 — ANALITIK PREDIKTIF, AI-DRIVEN REVENUE MANAGEMENT & ANOMALY DETECTION
 > **Status audit 2026-10-10:** ⬜ BELUM. Prasyarat bagi fase 99 (AI terpadu), 101/145 (DR) yang sebelumnya ditandai selesai. Kerjakan setelah Fase R.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (keputusan di DoR; boleh di Core `core_ai_*`) · **Prasyarat:** Fase R ✅ · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'AI' berupa angka acak/rumus tanpa snapshot input & seed; eksekusi otomatis tanpa approval di atas ambang; `ai:audit` yang hanya menghitung baris — ditambah seluruh X1–X25.
 - [ ] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
   - Algoritma penetapan harga dinamis deterministik: elastisitas harga permintaan, sisa umur simpan produk, dan tingkat keterisian ruang mall/katering.
   - Guardrail keamanan batas harga: proteksi harga batas bawah (*floor price*) dan kepatuhan regulasi HET pemerintah.
@@ -1394,6 +1646,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 65 — ENTERPRISE MOBILE SUITE (PWA/HYBRID OFFLINE-FIRST ARCHITECTURE)
 > **Status audit 2026-10-10:** ⬜ BELUM. Prasyarat bagi fase 99 (AI terpadu), 101/145 (DR) yang sebelumnya ditandai selesai. Kerjakan setelah Fase R.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core + modul peran (Manufacturing, Wms, Logistics, Agency); PWA di `resources/` · **Prasyarat:** R3 ✅ · **Acuan:** KONSEP §A7
+> **Jalan pintas terlarang di fase ini:** klaim offline tanpa antrean lokal yang diuji; sinkronisasi tanpa `Idempotency-Key`; `mobile:audit` tautologis — ditambah seluruh X1–X25.
 - [ ] 65.1 **Aplikasi Mobile Lapangan Khusus 4 Peran Kunci**:
   - *Operator Pabrik*: scan QR work order, input output produksi, catat downtime mesin.
   - *Petugas WMS*: scanner barcode rak/bin, konfirmasi putaway, picking wave panduan jalur terpendek.
@@ -1406,6 +1661,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 66 — RESILIENSI GLOBAL, DISASTER RECOVERY MULTI-REGION & DATA SOVEREIGNTY
 > **Status audit 2026-10-10:** ⬜ BELUM. Prasyarat bagi fase 99 (AI terpadu), 101/145 (DR) yang sebelumnya ditandai selesai. Kerjakan setelah Fase R.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** infrastruktur/ops + `dr:audit` di Core · **Prasyarat:** R0.3 ✅ · **Acuan:** KONSEP §A9, §A5
+> **Jalan pintas terlarang di fase ini:** klaim RPO/RTO/multi-region tanpa drill backup→restore yang benar-benar dijalankan dan outputnya terlampir; bila tanpa infrastruktur, nyatakan sebagai simulasi S3 (drill restore lokal) — ditambah seluruh X1–X25.
 - [ ] 66.1 **Arsitektur Multi-Region Replikasi Aktif-Pasif**:
   - Replikasi basis data asinkron antar-data center geografis (Region Primer Jakarta vs Region Sekunder Surabaya/Singapura).
   - Mekanisme failover otomatis: pendeteksian kegagalan primer via health-check heartbeat dan pengalihan trafik DNS/Load Balancer tanpa kehilangan data (RPO = 0 untuk transaksi ledger).
@@ -1447,6 +1705,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 67 — SIMULATION KERNEL, UNIVERSAL EVENT SPINE, DIGITAL TWIN BUS & SCALE PROVISIONER
 > **Status audit 2026-10-10:** 🟠 KERANGKA — `sim:run` hanya memajukan jam virtual (tanpa menjalankan job per hari, selalu mulai 2026-01-01, memakai `Carbon::setTestNow()` di produksi); Event Spine 1 publisher/0 consumer; scale provisioner tidak ada. Dikerjakan ulang di **R8**. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `DigitalTwinService`, `EventSpineService`, `SimClockService`; 4 migrasi; test `ModuleBoundariesTest`, `SimulationKernelTest` — commit `38aa7f0`, +8049 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (`core_`, `sim_`) · **Prasyarat:** R2.5, R4 ✅ · **Acuan:** KONSEP §A10
+> **Jalan pintas terlarang di fase ini:** jam virtual tanpa menjalankan tick handler; `Carbon::setTestNow()` di produksi; event spine tanpa konsumen nyata — ditambah seluruh X1–X25.
 - [ ] 67.1 **Simulation Kernel**: lapisan orkestrasi waktu `sim:run --days=N` menjalankan seluruh modul maju N hari kompresi (event time, bukan wall clock); clock virtual terpusat disuntikkan ke scheduler/scheduler-idempoten sehingga penyusutan aset, jatuh tempo kontrak, siklus S&OP, expiry poin, dan tenure berjalan bertahun-tahun dalam hitungan menit; deterministik (seed sama → hasil sama)
 - [ ] 67.2 **Universal Event Spine**: generalisasi `core_outbox` menjadi tulang punggung event ber-topik per pilar (`auto.*`, `fintech.*`, `resto.*`, `proptech.*`, `lgx.*`, `mfg.*`, `trade.*`, `gov.*`, `hsp.*`, `ven.*`, `htl.*`, `min.*`), schema registry ber-versi, consumer group idempoten, dan replay dari offset tertentu — setiap pilar dapat "menyaksikan" kejadian pilar lain tanpa coupling
 - [ ] 67.3 **Digital Twin Bus**: kontrak `TwinState` generik (entity_type, entity_id, state JSON, valid_from, hash prev) untuk entitas bernilai tinggi (kendaraan, gedung, kontainer, pabrik, petak lahan, kamar hotel, alat berat, pasien-episode, venue zone); update twin idempoten & teraudit, simulasi what-if berjalan di sandbox tanpa menyentuh ledger riil
@@ -1459,6 +1720,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 68 — TELEMATICS & IOT CONNECTED CAR (PREDICTIVE MAINTENANCE)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — baseline '7 hari rolling' = konstanta 90 °C/12,6 V; semua DTC dianggap critical; tanpa partisi/retensi/agregat 5 menit/dashboard/seeder. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul AutoServe, Telematics): service `TelematicsIngestService`; 1 migrasi; test `TelematicsTest` — commit `c6f0cd6`, +552 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mobility (`oto_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 1F slice 1
+> **Jalan pintas terlarang di fase ini:** baseline konstan; semua DTC dianggap critical; event di dalam transaksi tanpa `afterCommit`; akun `oto:*` dibuat di test; nilai sensor default diam-diam — ditambah seluruh X1–X25.
 - [ ] 68.1 Tabel `oto_telematics_devices` (OBD2/GPS, terikat `core_vehicles`), `oto_telematics_ticks` partisi harian (GPS, RPM, suhu oli, level baterai, kode DTC) — target ingest 500 juta tick/hari pada skala simulasi, retensi hot 30 hari / warm 1 tahun / cold arsip
 - [ ] 68.2 Ingest pipeline idempoten (device_id + seq + ts sebagai key), normalisasi satuan, penolakan tick di luar jendela waktu (anti-replay), dan agregat 5-menitan (avg/max/min) untuk menghemat ruang query
 - [ ] 68.3 Baseline per kendaraan (7 hari rolling) + deteksi anomali deterministik: suhu oli > 15% baseline, DTC kritis, konsumsi BBM menyimpang, baterai voltage drop → event `VehicleAnomalyDetected`
@@ -1470,6 +1734,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 69 — EKOSISTEM EV: CHARGING NETWORK & BATTERY PASSPORT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Ev): service `EvChargingService`; 1 migrasi; test `EvTest` — commit `b5865b7`, +485 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mobility (`oto_`) · **Prasyarat:** Fase 68 ✅ · **Acuan:** KONSEP 1F slice 2
+> **Jalan pintas terlarang di fase ini:** sesi EV tanpa hold/capture PaymentGateway; SoH dari angka masukan bebas; stop sesi ganda menggandakan capture — ditambah seluruh X1–X25.
 - [ ] 69.1 Tabel `oto_ev_stations` (SPKLU: lokasi hub/ mall/ resto/ rute logistik), `oto_ev_chargers` (AC/DC, kW, status), `oto_ev_sessions` (booking → plug → meter kWh → selesai → tagih)
 - [ ] 69.2 Booking slot time-lock dari garasi AutoDex/portal: reservasi 30 menit, no-show fee, anti-overlap per charger; check-in via scan QR charger
 - [ ] 69.3 Meteran kWh presisi (integer Wh) → tagihan otomatis via Payment Hub (tarif per kWh bertingkat per jam sibuk/non-sibuk, saldo wallet atau stablecoin) → posting ledger `oto:ev_revenue`
@@ -1481,6 +1748,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 70 — B2B FLEET & CORPORATE LEASING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Fleet): service `FleetLeasingService`; 1 migrasi; test `FleetTest` — commit `bf8f330`, +434 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mobility (`oto_`) + Contract · **Prasyarat:** Fase 68 ✅ · **Acuan:** KONSEP 1F slice 3
+> **Jalan pintas terlarang di fase ini:** akumulasi amortisasi sebelum posting ber-key; `Str::random` di key kompensasi SLA; klaim 'PSAK 73' tanpa PV/ROU (implementasi atau turunkan lewat P10) — ditambah seluruh X1–X25.
 - [ ] 70.1 Tabel `oto_fleet_contracts` (perusahaan penyewa = party, durasi 1–5 tahun, jumlah unit, SLA downtime maks, batas km/tahun, opsi perpanjangan/akuisisi), `oto_fleet_contract_units` (unit terikat, odometer baseline)
 - [ ] 70.2 Onboarding B2B: KYB Party (Fase 27), credit profile, deposit/garansi via Payment Hub, approval four-eyes di atas ambang nilai
 - [ ] 70.3 **Amortisasi nilai sewa** (PSAK 73 simulasi): hak guna + liabilitas sewa per kontrak, jurnal bulanan idempoten, bunga vs pokok, perhitungan sisa nilai — terhubung modul Aset (Fase 31.6)
@@ -1494,6 +1764,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 71 — TOKENISASI ASET RIIL (RWA) & DIVIDEN OTOMATIS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Rwa): service `RwaTokenService`; 1 migrasi; test `RwaTest` — commit `4737ff2`, +501 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Rwa (`rwa_`) + Asset + Party + Contract · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP 2F slice 1
+> **Jalan pintas terlarang di fase ini:** dividen dari angka masukan, bukan dari pendapatan terposting; kepemilikan token hanya di tabel tanpa ledger aset `RWA-{id}`; pembelian tanpa KYC — ditambah seluruh X1–X25.
 - [ ] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
 - [ ] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
 - [ ] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
@@ -1505,6 +1778,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 72 — INSURTECH: MICRO-INSURANCE TERSEMAT & CLAIMS AUTOPILOT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Insurance): service `InsurTechClaimsService`; 1 migrasi; test `InsuranceTest` — commit `671c6a3`, +481 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Insurance (`ins_`) · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP 2F slice 2
+> **Jalan pintas terlarang di fase ini:** klaim dicairkan dengan flag `$approved`; premi diakui penuh saat dibayar; klaim ganda untuk event yang sama — ditambah seluruh X1–X25.
 - [ ] 72.1 Tabel `ins_products` (premi mikro: keterlambatan logistik, kerusakan kendaraan, cold-chain breach, pembatalan event, cuti sakit karyawan), `ins_policies` (tersemat otomatis ke dompet pengguna/shipment/kontrak), `ins_claims`
 - [ ] 72.2 **Trigger otomatis tanpa formulir**: event spine (`lgx.late>4h`, `auto.collision_dtc`, `lgx.temp_breach>10m`, `ven.event_cancelled`) → smart-contract simulasi memvalidasi bukti hash-chain → klaim **cair langsung ke dompet dalam detik** (posting ledger `ins:claims_paid`)
 - [ ] 72.3 Akuntansi premi: akrual premi harian/bulanan dari saldo, reserve klaim (akun liabilitas), loss ratio & combined ratio per produk; batas payout per polis & per hari (anti-fraud)
@@ -1516,6 +1792,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 73 — ROBO-ADVISOR WEALTH MANAGEMENT & TREASURY YIELD
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Wealth): service `RoboAdvisorService`; 1 migrasi; test `WealthTest` — commit `df58401`, +397 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Wealth (`wm_`) · **Prasyarat:** Fase 58 ulang (R6.3) ✅ · **Acuan:** KONSEP 2F slice 3
+> **Jalan pintas terlarang di fase ini:** NAV/alokasi memakai float; alokasi melanggar guardrail likuiditas tanpa ditolak — ditambah seluruh X1–X25.
 - [ ] 73.1 Tabel `wm_profiles` (profil risiko konservatif/agresif, tujuan, horizon), `wm_plans` (alokasi bulanan), `wm_orders` (reksadana simulasi, emas digital, kripto), `wm_holdings`
 - [ ] 73.2 **Surplus detector**: membaca pola gaji (HCM payroll event) dan pengeluaran (mutasi wallet 3 bulan) → menghitung surplus bulanan yang aman; guardrail wajib: likuiditas minimum 2 bulan pengeluaran TIDAK boleh diinvestasikan, dana darurat tetap cair
 - [ ] 73.3 Eksekusi alokasi bulanan otomatis (opt-in per pengguna): split ke reksadana/emas/kripto sesuai profil → order via PriceFeed Fase 4 → posting ledger; penarikan kembali 1-klik (T+0 simulasi)
@@ -1529,6 +1808,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 74 — CLOUD KITCHEN, DELIVERY AGGREGATOR INTERNAL & KATERING PAYROLL DEDUCTION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul CloudKitchen): service `CloudKitchenService`; 1 migrasi; test `CloudKitchenTest` — commit `7cda67f`, +474 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** CloudKitchen (`ckt_`) · **Prasyarat:** R4.2 ✅ (prefiks), R6.3 ✅ · **Acuan:** KONSEP 3F slice 1–2
+> **Jalan pintas terlarang di fase ini:** CloudKitchen menulis tabel `resto_`; potongan katering di luar baris payroll — ditambah seluruh X1–X25.
 - [ ] 74.1 Modul cloud kitchen (`resto_ck_kitchens`): 200 satelit + 5 dapur sentral + 300 outlet berlisensi, masing-masing dengan kapasitas produksi/jam, menu subset, dan radius layanan
 - [ ] 74.2 **Delivery aggregator internal**: order dari kanal mana pun di-assign ke kitchen/ outlet terdekat berdasarkan kapasitas & ETA (algoritma deterministik), armada Logistics sendiri (Fase 22 last-mile) → satu tracking number untuk pelanggan, ongkir tiered
 - [ ] 74.3 **Katering payroll deduction**: langganan harian/mingguan karyawan EPC/pabrik & tenant Mall → debit otomatis dari gaji bulanan HCM (akun `hcm:meals_deduction`) kuota harian, menu rotasi mingguan, opt-out via self-service; potongan dikompensasi jika outlet tutup (refund ledger)
@@ -1540,6 +1822,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 75 — AI DEMAND & WASTE FORECASTING, AUTO-PO, SMART VENDING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Vending): service `SmartVendingService`; 1 migrasi; test `SmartVendingTest` — commit `db17929`, +605 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Resto/CloudKitchen (forecast) + Vending (`vnd_`) · **Prasyarat:** Fase 74 ✅ · **Acuan:** KONSEP 3F slice 3–4
+> **Jalan pintas terlarang di fase ini:** forecast acak tanpa seed; auto-PO tanpa approval/plafon; stok vending di luar Inventory — ditambah seluruh X1–X25.
 - [ ] 75.1 **Demand forecasting per outlet 7 hari**: input = footfall mall (Fase 14.4), kalender event Duta Mall/event venue, cuaca (feed simulasi), tren lalu lintas (telematik Pilar 1), hari besar nasional, riwayat sales 24 bulan → algoritma Holt-Winters (memperluas Fase 53.2) → MAPE per outlet terukur
 - [ ] 75.2 **Auto-PO bahan segar**: forecast → kebutuhan bahan (resep HPP Fase 7.3) → terhadap stok & lead time → **Purchase Order otomatis ke Agri/Supplier** melewati approval engine sebagai auto-PR (dengan plafon nilai harian; di atas plafon → approval manual); tanpa intervensi manusia di bawah plafon
 - [ ] 75.3 **Waste forecasting & guardrail**: proyeksi waste berdasarkan pola etalase (Fase 8.3) → sistem menyarankan scale-down batch berikutnya; waste aktual vs forecast → MAPE waste dilaporkan, digunakan memperbaiki model
@@ -1553,6 +1838,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 76 — PROPTECH & SMART BUILDING OPERATIONS (IOT + ESG REAL-TIME)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Proptech): service `ProptechService`; 1 migrasi; test `ProptechSmartBuildingTest` — commit `06af255`, +483 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Proptech (`prp_`) + Mall · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 4F slice 1
+> **Jalan pintas terlarang di fase ini:** tagihan utilitas dari estimasi, bukan bacaan; Proptech menulis tabel `mall_`; bacaan ganda menggandakan tagihan — ditambah seluruh X1–X25.
 - [ ] 76.1 Tabel `prp_building_sensors` (suhu, kelembaban, arus, CO2, okupansi CCTV/footfall) per zona gedung → ingest idempoten (memperluas pola telematik Fase 68)
 - [ ] 76.2 **Otomasi HVAC & pencahayaan**: rule engine deterministik (okupansi > ambang → turunkan suhu target; jam non-operasional → setback) → perintah ke simulasi perangkat → penghematan kWh dihitung vs baseline
 - [ ] 76.3 **Tagihan listrik tenant per zona aktual**: meteran per zona (memperluas `mall_utility_readings` Fase 13.2) → tarif bertingkat → invoice tenant presisi bukan estimasi; Overtime AC tetap berlaku
@@ -1564,6 +1852,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 77 — DIGITAL TWIN & BIM LIFECYCLE (EPC → OPERASI)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Proptech): service `BimTwinService`; 1 migrasi; test `BimTwinLifecycleTest` — commit `45bc61d`, +491 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Proptech (`prp_`) + Epc + Asset · **Prasyarat:** Fase 76 ✅, R6.4 ✅ · **Acuan:** KONSEP 4F slice 3–4
+> **Jalan pintas terlarang di fase ini:** Epc menulis tabel `ast_` langsung; BIM berupa JSON tanpa tautan WBS; progres > 100% — ditambah seluruh X1–X25.
 - [ ] 77.1 Tabel `prp_bim_models` (ber-versi, komponen JSON tervalidasi), `prp_twin_components` (pipa, duct, kabel, chiller — terikat lokasi & aset), `prp_twin_issues`
 - [ ] 77.2 **BIM saat konstruksi**: modul EPC (Fase 63) mengunggah model per milestone → tiap node WBS terikat komponen BIM → **progres fisik diverifikasi dari komponen selesai** → memicu MC, CIP, dan kapitalisasi (Fase 63.4) otomatis
 - [ ] 77.3 **Twin saat operasi**: komponen terhubung sensor (Fase 76) + work order facility (Fase 15.4) menandai komponen terdampak di twin → teknisi melihat letak pipa/kabel SEBELUM membongkar tembok (preview 2.5D/3D di browser)
@@ -1575,6 +1866,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 78 — FLEX-SPACE & CO-WORKING BOOKING ON-DEMAND
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Proptech): service `FlexSpaceService`; 1 migrasi; test `FlexSpaceBookingTest` — commit `d231846`, +434 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Proptech (`prp_`) · **Prasyarat:** Fase 76 ✅ · **Acuan:** KONSEP 4F slice 2
+> **Jalan pintas terlarang di fase ini:** booking tanpa kunci slot (overlap); pembayaran tanpa hold/capture — ditambah seluruh X1–X25.
 - [ ] 78.1 Tabel `prp_flex_spaces` (area kosong mall / site EPC / roof-top / lobi): tipe (meeting room, booth, co-working desk, studio), kapasitas, fasilitas, tarif per jam/hari
 - [ ] 78.2 Booking time-lock tanpa overlap (memperluas pola `mall_event_bookings` Fase 15.3 & dock appointment Fase 24.5), deposit via Payment Hub (hold → capture saat check-in, no-show fee)
 - [ ] 78.3 **Akses pintar**: check-in via pemindaian **Paspor Kriptografis** (QR identitas dari Core/Party) → pintu terbuka (simulasi) → sesi tercatat; tamu tanpa paspor → verifikasi KTP singkat sementara
@@ -1588,6 +1882,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 79 — REVERSE LOGISTICS & CIRCULAR ECONOMY ENGINE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Logistics): service `ReverseLogisticsService`; 1 migrasi; test `ReverseLogisticsCircularTest` — commit `4a0645a`, +353 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Logistics (`lgx_`) + Manufacturing + Pricing + Esg · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 5F slice 1
+> **Jalan pintas terlarang di fase ini:** material daur ulang tanpa lot Manufaktur; manfaat ESG berupa angka masukan — ditambah seluruh X1–X25.
 - [ ] 79.1 Tabel `lgx_reverse_orders` (jenis: retur Store, oli bekas AutoServe, jelantah Resto, limbah B3 medis, scrap Manufacturing, e-waste) + `lgx_reverse_items` (komposisi, kondisi, tujuan daur ulang)
 - [ ] 79.2 Reverse shipment otomatis dari event (`store.return`, `auto.oil_used`, `resto.waste_bulk`, `hsp.bio_waste`) → assign armada (satu armada dengan forward, muatan balik/backhaul) → terhubung chain of custody hash
 - [ ] 79.3 **Nilai sirkular**: barang terkumpul dinilai ulang → menjadi bahan baku Manufacturing (biodiesel jelantah, remanufaktur oli, remould sparepart) dengan harga dari Pricing Engine → posting ledger `lgx:circular_revenue` / `mfg:scrap_inbound`
@@ -1599,6 +1896,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 80 — COLD-CHAIN BLOCKCHAIN AUTONOMOUS, DRONE & LAST-MILE ROBOTICS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Logistics): service `AutonomousLogisticsService`; 1 migrasi; test `ColdChainAndDroneRoboticsTest` — commit `289165b`, +432 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Logistics (`lgx_`) + Payment · **Prasyarat:** Fase 79 ✅ · **Acuan:** KONSEP 5F slice 2–3
+> **Jalan pintas terlarang di fase ini:** tahan pembayaran sebagai kolom status tanpa ledger; breach dihitung per pembacaan (ganda); batas drone hanya di test — ditambah seluruh X1–X25.
 - [ ] 80.1 **Cold-chain enforcement**: pembacaan suhu reefer (Fase 24.4) → breach > 10 menit → event `lgx.temp_breach` → **PaymentGateway otomatis HOLD pembayaran subkontraktor** pengangkut sampai dispute selesai (release setelah investigasi/klaim asuransi Fase 23.4); pembacaan suhu masuk hash-chain sebagai bukti
 - [ ] 80.2 Perluasan monitored goods: farmasi (link Pilar 9), daging wagyu, vaksin, produk beach club (minuman beralkohol butuh suhu), linen hotel (sterilisasi)
 - [ ] 80.3 **Drone & last-mile robotics dispatch** (`lgx_drone_units`, `lgx_drone_missions`): dispatcher menugaskan leg terakhir ke drone/robot dari Hub (radius ≤ 15 km, beban ≤ 5 kg, baterai cukup untuk pulang-pergi + margin) → routing mempertimbangkan no-fly zone simulasi & angin → bahan ringan suku cadang/obat/makanan resto
@@ -1612,6 +1912,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 81 — ALGORITHMIC & SURGE PRICING ENGINE (DETIK-PER-DETIK)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Pricing): service `AlgorithmicSurgePricingService`; 1 migrasi; test `AlgorithmicSurgePricingTest` — commit `266d853`, +294 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Pricing (`pric_`) · **Prasyarat:** R4.2 ✅ (prefiks `prc_`→`pric_`) · **Acuan:** KONSEP 6F slice 1
+> **Jalan pintas terlarang di fase ini:** harga order mengikuti tick terbaru; tick tanpa guardrail floor/ceiling; tabel `prc_` di Pricing — ditambah seluruh X1–X25.
 - [ ] 81.1 Tabel `prc_price_ticks` partisi (SKU, detik, harga, sumber penggerak: demand index, stok WMS, harga komoditas global feed, musim, okupansi gudang) — target 1 miliar tick/tahun pada skala simulasi, agregat per menit untuk query
 - [ ] 81.2 **Mesin harga detik-per-detik**: harga suku cadang Store, ongkir logistik (Fase 80.5), bahan baku grosir Distributor → elastisitas & aturan surge deterministik → harga berfluktuasi real-time layaknya tiket pesawat
 - [ ] 81.3 **Guardrail mutlak**: floor price (HPP + margin minimum), ceiling (HET simulasi), band maksimal per hari; kontrak harga (Fase 44.4) & price list bertingkat (Fase 44.1) selalu mengalahkan harga dinamis; setiap perubahan tercatat di price waterfall audit
@@ -1623,6 +1926,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 82 — VENDOR-MANAGED INVENTORY (VMI) & C2M (CONSUMER-TO-MANUFACTURER)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Manufacturing): service `VmiAndC2mService`; 1 migrasi; test `VmiAndC2mManufacturingTest` — commit `c7b5089`, +359 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Procurement + Wms (VMI) · Manufacturing + Plm + Store (C2M) · **Prasyarat:** Fase 81 ✅ · **Acuan:** KONSEP 6F slice 2–3
+> **Jalan pintas terlarang di fase ini:** auto-PO tanpa plafon kontrak/approval; C2M tanpa BOM/routing nyata — ditambah seluruh X1–X25.
 - [ ] 82.1 **VMI**: akses khusus pemasok via API v2 (Fase 55, ability `vmi:read` + `vmi:po`) → mereka memantau stok rak WMS milik kita (read-only + scope partikel per SKU mereka) → menyentuh titik pesan ulang → **PO otomatis terbit tanpa staf pengadaan** (plafon per kontrak kerangka Fase 32.4; di atas plafon → approval)
 - [ ] 82.2 Penerimaan VMI: ASN dari pemasok → GRN → 3-way match (Fase 34.3) → kredit terms → siklus P2P penuh; performance pemasok masuk supplier scorecard (Fase 32.6)
 - [ ] 82.3 **C2M configurator 3D**: pembeli Store B2C mendesain suku cadang modifikasi mobil (parametric: ukuran, bahan, finishing) → validasi kelayakan (toleransi, beban) → harga live dari BOM + complexity factor
@@ -1636,6 +1942,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 83 — CROSS-BORDER CLEARING HOUSE BERBASIS KRIPTO & CBAM COMPLIANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul TradeFinance): service `CrossBorderClearingService`; 1 migrasi; test `CrossBorderClearingAndCbamTest` — commit `8c853e9`, +357 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** TradeFinance (`tf_`) + Trade + Esg + Logistics custody · **Prasyarat:** R1–R4 ✅, R6.4 ✅ · **Acuan:** KONSEP 7F slice 1–2
+> **Jalan pintas terlarang di fase ini:** rilis escrow tanpa verifikasi hash custody; CBAM dari masukan emisi bebas — ditambah seluruh X1–X25.
 - [ ] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
 - [ ] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
 - [ ] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
@@ -1646,6 +1955,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 84 — AI CONTRACT BIDDING AGENT (LELANG PENGADAAN OTOMATIS)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Trade): service `AiBiddingAgentService`; 1 migrasi; test `AiContractBiddingAgentTest` — commit `03559ca`, +423 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Procurement + Trade (asisten penawaran) · **Prasyarat:** Fase 64 ✅ · **Acuan:** KONSEP 7F slice 3
+> **Jalan pintas terlarang di fase ini:** usulan AI langsung submit tanpa approval; tanpa snapshot input (tidak bisa direkonstruksi) — ditambah seluruh X1–X25.
 - [ ] 84.1 Tabel `trd_bidding_agents` (konfigurasi per entitas: komoditas, batas harga, margin target, risiko maks), `trd_bid_runs` (lelang yang dipantau), `trd_bid_submissions` (penawaran + jejak persetujuan)
 - [ ] 84.2 **Agent merayapi**: harga komoditas global (feed simulasi), riwayat menang/kalah lelang (Fase 33.3 tender), skor risiko buyer (Party credit Fase 27.7), biaya logistik (Fase 80.5 rate card) → menghitung harga penawaran optimal (deterministik, dapat diulang → selaras `ai:audit` Fase 64)
 - [ ] 84.3 **Draf klausul di modul Contract**: agent menyusun klausul komersial (termin, penalti, force majeure) dari library klausul Fase 28.2 → masuk status draft untuk review
@@ -1659,6 +1971,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 85 — INTERNAL GIG ECONOMY (TALENT MARKETPLACE & BOUNTY)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hcm): service `InternalGigEconomyService`; 1 migrasi; test `InternalGigEconomyTest` — commit `2020c3a`, +428 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F slice 1
+> **Jalan pintas terlarang di fase ini:** bounty dibayar di luar payroll; klaim bounty tanpa cek sertifikat/jam kerja — ditambah seluruh X1–X25.
 - [ ] 85.1 Tabel `gov_bounties` (pemesan unit bisnis: Resto overload, gudang butuh bongkar muat dadakan, event mall setup, cuci armada), `gov_bounty_claims` (pengambil shift lintas unit), `gov_bounty_pofs` (proof of work: scan lokasi, foto, sign-off supervisor)
 - [ ] 85.2 **Matching**: karyawan eligible (skill, sertifikasi K3, lokasi, tidak tabrakan jadwal shift utama, batas jam kerja UU 22/2009 8 jam/hari) → first-come/berbasis skor; konflik jadwal ditolak sistem
 - [ ] 85.3 **Bayar per jam via Core Banking**: POF disetujui → upah lembur (tarif 1.5x/2x Fase 58.3) terhitung → posting `hcm:bounty_payout` ke dompet karyawan; biaya dibebankan ke pusat biaya unit pemesan (budget encumbrance Fase 54.1)
@@ -1670,6 +1985,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 86 — PRECISION AGRI-TECH (NDVI SATELIT) & DAO CORPORATE GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Agri): service `PrecisionAgriAndDaoService`; 1 migrasi; test `PrecisionAgriAndDaoGovernanceTest` — commit `fc7ee54`, +498 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Agri (`agri_`) + Governance (`gov_`) · **Prasyarat:** R6.4 ✅, Fase 71 ✅ (bobot token) · **Acuan:** KONSEP 8F slice 2–3
+> **Jalan pintas terlarang di fase ini:** voting tanpa snapshot bobot; hasil voting langsung mengeksekusi tanpa approval; NDVI dari masukan bebas tanpa jejak scan — ditambah seluruh X1–X25.
 - [ ] 86.1 **NDVI satelit** (`agri_satellite_scans` per petak plasma, feed simulasi): indeks kehijauan per poligon lahan (`land_polygon_geojson` Fase 62.1) per 5 hari → tren per musim → deteksi stres tanaman
 - [ ] 86.2 **Cicilan prestasi**: ratchet kontrak tani Fase 62.2 diperluas — pencairan cicilan modal pembiayaan ke petani **hanya bila NDVI ≥ standar kualitas**; gagal → penundaan + rencana korektif (irigasi/pupuk via Agri), 2x gagal → restrukturisasi via ApprovalEngine
 - [ ] 86.3 Korelasi NDVI vs hasil panen aktual (grade A/B/C Fase 62.3) → validasi model presisi; skor risiko petak → memengaruhi plafon pembiayaan berikutnya
@@ -1686,6 +2004,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 87 — RUMAH SAKIT I: IDENTITAS PASIEN, EMR, BED MANAGEMENT & CLINICAL PATHWAY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalEmrAndBedService`; 1 migrasi; test `HospitalEmrAndBedManagementTest` — commit `c4d3f7b`, +507 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 9F
+> **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
 - [ ] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
 - [ ] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
 - [ ] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
@@ -1697,6 +2018,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 88 — RUMAH SAKIT II: ORDER-TO-CASH, FARMASI, LAB, FARMASI SUPPLY CHAIN, KLAIM & REVENUE CYCLE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalRevenueCycleService`; 1 migrasi; test `HospitalRevenueCycleAndPharmacyTest` — commit `bf0d6c9`, +539 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 9F
+> **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
 - [ ] 88.1 **Billing episode**: seluruh item (bed-day, tindakan, obat, alat habis pakai, lab, radiologi, dokter) tergabung satu folio episode → struktur tarif bertingkat (mirip tarif utilitas mall Fase 13.2) → tagihan akhir saat discharge
 - [ ] 88.2 **Pembayaran campuran**: BPJS simulasi (klaim batch), insurance copay (via escrow/marketplace asuransi), self-pay wallet+PIN (Payment Hub Fase 2) → alokasi urut & split payment; bedah besar memakai **escrow deposit** (hold saat masuk → capture saat pulang → sisa refund)
 - [ ] 88.3 **e-Prescription → Farmasi**: resep digital → farmasi menyiap → stok obat terpotong via InventoryService (FEFO lot/kedaluwarsa) → item masuk tagihan pasien; interaksi obat terdeteksi (rule engine deterministik) → peringatan apoteker
@@ -1709,6 +2033,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 89 — BEACH CLUB & CLUBS I: TICKETING, ACCESS CONTROL, USIA & VENUE OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueOperationsService`; 1 migrasi; test `BeachClubAndVenueOperationsTest` — commit `c9464fa`, +567 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Venue (`ven_`) · **Prasyarat:** R1–R4 ✅, R4.2 (Vending pindah ke `vnd_`) · **Acuan:** KONSEP 10F
+> **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
 - [ ] 89.1 Modul `Venue` (`ven_`): provider, MenuRegistry "Venue & Entertainment", roles (`venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`), policies, arch test; tabel `ven_venues`, `ven_zones` (pool/beach/dance floor/VIP/garden), `ven_tables`, `ven_events`, `ven_tickets`
 - [ ] 89.2 **Skala**: 1.000 venue global (500 Indonesia + 500 internasional simulasi), 100 ribu event/tahun, 50 juta tiket/tahun, kapasitas puncak 1 juta pengunjung/hari (festival); venue terikat properti (Mall/properti grup Fase 12) atau lahan mandiri
 - [ ] 89.3 **Ticketing hash-chain non-fungible**: tiket digital dengan hash unik + anti-replay; transfer sekali (secondary market resmi dengan fee), QR scan di gate → **verifikasi identitas & usia** via Human Passport/KYC (umur min 21 club / 18+ tertentu) → gate terbuka (integrasi smart door seperti flex-space Fase 78.3); tiket ganda/replay ditolak
@@ -1721,6 +2048,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 90 — BEACH CLUB & CLUBS II: ARTIST CONTRACTS, SUPPLY, MEMBERSHIP & FESTIVAL ECONOMY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueEconomyService`; 1 migrasi; test `BeachClubArtistAndFestivalEconomyTest` — commit `9daf14a`, +489 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Venue (`ven_`) · **Prasyarat:** R1–R4 ✅, R4.2 (Vending pindah ke `vnd_`) · **Acuan:** KONSEP 10F
+> **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
 - [ ] 90.1 **Artist & talent contracts** (`ven_artist_contracts`): skema bayar advance + backlog + share door (persentase penjualan pintu), terikat modul Contract (Fase 28); performa lintas negara → pembayaran multi-currency (Fase 48) + stablecoin (Fase 83) + withholding tax simulasi (Fase 51.7)
 - [ ] 90.2 **Supply venue**: bar/resto venue memakai modul Resto penuh (HPP, batch, waste Fase 7–8) → bahan F&B dikirim via Logistics cold-chain dari dapur sentral → stok bar (spirit, mixer) terkelola WMS mini-warehouse per venue → **impor spirits** via Trade (Fase 49) dengan cukai simulasi
 - [ ] 90.3 **POS venue & night economics**: penjualan per jam (peak 23.00–03.00), mix per kategori, revenue per available table (RevPAT), waste bar; shift staff venue via HCM (bounty dadakan saat event mendadak, memperluas Fase 85)
@@ -1733,6 +2063,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 91 — PERHOTELAN I: PMS, CENTRAL RESERVATION, RATE MANAGEMENT & SMART ROOM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `HotelOperationsService`; 1 migrasi; test `HotelPmsAndOperationsTest` — commit `fa10da3`, +578 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hotel (`htl_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 11F
+> **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
 - [ ] 91.1 Modul `Hotel` (`htl_`): provider, MenuRegistry "Perhotelan", roles (`front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `concierge`), policies, arch test; tabel `htl_properties`, `htl_rooms`, `htl_rate_plans`, `htl_reservations`, `htl_folios`
 - [ ] 91.2 **Skala**: 5.000 properti (city hotel, resort, villa, serviced apartment, kapsul, glamping) × 500.000 kamar, 100 juta room-night/tahun, 200 juta booking channel/tahun; properti terikat aset (Fase 30) & sewa (mall/ruko)
 - [ ] 91.3 **Central reservation & anti-oversell**: kanal (web, app, OTA simulasi, corporate, walk-in) memakai inventori kamar terpusat dengan lock kapasitas (memperluas Fase 22.2) → overbooking bertingkat (mis. 3% dengan konfirmasi ulang) → konversi ke properti tetangga bila penuh
@@ -1745,6 +2078,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 92 — PERHOTELAN II: FOLIO, F&B/BANQUET, LOYALTY NIGHTS, TIMESHARE & DESTINATION PACKAGE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `HotelFolioAndPackageService`; 1 migrasi; test `HotelFolioTimeshareAndPackageTest` — commit `1682eef`, +461 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hotel (`htl_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 11F
+> **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
 - [ ] 92.1 **Folio & upsell**: seluruh item inap (kamar, F&B room service, spa, laundry, minibar, parkir valet) masuk satu folio → split settlement, corporate billing (invoicing bulanan ke perusahaan = piutang), deposit & city ledger per tamu
 - [ ] 92.2 **F&B & banquet**: restoran hotel memakai modul Resto penuh (HPP, batch, shift Fase 7–9) + banquet multi-event (memperluas katering Fase 11.2) → kitchen terhubung cold-chain Logistics; konsumsi room service ter-charge ke folio otomatis
 - [ ] 92.3 **Spa & wellness**: katalog treatment, booking terapis (HCM gig via bounty Fase 85), konsumsi produk ter-charge; treatment medis ringan terhubung konsultasi RS (Pilar 9)
@@ -1757,6 +2093,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 93 — PERTAMBANGAN I: MINE PLANNING, FLEET DISPATCH & FUEL MANAGEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningFleetDispatchService`; 1 migrasi; test `MiningFleetDispatchTest` — commit `2af5fba`, +458 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mining (`min_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 12F
+> **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 93.1 Modul `Mining` (`min_`): provider, MenuRegistry "Pertambangan", roles (`mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`), policies, arch test; tabel `min_sites`, `min_pits`, `min_equipment`, `min_dispatch_runs`, `min_weighbridge_tickets`
 - [ ] 93.2 **Skala**: 500 pit & 1.000 kawasan pengolahan (smelter, crushing, quarry) di 30 wilayah, 50.000 unit alat berat (haul truck 400 ton, excavator, drill, conveyor, dredger), 1 juta perjalanan angkut/hari, 100 juta ton material/bulan; seluruh alat berat terdaftar sebagai aset (Fase 30) & armada (terhubung Vehicle Passport diperluas ke alat berat)
 - [ ] 93.3 **Mine planning**: rencana bulanan cut & fill, grade target, produksi harian per pit → time-phased ke shift → target dipecah ke shovel/truck allocation; deviasi aktual vs rencana tercatat (kurva-S produksi)
@@ -1769,6 +2108,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 94 — PERTAMBANGAN II: WEIGHBRIDGE, GRADE RECONCILIATION, ROYALTY, HSE & OFFTAKE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningComplianceAndRoyaltyService`; 1 migrasi; test `MiningWeighbridgeRoyaltyAndHseTest` — commit `6b256df`, +420 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mining (`min_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 12F
+> **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 94.1 **Weighbridge & stockpile**: timbangan digital tercatat hash-chain per truck load (plat, muatan, tujuan, waktu) → stockpile model 3D (digital twin via Fase 67.3) → **rekonsiliasi ore vs concentrate vs shipment** (yang masuk smelter/ekspor = yang dicatat) → selisih > toleransi → investigasi otomatis + approval
 - [ ] 94.2 **Grade control**: sampling & assay lab per stockpile/load (hasil terverifikasi teknisi) → blending optimization (AI deterministik teraudit) agar feed smelter stabil → recovery % per unit pengolahan → assay bias dilaporkan
 - [ ] 94.3 **Smelter & hilirisasi**: ore → concentrate → bahan jadi (nickel pig iron, tembaga katoda simulasi) → memakai modul Manufacturing (BOM, costing Fase 35–38 dengan routing khusus pertambangan) → produk jadi masuk Store/Trade
@@ -1786,6 +2128,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 95 — INTEGRASI LINTAS 12 LINI (A): OTOMOTIF, EV, LOGISTIK, HOTEL, VENUE, RUMAH SAKIT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — integrasi = 1 service Core (91 baris) yang mengimpor Domain Hotel; bukan lewat event spine. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `TwelveLinesCrossEcosystemService`; test `CrossEcosystemTwelveLinesTest` — commit `df55b7b`, +196 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
 - [ ] 95.1 **Otomotif ↔ Logistik**: armada sewa (Fase 70) & haul truck tambang (Fase 93) memakai dispatch & custody Logistik (Fase 22) satu papan; odometer servis (Fase 24.3) berlaku untuk semua armada lintas lini; EV charger hub tersedia di Hub Logistik & Mall
 - [ ] 95.2 **EV ↔ infrastruktur lini**: SPKLU dipasang di Mall (Fase 76), Venue (Fase 89), Hotel (Fase 91), site tambang (Fase 94) → satu jaringan charger, tarif konsisten, kWh masuk ESG masing-masing properti
 - [ ] 95.3 **Hotel ↔ Venue ↔ Resto**: destination package (Fase 92.6) mencakup tiket festival (Fase 90.5) dan dining (Fase 74) → satu pembayaran, settlement multi-vendor escrow; folio hotel menerima charge venue/restaurant
@@ -1797,6 +2142,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 96 — INTEGRASI LINTAS 12 LINI (B): FINTECH, RWA, INSURTECH & PEMBIAYAAN UNTUK SEMUA LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — integrasi fintech lintas lini = 1 service Core kecil. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `UniversalCrossLineFintechService`; test `UniversalCrossLineFintechTest` — commit `24b5cb1`, +176 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
 - [ ] 96.1 **RWA lintas lini**: tokenisasi unit hotel/timeshare (Fase 92.5), unit mall (Fase 71), truk logistik (Fase 71), mesin tambang (Fase 94), alat RS medis → satu marketplace RWA, satu orderbook, satu engine dividen; omzet sumber dari lini mana pun mengalir pro-rata ke holder
 - [ ] 96.2 **InsurTech tersemat universal**: trigger dari 12 lini (keterlambatan logistik, kecelakaan kendaraan, cold-chain breach venue/RS/hotel, pembatalan event, cuaca tambang, no-show kontrak) → claims autopilot (Fase 72) satu kerangka, reserve terpusat di Treasury
 - [ ] 96.3 **Pembiayaan lintas lini**: HODL-to-Drive (Fase 5C) → diperluas: pembiayaan alat berat tambang, pembiayaan fit-out tenant, pembiayaan modal tani (Fase 62) & pre-payment petani berbasis NDVI (Fase 86.2) — satu engine kredit dengan credit profile 360° (Fase 27.7)
@@ -1807,6 +2155,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 97 — INTEGRASI LINTAS 12 LINI (C): TALENT GIG, ESG TERPADU & EVENT SPINE PENUH
 > **Status audit 2026-10-10:** 🟠 KERANGKA — event spine penuh tidak terwujud (1 publisher, 0 consumer). modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `TwelveLinesCommandCenterService`; test `TwelveLinesCommandCenterTest` — commit `a95bfe6`, +127 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
 - [ ] 97.1 **Talent marketplace universal**: bounty lintas lini (Resto overload, setup venue, bongkar muat logistik, cuci armada, asistensi RS dadakan, operasional shift hotel, crew tambang kontraktor) → satu papan, aturan upah & K3 konsisten (Fase 85), bayar via Core Banking
 - [ ] 97.2 **ESG terpadu 12 lini**: agregasi emisi Scope 1–3 dari armada (Fase 60), gedung/hotel/venue (Fase 76), pabrik & tambang (Fase 94.8), limbah sirkular (Fase 79) → neraca karbon grup → kredit karbon pensiun → laporan GRI per lini & konsolidasi grup
 - [ ] 97.3 **Universal Event Spine penuh** (Fase 67.2): seluruh event 12 lini terbit & terkonsumsi lintas pilar — contoh: `min.ore_shipped` → `lgx.container_loaded` → `trade.bl_issued` → `fintech.escrow_released`; `ven.event_ticket_sold` → `htl.bundle_confirmed` → `resto.catering_ready`
@@ -1817,6 +2168,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 98 — SKALA ULTRA: SEEDER 12 LINI, QUERY BUDGET & STRESS TEST
 > **Status audit 2026-10-10:** 🟠 KERANGKA — `TwelveLinesUltraSeeder` 118 baris — bukan skala ultra; tidak ada benchmark/query budget p95 tercatat. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul —): seeder `TwelveLinesUltraSeeder`; test `TwelveLinesUltraScaleStressTest` — commit `91fe194`, +164 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report` — ditambah seluruh X1–X25.
 - [ ] 98.1 **TwelveLinesUltraSeeder**: dataset raksasa deterministik idempoten (memperluas Fase 56.1 & 67.4): 10 juta kendaraan berpaspor + telematik 180 hari, 5 juta dompet + ratusan juta mutasi, 5.000 outlet + 730 juta order (12 bulan), 200 properti + 50 ribu lease + 12 bulan billing, 5 juta shipment + 100 juta event kustodi, 100 pabrik + 1 juta SPK, 10 ribu koridor dagang + 50 ribu L/C, 10 juta pasien + 100 juta encounter, 1.000 venue + 50 juta tiket, 5.000 properti hotel + 100 juta room-night, 500 pit + 50 ribu alat berat + miliaran tick telematik; checkpoint/resume, benchmark per etape
 - [ ] 98.2 **Query budget penuh**: endpoint kritis tiap lini (bed board, bed board venue, bed board tambang, RWA orderbook, claims autopilot, rate optimizer, tick feed) diuji p95 latensi & jumlah query di bawah ambang; dokumentasi EXPLAIN tanpa full table scan pada tabel > 100 ribu baris
 - [ ] 98.3 **Race condition ekstrem lintas lini**: 1.000 booking kamar serentak atas 10 kamar sisa, 500 tiket atas 100 kursi, 500 bid atas 10 unit RWA, penarikan saldo massal → alokasi tepat, tak pernah negatif/ganda
@@ -1826,6 +2180,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 99 — AI & ANALITIK PREDIKTIF TERPADU 12 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — AI terpadu ditandai selesai padahal Fase 64 (fondasi AI) belum dikerjakan. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `TwelveLinesUnifiedAnalyticsService`; test `TwelveLinesUnifiedAnalyticsTest` — commit `4a37d12`, +160 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI · **Prasyarat:** Fase 64 ✅ · **Acuan:** KONSEP §A10
+> **Jalan pintas terlarang di fase ini:** AI terpadu tanpa fondasi Fase 64; skor dari parameter pemanggil; auto-execute tanpa kill-switch yang diuji — ditambah seluruh X1–X25.
 - [ ] 99.1 **Dynamic pricing unified**: satu engine (Fase 81 + 64.1) mengatur harga lintas kanal — tiket venue, room rate hotel, ongkir logistik, suku cadang, harga grosir, tarif EV, royalti komoditas — dengan guardrail & contract-price-wins seragam, `ai:audit` membuktikan determinisme
 - [ ] 99.2 **Forecasting terpadu**: demand resto dari footfall mall & event venue (Fase 75.1), forecast S&OP pabrik (Fase 53.2), forecast okupansi hotel dari kalender event & festival, forecast produksi tambang dari rencana → satu kerangka MAPE & override ter-audit
 - [ ] 99.3 **Anomaly detection & anti-fraud lintas lini** (memperluas Fase 64.2): skor anomali untuk klaim asuransi, transaksi dompet, penjualan venue, tagihan RS, fuel tambang, resale tiket → quarantine transaksi berisiko sebelum settlement
@@ -1835,6 +2192,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 100 — KEAMANAN, RBAC 60+ ROLE, KEPATUHAN & OBSERVABILITAS 12 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — `RbacSeeder` berisi 26 role; role 12 lini (pharmacist, rs_admin, venue_manager, front_office, housekeeping, hotel_gm, …) tidak ada; `*:audit` 12 lini tidak ada; tidak ada enkripsi field-level data medis. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul —): test `TwelveLinesComprehensiveAuditTest` — commit `af31c5c`, +94 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core RBAC + semua modul · **Prasyarat:** R3 ✅ · **Acuan:** KONSEP §A6
+> **Jalan pintas terlarang di fase ini:** role disebut di seeder tetapi rute tidak dibatasi; enkripsi field-level diklaim tanpa `encrypted` cast; `*:audit` lini diklaim tanpa command — ditambah seluruh X1–X25.
 - [ ] 100.1 **RBAC 12 lini**: role baru (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`, `front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`, `ev_operator`, `fleet_manager`, `wm_advisor`, dst.) → matriks otorisasi data-driven, RouteSmokeTest & SecurityTest mencakup seluruh rute baru
 - [ ] 100.2 **Privacy & PII khusus**: data medis (rekam medis, telemetri pasien) ter-encrypt field-level + audit akses ketat (siapa membaca apa), data tamu hotel/venue (ID, kebiasaan) ter-scope ketat anti-IDOR lintas properti; PII minimization di pelacakan publik
 - [ ] 100.3 **Compliance kalender 12 lini**: izin RS (izin praktik, radiologi), izin venue (keramaian, minuman keras), izin hotel (pariwisata, kebakaran), izin tambang (IUP, AMDAL), sertifikasi halal/BPOM lintas F&B, CBAM lintas ekspor → pengingat & eskalasi terpusat (memperluas Fase 54.6)
@@ -1844,6 +2204,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 101 — SKENARIO EMAS 12 LINI & KETAHANAN (DISASTER RECOVERY)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — tidak ada DR drill/replikasi; golden scenario minimal. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `TwelveLinesGoldenScenarioService`; test `TwelveLinesGoldenScenarioTest` — commit `fa76167`, +122 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** tests/Feature (golden scenario) + ops DR · **Prasyarat:** Fase 66 ✅, R8 ✅ · **Acuan:** KONSEP §A10.1
+> **Jalan pintas terlarang di fase ini:** klaim DR/RPO tanpa drill yang dijalankan; skenario tanpa `sim:run` yang menjalankan tick handler — ditambah seluruh X1–X25.
 - [ ] 101.1 **Golden scenario lintas 12 lini**: satu skenario otomatis merajut semuanya — petani menanam (NDVI memicu cicilan) → bahan baku dikirim cold-chain → pabrik memproduksi → dikirim logistik → sampai resto/hotel/venue dijual → bagian ke RS sebagai produk farmasi → armada diisi daya EV → tambang mengirim ore via LC stablecoin → seluruhnya terkonsolidasi di group close → **semua `*:audit` serentak = 0 selisih**
 - [ ] 101.2 **Golden scenario krisis**: recall produk lintas lini (obat RS + F&B venue + produk pabrik) → ketertelusuran lot maju-mundur instan → quarantine + notifikasi + klaim asuransi autopilot + kredit vendor → ESG impact tercatat
 - [ ] 101.3 **Disaster recovery multi-region 12 lini** (memperluas Fase 66): failover replika dengan RPO = 0 untuk ledger semua aset (termasuk stablecoin, token RWA, escrow venue/hotel), RTO < 15 menit, drill terjadwal + `dr:audit`
@@ -1853,6 +2216,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 102 — API V3, WEBHOOK & PORTAL MITRA 12 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — tidak ada rute API v3 maupun portal mitra. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `TwelveLinesWebhookDispatcherService`; test `TwelveLinesWebhookDispatcherTest` — commit `726b89e`, +83 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** `routes/api.php` per modul + Integration (gateway) · **Prasyarat:** R3.4 ✅, Fase 55 ulang ✅ · **Acuan:** KONSEP §A4.5, §A7
+> **Jalan pintas terlarang di fase ini:** service tanpa rute disebut API; tanpa Sanctum/`Idempotency-Key`/rate limit; tanpa entri `docs/API.md` — ditambah seluruh X1–X25.
 - [ ] 102.1 **API v3**: endpoint untuk lini baru (telematik ingest, EV session, RWA orderbook, claims API, ticketing & check-in, PMS reservation, mine dispatch, weighbridge) — OpenAPI 3.1 lengkap, Sanctum abilities per lini, Idempotency-Key wajib, RFC 7807
 - [ ] 102.2 **Webhook event spine untuk mitra eksternal**: OTA hotel, payment aggregator venue, sistem tambang pihak ketiga, DHI/insurance partner, asuransi RS → HMAC-SHA256, retry, DLQ, replay (memperluas Fase 55.2)
 - [ ] 102.3 **Portal mitra baru**: supplier VMI (Fase 82), BPJS/insurance (klaim RS), OTA & corporate travel (hotel), artist management (venue), kontraktor tambang & off-taker, EV charge point operator → masing-masing dengan scope ketat & rate limit tier (Fase 55.5)
@@ -1862,6 +2228,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 103 — DOKUMENTASI FINAL, PLAYBOOK 60+ ROLE & SERAH TERIMA EKSPANSI 12 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — commit dokumen saja (63 baris). modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul —):  — commit `7f5f16f`, +63 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** dokumen hasil `docs:inventory` & `gate:report` · **Prasyarat:** semua fase 67–102 ✅ · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** dokumen klaim/playbook tanpa command generator; mencentang serah terima sebelum fase sebelumnya ✅ — ditambah seluruh X1–X25.
 - [ ] 103.1 **README final**: ringkasan 12 lini bisnis dalam satu website monolith, tabel akun demo per role baru, cara menjalankan simulasi kernel & seeder ultra, daftar seluruh command `*:audit`/`verify-*`
 - [ ] 103.2 **docs/ARCHITECTURE.md**: ERD 12 modul baru, peta Universal Event Spine & Digital Twin Bus, sequence diagram integrasi lintas lini, konvensi ledger multi-aset baru (stablecoin, token RWA, reserve asuransi)
 - [ ] 103.3 **docs/CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 67–103 tercatat, peta orientasi sesi baru lengkap
@@ -1892,6 +2261,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 104 — KESEHATAN: TELEMEDICINE, E-PHARMACY & JARINGAN APOTEK
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `TelemedicineAndEPharmacyService`; 1 migrasi; test `TelemedicineAndEPharmacyTest` — commit `8f7f695`, +514 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
+> **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
 - [ ] 104.1 Tabel `hsp_tele_consults` (konsultasi jarak jauh: video/chat simulasi, triase awal), `hsp_epharmacy_orders`, `hsp_pharmacy_branches` (500 apotek jaringan + 5.000 apotek mitra Party)
 - [ ] 104.2 Alur triase → konsultasi → **e-resep digital** (tanda tangan dokter hash) → fulfillment apotek terdekat (stok terpotong via InventoryService, FEFO lot) → pengiriman obat last-mile via Logistics (rentang 2 jam kota besar)
 - [ ] 104.3 Interaksi obat & alergi dicek rule engine terhadap Human Passport (Fase 87.2) sebelum e-resep disahkan; obat keras/psikotropika butuh verifikasi resep fisik (approval dokter kedua)
@@ -1902,6 +2274,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 105 — KESEHATAN: JARINGAN LABORATORIUM & DIAGNOSTIK IMAGING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalLabAndImagingService`; 1 migrasi; test `HospitalLabAndImagingTest` — commit `4f5b893`, +520 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
+> **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
 - [ ] 105.1 Tabel `hsp_lab_catalog` (10.000 parameter tes), `hsp_lab_specimens` (barcode rantai spesimen), `hsp_lab_results` (verifikasi teknisi + pathologist), `hsp_imaging_studies` (simulasi DICOM metadata)
 - [ ] 105.2 Rantai spesimen hash-chain: ambil → kirim (Logistics cold-chain) → terima lab → proses → hasil — setiap pindah tangan di-scan, waktu & suhu tercatat; spesimen hilang/putus rantai → auto-reject & minta ulang
 - [ ] 105.3 Hasil bertingkat: auto-verify untuk nilai normal (rule range), nilai kritis → hold pathologist → notifikasi dokter penulis order; hasil masuk Human Passport & memicu alert clinical pathway bila diagnosis berubah
@@ -1912,6 +2287,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 106 — KESEHATAN: CLINICAL TRIAL, RESEARCH & DATA VAULT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `ClinicalTrialAndResearchService`; 1 migrasi; test `ClinicalTrialAndResearchTest` — commit `cf45270`, +460 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
+> **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
 - [ ] 106.1 Tabel `hsp_trials` (studi, fase I–IV simulasi), `hsp_trial_sites` (RS pelaksana), `hsp_trial_subjects` (subjek terdaftar, informed consent hash), `hsp_trial_endpoints`
 - [ ] 106.2 Recruitment engine: pencocokan kriteria inklusi/exklusi terhadap Human Passport (anonimisasi identifier) → undangan ke pasien eligible → consent digital hash-chain → randomisasi terstruktur (deterministik ber-seed)
 - [ ] 106.3 Pengumpulan data endpoint (efikasi, keamanan) → database lock per analisis → laporan studi; **data vault terenkripsi** (Genomic & Personalized Medicine Vault) — akses riset via approval & audit ketat, di-tokenisasi anonim untuk mitra riset (memperluas RWA Fase 71 ke aset data)
@@ -1922,6 +2300,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 107 — KESEHATAN: PUBLIC HEALTH, JKN/BPJS & HEALTH COMMAND CENTER
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalPublicHealthAndBpjsService`; 1 migrasi; test `HospitalPublicHealthAndBpjsTest` — commit `4cfc0c7`, +473 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
+> **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
 - [ ] 107.1 **Klaim JKN/BPJS batch engine**: gabungan episode eligible → grouping DRG simulasi (kamar, tindakan, obat) → berkas klaim → status (submitted → verifikasi → paid/denied) → aging & provision; denial → alasan → koreksi → resubmit (gapless number per berkas)
 - [ ] 107.2 Dashboard capitation & kas: populasi terdaftar, kunjungan per kapita, utilization rate, forecast cash BPJS bulanan → memengaruhi arus kas RS (Fase 48.5)
 - [ ] 107.3 **Epidemic & public health surveillance** (simulasi): agregasi gejala/ diagnosis anonim per wilayah → deteksi klaster (threshold rule) → early warning ke puskesmas mitra & Kemenkes simulasi → trigger stok P3K/obat darurat via Procurement
@@ -1932,6 +2313,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 108 — KESEHATAN: MEDICAL TOURISM, WELLNESS & HEALTH MEMBERSHIP
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `MedicalTourismAndMembershipService`; 1 migrasi; test `MedicalTourismAndMembershipTest` — commit `6dcc7ee`, +444 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
+> **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
 - [ ] 108.1 Paket medical tourism (memperluas ide 9E): pemeriksaan menyeluruh/check-up premium, prosedur elektif, second opinion → bundling **RS + Hotel (Fase 92.6) + tiket pesawat/transport (Logistics) + visa dokumen (Trade 49.4)** → satu harga, settlement multi-vendor escrow
 - [ ] 108.2 Concierge health: penjemputan bandara (armada hotel), penerjemah, pendamping keluarga (kamar hotel terhubung folio pasien)
 - [ ] 108.3 **Health membership tahunan**: screening periodik, diskon telemedicine, prioritas bed kelas tertentu, wellness credit (spa hotel, gym venue) — poin PTS lintas ekosistem
@@ -1942,6 +2326,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 109 — KESEHATAN: MEDICAL WASTE, BLOOD BANK & REGULATORY COMPLIANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalBloodAndComplianceService`; 1 migrasi; test `HospitalBloodAndComplianceTest` — commit `31f6c8d`, +344 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
+> **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
 - [ ] 109.1 **Blood bank**: kantong darah berteknologi (serial, golongan, expiry, donor screening hash) → reservasi untuk jadwal operasi (hold stok) → issue saat operasi → stok terpotong; recall kantong terkontaminasi → tracing penerima (mirip Fase 39.6) → notifikasi klinis darurat
 - [ ] 109.2 **Cold-chain logistik darah khusus**: suhu 2–6°C ketat, breach > 5 menit → kantong quarantine + hold armada (Fase 80.1) → rantai kustodi hash penuh
 - [ ] 109.3 **Regulasi medis**: izin instalasi (reagen, radiologi, narkotika), kalibrasi alat medis (memperluas Fase 39.8) — alat kedaluwarsa memblokir pemeriksaan; sertifikasi dokter & tenaga (masa berlaku, pengingat eskalasi Fase 100.3)
@@ -1952,6 +2339,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 110 — KESEHATAN: HEALTH ANALYTICS, RISK & PORTOFOLIO RS GRUP
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalGroupAnalyticsService`; 1 migrasi; test `HospitalGroupAnalyticsTest` — commit `1ac9619`, +242 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
+> **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
 - [ ] 110.1 **Clinical analytics**: outcome per diagnosis/tenaga medis (mortality, readmission, komplikasi — risiko terkoreksi), benchmark antar RS dalam grup; mutu → memengaruhi skor RS di health membership & insurance partner
 - [ ] 110.2 **Financial risk RS**: exposure piutang (BPJS+asuransi+self-pay), concentration per insurance partner, covenant internal → early warning ke Treasury (Fase 48.7)
 - [ ] 110.3 **Portofolio RS grup**: 50 RS → P&L per RS, per layanan (bedah, penyakit dalam, IGD), ROI per modalitas alat (CT vs MRI), keputusan investasi alat → link ke RWA (alat medis disewakan/di-tokenisasi Fase 71.1)
@@ -1962,6 +2352,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 111 — HOSPITALITY & ENTERTAINMENT: CHAIN EXPANSION, BRAND STANDARD & FRANCHISE HOTEL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `HotelFranchiseAndBrandService`; 1 migrasi; test `HotelFranchiseAndBrandTest` — commit `a90d917`, +445 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hotel (`htl_`) (+ Venue/Logistics lewat event untuk paket) · **Prasyarat:** Fase 91–92 ✅ · **Acuan:** KONSEP 11F
+> **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
 - [ ] 111.1 Master brand & brand standard checklist (200 butir: kebersihan, fasilitas, SLA) → audit berkala per properti → skor kepatuhan → grade bintang tersimulasi; properti non-konform → action plan → suspensi listing
 - [ ] 111.2 **Hotel franchise & management contract**: franchisee (Party) bayar franchise fee + royalti % omzet (memperluas Fase 11.3 & 51.3) atau manajemen contract (grup operasikan, owner terima sewa + bonus performa) → settlement otomatis dari folio harian
 - [ ] 111.3 Expansion engine: studi kota baru (daya beli, kompetitor simulasi, okupansi proyek) → usulan pembukaan → approval DAO (Fase 86.6) → proyek EPC (Fase 63) → soft opening checklist → grand opening
@@ -1972,6 +2365,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 112 — HOSPITALITY & ENTERTAINMENT: GLOBAL LOYALTY & TRAVEL PASS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `HotelTravelPassAndLoyaltyService`; 1 migrasi; test `HotelTravelPassAndLoyaltyTest` — commit `71fe5a4`, +440 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hotel (`htl_`) (+ Venue/Logistics lewat event untuk paket) · **Prasyarat:** Fase 91–92 ✅ · **Acuan:** KONSEP 11F
+> **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
 - [ ] 112.1 **Travel Pass**: satu membership lintas properti hotel + venue + resto + airline partner simulasi + kereta → tier global (Silver/Gold/Platinum/Black) berbasis nights + spend gabungan
 - [ ] 112.2 Poin lintas-batas: earn di 17 lini, redeem (room upgrade, tiket festival, dining, spa, health check-up) dengan **redemption matrix** terpusat & liability poin terkendali (memperluas Fase 15.1) → breakage & expiry FIFO
 - [ ] 112.3 Airline/hotel alliance simulasi: transfer poin ke mitra (fee conversion), co-brand card (limit kredit via Fase 96.3) → cashback masuk dompet
@@ -1982,6 +2378,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 113 — HOSPITALITY & ENTERTAINMENT: TRAVEL & ITINERARY PLATFORM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `TravelPlatformAndItineraryService`; 1 migrasi; test `TravelPlatformAndItineraryTest` — commit `c5c12ff`, +428 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hotel (`htl_`) (+ Venue/Logistics lewat event untuk paket) · **Prasyarat:** Fase 91–92 ✅ · **Acuan:** KONSEP 11F
+> **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
 - [ ] 113.1 **Travel platform**: pencarian bundle (penerbangan simulasi + hotel + mobil sewa (Fase 70) + tiket event + itinerary harian) → harga total dengan komponen multi-vendor → sekali bayar → settlement escrow bertahap
 - [ ] 113.2 **Itinerary engine**: susun hari per kota (attraction, restoran (Fase 74), venue, spa) → booking massal satu aksi → kalender tamu → perubahan/reeschedule dengan aturan penalty per komponen kontrak
 - [ ] 113.3 **Travel insurance tersemat** (Fase 72): pembatalan penerbangan/penyakit di perjalanan → trigger dari feed penerbangan simulasi → auto-claim ke dompet
@@ -1992,6 +2391,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 114 — HOSPITALITY & ENTERTAINMENT: MICE & WEDDING GLOBAL SALES ENGINE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `MiceAndWeddingSalesService`; 1 migrasi; test `MiceAndWeddingSalesTest` — commit `08ff350`, +527 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hotel (`htl_`) (+ Venue/Logistics lewat event untuk paket) · **Prasyarat:** Fase 91–92 ✅ · **Acuan:** KONSEP 11F
+> **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
 - [ ] 114.1 Pipeline B2B MICE (konferensi, expo, korporat) & wedding → lead → site visit → proposal multi-komponen (kamar blok + ballroom + F&B + AV + dekorasi + transport) → quotation timelock → kontrak
 - [ ] 114.2 **Kamar blok (block allotment)**: reservasi 100–1.000 kamar untuk tanggal tertentu → release otomatis H-30 bagi yang belum terkonfirmasi → kembali ke inventori umum (anti-oversell Fase 91.3 tetap berlaku)
 - [ ] 114.3 **Banquet production sheet**: BOM event (menu per pax, dekorasi, sewa alat) → konsumsi bahan via Resto batch (Fase 8.2) → vendor pihak ketiga (PA, florist) → PO vendor terhubung → cost actual vs contract value → margin event
@@ -2002,6 +2404,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 115 — ENTERTAINMENT: CONTENT, CREATOR ECONOMY & MEDIA RIGHTS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueCreatorEconomyService`; 1 migrasi; test `VenueCreatorEconomyTest` — commit `32a0a71`, +455 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Venue (`ven_`) (+ Med untuk hak konten) · **Prasyarat:** Fase 89–90 ✅ · **Acuan:** KONSEP 10F, Lini 15
+> **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
 - [ ] 115.1 Tabel `ven_creators` (DJ, band, kreator konten, brand), `ven_content_assets` (video, foto, track — hash + lisensi), `ven_rights_contracts` (royalti per platform/stream)
 - [ ] 115.2 **Creator contract & payout**: kontrak eksklusif/non-eksklusif (Fase 28) → komisi per event/performa/streams → hold sampai periode klaim lewat (memperluas Fase 45.5) → payout multi-currency (Fase 48) + WHT simulasi (Fase 51.7)
 - [ ] 115.3 **Konten event lifecycle**: rekaman set festival → editing → distribusi (channel simulasi) → revenue share per view (formula kontrak) → pembukuan per konten
@@ -2012,6 +2417,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 116 — ENTERTAINMENT: SECONDARY TICKET MARKET & DYNAMIC BUNDLING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueSecondaryMarketService`; 1 migrasi; test `VenueSecondaryMarketTest` — commit `b7ecad1`, +395 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Venue (`ven_`) (+ Med untuk hak konten) · **Prasyarat:** Fase 89–90 ✅ · **Acuan:** KONSEP 10F, Lini 15
+> **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
 - [ ] 116.1 **Resale marketplace resmi**: tiket dijual kembali dengan hash transfer terkontrol (1 transfer maks, price cap 120% harga perdana anti-scalping) → platform fee → penjual wajib wallet terverifikasi
 - [ ] 116.2 **Anti-scalping enforcement**: deteksi bot (rate limit, velocity check Fase 100.5), pembelian massal dibatasi per identitas, blacklisting akun + denda → kepatuhan regulasi simulasi
 - [ ] 116.3 **Dynamic bundling event**: tiket + hotel (Fase 92.6) + transport + dining → harga bundle dinamis okupansi & sisa kamar → marginal cost terkalkulasi → guardrail floor
@@ -2022,6 +2430,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 117 — ENTERTAINMENT: GUEST EXPERIENCE AI, BIOMETRIC ENTRY & CROWD SAFETY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueCrowdAndBiometricService`; 1 migrasi; test `VenueCrowdAndBiometricTest` — commit `028dccb`, +367 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Venue (`ven_`) (+ Med untuk hak konten) · **Prasyarat:** Fase 89–90 ✅ · **Acuan:** KONSEP 10F, Lini 15
+> **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
 - [ ] 117.1 **Face-ID door entry** (token biometrik simulasi Fase 75.5): member → gate tanpa tiket fisik; liveness check → anti-share; biometrik disimpan sebagai template hash (bukan mentah) → compliance privasi
 - [ ] 117.2 **Peta orang dalam venue real-time**: agregasi scan masuk/keluar + sensor density → hitung okupansi per zona akurat → heatmap live → kapasitas ditolak otomatis (memperluas Fase 89.4)
 - [ ] 117.3 **Crowd safety AI**: prediksi kepadatan 15 menit ke depan (trend rule deterministik) → rekomendasi buka gate sekunder / slow entry / arahkan ke zona kosong → eksekusi oleh crowd_safety dengan konfirmasi
@@ -2032,6 +2443,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 118 — HOSPITALITY & ENTERTAINMENT: REVENUE COMMAND & PORTOFOLIO GLOBAL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `HospitalityRevenueCommandService`; 1 migrasi; test `HospitalityRevenueCommandTest` — commit `c6c8914`, +298 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hotel + Venue (laporan dari data terposting) · **Prasyarat:** Fase 111–117 ✅ · **Acuan:** KONSEP 10F, 11F
+> **Jalan pintas terlarang di fase ini:** KPI/RevPAR dari angka masukan, bukan dari folio/tiket terposting — ditambah seluruh X1–X25.
 - [ ] 118.1 **Revenue command center lintas jaringan**: ADR/RevPAR/okupansi 5.000 properti + GMV tiket 1.000 venue + bundle travel → satu papan, drill-down per kota/properti/event
 - [ ] 118.2 **Portfolio strategy simulator**: buka cabang (Fase 111.3) → simulasi 5 tahun (P&L, payback, cannibalization terhadap properti tetangga) di sandbox Digital Twin (Fase 67.3) → usulan ke DAO (Fase 86.6)
 - [ ] 118.3 **Syndication & JV properti**: properti baru didanai mitra (Fase 47) → investor hospitality token (memperluas RWA Fase 71: unit hotel disindikasi) → bagi hasil sewa per okupansi → reporting ke investor portal
@@ -2041,6 +2455,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 119 — SUMBER DAYA: UNDERGROUND & QUARRY DIGITAL TWIN, BLASTING, GEOTECH
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningGeotechAndBlastService`; 1 migrasi; test `MiningGeotechAndBlastTest` — commit `375c23b`, +482 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
+> **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 119.1 **Digital twin tambang bawah tanah**: model 3D terowongan & ventilasi (stope, decline, ventilation network) via Twin Bus (Fase 67.3) → simulasi aliran udara, jalur evakuasi, titik kritis runtuh → rencana pengeboran/blasting aman
 - [ ] 119.2 **Blast management**: jadwal peledakan → izin & radius keamanan (koordinat vs posisi pekerja/asset via telematik Fase 93.5 → tolak blast bila ada di radius) → rekam hasil (yield, oversize/undersize) → koreksi drill pattern berikutnya
 - [ ] 119.3 **Geotech & slope monitoring**: sensor inklinometer/vibrasi IoT → ambang gerakan tanah → pre-warning → inspeksi hse_officer → shutdown area; log masuk pilar lingkungan Fase 94.5
@@ -2051,6 +2468,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 120 — SUMBER DAYA: HSE LEADING INDICATOR, MENTAL HEALTH & CONTRACTOR SAFETY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningHseAndContractorService`; 1 migrasi; test `MiningHseAndContractorTest` — commit `af81f27`, +513 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
+> **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 120.1 **Leading indicator engine**: near-miss rate, safety observation, potensi bahaya (JSA per tugas), kepatuhan PPE (sensor simulasi/simulasi CCTV AI) → skor proaktif per site/shift → indikator mundur (lagging: LTIFR, TRIR) dilaporkan terpisah
 - [ ] 120.2 **Permit-to-work terintegrasi**: hot work, confined space, working at height, energi terkunci (LOTO) → approval + validasi posisi telematik pekerja (harus di area permit) + masa berlaku → kadaluarsa → auto-revoke akses
 - [ ] 120.3 **Fatigue management**: jam kerja + kualitas tidur shift (simulasi) → skor kelelahan operator alat berat → rekomendasi istirahat wajib → heavy equipment critical role fatigue tinggi → dialihkan (UU 22/2009 jam mengemudi konsisten Fase 20.4)
@@ -2061,6 +2481,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 121 — SUMBER DAYA: MINERALS PROCESSING, SMELTER & METALS TRADING DESK
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningSmelterAndMetalsTradingService`; 1 migrasi; test `MiningSmelterAndMetalsTradingTest` — commit `296d6ab`, +555 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
+> **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 121.1 **Smelter & plant lanjutan** (memperluas 94.3): BOM/routing khusus (ore → concentrate → NPI/matte/copper cathode simulasi), rekoveri per unit pengolahan, energi per ton (listrik/BBM terukur → emisi Scope 1/2)
 - [ ] 121.2 **Quality assay & LME-linked pricing**: kadar Ni/Co/Cu per lot → formula harga (index komoditas global simulasi + adjust kadar) → invoice offtaker → settlement bertingkat (Fase 94.7 lanjutan)
 - [ ] 121.3 **Metals trading desk**: posisi long/short komoditas (tangguh simulasi) → mark-to-market harian → margin call counterparty → hedging exposure produksi (memperluas Fase 48.6) → treasury metals account terpisah
@@ -2071,6 +2494,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 122 — SUMBER DAYA: COAL & COMMODITY EXPORT LOGISTICS SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningExportAndComplianceService`; 1 migrasi; test `MiningExportAndComplianceTest` — commit `32c14a7`, +508 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
+> **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 122.1 **Export terminal ops**: stockpile terminal → ship loader schedule → TOS sederhana (traffic order) → tiket muat per voyage (weighbridge terminal hash) → Bill of Lading → chain of custody penuh (Fase 22.5)
 - [ ] 122.2 **Demurrage & laytime komoditas curah**: terms CIF/FOB (Fase 49.1) → laytime calculator (weather working days) → demurrage/despatch otomatis ke invoice (memperluas Fase 23.5)
 - [ ] 122.3 **Quality & quantity dispute**: assay bersama surveyor independen (Party) → selisih > toleransi → sampel independen disegel → klaim → hold pembayaran (Fase 80.1 pola sama)
@@ -2081,6 +2507,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 123 — SUMBER DAYA: RENEWABLE ENERGY MINING & CARBON PROJECT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningRenewableAndCarbonService`; 1 migrasi; test `MiningRenewableAndCarbonTest` — commit `6e3726d`, +405 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
+> **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 123.1 **Elektrifikasi site**: solar farm (aset Fase 30) + battery storage di site tambang → beban terukur per area → konsumsi hijau vs diesel → pengurangan Scope 1 terhitung (Fase 60.1) → laporan dekarbonisasi tambang
 - [ ] 123.2 **Renewable-as-service internal**: listrik solar dialirkan ke site lain milik grup (pabrik, mall, RS) → meteran antar-entitas → **intercompany billing** (memperluas Fase 52.1) → transfer pricing cost-plus (Fase 52.2)
 - [ ] 123.3 **Carbon project (ARR/reforestation)**: lahan reklamasi (Fase 94.6) → proyek penanaman → verifikasi NDVI satelit (Fase 86.1) → issuance kredit karbon (Fase 60.2) → dijual di bursa karbon / dipakai offset sendiri
@@ -2091,6 +2520,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 124 — SUMBER DAYA: RECLAMATION, WATER & BIODIVERSITY COMPLIANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningEnvironmentalComplianceService`; 1 migrasi; test `MiningEnvironmentalComplianceTest` — commit `5cb103c`, +447 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
+> **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 124.1 **Reclamation lifecycle**: rencana pascatambang → budget & provisi (liabilitas, simulasi PSAK) → eksekusi proyek (EPC Fase 63) → verifikasi tumbuh (NDVI) → pelepasan provisi saat达标 → jurnal
 - [ ] 124.2 **Water balance**: sumber air → pemakaian (domestik, dust suppression, proses) → pengolahan (IPAL) → pelepasan → kualitas efluen (sensor) → ambang → penalti simulasi; air berulang pakai (recycle %) → insentif
 - [ ] 124.3 **Biodiversity & social**: baseline flora/fauna → monitoring → mitigasi (corridor, relocation simulasi dengan approval) → pelaporan ke regulator; desa binaan → program CSR ter-budit (DMSP ledger memperluas ide 12E)
@@ -2101,6 +2533,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 125 — SUMBER DAYA: INTEGRATED RESOURCE COMMAND CENTER
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningResourceCommandService`; 1 migrasi; test `MiningResourceCommandTest` — commit `1020677`, +312 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
+> **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 125.1 **Resource command center**: produksi pit/plant/terminal + harga komoditas live (Fase 81) + posisi metals desk (Fase 121.3) + okupansi armada → papan terpadu untuk direksi sumber daya
 - [ ] 125.2 **Mine-to-market margin**: revenue realized (setelah quality adjust) − biaya pit − processing − logistics − royalti → margin per ton per produk → drill-down ke voucher (Fase 52.6 pola)
 - [ ] 125.3 **Reserve & life-of-mine model**: sumber daya terbukti (statis 3D) → run-rate produksi → life of mine tahun → keputusan capex (pembukaan pit baru → proyek EPC → DAO approval Fase 86.6)
@@ -2110,6 +2545,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 126 — ENERGI & UTILITAS: GENCO, GRID & SMART METERING (LINI 13)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Egy): service `EnergyGridAndMeteringService`; 1 migrasi; test `EnergyGridAndMeteringTest` — commit `a96d2a5`, +544 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Egy (`egy_`) · **Prasyarat:** Fase 76 ✅ (meter), R1–R4 ✅ · **Acuan:** KONSEP Lini 13
+> **Jalan pintas terlarang di fase ini:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 126.1 Modul `Egy` (`egy_`): provider, MenuRegistry "Energi & Utilitas", roles (`grid_operator`, `genco_trader`, `energy_auditor`, `renewable_dev`), policies, arch test; tabel `egy_generation_assets` (PLTU simulasi, solar farm Fase 123.1, battery, genset) , `egy_grid_nodes`, `egy_smart_meters`
 - [ ] 126.2 **Smart metering massal**: 5 juta meter (mall, pabrik, RS, hotel, venue, kantor) → reading 15-menit → time-of-use tariff → tagihan distribusi per properti → terhubung tagihan utilitas lini (Fase 76.3, 13.2) sebagai sumber harga beli
 - [ ] 126.3 **Grid dispatch (simulasi)**: beban prediksi (pola jam, cuaca, event venue) → unit commitment sederhana (urutan murah) → dispatch order → realtime generation tercatat → curtailment saat surplus
@@ -2120,6 +2558,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 127 — ENERGI & UTILITAS: WATER, WASTE & DISTRICT UTILITIES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Egy): service `DistrictUtilityAndEscoService`; 1 migrasi; test `DistrictUtilityAndEscoTest` — commit `289f0f2`, +463 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Egy (`egy_`) · **Prasyarat:** Fase 76 ✅ (meter), R1–R4 ✅ · **Acuan:** KONSEP Lini 13
+> **Jalan pintas terlarang di fase ini:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 127.1 **Water utility**: instalasi pengolahan air (aset) → produksi m³ terukur → distribusi ke properti (meter, leak detection via pressure sensor) → tagihan per m³ tiered → limbah cair terolah → efluen compliant (Fase 124.2 pola)
 - [ ] 127.2 **Waste-to-energy & recycling plant**: sampah organik → biogas/listrik; anorganik → recycling line (Manufacturing ringan) → revenue bahan daur ulang + tipping fee dari pemerintah simulasi → mengurangi landfill (ESG Fase 79)
 - [ ] 127.3 **District cooling/heating** (mall & kawasan): central plant → distribusi pipa → meter per gedung → biaya per kWh thermal → koefisien COP terukur → efisien vs AC individual (penghematan tenant)
@@ -2130,6 +2571,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 128 — ENERGI & UTILITAS: CARBON TRADING, REC & ESG MARKETPLACE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Egy): service `CarbonTradingAndEsgMarketService`; 1 migrasi; test `CarbonTradingAndEsgMarketTest` — commit `654e54c`, +479 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Egy (`egy_`) · **Prasyarat:** Fase 76 ✅ (meter), R1–R4 ✅ · **Acuan:** KONSEP Lini 13
+> **Jalan pintas terlarang di fase ini:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 128.1 **Carbon exchange internal**: kredit karbon 17 lini (Fase 60 + 123.3) diperdagangkan antar entitas grup & mitra eksternal → orderbook (mirip Fase 71.3) → settlement ledger → retensi sebelum penjualan (kedaluwarsa vintage terhitung)
 - [ ] 128.2 **REC (Renewable Energy Certificate)**: listrik hijau solar site → REC per MWh → dijual/dipakai agar properti (hotel, mall, venue) klaim 100% renewable → laporan ke green customer & tenant
 - [ ] 128.3 **CBAM & carbon border connector** (memperluas Fase 83.3): emisi produk ekspor dari pabrik → sertifikat → harga karbon per kontainer → dikurangi dari margin atau ditagih ke buyer (sesuai terms)
@@ -2140,6 +2584,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 129 — ENERGI & UTILITAS: MICROGRID, STORAGE & RESILIENCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Egy): service `MicrogridAndResilienceService`; 1 migrasi; test `BackupGeneratorTest`, `MicrogridAndResilienceTest` — commit `e62753d`, +439 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Egy (`egy_`) · **Prasyarat:** Fase 76 ✅ (meter), R1–R4 ✅ · **Acuan:** KONSEP Lini 13
+> **Jalan pintas terlarang di fase ini:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [ ] 129.1 **Microgrid per site**: solar + battery + genset → islanding mode simulasi saat grid down → prioritas beban (RS > pabrik kritis > mall > umum) → ketersediaan terukur (SAIDI/SAIFI)
 - [ ] 129.2 **Battery storage arbitrage**: charge saat tarif murah → discharge saat puncak → selisih = revenue → siklus baterai tercatat → degradation → replacement via Asset (Fase 31)
 - [ ] 129.3 **Backup power compliance**: RS/venue/data center (Fase 134) wajib cadangan → uji beban berkala terjadwal → laporan kepatuhan → gagal uji → work order → alert compliance (Fase 100.3)
@@ -2149,6 +2596,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 130 — TELEKOMUNIKASI & DATA CENTER: NETWORK, IoT BACKBONE & ISP (LINI 14)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Tlx): service `TelecomNetworkAndIotService`; 1 migrasi; test `TelecomNetworkAndIotTest` — commit `fa7f9a0`, +569 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Tlx (`tlx_`) — registry perangkat IoT tunggal · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 14
+> **Jalan pintas terlarang di fase ini:** registry perangkat ganda per modul; tagihan konektivitas tanpa perangkat aktif di registry — ditambah seluruh X1–X25.
 - [ ] 130.1 Modul `Tlx` (`tlx_`): provider, MenuRegistry "Telekomunikasi & Data", roles (`noc_engineer`, `dc_operator`, `iot_platform_mgr`, `network_planner`), policies, arch test; tabel `tlx_sites` (tower, POP, data center), `tlx_links` (fiber, microwave), `tlx_sim_subscribers`
 - [ ] 130.2 **Network inventory & capacity**: 10.000 site, 50.000 link → kapasitas per link → penjadwalan perpanjangan (contract vendor tower) → SLA uptime 99.x% → penalti/insentif vendor (memperluas Fase 47.7)
 - [ ] 130.3 **IoT backbone untuk 17 lini**: satu platform ingest perangkat (telematik kendaraan Fase 68, sensor gedung Fase 76, meter energi Fase 126, sensor tambang Fase 93.5, monitor pasien Fase 87.5) → device registry, OTA update simulasi, per-device data plan billing ke entitas pemilik
@@ -2159,6 +2609,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 131 — TELEKOMUNIKASI & DATA CENTER: DC OPERATIONS, CLOUD & COLOCATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Tlx): service `DataCenterAndCloudOpsService`; 1 migrasi; test `DataCenterAndCloudOpsTest` — commit `8dd59af`, +469 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Tlx (`tlx_`) — registry perangkat IoT tunggal · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 14
+> **Jalan pintas terlarang di fase ini:** registry perangkat ganda per modul; tagihan konektivitas tanpa perangkat aktif di registry — ditambah seluruh X1–X25.
 - [ ] 131.1 **Data center ops**: 10 DC (Jakarta, Surabaya, Singapura simulasi) → rack/inventory → PUE terukur (daya total / IT load) → cooling optimization (memperluas Fase 76.2) → ESG DC (emisi)
 - [ ] 131.2 **Colocation & tenancy**: unit rak/rackspace disewakan (B2B) → kontrak colo (Contract) → meteran listrik per cage → billing bulanan → cross-connect fee antar tenant → escape hatch jika telat bayar (suspend port)
 - [ ] 131.3 **Cloud & compute service internal**: VM/container simulasi untuk divisi & mitra → katalog SKU (CPU/RAM/storage) → provisioning otomatis → metering pemakaian jam → chargeback per entitas/proyek (menghubungkan biaya AI Fase 99 & backup Fase 66)
@@ -2169,6 +2622,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 132 — TELEKOMUNIKASI: ISP RETAIL, SIM/5G & SMART CITY SERVICES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Tlx): service `IspAndMobileServices`; 1 migrasi; test `IspAndMobileServicesTest` — commit `7667762`, +596 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Tlx (`tlx_`) — registry perangkat IoT tunggal · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 14
+> **Jalan pintas terlarang di fase ini:** registry perangkat ganda per modul; tagihan konektivitas tanpa perangkat aktif di registry — ditambah seluruh X1–X25.
 - [ ] 132.1 **ISP retail & fixed wireless**: paket rumah/B2B (100 ribu subscriber simulasi) → billing cycle (prabayar topup / pascabayar invoice) → usage cap → throttle/pause saat telat bayar → denda keterlambatan → provisioning otomatis ke network (Fase 130.2)
 - [ ] 132.2 **SIM/eSIM & mobile plan**: 1 juta subscriber → paket data bulanan/robobin (auto-renew dari wallet) → rollover → family plan (akun induk–anak) → roaming partner settlement (interconnect antar operator simulasi)
 - [ ] 132.3 **Smart city services**: konektivitas untuk parkir pintar (Fase 14), lampu jalan IoT, CCTV traffic → layanan ke pemerintah daerah (kontrak B2G simulasi) → SLA & laporan bulanan
@@ -2179,6 +2635,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 133 — MEDIA & KREATIF: STUDIOS, CONTENT PRODUCTION & IP ECONOMY (LINI 15)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Med): service `StudioAndContentProductionService`; 1 migrasi; test `StudioAndContentProductionTest` — commit `873af50`, +690 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Med (`med_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 15
+> **Jalan pintas terlarang di fase ini:** royalti tanpa kontrak lisensi; settlement multi-pihak tanpa baris terakhir menyerap pembulatan — ditambah seluruh X1–X25.
 - [ ] 133.1 Modul `Med` (`med_`): provider, MenuRegistry "Media & Kreatif", roles (`producer`, `studio_ops`, `ip_manager`, `talent_mgmt`), policies, arch test; tabel `med_studios` (sound stage, virtual production, podcast room — fasilitas disewakan), `med_projects` (produksi: konten, iklan, event doc), `med_ip_assets`
 - [ ] 133.2 **Production lifecycle**: brief → pre-production (budget, schedule, cast) → shoot (booking studio + crew HCM gig Fase 85) → post → delivery → **akuisisi biaya sebagai aset** (capitalization simulasi bila memenuhi kriteria) atau expense → P&L proyek
 - [ ] 133.3 **Talent & creator contract**: aktor, sutradara, kreator → kontrak (Fase 28) dengan backend % (box office/revenue share) → audit royalty per karya → payout hold (memperluas Fase 45.5 & 115.2)
@@ -2189,6 +2648,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 134 — MEDIA & KREATIF: DISTRIBUTION, ADVERTISING & SPONSORSHIP PLATFORM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Med): service `DistributionAndAdvertisingService`; 1 migrasi; test `DistributionAndAdvertisingTest` — commit `25551b7`, +402 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Med (`med_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 15
+> **Jalan pintas terlarang di fase ini:** royalti tanpa kontrak lisensi; settlement multi-pihak tanpa baris terakhir menyerap pembulatan — ditambah seluruh X1–X25.
 - [ ] 134.1 **Distribution platform simulasi**: katalog konten (video, podcast, acara live) → kanal (app, social simulasi, in-venue screen) → views/impressions terukur → revenue share per view (formula per kontrak) → pembukuan per kanal per konten
 - [ ] 134.2 **Advertising & sponsorship platform**: inventory iklan digital (banner app/portal) + OOH (layar mall, venue, hotel) → booking campaign (slot waktu, impressions target) → **yield management** (harga dinamis okupansi inventaris, floor price) → verifikasi impressions (sensor footfall + analytics simulasi)
 - [ ] 134.3 **Campaign measurement**: awareness lift (survey simulasi), conversion attribution (kode referral Fase 45.4) → laporan ke advertiser → billing berbasis impressions/CPM/campaign flat
@@ -2199,6 +2661,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 135 — PENDIDIKAN & TALENT: ACADEMY, UPskilling & CERTIFICATION (LINI 16)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Edu): service `AcademyAndCertificationService`; 1 migrasi; test `AcademyAndCertificationTest` — commit `cb25cd7`, +625 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Edu (`edu_`) · **Prasyarat:** R1–R4 ✅, R6.3 ✅ · **Acuan:** KONSEP Lini 16
+> **Jalan pintas terlarang di fase ini:** sertifikat tanpa hash/nomor gapless; sertifikat tidak dipakai sebagai prasyarat lewat Contract `CredentialVerifier` — ditambah seluruh X1–X25.
 - [ ] 135.1 Modul `Edu` (`edu_`): provider, MenuRegistry "Pendidikan & Talent", roles (`instructor`, `edu_admin`, `cert_officer`, `corp_lnd`), policies, arch test; tabel `edu_programs` (kelas teknis bisnis: mekanik AutoServe, barista, HSE tambang, chef, front office, perawat), `edu_cohorts`, `edu_enrollments`
 - [ ] 135.2 **Katalog & kurikulum**: silabus berlapis (modul → sesi → asesmen), prerequisite graph (deteksi siklus), instruktur (staff HCM atau ahli eksternal Party) → jadwal & ruang (booking aset/flex-space Fase 78)
 - [ ] 135.3 **Pendaftaran & pembayaran**: enrollment → biaya (diskon beasiswa/CSR/employee benefit dari HCM training budget) → bayar via wallet/Payment Hub → cicilan (memperluas Fase 5C pattern) → refund pro-rata batal di tengah
@@ -2209,6 +2674,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 136 — PENDIDIKAN & TALENT: TALENT PIPELINE, HEADHUNTING & WORKFORCE MARKETPLACE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Edu): service `TalentPipelineAndWorkforceService`; 1 migrasi; test `TalentPipelineAndWorkforceTest` — commit `68ce41d`, +620 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Edu (`edu_`) · **Prasyarat:** R1–R4 ✅, R6.3 ✅ · **Acuan:** KONSEP Lini 16
+> **Jalan pintas terlarang di fase ini:** sertifikat tanpa hash/nomor gapless; sertifikat tidak dipakai sebagai prasyarat lewat Contract `CredentialVerifier` — ditambah seluruh X1–X25.
 - [ ] 136.1 **Talent pool 360°**: alumni edu (Fase 135) + karyawan internal + kandidat eksternal → profil skill (ontologi skill memperluas ide 8E), riwayat sertifikat, pengalaman → lowongan lintas 17 lini (formal job, kontrak proyek EPC, shift gig Fase 85)
 - [ ] 136.2 **Matching engine**: kecocokan skill/lokasi/gaji expectation (deterministik, `ai:audit`) → shortlist → interview scheduling (kalender) → offer → onboarding (Party KYC Fase 27 + HCM record)
 - [ ] 136.3 **Headhunter & agency fee**: rekruter eksternal → kontrak fee (% gaji pertama, staged) → hold sampai masa garansi kerja lewat (mirip clawback Fase 45.6) → payout
@@ -2219,6 +2687,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 137 — RITEL & E-COMMERCE: OMNICHANNEL MARKETPLACE GROUP (LINI 17)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Ret): service `OmnichannelRetailService`; 1 migrasi; test `OmnichannelRetailTest` — commit `a131ef1`, +542 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Ret (`ret_`) — memakai Inventory, tanpa stok sendiri · **Prasyarat:** R2.4 ✅, R1–R4 ✅ · **Acuan:** KONSEP Lini 17
+> **Jalan pintas terlarang di fase ini:** stok ritel terpisah dari Inventory (double-sell); cashback tanpa liabilitas ledger; settlement seller tanpa escrow — ditambah seluruh X1–X25.
 - [ ] 137.1 Modul `Ret` (`ret_`): provider, MenuRegistry "Ritel & E-Commerce", roles (`retail_ops`, `marketplace_mgr`, `category_mgr`, `last_mile_cs`), policies, arch test; tabel `ret_channels` (toko fisik 17 lini, web/app, marketplace 3P), `ret_listings`, `ret_fulfillment_centers`
 - [ ] 137.2 **Marketplace 3P multi-vendor**: penjual eksternal (menambah seller ke Party) → onboarding KYB → listing dengan moderasi kategori → komisi per kategori + biaya fulfillment opsional → settlement T+N via Payment Hub → chargeback & seller penalty
 - [ ] 137.3 **Unified inventory & OMS**: stok tersedia lintas channel (toko, web, marketplace) via InventoryService → reservasi anti double-sell (lockForUpdate) → backorder → pre-order (batas waktu & pembayaran penuh)
@@ -2229,6 +2700,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 138 — RITEL: SUPER APP, WALLET CROSS-LINI & CASHBACK ECONOMY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Ret): service `SuperAppAndCashbackService`; 1 migrasi; test `SuperAppAndCashbackTest` — commit `491b77c`, +546 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Ret (`ret_`) — memakai Inventory, tanpa stok sendiri · **Prasyarat:** R2.4 ✅, R1–R4 ✅ · **Acuan:** KONSEP Lini 17
+> **Jalan pintas terlarang di fase ini:** stok ritel terpisah dari Inventory (double-sell); cashback tanpa liabilitas ledger; settlement seller tanpa escrow — ditambah seluruh X1–X25.
 - [ ] 138.1 **Super app hub**: satu aplikasi agregasi 17 lini (naik taksi-simulasi, beli tiket venue, pesan hotel, bayar utilitas, topup EV, booking RS, langganan edukasi) → deeplink/uni-page → satu wallet & satu loyalty identity (Fase 112.1)
 - [ ] 138.2 **Cross-lini cashback**: promo berjenjang (beli di resto → cashback poin → tukar tiket venue → tambah nights hotel) → rules engine anti-abuse (velocity, self-dealing terdeteksi mirip Fase 46.6) → liability cashback terkendali
 - [ ] 138.3 **Bill payment hub**: utilitas (Fase 127.4), pajak simulasi (Fase 54.3), BPJS/insurance premium (Fase 72), cicilan (Fase 5C), sewa tenant → satu kanal pembayaran → fee revenue → receipt gapless
@@ -2239,6 +2713,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 139 — RITEL: FULFILLMENT, QUICK COMMERCE & LAST-MILE GRID
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Ret): service `FulfillmentAndQuickCommerceService`; 1 migrasi; test `FulfillmentAndQuickCommerceTest` — commit `4139de2`, +432 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Ret (`ret_`) — memakai Inventory, tanpa stok sendiri · **Prasyarat:** R2.4 ✅, R1–R4 ✅ · **Acuan:** KONSEP Lini 17
+> **Jalan pintas terlarang di fase ini:** stok ritel terpisah dari Inventory (double-sell); cashback tanpa liabilitas ledger; settlement seller tanpa escrow — ditambah seluruh X1–X25.
 - [ ] 139.1 **Quick commerce (q-commerce)**: dark store 100 titik (gudang mini WMS) → 30 menit delivery → picking zone terpendek → armada last-mile/motor/drone (Fase 80.3) → radius 3 km → slot density planning
 - [ ] 139.2 **Ghost store & hybrid**: area tanpa toko fisik dilayani FDC terdekat → biaya per order terukur → unit economics per zone (revenue vs picking + delivery + packaging)
 - [ ] 139.3 **Crowdshipping (simulasi)**: pekerja/driver yang menuju arah pesanan → tawaran → terima → pickup dari toko → drop → fee fleksibel → rating & verifikasi (POD hash)
@@ -2249,6 +2726,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 140 — INTEGRASI GELOMBANG 2: ENERGI + TELEKOM + MEDIA + EDU + RITEL TERHUBUNG MONOLITH
 > **Status audit 2026-10-10:** 🟠 KERANGKA — integrasi gelombang 2 = 1 service (243 baris) di Integration. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Integration): service `CrossEcosystemWave2OrchestrationService`; test `CrossEcosystemWave2IntegrationTest` — commit `bac30cf`, +243 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event lini 13–17 · **Prasyarat:** R8.1 ✅ + Fase 126–139 ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** integrasi berupa satu service di Integration; event tanpa konsumen nyata — ditambah seluruh X1–X25.
 - [ ] 140.1 **Energi ↔ semua lini**: smart meter (Fase 126.2) memasok data ESG & tagihan 17 lini; microgrid (Fase 129.1) melindungi RS & DC; solar PPA intercompany (Fase 123.2) menciptakan transaksi ledger antar entitas baru
 - [ ] 140.2 **Telekom ↔ semua lini**: IoT backbone (Fase 130.3) menaung seluruh telematik/sensor; DC (Fase 131) menampung backup & cloud chargeback; ISP memasok konektivitas venue/hotel/tambang
 - [ ] 140.3 **Media ↔ venue/hotel/mall**: OOH inventory (Fase 134.2) menjual layar mall & venue; sponsorship cross-lini (Fase 134.4); content IP (Fase 133.4) mengalirkan royalti ke seluruh touchpoint
@@ -2260,6 +2740,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 141 — INTEGRASI: GROUP CAPITAL, CONGLOMERATE GOVERNANCE & CROSS-LINI CAPITAL ALLOCATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul EnterpriseFinance): service `ConglomerateCapitalAndGovernanceService`; 1 migrasi; test `ConglomerateCapitalAndGovernanceTest` — commit `56a149c`, +464 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance (`ef_`) + Intercompany (`ic_`) · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** alokasi modal/dividen tanpa posting ledger; konsolidasi dari masukan manual — ditambah seluruh X1–X25.
 - [ ] 141.1 **Holding & subholding structure** (memperluas Fase 27.3): 17 lini → 5 subholding (Otomotif & Hospitality & Resources & Infrastructure & Consumer) → struktur saham token (memperluas Fase 71) → dividen holding dari laba anak (jurnal, simulasi)
 - [ ] 141.2 **Capital allocation engine**: proposal capex per lini (buka pabrik, 100 RS baru, 500 venue, solar farm) → scoring (IRR/NPV simulasi + skor strategis + ESG) → prioritas → dialokasi dana dari Treasury (Fase 48.5) → monitoring post-investment actual vs business case
 - [ ] 141.3 **M&A workflow**: target identification → due diligence (Fase 47.2 diperluas: financial, legal, tech, ESG) → valuation → offer → financing (debt via Fase 48.7 + equity token) → closing → integration playbook (migrasi data ke modul monolith, backfill idempoten)
@@ -2270,6 +2753,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 142 — SKALA GELOMBANG 2: SEEDER 17 LINI & PERFORMANCE ENFORCEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — `SeventeenLinesUltraSeeder` = 1 baris per jenis entitas; bukan skala. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul —): seeder `SeventeenLinesUltraSeeder`; test `SeventeenLinesScaleAndRaceConditionTest` — commit `612dbb2`, +222 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder lini 13–17 · **Prasyarat:** R9 ✅ · **Acuan:** KONSEP §A9
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; benchmark tanpa output terlampir — ditambah seluruh X1–X25.
 - [ ] 142.1 **SeventeenLinesUltraSeeder**: lanjutan Fase 98.1 — tambahan: 5 juta smart meter 15-menit × 90 hari, 1 juta subscriber telekom, 100 ribu enrollment edukasi + 500 ribu sertifikat, 1 juta listing marketplace + 50 juta order ritel, 500 proyek media + 100 ribu IP license, 5 juta meteran/telemetri DC & grid; total dataset miliaran baris — checkpoint/resume, benchmark per etape, idempoten mutlak
 - [ ] 142.2 **Query budget gelombang 2**: endpoint kritis (grid dispatch p95 < 500ms, marketplace OMS allocation < 100ms, super app feed < 300ms, energy TOU billing batch < 60s, IoT ingest 500 juta tick/hari) → dokumentasi EXPLAIN, index komposit, cache tagging
 - [ ] 142.3 **Race condition gelombang 2**: 1.000 order marketplace atas stok sama (OMS anti double-sell), 500 meteran billing serentak, 500 enrollment kelas berkapasitas 50 → alokasi tepat, tak negatif/ganda
@@ -2279,6 +2765,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 143 — AI CROSS-LINI: DECISION INTELLIGENCE & AUTONOMOUS OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — tidak ada commit sendiri; dicentang di commit Fase 144 (`4b7cf49`) bersama 99 baris `CrossLineAiAndAutonomousService`. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Tidak ditemukan commit khusus fase ini. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI · **Prasyarat:** Fase 64, 99 ✅ · **Acuan:** KONSEP §A10
+> **Jalan pintas terlarang di fase ini:** keputusan tanpa snapshot input & seed; kill-switch tidak diuji; dicentang di commit fase lain (X19) — ditambah seluruh X1–X25.
 - [ ] 143.1 **Cross-lini decision engine**: satu kerangka (memperluas Fase 99) → semua model deterministik ber-seed, input snapshot tersimpan, `ai:audit` membuktikan rekonstruksi identik; model registry ber-versi dengan approval perubahan
 - [ ] 143.2 **Autonomous operations ladder**: level 1 (rekomendasi) → level 2 (auto-execute bawah ambang: auto-PO Fase 75.2, rate Fase 81, dispatch Fase 93.4) → level 3 (auto dengan rollback window) → level 4 (fully autonomous untuk zona berisiko rendah) → setiap level punya kill-switch & audit trail
 - [ ] 143.3 **Digital twin what-if konglomerasi**: simulasi besar dari Fase 53.8/118.2 — tutup pelabuhan 14 hari, harga nikel −20%, wabah health, blackout grid → dampak P&L 17 lini, kas, dan rantai pasok → keputusan dewan berbasis simulasi
@@ -2289,6 +2778,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 144 — KEAMANAN & KEPATUHAN GELOMBANG 2: ZERO TRUST, PRIVACY VAULT & REGULATORY HEALTH 17 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — service keamanan di Integration (zero trust/privacy vault/pentest) tanpa penegakan di rute/middleware. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core, Integration): service `CrossLineAiAndAutonomousService`, `PrivacyVaultService`, `RegulatoryComplianceService`, `SecurityPenTestService` …; 2 migrasi; test `CrossLineAiAndAutonomousTest`, `SecurityWave2Test` — commit `4b7cf49`, +2200 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core RBAC/kripto + modul pemilik data (bukan Integration) · **Prasyarat:** R3 ✅ · **Acuan:** KONSEP §A6
+> **Jalan pintas terlarang di fase ini:** 'zero trust/privacy vault' sebagai tabel skor tanpa penegakan di middleware/cast; data P1 plaintext — ditambah seluruh X1–X25.
 - [ ] 144.1 **Zero trust architecture**: segmentasi modul (service identity), mTLS simulasi antar-service, least-privilege token per lini (Sanctum abilities diperluas Fase 26.1), device trust untuk IoT (Fase 130.3) → audit akses harian
 - [ ] 144.2 **Privacy vault terpusat**: PII kategori (medis, biometrik Fase 117.1, finansial, lokasi) → enkripsi field-level, tokenization untuk analytics (data science tak melihat mentah), consent ledger per subjek (opt-in/out lintas lini) → right-to-erasure workflow (anonimisasi bila tak bisa hapus transaksi ledger)
 - [ ] 144.3 **Regulatory compliance matrix 17 lini**: Kesehatan (izin, rekam medis), Energi (KWh metering, sertifikasi), Telko (frekuensi, data lokal), Media (siaran, konten), Edu (akreditasi), Ritel (konsumen, perlindungan data), Tambang (IUP, AMDAL), Hospitality (pariwisata) → satu kalender + eskalasi (memperluas Fase 100.3)
@@ -2299,6 +2791,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 145 — RESILIENCE GELOMBANG 2: MULTI-REGION ACTIVE-ACTIVE, EDGE & BUSINESS CONTINUITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — tidak ada infrastruktur active-active/edge/BCP; klaim RPO 0 di laporan tidak berdasar. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Integration): service `ResilienceWave2Service`; 1 migrasi; test `ResilienceWave2Test` — commit `7162299`, +744 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** infrastruktur/ops · **Prasyarat:** Fase 66 ✅ · **Acuan:** KONSEP §A9
+> **Jalan pintas terlarang di fase ini:** klaim active-active/RPO tanpa replikasi & drill nyata — ditambah seluruh X1–X25.
 - [ ] 145.1 **Active-active multi-region** (memperluas Fase 101.3): Jakarta primari + Singapura/SG-2 untuk lini internasional (venue/hotel mancanegara, metals trading, ISP) → routing DNS geo → conflict resolution ledger (idempotency key global) → RPO 0 untuk seluruh aset
 - [ ] 145.2 **Edge compute & local DC** (Fase 131.3 diperluas): edge node di venue/event & site tambang (bandwidth terbatas) → processing lokal → sync ke core saat online (memperluas offline-first Fase 65.2 ke lini baru)
 - [ ] 145.3 **Business continuity plan 17 lini**: BIA (business impact analysis) per lini → RTO/RPO tiered (RS/energi/pembayaran = critical < 15m; media/edukasi = standard) → DR drill otomatis per quarter → laporan
@@ -2309,6 +2804,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 146 — DATA PLATFORM: LAKEHOUSE, ANALYTICS & MASTER DATA MANAGEMENT 17 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Integration): service `DataPlatformService`; 1 migrasi; test `DataPlatformTest` — commit `1649290`, +716 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) — putuskan di DoR · **Prasyarat:** R5.1 ✅ · **Acuan:** KONSEP §A1
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/MDM' berupa tabel metadata yang diisi manual — ditambah seluruh X1–X25.
 - [ ] 146.1 **Data lakehouse**: ingest CDC dari seluruh modul (simulasi via outbox) → zona raw/curated/consumption → query analitik tanpa membebani transaksional (query budget transaksional tak terpengaruh) → retention policy (Fase 55.8)
 - [ ] 146.2 **Master Data Management**: satu MDM untuk produk, lokasi, partner, chart of account → golden record per entitas (merge workflow Fase 27.5 diperluas) → distribusi ke seluruh modul via event → duplikat terdeteksi & diresolusi
 - [ ] 146.3 **Semantic metrics layer**: definisi KPI tunggal (GMV, ADR, OTIF, utilization, margin) → semua dashboard pakai definisi yang sama → lineage audit (angka dashboard = query sumber)
@@ -2319,6 +2817,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 147 — PLATFORM ECONOMY: OPEN API, ECOSYSTEM DEVELOPERS & WHITE-LABEL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — tidak ada rute open API/white-label. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Integration): service `PlatformEconomyService`; 1 migrasi; test `PlatformEconomyTest` — commit `017c520`, +629 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** `routes/api.php` + Integration (gateway) · **Prasyarat:** Fase 102 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** open API tanpa rute/Sanctum/rate limit/dokumen — ditambah seluruh X1–X25.
 - [ ] 147.1 **Open platform API v3+ untuk ekosistem** (memperluas Fase 102): katalog 1.000 endpoint lintas 17 lini → tier developer (free/pro/enterprise) → sandbox per lini → SDK simulasi → revenue API (usage-based billing Fase 55.5)
 - [ ] 147.2 **App store & marketplace mitra**: integrasi pihak ketiga (POS vendor, HRIS, accounting eksternal) → listing → review → certification (regression suite otomatis) → revenue share platform
 - [ ] 147.3 **White-label solusi**: salah satu lini (mis. PMS hotel Fase 91, POS resto, health EMR) ditawarkan ke operator eksternal → instance multi-tenant terisolasi (Fase 55.7) → billing per tenant → upgrade path ke full suite
@@ -2329,6 +2830,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 148 — SCENARIO: KONGLOMERASI SIMULASI 12 BULAN & GOLDEN MEGA-SCENARIO
 > **Status audit 2026-10-10:** 🟠 KERANGKA — skenario 12 bulan bergantung `sim:run` yang tidak menjalankan job (lihat 67). modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Integration): service `MegaScenarioService`; 1 migrasi; test `MegaScenarioTest` — commit `4d72d37`, +501 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** tests/Feature + `sim:run` · **Prasyarat:** R8.4 ✅ + 17 lini ✅ · **Acuan:** KONSEP §A10.1
+> **Jalan pintas terlarang di fase ini:** skenario 12 bulan tanpa `sim:run` yang menjalankan tick handler; assert pada nilai yang disetel test sendiri — ditambah seluruh X1–X25.
 - [ ] 148.1 **Conglomerate 12-month simulation**: Simulation Kernel (Fase 67.1) menjalankan 17 lini 365 hari kompresi — siklus penuh: kontrak → produksi → logistik → penjualan → payroll → depresiasi → klaim → royalti → dividen token → konsolidasi grup → **seluruh `*:audit` 40+ = 0 selisih di akhir simulasikan**
 - [ ] 148.2 **Golden mega-scenario lintas 17 lini**: skenario tunggal otomatis merangkai semuanya: petani tanam (NDVI) → tambang nikel → smelter → baterai EV → dijual Store → dikirim Logistics → diisi daya SPKLU → pesan hotel via super app → nonton festival venue → konten media direkam → karyawan ikut kelas edu → bayar via wallet → maskapai-simulasi & ISP ikut terhubung → konsolidasi grup → audit masal 0 selisih
 - [ ] 148.3 **Crisis mega-scenario**: blackout grid (Fase 129) → RS jadi prioritas mikrogrid → DC failover (Fase 145) → venue event pakai genset → media livestream darurat → penagihan ditahan otomatis (business continuity) → pemulihan → audit 0 selisih
@@ -2338,6 +2842,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 149 — DOKUMENTASI & PLAYBOOK GELOMBANG 2
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Tidak ditemukan commit khusus fase ini. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** dokumen hasil command · **Prasyarat:** Fase 104–148 ✅ · **Acuan:** X24
+> **Jalan pintas terlarang di fase ini:** playbook/dokumen klaim tanpa generator — ditambah seluruh X1–X25.
 - [ ] 149.1 **README final 17 lini**: ringkasan seluruh lini, akun demo per role baru, cara menjalankan kernel simulasi + seeder ultra gelombang 2, daftar lengkap `*:audit`/`verify-*`
 - [ ] 149.2 **ARCHITECTURE.md**: ERD 12 modul gelombang 2 (Egy, Tlx, Med, Edu, Ret + perluasan Hosp/Ven/Htl/Min), peta energy/telco/data flow, sequence diagram super app & marketplace settlement
 - [ ] 149.3 **CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 104–149 tercatat; orientasi sesi baru lengkap
@@ -2348,6 +2855,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 150 — FINAL: QUALITY GATE EKSPANSI PENUH & SERAH TERIMA AKHIR
 > **Status audit 2026-10-10:** 🟠 KERANGKA — commit dokumen saja (15 baris). modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul —):  — commit `e74c9c1`, +15 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** agregasi bukti fase 104–149 · **Prasyarat:** semua fase 104–149 ✅ · **Acuan:** PROGRESS P7
+> **Jalan pintas terlarang di fase ini:** mencentang final sebelum seluruh fase sebelumnya ✅ terverifikasi — ditambah seluruh X1–X25.
 - [ ] 150.1 **Full regression Fase 0–150**: seluruh test suite (test Fase 0–63 karakterisasi + 64–103 gelombang 1 + 104–149 gelombang 2) 100% hijau, tanpa satu pun di-skip/dilemahkan; jumlah test & assertion tercatat vs baseline setiap fase
 - [ ] 150.2 **Audit massal akhir**: `bank:reconcile` (seluruh aset: IDR, PTS, crypto, stablecoin, token RWA, kredit karbon), seluruh `*:audit` 17 lini, seluruh `verify-*` hash-chain (passport, custody, paspor pasien, tiket venue, weighbridge, kontrak, aset, ECO, RWA, sertifikat edu) → SEMUA 0 selisih
 - [ ] 150.3 **Stress & security final**: seeder ultra gelombang 1+2 berjalan penuh (benchmark tercatat), race condition ekstrem, pen-testing massal (route × role, IDOR, fuzzing), query budget seluruh endpoint kritis hijau
@@ -2378,6 +2888,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 151 — GLOBAL COMMAND: OPERASI MULTI-NEGARA & REGIONAL HQ
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GlobalCommandService`; 1 migrasi; test `GlobalCommandTest` — commit `0439a23`, +335 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (multi-entitas/negara) + Hcm/Procurement/Hospital sesuai topik — putuskan di DoR · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP §A1, §A12
+> **Jalan pintas terlarang di fase ini:** fitur 'global' berupa tabel skor di Integration; payroll lintas negara tanpa jurnal & tarif yang dinyatakan; memperluas `GlobalCommandService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 151.1 Tabel `grp_regions` (APAC, EMEA, Americas simulasi), `grp_regional_hqs` (entitas hukum per wilayah, Fase 27.3 diperluas), `grp_country_ops` (status operasi per negara: study → entry → live → exit)
 - [ ] 151.2 **Market entry playbook otomatis**: checklist per negara (izin, pajak, tenaga kerja, data residency) → ApprovalEngine bertingkat → task force terbentuk (bounty Fase 85) → progress tracking → go-live gate
 - [ ] 151.3 **Regional consolidation**: mata uang lokal → fungsional IDR (Fase 48.2) → translasi (Fase 52.4) → laporan regional → konsolidasi grup; hedging exposure per region (Fase 48.6)
@@ -2388,6 +2901,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 152 — GLOBAL: CROSS-BORDER PAYROLL, MOBILITY & IMMIGRATION COMPLIANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CrossBorderPayrollService`; 1 migrasi; test `CrossBorderPayrollTest` — commit `75c085e`, +348 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (multi-entitas/negara) + Hcm/Procurement/Hospital sesuai topik — putuskan di DoR · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP §A1, §A12
+> **Jalan pintas terlarang di fase ini:** fitur 'global' berupa tabel skor di Integration; payroll lintas negara tanpa jurnal & tarif yang dinyatakan; memperluas `CrossBorderPayrollService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 152.1 **Global payroll engine**: 30 negara simulasi (pajak, THR/13th month, BPJS-ekuivalen) → per-country rule table ber-versi → pay run paralel → consolidated cost ke entitas induk (intercompany Fase 52.1)
 - [ ] 152.2 **Assignment contracts**: expatriate (Fase 151.4) → kontrak penugasan (durasi, benefit, repatriation clause) → termination benefit terhitung → link ke Contract & HCM
 - [ ] 152.3 **Immigration compliance**: visa/permit kerja per negara → masa berlaku → pengingat eskalasi (Fase 100.3) → kerja tanpa permit → blokir sistem penugasan
@@ -2398,6 +2914,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 153 — GLOBAL: SUPPLY CHAIN RESILIENCE & MULTI-SOURCING STRATEGY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SupplyChainResilienceService`; 1 migrasi; test `SupplyChainResilienceTest` — commit `3b43cdb`, +349 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (multi-entitas/negara) + Hcm/Procurement/Hospital sesuai topik — putuskan di DoR · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP §A1, §A12
+> **Jalan pintas terlarang di fase ini:** fitur 'global' berupa tabel skor di Integration; payroll lintas negara tanpa jurnal & tarif yang dinyatakan; memperluas `SupplyChainResilienceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 153.1 **Supplier multi-sourcing**: setiap kritikal item wajib ≥ 2 pemasok lintas region (aturan konsentrasi, memperluas Fase 32.7) → auto-flag single source → rekomendasi dual-source → qualification run (Fase 32.2)
 - [ ] 153.2 **Geopolitical risk feed** (simulasi): sanksi, blokade pelabuhan, tarif perang → blast radius (Fase 53.6) ke pesanan & produksi → alternatif routing otomatis (Fase 22.3 multi-scenario)
 - [ ] 153.3 **Strategic buffer stock**: item kritis → safety stock multi-echelon (Fase 53.5) ditingkatkan berdasar risiko region → biaya buffer vs risiko downtime → approval Treasury (Fase 48)
@@ -2408,6 +2927,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 154 — GLOBAL: TALENT GLOBAL, IMMIGRANT WORKFORCE & ETHICAL SOURCING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EthicalSourcingService`; 1 migrasi; test `EthicalSourcingTest` — commit `fa76c28`, +348 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (multi-entitas/negara) + Hcm/Procurement/Hospital sesuai topik — putuskan di DoR · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP §A1, §A12
+> **Jalan pintas terlarang di fase ini:** fitur 'global' berupa tabel skor di Integration; payroll lintas negara tanpa jurnal & tarif yang dinyatakan; memperluas `EthicalSourcingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 154.1 **Global talent pool** (memperluas Fase 136.1): kandidat lintas negara → work authorization check → remote/on-site matching → kontrak global (multi-currency comp)
 - [ ] 154.2 **Ethical sourcing & modern slavery check**: audit rantai pasok hulu (tambang, perkebunan, garmen Fase 181) → kuesioner + dokumen + inspeksi lapangan → skor → pelanggaran → remediation → blacklist (memperluas Fase 60.4)
 - [ ] 154.3 **Living wage benchmark**: perbandingan upah lokal vs benchmark (data simulasi) → gap → action plan → biaya masuk costing → laporan ESG social (Fase 60)
@@ -2418,6 +2940,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 155 — GLOBAL: PANDEMIC/PUBLIC HEALTH & BUSINESS CONTINUITY LINTAS NEGARA
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CrisisContinuityService`; 1 migrasi; test `CrisisContinuityTest` — commit `1d11c90`, +283 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (multi-entitas/negara) + Hcm/Procurement/Hospital sesuai topik — putuskan di DoR · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP §A1, §A12
+> **Jalan pintas terlarang di fase ini:** fitur 'global' berupa tabel skor di Integration; payroll lintas negara tanpa jurnal & tarif yang dinyatakan; memperluas `CrisisContinuityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 155.1 **Global health surveillance bridge** (memperluas Fase 107.3): agregasi lintas negara → peta risiko per wilayah operasi → rekomendasi pembatasan operasional (venue tutup, hotel karantina simulasi, pabrik shift reduksi)
 - [ ] 155.2 **Crisis cost & insurance response**: klaim asuransi bisnis (Fase 72 diperluas: BI interruption) → trigger dari deklarasi krisis → payout → dampak kas terukur
 - [ ] 155.3 **Workforce contingency**: work-from-home shift (role yang bisa remote), cross-training via Edu (Fase 135) → daftar pengganti siap per fungsi kritis
@@ -2428,6 +2953,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 156 — LINI 18: ASURANSI & REASURANSI PENUH (UNDERWRITING, ACTUARIAL, TREATY)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FullInsuranceService`; 1 migrasi; test `FullInsuranceTest` — commit `3b1cdcf`, +368 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Insurance (`ins_`) (+ Syariah untuk takaful, Agri untuk agri-insurance) · **Prasyarat:** Fase 72 ✅ · **Acuan:** KONSEP Lini 18
+> **Jalan pintas terlarang di fase ini:** klaim via flag; premi/klaim tanpa ledger; aktuaria berupa konstanta tanpa label S1; memperluas `FullInsuranceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 156.1 Modul `Ins` (`ins_` lanjutan dari 72): provider, MenuRegistry "Asuransi & Reasuransi", roles (`underwriter`, `actuary`, `claims_adjuster`, `reinsurance_mgr`, `broker_agent`), policies, arch test; tabel `ins_products_penuh` (kendaraan, properti, marine cargo, kesehatan, jiwa, liability, weather index), `ins_policies_penuh`, `ins_premium_schedule`
 - [ ] 156.2 **Underwriting engine**: risk assessment (data telematik kendaraan Fase 68, gedung Fase 76, kesehatan Fase 87, tambang Fase 93) → rating engine (faktor risiko deterministik) → quote → bind (kontrak asuransi hash) → policy terbit gapless
 - [ ] 156.3 **Actuarial & pricing**: loss triangle simulasi, relasi IBNR, expected loss ratio → harga produk ulang berkala → approval aktuaris → jejak perubahan tarif
@@ -2438,6 +2966,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 157 — LINI 18: REASURANSI, KAPITAL & CAT MODELLING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ReinsuranceAndCatService`; 1 migrasi; test `ReinsuranceAndCatTest` — commit `281188b`, +307 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Insurance (`ins_`) (+ Syariah untuk takaful, Agri untuk agri-insurance) · **Prasyarat:** Fase 72 ✅ · **Acuan:** KONSEP Lini 18
+> **Jalan pintas terlarang di fase ini:** klaim via flag; premi/klaim tanpa ledger; aktuaria berupa konstanta tanpa label S1; memperluas `ReinsuranceAndCatService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 157.1 **Treaty & facultative reinsurance**: kontrak proporsi (quota share), excess of loss, stop loss → otomatis mengalihkan bagian risiko ke reinsurer (Party) → settlement retrocession → neraca risiko bersih terhitung
 - [ ] 157.2 **Ceded/assumed premium ledger**: jurnal reinsurance (ceded premium, commission, claims recoverable) → subledger terpisah → `ins:reinsurance-audit` = 0 selisih
 - [ ] 157.3 **Capital adequacy model (simulasi C-ROSS/RBC)**: risk-based capital per kelas risiko → rasio solvabilitas → peringatan di bawah ambang → aksi (tambal modal via Fase 141.2, kurangi eksposur, tambah reasuransi)
@@ -2448,6 +2979,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 158 — LINI 18: INSURANCE EMBEDDED 30 LINI & BROKER MARKETPLACE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EmbeddedInsuranceService`; 1 migrasi; test `EmbeddedInsuranceTest` — commit `0ba3cab`, +319 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Insurance (`ins_`) (+ Syariah untuk takaful, Agri untuk agri-insurance) · **Prasyarat:** Fase 72 ✅ · **Acuan:** KONSEP Lini 18
+> **Jalan pintas terlarang di fase ini:** klaim via flag; premi/klaim tanpa ledger; aktuaria berupa konstanta tanpa label S1; memperluas `EmbeddedInsuranceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 158.1 **Embedded insurance matrix**: satu katalog proteksi tertanam di seluruh lini — kredit HODL-to-Drive (Fase 5C), booking hotel (cancellation), tiket venue, pengiriman (cargo Fase 50.6), sewa mall, kontrak EPC (performance bond bridge), tambang (liability), panen tani (weather index Fase 156.2)
 - [ ] 158.2 **Parametric trigger otomatis** (memperluas Fase 72.2): cuaca index (curah hujan < ambang → petani), batal event (Fase 113.3), bencana per region (Fase 157.4) → payout tanpa survey → reserve terukur
 - [ ] 158.3 **Broker & agent marketplace**: broker (Party role, Fase 45 extended) menawarkan produk multi-perusahaan → komisi → penilaian kinerja → settlement via escrow
@@ -2458,6 +2992,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 159 — LINI 18: LIFE, HEALTH & WELLNESS INSURANCE ADVANCED
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `LifeHealthWellnessService`; 1 migrasi; test `LifeHealthWellnessTest` — commit `7833862`, +317 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Insurance (`ins_`) (+ Syariah untuk takaful, Agri untuk agri-insurance) · **Prasyarat:** Fase 72 ✅ · **Acuan:** KONSEP Lini 18
+> **Jalan pintas terlarang di fase ini:** klaim via flag; premi/klaim tanpa ledger; aktuaria berupa konstanta tanpa label S1; memperluas `LifeHealthWellnessService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 159.1 **Term life & saving plans**: premi periodik → death benefit / maturity → underwriting medis (link ke RS Fase 87 data dengan consent) → beneficiary management (Party) → claim wafat (dokumen + verifikasi)
 - [ ] 159.2 **Health insurance full**: reimburse vs cashless di RS jaringan (Fase 88.2 diperluas) → e-claim real-time → cashless authorization ke RS (guarantee letter gapless) → settlement RS → denial reason coded → appeal workflow
 - [ ] 159.3 **Wellness rewards**: wearable data (Fase 108.4) → healthy behavior → diskon premi / bonus poin → data privacy via vault (Fase 144.2) → anti-gaming rules
@@ -2468,6 +3005,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 160 — LINI 18: TAKAFUL, AGRI-INSURANCE & INSURANCE OPS COMMAND
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TakafulAndAgriService`; 1 migrasi; test `TakafulAndAgriTest` — commit `09e3be8`, +290 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Insurance (`ins_`) (+ Syariah untuk takaful, Agri untuk agri-insurance) · **Prasyarat:** Fase 72 ✅ · **Acuan:** KONSEP Lini 18
+> **Jalan pintas terlarang di fase ini:** klaim via flag; premi/klaim tanpa ledger; aktuaria berupa konstanta tanpa label S1; memperluas `TakafulAndAgriService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 160.1 **Takaful window** (jembatan ke Lini 19 Syariah): dana partisipasi (mutual), wakalah fee, contribution → klaim dari dana → surplus dibagi (hibah/retensi) → syariah board approval simulasi → terpisah dari dana konvensional
 - [ ] 160.2 **Agri insurance lanjutan** (memperluas 156.5): parametric yield/curah hujan (link NDVI Fase 86) → payout ke petani plasma (Fase 62) → dikurangi otomatis dari cicilan (offset) → loss ratio per komoditas
 - [ ] 160.3 **Micro-insurance massal**: premi harian sangat kecil (kendaraan harian, perjalanan harian, product warranty) → agregasi via platform (Fase 158) → claims autopilot tetap (Fase 72) → volume tinggi, reserve terkendali
@@ -2478,6 +3018,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 161 — LINI 19: KEUANGAN SYARIAH (BANK SYARIAH, MURABAHAH, MUDHARABAH)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SyariahBankingService`; 1 migrasi; test `SyariahBankingTest` — commit `54da549`, +300 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Syariah (`syb_`) di atas Ledger · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP Lini 19
+> **Jalan pintas terlarang di fase ini:** memakai akun bunga; akad hanya label tanpa jadwal & posting margin/bagi hasil; memperluas `SyariahBankingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 161.1 Modul `Syariah` (`syb_`): provider, MenuRegistry "Keuangan Syariah", roles (`syariah_officer`, `shariah_board`, `muamalah_teller`), policies, arch test; tabel `syb_products` (murabahah, mudharabah, musyarakah, ijarah, qardh), `syb_accounts` (tabungan wadi'ah/yad), `syb_contracts`
 - [ ] 161.2 **Accounting PSAK 102/103 simulasi**: akun terpisah dari ledger konvensional (Fase 1) dengan sign khas (korporasi = akad), markup margin diakui gradual, akad wajib tercatat sebagai kontrak hash
 - [ ] 161.3 **Murabahah pembiayaan**: akad jual beli + markup disepakati di awal → pencairan ke vendor langsung (tidak ke nasabah) → angsuran pokok + margin → keterlambatan: denda disgorgement ke dana amil (bukan ke bank) → meniru pola Fase 5C dengan modifikasi akad
@@ -2488,6 +3031,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 162 — LINI 19: SUKUK, IJARAH & WEALTH SYARIAH
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SukukAndZakatService`; 1 migrasi; test `SukukAndZakatTest` — commit `a65d3a2`, +367 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Syariah (`syb_`) di atas Ledger · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP Lini 19
+> **Jalan pintas terlarang di fase ini:** memakai akun bunga; akad hanya label tanpa jadwal & posting margin/bagi hasil; memperluas `SukukAndZakatService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 162.1 **Sukuk issuance**: aset riil/ushul maal (gedung, armada) → SPV simulasi → token sukuk (memperluas RWA Fase 71) → periodic distribution (sewa ijarah / bagi hasil) → maturity redemption → dicatat off/on balance sheet (Fase 50.7 pola)
 - [ ] 162.2 **Ijarah & ijara muntahia bittamleek**: sewa aset + opsi akhir jual (hak beli) → amortisasi sewa → transfer kepemilikan saat opsi dieksekusi → terhubung modul Contract & Asset (Fase 31.6)
 - [ ] 162.3 **Wealth syariah**: reksa dana syariah (DAFT screening: tidak ada saham ribawi), emas syariah, obligasi negara/sukuk → robo-advisor mode syariah (Fase 73 diperluas) → screening report per instrumen
@@ -2498,6 +3044,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 163 — LINI 19: MICROFINANCE, BMT & ECONOMIC EMPOWERMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `BmtMicrofinanceService`; 1 migrasi; test `BmtMicrofinanceTest` — commit `5489b50`, +320 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Syariah (`syb_`) di atas Ledger · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP Lini 19
+> **Jalan pintas terlarang di fase ini:** memakai akun bunga; akad hanya label tanpa jadwal & posting margin/bagi hasil; memperluas `BmtMicrofinanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 163.1 **BMT/koperasi simulasi**: kelompok anggota → simpanan pokok/wajib/sukarela → pembiayaan mikro kelompok (musyarakah/qardh) → angsuran kolektif → denda ke kas amil
 - [ ] 163.2 **Gig worker financing** (bridge ke Fase 85/136): riwayat penghasilan bounty/payout → skor → plafon mikro → angsuran auto-deduct saat payout masuk (waterfall) → default ditangani bertahap
 - [ ] 163.3 **Farmer microfinance upgrade** (memperluas Fase 62.2/86.2): gabungan NDVI ratchet + weather insurance (Fase 160.2) → pencairan bertahap per milestone tanam → panen → repayment dari hasil jual
@@ -2508,6 +3057,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 164 — LINI 19: ISLAMIC TRADE FINANCE & CROSS-BORDER SYARIAH
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `IslamicTradeFinanceService`; 1 migrasi; test `IslamicTradeFinanceTest` — commit `56022e1`, +263 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Syariah (`syb_`) di atas Ledger · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP Lini 19
+> **Jalan pintas terlarang di fase ini:** memakai akun bunga; akad hanya label tanpa jadwal & posting margin/bagi hasil; memperluas `IslamicTradeFinanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 164.1 **Islamic LC (istisna' + wakalah)**: LC syariah untuk impor (Fase 50.1 diperluas) → akad istisna' untuk produksi + wakalah bi jualah untuk distribusi → settlement via stablecoin (Fase 83) → fee syariah terpisah
 - [ ] 164.2 **Salam & parallel salam** untuk komoditas agro (Fase 171): pembayaran di muka petani → pengiriman kemudian → hedge via parallel contract → meniru pola forward Fase 48.6 dengan akad sah
 - [ ] 164.3 **Murabahah supply chain finance** (memperluas Fase 50.5): bank beli dari pemasok → jual ke pembeli dengan margin → tenor → settlement → AR/AP terkait tetap tercatat
@@ -2518,6 +3070,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 165 — LINI 19: SYARIAH OPERATIONS, COMPLIANCE & INTEGRATION 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SyariahOperationsService`; 1 migrasi; test `SyariahOperationsTest` — commit `28f6ddf`, +244 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Syariah (`syb_`) di atas Ledger · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP Lini 19
+> **Jalan pintas terlarang di fase ini:** memakai akun bunga; akad hanya label tanpa jadwal & posting margin/bagi hasil; memperluas `SyariahOperationsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 165.1 **Syariah operations dashboard**: portfolio pembiayaan, NPF (non-performing financing) ratio, bagi hasil pool, zakat terkumpul & terdistribusi, sukuk outstanding
 - [ ] 165.2 **NPF management**: restructuring akad (reschedule tanpa tambahan margin ilegal), tagih, write-off dengan approval shariah board → recovery waterfall
 - [ ] 165.3 **Integration 30 lini**: wallet syariah bisa dipakai di seluruh lini (resto halal Fase 7, hotel Fase 91, venue Fase 89, marketplace Fase 137) → merchant fee mode syariah (tanpa penalty berlebih) → sertifikasi halal lintas produk (Fase 100.3)
@@ -2527,6 +3082,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 166 — LINI 20: PENDIDIKAN FORMAL & SEKOLAH (K-12, VOKASI, KAMPUS)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CampusEducationService`; 1 migrasi; test `CampusEducationTest` — commit `663c2a5`, +313 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Edu (`edu_`) — bukan modul `camp_` terpisah · **Prasyarat:** Fase 135–136 ✅ · **Acuan:** KONSEP Lini 20
+> **Jalan pintas terlarang di fase ini:** duplikasi enrollment/kurikulum di luar Edu; transkrip tanpa hash; memperluas `CampusEducationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 166.1 Modul `Campus` (`camp_`): school/campus, academic years, terms, classes, cohorts, subjects, curricula, teachers, learners, guardians; multi-level governance & data scope per institution
 - [ ] 166.2 Admission lifecycle: application → document verification → entrance assessment → offer → enrollment → tuition plan; scholarships/aid via approval, waitlist & capacity allocation
 - [ ] 166.3 Academic operations: timetable conflict detection, attendance, gradebook, exam & rubric, transcript, graduation eligibility; certificate/transcript hash-chain verify command
@@ -2537,6 +3095,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 167 — LINI 20: LEARNING PLATFORM, DIGITAL CONTENT & CREDENTIALS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `LearningPlatformService`; 1 migrasi; test `LearningPlatformTest` — commit `5e1e747`, +355 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Edu (`edu_`) — bukan modul `camp_` terpisah · **Prasyarat:** Fase 135–136 ✅ · **Acuan:** KONSEP Lini 20
+> **Jalan pintas terlarang di fase ini:** duplikasi enrollment/kurikulum di luar Edu; transkrip tanpa hash; memperluas `LearningPlatformService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 167.1 Learning management system: course versioning, enrollment, lessons, assignments, discussion, accessibility metadata, multilingual content
 - [ ] 167.2 Assessment integrity: question bank versioning, randomized forms deterministic by seed, proctoring simulation, appeals, regrade audit trail
 - [ ] 167.3 Digital credentials: competency-based micro-credential, prerequisite graph, expiration/renewal, portable QR verification, revoke/supersede without deleting history
@@ -2547,6 +3108,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 168 — LINI 21: AGRI-PROCESSING, FOOD COMMODITIES & EXPORT GRADE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FoodProcessingService`; 1 migrasi; test `FoodProcessingTest` — commit `c77eb6b`, +294 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Manufacturing + Agri (pengolahan) · Food (`food_`) hanya merek/program gizi · **Prasyarat:** Fase 62 (R6.4) ✅ · **Acuan:** KONSEP Lini 21
+> **Jalan pintas terlarang di fase ini:** BOM/MRP duplikat di luar Manufacturing; grade ekspor dari masukan bebas; memperluas `FoodProcessingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 168.1 Modul `FoodProcessing` (`food_`): collection, grading, mill/packing plants, food-safety plans, lots, yield, co-products, traceability to Agri Fase 62
 - [ ] 168.2 Procurement contracts with farmer groups; forecast intake from NDVI/harvest estimates; capacity reservation; quality-based price & transparent deductions
 - [ ] 168.3 Processing orders: raw material → WIP → finished goods, mass-balance invariant, waste/by-product recovery, manufacturing costing adapter
@@ -2557,6 +3121,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 169 — LINI 21: FOOD BRAND, PRIVATE LABEL & NUTRITION PROGRAMS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FoodBrandNutritionService`; 1 migrasi; test `FoodBrandNutritionTest` — commit `6101826`, +322 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Manufacturing + Agri (pengolahan) · Food (`food_`) hanya merek/program gizi · **Prasyarat:** Fase 62 (R6.4) ✅ · **Acuan:** KONSEP Lini 21
+> **Jalan pintas terlarang di fase ini:** BOM/MRP duplikat di luar Manufacturing; grade ekspor dari masukan bebas; memperluas `FoodBrandNutritionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 169.1 Brand/product lifecycle: formulation via PLM, nutrition/allergen label versioning, packaging approvals, shelf-life validation, market launch gates
 - [ ] 169.2 Private-label production for Resto/Retail/Hotel/Hospital: contract manufacturing, customer-owned materials, conversion cost, quality agreement
 - [ ] 169.3 Nutrition program catalogs (school meals, hospital diets, corporate catering): dietitian-approved recipe, allergen and restriction validation, menu substitution workflow
@@ -2566,6 +3133,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 170 — LINI 22: PERIKANAN, AQUACULTURE & MARINE SUPPLY CHAIN
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MarineAquacultureService`; 1 migrasi; test `MarineAquacultureTest` — commit `dd9c45d`, +281 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Marine (`mar_`) — pola kontrak mengikuti Agri · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 22
+> **Jalan pintas terlarang di fase ini:** menyalin modul Agri alih-alih memakai ulang pola; payout tanpa ledger; memperluas `MarineAquacultureService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 170.1 Modul `MarineAgri` (`mar_`): farms/cages/vessels, species, stock cohorts, feed, growth sampling, mortality, harvest lots, water-quality sensors
 - [ ] 170.2 Feed and seedling procurement, batch traceability, feeding plan, biomass estimate, harvest forecast linked to Agri/food processing
 - [ ] 170.3 Catch/harvest chain of custody: landing, weighbridge, grade, cold-chain, vessel/zone provenance, sustainable quota simulation
@@ -2575,6 +3145,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 171 — LINI 22: AQUACULTURE EXPORT, SEAFOOD TRACEABILITY & BLUE ESG
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AquacultureExportService`; 1 migrasi; test `AquacultureExportTest` — commit `551258b`, +264 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Marine (`mar_`) — pola kontrak mengikuti Agri · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 22
+> **Jalan pintas terlarang di fase ini:** menyalin modul Agri alih-alih memakai ulang pola; payout tanpa ledger; memperluas `AquacultureExportService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 171.1 End-to-end lot passport from hatchery/feed/farm/harvest/processing/container/buyer; immutable lineage and public verification with sensitive location redacted
 - [ ] 171.2 Export documents (health certificate, origin, customs simulation), Trade Finance and multimodal Logistics integration
 - [ ] 171.3 Blue ESG: water quality, mangrove restoration, feed conversion, bycatch/waste, scope emissions; verified credit issuance guardrails
@@ -2584,6 +3157,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 172 — LINI 23: KEHUTANAN, TIMBER & RESTORATION VALUE CHAIN
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ForestryTimberService`; 1 migrasi; test `ForestryTimberTest` — commit `425c55e`, +251 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Forest (`for_`) + Esg · **Prasyarat:** R6.4 ✅ · **Acuan:** KONSEP Lini 23
+> **Jalan pintas terlarang di fase ini:** volume tebang tanpa izin (approval); kredit karbon di luar Esg; memperluas `ForestryTimberService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 172.1 Modul `Forest` (`for_`): concessions/simulation plots, species, inventory, harvest plans, permits, restoration polygons, geospatial history
 - [ ] 172.2 Sustainable harvest quota and chain-of-custody tickets from stump/plot → mill → finished timber → buyer; permit, volume and location checks
 - [ ] 172.3 Restoration operations: nursery procurement, planting tasks, survival monitoring via satellite/field checks, maintenance cost and outcome evidence
@@ -2593,6 +3169,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 173 — LINI 23: NATURE FINANCE, BIODIVERSITY & ECOSYSTEM SERVICES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `NatureFinanceService`; 1 migrasi; test `NatureFinanceTest` — commit `5c9d904`, +302 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Forest (`for_`) + Esg · **Prasyarat:** R6.4 ✅ · **Acuan:** KONSEP Lini 23
+> **Jalan pintas terlarang di fase ini:** volume tebang tanpa izin (approval); kredit karbon di luar Esg; memperluas `NatureFinanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 173.1 Ecosystem-service project registry (carbon, watershed, biodiversity) with baseline, methodology version, monitoring period and independent verifier
 - [ ] 173.2 Credit issuance only after evidence/approval; unique serials prevent double counting; retirement/transfer ledger mirrors carbon Fase 60 controls
 - [ ] 173.3 Corporate nature-positive procurement: buyer obligations, claims wording guardrails, project benefit sharing to local communities via ledger
@@ -2602,6 +3181,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 174 — LINI 24: WASTE, RECYCLING & INDUSTRIAL CIRCULARITY MARKETPLACE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CircularEconomyService`; 1 migrasi; test `CircularEconomyTest` — commit `8eb2251`, +268 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Circular (`cir_`) + Logistics reverse + Esg · **Prasyarat:** Fase 79 ✅ · **Acuan:** KONSEP Lini 24
+> **Jalan pintas terlarang di fase ini:** tonase dari masukan bebas; angkutan di luar Logistics; memperluas `CircularEconomyService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 174.1 Modul `Circular` (`cir_`): waste streams, by-product specifications, testing, permits, recycler facilities, manifests, weighbridge records
 - [ ] 174.2 B2B marketplace matches seller by-product (manufacturing/mining/hotel/healthcare) to buyer input; price, quality, distance and compliance filters
 - [ ] 174.3 Reverse logistics booking + custody + treatment certificate; hazardous streams require eligible licensed operator and stricter approval
@@ -2611,6 +3193,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 175 — LINI 25: PROFESSIONAL SERVICES, CONSULTING & PROJECT MARKETPLACE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ProfessionalServicesService`; 1 migrasi; test `ProfessionalServicesTest` — commit `8d286cf`, +345 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** ProServices (`psv_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 25
+> **Jalan pintas terlarang di fase ini:** tagihan tanpa timesheet disetujui; pendapatan tanpa ledger; memperluas `ProfessionalServicesService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 175.1 Modul `ProServices` (`psv_`): service catalog, firms/consultants, statements of work, milestones, timesheets, deliverables, acceptance and disputes
 - [ ] 175.2 Procurement marketplace: RFP → proposals sealed → weighted evaluation → award approval → Contract → budget encumbrance → milestone payment
 - [ ] 175.3 Consultant access is least-privilege and time-bound to assigned project records; deliverables checksum stored via DocumentStore
@@ -2620,6 +3205,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 176 — LINI 25: LEGAL OPERATIONS, DISPUTES & KNOWLEDGE MANAGEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `LegalOperationsService`; 1 migrasi; test `LegalOperationsTest` — commit `c1f4495`, +263 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Contract (legal ops & sengketa) · **Prasyarat:** R6.1 (Contract) ✅ · **Acuan:** KONSEP Lini 25
+> **Jalan pintas terlarang di fase ini:** modul legal baru yang menduplikasi kontrak; memperluas `LegalOperationsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 176.1 Matter management: case, counterparties, deadlines, privilege classification, counsel, evidence store and retention policy
 - [ ] 176.2 Dispute lifecycle: notice → negotiation → mediation/arbitration simulation → award → settlement/payment or appeal; connect Contract, Insurance and Treasury
 - [ ] 176.3 Legal obligation calendar and clause library versioning; approved templates only; deviations require counsel approval
@@ -2629,6 +3217,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 177 — LINI 26: AVIATION, AIRPORT SERVICES & AIR CARGO
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AviationService`; 1 migrasi; test `AviationTest` — commit `14e277d`, +328 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Aviation (`avi_`); air cargo tetap di Logistics · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 26
+> **Jalan pintas terlarang di fase ini:** shipment udara kedua di luar Logistics; memperluas `AviationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 177.1 Modul `Aviation` (`avi_`): aircraft, operators, airports, slots, routes, maintenance cycles, ground handling and cargo manifests
 - [ ] 177.2 Passenger/charter booking simulation with capacity/time-lock, identity verification, baggage and refund rules; integrate Hotel/Travel/Payment
 - [ ] 177.3 Air cargo integrates Logistics multimodal; dangerous-goods eligibility, temperature control and customs documentation
@@ -2638,6 +3229,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 178 — LINI 26: AIRLINE NETWORK, LOYALTY & REVENUE MANAGEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AirlineNetworkService`; 1 migrasi; test `AirlineNetworkTest` — commit `02bbba1`, +257 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Aviation (`avi_`); air cargo tetap di Logistics · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 26
+> **Jalan pintas terlarang di fase ini:** shipment udara kedua di luar Logistics; memperluas `AirlineNetworkService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 178.1 Route network, schedule, fare classes, seat inventory, codeshare partner contracts and disruption handling (simulation)
 - [ ] 178.2 Yield management by demand/season/lead time with immutable quoted fare and contract/floor guardrails
 - [ ] 178.3 Loyalty miles connect to group Travel Pass with conversion rates and liability ledger; prevent duplicate earning across codeshare
@@ -2647,6 +3241,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 179 — LINI 27: PORTS, MARINE TERMINALS & TRADE FACILITATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PortOperationsService`; 1 migrasi; test `PortOperationsTest` — commit `df53209`, +300 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Port (`prt_`); master kapal/kontainer tetap di Logistics · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 27
+> **Jalan pintas terlarang di fase ini:** tabel kapal ganda; D&D dihitung ulang di luar kalkulator Logistics; memperluas `PortOperationsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 179.1 Modul `PortOps` (`prt_`): berth windows, vessel calls, cranes, yards, gate appointments, manifests and terminal charges
 - [ ] 179.2 Port community workflow: carrier, customs, shipper, terminal and inspector share scoped event/status data via API/Event Spine
 - [ ] 179.3 Yard/berth capacity planning, container dwell/demurrage, reefer plug-in monitoring, dangerous cargo separation
@@ -2656,6 +3253,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 180 — LINI 27: OCEAN FLEET, SHIP MANAGEMENT & MARINE SERVICES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `OceanFleetService`; 1 migrasi; test `OceanFleetTest` — commit `f219a3b`, +285 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Port (`prt_`); master kapal/kontainer tetap di Logistics · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 27
+> **Jalan pintas terlarang di fase ini:** tabel kapal ganda; D&D dihitung ulang di luar kalkulator Logistics; memperluas `OceanFleetService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 180.1 Vessel asset register: class, dry-dock schedule, crew, fuel/emissions, maintenance, charter and voyage profitability
 - [ ] 180.2 Voyage planning: port sequence, bunker simulation, weather risk feed, cargo compatibility, laytime and charter-party obligations
 - [ ] 180.3 Marine insurance, claims, hull maintenance and environmental incident reporting integrate Insurance/ESG/PortOps
@@ -2665,6 +3265,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 181 — LINI 28: APPAREL, TEXTILE & FASHION SOURCING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FashionSourcingService`; 1 migrasi; test `FashionSourcingTest` — commit `07e394b`, +304 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Manufacturing + Store (varian) · Fashion (`fsh_`) hanya sourcing/koleksi · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 28
+> **Jalan pintas terlarang di fase ini:** master produk/varian ganda di luar Inventory/Store; memperluas `FashionSourcingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 181.1 Modul `Fashion` (`fsh_`): design collections, size/color matrix, BOM, seasonal buy plan, supplier factories, purchase commitments and sample approval
 - [ ] 181.2 Ethical sourcing audit integrates Supplier ESG (Fase 154); factory capacity, labor standard evidence and corrective action gates before PO
 - [ ] 181.3 Production orders integrate Manufacturing; lot-level fiber/dye provenance, quality inspection, defect/rework and costing
@@ -2674,6 +3277,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 182 — LINI 28: FASHION RETAIL, PERSONALIZATION & CIRCULAR TEXTILES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FashionRetailCircularService`; 1 migrasi; test `FashionRetailCircularTest` — commit `094502d`, +254 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Manufacturing + Store (varian) · Fashion (`fsh_`) hanya sourcing/koleksi · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 28
+> **Jalan pintas terlarang di fase ini:** master produk/varian ganda di luar Inventory/Store; memperluas `FashionRetailCircularService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 182.1 Omnichannel fashion store: inventory per size/color, fit/availability, reserve-in-store, click-and-collect, returns and exchange
 - [ ] 182.2 Made-to-measure workflow: measurement consent, configurable design, production routing and delivery (C2M Fase 82 extended)
 - [ ] 182.3 Textile take-back: used garment collection → grading → resale/repair/recycle via Circular Fase 174 → customer credit via loyalty ledger
@@ -2683,6 +3289,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 183 — LINI 29: TELECOM MEDIA SERVICES, CONTENT CONNECTIVITY & DIGITAL ID
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TelecomIdentityService`; 1 migrasi; test `TelecomIdentityTest` — commit `4172bc2`, +299 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Tlx (layanan) + Party/Core (identitas) · **Prasyarat:** R3 ✅ · **Acuan:** KONSEP Lini 29
+> **Jalan pintas terlarang di fase ini:** modul identitas terpisah yang menduplikasi KYC Party; memperluas `TelecomIdentityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 183.1 Secure digital identity federation across 30 lines: consented SSO, scoped claims, revocation, session risk and audit (no shared credentials)
 - [ ] 183.2 Verified messaging/notification gateway for OTP, operational alerts and receipts with delivery state, retry and cost allocation
 - [ ] 183.3 Content delivery/network service for media/hospitality/education: usage metering, SLA, availability and intercompany billing
@@ -2692,6 +3301,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 184 — LINI 30: CITY OPERATIONS, SMART DISTRICTS & PUBLIC-PRIVATE SERVICES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SmartDistrictService`; 1 migrasi; test `SmartDistrictTest` — commit `ab01d63`, +272 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** District (`dst_`) sebagai orkestrator · **Prasyarat:** Fase 76, 126, 130 ✅ · **Acuan:** KONSEP Lini 30
+> **Jalan pintas terlarang di fase ini:** sensor/energi/gedung diduplikasi di District alih-alih memakai Tlx/Egy/Proptech; memperluas `SmartDistrictService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 184.1 Modul `District` (`dst_`): districts, public assets, service requests, permits, utility networks, mobility/parking, emergency response interfaces
 - [ ] 184.2 B2G service contracts: SLA, procurement, milestone acceptance, public billing and transparency reports; segregated public-sector tenant scope
 - [ ] 184.3 Smart district twin links buildings, utilities, traffic and public realm; what-if traffic/energy/waste scenarios in sandbox
@@ -2701,6 +3313,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 185 — 30-LINI DOMAIN MODEL, MASTER DATA & EVENT CONTRACT FREEZE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DomainGovernanceService`; 1 migrasi; test `DomainGovernanceTest` — commit `260824f`, +286 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** registry modul (KONSEP §A1) + katalog event (§A4.2) · **Prasyarat:** R4 ✅, R8.1 ✅ · **Acuan:** KONSEP §A1, §A4
+> **Jalan pintas terlarang di fase ini:** 'freeze' kontrak event tanpa test kontrak; registry di luar konfigurasi yang dibaca arch test; memperluas `DomainGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 185.1 Inventory seluruh domain, contracts, events, identifiers, currencies, units, statuses and ownership; publish versioned canonical registry
 - [ ] 185.2 Master data model: product, service, site, party, asset, account, unit-of-measure, geographic hierarchy and classification; backward-compatible adapters only
 - [ ] 185.3 Event contract governance: schema compatibility (additive-only by default), deprecation windows, consumer inventory and replay compatibility checks
@@ -2710,6 +3325,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 186 — INTEGRASI 30 LINI A: END-TO-END VALUE CHAIN SIMULATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ValueChainSimulationService`; 1 migrasi; test `ValueChainSimulationTest` — commit `4e3b756`, +240 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `ValueChainSimulationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 186.1 Peta aliran nilai 30 lini: hulu (tambang, perikanan, hutan, agro) → manufaktur (pangan, tekstil, mineral) → energi/telekom infrastruktur → distribusi/ritel/AV → hospitality/hiburan/edukasi/kesehatan → jasa profesional/keuangan → internasional
 - [ ] 186.2 Simulasi rantai penuh via Simulation Kernel: 90 hari kompresi menjalankan rantai utuh (pupuk → petani → food processing → resto → retail → pelanggan) dengan seluruh ledger tetap Σ=0
 - [ ] 186.3 Bridge kontrak lintas lini: setiap jenis kontrak (sewa, distribusi, Jasa, offtake, franchise, colo, PPA) punya adapter ke Contract core tanpa duplikasi state
@@ -2719,6 +3337,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 187 — INTEGRASI 30 LINI B: PAYMENT, SETTLEMENT & TREASURY UNIFICATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TreasuryUnificationService`; 1 migrasi; test `TreasuryUnificationTest` — commit `e68adf5`, +267 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `TreasuryUnificationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 187.1 Satu payment hub untuk 30 lini: wallet, kartu simulasi, QR, stablecoin, escrow, auto-debit, split settlement, settlement T+N per vertical
 - [ ] 187.2 Settlement network internal: clearing harian antar entitas (intercompany AR/AP → netting → payment run) → mengurangi gross flow, fee internal tercatat
 - [ ] 187.3 Multi-currency + multi-aset unified statement: IDR, valas, PTS, kripto, stablecoin, token RWA, kredit karbon, miles, zakat/wakaf fund → satu konsolidasi kesehatan kas
@@ -2728,6 +3349,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 188 — INTEGRASI 30 LINI C: IDENTITY, ACCESS & TENANCY 30 MODUL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `IdentityTenancyService`; 1 migrasi; test `IdentityTenancyTest` — commit `d73035f`, +311 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `IdentityTenancyService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 188.1 RBAC + ABAC gabungan: role, permission, scope (entity/region/site/project/time) → evaluasi gabungan terpusat → matriks uji otomatis seluruh route × role × scope
 - [ ] 188.2 Customer identity graph: satu pelanggan memiliki akun di hotel/RS/ritel/edukasi/AV → linkage dengan consent → tanpa cross-sell tanpa izin → shadow profile saat anonymized
 - [ ] 188.3 Vendor identity graph: supplier/partner di banyak lini → credit exposure gabungan (Fase 27.7) → keputusan limit terpadu → compliance screening sekali, dipakai ulang berkala
@@ -2737,6 +3361,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 189 — INTEGRASI 30 LINI D: DATA PRODUCT & ANALYTICS FEDERATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AnalyticsFederationService`; 1 migrasi; test `AnalyticsFederationTest` — commit `d66a26e`, +270 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `AnalyticsFederationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 189.1 Data product per lini (satu paket: schema, contract, SLA freshness, owner, access policy) → katalog pusat → konsumen dari lini lain lewat kontrak data
 - [ ] 189.2 Federated metric store: definisi KPI (Fase 146.3) diperluas ke 30 lini → lineage otomatis ke voucher ledger → dashboard mana pun memakai definisi tunggal
 - [ ] 189.3 Privacy-preserving analytics: agregasi kohort, differential privacy simulasi, k-anonimity check sebelum export lintas lini
@@ -2746,6 +3373,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 190 — INTEGRASI 30 LINI E: GROUP COMMAND CENTER & DAILY OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GroupCommandCenterService`; 1 migrasi; test `GroupCommandCenterTest` — commit `abf87ff`, +252 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `GroupCommandCenterService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 190.1 Group daily cockpit: revenue/cash/order/fulfillment/staffing per lini real-time + alert lintas lini → satu layar C-suite & duty officer
 - [ ] 190.2 Exception triage: alert terklasifikasi (money, safety, customer, compliance) → owner otomatis → SLA respons → eskalasi → closeout dengan bukti
 - [ ] 190.3 Daily/weekly cadence: close hari lintas lini (resto, AV, retail, hotel) → ringkasan terkonsolidasi → variance root-cause otomatis (perencanaan vs aktual)
@@ -2754,6 +3384,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 191 — SKALA GELOMBANG 3: SEEDER 30 LINI ULTRA & BENCHMARK
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ScaleBenchmarkService`; 1 migrasi; test `ScaleBenchmarkTest` — commit `e4ce7b7`, +212 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `ScaleBenchmarkService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 191.1 ThirtyLinesUltraSeeder: dataset 12 bulan untuk 30 lini — termasuk asuransi (polis + klaim), syariah (akad + bagi hasil), pendidikan (sekolah + enrollment), seafood/forest/textile (lot + trace), aviation (flight + seat), port (vessel call + yard), district (request + SLA) — miliaran baris, chunked, checkpoint/resume, deterministik
 - [ ] 191.2 Benchmark per domain: ingest telematik, billing batch, settlement, learning progress, insurance claims, port yard op → waktu & puncak memori tercatat
 - [ ] 191.3 Skalability forecast: proyeksi 3× volume → rekomendasi partisi/indeks sebelum diperlukan (dokumentasi EXPLAIN)
@@ -2762,6 +3395,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 192 — SKALA: PARTISI, ARSIP & QUERY BUDGET 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PartitionArchiveService`; 1 migrasi; test `PartitionArchiveTest` — commit `47f6c77`, +285 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `PartitionArchiveService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 192.1 Partisi time-based untuk tabel transaksional terbesar (telematik, meteran, order, booking, klaim, tiket) → strategi attach/detach per bulan
 - [ ] 192.2 Cold archive & recall (memperluas Fase 55.8): data > 5 tahun → archive store dengan checksum → query berseleksi tetap bisa tarik → tidak membebani indeks aktif
 - [ ] 192.3 Materialized summary per domain (rollup harian/bulanan) → dashboard memakai rollup → drill-down hanya saat diminta
@@ -2771,6 +3407,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 193 — SKALA: CONCURRENCY, LOCKING & CONTENTION MANAGEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ConcurrencyLockingService`; 1 migrasi; test `ConcurrencyLockingTest` — commit `dce4829`, +315 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `ConcurrencyLockingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 193.1 Peta kontensi: akun ledger, seat/tiket/kamar, stok OMS, kapasitas armada, kuota kelas → lock order policy global (urutan ID selalu konsisten) → anti-deadlock
 - [ ] 193.2 Optimistic concurrency untuk record non-uang (draft kontrak, jadwal) → version conflict → retry dengan pesan jelas
 - [ ] 193.3 Admission control: rate shed pada beban ekstrem (mis. flash sale, festival) → antrian adil (FIFO + member tier opsional) → tanpa kehilangan permintaan sah
@@ -2780,6 +3419,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 194 — SKALA: SEARCH, DISCOVERY & GLOBAL NAVIGATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GlobalSearchService`; 1 migrasi; test `GlobalSearchTest` — commit `893b807`, +226 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `GlobalSearchService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 194.1 Indeks pencarian global (produk, dokumen, pelanggan berizin, resi, kamar, program, kelas, aset, kontrak) → parsial, scope-aware (hanya hasil yang boleh dilihat pengguna)
 - [ ] 194.2 Search-as-you-type & global command palette diperluas (Ctrl+K Fase 16.6) → lintas 30 lini, peran menentukan hasil
 - [ ] 194.3 Full-text dokumen (kontrak, PO, invoice, sertifikat) dengan highlight → link ke sumber asli → akses policy dokumen ditegakkan saat preview
@@ -2788,6 +3430,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 195 — AI GELOMBANG 3: MODEL REGISTRY, EVALUATION & GUARDRAILS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AiModelGuardrailService`; 1 migrasi; test `AiModelGuardrailTest` — commit `8c4567f`, +302 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AiModelGuardrailService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 195.1 Model registry pusat: setiap model/aturan punya versi, pemilik, data latih snapshot hash, metrik evaluasi, approval rilis, rollback pointer
 - [ ] 195.2 Evaluation harness: benchmark internal per domain (forecast MAPE, klaim fraud AUC simulasi, match quality) → gate rilis: skor tak boleh turun > ambang
 - [ ] 195.3 Guardrails input/output: validasi schema, penolakan prompt injection pada konten user-generated (media/forum), redaksi PII sebelum inferensi eksternal
@@ -2799,6 +3444,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 196 — AI: AGENT ORCHESTRATION & HUMAN-IN-THE-LOOP
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AgentHitlOrchestrationService`; 1 migrasi; test `AgentHitlOrchestrationTest` — commit `1ccac1e`, +317 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AgentHitlOrchestrationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 196.1 Agent runtime: setiap agen (bid Fase 84, claim Fase 72, ops Fase 143, concierge Fase 113.5) memakai kerangka sama — tool whitelist per peran, budget langkah, audit tiap aksi
 - [ ] 196.2 Human-in-the-loop queues: aksi berisiko (uang besar, medis, kontrak, pemilihan talent) → antrean review per role → approve/reject/edit dengan alasan → masuk audit trail
 - [ ] 196.3 Multi-agent collaboration: orkestrator menggabungkan agen (procurement + logistics + finance) untuk satu tujuan → rencana disetujui manusia sebelum eksekusi → hasil dilaporkan
@@ -2810,6 +3458,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 197 — AI: DECISION LOG, EXPLAINABILITY & MODEL AUDIT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AiDecisionAuditService`; 1 migrasi; test `AiDecisionAuditTest` — commit `6718d7e`, +201 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AiDecisionAuditService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 197.1 Decision log: setiap keputusan otomatis menyimpan input snapshot, versi model, output, dan tindakan yang diambil → bisa di-replay identik (audit Fase 64.4 diperluas ke 30 lini)
 - [ ] 197.2 Explainability view: alasan faktor utama (feature contribution simulasi) per keputusan penting → tersedia untuk reviewer & regulator simulasi
 - [ ] 197.3 Fairness & bias check: hasil tidak boleh berbeda berdasarkan atribut terlindungi (uji statistik) → temuan → koreksi → tercatat
@@ -2821,6 +3472,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 198 — AI: GENERATIVE CONTENT, KNOWLEDGE ASSISTANT & SOP COPILOT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AiGenerativeCopilotService`; 1 migrasi; test `AiGenerativeCopilotTest` — commit `2d3704b`, +342 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AiGenerativeCopilotService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 198.1 Knowledge assistant internal: menjawab dari dokumen terverifikasi saja (ARCHITECTURE, RUNBOOK, kontrak, kebijakan) → sitasi wajib ke sumber → tanpa sitasi = tidak ditampilkan
 - [ ] 198.2 SOP copilot: dari prosedur tertulis → checklist eksekusi terpandu → bukti langkah (foto, scan, tanda tangan) → audit kepatuhan SOP
 - [ ] 198.3 Content generation terkontrol: draf kontrak dari template (Fase 28.2), laporan insiden, ringkasan meeting → selalu draft, approval manusia, hash dokumen saat disimpan
@@ -2832,6 +3486,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 199 — AI: OPTIMIZATION ENGINE (ROUTING, SCHEDULING, ALLOCATION)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AiOptimizationEngineService`; 1 migrasi; test `AiOptimizationEngineTest` — commit `f1480ae`, +211 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AiOptimizationEngineService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 199.1 Optimizer terpusat: objective + constraints dideklarasikan per masalah (rute armada, jadwal shift, alokasi seat/kamar/kursi, kapasitas pabrik, portofolio investasi) → solver deterministik (greedy + local search ber-seed)
 - [ ] 199.2 Constraint library: regulasi (jam kerja, kapasitas legal), kontrak (SLA, allotment), preferensi (service level) → solver wajib memuaskan hard constraint
 - [ ] 199.3 Explainable recommendations: solusi + alasan (mengapa unit X di rute Y) + alternatif top-3 + dampak biaya/layanan → manusia pilih atau setujui
@@ -2843,6 +3500,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 200 — AI: FRAUD, AML & ANOMALY DETECTION MESH 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AiFraudAmlMeshService`; 1 migrasi; test `AiFraudAmlMeshTest` — commit `91e2b87`, +249 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AiFraudAmlMeshService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 200.1 Signal mesh: gabung sinyal lintas lini (pembayaran mencurigakan, klaim beruntun, resale tiket, selisih timbangan, meteran dimanipulasi, retur berulang, komisi aneh) → skor gabungan per entitas
 - [ ] 200.2 Case management: alert → case → bukti (link ke voucher/telematik/dokumen) → investigasi → keputusan (freeze/block/chargeback/flag regulator simulasi) → appeal
 - [ ] 200.3 AML workflow: KYC refresh, PEP/sanctions screening periodik, transaction monitoring rulebook, SAR filing simulasi gapless
@@ -2854,6 +3514,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 201 — AI: FORECASTING FEDERATION & S&OP 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AiForecastingSopService`; 1 migrasi; test `AiForecastingSopTest` — commit `fff7ecb`, +211 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AiForecastingSopService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 201.1 Registry forecast per domain (demand resto, room, tiket, listrik, bahan baku, talent, klaim) → model per domain dengan backtest → MAPE tercatat per model
 - [ ] 201.2 Hierarki forecast: agregat nasional → region → entitas → SKU/unit → reconciliasi bottom-up/top-down (forecast konsisten di semua level)
 - [ ] 201.3 Executive S&OP lintas lini: demand review → supply & capacity → financial balancing → sign-off (Fase 53.3 diperluas ke 30 lini termasuk tenaga kerja, energi, kamar, seat)
@@ -2865,6 +3528,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 202 — RISIKO: ENTERPRISE RISK MANAGEMENT FRAMEWORK
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseRiskService`; 1 migrasi; test `EnterpriseRiskTest` — commit `655e432`, +213 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `EnterpriseRiskService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 202.1 Risk taxonomy 30 lini (strategis, operasional, keuangan, kepatuhan, teknologi, reputasi, lingkungan, sumber daya) → register risiko dengan pemilik, inherent score, control set, residual score
 - [ ] 202.2 Risk assessment cycle: identifikasi → analisis (likelihood × impact finansial simulasi) → treatment (avoid/mitigate/transfer/accept) → monitoring → review berkala
 - [ ] 202.3 Key risk indicators (KRI) otomatis dari sistem (ratio konsentrasi, downtime, NPF, denial klaim, siklus kas, insiden safety) → breach → eskalasi pemilik risiko
@@ -2876,6 +3542,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 203 — RISIKO: INTERNAL CONTROL, SoD 30 LINI & CONTROL TESTING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `InternalControlSodService`; 1 migrasi; test `InternalControlSodTest` — commit `1ba1606`, +225 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `InternalControlSodService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 203.1 Pemetaan kontrol per proses kritikal 30 lini (preventive/detective) → kontrol otomatis (system-enforced) vs manual (dengan bukti) → control matrix
 - [ ] 203.2 SoD matrix diperluas ke seluruh lini (Fase 54.4): konflik role per domain → deteksi pengguna punya konflik → remediation (reassign/compensating control)
 - [ ] 203.3 Automated control testing harian: contoh 3-way match, approval limit, capacity cap, pin/OTP enforcement → pass/fail → fail → issue → CAPA
@@ -2887,6 +3556,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 204 — RISIKO: CYBER, DATA BREACH & OPERATIONAL RESILIENCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CyberResilienceService`; 1 migrasi; test `CyberResilienceTest` — commit `e8aeb97`, +245 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `CyberResilienceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 204.1 Asset & threat inventory: sistem, dependency, data kelas risiko → attack surface map → prioritas hardening
 - [ ] 204.2 Vulnerability management: scan simulasi → temuan → severity SLA perbaikan → verifikasi close → aging report
 - [ ] 204.3 Incident response playbook (memperluas Fase 144.4): deteksi → containment (isolate modul/token) → eradication → recovery → postmortem → regulatory notification simulasi
@@ -2898,6 +3570,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 205 — RISIKO: THIRD-PARTY & SUPPLY CHAIN RISK
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ThirdPartyRiskService`; 1 migrasi; test `ThirdPartyRiskTest` — commit `09ad63f`, +188 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `ThirdPartyRiskService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 205.1 Vendor criticality tiering (50.000 pihak ketiga: pemasok, carrier, cloud, broker, outsourcer) → due diligence depth per tier → monitoring periodik
 - [ ] 205.2 Fourth-party risk: dependency pemasok atas sub-vendor → konsentrasi terdeteksi (mis. semua butuh 1 penyedia logistik) → rekomendasi diversifikasi
 - [ ] 205.3 Concentration dashboard: exposure gabungan per pihak (Fase 27.7) lintas lini → batas wajar → melanggar → approval sebelum transaksi baru
@@ -2909,6 +3584,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 206 — RISIKO: BUSINESS CONTINUITY 30 LINI & CRISIS COMMAND
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `BusinessContinuityCrisisService`; 1 migrasi; test `BusinessContinuityCrisisTest` — commit `e6fcfb2`, +245 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `BusinessContinuityCrisisService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 206.1 Business impact analysis per lini per negara: proses kritikal → RTO/RPO tier → dependency map (yang harus jalan agar yang lain jalan)
 - [ ] 206.2 Continuity plans: workarounds, alternate suppliers, alternate site, workforce redeployment (gig bridge Fase 85) → terhubung playbook per modul
 - [ ] 206.3 Crisis command center: incident kelas krisis → war room virtual (peran: komunikasi, operasi, legal, keuangan) → timeline keputusan tercatat → media statement (approval)
@@ -2920,6 +3598,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 207 — RISIKO: REGULATORY INTELLIGENCE & POLICY LIFECYCLE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `RegulatoryPolicyLifecycleService`; 1 migrasi; test `RegulatoryPolicyLifecycleTest` — commit `544633c`, +252 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `RegulatoryPolicyLifecycleService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 207.1 Regulatory change feed (simulasi per yurisdiksi) → impact analysis per modul (apa yang berubah: tarif, batas, pelaporan) → tugas perubahan ke tim terkait
 - [ ] 207.2 Policy & procedure lifecycle: draft → review hukum → approval → publish → training (Edu Fase 135) → acknowledgment karyawan → attestation → review periodik
 - [ ] 207.3 Rule-to-code translation: regulasi yang bisa diotomasi → jadi guardrail sistem (mis. batas suku bunga, jam kerja, kapasitas) → uji kepatuhan otomatis
@@ -2931,6 +3612,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 208 — RISIKO: TAX, CUSTOMS & TRADE COMPLIANCE 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TaxCustomsTradeService`; 1 migrasi; test `TaxCustomsTradeTest` — commit `2a348a5`, +222 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `TaxCustomsTradeService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 208.1 Consolidated indirect tax engine 30 lini: PPN per yurisdiksi, e-faktur simulasi, withholding (PPh 21/23/26/4(2)), transfer pricing documentation (Fase 52.2) lintas entitas baru
 - [ ] 208.2 Customs compliance lanjut: classification QA (HS code review), valuation support, origin management, drawback/restitution, free trade zone (simulasi)
 - [ ] 208.3 Tax provision & effective rate: laba kena pajak per entitas → beban pajak → rekonsiliasi buku vs fiskal (temporary/permanent difference) → pelaporan
@@ -2942,6 +3626,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 209 — KEUANGAN: GROUP FINANCE OPERATIONS & CLOSE AGILITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FinanceCloseAgilityService`; 1 migrasi; test `FinanceCloseAgilityTest` — commit `4d2dea2`, +226 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `FinanceCloseAgilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 209.1 Continuous close: subledger reconciliation otomatis harian (bukan bulanan) → variance alert → adjust sebelum periode berakhir → lock period ketat (Fase 54.2)
 - [ ] 209.2 Journal automation: recurring, accrual, allocation, revaluation → template ber-versi → auto-post dengan parameter tercatat → review sampel berkala
 - [ ] 209.3 Intercompany maturation: matching otomatis invoice vs bill antar entitas → mismatch report → resolusi dalam SLA → eliminasi lebih bersih (Fase 52.4)
@@ -2953,6 +3640,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 210 — KEUANGAN: CAPITAL MANAGEMENT & FUNDING STRATEGY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CapitalFundingStrategyService`; 1 migrasi; test `CapitalFundingStrategyTest` — commit `ea4772b`, +214 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `CapitalFundingStrategyService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 210.1 Capital structure model: debt/equity per entitas, covenant ratio (Fase 48.7) lintas 30 lini → headroom → early warning → opsi (refinancing, equity via RWA/sukuk Fase 162, dividen policy)
 - [ ] 210.2 Funding pipeline: kebutuhan proyek (EPC, ekspansi) → sumber (kas, bank, sukuk, investor syndication Fase 118.3, ILS Fase 157.5) → biaya & tenor → keputusan Treasury
 - [ ] 210.3 Dividend & distribution policy: per entitas (suku bagi hasil syariah, dividen token, payout RWA) → test profit & solvabilitas → approval → jurnal → withholding
@@ -2964,6 +3654,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 211 — KEUANGAN: INVESTOR RELATIONS & MARKET DISCIPLINE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `InvestorRelationsService`; 1 migrasi; test `InvestorRelationsTest` — commit `5c48519`, +222 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `InvestorRelationsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 211.1 Earnings cycle: guidance (internal), actual vs guidance variance root-cause, press release draf (approval), investor FAQ knowledge base (Fase 198.1)
 - [ ] 211.2 KPI & non-GAAP reconciliation: setiap metrik non-standar punya bridge ke standar → konsistensi definisi (Fase 189.2) → auditor simulasi puas
 - [ ] 211.3 Market data & valuation: harga token/sukuk/RWA (orderbook Fase 71/162) → fair value assessment periodik → disclosure jika deviasi signifikan
@@ -2975,6 +3668,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 212 — KEUANGAN: PROFITABILITY, TRANSFER PRICING & COST INTELLIGENCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ProfitabilityCostIntelligenceService`; 1 migrasi; test `ProfitabilityCostIntelligenceTest` — commit `b2050a9`, +224 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `ProfitabilityCostIntelligenceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 212.1 Profitability hierarchy: entitas → lini → unit → produk/kanal/proyek → pelanggan/kontrak → channel profitability sejati (biaya layanan, fulfillment, akuisisi ter-allocate)
 - [ ] 212.2 Full costing 30 lini: ABC (activity-based) untuk overhead kompleks → driver per aktivitas → biaya benar per objek → keputusan price/make/buy
 - [ ] 212.3 Transfer pricing optimization (dalam batas arm's length Fase 52.2): simulasi struktur → dampak pajak & motivasi manajer → implementation via intercompany contract
@@ -2986,6 +3682,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 213 — OPERASI: QUALITY MANAGEMENT SYSTEM 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `QualityManagementSystemService`; 1 migrasi; test `QualityManagementSystemTest` — commit `cf7db69`, +261 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `QualityManagementSystemService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 213.1 QMS framework lintas lini: standar mutu per domain (medis JCI simulasi, food HACCP, manufacturing ISO 9001 simulasi, hotel star standard Fase 111.1, port ISPS) → policy terpusat, eksekusi per lini
 - [ ] 213.2 Nonconformance & CAPA unified: temuan → root cause (5-Why/fishbone terstruktur) → tindakan → verifikasi efektivitas → jadwal audit lanjutan
 - [ ] 213.3 Audit program: audit internal terjadwal (internalisasi, eksternal, pihak ketiga) → temuan → rating kesiapan → gate sertifikasi
@@ -2997,6 +3696,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 214 — OPERASI: MAINTENANCE, RELIABILITY & ASSET PERFORMANCE 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AssetReliabilityService`; 1 migrasi; test `AssetReliabilityTest` — commit `5e1b430`, +229 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `AssetReliabilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 214.1 Unified asset reliability: mesin pabrik, alat berat, armada, alat medis, gedung, kapal, pesawat, transformer → strategy per kelas (corrective/preventive/predictive) → work order terpusat
 - [ ] 214.2 Condition monitoring: sensor (vibration, thermography, oil, ultrasound simulasi) → health index → prediction → part ordering terhubung MRP (Fase 82.1)
 - [ ] 214.3 Reliability metrics: MTBF, MTTR, availability, PM compliance, backlog aging, wrench time → target per kelas aset → improvement project
@@ -3008,6 +3710,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 215 — OPERASI: SUPPLY CHAIN EXECUTION & WAREHOUSE NETWORK 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SupplyChainNetworkService`; 1 migrasi; test `SupplyChainNetworkTest` — commit `f5c6fd1`, +224 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `SupplyChainNetworkService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 215.1 Network design: lokasi DC/gudang/kitchen/dark store/port → service coverage vs cost → simulator optimasi lokasi (Fase 199.1) → rekomendasi capex
 - [ ] 215.2 Multi-echelon execution: allocation & deployment otomatis (stok pusat → regional → forward) berdasar forecast (Fase 201) & safety stock (Fase 53.5) → in-transit visibility
 - [ ] 215.3 Yard & dock scheduling 30 lokasi: appointment window, equipment & labor availability → no-show policy → throughput KPI (memperluas Fase 24.5)
@@ -3019,6 +3724,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 216 — OPERASI: FIELD SERVICE, WORKFORCE MOBILITY & SLA ENGINE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FieldServiceSlaService`; 1 migrasi; test `FieldServiceSlaTest` — commit `d8935ea`, +264 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `FieldServiceSlaService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 216.1 Field service unification: teknisi (AutoServe, facility, media crew, medical equipment, network, mining maintenance) → skill & sertifikasi → scheduling → dispatch → mobile app → POD
 - [ ] 216.2 SLA engine terpusat: definisi SLA per kontrak/lini (response, resolution, uptime) → timer → breach detection → credit/penalty otomatis (Fase 47.7, 29.2) → laporan ke mitra
 - [ ] 216.3 Parts van inventory & tooling: stok di kendaraan teknisi → reserve/consume → restock route → rekonsiliasi
@@ -3030,6 +3738,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 217 — OPERASI: PROJECT & PORTFOLIO MANAGEMENT (EPC, MEDIA, TRANSFORMATION)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ProjectPortfolioManagementService`; 1 migrasi; test `ProjectPortfolioManagementTest` — commit `f1d540c`, +255 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `ProjectPortfolioManagementService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 217.1 PPM platform: proyek (konstruksi, event, media, implementasi sistem, kampanye) → WBS → resource → cost → schedule → risk → change → close
 - [ ] 217.2 Gantt & critical path (deterministik) → dependency violation detection → leveling resource lintas lini (talent sharing Fase 97.1)
 - [ ] 217.3 Portfolio view: kumpulan proyek → skor strategis + IRR + kapasitas → prioritas → kapitalisasi realokasi (memperluas Fase 141.2) → benefit realization terukur setelah go-live
@@ -3041,6 +3752,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 218 — OPERASI: INNOVATION R&D OPS, IP PORTFOLIO & TECH TRANSFER
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `RndTechTransferService`; 1 migrasi; test `RndTechTransferTest` — commit `1bc1d83`, +254 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `RndTechTransferService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 218.1 R&D portfolio (memperluas Fase 59): ide → hipotesis → eksperimen → hasil → stage gate → lab-to-plant transfer → benefit tracking → kill/scale decision
 - [ ] 218.2 IP portfolio management: paten, merek, rahasia dagang, lisensi masuk/keluar → biaya, tenggat, territorial coverage → freedom-to-operate check sebelum launch
 - [ ] 218.3 Tech transfer playbook: prototipe → proses terdokumentasi → pilot line → quality validation → mass production release → knowledge capture ke SOP copilot
@@ -3052,6 +3766,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 219 — PELANGGAN: UNIFIED CRM & CUSTOMER 360 (30 LINI)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CustomerCrm360Service`; 1 migrasi; test `CustomerCrm360Test` — commit `9345be2`, +289 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `CustomerCrm360Service` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 219.1 Customer master & golden record: pencocokan (NIK/NPWP/email/telepon ter-encrypt) → merge reversible (Fase 27.5) → profil 360 (transaksi lintas lini dengan consent)
 - [ ] 219.2 B2C & B2B account hierarchy: individu, keluarga, perusahaan, tenant, member → contact roles → credit & contract terkait → pic lintas lini
 - [ ] 219.3 Interaction timeline: semua sentuhan (layanan, tiket, pembelian, keluhan, campaign) → satu riwayat → agen mana pun melihat lengkap (sesuai scope)
@@ -3063,6 +3780,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 220 — PELANGGAN: SERVICE DESK, CASE MANAGEMENT & LOYALTY UNIFICATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CaseLoyaltyUnificationService`; 1 migrasi; test `CaseLoyaltyUnificationTest` — commit `d2374a9`, +289 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `CaseLoyaltyUnificationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 220.1 Unified service desk: tiket multi-kanal (app, telepon simulasi, chat, email, walk-in) → routing skill-based → SLA → escalation → CSAT → root cause analytics
 - [ ] 220.2 Case management lintas lini: satu kasus bisa menyentuh RS+hotel+logistik (mis. klaim perjalanan) → sub-case per lini → orkestrasi → solusi terpadu
 - [ ] 220.3 Loyalty unification final (memperluas Fase 112): satu mata uang poin untuk 30 lini → earning/redeem rules registry → liability terkendali → anti-fraud → breakage policy konsisten
@@ -3074,6 +3794,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 221 — PELANGGAN: SUBSCRIPTION, BILLING LIFECYCLE & RETENTION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SubscriptionBillingRetentionService`; 1 migrasi; test `SubscriptionBillingRetentionTest` — commit `3acea72`, +570 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `SubscriptionBillingRetentionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 221.1 Subscription engine lintas lini: membership hotel, ISP, edukasi, cloud, asuransi berkala, langganan konten → plan/version/price grandfather/trial/pause/cancel/reactivate
 - [ ] 221.2 Billing lifecycle: invoice → dunning (reminder bertahap) → grace → suspend (layanan berhenti otomatis) → retry → collect → write-off approval → reactivation
 - [ ] 221.3 Retention intelligence: churn risk score (pola usage, komplain, telat bayar) → playbook retensi (tawaran, diskon berizin, escalation human) → churn prevented terukur → biaya retensi vs LTV
@@ -3085,6 +3808,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 222 — PELANGGAN: MARKETING AUTOMATION & ATTRIBUTION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MarketingAutomationAttributionService`; 1 migrasi; test `MarketingAutomationAttributionTest` — commit `cb30d78`, +539 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `MarketingAutomationAttributionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 222.1 Segment engine: RFM, behavior, lifecycle, value tier → segment dinamis (update real-time) → membership campaign ke segmen
 - [ ] 222.2 Campaign orchestration: journey builder (multi-step, kondisi, split) → eksekusi kanal (push, in-app, email simulasi) → frequency cap → opt-out dihormati
 - [ ] 222.3 Promotion governance: budget per kampanye (encumbrance Fase 54.1) → approval melewati budget → redemption control → effective cost = ledger
@@ -3096,6 +3822,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 223 — SDM: ORGANIZATION DESIGN & WORKFORCE PLANNING 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `OrgDesignWorkforcePlanningService`; 1 migrasi; test `OrgDesignWorkforcePlanningTest` — commit `bf7cf65`, +520 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `OrgDesignWorkforcePlanningService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 223.1 Org design: struktur 30 lini lintas negara (Fase 58.1) → position management (jabatan, grade, reporting line, budget headcount) → perubahan org via approval → impact simulation
 - [ ] 223.2 Workforce planning: demand per fungsi (dari S&OP & proyek Fase 201/217) → supply internal (skill, capacity, attrition forecast) → gap → build/buy/borrow/gig (Fase 85/136)
 - [ ] 223.3 Succession & bench: posisi kritikal → kandidat pengganti → readiness → development plan (Edu Fase 135) → risiko single-point-of-failure SDM terdeteksi
@@ -3107,6 +3836,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 224 — SDM: COMPENSATION, BENEFITS & TOTAL REWARDS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CompensationBenefitsService`; 1 migrasi; test `CompensationBenefitsTest` — commit `7f969a7`, +572 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `CompensationBenefitsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 224.1 Job architecture: job family, level, grade band (market data simulasi) → pay structure lintas negara (Fase 152.1) → compression/equity check
 - [ ] 224.2 Variable pay: bonus kinerja (per entitas/lini/individu, scorecard) → payout saat capai → clawback saat restatement → komisi sales/agensi (bridge Fase 45)
 - [ ] 224.3 Benefits administration: asuransi kesehatan/jiwa (Fase 159), pensiun, wellness (Fase 159.3), flexible benefit → enrollment → cost payroll & intercompany
@@ -3118,6 +3850,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 225 — SDM: TALENT ACQUISITION, ONBOARDING & OFFBOARDING LIFECYCLE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TalentLifecycleService`; 1 migrasi; test `TalentLifecycleTest` — commit `fae277f`, +537 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `TalentLifecycleService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 225.1 Recruitment pipeline: requisition → sourcing (talent pool Fase 136.1) → screening otomatis (skill match, Fase 199) → interview → offer → background check → accept
 - [ ] 225.2 Candidate experience & compliance: consent data pelamar → retensi data → anonymized reporting → anti-bias check pada screening (Fase 197.3)
 - [ ] 225.3 Onboarding: pre-day tasks → day-1 access provisioning (scoped, Fase 188) → training path (Fase 167.4) → probation review → confirm
@@ -3129,6 +3864,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 226 — SDM: PERFORMANCE, ENGAGEMENT & PEOPLE ANALYTICS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PerformanceEngagementAnalyticsService`; 1 migrasi; test `PerformanceEngagementAnalyticsTest` — commit `7102992`, +490 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `PerformanceEngagementAnalyticsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 226.1 Performance cycle: goal (OKR/KPI terhubung business plan) → check-in berkala → review (self/peer/manager) → calibration lintas divisi → rating → link ke bonus (Fase 224.2)
 - [ ] 226.2 Engagement survey: pulse berkala → analisis driver → action plan per tim → follow-up effectiveness → attrition correlation
 - [ ] 226.3 People analytics: turnover, regretted attrition, time-to-fill, productivity per FTE, overtime exposure, safety incident rate per populasi → prediksi risiko attrition → retention outreach
@@ -3140,6 +3878,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 227 — SDM: LEARNING CLOUD, ACADEMY SCALE & SKILL INTELLIGENCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `LearningSkillIntelligenceService`; 1 migrasi; test `LearningSkillIntelligenceTest` — commit `c711374`, +436 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `LearningSkillIntelligenceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 227.1 Learning cloud 30 lini: katalog gabungan (formal Fase 166, micro Fase 135, on-job, compliance) → rekomendasi per role & career path → learning hour tracking
 - [ ] 227.2 Skill ontology & intelligence: skill graph (terhubung Fase 136.1) → gap analysis per unit → reskilling program → sertifikasi wajib (role kritikal) → dashboard kesiapan
 - [ ] 227.3 Content factory: produksi konten internal (media studio Fase 133 + instruktur) → versioning → effectiveness (pre/post test, on-job metric) → retire konten usang
@@ -3151,6 +3892,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 228 — KEBERLANJUTAN: ESG DATA FABRIC & DOUBLE MATERIALITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EsgDataFabricService`; 1 migrasi; test `EsgDataFabricTest` — commit `cbec9fb`, +414 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `EsgDataFabricService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 228.1 ESG data fabric: pengumpulan metrik E-S-G dari 30 lini (emisi Fase 60, air, limbah, energi, keragaman, safety Fase 120, governance) → quality score per metric → provenance
 - [ ] 228.2 Double materiality assessment: impact materiality (dampak lini ke dunia) + financial materiality (dampak dunia ke lini) → material topic per lini → scope laporan
 - [ ] 228.3 Reporting standards bridge (GRI/ISSB simulasi): mapping internal metric → disclosure requirement → evidence attachment → gap report
@@ -3163,6 +3907,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 229 — KEBERLANJUTAN: CLIMATE, ENERGY TRANSITION & DECARBONIZATION ROADMAP
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ClimateDecarbonizationRoadmapService`; 1 migrasi; test `ClimateDecarbonizationRoadmapTest` — commit `a909b00`, +480 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `ClimateDecarbonizationRoadmapService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 229.1 Net-zero roadmap per lini: baseline → target interim → levers (efisiensi, elektrifikasi, bahan hijau, offset) → capex & savings → tracking actual vs jalur
 - [ ] 229.2 Energy transition portfolio: proyek solar/wind/biomass/storage (Fase 123/126) → IRR + carbon benefit → prioritization → funding (Fase 210.2)
 - [ ] 229.3 Carbon price internal (shadow price): keputusan investasi dinilai dengan biaya karbon internal → proyek tinggi emisi butuh mitigasi → konsisten dengan roadmap
@@ -3174,6 +3921,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 230 — KEBERLANJUTAN: CIRCULARITY, WATER STRESS & NATURE POSITIVE SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CircularityWaterNatureService`; 1 migrasi; test `CircularityWaterNatureTest` — commit `1310791`, +442 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `CircularityWaterNatureService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 230.1 Circularity targets 30 lini: recycled content, waste diversion, product take-back, packaging reuse → per lini → pipeline inisiatif → tracking mass balance (Fase 174)
 - [ ] 230.2 Water stewardship: baseline per site → withdrawal/recycle/discharge → water-stressed area flag → reduction projects → quality compliance (Fase 124.2 scale)
 - [ ] 230.3 Nature-positive portfolio: proyek restorasi (Fase 173) dikaitkan footprint operasi → target nature-positive per entitas → verification cycle
@@ -3185,6 +3935,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 231 — TATA KELOLA: BOARD, COMMITTEE & DELEGATION SYSTEM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `BoardGovernanceDoaService`; 1 migrasi; test `BoardGovernanceDoaTest` — commit `fe181eb`, +443 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `BoardGovernanceDoaService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 231.1 Board composition & committees (audit, risk, nomrem/gov, sustainability, comp) → charter → meeting cycle → agenda & paper (dokumen 26.8) → minutes → decision register
 - [ ] 231.2 Delegation of authority matrix (DoA): per jenis keputusan (capex, kontrak, hiring, pricing, disclosure) → level (direksi, komite, CEO, unit) → batas nilai → enforcement di sistem (approval engine read matrix)
 - [ ] 231.3 Conflict of interest register: deklarasi → screening transaksi terkait → abstain wajib → disclosure simulation
@@ -3196,6 +3949,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 232 — TATA KELOLA: ETHICS, WHISTLEBLOWING & SPEAK-UP CULTURE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `WhistleblowingEthicsService`; 1 migrasi; test `WhistleblowingEthicsTest` — commit `a82542c`, +410 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `WhistleblowingEthicsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 232.1 Speak-up channel: laporan anonim (token pelapor opsional) → case terenkripsi → investigator assigned (four-eyes) → triage → investigation → outcome → feedback pelapor
 - [ ] 232.2 Anti-retaliation policy & monitoring: proteksi pelapor → perubahan treatment terdeteksi → investigasi terpisah → sanksi
 - [ ] 232.3 Ethics case management: code of conduct violation → hearing simulasi → sanction matrix konsisten → appeal → record terpisah dari HR data dengan akses ketat
@@ -3207,6 +3963,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 233 — TATA KELOLA: ECO SYSTEM GOVERNANCE, DAO EVOLUTION & STAKEHOLDER VOTING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EcosystemDaoGovernanceService`; 1 migrasi; test `EcosystemDaoGovernanceTest` — commit `51420fd`, +474 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Governance (`gov_`) — voting/DAO; kontrol & kebijakan tetap di GRC · **Prasyarat:** Fase 86 ✅ · **Acuan:** KONSEP 8F slice 3
+> **Jalan pintas terlarang di fase ini:** voting tanpa snapshot bobot; hasil voting mengeksekusi tanpa approval; bobot suara dari masukan bebas; memperluas `EcosystemDaoGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 233.1 Governance model evolution (memperluas Fase 86): proposal classes (strategis, operasional, sosial, teknis) → kelas berbeda bobot pemilih & quorum → delegation (pemilih boleh wakilkan suara) → liquid democracy simulasi
 - [ ] 233.2 Stakeholder assemblies: karyawan, mitra, franchisee, holder token, komunitas lokal (desa tambang Fase 124.3), pelanggan loyalty top tier → konsultasi non-binding vs voting binding dipisah jelas
 - [ ] 233.3 On-chain-style voting ledger: vote hash-chained, tally diverifikasi publik (tanpa bocor identitas), hasil immutable → eksekusi otomatis via bridge (Fase 86.6) dengan safety review
@@ -3218,6 +3977,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 234 — INOVASI: CORPORATE VENTURE, INCUBATION & ACCELERATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CorporateVentureIncubationService`; 1 migrasi; test `CorporateVentureIncubationTest` — commit `095e46b`, +472 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Plm (`plm_`) (+ Partner) · **Prasyarat:** R6.2 (Fase 59) ✅ · **Acuan:** KONSEP §A3
+> **Jalan pintas terlarang di fase ini:** stage-gate tanpa approval; 'portofolio' berupa tabel skor masukan; memperluas `CorporateVentureIncubationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 234.1 Venture pipeline: ide internal/startup → due diligence ringan → opsi (build in-house, incubate, JV Fase 51.2, investasi token) → stage gate funding bertahap (seed → series simulasi)
 - [ ] 234.2 Incubation platform: aset bersama (marketplace, data, logistik, payment) disediakan ke venture → usage metering → cost/revenue share → tata kelola terpisah tapi terintegrasi ledger
 - [ ] 234.3 Corporate venture portfolio dashboard: invested, valuation (mark-to-market periodik), strategic option value, kill/scale decision → exit (secondary sale token, acquisition sim)
@@ -3229,6 +3991,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 235 — INOVASI: MARKETPLACE OF CAPABILITIES & INTERNAL API PRODUCTS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `InternalCapabilitiesMarketplaceService`; 1 migrasi; test `InternalCapabilitiesMarketplaceTest` — commit `83d0a98`, +409 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Plm (`plm_`) (+ Partner) · **Prasyarat:** R6.2 (Fase 59) ✅ · **Acuan:** KONSEP §A3
+> **Jalan pintas terlarang di fase ini:** stage-gate tanpa approval; 'portofolio' berupa tabel skor masukan; memperluas `InternalCapabilitiesMarketplaceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 235.1 Capability-as-a-product: kemampuan platform (payment, identity, logistics, data, AI, loyalty) dikatalogkan sebagai produk internal → unit cost → chargeback/flywheel pricing → konsumen internal memilih
 - [ ] 235.2 Internal API marketplace: tim lini menemukan & memakai capability lain tanpa build ulang → usage metering → quality SLA → feedback → roadmap capability
 - [ ] 235.3 Build-vs-buy-vs-use decision framework: setiap inisiatif teknologi melewati framework (biaya, kecepatan, kontrol) → keputusan tercatat → review post-implementation
@@ -3240,6 +4005,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 236 — INOVASI: DIGITAL PRODUCT FACTORY & EXPERIMENTATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DigitalProductExperimentationService`; 1 migrasi; test `DigitalProductExperimentationTest` — commit `e32a1f6`, +431 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Plm (`plm_`) (+ Partner) · **Prasyarat:** R6.2 (Fase 59) ✅ · **Acuan:** KONSEP §A3
+> **Jalan pintas terlarang di fase ini:** stage-gate tanpa approval; 'portofolio' berupa tabel skor masukan; memperluas `DigitalProductExperimentationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 236.1 Product ops: discovery (customer problem → hypothesis) → experiment design → build increment → release → measure → iterate → sunset → terhubung PPM (Fase 217)
 - [ ] 236.2 Experimentation platform: A/B test deterministik (user bucketing by hash seed) → sample size & sequential test guard → metric terpisah dari noise → decision framework
 - [ ] 236.3 Feature flag & release engineering: flag per environment → gradual rollout → kill flag instan → usage analytics per flag → tech debt retirement saat flag matang
@@ -3251,6 +4019,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 237 — PLATFORM: DEVELOPER EXPERIENCE, DX TOOLING & QUALITY AUTOMATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DeveloperExperienceQualityService`; 1 migrasi; test `DeveloperExperienceQualityTest` — commit `c33f9c5`, +402 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `DeveloperExperienceQualityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 237.1 Developer portal: environment provisioning (sandbox/staging), seed data snapshot, docs otomatis dari code (OpenAPI, events), changelog → kontribusi lintas modul mudah
 - [ ] 237.2 Quality pipeline otomatis: lint → typecheck → unit → arch test → integration → security scan → performance smoke → deploy gate → setiap PR wajib hijau
 - [ ] 237.3 Test data management: synthetic data generator (ber-seed), data masking untuk staging, referential integrity → test realistis tanpa PII nyata
@@ -3262,6 +4033,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 238 — PLATFORM: RELEASE TRAIN, CHANGE MANAGEMENT & DEPLOYMENT SAFETY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ReleaseTrainDeploymentSafetyService`; 1 migrasi; test `ReleaseTrainDeploymentSafetyTest` — commit `a9fcf8f`, +499 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `ReleaseTrainDeploymentSafetyService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 238.1 Release train terjadwal (mis. mingguan) + hotfix path (approval terpisah) → release notes otomatis dari commit/flag → stakeholder notified
 - [ ] 238.2 Change advisory: risk score per change (blast radius: money/PII/availability) → risk tinggi butuh CAB simulasi → rollback plan wajib → post-deploy verification
 - [ ] 238.3 Database migration safety: expand-contract pattern, backfill idempoten di background, lint schema (tanpa breaking tanpa approval), dual-write bila perlu
@@ -3273,6 +4047,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 239 — PLATFORM: PERFORMANCE ENGINEERING & COST OPTIMIZATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PerformanceCostOptimizationService`; 1 migrasi; test `PerformanceCostOptimizationTest` — commit `d3e76c0`, +443 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `PerformanceCostOptimizationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 239.1 Performance observability per endpoint: p50/p95/p99, throughput, slow query, N+1 detection otomatis → regression gate CI (memperluas Fase 192.4)
 - [ ] 239.2 Cost-to-serve per modul & per transaksi (infra simulasi: compute, storage, queue) → trend → hotspots → optimasi (query, cache, partition) → saving terukur
 - [ ] 239.3 Capacity planning: pertumbuhan data & trafik 12 bulan → proyeksi → scaling plan (shard, read replica, archive) → capex/opex proposal ke Treasury (Fase 210.2)
@@ -3284,6 +4061,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 240 — PLATFORM: EXPERIENCE DESIGN SYSTEM & ACCESSIBILITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DesignSystemAccessibilityService`; 1 migrasi; test `DesignSystemAccessibilityTest` — commit `616797c`, +436 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `DesignSystemAccessibilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 240.1 Design system lintas 30 lini: komponen, token warna/tipografi/spacing, pola (form, table, flow) → satu library → konsistensi visual & interaksi lintas modul
 - [ ] 240.2 Accessibility standard (WCAG simulasi): keyboard navigation, contrast, screen reader labels → automated check CI → audit manual per rilis besar → remediation
 - [ ] 240.3 Responsive & mobile-first governance: semua halaman uji lebar 375px (Fase standar diperluas 30 lini) → gate RouteSmoke responsive
@@ -3295,6 +4075,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 241 — DATA: DATA GOVERNANCE, QUALITY & LINEAGE 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DataGovernanceLineageService`; 1 migrasi; test `DataGovernanceLineageTest` — commit `64acb19`, +419 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) atau modul pemilik data — putuskan di DoR · **Prasyarat:** R5.1 ✅ + modul sumber ✅ · **Acuan:** KONSEP §A1, §A5
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/mesh/lineage' berupa tabel metadata yang diisi manual; metrik tanpa query ke data sumber; memperluas `DataGovernanceLineageService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 241.1 Data governance council & stewardship: per domain (produk, pelanggan, finansial, medis, energi, komoditas) → data owner → policy (definisi, kualitas, retensi, akses) → enforcement
 - [ ] 241.2 Data quality rules registry: completeness, timeliness, validity, consistency, uniqueness → runtime checks → DQ score per domain → bad data quarantine + owner ticket (memperluas Fase 146.5)
 - [ ] 241.3 Lineage graph: column-level lineage dari source → transform → dashboard → keputusan → dampak analysis (ubah kolom → tahu siapa terpengaruh) → change gate
@@ -3306,6 +4089,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 242 — DATA: REAL-TIME PIPELINE, STREAM PROCESSING & CDC 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `RealtimeStreamProcessingService`; 1 migrasi; test `RealtimeStreamProcessingTest` — commit `95093cb`, +445 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) atau modul pemilik data — putuskan di DoR · **Prasyarat:** R5.1 ✅ + modul sumber ✅ · **Acuan:** KONSEP §A1, §A5
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/mesh/lineage' berupa tabel metadata yang diisi manual; metrik tanpa query ke data sumber; memperluas `RealtimeStreamProcessingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 242.1 CDC dari seluruh modul (via outbox Fase 26.7) → stream processing (window aggregation, enrichment) → real-time store untuk operational dashboards (Fase 190)
 - [ ] 242.2 Stream quality: exactly-once semantics (idempotent consumer), ordering per key, late data handling → metrics: lag, drop rate → SLA per consumer
 - [ ] 242.3 Event replay & time travel: rebuild agregat dari offset → verifikasi konsistensi dengan batch → mismatch = incident
@@ -3317,6 +4103,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 243 — DATA: ADVANCED ANALYTICS, GRAPH & OPTIMIZATION RESEARCH
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AdvancedAnalyticsGraphResearchService`; 1 migrasi; test `AdvancedAnalyticsGraphResearchTest` — commit `9dfa639`, +480 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) atau modul pemilik data — putuskan di DoR · **Prasyarat:** R5.1 ✅ + modul sumber ✅ · **Acuan:** KONSEP §A1, §A5
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/mesh/lineage' berupa tabel metadata yang diisi manual; metrik tanpa query ke data sumber; memperluas `AdvancedAnalyticsGraphResearchService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 243.1 Graph analytics: jaringan (supply chain, distribusi, franchise, ownership, payment flow) → centrality, konsentrasi risiko, deteksi pola mencurigakan (money flow) → insight terverifikasi
 - [ ] 243.2 Simulation & digital twin at scale (memperluas Fase 143.3): Monte Carlo simulasi risiko (weather, demand, outage) → distribusi hasil → VaR-like metrik per lini → keputusan berbasis probabilistik
 - [ ] 243.3 Prescriptive analytics: optimization result masuk sebagai rekomendasi (Fase 199) + expected impact → A/B shadow → actual impact terukur → model diperbaiki
@@ -3328,6 +4117,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 244 — DATA: DATA PRODUCTS, SHARING & EXTERNAL MONETIZATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DataProductsMonetizationService`; 1 migrasi; test `DataProductsMonetizationTest` — commit `a4c1668`, +467 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) atau modul pemilik data — putuskan di DoR · **Prasyarat:** R5.1 ✅ + modul sumber ✅ · **Acuan:** KONSEP §A1, §A5
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/mesh/lineage' berupa tabel metadata yang diisi manual; metrik tanpa query ke data sumber; memperluas `DataProductsMonetizationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 244.1 Data products eksternal: agregat pasar (harga komoditas, indeks footfall, benchmark industri simulasi) → subscription → API (Fase 147) → privacy kohort check wajib (Fase 189.3)
 - [ ] 244.2 Data sharing agreements: mitra (kontrak Fase 28) → field-level scope → audit trail pemakaian → retention & deletion → compliance (consent & regulation bridge Fase 207)
 - [ ] 244.3 Data clean room simulasi: dua pihak hitung bersama tanpa saling melihat raw data → hasil di-approve sebelum keluar → anti-re-identification check
@@ -3339,6 +4131,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 245 — KOMERSIAL: PRICING SCIENCE & REVENUE OPTIMIZATION 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PricingScienceRevenueOptimizationService`; 1 migrasi; test `PricingScienceRevenueOptimizationTest` — commit `cb26fe5`, +503 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Pricing / Agency / Distribution / Procurement / Store — sesuai topik · **Prasyarat:** R2.3 ✅ · **Acuan:** KONSEP 6F
+> **Jalan pintas terlarang di fase ini:** harga dokumen tidak terkunci; komisi/rebate tanpa ledger; memperluas `PricingScienceRevenueOptimizationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 245.1 Pricing architecture unified: cost-plus, value-based, dynamic (Fase 81), contract, promo (Fase 44), tariff public (utilitas, parkir, port) → framework per domain dengan guardrail seragam
 - [ ] 245.2 Elasticity & willingness-to-pay research: data historis + experiment → curve per segmen → price ladders → revenue lift terukur
 - [ ] 245.3 Price governance: price floor/ceiling, approval matrix per margin impact, MAP/parity enforcement lintas channel (Fase 111.4) → violation → action
@@ -3350,6 +4145,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 246 — KOMERSIAL: SALES FORCE EXCELLENCE & PIPELINE 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SalesForcePipelineExcellenceService`; 1 migrasi; test `SalesForcePipelineExcellenceTest` — commit `5b83184`, +474 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Pricing / Agency / Distribution / Procurement / Store — sesuai topik · **Prasyarat:** R2.3 ✅ · **Acuan:** KONSEP 6F
+> **Jalan pintas terlarang di fase ini:** harga dokumen tidak terkunci; komisi/rebate tanpa ledger; memperluas `SalesForcePipelineExcellenceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 246.1 Sales process unified (B2B lini: asuransi, hotel corporate, MICE, PPA, colo, telekom enterprise, proyek EPC, jasa) → stage definitions → exit criteria → forecast berbobot
 - [ ] 246.2 Account planning: strategic account map (multi-stakeholder), whitespace analysis, coverage model → activity plan → progress review
 - [ ] 246.3 Quota & territory: quota allocation (bottom-up capacity + top-down target) → territory design (Fase 42.2 extended) → conflict rule → payout (bridge Fase 45)
@@ -3361,6 +4159,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 247 — KOMERSIAL: KEY ACCOUNT MANAGEMENT & PARTNERSHIP REVENUE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `KamPartnershipRevenueService`; 1 migrasi; test `KamPartnershipRevenueTest` — commit `b94b38b`, +461 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Pricing / Agency / Distribution / Procurement / Store — sesuai topik · **Prasyarat:** R2.3 ✅ · **Acuan:** KONSEP 6F
+> **Jalan pintas terlarang di fase ini:** harga dokumen tidak terkunci; komisi/rebate tanpa ledger; memperluas `KamPartnershipRevenueService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 247.1 KAM workspace: akun besar (kontrak multi-lini: grup hotel eksternal, operator telko, retailer, pemerintah simulasi) → cross-lini solution → deal room kolaboratif
 - [ ] 247.2 Solution bundling engine: komponen dari lini berbeda → harga paket (tetap floor guardrail) → margin per komponen → settlement internal saat kontrak jalan
 - [ ] 247.3 QBR & value realization: review berkala dengan klien → KPI terkontrak vs aktual (SLA engine Fase 216.2) → renewal/expansion proposal
@@ -3372,6 +4173,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 248 — KOMERSIAL: TENDER & BID MANAGEMENT SCALE 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TenderBidManagementService`; 1 migrasi; test `TenderBidManagementTest` — commit `998a9b0`, +448 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Pricing / Agency / Distribution / Procurement / Store — sesuai topik · **Prasyarat:** R2.3 ✅ · **Acuan:** KONSEP 6F
+> **Jalan pintas terlarang di fase ini:** harga dokumen tidak terkunci; komisi/rebate tanpa ledger; memperluas `TenderBidManagementService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 248.1 Bid desk enterprise: lelang dari pelanggan B2B/B2G lintas lini (supply produk, sewa, jasa, PPA, project) → qualification (bid/no-bid scoring) → resource assignment → timeline → submission
 - [ ] 248.2 Bid cost accounting: biaya persiapan (engineering, legal, riset) → capitalize vs expense kebijakan → ROI bid terukur (win rate × contract value vs cost)
 - [ ] 248.3 AI bid agent federation (memperluas Fase 84): banyak agen per domain berbagi riset harga → konsolidasi → human approval per bid class → submission compliance
@@ -3383,6 +4187,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 249 — KOMERSIAL: CATALOG, CONFIGURATION & QUOTE-TO-CASH 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CpqOrderToCashService`; 1 migrasi; test `CpqOrderToCashTest` — commit `1a27d6e`, +494 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Pricing / Agency / Distribution / Procurement / Store — sesuai topik · **Prasyarat:** R2.3 ✅ · **Acuan:** KONSEP 6F
+> **Jalan pintas terlarang di fase ini:** harga dokumen tidak terkunci; komisi/rebate tanpa ledger; memperluas `CpqOrderToCashService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 249.1 Unified CPQ: product/service catalog lintas lini (complex: bundel asuransi, paket hotel+event, kontrak telko, solusi EPC) → configurator valid → pricing → quote → approval → contract → order → fulfillment → invoice → cash
 - [ ] 249.2 Quote lifecycle: versioning, expiry (timelock Fase 21.4), conversion rate analytics → konversi quote → order dihitung → bottleneck analysis
 - [ ] 249.3 Order-to-cash unification: credit check (Fase 42.4 generalized) → order acceptance → fulfillment → delivery evidence → invoice → dunning → collection → cash application (Fase 209.3 bridge)
@@ -3394,6 +4201,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 250 — PELANGGAN: CX METRICS, VOICE OF CUSTOMER & EXPERIENCE ORCHESTRATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CxMetricsVocOrchestrationService`; 1 migrasi; test `CxMetricsVocOrchestrationTest` — commit `decbd9f`, +451 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `CxMetricsVocOrchestrationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 250.1 VoC aggregation: survey (post-interaction, NPS periodik), review publik simulasi, komplain, social listening simulasi → sentimen & tema terklasifikasi → closed-loop follow-up untuk promoter/detractor
 - [ ] 250.2 CX journey mapping digital: journey utama (buy, stay, heal, learn, entertain) → instrumentasi step-level → drop-off detection → improvement backlog → impact measurement
 - [ ] 250.3 Experience orchestration: personalization (Fase 112.5 generalized) lintas titik sentuh → konsistensi pesan → frequency governance → hasil terukur
@@ -3405,6 +4215,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 251 — INTEGRASI AKHIR A: END-TO-END SUPPLY CHAIN 30 LINI (PLAN-DELIVER)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EndToEndSupplyChainService`; 1 migrasi; test `EndToEndSupplyChainTest` — commit `b83cdd1`, +342 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EndToEndSupplyChainService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 251.1 Plan-to-serve unification: S&OP (Fase 201) → planning jaringan (Fase 215) → procurement (Fase 33/82) → make (Fase 36-38) → move (Fase 22/80/177/179) → store (Fase 41) → sell (Fase 137) → return (Fase 79/174) → satu peta kontrol dengan KPI chain (OTIF, DOS, cash-to-cash)
 - [ ] 251.2 Control tower eksekutif 30 lini: status chain live, disruption feed (Fase 53.6) → blast radius → rencana mitigasi → eksekusi via optimizer (Fase 199) → hasil terukur
 - [ ] 251.3 End-to-end cost visibility: cost-to-serve chain per order (manufacture + move + sell + service) → identifikasi pemborosan → improvement project (Fase 217)
@@ -3416,6 +4229,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 252 — INTEGRASI AKHIR B: END-TO-END FINANCE 30 LINI (PLAN-FUND-REPORT)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EndToEndFinanceService`; 1 migrasi; test `EndToEndFinanceTest` — commit `081b386`, +418 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EndToEndFinanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 252.1 Finance process unification: plan (budget Fase 54.1) → fund (Treasury Fase 187/210) → transact (AP/AR/payroll/billing 30 lini) → close (Fase 209) → control (Fase 203) → report (Fase 141.5/211) → tax (Fase 208) dalam siklus tunggal dengan checklist otomatis
 - [ ] 252.2 Statutory + management + ESG reporting dari satu ledger truth (tanpa angka berbeda antar laporan) → reconciliation otomatis antar output
 - [ ] 252.3 Finance shared service: proses transaksional volume tinggi (AP, billing, cash app, payroll ops) → SLA internal → cost allocation → quality sampling
@@ -3427,6 +4243,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 253 — INTEGRASI AKHIR C: END-TO-END RISK 30 LINI (IDENTIFY-CONTROL-REPORT)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EndToEndRiskService`; 1 migrasi; test `EndToEndRiskTest` — commit `67eb248`, +394 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EndToEndRiskService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 253.1 Risk process unification: identify (register Fase 202) → assess (scoring) → treat (control Fase 203) → monitor (KRI) → incident bridge (Fase 204/206) → report (board pack Fase 231) → learning (postmortem masuk register)
 - [ ] 253.2 Aggregate risk view: korelasi risiko lintas lini (mis. komoditas + FX + kredit pelanggan) → concentration & tail risk (simulasi MC Fase 243.2) → capital implication (Fase 157.3 generalized)
 - [ ] 253.3 Assurance map: audit internal + eksternal + control testing + compliance → coverage map → gap dijamin → efficiency (hindari duplikasi audit area sama)
@@ -3438,6 +4257,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 254 — INTEGRASI AKHIR D: END-TO-END TALENT 30 LINI (PLAN-ATOMIC-DEVELOP-RETAIN)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EndToEndTalentService`; 1 migrasi; test `EndToEndTalentTest` — commit `7fced43`, +380 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EndToEndTalentService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 254.1 Talent process unification: plan (workforce Fase 223) → attract (Fase 225) → select → develop (Fase 227) → deploy (gig Fase 85, mobility Fase 152) → perform (Fase 226) → reward (Fase 224) → retain/exit (Fase 225.4) → satu employee journey dengan stage gate
 - [ ] 254.2 Skills-based organization: posisi didesain dari skill graph (Fase 227.2) → staffing (internal marketplace first) → gap → learning → deploy → productivity terukur → closed loop
 - [ ] 254.3 Future workforce scenarios: automation impact per role (Fase 199/236) → reskilling plan → headcount projection → cost trajectory → decision papan direksi
@@ -3449,6 +4271,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 255 — INTEGRASI AKHIR E: GOLDEN SCENARIO 30 LINI + MEGA AUDIT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GoldenScenarioMegaAuditService`; 1 migrasi; test `GoldenScenarioMegaAuditTest` — commit `a79ba70`, +356 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** tests/Feature (golden scenario) + `sim:run` (Core) · **Prasyarat:** R8.4 ✅ + semua lini dalam skenario ✅ · **Acuan:** KONSEP §A10.1
+> **Jalan pintas terlarang di fase ini:** skenario tanpa `sim:run` yang menjalankan tick handler; assert pada nilai yang disetel test sendiri; klaim '365 hari' tanpa run tercatat; memperluas `GoldenScenarioMegaAuditService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 255.1 Golden scenario 30 lini: satu skenario otomatis 180 hari simulasi merangkai seluruh rantai: tambang → smelter → baterai → EV dijual → dikirim → diisi → hotel+venue bundle → RS merawat → sekolah mengajar → telko terkoneksi → energi terbarukan → asuransi melindungi → syariah membiayai → ritel mendistribusikan → media meliput → pelabuhan mengapung → konsolidasi grup
 - [ ] 255.2 Verifikasi masal: seluruh `*:audit` (target 80+ perintah) serentak 0 selisih di akhir simulasi; seluruh `verify-*` hash-chain valid; seluruh reconcile multi-aset = 0
 - [ ] 255.3 Crisis mega-scenario 30 lini: krisis berlapis (banjir + blackout + wabah + krisis komoditas) → continuity plans (Fase 206) → recovery → audit tetap 0 selisih
@@ -3461,6 +4286,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 256 — PLATFORM: OBSERVABILITY & SLO ECONOMY 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ObservabilitySloEconomyService`; 1 migrasi; test `ObservabilitySloEconomyTest` — commit `772ffef`, +453 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `ObservabilitySloEconomyService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 256.1 SLO/SLI per layanan kritikal (payment, booking, claim, dispatch, billing): error budget → burn rate → alert → postmortem wajib saat budget habis
 - [ ] 256.2 Unified observability plane: logs, metrics, traces, audit trail (Fase 26.6) dalam satu korrelasi → drill dari insiden bisnis ke kode dalam hitungan detik
 - [ ] 256.3 Business observability: monitor invarian bisnis real-time (ledger Σ, stok negatif, escrow mismatch, seat oversell) → anomali = incident prioritas tinggi
@@ -3473,6 +4301,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 257 — PLATFORM: EVENT-DRIVEN ARCHITECTURE MATURITY & CQRS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EventDrivenCqrsSagaService`; 1 migrasi; test `EventDrivenCqrsSagaTest` — commit `aa5ae42`, +458 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `EventDrivenCqrsSagaService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 257.1 CQRS untuk domain berat (booking, inventory, portfolio, control tower): read model terpisah → projection idempoten → rebuild dari event → konsistensi terverifikasi
 - [ ] 257.2 Saga orchestration lintas modul: transaksi bisnis panjang (bundle travel, supply chain, M&A integration) → orchestrator + compensation action → state terlihat ke user
 - [ ] 257.3 Event schema evolution & consumer compatibility gates (memperluas Fase 185.3) → deprecation window → consumer inventory report
@@ -3484,6 +4315,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 258 — PLATFORM: MULTI-REGION DATA ARCHITECTURE & EDGE PATTERNS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MultiRegionEdgeArchitectureService`; 1 migrasi; test `MultiRegionEdgeArchitectureTest` — commit `6410071`, +375 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `MultiRegionEdgeArchitectureService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 258.1 Topologi data multi-region (memperluas Fase 145.1): primary per domain (komoditas internasional di SG, operasi domestik di Jakarta) → replicasi → conflict policy per data class (uang = strict serialisasi)
 - [ ] 258.2 Edge patterns per lini venue/tambang/kapal (Fase 145.2) → sync protocol formal: op selection, tombstone, version vector simulasi → convergence test
 - [ ] 258.3 Data gravity routing: query dievaluasi dekat sumber → federated query planner → biaya transfer data terkontrol → cost attribution per region
@@ -3495,6 +4329,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 259 — PLATFORM: ENTERPRISE SEARCH & KNOWLEDGE GRAPH
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseSearchKnowledgeGraphService`; 1 migrasi; test `EnterpriseSearchKnowledgeGraphTest` — commit `f305e16`, +419 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `EnterpriseSearchKnowledgeGraphService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 259.1 Knowledge graph lintas entitas: hubungan (pelanggan ↔ kontrak ↔ aset ↔ proyek ↔ risiko ↔ pihak) → traversal query terkontrol akses → insight graph (mis. eksposur konsentrasi via graph)
 - [ ] 259.2 Semantic search 30 lini: intent → entity resolution → hasil terkaya (dokumen + record + orang + produk) → permission-aware ranking
 - [ ] 259.3 Knowledge lifecycle: artikel SOP/prosedur → review periodik → expiry → versi lama tetap untuk audit → link dari keputusan masa lalu
@@ -3506,6 +4343,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 260 — EKOSISTEM: PARTNER API, CO-SELL & AFFILIATE NETWORK SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PartnerCosellAffiliateService`; 1 migrasi; test `PartnerCosellAffiliateTest` — commit `def72f1`, +410 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `PartnerCosellAffiliateService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 260.1 Partner tiering & benefits: bronze/silver/gold/platinum → rate card, support SLA, sandbox, co-marketing fund → upgrade criteria otomatis
 - [ ] 260.2 Co-sell motion: partner register deal → attribution rule (Fase 45.4) → shared pipeline → revenue share settlement (Fase 47.4) → payout statement
 - [ ] 260.3 Affiliate & referral massal (B2C): creator/agen/UMKM jadi affiliate → link tracking → atribusi cookie/id deterministik → komisi bulk payout → anti-fraud (Fase 46.6)
@@ -3517,6 +4357,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 261 — EKOSISTEM: SUPPLIER FINANCE & COLLABORATIVE PLANNING SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SupplierFinanceCollaborativePlanningService`; 1 migrasi; test `SupplierFinanceCollaborativePlanningTest` — commit `a302073`, +447 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `SupplierFinanceCollaborativePlanningService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 261.1 Supplier portal v2: forecast sharing (rolling 12 bulan) → capacity confirmation → ASN automation (Fase 55.3 bridge) → scorecard live
 - [ ] 261.2 Supply chain finance scale (memperluas Fase 50.5): early payment dari investor pool (tokenized SCF Fase 71) → discount curve → supplier cash conversion terukur
 - [ ] 261.3 Collaborative quality: supplier masuk quality system (Fase 213) → SPC data sharing → joint improvement → cost of quality turun terukur
@@ -3528,6 +4371,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 262 — EKOSISTEM: DISTRIBUTOR & RETAILER COLLABORATION 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DistributorRetailerCollaborationService`; 1 migrasi; test `DistributorRetailerCollaborationTest` — commit `3e55e03`, +421 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `DistributorRetailerCollaborationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 262.1 Joint business planning digital: target bersama per produk/wilayah → aktivitas → review → settlement insentif (bridge Fase 43.6)
 - [ ] 262.2 Sell-out data feed otomatis (POS retailer via API Fase 147) → data quality scoring → forecast akurasi naik → stock accuracy incentive
 - [ ] 262.3 Shelf & space analytics (simulasi): compliance planogram → penalti insentif → promo effectiveness per outlet
@@ -3539,6 +4385,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 263 — EKOSISTEM: GOVERNMENT & REGULATORY DIGITAL SERVICES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EgovRegulatoryDigitalServicesService`; 1 migrasi; test `EgovRegulatoryDigitalServicesTest` — commit `c36c44e`, +450 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `EgovRegulatoryDigitalServicesService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 263.1 e-Gov integration gateway: pelaporan elektronik per regulasi (pajak, ketenagakerjaan, lingkungan, keselamatan) → template resmi simulasi → submit → acknowledgement → tracking
 - [ ] 263.2 License & permit lifecycle per lini (Fase 144.3 → operasional): perpanjangan otomatis, dokumen, biaya, blocking rule bila kedaluwarsa
 - [ ] 263.3 Public disclosure dashboard: data wajib publik (emisi, ketenagakerjaan, CSR) → siap unggah → versi tercatat → konsisten dengan laporan internal
@@ -3550,6 +4399,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 264 — EKOSISTEM: INSURTECH & FINTECH PARTNER INTEGRATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FintechInsurtechPartnerService`; 1 migrasi; test `FintechInsurtechPartnerTest` — commit `4b9d5fe`, +416 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `FintechInsurtechPartnerService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 264.1 Partner gateway fintech (payment aggregator, e-wallet, bank simulasi) → routing terbaik per negara (cost/success rate) → failover → settlement reconciliation harian
 - [ ] 264.2 Insurance partner markets: placement ke reinsurer/market external (Fase 157) → API submission → status → billing → regulatory reporting
 - [ ] 264.3 Open finance consent (simulasi): pengguna izinkan mitra baca data (agregat) untuk penawaran → consent ledger → revoke instan → audit akses mitra
@@ -3561,6 +4413,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 265 — EKOSISTEM: ACADEMIC & INDUSTRY RESEARCH NETWORK
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AcademicIndustryResearchService`; 1 migrasi; test `AcademicIndustryResearchTest` — commit `434bc6d`, +440 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `AcademicIndustryResearchService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 265.1 Riset bersama universitas/institusi (Fase 106 bridge + Fase 218): proposal → ethics & IP agreement → funding tranche → data sandbox (Fase 244.3) → output (publikasi/paten)
 - [ ] 265.2 Talent dual-track: akademisi jadi affiliate researcher (kontrak jasa) → mahasiswa magang (Edu Fase 166) → penyerapan alumni (Fase 136)
 - [ ] 265.3 Innovation challenge platform: brief masalah terbuka → submission → evaluasi (four-eyes) → hadiah via ledger → implementasi jika menang
@@ -3572,6 +4427,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 266 — DATA: DECISION INTELLIGENCE PLATFORM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DecisionIntelligencePlatformService`; 1 migrasi; test `DecisionIntelligencePlatformTest` — commit `7deacc4`, +376 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) atau modul pemilik data — putuskan di DoR · **Prasyarat:** R5.1 ✅ + modul sumber ✅ · **Acuan:** KONSEP §A1, §A5
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/mesh/lineage' berupa tabel metadata yang diisi manual; metrik tanpa query ke data sumber; memperluas `DecisionIntelligencePlatformService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 266.1 Decision catalog: keputusan kritikal per lini (pricing, allocation, staffing, capital, risk) → owner → data & model dipakai → outcome terukur → review cycle
 - [ ] 266.2 Decision quality scoring: konsistensi, outcome vs prediksi, bias terdeteksi → training manager (Fase 226.4) → perbaikan budaya keputusan
 - [ ] 266.3 Scenario workbench: eksekutif menyusun what-if sendiri (data sandbox, drag komponen) → hasil deterministik → disimpan & dibandingkan → feed ke board paper (Fase 231.4)
@@ -3583,6 +4441,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 267 — DATA: DATA MESH FEDERATED GOVERNANCE (30 DOMAIN PRODUCT)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DataMeshFederatedGovernanceService`; 1 migrasi; test `DataMeshFederatedGovernanceTest` — commit `b44cf13`, +380 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) atau modul pemilik data — putuskan di DoR · **Prasyarat:** R5.1 ✅ + modul sumber ✅ · **Acuan:** KONSEP §A1, §A5
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/mesh/lineage' berupa tabel metadata yang diisi manual; metrik tanpa query ke data sumber; memperluas `DataMeshFederatedGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 267.1 Domain-owned data products (Fase 189.1) dengan federated computational policy: setiap domain menjalankan policy engine sendiri (akses, quality, schema) → platform menegakkan minimum bar
 - [ ] 267.2 Self-serve data platform: domain dapat publish product sendiri (template, CI policy, virtualisasi) → time-to-data product turun → metric terukur
 - [ ] 267.3 Interoperability contracts: konsumen berkontrak dengan producer (SLA data) → billing usage data product internal (Fase 235) → marketplace data internal
@@ -3594,6 +4455,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 268 — AI: AUTONOMOUS ENTERPRISE LADDER LEVEL 4
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AutonomousEnterpriseLadderService`; 1 migrasi; test `AutonomousEnterpriseLadderTest` — commit `b789248`, +412 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AutonomousEnterpriseLadderService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 268.1 Formalisasi 4 level otonomi (Fase 143.2) per proses: level 4 (full autonomous + human audit sampling) hanya untuk proses berisiko rendah & terukur → daftar proses eligible → kontrol sampling 5%
 - [ ] 268.2 Self-healing operations: anomaly → diagnosis (runbook terstruktur Fase 198.2) → remediation otomatis (restart, scale, failover) → post-incident report → tanpa downtime
 - [ ] 268.3 Autonomous negotiation agent (terbatas): renewal kontrak berulang dengan guardrail harga → draft + compare → human sign-off pada nilai > ambang → learning dari hasil
@@ -3605,6 +4469,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 269 — AI: SIMULATION ECONOMY & SYNTHETIC DATA FACTORY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SimulationSyntheticFactoryService`; 1 migrasi; test `SimulationSyntheticFactoryTest` — commit `8b3d8b2`, +375 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `SimulationSyntheticFactoryService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 269.1 Synthetic data generator per domain (transaksi, sensor, perilaku) → ber-seed, privacy-safe (tak mem-copy PII asli) → dipakai test/training/analisis → quality check vs distribusi asli
 - [ ] 269.2 Simulation marketplace internal: tim pakai simulator (demand, grid, port, mine, health) → cost per run → result registry → hindari duplikasi riset
 - [ ] 269.3 Counterfactual analysis: "apa jadinya jika harga naik 10%" → model terverifikasi → rekomendasi → implementasi via approval → impact review post-facto
@@ -3616,6 +4483,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 270 — AI: HUMAN-AI COLLABORATION WORKFLOWS 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `HumanAiCollaborationWorkflowsService`; 1 migrasi; test `HumanAiCollaborationWorkflowsTest` — commit `ea1760d`, +363 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `HumanAiCollaborationWorkflowsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 270.1 Copilot per peran: dokter (suggestion diagnosis Fase 198 bridge), mekanik (diagnosis), dispatcher (rekomendasi rute), kasir (upsell), auditor (sampling suggestion) → AI menyarankan, manusia memutus, keputusan tercatat
 - [ ] 270.2 Skill augmentation loop: review keputusan AI oleh manusia → disagreement rate per role/model → training material → model improvement proposal (Fase 195.4)
 - [ ] 270.3 Workload balancing: beban review HITL (Fase 196.2) terukur → queue optimization → SLA review terpenuhi → kualitas review sampling (misclass rate)
@@ -3627,6 +4497,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 271 — KEUANGAN: INNOVATIVE CAPITAL MARKETS & DIGITAL SECURITIES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DigitalSecuritiesCapitalMarketsService`; 1 migrasi; test `DigitalSecuritiesCapitalMarketsTest` — commit `f5ad962`, +470 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `DigitalSecuritiesCapitalMarketsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 271.1 Digital securities desk: penerbitan token ekuitas/utang (simulasi PSAK, Fase 162/71) → bookbuilding → allocation → secondary trading terbatas → corporate action → reporting
 - [ ] 271.2 Investor onboarding digital: KYC/AML tiered (Fase 27.2 + 200.3) → suitability check → subscription → custody entry (wallet institutional) → statement berkala
 - [ ] 271.3 Market making simulasi: liquidity provider internal (spread rules, inventory limit) → orderbook sehat (depth metric) → fee revenue → disturbance guard
@@ -3638,6 +4511,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 272 — KEUANGAN: CRYPTO NATIVE OPERATIONS & DEFI SIMULATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CryptoNativeDefiSimulationService`; 1 migrasi; test `CryptoNativeDefiSimulationTest` — commit `e585b0b`, +524 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `CryptoNativeDefiSimulationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 272.1 Treasury on-chain (simulasi): stablecoin/vault management → multi-sig approval (m-of-n role) → policy engine (limit harian, allowlist destination) → cold/hot wallet split
 - [ ] 272.2 DeFi pool simulasi: liquidity pool internal (token komoditas/poin) → AMM constant-product sederhana → fee → impermanent loss tercatat → risk limit
 - [ ] 272.3 Staking/yield program: token platform di-stake → reward emission terkontrol (tokenomics tercatat) → anti-whale rules → dilution terukur
@@ -3649,6 +4525,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 273 — KEUANGAN: FINANCIAL CRIME & SANCTIONS AT GLOBAL SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FinancialCrimeSanctionsService`; 1 migrasi; test `FinancialCrimeSanctionsTest` — commit `9b4611c`, +440 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `FinancialCrimeSanctionsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 273.1 Sanctions graph screening: screening entitas baru + re-screen berkala + ownership chain (UBO) → hit confidence → escalation → blocking operational (transaksi & kontrak)
 - [ ] 273.2 Trade-based AML lanjut (Fase 208.4): pricing anomaly vs indeks, circular trade, dual-use goods check (Fase 49.8) → case → reporting
 - [ ] 273.3 Crypto AML: wallet analytics simulasi (clustering, exposure risk) → travel rule bridge → high-risk wallet → hold
@@ -3660,6 +4539,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 274 — KEUANGAN: CORPORATE TAX ENGINE GLOBAL SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CorporateTaxEngineService`; 1 migrasi; test `CorporateTaxEngineTest` — commit `f994515`, +376 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `CorporateTaxEngineService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 274.1 Tax engine 30 negara: indirect tax, withholding, transfer pricing (Fase 52.2), Pillar Two simulasi (top-up tax global minimum) → provision otomatis → review tax director
 - [ ] 274.2 Tax data lineage: setiap angka pajak → sumber voucher → evidence pack → audit trail (bridge Fase 54.7) → perubahan aturan (Fase 207.1) → recompute
 - [ ] 274.3 Tax controversy readiness: posisi per isu → dokumentasi pendukung → defense pack → menang/kalah tercatat → learning ke pricing & structure
@@ -3671,6 +4553,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 275 — KEUANGAN: CASH FORECASTING & LIQUIDITY AT COMMAND
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CashForecastingLiquidityCommandService`; 1 migrasi; test `CashForecastingLiquidityCommandTest` — commit `9a41ef1`, +422 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `CashForecastingLiquidityCommandService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 275.1 13-minggu rolling forecast (Fase 48.5) diperluas 30 lini + scenario engine (best/base/worst) → accuracy tracking → bias correction otomatis
 - [ ] 275.2 Intraday cash position: real-time balance semua rekening & escrow → projected EOD → sweep decisions (Fase 187.4) → funding actions
 - [ ] 275.3 Liquidity stress test: skenario (loss of major customer, market freeze, disaster) → survival days per entity → contingency (credit line draw Fase 210.2) → board alert
@@ -3682,6 +4567,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 276 — OPERASI: OPERATIONS EXCELLENCE (LEAN, SIX SIGMA, CI)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `OperationsExcellenceService`; 1 migrasi; test `OperationsExcellenceTest` — commit `4a5a0da`, +410 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `OperationsExcellenceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 276.1 CI pipeline terpusat: improvement idea → DMAIC project (define, measure, analyze, improve, control) → owner → baseline → target → hasil terverifikasi finansial → standarisasi SOP (Fase 198.2)
 - [ ] 276.2 Operational KPI tree per lini: dari strategi → OKR → process KPI → dashboard → review cadence (memperluas Fase 231) → KPI hijau/merah objective
 - [ ] 276.3 Standard work library: best practice lintas outlet/site → playbook → adoption tracking (siapa sudah pakai) → variance dari standar → justification
@@ -3693,6 +4581,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 277 — OPERASI: PLANNING & SCHEDULING UNIFICATION (AP, CRP, WORKFORCE)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PlanningSchedulingUnificationService`; 1 migrasi; test `PlanningSchedulingUnificationTest` — commit `6a6bc99`, +406 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `PlanningSchedulingUnificationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 277.1 Unified planning stack: demand (Fase 201) → supply network (Fase 215) → capacity (Fase 36.4 generalized) → workforce (Fase 223.2) → financial plan (Fase 54.1) → satu consistent plan number
 - [ ] 277.2 Finite scheduling lintas sumber daya (mesin, orang, ruang, kapal, seat): constraint solver (Fase 199) → schedule → shop-floor execution feedback → reschedule trigger rules
 - [ ] 277.3 S&OP cadence terintegrasi dengan financial close & capital cycle → plan-actual-review dalam kalender tunggal
@@ -3704,6 +4595,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 278 — OPERASI: FLEET & ASSET UTILIZATION OPTIMIZATION 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FleetAssetUtilizationOptimizationService`; 1 migrasi; test `FleetAssetUtilizationOptimizationTest` — commit `f7965c5`, +388 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `FleetAssetUtilizationOptimizationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 278.1 Asset utilization framework: semua aset bergerak & stasioner (truk, kapal, pesawat, alat berat, CT scanner, kapasitas pabrik, kamar, seat, crane) → utilization, idle cost, revenue per asset-hour
 - [ ] 278.2 Allocation optimizer (memperluas Fase 199): assignment asset ↔ demand (kontrak, order, booking) → revenue maximize dgn constraint maintenance & crew
 - [ ] 278.3 Lifecycle decision engine: repair-or-replace (TCO Fase 31.7 + residual value) → recommendation → approval → capex routing (Fase 210.2)
@@ -3715,6 +4609,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 279 — OPERASI: WAREHOUSE AUTOMATION & ROBOTICS SIMULATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `WarehouseRoboticsAutomationService`; 1 migrasi; test `WarehouseRoboticsAutomationTest` — commit `ccd1746`, +354 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `WarehouseRoboticsAutomationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 279.1 Automation planning: per DC → pick method (man, AMR simulasi, conveyor) → kapasitas → biaya → ROI → phased implementation
 - [ ] 279.2 Robot fleet management (simulasi): task allocation, traffic (zone reservation anti-tabrakan), charging schedule, failure → fallback manual → throughput KPI
 - [ ] 279.3 Wave planning otomatis: order → wave (cutoff, carrier, priority) → pick path optimization (Fase 41.3) → pack → dispatch → SLA on-time terukur
@@ -3726,6 +4623,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 280 — OPERASI: FOOD SERVICE, HOSPITALITY & VENUE OPERATIONS PLAYBOOK SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `HospitalityOperationsPlaybookService`; 1 migrasi; test `HospitalityOperationsPlaybookTest` — commit `ca911ae`, +379 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Resto / Hotel / Venue (playbook operasional per lini) · **Prasyarat:** Fase 89–92 ✅, Resto ✅ · **Acuan:** KONSEP 3F, 10F, 11F
+> **Jalan pintas terlarang di fase ini:** 'playbook' berupa dokumen/tabel skor tanpa aksi terjadwal yang bisa ditunjuk; KPI tanpa query ke data operasional; memperluas `HospitalityOperationsPlaybookService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 280.1 Multi-outlet operations bible: SOP lintas 5.000 outlet resto, 5.000 hotel, 1.000 venue (service sequence, opening/closing, crisis) → versioned → training attested (Fase 167.4)
 - [ ] 280.2 Shift playbook engine: demand forecast (Fase 75.1/201) → staffing plan → task board per shift → completion evidence → variance report
 - [ ] 280.3 Quality audit mystery guest (simulasi): scoring terjadwal → gap → coaching → re-audit → outlet grade → dampak ke brand scorecard (Fase 111.1)
@@ -3737,6 +4637,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 281 — PELANGGAN: OMNI-CHANNEL SERVICE CONSISTENCY & SLA
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `OmnichannelServiceConsistencySlaService`; 1 migrasi; test `OmnichannelServiceConsistencySlaTest` — commit `64317a8`, +387 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `OmnichannelServiceConsistencySlaService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 281.1 Service level framework per segment (consumer, SMB, enterprise, government): janji layanan (respons time, resolusi, uptime) → kontrak/kebijakan → measurement → credit otomatis (Fase 216.2 generalized)
 - [ ] 281.2 Channel parity: jawaban & harga konsisten lintas chat, app, store, call simulasi → knowledge base tunggal (Fase 198.1) → divergensi terdeteksi → correction
 - [ ] 281.3 Escalation graph: tier1 → tier2 → specialist → lini terkait (case bridge Fase 220.2) → warm handoff dengan konteks penuh → no-repeat-customer policy (riwayat terlihat)
@@ -3748,6 +4651,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 282 — PELANGGAN: COMMUNITY, UGC & SOCIAL COMMERCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CommunityUgcSocialCommerceService`; 1 migrasi; test `CommunityUgcSocialCommerceTest` — commit `0450059`, +360 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `CommunityUgcSocialCommerceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 282.1 Community platform per lini (review, forum, Q&A) → moderation pipeline (auto + human) → guideline → escalation pelanggaran → trust score kontributor
 - [ ] 282.2 UGC commerce: review terverifikasi pembelian → influence ranking → UGC-terkait penjualan teratribusi (Fase 222.4) → insentif kreator (poin ledger)
 - [ ] 282.3 Social commerce (live selling simulasi): sesi live → order masuk OMS (Fase 137.3) → stok real-time → fulfillment biasa → komisi host & affiliate (Fase 260.3)
@@ -3759,6 +4665,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 283 — PELANGGAN: LOYALTY ECONOMY ADVANCED (COALITION, BREAKAGE, PARTNERS)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CoalitionLoyaltyBreakageService`; 1 migrasi; test `CoalitionLoyaltyBreakageTest` — commit `08cec43`, +371 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `CoalitionLoyaltyBreakageService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 283.1 Coalition loyalty lintas industri (maskapai, hotel, retail, asuransi, telko simulasi): earning rules per partner → interchange fee model → settlement multi-issuer → liability governance (Fase 220.3)
 - [ ] 283.2 Breakage economics: forecast redemption curve → breakage revenue akui konservatif (simulasi) → reversal bila deviasi → audit khusus loyalty
 - [ ] 283.3 Points economy safety: inflation control (devalue policy terbatas & diumumkan), expiry, fraud ring detection (Fase 200) → kebijakan adil tercatat
@@ -3770,6 +4679,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 284 — SDM: ORG HEALTH & CULTURE MEASUREMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SdmOrgHealthCultureService`; 1 migrasi; test `SdmOrgHealthCultureTest` — commit `64795d1`, +339 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `SdmOrgHealthCultureService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 284.1 Culture & values framework: perilaku yang diharapkan per level → assessment (360 simulasi) → gap → development → link promosi (Fase 226.4)
 - [ ] 284.2 Org network analysis: komunikasi/kolaborasi graph (meeting, project, comms metadata anonymized) → silo terdeteksi → interlock intervention → re-measure
 - [ ] 284.3 Diversity, equity & inclusion metrics: representasi per level/gender/region (agregat, privasi) → target → program → progress report ke governance (Fase 231)
@@ -3781,6 +4693,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 285 — SDM: WELLNESS, OCCUPATIONAL HEALTH & EMPLOYEE ASSISTANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SdmWellnessOccupationalHealthService`; 1 migrasi; test `SdmWellnessOccupationalHealthTest` — commit `e738141`, +335 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `SdmWellnessOccupationalHealthService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 285.1 Occupational health surveillance: pemeriksaan berkala (terutama tambang Fase 94, pabrik, radiologi RS) → hasil medis ter-encrypt terpisah (vault Fase 144.2) → fitness-for-duty terbatas (hanya status, bukan detail)
 - [ ] 285.2 EAP (Employee Assistance): konseling anonim → referral (link RS/telemedicine Fase 104) → utilization agregat tanpa identitas → program perbaikan workplace
 - [ ] 285.3 Ergonomics & wellbeing program: risk assessment per role → intervention → incident musculoskeletal turun terukur → biaya vs avoided cost
@@ -3792,6 +4707,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 286 — ESG: NATURE, CLIMATE & SOCIAL IMPACT AUDIT AT SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EsgImpactAuditScaleService`; 1 migrasi; test `EsgImpactAuditScaleTest` — commit `b4e216c`, +376 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `EsgImpactAuditScaleService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 286.1 Impact measurement framework: baseline/counterfactual, attribution, leakage/permanence risk → applies carbon, biodiversity, community, health, education projects
 - [ ] 286.2 Independent verification marketplace: verifier qualification, sampling plan, evidence review, conflict-of-interest control, assurance statement → payout only after approval
 - [ ] 286.3 Impact-linked financing: loan/sukuk interest/margin adjusts by verified KPI (water, emissions, jobs, training) → threshold & calculation immutable → audit
@@ -3804,6 +4722,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 287 — ESG: CLIMATE ADAPTATION & PHYSICAL RISK RESILIENCE 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ClimateAdaptationResilienceService`; 1 migrasi; test `ClimateAdaptationResilienceTest` — commit `7611b60`, +376 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `ClimateAdaptationResilienceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 287.1 Asset geospatial climate exposure: heat, flood, storm, drought (simulasi layers) → risk score per site/asset → financial impact estimation (damage, downtime, insurance)
 - [ ] 287.2 Adaptation measures: flood barrier, cooling, elevated DC, water storage, backup power → EPC project (Fase 63) → cost/benefit → resilience improvement tracked
 - [ ] 287.3 Supply chain climate exposure: supplier/route/crop/site exposure → alternative source/routing → S&OP scenario (Fase 201) → action plan
@@ -3815,6 +4736,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 288 — ESG: HUMAN RIGHTS, COMMUNITY & JUST TRANSITION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EsgHumanRightsJustTransitionService`; 1 migrasi; test `EsgHumanRightsJustTransitionTest` — commit `b8151e9`, +411 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `EsgHumanRightsJustTransitionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 288.1 Human rights due diligence across operations/supply chain: risk mapping → consultation → impact assessment → remediation → effectiveness check
 - [ ] 288.2 Community grievance mechanism: accessible intake, non-retaliation, case owner, remedy, appeal, community satisfaction
 - [ ] 288.3 Just transition: workforce affected by automation/energy transition → reskilling (Edu Fase 227), redeployment (Fase 254), income protection simulation → outcome tracking
@@ -3827,6 +4751,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 289 — ESG: PRODUCT STEWARDSHIP, REPAIRABILITY & EXTENDED PRODUCER RESPONSIBILITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ProductStewardshipEprService`; 1 migrasi; test `ProductStewardshipEprTest` — commit `ecb6bfb`, +363 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `ProductStewardshipEprService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 289.1 Product lifecycle passport (Fase 6E): materials, carbon, repair, take-back, recyclability, end-of-life instructions → QR public view with verified claims
 - [ ] 289.2 Repairability scoring per SKU → spare-part availability (AutoServe/Store) → warranty/repair network → feed to design teams (PLM Fase 59)
 - [ ] 289.3 EPR simulation: packaging/product sold → obligation quantity → collection/recycling evidence (Fase 174) → fee liability → compliance report
@@ -3839,6 +4766,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 290 — GOVERNANCE: ENTERPRISE POLICY ENGINE & DELEGATED CONTROLS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterprisePolicyEngineService`; 1 migrasi; test `EnterprisePolicyEngineTest` — commit `0961f84`, +401 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `EnterprisePolicyEngineService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 290.1 Policy-as-code catalog: approval, pricing, risk, data, retention, safety rules → versioned expression → staged rollout → simulation test before activation
 - [ ] 290.2 Policy decision point shared API → enforcement points in modules (RBAC, price floor, credit, age, capacity, residency) → decision trace & explainability
 - [ ] 290.3 Emergency override (break-glass) restricted, dual approval, time-bound, auto-expiry, post-review; cannot bypass ledger invariants or safety-critical guardrails
@@ -3851,6 +4781,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 291 — GOVERNANCE: DATA RETENTION, RECORDS & E-DISCOVERY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GovernanceDataRetentionDiscoveryService`; 1 migrasi; test `GovernanceDataRetentionDiscoveryTest` — commit `ce6ea13`, +353 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `GovernanceDataRetentionDiscoveryService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 291.1 Record classes per jurisdiction/sector: legal hold, retention duration, archival format, disposal method → policy catalog → automated classification
 - [ ] 291.2 Legal hold workflow (Fase 176): hold prevents deletion/archive mutation → scope by matter/person/date → release approved by legal
 - [ ] 291.3 Retention jobs: eligible records archived/deleted/anonymized with proof of execution; financial ledger immutable; PII minimized when retention expires
@@ -3863,6 +4796,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 292 — GOVERNANCE: RECORDS SIGNATURE, TRUST SERVICES & VERIFIABLE CREDENTIALS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GovTrustServicesSignaturesService`; 1 migrasi; test `GovTrustServicesSignaturesTest` — commit `1024803`, +359 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `GovTrustServicesSignaturesService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 292.1 Enterprise signing service: approval chain → signer identity → document hash → timestamp → certificate simulation → validation & revocation
 - [ ] 292.2 Verifiable credentials: staff certification (Edu), supplier qualification, medical license, product passport → issuer/schema/expiry/revocation registry
 - [ ] 292.3 Trust registry per jurisdiction: approved trust anchors, signature policy, archive evidence; cross-border contract workflow uses accepted policy
@@ -3874,6 +4810,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 293 — GOVERNANCE: INTERNAL AUDIT MANAGEMENT & CONTINUOUS ASSURANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GovInternalAuditAssuranceService`; 1 migrasi; test `GovInternalAuditAssuranceTest` — commit `dd8b01f`, +378 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `GovInternalAuditAssuranceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 293.1 Risk-based annual audit plan: risk score (Fase 202) → auditable entities → resources → calendar → board audit committee approval
 - [ ] 293.2 Audit engagement lifecycle: scope → request list → fieldwork → sample selection (AI suggestion with human approval) → finding → management response → issue closure
 - [ ] 293.3 Continuous audit analytics: journal anomaly, duplicate vendor, split PO, unusual override, stock variance → exception queue → audit follow-up
@@ -3886,6 +4825,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 294 — GOVERNANCE: ETHICS OF DATA, AI & BIOMETRIC SYSTEMS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GovEthicsAiBiometricsService`; 1 migrasi; test `GovEthicsAiBiometricsTest` — commit `b39840e`, +358 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `GovEthicsAiBiometricsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 294.1 Ethics impact assessment before new sensitive processing (medical, location, biometrics, child/student data) → necessity/proportionality → approval & review date
 - [ ] 294.2 Biometric governance: use limitation, template protection, deletion/revocation, alternative non-biometric path (accessibility) → audit
 - [ ] 294.3 AI impact classification (Fase 195): prohibited/high/limited/low impact simulation → transparency notice, human oversight, monitoring, incident reporting
@@ -3898,6 +4840,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 295 — PLATFORM: MIGRATION & MODULAR MONOLITH LONG-TERM EVOLUTION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PlatformMonolithEvolutionService`; 1 migrasi; test `PlatformMonolithEvolutionTest` — commit `af966f5`, +303 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `PlatformMonolithEvolutionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 295.1 Architecture fitness functions: module boundaries, no direct cross-domain DB, Contract/Event only, no circular dependencies → enforced in CI
 - [ ] 295.2 Schema evolution playbook: expand-contract, dual-read/write, backfill, cutover, cleanup → rehearsal on ultra-seeded DB (Fase 191)
 - [ ] 295.3 Modular monolith scaling strategy: read replicas, queue isolation, process pools, database partitioning; extraction to services only if evidence warrants (document ADR, not default)
@@ -3910,6 +4855,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 296 — PLATFORM: CONFIGURATION, FEATURE FLAGS & ENVIRONMENT PARITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PlatformFeatureFlagsParityService`; 1 migrasi; test `PlatformFeatureFlagsParityTest` — commit `106366c`, +371 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `PlatformFeatureFlagsParityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 296.1 Configuration registry per environment (dev/test/staging/prod-sim) → typed schema → secret references only → validation at boot; invalid config prevents startup
 - [ ] 296.2 Feature flag service: per tenant/region/role rollout, expiry owner, kill switch, audit; remove stale flag after adoption window
 - [ ] 296.3 Environment parity: seeded fixtures and service stubs consistent; drift detection for schema/config/queues; staging promotion gate
@@ -3922,6 +4870,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 297 — PLATFORM: AUTOMATED OPERATIONS, RUNBOOK EXECUTION & FINOPS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PlatformAutomatedOpsFinopsService`; 1 migrasi; test `PlatformAutomatedOpsFinopsTest` — commit `869e761`, +409 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `PlatformAutomatedOpsFinopsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 297.1 Runbook automation: approved operational task (replay DLQ, restore cache, rerun report) → dry-run → approval if material → execute → evidence log
 - [ ] 297.2 Scheduled job registry: owner, cadence, expected duration, idempotency, overlap guard, last success, next run; missed job alerts
 - [ ] 297.3 FinOps: unit cost per transaction/customer/order/model inference/storage GB → budget vs actual → anomaly → rightsizing suggestion → savings verified
@@ -3934,6 +4885,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 298 — PLATFORM: FINAL 30-LINI STRESS, SECURITY & BUSINESS SIMULATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PlatformFinalStressSecuritySimulationService`; 1 migrasi; test `PlatformFinalStressSecuritySimulationTest` — commit `3e313a8`, +343 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `PlatformFinalStressSecuritySimulationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 298.1 Full ultra seed 30 lini (Fase 191) plus 12 months simulation: repeatable duration/memory benchmark; checkpoint/resume from each stage; totals stored in AUDIT
 - [ ] 298.2 Stress matrix: 10.000 concurrent booking/payment/inventory requests across regions; 1.000 device streams; queue backlog recovery; query p95/p99 budgets enforced
 - [ ] 298.3 Security suite: route×role×tenant permutations, IDOR fuzz, privilege escalation, data leak, replay, webhook spoof, payment race; zero critical/high findings
@@ -3945,6 +4899,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 299 — FINAL DOCUMENTATION, OPERATIONS PLAYBOOK & RELEASE CANDIDATE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PlatformReleaseCandidateDocsService`; 1 migrasi; test `PlatformReleaseCandidateDocsTest` — commit `9109a64`, +263 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `PlatformReleaseCandidateDocsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 299.1 README final 30 lini, all commands, role matrix, simulation & seed guides, integration map
 - [ ] 299.2 ARCHITECTURE/CODEBASE/DECISIONS: 30-line ERD, boundaries, event registry, ledger conventions, twin architecture, ADRs complete
 - [ ] 299.3 RUNBOOK: every scheduled job, critical operations, recovery, DR, incident response, audit/reconciliation, data restore, health-check
@@ -3958,6 +4915,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 300 — RELEASE 30 LINI: FINAL ACCEPTANCE & HANDOVER
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PlatformRelease300HandoverService`; 1 migrasi; test `PlatformRelease300HandoverTest` — commit `4ade0ca`, +303 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command; memperluas `PlatformRelease300HandoverService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 300.1 Full regression Fase 0–299: 100% green, zero skipped/weakened tests; test/assertion trend published
 - [ ] 300.2 Reconcile all ledgers/assets/currencies/tokens/points/carbon/miles/zakat/wakaf and all 30-line subledgers: Σ=0, no unexplained variance
 - [ ] 300.3 Verify every hash-chain: vehicle/patient/product/asset/contract/ticket/custody/credential/weighbridge/RWA; all valid
@@ -3986,6 +4946,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 301 — ADVANCED SUPPLY INTELLIGENCE: MULTI-ECHELON OPTIMIZATION 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AdvancedSupplyOptimizationService`; 1 migrasi; test `AdvancedSupplyOptimizationTest` — commit `20c3f57`, +325 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `AdvancedSupplyOptimizationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 301.1 Dynamic network optimization: biaya transport, lead time, tarif, risiko region → solver (Fase 199) → rencana deployment bulanan → dampak service & cost terukur → implementasi bertahap
 - [ ] 301.2 Multi-echelon inventory policy otomatis: safety stock & reorder point dihitung per lokasi dengan konsesi anggaran → buffer bukan hanya biaya tapi service level → policy simulation sandbox
 - [ ] 301.3 Demand shaping: promo, pricing, allocation saat langka → fairness rules → dampak revenue & margin terukur vs baseline (Fase 266 scenario)
@@ -3997,6 +4960,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 302 — ADVANCED SUPPLY: SUPPLIER COLLABORATIVE DESIGN & INNOVATION SOURCING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SupplierCollaborativeSourcingService`; 1 migrasi; test `SupplierCollaborativeSourcingTest` — commit `1d574f5`, +290 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `SupplierCollaborativeSourcingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 302.1 Supplier co-development program: brief desain → proposal pemasok → joint development contract (Fase 28) → milestone → kualifikasi → produksi → skor inovasi
 - [ ] 302.2 Cost breakdown analysis: pemasok membuka struktur biaya (ransum simulasi) → value engineering bersama → target cost → savings terbagi adil (kontrak)
 - [ ] 302.3 Strategic sourcing event: reverse auction multi-loten (segel penawaran Fase 33.3) → evaluasi TCO (harga + risiko + logistik + kualitas) → award → knowledge retention
@@ -4008,6 +4974,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 303 — ADVANCED SUPPLY: COLD CHAIN, PHARMA & HIGH-VALUE LOGISTICS EXCELLENCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ColdChainHighValueLogisticsService`; 1 migrasi; test `ColdChainHighValueLogisticsTest` — commit `a3562c6`, +295 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `ColdChainHighValueLogisticsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 303.1 Cold chain excellence program: sensor coverage 100% lane kritikal → excursion root cause (door open, unit rusak, route) → corrective action → excursion rate target
 - [ ] 303.2 Pharma GDP compliance (simulasi): qualification kendaraan/rute, data logger, deviation management, serialisation → audit trail penuh ke regulator simulasi
 - [ ] 303.3 High-value security: chain of custody berlapis (seal, GPS, dual control) → high-value route risk assessment → insurance premium turun terukur (Fase 156)
@@ -4019,6 +4988,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 304 — ADVANCED SUPPLY: DEMAND-SIDE FLEXIBILITY & FULFILLMENT ORCHESTRATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FulfillmentOrchestrationPromiseService`; 1 migrasi; test `FulfillmentOrchestrationPromiseTest` — commit `5669bca`, +277 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `FulfillmentOrchestrationPromiseService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 304.1 Promise-to-fulfill engine: ATP/CTP (Fase 53.4) terluas — real-time komitmen lintas kanal (toko, web, marketplace, B2B) dengan buffer safety → promise accuracy KPI
 - [ ] 304.2 Order orchestration rules: source selection (toko vs DC vs dropship), substitution, split, bundling, backorder → rules versioned & testable → cost-to-serve aware
 - [ ] 304.3 Post-purchase experience: proactive delay notification, self-service reschedule, compensation policy otomatis → CSAT recovery terukur
@@ -4030,6 +5002,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 305 — ADVANCED DEMAND: COMMERCIAL PLANNING & REVENUE GROWTH MANAGEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CommercialRevenueGrowthPlanningService`; 1 migrasi; test `CommercialRevenueGrowthPlanningTest` — commit `40aeb9f`, +289 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `CommercialRevenueGrowthPlanningService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 305.1 Revenue growth management: price-pack architecture, promo portfolio optimization, mix steering → dampak net revenue per lini → guardrails margin
 - [ ] 305.2 Trade promo effectiveness (Fase 44.3 scale): incremental lift vs baseline (holdout control group simulasi) → ROI per promo → pembelajaran ke planner
 - [ ] 305.3 Forecast value of information: kapan forecast layak diperbaiki (biaya perbaikan vs error cost) → human override hanya saat VOI positif → tercatat
@@ -4041,6 +5016,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 306 — ADVANCED OPERATIONS: AUTONOMOUS FIELD FLEET (MINE, PORT, WAREHOUSE)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AutonomousFieldFleetService`; 1 migrasi; test `AutonomousFieldFleetTest` — commit `485f3c4`, +288 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `AutonomousFieldFleetService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 306.1 Autonomous vehicle simulation lane: haul truck/AGV/AMR beroperasi di koridor designated → teleop fallback → telematik penuh → safety cage rules (geofence, speed cap)
 - [ ] 306.2 Remote operation center: operator mengawasi banyak unit → intervention log → utilisasi & biaya vs manned baseline → ROI terukur
 - [ ] 306.3 Mixed traffic protocol: unit otonom & manual berbagi area → right-of-way rules → near-miss monitoring → continuous safety case review
@@ -4052,6 +5030,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 307 — ADVANCED OPERATIONS: PREDICTIVE OPERATIONS & DIGITAL TWIN CONTROL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PredictiveOperationsDigitalTwinService`; 1 migrasi; test `PredictiveOperationsDigitalTwinTest` — commit `694403c`, +256 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `PredictiveOperationsDigitalTwinService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 307.1 Twin-based control loop: twin (Fase 67.3) memprediksi state → controller menyarankan aksi (setpoint HVAC, jadwal maintenance, dispatch) → human approve atau auto bila level 4 (Fase 268) → hasil diverifikasi
 - [ ] 307.2 Prescriptive maintenance orchestration: prediksi kegagalan → optimasi jadwal (minimize downtime + parts availability + crew) → WO terjadwal → metrik MTBF/MTTR membaik
 - [ ] 307.3 Twin fidelity monitoring: kesalahan prediksi vs aktual → model drift → recalibration → fidelity score per domain → gate penggunaan control loop
@@ -4063,6 +5044,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 308 — ADVANCED OPERATIONS: NETWORK RESILIENCE & ANTI-FRAGILITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `NetworkResilienceChaosService`; 1 migrasi; test `NetworkResilienceChaosTest` — commit `1a9b33f`, +250 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `NetworkResilienceChaosService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 308.1 Redundancy mapping: dependency kritikal (supplier, link, route, power, DC) → N-1 analysis (hilang satu komponen) → celah terdeteksi → redundancy investment
 - [ ] 308.2 Chaos game days terjadwal: injeksi kegagalan terkontrol (node mati, region down, vendor hilang) → response time terukur → gap → remediasi → re-test
 - [ ] 308.3 Adaptive routing/allocation: saat gangguan → re-optimize otomatis (Fase 199) dengan constraint safety → recovery time objective per jenis gangguan
@@ -4074,6 +5058,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 309 — ADVANCED FINANCE: TREASURY ALGORITHMIC & MARKET RISK
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TreasuryAlgorithmicMarketRiskService`; 1 migrasi; test `TreasuryAlgorithmicMarketRiskTest` — commit `b8ebe3d`, +282 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `TreasuryAlgorithmicMarketRiskService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 309.1 Market risk engine: posisi FX, komoditas, rates → sensitivitas (delta simulasi) → VaR/CVaR per portofolio → limit per meja → breach alert
 - [ ] 309.2 Hedging policy automation: exposure terdeteksi → hedge ratio per kebijakan → order hedging (Fase 48.6/121.3) → effectiveness testing berkala → mark-to-market harian
 - [ ] 309.3 Counterparty credit: exposure per bank/broker/partner → limit → rating sim → settlement risk (pre-fund vs credit line) → daily position report
@@ -4085,6 +5072,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 310 — ADVANCED FINANCE: WORKING CAPITAL MASTERY & SCF SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `WorkingCapitalScfService`; 1 migrasi; test `WorkingCapitalScfTest` — commit `945cea3`, +255 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `WorkingCapitalScfService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 310.1 Cash conversion cycle program per lini: DSO/DPO/DIO → target → levers (invoicing otomatis, dynamic discount, factoring Fase 50.5, inventory policy) → cash released terukur
 - [ ] 310.2 Dynamic discounting marketplace: buyer early payment → supplier yield curve → investor pool internal (Fase 261.2) → settlement otomatis saat invoice jatuh tempo
 - [ ] 310.3 AR risk scoring: skor piutang per pelanggan (bayar historis + external sim) → limit & terms → collection priority → bad debt provision model
@@ -4096,6 +5086,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 311 — ADVANCED FINANCE: CONTINUOUS CONTROLS & TRANSACTION MONITORING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ContinuousControlsMonitoringService`; 1 migrasi; test `ContinuousControlsMonitoringTest` — commit `309ff1a`, +272 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `ContinuousControlsMonitoringService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 311.1 Continuous transaction monitoring: 100% transaksi material melewati rule engine (split payment, round amount, unusual counterparty, velocity) → alert quality tuning (precision/recall)
 - [ ] 311.2 Payment fraud prevention: device/behavior fingerprint (simulasi), step-up auth untuk risk tinggi, payee allowlist untuk transfer besar → fraud loss terukur turun
 - [ ] 311.3 Reconciliation excellence: automated matching (fuzzy reference, amount window) → exception aging → straight-through rate target → manual touch minim
@@ -4107,6 +5100,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 312 — ADVANCED FINANCE: FP&A, DRIVER-BASED PLANNING & AGILE BUDGET
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FpaDriverBasedBudgetingService`; 1 migrasi; test `FpaDriverBasedBudgetingTest` — commit `c9eedd4`, +275 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `FpaDriverBasedBudgetingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 312.1 Driver-based model: revenue = traffic × conversion × price; cost = volume × rate; headcount driver → planning cepat (ubah driver → seluruh model recompute) → konsistensi dengan ledger
 - [ ] 312.2 Rolling forecast 12 bulan (menggantikan annual static) → reforecast bulanan → accuracy tracking → variance driver attribution otomatis
 - [ ] 312.3 Zero-based review cycle: per pusat biaya periodik justifikasi belanja dari nol → eliminations → savings terverifikasi → budaya biaya
@@ -4118,6 +5114,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 313 — ADVANCED COMMERCE: MARKETPLACE DYNAMIC & C2B/C2C FLOWS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DynamicMarketplaceC2cCommerceService`; 1 migrasi; test `DynamicMarketplaceC2cCommerceTest` — commit `4ecf5e5`, +339 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Pricing / Agency / Distribution / Procurement / Store — sesuai topik · **Prasyarat:** R2.3 ✅ · **Acuan:** KONSEP 6F
+> **Jalan pintas terlarang di fase ini:** harga dokumen tidak terkunci; komisi/rebate tanpa ledger; memperluas `DynamicMarketplaceC2cCommerceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 313.1 C2C marketplace: consumer jual ke consumer (bekas kendaraan Fase 5A, fashion Fase 182, elektronik) → listing, escrow (Fase 61.4), autentikasi barang, rating, fulfillment offer
 - [ ] 313.2 C2B buyback: platform menawar barang bekas (trade-in EV baterai Fase 69.4) → harga berbasis kondisi & telematik → bayar ke wallet → stok masuk refurbish/recommerce
 - [ ] 313.3 Marketplace trust & safety: listing review (foto, deskripsi), dispute mediation, scam detection (Fase 200), seller fund hold saat dispute → resolution SLA
@@ -4129,6 +5128,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 314 — ADVANCED COMMERCE: SUBSCRIPTION COMMERCE & INSTANT REPLENISHMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SubscriptionCommerceReplenishmentService`; 1 migrasi; test `SubscriptionCommerceReplenishmentTest` — commit `e90b647`, +286 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Pricing / Agency / Distribution / Procurement / Store — sesuai topik · **Prasyarat:** R2.3 ✅ · **Acuan:** KONSEP 6F
+> **Jalan pintas terlarang di fase ini:** harga dokumen tidak terkunci; komisi/rebate tanpa ledger; memperluas `SubscriptionCommerceReplenishmentService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 314.1 Subscribe-and-save lintas lini: bahan grocery (Fase 75), sparepart fleet (Fase 70), hotel loyalty nights, media content, telecom data → satu engine plan dengan discount ladder
 - [ ] 314.2 Predictive replenishment: consumption pattern → auto-ship sebelum habis (consumable) → skip/edit window → forecast accuracy per subscriber → waste rendah
 - [ ] 314.3 Membership tiers commerce: benefit (free shipping, early access, bundle price) → cost of benefit terukur → LTV cohort comparison → price tiering optimal
@@ -4140,6 +5142,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 315 — ADVANCED ECOSYSTEM: SUPER APP ECOSYSTEM & MINI-APP PLATFORM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SuperAppMiniAppPlatformService`; 1 migrasi; test `SuperAppMiniAppPlatformTest` — commit `77a7d83`, +305 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `SuperAppMiniAppPlatformService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 315.1 Mini-app platform: mitra/lini membangun modul UI ringan di dalam super app (Fase 138) → SDK, sandbox, review → discovery → analytics → revenue share usage
 - [ ] 315.2 Universal deep-link & session: satu login, konteks terbawa antar mini-app (consent-aware) → handoff mulus → audit trail integrasi
 - [ ] 315.3 Ecosystem growth loop: acquisition (referral Fase 260.3) → engagement (loyalty Fase 283) → retention (subscription Fase 314) → monetization (ads/commerce/fee) → metrik loop per lini
@@ -4151,6 +5156,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 316 — ADVANCED ECOSYSTEM: B2B ECOSYSTEM & INDUSTRY PLATFORM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `B2bIndustryEcosystemPlatformService`; 1 migrasi; test `B2bIndustryEcosystemPlatformTest` — commit `db93142`, +281 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `B2bIndustryEcosystemPlatformService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 316.1 Industry vertical platform: terbuka penuh untuk industri tertentu (mis. tambang: vendor alat berat, logistics contractor, smelter buyer) → katalog, tender, settlement, financing → fees
 - [ ] 316.2 Network effects measurement: liquidity metrics (buyer/seller aktif, time-to-match, repeat rate) → growth interventions → anti-chicken-egg strategy (subsidy ber-bounded)
 - [ ] 316.3 Platform governance: quality standards, KYB tiering, dispute resolution, SLA platform → trust index publik (aggregate rating)
@@ -4162,6 +5170,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 317 — ADVANCED PEOPLE: SKILLS ECONOMY & INTERNAL MOBILITY AT SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SkillsEconomyInternalMobilityService`; 1 migrasi; test `SkillsEconomyInternalMobilityTest` — commit `4132d6c`, +321 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `SkillsEconomyInternalMobilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 317.1 Internal talent exchange: proyek/kontrak singkat diposting → karyawan apply (dengan manager visibility & approval) → assignment → feedback → skill graph ter-update → mobility KPI
 - [ ] 317.2 Gig-to-permanent pathway: kinerja gig luar biasa → penawaran permanen → onboarding fast-track → conversion rate terukur → biaya rekrutmen turun
 - [ ] 317.3 Expertise marketplace: konsultasi internal berbayar per jam antar unit (mis. engineer tambang bantu EPC) → knowledge transfer terdokumentasi → fee internal ledger
@@ -4173,6 +5184,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 318 — ADVANCED PEOPLE: LEADERSHIP PIPELINE & EXECUTIVE DEVELOPMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `LeadershipPipelineExecutiveService`; 1 migrasi; test `LeadershipPipelineExecutiveTest` — commit `60ab4db`, +271 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `LeadershipPipelineExecutiveService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 318.1 Leadership competency model per level (first line → C-suite) → assessment center simulasi → readiness score → development plan dengan coaching & rotation
 - [ ] 318.2 Executive rotation lintas lini/negara (Fase 152.4) → assignment contract → performance di lingkungan baru → succession readiness naik → bench strength metric
 - [ ] 318.3 Leadership bench risk: posisi tanpa pengganti siap → alert ke board comp committee (Fase 231) → emergency succession plan → diversity slate wajib
@@ -4184,6 +5198,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 319 — ADVANCED PEOPLE: WORKFORCE AUTOMATION & HUMAN-AI ROLE DESIGN
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `WorkforceAutomationRoleDesignService`; 1 migrasi; test `WorkforceAutomationRoleDesignTest` — commit `7455fd1`, +280 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `WorkforceAutomationRoleDesignService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 319.1 Role automation assessment: per fungsi → automatable task % → redesign role (human + AI copilot Fase 270) → training gap → redeployment plan → productivity target
 - [ ] 319.2 Labor-automation governance: keputusan otomasi besar → dampak pekerja (Fase 288.3 just transition) → stakeholder consultation → timeline humanis → dampak biaya & KPI
 - [ ] 319.3 New role creation lifecycle: role baru dari otomasi (mis. AI auditor, robot fleet manager) → job architecture update (Fase 224.1) → hiring/transfer → fill rate
@@ -4195,6 +5212,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 320 — ADVANCED PEOPLE: TOTAL WELLBEING & PERFORMANCE SUSTAINABILITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TotalWellbeingSustainabilityService`; 1 migrasi; test `TotalWellbeingSustainabilityTest` — commit `f8962eb`, +240 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `TotalWellbeingSustainabilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 320.1 Sustainable performance model: workload metrics (overtime, on-call, utilization) → burnout risk indicator → workload balancing action → attrition/absence correlation terukur
 - [ ] 320.2 Wellbeing program portfolio: physical, mental, financial (link Fase 163.4 literacy), social → engagement per program → cost per outcome → reallocation tahunan
 - [ ] 320.3 Safety culture leading index (Fase 120.1 generalized): reporting rate, near-miss quality, stop-work authority usage → leadership scorecard → incentive alignment
@@ -4206,6 +5226,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 321 — INTEGRASI PEOPLE: STRATEGIC WORKFORCE & BUSINESS CAPABILITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `StrategicWorkforceCapabilityService`; 1 migrasi; test `StrategicWorkforceCapabilityTest` — commit `6a65786`, +306 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `StrategicWorkforceCapabilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 321.1 Capability map: strategi 30 lini → kapabilitas → proses → skill → role → headcount & technology dependencies → gap analysis tahunan
 - [ ] 321.2 Workforce scenario: baseline/growth/automation/disruption → staffing & cost projection → linked financial model Fase 312
 - [ ] 321.3 Labor productivity tree: output per FTE / shift / site → quality & safety guardrail → improvement plan, bukan target volume semata
@@ -4217,6 +5240,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 322 — INTEGRASI PEOPLE: GLOBAL PAYROLL, TIME & BENEFITS CLOSE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GlobalPayrollCloseReconciliationService`; 1 migrasi; test `GlobalPayrollCloseReconciliationTest` — commit `daad0a3`, +288 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `GlobalPayrollCloseReconciliationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 322.1 Unified people close calendar: time approval → payroll calculation → tax withholding → benefits → payment → GL allocation → reconciliation lintas 30 lini
 - [ ] 322.2 Exception handling: missing time, duplicate employee, bank rejection, tax rule change → exception queue dengan owner & SLA
 - [ ] 322.3 Payroll simulation rehearsal (dry run) sebelum live run → compare prior period → material variance approval
@@ -4228,6 +5254,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 323 — INTEGRASI PEOPLE: SAFETY-CERTIFIED ACCESS & PERMIT-TO-WORK
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SafetyCertifiedPermitAccessService`; 1 migrasi; test `SafetyCertifiedPermitAccessTest` — commit `b026399`, +312 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `SafetyCertifiedPermitAccessService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 323.1 Credential-to-access bridge: valid certificate (Edu Fase 167) + role + permit + site induction → akses alat/area dibuka, semua syarat expiry-aware
 - [ ] 323.2 Permit workflow lintas tambang/pabrik/port/RS: JSA, isolasi energi, gas test simulasi, supervisor sign-off, emergency contact → expiry/revoke
 - [ ] 323.3 Stop-work authority: pekerja dapat hentikan tugas berisiko tanpa penalty → investigation & restart approval → trend learning
@@ -4239,6 +5268,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 324 — INTEGRASI PEOPLE: LEADERSHIP SUCCESSION & CRITICAL ROLE COVERAGE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CriticalLeadershipCoverageService`; 1 migrasi; test `CriticalLeadershipCoverageTest` — commit `5459aef`, +313 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `CriticalLeadershipCoverageService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 324.1 Critical-role registry per lini/site → single-person dependency → deputy & readiness → emergency cover roster
 - [ ] 324.2 Succession simulation: vacancy mendadak → candidate availability, certification, consent & workload checked → acting appointment approval
 - [ ] 324.3 Leadership pipeline diversity & skill coverage aggregated with privacy thresholds → board committee dashboard
@@ -4250,6 +5282,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 325 — INTEGRASI PEOPLE: TALENT VALUE & ORGANIZATIONAL OUTCOMES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TalentValueOrganizationalOutcomesService`; 1 migrasi; test `TalentValueOrganizationalOutcomesTest` — commit `7d285f5`, +265 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `TalentValueOrganizationalOutcomesService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 325.1 Link learning/skill/mobility → project performance, safety, quality and retention outcomes (causal claims guarded; correlation labeled)
 - [ ] 325.2 Human capital report: workforce cost, capability readiness, vacancy risk, internal fill, engagement aggregate → financial & ESG disclosures
 - [ ] 325.3 Investment prioritization: training vs hire vs automation → cost-benefit with uncertainty → post-investment review
@@ -4261,6 +5296,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 326 — KEBERLANJUTAN: CLIMATE TRANSITION FINANCE & INTERNAL CARBON PRICE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ClimateTransitionFinanceService`; 1 migrasi; test `ClimateTransitionFinanceTest` — commit `c0a463b`, +289 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `ClimateTransitionFinanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 326.1 Internal carbon price scenarios per sector/site → capex appraisal adjusted → shadow-cost separate from actual tax/ledger
 - [ ] 326.2 Transition finance instruments (green loan, sustainability-linked sukuk, carbon-linked facility simulation) → KPI, pricing step-up/down, verification & covenant
 - [ ] 326.3 Portfolio transition alignment: emissions trajectory vs sector pathway → outliers → transition plan → finance approvals (Fase 210)
@@ -4272,6 +5310,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 327 — KEBERLANJUTAN: SUPPLY CHAIN TRACEABILITY & RESPONSIBLE SOURCING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SupplyChainTraceabilityService`; 1 migrasi; test `SupplyChainTraceabilityTest` — commit `c9435f5`, +284 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `SupplyChainTraceabilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 327.1 End-to-end provenance for critical inputs (minerals, timber, seafood, food, textiles, pharma) → origin, transformation, custody, certification, emissions
 - [ ] 327.2 Supplier due diligence refresh based on risk signals (sanction, quality, labor, environmental events) → corrective action / suspend / alternate source
 - [ ] 327.3 Product-level verified claims and chain-of-custody credentials → buyer portal, export documentation and recall trace
@@ -4283,6 +5324,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 328 — KEBERLANJUTAN: PRODUCT LIFECYCLE CARBON & CIRCULAR DESIGN
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ProductLifecycleCircularDesignService`; 1 migrasi; test `ProductLifecycleCircularDesignTest` — commit `07c680a`, +271 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `ProductLifecycleCircularDesignService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 328.1 Product lifecycle assessment per version: BOM + manufacturing energy + transport + use + end-of-life → boundary & factors versioned
 - [ ] 328.2 Design alternatives compare material, durability, repairability and emissions → PLM ECO approval → released product passport update
 - [ ] 328.3 Take-back economics: repair/refurbish/recycle hierarchy → recovery yield, cost, resale value → design feedback loop
@@ -4294,6 +5338,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 329 — KEBERLANJUTAN: CLIMATE RISK INSURANCE & RESILIENCE INVESTMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ClimateRiskInsuranceResilienceService`; 1 migrasi; test `ClimateRiskInsuranceResilienceTest` — commit `f2a0f97`, +300 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `ClimateRiskInsuranceResilienceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 329.1 Link climate exposure (Fase 287) to policy pricing, deductibles and risk mitigation credits (Fase 156) → actuarial review required
 - [ ] 329.2 Adaptation project portfolio → avoided loss estimate → insurance premium impact → measure actual resilience after event/drill
 - [ ] 329.3 Parametric trigger data governance: authoritative sensor/feed, outage fallback, dispute protocol → payout evidence immutable
@@ -4305,6 +5352,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 330 — KEBERLANJUTAN: NATURE, WATER & COMMUNITY FINANCE SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `NatureWaterCommunityFinanceService`; 1 migrasi; test `NatureWaterCommunityFinanceTest` — commit `8caeda3`, +311 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `NatureWaterCommunityFinanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 330.1 Nature project marketplace scale: verified baseline, additionality, permanence, leakage, community rights → issuance gate & benefit share
 - [ ] 330.2 Water stewardship financing: project capex, meter baseline, verified savings → payment by performance (Fase 127/286)
 - [ ] 330.3 Community investment fund per operating region → participatory allocation, procurement transparency, outcome verification
@@ -4316,6 +5366,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 331 — KEBERLANJUTAN: ESG ASSURANCE & DISCLOSURE CONTROL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EsgAssuranceDisclosureControlService`; 1 migrasi; test `EsgAssuranceDisclosureControlTest` — commit `664e927`, +327 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `EsgAssuranceDisclosureControlService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 331.1 Disclosure workflow: reporting boundary → datapoint owner → evidence → control sign-off → assurance → publication → restatement process
 - [ ] 331.2 Estimate vs measured classification; uncertainty range & methodology disclosed; no unsupported claim promoted as verified
 - [ ] 331.3 Sustainability statement reconciliation to finance (energy spend, carbon liabilities, provisions, green capex) → audit pack
@@ -4327,6 +5380,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 332 — KEBERLANJUTAN: ESG-LINKED PROCUREMENT, LEASE & CUSTOMER CHOICE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GreenProcurementLeaseChoiceService`; 1 migrasi; test `GreenProcurementLeaseChoiceTest` — commit `b248770`, +298 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `GreenProcurementLeaseChoiceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 332.1 Green supplier award criteria in RFQ with minimum compliance gates and transparent weighted scores (Fase 230.4)
 - [ ] 332.2 Green lease / utility incentives tied to measured performance; baseline adjustment and tenant appeal process
 - [ ] 332.3 Customer product choice labels (repairable, low-carbon, recycled content) linked to verified passport data, not marketing-only claims
@@ -4338,6 +5394,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 333 — SUSTAINABILITY INTEGRATION: TRANSITION PLANS ACROSS 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `BusinessLineTransitionPlansService`; 1 migrasi; test `BusinessLineTransitionPlansTest` — commit `5790c06`, +280 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `BusinessLineTransitionPlansService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 333.1 Per-lini transition plan with owner, levers, budget, milestones, dependencies and annual review → consolidated trajectory
 - [ ] 333.2 Capital allocation climate screen integrated to portfolio office (Fase 141.2) → high transition risk requires plan before approval
 - [ ] 333.3 Progress-to-target dashboard with variance attribution, countermeasures, and board escalation
@@ -4349,6 +5408,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 334 — SUSTAINABILITY INTEGRATION: CIRCULAR BUSINESS MODELS & REVENUE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CircularBusinessModelsRevenueService`; 1 migrasi; test `CircularBusinessModelsRevenueTest` — commit `53968d1`, +272 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `CircularBusinessModelsRevenueService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 334.1 Product-as-a-service, lease, take-back, refurbishment and resale business models → contract templates, asset ownership, usage metering, end-of-life
 - [ ] 334.2 Circular revenue accounting: lease/subscription vs sale recognition, residual value, refurbishment cost, resale proceeds → policy-controlled journals
 - [ ] 334.3 Customer incentives for returns/reuse → deposit/credit → reverse flow → material recovery verification
@@ -4360,6 +5422,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 335 — SUSTAINABILITY INTEGRATION: COMMUNITY VALUE & SOCIAL PROCUREMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CommunityValueSocialProcurementService`; 1 migrasi; test `CommunityValueSocialProcurementTest` — commit `aca8ff0`, +272 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `CommunityValueSocialProcurementService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 335.1 Local supplier development programs → capability grant/training (Edu) → tender eligibility earned through objective milestones
 - [ ] 335.2 Community procurement spend & employment metrics with privacy-safe aggregation → regional impact report
 - [ ] 335.3 Grievance feedback loop (Fase 288.2) to project/contract change → remedy budget → closure confirmed by community representative
@@ -4371,6 +5436,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 336 — GOVERNANCE: ENTERPRISE POLICY SIMULATION & IMPACT TESTING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterprisePolicySimulationService`; 1 migrasi; test `EnterprisePolicySimulationTest` — commit `fe35f99`, +275 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `EnterprisePolicySimulationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 336.1 Policy simulation engine: jalankan rule baru terhadap historical data seed → dampak (transaksi terblokir, approval volume, revenue effect) → report sebelum aktivasi
 - [ ] 336.2 Policy regression suite: aturan aktif diuji berkala terhadap skenario tetap → drift perilaku terdeteksi → change ticket wajib
 - [ ] 336.3 Stakeholder impact review: policy berdampak besar pada pelanggan/mitra/karyawan → consultation simulation → mitigasi komunikasi & transisi
@@ -4382,6 +5450,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 337 — GOVERNANCE: ETHICS & COMPLIANCE PROGRAM MATURITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EthicsComplianceMaturityService`; 1 migrasi; test `EthicsComplianceMaturityTest` — commit `b0882c9`, +299 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `EthicsComplianceMaturityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 337.1 Compliance program scorecard per lini: risk assessment, training completion, monitoring, reporting, remediation → maturity level → improvement plan
 - [ ] 337.2 Third-party ethics: code adherence assessment, speak-up access untuk vendor, joint remediation → termination right exercised with evidence
 - [ ] 337.3 Board ethics report cycle: case themes, systemic root causes, program effectiveness, resource adequacy → board acknowledgement
@@ -4393,6 +5464,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 338 — GOVERNANCE: LEGAL & REGULATORY CHANGE EXECUTION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `LegalRegulatoryChangeExecutionService`; 1 migrasi; test `LegalRegulatoryChangeExecutionTest` — commit `04ec4f6`, +306 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `LegalRegulatoryChangeExecutionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 338.1 Change-to-control pipeline: regulatory update → interpretation memo (legal) → control gap → build/test/deploy → evidence → close → monitor
 - [ ] 338.2 Jurisdiction rule matrix: per negara/lini → applicability → owner → status → deadline → escalation → proof of compliance
 - [ ] 338.3 Litigation & enforcement tracking: cases, provisions (accounting estimate), settlement terms, disclosure materiality check
@@ -4404,6 +5478,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 339 — GOVERNANCE: PUBLIC AFFAIRS, STAKEHOLDER & LICENSE TO OPERATE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PublicAffairsLicenseService`; 1 migrasi; test `PublicAffairsLicenseTest` — commit `2acdfc7`, +299 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `PublicAffairsLicenseService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 339.1 Stakeholder map per lini/region: influence & interest → engagement plan → sentiment tracking (aggregated) → action items → license risk index
 - [ ] 339.2 Issue management: early warning → response team → holding statement (approved) → resolution → post-issue learning
 - [ ] 339.3 Government relations: engagement log, transparency register (siapa bertemu siapa tentang apa — simulasi), conflict screening
@@ -4415,6 +5492,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 340 — GOVERNANCE: BUSINESS ETHICS & ANTI-CORRUPTION OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `BusinessEthicsAntiCorruptionService`; 1 migrasi; test `BusinessEthicsAntiCorruptionTest` — commit `986dbcd`, +307 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `BusinessEthicsAntiCorruptionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 340.1 Corruption risk assessment per activity (licensing, tender, expedite, sponsor) → control design (payments, gifts, intermediaries) → testing
 - [ ] 340.2 Gifts/hospitality registry with threshold & pre-approval → high-risk request blocked → sampling audit
 - [ ] 340.3 Intermediary & agent due diligence (Fase 45/175) → payment reasonableness → performance-only incentive review → termination playbook
@@ -4426,6 +5506,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 341 — DATA PLATFORM: DATA PRODUCTS SCALE & PRIVACY ENGINEERING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PrivacyEngineeringDataProductsService`; 1 migrasi; test `PrivacyEngineeringDataProductsTest` — commit `d8fb4c3`, +271 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) atau modul pemilik data — putuskan di DoR · **Prasyarat:** R5.1 ✅ + modul sumber ✅ · **Acuan:** KONSEP §A1, §A5
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/mesh/lineage' berupa tabel metadata yang diisi manual; metrik tanpa query ke data sumber; memperluas `PrivacyEngineeringDataProductsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 341.1 Privacy by design templates: data minimization, purpose limitation, retention default, encryption at field, access pattern reviewed at design
 - [ ] 341.2 Consent orchestration across 30 lini: purpose-scoped consent, downstream propagation of revocation, proof-of-consent at processing time
 - [ ] 341.3 Privacy incident drill: simulated data leak → containment (key revoke, access freeze), notification workflow, remediation, lessons
@@ -4437,6 +5520,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 342 — DATA PLATFORM: DATA VALUE MEASUREMENT & COST TRANSPARENCY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DataValueCostTransparencyService`; 1 migrasi; test `DataValueCostTransparencyTest` — commit `3bfbaac`, +275 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) atau modul pemilik data — putuskan di DoR · **Prasyarat:** R5.1 ✅ + modul sumber ✅ · **Acuan:** KONSEP §A1, §A5
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/mesh/lineage' berupa tabel metadata yang diisi manual; metrik tanpa query ke data sumber; memperluas `DataValueCostTransparencyService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 342.1 Data asset inventory: dataset, consumer, criticality, refresh, cost, revenue contribution (if any) → steward → refresh priority
 - [ ] 342.2 Cost transparency per query/dashboard/model → budget owner → efficiency optimizations (index, cache, aggregate) → savings tracked
 - [ ] 342.3 Value realization: use case → metric move (e.g., forecast error ↓) → business value attribution (conservative method) → investment decision
@@ -4448,6 +5534,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 343 — DATA PLATFORM: DATA RESILIENCE, CHANGE & MIGRATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DataResilienceMigrationService`; 1 migrasi; test `DataResilienceMigrationTest` — commit `31d1dcd`, +282 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) atau modul pemilik data — putuskan di DoR · **Prasyarat:** R5.1 ✅ + modul sumber ✅ · **Acuan:** KONSEP §A1, §A5
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/mesh/lineage' berupa tabel metadata yang diisi manual; metrik tanpa query ke data sumber; memperluas `DataResilienceMigrationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 343.1 Data integrity controls: checksum, row counts, referential invariants, reconciliation jobs → tamper/drift detection → alert
 - [ ] 343.2 Schema change governance: proposal → compatibility analysis (Fase 185.3) → backfill plan → cutover → verification → cleanup
 - [ ] 343.3 Restore data drill: point-in-time restore → validation suite → RPO/RTO measured → gap remediation
@@ -4459,6 +5548,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 344 — DATA PLATFORM: DATA ACCESS, CONSUMER & DOMAIN SELF-SERVICE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DataAccessDomainSelfService`; 1 migrasi; test `DataAccessDomainSelfServiceTest` — commit `f799b4b`, +308 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) atau modul pemilik data — putuskan di DoR · **Prasyarat:** R5.1 ✅ + modul sumber ✅ · **Acuan:** KONSEP §A1, §A5
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/mesh/lineage' berupa tabel metadata yang diisi manual; metrik tanpa query ke data sumber; memperluas `DataAccessDomainSelfService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 344.1 Consumer workspace: explore catalog, request access with justification, auto-approve policy-compliant, human review for sensitive → time-bound grant
 - [ ] 344.2 Domain data product templates: schema, quality rules, owner, SLA, deprecation notice → publish pipeline with CI checks
 - [ ] 344.3 Data literacy program: analyst/engineer training (Edu), certification → access tiers linked to training completion for sensitive domain
@@ -4470,6 +5562,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 345 — DATA PLATFORM: ADVANCED ANALYTICS OPERATIONS & MODEL MONITORING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AnalyticsModelMonitoringService`; 1 migrasi; test `AnalyticsModelMonitoringTest` — commit `68affd5`, +296 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (read model/laporan) atau modul pemilik data — putuskan di DoR · **Prasyarat:** R5.1 ✅ + modul sumber ✅ · **Acuan:** KONSEP §A1, §A5
+> **Jalan pintas terlarang di fase ini:** 'lakehouse/mesh/lineage' berupa tabel metadata yang diisi manual; metrik tanpa query ke data sumber; memperluas `AnalyticsModelMonitoringService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 345.1 MLOps-lite: model artifacts versioned, training data snapshot, performance dashboards, retraining triggers, rollback to prior model
 - [ ] 345.2 Business metric monitoring for models: e.g., pricing model margin guard, fraud precision, forecast bias → drift → ticket
 - [ ] 345.3 Model documentation: purpose, data, limitations, expected users, failure modes → consumer discoverable before use
@@ -4481,6 +5576,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 346 — AI PLATFORM: AGENT SAFETY, GUARDRAILS & EVALUATION AT SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AgentSafetyGuardrailsService`; 1 migrasi; test `AgentSafetyGuardrailsTest` — commit `46a4a58`, +267 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AgentSafetyGuardrailsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 346.1 Safety eval suite: prompt injection, jailbreak, data exfiltration attempt, harmful content, tool misuse → agent blocked & logged → regression run per release
 - [ ] 346.2 Tool permission matrix per agent (Fase 196.1) with runtime enforcement → least privilege verified by test → change approval for permission expansion
 - [ ] 346.3 Agent observability: tool calls, tokens, decisions, human approvals, outcome → cost & quality per agent → retire ineffective agents
@@ -4492,6 +5590,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 347 — AI PLATFORM: KNOWLEDGE GROUNDING, RETRIEVAL & CITATION INTEGRITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `KnowledgeGroundingCitationService`; 1 migrasi; test `KnowledgeGroundingCitationTest` — commit `8ec0edd`, +273 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `KnowledgeGroundingCitationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 347.1 Grounded retrieval index: policies, SOP, contracts, runbooks with access control mirroring source → answer only from retrieved + citations
 - [ ] 347.2 Staleness control: source updated → re-index SLA → stale answer detection (version mismatch) → warn user
 - [ ] 347.3 Citation verification: automated spot-check that cited passage supports claim → fail → rephrase or refuse
@@ -4503,6 +5604,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 348 — AI PLATFORM: DECISION SUPPORT, SIMULATION & OPTIMIZATION GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DecisionOptimizationGovernanceService`; 1 migrasi; test `DecisionOptimizationGovernanceTest` — commit `5e10a58`, +315 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `DecisionOptimizationGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 348.1 Optimization problem registry: problem, objective, constraints, data inputs, solver version, owner, approval, outcome tracking
 - [ ] 348.2 Constraint review: regulatory/contract/safety constraints owned by responsible function → change control → solver config versioned
 - [ ] 348.3 Outcome audit: actual vs recommended → adoption, deviation, result → model improvement backlog (Fase 195)
@@ -4514,6 +5618,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 349 — AI PLATFORM: AI COST, ENERGY & SUSTAINABILITY GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AiCostSustainabilityService`; 1 migrasi; test `AiCostSustainabilityTest` — commit `08ee6a5`, +283 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AiCostSustainabilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 349.1 AI cost attribution: per agent/model/query/dashboard → budget per domain → over-budget alert → efficiency measures (cache, smaller model tier)
 - [ ] 349.2 Energy estimation: inference volume → estimated energy & emissions factor → report to ESG (scope boundary documented)
 - [ ] 349.3 Model tiering policy: high-stakes decisions use reviewed model tier; low-risk tasks use efficient tier → policy enforced at runtime
@@ -4525,6 +5632,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 350 — AI PLATFORM: HUMAN ACCOUNTABILITY & ETHICAL REVIEW BOARD
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AiHumanAccountabilityService`; 1 migrasi; test `AiHumanAccountabilityTest` — commit `5b0a802`, +278 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AiHumanAccountabilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 350.1 AI use-case register with impact classification (Fase 294.3), human accountable owner, review dates, retirement plan
 - [ ] 350.2 Review board cycle: new use-cases, incident reviews, complaints, regulatory updates → decisions recorded → actions tracked
 - [ ] 350.3 User transparency: disclosure when AI materially affects user outcome (pricing, credit, scheduling, medical suggestion) → appeal path
@@ -4536,6 +5646,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 351 — AI PLATFORM: MULTI-MODAL & VISION INTEGRATION (SIMULASI)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MultiModalVisionIntegrationService`; 1 migrasi; test `MultiModalVisionIntegrationTest` — commit `eb46356`, +284 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `MultiModalVisionIntegrationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 351.1 Document understanding: invoice, contract, lab report, BOL upload → extraction → structured fields → human verify for material fields → link to source doc
 - [ ] 351.2 Vision inspection (simulated): QC visual defects, PPE compliance, occupancy counting → result with confidence → human confirm for consequential action
 - [ ] 351.3 Audio analytics (simulated): call center intent tagging (privacy-safe), safety sound detection → routing/alert → retention limited
@@ -4547,6 +5660,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 352 — AI PLATFORM: GENERATIVE DESIGN & ENGINEERING COPILOT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GenerativeEngineeringCopilotService`; 1 migrasi; test `GenerativeEngineeringCopilotTest` — commit `4939ebf`, +304 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `GenerativeEngineeringCopilotService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 352.1 Design copilot (PLM): component suggestion, BOM variant generation, cost/weight trade-off → engineer review → ECO workflow if adopted
 - [ ] 352.2 Code copilot (platform): code suggestions, test generation, review assist → human approval mandatory, no direct production write → quality metrics
 - [ ] 352.3 Engineering simulation assist: run FEA/CFD-style simulations (simulated) → results validation against known cases → decision support only
@@ -4558,6 +5674,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 353 — AI PLATFORM: AI-ENABLED CUSTOMER SERVICE & AGENTIC COMMERCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CustomerServiceAgenticCommerceService`; 1 migrasi; test `CustomerServiceAgenticCommerceTest` — commit `7e89711`, +288 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `CustomerServiceAgenticCommerceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 353.1 Service agent: resolve tier-1 intents (status, FAQ, simple change) autonomously → escalate with full context → CSAT & resolution rate tracked → no autonomous refund above limit
 - [ ] 353.2 Shopping/booking agent: user intent → search across lines → quote → confirm price/availability (Fase 249) → human confirm payment → order placed idempotently
 - [ ] 353.3 Agent trust controls: disclosure, consent for data use, easy opt-out to human, transaction audit trail, complaint linkage
@@ -4569,6 +5688,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 354 — AI PLATFORM: FEDERATED & EDGE AI OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FederatedEdgeAiOperationsService`; 1 migrasi; test `FederatedEdgeAiOperationsTest` — commit `f6b979e`, +283 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `FederatedEdgeAiOperationsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 354.1 Edge inference for venue/site (Fase 145.2): local model, offline capability, sync insights → central → model update distribution with rollback
 - [ ] 354.2 Federated pattern: train/aggregate insights without raw data leaving domain (simulated) → privacy check → performance evaluation
 - [ ] 354.3 Device fleet model management: version per device group, staged rollout, health telemetry, fail-safe to deterministic rules
@@ -4580,6 +5702,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 355 — AI PLATFORM: EDGE MODEL REGISTRY & DEVICE FLEET ROLLOUT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EdgeModelRegistryRolloutService`; 1 migrasi; test `EdgeModelRegistryRolloutTest` — commit `1783ead`, +307 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `EdgeModelRegistryRolloutService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 355.1 Edge device registry per site (venue, mine, hospital, warehouse): hardware class, model version, connectivity, owner, criticality, update window
 - [ ] 355.2 Staged model rollout: canary device group → health & quality checks → progressive expansion → automatic rollback on error/drift → audit trail
 - [ ] 355.3 Deterministic fallback: sensor/AI unavailable → established rules/manual mode; safety-critical decisions never depend solely on edge model
@@ -4591,6 +5716,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 356 — AI PLATFORM: MODEL INCIDENT & SAFETY CASE MANAGEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ModelIncidentSafetyCaseService`; 1 migrasi; test `ModelIncidentSafetyCaseTest` — commit `04108ab`, +269 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `ModelIncidentSafetyCaseService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 356.1 Model incident lifecycle: detect → severity/classification → containment (disable/version rollback) → impact scope → notification → remediation → independent closure
 - [ ] 356.2 Safety case for high-impact models: hazard analysis, operating limits, validation evidence, human oversight, emergency procedure, approval owner
 - [ ] 356.3 Customer/employee appeal workflow when an automated recommendation materially affects service, eligibility or price
@@ -4602,6 +5730,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 357 — AI PLATFORM: KNOWLEDGE GRAPH & SEMANTIC ENTERPRISE COPILOT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `KnowledgeGraphEnterpriseCopilotService`; 1 migrasi; test `KnowledgeGraphEnterpriseCopilotTest` — commit `eabbaaa`, +278 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `KnowledgeGraphEnterpriseCopilotService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 357.1 Build permission-aware enterprise graph over parties, contracts, products, sites, assets, lots, risks, staff skills and events
 - [ ] 357.2 Query planner returns provenance and source records; answers requiring current financial/stock values must query authoritative services, never infer from stale embeddings
 - [ ] 357.3 Knowledge freshness SLA per source; stale source marked and excluded or disclosed; graph rebuild/replay reconciles to source
@@ -4613,6 +5744,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 358 — AI PLATFORM: AGENT MARKETPLACE & GOVERNED REUSABLE TOOLS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AgentMarketplaceGovernedToolsService`; 1 migrasi; test `AgentMarketplaceGovernedToolsTest` — commit `6dfdc66`, +303 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `AgentMarketplaceGovernedToolsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 358.1 Catalog of approved agents/tools with owner, purpose, data scope, risk tier, cost, version, SLA and retirement date
 - [ ] 358.2 Reusable tools (quote, schedule, reconciliation, document lookup) expose typed contracts and idempotency; no unrestricted database or filesystem access
 - [ ] 358.3 Agent composition requires explicit dependency & permission graph; tool outputs treated as untrusted input; secrets never exposed to agent context
@@ -4624,6 +5758,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 359 — AI PLATFORM: SYNTHETIC DATA, PRIVACY & MODEL TRAINING GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SyntheticDataTrainingGovernanceService`; 1 migrasi; test `SyntheticDataTrainingGovernanceTest` — commit `e47e75d`, +282 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `SyntheticDataTrainingGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 359.1 Training data catalog: purpose, consent/legal basis simulation, lineage, retention, exclusions, quality and snapshot checksum
 - [ ] 359.2 Synthetic dataset generation by domain with distribution fidelity checks and re-identification risk tests; real PII never copied to test/training fixtures
 - [ ] 359.3 Data deletion/consent revocation propagates to eligible derived datasets and future training; immutable financial records are minimized/anonymized under policy rather than altered
@@ -4635,6 +5772,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 360 — AI PLATFORM: ENTERPRISE AI GOVERNANCE OPERATING MODEL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseAiGovernanceOperatingModelService`; 1 migrasi; test `EnterpriseAiGovernanceOperatingModelTest` — commit `d02e72d`, +282 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Analytics/AI (lanjutan Fase 64; putuskan di DoR) · **Prasyarat:** Fase 64 ✅ (+99, 143 untuk lanjutan) · **Acuan:** KONSEP §A3, §A10
+> **Jalan pintas terlarang di fase ini:** 'model' berupa skor dari parameter pemanggil; keputusan tanpa snapshot input & seed; auto-execute tanpa approval di atas ambang & kill-switch yang diuji; memperluas `EnterpriseAiGovernanceOperatingModelService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 360.1 AI governance council, domain model owners, independent risk reviewers and escalation route; decision rights and cadence documented
 - [ ] 360.2 Annual inventory attestation for every model/agent, including shadow/embedded models; unknown model use triggers remediation
 - [ ] 360.3 Consolidated performance, fairness, privacy, security, cost and sustainability dashboard with evidence-linked metrics
@@ -4646,6 +5786,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 361 — GLOBAL PLATFORM: SERVICE CATALOG & INTERNAL DEVELOPER PORTAL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ServiceCatalogDeveloperPortalService`; 1 migrasi; test `ServiceCatalogDeveloperPortalTest` — commit `3e562de`, +266 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `ServiceCatalogDeveloperPortalService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 361.1 Catalog of 30-line capabilities, APIs, events, data products, owners, consumers, SLO, lifecycle and support channel
 - [ ] 361.2 Self-service onboarding: request sandbox, sample data, token scopes, webhook endpoint, test harness; approval and expiration built in
 - [ ] 361.3 Dependency map and impact view: proposed API/event/schema change lists affected consumers and migration actions
@@ -4657,6 +5800,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 362 — GLOBAL PLATFORM: ENTERPRISE SERVICE MANAGEMENT & CONFIGURATION DATABASE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseServiceManagementCmdbService`; 1 migrasi; test `EnterpriseServiceManagementCmdbTest` — commit `6ee1603`, +261 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `EnterpriseServiceManagementCmdbService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 362.1 Service/asset configuration registry (CMDB): applications, modules, queues, database, vendors, sites, owners, dependencies, criticality
 - [ ] 362.2 Incident/problem/change/request lifecycle integrated with release & risk controls (Fase 238, 204); correlation ID joins customer issue to technical incident
 - [ ] 362.3 Configuration drift detection against approved baseline; unauthorized change → alert and remediation workflow
@@ -4668,6 +5814,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 363 — GLOBAL PLATFORM: SERVICE OWNERSHIP, ON-CALL & SLO GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ServiceOncallSloGovernanceService`; 1 migrasi; test `ServiceOncallSloGovernanceTest` — commit `ea0b9b8`, +319 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `ServiceOncallSloGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 363.1 Named owner, deputy, on-call rotation and escalation policy for every critical service/domain
 - [ ] 363.2 Error-budget policy: freeze risky releases when SLO budget exhausted, exception via accountable approval, resume after reliability improvement
 - [ ] 363.3 On-call load and alert quality review; fatigue controls, deduplication, actionable alerts only
@@ -4679,6 +5828,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 364 — GLOBAL PLATFORM: AUTOMATION CONTROL PLANE & SAFE REMEDIATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AutomationControlPlaneRemediationService`; 1 migrasi; test `AutomationControlPlaneRemediationTest` — commit `f5e16a9`, +278 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `AutomationControlPlaneRemediationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 364.1 Approved automation catalog (restart worker, replay DLQ, scale queue, failover) with precondition, blast radius, rollback and evidence requirements
 - [ ] 364.2 Policy-based execution: dry-run → risk classification → approval when material → bounded action → post-check; financial/medical data mutations excluded from generic remediation
 - [ ] 364.3 Automation effectiveness & false-action monitoring; kill switch and manual takeover
@@ -4690,6 +5842,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 365 — GLOBAL PLATFORM: COST, CAPACITY & VALUE GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CostCapacityValueGovernanceService`; 1 migrasi; test `CostCapacityValueGovernanceTest` — commit `829f566`, +277 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `CostCapacityValueGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 365.1 Unit economics per capability (cost per booking, claim, shipment, room-night, model inference) and owner budget
 - [ ] 365.2 Capacity demand forecast ties to seeder/simulation growth and procurement/capex; trigger thresholds actionable
 - [ ] 365.3 Value realization register: approved business case → cost baseline → benefit owner → measured result → variance and lessons
@@ -4701,6 +5856,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 366 — GLOBAL PLATFORM: SERVICE LIFECYCLE, DEPRECATION & SUNSET
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ServiceLifecycleSunsetService`; 1 migrasi; test `ServiceLifecycleSunsetTest` — commit `ff55e43`, +260 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `ServiceLifecycleSunsetService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 366.1 API/event/data-product lifecycle states (experimental → supported → deprecated → sunset) with notice windows and migration guide
 - [ ] 366.2 Consumer inventory acknowledgment before sunset; compatibility dashboard; exception waiver bounded by date
 - [ ] 366.3 Safe retirement: usage zero proof, data retention satisfied, credentials revoked, route removed, archived evidence retained
@@ -4712,6 +5870,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 367 — GLOBAL PLATFORM: BUSINESS PROCESS AUTOMATION & CASE ORCHESTRATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `BusinessProcessOrchestrationService`; 1 migrasi; test `BusinessProcessOrchestrationTest` — commit `708344c`, +282 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `BusinessProcessOrchestrationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 367.1 BPMN-like process catalog for high-volume workflows (claim, onboarding, PO, booking, recall, permit) with versioned state machine definitions
 - [ ] 367.2 Human task inbox: role routing, SLA, delegation, escalation, evidence attachment, four-eyes segregation
 - [ ] 367.3 Process mining from event spine: actual path vs designed path → bottlenecks, rework loops, compliance deviations → improvement tasks
@@ -4723,6 +5884,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 368 — GLOBAL PLATFORM: DOCUMENT & RECORD AUTOMATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DocumentRecordAutomationService`; 1 migrasi; test `DocumentRecordAutomationTest` — commit `136a47a`, +295 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `DocumentRecordAutomationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 368.1 Document lifecycle templates for 30 lines: create, review, sign, issue, supersede, archive; gapless numbering where legally required by simulation policy
 - [ ] 368.2 Document extraction/validation pipeline (AI Fase 351): source hash, field confidence, human verification for material values, exception queue
 - [ ] 368.3 Records schedule classification and legal hold connection (Fase 291); immutable evidence bundles for disputes/audit
@@ -4734,6 +5898,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 369 — GLOBAL PLATFORM: EVENT SPINE OPERATIONS & REPLAY CENTER
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EventSpineReplayCenterService`; 1 migrasi; test `EventSpineReplayCenterTest` — commit `eba8cbe`, +274 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (event spine, replay center) · **Prasyarat:** R8 ✅ · **Acuan:** KONSEP §A10.2
+> **Jalan pintas terlarang di fase ini:** replay tanpa idempotensi konsumen; pusat replay berupa tabel status tanpa worker nyata; memperluas `EventSpineReplayCenterService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 369.1 Consumer lag/SLA dashboard per event topic, partition, tenant and owner; backlog prediction and capacity guidance
 - [ ] 369.2 Replay console: scoped event selection, dry-run impact diff, approval, idempotency verification, replay execution and post-reconcile
 - [ ] 369.3 DLQ triage with reason classification, safe payload redaction, retry policy, quarantine and closure owner
@@ -4745,6 +5912,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 370 — GLOBAL PLATFORM: ARCHITECTURE FITNESS & MODULAR MONOLITH HEALTH
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ArchitectureFitnessMonolithHealthService`; 1 migrasi; test `ArchitectureFitnessMonolithHealthTest` — commit `da5c594`, +252 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** `tests/Architecture` + `arch:scan` (bukan fitur aplikasi) · **Prasyarat:** R0.8, R4 ✅ · **Acuan:** KONSEP §A14
+> **Jalan pintas terlarang di fase ini:** 'fitness function' berupa skor yang disimpan di tabel alih-alih test arsitektur yang menolak pelanggaran; memperluas `ArchitectureFitnessMonolithHealthService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 370.1 Fitness tests for module boundaries, naming, migration prefix, provider registration, menu/policy coverage and audit command existence
 - [ ] 370.2 Coupling score dashboard and dependency graph; new direct cross-module persistence access fails CI
 - [ ] 370.3 Domain ownership review: every table/model/action has owning module; orphan/dead code detection and remediation backlog
@@ -4756,6 +5926,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 371 — EKOSISTEM: PARTNER ONBOARDING & ECOSYSTEM QUALITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PartnerOnboardingEcosystemService`; 1 migrasi; test `PartnerOnboardingEcosystemTest` — commit `b9d7df3`, +306 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `PartnerOnboardingEcosystemService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 371.1 Unified onboarding: KYB, due diligence, API sandbox, contract, billing, training, certification and go-live checklist per partner class
 - [ ] 371.2 Partner health score: delivery, quality, compliance, support, data accuracy and financial standing; action bands and appeal process
 - [ ] 371.3 Offboarding and data portability: revoke access, settle balances, transfer open cases, export partner-owned data, retain required audit evidence
@@ -4767,6 +5940,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 372 — EKOSISTEM: API ECONOMICS, BILLING & PARTNER SETTLEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PartnerApiEconomicsBillingService`; 1 migrasi; test `PartnerApiEconomicsBillingTest` — commit `5ac2963`, +247 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `PartnerApiEconomicsBillingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 372.1 Meter API usage by endpoint, tenant, tier, latency class and successful outcome; billable event rules versioned
 - [ ] 372.2 Partner invoice, credit, disputes, tax simulation, revenue share and collection integrated to ledger
 - [ ] 372.3 API credits/promotional quotas with budget encumbrance, expiry and fraud limits
@@ -4778,6 +5954,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 373 — EKOSISTEM: MARKETPLACE TRUST, DISPUTE & BUYER PROTECTION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MarketplaceDisputeBuyerProtectionService`; 1 migrasi; test `MarketplaceDisputeBuyerProtectionTest` — commit `0b7890d`, +305 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `MarketplaceDisputeBuyerProtectionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 373.1 Standard dispute taxonomy, evidence checklist, neutral reviewer assignment, timelines and escalation across B2B/B2C/venue/hotel services
 - [ ] 373.2 Buyer protection: escrow/hold rules per category, partial fulfillment, refund/repair/replacement remedy, appeal
 - [ ] 373.3 Seller quality tiers and sanctions: progressive warnings, listing restrictions, suspension, reinstatement after remediation
@@ -4789,6 +5968,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 374 — EKOSISTEM: TRUST & SAFETY, MODERATION & USER PROTECTION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TrustSafetyModerationProtectionService`; 1 migrasi; test `TrustSafetyModerationProtectionTest` — commit `6d5cee3`, +250 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `TrustSafetyModerationProtectionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 374.1 Unified trust operations across reviews, forums, tickets, creator content and marketplace listings; risk tiers and moderation SLA
 - [ ] 374.2 Safety reporting and urgent escalation; content decision appeal; audit reasons without exposing reporter identity
 - [ ] 374.3 Vulnerable user safeguards for health/education/community flows; age-appropriate access and contact restrictions
@@ -4800,6 +5982,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 375 — EKOSISTEM: ECOSYSTEM HEALTH & NETWORK EFFECTS GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EcosystemHealthNetworkGovernanceService`; 1 migrasi; test `EcosystemHealthNetworkGovernanceTest` — commit `30ee076`, +283 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Partner / B2b / Integration (adapter eksternal saja) · **Prasyarat:** R3.4 ✅ · **Acuan:** KONSEP §A4.5
+> **Jalan pintas terlarang di fase ini:** API mitra tanpa rute, Sanctum, rate limit, dan `docs/API.md`; settlement mitra tanpa ledger; memperluas `EcosystemHealthNetworkGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 375.1 Measure partner liquidity, buyer/seller balance, match rates, concentration, dispute levels and ecosystem value by vertical
 - [ ] 375.2 Fair access policies: avoid self-preferencing where marketplace platform also sells; ranking criteria transparent and audited
 - [ ] 375.3 Network health interventions (onboard underserved supplier, buyer guarantee, training) with bounded subsidy and outcome tracking
@@ -4811,6 +5996,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 376 — INTEGRASI GELOMBANG 3: GLOBAL FINANCE, RISK & TREASURY CONTROL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GlobalFinanceTreasuryRiskService`; 1 migrasi; test `GlobalFinanceTreasuryRiskTest` — commit `ff3a701`, +290 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `GlobalFinanceTreasuryRiskService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 376.1 Treasury, insurance, syariah, token securities, commodity desk and regional finance share exposure taxonomy and authoritative position feeds
 - [ ] 376.2 Consolidated counterparty exposure net of eligible collateral, intercompany balances and reinsurance recoverables; explainable drill-down
 - [ ] 376.3 Group funding waterfall under stress: cash pool → committed facilities → market issuance → bounded emergency actions, with approval thresholds
@@ -4822,6 +6010,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 377 — INTEGRASI GELOMBANG 3: ASSET, PROJECT & CAPITAL LIFECYCLE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AssetProjectCapitalLifecycleService`; 1 migrasi; test `AssetProjectCapitalLifecycleTest` — commit `b0860cd`, +262 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `AssetProjectCapitalLifecycleService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 377.1 Asset lifecycle common events from project capitalization → operation → maintenance → impairment/revaluation → disposal across all 30 lines
 - [ ] 377.2 Capital project actuals, forecast-at-completion, benefits realization and asset register link in one traceable graph
 - [ ] 377.3 Capex portfolio prioritization considers capacity, risk, climate, strategic fit and financing; delegated approval limits enforced
@@ -4833,6 +6024,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 378 — INTEGRASI GELOMBANG 3: CUSTOMER, LOYALTY & SUBSCRIPTION ECONOMY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CustomerLoyaltySubscriptionEconomyService`; 1 migrasi; test `CustomerLoyaltySubscriptionEconomyTest` — commit `af5d9fe`, +282 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `CustomerLoyaltySubscriptionEconomyService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 378.1 One customer-facing identity and consent-aware entitlement service for loyalty, subscription, insurance, wallet and service plans across 30 lines
 - [ ] 378.2 Unified benefits liability and fulfillment ledger; redemption split among participating entities settles intercompany automatically
 - [ ] 378.3 Cohort retention, LTV and service cost harmonized; incentives evaluated by incremental outcome, not gross redemption
@@ -4844,6 +6038,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 379 — INTEGRASI GELOMBANG 3: WORKFORCE, SKILLS & OPERATING CAPACITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `WorkforceSkillsOperatingCapacityService`; 1 migrasi; test `WorkforceSkillsOperatingCapacityTest` — commit `959c7d8`, +278 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `WorkforceSkillsOperatingCapacityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 379.1 Workforce schedule, competency credentials, labor cost and bounty assignment integrated with finite capacity planning (Fase 277)
 - [ ] 379.2 Cross-line workforce deployment requires qualification, availability, rest rule, budget and employee consent where applicable
 - [ ] 379.3 Staffing shortages feed service capacity promises (beds, tables, rooms, shifts, machines) with transparent constraints
@@ -4855,6 +6052,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 380 — INTEGRASI GELOMBANG 3: SUSTAINABILITY, PRODUCT & FINANCE DATA
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SustainabilityFinanceDataService`; 1 migrasi; test `SustainabilityFinanceDataTest` — commit `0d5ee41`, +248 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `SustainabilityFinanceDataService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 380.1 Product/site/contract carbon and circularity evidence links to procurement, pricing, export, finance and public disclosure
 - [ ] 380.2 Prevent double counting across carbon credits, REC, product claims and ESG statements with unique evidence identifiers
 - [ ] 380.3 Transition plan capex, benefits and actual emissions tracked consistently in project/asset/ledger views
@@ -4866,6 +6066,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 381 — INTEGRASI GELOMBANG 3: SUPPLY CHAIN, TRADE & CIRCULAR MATERIAL FLOWS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SupplyChainTradeMaterialFlowsService`; 1 migrasi; test `SupplyChainTradeMaterialFlowsTest` — commit `7a22d91`, +276 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `SupplyChainTradeMaterialFlowsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 381.1 One shipment/material identity flows from source lot through processing, trade documents, custody, customer delivery and returns
 - [ ] 381.2 Customs, sanctions, sustainability evidence, insurance and payment-release gates share consistent shipment state
 - [ ] 381.3 Reverse flows (returns, by-products, waste, reusable packaging) reconnect to inventory/procurement with ownership and quality checks
@@ -4877,6 +6080,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 382 — INTEGRASI GELOMBANG 3: HEALTH, INSURANCE & WORKFORCE WELLBEING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `HealthInsuranceWellbeingService`; 1 migrasi; test `HealthInsuranceWellbeingTest` — commit `9da14c8`, +244 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `HealthInsuranceWellbeingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 382.1 Employee/patient care journeys share referrals and coverage status through scoped contracts, never unrestricted medical record sharing
 - [ ] 382.2 Health claims, provider billing, wellness benefits and employee programs reconcile across insurer, employer and care provider
 - [ ] 382.3 Occupational health offers aggregate prevention insights; identifiable clinical data remains in privacy vault and clinician scope
@@ -4888,6 +6094,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 383 — INTEGRASI GELOMBANG 3: ENERGY, DATA CENTER & DIGITAL SERVICE RESILIENCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnergyDatacenterResilienceService`; 1 migrasi; test `EnergyDatacenterResilienceTest` — commit `703b862`, +272 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EnergyDatacenterResilienceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 383.1 DC workload placement considers energy price, renewable availability, data residency, latency and criticality
 - [ ] 383.2 Grid events trigger workload/operations continuity plans; priority services (payment, health, safety) protected first
 - [ ] 383.3 Carbon-aware compute scheduling reports avoided emissions and service impact; never delays safety/critical transactions
@@ -4899,6 +6108,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 384 — INTEGRASI GELOMBANG 3: EDUCATION, CERTIFICATION & OPERATIONAL AUTHORIZATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EducationCredentialAuthorizationService`; 1 migrasi; test `EducationCredentialAuthorizationTest` — commit `718cbd2`, +317 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EducationCredentialAuthorizationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 384.1 Credential lifecycle is authoritative for role eligibility across healthcare, aviation, mine, energy, port, food safety and finance control
 - [ ] 384.2 Renewal forecast, refresher learning, examination, revocation and employer notification integrated with scheduling
 - [ ] 384.3 Credential audit dashboard lists active assignments relying on each certification and impact of expiry
@@ -4910,6 +6122,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 385 — INTEGRASI GELOMBANG 3: MEDIA, COMMERCE & CONTENT RIGHTS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MediaCommerceContentRightsService`; 1 migrasi; test `MediaCommerceContentRightsTest` — commit `3e0a304`, +281 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `MediaCommerceContentRightsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 385.1 Content rights registry links media asset → campaign → venue/hotel screen → marketplace merch → revenue split and territory/window
 - [ ] 385.2 Ad delivery uses verified inventory/impressions, consent and frequency caps across app, venue, mall and hotel
 - [ ] 385.3 Rights expiry automatically stops distribution and future billing; historical reports remain auditable
@@ -4921,6 +6136,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 386 — INTEGRASI GELOMBANG 3: MINING, PORT, AVIATION & GLOBAL COMMODITY FLOW
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MiningPortCommodityFlowService`; 1 migrasi; test `MiningPortCommodityFlowTest` — commit `e6fcf10`, +265 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `MiningPortCommodityFlowService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 386.1 Mine output → terminal weighbridge → port yard/berth → vessel voyage → customs/export → buyer receipt → payment/LC release, one traceable commodity chain
 - [ ] 386.2 Assay/quantity disputes pause only related settlement, isolate affected lots and preserve independent evidence; unaffected shipments continue
 - [ ] 386.3 Commodity hedge and insurance correlate to shipment exposure without duplicate positions
@@ -4932,6 +6150,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 387 — INTEGRASI GELOMBANG 3: CROSS-LINE EVENT AND PROCESS MESH
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CrossLineProcessMeshService`; 1 migrasi; test `CrossLineProcessMeshTest` — commit `8f574a6`, +240 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `CrossLineProcessMeshService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 387.1 Canonical business process events across 30 lines with source, correlation, causation, schema version, tenant scope and lifecycle state
 - [ ] 387.2 Process mesh monitors end-to-end completion, orphaned saga, duplicated command and SLA across domain boundaries
 - [ ] 387.3 Business replay can rebuild operational read models while explicitly preventing replay of irreversible external actions
@@ -4943,6 +6164,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 388 — INTEGRASI GELOMBANG 3: UNIFIED CONTROL TOWER & EXECUTIVE DECISION LOOP
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `UnifiedControlTowerDecisionService`; 1 migrasi; test `UnifiedControlTowerDecisionTest` — commit `5b11706`, +242 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `UnifiedControlTowerDecisionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 388.1 Consolidated operating picture (finance, customer, supply, people, safety, climate, technology) with metric lineage and owner
 - [ ] 388.2 Decision loop: signal → scenario → recommendation → delegated approval → execution → outcome review; each handoff timestamped
 - [ ] 388.3 Decision latency & value tracking, identify stalled approvals and unresolved cross-line dependencies
@@ -4954,6 +6178,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 389 — INTEGRASI GELOMBANG 3: COMMON AUDIT, RECONCILIATION & EVIDENCE SERVICE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CommonAuditReconciliationService`; 1 migrasi; test `CommonAuditReconciliationTest` — commit `3b425e3`, +274 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `CommonAuditReconciliationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 389.1 Standard audit result contract: scope, period, population, checks, exceptions, evidence, reproducible run ID, exit code
 - [ ] 389.2 Central reconciliation scheduler runs domain audits by dependency order; downstream audit waits for upstream completeness
 - [ ] 389.3 Evidence pack builds source-linked records with checksum, privacy redaction and retention class
@@ -4965,6 +6192,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 390 — INTEGRASI GELOMBANG 3: END-TO-END CROSS-LINE SERVICE BUNDLES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CrossLineServiceBundlesService`; 1 migrasi; test `CrossLineServiceBundlesTest` — commit `553309d`, +231 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `CrossLineServiceBundlesService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 390.1 Bundle catalog for business journeys: travel, health, fleet, event, industrial site, education, energy-as-a-service; versioned components and terms
 - [ ] 390.2 Bundle orchestration handles capacity, partial fulfillment, cancellations, substitutions, refunds and partner payout rules
 - [ ] 390.3 Bundle margin & customer promise computed from component economics and service constraints, quoted price immutable
@@ -4976,6 +6206,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 391 — STRESS WAVE: 30-LINE BASELINE, DATASET & REPRODUCIBLE BENCHMARK
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `StressBenchmarkBaselineService`; 1 migrasi; test `StressBenchmarkBaselineTest` — commit `d1f2c28`, +209 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `StressBenchmarkBaselineService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 391.1 Publish benchmark profile, hardware assumptions, synthetic-data distribution, seed values, run commands and expected variance bands
 - [ ] 391.2 Create tiered stress suites (developer, CI, nightly, extreme) with deterministic data and checkpoint/resume
 - [ ] 391.3 Record per-module ingest, query, memory, queue lag, ledger posting and reconciliation performance
@@ -4987,6 +6220,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 392 — STRESS WAVE: DOMAIN-SPECIFIC LOAD & CAPACITY ENVELOPES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DomainCapacityEnvelopesService`; 1 migrasi; test `DomainCapacityEnvelopesTest` — commit `3d1f821`, +276 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `DomainCapacityEnvelopesService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 392.1 Define supported envelope per domain (peak TPS, concurrent users, device events, batch size, retention) with tested operating limits
 - [ ] 392.2 Load profiles for healthcare peak, festival ticket drop, hotel check-in wave, mine dispatch shift, retail flash sale and month-end close
 - [ ] 392.3 Graceful degradation policy per endpoint: queue, shed, stale-read, manual fallback, or reject with retry guidance
@@ -4998,6 +6234,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 393 — STRESS WAVE: DATABASE PARTITION & ARCHIVE SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DatabasePartitionScaleService`; 1 migrasi; test `DatabasePartitionScaleTest` — commit `7f97587`, +278 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `DatabasePartitionScaleService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 393.1 Partition strategy by event date/tenant/domain for largest append-only tables; ownership and retention clearly declared
 - [ ] 393.2 Partition maintenance automation with dry-run, lock budget, rollback and audit evidence
 - [ ] 393.3 Archive/restore at scale with checksum, referential manifest and sample query compatibility
@@ -5009,6 +6248,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 394 — STRESS WAVE: QUEUE, SCHEDULER & BATCH PROCESSING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `QueueSchedulerBatchService`; 1 migrasi; test `QueueSchedulerBatchTest` — commit `9e463e3`, +242 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `QueueSchedulerBatchService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 394.1 Queue isolation by priority/domain; fairness and tenant quotas; poison message quarantine; retry budgets
 - [ ] 394.2 Batch framework: chunk checkpoint, resumability, idempotency, progress metrics, cancellation and safe restart
 - [ ] 394.3 Scheduler overlap policy, missed-run detection, dependency graph, time-zone/DST correctness
@@ -5020,6 +6262,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 395 — STRESS WAVE: READ/WRITE ISOLATION & REPLICA LAG
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ReadWriteReplicaLagService`; 1 migrasi; test `ReadWriteReplicaLagTest` — commit `d3ea2d6`, +246 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `ReadWriteReplicaLagService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 395.1 Read routing rules distinguish authoritative money/availability reads from eventual analytics; stale-read label for permitted views
 - [ ] 395.2 Replica lag monitoring with bounded fallback to primary for critical workflows; protect primary with admission control
 - [ ] 395.3 Consistency token/correlation mechanism for read-after-write where user needs immediate confirmation
@@ -5031,6 +6276,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 396 — STRESS WAVE: GLOBAL CONCURRENCY & DISTRIBUTED TRANSACTION SAFETY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DistributedTransactionSafetyService`; 1 migrasi; test `DistributedTransactionSafetyTest` — commit `f66ecdd`, +236 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `DistributedTransactionSafetyService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 396.1 Global idempotency namespace and conflict behavior across region failover; key retention policy and client replay semantics
 - [ ] 396.2 Saga timeout/recovery matrix for each multi-step workflow; compensation owners and unresolvable state escalation
 - [ ] 396.3 Lock contention metrics, deterministic lock ordering, bounded deadlock retry and user-facing conflict responses
@@ -5042,6 +6290,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 397 — STRESS WAVE: DATA QUALITY & DRIFT UNDER LOAD
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DataQualityDriftLoadService`; 1 migrasi; test `DataQualityDriftLoadTest` — commit `b816ced`, +262 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `DataQualityDriftLoadService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 397.1 Continuous DQ checks sampled vs full scans based on risk; ensure production checks don't create load spikes
 - [ ] 397.2 Drift monitors on master data, telemetry, price feeds and model inputs; thresholds and owner action defined
 - [ ] 397.3 Quarantine/repair pipelines preserve source records, track correction lineage and prevent bad data propagation
@@ -5053,6 +6304,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 398 — STRESS WAVE: SECURITY, PRIVACY & PENETRATION REGRESSION 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SecurityPenetrationRegressionService`; 1 migrasi; test `SecurityPenetrationRegressionTest` — commit `44c4783`, +259 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `SecurityPenetrationRegressionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 398.1 Automated auth matrix across route × role × tenant × region × data classification; test role escalation and object-level scope
 - [ ] 398.2 Abuse cases: replay, webhook spoof, credential rotation race, mass export, ticket scalping, API scraping, payment race
 - [ ] 398.3 Privacy regression: PII in logs/traces/exports, consent revocation, retention and legal hold conflicts, data residency
@@ -5064,6 +6318,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 399 — STRESS WAVE: DISASTER RECOVERY, FAILOVER & RESTORE PROOF
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DisasterRecoveryProofService`; 1 migrasi; test `DisasterRecoveryProofTest` — commit `df751a8`, +272 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `DisasterRecoveryProofService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 399.1 Quarterly DR drill across active regions, queues, document store, object archive, keys and event spine; measure RPO/RTO per tier
 - [ ] 399.2 Ledger recovery: restore snapshot + replay outbox/events → reconcile all assets → hash-chain verification → sign evidence pack
 - [ ] 399.3 Business service recovery order validated against dependency graph; stakeholder communication and degraded-mode practice
@@ -5075,6 +6332,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 400 — STRESS WAVE: CAPACITY CERTIFICATION & OPERATIONAL READINESS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CapacityCertificationReadinessService`; 1 migrasi; test `CapacityCertificationReadinessTest` — commit `c32cacd`, +190 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
+> **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `CapacityCertificationReadinessService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 400.1 Certify domain envelopes using benchmark Fase 391–399; owners sign expected load, known constraints and scaling actions
 - [ ] 400.2 Release readiness pack per domain: SLO, monitoring, runbook, rollback, data recovery, support rota, security and cost
 - [ ] 400.3 Executive capacity review: projected growth vs tested envelope → funded remediation roadmap, no unsupported production claim
@@ -5086,6 +6346,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 401 — GOVERNANCE WAVE: INTERNAL CONTROL MATURITY AT SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `InternalControlMaturityService`; 1 migrasi; test `InternalControlMaturityTest` — commit `d8b48e0`, +323 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `InternalControlMaturityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 401.1 Control inventory: every control has design documentation, frequency, owner, evidence source, test plan and dependency map
 - [ ] 401.2 Automated control monitoring: continuous/system-enabled controls sampled with statistical approach; manual controls with attestation and sample testing
 - [ ] 401.3 Deficiency rating (design vs operating), root-cause analysis, remediation plan, effectiveness retest and issue aging
@@ -5097,6 +6360,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 402 — GOVERNANCE WAVE: FRAUD RISK ASSESSMENT & CONTINUOUS DETECTION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FraudRiskAssessmentDetectionService`; 1 migrasi; test `FraudRiskAssessmentDetectionTest` — commit `cd05fd2`, +243 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `FraudRiskAssessmentDetectionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 402.1 Fraud risk assessment per business cycle (procure-to-pay, order-to-cash, payroll, treasury, claims, royalties, tenders, insurance, loyalty)
 - [ ] 402.2 Detection rulebook with scenario coverage, tuning to balance false positive/negative, challenger rules and periodic validation
 - [ ] 402.3 Red-team fraud exercise: seeded schemes (split invoice, vendor collusion, loyalty abuse, claim stacking) must be detected or documented gap
@@ -5108,6 +6374,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 403 — GOVERNANCE WAVE: THIRD-PARTY ECOSYSTEM RESILIENCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ThirdPartyEcosystemResilienceService`; 1 migrasi; test `ThirdPartyEcosystemResilienceTest` — commit `92b525e`, +257 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `ThirdPartyEcosystemResilienceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 403.1 Critical vendor concentration analysis across lines and regions; alternate qualification costed and time-bound
 - [ ] 403.2 Vendor continuity test: simulate sudden vendor failure → identify dependent workflows → execute substitution playbook → measure recovery time
 - [ ] 403.3 Exit strategy rehearsals for major cloud/logistics/payment/insurance providers: data export, credential rotation, parallel run
@@ -5119,6 +6388,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 404 — GOVERNANCE WAVE: LEGAL, REGULATORY & TAX OPERATIONS AT SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `RegulatoryTaxOperationsService`; 1 migrasi; test `RegulatoryTaxOperationsTest` — commit `22fa59a`, +261 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `RegulatoryTaxOperationsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 404.1 Obligation calendar across 30 jurisdictions/lines with submission evidence, approvers and late-filing controls
 - [ ] 404.2 Regulatory reporting pack generator: source lineage per figure, sign-off workflow, versioned historical submissions
 - [ ] 404.3 Tax provision governance: estimate quality review, uncertain tax position register, audit trail for positions taken
@@ -5130,6 +6402,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 405 — GOVERNANCE WAVE: BOARD & MANAGEMENT REPORTING INTEGRITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `BoardManagementReportingIntegrityService`; 1 migrasi; test `BoardManagementReportingIntegrityTest` — commit `0a01959`, +313 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `BoardManagementReportingIntegrityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 405.1 Management reporting pack: metric definitions registry, reconciliation to ledger/data, variance commentary workflow and submission deadlines
 - [ ] 405.2 Report certification: preparer/reviewer/approver segregation, materiality thresholds for commentary, restatement procedure
 - [ ] 405.3 Narrative analytics linked to numbers (variance explanation from source drill-down), with narrative versioning
@@ -5141,6 +6416,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 406 — GOVERNANCE WAVE: WHISTLEBLOWING, ETHICS & SPEAK-UP AT GLOBAL SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `WhistleblowingEthicsSpeakUpService`; 1 migrasi; test `WhistleblowingEthicsSpeakUpTest` — commit `31d2680`, +258 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `WhistleblowingEthicsSpeakUpService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 406.1 Multi-channel intake (web, mobile, phone simulation) across regions with local-language handling and anonymization
 - [ ] 406.2 Case management: triage, investigation plan, evidence handling, interim protective measures, outcome, discipline bridge to HCM
 - [ ] 406.3 Quality assurance: independent review of case outcomes, trend analysis, systemic action tracking to closure
@@ -5152,6 +6430,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 407 — GOVERNANCE WAVE: ESG & CLIMATE DISCLOSURE CONTROL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EsgClimateDisclosureControlService`; 1 migrasi; test `EsgClimateDisclosureControlTest` — commit `588bdc9`, +264 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `EsgClimateDisclosureControlService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 407.1 Disclosure control framework: data points, owner, system source, calculation, evidence, review, sign-off, publication and correction
 - [ ] 407.2 Assurance pack: sampling-ready evidence bundles, methodology notes, boundary mapping and reconciliation to financials
 - [ ] 407.3 Restatement & correction policy for ESG figures with stakeholder notification simulation
@@ -5163,6 +6444,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 408 — OPERATIONS WAVE: OPERATIONS EXCELLENCE PROGRAM GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `OperationsExcellenceGovernanceService`; 1 migrasi; test `OperationsExcellenceGovernanceTest` — commit `21248db`, +278 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `OperationsExcellenceGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 408.1 Improvement portfolio: initiatives with baseline, benefit hypothesis, owner, milestones, dependency and adoption plan
 - [ ] 408.2 Benefit validation: finance-verified actuals, attribution method, sustainment review at 6/12 months
 - [ ] 408.3 Standardization rollout: proven practice → playbook → training → compliance audit → deviation management
@@ -5174,6 +6458,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 409 — OPERATIONS WAVE: END-TO-END ORDER & SERVICE ORCHESTRATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EndToEndOrderServiceOrchestrationService`; 1 migrasi; test `EndToEndOrderServiceOrchestrationTest` — commit `82aef15`, +255 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `EndToEndOrderServiceOrchestrationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 409.1 Cross-line order orchestration for bundles: reservation, dependency check, partial success semantics, rollback and notification
 - [ ] 409.2 Consistency model documented: what must be atomic vs eventually consistent; user-facing state machine reflects reality
 - [ ] 409.3 Exception handling: failed component → clear user outcome (refund, alternative, escalation) with SLA and audit
@@ -5185,6 +6472,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 410 — OPERATIONS WAVE: INVENTORY, ASSET & EQUIPMENT AVAILABILITY PROGRAM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AssetAvailabilityProgramService`; 1 migrasi; test `AssetAvailabilityProgramTest` — commit `7212ee3`, +249 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `AssetAvailabilityProgramService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 410.1 Availability commitment by asset class (truck, crane, bed, room, machine, charger) with maintenance reserve and priority rules
 - [ ] 410.2 Buffer capacity policy: safety capacity for critical service lines (health, safety-critical logistics) with cost transparency
 - [ ] 410.3 Shortage escalation: substitute, defer with consent, third-party rental with approval → cost and customer impact recorded
@@ -5196,6 +6486,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 411 — OPERATIONS WAVE: FIELD & REMOTE SITE OPERATIONS INTEGRITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FieldRemoteSiteOperationsIntegrityService`; 1 migrasi; test `FieldRemoteSiteOperationsIntegrityTest` — commit `e51867b`, +326 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `FieldRemoteSiteOperationsIntegrityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 411.1 Remote site operating kit: procedures, credential check, equipment check, safety permit, communication check → digital pre-start gate
 - [ ] 411.2 Offline operations protocol: local buffer, conflict resolution, mandatory sync window, escalation when connectivity lost beyond threshold
 - [ ] 411.3 Post-operation verification: evidence (photo, signature, reading) uploaded → reviewer → records sealed
@@ -5207,6 +6500,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 412 — OPERATIONS WAVE: QUALITY ASSURANCE & INSPECTION PROGRAM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `QualityAssuranceInspectionProgramService`; 1 migrasi; test `QualityAssuranceInspectionProgramTest` — commit `a964c23`, +258 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `QualityAssuranceInspectionProgramService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 412.1 Risk-based inspection plan: frequency by risk, method, sampling plan, acceptance criteria and inspector qualification
 - [ ] 412.2 Inspection execution with calibrated tools (Fase 39.8), record integrity, nonconformance trigger and segregation from production pressure
 - [ ] 412.3 Quality cost accounting: prevention/appraisal/internal failure/external failure → trend → investment decisions
@@ -5218,6 +6514,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 413 — OPERATIONS WAVE: MAINTENANCE & RELIABILITY PROGRAM GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MaintenanceReliabilityGovernanceService`; 1 migrasi; test `MaintenanceReliabilityGovernanceTest` — commit `14fc7df`, +245 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `MaintenanceReliabilityGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 413.1 Asset criticality ranking and maintenance strategy selection (RCM-lite) per class with documented rationale
 - [ ] 413.2 PM compliance, backlog aging, schedule adherence and wrench-time metrics with accountable owner
 - [ ] 413.3 Reliability improvement: chronic failure analysis → design/operating change (ECO/contract) → effectiveness verification
@@ -5229,6 +6528,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 414 — OPERATIONS WAVE: SUPPLY CHAIN PROGRAM GOVERNANCE & SCORECARDS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SupplyChainGovernanceScorecardsService`; 1 migrasi; test `SupplyChainGovernanceScorecardsTest` — commit `6b4ef1d`, +264 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `SupplyChainGovernanceScorecardsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 414.1 End-to-end supply scorecard: supplier, manufacturing, warehouse, logistics, channel, customer with common definitions
 - [ ] 414.2 Corrective action workflow for scorecard misses with root cause, countermeasure, verification and closure
 - [ ] 414.3 Executive supply review cadence with decision log and follow-up tracking
@@ -5240,6 +6542,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 415 — OPERATIONS WAVE: WORKFORCE SCHEDULING & LABOR COMPLIANCE INTEGRITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `WorkforceLaborComplianceIntegrityService`; 1 migrasi; test `WorkforceLaborComplianceIntegrityTest` — commit `54f8069`, +274 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
+> **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `WorkforceLaborComplianceIntegrityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 415.1 Schedule generator respecting labor rules (rest, overtime caps, credential validity, union/agreement terms simulation)
 - [ ] 415.2 Time & attendance reconciliation: clock events vs schedule vs work performed → exceptions queue with approval
 - [ ] 415.3 Labor budget vs actual with variance explanation; premium cost transparency (night/weekend/overtime)
@@ -5251,6 +6556,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 416 — CUSTOMER WAVE: CUSTOMER DATA PLATFORM & ACTIVATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CustomerDataPlatformActivationService`; 1 migrasi; test `CustomerDataPlatformActivationTest` — commit `c6e99bb`, +270 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `CustomerDataPlatformActivationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 416.1 Unified profile with consent-scoped attributes, calculated segments and activation channels (service, marketing, pricing, support)
 - [ ] 416.2 Activation governance: suppression lists, frequency caps, channel preference, quiet hours, purpose limitation enforcement
 - [ ] 416.3 Identity resolution quality: match/conflict metrics, manual review queue for material merges, reversible merge audit
@@ -5262,6 +6570,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 417 — CUSTOMER WAVE: JOURNEY ANALYTICS & CONVERSION OPTIMIZATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `JourneyAnalyticsOptimizationService`; 1 migrasi; test `JourneyAnalyticsOptimizationTest` — commit `dea258f`, +266 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `JourneyAnalyticsOptimizationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 417.1 Instrument key journeys across lines (book→stay→dine, buy→deliver→return, admit→treat→bill, enroll→learn→credential)
 - [ ] 417.2 Funnel metrics with defined denominators, cohort comparison and statistical guardrails for tests
 - [ ] 417.3 Friction prioritization: drop-off analysis → hypothesis → experiment (Fase 236.2) → outcome → standardize
@@ -5273,6 +6584,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 418 — CUSTOMER WAVE: SERVICE RECOVERY & LOYALTY PROTECTION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ServiceRecoveryLoyaltyProtectionService`; 1 migrasi; test `ServiceRecoveryLoyaltyProtectionTest` — commit `ecbd926`, +225 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `ServiceRecoveryLoyaltyProtectionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 418.1 Service failure taxonomy with expected remedies (goodwill, refund, repair, escalation) and authority matrix
 - [ ] 418.2 Proactive recovery: detect failure from system events → offer remedy before customer complains → measure recovery rate and cost
 - [ ] 418.3 Loyalty protection: high-value/at-risk customer handling rules, win-back offers with margin guard, no-discriminatory treatment audit
@@ -5284,6 +6598,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 419 — CUSTOMER WAVE: PRICING & PROMOTION CUSTOMER FAIRNESS REVIEW
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CustomerPricingFairnessService`; 1 migrasi; test `CustomerPricingFairnessTest` — commit `3167add`, +255 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `CustomerPricingFairnessService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 419.1 Fairness review: price differentiation criteria documented (cost, timing, volume, segment); prohibited basis flagged
 - [ ] 419.2 Personalized offer governance: eligibility rules, discount depth caps, exclusion of vulnerable segments where policy requires
 - [ ] 419.3 Transparency: customer-visible price components, promo terms clear, complaint linkage for pricing disputes
@@ -5295,6 +6612,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 420 — CUSTOMER WAVE: ENTERPRISE ACCOUNT & RELATIONSHIP GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseAccountGovernanceService`; 1 migrasi; test `EnterpriseAccountGovernanceTest` — commit `21f427a`, +229 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul Crm baru (`crm_`, keputusan di DoR) + Store/Mall loyalty; identitas tetap di Party · **Prasyarat:** R3 ✅ (PII) · **Acuan:** KONSEP §A6, §A2
+> **Jalan pintas terlarang di fase ini:** profil pelanggan duplikat di luar Party; poin/cashback tanpa liabilitas ledger; data pribadi plaintext; memperluas `EnterpriseAccountGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 420.1 Strategic account plans with executive sponsor, coverage model, mutual business review and renewal strategy
 - [ ] 420.2 Multi-contract, multi-line enterprise agreements: umbrella terms, component orders, consolidated billing with line-level settlement
 - [ ] 420.3 Health index: usage, satisfaction, support, payment behavior → renewal risk → intervention plan
@@ -5306,6 +6626,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 421 — PEOPLE WAVE: TALENT ACQUISITION AT SCALE & EMPLOYER BRAND
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TalentAcquisitionEmployerBrandService`; 1 migrasi; test `TalentAcquisitionEmployerBrandTest` — commit `b2e6429`, +217 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `TalentAcquisitionEmployerBrandService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 421.1 High-volume hiring engine: batch requisitions, assessment automation with fairness checks, interview scheduling optimization, offer pipeline
 - [ ] 421.2 Source channel effectiveness: cost per hire, quality of hire, time to fill by role family → budget reallocation
 - [ ] 421.3 Candidate experience: status transparency, feedback for finalists, privacy retention and deletion policy
@@ -5317,6 +6640,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 422 — PEOPLE WAVE: COMPENSATION GOVERNANCE & PAY EQUITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CompensationGovernancePayEquityService`; 1 migrasi; test `CompensationGovernancePayEquityTest` — commit `2d854c8`, +314 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `CompensationGovernancePayEquityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 422.1 Market benchmark refresh cycle with provider data (simulasi), job matching review, peer group definition and approval
 - [ ] 422.2 Pay review cycle: merit budget allocation, manager recommendation with guardrails, calibration committee, employee communication
 - [ ] 422.3 Pay equity analysis with controlled regression (simulasi), unexplained gap flag, remediation plan and board compensation report
@@ -5328,6 +6654,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 423 — PEOPLE WAVE: PERFORMANCE, REWARDS & TALENT DECISIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PerformanceRewardsTalentDecisionsService`; 1 migrasi; test `PerformanceRewardsTalentDecisionsTest` — commit `67bb9c5`, +284 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `PerformanceRewardsTalentDecisionsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 423.1 Goal alignment cascade: strategy → business unit → team → individual; goal change requires approval after period start
 - [ ] 423.2 Performance rating calibration across lines with bias checks; final rating approved before linking to reward
 - [ ] 423.3 Talent segmentation (9-box style) with development/retention actions; differentiation decisions reviewed for consistency
@@ -5339,6 +6668,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 424 — PEOPLE WAVE: LEARNING OPERATIONS & EFFECTIVENESS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `LearningOperationsEffectivenessService`; 1 migrasi; test `LearningOperationsEffectivenessTest` — commit `28c1491`, +258 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `LearningOperationsEffectivenessService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 424.1 Learning operations: catalog governance, capacity/session scheduling, instructor qualification, materials version control
 - [ ] 424.2 Effectiveness measurement: Kirkpatrick-style levels (reaction, learning, behavior, result) where feasible; correlation labeled
 - [ ] 424.3 Compliance learning engine: mandatory assignments by role/risk, deadline escalation, blocked assignments on overdue
@@ -5350,6 +6682,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 425 — PEOPLE WAVE: ORGANIZATION DESIGN & CHANGE MANAGEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `OrgDesignChangeManagementService`; 1 migrasi; test `OrgDesignChangeManagementTest` — commit `7979036`, +274 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Hcm (`hcm_`) (+ Edu untuk pembelajaran) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F
+> **Jalan pintas terlarang di fase ini:** payroll/kompensasi tanpa jurnal; data gaji tanpa batas role; tarif pajak tanpa label simulasi; memperluas `OrgDesignChangeManagementService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 425.1 Org design scenarios: structure alternatives with span of control, cost, decision-path analysis → approval → migration plan
 - [ ] 425.2 Change impact assessment: affected roles, processes, systems, communications → readiness score → intervention plan
 - [ ] 425.3 Restructuring execution: position freeze/unfreeze, employee consultation simulation, redeployment offers, severance simulation, timeline
@@ -5361,6 +6696,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 426 — PLATFORM WAVE: QUALITY ENGINEERING AUTOMATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `QualityEngineeringAutomationService`; 1 migrasi; test `QualityEngineeringAutomationTest` — commit `a228c45`, +245 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `QualityEngineeringAutomationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 426.1 Test pyramid enforcement: unit/contract/integration/e2e coverage gates per module; flaky test quarantine with owner
 - [ ] 426.2 Production-like test environments with seeded synthetic data; performance and security tests in CI per risk tier
 - [ ] 426.3 Mutation-style checks for critical business rules (ledger, pricing, capacity) to prove tests actually detect faults
@@ -5372,6 +6710,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 427 — PLATFORM WAVE: RELEASE MANAGEMENT & CHANGE ADVISORY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ReleaseManagementChangeAdvisoryService`; 1 migrasi; test `ReleaseManagementChangeAdvisoryTest` — commit `bf539d2`, +306 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `ReleaseManagementChangeAdvisoryService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 427.1 Change risk classification (standard/normal/emergency) with required artifacts, approvers and post-implementation review
 - [ ] 427.2 Release train metrics: frequency, lead time, change failure rate, MTTR → improvement targets
 - [ ] 427.3 Coordinate multi-team releases: dependency freeze windows, compatibility checks, launch communication
@@ -5383,6 +6724,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 428 — PLATFORM WAVE: PROBLEM MANAGEMENT & ROOT CAUSE OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ProblemManagementRootCauseService`; 1 migrasi; test `ProblemManagementRootCauseTest` — commit `c1f6cd1`, +247 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `ProblemManagementRootCauseService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 428.1 Incident → problem linkage: major incidents create problem records; error budget breach triggers problem review
 - [ ] 428.2 Root cause analysis workflow (5-Why/fault tree): evidence, hypothesis, corrective/preventive action, verification
 - [ ] 428.3 Known-error database: documented workarounds surfaced to service desk and runbooks
@@ -5394,6 +6738,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 429 — PLATFORM WAVE: API & INTEGRATION QUALITY GATES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ApiIntegrationQualityGatesService`; 1 migrasi; test `ApiIntegrationQualityGatesTest` — commit `470b931`, +242 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `ApiIntegrationQualityGatesService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 429.1 Contract testing between provider and consumer before deploy (schema compatibility, semantics, error model)
 - [ ] 429.2 Integration certification: sandbox scenario suite for new partner → certificate with scope & expiry → production enablement
 - [ ] 429.3 Integration monitoring: latency, error rate, data volume anomaly per partner endpoint → partner-facing status
@@ -5405,6 +6752,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 430 — PLATFORM WAVE: SECURITY ENGINEERING & SUPPLY CHAIN INTTEGRITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SecurityEngineeringSupplyChainIntegrityService`; 1 migrasi; test `SecurityEngineeringSupplyChainIntegrityTest` — commit `3e811ef`, +271 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `SecurityEngineeringSupplyChainIntegrityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 430.1 Dependency & artifact integrity: pinned versions, checksum verification, vulnerability scan gating build, license compliance
 - [ ] 430.2 Secret management & key rotation drills (Fase 296.4) with zero-downtime rotation and detection of leaked secrets
 - [ ] 430.3 Threat modeling for new domains (health, finance, energy, venue) before go-live → security requirements → verification
@@ -5416,6 +6766,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 431 — PLATFORM WAVE: OBSERVABILITY, SLO & CAPACITY INTELLIGENCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ObservabilitySloCapacityService`; 1 migrasi; test `ObservabilitySloCapacityTest` — commit `719ee39`, +265 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `ObservabilitySloCapacityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 431.1 Golden signals per service (traffic, errors, latency, saturation) with business overlay (orders, claims, bookings)
 - [ ] 431.2 Alert quality program: paging only actionable, deduplication, runbook link, alert-to-ticket automatic, monthly alert review
 - [ ] 431.3 Capacity forecasting using growth curves from ultra-seed simulation → scaling recommendation with cost impact
@@ -5427,6 +6780,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 432 — PLATFORM WAVE: DATA & MODEL OPS GOVERNANCE (DOM)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DataModelOpsGovernanceService`; 1 migrasi; test `DataModelOpsGovernanceTest` — commit `5a86428`, +251 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `DataModelOpsGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 432.1 Unified pipeline for data + model changes: proposal → compatibility → test → approval → deploy → monitor → rollback
 - [ ] 432.2 Lineage-based impact analysis: change to field/model flags affected dashboards, agents and decisions
 - [ ] 432.3 Operational dashboards for data freshness, model drift, pipeline failure with owner and SLA
@@ -5438,6 +6794,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 433 — PLATFORM WAVE: ENTERPRISE SEARCH, KNOWLEDGE & DOCUMENT OPS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseSearchKnowledgeDocOpsService`; 1 migrasi; test `EnterpriseSearchKnowledgeDocOpsTest` — commit `9f79bc7`, +261 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `EnterpriseSearchKnowledgeDocOpsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 433.1 Index governance: source of truth per corpus, refresh SLA, ACL mirror, stale-content detection
 - [ ] 433.2 Search quality: relevance evaluation set per domain, synonym/typo handling, no-result analysis → content gaps
 - [ ] 433.3 Document operations: template compliance check, sign-off completeness, superseded-document resolution in links
@@ -5449,6 +6808,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 434 — PLATFORM WAVE: COST EFFICIENCY & PERFORMANCE IMPROVEMENT PROGRAM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CostEfficiencyPerformanceService`; 1 migrasi; test `CostEfficiencyPerformanceTest` — commit `57e84a7`, +275 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `CostEfficiencyPerformanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 434.1 Efficiency backlog: slow query, storage growth, cache miss, model cost, queue backlog → prioritized by value/effort
 - [ ] 434.2 Baseline vs after measurements for each efficiency item; savings validated by FinOps metrics (Fase 297.3)
 - [ ] 434.3 Performance budget in design review for new features; regression on budget blocks release
@@ -5460,6 +6822,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 435 — PLATFORM WAVE: USER RESEARCH, DESIGN SYSTEM & ACCESSIBILITY AT SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `UserResearchDesignSystemService`; 1 migrasi; test `UserResearchDesignSystemTest` — commit `9cd7f28`, +225 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `UserResearchDesignSystemService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 435.1 Research repository: studies, findings, decisions linked to backlog; evidence requirement for major UX change
 - [ ] 435.2 Design system adoption: component usage report per module, debt detection for custom components, migration path
 - [ ] 435.3 Accessibility conformance program: automated + manual testing per line, remediation SLA, public accessibility statement
@@ -5471,6 +6836,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 436 — GLOBAL FINANCE WAVE: GROUP FINANCE OPERATING MODEL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GroupFinanceOperatingModelService`; 1 migrasi; test `GroupFinanceOperatingModelTest` — commit `9d2d3f9`, +248 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `GroupFinanceOperatingModelService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 436.1 Finance service catalog per entity/line: close, reporting, tax, treasury, controlling, shared services → SLA and cost allocation
 - [ ] 436.2 Close orchestration: task dependency graph, automated checks, exception routing, late-task escalation, cycle-time metrics
 - [ ] 436.3 Finance transformation roadmap: automation opportunities, control impact, benefit tracking
@@ -5482,6 +6850,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 437 — GLOBAL FINANCE WAVE: CAPITAL ALLOCATION & PORTFOLIO OPTIMIZATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CapitalAllocationPortfolioService`; 1 migrasi; test `CapitalAllocationPortfolioTest` — commit `bd3e875`, +266 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `CapitalAllocationPortfolioService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 437.1 Investment scoring: financial (NPV/IRR/payback), strategic fit, risk, capability, sustainability, dependency → weighted score versioned
 - [ ] 437.2 Portfolio optimizer: constraint (budget, capacity, risk appetite) → recommended allocation → human approval → funding release
 - [ ] 437.3 Post-investment review: actual vs case, lessons, go/no-go for continuation, write-off path with approval
@@ -5493,6 +6864,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 438 — GLOBAL FINANCE WAVE: TAX, CUSTOMS & TRANSFER PRICING OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TaxTransferPricingOperationsService`; 1 migrasi; test `TaxTransferPricingOperationsTest` — commit `c305164`, +257 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `TaxTransferPricingOperationsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 438.1 Transfer pricing documentation automation: comparability search (simulasi), method application, master/local file draft, adjustment proposals
 - [ ] 438.2 Customs valuation support: transaction value evidence, related-party disclosure, advance ruling simulation
 - [ ] 438.3 Tax controversy workflow: notice → position → defense pack → provision update → outcome learning
@@ -5504,6 +6878,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 439 — GLOBAL FINANCE WAVE: INVESTOR, LENDER & CREDIT RATING REPORTING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `InvestorLenderReportingService`; 1 migrasi; test `InvestorLenderReportingTest` — commit `b82862c`, +263 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `InvestorLenderReportingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 439.1 Reporting calendar: covenant tests, rating agency packs (simulasi), investor updates, regulatory filings
 - [ ] 439.2 Covenant management: definitions → monitoring → headroom projection → early warning → remediation options → approval
 - [ ] 439.3 Disclosure control: materiality determination, legal review, consistency with internal reports, correction procedure
@@ -5515,6 +6892,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 440 — GLOBAL FINANCE WAVE: INSURANCE, SYARIAH & SECURITIES FINANCE OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `InsuranceSyariahSecuritiesFinanceService`; 1 migrasi; test `InsuranceSyariahSecuritiesFinanceTest` — commit `7a0b9b1`, +300 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** EnterpriseFinance / Treasury / Intercompany / Banking — sesuai topik · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
+> **Jalan pintas terlarang di fase ini:** angka keuangan tanpa posting ledger; float; laporan konsolidasi dari masukan manual; memperluas `InsuranceSyariahSecuritiesFinanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 440.1 Insurance portfolio operations: premium collection, reserve review cycle, reinsurance settlement, regulatory returns (simulasi)
 - [ ] 440.2 Syariah product operations: akad renewal, profit-sharing settlement, shariah board review calendar, NPF resolution
 - [ ] 440.3 Digital securities operations: issuance calendar, distribution to investors, corporate action execution, holder register reconciliation
@@ -5526,6 +6906,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 441 — SUSTAINABILITY WAVE: ESG OPERATING MODEL & OWNERSHIP
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EsgOperatingModelOwnershipService`; 1 migrasi; test `EsgOperatingModelOwnershipTest` — commit `254a078`, +290 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `EsgOperatingModelOwnershipService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 441.1 ESG data owners, metric stewards, control owners and assurance provider responsibilities formalized per topic
 - [ ] 441.2 ESG management system: policy → objectives → programs → monitoring → management review → continual improvement
 - [ ] 441.3 ESG incentive linkage: leadership scorecard includes verified sustainability outcomes with guardrails against gaming
@@ -5537,6 +6920,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 442 — SUSTAINABILITY WAVE: CLIMATE METRICS, TARGETS & ALLOCATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ClimateTargetsAllocationService`; 1 migrasi; test `ClimateTargetsAllocationTest` — commit `d811e79`, +249 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `ClimateTargetsAllocationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 442.1 Science-aligned target setting process (simulasi): baseline, pathway, interim milestones, scope 3 category inclusion
 - [ ] 442.2 Abatement cost curve: measure options ranked by cost/tonne → investment sequencing → financed emissions where relevant
 - [ ] 442.3 Monthly/quarterly tracking with variance narrative and corrective action; external claim updates follow disclosure control
@@ -5548,6 +6934,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 443 — SUSTAINABILITY WAVE: CIRCULARITY & WASTE PROGRAM OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CircularityWasteProgramService`; 1 migrasi; test `CircularityWasteProgramTest` — commit `6978fe0`, +275 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `CircularityWasteProgramService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 443.1 Waste hierarchy enforcement: reduce → reuse → recycle → recover → dispose with cost and carbon comparison per stream
 - [ ] 443.2 Vendor compliance for waste handlers: license, manifest, treatment certificate, payment tied to evidence
 - [ ] 443.3 Circular KPI per line/site: diversion rate, recycled input, take-back volume → targets → site action plans
@@ -5559,6 +6948,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 444 — SUSTAINABILITY WAVE: SOCIAL IMPACT & COMMUNITY PROGRAM OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SocialImpactCommunityProgramService`; 1 migrasi; test `SocialImpactCommunityProgramTest` — commit `da50f28`, +275 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `SocialImpactCommunityProgramService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 444.1 Community program portfolio: need assessment → design → budget → implementation → monitoring → evaluation
 - [ ] 444.2 Benefit-sharing formula execution (Fase 288.3) with community participation, grievance linkage and transparent ledger
 - [ ] 444.3 Social impact measurement: jobs, income, health/education outcomes (proxy indicators) with attribution caveats
@@ -5570,6 +6962,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 445 — SUSTAINABILITY WAVE: BIODIVERSITY & LAND USE PROGRAM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `BiodiversityLandUseProgramService`; 1 migrasi; test `BiodiversityLandUseProgramTest` — commit `a8cf7bb`, +282 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `BiodiversityLandUseProgramService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 445.1 Baseline ecology surveys (simulasi), no-net-loss hierarchy: avoid → minimize → restore → offset last resort
 - [ ] 445.2 Land/plot monitoring via satellite/field (Fase 86/172) with disturbance detection and remediation tasking
 - [ ] 445.3 Offset project quality: additionality, permanence, leakage risk, community consent → issuance gate
@@ -5581,6 +6976,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 446 — SUSTAINABILITY WAVE: WATER STEWARDSHIP & ENERGY MANAGEMENT OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `WaterEnergyManagementService`; 1 migrasi; test `WaterEnergyManagementTest` — commit `aa4d232`, +280 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `WaterEnergyManagementService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 446.1 Site water balance and energy baseline with normalized intensity (production, occupancy) → target setting
 - [ ] 446.2 Efficiency project pipeline: audit → measure → implement → verify (M&V) → sustain → replicate
 - [ ] 446.3 Utility procurement optimization: tariff structure, demand response participation (Fase 126.5), renewable PPAs → savings verified
@@ -5592,6 +6990,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 447 — SUSTAINABILITY WAVE: GREEN PROCUREMENT & SUPPLIER DEVELOPMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `GreenProcurementSupplierDevelopmentService`; 1 migrasi; test `GreenProcurementSupplierDevelopmentTest` — commit `69b326a`, +228 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `GreenProcurementSupplierDevelopmentService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 447.1 Supplier sustainability questionnaire, evidence, risk tier and improvement plans integrated to sourcing events
 - [ ] 447.2 Supplier decarbonization program: footprint data request, joint projects, contractual target clauses → tracking
 - [ ] 447.3 Green premium/discount decisions: documented criteria, avoid greenwashing, tie to verified data
@@ -5603,6 +7004,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 448 — SUSTAINABILITY WAVE: SUSTAINABLE FINANCE & REPORTING OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SustainableFinanceReportingService`; 1 migrasi; test `SustainableFinanceReportingTest` — commit `2b0da71`, +267 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `SustainableFinanceReportingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 448.1 Sustainable instrument register: green loan/sukuk, sustainability-linked, carbon-linked → KPI, margin adjustment, reporting obligations
 - [ ] 448.2 Allocation reporting: proceeds use, eligible project list, no-diversion control → external report draft
 - [ ] 448.3 External review workflow: reviewer engagement, evidence pack, statement → publication → annual update
@@ -5614,6 +7018,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 449 — SUSTAINABILITY WAVE: ESG DATA, ASSURANCE & DIGITAL REPORTING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EsgDataAssuranceDigitalReportingService`; 1 migrasi; test `EsgDataAssuranceDigitalReportingTest` — commit `f8e2a88`, +216 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Esg (`esg_`) (+ Egy/Circular sesuai topik) · **Prasyarat:** R6.4 (ESG ledger) ✅ · **Acuan:** KONSEP 4F, 5F, §A5
+> **Jalan pintas terlarang di fase ini:** emisi/target dari masukan bebas tanpa data aktivitas; kredit karbon tanpa ledger; laporan ESG tanpa audit dua-sumber; memperluas `EsgDataAssuranceDigitalReportingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 449.1 Digital disclosure pipeline: datapoint ingestion → validation → evidence linkage → sign-off → XBRL-like tagging (simulasi) → publication
 - [ ] 449.2 Assurance readiness: internal audit sample → external assessor portal (Fase 293.4) → findings → remediation → statement
 - [ ] 449.3 Restatement & comparative update procedure with versioned historical reports and stakeholder notice
@@ -5625,6 +7032,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 450 — GOVERNANCE WAVE: ENTERPRISE RISK APPETITE & BOARD RISK REPORTING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseRiskAppetiteBoardReportingService`; 1 migrasi; test `EnterpriseRiskAppetiteBoardReportingTest` — commit `65ea2b1`, +234 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `EnterpriseRiskAppetiteBoardReportingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 450.1 Risk appetite statement quantified per category (credit, market, operational, compliance, strategic, climate) with KRIs
 - [ ] 450.2 Appetite breach workflow: KRI breach → owner response → time-bound remediation → board risk committee escalation
 - [ ] 450.3 Board risk pack: aggregate exposure, trend, scenario stress (Fase 243.2), top risks with mitigation status
@@ -5636,6 +7046,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 451 — GOVERNANCE WAVE: POLICY COMPLIANCE TESTING & REMEDIATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PolicyComplianceTestingRemediationService`; 1 migrasi; test `PolicyComplianceTestingRemediationTest` — commit `cef2100`, +223 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `PolicyComplianceTestingRemediationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 451.1 Compliance test plan: sample transactions/records against policy → evidence → finding → owner → due date → verify
 - [ ] 451.2 Regulatory examination simulation: request list → evidence assembly (Fase 54.7) → mock interview → gap remediation
 - [ ] 451.3 Repeat finding analysis: systemic cause → control redesign → effectiveness test → closure with independent verification
@@ -5647,6 +7060,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 452 — GOVERNANCE WAVE: BUSINESS CONTINUITY & CRISIS SIMULATION SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `BusinessContinuityCrisisSimulationService`; 1 migrasi; test `BusinessContinuityCrisisSimulationTest` — commit `0a4e8f9`, +271 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `BusinessContinuityCrisisSimulationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 452.1 Scenario library: natural disaster, cyber, supplier failure, health event, market shock, regulatory action, utility outage
 - [ ] 452.2 Full-scale annual exercise across lines: activate continuity, run degraded operations, recover, reconcile, after-action review
 - [ ] 452.3 Crisis communications: stakeholder matrix, approved templates, spokesperson protocol, rumor monitoring (simulasi)
@@ -5658,6 +7074,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 453 — GOVERNANCE WAVE: M&A DUE DILIGENCE & POST-MERGER INTEGRATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MnaDueDiligencePmiService`; 1 migrasi; test `MnaDueDiligencePmiTest` — commit `f6057de`, +256 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `MnaDueDiligencePmiService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 453.1 DD workstream framework: commercial, financial, tax, legal, tech, data, people, ESG → findings register → valuation adjustment decision
 - [ ] 453.2 Integration playbook: day-1 readiness, systems/data migration, org harmonization, synergy tracking, culture plan
 - [ ] 453.3 PMI governance: integration management office, milestone gating, benefit realization vs deal case, risk escalation
@@ -5669,6 +7088,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 454 — GOVERNANCE WAVE: STRATEGIC PLANNING & EXECUTION SYSTEM
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `StrategicPlanningExecutionService`; 1 migrasi; test `StrategicPlanningExecutionTest` — commit `f785855`, +272 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul GRC baru (`grc_`, keputusan di DoR + DECISIONS) di atas Core ApprovalEngine/AuditTrail; voting tetap di Governance (`gov_`) · **Prasyarat:** R3 ✅, R5 ✅ · **Acuan:** KONSEP §A3, §A6
+> **Jalan pintas terlarang di fase ini:** kontrol/kepatuhan berupa flag boolean dari pemanggil; skor kematangan tanpa sumber data; register risiko tanpa tautan ke kontrol & bukti; memperluas `StrategicPlanningExecutionService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 454.1 Strategy tree: vision → strategic themes → objectives → initiatives → measures → owners → funding → review cadence
 - [ ] 454.2 Annual strategy cycle: environmental scan, scenario analysis (Fase 266), strategy choice, resource allocation, KPI cascade
 - [ ] 454.3 Quarterly execution review: initiative progress, KPI trend, blocker escalation, reallocation decision → board strategy report
@@ -5680,6 +7102,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 455 — INTEGRASI AKHIR: 30-LINE ENTERPRISE PROCESS INTEGRITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseProcessIntegrityService`; 1 migrasi; test `EnterpriseProcessIntegrityTest` — commit `fdf364f`, +264 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EnterpriseProcessIntegrityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 455.1 Process integrity map: every cross-line business process (order-to-cash, procure-to-pay, hire-to-retire, incident-to-resolution, idea-to-cash) documented with systems of record
 - [ ] 455.2 Integrity control points: single source of truth per fact, segregation between creation and approval, reconciliation between handoffs
 - [ ] 455.3 Process compliance monitoring: deviation from designed flow flagged with severity → process owner → corrective action
@@ -5691,6 +7116,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 456 — INTEGRASI AKHIR: ENTERPRISE MASTER DATA GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseMasterDataGovernanceService`; 1 migrasi; test `EnterpriseMasterDataGovernanceTest` — commit `082b310`, +291 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EnterpriseMasterDataGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 456.1 Golden record governance per master domain (customer, vendor, product, asset, chart of accounts, location, employee) with survivorship rules
 - [ ] 456.2 Stewardship workflow: create/change with quality rules, duplicate detection, merge with approval and audit, downstream propagation
 - [ ] 456.3 Master data SLA: refresh timeliness, quality score, consumer satisfaction, remediation backlog
@@ -5702,6 +7130,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 457 — INTEGRASI AKHIR: ENTERPRISE IDENTITY, ACCESS & ZERO-TRUST HARDENING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseIdentityZeroTrustService`; 1 migrasi; test `EnterpriseIdentityZeroTrustTest` — commit `a41c0b6`, +271 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EnterpriseIdentityZeroTrustService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 457.1 Access recertification cycle: periodic owner review of user/role/entitlement across 30 lines → revoke unused → evidence
 - [ ] 457.2 Privileged access management: just-in-time elevation, session recording simulation, break-glass post-review (Fase 203.4)
 - [ ] 457.3 Zero-trust verification: every request authenticated, authorized, context-checked (device, location, risk) → policy decision point
@@ -5713,6 +7144,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 458 — INTEGRASI AKHIR: ENTERPRISE FINANCIAL CONTROL & ASSURANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseFinancialControlAssuranceService`; 1 migrasi; test `EnterpriseFinancialControlAssuranceTest` — commit `9173fd8`, +255 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EnterpriseFinancialControlAssuranceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 458.1 Consolidated control self-assessment across finance processes with management assertion
 - [ ] 458.2 Independent assurance coverage plan: internal audit + control testing + continuous monitoring → no material gap untested
 - [ ] 458.3 Deficiency aggregation: sum of deficiencies → significant deficiency/material weakness determination → disclosure consideration
@@ -5724,6 +7158,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 459 — INTEGRASI AKHIR: ENTERPRISE PERFORMANCE MANAGEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterprisePerformanceManagementService`; 1 migrasi; test `EnterprisePerformanceManagementTest` — commit `ec3f145`, +294 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EnterprisePerformanceManagementService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 459.1 Balanced scorecard across 30 lines: financial, customer, process, people, sustainability perspectives with common definitions
 - [ ] 459.2 Performance review cycle: monthly operational, quarterly strategic, annual planning → decision log with follow-up
 - [ ] 459.3 Performance communication: cascade to teams with context, not just targets; recognize and address gaps
@@ -5735,6 +7172,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 460 — INTEGRASI AKHIR: ENTERPRISE INNOVATION & R&D GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseInnovationRdGovernanceService`; 1 migrasi; test `EnterpriseInnovationRdGovernanceTest` — commit `ef7bf99`, +283 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EnterpriseInnovationRdGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 460.1 Innovation funnel metrics: idea → experiment → pilot → scale, with kill criteria and resource reallocation
 - [ ] 460.2 R&D portfolio balance: exploratory vs exploitative, horizon 1/2/3, capital allocation per horizon → board innovation report
 - [ ] 460.3 Intellectual property portfolio management: filing, maintenance, licensing, enforcement strategy, competitive landscape
@@ -5746,6 +7186,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 461 — INTEGRASI AKHIR: ENTERPRISE SUPPLY CHAIN GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseSupplyChainGovernanceService`; 1 migrasi; test `EnterpriseSupplyChainGovernanceTest` — commit `68604d2`, +222 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EnterpriseSupplyChainGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 461.1 Supply chain strategy: network design, make-vs-buy, dual-sourcing policy, inventory strategy per category → reviewed annually
 - [ ] 461.2 Category management: strategic/tactical/operational categories with sourcing strategy, supplier panel, negotiation plan
 - [ ] 461.3 Supply chain risk register with mitigation portfolio and residual risk reporting
@@ -5757,6 +7200,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 462 — INTEGRASI AKHIR: ENTERPRISE QUALITY MANAGEMENT GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseQualityGovernanceService`; 1 migrasi; test `EnterpriseQualityGovernanceTest` — commit `5cbb5fb`, +243 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EnterpriseQualityGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 462.1 Quality policy and objectives per line with management review cycle
 - [ ] 462.2 Cross-line quality incident: customer complaint → root cause across boundary → system-level fix → effectiveness verification
 - [ ] 462.3 Quality culture: training, recognition, non-punitive reporting of quality issues → maturity assessment
@@ -5768,6 +7214,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 463 — INTEGRASI AKHIR: ENTERPRISE CUSTOMER VALUE GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseCustomerValueGovernanceService`; 1 migrasi; test `EnterpriseCustomerValueGovernanceTest` — commit `35e0e39`, +251 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EnterpriseCustomerValueGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 463.1 Customer value proposition per line with differentiation, pricing logic and delivery promise → reviewed with market feedback
 - [ ] 463.2 Customer value measurement: willingness-to-pay, value delivered vs promised, value gap → improvement backlog
 - [ ] 463.3 Value-based selling enablement: value quantification tool for sales (Fase 246.4) → proof points → win/loss learning
@@ -5779,6 +7228,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 464 — INTEGRASI AKHIR: ENTERPRISE SUSTAINABILITY GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseSustainabilityGovernanceService`; 1 migrasi; test `EnterpriseSustainabilityGovernanceTest` — commit `104de76`, +219 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini sumber ✅ · **Acuan:** KONSEP §A4.2
+> **Jalan pintas terlarang di fase ini:** satu service orkestrasi yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan; memperluas `EnterpriseSustainabilityGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 464.1 Sustainability steering: cross-line priorities, trade-off decisions (cost vs carbon vs social) with documented rationale
 - [ ] 464.2 Sustainability risk & opportunity integration into enterprise risk (Fase 202) and strategy (Fase 454)
 - [ ] 464.3 Sustainability performance in leadership scorecard (Fase 441.3) with verified metrics only
@@ -5790,6 +7242,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 465 — SCENARIO WAVE: CONGLOMERATE SIMULATION 365 HARI, 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ConglomerateSimulationService`; 1 migrasi; test `ConglomerateSimulationTest` — commit `0610977`, +227 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** tests/Feature (golden scenario) + `sim:run` (Core) · **Prasyarat:** R8.4 ✅ + semua lini dalam skenario ✅ · **Acuan:** KONSEP §A10.1
+> **Jalan pintas terlarang di fase ini:** skenario tanpa `sim:run` yang menjalankan tick handler; assert pada nilai yang disetel test sendiri; klaim '365 hari' tanpa run tercatat; memperluas `ConglomerateSimulationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 465.1 Full-year simulation via Simulation Kernel: all 30 lines run 365 compressed days — contracts, production, logistics, sales, payroll, depreciation, claims, royalties, dividends, consolidation
 - [ ] 465.2 Verification: every `*:audit` (target 100+ commands) = 0 variance at end; every `verify-*` hash-chain valid; every multi-asset reconcile = 0
 - [ ] 465.3 Determinism proof: same seed, same duration → identical results; variance run documented
@@ -5801,6 +7256,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 466 — SCENARIO WAVE: CRISIS MEGA-SCENARIO MULTI-LINI BERLAPIS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CrisisMegaScenarioService`; 1 migrasi; test `CrisisMegaScenarioTest` — commit `c637017`, +234 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** tests/Feature (golden scenario) + `sim:run` (Core) · **Prasyarat:** R8.4 ✅ + semua lini dalam skenario ✅ · **Acuan:** KONSEP §A10.1
+> **Jalan pintas terlarang di fase ini:** skenario tanpa `sim:run` yang menjalankan tick handler; assert pada nilai yang disetel test sendiri; klaim '365 hari' tanpa run tercatat; memperluas `CrisisMegaScenarioService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 466.1 Layered crisis: flood + blackout + health event + commodity shock + cyber incident simultaneously → priority service protection → continuity execution → recovery
 - [ ] 466.2 Verification: money/stock/asset invariants hold throughout; all audits clean after recovery; RTO measured per tier
 - [ ] 466.3 After-action: gap analysis → plan updates → re-test → evidence pack
@@ -5812,6 +7270,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 467 — SCENARIO WAVE: M&A MEGA-SCENARIO & GROUP RESTRUCTURING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MnaMegaScenarioRestructuringService`; 1 migrasi; test `MnaMegaScenarioRestructuringTest` — commit `e4244a8`, +204 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** tests/Feature (golden scenario) + `sim:run` (Core) · **Prasyarat:** R8.4 ✅ + semua lini dalam skenario ✅ · **Acuan:** KONSEP §A10.1
+> **Jalan pintas terlarang di fase ini:** skenario tanpa `sim:run` yang menjalankan tick handler; assert pada nilai yang disetel test sendiri; klaim '365 hari' tanpa run tercatat; memperluas `MnaMegaScenarioRestructuringService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 467.1 Acquire simulated external entity (3 modules) → DD findings → integration (data migration, org, systems) → consolidation → divestment path
 - [ ] 467.2 Verification: backfill idempotent, no duplicate master data, consolidated statements correct, all audits clean
 - [ ] 467.3 Restructuring: intercompany reorganization (entity merge/split) → ledger migration → audit trail preserved
@@ -5823,6 +7284,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 468 — SCENARIO WAVE: REGULATORY CHANGE MEGA-SCENARIO
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `RegulatoryChangeMegaScenarioService`; 1 migrasi; test `RegulatoryChangeMegaScenarioTest` — commit `70646d8`, +202 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** tests/Feature (golden scenario) + `sim:run` (Core) · **Prasyarat:** R8.4 ✅ + semua lini dalam skenario ✅ · **Acuan:** KONSEP §A10.1
+> **Jalan pintas terlarang di fase ini:** skenario tanpa `sim:run` yang menjalankan tick handler; assert pada nilai yang disetel test sendiri; klaim '365 hari' tanpa run tercatat; memperluas `RegulatoryChangeMegaScenarioService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 468.1 Major regulatory change affecting multiple lines (e.g., carbon border + data localization + payment regulation) → impact analysis → control build → compliance evidence
 - [ ] 468.2 Verification: all affected controls implemented & tested, no operation blocked unexpectedly, evidence complete
 - [ ] 468.3 Lessons: regulatory intelligence improvement → faster detection → better playbook
@@ -5834,6 +7298,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 469 — SCENARIO WAVE: MARKET DISRUPTION & COMPETITIVE RESPONSE SIMULATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MarketDisruptionSimulationService`; 1 migrasi; test `MarketDisruptionSimulationTest` — commit `663f31a`, +202 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** tests/Feature (golden scenario) + `sim:run` (Core) · **Prasyarat:** R8.4 ✅ + semua lini dalam skenario ✅ · **Acuan:** KONSEP §A10.1
+> **Jalan pintas terlarang di fase ini:** skenario tanpa `sim:run` yang menjalankan tick handler; assert pada nilai yang disetel test sendiri; klaim '365 hari' tanpa run tercatat; memperluas `MarketDisruptionSimulationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 469.1 Disruption scenario: new competitor, demand collapse, technology shift → strategic response options → simulation of financial/operational impact
 - [ ] 469.2 Response playbook: pricing, cost, portfolio, partnership levers → decision under constraints (risk appetite Fase 450)
 - [ ] 469.3 Verification: sandbox only (no real data change), decision quality review, learning captured
@@ -5845,6 +7312,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 470 — SCENARIO WAVE: CYBER ATTACK & RANSOMWARE FULL RECOVERY DRILL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CyberRansomwareRecoveryDrillService`; 1 migrasi; test `CyberRansomwareRecoveryDrillTest` — commit `c1a9001`, +261 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** tests/Feature (golden scenario) + `sim:run` (Core) · **Prasyarat:** R8.4 ✅ + semua lini dalam skenario ✅ · **Acuan:** KONSEP §A10.1
+> **Jalan pintas terlarang di fase ini:** skenario tanpa `sim:run` yang menjalankan tick handler; assert pada nilai yang disetel test sendiri; klaim '365 hari' tanpa run tercatat; memperluas `CyberRansomwareRecoveryDrillService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 470.1 Simulated ransomware: encrypted systems → containment (isolate, credential revoke) → forensic timeline → recovery from clean backup + event replay → reconcile
 - [ ] 470.2 Verification: RPO/RTO proven, ledger Σ=0 after recovery, hash-chains valid, all services restored in documented order
 - [ ] 470.3 Post-incident: root cause, control improvement, regulator/customer notification workflow, lessons to threat model
@@ -5856,6 +7326,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 471 — PLATFORM WAVE: DEVELOPER PRODUCTIVITY & ENGINEERING EXCELLENCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DeveloperProductivityEngineeringService`; 1 migrasi; test `DeveloperProductivityEngineeringTest` — commit `5bd3e0a`, +254 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `DeveloperProductivityEngineeringService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 471.1 Engineering metrics: lead time, deployment frequency, change failure rate, MTTR (DORA-style) per team with targets
 - [ ] 471.2 Developer experience: local environment setup time, test feedback loop, documentation quality → survey + metrics → improvement
 - [ ] 471.3 Code quality standards: review coverage, complexity thresholds, technical debt register with paydown budget
@@ -5867,6 +7340,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 472 — PLATFORM WAVE: ENTERPRISE ARCHITECTURE GOVERNANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseArchitectureGovernanceService`; 1 migrasi; test `EnterpriseArchitectureGovernanceTest` — commit `a938112`, +262 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `EnterpriseArchitectureGovernanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 472.1 Architecture principles & standards (modular monolith, event-driven, ledger-first, privacy-first) with compliance assessment
 - [ ] 472.2 Architecture review board: proposal → impact assessment → decision → conditions → post-implementation verification
 - [ ] 472.3 Technology radar: adopt/trial/assess/hold per technology with owner and review cycle → no uncontrolled tech adoption
@@ -5878,6 +7354,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 473 — PLATFORM WAVE: ENTERPRISE DATA MIGRATION & LEGACY RETIREMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseDataMigrationRetirementService`; 1 migrasi; test `EnterpriseDataMigrationRetirementTest` — commit `a84a439`, +297 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `EnterpriseDataMigrationRetirementService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 473.1 Migration inventory: source systems, data domains, cutover strategy (big-bang/phased), rollback plan, dual-run period
 - [ ] 473.2 Data quality remediation before migration: cleanse, dedupe, enrich → migration acceptance criteria
 - [ ] 473.3 Legacy retirement: parallel run → validation → cutover → decommission → data archive → access revoke → cost saving realized
@@ -5889,6 +7368,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 474 — PLATFORM WAVE: ENTERPRISE TEST DATA MANAGEMENT & COMPLIANCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `TestDataComplianceService`; 1 migrasi; test `TestDataComplianceTest` — commit `ee19350`, +222 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `TestDataComplianceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 474.1 Test data policy: synthetic for dev/test, masked for staging, production never copied without approval
 - [ ] 474.2 Data subsetting: representative slices per scenario with referential integrity → faster test cycles
 - [ ] 474.3 Compliance verification: scan test environments for PII leakage → remediate → evidence
@@ -5900,6 +7382,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 475 — PLATFORM WAVE: ENTERPRISE MONITORING & BUSINESS KPI OBSERVABILITY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `BusinessKpiObservabilityService`; 1 migrasi; test `BusinessKpiObservabilityTest` — commit `d4a7402`, +263 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
+> **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `BusinessKpiObservabilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 475.1 Business KPI as first-class observable: revenue rate, order rate, claim rate, booking rate, payment success → real-time with lineage
 - [ ] 475.2 Anomaly detection on business metrics: sudden drop → triage (technical vs business cause) → owner → resolution
 - [ ] 475.3 KPI freshness SLA: stale KPI flagged, consumers warned, root cause of staleness tracked
@@ -5911,6 +7396,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 476 — FINAL: ENTERPRISE KNOWLEDGE, DOCUMENTATION & INSTITUTIONAL MEMORY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `InstitutionalMemoryKnowledgeService`; 1 migrasi; test `InstitutionalMemoryKnowledgeTest` — commit `d474e86`, +246 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command; memperluas `InstitutionalMemoryKnowledgeService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 476.1 Decision log repository: strategic and architectural decisions with context, alternatives, outcome, review date → searchable
 - [ ] 476.2 Institutional memory: post-incident reviews, project lessons, negotiation history, regulatory interpretations linked to source
 - [ ] 476.3 Documentation health: coverage, freshness, owner, usage metrics → debt register → improvement plan
@@ -5922,6 +7410,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 477 — FINAL: ENTERPRISE OPERATING MODEL & ORGANIZATIONAL READINESS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseOperatingModelReadinessService`; 1 migrasi; test `EnterpriseOperatingModelReadinessTest` — commit `605b80b`, +254 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command; memperluas `EnterpriseOperatingModelReadinessService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 477.1 Operating model documentation: structure, processes, technology, people, governance for 30 lines with RACI for key processes
 - [ ] 477.2 Readiness assessment: capability maturity per line → gaps → investment plan → re-assessment cadence
 - [ ] 477.3 Change portfolio: transformation initiatives with benefit, risk, dependency → prioritized → tracked → realized
@@ -5933,6 +7424,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 478 — FINAL: ENTERPRISE STAKEHOLDER VALUE & OUTCOMES REPORTING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseStakeholderValueReportingService`; 1 migrasi; test `EnterpriseStakeholderValueReportingTest` — commit `0f0026f`, +255 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command; memperluas `EnterpriseStakeholderValueReportingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 478.1 Stakeholder value map: shareholders, customers, employees, partners, communities, regulators → value delivered per group → metrics
 - [ ] 478.2 Integrated reporting: financial + operational + sustainability + people value in one narrative with metric lineage
 - [ ] 478.3 Value feedback: stakeholder input (survey, board, partner review) → improvement actions → tracking
@@ -5944,6 +7438,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 479 — FINAL: ENTERPRISE RESILIENCE, ANTI-FRAGILITY & CONTINUOUS IMPROVEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseResilienceAntiFragilityService`; 1 migrasi; test `EnterpriseResilienceAntiFragilityTest` — commit `b991688`, +253 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command; memperluas `EnterpriseResilienceAntiFragilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 479.1 Resilience index: combine recovery capability, redundancy, diversity, learning rate into composite score per domain
 - [ ] 479.2 Continuous improvement culture: idea intake, evaluation, experimentation, standardization, recognition → measurable participation
 - [ ] 479.3 Adaptive capacity: feedback loops from operations/market to strategy/process/technology with bounded response time
@@ -5955,6 +7452,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 480 — FINAL: ENTERPRISE FINANCIAL INTEGRITY & TRUST AT SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseFinancialIntegrityService`; 1 migrasi; test `EnterpriseFinancialIntegrityTest` — commit `e0b1c82`, +226 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command; memperluas `EnterpriseFinancialIntegrityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 480.1 Financial integrity statement: all reconciliations, audits, hash-chains, controls tested in last period → zero exceptions → signed
 - [ ] 480.2 Trust metrics: reconciliation success rate, audit pass rate, incident rate, control effectiveness → trend → target
 - [ ] 480.3 Independent verification: external auditor simulation reads integrity statement → performs sample testing → issues opinion (simulasi)
@@ -5966,6 +7466,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 481 — FINAL: ENTERPRISE ETHICS, PURPOSE & SOCIAL LICENSE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseEthicsSocialLicenseService`; 1 migrasi; test `EnterpriseEthicsSocialLicenseTest` — commit `019fdbc`, +247 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command; memperluas `EnterpriseEthicsSocialLicenseService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 481.1 Purpose & values operationalization: values → behaviors → policies → incentives → recognition → measurement
 - [ ] 481.2 Ethics maturity: culture survey, speak-up health, case quality, remediation effectiveness → improvement plan
 - [ ] 481.3 Social license index: community trust, regulatory standing, partner confidence, employee pride → engagement → action
@@ -5977,6 +7480,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 482 — FINAL: ENTERPRISE INNOVATION & FUTURE READINESS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseFutureReadinessService`; 1 migrasi; test `EnterpriseFutureReadinessTest` — commit `8505c95`, +241 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command; memperluas `EnterpriseFutureReadinessService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 482.1 Horizon scanning: technology, market, regulation, societal trends → impact assessment → strategic options → portfolio balance
 - [ ] 482.2 Future scenarios: 3-5 plausible futures → capability implications → resilience/option investments → trigger monitoring
 - [ ] 482.3 Innovation pipeline health: ideas, experiments, pilots, scale rate with resource and outcome tracking
@@ -5988,6 +7494,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 483 — FINAL: ENTERPRISE LEARNING ORGANIZATION & KNOWLEDGE FLYWHEEL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseLearningFlywheelService`; 1 migrasi; test `EnterpriseLearningFlywheelTest` — commit `28cbf26`, +274 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command; memperluas `EnterpriseLearningFlywheelService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 483.1 Learning loops: operations → data → insight → decision → action → outcome → knowledge capture → practice → operations (closed)
 - [ ] 483.2 Knowledge flywheel metrics: reuse of lessons, time-to-competence, error reduction from past incidents, best-practice adoption
 - [ ] 483.3 Cross-line knowledge exchange: communities of practice, rotations, joint projects → knowledge transfer measured
@@ -5999,6 +7508,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 484 — FINAL: ENTERPRISE DIGITAL TRUST & VERIFIABLE OPERATIONS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EnterpriseDigitalTrustService`; 1 migrasi; test `EnterpriseDigitalTrustTest` — commit `3b190df`, +251 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command; memperluas `EnterpriseDigitalTrustService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
 - [ ] 484.1 Verifiable claim framework: any external claim (quality, sustainability, financial, safety) links to verifiable evidence with public/private verification
 - [ ] 484.2 Trust infrastructure: hash-chain registry, credential registry, audit trail portal, third-party verification API
 - [ ] 484.3 Trust score: based on verification coverage, incident history, audit results → published (aggregated) → improvement loop
@@ -6010,6 +7522,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 485 — FINAL: ENTERPRISE PLATFORM EVOLUTION & MODULAR MONOLITH MATURITY
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 485.1 Modular monolith at scale: proven boundaries, fitness functions green, coupling low, extraction only when evidence warrants (ADR)
 - [ ] 485.2 Platform roadmap: based on fitness metrics, capacity forecast, developer feedback, business demand → prioritized → funded
 - [ ] 485.3 Technical debt governance: register, prioritization, paydown budget, no-new-debt-without-plan policy
@@ -6021,6 +7536,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 486 — FINAL: ENTERPRISE API, DATA & AI PRODUCT MONETIZATION
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 486.1 Productized offerings: API economy, data products, AI-as-a-service, platform fees → pricing, metering, billing, support
 - [ ] 486.2 Monetization governance: value-based pricing, channel strategy, cannibalization check, margin targets → portfolio review
 - [ ] 486.3 Revenue recognition for digital products (subscription, usage, one-time) with deferred revenue schedule
@@ -6032,6 +7550,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 487 — FINAL: ENTERPRISE ECOSYSTEM GOVERNANCE & TRUST MARKET
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 487.1 Ecosystem rules: participation, quality standards, dispute resolution, data sharing, value distribution → governance body
 - [ ] 487.2 Trust market: partner trust scores, verification badges, historical performance → buyer confidence → liquidity
 - [ ] 487.3 Ecosystem value distribution: platform fee vs participant value → transparent → fair → reinvestment in ecosystem
@@ -6043,6 +7564,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 488 — FINAL: ENTERPRISE CLIMATE & NATURE POSITIVE LEADERSHIP
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 488.1 Net-zero achievement verification: inventory → reductions → offsets (residual only) → third-party assurance → claim
 - [ ] 488.2 Nature-positive verification: baseline → no loss → restoration → net gain evidence → assurance → claim
 - [ ] 488.3 Leadership disclosure: progress, challenges, next commitments → stakeholder trust → continuous improvement
@@ -6054,6 +7578,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 489 — FINAL: ENTERPRISE SOCIAL IMPACT & COMMUNITY VALUE LEADERSHIP
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 489.1 Impact portfolio optimized: social return on investment (SROI-like simulation) → reallocation to highest impact
 - [ ] 489.2 Community partnership model: long-term agreements, shared governance, capacity building → sustainability of programs
 - [ ] 489.3 Inclusive value: access for underserved, fair wages, safety, grievance redress → verified → reported
@@ -6065,6 +7592,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 490 — FINAL: ENTERPRISE GOVERNANCE, ETHICS & TRUST LEADERSHIP
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 490.1 Governance maturity assessment: board effectiveness, delegation clarity, transparency, accountability → improvement
 - [ ] 490.2 Ethics leadership: purpose-driven decisions, stakeholder voice, speak-up culture, anti-corruption rigor → benchmark
 - [ ] 490.3 Trust capital: composite of verifiable claims, incident history, stakeholder trust → monitored → invested
@@ -6076,6 +7606,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 491 — FINAL: ENTERPRISE FINANCIAL RESILIENCE & VALUE CREATION
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 491.1 Financial resilience: capital adequacy, liquidity buffer, earnings quality, diversification → stress tested → rated
 - [ ] 491.2 Value creation model: ROIC vs WACC (simulasi), economic profit, cash conversion → strategy link → capital allocation
 - [ ] 491.3 Shareholder value: dividend policy, buyback (token), reinvestment → total return modeled → communication
@@ -6087,6 +7620,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 492 — FINAL: ENTERPRISE OPERATIONAL EXCELLENCE & CUSTOMER VALUE LEADERSHIP
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 492.1 Excellence benchmark: internal best-in-class per process → gap → adoption plan → measured improvement
 - [ ] 492.2 Customer value leadership: NPS/CSAT vs competitors (simulasi), value delivered vs price → differentiation → loyalty
 - [ ] 492.3 Operational efficiency: cost-to-serve, productivity, quality, speed → improvement portfolio → realized savings
@@ -6098,6 +7634,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 493 — FINAL: ENTERPRISE TALENT & ORGANIZATIONAL EXCELLENCE LEADERSHIP
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 493.1 Employer brand: talent attraction, retention, engagement, diversity → benchmark → investment → measurement
 - [ ] 493.2 Leadership bench strength: pipeline coverage, readiness, diversity → board talent report → action
 - [ ] 493.3 Organization agility: decision speed, structure adaptability, change capacity → improvement → performance link
@@ -6109,6 +7648,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 494 — FINAL: ENTERPRISE INNOVATION, R&D & TECHNOLOGY LEADERSHIP
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 494.1 Innovation leadership: pipeline health, breakthrough rate, time-to-market, IP portfolio strength → benchmark → investment
 - [ ] 494.2 Technology leadership: platform maturity, AI adoption, data excellence, developer productivity → assessment → roadmap
 - [ ] 494.3 R&D effectiveness: spend efficiency, output per R&D dollar, commercialization rate → reallocation → growth link
@@ -6120,6 +7662,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 495 — FINAL: ENTERPRISE SUSTAINABILITY & CLIMATE LEADERSHIP
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 495.1 Sustainability leadership: decarbonization progress, circularity, nature positive, social impact → benchmark → strategy
 - [ ] 495.2 Sustainability value: green premium, cost avoidance, risk reduction, financing benefit → financial link → investment case
 - [ ] 495.3 Sustainability trust: verified claims, assurance, disclosure quality → stakeholder confidence → market position
@@ -6131,6 +7676,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 496 — FINAL: ENTERPRISE INTEGRATION, SYNERGY & GROUP VALUE
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 496.1 Synergy realization: cross-line revenue synergy, cost synergy, capability synergy → tracked vs case → realized
 - [ ] 496.2 Group value creation: portfolio effects (diversification, shared services, brand) → measured → communicated
 - [ ] 496.3 Integration excellence: M&A, partnerships, alliances → playbook maturity → success rate → lessons
@@ -6142,6 +7690,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 497 — FINAL: ENTERPRISE QUALITY, ASSURANCE & VERIFICATION AT SCALE
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 497.1 Verification coverage: every material process/domain has automated verification (audit, reconcile, hash-chain, control test)
 - [ ] 497.2 Verification independence: automated checks independent of the process they verify; no self-verifying process without sampling
 - [ ] 497.3 Verification evidence: immutable, reproducible, time-stamped, privacy-respecting → third-party consumable
@@ -6153,6 +7704,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 498 — FINAL: ENTERPRISE KNOWLEDGE, DOCUMENTATION & OPERATIONAL READINESS
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 498.1 Documentation final state: README, ARCHITECTURE, CODEBASE, DECISIONS, RUNBOOK, API, PLAYBOOKS complete for 30 lines
 - [ ] 498.2 Operational readiness: every service has owner, runbook, monitoring, on-call, rollback, DR plan, cost model
 - [ ] 498.3 Handover readiness: role transition, access transfer, knowledge transfer, support agreement → evidence
@@ -6164,6 +7718,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 499 — FINAL: ENTERPRISE QUALITY GATE, SECURITY & COST CERTIFICATION
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 499.1 Full regression Fase 0–498: 100% green, zero skipped/weakened, test/assertion trend published
 - [ ] 499.2 Security certification: full penetration suite, privacy audit, zero critical/high, sign-off
 - [ ] 499.3 Cost certification: unit economics documented, FinOps within budget, capacity plan funded
@@ -6175,6 +7732,9 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 ## FASE 500 — ENTERPRISE MATURITY FINAL: ACCEPTANCE, CERTIFICATION & HANDOVER
 > **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
+> **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
+> **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
 - [ ] 500.1 Final acceptance: all Fase 0–499 evidence collected, DoD met, no phase marked complete without proof
 - [ ] 500.2 Enterprise maturity certification: 30 lines, 500 phases, all audits/reconciliations/hash-chains clean, all simulations deterministic
 - [ ] 500.3 Stakeholder sign-off: board, management, operations, audit, external verification (simulasi) → formal acceptance
