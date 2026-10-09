@@ -5272,14 +5272,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 483.8 Quality gate Fase 483
 
 ## FASE 484 — FINAL: ENTERPRISE DIGITAL TRUST & VERIFIABLE OPERATIONS
-- [ ] 484.1 Verifiable claim framework: any external claim (quality, sustainability, financial, safety) links to verifiable evidence with public/private verification
-- [ ] 484.2 Trust infrastructure: hash-chain registry, credential registry, audit trail portal, third-party verification API
-- [ ] 484.3 Trust score: based on verification coverage, incident history, audit results → published (aggregated) → improvement loop
-- [ ] 484.4 Tests: claim without evidence blocked, verification API works, trust score reproducible, all `verify-*` clean
-- [ ] 484.5 Edge case: claim tanpa evidence → ditolak publikasi, bukan dianggap benar
-- [ ] 484.6 Risiko: trust score dimanipulasi → komponen score dari data terverifikasi + sampling audit
-- [ ] 484.7 Evidence: trust framework, verification API log, dan score method tercatat
-- [ ] 484.8 Quality gate Fase 484
+- [x] 484.1 Verifiable claim framework: any external claim (quality, sustainability, financial, safety) links to verifiable evidence with public/private verification
+- [x] 484.2 Trust infrastructure: hash-chain registry, credential registry, audit trail portal, third-party verification API
+- [x] 484.3 Trust score: based on verification coverage, incident history, audit results → published (aggregated) → improvement loop
+- [x] 484.4 Tests: claim without evidence blocked, verification API works, trust score reproducible, all `verify-*` clean
+- [x] 484.5 Edge case: claim tanpa evidence → ditolak publikasi, bukan dianggap benar
+- [x] 484.6 Risiko: trust score dimanipulasi → komponen score dari data terverifikasi + sampling audit
+- [x] 484.7 Evidence: trust framework, verification API log, dan score method tercatat
+- [x] 484.8 Quality gate Fase 484
 
 ## FASE 485 — FINAL: ENTERPRISE PLATFORM EVOLUTION & MODULAR MONOLITH MATURITY
 - [ ] 485.1 Modular monolith at scale: proven boundaries, fitness functions green, coupling low, extraction only when evidence warrants (ADR)
