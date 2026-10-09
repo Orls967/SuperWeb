@@ -5142,14 +5142,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 470.8 Quality gate Fase 470
 
 ## FASE 471 — PLATFORM WAVE: DEVELOPER PRODUCTIVITY & ENGINEERING EXCELLENCE
-- [ ] 471.1 Engineering metrics: lead time, deployment frequency, change failure rate, MTTR (DORA-style) per team with targets
-- [ ] 471.2 Developer experience: local environment setup time, test feedback loop, documentation quality → survey + metrics → improvement
-- [ ] 471.3 Code quality standards: review coverage, complexity thresholds, technical debt register with paydown budget
-- [ ] 471.4 Tests: metrics collected automatically, debt register current, standards enforced in CI, `platform:audit` clean
-- [ ] 471.5 Edge case: flaky test tak segera diperbaiki → quarantine dengan due date, tak dianggap lewat
-- [ ] 471.6 Risiko: debt menumpuk → paydown budget resmi (Fase 859) diikat per rilis
-- [ ] 471.7 Evidence: DORA metric trend, dev survey result, dan debt register tercatat
-- [ ] 471.8 Quality gate Fase 471
+- [x] 471.1 Engineering metrics: lead time, deployment frequency, change failure rate, MTTR (DORA-style) per team with targets
+- [x] 471.2 Developer experience: local environment setup time, test feedback loop, documentation quality → survey + metrics → improvement
+- [x] 471.3 Code quality standards: review coverage, complexity thresholds, technical debt register with paydown budget
+- [x] 471.4 Tests: metrics collected automatically, debt register current, standards enforced in CI, `platform:audit` clean
+- [x] 471.5 Edge case: flaky test tak segera diperbaiki → quarantine dengan due date, tak dianggap lewat
+- [x] 471.6 Risiko: debt menumpuk → paydown budget resmi (Fase 859) diikat per rilis
+- [x] 471.7 Evidence: DORA metric trend, dev survey result, dan debt register tercatat
+- [x] 471.8 Quality gate Fase 471
 
 ## FASE 472 — PLATFORM WAVE: ENTERPRISE ARCHITECTURE GOVERNANCE
 - [ ] 472.1 Architecture principles & standards (modular monolith, event-driven, ledger-first, privacy-first) with compliance assessment
