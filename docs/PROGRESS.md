@@ -4632,14 +4632,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 419.8 Quality gate Fase 419
 
 ## FASE 420 — CUSTOMER WAVE: ENTERPRISE ACCOUNT & RELATIONSHIP GOVERNANCE
-- [ ] 420.1 Strategic account plans with executive sponsor, coverage model, mutual business review and renewal strategy
-- [ ] 420.2 Multi-contract, multi-line enterprise agreements: umbrella terms, component orders, consolidated billing with line-level settlement
-- [ ] 420.3 Health index: usage, satisfaction, support, payment behavior → renewal risk → intervention plan
-- [ ] 420.4 Tests: umbrella terms govern component orders, consolidated billing reconciles to line settlements, health index source-linked, `psv:audit` clean
-- [ ] 420.5 Edge case: umbrella agreement batal → komponen terdampak dikelola terpisah, tak semua hangus
-- [ ] 420.6 Risiko: health index salah deteksi churn → validasi dengan survey/behavior, bukan hanya skor model
-- [ ] 420.7 Evidence: account plan, consolidated billing reconciliation, dan health index trace tercatat
-- [ ] 420.8 Quality gate Fase 420
+- [x] 420.1 Strategic account plans with executive sponsor, coverage model, mutual business review and renewal strategy
+- [x] 420.2 Multi-contract, multi-line enterprise agreements: umbrella terms, component orders, consolidated billing with line-level settlement
+- [x] 420.3 Health index: usage, satisfaction, support, payment behavior → renewal risk → intervention plan
+- [x] 420.4 Tests: umbrella terms govern component orders, consolidated billing reconciles to line settlements, health index source-linked, `psv:audit` clean
+- [x] 420.5 Edge case: umbrella agreement batal → komponen terdampak dikelola terpisah, tak semua hangus
+- [x] 420.6 Risiko: health index salah deteksi churn → validasi dengan survey/behavior, bukan hanya skor model
+- [x] 420.7 Evidence: account plan, consolidated billing reconciliation, dan health index trace tercatat
+- [x] 420.8 Quality gate Fase 420
 
 ## FASE 421 — PEOPLE WAVE: TALENT ACQUISITION AT SCALE & EMPLOYER BRAND
 - [ ] 421.1 High-volume hiring engine: batch requisitions, assessment automation with fairness checks, interview scheduling optimization, offer pipeline
