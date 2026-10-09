@@ -4852,14 +4852,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 441.8 Quality gate Fase 441
 
 ## FASE 442 — SUSTAINABILITY WAVE: CLIMATE METRICS, TARGETS & ALLOCATION
-- [ ] 442.1 Science-aligned target setting process (simulasi): baseline, pathway, interim milestones, scope 3 category inclusion
-- [ ] 442.2 Abatement cost curve: measure options ranked by cost/tonne → investment sequencing → financed emissions where relevant
-- [ ] 442.3 Monthly/quarterly tracking with variance narrative and corrective action; external claim updates follow disclosure control
-- [ ] 442.4 Tests: cost curve method versioned, tracking consistent with inventory, corrective action opened on miss, `esg:audit` clean
-- [ ] 442.5 Edge case: milestone terlewat → corrective action dibuka otomatis, jangan ditunda kuartal berikut
-- [ ] 442.6 Risiko: scope 3 data lemah → confidence label + supplier engagement program
-- [ ] 442.7 Evidence: target document, cost curve version, dan tracking report tercatat
-- [ ] 442.8 Quality gate Fase 442
+- [x] 442.1 Science-aligned target setting process (simulasi): baseline, pathway, interim milestones, scope 3 category inclusion
+- [x] 442.2 Abatement cost curve: measure options ranked by cost/tonne → investment sequencing → financed emissions where relevant
+- [x] 442.3 Monthly/quarterly tracking with variance narrative and corrective action; external claim updates follow disclosure control
+- [x] 442.4 Tests: cost curve method versioned, tracking consistent with inventory, corrective action opened on miss, `esg:audit` clean
+- [x] 442.5 Edge case: milestone terlewat → corrective action dibuka otomatis, jangan ditunda kuartal berikut
+- [x] 442.6 Risiko: scope 3 data lemah → confidence label + supplier engagement program
+- [x] 442.7 Evidence: target document, cost curve version, dan tracking report tercatat
+- [x] 442.8 Quality gate Fase 442
 
 ## FASE 443 — SUSTAINABILITY WAVE: CIRCULARITY & WASTE PROGRAM OPERATIONS
 - [ ] 443.1 Waste hierarchy enforcement: reduce → reuse → recycle → recover → dispose with cost and carbon comparison per stream
