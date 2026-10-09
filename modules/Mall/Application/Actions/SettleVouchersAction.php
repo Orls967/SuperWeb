@@ -14,6 +14,7 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mall\Domain\Enums\VoucherStatus;
 use Modules\Mall\Domain\Models\Tenant;
 use Modules\Mall\Domain\Models\Voucher;
@@ -35,24 +36,6 @@ class SettleVouchersAction
      */
     public function execute(?int $tenantId = null): array
     {
-        $query = Voucher::query()
-            ->where('status', VoucherStatus::USED)
-            ->whereNull('settled_at');
-
-        if ($tenantId) {
-            $query->where('used_at_tenant_id', $tenantId);
-        }
-
-        $vouchers = $query->with('usedAtTenant')->get();
-
-        if ($vouchers->isEmpty()) {
-            return [
-                'settled_count' => 0,
-                'total_amount' => 0,
-                'tenants_count' => 0,
-            ];
-        }
-
         $mallVoucherLiability = LedgerAccount::firstOrCreate(
             ['code' => 'liability:mall:voucher:IDR'],
             [
@@ -68,14 +51,34 @@ class SettleVouchersAction
 
         $settledCount = 0;
         $totalSettledAmount = 0;
-        $tenantsGroup = $vouchers->groupBy('used_at_tenant_id');
+        $tenantsCount = 0;
 
         DB::transaction(function () use (
-            $tenantsGroup,
+            $tenantId,
             $mallVoucherLiability,
             &$settledCount,
-            &$totalSettledAmount
+            &$totalSettledAmount,
+            &$tenantsCount
         ) {
+            $query = Voucher::query()
+                ->where('status', VoucherStatus::USED)
+                ->whereNull('settled_at')
+                ->orderBy('id');
+
+            if ($tenantId) {
+                $query->where('used_at_tenant_id', $tenantId);
+            }
+
+            // Baris voucher dikunci di dalam transaksi agar tidak ada settlement ganda
+            $vouchers = $query->with('usedAtTenant')->lockForUpdate()->get();
+
+            if ($vouchers->isEmpty()) {
+                return;
+            }
+
+            $tenantsGroup = $vouchers->groupBy('used_at_tenant_id');
+            $tenantsCount = $tenantsGroup->count();
+
             foreach ($tenantsGroup as $tId => $items) {
                 $tenant = Tenant::find($tId);
                 if (! $tenant) {
@@ -89,6 +92,30 @@ class SettleVouchersAction
 
                 $sumNominal = (int) $items->sum('nominal_value');
                 if ($sumNominal <= 0) {
+                    continue;
+                }
+
+                // Kunci deterministik per tenant dari voucher id terurut agar retry tidak men-posting ganda
+                $settlementKey = 'vch_settle_'.$tenant->id.'_'.implode('_', $items->pluck('id')->sort()->values()->all());
+
+                $existingSettlement = LedgerTransaction::query()
+                    ->where('idempotency_key', $settlementKey)
+                    ->first();
+
+                if ($existingSettlement !== null) {
+                    $replaySettlementId = $existingSettlement->meta['settlement_id'] ?? null;
+
+                    foreach ($items as $item) {
+                        $item->update([
+                            'status' => VoucherStatus::SETTLED,
+                            'settled_at' => now(),
+                            'settlement_id' => $replaySettlementId,
+                        ]);
+                    }
+
+                    $settledCount += $items->count();
+                    $totalSettledAmount += $sumNominal;
+
                     continue;
                 }
 
@@ -106,7 +133,7 @@ class SettleVouchersAction
                 $dto = new PostingDTO(
                     type: TransactionType::VOUCHER_SETTLEMENT->value,
                     description: "Settlement {$items->count()} Voucher Mall untuk Tenant {$tenant->brand_name} (Rp ".number_format($sumNominal).')',
-                    idempotencyKey: 'vch_settle_'.$tenant->id.'_'.Str::random(10),
+                    idempotencyKey: $settlementKey,
                     entries: $entries,
                     referenceType: Tenant::class,
                     referenceId: $tenant->id,
@@ -138,7 +165,7 @@ class SettleVouchersAction
         return [
             'settled_count' => $settledCount,
             'total_amount' => $totalSettledAmount,
-            'tenants_count' => $tenantsGroup->count(),
+            'tenants_count' => $tenantsCount,
         ];
     }
 }

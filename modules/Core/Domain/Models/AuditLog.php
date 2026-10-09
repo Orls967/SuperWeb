@@ -18,6 +18,8 @@ class AuditLog extends Model
     protected $fillable = [
         'user_id',
         'action',
+        'correlation_id',
+        'impact_type',
         'auditable_type',
         'auditable_id',
         'ip_address',
@@ -65,17 +67,30 @@ class AuditLog extends Model
         array $context = [],
         ?array $oldValues = null,
         ?array $newValues = null,
-        ?User $user = null
+        ?User $user = null,
+        ?string $correlationId = null,
+        ?string $impactType = null
     ): self {
         $currentUser = $user ?? (auth()->check() ? auth()->user() : null);
+
+        $ipAddress = null;
+        $userAgent = null;
+        try {
+            $ipAddress = request()?->ip();
+            $userAgent = request()?->userAgent();
+        } catch (\Throwable) {
+            // CLI or background context without active HTTP request
+        }
 
         return self::create([
             'user_id' => $currentUser?->id,
             'action' => $action,
+            'correlation_id' => $correlationId ?? (request()?->header('X-Correlation-ID') ?: null),
+            'impact_type' => $impactType,
             'auditable_type' => $auditable ? get_class($auditable) : null,
             'auditable_id' => $auditable?->getKey(),
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
+            'ip_address' => $ipAddress,
+            'user_agent' => $userAgent,
             'old_values' => $oldValues,
             'new_values' => $newValues,
             'context' => $context,

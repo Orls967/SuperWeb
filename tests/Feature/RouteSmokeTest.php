@@ -197,6 +197,23 @@ class RouteSmokeTest extends TestCase
             'logistics.fuel.index',
             'logistics.cod.index',
             'logistics.exceptions.index',
+
+            // Master Data (Party & Contract)
+            'party.index',
+            'party.legal-entities',
+            'contract.index',
+            'contract.clauses.index',
+            'contract.templates.index',
+            'asset.index',
+            'asset.create',
+            'asset.audit',
+            'asset.depreciation.index',
+            'supplier.index',
+            'supplier.create',
+            'supplier.portal.home',
+            'procurement.dashboard',
+            'agency.index',
+            'partners.index',
         ];
 
         foreach ($adminRoutes as $route) {
@@ -245,5 +262,56 @@ class RouteSmokeTest extends TestCase
         // 5. Customer forbidden from logistics internal operations
         $this->actingAs($this->customer)->get(route('logistics.control-tower.index'))->assertForbidden();
         $this->actingAs($this->customer)->get(route('logistics.dispatch.index'))->assertForbidden();
+    }
+
+    // ============================================================
+    // 6. CONTRACT & PARTY ROLES ACCESS MATRIX
+    // ============================================================
+
+    public function test_contract_and_party_roles_authorization_matrix(): void
+    {
+        $contractManager = User::where('role', 'contract_manager')->first()
+            ?? User::factory()->create(['role' => 'contract_manager']);
+        $legal = User::where('role', 'legal')->first()
+            ?? User::factory()->create(['role' => 'legal']);
+        $partyManager = User::where('role', 'party_manager')->first()
+            ?? User::factory()->create(['role' => 'party_manager']);
+
+        // 1. contract_manager: full manage on contracts
+        $this->actingAs($contractManager)->get(route('contract.index'))->assertOk();
+        $this->actingAs($contractManager)->get(route('contract.clauses.index'))->assertOk();
+        $this->actingAs($contractManager)->get(route('contract.obligations'))->assertOk();
+
+        // 2. legal: seluruh UI kontrak (guard grup /contracts memuat admin,contract_manager,legal)
+        $this->actingAs($legal)->get(route('contract.index'))->assertOk();
+        $this->actingAs($legal)->get(route('contract.obligations'))->assertOk();
+        $this->actingAs($legal)->get(route('contract.clauses.index'))->assertOk();
+        // ...tapi legal tidak masuk ke direktori pihak
+        $this->actingAs($legal)->get(route('party.index'))->assertForbidden();
+
+        // 3. party_manager: party directory yes, contract editor no
+        $this->actingAs($partyManager)->get(route('party.index'))->assertOk();
+        $this->actingAs($partyManager)->get(route('contract.index'))->assertForbidden();
+
+        // 4. Customer forbidden from contract & party operations
+        $this->actingAs($this->customer)->get(route('contract.index'))->assertForbidden();
+        $this->actingAs($this->customer)->get(route('contract.obligations'))->assertForbidden();
+        $this->actingAs($this->customer)->get(route('party.index'))->assertForbidden();
+    }
+
+    // ============================================================
+    // 7. AGENCY ROLE ACCESS MATRIX
+    // ============================================================
+
+    public function test_agent_role_authorization_matrix(): void
+    {
+        $agent = User::where('role', 'agent')->first()
+            ?? User::factory()->create(['role' => 'agent']);
+
+        // Agent can access agency directory/portal
+        $this->actingAs($agent)->get(route('agency.index'))->assertOk();
+
+        // Customer forbidden from agency portal
+        $this->actingAs($this->customer)->get(route('agency.index'))->assertForbidden();
     }
 }

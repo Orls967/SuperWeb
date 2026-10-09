@@ -105,6 +105,7 @@ class PurchaseController extends Controller
         $validated = $request->validate([
             'amount' => ['required', 'integer', 'min:1'],
             'note' => ['nullable', 'string', 'max:255'],
+            'idempotency_key' => ['nullable', 'string', 'max:64'],
         ]);
 
         $action->handle(
@@ -112,7 +113,8 @@ class PurchaseController extends Controller
             amount: (int) $validated['amount'],
             po: $purchase,
             payerUser: $request->user(),
-            note: $validated['note'] ?? null
+            note: $validated['note'] ?? null,
+            idempotencyKey: $validated['idempotency_key'] ?? null
         );
 
         return back()->with('success', 'Pembayaran utang dagang supplier berhasil diposting ke ledger.');

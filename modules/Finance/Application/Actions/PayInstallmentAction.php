@@ -29,10 +29,6 @@ class PayInstallmentAction extends BaseAction
 
     public function execute(Installment $installment, ?string $idempotencyKey = null): Installment
     {
-        if ($installment->status === InstallmentStatus::Paid) {
-            throw new Exception("Cicilan ke-{$installment->sequence} sudah terbayar.");
-        }
-
         $installment->loadMissing('loan.user');
         $loan = $installment->loan;
 
@@ -40,38 +36,66 @@ class PayInstallmentAction extends BaseAction
             throw new Exception('Cicilan tidak terhubung dengan pinjaman manapun.');
         }
 
-        if (! $loan->status->isOpen()) {
-            throw new Exception("Pinjaman berstatus {$loan->status->label()} tidak menerima pembayaran cicilan.");
+        $insufficient = $this->charge($installment, $loan, $idempotencyKey);
+
+        if ($insufficient !== null) {
+            // Penanda Overdue/denda sudah disimpan di transaksi terpisah supaya
+            // tidak ikut ter-rollback bersama galat saldo yang tidak cukup.
+            throw $insufficient;
         }
 
-        $penalty = $installment->calculatePenalty();
-        $total = $installment->amount + $penalty;
-        $user = $loan->user;
-        $wallet = $user->walletAccount('IDR');
+        return $installment->fresh();
+    }
 
-        if ((int) $wallet->cached_balance < $total) {
-            // Saldo tidak cukup: tandai terlambat agar denda terus berjalan
-            if ($installment->status === InstallmentStatus::Scheduled && $installment->daysLate() > 0) {
-                $installment->transitionTo(InstallmentStatus::Overdue);
+    /**
+     * Debit satu cicilan di bawah kunci baris.
+     */
+    private function charge(Installment $installment, Loan $loan, ?string $idempotencyKey): ?InsufficientFundsException
+    {
+        return $this->transaction(function () use ($installment, $loan, $idempotencyKey): ?InsufficientFundsException {
+            // Kunci baris fin_installments dan fin_loans terlebih dahulu, lalu baca
+            // ulang status, denda, dan sisa pokok di bawah kunci yang sama.
+            $lockedInstallment = Installment::whereKey($installment->getKey())->lockForUpdate()->firstOrFail();
+            $lockedLoan = Loan::whereKey($loan->getKey())->lockForUpdate()->firstOrFail();
+
+            if ($lockedInstallment->status === InstallmentStatus::Paid) {
+                throw new Exception("Cicilan ke-{$lockedInstallment->sequence} sudah terbayar.");
             }
 
-            $installment->update(['penalty' => $penalty]);
+            if (! $lockedLoan->status->isOpen()) {
+                throw new Exception("Pinjaman berstatus {$lockedLoan->status->label()} tidak menerima pembayaran cicilan.");
+            }
 
-            throw new InsufficientFundsException(
-                $wallet->code,
-                (string) $wallet->cached_balance,
-                (string) $total
-            );
-        }
+            $penalty = $lockedInstallment->calculatePenalty();
+            $total = $lockedInstallment->amount + $penalty;
+            $user = $lockedLoan->user;
+            $wallet = $user->walletAccount('IDR');
 
-        return $this->transaction(function () use ($installment, $loan, $wallet, $penalty, $total, $idempotencyKey) {
+            if ((int) $wallet->cached_balance < $total) {
+                // Saldo tidak cukup: tandai terlambat agar denda terus berjalan
+                if ($lockedInstallment->status === InstallmentStatus::Scheduled && $lockedInstallment->daysLate() > 0) {
+                    $lockedInstallment->transitionTo(InstallmentStatus::Overdue);
+                }
+
+                $lockedInstallment->update(['penalty' => $penalty]);
+
+                $installment->setRawAttributes($lockedInstallment->getAttributes(), true);
+                $installment->syncOriginal();
+
+                return new InsufficientFundsException(
+                    $wallet->code,
+                    (string) $wallet->cached_balance,
+                    (string) $total
+                );
+            }
+
             $entries = [
                 PostingEntryDTO::forAccount($wallet->id, 'IDR', BigDecimal::of((string) $total)->negated()),
-                PostingEntryDTO::forCode('loan_receivable:IDR', 'IDR', (string) $installment->principal_part),
+                PostingEntryDTO::forCode('loan_receivable:IDR', 'IDR', (string) $lockedInstallment->principal_part),
             ];
 
-            if ($installment->interest_part > 0) {
-                $entries[] = PostingEntryDTO::forCode('fin:interest:IDR', 'IDR', (string) $installment->interest_part);
+            if ($lockedInstallment->interest_part > 0) {
+                $entries[] = PostingEntryDTO::forCode('fin:interest:IDR', 'IDR', (string) $lockedInstallment->interest_part);
             }
 
             if ($penalty > 0) {
@@ -80,41 +104,50 @@ class PayInstallmentAction extends BaseAction
 
             $tx = $this->ledger->post(new PostingDTO(
                 type: TransactionType::LOAN_REPAYMENT->value,
-                description: "Cicilan ke-{$installment->sequence} pembiayaan {$loan->uuid}",
-                idempotencyKey: $idempotencyKey ?? ('loan_inst_'.$loan->uuid.'_'.$installment->sequence),
+                description: "Cicilan ke-{$lockedInstallment->sequence} pembiayaan {$loan->uuid}",
+                idempotencyKey: $idempotencyKey ?? ('loan_inst_'.$loan->uuid.'_'.$lockedInstallment->sequence),
                 entries: $entries,
                 referenceType: 'fin_loan',
                 referenceId: $loan->id,
                 meta: [
                     'loan_id' => $loan->id,
-                    'installment_sequence' => $installment->sequence,
-                    'principal_part' => $installment->principal_part,
-                    'interest_part' => $installment->interest_part,
+                    'installment_sequence' => $lockedInstallment->sequence,
+                    'principal_part' => $lockedInstallment->principal_part,
+                    'interest_part' => $lockedInstallment->interest_part,
                     'penalty' => $penalty,
                 ],
                 createdBy: $loan->user_id,
                 postedAt: now(),
             ));
 
-            $installment->status = InstallmentStatus::Paid;
-            $installment->penalty = $penalty;
-            $installment->paid_at = now();
-            $installment->ledger_transaction_id = $tx->id;
-            $installment->save();
+            // LedgerService mengembalikan transaksi lama bila kunci sama (replay),
+            // jadi saldo pinjaman hanya dikurangi bila posting ini benar-benar baru.
+            if ($tx->wasRecentlyCreated) {
+                $lockedInstallment->status = InstallmentStatus::Paid;
+                $lockedInstallment->penalty = $penalty;
+                $lockedInstallment->paid_at = now();
+                $lockedInstallment->ledger_transaction_id = $tx->id;
+                $lockedInstallment->save();
 
-            $loan->outstanding_principal = max(0, $loan->outstanding_principal - $installment->principal_part);
-            $loan->save();
+                $lockedLoan->outstanding_principal = max(0, $lockedLoan->outstanding_principal - $lockedInstallment->principal_part);
+                $lockedLoan->save();
+
+                $installment->setRawAttributes($lockedInstallment->getAttributes(), true);
+                $installment->syncOriginal();
+                $loan->setRawAttributes($lockedLoan->getAttributes(), true);
+                $loan->syncOriginal();
+            }
 
             // Seluruh cicilan lunas → kolateral dikembalikan ke pemiliknya
-            $remaining = $loan->installments()
+            $remaining = $lockedLoan->installments()
                 ->where('status', '!=', InstallmentStatus::Paid->value)
                 ->count();
 
             if ($remaining === 0) {
-                $this->releaseCollateral->execute($loan, 'Pelunasan seluruh cicilan');
+                $this->releaseCollateral->execute($lockedLoan, 'Pelunasan seluruh cicilan');
             }
 
-            return $installment->fresh();
+            return null;
         });
     }
 

@@ -85,7 +85,20 @@ class BackorderPartsAction extends BaseAction
         }
 
         return $this->transaction(function () use ($estimate, $shortages) {
-            $estimate->loadMissing('booking');
+            /** @var Estimate $lockedEstimate */
+            $lockedEstimate = Estimate::query()->lockForUpdate()->findOrFail($estimate->id);
+            $lockedEstimate->loadMissing('booking');
+
+            // Idempoten: double-approval tidak boleh membuat backorder kedua
+            // (order uuid baru = ledger idempotency key baru → pembayaran ganda).
+            if ($lockedEstimate->backorder_order_id) {
+                $existingOrder = Order::with('items')->find($lockedEstimate->backorder_order_id);
+                if ($existingOrder !== null) {
+                    return $existingOrder;
+                }
+            }
+
+            $estimate = $lockedEstimate;
             $operator = $this->workshopOperator($estimate);
 
             $subtotal = array_sum(array_map(
@@ -155,8 +168,11 @@ class BackorderPartsAction extends BaseAction
     public function receive(Order $order): Order
     {
         return $this->transaction(function () use ($order) {
+            /** @var Order $order */
+            $order = Order::query()->with('items.product')->lockForUpdate()->findOrFail($order->id);
+
             if ($order->status === OrderStatus::COMPLETED) {
-                throw new Exception('Backorder ini sudah diterima sebelumnya.');
+                return $order->fresh('items');
             }
 
             foreach ($order->items as $item) {

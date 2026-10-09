@@ -6,6 +6,7 @@ namespace Modules\Resto;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Modules\Resto\Application\Services\IngredientReferenceCostUpdater;
 use Modules\Resto\Application\Services\RecipeCostCalculator;
 use Modules\Resto\Application\Services\RestoTenantSalesProvider;
 use Modules\Resto\Console\Commands\CloseDayCommand;
@@ -30,11 +31,18 @@ use Modules\Resto\Domain\Models\StockCount;
 use Modules\Resto\Domain\Models\StockTransfer;
 use Modules\Resto\Domain\Models\TableSession;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Supplier\Contracts\ReferenceCostUpdater;
 
 class RestoServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        // 32.8 — kontrak harga pemasok → MAC referensi (tanpa import domain lintas modul).
+        $this->app->bind(
+            ReferenceCostUpdater::class,
+            IngredientReferenceCostUpdater::class
+        );
+
         $this->app->singleton(RecipeCostCalculator::class, fn () => new RecipeCostCalculator);
         $this->app->singleton(RestoTenantSalesProvider::class);
         $this->app->tag(RestoTenantSalesProvider::class, 'mall.tenant_sales_provider');

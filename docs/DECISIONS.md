@@ -414,3 +414,656 @@
   5. **Antrean Idempoten**: `ProcessBulkShipmentUploadJob` menerapkan `ShouldBeUnique` berbasis `batchId` untuk mencegah eksekusi impor CSV ganda. Seluruh scheduler logistik terdaftar di `routes/console.php`.
   6. **Control Tower**: Antarmuka pusat kendali untuk `logistics_admin` menampilkan metrik On-Time In-Full (OTIF), utilisasi armada, dwell time kontainer pelabuhan/depot, saldo titipan COD kasir/driver, dan margin per jalur transportasi (lane).
 - **Reason:** Memastikan platform logistik siap skala produksi, aman dari gangguan jaringan atau replay ganda, serta memiliki observabilitas operasional menyeluruh.
+
+## 2026-10-03: Fase 26.1 — Autentikasi API dengan Sanctum Asli
+- **Context:** Pemeriksaan Fase 24–25 menemukan `auth:sanctum` Logistics v1 bukan guard Sanctum: provider membuat alias test helper dan guard berbasis session web. API tidak memvalidasi bearer token atau token abilities.
+- **Decision:** Pasang `laravel/sanctum ^4.3`, migrasi `personal_access_tokens`, gunakan `HasApiTokens` pada `User`, dan terbitkan token bernama dengan abilities/expiry opsional melalui UI profil (`POST /profile/api-tokens`). Token hanya dapat dicabut oleh pemilik lewat profil. Set `sanctum.guard` kosong agar API v1 hanya menerima bearer token dan tidak mewarisi session web; ability diperiksa lewat `tokenCan()` dari Sanctum. Hapus alias, guard custom, shim helper, dan array ability in-memory.
+- **Verification:** Security tests membuktikan bearer token valid, no-token/session-only/revoked/expired => 401, ability tidak cocok => 403, serta issuance/revocation profil berhasil.
+
+## 2026-10-03: Fase 26.2 — Dokumentasi Quality Gate Fase 25
+- **Context:** `docs/AUDIT.md` belum memuat gate final Fase 25, dan README mencantumkan assertion count lama serta belum memiliki ringkasan API v1.
+- **Decision:** Tambahkan catatan Fase 25 di AUDIT, sinkronkan README ke 545 tests / 3203 assertions setelah perubahan Fase 26.1, dan jelaskan Logistics commands, token API, abilities, expiry, rate limits, serta respons autentikasi. Perbarui `CODEBASE.md` sesuai protokol orientasi.
+- **Verification:** Full Pest suite (545 passed, 3203 assertions, 0 skipped), Pint, Vite, `bank:reconcile`, Logistics billing/custody/capacity, Mall billing, Vehicle Passport, dan `super:health-check` lulus.
+
+## 2026-10-03: Fase 26.3 — Sweep Kebenaran Seluruh Action
+- **Context:** Audit menyeluruh 143 Action lintas 8 modul terhadap 4 konvensi (transaksi, key idempotensi deterministik, event afterCommit, lockForUpdate) menemukan 110 cacat nyata; 2 klaim dari putaran audit awal terbukti salah dan dibuang setelah verifikasi langsung ke kode.
+- **Decision:**
+  1. **Gateway pembayaran dirombak total**: `charge/hold/capture/release/refund` masing-masing satu `DB::transaction` + `lockForUpdate` pada baris intent + kunci deterministik (`tx_cap_/tx_rel_/tx_ref_` + id intent) + penanganan `UniqueConstraintViolationException`. Partial refund kini membalik pendapatan **proporsional** terhadap pecahan refund (sebelumnya membalik seluruh split → `UnbalancedTransactionException`), dengan pelacakan `refunded_amount` (kolom baru) dan penolakan over-refund kumulatif.
+  2. **Event ditunda ke commit**: 8 titik (`VehicleAcquired`, `VehicleOwnershipTransferred`, `BookingCompleted`, `ShipmentDelivered` ×2, `PaymentCaptured/Held/Released/Refunded`) memakai `DB::afterCommit`, sehingga listener tidak pernah membaca state belum-commit dan tidak berjalan saat rollback.
+  3. **Guard dibawa ke dalam lock**: limit kredit B2B, ketersediaan quote, status pembatalan resi, status hub scan, alokasi kapasitas, poin/voucher, PO/suplai, status estimasi & pesanan — semuanya dipindahkan ke dalam transaksi setelah `lockForUpdate` dengan re-check terhadap baris terkunci (TOCTOU ditutup). `ReserveCapacityAction` juga mengunci baris driver/aset karena kunci baris jadwal sendiri ternyata tidak cukup untuk jadwal berbeda dengan driver sama.
+  4. **Kunci acak diganti deterministik di 38 titik** (turunan id intent, id resi, nomor struk, id batch urut) dengan guard replay; operasi manual (transfer, top-up, bayar PO, setoran kas, bayar mall, redeem voucher, collateral, buka pinjaman) diberi `idempotency_key` tersembunyi di formulir agar double-submit tidak menggandakan pencatatan.
+  5. **Koreksi keamanan PIN**: `VerifyPinAction` di bawah `lockForUpdate` dengan inkrementasi atomik — counter yang di-read-modify-write bersamaan sebelumnya tidak pernah mencapai 5, sehingga brute-force PIN dompet tidak terbatas.
+  6. **Integritas kepemilikan & escrow**: penyelesaian pesanan Store (status + akuisisi kendaraan) dibungkus satu transaksi dengan perbaikan saat retry; alur C2C dibuat dapat diulang (release escrow yang sudah terlanjur commit tidak lagi membuat pesanan tak terbatal).
+- **Verification:** 554 tests / 3233 assertions 0 skipped; 5 test race berurutan baru (`ActionConcurrencyRegressionTest`) + 4 test regresi Payment; pint clean; `bank:reconcile`, `lgx:audit-billing`, `mall:audit-billing` = 0 selisih.
+- **Reason:** 110 temuan semuanya berpotensi menggandakan uang, stok, atau limit kredit pada retry/ketidaksamaan; audit juga membuktikan sejumlah tuduhan tidak benar, jadi laporan mencatat yang tertutup dan yang ternyata bukan cacat.
+
+## 2026-10-04: Fase 26.5 — RBAC Granular (Multi-Role, Scope Entitas, Gate/Policy Integrasi)
+- **Context:** Sistem otorisasi sebelumnya hanya mengandalkan kolom string enum `users.role` (admin, mekanik, customer, dsb) yang kaku, tidak mendukung multi-role, tidak mendukung hak akses granular per aksi/modul, dan tidak memiliki scoping per entitas.
+- **Decision:**
+  1. **Schema RBAC:** Tambahkan tabel `roles`, `permissions`, `role_permission`, dan `user_role` dengan dukungan scoping entitas (`entity_type`, `entity_id`).
+  2. **Backward Compatibility:** Pertahankan kolom `users.role` sebagai fallback dan cermin (mirror). `CheckRole` middleware diperbarui untuk mengecek tabel RBAC terlebih dahulu sebelum jatuh kembali ke `users.role`.
+  3. **Gate/Policy Integration:** Daftarkan `Gate::before` di `CoreServiceProvider` yang mengecek `RbacService::userHasPermission($user, $ability)` untuk mengintegrasikan permission RBAC secara transparan ke seluruh otorisasi Laravel.
+  4. **Seeder & Backfill:** `RbacSeeder` memetakan permission default untuk setiap role sistem dan secara otomatis mem-backfill seluruh user lama dari nilai `users.role` masing-masing.
+  5. **Admin UI:** Sediakan `RbacController` dan view Blade di `/admin/rbac` untuk mengelola role, permission matrix per modul, dan assignment user.
+## 2026-10-04: Fase 26.6 — Audit Trail Generik (Append-Only, Impactful Actions, Admin UI)
+- **Context:** Sistem membutuhkan pencatatan jejak audit (audit trail) generik yang standar dan terpusat untuk setiap aksi ber-impact (mutasi uang, perubahan state kritis, transfer kepemilikan aset, dan konfigurasi keamanan) yang dijamin append-only (tidak dapat diedit maupun dihapus).
+- **Decision:**
+  1. **Schema & Model:** Tambahkan kolom `correlation_id` (index) dan `impact_type` (index: `financial`, `state`, `ownership`, `security`) pada tabel `core_audit_logs`. Model `AuditLog` menegakkan immutability mutlak (`static::updating` dan `static::deleting` melempar `RuntimeException`).
+  2. **Kontrak & Layanan:** Buat `AuditTrailInterface` dan `AuditTrailService` yang terdaftar sebagai singleton di container Core.
+  3. **BaseAction Helper:** Tambahkan helper `audit()` pada `BaseAction` sehingga seluruh Action di semua lini bisnis dapat mencatat audit log dengan mudah tanpa melanggar batasan arsitektur (boundary decoupling).
+  4. **Penerapan Aksi Kritis:** Terapkan pencatatan audit pada `TransferAction` (keuangan), `TransferVehicleOwnershipAction` & `AcquireVehicleAction` (kepemilikan), `UpdateOrderStatusAction` (state), dan `RbacService` (keamanan/hak akses).
+  5. **Admin UI:** Sediakan `AuditLogController` dan antarmuka Blade di `/admin/audit-logs` dengan kemampuan pencarian teks bebas, penyaringan berdasarkan aksi, tipe dampak, pengguna, dan rentang tanggal, serta visualisasi perbandingan *Old Values* vs *New Values*.
+## 2026-10-04: Fase 26.7 — Outbox & Event Bus Generik (Transactional Outbox, Dispatcher, Dead-Letter & Replay)
+- **Context:** Pengiriman event dan webhook ke pihak luar (mitra, sistem eksternal) sebelumnya hanya tersedia secara khusus di modul Logistics, rentan kehilangan pesan saat kegagalan jaringan atau crash aplikasi jika dipanggil langsung di tengah transaksi.
+- **Decision:**
+  1. **Schema & Model:** Buat tabel `core_outbox`, `core_outbox_subscriptions`, dan `core_outbox_dispatches`. Model `OutboxMessage`, `OutboxSubscription`, dan `OutboxDispatch`.
+  2. **Kontrak & Layanan:** Buat `OutboxBusInterface` dan `OutboxBusService` yang menangani pencatatan idempoten (`record` dengan `idempotency_key`), dispatch bertarget (webhook dengan tanda tangan HMAC-SHA256, listener), exponential backoff retry, dan transisi ke dead-letter setelah 5 kali gagal.
+  3. **BaseAction Helper:** Tambahkan helper `outbox()` pada `BaseAction` sehingga semua action transaksi dapat menulis ke outbox transaksional secara terstandarisasi.
+  4. **Migrasi Modul:** Integrasikan `DispatchWebhookAction` (Logistics) agar otomatis mencatat event ke bus generik `core_outbox`.
+  5. **Console Command:** Sediakan `core:process-outbox` dengan opsi `--limit` dan `--retry` untuk eksekusi terjadwal via worker/cron.
+  6. **Replay Mechanism:** Metode `replay()` mereset status pesan dead-letter menjadi pending untuk dicoba kembali setelah pihak penerima pulih.
+## 2026-10-04: Fase 26.8 — Document Numbering & Document Store (Gapless Sequence & Secure Storage)
+- **Context:** Setiap transaksi legal, faktur, klaim, atau kontrak membutuhkan penomoran resmi yang urut tanpa celah (gapless) per entitas dan periode (bulanan/tahunan) di bawah konkurensi tinggi. Dokumen lampiran (faktur PDF, bukti bayar, foto serah terima, ID kyc) juga membutuhkan media penyimpanan aman yang ber-checksum (SHA-256), bervalidasi ekstensi, dan memiliki masa retensi jelas.
+- **Decision:**
+  1. **Schema & Model:**
+     - Tabel `core_document_sequences` dengan model `DocumentSequence` dan unique index `(entity_code, document_type, year, month)`.
+     - Tabel `core_documents` dengan model `DocumentAttachment` (`uuid`, `polymorphic documentable`, `checksum_sha256`, `mime_type`, `file_size_bytes`, `retention_until`).
+  2. **Gapless Numbering Service:** `DocumentNumberingService` mengunci baris urutan dengan `lockForUpdate()` dalam `DB::transaction`, menghasilkan nomor berurutan tanpa celah dan zero-padded (default 5 digit) dengan prefix template dinamis.
+  3. **Document Store Service:** `DocumentStoreService` menyimpan file ke storage lokal/S3, menghasilkan SHA-256 checksum untuk deteksi integritas/tampering, memblokir ekstensi berbahaya (executable/script), serta mencatat waktu jatuh tempo retensi (retention policy).
+- **Verification:** 5 test baru (`DocumentServicesTest.php`, 19 assertions). Full suite: **592 passed / 3361 assertions / 0 skipped**.
+
+
+
+
+
+## 2026-10-04: Fase 28 — Kontrak Inti (Modul `ctr_`)
+- **Context:** Rantai nilai Fase 29–57 membutuhkan kontrak sebagai objek utama: nomor gapless, negosiasi ber-versi, persetujuan berjenjang, dan keterkaitan ke pihak (Fase 27) serta dokumen (Fase 26.8).
+- **Decision:**
+  1. **Modul Contract** (`modules/Contract`, tabel `ctr_*`): `ContractService` memakai `DocumentNumberingInterface` untuk nomor `CTR/{entity}/YYYY-NNNNN` (gapless, lock) dan `ApprovalEngineInterface` untuk persetujuan berjenjang dengan aturan nilai (≥ Rp 100 juta menuntut dua langkah: legal lalu admin). State machine digarap ketat: ≥2 pihak sebelum keluar dari Draft, `Signed` hanya boleh dari `Approved`, dan `terminate`/`suspend` wajib beralasan; pelanggaran melempar exception domain khusus.
+  2. **Versioning hash-chain append-only**: setiap versi (creation/negotiation/amendment/clause_update) membawa `prev_hash` → `hash` SHA-256 berantai seperti Vehicle Passport; update & delete pada `ContractVersion` diblokir; `contracts:verify-chain` memverifikasi seluruh rantai; halaman diff membandingkan dua versi. Kunci rantai dihitung di dalam transaksi dengan `lockForUpdate` agar dua revisi bersaing tidak pernah membuat cabang.
+  3. **Lampiran lewat Core DocumentStore**: `ctr_contract_attachments` hanya *tautan* (kontrak ↔ pihak ↔ entitas hukum) sementara berkas, checksum, dan retensi 7 tahun tetap pada `core_documents` — satu pintu penyimpanan, validasi ekstensi, dan verifikasi checksum untuk seluruh platform. Unggah dibatasi status Draft/Negosiasi agar kontrak aktif tidak bisa diubah diam-diam.
+  4. **Pengingat ganda (in-app + outbox)**: `ctr:remind` mengirim notifikasi in-app ke pembuat kontrak + pemegang role `contract_manager`/`legal` dan merekam event ke Outbox generik Fase 26.7 dengan **idempotency key deterministik** (`contract_expiring:{id}:{hari}`, `milestone_reminder:{id}:{tanggal}`) sehingga cron harian tidak pernah menggandakan event; milestone menandai `reminder_sent` agar pengiriman terbatas sekali.
+  5. **Role granular**: `contract_manager`, `legal`, `party_manager` didaftarkan di RBAC Fase 26.5 dengan permission `contract.{view,manage,approve}` / `party.{view,manage,legal_entity.manage}`; guard rute `/contracts` memakai ketiganya dan `/party` ditambah `party_manager`. Dilengkapi matriks akses di `RouteSmokeTest`.
+- **Verification:** 642 tests / 3558 assertions 0 skipped; Pint, Vite, arch test lulus; `contracts:verify-chain` (2 kontrak seed valid), `ctr:remind` (0 duplikat pada retry), `bank:reconcile`, `lgx:audit-billing`, `mall:audit-billing` = 0 selisih, `super:health-check` 8 pilar HEALTHY.
+- **Reason:** kontrak adalah fondasi untuk Fase 29 (keuangan kontrak) dan integrasi Logistics/Mall/Resto; pendekatan hash-chain + approval engine memakai ulang kerja Fase 26 tanpa meniru.
+
+## 2026-10-04: Fase 29 — Kontrak Lanjutan (Keuangan, Kepatuhan & Integrasi)
+- **Context:** Fase 28 menghasilkan kontrak sebagai objek bisnis; Fase 29 harus menjadikannya instrumen keuangan nyata — termin, uang muka, retensi, denda, eskalasi, plafon pemakaian, serta integrasi ke Logistics/Mall/Resto.
+- **Decision:**
+  1. **Jadwal pembayaran & uang muka** (`ContractFinanceService::buildSchedule`): termin dibentuk dalam satu transaksi dengan lock kontrak; pemanggilan ulang idempoten (mengembalikan jadwal yang ada), kecuali eksplisit `replaceUnpaid` untuk amandemen (menolak mengganti termin yang sudah terbayar). Retensi per termin dihitung proporsional (integer, `RoundingMode::HalfUp`), uang muka dibayar dari dompet dengan cap sisa.
+  2. **Posting ledger deterministik**: pembayaran termin memakai key dari caller (hidden `idempotency_key` di formulir), advance memakai key eksplisit, dan replay guard ada sebelum guard status agar retry tidak double-count `advance_paid_idr` maupun saldo dompet. Akun ledger dibuat lazily lewat `ensureAccounts()`; refund/penalty terpisah dari termin.
+  3. **Denda & waiver (29.2)**: aturan `per_day_fixed` atau `percent_per_day` (basis point) dengan `grace_days` dan `cap_amount_idr`; denda dihitung dari saldo termin, dibayar dari dompet, dan **pembebasan melewati ApprovalEngine dua mata** (`legal` → `admin`) — waiver tidak mengembalikan denda yang sudah terbayar.
+  4. **Eskalasi harga (29.3)**: formula disimpan sebagai teks dan dievaluasi oleh **parser shunting-yard mini** yang hanya menerima angka/operator (`base`, `index`, `index_base`) — tanpa `eval`, sesuai larangan eksekusi kode. Faktor di-cap ±`escalation_cap_percent` dan konversi float→BigDecimal memakai sprintf (aturan no-float uang).
+  5. **Amandemen (29.4)**: perubahan nilai/jangka menghasilkan versi hash-chain baru + baris `ctr_amendments` ber-diff (old/new per field) + regenerate jadwal termin belum dibayar; gagal bila kontrak bukan aktif atau tidak ada perubahan.
+  6. **Rekonsiliasi plafon (29.5)**: `ctr_usage_ledger` unique per `source_type+source_id` (replay aman), cache `used_value_idr` dihitung ulang setelah setiap catatan, threshold `80%` (early warning) & `100%` (melebihi). Sumber diakses lewat query tabel (bukan import Domain) untuk menjaga boundary; sumber dikunci ke peran `second_party` agar kontrak dua arah tidak menghitung dua kali.
+  7. **Integrasi 29.6 via interface, bukan import**: `Logistics\Contracts\RateCardOverrideResolver` (parameter string, tanpa enum Domain) diikat `ContractRateResolver` — **rate card kontrak mengalahkan tarif standar** sebelum pencocokan lane. Tautan lease/royalty/rate-card memakai kolom nullable non-breaking (`linked_*`), tanpa FK ke modul lain.
+  8. **Skor risiko (29.7) & laporan (29.8)**: 7 aturan simulasi (0–100) disimpan sebagai `risk_flags` JSON; `ContractReportService` menghitung eksposur per tipe/pihak (agregat SQL), aging obligasi, kontrak kedaluwarsa, dan `ctr:audit` yang memverifikasi cache==ledger serta jadwal ≤ plafon (exit 1 bila selisih, dengan `--sync` untuk rekonsiliasi sumber).
+- **Verification:** 653 tests / 3602 assertions 0 skipped; pint, vite, arch (12) lulus; `ctr:audit` 0 selisih, `bank:reconcile`, `lgx:audit-billing`, `mall:audit-billing` 0 selisih, `contracts:verify-chain` valid, `super:health-check` 8 pilar HEALTHY. 11 test regresi baru di `ContractObligationsTest` (jadwal/advance/retensi, formula denda grace+bp+cap, parser eskalasi+cap, amandemen→chain+regen, usage idempoten+threshold, skor risiko, `ctr:audit`, rate-card override E2E).
+- **Reason:** termin/denda/eskalasi menyangkut uang nyata — semua key deterministik dan lock berada di dalam transaksi; integrasi antar-modul memakai contract/interface sehingga arch test tetap hijau.
+
+## 2026-10-04: Fase 30 — Aset Inti (Modul `ast_`)
+- **Context:** Fase 31–52 membutuhkan register aset tunggal untuk penyusutan, pemeliharaan, sewa (PSAK 73), intercompany, dan konsolidasi grup; data aset lama terpencar di `mall_assets`, armada Logistics, dan aset Resto.
+- **Decision:**
+  1. **Kategori PSAK 16 (simulasi)** (`AssetCategoryCode` enum → `ast_categories`): umur ekonomis & metode default per kategori (tanah 0/none, bangunan 20 th, mesin 10 th, kendaraan 5 th, peralatan declining balance, IT 4 th, intangible 5 th). Nilai disimpan sebagai data sehingga bisa disesuaikan tanpa kode; semua angka ditandai simulasi.
+  2. **Register & kapitalisasi atomik**: `AssetService::register` satu transaksi — nomor gapless via `DocumentNumberingInterface` dengan template `AST/{ENT}/` (memakai `{ENT}` sehingga sequence berbeda per sumber tidak pernah menghasilkan string nomor sama — ini ditemukan saat backfill gagal `UNIQUE asset_number`), posting ledger `ast:fixed_assets` dengan key deterministik `ast:acquire:{assetId}`, book value = perolehan + landed − depresiasi.
+  3. **Riwayat hash-chain**: `ast_events` meniru Vehicle Passport (prev_hash → SHA-256 kanonik, `HasUuids`, update/delete diblokir di `booted()`), nomor urut per aset dikunci `lockForUpdate` agar dua event bersaing tidak membuat cabang; `ast:verify-chain` memvalidasi urutan, prev_hash, dan digest.
+  4. **Konsolidasi non-breaking**: 6 tabel legacy (`mall_assets`, `lgx_trucks/trailers/vessels/aircraft/containers`) menerima kolom `asset_id` nullable; `ast:backfill-links` berjalan idempoten (berhenti pada baris sudah tertaut), menghasilkan 348 tautan pada seed dev dan **0 tambahan saat dijalankan ulang**. Tidak ada FK lintas modul — hanya kolom kait, sesuai batas arsitektur.
+  5. **Mutasi & opname ber-approval**: mutasi lokasi mengajukan `ApprovalEngine` (four-eyes) sebelum eksekusi `executeMove`; stok opname menandai selisih `missing/unexpected` sebagai `adjustment_status=pending` (tidak langsung mengubah ledger); hasil scan dalam siklus sama idempoten.
+  6. **Penugasan & asuransi**: check-out/in eksklusif (baris `status=out` dikunci; check-out kedua dan check-in ganda ditolak); polis asuransi mencatat event ke rantai. Dokumen/foto aset disimpan lewat `DocumentStoreInterface` (checksum + retensi) — bukan penyimpanan lokal sendiri.
+  7. **Role**: `asset_manager` (view/manage/approve asset) dan `auditor` (read-only) ditambahkan ke RBAC; guard `/assets` = `admin,asset_manager`; menu Master Data → Aset.
+- **Verification:** 664 tests / 3662 assertions 0 skipped; pint, vite, arch test hijau; `ast:verify-chain` 697 event valid, `ast:backfill-links` idempoten (0 pada replay), `bank:reconcile`, `lgx:audit-billing`, `mall:audit-billing`, `ctr:audit` = 0 selisih, `super:health-check` 8 pilar HEALTHY. 11 test baru `AssetCoreTest` (kategori PSAK, kapitalisasi+ledger idempoten, nomor gapless, deteksi manipulasi chain, append-only, mutasi approval, backfill idempoten, opname per siklus, check-out eksklusif, asuransi).
+- **Reason:** satu register aset dengan rantai kriptografis meniru pola yang sudah teruji (Vehicle Passport) dan menjaga seluruh uang dalam integer IDR dengan key deterministik — tanpa mengimpor Domain modul lain.
+
+## 2026-10-04: Fase 31 — Penyusutan, Pemeliharaan, Revaluasi & Disposal Aset
+- **Context:** Register Fase 30 perlu lifecycle finansial/operasional: depresiasi, impairment/revaluasi, pelepasan, perawatan, sewa PSAK 73 simulasi, dan TCO.
+- **Decision:**
+  1. **Penyusutan dua buku (31.1–31.2):** `DepreciationService` menyediakan straight-line (`cost-salvage` / useful-life-bulan), double-declining balance, dan units-of-production; idempoten per (asset, period, method, book), posting debit expense/kredit kontra-aset `ast:accumulated_depreciation`, buku fiskal tersendiri (`ast:fiscal_*`) tidak mengubah book value komersial. Aset `legacy_backfill` tidak disusutkan oleh ledger ast karena acquisition value-nya tetap tercatat di modul asal (menghindari saldo kontra-aset tanpa aset debit).
+  2. **Revaluasi, impairment, disposal (31.3–31.4):** semua pengajuan lewat ApprovalEngine four-eyes (`asset_manager` → `admin`) sebelum nilai/status berubah; laba/rugi disposal = proceeds − book value; event selalu masuk hash-chain. Jurnal final spesifik GL (surplus revaluasi, laba/rugi disposal) akan diperdalam di fase finance grup — angka buku/register kini konsisten.
+  3. **WO pemeliharaan (31.5):** trigger tanggal atau penggunaan (jam/km), nomor gapless; biaya `expense` → `maintenance:asset:IDR`, biaya `capitalized` → debit `ast:fixed_assets` dan landed cost; unique key `ast:wo:{id}` membuat penyelesaian ulang aman.
+  4. **Sewa PSAK 73 (31.6, simulasi):** nilai kini pembayaran sederhana membentuk ROU asset/liabilitas; tiap periode memisah bunga dan pokok, posting ledger idempoten `ast:lease:pay:{paymentId}`; jadwal multi-periode menggunakan bunga implisit tersimpan.
+  5. **TCO (31.7):** agregat penyusutan komersial + biaya WO + premi polis (+ BBM yang dicatat pada deskripsi WO); rekomendasi ganti jika TCO ≥60% biaya perolehan, pemeliharaan ≥30%, atau kondisi poor/broken (heuristik simulasi).
+  6. **Audit (31.8):** `ast:audit` mengecek akumulasi depresiasi per aset, formula book value, ledger vs nilai buku **hanya untuk aset yang benar-benar diposting `ast:acquire:*`**. Aset legacy/backfill dikecualikan dari rekonsiliasi GL ast karena nilainya sudah di GL modul pemilik lama. Pilar `assets` ditambah ke `super:health-check` (total 9).
+- **Verification:** 680 tests / 3733 assertions 0 skipped; Pint, Vite, arch test; `ast:audit` dan `ast:verify-chain` 0 selisih/utuh; `bank:reconcile`, `lgx:audit-billing`, `mall:audit-billing`, `ctr:audit` 0 selisih; `super:health-check` 9 pilar HEALTHY.
+- **Reason:** penyusutan/disposal menyentuh buku besar; idempotency per aset-periode, transaksi+lock, dan pemisahan data legacy mencegah duplikasi serta false discrepancy.
+
+## 2026-10-05: Fase 32 — Produsen & Pemasok (Modul `sup_`)
+- **Context:** Fase 33 (procurement) membutuhkan master pemasok: kualifikasi, harga, skor, dan risiko, dengan tautan ke Party (Fase 27) dan kontrak (Fase 28/29).
+- **Decision:**
+  1. **Onboarding ber-guard**: `candidate → approved → preferred → probation → disqualified` dievaluasi `SupplierStatus::canTransitionTo()`; setiap transisi wajib beralasan dan menulis `sup_status_histories` (jejak audit). Sanksi/skoring tetap simulasi.
+  2. **Kualifikasi lewat ApprovalEngine**: kuesioner/audit lokasi menghasilkan skor rata-rata (pass ≥70, fail <50) lalu mengajukan approval dua mata (`procurement` → `admin`); persetujuan otomatis menaikkan status candidate→approved.
+  3. **Harga bertingkat & kontrak**: `resolvePrice` menghormati MOQ dan periode aktif tanpa overlap; tier membawa `contract_id` nullable (kolom kait, tanpa FK lintas modul) sehingga **harga kontrak kerangka mengalahkan harga katalog** saat konteks kontrak diberikan — pengujian membuktikan 10.000 (katalog) vs 8.500 (kontrak).
+  4. **Portal terisolasi**: `sup_suppliers.owner_user_id` (FK users) menjadi sumber kebenaran akses portal — lebih andal daripada mencocokkan nama/email, dan `entity_id` RBAC bertipe numerik sehingga tidak bisa menampung UUID supplier. Admin dapat membuka portal untuk inspeksi; supplier lain menolak dengan 403 (diuji per-arah: A→A, B→B).
+  5. **Portal ASN & dokumen**: ASN dibuat draft → shipped (guard status), nomor via `DocumentNumberingInterface`; unggah COA/sertifikat memakai `DocumentStoreInterface` (checksum SHA-256 + retensi 7 tahun), tautan lewat `sup_documents`.
+  6. **Skor & risiko**: `score()` menghitung OTD/kualitas/harga/respons (0–100) dengan aksi `none/review/corrective/scar` (<70 korektif, <50 SCAR); `saveScorecard` upsert idempoten per (supplier, periode). `scanRisks` membuka flag: sertifikat kedaluwarsa/<60 hari, skor di bawah ambang, sanksi Party (via tabel `pty_sanctions_checks`), dan single-source (konsentrasi) — pertama disimpan dengan `firstOrCreate`, ulangi aman.
+  7. **Integrasi Resto (32.8)**: kontrak antar-modul `Supplier\Contracts\ReferenceCostUpdater` diikat `Resto\IngredientReferenceCostUpdater` (update `moving_avg_cost_per_base_unit` + `last_purchase_cost` milik sendiri) — Supplier tidak pernah mengimpor Domain Resto (arch test hijau).
+  8. **Role RBAC**: `supplier` (portal saja) dan `procurement` (kelola + approve) ditambahkan; guard rute memakai keduanya.
+- **Verification:** 696 tests / 3786 assertions 0 skipped; pint, vite, arch (10); `sup:scan-risks` sukses; `bank:reconcile`, `ast:audit`, `ctr:audit` 0 selisih; `super:health-check` 9 pilar HEALTHY. 16 test baru `SupplierManagementTest` (kode gapless, transisi guard, approval, tier harga + kontrak, skor idempoten, flag idempoten, portal IDOR per-arah, ASN, upload dokumen).
+- **Reason:** pemasok adalah simpul yang menyentuh hampir semua lini (procurement, resto, kontrak, aset) — isolasi akses pakai FK pemilik, bukan kecocokan teks, agar portal tidak bocor antar-tenant.
+
+## 2026-10-05: Fase 33 — Procurement (PR → RFQ → Tender → PO)
+- **Context:** Setelah master pemasok (Fase 32), dibutuhkan siklus pengadaan penuh: PR berjenjang, pemilihan pemasok berbasis data, tender buta, PO bersiapan GRN (Fase 34), serta penguncian anggaran.
+- **Decision:**
+  1. **Encumbrance per pusat biaya (33.6):** `prc_budget_encumbrances` unik per (source_type, source_id) sehingga replay aman; PR/PO mengunci dana saat approved/dibuat dan melepasnya saat close/cancel; anggaran terlampaui = **peringatan, bukan error** (sesuai brief), terlihat di dashboard.
+  2. **PR approval berjenjang (33.1):** total < 50jt cukup tahap `procurement`, ≥ 50jt menuntut `admin`; alur lewat ApprovalEngine (four-eyes) yang sudah ada.
+  3. **RFQ (33.2):** matriks komposit harga 50% / lead time 20% / skor pemasok 32.6 30%; penawaran di-upsert per (rfq, supplier) sehingga kirim ulang tidak menggandakan; **penetapan wajib beralasan** dan hanya satu pemenang (flag direset untuk lainnya).
+  4. **Tender (33.3):** penawaran disimpan sebagai **segel SHA-256** sebelum tenggat (blind), `offer` baru terbaca setelah `openBids` yang hanya boleh dijalankan lewat tenggat; evaluasi berbobot menolak berjalan bila ada segel belum dibuka; penetapan pemenang tetap melewati approval dua mata.
+  5. **PO (33.4):** revisi menaikkan `version` (bisnis) dan merekam snapshot riwayat memakai **ordinal sendiri** `max(version)+1` — tanpa ini close/cancel (tanpa revisi) melanggar `unique(po_id, version)` (bug ditemukan oleh test). Blanket PO menghasilkan call-off yang menunjuk induk.
+  6. **PO impor (33.5):** profil Incoterm + kurs + freight/asuransi/bea; landed cost estimasi = nilai barang + ketiganya (simulasi; perhitungan riil di Fase 48–49).
+  7. **Integrasi Logistics (33.7):** `InboundShipmentService` memakai kontrak `ShipmentBooking` (tanpa import Domain), guard replay per `procurement_po` + PO.id, dan hanya menolak PO batal/tutup. Untuk menampung UUID PO, `lgx_shipments.source_id` diubah menjadi string **dengan accessor yang mengembalikan int untuk nilai numerik lama** — mengembalikan kompatibilitas Store (test lama tetap `=== 999` lulus); kontrak `ShipmentBooking::cancelForOrder` dilonggarkan ke `string|int`. Booking menolak `amount_idr = 0` karena ledger menuntut ≥2 entri (ongkir simulasi 1 rupiah sampai GRN Fase 34).
+  8. **Portal pemasok & RBAC:** pemasok boleh membaca dashboard terbatas, kirim quote, dan mengirim segel tender; seluruh aksi mutasi (approve, award, seal open, close/cancel PO) dibatasi `role:admin,procurement` per-rute.
+- **Verification:** 713 tests / 3852 assertions 0 skipped; Pint, Vite, arch test; `bank:reconcile`, `lgx:audit-billing`, `mall:audit-billing`, `ctr:audit`, `ast:audit` 0 selisih; `super:health-check` 9 pilar HEALTHY. 17 test baru `ProcurementTest`.
+- **Reason:** pengadaan menyentuh uang dan komitmen anggaran — idempotency per sumber, lock baris, dan alasan wajib pada setiap penetapan menjaga jejak audit tanpa menghambat operasional.
+
+## 2026-10-05: Fase 34 — Penerimaan Barang, Hutang Usaha & Pembayaran Pemasok
+- **Context:** Setelah PO (Fase 33), siklus penerimaan sampai bayar harus tertutup dengan pemeriksaan tiga arah dan subledger AP yang bisa diaudit, semuanya dalam simulasi pajak.
+- **Decision:**
+  1. **GRN parsial & toleransi (34.1):** `ReceivingService::receive` berjalan dalam satu transaksi dengan `lockForUpdate` pada PO + baris PO; akumulasi `received_qty` mencegah double-receipt, toleransi over-delivery default 5% (ceil), lot/batch & kedaluwarsa tersimpan per baris; stok masuk **hanya lewat kontrak `InventoryService`** (tanpa import Domain); PO berubah `partially_received` → `received`.
+  2. **Inspeksi & retur (34.2):** setiap baris menerima record `Inspection`; unit ditolak → `quarantine=true` (hook QMS Fase 39) dan otomatis menerbitkan `SupplierReturn` (debit note) yang tercatat ke subledger AP — tanpa mengubah status akhir PO.
+  3. **3-way match (34.3):** varian harga & qty dihitung dalam persen terhadap PO/GRN; di luar toleransi (harga 2%, qty 5%) invoice masuk `held` dan mengajukan ApprovalEngine; `approveHeldInvoice` baru menerbitkan jurnal. `evaluateThreeWayMatch` dipisah sebagai fungsi murni agar bisa diuji tanpa side effect.
+  4. **Akuntansi (34.4):** GRN mengkredit `inv:grir` dan mendebit `inventory:procurement`; invoice mendebit GR/IR + PPV bila ada varian, mendebit `ap:ppn_input` (11% simulasi), mengkredit `ap:pph23_withheld` (2% simulasi), dan mengkredit `ap:supplier:{id}` sebesar net. **Konvensi tanda khas proyek:** entri ledger dikredit dengan nilai negatif, sehingga saldo ledger = debit − kredit dan audit memakai rumus `pembayaran − tagihan` (ditemukan dan diperbaiki saat menguji `proc:audit`).
+  5. **Batch payment (34.5):** `PaymentBatch` wajib melalui ApprovalEngine sebelum `executePaymentBatch`; posting per invoice memakai key deterministik `proc:payment:{batch}:{invoice}` sehingga eksekusi ulang aman; diskon pembayaran dini (simulasi) mengkredit `revenue:early_payment_discount` sehingga Σ entri tetap 0 (bug sign diskon ditemukan lewat `bank:reconcile` saat implementasi).
+  6. **Uang muka & kredit memo (34.6):** key idempotency dibebankan pada pemanggil; kompensasi mengunci advance + invoice dan mengurangi sisa dengan `min()` — tidak pernah melebihi.
+  7. **Landed cost (34.7):** alokasi value/weight/qty memakai pembulatan HalfUp untuk baris awal dan **baris terakhir menyerap selisih** sehingga Σ alokasi == total persis (diuji dengan total ganjil 1.000.001).
+  8. **`proc:audit` (34.8):** agregat SQL (bukan memuat seluruh baris) memverifikasi subledger AP == ledger per pemasok dan GR/IR nol untuk PO received; pilar ke-10 `procurement` ditambahkan ke `super:health-check`.
+- **Verification:** 726 tests / 3906 assertions 0 skipped; Pint, Vite, arch (12); `proc:audit`, `bank:reconcile`, `lgx:audit-billing`, `ctr:audit`, `ast:audit` 0 selisih; `super:health-check` 10 pilar HEALTHY. 13 test baru `ReceivingAndPayablesTest`.
+- **Reason:** uang pemasok disentuh di banyak titik (GRN → invoice → bayar) — semua key deterministik dan seluruh perubahan dalam satu transaksi agar gagal tengah tidak meninggalkan subledger vs ledger tidak sinkron.
+
+## 2026-10-05: Fase 35 — Pabrik: Master Data Manufaktur (Modul `mfg_`)
+
+- **Context:** Fase 36–40 (MRP, shop floor, costing, QMS, OKE/K3) membutuhkan master plant, BOM, routing, formula, dan tenaga kerja. BOM Resto sudah berjalan mandiri dan tidak boleh diubah.
+- **Decision:**
+  - Modul baru `modules/Manufacturing` (16 tabel `mfg_*`), service tunggal `ManufacturingService` dipakai controller dan seeder.
+  - BOM multi-level ber-versi: nomor versi = `max(version)+1` per material output; validasi saat `createBom` — siklus langsung (A→A) dan multi-level (A→B→A) lewat DFS leluhur, qty ≤ 0, UoM tanpa jalur konversi, alokasi co-product ≠ 100%.
+  - Formula: hash-chain `prev_hash/hash` (canonical `prev|version|sha256(body)`), status `draft → pending_approval (MFG_FORMULA_CHANGE, four-eyes) → approved`; `approveFormula` hanya dari `pending_approval` dan meneruskan ke `ApprovalEngineInterface::approve` (creator ≠ approver).
+  - CK-01: plant `central_kitchen` + `mfg_resto_adapters` (pointer outlet + stempel `last_synced_at/last_sync_key`, replay idempoten). Query mentah `resto_outlets` di seeder — arsitektur melarang import Domain lintas modul. BOM/HPP Resto tidak tersentuh.
+  - `mfg_work_centers.asset_id` & `mfg_routing_operations.work_center_id` bertipe `uuid` agar tidak melanggar FK tabel `ast_assets` / `mfg_work_centers` yang PK-nya UUID.
+  - RBAC: 3 role baru (`planner`, `operator`, `qc_inspector`) + grup permission `manufacturing.*`; ekspektasi `RbacTest` 19 → 22. Sekaligus memperbaiki duplikasi kunci `'procurement'` di `$rolePermissionMap` (kunci kedua menimpa yang pertama) — dua set permission digabung.
+  - Seeder `ManufacturingSeeder` menanam `PLT-JKT` + `CK-01` dan mengaitkan adapter ke outlet Resto CK-01 (urutan `RestoSeeder` sebelumnya di `DatabaseSeeder`); tes tabrak kode disesuaikan (`ck-99`).
+- **Reason:** satu service/penyimpanan untuk seluruh master produksi; validasi BOM dilakukan sekali di sisi server agar modul berikutnya (MRP/shop floor) tidak perlu mengulang; tanpa ledger di Fase 35 (posting produksi baru di Fase 37–38).
+- **Tests:** `modules/Manufacturing/tests/Feature/ManufacturingPhase35Test` (7 tes / 26 asersi) + `RbacTest` 22 role. Gate: 733 test / 3932 assertion.
+
+## 2026-10-05: Fase 36 — Perencanaan Produksi (MPS / MRP / CRP)
+
+- **Context:** Fase 35 menyediakan BOM, routing, material; perencanaan perlu demand per bucket, netting stok/supply, usulan produksi/pembelian, dan beban work center. Resto/Inventory tetap pemilik stok outlet; saldo `mfg_material_balances` adalah stok material pabrik.
+- **Decision:**
+  - Tambah 12 tabel planning `mfg_*`: parameter, forecast scenarios/lines, MPS headers/lines, balance, scheduled receipts, MRP run/requirements, planned orders, reservations, CRP loads.
+  - Forecast skenario ber-versi, hanya satu `active`; MPS juga ber-versi, satu `active`, dan baris within `freeze_days` diberi `frozen`.
+  - `PlanningService::runMrp`: snapshot MPS/forecast/parameter/balance/receipt + horizon/bucket → SHA-256 `run_key`; replay `completed` dengan key sama mengembalikan run terdahulu. MRP mode scenario ikut key, menulis requirement/summary saja, tanpa planned orders atau CRP rows.
+  - Ledakan BOM bertingkat menggunakan level-relaxation topological order (induk sebelum komponen), netting per bucket (`on_hand − reserved + scheduled receipts − gross demand`), semua qty kalkulasi disimpan sebagai decimal 6 via bc-math. BOM effective per bucket, qty line dinormalisasi `bom.output_qty`, scrap ditambahkan.
+  - Lot sizing: `l4l`, `fixed`, `periodic`, `eoq` (EOQ memakai `sqrt(2DS/H)`, dibulatkan ke atas 6 desimal); `moq` floor selalu diterapkan. Receipt terjadwal dialokasikan berdasar bucket due date.
+  - Planned order purchase → requisition via contract `Modules\Procurement\Contracts\MrpRequisitionProposer`; Procurement yang membentuk PR dan approval. Tidak ada import Domain lintas modul. Adapter interface dapat dipakai modul lain bila mengusulkan material purchase.
+  - Firming membuat reservasi BOM (soft/hard); `resolveAllocationConflicts` alokasi ulang per material berdasarkan due date lalu creation (earliest due wins), shortfall dicatat; simulasi what-if menyimpan `is_scenario=true` dan tidak menulis order nyata.
+  - CRP menghitung setup + run time terhadap kapasitas work center ter-adjust efisiensi; load > capacity atau capacity=0 ditandai bottleneck. `mfg:run-mrp` harian 04:45.
+- **Reason:** MRP dapat diulang deterministik terhadap snapshot yang sama, tidak langsung memutasi inventory/PO, dan semua lintas modul memakai contract; what-if tidak boleh merusak parameter/data nyata.
+- **Tests:** `modules/Manufacturing/tests/Feature/ProductionPlanningTest` (10 tes); full gate 743 test / 3971 assertions, Pint, Vite, audit bank/proc/asset/contract/logistics/mall, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 37 — Eksekusi Produksi (Shop Floor)
+
+- **Context:** Fase 36 menghasilkan planned/firm order; shop floor harus mengeksekusinya dengan akurasi lot, ketertelusuran operasi, dan invarian kuantitas yang dapat diuji.
+- **Decision:**
+  - 9 tabel baru `mfg_*` shop floor + 1 tabel alokasi `mfg_material_issue_lots` (bahan issue dicatat per lot → rekonsiliasi Σ per lot).
+  - `ProductionService::transition` state machine: `planned→released→in_progress→completed→closed|cancelled`, transisi lompat ditolak, replay idempoten. Nomor gapless `MPO/{ENT}/` via `DocumentNumberingInterface`.
+  - Issue bahan FIFO (`produced_at`) / FEFO (`expiry`): konsumsi lot berurutan, kolom `alert` mencatat `shortage`/`no_lot` bila tidak cukup; saldo `mfg_material_balances` tidak pernah negatif (guard hard + `DB::transaction` + `lockForUpdate`). Sisa kebutuhan yang tidak punya lot ditarik dari saldo tanpa alokasi lot.
+  - Backflush otomatis pada transisi ke `completed` dengan `kind=backflush`; hitungan "sudah di-issue" hanya `kind IN (issue, backflush)`.
+  - Guard FG: `receiveFg` menolak Σ receipt > `qty_completed` (hasil lapangan) — menjaga invarian 37.9.
+  - Downtime 5 kode alasan (`machine_down, material_wait, setup, break, other`) sebagai bahan OEE Fase 40; end idempoten.
+  - WIP: transfer `in_transit → received` (idempoten) + `mfg:wip` laporan per order.
+  - Scrap/rework: flag `ncr_required` bila scrap kumulatif > `scrap_tolerance_percent` → hook QMS Fase 39; scrap mengurangi `qty_completed`.
+  - Subkontrak 37.8: kirim bahan lewat contract `ShipmentBooking` Logistics (source_type `manufacturing_subcontract`, idempoten per order), hasil olahan menambah `qty_completed` + stok FG, biaya jasa → PR via contract `MrpRequisitionProposer`.
+  - FEFO ditulis `fefo` (bukan `fefe`) pada kode, validasi controller, dan UI.
+- **Reason:** ketertelusuran lot per issue membuat invarian dapat dibuktikan; stok pabrik dipisah dari stok outlet Resto agar HPP resto tidak terpengaruh; seluruh integrasi lintas modul memakai Contract/Domain-event yang sah (arch 12).
+- **Tests:** `modules/Manufacturing/tests/Feature/ShopFloorTest` (14 tes / 63 asersi). Gate: 757 test / 4034 assertion, Pint, Vite, arch (12), audit bank/lgx/proc/ast/ctr/mall 0 selisih, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 38 — Biaya Produksi (Costing)
+
+- **Context:** Shop floor Fase 37 menghasilkan qty & lot tanpa nilai rupiah. Dibutuhkan HPP (COGM/COGS), standar biaya ber-versi, dan varians — tanpa merusak ledger Resto/Procurement yang sudah berjalan.
+- **Decision:**
+  - **Konvensi tanda ledger (38.3)** — debit positif, kredit negatif (konsisten `PostingEntryDTO` yang memakai `->negated()` untuk kredit):
+    - Issue bahan: `DR inv:wip` / `CR inv:materials`
+    - Konversi (tenaga+mesin+overhead): `DR inv:wip` / `CR clearing:external`
+    - Scrap: `DR expense:mfg_scrap` / `CR inv:wip`
+    - Penerimaan FG: `DR inv:finished_goods` / `CR inv:wip`
+    - COGS penjualan: `DR expense:mfg_cogs` / `CR inv:finished_goods`
+    - Varians post: `DR expense:mfg_variance` / `CR clearing:external`; capitalize: `DR inv:wip` / `CR clearing:external`
+  - 4 tabel baru `mfg_cost_*`/`mfg_variances` + kolom biaya per lot (`mfg_material_lots.unit_cost_idr`) dan per receipt (`mfg_fg_receipts.unit_cost_idr`).
+  - Standard cost: `CostVersion` draft → `submitCostVersion` (ApprovalEngine four-eyes) → approved (versi lama → retired). Roll-up level: bahan baku ← `baseCosts`, output BOM ← Σ(input × level) termasuk scrap, konversi ← routing menit × biaya/jam WC (ceil integer, tanpa float).
+  - Actual cost per order (`OrderCost`) dihitung ulang setiap transisi `completed`/`closed`: bahan (alokasi lot × unit_cost + sisa tanpa lot × standar), tenaga/mesin/overhead (menit laporan × tarif WC), subkontrak, dikurangi nilai by-product (standar × qty).
+  - **FG transfer proporsional**: setiap receipt memindahkan `total_cost × (kumulatif_qty_receipt / qty_completed) − yang sudah keluar`; receipt terakhir menyerap pembulatan. (BUG awal: memindahkan sisa penuh setiap receipt → penerimaan parsial menguras seluruh WIP; ditangkap tes 38.3.)
+  - Varians (38.4): harga = Σ qty×(lot−std); pemakaian = Σ (qty aktual − qty std BOM) × harga std — **terpisah** agar tidak menumpuk; tenaga/mesin, overhead volume, yield. Policy `post` → akun varians, `capitalize` → WIP; idempoten per `mfg:variance:{order}:{kind}`. (BUG awal: pemakaian dihitung dari total material aktual → ganda dengan harga; ditangkap tes 38.4.)
+  - COGS (38.5) lewat listener `OrderPaid` Store (dipublish `Order::onPaymentCaptured`); SKU produk = kode material; FIFO dari lot FG; query mentah `store_order_items`/`store_products` (tanpa import Domain Store — arsitektur); key `mfg:cogs:{order}:{item}`.
+  - Settle order `closed`: sisa WIP + varians capitalize − yang sudah keluar ke FG diserap via `mfg:settle:{order}` sehingga audit 38.8 menemukan 0 sisa.
+  - Laporan 38.7 (`/manufacturing/costing`): margin per barang jadi (revenue dari `store_order_items`, HPP = unit cost aktual × qty terjual) + drill-down `OrderCost` per order.
+- **Reason:** seluruh jurnal idempotent dan dapat diaudit ulang; roll-up & netting memakai integer/bc-math mengikuti konvensi proyek (tanpa float untuk nilai tersimpan); keputusan varians & tanda terdokumentasi agar modul 39–40 konsisten.
+- **Tests:** `modules/Manufacturing/tests/Feature/ProductionCostingTest` (7 tes / 34 asersi). Gate: 764 test / 4070 assertion, Pint, Vite, arch (12), audit bank/proc/ast/ctr/lgx/mall + `mfg:audit-costing` 0 selisih, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 39 — Mutu & Ketertelusuran (QMS)
+
+- **Context:** Shop floor/costing sudah punya lot, issue per lot, hasil operasi, scrap, dan penjualan per lot; perlu inspeksi berlapis, CAPA, recall, dan traceability maju-mundur. Standar sertifikasi/regulasi Indonesia belum terintegrasi — semua sertifikat bersifat simulasi.
+- **Decision:**
+  - 10 tabel `mfg_*` QMS: `inspection_plans`, `inspections` (+`approval_id`), `spc_samples`, `gauges`, `ncrs`, `capas`, `lot_sales`, `recalls`, `recall_recipients`, `certificates`.
+  - Inspection plan menyimpan stage `receiving/in_process/final`, characteristic JSON, batas min/max, ukuran sample, frequency, AQL; AQL hanya **simulasi**: gagal bila persentase out-of-spec > AQL. Inspeksi dengan readings kosong ditolak.
+  - Waiver: `submitWaiver` gagal inspection → `ApprovalEngineInterface::submit(MFG_INSPECTION_WAIVER)` (status tetap failed); `approveWaiver` memanggil engine dan hanya menjadi `waived` setelah approval (empat mata creator ≠ approver). Tidak ada approver otomatis.
+  - `Gauge::isCalibrationValid`: alat aktif + `calibration_due` future; alat expired/null memblokir inspeksi (39.8). Rilis lot mensyaratkan tidak ada inspeksi `failed` dan setidaknya satu sertifikat valid per tipe wajib; default COA; sertifikat `SNI/Halal/BPOM/GMP/COA/COC` data simulasi.
+  - SPC X-bar/R: mean/range per subgroup; `σ=R̄/d2` untuk n=5 (`d2=2.326`); `Cp=(USL−LSL)/(6σ)`, `Cpk=min(USL−μ,μ−LSL)/(3σ)`; alarm sederhana bila mean di luar spec atau Cpk<1.
+  - `openNcr` nomor gapless `NCR/{ENT}/`; sumber supplier memunculkan `sup_risk_flags.type='scar'` via query mentah + `scar_ref` (tanpa import Supplier Domain). CAPA corrective/preventive, due date, completion/effectiveness; sweep `mfg:qms-audit` menandai overdue; NCR menutup setelah semua CAPA tidak lagi open.
+  - Trace backward: FG lot `source_ref` → nomor order produksi → material issues + `mfg_material_issue_lots` → lot bahan → source_type/ref. Trace forward: listener `OrderPaid` membuat `mfg_lot_sales` FIFO per SKU=material code; replay idempoten per `store_order_item_id`.
+  - Recall idempoten per lot: lot `blocked`, penerima disalin dari `mfg_lot_sales`, notifikasi dicap, biaya recall `DR expense:mfg_scrap / CR inv:finished_goods` via key `mfg:recall:{id}`, completion menandai lot consumed & qty 0 + destruction note. Regulasi pemusnahan/sertifikat bersifat simulasi.
+  - Command `mfg:qms-audit` harian 05:00: expired calibration, CAPA/NCR lewat due date, recall planned/notified >3 hari → exit 1; selain itu 0.
+- **Reason:** waiver harus mematuhi four-eyes; lot release/recall tak boleh bergantung UI; query trace tetap bounded per satu lot; memakai query mentah untuk boundary ke Store/Supplier menjaga 12 arch rules.
+- **Tests:** `modules/Manufacturing/tests/Feature/QualityManagementTest` (12 tes / 59 asersi). Gate: 776 test / 4129 assertion, Pint, Vite, arch (12), seluruh audit termasuk QMS 0 temuan, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 40 — Pemeliharaan Pabrik, OEE & K3
+
+- **Context:** Fase 35–39 melengkapi master→MRP→shop floor→costing→QMS; operasi pabrik perlu availability/performance/quality, maintenance, sensor, K3, dan intensitas resource per order. Asset & Resto punya domain sendiri.
+- **Decision:**
+  - 8 tabel `mfg_*`: maintenance orders, BOM suku cadang + pemakaian, bacaan sensor, agregat OEE, insiden HSE, work permit, penggunaan resource.
+  - `MaintenanceService` WO pabrik bernomor `MWO/{ENT}/`, state `open→in_progress→completed|cancelled`, replay guard `trigger_key` unik; bila `work_center.asset_id` mengarah ke aset valid, delegasi ke `AssetWorkOrderService::schedule` agar event chain/TCO pemilik aset tetap satu. Part usage biaya integer IDR menambah `parts_cost_idr` maintenance WO; persediaan suku cadang fisik menunggu WMS Fase 41 (min-stock Fase 40 hanya simulasi pemakaian vs threshold).
+  - Sensor IoT `temperature/vibration/current` **simulasi**; out-of-threshold → predictive MWO idempoten per `(work_center_id, metric, tanggal)`. Tidak memanggil layanan IoT eksternal.
+  - OEE: A=`(planned−downtime)/planned`, P=`ideal_cycle×qty_total/run_minutes`, Q=`good/total`, OEE=`A×P×Q`; MTBF/MTTR & Pareto downtime. `OeeSummary` unik `(work_center,date,shift)`; karena SQLite unik tidak menolak duplikasi NULL, key shift kosong dinormalisasi `''`. Penyimpanan memakai lookup `whereDate` (SQLite simpan cast `date` sebagai datetime sehingga `updateOrCreate(date-string)` tidak cocok).
+  - HSE: insiden `reported→action→closed` (investigasi wajib sebelum close), work permit `PTW/{ENT}/` tipe `hot_work|confined_space` via ApprovalEngine four-eyes; akses kerja hanya saat status active & waktu dalam window; `expirePermits` menandai expired.
+  - Energi/lingkungan `electricity_kwh|water_liter|waste_kg` dicatat per production order, laporan intensitas = total resource / `qty_completed` (jika nol, divisor minimum 1). Input sensor/ambang, standar K3 & resource usage bersifat simulasi.
+- **Reason:** maintenance aset perlu satu sumber biaya/event, OEE dihitung dari shop floor/downtime riil (bukan angka demo), pembatas izin berbasis jendela waktu untuk kerja berisiko, integrasi stok fisik sengaja ditunda ke WMS.
+- **Tests:** `modules/Manufacturing/tests/Feature/MaintenanceOeeHseTest` (8 tes / 50 asersi). Gate: 784 test / 4179 assertion, Pint, Vite, arch (12), audit ledger/proc/asset/contract/logistics/mall/costing/QMS sehat, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 41 — Gudang & Pusat Distribusi (WMS, `wms_`)
+
+- **Context:** Manufacturing 35–40 menghasilkan/pakai barang; Logistics mengangkut shipment; perlu posisi gudang/bin, putaway/pick, transfer, cycle count & dock tanpa mengganti pemilik saldo produk global `InventoryService`.
+- **Decision:**
+  - Modul `modules/Wms` (15 tabel `wms_*`), provider & menu Gudang; `WmsSeeder` menyediakan `DC-BJM` + zona/rak/bin contoh.
+  - Hirarki Warehouse(UUID)→Zone(id)→Rack(id)→Bin(id). Bin stock per `(bin,product,lot,serial,status)`; status `available/quarantine/blocked`. Putaway capacity check; pergerakan internal bin tidak mengubah `store_products.cached_stock`; hanya cycle-count variance disinkronkan lewat `InventoryService::adjust` contract. WMS subledger tidak pernah membolehkan stok bin negatif; `wms:audit` memastikan Σ bin tidak negatif/melebihi saldo global `inv_`.
+  - Pick FIFO/FEFO per lot, stok tidak cukup → ditolak; Wave `open→released→closed`, kosong tidak dirilis; Task close replay idempoten.
+  - Transfer `draft→in_transit→received`: saat ship, pick stok gudang asal, booking Logistics `ShipmentBooking` (source `wms_transfer`, idempotent) → tracking_number; bila Logistics tak menyediakan route usable, transfer tetap lanjut tanpa resi; receipt putaway gudang tujuan; dua langkah jadi in-transit view (saldo produk global tetap sama). Cross-dock ditandai transfer, aturan direct inbound→outbound dicatat sebagai mode.
+  - Cycle count snapshot per bin/product/lot, accuracy %, variance≠0 → ApprovalEngine four-eyes; apply mengubah BinStock + InventoryService adjust (ketidakcukupan ditolak, satu transaksi).
+  - Replenishment pick-face min/max → task saat di bawah min; slotting ABC sederhana; dock appointment menolak overlap arah/gudang; packing list `draft→printed`, item snapshot + label resi.
+  - `wms:audit` menjaga posisi bin valid; opening stock/outside-WMS stock boleh membuat cached global > total bin (normal), maka audit hanya fail pada stok bin negatif atau bin melebihi saldo global.
+- **Reason:** WMS menjadi *location subledger*, bukan buku saldo alternatif — semua perubahan total stock melalui Inventory contract, jadi modul Store tetap backward-compatible; Logistics hanya dipanggil via `ShipmentBooking` Contract.
+- **Tests:** `modules/Wms/tests/Feature/WmsTest` (10 tes / 48 asersi). Gate: 794 test / 4227 assertion, Pint, Vite, arch (12), audit bank/WMS/proc/asset/contract/logistics/mall/manufacturing sehat, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 42 — Jaringan Distributor (Modul `dist_`)
+
+- **Context:** dibutuhkan jaringan jual (distributor/agen/dealer), kredit, dan skor kinerja sebelum Fase 43 (order/sell-in/retur/rebate). Party sudah punya `PartyRoleType::Distributor` dan `CreditProfile`; modul baru menjaga ownership piutang & tier sendiri.
+- **Decision:**
+  - Modul baru `modules/Distribution` (10 tabel `dist_*`), provider + menu Distributor + role `distributor` (RBAC 23 role) + permission `distribution.*` + seeder `dist_tiers` (Bronze 0%, Silver 2,5% ≥70%, Gold 5% ≥90%).
+  - **Hirarki & jenis:** `kind ∈ {distributor, sub_distributor, agent, dealer}`; sub hanya boleh ke induk `approved`. `parent_id` self-FK UUID.
+  - **Teritori:** level provinsi→kota→kecamatan (wajib berurutan satu tingkat), coverage eksklusif menolak distributor lain pada wilayah sama (interval valid); `territoryConflicts()` melaporkan sisa konflik.
+  - **Onboarding 42.3:** wajib `Security` aktif (bank garansi/deposit) sebelum `submitOnboarding` → ApprovalEngine `DISTRIBUTOR_ONBOARDING` (procurement → admin) disimpan di `dist_distributors.approval_id`; `approveOnboarding` menolak tanpa pengajuan dan meneruskan approve sampai engine `approved` (guard loop 5) — four-eyes sungguhan.
+  - **AR 42.4:** `ArInvoice` per distributor (`AR/{ENT}/`); exposure = Σ `amount + denda − paid` (sinkron dengan `dist:audit`). Jurnal: terbit `DR dist:receivable / CR dist:ar:{id}`, bayar `DR dist:ar / CR clearing`, denda `DR dist:receivable / CR dist:denda` (semua kredit negatif — menangkap bug awal kedua entri positif → UnbalancedTransactionException). Denda 0,1%/hari cap 5% (simulasi); pelunasan penuh menghapus sisa denda & exposure-nya. **Blokir otomatis**: eksposur > limit saat tagihan terbit, dan overdue > grace 7 hari pada sweep; unblock otomatis saat eksposur < limit.
+  - **Target/tier 42.5:** `Target` unik (distributor, SKU, periode, basis sell_in/sell_out), achievement akumulatif; `evaluateTier` memakai rata-rata capaian tahun berjalan vs threshold tier.
+  - **Outlet 42.7:** wajib wilayah ter-cover distributor; kode unik per distributor; segment retail/horeca/modern/wholesale.
+  - **Scorecard 42.8:** komposit 0–100 = achievement 40% + fill-rate 20% + DSO 20% (0 bila >90 hari) + kepatuhan harga 20%; `recommended_tier` gold ≥80, silver ≥60.
+  - **Portal 42.6 (minimal di Fase 42):** `/portal/distributors` menampilkan ringkasan kredit, tagihan + aging, target, outlet; order/klaim/laporan stok menanti Fase 43; 403 bila akun belum terhubung `owner_user_id`.
+  - `dist:audit`: exposure == Σ terbuka, |saldo akun `dist:ar:{id}| == |open|, tanpa overpaid, tier valid. `Sweep harian` (dipanggil manual / scheduler menyusul) menandai overdue + denda + blokir grace.
+- **Reason:** semua keputusan kredit (limit, blokir, denda) terpusat di service dengan jurnal idempoten; konflik teritori dideteksi sebelum coverage tersimpan; audit subledger AR memakai formula yang sama dengan exposure agar gate konsisten.
+- **Tests:** `modules/Distribution/tests/Feature/DistributionTest` (13 tes / 63 asersi). Gate: 807 test / 4290 assertion, Pint, Vite, arch (12), seluruh audit (termasuk `dist:audit` & `wms:audit`) 0 selisih, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 43 — Distribusi: Order, Sell-out, Konsinyasi, Retur, Rebate
+
+- **Context:** Fase 42 menyediakan entitas & kredit; Fase 43 mengeksekusi alur order→kirim→faktur→retur/rebate. ATP memakai `InventoryService` contract (stok Store); sementara WMS Fase 41 mengelola lokasi.
+- **Decision:**
+  - 9 tabel baru `dist_*` fulfilment; `dist_invoices.order_id` dibuat nullable (migrasi 430101) untuk faktur konsinyasi.
+  - **ATP & alokasi (43.1):** `placeOrder` menghitung subtotal−diskon tier+PPN 11% (simulasi) lalu menolak bila `exposur + total > limit`. `allocate` mereservasi per baris dengan `source_type='dist_order_line'` (ikatan per baris, bukan per order); `priority` mengambil sisa stok penuh, `fair_share` membagi stok ke **order yang belum teralokasi** (pemenang mengunci bagiannya) sehingga retry tidak menggandakan; baris tersisa → `backorder`, status order `partial`; retry alokasi diizinkan untuk `draft|partial|backordered`.
+  - **Pemenuhan (43.2):** `fulfil` membuat `DSP/{ENT}/`, booking `ShipmentBooking` (source `dist_shipment`) → `tracking_number`, lalu `commit` reservasi (alasan SALE) per baris — tanpa import Domain Logistics/Inventory (hanya Contract + enum `StockMovementReason`). `recordPod` → order `delivered` + `issueTaxInvoice`: nomor seri `010.001.yymm.…` **simulasi**, PPN 11% sudah dibulatkan di order; jurnal `DR dist:receivable / CR revenue:distribution` (net).
+  - **Sell-out (43.3):** satu laporan per outlet/tanggal; anomali `stuffing` (qty > 3× rata 7 hari), `price_violation` (<70% HET), status `flagged`; capaian terhubung ke `Target` basis `sell_out`.
+  - **Konsinyasi (43.4):** stok prinsipal di lokasi distributor (`dist_consignment_stocks`); penjualan terlapor → `qty_sold_unbilled`; `invoiceConsignment` menerbitkan faktur (order_id null) + jurnal `DR dist:consignment_ar / CR dist:consignment`, sales → `invoiced`, idempoten (billed=0 bila tidak ada).
+  - **Retur (43.5):** alasan & disposition enum; nilai ≤ order asal; `approveReturn` → kredit nota `DR revenue / CR receivable` + reduksi exposure distributor (+unblock bila < limit); disposition `restock|quarantine|destroy` tercatat (tindakan fisik menyusul WMS/QMS).
+  - **Rebate (43.6):** program `volume|growth|tiered` dengan `rateFor(qty)` (tiered dari `tier_breaks` JSON); akrual idempoten per `(distributor, program, order)`, jurnal `DR dist:rebate_expense / CR dist:rebate_payable`; `settleRebate` membuat approval `DIST_REBATE_SETTLEMENT` (procurement→admin), `approveSettlement` mengulang approve sampai final (guard 5×); breakage = program `!isLive()` tidak menghasilkan akrual baru.
+  - **HET & VMI (43.7/43.8):** `HetPrice` simulasi, margin vs tebus proxy 85% HET; `StockLevel` `calculateSuggestion` = isi ke max + buffer 7 hari × ADS.
+  - **Audit 43.9:** `dist:audit` diperluas: rebate payable ledger == Σ akrual, `qty_sold_unbilled` == Σ penjualan reported, penjualan invoiced punya `invoice_id`.
+- **Reason:** reservasi per baris menghindari race dua order memakai reservasi yang sama; fair-share berbasis "belum teralokasi" membuat perilaku deterministik & idempoten; seluruh pihak lintas modul hanya lewat Contract (arch 12).
+- **Tests:** `modules/Distribution/tests/Feature/DistributionFulfilmentTest` (9 tes) + `DistributionTest` (13). Gate: 816 test / 4349 assertion, Pint, Vite, arch (12), semua audit 0 selisih, 10 pilar HEALTHY.
+
+## 2026-10-05: Fase 44 — Harga, Promo & Trade Terms (Pricing Engine)
+
+- **Context:** modul Store/Distribution/Contract sudah memakai harga sendiri (snapshot `price_snapshot`, harga order, rate card kontrak 29.6). Fase 44 menyediakan mesin harga terpusat tanpa memutus modul lama.
+- **Decision:**
+  - Prefix tabel **`pric_`** (bukan `prc_` yang sudah dipakai Procurement — diperiksa sebelum menulis). Modul baru `modules/Pricing` (10 tabel), provider terdaftar di `bootstrap/providers.php`.
+  - **44.1** `PriceList` per `(channel, segment, region, currency)` + `priority`; aktivasi menolak overlap periode pada scope identik; resolver `resolveList` memakai tingkat spesifisitas (region 0, segment+2, general+1) lalu priority kecil menang — bukan hanya urutan insert. Price list `active` immutable (perubahan = list baru).
+  - **44.2** Waterfall deterministik: `DiscountRule` urut `(order, code)`; threshold qty/nilai; alokasi diskon proporsional ke baris layak (pembulatan terakhir menyerap sisa); `stackable=false` menghentikan tambahan non-kupon; kupon diverifikasi `coupon_code` + `isLive` dan status `stackable`. Hasil waterfall disimpan sebagai array JSON → dapat diaudit ulang.
+  - **44.3** Klaim promo wajib `evidence_note` non-kosong, `budget` diperiksa terhadap `remainingBudget + pendingClaims (submitted|validated)` (menangkap bug: klaim kedua lolos karena klaim pertama belum `spent`); settlement four-eyes via ApprovalEngine (guard loop 5×), `spent_idr` baru naik saat settle — anggaran tidak dibakar saat submit.
+  - **44.4** `PriceLock` unik `(subject_type, subject_id, sku)`; replay `lockPrice` mengembalikan snapshot lama (immutable); `source_kind` ∈ `price_list|contract|discount|promo|override|order_snapshot`. `quote()` memberi prioritas **harga kontrak lebih dulu** lalu price list lalu discount — sesuai 44.4.
+  - **44.5** `MarginPolicy.minAllowedPrice = ceil(floor_cost × (100+margin)/100)`; `quote` melempar bila harga < floor dan tidak ada override approved dengan harga sama; `requestOverride` → ApprovalEngine; `decideOverride(approve)` mengisi `decided_at` (dicegah `pricing:audit`).
+  - **44.6** Listener `PostSalePriceLockListener` pada event `OrderPaid` Store (dipublish `Order::onPaymentCaptured`) → snapshot per baris, replay idempoten; contract `PriceLocker` terikat ke `PricingService` untuk konsumen lain (Distribusi/Agensi) tanpa import Domain. `PriceEvent` `firstOrCreate` by hash — idempoten.
+  - **44.7** `computeAnalytics(period, channel)` dari price locks: realisasi = Σ(applied×qty)/Σ(list×qty), leakage = Σ discount yang `source_kind` tidak dikenal, diskon rata-rata & efektivitas promo (cap 100%).
+  - `pricing:audit` (5 pemeriksaan: budget, settled tanpa approval, override tanpa `decided_at`, lock `applied > list` tanpa `reason`, overlap price list) exit 1 bila ada temuan.
+  - Permission grup `pricing.*` ditambahkan (admin mendapat semua; modul lain tidak menambah role baru → jumlah role tetap 23).
+- **Reason:** harga lama tetap jalan (price snapshot order); mesin baru menyediakan lapisan resolusi & audit; prefix `pric_` mencegah tabrakan dengan `prc_` Procurement; kasus precedence `$a ?? $b && …` di PHP menangkap lebih longgar — diperbaiki eksplisit dengan variabel temp.
+- **Tests:** `modules/Pricing/tests/Feature/PricingEngineTest` (7 tes / 44 asersi). Gate: 823 test / 4393 assertion, Pint, Vite, arch (12), semua audit (bank, dist, wms, proc, ast, ctr, lgx, mall, mfg-cost, mfg-qms, pricing) 0 selisih, 10 pilar HEALTHY.
+
+## 2026-10-06: Fase 45 — Agensi: Agen Penjualan & Komisi (Modul `agy_`)
+
+- **Context:** Rantai distribusi membutuhkan peran agensi (sales agent, broker, reseller, affiliate, sole agent) dengan perhitungan komisi berbasis performa, jenjang upline/downline (override), atribusi, periode hold retur, clawback komisi negatif, dan payout periodik ber-approval four-eyes.
+- **Decision:**
+  - Prefix tabel **`agy_`** (8 tabel: `agy_agents`, `agy_contracts`, `agy_commission_schemes`, `agy_attributions`, `agy_commission_accruals`, `agy_payouts`, `agy_payout_items`, `agy_statements`).
+  - **45.1 Hirarki:** `Agent` mendukung `parent_id` (upline wajib `active`), batas level `max_downline_levels` (default 3), state machine `onboarding → active → suspended → terminated`.
+  - **45.2 Kontrak:** `AgentContract` dengan scope teritori, scope produk (JSON), bendera `exclusive` & `non_compete`.
+  - **45.3 Skema Komisi:** basis `flat`, `percent`, `slab`, `target_bonus` + skema override upline (`level >= 1`, basis percent).
+  - **45.4 Atribusi:** Atribusi referral/lead dengan kebijakan konflik `first_touch` (mempertahankan atribusi pertama) vs `last_touch` (update agen), serta pengecekan tanggal kadaluwarsa (`expires_at`).
+  - **45.5 Akrual Komisi & Retur:** Komisi dihitung dari skema langsung + override upline bertingkat, status awal `hold` hingga periode retur lewat (`hold_until = now() + holdDays`), idempoten per `(agent, reference_id, source_type)`. Jurnal: `DR agy:commission_expense:IDR / CR agy:commission_payable:IDR`.
+  - **45.6 Clawback:** Retur penjualan memicu akrual negatif (`amount_idr < 0`) dan membalik sumber akrual (`reversed`). Jurnal: `DR agy:commission_payable:IDR / CR agy:commission_expense:IDR`.
+  - **45.7 Payout Periodik:** Agregasi seluruh akrual payable (termasuk kompensasi clawback negatif), verifikasi total net > 0, PPh 21/23 pemotongan simulasi (`withheld_tax_idr`). Alur four-eyes approval (`AGENCY_PAYOUT` via `ApprovalEngineInterface`). Eksekusi pembayaran memposting ledger net `DR agy:commission_payable / CR clearing:external` dan pajak `DR agy:commission_payable / CR tax:withheld`.
+  - **45.8 Statement & Portal:** `Statement` merekonsiliasi `opening + accrued - clawback - paid = closing balance`. Portal `/agency` dan `/agency/{agent}` dapat diakses role `agent`, `admin`, `procurement`, `auditor`.
+  - **45.9 Audit & Role:** Command `agy:audit` memvalidasi saldo payable ledger = Σ akrual, payout net = gross - tax, payout berstatus paid memiliki transaksi ledger, dan atribusi valid. Role `agent` (role ke-24) didaftarkan di `RbacSeeder`.
+- **Tests:** `modules/Agency/tests/Feature/AgencyCommissionTest` (9 tes / 54 asersi), RouteSmokeTest (+2 asersi), RbacTest (+24 roles). Gate final Fase 45: **832 tests passed (4446 assertions)**, 0 failures, 0 skipped, Pint lulus, Vite sukses, `bank:reconcile` (140 akun, 0 selisih), `agy:audit` 0 selisih, `super:health-check` 10 pilar HEALTHY.
+
+## 2026-10-06: Fase 46 — Agensi: Ekosistem, Lead, Tier & Kepatuhan (Modul `agy_`)
+
+- **Context:** Jaringan agensi memerlukan manajemen siklus hidup prospek (CRM), rekrutmen/sertifikasi, sistem level/tiering untuk gamifikasi, keagenan pemegang merek (APM-style), sanksi kepatuhan, serta deteksi dini kecurangan (self-referral & spike komisi).
+- **Decision:**
+  - Tambah 6 tabel baru di modul Agency: `agy_leads`, `agy_lead_activities`, `agy_certifications`, `agy_agent_tiers`, `agy_brand_agencies`, `agy_compliance_incidents`, `agy_fraud_checks`, serta kolom status performa `tier_code`, `total_sales_volume_idr`, `total_deals_count` pada `agy_agents`.
+  - **46.1 CRM Leads:** Pengelolaan prospek pipeline (`new → contacted → qualified → proposal → converted → lost`), pencatatan aktivitas, dan konversi otomatis yang langsung mengakumulasikan volume dan deal count agen serta memicu evaluasi tier.
+  - **46.2 Sertifikasi & Lisensi:** Pelacakan lisensi (properti, asuransi, keagenan) dengan verifikasi tanggal berlaku `isValidAt()`.
+  - **46.3 Tier & Gamifikasi:** Konfigurasi tier dinamis (`BRONZE`, `SILVER`, `GOLD`) berdasarkan volume dan jumlah closing, serta leaderboard performa agen.
+  - **46.4 APM Brand Agencies:** Pendaftaran hak keagenan merek resmi dengan bendera hak impor dan garansi servis purna jual yang terhubung ke jaringan bengkel AutoServe.
+  - **46.5 Kepatuhan & Sanksi:** Pencatatan insiden pelanggaran dengan eskalasi sanksi, di mana sanksi pembekuan (`commission_freeze`) secara otomatis menyuspensi agen dan mencabut hak mendapatkan komisi (`canEarn = false`), dengan mekanisme banding (`appealIncident`).
+  - **46.6 Deteksi Kecurangan:** Mesin deteksi kecurangan otomatis (pemeriksaan nomor telepon self-referral berbobot risiko 95 dan pemblokiran otomatis; serta deteksi lonjakan anomali komisi >5x rata-rata historis).
+  - **46.7/46.8 Analitik & Lintas Lini:** Analitik ROI agen menghitung rasio perolehan penjualan terhadap total komisi dibayar (`sales / paid`).
+- **Reason:** Evaluasi tier otomatis saat konversi lead menjaga integritas gamifikasi secara instan; fraud check algoritmik mencegah kebocoran kas perusahaan akibat skema referral diri sendiri.
+- **Tests:** `modules/Agency/tests/Feature/AgencyEcosystemTest` (7 tes / 31 asersi). Gate final Fase 46: **839 tests passed (4477 assertions)**, 0 failures, 0 skipped, Pint lulus, Vite sukses, `bank:reconcile` (140 akun, 0 selisih), `agy:audit` 0 selisih, `super:health-check` 10 pilar HEALTHY.
+
+## 2026-10-06: Fase 47 — Mitra & Kemitraan (Modul `ptn_`)
+
+- **Decision:** modul `modules/Partner` (8 tabel `ptn_*`), state machine mitra ber-guard, bagi hasil generik idempoten (`floor(net × rate)`), jurnal `DR ptn:rev_share_expense / CR clearing:external`, role `partner` (total 25 role).
+- **Batasan yang diketahui:** portal mitra minimal, due diligence berbasis skor tanpa approval berjenjang, HKI belum terhubung ke Asset, adapter Resto royalti/Mall revenue share belum dimigrasikan.
+- **Tests:** `PartnerTest` (5 tes). Gate parsial: RbacTest, RouteSmokeTest, arch (12) lulus; full suite belum dijalankan ulang untuk fase ini.
+
+## 2026-10-06: Fase 48 — Multi-Currency & Treasury (Modul `trs_`)
+
+- **Context:** Operasi enterprise membutuhkan dukungan mata uang multi-valas dengan perhitungan tanpa kehilangan presisi, rekonsiliasi mutasi bank, pengelolaan fasilitas pinjaman & covenant bank, serta lindung nilai nilai tukar (FX hedging).
+- **Decision:**
+  - Prefix tabel **`trs_`** (9 tabel: `trs_currencies`, `trs_exchange_rates`, `trs_revaluations`, `trs_bank_accounts`, `trs_bank_statements`, `trs_cash_forecasts`, `trs_forward_contracts`, `trs_credit_facilities`, `trs_cash_pools`).
+  - **48.1 Master Mata Uang & Kurs:** Nilai tukar disimpan dalam bentuk pasangan `(from, to, date, type)` dengan representasi integer scaled `rate_numerator / rate_denominator` (1e6) untuk menghindari floating-point imprecision. Konversi amount dalam integer minor units.
+  - **48.2 Multi-Currency Posting:** Transaksi multi-valas memposting entri valas yang seimbang per aset (`assetCode`) dengan nilai fungsional IDR terhitung secara deterministik dan idempoten.
+  - **48.3 Revaluasi Valas:** Menghitung unrealized gain/loss selisih kurs akhir periode berdasarkan kurs penutupan vs nilai buku fungsional IDR.
+  - **48.4 Rekening Bank & Rekonsiliasi:** Akun operasional dan kas kecil dengan pencocokan otomatis mutasi statement bank (`BankStatement`).
+  - **48.5 Cash Forecast:** Horizon 13 minggu memproyeksikan inflow, outflow, dan saldo akhir periodik per skenario.
+  - **48.6 Lindung Nilai Forward Contract:** Kontrak forward valas dengan valuasi mark-to-market (MTM) berdasarkan selisih kurs forward vs spot berjalan.
+  - **48.7 Fasilitas Kredit & Pemantauan Covenant:** Pengelolaan plafon pinjaman bank dengan peringatan pelanggaran rasio Debt-to-Equity (DER).
+  - **48.8 Cash Pooling:** Mekanisme sweep otomatis dari sub-account ke header account ketika saldo melampaui target balance.
+  - **48.9 Audit & Role:** Command `treasury:audit` memastikan konsistensi saldo, rasio limit fasilitas kredit, dan ketiadaan diskrepansi. Role `treasury` didaftarkan sebagai role ke-26 di `RbacSeeder`.
+- **Tests:** `TreasuryTest` (8 tes / 29 asersi). Suite terverifikasi: `PartnerTest|TreasuryTest|RbacTest|ModuleBoundariesTest` (48 passed / 165 assertions), `bank:reconcile` (0 diskrepansi), `treasury:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 49 — Ekspor-Impor / Trade Operations (Modul `trd_`)
+
+- **Context:** Operasi perdagangan lintas batas memerlukan tata kelola master negara, pelabuhan, Incoterms 2020 (titik transfer risiko & biaya), HS Code & lartas, alur pesanan ekspor (PEB) & impor (PIB), kalkulasi landed cost otomatis, pengelolaan dokumen CoO, dan pelacakan kontainer lintas batas hash-chain.
+- **Decision:**
+  - Prefix tabel **`trd_`** (8 tabel: `trd_countries`, `trd_ports`, `trd_incoterms`, `trd_hs_codes`, `trd_export_orders`, `trd_import_orders`, `trd_trade_documents`, `trd_shipment_legs`, `trd_trade_disputes`).
+  - **49.1 Master Perdagangan & Incoterms:** Incoterms 2020 dengan kejelasan titik transfer risiko dan pembagian beban biaya. HS Code mencatat base duty, tarif preferensial FTA, dan indikator izin lartas (larangan/pembatasan).
+  - **49.2 Order Ekspor & Pengakuan Pendapatan:** Pesanan ekspor bertransisi dari `draft → proforma → confirmed (PEB)` hingga `risk_transferred` yang secara otomatis memicu pengakuan piutang internasional dan pendapatan ekspor di ledger double-entry secara idempoten (`DR ar:international:IDR / CR revenue:export:IDR`).
+  - **49.3 & 49.5 Kalkulator Bea Cukai & FTA:** Simulasi perhitungan Bea Masuk (BM) dengan penerapan tarif preferensial FTA bila Certificate of Origin (CoO) valid, ditambah PPN Impor 11% dan PPh 22 Impor 2.5%, menghitung total landed cost secara deterministik.
+  - **49.4 Dokumen Perdagangan:** Lampiran dokumen CoO Form E, Fumigasi, Phytosanitary, dan sertifikasi Halal dengan masa berlaku dan otoritas penerbit.
+  - **49.6 Pelacakan Lintas Batas Kriptografis:** `trd_shipment_legs` membentuk hash-chain append-only SHA-256 (`GENESIS_CROSS_BORDER_TRACK → leg1 → leg2 → ...`) untuk menjamin integritas lacak balak perpindahan kontainer antar-pelabuhan/negara.
+  - **49.7 Sengketa & Asuransi:** Pencatatan klaim kerusakan/keterlambatan dagang dan pelunasan klaim asuransi kargo internasional.
+  - **49.9 Audit Perdagangan:** Command `trade:audit` memverifikasi keselarasan pesanan ekspor/impor dan keutuhan seluruh rantai hash tracking tanpa kerusakan.
+- **Tests:** `TradeTest` (7 tes / 31 asersi). Sub-suite `PartnerTest|TreasuryTest|TradeTest|RbacTest|ModuleBoundariesTest` (55 passed / 196 assertions), `bank:reconcile` (0 diskrepansi), `trade:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 50 — Trade Finance & SCF (Modul `tf_`)
+
+- **Context:** Transaksi perdagangan global memerlukan instrumen keuangan bank (Letter of Credit, Documentary Collection, Bank Guarantee) dan fasilitas pembiayaan supply chain (Pre/Post-shipment financing).
+- **Decision:**
+  - Prefix tabel **`tf_`** (5 tabel: `tf_letters_of_credit`, `tf_lc_documents`, `tf_documentary_collections`, `tf_bank_guarantees`, `tf_trade_loans`).
+  - **50.1 & 50.7 Letter of Credit Engine (UCP 600) & Ledger Memorandum:** Siklus L/C dengan pencatatan komitmen off-balance-sheet di ledger double-entry secara idempoten (`DR tf:contingent_lc:IDR / CR tf:contra_lc:IDR`) dengan nilai fungsional IDR terhitung via `TreasuryService`.
+  - **50.2 Pemeriksaan Dokumen & Diskrepansi:** Presentasi dokumen perdagangan dengan flag diskrepansi otomatis dan alur persetujuan waiver oleh applicant untuk meloloskan akseptasi L/C.
+  - **50.3 Documentary Collection (D/P, D/A):** Pengelolaan inkaso wesel dagang tunai vs akseptasi berjangka.
+  - **50.4 Garansi Bank (Bank Guarantee):** Bid Bond, Performance Bond, Advance Payment Guarantee dengan validasi ketat klaim tidak boleh melampaui nilai plafon garansi.
+  - **50.5 Pembiayaan Modal Kerja & SCF:** Pinjaman perdagangan pre/post-shipment dengan perhitungan bunga dan pelunasan parsial/lunas.
+- **Tests:** `TradeFinanceTest` (8 tes / 29 asersi). Sub-suite `TradeFinanceTest|ModuleBoundariesTest` (20 passed / 89 assertions), `bank:reconcile` (0 diskrepansi), `tf:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 51 — Kerja Sama Internasional I (Modul `intl_`)
+
+- **Context:** Kolaborasi bisnis multinasional memerlukan tata kelola master entitas hukum asing, kepatuhan AML/Apostille, struktur Joint Venture (Equity & Contractual) beserta panggilan modal (capital calls), lisensi HKI & royalti dengan Minimum Annual Guarantee (MAG), kontrak manufaktur OEM/ODM, milestone delivery transfer teknologi, dan perhitungan Withholding Tax (WHT) berbasis Tax Treaty (P3B).
+- **Decision:**
+  - Prefix tabel **`intl_`** (6 tabel: `intl_foreign_entities`, `intl_joint_ventures`, `intl_technology_licenses`, `intl_oem_contracts`, `intl_tech_transfers`, `intl_tax_treaties`).
+  - **51.1 Master Entitas Asing:** Pendataan nomor registrasi resmi negara asal, mata uang fungsional, yurisdiksi arbitrase (SIAC/ICC/BANI), dan bukti screening AML.
+  - **51.2 Joint Venture Management:** Dukungan Equity JV vs Contractual JV dengan validasi invariant total kepemilikan saham tepat 100% dan setoran modal (paid-in capital) tidak boleh melebihi plafon modal yang dikomitmenkan.
+  - **51.3 Lisensi HKI & Royalti Otomatis:** Perhitungan royalti berjenjang terhadap omzet bersih dengan mekanisme jaminan tahunan minimum (MAG) fallback per bulan.
+  - **51.4 OEM/ODM Manufaktur:** Pengelolaan kontrak OEM/ODM dengan penetapan unit tolling fee dan penelusuran bahan baku konsinyasi tanpa pengakuan hutang dagang.
+  - **51.5 Alih Teknologi (Tech Transfer):** Pelacakan tahapan milestone serah terima teknologi dengan validasi nilai milestone terhadap total nilai proyek alih teknologi.
+- **Tests:** `InternationalTest` (8 tes / 31 asersi). Sub-suite `InternationalTest|ModuleBoundariesTest` (20 passed / 91 assertions), `bank:reconcile` (0 diskrepansi), `intl:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 52 — Kerja Sama Internasional II: Intercompany & TP (Modul `ic_`)
+
+- **Context:** Transaksi antar-anak perusahaan dalam konglomerasi memerlukan otomasi mirror transaction (SO/PO cermin), pinjaman intercompany dengan suku bunga wajar (*arm's length rate*), regulasi kepatuhan transfer pricing (OECD/PMK), eliminasi saldo akun timbal balik (AR/AP konsolidasi), dan pembagian kepemilikan non-pengendali (Non-Controlling Interest / NCI).
+- **Decision:**
+  - Prefix tabel **`ic_`** (5 tabel: `ic_transactions`, `ic_loans`, `ic_transfer_pricing_rules`, `ic_elimination_entries`, `ic_subsidiary_nci`).
+  - **52.1 Mirror Transactions & Intercompany Loans:** Penjualan dari Entitas Penjual ke Entitas Pembeli secara atomik menghasilkan referensi faktur penjualan dan tagihan pembelian yang saling cocok (*matched*), melarang transaksi diri sendiri (*self-transaction*). Pinjaman intercompany menerapkan suku bunga wajar dan pelacakan pelunasan.
+  - **52.2 Transfer Pricing Engine (OECD / PMK):** Penegakan batas margin wajar minimum dan maksimum (*arm's length margin range*) untuk metode CUP, CPM, RPM, dan TNMM terhadap benchmark industri.
+- **Tests:** `IntercompanyTest` (7 tes / 23 asersi). Sub-suite `IntercompanyTest|ModuleBoundariesTest` (19 passed / 83 assertions), `bank:reconcile` (0 diskrepansi), `group:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 53 — Supply Chain Control Tower & S&OP (Modul `sct_`)
+
+- **Context:** Operasi rantai pasok multi-eselon membutuhkan visibilitas menyeluruh dari pemasok hingga konsumen, otomasi peramalan permintaan deterministik (Moving Average, Exponential Smoothing), penetapan janji pesanan akurat (ATP dari stok bebas & CTP dari kapasitas pabrik), klasifikasi material ABC/XYZ, dan mitigasi disrupsi operasional secara dini.
+- **Decision:**
+  - Prefix tabel **`sct_`** (4 tabel: `sct_echelon_stocks`, `sct_demand_forecasts`, `sct_order_promises`, `sct_disruption_alerts`).
+  - **53.1 & 53.5 Visibilitas Multi-Eselon & ABC/XYZ:** Pelacakan saldo on-hand, in-transit, reserved, dan safety stock di seluruh simpul eselon (Supplier, Port, Plant, DC, Outlet) dengan pengelompokan prioritas ABC/XYZ.
+  - **53.2 Peramalan Permintaan Multi-Model & Akurasi MAPE:** Menghitung deviasi kesalahan peramalan (Mean Absolute Percentage Error) setelah data aktual permintaan tercatat.
+  - **53.4 Janji Pesanan Berbasis Kapasitas Nyata (ATP & CTP):** Pemenuhan pesanan memprioritaskan alokasi stok bebas DC yang belum terreservasi (*Available-To-Promise*), dan mengalokasikan sisa kekurangan ke jadwal manufaktur pabrik (*Capable-To-Promise*).
+- **Tests:** `ControlTowerTest` (6 tes / 16 asersi). Sub-suite `ControlTowerTest|ModuleBoundariesTest` (18 passed / 76 assertions), `bank:reconcile` (0 diskrepansi), `tower:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 54 — Finance Grup, Anggaran & Kepatuhan (Modul `ef_`)
+
+- **Context:** Tata kelola keuangan enterprise menuntut pengendalian pagu anggaran hierarkis dengan proteksi hard-stop encumbrance, rekonsiliasi PPN Masukan/Keluaran dan bukti potong PPh, penegakan prinsip pemisahan wewenang (Segregation of Duties / SoD), dan manajemen kepatuhan regulasi terpusat.
+- **Decision:**
+  - Prefix tabel **`ef_`** (4 tabel: `ef_budgets`, `ef_tax_summaries`, `ef_sod_rules`, `ef_compliance_deadlines`).
+  - **54.1 Enterprise Budgeting & Hard-Stop Encumbrance:** Penguncian pagu anggaran per pusat biaya dan mata anggaran belanja. Transaksi encumbrance otomatis ditolak apabila sisa anggaran tidak mencukupi (Hard-Stop), serta pembaruan realisasi belanja belanja secara berkala.
+  - **54.3 Rekonsiliasi Pajak Nasional (PPN & PPh):** Agregasi otomatis DPP, Pajak Masukan, Pajak Keluaran, dan pajak dipotong dengan formula hitung kurang/lebih bayar.
+  - **54.4 Mesin Validasi Pemisahan Tugas (SoD Matrix):** Pengecekan otomatis kombinasi wewenang berbahaya pada user multi-role (misal: larangan kombinasi peran `procurement` dan `treasury`).
+- **Tests:** `EnterpriseFinanceTest` (7 tes / 22 asersi). Sub-suite `EnterpriseFinanceTest|ModuleBoundariesTest` (19 passed / 82 assertions), `bank:reconcile` (0 diskrepansi), `enterprise:audit` (0 diskrepansi), Pint lulus.
+
+## 2026-10-06: Fase 55 — Integrasi API v2, B2B EDI & Multi-Tenancy (Modul `intg_`)
+
+- **Context:** Integrasi ekosistem enterprise ke sistem prinsipal, perbankan, vendor tier-1, dan mitra logistik global membutuhkan pengiriman webhook andal dengan integritas signature kriptografis HMAC-SHA256, subsistem penerjemah pesan B2B Electronic Data Interchange (EDI 850/855/856/810), serta otentikasi klien B2B dengan limitasi kuota bertingkat (*tiered rate limiting*).
+- **Decision:**
+  - Prefix tabel **`intg_`** (4 tabel: `intg_webhook_subscriptions`, `intg_webhook_deliveries`, `intg_edi_messages`, `intg_api_clients`).
+  - **55.2 Mesin Webhook B2B & HMAC Signature:** Publikasi event domain dengan penandatanganan payload transaksional menggunakan HMAC-SHA256 (`secret_key`) untuk verifikasi integritas oleh penerima.
+  - **55.3 B2B Electronic Data Interchange (EDI):** Penanganan standar pesan EDI X12 / EDIFACT untuk set transaksi Purchase Order (850), Order Acknowledgment (855), Advance Shipping Notice (856), dan Electronic Invoice (810).
+  - **55.5 Manajemen Klien B2B & Tiered Quota:** Penerbitan kredensial API key dengan proteksi hash SHA-256 dan penetapan batas panggilan per menit berdasarkan tier langganan (Silver: 120, Gold: 600, Platinum: 2000).
+  - **55.9 Audit Integrasi B2B:** Command `api:audit` memverifikasi keselarasan signature pengiriman webhook dan keutuhan transmisi pesan EDI bernilai 0 diskrepansi.
+- **Tests:** `IntegrationTest` (5 tes / 18 asersi). Sub-suite `IntegrationTest|ModuleBoundariesTest` (17 passed / 78 assertions), `bank:reconcile` (0 diskrepansi), `api:audit` (0 diskrepansi), Pint lulus.
+
+---
+
+## 2026-10-06: Fase 56 — Stress Testing Skala Ultra, Simulasi 12 Bulan & Resilience
+
+- **Context:** Pengujian ketahanan sistem pada volume data skala ultra (skala enterprise 12 bulan transaksi), penegakan konsistensi 6 siklus rantai nilai makro hulu-hilir (Procure-to-Pay, Plan-to-Produce, Order-to-Cash, Agent-to-Pay, Import/Export-to-Settle, Record-to-Report), proteksi double allocation persediaan / limit kredit, serta isolasi otorisasi multi-role.
+- **Decision:**
+  - **56.1 Dataset Skala Enterprise Deterministik (`ValueChainUltraSeeder`):** Implementasi seeder streaming deterministik menggunakan `updateOrInsert` yang menanam puluhan master vendor, ratusan stasiun kerja manufaktur, jaringan distributor resmi bertingkat, dan agen komisi dengan hierarki downline tanpa menyebabkan konflik primary key atau unique constraint.
+  - **56.2 Simulasi 6 Siklus Rantai Nilai Makro:** Seluruh siklus diuji terhadap kepatuhan invarian `bank:reconcile` (double-entry ledger seimbang sempurna, selisih aset global = 0).
+  - **56.3 & 56.5 Proteksi Balap Konkurensi & Alokasi Terbatas:** Penegakan constraint atomik pada update saldo eksposur kredit dan alokasi stok untuk mencegah race conditions dan saldo negatif.
+  - **56.6 Pengujian Penetrasi Otorisasi & Akses Multi-Tenant:** Verifikasi proteksi IDOR dan boundary pengguna multi-role.
+- **Tests:** `ValueChainUltraSimulationTest` (4 tes / 14 asersi). Sub-suite `ValueChainUltraSimulationTest|ModuleBoundariesTest` (16 passed / 74 assertions), `bank:reconcile` (0 diskrepansi), Pint lulus.
+
+---
+
+## 2026-10-06: Fase 57 — Skenario Emas End-to-End, Dokumentasi Final & Serah Terima
+
+- **Context:** Puncak arsitektur rantai pasok dan nilai superwebsite enterprise. Pengujian skenario emas hulu-ke-hilir (Golden Value Chain) yang merajut Kontrak, Trade Finance, Logistik, Gudang WMS, Manufaktur, Distribusi, Komisi Penjualan Agensi, hingga Konsolidasi Finansial Holding, disertai pengujian skenario krisis cacat mutu (recall & quarantine) dan konsolidasi pajak JV internasional.
+- **Decision:**
+  - **57.1 Orkestrasi Audit Rantai Nilai Global (`chain:audit-all`):** Command `chain:audit-all` mengeksekusi serentak 12 audit platform (`bank:reconcile`, `treasury:audit`, `trade:audit`, `tf:audit`, `proc:audit`, `mfg:audit-costing`, `dist:audit`, `agy:audit`, `group:audit`, `tower:audit`, `enterprise:audit`, `api:audit`) dengan verifikasi 0 diskrepansi secara deterministik.
+  - **57.2 & 57.3 Skenario Krisis Mutu & JV Internasional:** Pengujian alur isolasi karantina lot material cacat dan rekonsiliasi eliminasi timbal balik entitas anak dengan 0 selisih.
+  - **57.4–57.7 Dokumentasi & Berita Acara:** Sinkronisasi menyeluruh catatan arsitektur, inventaris kode, dan log pengujian.
+- **Tests:** `GoldenValueChainMegaIntegrationTest` (3 tes / 21 asersi). Sub-suite `GoldenValueChainMegaIntegrationTest|ModuleBoundariesTest` (15 passed / 81 assertions), `chain:audit-all` (12 audit lulus, 0 diskrepansi), Pint lulus.
+
+---
+
+## 2026-10-06: Fase 57B — Deep Audit Codebase, Hardening, Keamanan, Validasi Ketat & Enriched Unique Seeders
+
+- **Context:** Pemeliharaan menyeluruh ekosistem platform modular monolith, pengerasan kontrol keamanan rate limiting, pengujian kepatuhan batas modul, pengayaan dataset unik idempoten skala besar (100+ badan hukum unik), dan validasi integritas sistem multi-pilar.
+- **Decision:**
+  - **57B.1 & 57B.2 Zero Fat Controller & DTO/Exception Hierarchy:** Penegakan konsistensi pemanggilan service/action terenkapsulasi `DB::transaction`, standardisasi DTO strongly-typed, dan pemisahan exception bisnis dari layer HTTP.
+  - **57B.4 Security Hardening & Rate Limiter Granular:** Konfigurasi rate limiter di `AppServiceProvider` (`transactions` 10/min, `wallet-pin` 3/5min, `auth-attempts` 5/min, `exports-imports` 5/min) untuk mitigasi DoS dan brute-force.
+  - **57B.6 Dataset Unik & Idempoten (`EnterpriseUniverseSeeder`):** Penambahan 100 entitas badan hukum (PT, CV, Firma) dengan NIK/NPWP/NIB ber-masking dan ber-hash deterministik, aman diulang berulang kali tanpa benturan constraint.
+  - **57B.8 Observabilitas 10 Pilar Multi-Domain:** Pengujian kesehatan ekosistem via `super:health-check` menghasilkan status HEALTHY di seluruh subsistem utama.
+- **Tests:** `MaintenanceAndResiliencePhase57BTest` (4 tes / 8 asersi). Sub-suite `MaintenanceAndResiliencePhase57BTest|ModuleBoundariesTest` (16 passed / 68 assertions), `super:health-check` (lulus 100%), `chain:audit-all` (0 selisih), Pint lulus.
+
+---
+
+## 2026-10-06: Fase 58 — Human Capital Management (HCM), Talent & Production Payroll (Modul `hcm_`)
+
+- **Context:** Manajemen sumber daya manusia terpadu, struktur organisasi hierarkis, pemrosesan penggajian terotomasi dengan pemotongan BPJS Ketenagakerjaan/Kesehatan dan PPh 21 TER, serta alokasi langsung biaya tenaga kerja ke perintah kerja manufaktur (*Direct Labor Costing*).
+- **Decision:**
+  - Prefix tabel **`hcm_`** (4 tabel: `hcm_departments`, `hcm_employees`, `hcm_payrolls`, `hcm_production_labor_allocations`).
+  - **58.1 Master Karyawan & Kontrak:** Pengelolaan profil karyawan dengan perlindungan data privasi (NIK di-hash SHA-256), jabatan, dan jenis hubungan kerja (PKWT/PKWTT).
+  - **58.3 Payroll & Kalkulator Pajak PPh 21:** Perhitungan gaji kotor, potongan jaminan sosial, dan penghasilan bersih dengan verifikasi matematis ketat.
+  - **58.4 Direct Labor Costing Manufaktur:** Pencatatan alokasi jam kerja aktual operator pabrik ke referensi nomor SPK manufaktur (`mfg_`).
+  - **58.5 Audit HCM:** Command `hcm:audit` memvalidasi konsistensi gaji kotor - potongan = gaji bersih dan total potongan BPJS/PPh dengan 0 diskrepansi.
+- **Tests:** `HcmTest` (4 tes / 9 asersi). Sub-suite `HcmTest|ModuleBoundariesTest` (16 passed / 69 assertions), `hcm:audit` (0 diskrepansi), `chain:audit-all` (13 audit lulus), Pint lulus.
+
+---
+
+## 2026-10-06: Fase 59 — R&D & Product Lifecycle Management (Modul `plm_`)
+
+- **Context:** Pengelolaan inovasi, rekayasa spesifikasi produk, gerbang tahapan riset (stage-gate), Engineering Bill of Materials (EBOM), Engineering Change Orders (ECO) berantai kriptografis append-only (SHA-256 hash-chain), dan buku catatan laboratorium (Lab Notebook) berformula terlindungi enkripsi.
+- **Decision:**
+  - Prefix tabel **`plm_`** (4 tabel: `plm_projects`, `plm_engineering_boms`, `plm_change_orders`, `plm_lab_notebooks`).
+  - **59.1 Project R&D & Stage-Gate:** Pengelolaan siklus proyek riset (`concept`, `prototype`, `validation`, `pre_production`, `launched`, `cancelled`) dengan persetujuan tahapan.
+  - **59.2 Engineering BOM (EBOM):** Spesifikasi teknis komponen rekayasa sebelum dirilis ke Manufacturing BOM (MBOM).
+  - **59.3 Engineering Change Order (ECO) Hash-Chain:** Perubahan rekayasa dicatat secara berantai append-only menggunakan `prev_hash` dan `hash` SHA-256 kanonik untuk audit trail tidak terbantahkan.
+  - **59.4 Lab Notebook & Formula Enkripsi:** Catatan eksperimen dan formula kimia/rekayasa tersimpan dalam payload aman terenkripsi (AES/Base64 envelope).
+  - **59.5 Audit PLM:** Command `plm:audit` memvalidasi integritas hash-chain ECO dan stage-gate proyek dengan 0 diskrepansi.
+- **Tests:** `PlmTest` (5 tes / 8 asersi). Sub-suite `PlmTest|ModuleBoundariesTest` (17 passed / 68 assertions), `plm:audit` (0 diskrepansi), `chain:audit-all` (14 audit lulus), Pint lulus.
+
+---
+
+## 2026-10-06: Fase 60 — ESG, Emisi Karbon & Sustainable Value Chain (Modul `esg_`)
+
+- **Context:** Pelacakan emisi gas rumah kaca (GRK) terstandarisasi GHG Protocol (Scope 1, 2, 3), akuntansi portofolio kredit karbon dan offset retirement dengan proteksi over-retirement, serta penilaian kepatuhan ESG mitra/pemasok berstandar GRI.
+- **Decision:**
+  - Prefix tabel **`esg_`** (4 tabel: `esg_emissions`, `esg_carbon_credits`, `esg_offset_retirements`, `esg_supplier_scores`).
+  - **60.1 Pelacak Emisi GRK Scope 1, 2, 3:** Standardisasi faktor emisi bahan bakar, listrik PLN grid, dan pengiriman barang dengan perhitungan presisi matematis.
+  - **60.2 Akuntansi Karbon & Offset Retirement:** Registrasi sertifikat kredit karbon (VERRA, Gold Standard, IDXCarbon) dan alokasi pemensiunan unit offset tanpa risiko klaim ganda (*anti double-counting*).
+  - **60.3 Penilaian Keberlanjutan Pemasok Hijau:** Skoring multi-faktor berbobot (Environmental 40%, Social 30%, Governance 30%) dengan sertifikasi terakreditasi (ISO 14001, FSC, RSPO).
+  - **60.4 Audit ESG:** Command `esg:audit` memvalidasi faktor emisi terstandarisasi, kuantitas offset tidak melampaui kredit aktif, dengan 0 diskrepansi.
+- **Tests:** `EsgTest` (5 tes / 12 asersi). Sub-suite `EsgTest|ModuleBoundariesTest` (17 passed / 72 assertions), `esg:audit` (0 diskrepansi), `chain:audit-all` (15 audit lulus), Pint lulus.
+
+---
+
+## 2026-10-06: Fase 61 — Marketplace B2B, Surplus Asset Auction & Escrow (Modul `b2b_`)
+
+- **Context:** Direktori katalog grosir B2B multi-vendor tertutup dengan penetapan harga kuantitas bertingkat (*Tiered Pricing Matrix*), alur negosiasi RFQ tempo pembayaran TOP 30/60, balai lelang digital aset surplus pabrik/mesin dengan proteksi perpanjangan waktu otomatis (*anti-sniping*), dan rekening escrow multi-pihak terproteksi pelepasan berbasis verifikasi BAST fisik.
+- **Decision:**
+  - Prefix tabel **`b2b_`** (4 tabel: `b2b_wholesale_catalogs`, `b2b_rfqs`, `b2b_auctions`, `b2b_escrow_accounts`).
+  - **61.1 Marketplace Grosir & RFQ:** Pengelolaan katalog vendor terverifikasi dan siklus penawaran harga B2B transparan.
+  - **61.2 Balai Lelang Digital & Anti-Sniping:** Mesin penawaran harga lelang (English Auction) dengan deteksi penawaran menit-menit akhir untuk memperpanjang durasi penawaran secara adil.
+  - **61.3 Escrow Multi-Pihak Terproteksi:** Kunci dana transaksi di akun escrow dengan pelepasan bertahap berbasis Berita Acara Serah Terima (BAST).
+  - **61.4 Audit B2B:** Command `b2b:audit` memvalidasi neraca rekening escrow (dana keluar tidak melebihi deposit) dan konsistensi lelang dengan 0 diskrepansi.
+- **Tests:** `B2bTest` (5 tes / 16 asersi). Sub-suite `B2bTest|ModuleBoundariesTest` (17 passed / 76 assertions), `b2b:audit` (0 diskrepansi), `chain:audit-all` (16 audit lulus), Pint lulus.
+
+---
+
+## 2026-10-06: Fase 62 — Agribisnis, Kontrak Petani & Hulu Rantai Pasok Makanan (Modul `agri_`)
+
+- **Context:** Kemitraan petani plasma hulu rantai pasok makanan, kontrak bagi hasil tani dengan talangan uang muka bibit/pupuk, jaminan harga dasar (*floor price*), operasional pos pengumpul (*collection center*) dengan penimbangan & grading mutu otomatis, serta integrasi rantai dingin (*cold chain*) IoT ke Dapur Sentral Resto CK-01 dan pabrik pengolahan.
+- **Decision:**
+  - Prefix tabel **`agri_`** (4 tabel: `agri_farmers`, `agri_contracts`, `agri_collection_batches`, `agri_cold_chain_logs`).
+  - **62.1 Registrasi Petani & Kontrak Tani:** Pemetaan poligon lahan dan pencatatan uang muka sarana produksi pertanian (saprotan).
+  - **62.2 Grading Sentra Pengumpul & Pemotongan Talangan:** Penentuan harga beli berbasis grade mutu (Grade A 100%, Grade B 90%, Grade C 80%) dan pemotongan otomatis talangan bibit/pupuk pada pembayaran panen bersih.
+  - **62.3 Telemetri Rantai Dingin IoT:** Pemantauan suhu truk reefer berpendingin dengan deteksi pelanggaran batas suhu segar (*fresh produce threshold* 2°C - 8°C).
+  - **62.4 Audit Agribisnis:** Command `agri:audit` memvalidasi konsistensi perhitungan pembayaran bersih (`gross - deduction == net`) dan batas potongan tidak melampaui bruto dengan 0 diskrepansi.
+- **Tests:** `AgriTest` (5 tes / 14 asersi). Sub-suite `AgriTest|ModuleBoundariesTest` (17 passed / 74 assertions), `agri:audit` (0 diskrepansi), `chain:audit-all` (17 audit lulus), Pint lulus.
+
+---
+
+## 2026-10-06: Fase 63 — Konstruksi EPC, Manajemen Proyek Properti & Asset Capitalization (Modul `epc_`)
+
+- **Context:** Manajemen hierarki proyek konstruksi EPC (Mall Ekstensi & Pabrik Pengolahan Baru), pemecahan aktivitas Work Breakdown Structure (WBS) dengan kurva-S progres fisik, penerbitan sertifikat prestasi bulanan (*Monthly Certificate - MC*) dengan potongan retensi 5%, akumulasi biaya konstruksi dalam pengerjaan (*Construction in Progress - CIP*), dan reklasifikasi otomatis menjadi Aset Tetap di modul Aset (`ast_`) saat BAST Final diterbitkan.
+- **Decision:**
+  - Prefix tabel **`epc_`** (4 tabel: `epc_projects`, `epc_wbs_nodes`, `epc_progress_certificates`, `epc_cip_capitalizations`).
+  - **63.1 Hierarki WBS & RAB Proyek:** Struktur paket kerja (struktur sipil, MEP, arsitektur, finishing) dengan bobot persentase kurva-S dan alokasi anggaran.
+  - **63.2 Sertifikat Prestasi Fisik (Monthly Certificate - MC):** Sertifikasi kemajuan fisik independen dengan klaim bruto dan pemotongan retensi pemeliharaan 5%.
+  - **63.3 Akumulasi CIP & Kapitalisasi Aset Tetap:** Pencatatan biaya konstruksi dalam pengerjaan dan penutupan akun CIP menjadi Aset Tetap terdaftar saat serah terima BAST final.
+  - **63.4 Audit EPC:** Command `epc:audit` memvalidasi kesesuaian nilai klaim MC dengan akumulasi saldo CIP dan nilai aset terkapitalisasi dengan 0 diskrepansi.
+- **Tests:** `EpcTest` (5 tes / 19 asersi). Sub-suite `EpcTest|ModuleBoundariesTest` (17 passed / 79 assertions), `epc:audit` (0 diskrepansi), `chain:audit-all` (18 audit lulus), Pint lulus.
+
+---
+
+## 2026-10-06: Enterprise Deepening & Architectural Documentation — Fase 59 s/d 63 (PLM, ESG, B2B, Agri, EPC)
+
+- **Context:** Permintaan user untuk mengembangkan rencana Fase 59-63 sedetail mungkin (enterprise-grade granular sub-phases), memperdalam implementasi logika/validasi/pengujian di codebase, serta memeriksa dan melengkapi seluruh bagian `CODEBASE.md` yang belum mencatat modul baru.
+- **Decision:**
+  - **PROGRESS.md Expansion:** Rincian Fase 59 s/d 63 diperluas dari outline ringkas menjadi sub-fase granular (.1 s/d .5) dengan spesifikasi teknis, matriks kelayakan, invarian data, dan flow bisnis komprehensif.
+  - **Logic & Defense Hardening:**
+    - `PlmService`: penambahan alur transisi `advanceStage` dengan proteksi anti-revert dan konversi `releaseEbomToMbom` menjadi resep manufaktur aktif.
+    - `B2bService`: penambahan alur negosiasi formal `respondToRfq` dan persetujuan penawaran `acceptRfq`.
+    - `AgriService`: penguatan pengujian grading bertingkat (Grade B 90%, Grade C 80%) dan amortisasi talangan bibit/pupuk.
+    - `EpcService`: penambahan validasi akumulasi bobot simpul WBS agar tidak melampaui batas absolut 100%.
+  - **Documentation Alignment:**
+    - `docs/CODEBASE.md`: Memperbarui tabel modul (§3) dengan 6 modul baru (`HCM`, `PLM`, `ESG`, `B2B`, `Agri`, `EPC`), memperbarui daftar command audit (§8), memperbarui matriks role RBAC (§4) menjadi 32 role, dan menulis spesifikasi arsitektur modul di §15.
+- **Verification:** Seluruh 38 tes modul 59-63 dan arsitektur boundaries lulus (141 asersi), `chain:audit-all` 18/18 audit lulus, `bank:reconcile` 140 akun seimbang (0 selisih), dan Pint lulus 100%.
+
+---
+
+## 2026-10-07: Enterprise Expansion Across 12 Business Lines — Fase 67 s/d 103
+
+- **Context:** Pelaksanaan cetak biru ekspansi konglomerasi 12 lini bisnis secara bertahap dan menyeluruh:
+  - Fase 67: Simulation Kernel, Universal Event Spine, Digital Twin Bus
+  - Fase 68: Telematics & IoT Connected Car
+  - Fase 69: Ekosistem EV & Jaringan Charging SPKLU
+  - Fase 70: B2B Fleet Leasing & SLA Management
+  - Fase 71: Real-World Asset (RWA) Tokenization
+  - Fase 72: InsurTech & Claims Autopilot
+  - Fase 73: Robo-Advisor Wealth Management & Treasury Yield
+  - Fase 74: Cloud Kitchen & Catering HCM Payroll
+  - Fase 75: Smart Vending, AI Forecasting & Auto-PO
+  - Fase 76: Proptech & Smart Building Operations
+  - Fase 77: Digital Twin & BIM Lifecycle
+  - Fase 78: Flex-Space & Co-working Booking
+  - Fase 79: Reverse Logistics & Circular Economy
+  - Fase 80: Cold-Chain Blockchain & Drone Robotics
+  - Fase 81: Algorithmic & Surge Pricing Engine
+  - Fase 82: VMI & C2M Manufacturing
+  - Fase 83: Cross-Border Clearing & CBAM Carbon Tax
+  - Fase 84: AI Contract Bidding Agent
+  - Fase 85: Internal Gig Economy
+  - Fase 86: Precision Agri-Tech & DAO Governance
+  - Fase 87: Hospital EMR & Bed Management
+  - Fase 88: Hospital Revenue Cycle & Drug Contraindications
+  - Fase 89: Beach Club Ticketing, Access Control & Table Escrow
+  - Fase 90: Beach Club Artist Door-Share & Festival Economy
+  - Fase 91: Hotel PMS, Central Reservation & Smart Room Energy Twin
+  - Fase 92: Hotel Folio Items, Timeshare Fractional Yield & Destination Packages
+  - Fase 93: Mining Fleet Dispatch, Payload Variance & Fuel Anomaly
+  - Fase 94: Mining Weighbridge Hash-Chain, PNBP Royalty & HSE Work Permits
+  - Fase 95: Cross-Line 12-Pillars Ecosystem Integration
+  - Fase 96: Universal Fintech, Multi-Line Claims & Stablecoin Clearing
+  - Fase 97: Group Command Center, Carbon Balance & Health Scoring
+  - Fase 98: TwelveLinesUltraSeeder & Stress Testing
+  - Fase 99: Unified AI Dynamic Pricing & Fraud Quarantine
+  - Fase 100: 12-Lines Comprehensive Audit Command (`ecosystem:audit-12-lines`)
+  - Fase 101: 12-Lines Golden Scenario End-to-End Simulation
+  - Fase 102: API v3 & HMAC-SHA256 Webhook Dispatcher
+  - Fase 103: Dokumentasi, Playbook & Serah Terima Final
+- **Decision:**
+  - Mengintegrasikan seluruh 12 lini ke dalam modular monolith dengan double-entry multi-asset ledger, hash-chain tamper-evident SHA-256, dan event spine.
+  - Memastikan seluruh invarian data: $\sum \text{entries} = 0$, fractional dividend $\sum \text{shares} = \text{supply}$, harga dinamis bounded floor/ceiling, serta verifikasi otorisasi ketat.
+- **Verification:** Seluruh test suite hijau (0 failed, 0 skipped), Pint clean 100%, Arch test hijau, `ecosystem:audit-12-lines` 0 diskrepansi.
+
+## 2026-10-08: Gelombang 2 (Fase 104–149) — 17 Lini Bisnis & Arsitektur Enterprise
+- **Context:**
+  - Penambahan 5 lini bisnis baru: Energy & Power Grid (`egy_`), Telecom & ISP (`tlx_`), Media & Entertainment (`med_`), Education & Cohorts (`edu_`), Retail & Q-Commerce (`ret_`).
+  - Ekspansi mendalam lini Gelombang 1: Hospital EMR, Venue Ticketing, Hotel PMS, Mining Dispatch & Royalty.
+  - Penguatan arsitektur platform: Universal Event Spine, Zero Trust & Privacy Vault, Multi-Region Active-Active Resilience, Lakehouse CDC & Master Data Management (MDM), Platform Economy & Open API v3+, serta Mega Scenario Konglomerasi 12-Bulan deterministik.
+- **Decision:**
+  - Menjaga prinsip **Modular Monolith** tanpa kebocoran domain antar modul. Komunikasi antar modul melalui Contract, Domain Event, dan Double-Entry Ledger.
+  - Seluruh nilai moneter menggunakan representasi integer Rupiah dan decimal(36,18) multi-aset.
+  - Setiap fase dilengkapi automated feature tests dengan skenario komprehensif (a)–(e) dan quality gate 0 selisih.
+- **Verification:**
+  - `php artisan bank:reconcile` = 0 selisih.
+  - Seluruh quality gate command (`security:audit`, `dr:audit`, `api:audit`, `egy:audit`, `tlx:audit`, `med:audit`, `edu:audit`, `ret:audit`, dll.) lulus dengan 0 diskrepansi.
+  - Pint linting clean 100%.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

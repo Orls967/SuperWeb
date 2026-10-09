@@ -16,6 +16,7 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mall\Domain\Enums\ReceiptClaimStatus;
 use Modules\Mall\Domain\Exceptions\DuplicateReceiptClaimException;
 use Modules\Mall\Domain\Models\LoyaltyMember;
@@ -110,7 +111,12 @@ class ClaimReceiptPointsAction
                     PostingEntryDTO::forAccount($mallLiabilityAccount->id, 'PTS', $ptsBd->negated()),
                 ];
 
-                $txKey = 'pts_claim_'.$receiptNumber.'_'.Str::random(8);
+                // Kunci deterministik dari nomor struk agar retry tidak men-posting ganda
+                $txKey = 'pts_claim_'.$receiptNumber;
+
+                if (LedgerTransaction::query()->where('idempotency_key', $txKey)->exists()) {
+                    return ReceiptClaim::query()->where('receipt_number', $receiptNumber)->firstOrFail();
+                }
 
                 $dto = new PostingDTO(
                     type: TransactionType::LOYALTY_EARN->value,

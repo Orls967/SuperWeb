@@ -7,14 +7,23 @@ use App\Models\Sparepart;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Modules\Asset\Database\Seeders\AssetSeeder;
 use Modules\Banking\Application\Actions\SetPinAction;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\database\seeders\BankingSeeder;
+use Modules\Contract\database\seeders\ContractSeeder;
 use Modules\Core\database\seeders\PlatformSeeder;
+use Modules\Core\database\seeders\RbacSeeder;
 use Modules\Crypto\database\seeders\CryptoSeeder;
+use Modules\Distribution\Database\Seeders\DistributionSeeder;
 use Modules\Logistics\database\seeders\LogisticsSeeder;
 use Modules\Mall\database\seeders\MallSeeder;
+use Modules\Manufacturing\Database\Seeders\ManufacturingSeeder;
+use Modules\Party\database\seeders\PartySeeder;
+use Modules\Procurement\database\seeders\ProcurementSeeder;
 use Modules\Resto\database\seeders\RestoMenuSeeder;
+use Modules\Supplier\database\seeders\SupplierSeeder;
+use Modules\Wms\Database\Seeders\WmsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -131,6 +140,15 @@ class DatabaseSeeder extends Seeder
             RestoMenuSeeder::class,
             MallSeeder::class,
             LogisticsSeeder::class,
+            PartySeeder::class,
+            ContractSeeder::class,
+            AssetSeeder::class,
+            SupplierSeeder::class,
+            ProcurementSeeder::class,
+            ManufacturingSeeder::class,
+            DistributionSeeder::class,
+            WmsSeeder::class,
+            RbacSeeder::class,
         ]);
     }
 }

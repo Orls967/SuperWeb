@@ -214,6 +214,8 @@
 
                 <form method="POST" action="{{ route('wallet.topup.store') }}" class="mt-4 space-y-4">
                     @csrf
+                    {{-- Kunci idempoten tetap sama saat submit ulang setelah validasi gagal --}}
+                    <input type="hidden" name="idempotency_key" value="{{ old('idempotency_key', (string) \Illuminate\Support\Str::uuid()) }}">
 
                     <div>
                         <label class="block text-xs font-medium text-slate-300 mb-2">Pilih Nominal Cepat</label>

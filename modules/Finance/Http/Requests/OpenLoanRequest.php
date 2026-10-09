@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Finance\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Modules\Finance\Application\Services\LoanSimulator;
 
@@ -13,6 +14,19 @@ class OpenLoanRequest extends FormRequest
     public function authorize(): bool
     {
         return $this->user() !== null;
+    }
+
+    /**
+     * Formulir selalu menyertakan kunci tersembunyi; pemanggil programatik tanpa
+     * kunci tetap mendapat satu nilai stabil untuk submit ini saja.
+     */
+    public function prepareForValidation(): void
+    {
+        if ($this->filled('idempotency_key')) {
+            return;
+        }
+
+        $this->merge(['idempotency_key' => (string) Str::uuid()]);
     }
 
     /**
@@ -30,7 +44,7 @@ class OpenLoanRequest extends FormRequest
             'city' => 'required|string|max:100',
             'postal_code' => 'required|string|max:20',
             'pin' => 'required|string|size:6',
-            'idempotency_key' => 'nullable|uuid',
+            'idempotency_key' => 'required|string|max:64',
         ];
     }
 
@@ -43,6 +57,7 @@ class OpenLoanRequest extends FormRequest
             'tenor_months.in' => 'Tenor hanya tersedia untuk 6, 12, 24, atau 36 bulan.',
             'collateral_symbol.exists' => 'Aset kolateral tidak dikenal.',
             'pin.size' => 'PIN dompet harus 6 digit.',
+            'idempotency_key.required' => 'Kunci pengajuan tidak ditemukan. Muat ulang halaman lalu coba lagi.',
         ];
     }
 }

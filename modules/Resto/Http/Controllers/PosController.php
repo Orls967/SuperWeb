@@ -139,13 +139,15 @@ class PosController extends Controller
             'outlet_id' => ['required', 'exists:resto_outlets,id'],
             'amount' => ['required', 'integer', 'min:1'],
             'note' => ['nullable', 'string', 'max:255'],
+            'idempotency_key' => ['nullable', 'string', 'max:64'],
         ]);
 
         $action->handle(
             outletId: (int) $validated['outlet_id'],
             amount: (int) $validated['amount'],
             userId: (int) $request->user()->id,
-            note: $validated['note'] ?? null
+            note: $validated['note'] ?? null,
+            idempotencyKey: $validated['idempotency_key'] ?? null
         );
 
         return back()->with('success', 'Setoran kas laci ke rekening bank berhasil dicatat.');

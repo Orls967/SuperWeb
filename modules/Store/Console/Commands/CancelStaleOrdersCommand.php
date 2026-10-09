@@ -20,35 +20,36 @@ class CancelStaleOrdersCommand extends Command
         $minutes = (int) $this->option('minutes');
         $cutoff = now()->subMinutes($minutes);
 
-        $staleOrders = Order::where('status', OrderStatus::PENDING_PAYMENT->value)
+        $count = 0;
+        $query = Order::where('status', OrderStatus::PENDING_PAYMENT->value)
             ->where('created_at', '<=', $cutoff)
-            ->with('items')
-            ->get();
+            ->with('items');
 
-        if ($staleOrders->isEmpty()) {
+        $query->chunkById(200, function ($staleOrders) use ($inventoryService, $minutes, &$count): void {
+            foreach ($staleOrders as $order) {
+                foreach ($order->items as $item) {
+                    if ($item->reservation_id) {
+                        $inventoryService->release(
+                            $item->reservation_id,
+                            "Auto-cancel: Pesanan {$order->number} tidak dibayar dalam {$minutes} menit"
+                        );
+                    }
+                }
+
+                $order->status = OrderStatus::CANCELLED;
+                $order->cancelled_at = now();
+                $order->cancellation_reason = "Kedaluwarsa: Tidak dibayar dalam {$minutes} menit";
+                $order->save();
+
+                $count++;
+                $this->line("Pesanan {$order->number} berhasil dibatalkan dan reservasi stok dilepaskan.");
+            }
+        });
+
+        if ($count === 0) {
             $this->info("Tidak ada pesanan pending payment yang kedaluwarsa (> {$minutes} menit).");
 
             return self::SUCCESS;
-        }
-
-        $count = 0;
-        foreach ($staleOrders as $order) {
-            foreach ($order->items as $item) {
-                if ($item->reservation_id) {
-                    $inventoryService->release(
-                        $item->reservation_id,
-                        "Auto-cancel: Pesanan {$order->number} tidak dibayar dalam {$minutes} menit"
-                    );
-                }
-            }
-
-            $order->status = OrderStatus::CANCELLED;
-            $order->cancelled_at = now();
-            $order->cancellation_reason = "Kedaluwarsa: Tidak dibayar dalam {$minutes} menit";
-            $order->save();
-
-            $count++;
-            $this->line("Pesanan {$order->number} berhasil dibatalkan dan reservasi stok dilepaskan.");
         }
 
         $this->info("Total {$count} pesanan kedaluwarsa berhasil dibatalkan.");

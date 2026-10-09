@@ -13,6 +13,7 @@ use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Enums\TransactionType;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Crypto\Contracts\PriceFeed;
 use Modules\Crypto\Domain\Models\CryptoAsset;
 use Modules\Finance\Application\Services\LoanSimulator;
@@ -61,6 +62,20 @@ class OpenLoanAction extends BaseAction
         ?string $idempotencyKey = null,
         ?BigDecimal $collateralQty = null,
     ): Loan {
+        if ($idempotencyKey !== null) {
+            // Submit ulang dengan kunci yang sama harus mengembalikan pinjaman
+            // yang sudah ada, bukan membuka pinjaman dan debit kolateral kedua kalinya.
+            $posted = LedgerTransaction::where('idempotency_key', 'loan_open_'.$idempotencyKey)->first();
+
+            if ($posted !== null) {
+                $existing = Loan::where('order_id', $posted->reference_id)->first();
+
+                if ($existing !== null) {
+                    return $existing->fresh(['installments', 'collateralAsset']);
+                }
+            }
+        }
+
         if (! $product->is_car || $product->productable_type !== 'dex_car') {
             throw new Exception('Pembiayaan HODL-to-Drive hanya berlaku untuk unit mobil baru di Store.');
         }

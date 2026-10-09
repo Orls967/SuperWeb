@@ -24,21 +24,24 @@ class BillWorkOrderToTenantAction
      */
     public function execute(WorkOrder $workOrder): Invoice
     {
-        if (! $workOrder->tenant_id) {
-            throw new InvalidArgumentException('Work order tidak memiliki asosiasi tenant yang dituju.');
-        }
+        return DB::transaction(function () use ($workOrder) {
+            // Kunci work order agar pemeriksaan "sudah ditagih" dan penerbitan invoice atomik
+            $lockedWorkOrder = WorkOrder::query()->lockForUpdate()->findOrFail($workOrder->getKey());
 
-        if ($workOrder->billed_invoice_id) {
-            throw new InvalidArgumentException("Work order sudah pernah ditagihkan ke Invoice #{$workOrder->billed_invoice_id}.");
-        }
+            if (! $lockedWorkOrder->tenant_id) {
+                throw new InvalidArgumentException('Work order tidak memiliki asosiasi tenant yang dituju.');
+            }
 
-        if ($workOrder->total_cost <= 0) {
-            throw new InvalidArgumentException('Total biaya perbaikan harus lebih dari 0 untuk dapat ditagihkan.');
-        }
+            if ($lockedWorkOrder->billed_invoice_id) {
+                throw new InvalidArgumentException("Work order sudah pernah ditagihkan ke Invoice #{$lockedWorkOrder->billed_invoice_id}.");
+            }
 
-        $tenant = Tenant::findOrFail($workOrder->tenant_id);
+            if ($lockedWorkOrder->total_cost <= 0) {
+                throw new InvalidArgumentException('Total biaya perbaikan harus lebih dari 0 untuk dapat ditagihkan.');
+            }
 
-        return DB::transaction(function () use ($workOrder, $tenant) {
+            $tenant = Tenant::findOrFail($lockedWorkOrder->tenant_id);
+
             // Cari invoice terbuka milik tenant, atau buat invoice baru jika belum ada
             $invoice = Invoice::query()
                 ->where('tenant_id', $tenant->id)
@@ -49,6 +52,7 @@ class BillWorkOrderToTenantAction
                     InvoiceStatus::PARTIALLY_PAID,
                 ])
                 ->latest('id')
+                ->lockForUpdate()
                 ->first();
 
             if (! $invoice) {
@@ -60,7 +64,7 @@ class BillWorkOrderToTenantAction
                     'invoice_number' => $invoiceNumber,
                     'lease_id' => $lease?->id,
                     'tenant_id' => $tenant->id,
-                    'property_id' => $workOrder->property_id ?? $lease?->property_id,
+                    'property_id' => $lockedWorkOrder->property_id ?? $lease?->property_id,
                     'period_month' => $period,
                     'subtotal' => 0,
                     'penalty_amount' => 0,
@@ -76,19 +80,19 @@ class BillWorkOrderToTenantAction
             InvoiceLine::create([
                 'invoice_id' => $invoice->id,
                 'type' => InvoiceLineType::REPAIR_COST,
-                'description' => "Biaya Perbaikan Fasilitas: {$workOrder->title} ({$workOrder->order_number})",
+                'description' => "Biaya Perbaikan Fasilitas: {$lockedWorkOrder->title} ({$lockedWorkOrder->order_number})",
                 'quantity' => 1,
-                'unit_price' => $workOrder->total_cost,
-                'amount' => $workOrder->total_cost,
+                'unit_price' => $lockedWorkOrder->total_cost,
+                'amount' => $lockedWorkOrder->total_cost,
                 'paid_amount' => 0,
                 'status' => 'unpaid',
             ]);
 
-            $invoice->subtotal += $workOrder->total_cost;
-            $invoice->total_amount += $workOrder->total_cost;
+            $invoice->subtotal += $lockedWorkOrder->total_cost;
+            $invoice->total_amount += $lockedWorkOrder->total_cost;
             $invoice->save();
 
-            $workOrder->update([
+            $lockedWorkOrder->update([
                 'is_billable_to_tenant' => true,
                 'billed_invoice_id' => $invoice->id,
             ]);

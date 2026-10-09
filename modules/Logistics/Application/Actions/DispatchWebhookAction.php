@@ -6,6 +6,7 @@ namespace Modules\Logistics\Application\Actions;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Logistics\Domain\Models\WebhookDelivery;
 use Modules\Logistics\Domain\Models\WebhookEndpoint;
 
@@ -23,6 +24,19 @@ class DispatchWebhookAction
      */
     public function execute(string $eventType, array $payload): array
     {
+        // Record into generic transactional outbox bus if available
+        if (app()->bound(OutboxBusInterface::class)) {
+            try {
+                app(OutboxBusInterface::class)->record(
+                    eventType: $eventType,
+                    payload: $payload,
+                    headers: ['source' => 'logistics']
+                );
+            } catch (\Throwable) {
+                // Non-blocking fallback
+            }
+        }
+
         $endpoints = WebhookEndpoint::where('is_active', true)->get();
         $deliveries = [];
 

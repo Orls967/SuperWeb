@@ -21,6 +21,7 @@ enum AccountKind: string
     case DEPOSIT = 'deposit';
     case LIABILITY = 'liability';
     case ASSET = 'asset';
+    case CONTRA_ASSET = 'contra_asset';
     case POINTS = 'points';
 
     public function label(): string
@@ -41,6 +42,7 @@ enum AccountKind: string
             self::DEPOSIT => 'Titipan Deposit',
             self::LIABILITY => 'Kewajiban / Liabilitas',
             self::ASSET => 'Aset',
+            self::CONTRA_ASSET => 'Kontra Aset (Akumulasi)',
             self::POINTS => 'Poin Loyalitas',
         };
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Logistics\Application\Actions;
 
 use Brick\Math\BigDecimal;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Logistics\Domain\Enums\ScheduleStatus;
@@ -12,6 +13,7 @@ use Modules\Logistics\Domain\Exceptions\CapacityCutoffExceededException;
 use Modules\Logistics\Domain\Exceptions\CapacityExceededException;
 use Modules\Logistics\Domain\Exceptions\ScheduleConflictException;
 use Modules\Logistics\Domain\Models\CapacityReservation;
+use Modules\Logistics\Domain\Models\Driver;
 use Modules\Logistics\Domain\Models\Schedule;
 
 class ReserveCapacityAction
@@ -42,6 +44,29 @@ class ReserveCapacityAction
                 $existing = CapacityReservation::where('idempotency_key', $idempotencyKey)->first();
                 if ($existing) {
                     return $existing;
+                }
+            }
+
+            // Lock the resource rows shared by overlapping schedules BEFORE
+            // checking conflicts. A schedule-row lock alone does not serialize
+            // reservations made against two different schedules using the same
+            // driver or asset.
+            $candidate = Schedule::query()->findOrFail($scheduleId);
+            if ($candidate->driver_id !== null) {
+                Driver::query()
+                    ->whereKey($candidate->driver_id)
+                    ->lockForUpdate()
+                    ->first();
+            }
+            if ($candidate->asset_type !== null && $candidate->asset_id !== null) {
+                // asset_type may be a morph-map alias; resolve to the model class.
+                $assetClass = Relation::getMorphedModel($candidate->asset_type)
+                    ?? $candidate->asset_type;
+                if (is_string($assetClass) && class_exists($assetClass)) {
+                    $assetClass::query()
+                        ->whereKey($candidate->asset_id)
+                        ->lockForUpdate()
+                        ->first();
                 }
             }
 

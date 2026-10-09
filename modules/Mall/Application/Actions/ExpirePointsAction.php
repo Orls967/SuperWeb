@@ -15,6 +15,7 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mall\Domain\Models\PointBatch;
 
 class ExpirePointsAction
@@ -30,35 +31,37 @@ class ExpirePointsAction
     {
         $asOfDate = $asOfDate ?? Carbon::now();
 
-        $batches = PointBatch::query()
-            ->where('is_expired', false)
-            ->where('expires_at', '<=', $asOfDate)
-            ->where('points_remaining', '>', 0)
-            ->get();
-
-        if ($batches->isEmpty()) {
-            return 0;
-        }
-
         $totalExpiredPoints = 0;
 
-        $mallLiabilityAccount = LedgerAccount::firstOrCreate(
-            ['code' => 'liability:mall:points:PTS'],
-            [
-                'uuid' => (string) Str::uuid(),
-                'name' => 'Kewajiban Poin Loyalitas Duta Mall',
-                'asset_code' => 'PTS',
-                'kind' => AccountKind::LIABILITY->value,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'is_frozen' => false,
-            ]
-        );
+        DB::transaction(function () use ($asOfDate, &$totalExpiredPoints) {
+            $batches = PointBatch::query()
+                ->where('is_expired', false)
+                ->where('expires_at', '<=', $asOfDate)
+                ->where('points_remaining', '>', 0)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get();
 
-        // Kelompokkan per user untuk meminimalisasi jumlah transaksi buku besar
-        $userBatches = $batches->groupBy('user_id');
+            if ($batches->isEmpty()) {
+                return;
+            }
 
-        DB::transaction(function () use ($userBatches, $mallLiabilityAccount, &$totalExpiredPoints) {
+            $mallLiabilityAccount = LedgerAccount::firstOrCreate(
+                ['code' => 'liability:mall:points:PTS'],
+                [
+                    'uuid' => (string) Str::uuid(),
+                    'name' => 'Kewajiban Poin Loyalitas Duta Mall',
+                    'asset_code' => 'PTS',
+                    'kind' => AccountKind::LIABILITY->value,
+                    'allow_negative' => true,
+                    'cached_balance' => '0',
+                    'is_frozen' => false,
+                ]
+            );
+
+            // Kelompokkan per user untuk meminimalisasi jumlah transaksi buku besar
+            $userBatches = $batches->groupBy('user_id');
+
             foreach ($userBatches as $userId => $items) {
                 $user = User::find($userId);
                 if (! $user) {
@@ -70,6 +73,20 @@ class ExpirePointsAction
                     continue;
                 }
 
+                // Kunci deterministik dari batch id terurut agar retry tidak men-posting ganda
+                $txKey = 'pts_expire_'.$userId.'_'.implode('_', $items->pluck('id')->sort()->values()->all());
+
+                if (LedgerTransaction::query()->where('idempotency_key', $txKey)->exists()) {
+                    foreach ($items as $item) {
+                        $item->update([
+                            'points_remaining' => 0,
+                            'is_expired' => true,
+                        ]);
+                    }
+
+                    continue;
+                }
+
                 $userPointsAccount = $user->pointsAccount();
                 $ptsBd = BigDecimal::of($userTotal);
 
@@ -78,8 +95,6 @@ class ExpirePointsAction
                     PostingEntryDTO::forAccount($userPointsAccount->id, 'PTS', $ptsBd->negated()),
                     PostingEntryDTO::forAccount($mallLiabilityAccount->id, 'PTS', $ptsBd),
                 ];
-
-                $txKey = 'pts_expire_'.$userId.'_'.now()->format('YmdHis').'_'.Str::random(6);
 
                 $dto = new PostingDTO(
                     type: TransactionType::LOYALTY_EXPIRE->value,

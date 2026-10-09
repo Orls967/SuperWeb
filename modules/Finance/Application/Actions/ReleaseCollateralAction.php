@@ -25,10 +25,14 @@ class ReleaseCollateralAction extends BaseAction
     public function execute(Loan $loan, string $reason = 'Pelunasan pembiayaan'): Loan
     {
         $loan->loadMissing(['user', 'collateralAsset']);
-        $qty = $loan->collateralQty();
         $symbol = $loan->collateralAsset->symbol;
 
-        return $this->transaction(function () use ($loan, $qty, $symbol, $reason) {
+        return $this->transaction(function () use ($loan, $symbol, $reason) {
+            // Kunci baris fin_loans lalu baca ulang kolateral di bawah kunci,
+            // agar penambahan kolateral yang berjalan bersamaan tidak tertinggal.
+            $locked = Loan::whereKey($loan->getKey())->lockForUpdate()->firstOrFail();
+            $qty = $locked->collateralQty();
+
             if ($qty->isPositive()) {
                 $cryptoAccount = $loan->user->walletAccount($symbol);
 
@@ -52,11 +56,14 @@ class ReleaseCollateralAction extends BaseAction
                 ));
             }
 
-            $loan->collateral_qty = BigDecimal::zero()->__toString();
-            $loan->closed_at = now();
-            $loan->save();
+            $locked->collateral_qty = BigDecimal::zero()->__toString();
+            $locked->closed_at = now();
+            $locked->save();
 
-            $loan->transitionTo(LoanStatus::PaidOff);
+            $locked->transitionTo(LoanStatus::PaidOff);
+
+            $loan->setRawAttributes($locked->getAttributes(), true);
+            $loan->syncOriginal();
 
             return $loan->fresh();
         });

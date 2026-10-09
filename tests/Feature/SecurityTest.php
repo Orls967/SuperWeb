@@ -390,6 +390,89 @@ class SecurityTest extends TestCase
         $response->assertStatus(403);
     }
 
+    public function test_api_v1_requires_a_bearer_token(): void
+    {
+        $this->getJson(route('api.v1.logistics.shipments.index'))
+            ->assertUnauthorized();
+    }
+
+    public function test_web_session_alone_does_not_authenticate_api(): void
+    {
+        $shipper = User::factory()->create(['role' => 'shipper']);
+
+        $this->actingAs($shipper, 'web')
+            ->getJson(route('api.v1.logistics.shipments.index'))
+            ->assertUnauthorized();
+    }
+
+    public function test_revoked_api_token_is_rejected(): void
+    {
+        $shipper = User::factory()->create(['role' => 'shipper']);
+        $token = $shipper->createToken('test', ['shipment:read']);
+        $shipper->tokens()->whereKey($token->accessToken->id)->delete();
+
+        $this->withToken($token->plainTextToken)
+            ->getJson(route('api.v1.logistics.shipments.index'))
+            ->assertUnauthorized();
+    }
+
+    public function test_expired_api_token_is_rejected(): void
+    {
+        $shipper = User::factory()->create(['role' => 'shipper']);
+        $token = $shipper->createToken('test', ['shipment:read'], now()->subSecond());
+
+        $this->withToken($token->plainTextToken)
+            ->getJson(route('api.v1.logistics.shipments.index'))
+            ->assertUnauthorized();
+    }
+
+    public function test_valid_bearer_token_with_ability_passes(): void
+    {
+        $shipper = User::factory()->create(['role' => 'shipper']);
+        $token = $shipper->createToken('erp', ['shipment:read']);
+
+        $this->withToken($token->plainTextToken)
+            ->getJson(route('api.v1.logistics.shipments.index'))
+            ->assertOk();
+    }
+
+    public function test_profile_can_issue_and_revoke_api_token(): void
+    {
+        $shipper = User::factory()->create(['role' => 'shipper', 'email_verified_at' => now()]);
+        $this->actingAs($shipper);
+
+        $response = $this->post(route('profile.api-tokens.store'), [
+            'name' => 'integrasi-erp',
+            'abilities' => 'shipment:read, quote:create',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertSame(1, $shipper->tokens()->count());
+
+        $token = $shipper->tokens()->first();
+        $this->assertSame('integrasi-erp', $token->name);
+        $this->assertSame(['shipment:read', 'quote:create'], $token->abilities);
+
+        $this->delete(route('profile.api-tokens.destroy'), ['token_id' => $token->id])
+            ->assertRedirect();
+
+        $this->assertSame(0, $shipper->tokens()->count());
+    }
+
+    public function test_profile_revoke_all_api_tokens(): void
+    {
+        $shipper = User::factory()->create(['role' => 'shipper']);
+        $shipper->createToken('a');
+        $shipper->createToken('b');
+        $this->assertSame(2, $shipper->tokens()->count());
+
+        $this->actingAs($shipper)
+            ->delete(route('profile.api-tokens.destroy'))
+            ->assertRedirect();
+
+        $this->assertSame(0, $shipper->tokens()->count());
+    }
+
     public function test_webhook_hmac_sha256_signature_verification(): void
     {
         $secret = 'whsec_testing_secret_key_12345';

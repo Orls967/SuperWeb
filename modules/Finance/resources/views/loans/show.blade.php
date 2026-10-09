@@ -121,6 +121,8 @@
 
                 <form method="POST" action="{{ route('finance.loans.topUpCollateral', $loan) }}" class="space-y-2 pt-3 border-t border-slate-700/60">
                     @csrf
+                    {{-- Kunci idempoten tetap sama saat submit ulang setelah validasi gagal --}}
+                    <input type="hidden" name="idempotency_key" value="{{ old('idempotency_key', (string) \Illuminate\Support\Str::uuid()) }}">
                     <label class="text-xs font-semibold text-slate-300 block">Tambah Kolateral ({{ $symbol }})</label>
                     <input type="number" name="qty" step="0.00000001" min="0" required
                         class="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm font-mono"

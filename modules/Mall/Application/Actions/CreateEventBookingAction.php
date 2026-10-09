@@ -6,6 +6,7 @@ namespace Modules\Mall\Application\Actions;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Mall\Domain\Enums\EventBookingStatus;
@@ -40,46 +41,48 @@ class CreateEventBookingAction
             throw new InvalidArgumentException('Tanggal selesai tidak boleh sebelum tanggal mulai.');
         }
 
-        // 1. Deteksi bentrok jadwal dengan booking yang sudah terkonfirmasi / aktif
-        $conflict = EventBooking::query()
-            ->where('event_space_id', $space->id)
-            ->whereIn('status', [EventBookingStatus::CONFIRMED, EventBookingStatus::ONGOING])
-            ->where(function ($q) use ($startDate, $endDate) {
-                $q->whereDate('start_date', '<=', $endDate->toDateString())
-                    ->whereDate('end_date', '>=', $startDate->toDateString());
-            })
-            ->exists();
+        return DB::transaction(function () use ($space, $customer, $eventName, $eventType, $startDate, $endDate, $boothCount, $tenantId, $notes) {
+            $lockedSpace = EventSpace::query()->lockForUpdate()->findOrFail($space->id);
 
-        if ($conflict) {
-            throw new EventScheduleConflictException("Jadwal event pada area {$space->name} bertabrakan dengan booking lain yang sudah terkonfirmasi.");
-        }
+            // Re-check overlaps after serializing bookings for this event space
+            $conflict = EventBooking::query()
+                ->where('event_space_id', $lockedSpace->id)
+                ->whereIn('status', [EventBookingStatus::CONFIRMED, EventBookingStatus::ONGOING])
+                ->where(function ($q) use ($startDate, $endDate) {
+                    $q->whereDate('start_date', '<=', $endDate->toDateString())
+                        ->whereDate('end_date', '>=', $startDate->toDateString());
+                })
+                ->exists();
 
-        // 2. Hitung durasi hari dan total biaya sewa
-        $days = max(1, (int) $startDate->diffInDays($endDate) + 1);
-        $totalAmount = $days * $space->daily_rate;
+            if ($conflict) {
+                throw new EventScheduleConflictException("Jadwal event pada area {$lockedSpace->name} bertabrakan dengan booking lain yang sudah terkonfirmasi.");
+            }
 
-        // Tambahan biaya booth jika bazaar
-        if ($boothCount > 0) {
-            $totalAmount += $boothCount * 250_000 * $days;
-        }
+            $days = max(1, (int) $startDate->diffInDays($endDate) + 1);
+            $totalAmount = $days * $lockedSpace->daily_rate;
 
-        $bookingNumber = 'EVT-'.$startDate->format('Ymd').'-'.strtoupper(Str::random(4));
+            if ($boothCount > 0) {
+                $totalAmount += $boothCount * 250_000 * $days;
+            }
 
-        return EventBooking::create([
-            'property_id' => $space->property_id,
-            'event_space_id' => $space->id,
-            'customer_id' => $customer->id,
-            'tenant_id' => $tenantId,
-            'booking_number' => $bookingNumber,
-            'event_name' => $eventName,
-            'event_type' => $eventType,
-            'start_date' => $startDate->toDateString(),
-            'end_date' => $endDate->toDateString(),
-            'booth_count' => $boothCount,
-            'total_amount' => $totalAmount,
-            'paid_amount' => 0,
-            'status' => EventBookingStatus::DRAFT,
-            'notes' => $notes,
-        ]);
+            $bookingNumber = 'EVT-'.$startDate->format('Ymd').'-'.strtoupper(Str::random(4));
+
+            return EventBooking::create([
+                'property_id' => $lockedSpace->property_id,
+                'event_space_id' => $lockedSpace->id,
+                'customer_id' => $customer->id,
+                'tenant_id' => $tenantId,
+                'booking_number' => $bookingNumber,
+                'event_name' => $eventName,
+                'event_type' => $eventType,
+                'start_date' => $startDate->toDateString(),
+                'end_date' => $endDate->toDateString(),
+                'booth_count' => $boothCount,
+                'total_amount' => $totalAmount,
+                'paid_amount' => 0,
+                'status' => EventBookingStatus::DRAFT,
+                'notes' => $notes,
+            ]);
+        });
     }
 }

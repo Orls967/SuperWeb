@@ -55,11 +55,31 @@ class AcquireVehicleAction extends BaseAction implements AcquiresVehicle
                 ->where('car_id', $carId)
                 ->delete();
 
-            event(new VehicleAcquired(
+            $this->audit(
+                action: 'core.vehicle.acquired',
+                auditable: $vehicle,
+                oldValues: null,
+                newValues: [
+                    'user_id' => $userId,
+                    'car_id' => $carId,
+                    'plate_number' => $vehicle->plate_number,
+                    'status' => 'active',
+                ],
+                context: [
+                    'acquired_via_type' => $acquiredViaType,
+                    'acquired_via_id' => $acquiredViaId,
+                ],
+                correlationId: 'veh_acq_'.$vehicle->id.'_'.$userId,
+                impactType: 'ownership',
+            );
+
+            // Defer until after commit: listeners write to the Vehicle Passport
+            // hash chain and must never observe uncommitted vehicle state.
+            DB::afterCommit(fn () => event(new VehicleAcquired(
                 vehicle: $vehicle,
                 actorId: $userId,
                 method: $acquiredViaType ?? 'manual'
-            ));
+            )));
 
             return $vehicle;
         });

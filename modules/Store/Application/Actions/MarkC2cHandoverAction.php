@@ -18,24 +18,29 @@ class MarkC2cHandoverAction extends BaseAction
 {
     public function execute(Order $order, User $actor): Order
     {
-        if (! $order->isC2c()) {
-            throw new Exception('Pesanan ini bukan transaksi C2C.');
-        }
+        return $this->transaction(function () use ($order, $actor) {
+            /** @var Order $order */
+            $order = Order::query()->lockForUpdate()->findOrFail($order->id);
 
-        if ((int) $order->seller_id !== (int) $actor->id && ! $actor->isAdmin()) {
-            throw new Exception('Hanya penjual yang dapat menandai serah terima kendaraan.');
-        }
+            if (! $order->isC2c()) {
+                throw new Exception('Pesanan ini bukan transaksi C2C.');
+            }
 
-        if ($order->status !== OrderStatus::AWAITING_HANDOVER) {
-            throw new Exception("Serah terima hanya dapat dilakukan pada pesanan yang menunggu penyerahan. Status saat ini: {$order->status->label()}");
-        }
+            if ((int) $order->seller_id !== (int) $actor->id && ! $actor->isAdmin()) {
+                throw new Exception('Hanya penjual yang dapat menandai serah terima kendaraan.');
+            }
 
-        $order->update([
-            'status' => OrderStatus::AWAITING_CONFIRMATION,
-            'handover_at' => now(),
-            'auto_capture_at' => now()->addDays(Order::C2C_AUTO_CAPTURE_DAYS),
-        ]);
+            if ($order->status !== OrderStatus::AWAITING_HANDOVER) {
+                throw new Exception("Serah terima hanya dapat dilakukan pada pesanan yang menunggu penyerahan. Status saat ini: {$order->status->label()}");
+            }
 
-        return $order->fresh();
+            $order->update([
+                'status' => OrderStatus::AWAITING_CONFIRMATION,
+                'handover_at' => now(),
+                'auto_capture_at' => now()->addDays(Order::C2C_AUTO_CAPTURE_DAYS),
+            ]);
+
+            return $order->fresh();
+        });
     }
 }

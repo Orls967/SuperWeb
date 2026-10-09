@@ -178,6 +178,26 @@ class QueryBudgetTest extends TestCase
         $this->assertLessThanOrEqual(12, $count, "Control Tower logistik melebihi kuota query <= 12 (tercatat: {$count})");
     }
 
+    public function test_bank_reconcile_query_budget(): void
+    {
+        $count = $this->countQueries(function () {
+            $exitCode = Artisan::call('bank:reconcile');
+            $this->assertSame(0, $exitCode);
+        });
+
+        $this->assertLessThanOrEqual(10, $count, "bank:reconcile melebihi kuota query (tercatat: {$count})");
+    }
+
+    public function test_logistics_billing_audit_query_budget(): void
+    {
+        $count = $this->countQueries(function () {
+            $exitCode = Artisan::call('lgx:audit-billing');
+            $this->assertSame(0, $exitCode);
+        });
+
+        $this->assertLessThanOrEqual(60, $count, "lgx:audit-billing melebihi kuota query (tercatat: {$count})");
+    }
+
     public function test_logistics_accrue_demurrage_execution_time(): void
     {
         $startTime = microtime(true);

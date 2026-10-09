@@ -67,7 +67,10 @@ class BillingAuditor
 
     private function balanceLike(string $prefix): int
     {
-        return (int) LedgerAccount::where('code', 'like', $prefix.'%')->where('asset_code', 'IDR')->get()->sum(fn ($a) => (int) $a->cached_balance);
+        // Agregat SQL, bukan memuat seluruh akun lalu menjumlahkan di PHP.
+        return (int) LedgerAccount::where('code', 'like', $prefix.'%')
+            ->where('asset_code', 'IDR')
+            ->sum('cached_balance');
     }
 
     /** @return array{key: string, label: string, items: int, document: int, ledger: int, ok: bool, detail: string|null} */
@@ -168,8 +171,15 @@ class BillingAuditor
         $invoiceTotal = 0;
         $dwellTotal = 0;
         $invoices = LogisticsInvoice::where('kind', 'dd')->get();
+
+        // Satu agregat GROUP BY pengganti N query per invoice.
+        $dwellByInvoice = ContainerDwell::whereIn('invoice_id', $invoices->pluck('id'))
+            ->selectRaw('invoice_id, SUM(accrued_amount_idr) as total')
+            ->groupBy('invoice_id')
+            ->pluck('total', 'invoice_id');
+
         foreach ($invoices as $invoice) {
-            $sum = (int) ContainerDwell::where('invoice_id', $invoice->id)->sum('accrued_amount_idr');
+            $sum = (int) ($dwellByInvoice[$invoice->id] ?? 0);
             $invoiceTotal += (int) $invoice->total_amount_idr;
             $dwellTotal += $sum;
             $bad += (int) $invoice->total_amount_idr === $sum ? 0 : 1;
@@ -218,8 +228,16 @@ class BillingAuditor
     {
         $unpaid = (int) ShipmentLeg::whereNotNull('cost_accrued_at')->whereNull('carrier_payment_id')->sum('carrier_cost_idr');
         $badPayments = 0;
+
+        // Satu agregat GROUP BY pengganti N query per pembayaran.
+        $legsByPayment = DB::table('lgx_shipment_legs')
+            ->whereNotNull('carrier_payment_id')
+            ->selectRaw('carrier_payment_id, SUM(carrier_cost_idr) as total')
+            ->groupBy('carrier_payment_id')
+            ->pluck('total', 'carrier_payment_id');
+
         foreach (DB::table('lgx_carrier_payments')->get() as $payment) {
-            $badPayments += (int) $payment->amount_idr === (int) ShipmentLeg::where('carrier_payment_id', $payment->id)->sum('carrier_cost_idr') ? 0 : 1;
+            $badPayments += (int) $payment->amount_idr === (int) ($legsByPayment[$payment->id] ?? 0) ? 0 : 1;
         }
 
         return $this->result('carrier_payable', 'Utang carrier belum dibayar vs ledger (+ pembayaran vs leg)', Carrier::count(), $unpaid, $this->balanceLike('lgx:carrier_payable:'), $badPayments > 0 ? "{$badPayments} pembayaran carrier tidak sama dengan leg yang dilunasi." : null);

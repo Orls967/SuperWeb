@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Modules\AutoServe;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Modules\AutoServe\Application\Listeners\CreatePredictiveMaintenanceBooking;
 use Modules\AutoServe\Application\Services\AutoServeFleetMaintenanceBooking;
 use Modules\AutoServe\Application\Services\AutoServeTenantSalesProvider;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\Logistics\Contracts\FleetMaintenanceBooking;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Telematics\Domain\Events\VehicleAnomalyDetected;
 
 class AutoServeServiceProvider extends ServiceProvider
 {
@@ -63,6 +66,11 @@ class AutoServeServiceProvider extends ServiceProvider
             order: 21,
             group: 'Otomotif',
             activePattern: 'spareparts.*',
+        );
+
+        Event::listen(
+            VehicleAnomalyDetected::class,
+            CreatePredictiveMaintenanceBooking::class
         );
     }
 }

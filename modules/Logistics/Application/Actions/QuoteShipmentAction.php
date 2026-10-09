@@ -8,6 +8,7 @@ use App\Models\User;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Illuminate\Support\Str;
+use Modules\Logistics\Contracts\RateCardOverrideResolver;
 use Modules\Logistics\Domain\Enums\ServiceLevel;
 use Modules\Logistics\Domain\Enums\TransportMode;
 use Modules\Logistics\Domain\Exceptions\NoRateBracketFoundException;
@@ -21,7 +22,8 @@ use Modules\Logistics\Domain\Services\ChargeableWeightCalculator;
 class QuoteShipmentAction
 {
     public function __construct(
-        private readonly ChargeableWeightCalculator $weightCalculator
+        private readonly ChargeableWeightCalculator $weightCalculator,
+        private readonly ?RateCardOverrideResolver $contractRateResolver = null,
     ) {}
 
     /**
@@ -47,7 +49,7 @@ class QuoteShipmentAction
         $weightResult = $this->weightCalculator->calculate($packages, $mode, $serviceLevel);
 
         // 2. Find Rate Card
-        $rateCard = $this->resolveRateCard($originLoc, $destLoc, $serviceLevel, $mode);
+        $rateCard = $this->resolveRateCard($originLoc, $destLoc, $serviceLevel, $mode, (int) $shipper->id);
         if (! $rateCard) {
             throw NoRateCardFoundException::forRoute($originLocationId, $destinationLocationId, $serviceLevel->value);
         }
@@ -161,8 +163,24 @@ class QuoteShipmentAction
         Location $origin,
         Location $dest,
         ServiceLevel $serviceLevel,
-        TransportMode $mode
+        TransportMode $mode,
+        ?int $shipperId = null
     ): ?RateCard {
+        // 29.6 — rate card kontrak memenangkan tarif standar bila resolver terikat.
+        if ($shipperId !== null && $this->contractRateResolver !== null) {
+            $overrideId = $this->contractRateResolver->resolve($shipperId, $serviceLevel->value, $mode->value);
+            if ($overrideId !== null) {
+                $overrideCard = RateCard::query()
+                    ->whereKey($overrideId)
+                    ->where('is_active', true)
+                    ->first();
+
+                if ($overrideCard !== null) {
+                    return $overrideCard;
+                }
+            }
+        }
+
         // Direct location pair match
         $card = RateCard::query()
             ->where('is_active', true)

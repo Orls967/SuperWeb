@@ -30,7 +30,7 @@ class LogisticsApiController extends Controller
      */
     public function createQuote(Request $request, QuoteShipmentAction $action): JsonResponse
     {
-        if (method_exists($request->user(), 'tokenCan') && ! $request->user()->tokenCan('quote:create') && ! $request->user()->tokenCan('*')) {
+        if (! $request->user()->tokenCan('quote:create')) {
             return response()->json(['message' => 'Token ability [quote:create] required.'], 403);
         }
 
@@ -81,7 +81,7 @@ class LogisticsApiController extends Controller
      */
     public function createShipment(Request $request, BookShipmentAction $action): JsonResponse
     {
-        if (method_exists($request->user(), 'tokenCan') && ! $request->user()->tokenCan('shipment:create') && ! $request->user()->tokenCan('*')) {
+        if (! $request->user()->tokenCan('shipment:create')) {
             return response()->json(['message' => 'Token ability [shipment:create] required.'], 403);
         }
 
@@ -142,7 +142,7 @@ class LogisticsApiController extends Controller
      */
     public function showShipment(Request $request, string $trackingNumber): JsonResponse
     {
-        if (method_exists($request->user(), 'tokenCan') && ! $request->user()->tokenCan('shipment:read') && ! $request->user()->tokenCan('*')) {
+        if (! $request->user()->tokenCan('shipment:read')) {
             return response()->json(['message' => 'Token ability [shipment:read] required.'], 403);
         }
 
@@ -163,7 +163,7 @@ class LogisticsApiController extends Controller
      */
     public function listShipments(Request $request): JsonResponse
     {
-        if (method_exists($request->user(), 'tokenCan') && ! $request->user()->tokenCan('shipment:read') && ! $request->user()->tokenCan('*')) {
+        if (! $request->user()->tokenCan('shipment:read')) {
             return response()->json(['message' => 'Token ability [shipment:read] required.'], 403);
         }
 

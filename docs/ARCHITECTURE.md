@@ -58,6 +58,40 @@ Untuk mencegah *tight coupling* ("spaghetti monolith"):
 | **Resto** | `resto_` | Jaringan resto Padang "RM Sari Ranah": multi-outlet, dapur sentral, menu, resep berlapis BOM, kalkulasi HPP, batch dapur, etalase hidang, POS shift, rantai pasok. |
 | **Mall** | `mall_` | Pengelolaan "Duta Mall": leasing unit, tagihan sewa & utilitas, revenue sharing tenant, parkir terintegrasi, poin loyalty PTS, voucher mall, fasilitas. |
 | **Shared** | - | Value objects (`Money`), base classes, komponen Blade seragam, Menu Registry global. |
+| **Logistics** | `lgx_` | Sari Ranah Express: multi-modal routing, fleet & driver dispatch, hub scanning, LCL consolidation, customs clearance, live tracking. |
+| **Party** | `pty_` | Registri pihak tunggal (perorangan / badan usaha), relasi entitas legal, KYC, verifikasi sanksi, profil kredit. |
+| **Asset** | `ast_` | Register aset tetap grup (PSAK 16/73), depresiasi komersial/fiskal, revaluasi, work order pemeliharaan, asuransi, leasing. |
+| **Supplier** | `sup_` | Master data pemasok/produsen, sertifikasi halal/ISO, matriks tiering harga, audit kualifikasi, supplier scorecard & risk scanning. |
+| **Contract** | `ctr_` | Manajemen siklus kontrak korporat, templat klausul, approval berjenjang, e-sign simulasi, hash-chain append-only, jadwal termin. |
+| **Procurement** | `prc_` | Siklus PR → RFQ → Tender → PO, budget encumbrance, receiving report GRN, 3-way match, landed cost allocation. |
+| **Manufacturing** | `mfg_` | Master pabrik, BOM multi-level, routing, formula hash-chain, perencanaan MRP/MPS, shop floor tracking, costing WIP, QMS, OEE & HSE. |
+| **WMS** | `wms_` | Gudang multi-zona, rak & bin, bin stock, task picking & putaway ber-wave, cross-docking, cycle count four-eyes, packing list. |
+| **Distribution** | `dist_` | Jaringan distribusi/agen, teritori eksklusif, limit kredit AR, ATP reservation, faktur pajak seri resmi, konsinyasi, program rebate. |
+| **Pricing** | `pric_` | Engine harga deterministik, waterfall diskon, price list wilayah/segmen, margin floor policy, immutable price lock. |
+| **Agency** | `agy_` | Tata kelola agen penjualan, skema komisi multi-tier ber-override upline, hold masa retur, clawback, payout ber-PPh 21/23. |
+| **Partner** | `ptn_` | Ekosistem kemitraan strategis, due diligence, Joint Business Plan (JBP), revenue share multi-party, direktori co-selling. |
+| **Treasury** | `trs_` | Perbendaharaan multi-valas, kurs versi immutable scaled 1e6, revaluasi kurs periodik, cash pool sweeping, cash forecast 13 minggu. |
+| **Trade** | `trd_` | Tata niaga lintas batas, kepatuhan Incoterms 2020, HS Code landed cost, kepabeanan PEB/PIB, pelacakan kargo perbatasan. |
+| **Trade Finance** | `tf_` | Instrumen SCF internasional, Letter of Credit UCP 600, diskrepansi dokumen ekspor-impor, penagihan D/P-D/A, bank garansi tender. |
+| **International** | `intl_` | Aliansi global PMA, joint venture equity/contractual, lisensi teknologi internasional & MAG royalti, tax treaty P3B. |
+| **Intercompany** | `ic_` | Konsolidasi grup multi-entitas, transaksi cermin SO-PO/AR-AP, transfer pricing wajar (CUP/CPM/RPM/TNMM), eliminasi saldo resiprokal. |
+| **Control Tower** | `sct_` | Menara kendali rantai pasok multi-eselon ABC/XYZ, demand forecasting S&OP, alokasi janji ATP/CTP, radar peringatan gangguan rantai pasok. |
+| **Enterprise Finance** | `ef_` | Kontrol pagu anggaran unit bisnis (hard-stop/soft-stop), kalender kepatuhan pajak grup, matriks pemisahan tugas (SoD) anti-fraud. |
+| **Integration** | `intg_` | B2B REST API v2 & EDI gateway (EDIFACT / ANSI X12), webhook publisher HMAC-SHA256, tiered rate limiting. |
+| **HCM** | `hcm_` | Human Capital Management, master pegawai PKWT/PKWTT, payroll engine otomatis PPh 21 TER & BPJS, alokasi jam kerja ke SPK pabrik. |
+| **PLM** | `plm_` | Product Lifecycle Management, pipeline riset Stage-Gate, konversi EBOM ke MBOM resep pabrik, ECO berantai hash SHA-256, ELN lab. |
+| **ESG** | `esg_` | Pengukuran emisi GRK GHG Protocol Scope 1-3, bursa karbon IDX Carbon / Verra, offset retirement net-zero, ESG supplier scorecard GRI. |
+| **B2B** | `b2b_` | Marketplace grosir tertutup, alur negosiasi RFQ komersial, balai lelang digital aset surplus & mesin pabrik anti-sniping, escrow akun. |
+| **EPC** | `epc_` | Rekayasa konstruksi proyek properti & pabrik, hierarki WBS bobot 100%, kurva-S, Monthly Certificate MC retensi 5%, kapitalisasi CIP ke Aset. |
+| **Hospital** | `hosp_` | Layanan kesehatan & farmasi, EMR paspor pasien hash-chain, ketersediaan bed rawat inap & ICU, contraindication engine, BPJS/asuransi billing. |
+| **Venue** | `ven_` | Entertainment & beach club, ticketing non-fungible hash-chain, access control RFID/QR gate, zone crowd safety, VIP table escrow, festival bundle. |
+| **Hotel** | `htl_` | Hospitality PMS, alokasi kamar anti-oversell, dynamic rate protection, smart lock keyless QR, HVAC energy twin setback, timeshare yield. |
+| **Mining** | `min_` | Pertambangan & alat berat, mine planning, fleet dispatch, weighbridge digital hash-chain, akrual royalti PNBP, HSE work permit. |
+| **Energy** | `egy_` | Pembangkit EBT/Fosil, transmisi SCADA, automated grid dispatch, microgrid islanding, SPKLU smart metering, sertifikat REC hash-chain. |
+| **Telecom** | `tlx_` | Jaringan ISP & fiber optic, NOC monitoring, tower sharing, data center rack leasing & PUE cooling twin, RADIUS bandwidth throttling. |
+| **Media** | `med_` | Stage-gate produksi film/musik, DRM watermark tamper-evident, distribusi SVOD/broadcast, royalti kreator, sponsorship escrow. |
+| **Education** | `edu_` | Student cohort class, grading engine, sertifikasi kompetensi digital hash-chain, akreditasi kurikulum, tuition split & scholarship fee. |
+| **Retail** | `ret_` | Omnichannel OMS, inventory allocation, dark store picking wave, q-commerce ultra-fast dispatch, dynamic loyalty sync. |
 
 ---
 

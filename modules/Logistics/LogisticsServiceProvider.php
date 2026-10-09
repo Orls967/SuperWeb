@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Logistics;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Logistics\Application\Actions\BookShipmentForOrderAction;
@@ -23,7 +22,6 @@ use Modules\Logistics\Console\Commands\VerifyCustodyCommand;
 use Modules\Logistics\Contracts\ShipmentBooking;
 use Modules\Logistics\Domain\Events\FleetServiceDue;
 use Modules\Logistics\Domain\Events\ShipmentDelivered;
-use Modules\Logistics\Domain\Support\Sanctum;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Store\Domain\Events\OrderPaid;
 
@@ -44,14 +42,6 @@ class LogisticsServiceProvider extends ServiceProvider
         Event::listen(ShipmentDelivered::class, RecognizeFreightRevenueOnDelivery::class);
         Event::listen(OrderPaid::class, CreateShipmentOnOrderPaid::class);
         Event::listen(FleetServiceDue::class, HandleFleetServiceDue::class);
-
-        if (! class_exists('Laravel\Sanctum\Sanctum')) {
-            class_alias(Sanctum::class, 'Laravel\Sanctum\Sanctum');
-        }
-
-        Auth::viaRequest('sanctum', function ($request) {
-            return Auth::guard('web')->user();
-        });
 
         if ($this->app->runningInConsole()) {
             $this->commands([

@@ -15,6 +15,24 @@ arch('controllers do not use DB facade directly')
         'Modules\Core\Http\Controllers',
         'Modules\Finance\Http\Controllers',
         'Modules\Logistics\Http\Controllers',
+        'Modules\Contract\Http\Controllers',
+        'Modules\Party\Http\Controllers',
+        'Modules\Agency\Http\Controllers',
+        'Modules\Partner\Http\Controllers',
+        'Modules\Treasury\Http\Controllers',
+        'Modules\Trade\Http\Controllers',
+        'Modules\TradeFinance\Http\Controllers',
+        'Modules\International\Http\Controllers',
+        'Modules\Intercompany\Http\Controllers',
+        'Modules\ControlTower\Http\Controllers',
+        'Modules\EnterpriseFinance\Http\Controllers',
+        'Modules\Integration\Http\Controllers',
+        'Modules\Hcm\Http\Controllers',
+        'Modules\Plm\Http\Controllers',
+        'Modules\Esg\Http\Controllers',
+        'Modules\B2b\Http\Controllers',
+        'Modules\Agri\Http\Controllers',
+        'Modules\Epc\Http\Controllers',
     ])
     ->not->toUse('Illuminate\Support\Facades\DB');
 
@@ -32,6 +50,22 @@ arch('domain does not depend on Http')
         'Modules\Resto\Domain',
         'Modules\Mall\Domain',
         'Modules\Logistics\Domain',
+        'Modules\Agency\Domain',
+        'Modules\Partner\Domain',
+        'Modules\Treasury\Domain',
+        'Modules\Trade\Domain',
+        'Modules\TradeFinance\Domain',
+        'Modules\International\Domain',
+        'Modules\Intercompany\Domain',
+        'Modules\ControlTower\Domain',
+        'Modules\EnterpriseFinance\Domain',
+        'Modules\Integration\Domain',
+        'Modules\Hcm\Domain',
+        'Modules\Plm\Domain',
+        'Modules\Esg\Domain',
+        'Modules\B2b\Domain',
+        'Modules\Agri\Domain',
+        'Modules\Epc\Domain',
     ])
     ->not->toUse([
         'Illuminate\Http',
@@ -83,3 +117,53 @@ arch('other business domains do not import Logistics Domain')
         'Modules\Mall',
     ])
     ->not->toUse('Modules\Logistics\Domain');
+
+arch('Party Domain does not import business domain models')
+    ->expect('Modules\Party\Domain')
+    ->not->toUse([
+        'Modules\Logistics\Domain',
+        'Modules\Mall\Domain',
+        'Modules\Resto\Domain',
+        'Modules\Store\Domain',
+        'Modules\AutoServe\Domain',
+        'Modules\Crypto\Domain',
+        'Modules\Banking\Domain',
+    ]);
+
+arch('Contract Domain does not import other business domain models')
+    ->expect('Modules\Contract\Domain')
+    ->not->toUse([
+        'Modules\Logistics\Domain',
+        'Modules\Mall\Domain',
+        'Modules\Resto\Domain',
+        'Modules\Store\Domain',
+        'Modules\AutoServe\Domain',
+        'Modules\Crypto\Domain',
+        'Modules\Banking\Domain',
+    ]);
+
+arch('Contract does not import Logistics or Mall Domain directly')
+    ->expect('Modules\Contract')
+    ->not->toUse([
+        'Modules\Logistics\Domain',
+        'Modules\Mall\Domain',
+        'Modules\Resto\Domain',
+    ]);
+
+arch('controllers do not access SimClockInterface or models directly')
+    ->expect([
+        'Modules\AutoServe\Http\Controllers',
+        'Modules\Banking\Http\Controllers',
+        'Modules\Store\Http\Controllers',
+    ])
+    ->not->toUse([
+        'Modules\Core\Contracts\SimClockInterface',
+        'Modules\Core\Domain\Models\SimRun',
+    ]);
+
+arch('DigitalTwin state does not directly touch LedgerAccount or balance')
+    ->expect('Modules\Core\Application\Services\DigitalTwinService')
+    ->not->toUse([
+        'Modules\Banking\Domain\Models\LedgerAccount',
+        'Modules\Banking\Domain\Models\LedgerEntry',
+    ]);

@@ -138,6 +138,7 @@
                                 </div>
                                 <form action="{{ route('mall.loyalty.redeem', $tmpl) }}" method="POST">
                                     @csrf
+                                    <input type="hidden" name="idempotency_key" value="{{ $redeemIdempotencyKey.'-'.$tmpl->id }}">
                                     <button type="submit" @if($userPoints < $tmpl->points_required) disabled @endif class="px-4 py-2 rounded-xl text-xs font-extrabold transition-all {{ $userPoints >= $tmpl->points_required ? 'bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/20' : 'bg-slate-100 text-slate-400 cursor-not-allowed' }}">
                                         Tukar {{ $tmpl->points_required }} PTS
                                     </button>

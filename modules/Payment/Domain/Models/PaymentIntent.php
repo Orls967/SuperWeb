@@ -26,6 +26,7 @@ class PaymentIntent extends Model
         'payable_type',
         'payable_id',
         'amount',
+        'refunded_amount',
         'currency',
         'status',
         'hold_transaction_id',

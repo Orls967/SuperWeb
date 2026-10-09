@@ -24,7 +24,7 @@ class PayInvoiceAction
      *
      * @throws InvalidArgumentException
      */
-    public function execute(Invoice $invoice, int $amount, string $pin, User $user): Invoice
+    public function execute(Invoice $invoice, int $amount, string $pin, User $user, ?string $idempotencyKey = null): Invoice
     {
         // Validasi hak akses (hanya pemilik tenant atau admin/staff yang berhak)
         $tenantUserId = $invoice->tenant?->user_id;
@@ -37,7 +37,8 @@ class PayInvoiceAction
         return $this->allocatePaymentAction->execute(
             $invoice,
             $amount,
-            source: 'portal'
+            source: 'portal',
+            idempotencyKey: $idempotencyKey
         );
     }
 }

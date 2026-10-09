@@ -32,16 +32,18 @@ class GenerateMonthlyInvoicesAction
      */
     public function generateForLease(Lease $lease, string $periodMonth): Invoice
     {
-        // Cek apakah invoice sudah pernah dibuat untuk periode ini
-        $existing = Invoice::where('lease_id', $lease->id)
-            ->where('period_month', $periodMonth)
-            ->first();
+        return DB::transaction(function () use ($lease, $periodMonth) {
+            // Kunci lease sebelum memeriksa invoice agar eksekusi paralel terserialisasi
+            $lease = Lease::query()->lockForUpdate()->findOrFail($lease->getKey());
+            $existing = Invoice::query()
+                ->where('lease_id', $lease->id)
+                ->where('period_month', $periodMonth)
+                ->lockForUpdate()
+                ->first();
 
-        if ($existing !== null && in_array($existing->status, [InvoiceStatus::ISSUED, InvoiceStatus::PARTIALLY_PAID, InvoiceStatus::PAID])) {
-            return $existing;
-        }
-
-        return DB::transaction(function () use ($lease, $periodMonth, $existing) {
+            if ($existing !== null && in_array($existing->status, [InvoiceStatus::ISSUED, InvoiceStatus::PARTIALLY_PAID, InvoiceStatus::PAID], true)) {
+                return $existing;
+            }
             // Sinkronisasi data penjualan jika ada provider terintegrasi
             $salesReport = $this->salesService->syncMonthlySales($lease, $periodMonth)
                 ?? TenantSalesReport::where('lease_id', $lease->id)

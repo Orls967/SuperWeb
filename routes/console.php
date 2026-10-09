@@ -42,3 +42,22 @@ Schedule::command('lgx:pay-carriers')->weeklyOn(1, '09:00');
 Schedule::command('lgx:accrue-dd')->dailyAt('00:10');
 Schedule::command('lgx:audit-billing')->dailyAt('07:15');
 Schedule::command('lgx:verify-custody')->dailyAt('02:30');
+
+// --- Party Master & Compliance ---
+Schedule::command('party:remind-expiring-docs')->dailyAt('08:00');
+
+// --- Kontrak Inti ---
+Schedule::command('contracts:verify-chain')->dailyAt('03:00');
+Schedule::command('ctr:remind')->dailyAt('08:15');
+
+// --- Aset (Fase 31) ---
+Schedule::command('ast:depreciate')->monthlyOn(1, '01:30');
+Schedule::command('ast:audit')->monthlyOn(1, '02:00');
+
+// --- Supplier Management (Fase 32) ---
+Schedule::command('sup:scan-risks')->dailyAt('06:45');
+Schedule::command('sup:remind-certifications')->dailyAt('07:10');
+
+// --- Perencanaan Produksi (Fase 36) ---
+Schedule::command('mfg:run-mrp')->dailyAt('04:45');
+Schedule::command('mfg:qms-audit')->dailyAt('05:00');

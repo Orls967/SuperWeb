@@ -30,10 +30,6 @@ class LiquidateLoanAction extends BaseAction
 
     public function execute(Loan $loan, string $reason = 'LTV melewati ambang likuidasi'): Loan
     {
-        if (! $loan->status->isOpen()) {
-            throw new Exception("Pinjaman berstatus {$loan->status->label()} tidak dapat dilikuidasi.");
-        }
-
         $loan->loadMissing(['user', 'collateralAsset']);
         $asset = $loan->collateralAsset;
         $symbol = $asset->symbol;
@@ -44,34 +40,38 @@ class LiquidateLoanAction extends BaseAction
             throw new Exception("Harga {$symbol} tidak tersedia untuk likuidasi.");
         }
 
-        $collateralQty = $loan->collateralQty();
-        $outstanding = (int) $loan->outstanding_principal;
-
-        // Jual secukupnya untuk menutup sisa pokok, dibulatkan ke atas
-        $neededQty = BigDecimal::of((string) $outstanding)->dividedBy($price, $decimals, RoundingMode::Up);
-        $soldQty = $neededQty->isGreaterThan($collateralQty) ? $collateralQty : $neededQty;
-        $remainingQty = $collateralQty->minus($soldQty);
-
-        // Hasil penjualan dibulatkan ke bawah ke rupiah utuh
-        $proceeds = $soldQty->multipliedBy($price)->toScale(0, RoundingMode::Down);
-        $proceedsInt = (int) $proceeds->__toString();
-        $repaid = min($outstanding, $proceedsInt);
-        $surplus = $proceedsInt - $repaid;
-
         return $this->transaction(function () use (
             $loan,
             $symbol,
-            $soldQty,
-            $remainingQty,
-            $proceeds,
-            $repaid,
-            $surplus,
+            $decimals,
             $price,
             $reason
         ) {
+            // Kunci baris fin_loans dulu: saldo kolateral dan sisa pokok harus
+            // dibaca ulang di bawah kunci yang sama dengan yang ditulis.
+            $locked = Loan::whereKey($loan->getKey())->lockForUpdate()->firstOrFail();
+
+            if (! $locked->status->isOpen()) {
+                throw new Exception("Pinjaman berstatus {$locked->status->label()} tidak dapat dilikuidasi.");
+            }
+
             $user = $loan->user;
             $cryptoAccount = $user->walletAccount($symbol);
             $idrAccount = $user->walletAccount('IDR');
+
+            $collateralQty = $locked->collateralQty();
+            $outstanding = (int) $locked->outstanding_principal;
+
+            // Jual secukupnya untuk menutup sisa pokok, dibulatkan ke atas
+            $neededQty = BigDecimal::of((string) $outstanding)->dividedBy($price, $decimals, RoundingMode::Up);
+            $soldQty = $neededQty->isGreaterThan($collateralQty) ? $collateralQty : $neededQty;
+            $remainingQty = $collateralQty->minus($soldQty);
+
+            // Hasil penjualan dibulatkan ke bawah ke rupiah utuh
+            $proceeds = $soldQty->multipliedBy($price)->toScale(0, RoundingMode::Down);
+            $proceedsInt = (int) $proceeds->__toString();
+            $repaid = min($outstanding, $proceedsInt);
+            $surplus = $proceedsInt - $repaid;
 
             $entries = [];
 
@@ -98,8 +98,10 @@ class LiquidateLoanAction extends BaseAction
                 $entries[] = PostingEntryDTO::forAccount($cryptoAccount->id, $symbol, $remainingQty);
             }
 
+            $postedByThisCall = true;
+
             if ($entries !== []) {
-                $this->ledger->post(new PostingDTO(
+                $tx = $this->ledger->post(new PostingDTO(
                     type: TransactionType::LIQUIDATION->value,
                     description: "Likuidasi kolateral {$symbol} pembiayaan {$loan->uuid}: {$reason}",
                     idempotencyKey: 'loan_liquidation_'.$loan->uuid,
@@ -118,18 +120,27 @@ class LiquidateLoanAction extends BaseAction
                     createdBy: $loan->user_id,
                     postedAt: now(),
                 ));
+
+                // LedgerService mengembalikan transaksi lama bila kunci sama
+                // (replay); nilai sisa pokok hanya ditulis bila posting ini benar-benar baru.
+                $postedByThisCall = $tx->wasRecentlyCreated;
             }
 
-            $loan->outstanding_principal = max(0, $loan->outstanding_principal - $repaid);
-            $loan->collateral_qty = BigDecimal::zero()->__toString();
-            $loan->closed_at = now();
-            $loan->save();
+            if ($postedByThisCall) {
+                $locked->outstanding_principal = max(0, $locked->outstanding_principal - $repaid);
+                $locked->collateral_qty = BigDecimal::zero()->__toString();
+                $locked->closed_at = now();
+                $locked->save();
 
-            // Cicilan yang belum terbayar tidak ditandai lunas: pinjaman ditutup oleh
-            // likuidasi, dan scheduler hanya memproses pinjaman berstatus terbuka.
-            $loan->transitionTo(
-                $loan->outstanding_principal > 0 ? LoanStatus::Defaulted : LoanStatus::Liquidated
-            );
+                // Cicilan yang belum terbayar tidak ditandai lunas: pinjaman ditutup oleh
+                // likuidasi, dan scheduler hanya memproses pinjaman berstatus terbuka.
+                $locked->transitionTo(
+                    $locked->outstanding_principal > 0 ? LoanStatus::Defaulted : LoanStatus::Liquidated
+                );
+
+                $loan->setRawAttributes($locked->getAttributes(), true);
+                $loan->syncOriginal();
+            }
 
             return $loan->fresh(['installments', 'collateralAsset']);
         });

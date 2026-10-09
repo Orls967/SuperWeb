@@ -6,6 +6,7 @@ namespace Modules\Core;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\AutoServe\Domain\Events\BookingCompleted;
 use Modules\Core\Application\Actions\AcquireVehicleAction;
@@ -16,10 +17,30 @@ use Modules\Core\Application\Listeners\NotifyPaymentRefunded;
 use Modules\Core\Application\Listeners\RecordBookingCompletedPassportEvent;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
 use Modules\Core\Application\Services\ActivityLogger;
+use Modules\Core\Application\Services\ApprovalEngineService;
+use Modules\Core\Application\Services\AuditTrailService;
+use Modules\Core\Application\Services\DigitalTwinService;
+use Modules\Core\Application\Services\DocumentNumberingService;
+use Modules\Core\Application\Services\DocumentStoreService;
+use Modules\Core\Application\Services\EventSpineService;
 use Modules\Core\Application\Services\NotificationService;
+use Modules\Core\Application\Services\OutboxBusService;
+use Modules\Core\Application\Services\RbacService;
+use Modules\Core\Application\Services\SimClockService;
+use Modules\Core\Console\Commands\ProcessOutboxCommand;
+use Modules\Core\Console\Commands\RunSimulationCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
+use Modules\Core\Console\Commands\TwelveLinesComprehensiveAuditCommand;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
+use Modules\Core\Contracts\ApprovalEngineInterface;
+use Modules\Core\Contracts\AuditTrailInterface;
+use Modules\Core\Contracts\DigitalTwinInterface;
+use Modules\Core\Contracts\DocumentNumberingInterface;
+use Modules\Core\Contracts\DocumentStoreInterface;
+use Modules\Core\Contracts\EventSpineInterface;
+use Modules\Core\Contracts\OutboxBusInterface;
+use Modules\Core\Contracts\SimClockInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Core\Domain\Events\VehicleAcquired;
 use Modules\Core\Domain\Models\Vehicle;
@@ -41,9 +62,58 @@ class CoreServiceProvider extends ServiceProvider
             TransferVehicleOwnershipAction::class
         );
 
+        $this->app->bind(
+            AuditTrailInterface::class,
+            AuditTrailService::class
+        );
+
+        $this->app->bind(
+            OutboxBusInterface::class,
+            OutboxBusService::class
+        );
+
+        $this->app->bind(
+            DocumentNumberingInterface::class,
+            DocumentNumberingService::class
+        );
+
+        $this->app->bind(
+            DocumentStoreInterface::class,
+            DocumentStoreService::class
+        );
+
+        $this->app->bind(
+            ApprovalEngineInterface::class,
+            ApprovalEngineService::class
+        );
+
+        $this->app->bind(
+            SimClockInterface::class,
+            SimClockService::class
+        );
+
+        $this->app->bind(
+            EventSpineInterface::class,
+            EventSpineService::class
+        );
+
+        $this->app->bind(
+            DigitalTwinInterface::class,
+            DigitalTwinService::class
+        );
+
         // Platform services — singletons so they can be injected anywhere
         $this->app->singleton(NotificationService::class);
         $this->app->singleton(ActivityLogger::class);
+        $this->app->singleton(RbacService::class);
+        $this->app->singleton(AuditTrailService::class);
+        $this->app->singleton(OutboxBusService::class);
+        $this->app->singleton(DocumentNumberingService::class);
+        $this->app->singleton(DocumentStoreService::class);
+        $this->app->singleton(ApprovalEngineService::class);
+        $this->app->singleton(SimClockService::class);
+        $this->app->singleton(EventSpineService::class);
+        $this->app->singleton(DigitalTwinService::class);
     }
 
     public function boot(): void
@@ -58,6 +128,22 @@ class CoreServiceProvider extends ServiceProvider
         if (file_exists(__DIR__.'/routes/web.php')) {
             $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         }
+
+        // === Gate: RBAC permission-based authorization ===
+        // Admin bypasses all gates; otherwise check RBAC permissions
+        Gate::before(function ($user, $ability) {
+            if ($user->role === 'admin' || $user->hasRbacRole('admin')) {
+                return true;
+            }
+
+            // Check if the user has the permission through RBAC
+            if ($user->hasRbacPermission($ability)) {
+                return true;
+            }
+
+            // Return null to let the policy/gate decide
+            return null;
+        });
 
         // Register menu items
         $registry = $this->app->make(MenuRegistry::class);
@@ -81,10 +167,33 @@ class CoreServiceProvider extends ServiceProvider
             activePattern: 'admin/health*',
         );
 
+        $registry->addItem(
+            label: 'Roles & Permissions',
+            route: 'admin.rbac.index',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>',
+            roles: ['admin'],
+            order: 98,
+            group: 'Grup & Admin',
+            activePattern: 'admin/rbac*',
+        );
+
+        $registry->addItem(
+            label: 'Audit Trail',
+            route: 'admin.audit-logs.index',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
+            roles: ['admin'],
+            order: 97,
+            group: 'Grup & Admin',
+            activePattern: 'admin/audit-logs*',
+        );
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 VerifyPassportsCommand::class,
                 SuperHealthCheckCommand::class,
+                ProcessOutboxCommand::class,
+                RunSimulationCommand::class,
+                TwelveLinesComprehensiveAuditCommand::class,
             ]);
         }
 

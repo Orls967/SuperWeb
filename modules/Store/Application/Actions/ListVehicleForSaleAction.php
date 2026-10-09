@@ -103,16 +103,21 @@ class ListVehicleForSaleAction extends BaseAction
      */
     public function unlist(User $seller, Product $product): Product
     {
-        if (! $product->isC2c() || (int) $product->seller_id !== (int) $seller->id) {
-            throw new Exception('Listing ini bukan milikmu.');
-        }
+        return $this->transaction(function () use ($seller, $product) {
+            /** @var Product $product */
+            $product = Product::query()->lockForUpdate()->findOrFail($product->id);
 
-        if ((int) $product->cached_stock < 1) {
-            throw new Exception('Listing sedang dalam proses transaksi dan tidak dapat ditarik.');
-        }
+            if (! $product->isC2c() || (int) $product->seller_id !== (int) $seller->id) {
+                throw new Exception('Listing ini bukan milikmu.');
+            }
 
-        $product->update(['is_listed' => false]);
+            if ((int) $product->cached_stock < 1) {
+                throw new Exception('Listing sedang dalam proses transaksi dan tidak dapat ditarik.');
+            }
 
-        return $product->fresh();
+            $product->update(['is_listed' => false]);
+
+            return $product->fresh();
+        });
     }
 }

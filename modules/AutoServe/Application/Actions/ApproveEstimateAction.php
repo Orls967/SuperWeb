@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
 use Modules\AutoServe\Domain\Enums\EstimateStatus;
+use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Payment\Contracts\PaymentGateway;
@@ -53,32 +54,46 @@ class ApproveEstimateAction extends BaseAction
 
         $key = $idempotencyKey ?? ('estimate_hold_'.$estimate->uuid);
 
-        // Tahan dana sebesar estimasi (tanpa expiry: dilepas/dicapture oleh alur servis)
-        $intent = $this->paymentGateway->hold($estimate, Money::fromIdr($estimate->total), $key);
+        return $this->transaction(function () use ($booking, $estimate, $key) {
+            // Urutan lock konsisten dengan ApproveExtraChargeAction: booking → estimasi.
+            /** @var Booking $lockedBooking */
+            $lockedBooking = Booking::query()->lockForUpdate()->findOrFail($booking->id);
 
-        $estimate->transitionTo(EstimateStatus::Approved);
-        $estimate->update([
-            'approved_at' => now(),
-            'payment_intent_id' => $intent->id,
-        ]);
+            /** @var Estimate $lockedEstimate */
+            $lockedEstimate = Estimate::query()->lockForUpdate()->findOrFail($estimate->id);
 
-        // Booking langsung masuk pengerjaan (lewati konfirmasi bila masih pending)
-        if ($booking->isPending()) {
-            $booking->transitionTo(BookingStatus::Confirmed);
-        }
+            if ($lockedEstimate->status !== EstimateStatus::Sent) {
+                throw new Exception("Estimasi berstatus {$lockedEstimate->status->label()} tidak dapat disetujui.");
+            }
 
-        if (! $booking->isInProgress()) {
-            $booking->transitionTo(BookingStatus::InProgress);
-        }
+            // Gateway menahan dana (menyimpan intent + posting ledger) dalam
+            // savepoint tersendiri; key deterministik membuat retry idempoten.
+            $intent = $this->paymentGateway->hold($lockedEstimate, Money::fromIdr($lockedEstimate->total), $key);
 
-        // Sparepart kurang stok → pesan backorder internal, booking menunggu sparepart
-        $shortages = $this->backorderParts->shortages($estimate);
+            $lockedEstimate->transitionTo(EstimateStatus::Approved);
+            $lockedEstimate->update([
+                'approved_at' => now(),
+                'payment_intent_id' => $intent->id,
+            ]);
 
-        if ($shortages !== []) {
-            $this->backorderParts->execute($estimate, $shortages);
-            $booking->transitionTo(BookingStatus::WaitingParts);
-        }
+            // Booking langsung masuk pengerjaan (lewati konfirmasi bila masih pending)
+            if ($lockedBooking->isPending()) {
+                $lockedBooking->transitionTo(BookingStatus::Confirmed);
+            }
 
-        return $estimate->fresh(['booking', 'paymentIntents']);
+            if (! $lockedBooking->isInProgress() && ! $lockedBooking->isWaitingParts()) {
+                $lockedBooking->transitionTo(BookingStatus::InProgress);
+            }
+
+            // Sparepart kurang stok → pesan backorder internal, booking menunggu sparepart
+            $shortages = $this->backorderParts->shortages($lockedEstimate);
+
+            if ($shortages !== []) {
+                $this->backorderParts->execute($lockedEstimate, $shortages);
+                $lockedBooking->transitionTo(BookingStatus::WaitingParts);
+            }
+
+            return $lockedEstimate->fresh(['booking', 'paymentIntents']);
+        });
     }
 }

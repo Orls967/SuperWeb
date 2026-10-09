@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Finance\Application\Actions;
 
+use Illuminate\Support\Facades\DB;
 use Modules\Crypto\Contracts\PriceFeed;
 use Modules\Finance\Domain\Enums\LoanStatus;
 use Modules\Finance\Domain\Models\Loan;
@@ -65,18 +66,22 @@ class EvaluateLoanRiskAction
 
         if ($ltv >= Loan::MARGIN_CALL_LTV) {
             if ($loan->status !== LoanStatus::MarginCall) {
-                $loan->margin_called_at = now();
-                $loan->save();
-                $loan->transitionTo(LoanStatus::MarginCall);
+                DB::transaction(function () use ($loan): void {
+                    $loan->margin_called_at = now();
+                    $loan->save();
+                    $loan->transitionTo(LoanStatus::MarginCall);
+                });
             }
 
             return ['loan_id' => $loan->id, 'ltv' => $ltv, 'outcome' => 'margin_call'];
         }
 
         if ($loan->status === LoanStatus::MarginCall) {
-            $loan->margin_called_at = null;
-            $loan->save();
-            $loan->transitionTo(LoanStatus::Active);
+            DB::transaction(function () use ($loan): void {
+                $loan->margin_called_at = null;
+                $loan->save();
+                $loan->transitionTo(LoanStatus::Active);
+            });
 
             return ['loan_id' => $loan->id, 'ltv' => $ltv, 'outcome' => 'recovered'];
         }
