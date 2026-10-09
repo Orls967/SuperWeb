@@ -4592,14 +4592,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 415.8 Quality gate Fase 415
 
 ## FASE 416 — CUSTOMER WAVE: CUSTOMER DATA PLATFORM & ACTIVATION
-- [ ] 416.1 Unified profile with consent-scoped attributes, calculated segments and activation channels (service, marketing, pricing, support)
-- [ ] 416.2 Activation governance: suppression lists, frequency caps, channel preference, quiet hours, purpose limitation enforcement
-- [ ] 416.3 Identity resolution quality: match/conflict metrics, manual review queue for material merges, reversible merge audit
-- [ ] 416.4 Tests: suppression respected in every activation, purpose limitation enforced, merge reversible, `crm:audit` clean
-- [ ] 416.5 Edge case: identity conflict dua profil benar → manual review, jangan auto-merge
-- [ ] 416.6 Risiko: segment refresh terlalu sering → cadence dikontrol agar tak membebani operasional
-- [ ] 416.7 Evidence: activation log, suppression compliance, dan merge audit trail tercatat
-- [ ] 416.8 Quality gate Fase 416
+- [x] 416.1 Unified profile with consent-scoped attributes, calculated segments and activation channels (service, marketing, pricing, support)
+- [x] 416.2 Activation governance: suppression lists, frequency caps, channel preference, quiet hours, purpose limitation enforcement
+- [x] 416.3 Identity resolution quality: match/conflict metrics, manual review queue for material merges, reversible merge audit
+- [x] 416.4 Tests: suppression respected in every activation, purpose limitation enforced, merge reversible, `crm:audit` clean
+- [x] 416.5 Edge case: identity conflict dua profil benar → manual review, jangan auto-merge
+- [x] 416.6 Risiko: segment refresh terlalu sering → cadence dikontrol agar tak membebani operasional
+- [x] 416.7 Evidence: activation log, suppression compliance, dan merge audit trail tercatat
+- [x] 416.8 Quality gate Fase 416
 
 ## FASE 417 — CUSTOMER WAVE: JOURNEY ANALYTICS & CONVERSION OPTIMIZATION
 - [ ] 417.1 Instrument key journeys across lines (book→stay→dine, buy→deliver→return, admit→treat→bill, enroll→learn→credential)
