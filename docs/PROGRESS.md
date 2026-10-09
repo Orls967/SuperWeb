@@ -4582,14 +4582,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 414.8 Quality gate Fase 414
 
 ## FASE 415 — OPERATIONS WAVE: WORKFORCE SCHEDULING & LABOR COMPLIANCE INTEGRITY
-- [ ] 415.1 Schedule generator respecting labor rules (rest, overtime caps, credential validity, union/agreement terms simulation)
-- [ ] 415.2 Time & attendance reconciliation: clock events vs schedule vs work performed → exceptions queue with approval
-- [ ] 415.3 Labor budget vs actual with variance explanation; premium cost transparency (night/weekend/overtime)
-- [ ] 415.4 Tests: rule violations blocked at schedule publish, time exception needs approval, premium cost reconciles, `hcm:audit` clean
-- [ ] 415.5 Edge case: aturan kerja konflik antar yurisdiksi → aturan lokal menang, kebijakan global hanya minimum
-- [ ] 415.6 Risiko: time exception menumpuk → aging SLA + auto-escalation ke payroll close
-- [ ] 415.7 Evidence: schedule rule set, exception queue, dan premium cost report tercatat
-- [ ] 415.8 Quality gate Fase 415
+- [x] 415.1 Schedule generator respecting labor rules (rest, overtime caps, credential validity, union/agreement terms simulation)
+- [x] 415.2 Time & attendance reconciliation: clock events vs schedule vs work performed → exceptions queue with approval
+- [x] 415.3 Labor budget vs actual with variance explanation; premium cost transparency (night/weekend/overtime)
+- [x] 415.4 Tests: rule violations blocked at schedule publish, time exception needs approval, premium cost reconciles, `hcm:audit` clean
+- [x] 415.5 Edge case: aturan kerja konflik antar yurisdiksi → aturan lokal menang, kebijakan global hanya minimum
+- [x] 415.6 Risiko: time exception menumpuk → aging SLA + auto-escalation ke payroll close
+- [x] 415.7 Evidence: schedule rule set, exception queue, dan premium cost report tercatat
+- [x] 415.8 Quality gate Fase 415
 
 ## FASE 416 — CUSTOMER WAVE: CUSTOMER DATA PLATFORM & ACTIVATION
 - [ ] 416.1 Unified profile with consent-scoped attributes, calculated segments and activation channels (service, marketing, pricing, support)
