@@ -4862,14 +4862,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 442.8 Quality gate Fase 442
 
 ## FASE 443 — SUSTAINABILITY WAVE: CIRCULARITY & WASTE PROGRAM OPERATIONS
-- [ ] 443.1 Waste hierarchy enforcement: reduce → reuse → recycle → recover → dispose with cost and carbon comparison per stream
-- [ ] 443.2 Vendor compliance for waste handlers: license, manifest, treatment certificate, payment tied to evidence
-- [ ] 443.3 Circular KPI per line/site: diversion rate, recycled input, take-back volume → targets → site action plans
-- [ ] 443.4 Tests: disposal without hierarchy justification blocked, payment requires certificate, KPI reconciles mass balance, `circular:audit` clean
-- [ ] 443.5 Edge case: disposal urgent tanpa hierarki → approval darurat + justifikasi tercatat, review post
-- [ ] 443.6 Risiko: KPI diversion naik tapi biaya tak terkontrol → cost-per-tonne terpantau berdampingan
-- [ ] 443.7 Evidence: hierarchy decision, certificate proof, dan KPI reconciliation tercatat
-- [ ] 443.8 Quality gate Fase 443
+- [x] 443.1 Waste hierarchy enforcement: reduce → reuse → recycle → recover → dispose with cost and carbon comparison per stream
+- [x] 443.2 Vendor compliance for waste handlers: license, manifest, treatment certificate, payment tied to evidence
+- [x] 443.3 Circular KPI per line/site: diversion rate, recycled input, take-back volume → targets → site action plans
+- [x] 443.4 Tests: disposal without hierarchy justification blocked, payment requires certificate, KPI reconciles mass balance, `circular:audit` clean
+- [x] 443.5 Edge case: disposal urgent tanpa hierarki → approval darurat + justifikasi tercatat, review post
+- [x] 443.6 Risiko: KPI diversion naik tapi biaya tak terkontrol → cost-per-tonne terpantau berdampingan
+- [x] 443.7 Evidence: hierarchy decision, certificate proof, dan KPI reconciliation tercatat
+- [x] 443.8 Quality gate Fase 443
 
 ## FASE 444 — SUSTAINABILITY WAVE: SOCIAL IMPACT & COMMUNITY PROGRAM OPERATIONS
 - [ ] 444.1 Community program portfolio: need assessment → design → budget → implementation → monitoring → evaluation
