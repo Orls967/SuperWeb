@@ -401,6 +401,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\BiodiversityLandUseProgramService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\WaterEnergyManagementService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\GreenProcurementSupplierDevelopmentService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\SustainableFinanceReportingService::class);
     }
 
     public function boot(): void

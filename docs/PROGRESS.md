@@ -4912,14 +4912,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 447.8 Quality gate Fase 447
 
 ## FASE 448 — SUSTAINABILITY WAVE: SUSTAINABLE FINANCE & REPORTING OPERATIONS
-- [ ] 448.1 Sustainable instrument register: green loan/sukuk, sustainability-linked, carbon-linked → KPI, margin adjustment, reporting obligations
-- [ ] 448.2 Allocation reporting: proceeds use, eligible project list, no-diversion control → external report draft
-- [ ] 448.3 External review workflow: reviewer engagement, evidence pack, statement → publication → annual update
-- [ ] 448.4 Tests: margin adjustment = KPI formula, allocation report reconciles to project spend, reviewer independence check, `treasury:audit` clean
-- [ ] 448.5 Edge case: proceeds terpakai di luar eligible project → koreksi cepat + disclosure
-- [ ] 448.6 Risiko: KPI margin adjustment tak terukur → data KPI dari sumber otoritatif, bukan self-report
-- [ ] 448.7 Evidence: instrument register, allocation report, dan reviewer statement tercatat
-- [ ] 448.8 Quality gate Fase 448
+- [x] 448.1 Sustainable instrument register: green loan/sukuk, sustainability-linked, carbon-linked → KPI, margin adjustment, reporting obligations
+- [x] 448.2 Allocation reporting: proceeds use, eligible project list, no-diversion control → external report draft
+- [x] 448.3 External review workflow: reviewer engagement, evidence pack, statement → publication → annual update
+- [x] 448.4 Tests: margin adjustment = KPI formula, allocation report reconciles to project spend, reviewer independence check, `treasury:audit` clean
+- [x] 448.5 Edge case: proceeds terpakai di luar eligible project → koreksi cepat + disclosure
+- [x] 448.6 Risiko: KPI margin adjustment tak terukur → data KPI dari sumber otoritatif, bukan self-report
+- [x] 448.7 Evidence: instrument register, allocation report, dan reviewer statement tercatat
+- [x] 448.8 Quality gate Fase 448
 
 ## FASE 449 — SUSTAINABILITY WAVE: ESG DATA, ASSURANCE & DIGITAL REPORTING
 - [ ] 449.1 Digital disclosure pipeline: datapoint ingestion → validation → evidence linkage → sign-off → XBRL-like tagging (simulasi) → publication
