@@ -4882,14 +4882,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 444.8 Quality gate Fase 444
 
 ## FASE 445 — SUSTAINABILITY WAVE: BIODIVERSITY & LAND USE PROGRAM
-- [ ] 445.1 Baseline ecology surveys (simulasi), no-net-loss hierarchy: avoid → minimize → restore → offset last resort
-- [ ] 445.2 Land/plot monitoring via satellite/field (Fase 86/172) with disturbance detection and remediation tasking
-- [ ] 445.3 Offset project quality: additionality, permanence, leakage risk, community consent → issuance gate
-- [ ] 445.4 Tests: offset cannot substitute for avoidance where feasible, disturbance triggers tasking, issuance evidence complete, `nature:audit` clean
-- [ ] 445.5 Edge case: disturbance terdeteksi tapi tak ada remediasi → tasking otomatis + aging alert
-- [ ] 445.6 Risiko: offset jadi alasan tak menghindari → hierarchy avoid-first ditegakkan sistem
-- [ ] 445.7 Evidence: baseline survey, monitoring result, dan issuance gate tercatat
-- [ ] 445.8 Quality gate Fase 445
+- [x] 445.1 Baseline ecology surveys (simulasi), no-net-loss hierarchy: avoid → minimize → restore → offset last resort
+- [x] 445.2 Land/plot monitoring via satellite/field (Fase 86/172) with disturbance detection and remediation tasking
+- [x] 445.3 Offset project quality: additionality, permanence, leakage risk, community consent → issuance gate
+- [x] 445.4 Tests: offset cannot substitute for avoidance where feasible, disturbance triggers tasking, issuance evidence complete, `nature:audit` clean
+- [x] 445.5 Edge case: disturbance terdeteksi tapi tak ada remediasi → tasking otomatis + aging alert
+- [x] 445.6 Risiko: offset jadi alasan tak menghindari → hierarchy avoid-first ditegakkan sistem
+- [x] 445.7 Evidence: baseline survey, monitoring result, dan issuance gate tercatat
+- [x] 445.8 Quality gate Fase 445
 
 ## FASE 446 — SUSTAINABILITY WAVE: WATER STEWARDSHIP & ENERGY MANAGEMENT OPERATIONS
 - [ ] 446.1 Site water balance and energy baseline with normalized intensity (production, occupancy) → target setting
