@@ -4902,14 +4902,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 446.8 Quality gate Fase 446
 
 ## FASE 447 — SUSTAINABILITY WAVE: GREEN PROCUREMENT & SUPPLIER DEVELOPMENT
-- [ ] 447.1 Supplier sustainability questionnaire, evidence, risk tier and improvement plans integrated to sourcing events
-- [ ] 447.2 Supplier decarbonization program: footprint data request, joint projects, contractual target clauses → tracking
-- [ ] 447.3 Green premium/discount decisions: documented criteria, avoid greenwashing, tie to verified data
-- [ ] 447.4 Tests: tier affects evaluation weighting as designed, target clause enforced in contract workflow, `supplier:audit` + `esg:audit` clean
-- [ ] 447.5 Edge case: supplier menolak target dekarbonisasi → tier downgrade bertahap, bukan langsung blacklist
-- [ ] 447.6 Risiko: green premium tanpa bukti → discount/premium hanya dari data terverifikasi (Fase 289)
-- [ ] 447.7 Evidence: questionnaire score, target clause, dan evaluation weighting tercatat
-- [ ] 447.8 Quality gate Fase 447
+- [x] 447.1 Supplier sustainability questionnaire, evidence, risk tier and improvement plans integrated to sourcing events
+- [x] 447.2 Supplier decarbonization program: footprint data request, joint projects, contractual target clauses → tracking
+- [x] 447.3 Green premium/discount decisions: documented criteria, avoid greenwashing, tie to verified data
+- [x] 447.4 Tests: tier affects evaluation weighting as designed, target clause enforced in contract workflow, `supplier:audit` + `esg:audit` clean
+- [x] 447.5 Edge case: supplier menolak target dekarbonisasi → tier downgrade bertahap, bukan langsung blacklist
+- [x] 447.6 Risiko: green premium tanpa bukti → discount/premium hanya dari data terverifikasi (Fase 289)
+- [x] 447.7 Evidence: questionnaire score, target clause, dan evaluation weighting tercatat
+- [x] 447.8 Quality gate Fase 447
 
 ## FASE 448 — SUSTAINABILITY WAVE: SUSTAINABLE FINANCE & REPORTING OPERATIONS
 - [ ] 448.1 Sustainable instrument register: green loan/sukuk, sustainability-linked, carbon-linked → KPI, margin adjustment, reporting obligations
