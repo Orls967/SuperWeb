@@ -4572,14 +4572,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 413.8 Quality gate Fase 413
 
 ## FASE 414 — OPERATIONS WAVE: SUPPLY CHAIN PROGRAM GOVERNANCE & SCORECARDS
-- [ ] 414.1 End-to-end supply scorecard: supplier, manufacturing, warehouse, logistics, channel, customer with common definitions
-- [ ] 414.2 Corrective action workflow for scorecard misses with root cause, countermeasure, verification and closure
-- [ ] 414.3 Executive supply review cadence with decision log and follow-up tracking
-- [ ] 414.4 Tests: scorecard values trace to source, corrective action closure needs verification, decision log complete, `tower:audit` clean
-- [ ] 414.5 Edge case: scorecard miss berulang → root cause review lanjutan, bukan hanya corrective action statis
-- [ ] 414.6 Risiko: definisi KPI beda antar fungsi → metric registry (Fase 518) dipakai bersama
-- [ ] 414.7 Evidence: scorecard trace, corrective action closure, dan decision log tercatat per review
-- [ ] 414.8 Quality gate Fase 414
+- [x] 414.1 End-to-end supply scorecard: supplier, manufacturing, warehouse, logistics, channel, customer with common definitions
+- [x] 414.2 Corrective action workflow for scorecard misses with root cause, countermeasure, verification and closure
+- [x] 414.3 Executive supply review cadence with decision log and follow-up tracking
+- [x] 414.4 Tests: scorecard values trace to source, corrective action closure needs verification, decision log complete, `tower:audit` clean
+- [x] 414.5 Edge case: scorecard miss berulang → root cause review lanjutan, bukan hanya corrective action statis
+- [x] 414.6 Risiko: definisi KPI beda antar fungsi → metric registry (Fase 518) dipakai bersama
+- [x] 414.7 Evidence: scorecard trace, corrective action closure, dan decision log tercatat per review
+- [x] 414.8 Quality gate Fase 414
 
 ## FASE 415 — OPERATIONS WAVE: WORKFORCE SCHEDULING & LABOR COMPLIANCE INTEGRITY
 - [ ] 415.1 Schedule generator respecting labor rules (rest, overtime caps, credential validity, union/agreement terms simulation)
