@@ -5162,14 +5162,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 472.8 Quality gate Fase 472
 
 ## FASE 473 — PLATFORM WAVE: ENTERPRISE DATA MIGRATION & LEGACY RETIREMENT
-- [ ] 473.1 Migration inventory: source systems, data domains, cutover strategy (big-bang/phased), rollback plan, dual-run period
-- [ ] 473.2 Data quality remediation before migration: cleanse, dedupe, enrich → migration acceptance criteria
-- [ ] 473.3 Legacy retirement: parallel run → validation → cutover → decommission → data archive → access revoke → cost saving realized
-- [ ] 473.4 Tests: migration reconciliation complete (source vs target counts/hashes), rollback tested, legacy access revoked, `data:audit` clean
-- [ ] 473.5 Edge case: legacy retirement tak ada consumer confirmation → waiver eksplisit sebelum decommission
-- [ ] 473.6 Risiko: data quality buruk sebelum migrasi → cleansing wajib lolos acceptance criteria dulu
-- [ ] 473.7 Evidence: migration reconciliation, dual-run result, dan cost saving tercatat
-- [ ] 473.8 Quality gate Fase 473
+- [x] 473.1 Migration inventory: source systems, data domains, cutover strategy (big-bang/phased), rollback plan, dual-run period
+- [x] 473.2 Data quality remediation before migration: cleanse, dedupe, enrich → migration acceptance criteria
+- [x] 473.3 Legacy retirement: parallel run → validation → cutover → decommission → data archive → access revoke → cost saving realized
+- [x] 473.4 Tests: migration reconciliation complete (source vs target counts/hashes), rollback tested, legacy access revoked, `data:audit` clean
+- [x] 473.5 Edge case: legacy retirement tak ada consumer confirmation → waiver eksplisit sebelum decommission
+- [x] 473.6 Risiko: data quality buruk sebelum migrasi → cleansing wajib lolos acceptance criteria dulu
+- [x] 473.7 Evidence: migration reconciliation, dual-run result, dan cost saving tercatat
+- [x] 473.8 Quality gate Fase 473
 
 ## FASE 474 — PLATFORM WAVE: ENTERPRISE TEST DATA MANAGEMENT & COMPLIANCE
 - [ ] 474.1 Test data policy: synthetic for dev/test, masked for staging, production never copied without approval
