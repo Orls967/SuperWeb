@@ -4812,14 +4812,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 437.8 Quality gate Fase 437
 
 ## FASE 438 — GLOBAL FINANCE WAVE: TAX, CUSTOMS & TRANSFER PRICING OPERATIONS
-- [ ] 438.1 Transfer pricing documentation automation: comparability search (simulasi), method application, master/local file draft, adjustment proposals
-- [ ] 438.2 Customs valuation support: transaction value evidence, related-party disclosure, advance ruling simulation
-- [ ] 438.3 Tax controversy workflow: notice → position → defense pack → provision update → outcome learning
-- [ ] 438.4 Tests: TP method consistent across year, valuation evidence complete, controversy timeline tracked, `enterprise:audit` clean
-- [ ] 438.5 Edge case: TP position dipersoalkan regulator → defense pack tersedia & provision disesuaikan
-- [ ] 438.6 Risiko: comparability data tak memadai → confidence label + alternative method dicatat
-- [ ] 438.7 Evidence: TP documentation, valuation evidence, dan controversy timeline tercatat
-- [ ] 438.8 Quality gate Fase 438
+- [x] 438.1 Transfer pricing documentation automation: comparability search (simulasi), method application, master/local file draft, adjustment proposals
+- [x] 438.2 Customs valuation support: transaction value evidence, related-party disclosure, advance ruling simulation
+- [x] 438.3 Tax controversy workflow: notice → position → defense pack → provision update → outcome learning
+- [x] 438.4 Tests: TP method consistent across year, valuation evidence complete, controversy timeline tracked, `enterprise:audit` clean
+- [x] 438.5 Edge case: TP position dipersoalkan regulator → defense pack tersedia & provision disesuaikan
+- [x] 438.6 Risiko: comparability data tak memadai → confidence label + alternative method dicatat
+- [x] 438.7 Evidence: TP documentation, valuation evidence, dan controversy timeline tercatat
+- [x] 438.8 Quality gate Fase 438
 
 ## FASE 439 — GLOBAL FINANCE WAVE: INVESTOR, LENDER & CREDIT RATING REPORTING
 - [ ] 439.1 Reporting calendar: covenant tests, rating agency packs (simulasi), investor updates, regulatory filings
