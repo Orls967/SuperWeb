@@ -4742,14 +4742,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 430.8 Quality gate Fase 430
 
 ## FASE 431 — PLATFORM WAVE: OBSERVABILITY, SLO & CAPACITY INTELLIGENCE
-- [ ] 431.1 Golden signals per service (traffic, errors, latency, saturation) with business overlay (orders, claims, bookings)
-- [ ] 431.2 Alert quality program: paging only actionable, deduplication, runbook link, alert-to-ticket automatic, monthly alert review
-- [ ] 431.3 Capacity forecasting using growth curves from ultra-seed simulation → scaling recommendation with cost impact
-- [ ] 431.4 Tests: alert fires with runbook link, capacity model deterministic, business overlay traces to ledger, health-check clean
-- [ ] 431.5 Edge case: alert storm saat insiden besar → grouping + suppression + meta alert tetap hidup
-- [ ] 431.6 Risiko: business overlay stale → freshness label + SLA refresh dashboard kritikal
-- [ ] 431.7 Evidence: golden signal dashboard, alert review minutes, dan capacity model tercatat
-- [ ] 431.8 Quality gate Fase 431
+- [x] 431.1 Golden signals per service (traffic, errors, latency, saturation) with business overlay (orders, claims, bookings)
+- [x] 431.2 Alert quality program: paging only actionable, deduplication, runbook link, alert-to-ticket automatic, monthly alert review
+- [x] 431.3 Capacity forecasting using growth curves from ultra-seed simulation → scaling recommendation with cost impact
+- [x] 431.4 Tests: alert fires with runbook link, capacity model deterministic, business overlay traces to ledger, health-check clean
+- [x] 431.5 Edge case: alert storm saat insiden besar → grouping + suppression + meta alert tetap hidup
+- [x] 431.6 Risiko: business overlay stale → freshness label + SLA refresh dashboard kritikal
+- [x] 431.7 Evidence: golden signal dashboard, alert review minutes, dan capacity model tercatat
+- [x] 431.8 Quality gate Fase 431
 
 ## FASE 432 — PLATFORM WAVE: DATA & MODEL OPS GOVERNANCE (DOM)
 - [ ] 432.1 Unified pipeline for data + model changes: proposal → compatibility → test → approval → deploy → monitor → rollback
