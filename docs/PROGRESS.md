@@ -4952,14 +4952,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 451.8 Quality gate Fase 451
 
 ## FASE 452 — GOVERNANCE WAVE: BUSINESS CONTINUITY & CRISIS SIMULATION SCALE
-- [ ] 452.1 Scenario library: natural disaster, cyber, supplier failure, health event, market shock, regulatory action, utility outage
-- [ ] 452.2 Full-scale annual exercise across lines: activate continuity, run degraded operations, recover, reconcile, after-action review
-- [ ] 452.3 Crisis communications: stakeholder matrix, approved templates, spokesperson protocol, rumor monitoring (simulasi)
-- [ ] 452.4 Tests: exercise objective met with evidence, recovery RTO measured, comms approval chain enforced, `risk:audit` + `dr:audit` clean
-- [ ] 452.5 Edge case: exercise gagal → finding blocker → plan diperbarui & drill ulang sebelum andalkan
-- [ ] 452.6 Risiko: comms latihan nyasar ke publik → simulasi terkontrol + approval channel jelas
-- [ ] 452.7 Evidence: scenario library, exercise timeline, dan after-action review tercatat
-- [ ] 452.8 Quality gate Fase 452
+- [x] 452.1 Scenario library: natural disaster, cyber, supplier failure, health event, market shock, regulatory action, utility outage
+- [x] 452.2 Full-scale annual exercise across lines: activate continuity, run degraded operations, recover, reconcile, after-action review
+- [x] 452.3 Crisis communications: stakeholder matrix, approved templates, spokesperson protocol, rumor monitoring (simulasi)
+- [x] 452.4 Tests: exercise objective met with evidence, recovery RTO measured, comms approval chain enforced, `risk:audit` + `dr:audit` clean
+- [x] 452.5 Edge case: exercise gagal → finding blocker → plan diperbarui & drill ulang sebelum andalkan
+- [x] 452.6 Risiko: comms latihan nyasar ke publik → simulasi terkontrol + approval channel jelas
+- [x] 452.7 Evidence: scenario library, exercise timeline, dan after-action review tercatat
+- [x] 452.8 Quality gate Fase 452
 
 ## FASE 453 — GOVERNANCE WAVE: M&A DUE DILIGENCE & POST-MERGER INTEGRATION
 - [ ] 453.1 DD workstream framework: commercial, financial, tax, legal, tech, data, people, ESG → findings register → valuation adjustment decision
