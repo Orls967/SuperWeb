@@ -4532,14 +4532,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 409.8 Quality gate Fase 409
 
 ## FASE 410 — OPERATIONS WAVE: INVENTORY, ASSET & EQUIPMENT AVAILABILITY PROGRAM
-- [ ] 410.1 Availability commitment by asset class (truck, crane, bed, room, machine, charger) with maintenance reserve and priority rules
-- [ ] 410.2 Buffer capacity policy: safety capacity for critical service lines (health, safety-critical logistics) with cost transparency
-- [ ] 410.3 Shortage escalation: substitute, defer with consent, third-party rental with approval → cost and customer impact recorded
-- [ ] 410.4 Tests: availability honors maintenance reserve, substitution policy applied consistently, shortage escalation auditable, `ast:audit` clean
-- [ ] 410.5 Edge case: kapasitas buffer terpakai penuh → prioritas layanan kritikal, komunikasi ke pelanggan non-kritis
-- [ ] 410.6 Risiko: substitusi berkualitas beda → quality gate substitusi + approval, jangan otomatis setara
-- [ ] 410.7 Evidence: availability commitment, shortage escalation, dan cost record tercatat per kelas aset
-- [ ] 410.8 Quality gate Fase 410
+- [x] 410.1 Availability commitment by asset class (truck, crane, bed, room, machine, charger) with maintenance reserve and priority rules
+- [x] 410.2 Buffer capacity policy: safety capacity for critical service lines (health, safety-critical logistics) with cost transparency
+- [x] 410.3 Shortage escalation: substitute, defer with consent, third-party rental with approval → cost and customer impact recorded
+- [x] 410.4 Tests: availability honors maintenance reserve, substitution policy applied consistently, shortage escalation auditable, `ast:audit` clean
+- [x] 410.5 Edge case: kapasitas buffer terpakai penuh → prioritas layanan kritikal, komunikasi ke pelanggan non-kritis
+- [x] 410.6 Risiko: substitusi berkualitas beda → quality gate substitusi + approval, jangan otomatis setara
+- [x] 410.7 Evidence: availability commitment, shortage escalation, dan cost record tercatat per kelas aset
+- [x] 410.8 Quality gate Fase 410
 
 ## FASE 411 — OPERATIONS WAVE: FIELD & REMOTE SITE OPERATIONS INTEGRITY
 - [ ] 411.1 Remote site operating kit: procedures, credential check, equipment check, safety permit, communication check → digital pre-start gate
