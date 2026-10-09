@@ -4792,14 +4792,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 435.8 Quality gate Fase 435
 
 ## FASE 436 — GLOBAL FINANCE WAVE: GROUP FINANCE OPERATING MODEL
-- [ ] 436.1 Finance service catalog per entity/line: close, reporting, tax, treasury, controlling, shared services → SLA and cost allocation
-- [ ] 436.2 Close orchestration: task dependency graph, automated checks, exception routing, late-task escalation, cycle-time metrics
-- [ ] 436.3 Finance transformation roadmap: automation opportunities, control impact, benefit tracking
-- [ ] 436.4 Tests: close cycle deterministic, exception routing correct, cycle time measured, `enterprise:audit` clean
-- [ ] 436.5 Edge case: close task gagal → exception routing + escalation, period lock tertahan
-- [ ] 436.6 Risiko: shared service tak efisien → cost allocation & cycle time review per periode
-- [ ] 436.7 Evidence: service catalog, close dependency graph, dan cycle time trend tercatat
-- [ ] 436.8 Quality gate Fase 436
+- [x] 436.1 Finance service catalog per entity/line: close, reporting, tax, treasury, controlling, shared services → SLA and cost allocation
+- [x] 436.2 Close orchestration: task dependency graph, automated checks, exception routing, late-task escalation, cycle-time metrics
+- [x] 436.3 Finance transformation roadmap: automation opportunities, control impact, benefit tracking
+- [x] 436.4 Tests: close cycle deterministic, exception routing correct, cycle time measured, `enterprise:audit` clean
+- [x] 436.5 Edge case: close task gagal → exception routing + escalation, period lock tertahan
+- [x] 436.6 Risiko: shared service tak efisien → cost allocation & cycle time review per periode
+- [x] 436.7 Evidence: service catalog, close dependency graph, dan cycle time trend tercatat
+- [x] 436.8 Quality gate Fase 436
 
 ## FASE 437 — GLOBAL FINANCE WAVE: CAPITAL ALLOCATION & PORTFOLIO OPTIMIZATION
 - [ ] 437.1 Investment scoring: financial (NPV/IRR/payback), strategic fit, risk, capability, sustainability, dependency → weighted score versioned
