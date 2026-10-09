@@ -4552,14 +4552,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 411.8 Quality gate Fase 411
 
 ## FASE 412 — OPERATIONS WAVE: QUALITY ASSURANCE & INSPECTION PROGRAM
-- [ ] 412.1 Risk-based inspection plan: frequency by risk, method, sampling plan, acceptance criteria and inspector qualification
-- [ ] 412.2 Inspection execution with calibrated tools (Fase 39.8), record integrity, nonconformance trigger and segregation from production pressure
-- [ ] 412.3 Quality cost accounting: prevention/appraisal/internal failure/external failure → trend → investment decisions
-- [ ] 412.4 Tests: inspector qualification enforced, calibration gate blocks inspection, cost-of-quality reconciles, `quality:audit` clean
-- [ ] 412.5 Edge case: inspector di bawah tekanan produksi loloskan barang → independence control + sampling ulang acak
-- [ ] 412.6 Risiko: biaya kualitas tak terhitung → cost-of-quality jadi KPI wajib tiap lini
-- [ ] 412.7 Evidence: inspection plan, calibration proof, dan quality cost report tercatat
-- [ ] 412.8 Quality gate Fase 412
+- [x] 412.1 Risk-based inspection plan: frequency by risk, method, sampling plan, acceptance criteria and inspector qualification
+- [x] 412.2 Inspection execution with calibrated tools (Fase 39.8), record integrity, nonconformance trigger and segregation from production pressure
+- [x] 412.3 Quality cost accounting: prevention/appraisal/internal failure/external failure → trend → investment decisions
+- [x] 412.4 Tests: inspector qualification enforced, calibration gate blocks inspection, cost-of-quality reconciles, `quality:audit` clean
+- [x] 412.5 Edge case: inspector di bawah tekanan produksi loloskan barang → independence control + sampling ulang acak
+- [x] 412.6 Risiko: biaya kualitas tak terhitung → cost-of-quality jadi KPI wajib tiap lini
+- [x] 412.7 Evidence: inspection plan, calibration proof, dan quality cost report tercatat
+- [x] 412.8 Quality gate Fase 412
 
 ## FASE 413 — OPERATIONS WAVE: MAINTENANCE & RELIABILITY PROGRAM GOVERNANCE
 - [ ] 413.1 Asset criticality ranking and maintenance strategy selection (RCM-lite) per class with documented rationale
