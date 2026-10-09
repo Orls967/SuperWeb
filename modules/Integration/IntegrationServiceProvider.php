@@ -387,6 +387,7 @@ class IntegrationServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Integration\Application\Services\ObservabilitySloCapacityService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\DataModelOpsGovernanceService::class);
         $this->app->singleton(\Modules\Integration\Application\Services\EnterpriseSearchKnowledgeDocOpsService::class);
+        $this->app->singleton(\Modules\Integration\Application\Services\CostEfficiencyPerformanceService::class);
     }
 
     public function boot(): void
