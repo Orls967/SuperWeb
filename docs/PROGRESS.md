@@ -4652,14 +4652,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 421.8 Quality gate Fase 421
 
 ## FASE 422 — PEOPLE WAVE: COMPENSATION GOVERNANCE & PAY EQUITY
-- [ ] 422.1 Market benchmark refresh cycle with provider data (simulasi), job matching review, peer group definition and approval
-- [ ] 422.2 Pay review cycle: merit budget allocation, manager recommendation with guardrails, calibration committee, employee communication
-- [ ] 422.3 Pay equity analysis with controlled regression (simulasi), unexplained gap flag, remediation plan and board compensation report
-- [ ] 422.4 Tests: merit within budget and band, equity method documented, exception approval required, `hcm:audit` clean
-- [ ] 422.5 Edge case: pay band tak sesuai market → refresh benchmark lebih sering dengan approval budget
-- [ ] 422.6 Risiko: unexplained gap besar → remediation wajib sebelum laporan ditutup, jangan ditunda
-- [ ] 422.7 Evidence: benchmark snapshot, calibration minutes, dan equity analysis tercatat
-- [ ] 422.8 Quality gate Fase 422
+- [x] 422.1 Market benchmark refresh cycle with provider data (simulasi), job matching review, peer group definition and approval
+- [x] 422.2 Pay review cycle: merit budget allocation, manager recommendation with guardrails, calibration committee, employee communication
+- [x] 422.3 Pay equity analysis with controlled regression (simulasi), unexplained gap flag, remediation plan and board compensation report
+- [x] 422.4 Tests: merit within budget and band, equity method documented, exception approval required, `hcm:audit` clean
+- [x] 422.5 Edge case: pay band tak sesuai market → refresh benchmark lebih sering dengan approval budget
+- [x] 422.6 Risiko: unexplained gap besar → remediation wajib sebelum laporan ditutup, jangan ditunda
+- [x] 422.7 Evidence: benchmark snapshot, calibration minutes, dan equity analysis tercatat
+- [x] 422.8 Quality gate Fase 422
 
 ## FASE 423 — PEOPLE WAVE: PERFORMANCE, REWARDS & TALENT DECISIONS
 - [ ] 423.1 Goal alignment cascade: strategy → business unit → team → individual; goal change requires approval after period start
