@@ -1,7 +1,6 @@
 # Quality Gate Report: Fase R0
 
 - **Commit:** `0eb544b424a4d72303edb42c2b76c1d7b1b3a3ae` (0eb544b)
-- **CI Run ID:** [38068206489](https://github.com/Orls967/SuperWeb/actions/runs/38068206489)
 - **Tanggal:** 2026-10-10T16:34:49+00:00
 - **PHP:** 8.4.26
 - **Database:** sqlite (v3.45.1)
