@@ -72,7 +72,7 @@ it('enforces artifact upload includes manifest, report, junit, and arch-scan wit
     expect($content)->toContain('storage/logs/gate-manifest.json')
         ->and($content)->toContain('storage/logs/pest-junit.xml')
         ->and($content)->toContain('storage/logs/arch-scan.json')
-        ->and($content)->toContain('docs/gates/fase-r0.md')
+        ->and($content)->toContain('docs/gates/fase-')
         ->and($content)->toContain('if-no-files-found: error');
 });
 
@@ -115,3 +115,15 @@ it('enforces npm build for frontend assets in gate-sqlite job', function (): voi
 
     expect($content)->toContain('npm run build');
 });
+
+it('enforces dynamic phase resolution and forbids hardcoded --fase=R0 in CI workflow', function (): void {
+    $workflowPath = dirname(__DIR__, 2).'/.github/workflows/ci.yml';
+    $content = (string) file_get_contents($workflowPath);
+
+    expect($content)->not->toContain('--fase=R0')
+        ->and($content)->toContain('gate:report --fase=')
+        ->and($content)->toContain('gate-report-fase-')
+        ->and($content)->toContain('workflow_dispatch')
+        ->and($content)->toContain('feature/fase-');
+});
+

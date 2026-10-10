@@ -9,6 +9,12 @@ on:
     branches:
       - master
       - 'feature/**'
+  workflow_dispatch:
+    inputs:
+      fase:
+        description: 'ID Fase (mis. R0, R1, 55)'
+        required: false
+        default: ''
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -51,23 +57,39 @@ jobs:
           cp .env.example .env
           php artisan key:generate --ansi
 
+      - name: Determine Phase ID
+        id: resolve-phase
+        run: |
+          FASE_INPUT="${{ github.event.inputs.fase }}"
+          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+          if [ -n "$FASE_INPUT" ]; then
+            FASE="$FASE_INPUT"
+          elif [[ "$BRANCH_NAME" =~ feature/fase-([a-zA-Z0-9]+) ]]; then
+            FASE="${BASH_REMATCH[1]}"
+          else
+            FASE="r0"
+          fi
+          FASE_LOWER=$(echo "$FASE" | tr '[:upper:]' '[:lower:]')
+          echo "fase=$FASE" >> $GITHUB_OUTPUT
+          echo "fase_lower=$FASE_LOWER" >> $GITHUB_OUTPUT
+
       - name: Run Quality Gate (composer gate)
         run: composer gate
 
       - name: Generate Quality Gate Report
-        run: php artisan gate:report --fase=R0
+        run: php artisan gate:report --fase="${{ steps.resolve-phase.outputs.fase }}"
 
       - name: Upload Gate Manifest, Report & JUnit Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: gate-report-fase-r0
+          name: gate-report-fase-${{ steps.resolve-phase.outputs.fase_lower }}
           if-no-files-found: error
           path: |
             storage/logs/gate-manifest.json
             storage/logs/pest-junit.xml
             storage/logs/arch-scan.json
-            docs/gates/fase-r0.md
+            docs/gates/fase-${{ steps.resolve-phase.outputs.fase_lower }}.md
 
   portability-mysql:
     name: PHP 8.4 × MySQL 8 (DB Portability)
