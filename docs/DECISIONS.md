@@ -1187,6 +1187,21 @@
   - `vendor/bin/pest tests/Architecture/RouteAuthorizationMatrixTest.php` lulus (7 passed, 1545 assertions).
   - Register Minus `M-R0-18` tetap terbuka di `docs/PROGRESS.md` sebagai temuan P1.
 
+## 2026-10-11: Pengecualian database/database.sqlite pada resolveIsDirty GateRunner
+- **Context:**
+  - `database/database.sqlite` tercatat sebagai file terlacak git (`git ls-files database/database.sqlite`), namun file ini bertindak sebagai database lokal aktif di mana proses audit, migrasi, dan eksekusi test lokal dapat memodifikasi isi file atau menghasilkan berkas WAL/SHM (`.sqlite-wal`, `.sqlite-shm`).
+  - Sesuai protokol I1, keberadaan perubahan pada file sqlite lokal tidak boleh menggagalkan status clean working tree pada quality gate selama file kode sumber bersih.
+- **Decision:**
+  - `GateRunner::resolveIsDirty()` secara eksplisit mengecualikan perubahan pada `database/database.sqlite`, seluruh file berakhiran `.sqlite`, dan file berkas temporer sqlite (`.sqlite-wal`, `.sqlite-shm`), serta artefak log di `storage/logs/` dan `storage/gate/`.
+  - Pengecualian ini aman karena pipeline quality gate mengisolasi database pengujian ke `storage/gate/gate.sqlite` yang dibuat ulang dari awal dan migrasi diisolasi, sehingga modifikasi pada `database/database.sqlite` lokal tidak memengaruhi validitas artefak pengujian.
+  - Namun, untuk menjamin integritas working tree, file kode sumber lain di `app/`, `modules/`, `database/migrations/`, `routes/`, dll. yang terlacak git tetap terdeteksi secara ketat (`dirty=true`) menggunakan opsi `git status --porcelain -uall`.
+- **Reason:**
+  - Menghindari kegagalan gate akibat lock file atau modifikasi seeder/audit pada database SQLite lokal saat pelaksana atau CI menjalankan rangkaian pemeriksaan.
+  - Mempertahankan kebersihan working tree murni pada level kode sumber.
+- **Verification:**
+  - `vendor/bin/pest tests/Feature/Quality/GateRunnerTest.php` (`it accurately detects dirty working tree while ignoring sqlite and logs`) lulus (7 passed, 83 assertions).
+
+
 
 
 
