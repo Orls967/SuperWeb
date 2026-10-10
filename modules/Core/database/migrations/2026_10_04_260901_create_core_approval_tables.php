@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('core_approvals', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->nullableMorphs('approvable'); // Target entity being approved (Claim, PO, Contract, Asset, etc.)
+            $table->string('approvable_type')->nullable();
+            $table->string('approvable_id', 64)->nullable(); // id bigint atau UUID/ULID entitas yang disetujui
+            $table->index(['approvable_type', 'approvable_id']); // Target entity being approved (Claim, PO, Contract, Asset, etc.)
             $table->string('approval_type', 50)->index(); // CLAIM, PO, CONTRACT, CARRIER_PAYMENT, ASSET_WRITE_OFF
             $table->string('title', 255);
             $table->decimal('amount', 18, 2)->nullable();
