@@ -1172,5 +1172,21 @@
   - `vendor/bin/pest tests/Feature/Portability/DualGenesisCompatibilityTest.php` lulus (3 passed, 9 assertions).
   - Test modul Asset (`AssetCoreTest`, `AssetPhase31Test`), Contract (`ContractFeatureTest`, `ContractObligationsTest`), dan Manufacturing (`ManufacturingPhase35Test`) lulus (75 passed, 288 assertions).
 
+## 2026-10-11: Peta Role R0 Adalah Potret Middleware Efektif (Bukan Spesifikasi Akses Akhir)
+- **Context:**
+  - File `tests/Architecture/route-roles.php` pernah ditulis ulang secara otomatis agar selaras persis dengan middleware efektif yang terpasang pada route registri per 10–11 Okt 2026.
+  - Hal ini diperlukan untuk membangun baseline ratchet (`route-authorization.json` 598 rute, `route-auth-entries.json` 299 rute, `route-dynamic-pending.json` 280 rute) agar tidak ada rute yang melemah tanpa terdeteksi.
+- **Decision:**
+  - Peta role di `route-roles.php` pada Fase R0 merupakan potret faktual middleware yang terpasang pada rute per 10–11 Okt 2026, **bukan spesifikasi hak akses akhir**.
+  - Spesifikasi granular dan pengetatan otorisasi per role (termasuk pembatasan role `admin`, `auditor`, dan operator bisnis) akan ditetapkan secara resmi pada **Fase R3.1** (Otorisasi & Matriks Peran).
+  - Sebanyak 37 rute tulis (mutasi data/POST/PUT/PATCH/DELETE) yang saat ini mengizinkan role `auditor` tetap dicatat secara jujur dan transparan di Register Minus **M-R0-18** (Prioritas P1) sesuai protokol P1/P7, dan akan diperbaiki pada Fase R3.1 agar auditor berstatus read-only murni.
+- **Reason:**
+  - Menghindari modifikasi sepihak atas rute operasional sebelum spesifikasi domain dan matriks peran difinalisasi di R3.1.
+  - Memastikan pagar otomatis `RouteAuthorizationMatrixTest` bekerja sebagai ratchet yang mencegah pelemahan hak akses rute (V8a, V8b, V8c).
+- **Verification:**
+  - `vendor/bin/pest tests/Architecture/RouteAuthorizationMatrixTest.php` lulus (7 passed, 1545 assertions).
+  - Register Minus `M-R0-18` tetap terbuka di `docs/PROGRESS.md` sebagai temuan P1.
+
+
 
 

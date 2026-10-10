@@ -493,14 +493,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 #### Register Minus Fase R0
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
-| M-R0-1 | R0.8 | Pelanggaran `arch:scan` warisan kode lama (7.273 temuan terbaseline di A1–A13) belum diperbaiki | Pola anti-pola X2–X25 masih ada di kode lama sampai remediasi modular | P2 | R1–R5 (K2) |
-| M-R0-2 | R0.9 | 100 rute warisan belum dipetakan role eksplisit (tercatat di baseline `route-authorization.json`) | Rute lama belum terlindungi matriks otorisasi per-role ketat | P2 | R3.1 (K2) |
-| M-R0-3 | R0.9 | 148 rute berparameter belum memiliki closure parameter uji HTTP dinamis (ratchet `route-dynamic-pending.json`) | Uji HTTP dinamis 403/non-403 pada rute ini ditunda | P2 | R3.1 (K2) |
+| M-R0-1 | R0.8 | Pelanggaran `arch:scan` warisan kode lama (7.265 temuan terbaseline di A1–A13, A12 berkurang 8 dari 596 ke 588) belum diperbaiki | Pola anti-pola X2–X25 masih ada di kode lama sampai remediasi modular | P2 | R1–R5 (K2) |
+| M-R0-2 | R0.9 | 299 rute operasional dipetakan sebagai 'auth' di route-auth-entries.json (dari total 598 rute di route-authorization.json) | Rute lama belum terlindungi matriks otorisasi per-role ketat | P2 | R3.1 (K2) |
+| M-R0-3 | R0.9 | 280 rute berparameter belum memiliki closure parameter uji HTTP dinamis (ratchet `route-dynamic-pending.json`) | Uji HTTP dinamis 403/non-403 pada rute ini ditunda | P2 | R3.1 (K2) |
 | M-R0-4 | R0.10 | 33 command audit warisan belum memiliki fixture korupsi (`audit-contract.json`) | Baru 2 audit (`bank:reconcile`, `api:audit`) yang terbukti gagal saat data rusak | P1 | R5.2 (K2) |
 | M-R0-5 | R0.10 | 172 kode akun produksi belum didefinisikan di seeder chart of accounts (`ledger-accounts.json`) | Akun warisan ini berpotensi gagal posting di skenario database bersih | P1 | R1.3 (K2) |
 | M-R0-6 | R0.10 | 3 saldo akun berlawanan sisi normal akuntansi (`ledger-normal-balance.json`: `ast:fixed_assets`, `expense:resto:waste:IDR`, `liability:mall:points:PTS`) | Data uang dan saldo neraca/laba rugi terbalik | P0 | R1.2 (K2) |
-| M-R0-7 | R0.11 | 705 file & 853 tabel warisan di `modules/Integration` dibekukan via baseline `integration-freeze.json` | Belum dipindahkan ke modul domain yang sesuai | P2 | R4.4 (K2) |
-| M-R0-8 | R0.11 | 94 lokasi pembuatan `LedgerAccount` langsung di test & 9 assertion sepele (`test-hygiene.json`) | Test lama masih mengaburkan status produksi dan kebersihan pengujian | P2 | R1.3, R5.5 (K2) |
+| M-R0-7 | R0.11 | 705 file & 853 tabel warisan di `modules/Integration` dibekukan via baseline `integration-freeze.json` (total 1.558 entri) | Belum dipindahkan ke modul domain yang sesuai | P2 | R4.4 (K2) |
+| M-R0-8 | R0.11 | 94 lokasi pembuatan `LedgerAccount` langsung di test & 9 assertion sepele (`test-hygiene.json`, total 106 entri: T1=9, T2=94, T3=1, T4=2) | Test lama masih mengaburkan status produksi dan kebersihan pengujian | P2 | R1.3, R5.5 (K2) |
 | M-R0-9 | R0.3 | CI run #38078763783 membuktikan job `gate-sqlite` dan `portability-mysql` (MySQL 8) keduanya HIJAU PENUH (SUCCESS, 2.524 test, 11.065 asersi); Draft PR #8 aktif; branch protection master menunggu aktivasi pemilik repo | Branch protection remote master menunggu hak akses admin pemilik | P2 | Menunggu aktivasi protection oleh pemilik |
 | M-R0-10 | R2.3 | `contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`) | Pembuatan klausa kontrak tidak dapat diakses via web UI | P1 | R2.3 (K2) |
 | M-R0-11 | R2.3 | `contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view | Halaman laporan keuangan kontrak tidak bisa dibuka | P1 | R2.3 (K2) |
@@ -508,9 +508,11 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-13 | R3.1 | `storage.local.upload`: tidak terlindungi = P0 tidak terbukti (closure bawaan Laravel abort 403 bila URL signature tidak valid); belum terdokumentasi di route-roles | Perlu dokumentasi eksplisit signed route | P2 | R3.1 (K2) |
 | M-R0-14 | R5.2 | `api:audit` tidak menyebut entitas/record yang rusak (hanya count dan pesan generik) | Penelusuran data korup memerlukan query manual ke database | P1 | R5.2 (K2) |
 | M-R0-15 | R5.5 | Scanner A12 hanya per-file migrasi (FK di migrasi terpisah tidak terbaca) & scanner T4 berbasis heuristik nama folder/token | Risiko false positive/negative pada analisis statis arsitektur | P2 | R5.5 (K2) |
-| M-R0-16 | R5.5 | Memori test suite penuh mendekati 512M saat dijalankan sekuensial (dinaikkan ke 2048M untuk mutation testing) | Risiko Out Of Memory bila test suite bertambah tanpa eksekusi paralel | P2 | R5.5 (K2) |
-| M-R0-17 | R0.3 | Selesai di R0.3.b (commit `5b2828a`, `4a8ad1a`): 22 identifier diperbaiki ≤ 64 char, key InnoDB ≤ 3072 byte, tipe approval_id disesuaikan UUID; job MySQL CI 100% HIJAU | Portabilitas skema MySQL tuntas | Selesai | Tuntas di R0.3.b |
+| M-R0-16 | R5.5 | Memori test suite penuh pada batas `memory_limit=512M` phpunit.xml terukur lulus tanpa crash: sekuensial durasi 285.00s peak RSS 685.1MB peak footprint 592.5MB; paralel 10 proses 57.48s peak RSS 389.5MB peak footprint 119.0MB | Risiko Out Of Memory bila test suite bertambah tanpa eksekusi paralel | P2 | R5.5 (K2) |
+| ~~M-R0-17~~ | R0.3 | ~~Portabilitas skema MySQL: 22 identifier ≤ 64 char, key InnoDB ≤ 3072 byte, approval_id disatukan bigint FK~~ | ~~Portabilitas skema MySQL tuntas~~ | ~~P0~~ | Tuntas di R0.3.b (commit `5b2828a`, `4a8ad1a`, diperkuat `2cd2003`; test `MysqlSchemaCompatibilityTest`) |
 | M-R0-18 | R3.1 | 37 rute tulis auditor (V8c) mencantumkan role auditor pada endpoint mutasi data (store/update/delete/settle/transition/decide) | Auditor seharusnya hanya memiliki hak baca (read-only) | P1 | R3.1 (K2) |
+| M-R0-19 | R0.3 | Workflow CI dinamis per-fase terpasang di `.github/workflows/ci.yml` (B-06), menunggu pembuktian eksekusi run CI | Penamaan artefak dan parameter fase otomatis mengikuti branch/input | P2 | Tuntas di commit `92385b0`, menunggu hasil CI |
+| M-R0-20 | R0.12 | Skor mutasi `App\Quality\Gate\GateRunner` mencapai 47.87% (131 killed mutants dari 282 total mutasi, naik dari 3.19%), sisa mutan untested pada konstanta MANDATORY_STEPS dan I/O shell | Pagar mutasi runner perlu penguatan lanjutan sampai ambang ≥ 60% | P2 | R5.5 (K2) |
 
 ### FASE R1 — LEDGER & UANG (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.
