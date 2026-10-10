@@ -84,6 +84,7 @@ final class GateRunner
     public function run(?string $manifestPath = null, ?Closure $logger = null): int
     {
         $root = $this->repoRoot ?? (function_exists('app') && app()->has('path.base') ? base_path() : dirname(__DIR__, 3));
+        $manifestFile = $manifestPath ?? $root.'/storage/logs/gate-manifest.json';
         $headCommit = $this->resolveCommitHash($root);
         $isDirty = $this->resolveIsDirty($root);
         $timestamp = date('c');
