@@ -33,6 +33,21 @@ it('verifies CI workflow defines mutation testing job with PCOV and 60% minimum 
         ->and($content)->toContain('--min=60');
 });
 
+it('verifies MutationTestCommand defaults to master base and fails on invalid base branch', function (): void {
+    // 1. Default base is master
+    $cmd = app(\App\Console\Commands\MutationTestCommand::class);
+    $definition = $cmd->getDefinition();
+    expect($definition->getOption('base')->getDefault())->toBe('master');
+
+    // 2. Non-zero exit code when git merge-base/diff fails
+    $this->artisan('test:mutate', [
+        '--git-diff' => true,
+        '--base' => 'nonexistent_branch_definitely_missing_xyz',
+    ])
+        ->expectsOutputToContain('Gagal menjalankan git merge-base/diff')
+        ->assertExitCode(1);
+});
+
 it('verifies Pest CLI supports mutation testing options', function (): void {
     $output = shell_exec('vendor/bin/pest --help 2>&1');
 

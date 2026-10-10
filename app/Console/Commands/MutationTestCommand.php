@@ -18,8 +18,8 @@ class MutationTestCommand extends Command
     protected $signature = 'test:mutate
         {--class=* : Spesifikasikan nama kelas target mutasi (mis. Modules\\Hospital\\Application\\Actions\\AdmitPatientAction)}
         {--min=60 : Ambang batas skor mutasi minimum dalam persen (bawaan: 60)}
-        {--git-diff : Deteksi otomatis kelas Action/Service yang disentuh git branch terhadap origin/main}
-        {--base=main : Base branch untuk git diff (bawaan: main)}
+        {--git-diff : Deteksi otomatis kelas Action/Service yang disentuh git branch terhadap origin/master}
+        {--base=master : Base branch untuk git diff (bawaan: master)}
         {--bail : Hentikan eksekusi pada mutasi pertama yang gagal}
         {--dry-run : Tampilkan perintah pest yang akan dijalankan tanpa mengeksekusi}';
 
@@ -33,6 +33,13 @@ class MutationTestCommand extends Command
         if ($this->option('git-diff')) {
             $base = (string) $this->option('base');
             $detected = $this->detectChangedClasses($base);
+
+            if ($detected === null) {
+                $this->error("Gagal menjalankan git merge-base/diff terhadap base branch '{$base}'.");
+
+                return self::FAILURE;
+            }
+
             $classes = array_values(array_unique([...$classes, ...$detected]));
         }
 
@@ -75,22 +82,38 @@ class MutationTestCommand extends Command
     }
 
     /**
-     * @return list<string>
+     * @return list<string>|null Null indicates git error (merge-base / diff failure)
      */
-    private function detectChangedClasses(string $baseBranch): array
+    private function detectChangedClasses(string $baseBranch): ?array
     {
-        $mergeBase = trim((string) shell_exec("git merge-base origin/{$baseBranch} HEAD 2>/dev/null || git merge-base {$baseBranch} HEAD 2>/dev/null"));
-        if ($mergeBase !== '') {
-            $output = shell_exec("git diff --name-only {$mergeBase} HEAD 2>/dev/null");
-        } else {
-            $output = shell_exec("git diff --name-only origin/{$baseBranch}...HEAD 2>/dev/null || git diff --name-only {$baseBranch}...HEAD 2>/dev/null");
+        $mergeBaseOutput = [];
+        $mergeBaseCode = 1;
+        exec("git merge-base origin/{$baseBranch} HEAD 2>/dev/null || git merge-base {$baseBranch} HEAD 2>/dev/null", $mergeBaseOutput, $mergeBaseCode);
+        $mergeBase = trim(implode("\n", $mergeBaseOutput));
+
+        if ($mergeBaseCode !== 0 || $mergeBase === '') {
+            $diffOutput = [];
+            $diffCode = 1;
+            exec("git diff --name-only origin/{$baseBranch}...HEAD 2>/dev/null || git diff --name-only {$baseBranch}...HEAD 2>/dev/null", $diffOutput, $diffCode);
+
+            if ($diffCode !== 0) {
+                return null;
+            }
+
+            $files = array_filter(array_map('trim', $diffOutput));
+
+            return MutationTargetResolver::resolveClasses($files);
         }
 
-        if ($output === null || trim($output) === '') {
-            return [];
+        $diffOutput = [];
+        $diffCode = 1;
+        exec("git diff --name-only {$mergeBase} HEAD 2>/dev/null", $diffOutput, $diffCode);
+
+        if ($diffCode !== 0) {
+            return null;
         }
 
-        $files = array_filter(array_map('trim', explode("\n", trim($output))));
+        $files = array_filter(array_map('trim', $diffOutput));
 
         return MutationTargetResolver::resolveClasses($files);
     }
