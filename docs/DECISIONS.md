@@ -1072,3 +1072,19 @@
 - **Context:** detektor Fase R0 selain `arch:scan` juga menemukan pelanggaran lama yang baru akan ditutup di R1–R5 (rute tanpa role, audit tanpa fixture korupsi, akun ledger yang hanya ada di test, saldo berlawanan sisi normal, isi `modules/Integration`, higiene test).
 - **Decision:** setiap detektor memakai file baseline ratchet di `tests/Architecture/baselines/` (format sama: hanya boleh turun; menambah entri wajib `BASELINE_DECISION="DECISIONS.md#…"` yang ada). Baseline awal dibuat dari kondisi kode 10 Okt 2026; angka per detektor dicatat di laporan gate Fase R0 dan Register Minus R0.
 - **Reason:** pagar langsung aktif untuk perubahan baru tanpa menunggu seluruh utang lama lunas.
+
+## 2026-10-10: Penamaan eksplisit identifier skema MySQL ≤ 64 karakter (Fase R0.3.b)
+- **Context:**
+  - MySQL 8.4 membatasi panjang nama identifier (tabel, kolom, index, unique constraint, foreign key) maksimal 64 karakter.
+  - Konvensi penamaan default Laravel menghasilkan nama index/unique > 64 karakter pada tabel/kolom dengan nama panjang (ditemukan pertama kali pada CI run 38068206489 job `portability-mysql`: `mall_utility_tariffs_property_id_utility_type_effective_from_index` sepanjang 67 karakter).
+  - Total 22 identifier melebihi batas 64 karakter terdeteksi di modul `Mall`, `Logistics`, `Manufacturing`, `Wms`, `Mining`, `Egy`, `Tlx`, `Edu`, dan `Integration`.
+- **Decision:**
+  - Sesuai Keputusan Pemilik K1 (mengikat): seluruh identifier yang melebihi 64 karakter diperbaiki langsung di file migrasinya dengan memberi nama eksplisit ≤ 64 karakter tanpa mengubah kolom, tipe data, atau semantik database.
+  - Penyingkatan menggunakan singkatan domain yang konsisten (mis. `prop_type`, `eff_idx`, `stat_uniq`, `hh_contracts`).
+  - Dibuat arsitektur test `tests/Architecture/SchemaIdentifierLengthTest.php` untuk memvalidasi seluruh migrasi secara otomatis agar identifier > 64 karakter langsung menggagalkan CI.
+- **Reason:**
+  - Portabilitas penuh dengan MySQL 8.4 agar job CI `portability-mysql` hijau.
+  - Tidak mengubah skema data fisik atau struktur relasi data, murni penamaan identifier metadata.
+- **Verification:**
+  - `vendor/bin/pest tests/Architecture/SchemaIdentifierLengthTest.php` exit 0.
+  - Sabotase sementara dengan identifier 65 karakter terbukti menghasilkan exit code ≠ 0 (gagal).

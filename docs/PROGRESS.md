@@ -377,6 +377,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
       - file: README.md
       - file: docs/DECISIONS.md
       - test: tests/Architecture/Psr4ComplianceTest.php::it keeps production classes at their case-sensitive PSR-4 path
+  - [ ] R0.3.b **Portabilitas skema MySQL** (K-28; ditemukan CI run 38068206489, 10 Okt 2026): migrasi gagal di MySQL 8.4 karena nama identifier > 64 karakter (contoh `mall_utility_tariffs_property_id_utility_type_effective_from_index`, 67 karakter). Temukan SEMUA identifier (tabel, kolom, index, unique, foreign key) yang melebihi batas, beri nama eksplisit ≤ 64 karakter tanpa mengubah kolom/semantik, dan pasang `SchemaIdentifierLengthTest` agar nama baru yang terlalu panjang langsung gagal.
 - [x] R0.4 **`ProgressIntegrityTest`** (K-01; spesifikasi `KONSEP.md` §A14.2): parse `docs/PROGRESS.md` dan validasi blok `Bukti:` sesuai aturan P2 (commit ada & menyentuh file yang disebut; file/test ada; test lulus di laporan gate; rute ada dengan middleware role yang sesuai; command/listener terdaftar; item fitur wajib punya `akses` + test HTTP/command). Juga gagal bila: status ✅ tanpa bagian **Verifikasi** di `docs/gates/fase-N.md`; fase ✅ masih punya minus P0/P1 terbuka; teks item berubah tanpa penanda `⬇️ diturunkan` (dibandingkan snapshot teks item di baseline). Berlaku untuk: semua item Fase R, semua fase yang statusnya berubah setelah 2026-10-10, dan seluruh fase setelah R6 selesai.
   Bukti:
     - commit: 1fcc5f3
