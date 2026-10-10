@@ -151,4 +151,3 @@ it('resolves unnamed route keys and middleware role intersections', function ():
     $multiRole->middleware(['role:admin, manager', 'role:admin, auditor']);
     expect(RouteAuthorizationScanner::routeProtection($multiRole))->toBe(['roles' => ['admin']]);
 });
-

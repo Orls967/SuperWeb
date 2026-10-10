@@ -199,4 +199,3 @@ it('matches required steps using commands and name prefixes', function (): void 
 
     expect($manifest->missingRequiredSteps())->toBeEmpty();
 });
-

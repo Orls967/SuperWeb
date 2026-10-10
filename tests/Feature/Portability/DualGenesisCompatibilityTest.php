@@ -5,14 +5,15 @@ declare(strict_types=1);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Modules\Asset\Application\Services\AssetService;
 use Modules\Asset\Domain\Models\Asset;
 use Modules\Asset\Domain\Models\AssetEvent;
 use Modules\Contract\Domain\Models\Contract;
 use Modules\Contract\Domain\Models\ContractVersion;
 use Modules\Manufacturing\Application\Services\ManufacturingService;
-use Modules\Manufacturing\Domain\Models\Material;
 use Modules\Manufacturing\Domain\Models\Formula;
+use Modules\Manufacturing\Domain\Models\Material;
 
 uses(RefreshDatabase::class);
 
@@ -27,7 +28,7 @@ test('asset module accepts both new and legacy genesis but rejects random genesi
 
     if (! $event) {
         $hashNew = AssetEvent::calculateHash(AssetService::GENESIS_HASH, 1, 'acquisition', $payloadJson, $nowIso);
-        $eventId = (string) \Illuminate\Support\Str::uuid();
+        $eventId = (string) Str::uuid();
         DB::table('ast_events')->insert([
             'id' => $eventId,
             'asset_id' => $asset->id,
@@ -98,7 +99,7 @@ test('contract module accepts both new and legacy genesis but rejects random gen
             body: $body,
             createdAtIso: $nowIso
         );
-        $versionId = (string) \Illuminate\Support\Str::uuid();
+        $versionId = (string) Str::uuid();
         DB::table('ctr_contract_versions')->insert([
             'id' => $versionId,
             'contract_id' => $contract->id,

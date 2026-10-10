@@ -35,7 +35,7 @@ it('isolates gate db commands to storage/gate/gate.sqlite and recreates it (V7)'
 });
 
 it('correctly resolves git commit hash and falls back to zeros when not in a git repo', function (): void {
-    $runner = new GateRunner();
+    $runner = new GateRunner;
     $reflection = new \ReflectionClass($runner);
     $method = $reflection->getMethod('resolveCommitHash');
     $method->setAccessible(true);
@@ -288,6 +288,3 @@ it('executes full 9-step gate pipeline successfully and produces clean manifest 
 
     File::deleteDirectory($tempDir);
 });
-
-
-

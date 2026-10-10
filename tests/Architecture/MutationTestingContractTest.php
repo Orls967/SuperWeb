@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Console\Commands\MutationTestCommand;
 use Tests\TestCase;
 
 /*
@@ -35,7 +36,7 @@ it('verifies CI workflow defines mutation testing job with PCOV and 60% minimum 
 
 it('verifies MutationTestCommand defaults to master base and fails on invalid base branch', function (): void {
     // 1. Default base is master
-    $cmd = app(\App\Console\Commands\MutationTestCommand::class);
+    $cmd = app(MutationTestCommand::class);
     $definition = $cmd->getDefinition();
     expect($definition->getOption('base')->getDefault())->toBe('master');
 

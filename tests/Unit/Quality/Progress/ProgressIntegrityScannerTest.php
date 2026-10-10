@@ -432,4 +432,3 @@ MD;
     expect(implode("\n", $violations))->toContain('bagian Verifikasi di')
         ->and(implode("\n", $violations))->toContain('tidak sah');
 });
-

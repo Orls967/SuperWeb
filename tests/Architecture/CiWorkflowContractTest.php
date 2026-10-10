@@ -126,4 +126,3 @@ it('enforces dynamic phase resolution and forbids hardcoded --fase=R0 in CI work
         ->and($content)->toContain('workflow_dispatch')
         ->and($content)->toContain('feature/fase-');
 });
-
