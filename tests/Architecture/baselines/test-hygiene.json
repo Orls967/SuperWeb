@@ -1,0 +1,254 @@
+{
+    "about": "Baseline ratchet higiene test T1–T4 (PROGRESS R0.11, KONSEP §A14.7). Hanya boleh turun; target 0 di R5.5 (T2 di R1.3).",
+    "rules": {
+        "T1": {
+            "total": 9,
+            "entries": {
+                "modules/Fleet/tests/Feature/FleetTest.php": {
+                    "assertTrue(true)": 1
+                },
+                "modules/Logistics/tests/Feature/LogisticsDriverTest.php": {
+                    "assertTrue(true)": 2
+                },
+                "modules/Manufacturing/tests/Feature/MaintenanceOeeHseTest.php": {
+                    "assertTrue(true)": 2
+                },
+                "modules/Manufacturing/tests/Feature/ManufacturingPhase35Test.php": {
+                    "assertTrue(true)": 1
+                },
+                "modules/Manufacturing/tests/Feature/QualityManagementTest.php": {
+                    "assertTrue(true)": 1
+                },
+                "modules/Manufacturing/tests/Feature/ShopFloorTest.php": {
+                    "assertTrue(true)": 1
+                },
+                "tests/Unit/ExampleTest.php": {
+                    "assertTrue(true)": 1
+                }
+            }
+        },
+        "T2": {
+            "total": 94,
+            "entries": {
+                "modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Banking/tests/Feature/LedgerPostingTest.php": {
+                    "LedgerAccount::create()": 5
+                },
+                "modules/CloudKitchen/tests/Feature/CloudKitchenTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Core/tests/Feature/UniversalCrossLineFintechTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Edu/tests/Feature/AcademyAndCertificationTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Edu/tests/Feature/TalentPipelineAndWorkforceTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Egy/tests/Feature/CarbonTradingAndEsgMarketTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Egy/tests/Feature/DistrictUtilityAndEscoTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Egy/tests/Feature/EnergyGridAndMeteringTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Egy/tests/Feature/MicrogridAndResilienceTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/EnterpriseFinance/tests/Feature/ConglomerateCapitalAndGovernanceTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Ev/tests/Feature/EvTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Fleet/tests/Feature/FleetTest.php": {
+                    "LedgerAccount::create()": 3
+                },
+                "modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Hospital/tests/Feature/HospitalLabAndImagingTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Hospital/tests/Feature/HospitalPublicHealthAndBpjsTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Hospital/tests/Feature/MedicalTourismAndMembershipTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Hospital/tests/Feature/TelemedicineAndEPharmacyTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Hotel/tests/Feature/HospitalityRevenueCommandTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php": {
+                    "LedgerAccount::firstOrCreate()": 2
+                },
+                "modules/Hotel/tests/Feature/HotelFranchiseAndBrandTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Hotel/tests/Feature/HotelTravelPassAndLoyaltyTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Hotel/tests/Feature/MiceAndWeddingSalesTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Hotel/tests/Feature/TravelPlatformAndItineraryTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Insurance/tests/Feature/InsuranceTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Integration/tests/Feature/CrossEcosystemWave2IntegrationTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Med/tests/Feature/DistributionAndAdvertisingTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Med/tests/Feature/StudioAndContentProductionTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Mining/tests/Feature/MiningEnvironmentalComplianceTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Mining/tests/Feature/MiningExportAndComplianceTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Mining/tests/Feature/MiningGeotechAndBlastTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Mining/tests/Feature/MiningHseAndContractorTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Mining/tests/Feature/MiningRenewableAndCarbonTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Mining/tests/Feature/MiningSmelterAndMetalsTradingTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Proptech/tests/Feature/FlexSpaceBookingTest.php": {
+                    "LedgerAccount::create()": 4
+                },
+                "modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Ret/tests/Feature/FulfillmentAndQuickCommerceTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Ret/tests/Feature/OmnichannelRetailTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Ret/tests/Feature/SuperAppAndCashbackTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Rwa/tests/Feature/RwaTest.php": {
+                    "LedgerAccount::create()": 4
+                },
+                "modules/Tlx/tests/Feature/DataCenterAndCloudOpsTest.php": {
+                    "LedgerAccount::firstOrCreate()": 2
+                },
+                "modules/Tlx/tests/Feature/IspAndMobileServicesTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                },
+                "modules/Tlx/tests/Feature/TelecomNetworkAndIotTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php": {
+                    "LedgerAccount::create()": 3
+                },
+                "modules/Treasury/tests/Feature/TreasuryTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Vending/tests/Feature/SmartVendingTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php": {
+                    "LedgerAccount::firstOrCreate()": 2
+                },
+                "modules/Venue/tests/Feature/VenueCreatorEconomyTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Venue/tests/Feature/VenueSecondaryMarketTest.php": {
+                    "LedgerAccount::create()": 1
+                },
+                "modules/Wealth/tests/Feature/WealthTest.php": {
+                    "LedgerAccount::create()": 2
+                },
+                "tests/Feature/TwelveLinesComprehensiveAuditTest.php": {
+                    "LedgerAccount::firstOrCreate()": 1
+                }
+            }
+        },
+        "T3": {
+            "total": 1,
+            "entries": {
+                "tests/Performance/QueryBudgetTest.php": {
+                    "markTestSkipped()": 1
+                }
+            }
+        },
+        "T4": {
+            "total": 2,
+            "entries": {
+                "modules/Asset/routes/web.php": {
+                    "modul Asset tanpa test HTTP": 1
+                },
+                "modules/Payment/routes/web.php": {
+                    "modul Payment tanpa test HTTP": 1
+                }
+            }
+        }
+    },
+    "approved_additions": [
+        {
+            "date": "2026-10-10",
+            "decision": "DECISIONS.md#2026-10-10-baseline-awal-detektor-lain-fase-r0-r09r011",
+            "rule": "*",
+            "path": "*",
+            "signature": "baseline awal",
+            "added": 107
+        }
+    ]
+}

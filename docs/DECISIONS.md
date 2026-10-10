@@ -1067,3 +1067,8 @@
 - **Context:** `api:audit` dideklarasikan oleh dua kelas (`AuditIntegrationCommand` Fase 55 dan `ApiAuditCommand` Fase 147). Laravel hanya menyimpan registrasi terakhir, sehingga audit webhook HMAC & EDI Fase 55 tidak pernah berjalan dan `IntegrationTest::test_55_9` gagal di Linux.
 - **Decision:** satu kelas `AuditIntegrationCommand` menjalankan kedua audit; command gagal bila salah satu menemukan selisih. Teks keluaran lama dipertahankan agar item 55.9, 102.5, dan 147.6 tetap merujuk command yang sama. `ApiAuditCommand` dihapus. `CommandSignatureUniqueTest` mencegah nama command ganda terulang.
 - **Reason:** ketiga item PROGRESS memakai nama `api:audit`; menggabungkan lebih jujur daripada mengganti nama salah satunya diam-diam.
+
+## 2026-10-10: Baseline awal detektor lain Fase R0 (R0.9–R0.11)
+- **Context:** detektor Fase R0 selain `arch:scan` juga menemukan pelanggaran lama yang baru akan ditutup di R1–R5 (rute tanpa role, audit tanpa fixture korupsi, akun ledger yang hanya ada di test, saldo berlawanan sisi normal, isi `modules/Integration`, higiene test).
+- **Decision:** setiap detektor memakai file baseline ratchet di `tests/Architecture/baselines/` (format sama: hanya boleh turun; menambah entri wajib `BASELINE_DECISION="DECISIONS.md#…"` yang ada). Baseline awal dibuat dari kondisi kode 10 Okt 2026; angka per detektor dicatat di laporan gate Fase R0 dan Register Minus R0.
+- **Reason:** pagar langsung aktif untuk perubahan baru tanpa menunggu seluruh utang lama lunas.
