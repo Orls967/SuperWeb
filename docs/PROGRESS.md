@@ -488,7 +488,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-6 | R0.10 | 3 saldo akun berlawanan sisi normal akuntansi (`ledger-normal-balance.json`: `ast:fixed_assets`, `expense:resto:waste:IDR`, `liability:mall:points:PTS`) | Data uang dan saldo neraca/laba rugi terbalik | P0 | R1.2 |
 | M-R0-7 | R0.11 | 705 file & 853 tabel warisan di `modules/Integration` dibekukan via baseline `integration-freeze.json` | Belum dipindahkan ke modul domain yang sesuai | P2 | R4.4 |
 | M-R0-8 | R0.11 | 94 lokasi pembuatan `LedgerAccount` langsung di test & 9 assertion sepele (`test-hygiene.json`) | Test lama masih mengaburkan status produksi dan kebersihan pengujian | P2 | R1.3, R5.5 |
-| M-R0-9 | R0.3 | CI run awal #38064350788 gagal (gate-sqlite: MissingAppKeyException & shallow clone; mysql: butuh --force & .env; mutation: skipped). Workflow diperbaiki di commit f13054a; branch protection belum aktif di remote master | Pipeline CI dan proteksi branch belum berjalan secara riil di remote | P1 | setelah push + pemilik mengaktifkan protection |
+| M-R0-9 | R0.3 | CI run #38064350788 & #38065346460 membuktikan MySQL 8.4 & environment berjalan riil, namun terhenti di M-R0-17; branch protection belum aktif di remote master | Pipeline CI dan proteksi branch belum sepenuhnya hijau | P1 | setelah push + pemilik mengaktifkan protection |
 | M-R0-10 | R2.3 | `contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`) | Pembuatan klausa kontrak tidak dapat diakses via web UI | P1 | R2.3 |
 | M-R0-11 | R2.3 | `contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view | Halaman laporan keuangan kontrak tidak bisa dibuka | P1 | R2.3 |
 | M-R0-12 | R3.1 | `distribution.portal.home` → HTTP 403 untuk user dengan role `admin` (hanya allow distributor/partner) | Admin sistem tidak bisa membuka portal distributor untuk supervisi | P1 | R3.1 |
@@ -496,6 +496,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-14 | R5.2 | `api:audit` tidak menyebut entitas/record yang rusak (hanya count dan pesan generik) | Penelusuran data korup memerlukan query manual ke database | P1 | R5.2 |
 | M-R0-15 | R5.5 | Scanner A12 hanya per-file migrasi (FK di migrasi terpisah tidak terbaca) & scanner T4 berbasis heuristik nama folder/token | Risiko false positive/negative pada analisis statis arsitektur | P2 | R5.5 |
 | M-R0-16 | R5.5 | Memori test suite penuh mendekati 512M saat dijalankan sekuensial | Risiko Out Of Memory bila test suite bertambah tanpa eksekusi paralel | P2 | R5.5 |
+| M-R0-17 | R0.3 | Migrasi warisan `2026_09_30_130001_create_mall_billing_tables.php` gagal di MySQL 8.4 karena identifier index `mall_utility_tariffs_property_id_utility_type_effective_from_index` melebihi batas 64 karakter (SQLSTATE[42000] error 1059) | `php artisan migrate:fresh --seed` gagal di job MySQL 8.4 CI | P1 | Menunggu arahan pemilik: perbaiki nama index di migrasi atau tangani di R1.9 |
 
 ### FASE R1 — LEDGER & UANG (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.
