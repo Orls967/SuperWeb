@@ -185,7 +185,7 @@ it('generates gate report when manifest and test suite are clean and match HEAD'
 <testsuites>
   <testsuite name="TestSuite" tests="20" assertions="50" errors="0" failures="0" time="12.5">
     <testcase name="it ensures composer.json and README.md align on PHP ^8.4 requirement" file="tests/Architecture/DocsVersionConsistencyTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it generates gate report when test suite passes and matches JUnit fixture data" file="tests/Feature/Console/GateReportCommandTest.php" class="Tests\Sample" time="0.05" />
+    <testcase name="it generates gate report when manifest and test suite are clean and match HEAD" file="tests/Feature/Console/GateReportCommandTest.php" class="Tests\Sample" time="0.05" />
     <testcase name="it keeps production classes at their case-sensitive PSR-4 path" file="tests/Architecture/Psr4ComplianceTest.php" class="Tests\Sample" time="0.05" />
     <testcase name="it enforces proof block integrity and phase verification in docs/PROGRESS.md" file="tests/Architecture/ProgressIntegrityTest.php" class="Tests\Sample" time="0.05" />
     <testcase name="passes when valid proof block is provided for a checked item" file="tests/Unit/Quality/Progress/ProgressIntegrityScannerTest.php" class="Tests\Sample" time="0.05" />
