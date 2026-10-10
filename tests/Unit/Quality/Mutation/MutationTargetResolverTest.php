@@ -55,4 +55,3 @@ it('returns empty array when no Action or Service classes are changed', function
 
     expect($resolved)->toBe([]);
 });
-

@@ -23,7 +23,7 @@ final class GateRunner
         ],
         [
             'name' => 'pest',
-            'command' => 'vendor/bin/pest --log-junit=storage/logs/pest-junit.xml',
+            'command' => 'vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml',
         ],
         [
             'name' => 'pint --test',
