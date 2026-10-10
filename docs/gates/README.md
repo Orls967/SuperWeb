@@ -63,6 +63,8 @@ git commit -m "docs(fase-<N>): laporan gate dari CI run <run-id>"
 
 Tulis run-id CI di Bukti dan di Register Minus bila ada job yang belum hijau. Menjalankan `composer gate` di laptop tetap berguna sebagai pemeriksaan awal, tetapi hasilnya bukan laporan resmi.
 
+> Per 11 Okt 2026, workflow CI masih memanggil `gate:report --fase=R0` dan menamai artefaknya `gate-report-fase-r0`. Sebelum Fase R1 ditutup, fase harus diambil dari input workflow atau nama branch (`BLOCKERS.md` B-06).
+
 ---
 
 ## 4. Struktur Laporan Quality Gate & cara membacanya
@@ -87,6 +89,7 @@ Laporan hanya membuktikan bahwa gate hijau pada commit itu, bukan bahwa fitur se
 - Wajib memuat: tanggal, commit yang diverifikasi, identitas verifikator, hasil C1–C14, minus yang ditambahkan verifikator, dan keputusan akhir (✅, atau 🔁 dengan alasan).
 - Template kosong yang dibuat `gate:report` **bukan** verifikasi. Status ✅ di `PROGRESS.md` hanya sah bila bagian ini benar-benar terisi dan Register Minus fase tidak punya minus P0/P1 terbuka.
 - Membuat ulang laporan dengan `gate:report` mempertahankan bagian Verifikasi yang sudah ada.
+- Langkah konkret per butir C1–C14, katalog sabotase `ProgressIntegrityTest`, dan templat bagian Verifikasi ada di [`VERIFIKATOR.md`](VERIFIKATOR.md).
 
 ---
 
@@ -97,3 +100,5 @@ Di GitHub, *Settings → Branches → Branch protection rules* untuk `master`:
 - **Require status checks to pass before merging:** pilih ketiga job CI di atas, dengan nama **persis** seperti di run terakhir.
 - **Require a pull request before merging**, dengan metode merge **merge commit** agar hash `commit:` di blok Bukti tetap ada di riwayat.
 - **Require review from Code Owners** (`.github/CODEOWNERS`): GitHub tidak mengizinkan penulis PR menyetujui PR-nya sendiri. Bila semua commit agent di-push dengan akun pemilik, review code owner tidak bisa dipenuhi. Pilihannya: (a) agent memakai akun/bot terpisah sehingga pemilik bisa me-review, atau (b) pemilik memakai hak admin untuk merge setelah verifikasi silang tercatat di §5.
+
+Status pengaturan ini dicatat di `docs/BLOCKERS.md` (B-01) sampai selesai.
