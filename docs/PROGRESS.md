@@ -328,7 +328,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 > Urutan R0 → R9 mengikuti dependensi. **R0 memasang pagar otomatis lebih dulu** sehingga sejak perbaikan pertama, jalan pintas langsung membuat gate merah. Setiap sub-fase R mengikuti P1–P13 (DoR boleh singkat karena tugas R sudah rinci) dan ditutup gate penuh + verifikasi silang. Rujukan temuan `K-xx` ada di `docs/KNOWLEDGE.md` §5.
 
 ### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS (ANTI JALAN PINTAS)
-> **Status audit:** 🔵 SIAP VERIFIKASI (DoR disetujui 2026-10-10, branch `feature/fase-r0-pagar-otomatis`) · Prasyarat semua fase R lain. Semua detektor di R0 dipasang dengan baseline (ratchet) sehingga bisa langsung aktif walau kode lama masih melanggar.
+> **Status audit:** 🔵 SIAP VERIFIKASI (DoR disetujui 2026-10-10, branch `feature/fase-r0-mac`) · Prasyarat semua fase R lain. Semua detektor di R0 dipasang dengan baseline (ratchet) sehingga bisa langsung aktif walau kode lama masih melanggar.
 
 #### DoR Fase R0 — Lingkungan, gate & pagar otomatis
 - Disetujui pemilik: [x]   2026-10-10 (chat) — DoR disetujui; (1) `"php": "^8.4"` + `composer.lock` tetap di-commit; (2) folder `.github/` boleh dibuat, **push wajib ditanyakan dulu**; (3) DB kedua CI: **MySQL 8**; (4) merge dengan merge commit.
@@ -488,7 +488,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-6 | R0.10 | 3 saldo akun berlawanan sisi normal akuntansi (`ledger-normal-balance.json`: `ast:fixed_assets`, `expense:resto:waste:IDR`, `liability:mall:points:PTS`) | Data uang dan saldo neraca/laba rugi terbalik | P0 | R1.2 |
 | M-R0-7 | R0.11 | 705 file & 853 tabel warisan di `modules/Integration` dibekukan via baseline `integration-freeze.json` | Belum dipindahkan ke modul domain yang sesuai | P2 | R4.4 |
 | M-R0-8 | R0.11 | 94 lokasi pembuatan `LedgerAccount` langsung di test & 9 assertion sepele (`test-hygiene.json`) | Test lama masih mengaburkan status produksi dan kebersihan pengujian | P2 | R1.3, R5.5 |
-| M-R0-9 | R0.3 | CI, job MySQL 8, dan job mutation belum pernah jalan di remote; branch protection belum aktif | Pipeline CI dan proteksi branch belum berjalan secara riil di remote | P1 | setelah push + pemilik mengaktifkan protection |
+| M-R0-9 | R0.3 | CI run awal #38064350788 gagal (gate-sqlite: MissingAppKeyException & shallow clone; mysql: butuh --force & .env; mutation: skipped). Workflow diperbaiki di commit f13054a; branch protection belum aktif di remote master | Pipeline CI dan proteksi branch belum berjalan secara riil di remote | P1 | setelah push + pemilik mengaktifkan protection |
 | M-R0-10 | R2.3 | `contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`) | Pembuatan klausa kontrak tidak dapat diakses via web UI | P1 | R2.3 |
 | M-R0-11 | R2.3 | `contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view | Halaman laporan keuangan kontrak tidak bisa dibuka | P1 | R2.3 |
 | M-R0-12 | R3.1 | `distribution.portal.home` → HTTP 403 untuk user dengan role `admin` (hanya allow distributor/partner) | Admin sistem tidak bisa membuka portal distributor untuk supervisi | P1 | R3.1 |
