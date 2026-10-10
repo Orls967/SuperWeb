@@ -329,6 +329,24 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 
 ### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS (ANTI JALAN PINTAS)
 > **Status audit:** ⬜ BELUM · Prasyarat semua fase R lain. Semua detektor di R0 dipasang dengan baseline (ratchet) sehingga bisa langsung aktif walau kode lama masih melanggar.
+
+#### DoR Fase R0 — Lingkungan, gate & pagar otomatis
+- Disetujui pemilik: [ ]   (tanggal / komentar)
+- Tujuan: memasang pemeriksaan otomatis yang langsung menggagalkan gate/CI bila ada jalan pintas — centang tanpa bukti, laporan gate ketikan tangan, pola terlarang X2–X25 di kode **baru**, rute tanpa role, audit yang tidak bisa gagal, akun ledger yang hanya ada di test — sebelum perbaikan R1–R9 dimulai. Pelanggaran lama dicatat sebagai baseline yang hanya boleh turun.
+- Modul pemilik & prefiks: tooling lintas modul, bukan fitur domain — **tidak membuat tabel**. Command di `app/Console/Commands/` (konvensi yang sudah ada: `ChainAuditAllCommand`), kelas pendukung di `app/Quality/` (subfolder baru di `app/`), registry prefiks tabel `config/modules.php` (dipakai aturan A2; diperluas di R4.2), test di `tests/Architecture/`, baseline di `tests/Architecture/baselines/*.json`, laporan di `docs/gates/`.
+- Prasyarat & statusnya: tidak ada (R0 fase pertama). Lingkungan: PHP 8.4 (sandbox: dibangun dari source karena paket PHP 8.4 tidak tersedia; CI: `shivammathur/setup-php`).
+- Item sesi ini: R0.1–R0.13. Ditunda **by design** (masuk baseline, ditutup fase lain): rute lama yang belum dipetakan role → R3.1; fixture korupsi untuk audit lama → R5.2; akun ledger yang hanya ada di test → R1.3; saldo berlawanan sisi normal → R1.2; pelanggaran `arch:scan` lama → R1–R5; isi `Integration` lama → R4.4.
+- Entitas/tabel + state machine: tidak ada.
+- Posting ledger: tidak ada.
+- Event: tidak ada.
+- Rute/UI/menu + role & policy: tidak ada.
+- Command/jadwal: `php artisan arch:scan {--json} {--update-baseline}`, `php artisan gate:report --fase=`, script `composer gate`; tanpa jadwal.
+- Audit dua-sumber + fixture korupsi: tidak ada audit baru. Mekanisme `{Command}CorruptionFixture` dibuktikan dengan fixture nyata untuk `bank:reconcile` dan `api:audit` (R0.6 menyatukan dua kelas `api:audit` menjadi satu command yang menjalankan audit integrasi Fase 55 + audit platform economy Fase 147).
+- Nama test yang akan ditulis: `ProgressIntegrityTest`, `ProgressIntegrityRulesTest` (fixture markdown: item tanpa bukti, commit tidak menyentuh file, rute tanpa role, ✅ tanpa verifikasi, teks berubah tanpa ⬇️, minus P0 terbuka, bukti valid lulus), `GateReportCommandTest`, `ArchScanRulesTest` (fixture positif & negatif per aturan A1–A13), `ArchScanBaselineTest`, `RouteAuthorizationMatrixTest`, `RouteAuthorizationMatrixRulesTest`, `AuditCommandContractTest`, `LedgerAccountRegistryTest`, `LedgerNormalBalanceTest`, `IntegrationFreezeTest`, `TestHygieneTest`, `CommandSignatureUniqueTest`, `DocsVersionConsistencyTest`.
+- Tingkat simulasi & tier skala: tidak berlaku (tooling); T0.
+- Jalan pintas yang harus dihindari: detektor regex yang mudah dikelabui (pakai tokenizer PHP bawaan, tanpa dependensi baru); baseline berbasis jumlah saja (pakai sidik jari per pelanggaran agar "perbaiki satu, tambah satu" tetap gagal); detektor tanpa fixture negatif; laporan gate yang tetap bisa dibuat walau gate gagal atau untuk commit lain; test yang di-skip; mencentang item R0 tanpa blok `Bukti:`; memberi ✅ pada R0 sendiri.
+- Keputusan pemilik yang dibutuhkan: (1) `composer.json` → `"php": "^8.4"` (hanya constraint & hash lock; versi paket tidak berubah) dan `composer.lock` tetap di-commit; (2) izin folder baru `.github/` (workflow CI, template PR, `CODEOWNERS` untuk file baseline) dan push branch untuk menjalankan CI; (3) DB kedua di CI: MySQL 8 atau PostgreSQL 16; (4) PR di-merge dengan **merge commit** (bukan squash/rebase) agar hash `commit:` di blok Bukti tetap ada di riwayat; branch protection + review code owner diaktifkan pemilik setelah CI hijau.
+
 - [ ] R0.1 **Selaraskan versi PHP** (K-28): `composer.json` → `"php": "^8.4"` (sesuai `composer.lock` yang mewajibkan ≥ 8.4.1); dokumentasikan di README & CODEBASE; hapus instruksi "jangan commit composer.lock" atau sebaliknya keluarkan lock dari repo — pilih satu dan catat di DECISIONS.
   - Kriteria terima: `composer install` bersih di PHP 8.4 tanpa `--ignore-platform-reqs`.
 - [ ] R0.2 **`composer gate` + `gate:report`** (K-02, K-04): script composer yang menjalankan `pest` (suite penuh, `--parallel` boleh, `--log-junit`), `pint --test`, test arsitektur, `npm run build`; exit ≠ 0 bila salah satu gagal. Command `php artisan gate:report --fase=N` menulis `docs/gates/fase-N.md` dari output asli: hash commit, tanggal, versi PHP/DB, jumlah test/assertion/durasi, exit code tiap command P4, status setiap test yang disebut di blok `Bukti:` fase N (dari JUnit), ringkasan `arch:scan`.
