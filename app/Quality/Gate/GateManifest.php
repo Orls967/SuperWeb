@@ -85,22 +85,33 @@ final class GateManifest
      */
     public function missingRequiredSteps(): array
     {
-        $executed = [];
+        $executedNames = [];
+        $executedCommands = [];
         foreach ($this->steps as $step) {
             $name = strtolower(trim((string) ($step['name'] ?? '')));
             $cmd = strtolower(trim((string) ($step['command'] ?? '')));
-            $executed[] = $name;
-            $executed[] = $cmd;
+            if ($name !== '') {
+                $executedNames[] = $name;
+            }
+            if ($cmd !== '') {
+                $executedCommands[] = $cmd;
+            }
         }
 
         $missing = [];
         foreach (self::REQUIRED_STEP_KEYS as $required) {
-            $found = false;
-            $search = strtolower($required);
-            foreach ($executed as $entry) {
-                if (str_contains($entry, $search) || str_contains($search, $entry)) {
-                    $found = true;
-                    break;
+            $search = strtolower(trim($required));
+            $found = in_array($search, $executedNames, true);
+            if (! $found) {
+                foreach ($executedCommands as $cmd) {
+                    if ($cmd === $search
+                        || str_starts_with($cmd, $search.' ')
+                        || str_starts_with($cmd, 'php artisan '.$search)
+                        || str_starts_with($cmd, 'vendor/bin/'.$search)
+                    ) {
+                        $found = true;
+                        break;
+                    }
                 }
             }
             if (! $found) {

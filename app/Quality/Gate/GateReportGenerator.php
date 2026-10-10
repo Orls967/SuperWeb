@@ -142,12 +142,13 @@ final class GateReportGenerator
             return null;
         }
 
-        $pos = strpos($content, '## 5. Verifikasi');
-        if ($pos === false) {
-            return null;
+        if (preg_match('/(^#{1,3}\s+.*Verifikasi.*$)/mi', $content, $matches, PREG_OFFSET_CAPTURE)) {
+            $pos = $matches[0][1];
+
+            return trim(substr($content, $pos));
         }
 
-        return trim(substr($content, $pos));
+        return null;
     }
 
     private function resolveCommitHash(string $root): string
