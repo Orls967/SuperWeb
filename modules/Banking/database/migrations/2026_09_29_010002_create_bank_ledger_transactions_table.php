@@ -14,7 +14,8 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('type', 32); // topup, transfer, fee, payment, manual_adjustment, exchange, etc.
-            $table->nullableMorphs('reference');
+            $table->string('reference_type', 160)->nullable();
+            $table->string('reference_id', 64)->nullable();
             $table->string('idempotency_key')->unique();
             $table->string('description');
             $table->json('meta')->nullable();
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['type', 'posted_at']);
+            $table->index(['reference_type', 'reference_id']);
         });
     }
 
