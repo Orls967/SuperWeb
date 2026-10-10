@@ -88,6 +88,10 @@ final class GateRunner
 
             $start = microtime(true);
             $pipes = [];
+            $env = $_SERVER;
+            if ($name === 'pest') {
+                $env['APP_ENV'] = 'testing';
+            }
             $process = proc_open(
                 $cmd,
                 [
@@ -96,7 +100,8 @@ final class GateRunner
                     2 => ['pipe', 'w'],
                 ],
                 $pipes,
-                $root
+                $root,
+                $env
             );
 
             $output = '';
