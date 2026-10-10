@@ -102,3 +102,27 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: root
         run: vendor/bin/pest --group=db-portability
+
+  mutation-testing:
+    name: PHP 8.4 × Pest Mutation Testing (min 60%)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP 8.4 (PCOV Coverage Driver)
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, pcov, bcmath
+          coverage: pcov
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run Pest Mutation Testing on Touched Classes
+        run: php artisan test:mutate --git-diff --min=60
