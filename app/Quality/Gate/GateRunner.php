@@ -88,7 +88,12 @@ final class GateRunner
 
             $start = microtime(true);
             $pipes = [];
-            $env = $_SERVER;
+            $env = [];
+            foreach ($_SERVER as $k => $v) {
+                if (is_scalar($v)) {
+                    $env[$k] = (string) $v;
+                }
+            }
             if ($name === 'pest') {
                 $env['APP_ENV'] = 'testing';
             }
