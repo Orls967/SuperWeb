@@ -95,46 +95,74 @@ it('enforces all database schema identifiers do not exceed 64 characters', funct
     expect($violationList)->toBeEmpty();
 });
 
+/**
+ * KETERBATASAN ARSITEKTUR (D1, K-28, PROGRESS Register Minus R0):
+ * Pemeriksaan panjang key index komposit di bawah ini menggunakan estimasi statis regex berbasis deklarasi skema
+ * migrasi (Schema::create & Schema::table), bukan koneksi live MySQL runtime DDL.
+ * Asumsi yang digunakan:
+ * - Charset utf8mb4: 1 karakter string/char memakan 4 byte pada index InnoDB.
+ * - String tanpa argumen panjang default ke 255 karakter (1.020 byte).
+ * - Batas InnoDB prefix key length adalah 3.072 byte (MySQL 8.0+).
+ */
 it('enforces all database index composite key lengths do not exceed 3072 bytes for MySQL utf8mb4 portability', function (): void {
     $migrations = array_merge(
         glob(base_path('modules/*/database/migrations/*.php')),
         glob(database_path('migrations/*.php'))
     );
+    sort($migrations);
 
-    $violations = [];
+    // Pass 1: Kumpulkan seluruh definisi tipe/panjang kolom per tabel dari create & table
+    $tableColumns = [];
 
     foreach ($migrations as $file) {
         $code = (string) file_get_contents($file);
-        if (preg_match_all("/Schema::create\(\s*[\x27\"]([^\x27\"]+)[\x27\"]\s*,\s*function\s*\([^)]*\)\s*\{(.*?)\}\s*\);/s", $code, $tableMatches, PREG_SET_ORDER)) {
+        if (preg_match_all("/Schema::(?:create|table)\(\s*[\x27\"]([^\x27\"]+)[\x27\"]\s*,\s*function\s*\([^)]*\)\s*\{(.*?)\}\s*\);/s", $code, $tableMatches, PREG_SET_ORDER)) {
             foreach ($tableMatches as $tm) {
                 $tableName = $tm[1];
                 $tableBody = $tm[2];
 
-                $colLengths = [];
                 if (preg_match_all("/\\\$table->([a-zA-Z0-9_]+)\(\s*[\x27\"]([^\x27\"]+)[\x27\"](?:\s*,\s*([0-9]+))?/", $tableBody, $colMatches, PREG_SET_ORDER)) {
                     foreach ($colMatches as $cm) {
                         $type = $cm[1];
                         $name = $cm[2];
                         $len = isset($cm[3]) && is_numeric($cm[3]) ? (int) $cm[3] : null;
+
                         if ($type === 'string') {
-                            $colLengths[$name] = ($len ?? 255) * 4;
-                        } elseif ($type === 'uuid' || $type === 'char') {
-                            $colLengths[$name] = ($len ?? 36) * 4;
+                            $bytes = ($len ?? 255) * 4;
+                        } elseif ($type === 'char') {
+                            $bytes = ($len ?? 36) * 4;
+                        } elseif ($type === 'uuid') {
+                            $bytes = 36 * 4;
                         } elseif ($type === 'text' || $type === 'longText') {
-                            $colLengths[$name] = 3072;
+                            $bytes = 3072;
                         } elseif (in_array($type, ['integer', 'unsignedInteger'], true)) {
-                            $colLengths[$name] = 4;
+                            $bytes = 4;
                         } elseif (in_array($type, ['bigInteger', 'unsignedBigInteger', 'foreignId', 'id'], true)) {
-                            $colLengths[$name] = 8;
+                            $bytes = 8;
                         } elseif (in_array($type, ['tinyInteger', 'boolean'], true)) {
-                            $colLengths[$name] = 1;
+                            $bytes = 1;
                         } elseif (in_array($type, ['date', 'timestamp', 'dateTime'], true)) {
-                            $colLengths[$name] = 8;
+                            $bytes = 8;
                         } else {
-                            $colLengths[$name] = ($len ?? 255) * 4;
+                            $bytes = ($len ?? 255) * 4;
                         }
+
+                        $tableColumns[$tableName][$name] = $bytes;
                     }
                 }
+            }
+        }
+    }
+
+    // Pass 2: Evaluasi seluruh unique dan index komposit
+    $violations = [];
+
+    foreach ($migrations as $file) {
+        $code = (string) file_get_contents($file);
+        if (preg_match_all("/Schema::(?:create|table)\(\s*[\x27\"]([^\x27\"]+)[\x27\"]\s*,\s*function\s*\([^)]*\)\s*\{(.*?)\}\s*\);/s", $code, $tableMatches, PREG_SET_ORDER)) {
+            foreach ($tableMatches as $tm) {
+                $tableName = $tm[1];
+                $tableBody = $tm[2];
 
                 if (preg_match_all("/\\\$table->(unique|index)\(\s*\[([^\]]+)\]/", $tableBody, $idxMatches, PREG_SET_ORDER)) {
                     foreach ($idxMatches as $im) {
@@ -142,7 +170,7 @@ it('enforces all database index composite key lengths do not exceed 3072 bytes f
                         $cols = array_map(fn ($c) => trim($c, " \t\n\r\0\x0B\x27\""), explode(',', $im[2]));
                         $total = 0;
                         foreach ($cols as $c) {
-                            $total += $colLengths[$c] ?? (255 * 4);
+                            $total += $tableColumns[$tableName][$c] ?? (255 * 4);
                         }
                         if ($total > 3072) {
                             $violations[] = [
