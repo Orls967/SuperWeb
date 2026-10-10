@@ -78,7 +78,7 @@ modules/                     # 38 Modular Monolith Domains
 ## 🚀 Panduan Instalasi & Menjalankan
 
 ### Persyaratan Sistem
-- **PHP**: $\ge$ 8.2 (ekstensi `sqlite3`, `bcmath`, `curl`, `mbstring`, `pdo`)
+- **PHP**: `^8.4` (minimal 8.4.1, sesuai `composer.lock`) dengan ekstensi `ctype`, `dom`, `fileinfo`, `filter`, `iconv`, `mbstring`, `openssl`, `pdo_sqlite`, `session`, `simplexml`, `tokenizer`, `xml`, `xmlwriter` (+ `bcmath` disarankan untuk `brick/math`). Jangan memakai `--ignore-platform-reqs`.
 - **Composer**: $\ge$ 2.5
 - **Node.js**: $\ge$ 18.x & **NPM**
 

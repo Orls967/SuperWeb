@@ -1051,19 +1051,8 @@
   - Seluruh quality gate command (`security:audit`, `dr:audit`, `api:audit`, `egy:audit`, `tlx:audit`, `med:audit`, `edu:audit`, `ret:audit`, dll.) lulus dengan 0 diskrepansi.
   - Pint linting clean 100%.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## 2026-10-10: PHP 8.4 & composer.lock di-commit (Fase R0.1)
+- **Context:** `composer.json` menulis `"php": "^8.3"`, tetapi `composer.lock` berisi komponen Symfony 8 yang mewajibkan PHP ≥ 8.4.1, sehingga `composer install` gagal di PHP 8.3. `CODEBASE.md` sempat menyuruh memakai `platform.php 8.3.6` dan tidak meng-commit `composer.lock` — cara yang memasang paket di versi PHP yang tidak didukung (temuan K-28 di `KNOWLEDGE.md`).
+- **Decision:** `"php": "^8.4"`; `composer.lock` tetap di-commit dan menjadi sumber versi paket untuk dev, CI, dan produksi. Perubahan hanya pada constraint PHP, blok `platform` lock, dan `content-hash` (dihitung dengan `Composer\Package\Locker::getContentHash`); versi paket tidak berubah. Dilarang `--ignore-platform-reqs` dan `config.platform.php` palsu.
+- **Reason:** build yang bisa diulang; test berjalan di versi PHP yang sama dengan lock; disetujui pemilik pada DoR Fase R0.
+- **Verification:** `composer validate --strict --no-check-publish` exit 0 (hash lama → exit 2 "lock file is not up to date"); `composer install --dry-run` → "Nothing to install, update or remove" di PHP 8.4.26.

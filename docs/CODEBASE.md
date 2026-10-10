@@ -15,7 +15,7 @@
 
 | Hal | Nilai |
 |---|---|
-| Framework | Laravel 13 (`laravel/framework ^13.17`), PHP `^8.3` (composer.lock butuh ≥ 8.4; sandbox 8.3 → pakai `platform.php 8.3.6` sementara, **jangan commit composer.lock**) |
+| Framework | Laravel 13 (`laravel/framework ^13.17`), PHP `^8.4` (`composer.lock` butuh ≥ 8.4.1 karena komponen Symfony 8). `composer.lock` **di-commit** dan dipasang apa adanya (`composer install`, tanpa `--ignore-platform-reqs` / `platform.php` palsu) — lihat DECISIONS 2026-10-10 |
 | DB | SQLite (dev/test). Uang = integer IDR atau `decimal(36,18)` untuk kripto; **tanpa float** |
 | Test | Pest 4 + pest-plugin-arch; `vendor/bin/pest` (≈ 81 file test) |
 | Front-end | Blade + Tailwind + Alpine, Vite (`npm run build`) |
