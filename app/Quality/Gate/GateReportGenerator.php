@@ -28,16 +28,17 @@ final class GateReportGenerator
         array $commandExitCodes = [],
         ?string $commitHash = null,
         ?string $timestamp = null,
+        ?GateManifest $manifest = null,
     ): string {
         $root = $this->repoRoot ?? (function_exists('app') && app()->has('path.base') ? base_path() : dirname(__DIR__, 3));
 
-        $commit = $commitHash ?? $this->resolveCommitHash($root);
+        $commit = $commitHash ?? ($manifest !== null ? $manifest->commit : $this->resolveCommitHash($root));
         $shortCommit = substr($commit, 0, 7);
-        $date = $timestamp ?? date('Y-m-d H:i:s T');
+        $date = $timestamp ?? ($manifest !== null ? $manifest->timestamp : date('Y-m-d H:i:s T'));
         $phpVersion = PHP_VERSION;
         $dbInfo = $this->resolveDatabaseInfo();
 
-        $gateStatus = $junitSummary->isClean() ? 'PASS 🟢' : 'FAIL 🔴';
+        $gateStatus = ($junitSummary->isClean() && ($manifest === null || $manifest->isClean())) ? 'PASS 🟢' : 'FAIL 🔴';
 
         // Extract Bukti tests for the target phase
         $buktiTests = $this->extractPhaseBuktiTests($root, $phaseId, $junitSummary);
@@ -65,18 +66,29 @@ final class GateReportGenerator
         $md[] = '| Perintah | Deskripsi | Exit Code | Status |';
         $md[] = '|---|---|---|---|';
 
-        $defaultP4 = [
-            'composer gate' => 'Test suite penuh + lint Pint + arch test + npm build',
-            'php artisan arch:scan' => 'Pemindaian aturan arsitektur A1–A13 (ratchet)',
-            'php artisan bank:reconcile' => 'Rekonsiliasi double-entry ledger & bank',
-            'php artisan chain:audit-all' => 'Audit integritas semua rantai transaksi',
-            'php artisan super:health-check' => 'Pemeriksaan kesehatan sistem pilar',
-        ];
+        if ($manifest !== null && ! empty($manifest->steps)) {
+            foreach ($manifest->steps as $step) {
+                $code = (int) ($step['exit_code'] ?? 0);
+                $status = $code === 0 ? 'PASS 🟢' : "FAIL 🔴 (code {$code})";
+                $name = (string) ($step['name'] ?? '');
+                $cmd = (string) ($step['command'] ?? $name);
+                $dur = isset($step['duration']) ? ' ('.number_format((float) $step['duration'], 2).'s)' : '';
+                $md[] = "| `{$cmd}` | Langkah gate: {$name}{$dur} | {$code} | {$status} |";
+            }
+        } else {
+            $defaultP4 = [
+                'composer gate' => 'Test suite penuh + lint Pint + arch test + npm build',
+                'php artisan arch:scan' => 'Pemindaian aturan arsitektur A1–A13 (ratchet)',
+                'php artisan bank:reconcile' => 'Rekonsiliasi double-entry ledger & bank',
+                'php artisan chain:audit-all' => 'Audit integritas semua rantai transaksi',
+                'php artisan super:health-check' => 'Pemeriksaan kesehatan sistem pilar',
+            ];
 
-        foreach ($defaultP4 as $cmd => $desc) {
-            $code = $commandExitCodes[$cmd] ?? 0;
-            $status = $code === 0 ? 'PASS 🟢' : "FAIL 🔴 (code {$code})";
-            $md[] = "| `{$cmd}` | {$desc} | {$code} | {$status} |";
+            foreach ($defaultP4 as $cmd => $desc) {
+                $code = $commandExitCodes[$cmd] ?? 0;
+                $status = $code === 0 ? 'PASS 🟢' : "FAIL 🔴 (code {$code})";
+                $md[] = "| `{$cmd}` | {$desc} | {$code} | {$status} |";
+            }
         }
 
         $md[] = '';
@@ -147,7 +159,7 @@ final class GateReportGenerator
     /**
      * @return list<array{item: string, testName: string, file: string, status: string, time: float}>
      */
-    private function extractPhaseBuktiTests(string $root, string $phaseId, JUnitSummary $junitSummary): array
+    public function extractPhaseBuktiTests(string $root, string $phaseId, JUnitSummary $junitSummary): array
     {
         $progressPath = $root.'/docs/PROGRESS.md';
         if (! is_file($progressPath)) {
