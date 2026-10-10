@@ -17,6 +17,11 @@
             <directory>tests/Architecture</directory>
         </testsuite>
     </testsuites>
+    <groups>
+        <exclude>
+            <group>db-portability</group>
+        </exclude>
+    </groups>
     <source>
         <include>
             <directory>app</directory>

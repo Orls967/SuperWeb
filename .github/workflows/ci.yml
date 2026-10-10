@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup PHP 8.4
         uses: shivammathur/setup-php@v2
@@ -82,6 +84,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup PHP 8.4
         uses: shivammathur/setup-php@v2
@@ -101,7 +105,9 @@ jobs:
           DB_DATABASE: superweb_test
           DB_USERNAME: root
           DB_PASSWORD: root
-        run: vendor/bin/pest --group=db-portability
+        run: |
+          php artisan migrate:fresh --seed
+          vendor/bin/pest --group=db-portability
 
   mutation-testing:
     name: PHP 8.4 × Pest Mutation Testing (min 60%)
