@@ -29,6 +29,8 @@ final class GateReportGenerator
         ?string $commitHash = null,
         ?string $timestamp = null,
         ?GateManifest $manifest = null,
+        ?string $existingContent = null,
+        ?string $progressPath = null,
     ): string {
         $root = $this->repoRoot ?? (function_exists('app') && app()->has('path.base') ? base_path() : dirname(__DIR__, 3));
 
@@ -41,7 +43,7 @@ final class GateReportGenerator
         $gateStatus = ($junitSummary->isClean() && ($manifest === null || $manifest->isClean())) ? 'PASS 🟢' : 'FAIL 🔴';
 
         // Extract Bukti tests for the target phase
-        $buktiTests = $this->extractPhaseBuktiTests($root, $phaseId, $junitSummary);
+        $buktiTests = $this->extractPhaseBuktiTests($root, $phaseId, $junitSummary, $progressPath);
 
         // Architecture scan summary
         $archSummary = $this->resolveArchScanSummary($root);
@@ -109,24 +111,43 @@ final class GateReportGenerator
         $md[] = '## 4. Ringkasan Arsitektur (`arch:scan`)';
         $md[] = $archSummary;
 
+        $existingVerification = $this->extractExistingVerification($existingContent);
         $md[] = '';
-        $md[] = '## 5. Verifikasi';
-        $md[] = '*(Bagian ini wajib diisi oleh verifikator independen sebelum mengubah status fase ke ✅ sesuai P7).*';
-        $md[] = '';
-        $md[] = '- **Tanggal Verifikasi:** ';
-        $md[] = '- **Verifikator:** ';
-        $md[] = '- **Checklist Verifikator (C1–C14):**';
-        $md[] = '  - [ ] C1 Kode ada di modul pemilik yang benar';
-        $md[] = '  - [ ] C2 Tidak ada tabel/kolom liar tanpa prefiks registry';
-        $md[] = '  - [ ] C3 Double-entry integer minor unit; saldo normal seimbang';
-        $md[] = '  - [ ] C4 Idempotensi terbukti pada aksi mutasi & posting';
-        $md[] = '  - [ ] C5 Otorisasi per rute (role:/can:) terverifikasi matriks';
-        $md[] = '  - [ ] C6 Audit command memiliki fixture korupsi yang gagal';
-        $md[] = '  - [ ] C7 Tidak ada jalan pintas terlarang X1–X25';
-        $md[] = '- **Catatan Temuan / Rekomendasi:**';
+        if ($existingVerification !== null) {
+            $md[] = $existingVerification;
+        } else {
+            $md[] = '## 5. Verifikasi';
+            $md[] = '*(Bagian ini wajib diisi oleh verifikator independen sebelum mengubah status fase ke ✅ sesuai P7).*';
+            $md[] = '';
+            $md[] = '- **Tanggal Verifikasi:** ';
+            $md[] = '- **Verifikator:** ';
+            $md[] = '- **Checklist Verifikator (C1–C14):**';
+            $md[] = '  - [ ] C1 Kode ada di modul pemilik yang benar';
+            $md[] = '  - [ ] C2 Tidak ada tabel/kolom liar tanpa prefiks registry';
+            $md[] = '  - [ ] C3 Double-entry integer minor unit; saldo normal seimbang';
+            $md[] = '  - [ ] C4 Idempotensi terbukti pada aksi mutasi & posting';
+            $md[] = '  - [ ] C5 Otorisasi per rute (role:/can:) terverifikasi matriks';
+            $md[] = '  - [ ] C6 Audit command memiliki fixture korupsi yang gagal';
+            $md[] = '  - [ ] C7 Tidak ada jalan pintas terlarang X1–X25';
+            $md[] = '- **Catatan Temuan / Rekomendasi:**';
+        }
         $md[] = '';
 
         return implode("\n", $md)."\n";
+    }
+
+    private function extractExistingVerification(?string $content): ?string
+    {
+        if ($content === null || $content === '') {
+            return null;
+        }
+
+        $pos = strpos($content, '## 5. Verifikasi');
+        if ($pos === false) {
+            return null;
+        }
+
+        return trim(substr($content, $pos));
     }
 
     private function resolveCommitHash(string $root): string
@@ -159,15 +180,15 @@ final class GateReportGenerator
     /**
      * @return list<array{item: string, testName: string, file: string, status: string, time: float}>
      */
-    public function extractPhaseBuktiTests(string $root, string $phaseId, JUnitSummary $junitSummary): array
+    public function extractPhaseBuktiTests(string $root, string $phaseId, JUnitSummary $junitSummary, ?string $progressPath = null): array
     {
-        $progressPath = $root.'/docs/PROGRESS.md';
-        if (! is_file($progressPath)) {
+        $filePath = $progressPath ?? ($root.'/docs/PROGRESS.md');
+        if (! is_file($filePath)) {
             return [];
         }
 
         $scanner = new ProgressIntegrityScanner;
-        $phases = $scanner->parse((string) file_get_contents($progressPath));
+        $phases = $scanner->parse((string) file_get_contents($filePath));
 
         $targetPhase = $phases[$phaseId] ?? null;
         if ($targetPhase === null) {

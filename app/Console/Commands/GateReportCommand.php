@@ -29,6 +29,7 @@ final class GateReportCommand extends Command
         {--manifest=storage/logs/gate-manifest.json : Path ke file manifest gate}
         {--junit=storage/logs/pest-junit.xml : Path ke file log JUnit XML}
         {--output= : Path file output markdown (bawaan: docs/gates/fase-{fase}.md)}
+        {--progress= : Path ke file PROGRESS.md alternatif (bawaan: docs/PROGRESS.md)}
         {--force : Abaikan penolakan (hanya untuk keperluan pengujian khusus)}
         {--dry-run : Cetak laporan ke stdout tanpa menulis ke file}';
 
@@ -122,8 +123,13 @@ final class GateReportCommand extends Command
         }
 
         // 7. Validasi status test blok Bukti fase target
+        $progressRel = (string) $this->option('progress');
+        $progressPath = $progressRel !== ''
+            ? (str_starts_with($progressRel, '/') ? $progressRel : base_path($progressRel))
+            : base_path('docs/PROGRESS.md');
+
         $generator = new GateReportGenerator($root);
-        $phaseBuktiTests = $generator->extractPhaseBuktiTests($root, $phaseId, $junitSummary);
+        $phaseBuktiTests = $generator->extractPhaseBuktiTests($root, $phaseId, $junitSummary, $progressPath);
 
         if (! $isForce) {
             foreach ($phaseBuktiTests as $bt) {
@@ -135,11 +141,20 @@ final class GateReportCommand extends Command
             }
         }
 
+        $outputOption = (string) $this->option('output');
+        $outputPath = $outputOption !== ''
+            ? (str_starts_with($outputOption, '/') ? $outputOption : base_path($outputOption))
+            : base_path('docs/gates/fase-'.strtolower($phaseId).'.md');
+
+        $existingContent = is_file($outputPath) ? (string) file_get_contents($outputPath) : null;
+
         // Seluruh penolakan lolos, generate laporan
         $reportContent = $generator->generate(
             phaseId: $phaseId,
             junitSummary: $junitSummary,
             manifest: $manifest,
+            existingContent: $existingContent,
+            progressPath: $progressPath,
         );
 
         if ($this->option('dry-run')) {
@@ -149,11 +164,6 @@ final class GateReportCommand extends Command
 
             return self::SUCCESS;
         }
-
-        $outputOption = (string) $this->option('output');
-        $outputPath = $outputOption !== ''
-            ? (str_starts_with($outputOption, '/') ? $outputOption : base_path($outputOption))
-            : base_path('docs/gates/fase-'.strtolower($phaseId).'.md');
 
         $dir = dirname($outputPath);
         if (! is_dir($dir)) {

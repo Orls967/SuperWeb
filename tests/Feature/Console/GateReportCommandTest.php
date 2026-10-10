@@ -11,7 +11,22 @@ use Illuminate\Support\Facades\File;
 | - manifest hilang / korup / langkah wajib hilang / step gagal / commit mismatch / dirty
 | - junit hilang / failure
 | - test bukti tidak ditemukan / gagal di JUnit
+| - mempertahankan bagian ## Verifikasi yang sudah ada
+|
+| Desain terisolasi: Menggunakan PROGRESS fixture mandiri per-test di folder temp,
+| tidak membaca docs/PROGRESS.md repositori asli.
 */
+
+beforeEach(function (): void {
+    $this->tempDir = sys_get_temp_dir().'/gate_test_'.uniqid();
+    File::makeDirectory($this->tempDir, 0777, true);
+});
+
+afterEach(function (): void {
+    if (isset($this->tempDir) && File::isDirectory($this->tempDir)) {
+        File::deleteDirectory($this->tempDir);
+    }
+});
 
 function createValidManifestData(string $commit, array $overrides = []): array
 {
@@ -35,8 +50,28 @@ function createValidManifestData(string $commit, array $overrides = []): array
     ], $overrides);
 }
 
+function createProgressFixtureContent(): string
+{
+    return <<<'MD'
+### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS
+- [x] R0.1 Contoh item uji satu
+  Bukti:
+    - test: tests/Unit/SampleTest.php::it passes sample test
+- [x] R0.2 Contoh item uji dua
+  Bukti:
+    - test: tests/Unit/SecondTest.php::it passes second test
+MD;
+}
+
 function createSampleJunitXml(array $testCases = []): string
 {
+    if ($testCases === []) {
+        $testCases = [
+            ['name' => 'it passes sample test', 'file' => 'tests/Unit/SampleTest.php', 'status' => 'PASS'],
+            ['name' => 'it passes second test', 'file' => 'tests/Unit/SecondTest.php', 'status' => 'PASS'],
+        ];
+    }
+
     $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
     $xml .= '<testsuites>'."\n";
     $xml .= '  <testsuite name="TestSuite" tests="'.count($testCases).'" assertions="10" errors="0" failures="0" time="1.0">'."\n";
@@ -53,15 +88,45 @@ function createSampleJunitXml(array $testCases = []): string
     return $xml;
 }
 
-it('refuses to generate report under each invalid gate condition', function (string $scenario, Closure $setup, string $expectedMessage): void {
-    $tempDir = sys_get_temp_dir().'/gate_test_'.uniqid();
-    File::makeDirectory($tempDir, 0777, true);
+it('generates gate report when manifest and test suite are clean and match HEAD', function (): void {
+    $headCommit = trim((string) shell_exec('git rev-parse HEAD 2>/dev/null')) ?: '1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b';
+    $manifestFile = $this->tempDir.'/manifest.json';
+    $junitFile = $this->tempDir.'/junit.xml';
+    $progressFile = $this->tempDir.'/PROGRESS.md';
+    $outputReport = $this->tempDir.'/docs/gates/fase-r0.md';
 
-    $manifestFile = $tempDir.'/manifest.json';
-    $junitFile = $tempDir.'/junit.xml';
-    $outputReport = $tempDir.'/docs/gates/fase-r0.md';
+    File::put($manifestFile, json_encode(createValidManifestData($headCommit)));
+    File::put($progressFile, createProgressFixtureContent());
+    File::put($junitFile, createSampleJunitXml());
+
+    $this->artisan('gate:report', [
+        '--fase' => 'R0',
+        '--manifest' => $manifestFile,
+        '--junit' => $junitFile,
+        '--progress' => $progressFile,
+        '--output' => $outputReport,
+    ])
+        ->expectsOutputToContain('Laporan quality gate fase R0 berhasil ditulis')
+        ->assertSuccessful();
+
+    expect(File::exists($outputReport))->toBeTrue('File laporan harus terbentuk pada kondisi bersih.');
+
+    $content = File::get($outputReport);
+    expect($content)->toContain('# Quality Gate Report: Fase R0')
+        ->and($content)->toContain($headCommit)
+        ->and($content)->toContain('it passes sample test')
+        ->and($content)->toContain('PASS 🟢');
+});
+
+it('refuses to generate report under each invalid gate condition', function (string $scenario, Closure $setup, string $expectedMessage): void {
+    $manifestFile = $this->tempDir.'/manifest.json';
+    $junitFile = $this->tempDir.'/junit.xml';
+    $progressFile = $this->tempDir.'/PROGRESS.md';
+    $outputReport = $this->tempDir.'/docs/gates/fase-r0.md';
 
     $headCommit = trim((string) shell_exec('git rev-parse HEAD 2>/dev/null')) ?: '1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b';
+
+    File::put($progressFile, createProgressFixtureContent());
 
     $setup($manifestFile, $junitFile, $headCommit);
 
@@ -69,6 +134,7 @@ it('refuses to generate report under each invalid gate condition', function (str
         '--fase' => 'R0',
         '--manifest' => $manifestFile,
         '--junit' => $junitFile,
+        '--progress' => $progressFile,
         '--output' => $outputReport,
     ];
 
@@ -77,13 +143,10 @@ it('refuses to generate report under each invalid gate condition', function (str
         ->assertFailed();
 
     expect(File::exists($outputReport))->toBeFalse("File laporan tidak boleh terbentuk pada skenario '{$scenario}'.");
-
-    File::deleteDirectory($tempDir);
 })->with([
     'manifest missing' => [
         'scenario' => 'manifest missing',
         'setup' => function (string $manifestFile, string $junitFile, string $commit): void {
-            // Manifest not created
             File::put($junitFile, createSampleJunitXml());
         },
         'expectedMessage' => 'File gate manifest tidak ditemukan',
@@ -100,7 +163,6 @@ it('refuses to generate report under each invalid gate condition', function (str
         'scenario' => 'mandatory step missing',
         'setup' => function (string $manifestFile, string $junitFile, string $commit): void {
             $data = createValidManifestData($commit);
-            // remove npm run build step
             $data['steps'] = array_filter($data['steps'], fn ($s) => $s['name'] !== 'npm run build');
             File::put($manifestFile, json_encode($data));
             File::put($junitFile, createSampleJunitXml());
@@ -142,7 +204,6 @@ it('refuses to generate report under each invalid gate condition', function (str
         'setup' => function (string $manifestFile, string $junitFile, string $commit): void {
             $data = createValidManifestData($commit);
             File::put($manifestFile, json_encode($data));
-            // JUnit file not created
         },
         'expectedMessage' => 'File log JUnit XML tidak ditemukan',
     ],
@@ -165,74 +226,67 @@ XML;
         },
         'expectedMessage' => 'Quality gate GAGAL: JUnit mencatat',
     ],
+    'test bukti missing in junit' => [
+        'scenario' => 'test bukti missing in junit',
+        'setup' => function (string $manifestFile, string $junitFile, string $commit): void {
+            $data = createValidManifestData($commit);
+            File::put($manifestFile, json_encode($data));
+            // Only provide 1 test case, missing the second test in progress fixture
+            $xml = createSampleJunitXml([
+                ['name' => 'it passes sample test', 'file' => 'tests/Unit/SampleTest.php', 'status' => 'PASS'],
+            ]);
+            File::put($junitFile, $xml);
+        },
+        'expectedMessage' => 'gagal atau tidak ditemukan di JUnit',
+    ],
 ]);
 
-it('generates gate report when manifest and test suite are clean and match HEAD', function (): void {
-    $tempDir = sys_get_temp_dir().'/gate_test_'.uniqid();
-    File::makeDirectory($tempDir, 0777, true);
-
+it('preserves existing verification section when report is regenerated', function (): void {
     $headCommit = trim((string) shell_exec('git rev-parse HEAD 2>/dev/null')) ?: '1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b';
-    $manifestFile = $tempDir.'/manifest.json';
-    $junitFile = $tempDir.'/junit.xml';
-    $outputReport = $tempDir.'/docs/gates/fase-r0.md';
+    $manifestFile = $this->tempDir.'/manifest.json';
+    $junitFile = $this->tempDir.'/junit.xml';
+    $progressFile = $this->tempDir.'/PROGRESS.md';
+    $outputReport = $this->tempDir.'/docs/gates/fase-r0.md';
 
-    $data = createValidManifestData($headCommit);
-    File::put($manifestFile, json_encode($data));
+    File::put($manifestFile, json_encode(createValidManifestData($headCommit)));
+    File::put($progressFile, createProgressFixtureContent());
+    File::put($junitFile, createSampleJunitXml());
 
-    // JUnit with passing test cases for all proof tests in Fase R0
-    $passingXml = <<<'XML'
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites>
-  <testsuite name="TestSuite" tests="20" assertions="50" errors="0" failures="0" time="12.5">
-    <testcase name="it ensures composer.json and README.md align on PHP ^8.4 requirement" file="tests/Architecture/DocsVersionConsistencyTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it generates gate report when manifest and test suite are clean and match HEAD" file="tests/Feature/Console/GateReportCommandTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it keeps production classes at their case-sensitive PSR-4 path" file="tests/Architecture/Psr4ComplianceTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it enforces proof block integrity and phase verification in docs/PROGRESS.md" file="tests/Architecture/ProgressIntegrityTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="passes when valid proof block is provided for a checked item" file="tests/Unit/Quality/Progress/ProgressIntegrityScannerTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it ensures LAPORAN_AUDIT_GELOMBANG_2.md is explicitly marked as archived and invalid" file="tests/Architecture/DocsVersionConsistencyTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it ensures CODEBASE.md does not reference removed non-existent accounts" file="tests/Architecture/DocsVersionConsistencyTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it declares every artisan command name exactly once" file="tests/Architecture/CommandSignatureUniqueTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="runs the integration and platform economy audits and passes on consistent data" file="modules/Integration/tests/Feature/ApiAuditCommandTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it verifies pull request template contains V1-V12 and C1-C14 checklists" file="tests/Architecture/GateTemplateContractTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it verifies docs/gates/README.md provides guidance on reading gate reports" file="tests/Architecture/GateTemplateContractTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it keeps module code within the arch:scan ratchet baseline" file="tests/Architecture/ArchScanBaselineTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="fails and names the violation when it is not covered by the baseline" file="tests/Feature/Console/ArchScanCommandTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it maps every registered route in route-roles.php" file="tests/Architecture/RouteAuthorizationMatrixTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it enforces that route authorization never weakens compared to baseline" file="tests/Architecture/RouteAuthorizationMatrixTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it keeps pending dynamic routes within the ratchet baseline" file="tests/Architecture/RouteAuthorizationMatrixTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it enforces that unauthorized roles receive 403 on role-protected routes" file="tests/Architecture/RouteAuthorizationMatrixTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it confirms authorized roles are not forbidden (not 403) on role-protected routes" file="tests/Architecture/RouteAuthorizationMatrixTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it confirms bank:reconcile passes on clean state and fails when data is corrupted" file="tests/Architecture/AuditCommandContractTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it confirms api:audit passes on clean state and fails when signature is corrupted" file="tests/Architecture/AuditCommandContractTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it keeps audit commands without corruption fixtures within the ratchet baseline" file="tests/Architecture/AuditCommandContractTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it keeps unseeded ledger accounts within the ratchet baseline" file="tests/Architecture/LedgerAccountRegistryTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it keeps accounts with inverted normal balances within the ratchet baseline" file="tests/Architecture/LedgerNormalBalanceTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it keeps modules/Integration frozen except for external adapters and intg_ tables" file="tests/Architecture/IntegrationFreezeTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it keeps tests within the hygiene ratchet baseline" file="tests/Architecture/TestHygieneTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it verifies MutationTestCommand is registered and constructs correct Pest CLI invocation" file="tests/Architecture/MutationTestingContractTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it verifies CI workflow defines mutation testing job with PCOV and 60% minimum threshold" file="tests/Architecture/MutationTestingContractTest.php" class="Tests\Sample" time="0.05" />
-    <testcase name="it verifies Pest CLI supports mutation testing options" file="tests/Architecture/MutationTestingContractTest.php" class="Tests\Sample" time="0.05" />
-  </testsuite>
-</testsuites>
-XML;
-    File::put($junitFile, $passingXml);
+    // Pre-create output report with an existing verified section
+    $existingReport = <<<'MD'
+# Quality Gate Report: Fase R0
+
+Old content that will be overwritten.
+
+## 5. Verifikasi
+*(Bagian ini wajib diisi oleh verifikator independen sebelum mengubah status fase ke ✅ sesuai P7).*
+
+- **Tanggal Verifikasi:** 2026-10-11
+- **Verifikator:** Auditor Independen Lead
+- **Checklist Verifikator (C1–C14):**
+  - [x] C1 Kode ada di modul pemilik yang benar
+  - [x] C2 Tidak ada tabel/kolom liar tanpa prefiks registry
+  - [ ] C3 Double-entry integer minor unit; saldo normal seimbang
+- **Catatan Temuan / Rekomendasi:** Verifikasi tahap satu disetujui bersyarat.
+MD;
+
+    File::ensureDirectoryExists(dirname($outputReport));
+    File::put($outputReport, $existingReport);
 
     $this->artisan('gate:report', [
         '--fase' => 'R0',
         '--manifest' => $manifestFile,
         '--junit' => $junitFile,
+        '--progress' => $progressFile,
         '--output' => $outputReport,
     ])
         ->expectsOutputToContain('Laporan quality gate fase R0 berhasil ditulis')
         ->assertSuccessful();
 
-    expect(File::exists($outputReport))->toBeTrue('File laporan harus terbentuk pada kondisi bersih.');
-
     $content = File::get($outputReport);
-    expect($content)->toContain('# Quality Gate Report: Fase R0')
-        ->and($content)->toContain($headCommit)
-        ->and($content)->toContain('composer validate --strict')
-        ->and($content)->toContain('npm run build');
 
-    File::deleteDirectory($tempDir);
+    expect($content)->toContain('# Quality Gate Report: Fase R0')
+        ->and($content)->toContain('- **Verifikator:** Auditor Independen Lead')
+        ->and($content)->toContain('- [x] C1 Kode ada di modul pemilik yang benar')
+        ->and($content)->toContain('Verifikasi tahap satu disetujui bersyarat.');
 });
