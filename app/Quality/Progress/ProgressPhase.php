@@ -11,6 +11,7 @@ final class ProgressPhase
 {
     /**
      * @param  list<ProgressItem>  $items
+     * @param  list<array{id: string, item: string, minus: string, dampak: string, prioritas: string, rencana: string, is_closed: bool}>  $minusEntries
      */
     public function __construct(
         public readonly string $id,
@@ -19,6 +20,7 @@ final class ProgressPhase
         public readonly string $statusRaw,
         public readonly ?string $statusDate,
         public readonly array $items = [],
+        public readonly array $minusEntries = [],
     ) {}
 
     public function isFaseR(): bool
@@ -38,5 +40,26 @@ final class ProgressPhase
         }
 
         return strcmp($this->statusDate, $cutoffDate) > 0;
+    }
+
+    /**
+     * Returns list of open (unclosed) P0 or P1 minus IDs.
+     *
+     * @return list<string>
+     */
+    public function openCriticalMinusIds(): array
+    {
+        $critical = [];
+        foreach ($this->minusEntries as $entry) {
+            if ($entry['is_closed']) {
+                continue;
+            }
+            $pri = strtoupper(trim((string) ($entry['prioritas'] ?? '')));
+            if ($pri === 'P0' || $pri === 'P1') {
+                $critical[] = (string) ($entry['id'] ?? 'unknown');
+            }
+        }
+
+        return $critical;
     }
 }

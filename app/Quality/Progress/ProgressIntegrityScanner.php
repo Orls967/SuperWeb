@@ -36,6 +36,8 @@ final class ProgressIntegrityScanner
         $currentStatusRaw = '';
         $currentStatusDate = null;
         $currentItems = [];
+        $currentMinusEntries = [];
+        $phaseItemKeyCounts = [];
 
         /** @var ProgressItem|null $currentItem */
         $currentItem = null;
@@ -49,6 +51,7 @@ final class ProgressIntegrityScanner
             &$currentStatusRaw,
             &$currentStatusDate,
             &$currentItems,
+            &$currentMinusEntries,
             &$currentItem
         ): void {
             if ($currentPhaseId === null) {
@@ -67,6 +70,7 @@ final class ProgressIntegrityScanner
                 statusRaw: $currentStatusRaw,
                 statusDate: $currentStatusDate,
                 items: $currentItems,
+                minusEntries: $currentMinusEntries,
             );
 
             $currentPhaseId = null;
@@ -75,6 +79,7 @@ final class ProgressIntegrityScanner
             $currentStatusRaw = '';
             $currentStatusDate = null;
             $currentItems = [];
+            $currentMinusEntries = [];
         };
 
         foreach ($lines as $lineIndex => $line) {
@@ -142,27 +147,27 @@ final class ProgressIntegrityScanner
                 continue;
             }
 
-            // Bukti: header under an item
-            if ($currentItem !== null && preg_match('/^\s*Bukti\s*:\s*$/u', $line)) {
+            // Proof block header: Bukti:
+            if (preg_match('/^\s*Bukti:\s*$/u', $line)) {
                 $inProof = true;
 
                 continue;
             }
 
-            // Proof entry under Bukti:   - key: value
-            if ($currentItem !== null && $inProof && preg_match('/^\s*-\s+([a-z0-9_]+)\s*:\s*(.+)$/i', $line, $matches)) {
+            // Proof line: - key: value
+            if ($inProof && $currentItem !== null && preg_match('/^\s*-\s+([a-z]+):\s*(.+)$/u', $line, $matches)) {
                 $key = strtolower(trim($matches[1]));
-                $val = trim($matches[2]);
+                $value = trim($matches[2]);
 
-                $updatedProof = $currentItem->proof;
-                $updatedProof[$key][] = $val;
+                $currentProof = $currentItem->proof;
+                $currentProof[$key][] = $value;
 
                 $currentItem = new ProgressItem(
                     id: $currentItem->id,
                     phaseId: $currentItem->phaseId,
                     isChecked: $currentItem->isChecked,
                     text: $currentItem->text,
-                    proof: $updatedProof,
+                    proof: $currentProof,
                     lineNumber: $currentItem->lineNumber,
                     uniqueKey: $currentItem->uniqueKey,
                 );
@@ -170,8 +175,26 @@ final class ProgressIntegrityScanner
                 continue;
             }
 
-            // Non-indented line or empty line followed by new section breaks proof block
-            if ($inProof && trim($line) !== '' && ! str_starts_with($line, ' ') && ! str_starts_with($line, "\t")) {
+            // Register Minus table row: | M-N-1 | N.3 | minus | dampak | P0 | rencana |
+            if (preg_match('/^\|\s*([~]*M-[^|]+[~]*)\s*\|\s*([^|]+)\|\s*([^|]+)\|\s*([^|]+)\|\s*([^|]+)\|\s*([^|]+)\|/u', $line, $mm)) {
+                $rawId = trim($mm[1]);
+                $isClosed = str_contains($rawId, '~~') || str_contains($line, '~~');
+                $cleanId = trim(str_replace('~~', '', $rawId));
+                $currentMinusEntries[] = [
+                    'id' => $cleanId,
+                    'item' => trim($mm[2]),
+                    'minus' => trim($mm[3]),
+                    'dampak' => trim($mm[4]),
+                    'prioritas' => trim(str_replace('~~', '', $mm[5])),
+                    'rencana' => trim($mm[6]),
+                    'is_closed' => $isClosed,
+                ];
+
+                continue;
+            }
+
+            // If a non-indented or non-proof line is encountered, exit proof block
+            if ($inProof && ! preg_match('/^\s{2,}/u', $line)) {
                 $inProof = false;
             }
         }
@@ -182,13 +205,13 @@ final class ProgressIntegrityScanner
     }
 
     /**
-     * Extracts item text snapshot from parsed phases for ratchet baseline.
+     * Extracts baseline text dictionary of all items in PROGRESS.md for ratchet locking.
      *
-     * @param  array<string, ProgressPhase>  $phases
-     * @return array<string, string>
+     * @return array<string, string> Keyed by item uniqueKey (or 'phaseId:itemId')
      */
-    public function extractItemTexts(array $phases): array
+    public function extractTextBaseline(string $content): array
     {
+        $phases = $this->parse($content);
         $texts = [];
 
         foreach ($phases as $phase) {
@@ -257,6 +280,11 @@ final class ProgressIntegrityScanner
                         $violations[] = "Fase {$phase->id} berstatus ✅ tetapi docs/gates/fase-{$phase->id}.md tidak memiliki bagian Verifikasi.";
                     }
                 }
+
+                $openCritical = $phase->openCriticalMinusIds();
+                if ($openCritical !== []) {
+                    $violations[] = "Fase {$phase->id} berstatus ✅ tetapi masih memiliki minus P0/P1 terbuka: ".implode(', ', $openCritical).' (PROGRESS.md §P7, P9).';
+                }
             }
 
             // Items check
@@ -301,7 +329,7 @@ final class ProgressIntegrityScanner
                     }
                 }
 
-                // Validate test: file exists and contains test name if specified
+                // Validate test: file exists and contains exact test declaration
                 if (! empty($item->proof['test'])) {
                     foreach ($item->proof['test'] as $testEntry) {
                         $parts = explode('::', $testEntry, 2);
@@ -311,12 +339,7 @@ final class ProgressIntegrityScanner
                         if (! is_file($root.'/'.$testFile)) {
                             $violations[] = "Item {$item->id}: file test '{$testFile}' tidak ditemukan di filesystem.";
                         } elseif ($testName !== null) {
-                            $testContent = (string) file_get_contents($root.'/'.$testFile);
-                            $found = str_contains($testContent, $testName);
-                            if (! $found && str_starts_with($testName, 'it ')) {
-                                $found = str_contains($testContent, substr($testName, 3));
-                            }
-                            if (! $found) {
+                            if (! self::testNameExistsInFile($root.'/'.$testFile, $testName)) {
                                 $violations[] = "Item {$item->id}: nama test '{$testName}' tidak ditemukan di dalam '{$testFile}'.";
                             }
                         }
@@ -382,6 +405,41 @@ final class ProgressIntegrityScanner
         return $violations;
     }
 
+    /**
+     * Checks if exact test declaration exists in file with prefix normalization.
+     * No substring or fuzzy matching allowed.
+     */
+    public static function testNameExistsInFile(string $filePath, string $declaredTestName): bool
+    {
+        if (! is_file($filePath)) {
+            return false;
+        }
+
+        $content = (string) file_get_contents($filePath);
+
+        $candidates = [$declaredTestName];
+        if (str_starts_with($declaredTestName, 'it ')) {
+            $candidates[] = substr($declaredTestName, 3);
+        } elseif (str_starts_with($declaredTestName, 'test ')) {
+            $candidates[] = substr($declaredTestName, 5);
+        }
+
+        foreach ($candidates as $candidate) {
+            // 1. Literal exact quoted string in file (Pest / dataset / description)
+            if (str_contains($content, "'{$candidate}'") || str_contains($content, "\"{$candidate}\"")) {
+                return true;
+            }
+
+            // 2. Exact PHPUnit method declaration
+            $snake = 'test_'.str_replace([' ', '-'], '_', strtolower($candidate));
+            if (str_contains(strtolower($content), 'function '.$snake.'(')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static function findMatchingRoute(string $method, string $uri): ?Route
     {
         if (! class_exists(RouteFacade::class)) {
@@ -413,22 +471,26 @@ final class ProgressIntegrityScanner
     public static function routeHasExpectedRoles(Route $route, array $expectedRoles): bool
     {
         $middleware = $route->gatherMiddleware();
-        $declaredRoles = [];
+        $routeRoles = [];
 
         foreach ($middleware as $m) {
             if (str_starts_with($m, 'role:')) {
-                $parsed = array_map('trim', explode(',', substr($m, 5)));
-                $declaredRoles = array_unique([...$declaredRoles, ...$parsed]);
+                $parts = explode(',', substr($m, 5));
+                foreach ($parts as $p) {
+                    $routeRoles[] = trim($p);
+                }
             }
         }
 
-        foreach ($expectedRoles as $role) {
-            if (in_array($role, $declaredRoles, true)) {
-                return true;
+        $routeRoles = array_unique($routeRoles);
+
+        foreach ($expectedRoles as $expected) {
+            if (! in_array($expected, $routeRoles, true)) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     public static function isCommandRegistered(string $commandSignature): bool

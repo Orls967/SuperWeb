@@ -217,3 +217,50 @@ MD;
 
     expect($violations)->toBe([]);
 });
+
+it('detects verified phase ✅ with open P0 or P1 minus', function (): void {
+    $tempDir = sys_get_temp_dir().'/progress_test_'.uniqid();
+    mkdir($tempDir.'/docs/gates', 0777, true);
+    file_put_contents($tempDir.'/docs/gates/fase-r1.md', "# Gate Fase R1\n## Verifikasi\nSemua verifikasi lengkap.");
+
+    $markdown = <<<'MD'
+### FASE R1 — LEDGER & UANG
+> **Status audit:** ✅ SELESAI
+
+- [ ] R1.1 Konvensi tanda tunggal
+
+| # | Item | Minus | Dampak | Prioritas | Rencana mitigasi |
+|---|---|---|---|---|---|
+| M-R1-1 | R1.1 | Posting ganda | Saldo tidak seimbang | P0 | Perbaiki di R1.2 |
+MD;
+
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, repoRoot: $tempDir);
+
+    expect($violations)->toContain('Fase R1 berstatus ✅ tetapi masih memiliki minus P0/P1 terbuka: M-R1-1 (PROGRESS.md §P7, P9).');
+});
+
+it('strictly matches exact test names rejecting partial or fuzzy names', function (): void {
+    $tempDir = sys_get_temp_dir().'/progress_test_'.uniqid();
+    mkdir($tempDir.'/tests', 0777, true);
+    $testFilePath = $tempDir.'/tests/ExampleTest.php';
+    file_put_contents($testFilePath, <<<'PHP'
+<?php
+it('runs exact test with precision', function () {});
+PHP);
+
+    // Exact name with "it " prefix
+    expect(ProgressIntegrityScanner::testNameExistsInFile($testFilePath, 'it runs exact test with precision'))->toBeTrue();
+
+    // Exact name without "it " prefix
+    expect(ProgressIntegrityScanner::testNameExistsInFile($testFilePath, 'runs exact test with precision'))->toBeTrue();
+
+    // Substring / partial match MUST fail
+    expect(ProgressIntegrityScanner::testNameExistsInFile($testFilePath, 'exact test'))->toBeFalse();
+    expect(ProgressIntegrityScanner::testNameExistsInFile($testFilePath, 'runs exact test'))->toBeFalse();
+    expect(ProgressIntegrityScanner::testNameExistsInFile($testFilePath, 'it runs exact test'))->toBeFalse();
+
+    // Case difference / fuzzy MUST fail
+    expect(ProgressIntegrityScanner::testNameExistsInFile($testFilePath, 'RUNS EXACT TEST WITH PRECISION'))->toBeFalse();
+});
