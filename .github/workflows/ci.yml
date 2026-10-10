@@ -38,16 +38,16 @@ jobs:
         with:
           node-version: 20
 
-      - name: Setup Environment
-        run: |
-          cp .env.example .env
-          php artisan key:generate --ansi
-
       - name: Install npm dependencies
         run: npm ci
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Setup Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate --ansi
 
       - name: Run Quality Gate (composer gate)
         run: composer gate
@@ -95,13 +95,13 @@ jobs:
           extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, gd, zip, bcmath
           coverage: none
 
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
       - name: Setup Environment
         run: |
           cp .env.example .env
           php artisan key:generate --ansi
-
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Run DB Portability Tests
         env:
@@ -120,7 +120,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: portability-mysql-junit
-          if-no-files-found: error
           path: storage/logs/portability-junit.xml
 
   mutation-testing:
@@ -142,13 +141,13 @@ jobs:
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, pcov, bcmath
           coverage: pcov
 
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
       - name: Setup Environment
         run: |
           cp .env.example .env
           php artisan key:generate --ansi
-
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Run Pest Mutation Testing on Touched Classes
         run: php artisan test:mutate --git-diff --base="${{ github.base_ref || 'master' }}" --min=60
