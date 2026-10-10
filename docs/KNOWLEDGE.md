@@ -468,6 +468,31 @@ $entries = Posting::lines()
 **Bukti:** `HcmService::auditHcm()` memuat `Payroll::all()`; `OutboxBusService::processMessage()` memuat semua subscription aktif lalu filter di PHP; `IntegrationService::auditIntegration()` sampel `limit(50)` tanpa urutan; screening sanksi Party memakai `similar_text` terhadap seluruh daftar (O(n·m)); audit-audit Integration menghitung seluruh tabel tanpa indeks khusus.
 **Seharusnya:** `chunkById`/`lazyById`, agregasi SQL, indeks untuk kolom status/tanggal, dan untuk pencocokan nama gunakan normalisasi + blocking key (mis. soundex/trigram) sebelum skor kemiripan.
 
+#### K-33 (Temuan R0) — Portabilitas skema MySQL: Identifier > 64 & key InnoDB > 3072 byte (P1 · R0.3.b)
+
+**Bukti:** MySQL 8.4 membatasi nama identifier (tabel, kolom, indeks, unique constraint, foreign key) maksimal 64 karakter. Konvensi otomatis Laravel menghasilkan nama indeks komposit > 64 karakter pada tabel/kolom panjang (misal `mall_utility_tariffs_property_id_utility_type_effective_from_index` sepanjang 67 karakter; SQLSTATE[42000] error 1059 `Identifier name is too long`). Selain itu, InnoDB charset `utf8mb4` membatasi total panjang komposit key index maksimal 3072 byte; indeks komposit dengan 4 kolom `string(255)` default memakan 4.080 byte (SQLSTATE[42000] error 1071 `Specified key was too long; max key length is 3072 bytes`, terdeteksi di CI run 38071600613 pada `pty_party_roles` dan `med_ip_licenses`). Kolom `approval_id` di berbagai tabel berukuran integer sementara data approval menggunakan UUID string 36 char (error 1366 `Incorrect integer value`).
+**Seharusnya:** Seluruh identifier yang melebihi 64 karakter diberi nama eksplisit ≤ 64 karakter pada migrasi; kolom varchar komposit diperpendek sesuai kebutuhan bisnis riil (misal `string('role', 50)`); pasang guard arsitektur `SchemaIdentifierLengthTest` yang memverifikasi identifier ≤ 64 karakter dan key InnoDB ≤ 3072 byte; jalankan verifikasi reguler pada container MySQL di CI (`portability-mysql`).
+
+#### K-34 (Temuan R0) — Lubang lingkup verifikasi ProgressIntegrity (P1 · R0.4)
+
+**Bukti:** Implementasi awal `ProgressIntegrityScanner` hanya memindai item yang dicentang `[x]`, membiarkan item belum tercentang `[ ]` lolos tanpa verifikasi struktur teks. Scanner juga belum memvalidasi tag `jenis:` pada blok Bukti P2, belum memeriksa konsistensi nama method test terhadap file test JUnit aktual, dan belum menegakkan aturan bahwa fase berstatus `🔵 SIAP VERIFIKASI` mewajibkan seluruh item memiliki blok bukti valid tanpa ada item yang disembunyikan.
+**Seharusnya:** `ProgressIntegrityScanner` memvalidasi snapshot teks item terhadap baseline teks (`progress-item-texts.json`), menolak perubahan teks tanpa penanda `⬇️ diturunkan` (P10/X18), memvalidasi kelengkapan format blok bukti P2 (`jenis:`, `commit:`, `file:`, `test:`, `akses:`), memverifikasi bahwa status fase `🔵` memiliki bukti lengkap dan bebas status palsu `✅` sebelum verifikasi verifikator (P7).
+
+#### K-35 (Temuan R0) — Anti-pola `gate:report --force` merusak integritas gerbang kualitas (P0 · R0.2)
+
+**Bukti:** Opsi `--force` pada `php artisan gate:report` memungkinkan laporan gerbang kualitas (`docs/gates/fase-N.md`) tetap diproduksi meskipun manifest berstatus dirty atau salah satu langkah gate gagal (exit code ≠ 0). Hal ini melanggar kriteria terima wajib R0.2 ("laporan tidak bisa dibuat bila gate gagal") dan menciptakan celah laporan hijau palsu yang menyembunyikan kegagalan pengujian.
+**Seharusnya:** Opsi `--force` dihapus sepenuhnya dari `GateReportCommand`. Laporan gerbang kualitas HANYA boleh dihasilkan bila `GateManifest::isClean()` bernilai true, seluruh langkah pengujian lulus (exit code 0), dan hash commit manifest cocok tepat dengan commit HEAD git repository.
+
+#### K-36 (Temuan R0) — GateRunner menghapus database development (isolasi gate db) (P0 · R0.2)
+
+**Bukti:** Saat menjalankan `composer gate` atau `GateRunner`, langkah `migrate:fresh --seed` secara bawaan mengeksekusi migrasi pada file database development lokal yang aktif (`database/database.sqlite`), sehingga data kerja, akun pengujian lokal, dan state dev tertimpa dan terhapus setiap kali pengembang memvalidasi gate.
+**Seharusnya:** `GateRunner` wajib mengisolasi database khusus pengujian gate (misal `storage/gate/gate.sqlite` dengan menyuntikkan `DB_DATABASE=storage/gate/gate.sqlite` ke proses runner), memastikan database development pengembang tetap aman dan utuh tanpa risiko tertimpa.
+
+#### K-37 (Temuan R0) — Pelajaran keamanan kredensial & token rahasia (P0 · R0)
+
+**Bukti:** Eksekusi perintah pembantu interaktif seperti `git credential fill` dapat memicu pencetakan kredensial atau Personal Access Token (PAT) sensitif ke stdout atau berkas log terminal. Penyimpanan token di environment publik atau log CI berisiko kebocoran rahasia kritis repositori.
+**Seharusnya:** Dilarang keras memanggil `git credential fill`, dilarang membaca atau mencetak file `.git-credentials` atau token autentikasi. Operasi git terotentikasi di CI hanya boleh memanfaatkan token ephemeral bawaan runner (`GITHUB_TOKEN` via secure auth headers `actions/checkout`), dan lingkungan lokal harus mengandalkan credential manager bawaan sistem operasi (macOS Keychain) secara aman dan transparan tanpa perantara CLI.
+
 ---
 
 ## 6. Yang sudah bagus

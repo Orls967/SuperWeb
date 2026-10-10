@@ -1092,3 +1092,22 @@
   - Sabotase sementara dengan index 4.080 byte terbukti gagal (exit code 1).
   - `vendor/bin/pest modules/Party/tests/Feature/PartyColumnLengthValidationTest.php` lulus (6 tests, 15 assertions, exit 0).
   - `vendor/bin/pest modules/Med/tests/Feature/MedColumnLengthValidationTest.php` lulus (5 tests, 8 assertions, exit 0).
+
+## 2026-10-10: Pengalihan minus warisan ke fase perbaikan spesifik (Keputusan K2)
+- **Context:**
+  - Audit Fase R0 dan penegakan pagar otomatis menemukan berbagai kekurangan dan utang teknis warisan (baseline `arch:scan` 7.273 temuan di A1–A13, 100 rute tanpa role terpetakan, 148 rute dinamis berparameter tertunda, 33 command audit tanpa fixture korupsi, 172 kode akun produksi belum terdaftar di seeder, 3 saldo akun berlawanan sisi normal, 705 file & 853 tabel di `modules/Integration`, 94 pembuatan `LedgerAccount` langsung di test, 37 rute tulis yang masih mengizinkan role auditor, error Blade view/tipe data pada contract clauses & reports, scanner A12/T4 heuristik, dan batas memori test suite).
+  - Fase R0 bertujuan membangun pagar otomatis, lingkungan CI, dan baseline ratchet tanpa membongkar logika bisnis secara prematur tanpa spesifikasi dan pengujian per-fase yang memadai.
+- **Decision:**
+  - Sesuai Keputusan Pemilik K2 (mengikat): seluruh minus warisan dialihkan secara terstruktur ke fase perbaikan yang relevan:
+    - M-R0-1 (pelanggaran `arch:scan` A1–A13): dialihkan ke remediasi bertahap Fase R1–R5 (target baseline 0 di DoD Fase R).
+    - M-R0-5 (172 kode akun produksi belum terdaftar) & M-R0-8 (94 `LedgerAccount` di test): dialihkan ke Fase R1.3.
+    - M-R0-6 (3 saldo akun berlawanan sisi normal): dialihkan ke Fase R1.2.
+    - M-R0-10 & M-R0-11 (view error contract clauses & reports): dialihkan ke Fase R2.3.
+    - M-R0-2 (100 rute warisan tanpa role), M-R0-3 (148 rute berparameter tertunda), M-R0-12 (distribution portal 403 admin), M-R0-13 (storage local signed route), dan M-R0-18 (37 rute tulis dengan role auditor dari V8c): dialihkan ke Fase R3.1.
+    - M-R0-7 (pembekuan `modules/Integration`): dialihkan ke Fase R4.4.
+    - M-R0-4 (33 audit command tanpa fixture korupsi) & M-R0-14 (detail record rusak `api:audit`): dialihkan ke Fase R5.2.
+    - M-R0-15 (scanner A12 & T4) & M-R0-16 (memori test suite): dialihkan ke Fase R5.5.
+  - Setiap minus dicatat secara jujur di Register Minus Fase R0 dan Register Minus fase tujuan, tanpa menyembunyikan fakta teknis (larangan anti-pola X1).
+- **Reason:** Menjamin scope integrity Fase R0 tetap fokus pada pagar otomatis dan tata kelola kualitas, sembari memberikan kepastian roadmap penyelesaian utang teknis warisan pada fase yang tepat.
+- **Verification:** Register Minus Fase R0 di `docs/PROGRESS.md` diselaraskan dengan rencana pengalihan K2; semua item minus warisan memiliki fase target yang jelas.
+
