@@ -58,7 +58,7 @@ return new class extends Migration
             $table->json('scores')->nullable()->comment('Skor per butir');
             $table->unsignedTinyInteger('total_score')->default(0)->comment('0-100');
             $table->string('result', 32)->default('pending')->comment('pending, pass, fail');
-            $table->unsignedBigInteger('approval_id')->nullable();
+            $table->string('approval_id', 64)->nullable();
             $table->string('approval_status', 16)->default('pending')->comment('pending, approved, rejected');
             $table->foreignId('assessed_by_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->text('notes')->nullable();

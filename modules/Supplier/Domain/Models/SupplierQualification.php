@@ -17,7 +17,7 @@ class SupplierQualification extends Model
         'approval_id', 'approval_status', 'assessed_by_user_id', 'notes',
     ];
 
-    protected $casts = ['answers' => 'array', 'scores' => 'array', 'total_score' => 'integer', 'approval_id' => 'integer'];
+    protected $casts = ['answers' => 'array', 'scores' => 'array', 'total_score' => 'integer', 'approval_id' => 'string'];
 
     public function supplier(): BelongsTo
     {
