@@ -58,7 +58,7 @@ return new class extends Migration
             $table->string('payout_status')->default('HOLD'); // HOLD, RELEASED, CLAWBACK
             $table->timestamps();
 
-            $table->index(['headhunter_agency_id', 'payout_status']);
+            $table->index(['headhunter_agency_id', 'payout_status'], 'edu_hh_contracts_agency_stat_idx');
         });
 
         // 136.4 Contingent workforce timesheet & contracts
