@@ -328,10 +328,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 > Urutan R0 → R9 mengikuti dependensi. **R0 memasang pagar otomatis lebih dulu** sehingga sejak perbaikan pertama, jalan pintas langsung membuat gate merah. Setiap sub-fase R mengikuti P1–P13 (DoR boleh singkat karena tugas R sudah rinci) dan ditutup gate penuh + verifikasi silang. Rujukan temuan `K-xx` ada di `docs/KNOWLEDGE.md` §5.
 
 ### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS (ANTI JALAN PINTAS)
-> **Status audit:** ⬜ BELUM · Prasyarat semua fase R lain. Semua detektor di R0 dipasang dengan baseline (ratchet) sehingga bisa langsung aktif walau kode lama masih melanggar.
+> **Status audit:** 🔨 DIKERJAKAN (DoR disetujui 2026-10-10, branch `feature/fase-r0-pagar-otomatis`) · Prasyarat semua fase R lain. Semua detektor di R0 dipasang dengan baseline (ratchet) sehingga bisa langsung aktif walau kode lama masih melanggar.
 
 #### DoR Fase R0 — Lingkungan, gate & pagar otomatis
-- Disetujui pemilik: [ ]   (tanggal / komentar)
+- Disetujui pemilik: [x]   2026-10-10 (chat) — DoR disetujui; (1) `"php": "^8.4"` + `composer.lock` tetap di-commit; (2) folder `.github/` boleh dibuat, **push wajib ditanyakan dulu**; (3) DB kedua CI: **MySQL 8**; (4) merge dengan merge commit.
 - Tujuan: memasang pemeriksaan otomatis yang langsung menggagalkan gate/CI bila ada jalan pintas — centang tanpa bukti, laporan gate ketikan tangan, pola terlarang X2–X25 di kode **baru**, rute tanpa role, audit yang tidak bisa gagal, akun ledger yang hanya ada di test — sebelum perbaikan R1–R9 dimulai. Pelanggaran lama dicatat sebagai baseline yang hanya boleh turun.
 - Modul pemilik & prefiks: tooling lintas modul, bukan fitur domain — **tidak membuat tabel**. Command di `app/Console/Commands/` (konvensi yang sudah ada: `ChainAuditAllCommand`), kelas pendukung di `app/Quality/` (subfolder baru di `app/`), registry prefiks tabel `config/modules.php` (dipakai aturan A2; diperluas di R4.2), test di `tests/Architecture/`, baseline di `tests/Architecture/baselines/*.json`, laporan di `docs/gates/`.
 - Prasyarat & statusnya: tidak ada (R0 fase pertama). Lingkungan: PHP 8.4 (sandbox: dibangun dari source karena paket PHP 8.4 tidak tersedia; CI: `shivammathur/setup-php`).
