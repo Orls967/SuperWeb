@@ -28,7 +28,7 @@ return new class extends Migration
 
             $table->foreign('output_material_id')->references('id')->on('mfg_materials')->cascadeOnDelete();
             $table->unique(['output_material_id', 'version']);
-            $table->index(['output_material_id', 'is_active', 'effective_from', 'effective_to']);
+            $table->index(['output_material_id', 'is_active', 'effective_from', 'effective_to'], 'mfg_boms_out_mat_active_eff_idx');
         });
 
         Schema::create('mfg_bom_lines', function (Blueprint $table) {
