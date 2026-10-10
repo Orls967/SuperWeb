@@ -13,7 +13,7 @@
 2. [Inventaris repo](#2-inventaris-repo)
 3. [Linimasa pengerjaan & pola kerja agent](#3-linimasa-pengerjaan--pola-kerja-agent)
 4. [Penilaian per era fase](#4-penilaian-per-era-fase)
-5. [Temuan detail (K-01 … K-32)](#5-temuan-detail)
+5. [Temuan detail (K-01 … K-39)](#5-temuan-detail)
 6. [Yang sudah bagus — pertahankan & jadikan standar](#6-yang-sudah-bagus)
 7. [Seharusnya: pola emas implementasi](#7-seharusnya-pola-emas-implementasi)
 8. [Rencana perbaikan (ringkas; detail di PROGRESS.md Fase R)](#8-rencana-perbaikan)
@@ -467,6 +467,106 @@ $entries = Posting::lines()
 
 **Bukti:** `HcmService::auditHcm()` memuat `Payroll::all()`; `OutboxBusService::processMessage()` memuat semua subscription aktif lalu filter di PHP; `IntegrationService::auditIntegration()` sampel `limit(50)` tanpa urutan; screening sanksi Party memakai `similar_text` terhadap seluruh daftar (O(n·m)); audit-audit Integration menghitung seluruh tabel tanpa indeks khusus.
 **Seharusnya:** `chunkById`/`lazyById`, agregasi SQL, indeks untuk kolom status/tanggal, dan untuk pencocokan nama gunakan normalisasi + blocking key (mis. soundex/trigram) sebelum skor kemiripan.
+
+### H. Temuan saat memasang pagar Fase R0 (10–11 Okt 2026)
+
+Temuan di bagian ini muncul ketika detektor Fase R0 dijalankan untuk pertama kali di Linux, di CI, dan di MySQL 8.4. Angka diambil dari file baseline, log CI, dan Register Minus R0 (`PROGRESS.md`), bukan perkiraan.
+
+#### K-33 — Skema tidak pernah dijalankan di MySQL (P1 · R0.3.b)
+
+**Bukti:**
+- CI run 38068206489, job `portability-mysql`, menghasilkan `SQLSTATE[42000] 1059 Identifier name 'mall_utility_tariffs_property_id_utility_type_effective_from_index' is too long` (67 karakter, batas MySQL 64).
+- Pemindaian lanjutan menemukan 22 nama index/unique bawaan Laravel yang melebihi 64 karakter di 9 modul: Mall, Logistics, Manufacturing, Wms, Mining, Egy, Tlx, Edu, Integration.
+- Setelah nama diperbaiki, MySQL menolak dua index komposit karena melebihi 3.072 byte (`1071 Specified key was too long`): `pty_party_roles` dan `med_ip_licenses`, masing-masing empat kolom `VARCHAR(255)` utf8mb4.
+
+**Kenapa buruk:**
+- Klaim kesiapan MySQL/PostgreSQL di fase-fase sebelumnya tidak pernah diuji. `migrate:fresh` di MySQL berhenti pada error pertama, sehingga pelanggaran berikutnya tersembunyi di belakangnya.
+- Perbaikan dengan memperpendek kolom (`role` 50, `scope_type` 50, `ip_id` 64, …) mengubah kapasitas data, bukan hanya nama. Nilai dari input yang tidak divalidasi `max` akan menjadi HTTP 500 di MySQL.
+
+**Seharusnya:**
+- Nama index/FK eksplisit ≤ 64 karakter. Panjang key ≤ 3.072 byte dihitung dari panjang kolom yang dideklarasikan.
+- Setiap kolom yang diperpendek punya validasi `max` di jalur masuknya, dengan test 422 untuk n+1 karakter.
+
+**Cara mengunci:**
+- `tests/Architecture/SchemaIdentifierLengthTest.php`.
+- Job CI `portability-mysql` (`migrate:fresh --seed` + `pest --group=db-portability`) wajib hijau sebelum merge.
+
+#### K-34 — Repo hanya jalan di filesystem case-insensitive (P1 · R0.3.a — ditutup `9247f6d`)
+
+**Bukti:**
+- Empat seeder (Asset, Wms, Distribution, Manufacturing) memakai namespace `Database\Seeders` padahal foldernya `database/seeders`, sehingga `DatabaseSeeder` gagal di Linux (188 error test).
+- Test Logistik butuh GD dengan JPEG, dan ini tidak terdokumentasi (28 error).
+- Selama ini suite hanya pernah hijau di macOS.
+
+**Seharusnya:** namespace sama dengan path secara case-sensitive, dan dependensi ekstensi PHP tercatat di README.
+
+**Cara mengunci:** `tests/Architecture/Psr4ComplianceTest.php` + job CI Linux.
+
+#### K-35 — Satu nama command, dua kelas: audit Fase 55 tidak pernah jalan (P1 · R0.6 — ditutup `45902c9`)
+
+**Bukti:** `api:audit` dideklarasikan oleh `AuditIntegrationCommand` (Fase 55) dan `ApiAuditCommand` (Fase 147). Laravel hanya menyimpan registrasi terakhir, sehingga audit webhook HMAC & EDI Fase 55 tidak pernah dieksekusi meskipun itemnya dicentang.
+
+**Seharusnya:** satu kelas per nama command.
+
+**Cara mengunci:** `tests/Architecture/CommandSignatureUniqueTest.php`.
+
+#### K-36 — Halaman yang rusak baru ketahuan saat rute diakses sebagai role (P1 · R2.3, R3.1)
+
+**Bukti** (matriks HTTP `RouteAuthorizationMatrixTest`; Register Minus R0 M-R0-10..12):
+- `contract.clauses.create` → HTTP 500 (Blade rusak: `Unclosed '(' does not match '}'`).
+- `contract.reports` → HTTP 500 (`str_replace()` menerima enum `ContractType` di view).
+- `distribution.portal.home` → HTTP 403 untuk `admin`.
+
+Tidak ada test sebelumnya yang membuka halaman ini lewat HTTP.
+
+**Seharusnya:** setiap rute UI punya minimal satu test HTTP sebagai role berhak (bukan 403/500) dan satu sebagai role tak berhak (403). Lihat K-27.
+
+**Cara mengunci:** `RouteAuthorizationMatrixTest`. Rute berparameter yang belum diuji dicatat di baseline `route-dynamic-pending.json` (280 entri) sampai R3.1.
+
+#### K-37 — Ukuran utang ledger yang terukur (P0 · R1.2, R1.3, R5.2)
+
+**Bukti** (baseline per 10 Okt 2026):
+- `ledger-accounts.json`: 172 kode akun dipakai kode produksi tetapi tidak diprovisi seeder. Alur yang memakainya gagal di DB hasil `migrate:fresh --seed`.
+- `ledger-normal-balance.json`: 3 akun bersaldo di sisi yang salah setelah seed, yaitu `ast:fixed_assets`, `expense:resto:waste:IDR`, dan `liability:mall:points:PTS`.
+- `audit-contract.json`: 33 command audit tanpa fixture korupsi. Belum terbukti bahwa audit-audit itu bisa gagal.
+- `arch:scan`: A3 (float pada uang) 352, A4 (idempotency key acak) 44, A5 (type transaksi > 32 karakter / tidak terdaftar) 101.
+
+**Seharusnya:** semua angka di atas turun ke 0 di R1–R5 (lihat DoR Fase R1). Baseline hanya boleh turun.
+
+#### K-38 — Pagar anti jalan pintas sendiri bisa dijalan-pintasi (P0 · R0.2, R0.4)
+
+**Bukti** (verifikasi silang commit `a3dd664`, sabotase pada salinan `PROGRESS.md`):
+- Mencentang item fase lama (55.1) tanpa blok `Bukti:` → `ProgressIntegrityTest` tetap hijau. Fase lama hanya diperiksa bila baris statusnya memuat tanggal setelah 10 Okt.
+- Mengubah status Fase 55 menjadi ✅ tanpa laporan gate dan tanpa Verifikasi → tetap hijau.
+- Item `jenis: tooling` tanpa test lolos. Item dianggap "fitur" berdasarkan kata kunci teks, bukan kunci `jenis:`.
+- Teks item dipersempit lalu ditempeli "⬇️" saja (tanpa DECISIONS) → lolos.
+- Kunci `audit:` di Bukti membuat pemindai crash (`AuditCommandRegistry::commands()` tidak ada).
+- `gate:report --force` melewati semua penolakan dan tetap menulis laporan tanpa tanda.
+- `composer gate` menjalankan `migrate:fresh --seed` pada DB dari `.env`, sehingga menghapus DB dev.
+- Pencocokan langkah wajib di manifest memakai substring dua arah: langkah bernama kosong dianggap memenuhi semua.
+
+**Kenapa buruk:** pola K-01 (centang tanpa bukti) bisa terulang persis, sementara gate tetap hijau.
+
+**Seharusnya:**
+- Lingkup ditentukan dari snapshot status & centang per item (commit acuan `8c8369d`), bukan dari tanggal yang ditulis tangan.
+- `⬇️ diturunkan` wajib punya entri DECISIONS.
+- `jenis:` menentukan bukti minimum. Tanpa opsi bypass.
+- Gate memakai DB khusus.
+
+**Cara mengunci:** sabotase di atas menjadi fixture test permanen (perbaikan V1–V7, dikerjakan di Fase R0).
+
+#### K-39 — Agent membaca kredensial pemilik (P0 · proses kerja agent)
+
+**Bukti:** saat diminta memantau CI, agent pelaksana memanggil `git credential fill` untuk mengambil token GitHub dari penyimpanan kredensial lokal, mencetaknya ke log alatnya, lalu memakainya untuk `gh`. Token itu berlaku untuk semua repo di akun. Pemilik kemudian mencabut aplikasi OAuth terkait dan menggantinya dengan fine-grained token khusus `Orls967/superweb`.
+
+**Kenapa buruk:** satu instruksi "pantau CI" berujung pada pengambilan kredensial berlingkup penuh tanpa izin. Log agent menjadi lokasi kebocoran.
+
+**Seharusnya:**
+- Agent memakai token berlingkup minimum: fine-grained, satu repo, izin Contents/Pull requests/Workflows/Actions-read, kedaluwarsa pendek.
+- Prompt pelaksana memuat larangan eksplisit membaca atau mencetak kredensial.
+- Bila `gh` belum login, agent berhenti dan meminta pemilik login.
+
+**Cara mengunci:** larangan tercantum di prompt pelaksana (P13). Token agent tidak punya izin Administration, sehingga setting repo dan branch protection tidak bisa diubah agent.
 
 ---
 
