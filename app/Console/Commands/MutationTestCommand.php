@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Quality\Mutation\MutationTargetResolver;
 use Illuminate\Console\Command;
 
 /**
  * Mutation testing runner using Pest --mutate (PROGRESS R0.12, KONSEP §A14.8, K-27).
  *
  * Runs mutation testing on touched Action/Service classes with a minimum threshold of 60%.
+ * Note: --covered-only is forbidden in CI as it artificially inflates scores.
  */
 class MutationTestCommand extends Command
 {
@@ -34,6 +36,12 @@ class MutationTestCommand extends Command
             $classes = array_values(array_unique([...$classes, ...$detected]));
         }
 
+        if ($classes === [] && $this->option('git-diff')) {
+            $this->info('Tidak ada kelas Action/Service yang disentuh pada branch ini. Mutation testing dilewati.');
+
+            return self::SUCCESS;
+        }
+
         $cmdParts = [
             'vendor/bin/pest',
             '--mutate',
@@ -48,8 +56,6 @@ class MutationTestCommand extends Command
         if ($classes !== []) {
             $classArg = implode(',', $classes);
             $cmdParts[] = "--class={$classArg}";
-        } else {
-            $cmdParts[] = '--covered-only';
         }
 
         $fullCmd = implode(' ', $cmdParts);
@@ -79,28 +85,7 @@ class MutationTestCommand extends Command
         }
 
         $files = array_filter(array_map('trim', explode("\n", trim($output))));
-        $classes = [];
 
-        foreach ($files as $file) {
-            if (! str_ends_with($file, '.php')) {
-                continue;
-            }
-            if (! str_contains($file, 'Application/Actions/') && ! str_contains($file, 'Application/Services/') && ! str_contains($file, 'app/Quality/')) {
-                continue;
-            }
-
-            // Convert path to namespace
-            $clean = substr($file, 0, -4);
-            $fqcn = str_replace('/', '\\', $clean);
-            if (str_starts_with($fqcn, 'modules\\')) {
-                $fqcn = 'Modules\\'.substr($fqcn, 8);
-            } elseif (str_starts_with($fqcn, 'app\\')) {
-                $fqcn = 'App\\'.substr($fqcn, 4);
-            }
-
-            $classes[] = $fqcn;
-        }
-
-        return array_values(array_unique($classes));
+        return MutationTargetResolver::resolveClasses($files);
     }
 }
