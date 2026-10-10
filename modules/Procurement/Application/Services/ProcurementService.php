@@ -200,7 +200,7 @@ class ProcurementService
             ]
         );
 
-        $requisition->update(['status' => 'pending_approval', 'approval_id' => $approval->uuid]);
+        $requisition->update(['status' => 'pending_approval', 'approval_id' => $approval->id]);
 
         return $approval;
     }
@@ -567,7 +567,7 @@ class ProcurementService
                 ]
             );
 
-            $bid->update(['approval_id' => $approval->uuid, 'notes' => $reason]);
+            $bid->update(['approval_id' => $approval->id, 'notes' => $reason]);
             $tender->update(['status' => 'awarded']);
 
             return $bid->fresh();

@@ -98,7 +98,7 @@ return new class extends Migration
             $table->string('change_type'); // creation, amendment, negotiation, clause_update
             $table->text('body');
             $table->json('metadata')->nullable();
-            $table->string('prev_hash', 64);
+            $table->string('prev_hash', 80)->comment('hash versi sebelumnya (64) atau penanda genesis GENESIS_CTR_… (72)');
             $table->string('hash', 64);
             $table->string('created_by_name')->nullable();
             $table->timestamp('created_at')->useCurrent();

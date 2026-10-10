@@ -539,7 +539,7 @@ class ReceivingService
             );
 
             $batch->status = 'pending_approval';
-            $batch->approval_id = $approval->uuid;
+            $batch->approval_id = $approval->id;
             $batch->save();
 
             return $batch->fresh(['items']);
