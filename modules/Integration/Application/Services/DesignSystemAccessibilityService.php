@@ -184,7 +184,7 @@ class DesignSystemAccessibilityService
             ->where('is_gate_passed', true)
             ->where(function ($q) {
                 $q->where('wcag_violations_count', '>', 0)
-                  ->orWhere('responsive_overflow_detected', true);
+                    ->orWhere('responsive_overflow_detected', true);
             })
             ->count();
 

@@ -69,7 +69,7 @@ class ColdChainHighValueLogisticsService
 
         // Risk check 303.6: Transit passing through high-risk zones requires completed risk reassessment
         if ($risk === 'HIGH_RISK_ZONE' && ! $riskReassessmentCompleted) {
-            throw new InvalidArgumentException("Dispatch rejected: High-risk zone transit requires mandatory route risk reassessment prior to execution (303.6).");
+            throw new InvalidArgumentException('Dispatch rejected: High-risk zone transit requires mandatory route risk reassessment prior to execution (303.6).');
         }
 
         // Dual control check 303.3 & 303.4: High-value (>= $50,000) strictly requires two distinct authorized custody agents
@@ -77,7 +77,7 @@ class ColdChainHighValueLogisticsService
         $hasDualControl = (! empty($secondaryAgentId) && $primaryAgentId !== $secondaryAgentId);
 
         if ($isHighValue && ! $hasDualControl) {
-            throw new InvalidArgumentException("Security violation: Consignments valued >= \$50,000 strictly require dual control custody agents (303.4).");
+            throw new InvalidArgumentException('Security violation: Consignments valued >= $50,000 strictly require dual control custody agents (303.4).');
         }
 
         $id = DB::table('logistics_high_value_transits')->insertGetId([

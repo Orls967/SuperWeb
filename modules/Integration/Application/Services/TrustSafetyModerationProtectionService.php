@@ -33,7 +33,7 @@ class TrustSafetyModerationProtectionService
         $tier = strtoupper($riskTier);
 
         // Edge case 374.5: High-risk reporter strictly anonymized, identity never stored raw
-        $anonymizedHash = hash('sha256', 'REPORTER_SALT_' . $rawReporterEmailOrPhone);
+        $anonymizedHash = hash('sha256', 'REPORTER_SALT_'.$rawReporterEmailOrPhone);
 
         $id = DB::table('trust_safety_incident_reports')->insertGetId([
             'report_code' => $rCode,

@@ -309,4 +309,9 @@ class AssetCoreTest extends TestCase
 
         $this->assertTrue($this->service->verifyChain($asset->id)['valid']);
     }
+
+    public function test_genesis_hash_length_does_not_exceed_column_capacity(): void
+    {
+        $this->assertLessThanOrEqual(64, strlen(AssetService::GENESIS_HASH));
+    }
 }

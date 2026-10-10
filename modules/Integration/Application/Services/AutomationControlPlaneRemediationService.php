@@ -47,7 +47,7 @@ class AutomationControlPlaneRemediationService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Automation control plane blocked: Kill switch is active for remediation actions (364.4).");
+            throw new InvalidArgumentException('Automation control plane blocked: Kill switch is active for remediation actions (364.4).');
         }
 
         // Core gate 364.4: Preconditions must be satisfied

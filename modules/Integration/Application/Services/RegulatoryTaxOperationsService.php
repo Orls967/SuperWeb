@@ -57,7 +57,7 @@ class RegulatoryTaxOperationsService
 
         // 404.5 Edge case: if late filing, root cause is strictly mandatory
         if ($isLate && empty($rootCause)) {
-            throw new InvalidArgumentException("Late filing strictly requires root cause documentation (404.5).");
+            throw new InvalidArgumentException('Late filing strictly requires root cause documentation (404.5).');
         }
 
         DB::table('gov_regulatory_obligations')->where('id', $obligation->id)->update([

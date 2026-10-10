@@ -60,7 +60,7 @@ class EnterpriseOperatingModelReadinessService
     ): object {
         // 477.6 Risk: Capacity check must pass
         if (! $capacityAvailable) {
-            throw new InvalidArgumentException("Initiative approval blocked: Team capacity check failed (overcommitted FTE limit) (477.6).");
+            throw new InvalidArgumentException('Initiative approval blocked: Team capacity check failed (overcommitted FTE limit) (477.6).');
         }
 
         $id = DB::table('int_enterprise_change_initiatives')->insertGetId([

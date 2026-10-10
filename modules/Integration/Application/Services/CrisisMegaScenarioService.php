@@ -28,7 +28,7 @@ class CrisisMegaScenarioService
     ): object {
         // 466.6 Risk: Unsandboxed simulation blocked to avoid corrupting baseline data
         if (! $sandboxIsolated) {
-            throw new InvalidArgumentException("Crisis simulation blocked: Must execute within an isolated sandbox environment to protect production baseline data (466.6).");
+            throw new InvalidArgumentException('Crisis simulation blocked: Must execute within an isolated sandbox environment to protect production baseline data (466.6).');
         }
 
         $id = DB::table('sim_crisis_mega_scenarios')->insertGetId([

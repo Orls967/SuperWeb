@@ -40,7 +40,7 @@ class PlatformMonolithEvolutionService
         );
 
         if ($isViolated) {
-            throw new InvalidArgumentException("Architecture fitness violation: Direct cross-domain database querying is strictly prohibited in modular monolith (295.5).");
+            throw new InvalidArgumentException('Architecture fitness violation: Direct cross-domain database querying is strictly prohibited in modular monolith (295.5).');
         }
 
         return (object) DB::table('platform_architecture_fitness_rules')->where('rule_code', $rCode)->first();
@@ -90,7 +90,7 @@ class PlatformMonolithEvolutionService
 
         // Guard 295.7: Service extraction strictly forbidden without empirical benchmark evidence
         if (trim($evidenceSummary) === '' || strlen($evidenceSummary) < 15) {
-            throw new InvalidArgumentException("Microservice extraction rejected: Extraction requires documented empirical benchmark evidence, not design hype (295.7).");
+            throw new InvalidArgumentException('Microservice extraction rejected: Extraction requires documented empirical benchmark evidence, not design hype (295.7).');
         }
 
         $status = $architectApproved ? 'APPROVED' : 'PROPOSED';

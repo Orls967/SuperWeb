@@ -1,6 +1,6 @@
 # Arsitektur Sistem AutoServe
 
-AutoServe adalah platform otomotif terpadu (*superwebsite*) berskala enterprise yang dirancang dengan pola **Modular Monolith** di atas framework Laravel 11. Arsitektur ini menggabungkan fleksibilitas pengembangan monolit dengan isolasi batas domain yang tegas antar-modul bisnis.
+AutoServe adalah platform otomotif terpadu (*superwebsite*) berskala enterprise yang dirancang dengan pola **Modular Monolith** di atas framework Laravel 13 (PHP ^8.4). Arsitektur ini menggabungkan fleksibilitas pengembangan monolit dengan isolasi batas domain yang tegas antar-modul bisnis.
 
 ---
 
@@ -15,7 +15,7 @@ modules/{Modul}/
 ├── Contracts/                 # Interface publik untuk konsumsi lintas modul
 ├── Console/                   # Artisan commands terjadwal / operasional
 ├── Domain/
-│   ├── Enums/                 # PHP 8.3 Backed Enums untuk state & tipe
+│   ├── Enums/                 # PHP 8.4 Backed Enums untuk state & tipe
 │   ├── Events/                # Domain events untuk integrasi asinkron / loose-coupling
 │   └── Models/                # Eloquent models dengan business rules terenkapsulasi
 ├── Http/Controllers/          # HTTP request handlers & view presenters
@@ -38,7 +38,39 @@ Untuk mencegah *tight coupling* ("spaghetti monolith"):
      - **Contracts / Interfaces** (contoh: `AcquiresVehicle`, `TransfersVehicleOwnership`).
      - **Domain Events** (contoh: `PricesTicked` didengar oleh `MonitorLoanRisk`).
      - **Payment / Ledger Services** yang terdaftar di container.
-4. **Verifikasi Arsitektur Otomatis**: Ditegakkan melalui *Arch Tests* di `tests/Architecture/ModuleBoundariesTest.php`.
+4. **Verifikasi Arsitektur Otomatis**: aturan di atas diperiksa `php artisan arch:scan` (aturan A1 import Domain lintas modul, A2 tabel berprefiks modul lain, A9 kernel bergantung pada modul bisnis; lihat §1.3) dan `tests/Architecture/ModuleBoundariesTest.php`. Pelanggaran yang sudah ada per 10 Okt 2026 tercatat sebagai baseline yang hanya boleh turun (`KNOWLEDGE.md` K-04/K-05). Artinya aturan ini **belum** dipatuhi seluruh kode lama, tetapi kode baru yang melanggar langsung menggagalkan gate.
+
+### 1.3 Pagar Otomatis & Quality Gate (`app/Quality`)
+
+Sejak Fase R0, aturan proses di `PROGRESS.md` (P1–P13) dan aturan desain di `KONSEP.md` §A14 ditegakkan oleh kode, bukan hanya oleh dokumen. Komponennya berada di `app/Quality/` (tooling lintas modul, tanpa tabel) dan diuji di `tests/Architecture/`.
+
+**Pola ratchet.** Pelanggaran lama dicatat di `tests/Architecture/baselines/*.json`:
+- `arch:scan` dan TestHygiene memakai sidik jari per aturan → file → tanda tangan pelanggaran.
+- Detektor lain memakai himpunan entri.
+
+Test gagal bila ada entri **baru** (perbaiki kodenya) atau entri yang **sudah hilang** (turunkan baseline di commit yang sama). Entri baru hanya bisa masuk lewat `approved_additions` yang menunjuk anchor `docs/DECISIONS.md` yang benar-benar ada (diperiksa `app/Quality/Docs/DecisionLog`). Cara memperbarui baseline: `RUNBOOK.md` §6.1.
+
+| Pagar | Menolak | Komponen | Dijalankan oleh |
+|---|---|---|---|
+| `arch:scan` (A1–A13) | import Domain/tabel lintas modul, float uang, idempotency key acak, type transaksi liar, parameter bool kontrol, hash tanpa kunci, `setTestNow` di produksi, kernel → modul bisnis, `$guarded = []`, tanpa `strict_types`, `*_id` tanpa FK, `back()->errors()` | `ArchScan/` (tokenizer PHP bawaan), `Modules/ModuleRegistry` + `config/modules.php` (registry prefiks tabel) | `ArchScanBaselineTest`, `php artisan arch:scan` |
+| Integritas PROGRESS | centang tanpa Bukti valid, commit yang tidak menyentuh file bukti, rute tanpa role, ✅ tanpa Verifikasi, minus P0/P1 terbuka saat ✅, teks item diubah tanpa ⬇️ | `Progress/` (parser, `GitCommitInspector`), snapshot `progress-snapshot-8c8369d.json` | `ProgressIntegrityTest` |
+| Matriks otorisasi rute | rute tanpa entri di `tests/Architecture/route-roles.php`, proteksi rute melemah, role tak berhak tidak 403 | `Routing/RouteAuthorizationScanner` | `RouteAuthorizationMatrixTest` |
+| Kontrak audit | `*:audit`/`*:reconcile`/`verify-*` tanpa fixture korupsi (bersih → exit 0, rusak → exit ≠ 0) | `Audit/` (`AuditCommandRegistry`, `Fixtures/`) | `AuditCommandContractTest` |
+| Ledger | kode akun produksi tanpa provisi seeder; saldo berlawanan sisi normal | `Ledger/` | `LedgerAccountRegistryTest`, `LedgerNormalBalanceTest` |
+| Pembekuan Integration | file/tabel baru di `modules/Integration` di luar allowlist adapter | `Freeze/IntegrationFreeze` | `IntegrationFreezeTest` |
+| Higiene test (T1–T4) | assertion yang tidak bisa gagal, `LedgerAccount::create` di test, skip tanpa rujukan BLOCKERS, modul tanpa test HTTP | `TestHygiene/` | `TestHygieneTest` |
+| Portabilitas | path kelas ≠ namespace (case-sensitive); identifier > 64; DDL yang ditolak MySQL 8.4 | `Autoload/Psr4ComplianceChecker`, `Database/MysqlDdlReplay` + `MysqlSchemaChecker` | `Psr4ComplianceTest`, `SchemaIdentifierLengthTest`, `MysqlSchemaCompatibilityTest`, job CI MySQL |
+| Nama command unik | dua kelas mendaftarkan signature yang sama (kasus `api:audit`) | `Commands/CommandNameCollector` | `CommandSignatureUniqueTest` |
+| Kejujuran dokumen | versi Laravel/PHP yang diklaim ≠ `composer.lock`, akun fiktif di CODEBASE | — | `DocsVersionConsistencyTest` |
+| Kontrak CI & repo | job CI dihapus/dilemahkan, CODEOWNERS hilang, template PR tanpa V1–V12/C1–C14 | — | `CiWorkflowContractTest`, `CodeownersContractTest`, `GateTemplateContractTest`, `GateCommandContractTest`, `MutationTestingContractTest` |
+
+**Quality gate.**
+- `composer gate` → `php artisan gate:run` (`Gate/GateRunner`) menjalankan sembilan langkah P4 dan menulis manifest (commit, status dirty, exit code dan durasi tiap langkah). `migrate:fresh --seed` dan audit memakai database SQLite khusus gate.
+- `php artisan gate:report --fase=N` (`Gate/GateReportGenerator`, `JUnitParser`) menulis `docs/gates/fase-N.md` hanya dari manifest dan JUnit asli. Laporan ditolak bila gate gagal, ada langkah hilang, commit ≠ HEAD, tree kotor, JUnit tidak hijau, atau test Bukti tidak lulus.
+- `php artisan test:mutate` (`Mutation/MutationTargetResolver`) menjalankan mutation testing Pest pada kelas Action/Service yang diubah, dengan ambang 60%.
+- Ketiganya dijalankan CI (`.github/workflows/ci.yml`): job SQLite (gate penuh), job MySQL 8.4 (migrasi, seeder, `@group db-portability`), dan job mutation (pull request).
+
+File baseline, `route-roles.php`, workflow CI, `PROGRESS.md`, `DECISIONS.md`, `docs/gates/`, dan `app/Quality/` dimiliki pemilik lewat `.github/CODEOWNERS`.
 
 ---
 

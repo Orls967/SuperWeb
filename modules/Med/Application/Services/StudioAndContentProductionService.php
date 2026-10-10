@@ -199,11 +199,21 @@ class StudioAndContentProductionService
 
     public function issueIpLicense(array $params): MedIpLicense
     {
-        $ipId = $params['ip_id'];
-        $channel = $params['channel'];
-        $territory = $params['territory'];
+        $ipId = (string) $params['ip_id'];
+        $channel = (string) $params['channel'];
+        $territory = (string) $params['territory'];
         $startDate = $params['start_date'];
         $endDate = $params['end_date'];
+
+        if (strlen($ipId) > 64) {
+            throw new \InvalidArgumentException('IP ID exceeds maximum length of 64 characters.');
+        }
+        if (strlen($channel) > 50) {
+            throw new \InvalidArgumentException('Channel exceeds maximum length of 50 characters.');
+        }
+        if (strlen($territory) > 50) {
+            throw new \InvalidArgumentException('Territory exceeds maximum length of 50 characters.');
+        }
 
         // Overlapping territory & channel check
         $conflict = MedIpLicense::where('ip_id', $ipId)

@@ -149,7 +149,7 @@ class ContractService
             // 4. Initial Version 1 in Hash-Chain
             $createdAtIso = now()->toIso8601String();
             $hash = ContractVersion::calculateHash(
-                prevHash: 'GENESIS_CTR_000000000000000000000000000000000000000000000000000000000000',
+                prevHash: ContractVersion::GENESIS_HASH,
                 sequence: 1,
                 changeType: 'creation',
                 body: $bodyContent,
@@ -162,7 +162,7 @@ class ContractService
                 'change_type' => 'creation',
                 'body' => $bodyContent,
                 'metadata' => ['initial' => true],
-                'prev_hash' => 'GENESIS_CTR_000000000000000000000000000000000000000000000000000000000000',
+                'prev_hash' => ContractVersion::GENESIS_HASH,
                 'hash' => $hash,
                 'created_by_name' => $data['created_by_name'] ?? 'System',
                 'created_at' => $createdAtIso,
@@ -195,7 +195,7 @@ class ContractService
                 ->orderByDesc('sequence')
                 ->lockForUpdate()
                 ->first();
-            $prevHash = $latestVersion ? $latestVersion->hash : 'GENESIS_CTR_000000000000000000000000000000000000000000000000000000000000';
+            $prevHash = $latestVersion ? $latestVersion->hash : ContractVersion::GENESIS_HASH;
             $nextSequence = ($latestVersion?->sequence ?? 0) + 1;
             $createdAtIso = now()->toIso8601String();
 
@@ -239,7 +239,7 @@ class ContractService
             return true;
         }
 
-        $expectedPrevHash = 'GENESIS_CTR_000000000000000000000000000000000000000000000000000000000000';
+        $expectedPrevHash = ContractVersion::GENESIS_HASH;
 
         foreach ($versions as $idx => $v) {
             $expectedSeq = $idx + 1;
@@ -247,8 +247,14 @@ class ContractService
                 throw new ContractChainCorruptedException("Urutan versi tidak konsisten pada kontrak {$contract->contract_number}: diharapkan {$expectedSeq}, ditemukan {$v->sequence}");
             }
 
-            if ($v->prev_hash !== $expectedPrevHash) {
-                throw new ContractChainCorruptedException("Rantai prev_hash rusak pada urutan {$v->sequence} kontrak {$contract->contract_number}");
+            if ($idx === 0) {
+                if ($v->prev_hash !== ContractVersion::GENESIS_HASH && $v->prev_hash !== ContractVersion::LEGACY_GENESIS_HASH) {
+                    throw new ContractChainCorruptedException("Rantai prev_hash rusak pada urutan {$v->sequence} kontrak {$contract->contract_number}: bukan genesis sah");
+                }
+            } else {
+                if ($v->prev_hash !== $expectedPrevHash) {
+                    throw new ContractChainCorruptedException("Rantai prev_hash rusak pada urutan {$v->sequence} kontrak {$contract->contract_number}");
+                }
             }
 
             $calculatedHash = ContractVersion::calculateHash(
@@ -362,7 +368,7 @@ class ContractService
             );
 
             $contract->update([
-                'approval_id' => $approval->uuid,
+                'approval_id' => $approval->id,
                 'status' => ContractStatus::Review->value,
             ]);
         });

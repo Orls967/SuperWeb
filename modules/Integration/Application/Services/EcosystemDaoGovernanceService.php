@@ -106,7 +106,7 @@ class EcosystemDaoGovernanceService
             ->where('is_active', true)
             ->where(function ($q) use ($proposal) {
                 $q->whereNull('proposal_class')
-                  ->orWhere('proposal_class', $proposal->proposal_class);
+                    ->orWhere('proposal_class', $proposal->proposal_class);
             })
             ->sum('voting_weight');
 

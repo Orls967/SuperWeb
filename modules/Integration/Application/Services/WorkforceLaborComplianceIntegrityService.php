@@ -57,7 +57,7 @@ class WorkforceLaborComplianceIntegrityService
 
         // 415.4 Rule violations strictly blocked at schedule publish
         if ($sched->rule_violation_detected) {
-            throw new InvalidArgumentException("Publish blocked: Schedule violates mandatory labor regulations (rest hours / credentials / max hours) (415.1, 415.4).");
+            throw new InvalidArgumentException('Publish blocked: Schedule violates mandatory labor regulations (rest hours / credentials / max hours) (415.1, 415.4).');
         }
 
         DB::table('ops_workforce_schedules')->where('id', $sched->id)->update([

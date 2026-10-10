@@ -30,7 +30,7 @@ class WaterEnergyManagementService
     ): object {
         // 446.6 Risk: Production units must be positive to compute normalized intensity
         if ($productionUnits <= 0) {
-            throw new InvalidArgumentException("Baseline invalid: Production units must be > 0 to normalize water/energy intensity (446.1, 446.6).");
+            throw new InvalidArgumentException('Baseline invalid: Production units must be > 0 to normalize water/energy intensity (446.1, 446.6).');
         }
 
         $waterIntensity = round($waterM3 / $productionUnits, 4);
@@ -111,12 +111,12 @@ class WaterEnergyManagementService
         }
 
         if (! $proj->mv_measurement_verified) {
-            throw new InvalidArgumentException("Sustainment audit blocked: Initial M&V must be verified first (446.4, 446.5).");
+            throw new InvalidArgumentException('Sustainment audit blocked: Initial M&V must be verified first (446.4, 446.5).');
         }
 
         $isStillSustained = ($auditMeasuredKwh <= (float) $proj->baseline_consumption_kwh);
         if (! $isStillSustained) {
-            throw new InvalidArgumentException("Sustainment failed: Consumption has drifted back above baseline level (446.5).");
+            throw new InvalidArgumentException('Sustainment failed: Consumption has drifted back above baseline level (446.5).');
         }
 
         DB::table('esg_energy_efficiency_projects')->where('id', $proj->id)->update([

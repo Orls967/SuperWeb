@@ -42,7 +42,13 @@ class AssetService
 {
     public const ACCT_FIXED_ASSETS = 'ast:fixed_assets';
 
-    public const GENESIS_HASH = 'GENESIS_AST_0000000000000000000000000000000000000000000000000000000000000';
+    public const GENESIS_HASH = 'GENESIS_AST_0000000000000000000000000000000000000000000000000000';
+
+    /**
+     * Legacy genesis hash 73 karakter sebelum diselaraskan pada commit 0a21d42/f6fbefd.
+     * Diterima oleh verifyChain untuk backward compatibility dengan rantai event lama (K-B04, B-04).
+     */
+    public const LEGACY_GENESIS_HASH = 'GENESIS_AST_0000000000000000000000000000000000000000000000000000000000000';
 
     public function __construct(
         private readonly DocumentNumberingInterface $numbering,
@@ -310,13 +316,24 @@ class AssetService
                     break;
                 }
 
-                if ($event->prev_hash !== $expectedPrev) {
-                    $broken[] = [
-                        'asset' => $assetIdKey,
-                        'sequence' => $event->sequence,
-                        'message' => 'prev_hash tidak cocok dengan event sebelumnya',
-                    ];
-                    break;
+                if ($event->sequence === 1) {
+                    if ($event->prev_hash !== self::GENESIS_HASH && $event->prev_hash !== self::LEGACY_GENESIS_HASH) {
+                        $broken[] = [
+                            'asset' => $assetIdKey,
+                            'sequence' => $event->sequence,
+                            'message' => 'prev_hash event pertama bukan genesis yang sah (baru atau lama)',
+                        ];
+                        break;
+                    }
+                } else {
+                    if ($event->prev_hash !== $expectedPrev) {
+                        $broken[] = [
+                            'asset' => $assetIdKey,
+                            'sequence' => $event->sequence,
+                            'message' => 'prev_hash tidak cocok dengan event sebelumnya',
+                        ];
+                        break;
+                    }
                 }
 
                 $payloadJson = json_encode($event->payload, JSON_UNESCAPED_SLASHES);

@@ -133,7 +133,7 @@ return new class extends Migration
             $table->timestamp('confirmed_at')->nullable();
             $table->timestamps();
 
-            $table->index(['event_space_id', 'start_date', 'end_date', 'status']);
+            $table->index(['event_space_id', 'start_date', 'end_date', 'status'], 'mall_evt_bkng_space_date_stat_idx');
         });
 
         // 8. Manajemen Aset & Fasilitas Gedung Mall

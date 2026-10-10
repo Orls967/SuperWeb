@@ -6,7 +6,6 @@ namespace Modules\Integration\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
 use Modules\Integration\Application\Services\TenderBidManagementService;
 use Tests\TestCase;
 

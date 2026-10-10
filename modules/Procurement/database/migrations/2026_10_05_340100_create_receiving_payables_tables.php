@@ -137,7 +137,7 @@ return new class extends Migration
             $table->unsignedInteger('item_count')->default(0);
             $table->date('scheduled_date')->nullable();
             $table->text('proof')->nullable()->comment('Bukti potong / ref transfer');
-            $table->unsignedBigInteger('approval_id')->nullable();
+            $table->foreignId('approval_id')->nullable()->constrained('core_approvals')->nullOnDelete();
             $table->foreignId('created_by_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 

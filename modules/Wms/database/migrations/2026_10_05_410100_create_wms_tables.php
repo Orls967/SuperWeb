@@ -84,7 +84,7 @@ return new class extends Migration
                 $table->timestamps();
 
                 $table->foreign('bin_id')->references('id')->on('wms_bins')->cascadeOnDelete();
-                $table->unique(['bin_id', 'product_id', 'lot_number', 'serial_number', 'status']);
+                $table->unique(['bin_id', 'product_id', 'lot_number', 'serial_number', 'status'], 'wms_bin_stocks_bin_prod_lot_sn_stat_uniq');
                 $table->index(['product_id', 'status']);
             });
         }

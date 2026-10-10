@@ -73,7 +73,7 @@ class DataValueCostTransparencyService
 
         // Finance approval gate 342.6 Risk
         if (! $financeApproved) {
-            throw new InvalidArgumentException("Financial governance breach: Data value attribution cannot be used for investment decisions without Finance methodology sign-off (342.6).");
+            throw new InvalidArgumentException('Financial governance breach: Data value attribution cannot be used for investment decisions without Finance methodology sign-off (342.6).');
         }
 
         $id = DB::table('data_asset_business_value_attributions')->insertGetId([

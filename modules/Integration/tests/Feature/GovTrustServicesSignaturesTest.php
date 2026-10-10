@@ -23,7 +23,7 @@ class GovTrustServicesSignaturesTest extends TestCase
 
     public function test_document_signature_and_modification_tamper_detection(): void
     {
-        $originalContract = "This is a binding commercial nickel supply agreement between Party A and Party B.";
+        $originalContract = 'This is a binding commercial nickel supply agreement between Party A and Party B.';
 
         // 1. Sign original document (292.1 & 292.4)
         $signature = $this->service->signDocument(
@@ -38,7 +38,7 @@ class GovTrustServicesSignaturesTest extends TestCase
         $this->assertTrue($isValidOriginal);
 
         // 3. Modified document invalidates signature (tamper detection) (292.4)
-        $tamperedContract = "This is a binding commercial nickel supply agreement between Party A and Party B. Mod: Price is $0.";
+        $tamperedContract = 'This is a binding commercial nickel supply agreement between Party A and Party B. Mod: Price is $0.';
         $isValidTampered = $this->service->verifyDocumentSignature($signature->signature_id, $tamperedContract);
         $this->assertFalse($isValidTampered);
     }

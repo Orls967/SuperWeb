@@ -32,12 +32,12 @@ class EventSpineReplayCenterService
 
         // Core gate 369.4: Unauthorized replay denied
         if (! $approvalGranted) {
-            throw new InvalidArgumentException("Replay authorization failure: Unauthorized event replay is strictly denied (369.4).");
+            throw new InvalidArgumentException('Replay authorization failure: Unauthorized event replay is strictly denied (369.4).');
         }
 
         // Core gate 369.4: Replay cannot double-post ledger
         if ($attemptDoublePostLedger) {
-            throw new InvalidArgumentException("Idempotency breach: Event replay prevented from double-posting financial ledger (369.4).");
+            throw new InvalidArgumentException('Idempotency breach: Event replay prevented from double-posting financial ledger (369.4).');
         }
 
         // Edge case 369.5: Replay mode disables external side-effects

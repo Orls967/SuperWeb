@@ -61,7 +61,7 @@ class GreenProcurementSupplierDevelopmentService
 
         // 447.6 Risk: Anti-greenwashing gate
         if (! $supp->has_verified_footprint_data) {
-            throw new InvalidArgumentException("Greenwashing blocked: Green discount/premium requires third-party verified environmental footprint data (447.3, 447.6).");
+            throw new InvalidArgumentException('Greenwashing blocked: Green discount/premium requires third-party verified environmental footprint data (447.3, 447.6).');
         }
 
         DB::table('esg_green_supplier_evaluations')->where('id', $supp->id)->update([

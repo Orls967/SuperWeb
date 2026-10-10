@@ -29,7 +29,7 @@ class EnterpriseQualityGovernanceService
     ): object {
         // 462.5 Edge case: Coordinator is mandatory to prevent finger-pointing across lines
         if (empty(trim($coordinator))) {
-            throw new InvalidArgumentException("Incident logging blocked: Cross-boundary quality incident must have a designated responsible coordinator (462.2, 462.5).");
+            throw new InvalidArgumentException('Incident logging blocked: Cross-boundary quality incident must have a designated responsible coordinator (462.2, 462.5).');
         }
 
         $id = DB::table('int_enterprise_quality_incidents')->insertGetId([
@@ -63,7 +63,7 @@ class EnterpriseQualityGovernanceService
         }
 
         if (empty(trim($rca)) || empty(trim($systemFix))) {
-            throw new InvalidArgumentException("Remediation incomplete: Root cause analysis and system-level fix details are mandatory (462.2).");
+            throw new InvalidArgumentException('Remediation incomplete: Root cause analysis and system-level fix details are mandatory (462.2).');
         }
 
         DB::table('int_enterprise_quality_incidents')->where('id', $inc->id)->update([

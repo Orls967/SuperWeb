@@ -86,7 +86,7 @@ class EnterpriseAiGovernanceOperatingModelService
                     'updated_at' => now(),
                 ]);
 
-            throw new InvalidArgumentException("Annual attestation expired: High-risk model inference is blocked until council re-attestation (360.4).");
+            throw new InvalidArgumentException('Annual attestation expired: High-risk model inference is blocked until council re-attestation (360.4).');
         }
 
         return (object) $model;

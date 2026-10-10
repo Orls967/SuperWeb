@@ -34,7 +34,7 @@ class DynamicMarketplaceC2cCommerceService
 
         // Edge case 313.5: High velocity (> 3 listings) strictly requires verified identity
         if ($sellerActiveVelocityCount > 3 && ! $identityVerified) {
-            throw new InvalidArgumentException("Trust & safety violation: High velocity sellers (> 3 active listings) must complete identity verification before listing activation (313.5).");
+            throw new InvalidArgumentException('Trust & safety violation: High velocity sellers (> 3 active listings) must complete identity verification before listing activation (313.5).');
         }
 
         $id = DB::table('c2c_marketplace_listings')->insertGetId([
@@ -109,7 +109,7 @@ class DynamicMarketplaceC2cCommerceService
         }
 
         if ($escrow->is_disputed && ! $resolveDispute && ! $escrow->is_dispute_resolved) {
-            throw new InvalidArgumentException("Escrow lock: Cannot release funds while dispute is active without formal resolution (313.4).");
+            throw new InvalidArgumentException('Escrow lock: Cannot release funds while dispute is active without formal resolution (313.4).');
         }
 
         DB::table('c2c_marketplace_escrows')

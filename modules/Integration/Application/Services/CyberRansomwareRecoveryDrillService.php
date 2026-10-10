@@ -28,7 +28,7 @@ class CyberRansomwareRecoveryDrillService
         bool $sandboxIsolated = true
     ): object {
         if (! $sandboxIsolated) {
-            throw new InvalidArgumentException("Drill blocked: Cyber ransomware drill must be executed in isolated sandbox environment (470.6).");
+            throw new InvalidArgumentException('Drill blocked: Cyber ransomware drill must be executed in isolated sandbox environment (470.6).');
         }
 
         $id = DB::table('sim_cyber_ransomware_drills')->insertGetId([

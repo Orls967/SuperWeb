@@ -34,7 +34,7 @@ class FederatedEdgeAiOperationsService
 
         // Core gate 354.6 Risk: Privacy check mandatory before model release
         if (! $privacyPassed) {
-            throw new InvalidArgumentException("Privacy protection breach: Federated model cannot be distributed to edge fleet without passing privacy checks (354.6).");
+            throw new InvalidArgumentException('Privacy protection breach: Federated model cannot be distributed to edge fleet without passing privacy checks (354.6).');
         }
 
         $id = DB::table('edge_ai_device_fleet_rollouts')->insertGetId([

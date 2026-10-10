@@ -72,12 +72,12 @@ class PlatformAutomatedOpsFinopsService
 
         // Gate 297.5: Must have dry-run verified
         if (! $rb->dry_run_verified) {
-            throw new InvalidArgumentException("Runbook execution rejected: Must complete successful dry-run simulation first (297.5).");
+            throw new InvalidArgumentException('Runbook execution rejected: Must complete successful dry-run simulation first (297.5).');
         }
 
         // Gate 297.5: Material tasks require authorized approver
         if ($rb->is_material_action && empty($rb->approver_lead_id)) {
-            throw new InvalidArgumentException("Runbook execution rejected: Material task requires documented lead approval (297.5).");
+            throw new InvalidArgumentException('Runbook execution rejected: Material task requires documented lead approval (297.5).');
         }
 
         DB::table('platform_automated_runbooks')
@@ -173,7 +173,7 @@ class PlatformAutomatedOpsFinopsService
         ]);
 
         if (! $isAuthorized) {
-            throw new InvalidArgumentException("Operational readiness review failed: Feature release blocked due to missing operational readiness artifacts (297.8).");
+            throw new InvalidArgumentException('Operational readiness review failed: Feature release blocked due to missing operational readiness artifacts (297.8).');
         }
 
         return (object) DB::table('platform_operational_readiness_reviews')->find($id);

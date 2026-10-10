@@ -67,7 +67,7 @@ class PredictiveOperationsDigitalTwinService
 
         // Risk limit 307.6: Damping factor must be capped at 20% to prevent destructive oscillatory feedback
         if ($dampingFactorPct > 20.00) {
-            throw new InvalidArgumentException("Feedback loop risk breach: Damping change factor cannot exceed 20% per cycle (307.6).");
+            throw new InvalidArgumentException('Feedback loop risk breach: Damping change factor cannot exceed 20% per cycle (307.6).');
         }
 
         $fidelity = (float) $model->fidelity_score_pct;

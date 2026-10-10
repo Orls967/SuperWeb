@@ -66,7 +66,7 @@ class ServiceCatalogDeveloperPortalService
 
         // Core gate 361.4: Sandbox scope must be isolated
         if (! $scopeIsolated) {
-            throw new InvalidArgumentException("Sandbox isolation security breach: Developer sandbox must have strict tenant isolation (361.4).");
+            throw new InvalidArgumentException('Sandbox isolation security breach: Developer sandbox must have strict tenant isolation (361.4).');
         }
 
         $id = DB::table('service_developer_portal_sandboxes')->insertGetId([

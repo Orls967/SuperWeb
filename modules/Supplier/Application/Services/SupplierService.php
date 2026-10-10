@@ -122,7 +122,7 @@ class SupplierService
                 'scores' => $scores,
                 'total_score' => $total,
                 'result' => $result,
-                'approval_id' => $approval->uuid,
+                'approval_id' => $approval->id,
                 'approval_status' => 'pending',
                 'assessed_by_user_id' => $assessor->id,
                 'notes' => $notes,

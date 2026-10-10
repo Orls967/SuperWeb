@@ -29,7 +29,7 @@ class PolicyComplianceTestingRemediationService
     ): object {
         // 451.6 Risk: Sampling method validation
         if (! $isStatisticallyValidSample) {
-            throw new InvalidArgumentException("Test invalid: Compliance opinion cannot be derived from a statistically invalid/non-representative sample (451.4, 451.6).");
+            throw new InvalidArgumentException('Test invalid: Compliance opinion cannot be derived from a statistically invalid/non-representative sample (451.4, 451.6).');
         }
 
         $id = DB::table('gov_policy_compliance_findings')->insertGetId([
@@ -64,12 +64,12 @@ class PolicyComplianceTestingRemediationService
 
         // 451.3 & 451.4 Independent verification required to close repeat findings
         if ($f->is_repeat_finding && ! $independentVerifierCheck) {
-            throw new InvalidArgumentException("Closure blocked: Repeat compliance finding requires independent audit verification before closure (451.3, 451.4).");
+            throw new InvalidArgumentException('Closure blocked: Repeat compliance finding requires independent audit verification before closure (451.3, 451.4).');
         }
 
         // 451.5 Edge case: Repeat finding cannot be closed as isolated without systemic RCA and control redesign
         if ($f->is_repeat_finding && (empty(trim($systemicRca ?? '')) || empty(trim($redesignedControl ?? '')))) {
-            throw new InvalidArgumentException("Closure blocked: Repeat finding cannot be closed as an isolated incident; systemic root cause analysis and control redesign are required (451.3, 451.5).");
+            throw new InvalidArgumentException('Closure blocked: Repeat finding cannot be closed as an isolated incident; systemic root cause analysis and control redesign are required (451.3, 451.5).');
         }
 
         DB::table('gov_policy_compliance_findings')->where('id', $f->id)->update([

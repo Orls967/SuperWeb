@@ -90,7 +90,7 @@ class GroupFinanceOperatingModelService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Close failed: Automated ledger reconciliation check failed; routed to CONTROLLING_ESCALATION_DESK (436.2, 436.5).");
+            throw new InvalidArgumentException('Close failed: Automated ledger reconciliation check failed; routed to CONTROLLING_ESCALATION_DESK (436.2, 436.5).');
         }
 
         DB::table('fin_close_orchestration_tasks')->where('id', $task->id)->update([

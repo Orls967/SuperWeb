@@ -82,7 +82,7 @@ class SupplyChainGovernanceScorecardsService
 
         // 414.4 Closure strictly requires verified effectiveness
         if (! $effectivenessVerified) {
-            throw new InvalidArgumentException("Closure blocked: Corrective action closure requires verified effectiveness (414.2, 414.4).");
+            throw new InvalidArgumentException('Closure blocked: Corrective action closure requires verified effectiveness (414.2, 414.4).');
         }
 
         DB::table('ops_supply_corrective_actions')->where('id', $action->id)->update([

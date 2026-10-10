@@ -66,7 +66,7 @@ class TalentValueOrganizationalOutcomesService
 
         // Edge case 325.5: Claiming benefits without empirical evidence is rejected
         if ($projectedBenefitUsd > 0.0 && ! $hasEmpiricalEvidence) {
-            throw new InvalidArgumentException("Methodology review required: Cannot claim financial benefit without measured empirical evidence (325.5).");
+            throw new InvalidArgumentException('Methodology review required: Cannot claim financial benefit without measured empirical evidence (325.5).');
         }
 
         $id = DB::table('human_capital_investment_decisions')->insertGetId([

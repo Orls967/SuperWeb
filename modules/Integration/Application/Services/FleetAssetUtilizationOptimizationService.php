@@ -136,7 +136,7 @@ class FleetAssetUtilizationOptimizationService
 
         // Edge case 278.6: Replacement requires prior budget encumbrance
         if (! $decision->is_budget_encumbered) {
-            throw new InvalidArgumentException("Capex replacement approval rejected: Budget encumbrance required prior to financing sign-off (278.6).");
+            throw new InvalidArgumentException('Capex replacement approval rejected: Budget encumbrance required prior to financing sign-off (278.6).');
         }
 
         DB::table('asset_lifecycle_decisions')

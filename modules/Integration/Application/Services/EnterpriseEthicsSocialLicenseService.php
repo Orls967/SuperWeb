@@ -75,7 +75,7 @@ class EnterpriseEthicsSocialLicenseService
     ): object {
         // 481.6 Risk: Methodology must be open and documented
         if (! $openMethodology) {
-            throw new InvalidArgumentException("Index blocked: Social license index calculation requires open, auditable empirical methodology documentation (481.6).");
+            throw new InvalidArgumentException('Index blocked: Social license index calculation requires open, auditable empirical methodology documentation (481.6).');
         }
 
         $composite = round(($communityTrust * 0.30) + ($regulatoryStanding * 0.30) + ($partnerConfidence * 0.20) + ($employeePride * 0.20), 2);

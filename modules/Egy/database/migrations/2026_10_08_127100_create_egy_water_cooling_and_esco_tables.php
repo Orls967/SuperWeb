@@ -53,7 +53,7 @@ return new class extends Migration
             $table->string('ledger_transaction_id')->nullable();
             $table->timestamps();
 
-            $table->index(['property_id', 'billing_period']);
+            $table->index(['property_id', 'billing_period'], 'egy_util_inv_prop_period_idx');
         });
 
         Schema::create('egy_esco_performance_contracts', function (Blueprint $table) {

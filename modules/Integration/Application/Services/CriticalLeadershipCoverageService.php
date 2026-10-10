@@ -62,12 +62,12 @@ class CriticalLeadershipCoverageService
 
         // Qualification check 324.4: Unqualified candidates (< 80 score, uncertified, or no consent) are rejected
         if ($readinessScore < 80.0 || ! $certified || ! $consentGranted) {
-            throw new InvalidArgumentException("Successor qualification breach: Candidate lacks required readiness score (>= 80), safety/domain certification, or explicit consent (324.4).");
+            throw new InvalidArgumentException('Successor qualification breach: Candidate lacks required readiness score (>= 80), safety/domain certification, or explicit consent (324.4).');
         }
 
         // Duration bound check 324.4: Acting appointment must not exceed 90 days ceiling
         if ($durationDays > 90) {
-            throw new InvalidArgumentException("Time-bounding breach: Acting appointment cannot exceed 90 days maximum limit (324.4).");
+            throw new InvalidArgumentException('Time-bounding breach: Acting appointment cannot exceed 90 days maximum limit (324.4).');
         }
 
         $id = DB::table('critical_acting_appointments')->insertGetId([
@@ -98,7 +98,7 @@ class CriticalLeadershipCoverageService
         }
 
         if (empty($justification)) {
-            throw new InvalidArgumentException("External recruitment justification must be documented (324.5).");
+            throw new InvalidArgumentException('External recruitment justification must be documented (324.5).');
         }
 
         DB::table('critical_leadership_role_coverages')

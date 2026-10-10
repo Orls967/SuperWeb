@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
 
 /**
  * CorporateTaxEngineService (Fase 274)

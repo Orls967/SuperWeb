@@ -50,7 +50,7 @@ return new class extends Migration
             $table->string('status')->default('ACTIVE');
             $table->timestamps();
 
-            $table->index(['consumer_property_type', 'consumer_property_id']);
+            $table->index(['consumer_property_type', 'consumer_property_id'], 'egy_smart_meters_prop_type_id_idx');
         });
 
         Schema::create('egy_meter_readings', function (Blueprint $table) {

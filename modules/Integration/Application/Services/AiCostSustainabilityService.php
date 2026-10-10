@@ -77,7 +77,7 @@ class AiCostSustainabilityService
 
         // Core gate 349.3 & 349.4: High-stakes tasks cannot use unreviewed/efficient tiers
         if ($sStakes === 'HIGH_STAKES' && $mTier !== 'REVIEWED_PREMIUM') {
-            throw new InvalidArgumentException("Model tiering violation: High-stakes decision requires REVIEWED_PREMIUM model tier (349.3).");
+            throw new InvalidArgumentException('Model tiering violation: High-stakes decision requires REVIEWED_PREMIUM model tier (349.3).');
         }
 
         $id = DB::table('ai_model_tiering_runtime_enforcements')->insertGetId([

@@ -56,7 +56,7 @@ class FieldRemoteSiteOperationsIntegrityService
 
         // 411.1, 411.4, 411.6 Non-bypassable gate
         if (! $credentialsVerified || ! $safetyPermitIssued || ! $equipmentChecked) {
-            throw new InvalidArgumentException("Pre-start gate blocked: Missing mandatory credential verification, safety permit, or equipment check (411.1, 411.6).");
+            throw new InvalidArgumentException('Pre-start gate blocked: Missing mandatory credential verification, safety permit, or equipment check (411.1, 411.6).');
         }
 
         DB::table('ops_field_tasks')->where('id', $task->id)->update([
@@ -128,7 +128,7 @@ class FieldRemoteSiteOperationsIntegrityService
 
         // 411.3 & 411.4 Evidence required to close
         if (empty($evidenceHash)) {
-            throw new InvalidArgumentException("Closure blocked: Post-op evidence hash required (411.3).");
+            throw new InvalidArgumentException('Closure blocked: Post-op evidence hash required (411.3).');
         }
 
         DB::table('ops_field_tasks')->where('id', $task->id)->update([

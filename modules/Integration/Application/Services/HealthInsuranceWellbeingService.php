@@ -33,7 +33,7 @@ class HealthInsuranceWellbeingService
 
         // Core gate 382.1 & 382.6: Unrestricted medical sharing strictly prohibited
         if ($unrestrictedSharingAttempted || ! $medicalDataScoped) {
-            throw new InvalidArgumentException("Privacy violation: Unrestricted clinical record sharing prohibited; referral access must be strictly contract-scoped (382.6).");
+            throw new InvalidArgumentException('Privacy violation: Unrestricted clinical record sharing prohibited; referral access must be strictly contract-scoped (382.6).');
         }
 
         $id = DB::table('global_health_insurance_referral_contracts')->insertGetId([

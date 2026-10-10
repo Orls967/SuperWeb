@@ -59,11 +59,11 @@ class EsgClimateDisclosureControlService
 
         // 407.5 Edge case: ESG figures without verifiable system source strictly blocked from publication
         if (empty($disclosure->system_source)) {
-            throw new InvalidArgumentException("Publication blocked: ESG figure lacks verified system source (407.5).");
+            throw new InvalidArgumentException('Publication blocked: ESG figure lacks verified system source (407.5).');
         }
 
         if (empty($disclosure->evidence_bundle_hash)) {
-            throw new InvalidArgumentException("Publication blocked: ESG figure lacks assurance evidence bundle (407.2).");
+            throw new InvalidArgumentException('Publication blocked: ESG figure lacks assurance evidence bundle (407.2).');
         }
 
         DB::table('gov_esg_disclosures')->where('id', $disclosure->id)->update([

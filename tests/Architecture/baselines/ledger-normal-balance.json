@@ -1,0 +1,23 @@
+{
+    "about": "Akun ledger dengan saldo berlawanan sisi normal pada database seed (PROGRESS R0.10, KONSEP §A14.5). Hanya boleh menyusut (R1.2).",
+    "total": 3,
+    "entries": [
+        "account:ast:fixed_assets:debit_normal_has_credit_balance",
+        "account:expense:resto:waste:IDR:debit_normal_has_credit_balance",
+        "account:liability:mall:points:PTS:credit_normal_has_debit_balance"
+    ],
+    "approved_additions": [
+        {
+            "date": "2026-10-10",
+            "decision": "DECISIONS.md#2026-10-10-baseline-awal-detektor-lain-fase-r0-r09r011",
+            "entries": "baseline awal: 3 entri"
+        },
+        {
+            "date": "2026-10-10",
+            "decision": "DECISIONS.md#2026-10-10-baseline-awal-detektor-lain-fase-r0-r09r011",
+            "entries": [
+                "account:ast:fixed_assets:debit_normal_has_credit_balance"
+            ]
+        }
+    ]
+}

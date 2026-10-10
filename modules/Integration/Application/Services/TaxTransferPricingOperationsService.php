@@ -87,7 +87,7 @@ class TaxTransferPricingOperationsService
 
         // 438.5 Defense pack and provision are mandatory when filing defense
         if (! $hasDefensePack || $provisionAmount <= 0) {
-            throw new InvalidArgumentException("Filing blocked: Defense pack must be attached and positive contingent tax provision allocated (438.3, 438.5).");
+            throw new InvalidArgumentException('Filing blocked: Defense pack must be attached and positive contingent tax provision allocated (438.3, 438.5).');
         }
 
         DB::table('fin_tax_controversy_notices')->where('id', $notice->id)->update([

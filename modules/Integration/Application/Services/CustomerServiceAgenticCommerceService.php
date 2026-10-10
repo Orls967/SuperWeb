@@ -33,13 +33,13 @@ class CustomerServiceAgenticCommerceService
 
         // Core gate 353.3 & 353.6: Disclosure is mandatory
         if (! $disclosureProvided) {
-            throw new InvalidArgumentException("Customer trust violation: Session requires mandatory AI transparency disclosure (353.6).");
+            throw new InvalidArgumentException('Customer trust violation: Session requires mandatory AI transparency disclosure (353.6).');
         }
 
         // Edge case 353.5: Failed resolution triggers handoff with complete context
         $escalated = ! $resolvedAutonomously;
         if ($escalated && empty($handoffContext)) {
-            throw new InvalidArgumentException("Agent handoff error: Escalation requires non-empty context payload to prevent customer data loss (353.5).");
+            throw new InvalidArgumentException('Agent handoff error: Escalation requires non-empty context payload to prevent customer data loss (353.5).');
         }
 
         $id = DB::table('customer_service_agent_sessions')->insertGetId([

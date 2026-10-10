@@ -54,7 +54,7 @@ class SocialImpactCommunityProgramService
 
         // 444.6 Risk: Formula or payout change requires community consent
         if (! $communityConsent) {
-            throw new InvalidArgumentException("Payout blocked: Benefit-sharing requires formal community council consent and contract amendment (444.2, 444.6).");
+            throw new InvalidArgumentException('Payout blocked: Benefit-sharing requires formal community council consent and contract amendment (444.2, 444.6).');
         }
 
         $id = DB::table('esg_benefit_sharing_payouts')->insertGetId([
@@ -85,12 +85,12 @@ class SocialImpactCommunityProgramService
 
         // 444.5 Edge case: Program failing outcome evaluation is paused for redesign
         if ($prog && ! $prog->outcome_evaluation_passed) {
-            throw new InvalidArgumentException("Payout blocked: Community program failed outcome evaluation and is currently paused for redesign (444.5).");
+            throw new InvalidArgumentException('Payout blocked: Community program failed outcome evaluation and is currently paused for redesign (444.5).');
         }
 
         // 444.4 Milestone gate verification
         if (! $milestoneVerified) {
-            throw new InvalidArgumentException("Payout blocked: Community implementation milestone must be verified before payment release (444.4).");
+            throw new InvalidArgumentException('Payout blocked: Community implementation milestone must be verified before payment release (444.4).');
         }
 
         DB::table('esg_benefit_sharing_payouts')->where('id', $payout->id)->update([

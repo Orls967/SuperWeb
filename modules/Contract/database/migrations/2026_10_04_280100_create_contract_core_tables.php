@@ -55,7 +55,7 @@ return new class extends Migration
             $table->string('dispute_forum')->default('BANI Jakarta');
             $table->text('current_body')->nullable();
             $table->string('current_hash', 64)->nullable()->comment('Latest hash-chain digest');
-            $table->string('approval_id')->nullable()->comment('FK to Core Approval');
+            $table->foreignId('approval_id')->nullable()->constrained('core_approvals')->nullOnDelete();
             $table->timestamp('signed_at')->nullable();
             $table->timestamp('activated_at')->nullable();
             $table->timestamp('terminated_at')->nullable();
@@ -98,7 +98,7 @@ return new class extends Migration
             $table->string('change_type'); // creation, amendment, negotiation, clause_update
             $table->text('body');
             $table->json('metadata')->nullable();
-            $table->string('prev_hash', 64);
+            $table->string('prev_hash', 80)->comment('hash versi sebelumnya (64) atau penanda genesis GENESIS_CTR_… (72)');
             $table->string('hash', 64);
             $table->string('created_by_name')->nullable();
             $table->timestamp('created_at')->useCurrent();

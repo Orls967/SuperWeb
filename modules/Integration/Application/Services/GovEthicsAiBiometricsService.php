@@ -34,7 +34,7 @@ class GovEthicsAiBiometricsService
 
         // Necessity test 294.7: Must provide substantive justification for why sensitive data is required
         if (trim($necessityJustification) === '') {
-            throw new InvalidArgumentException("Ethics assessment rejected: Sensitive data processing requires documented necessity and proportionality justification (294.7).");
+            throw new InvalidArgumentException('Ethics assessment rejected: Sensitive data processing requires documented necessity and proportionality justification (294.7).');
         }
 
         $id = DB::table('gov_ethics_impact_assessments')->insertGetId([
@@ -79,7 +79,7 @@ class GovEthicsAiBiometricsService
 
         // Gate 294.8: Alternative non-biometric path must always be provided
         if (! $providePinAlternative) {
-            throw new InvalidArgumentException("Accessibility violation: Non-biometric alternative verification path is mandatory (294.8).");
+            throw new InvalidArgumentException('Accessibility violation: Non-biometric alternative verification path is mandatory (294.8).');
         }
 
         // Template protection 294.2
@@ -128,7 +128,7 @@ class GovEthicsAiBiometricsService
 
         // Child safeguard 294.4: Under 18 requires verified parent/guardian consent
         if ($age < 18 && empty($guardianConsentRef)) {
-            throw new InvalidArgumentException("Safeguarding violation: Student under 18 requires verified parent/guardian consent (294.4).");
+            throw new InvalidArgumentException('Safeguarding violation: Student under 18 requires verified parent/guardian consent (294.4).');
         }
 
         $id = DB::table('gov_child_safeguards')->insertGetId([

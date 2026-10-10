@@ -77,7 +77,7 @@ class CommercialRevenueGrowthPlanningService
 
         // Risk constraint 305.6: Finance cost must be realistic and strictly non-negative
         if ($overrideFinanceCostUsd < 0.0) {
-            throw new InvalidArgumentException("Cost validation error: Override cost must be positive number verified from Finance (305.6).");
+            throw new InvalidArgumentException('Cost validation error: Override cost must be positive number verified from Finance (305.6).');
         }
 
         // Net VOI = projected savings - override cost (305.3)

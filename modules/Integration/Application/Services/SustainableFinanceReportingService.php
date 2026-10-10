@@ -98,7 +98,7 @@ class SustainableFinanceReportingService
 
         // 448.6 Risk: Authoritative source check
         if (! $isAuthoritativeSource) {
-            throw new InvalidArgumentException("Margin adjustment blocked: KPI score must originate from an authoritative external verifier, not self-reported (448.6).");
+            throw new InvalidArgumentException('Margin adjustment blocked: KPI score must originate from an authoritative external verifier, not self-reported (448.6).');
         }
 
         // e.g. KPI >= 90 bps discount = -25.0 bps; KPI >= 80 = -10.0 bps; else 0 bps

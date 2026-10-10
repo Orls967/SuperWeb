@@ -1,0 +1,53 @@
+{
+    "about": "Daftar command audit/reconcile/verify tanpa fixture korupsi (PROGRESS R0.10, KONSEP §A14.4). Hanya boleh berkurang (R5.2).",
+    "total": 33,
+    "entries": [
+        "cmd:agri:audit",
+        "cmd:agy:audit",
+        "cmd:ast:audit",
+        "cmd:ast:verify-chain",
+        "cmd:b2b:audit",
+        "cmd:chain:audit-all",
+        "cmd:contracts:verify-chain",
+        "cmd:core:verify-passports",
+        "cmd:ctr:audit",
+        "cmd:dist:audit",
+        "cmd:dr:audit",
+        "cmd:ecosystem:audit-12-lines",
+        "cmd:enterprise:audit",
+        "cmd:epc:audit",
+        "cmd:esg:audit",
+        "cmd:group:audit",
+        "cmd:hcm:audit",
+        "cmd:intl:audit",
+        "cmd:lgx:audit-billing",
+        "cmd:lgx:verify-custody",
+        "cmd:mall:audit-billing",
+        "cmd:mfg:audit-costing",
+        "cmd:mfg:qms-audit",
+        "cmd:plm:audit",
+        "cmd:pricing:audit",
+        "cmd:proc:audit",
+        "cmd:ptn:audit",
+        "cmd:security:audit",
+        "cmd:tf:audit",
+        "cmd:tower:audit",
+        "cmd:trade:audit",
+        "cmd:treasury:audit",
+        "cmd:wms:audit"
+    ],
+    "approved_additions": [
+        {
+            "date": "2026-10-10",
+            "decision": "DECISIONS.md#2026-10-10-baseline-awal-detektor-lain-fase-r0-r09r011",
+            "entries": "baseline awal: 33 entri"
+        },
+        {
+            "date": "2026-10-10",
+            "decision": "DECISIONS.md#2026-10-10-baseline-awal-detektor-lain-fase-r0-r09r011",
+            "entries": [
+                "cmd:agri:audit"
+            ]
+        }
+    ]
+}

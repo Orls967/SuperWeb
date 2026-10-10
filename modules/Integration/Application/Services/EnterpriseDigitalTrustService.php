@@ -39,7 +39,7 @@ class EnterpriseDigitalTrustService
 
         // 484.5 Edge case: Claim without cryptographic evidence hash is rejected
         if (empty(trim($evidenceHash))) {
-            throw new InvalidArgumentException("Claim publication blocked: External enterprise claims strictly require cryptographic evidence verification (484.1, 484.5).");
+            throw new InvalidArgumentException('Claim publication blocked: External enterprise claims strictly require cryptographic evidence verification (484.1, 484.5).');
         }
 
         $id = DB::table('int_verifiable_enterprise_claims')->insertGetId([
@@ -82,7 +82,7 @@ class EnterpriseDigitalTrustService
     ): object {
         // 484.6 Risk: Unverified data input blocked
         if (! $verifiedDataOnly) {
-            throw new InvalidArgumentException("Trust score computation blocked: Scores must be derived strictly from verified data (484.6).");
+            throw new InvalidArgumentException('Trust score computation blocked: Scores must be derived strictly from verified data (484.6).');
         }
 
         $composite = round(($verificationCoverage * 0.50) + ($auditPassRate * 0.50), 2);

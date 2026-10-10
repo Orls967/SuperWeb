@@ -76,7 +76,7 @@ class CostCapacityValueGovernanceService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Operational readiness failure: Release held until runbook, dashboard, and rollback plan are verified (365.5).");
+            throw new InvalidArgumentException('Operational readiness failure: Release held until runbook, dashboard, and rollback plan are verified (365.5).');
         }
 
         $id = DB::table('platform_service_readiness_reviews')->insertGetId([

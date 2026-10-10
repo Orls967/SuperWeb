@@ -55,7 +55,7 @@ class ObservabilitySloCapacityService
     ): object {
         // 431.2 & 431.4 Mandatory runbook link validation
         if (empty($runbookUrl) || ! filter_var($runbookUrl, FILTER_VALIDATE_URL)) {
-            throw new InvalidArgumentException("Alert blocked: Alert must contain a valid, accessible runbook URL (431.2, 431.4).");
+            throw new InvalidArgumentException('Alert blocked: Alert must contain a valid, accessible runbook URL (431.2, 431.4).');
         }
 
         // 431.5 Edge case: Alert storm suppression check
@@ -71,7 +71,7 @@ class ObservabilitySloCapacityService
             $isSuppressed = true;
             $ticketId = $recentSameFingerprint->ticket_id;
         } else {
-            $ticketId = 'TCK-OPS-' . strtoupper(substr(md5($alertCode . time()), 0, 8));
+            $ticketId = 'TCK-OPS-'.strtoupper(substr(md5($alertCode.time()), 0, 8));
         }
 
         $id = DB::table('plt_observability_alerts')->insertGetId([

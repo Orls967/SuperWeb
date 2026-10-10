@@ -34,7 +34,7 @@ class CircularityWasteProgramService
 
         // 443.1 & 443.4 Direct disposal without hierarchy justification is strictly blocked
         if ($level === 'direct_dispose' && empty(trim($justification ?? '')) && ! $emergencyApproval) {
-            throw new InvalidArgumentException("Disposal blocked: Direct disposal requires formal waste hierarchy non-viability justification or emergency approval (443.1, 443.4, 443.5).");
+            throw new InvalidArgumentException('Disposal blocked: Direct disposal requires formal waste hierarchy non-viability justification or emergency approval (443.1, 443.4, 443.5).');
         }
 
         $id = DB::table('esg_waste_disposal_requests')->insertGetId([
@@ -84,7 +84,7 @@ class CircularityWasteProgramService
         }
 
         if (! $certVerified || empty($payment->environmental_treatment_cert_no)) {
-            throw new InvalidArgumentException("Payment blocked: Vendor payment requires verified environmental treatment/manifest certificate (443.2, 443.4).");
+            throw new InvalidArgumentException('Payment blocked: Vendor payment requires verified environmental treatment/manifest certificate (443.2, 443.4).');
         }
 
         DB::table('esg_waste_vendor_payments')->where('id', $payment->id)->update([

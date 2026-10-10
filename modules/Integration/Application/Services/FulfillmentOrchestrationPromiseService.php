@@ -34,7 +34,7 @@ class FulfillmentOrchestrationPromiseService
 
         // Price freeze contract guardrail 304.6
         if ($frozenContractPriceUsd <= 0.0) {
-            throw new InvalidArgumentException("Contract guardrail violation: Frozen contract price must be strictly positive (304.6).");
+            throw new InvalidArgumentException('Contract guardrail violation: Frozen contract price must be strictly positive (304.6).');
         }
 
         $id = DB::table('fulfillment_order_promises')->insertGetId([
@@ -89,7 +89,7 @@ class FulfillmentOrchestrationPromiseService
 
         // Guardrail 304.6: Orchestration routing cannot bypass contract price freeze
         if (! $honorContractPriceFreeze) {
-            throw new InvalidArgumentException("Contract guardrail breach: Fulfillment orchestration cannot override frozen contractual pricing (304.6).");
+            throw new InvalidArgumentException('Contract guardrail breach: Fulfillment orchestration cannot override frozen contractual pricing (304.6).');
         }
 
         DB::table('fulfillment_orchestration_rules')->updateOrInsert(

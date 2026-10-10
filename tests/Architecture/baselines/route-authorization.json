@@ -1,0 +1,1692 @@
+{
+    "about": "Snapshot proteksi rute (PROGRESS R0.9, KONSEP §A14.3). Rute baseline tidak boleh melemah (role bertambah/auth hilang = gagal), menguatkan boleh; rute baru tanpa entri peta = gagal.",
+    "total": 598,
+    "routes": {
+        "GET /": "public",
+        "GET up": "public",
+        "POST confirm-password": "auth",
+        "POST login": "public",
+        "POST register": "public",
+        "activity.index": "auth",
+        "admin.audit-logs.index": [
+            "admin"
+        ],
+        "admin.audit-logs.show": [
+            "admin"
+        ],
+        "admin.group-dashboard": [
+            "admin"
+        ],
+        "admin.health.index": [
+            "admin"
+        ],
+        "admin.health.run": [
+            "admin"
+        ],
+        "admin.ledger.adjust": [
+            "admin"
+        ],
+        "admin.ledger.freeze": [
+            "admin"
+        ],
+        "admin.ledger.index": [
+            "admin"
+        ],
+        "admin.ledger.show": [
+            "admin"
+        ],
+        "admin.rbac.assign": [
+            "admin"
+        ],
+        "admin.rbac.index": [
+            "admin"
+        ],
+        "admin.rbac.revoke": [
+            "admin"
+        ],
+        "admin.rbac.role": [
+            "admin"
+        ],
+        "admin.rbac.toggle-permission": [
+            "admin"
+        ],
+        "admin.rbac.user": [
+            "admin"
+        ],
+        "agency.accruals.clawback": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.accruals.release": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.accruals.store": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.agents.store": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.agents.transition": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.attributions.store": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.brands.store": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.certifications.store": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.compliance.store": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.fraud.store": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.index": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.leads.convert": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.leads.store": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.payouts.approve": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.payouts.store": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.schemes.store": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agency.show": [
+            "admin",
+            "agent",
+            "auditor",
+            "procurement"
+        ],
+        "agri.index": "auth",
+        "api.global-search": "auth",
+        "api.v1.logistics.quotes.store": "auth",
+        "api.v1.logistics.shipments.index": "auth",
+        "api.v1.logistics.shipments.show": "auth",
+        "api.v1.logistics.shipments.store": "auth",
+        "api.v1.logistics.tracking.show": "public",
+        "asset.audit": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.checkin": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.checkout": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.create": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.depreciate": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.depreciation.index": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.depreciation.run": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.disposal.finalize": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.disposal.request": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.index": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.insurance.store": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.leases.pay": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.leases.store": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.move": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.move.approve": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.revaluation.apply": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.revaluation.request": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.scan": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.scan.form": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.show": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.store": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.verify-chain": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.work-orders.complete": [
+            "admin",
+            "asset_manager"
+        ],
+        "asset.work-orders.store": [
+            "admin",
+            "asset_manager"
+        ],
+        "autodex.garage.index": "auth",
+        "autodex.garage.toggle": "auth",
+        "autodex.index": "auth",
+        "autodex.show": "auth",
+        "autodex.wishlist.toggle": "auth",
+        "b2b.index": "auth",
+        "bookings.addSparepart": [
+            "admin",
+            "mekanik"
+        ],
+        "bookings.approveExtra": "auth",
+        "bookings.assign": [
+            "admin",
+            "mekanik"
+        ],
+        "bookings.create": "auth",
+        "bookings.invoice": "auth",
+        "bookings.pay": "auth",
+        "bookings.refund": "auth",
+        "bookings.removeSparepart": [
+            "admin",
+            "mekanik"
+        ],
+        "bookings.show": "auth",
+        "bookings.store": "auth",
+        "bookings.updateStatus": [
+            "admin",
+            "mekanik"
+        ],
+        "boost.browser-logs": "public",
+        "contract.advance.pay": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.amend": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.append-version": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.attachment.destroy": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.attachment.store": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.clauses.create": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.clauses.edit": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.clauses.index": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.clauses.store": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.clauses.update": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.create": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.edit": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.escalation.apply": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.escalation.preview": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.index": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.milestone.complete": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.milestone.store": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.obligations": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.party.add": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.party.remove": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.reports": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.risk.rescore": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.schedule.build": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.schedule.pay": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.schedule.penalty.pay": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.schedule.penalty.show": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.schedule.penalty.waiver": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.schedule.penalty.waiver.apply": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.show": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.sign-party": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.store": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.submit-approval": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.templates.create": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.templates.index": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.templates.store": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.transition": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.update": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.usage.sync": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.version-diff": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "contract.versions": [
+            "admin",
+            "contract_manager",
+            "legal"
+        ],
+        "control_tower.index": "auth",
+        "control_tower.promises": "auth",
+        "crypto.alerts.destroy": "auth",
+        "crypto.alerts.index": "auth",
+        "crypto.alerts.store": "auth",
+        "crypto.api.chart": "public",
+        "crypto.api.prices": "public",
+        "crypto.market.index": "public",
+        "crypto.market.show": "public",
+        "crypto.portfolio.index": "auth",
+        "crypto.trade.execute": "auth",
+        "crypto.trade.quote": "auth",
+        "dashboard": "auth",
+        "distribution.coverages.store": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.distributors.store": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.index": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.invoices.pay": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.invoices.store": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.onboarding.approve": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.onboarding.submit": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.outlets.store": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.portal.home": [
+            "admin",
+            "distributor"
+        ],
+        "distribution.scorecards.store": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.securities.store": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.show": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.sweep": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.targets.store": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.territories.store": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.tier.evaluate": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "distribution.transition": [
+            "admin",
+            "auditor",
+            "distributor",
+            "procurement"
+        ],
+        "enterprise_finance.budgets": "auth",
+        "enterprise_finance.index": "auth",
+        "epc.index": "auth",
+        "esg.index": "auth",
+        "estimates.approve": "auth",
+        "estimates.receiveBackorder": [
+            "admin",
+            "mekanik"
+        ],
+        "estimates.reject": "auth",
+        "estimates.send": [
+            "admin",
+            "mekanik"
+        ],
+        "estimates.store": [
+            "admin",
+            "mekanik"
+        ],
+        "finance.loans.index": "auth",
+        "finance.loans.payInstallment": "auth",
+        "finance.loans.payOff": "auth",
+        "finance.loans.quote": "auth",
+        "finance.loans.show": "auth",
+        "finance.loans.simulate": "auth",
+        "finance.loans.store": "auth",
+        "finance.loans.topUpCollateral": "auth",
+        "hcm.index": "auth",
+        "integration.index": "auth",
+        "integration.webhooks": "auth",
+        "intercompany.index": "auth",
+        "intercompany.transactions": "auth",
+        "international.index": "auth",
+        "international.jvs": "auth",
+        "login": "public",
+        "logistics.carriers.index": "auth",
+        "logistics.carriers.pay": "auth",
+        "logistics.carriers.store": "auth",
+        "logistics.claims.decide": "auth",
+        "logistics.claims.index": "auth",
+        "logistics.claims.pay": "auth",
+        "logistics.claims.store": "auth",
+        "logistics.claims.submit": "auth",
+        "logistics.cod.deposit": "auth",
+        "logistics.cod.index": "auth",
+        "logistics.control-tower.index": "auth",
+        "logistics.customs.clear": "auth",
+        "logistics.customs.index": "auth",
+        "logistics.customs.pay": "auth",
+        "logistics.customs.store": "auth",
+        "logistics.customs.tariffs.store": "auth",
+        "logistics.dashboard": "auth",
+        "logistics.dd.end": "auth",
+        "logistics.dd.index": "auth",
+        "logistics.dd.invoice": "auth",
+        "logistics.dd.start": "auth",
+        "logistics.dd.tariffs.store": "auth",
+        "logistics.dispatch.assign": "auth",
+        "logistics.dispatch.assign-shipment": "auth",
+        "logistics.dispatch.index": "auth",
+        "logistics.dispatch.release": "auth",
+        "logistics.driver.deliver": "auth",
+        "logistics.driver.fail": "auth",
+        "logistics.driver.pickup": "auth",
+        "logistics.driver.start-delivery": "auth",
+        "logistics.driver.tasks": "auth",
+        "logistics.drivers.index": "auth",
+        "logistics.exceptions.index": "auth",
+        "logistics.exceptions.resolve": "auth",
+        "logistics.exceptions.store": "auth",
+        "logistics.fleet.index": "auth",
+        "logistics.fuel.index": "auth",
+        "logistics.fuel.store": "auth",
+        "logistics.hub.inbound": "auth",
+        "logistics.hub.index": "auth",
+        "logistics.hub.outbound": "auth",
+        "logistics.hub.sort": "auth",
+        "logistics.lanes.destroy": "auth",
+        "logistics.lanes.index": "auth",
+        "logistics.lanes.store": "auth",
+        "logistics.legs.assign-carrier": "auth",
+        "logistics.legs.complete": "auth",
+        "logistics.locations.create": "auth",
+        "logistics.locations.destroy": "auth",
+        "logistics.locations.edit": "auth",
+        "logistics.locations.index": "auth",
+        "logistics.locations.store": "auth",
+        "logistics.locations.update": "auth",
+        "logistics.margins": "auth",
+        "logistics.shipments.bulk": "auth",
+        "logistics.shipments.bulk.process": "auth",
+        "logistics.shipments.create": "auth",
+        "logistics.shipments.errors": "auth",
+        "logistics.shipments.index": "auth",
+        "logistics.shipments.label": "auth",
+        "logistics.shipments.show": "auth",
+        "logistics.shipments.store": "auth",
+        "logistics.shipments.template": "auth",
+        "logout": "auth",
+        "mall.billing.apply-penalties": "auth",
+        "mall.billing.generate": "auth",
+        "mall.billing.index": "auth",
+        "mall.directory.index": "public",
+        "mall.events.index": "auth",
+        "mall.events.store": "auth",
+        "mall.facilities.bill-tenant": "auth",
+        "mall.facilities.generate-pm": "auth",
+        "mall.facilities.index": "auth",
+        "mall.invoices.auto-debit": "auth",
+        "mall.invoices.show": "auth",
+        "mall.leases.activate": "auth",
+        "mall.leases.create": "auth",
+        "mall.leases.index": "auth",
+        "mall.leases.renew": "auth",
+        "mall.leases.show": "auth",
+        "mall.leases.store": "auth",
+        "mall.leases.terminate": "auth",
+        "mall.loyalty.claim": "auth",
+        "mall.loyalty.index": "auth",
+        "mall.loyalty.redeem": "auth",
+        "mall.loyalty.settle": "auth",
+        "mall.loyalty.use": "auth",
+        "mall.parking.footfall": "auth",
+        "mall.parking.gate.check-in": "auth",
+        "mall.parking.gate.check-out": "auth",
+        "mall.parking.gate.entry": "auth",
+        "mall.parking.gate.exit": "auth",
+        "mall.parking.gate.lost-ticket": "auth",
+        "mall.parking.gate.settle": "auth",
+        "mall.parking.index": "auth",
+        "mall.parking.members": "auth",
+        "mall.parking.members.store": "auth",
+        "mall.parking.occupancy": "auth",
+        "mall.parking.validate": "auth",
+        "mall.portal.index": "auth",
+        "mall.portal.invoice": "auth",
+        "mall.portal.overtime": "auth",
+        "mall.portal.pay": "auth",
+        "mall.portal.sales": "auth",
+        "mall.portal.sales.store": "auth",
+        "mall.site-plan.index": "auth",
+        "mall.tenants.create": "auth",
+        "mall.tenants.index": "auth",
+        "mall.tenants.show": "auth",
+        "mall.tenants.store": "auth",
+        "mall.utilities.batch": "auth",
+        "mall.utilities.index": "auth",
+        "manufacturing.boms.store": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.costing.index": [
+            "admin",
+            "auditor",
+            "planner"
+        ],
+        "manufacturing.costing.versions.approve": [
+            "admin",
+            "auditor",
+            "planner"
+        ],
+        "manufacturing.costing.versions.submit": [
+            "admin",
+            "auditor",
+            "planner"
+        ],
+        "manufacturing.formulas.approve": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.formulas.store": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.formulas.submit": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.index": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.maintenance.incidents.close": [
+            "admin",
+            "asset_manager",
+            "auditor",
+            "operator",
+            "planner"
+        ],
+        "manufacturing.maintenance.incidents.store": [
+            "admin",
+            "asset_manager",
+            "auditor",
+            "operator",
+            "planner"
+        ],
+        "manufacturing.maintenance.index": [
+            "admin",
+            "asset_manager",
+            "auditor",
+            "operator",
+            "planner"
+        ],
+        "manufacturing.maintenance.oee.compute": [
+            "admin",
+            "asset_manager",
+            "auditor",
+            "operator",
+            "planner"
+        ],
+        "manufacturing.maintenance.orders.store": [
+            "admin",
+            "asset_manager",
+            "auditor",
+            "operator",
+            "planner"
+        ],
+        "manufacturing.maintenance.orders.transition": [
+            "admin",
+            "asset_manager",
+            "auditor",
+            "operator",
+            "planner"
+        ],
+        "manufacturing.maintenance.parts.store": [
+            "admin",
+            "asset_manager",
+            "auditor",
+            "operator",
+            "planner"
+        ],
+        "manufacturing.maintenance.permits.approve": [
+            "admin",
+            "asset_manager",
+            "auditor",
+            "operator",
+            "planner"
+        ],
+        "manufacturing.maintenance.permits.store": [
+            "admin",
+            "asset_manager",
+            "auditor",
+            "operator",
+            "planner"
+        ],
+        "manufacturing.maintenance.sensors.store": [
+            "admin",
+            "asset_manager",
+            "auditor",
+            "operator",
+            "planner"
+        ],
+        "manufacturing.materials.store": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.planning.balances.store": [
+            "admin",
+            "planner"
+        ],
+        "manufacturing.planning.forecast.activate": [
+            "admin",
+            "planner"
+        ],
+        "manufacturing.planning.forecast.store": [
+            "admin",
+            "planner"
+        ],
+        "manufacturing.planning.index": [
+            "admin",
+            "planner"
+        ],
+        "manufacturing.planning.mps.store": [
+            "admin",
+            "planner"
+        ],
+        "manufacturing.planning.mrp.run": [
+            "admin",
+            "planner"
+        ],
+        "manufacturing.planning.orders.firm": [
+            "admin",
+            "planner"
+        ],
+        "manufacturing.planning.params.store": [
+            "admin",
+            "planner"
+        ],
+        "manufacturing.planning.receipts.store": [
+            "admin",
+            "planner"
+        ],
+        "manufacturing.planning.runs.propose": [
+            "admin",
+            "planner"
+        ],
+        "manufacturing.plants.store": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.production.downtimes.end": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.production.downtimes.store": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.production.index": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.production.operations.finish": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.production.operations.start": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.production.orders.invariants": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.production.orders.issue": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.production.orders.receive-fg": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.production.orders.scrap": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.production.orders.store": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.production.orders.transition": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.capas.complete": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.capas.store": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.index": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.inspections.approve": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.inspections.store": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.inspections.waiver": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.lots.certificates": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.lots.recall": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.lots.release": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.lots.trace": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.ncrs.store": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.plans.store": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.recalls.complete": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.quality.recalls.notify": [
+            "admin",
+            "auditor",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.routings.store": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "manufacturing.workers.store": [
+            "admin",
+            "operator",
+            "planner",
+            "qc_inspector"
+        ],
+        "notifications.index": "auth",
+        "notifications.markAllRead": "auth",
+        "notifications.markAllReadJson": "auth",
+        "notifications.read": "auth",
+        "notifications.recent": "auth",
+        "partners.index": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "partners.show": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "partners.store": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "partners.transition": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "party.create": [
+            "admin",
+            "logistics_admin",
+            "party_manager"
+        ],
+        "party.index": [
+            "admin",
+            "logistics_admin",
+            "party_manager"
+        ],
+        "party.kyc.approve": [
+            "admin",
+            "logistics_admin",
+            "party_manager"
+        ],
+        "party.kyc.reject": [
+            "admin",
+            "logistics_admin",
+            "party_manager"
+        ],
+        "party.kyc.submit": [
+            "admin",
+            "logistics_admin",
+            "party_manager"
+        ],
+        "party.legal-entities": [
+            "admin",
+            "logistics_admin",
+            "party_manager"
+        ],
+        "party.legal-entities.store": [
+            "admin",
+            "logistics_admin",
+            "party_manager"
+        ],
+        "party.rescore": [
+            "admin",
+            "logistics_admin",
+            "party_manager"
+        ],
+        "party.screen": [
+            "admin",
+            "logistics_admin",
+            "party_manager"
+        ],
+        "party.show": [
+            "admin",
+            "logistics_admin",
+            "party_manager"
+        ],
+        "party.store": [
+            "admin",
+            "logistics_admin",
+            "party_manager"
+        ],
+        "passport.show": "public",
+        "password.confirm": "auth",
+        "password.email": "public",
+        "password.request": "public",
+        "password.reset": "public",
+        "password.store": "public",
+        "password.update": "auth",
+        "plm.index": "auth",
+        "pricing.analytics.compute": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.claims.settle": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.claims.validate": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.discounts.store": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.index": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.margin-policies.store": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.overrides.decide": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.overrides.store": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.price-lists.activate": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.price-lists.items.store": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.price-lists.store": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.promotions.claims.store": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.promotions.store": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "procurement.dashboard": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.pos.cancel": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.pos.close": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.pos.import-profile": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.pos.inbound": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.pos.revise": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.pos.show": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.pos.store": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.quotes.store": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.requisitions.approve": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.requisitions.show": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.requisitions.store": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.rfqs.award": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.rfqs.show": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.rfqs.store": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.tenders.award": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.tenders.evaluate": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.tenders.open": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.tenders.seal": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.tenders.show": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "procurement.tenders.store": [
+            "admin",
+            "procurement",
+            "supplier"
+        ],
+        "profile.api-tokens.destroy": "auth",
+        "profile.api-tokens.store": "auth",
+        "profile.destroy": "auth",
+        "profile.edit": "auth",
+        "profile.update": "auth",
+        "register": "public",
+        "resto.analytics.index": "auth",
+        "resto.catering.cancel": "auth",
+        "resto.catering.complete": "auth",
+        "resto.catering.create": "auth",
+        "resto.catering.deposit": "auth",
+        "resto.catering.destroy": "auth",
+        "resto.catering.edit": "auth",
+        "resto.catering.index": "auth",
+        "resto.catering.show": "auth",
+        "resto.catering.store": "auth",
+        "resto.catering.update": "auth",
+        "resto.deliveries.create": "auth",
+        "resto.deliveries.destroy": "auth",
+        "resto.deliveries.edit": "auth",
+        "resto.deliveries.fail": "auth",
+        "resto.deliveries.index": "auth",
+        "resto.deliveries.show": "auth",
+        "resto.deliveries.status": "auth",
+        "resto.deliveries.store": "auth",
+        "resto.deliveries.update": "auth",
+        "resto.franchise.contract.store": "auth",
+        "resto.franchise.index": "auth",
+        "resto.franchise.royalty.run": "auth",
+        "resto.ingredients.conversions.store": "auth",
+        "resto.ingredients.create": "auth",
+        "resto.ingredients.destroy": "auth",
+        "resto.ingredients.edit": "auth",
+        "resto.ingredients.index": "auth",
+        "resto.ingredients.show": "auth",
+        "resto.ingredients.store": "auth",
+        "resto.ingredients.update": "auth",
+        "resto.kitchen.cook": "auth",
+        "resto.kitchen.index": "auth",
+        "resto.kitchen.simulate": "auth",
+        "resto.kitchen.trays.discard": "auth",
+        "resto.kitchen.trays.recirculate": "auth",
+        "resto.menu.calculate-cost": "auth",
+        "resto.menu.create": "auth",
+        "resto.menu.destroy": "auth",
+        "resto.menu.edit": "auth",
+        "resto.menu.index": "auth",
+        "resto.menu.show": "auth",
+        "resto.menu.store": "auth",
+        "resto.menu.update": "auth",
+        "resto.outlets.create": "auth",
+        "resto.outlets.destroy": "auth",
+        "resto.outlets.edit": "auth",
+        "resto.outlets.index": "auth",
+        "resto.outlets.show": "auth",
+        "resto.outlets.store": "auth",
+        "resto.outlets.update": "auth",
+        "resto.pos.index": "auth",
+        "resto.pos.order.pay": "auth",
+        "resto.pos.order.receipt": "auth",
+        "resto.pos.order.validate-parking": "auth",
+        "resto.pos.order.void": "auth",
+        "resto.pos.session.bill": "auth",
+        "resto.pos.session.hidang": "auth",
+        "resto.pos.session.item": "auth",
+        "resto.pos.session.open": "auth",
+        "resto.pos.session.show": "auth",
+        "resto.pos.shift.close": "auth",
+        "resto.pos.shift.open": "auth",
+        "resto.pos.shift.settle": "auth",
+        "resto.purchases.create": "auth",
+        "resto.purchases.destroy": "auth",
+        "resto.purchases.edit": "auth",
+        "resto.purchases.index": "auth",
+        "resto.purchases.pay": "auth",
+        "resto.purchases.receive": "auth",
+        "resto.purchases.show": "auth",
+        "resto.purchases.store": "auth",
+        "resto.purchases.update": "auth",
+        "resto.stock-counts.approve": "auth",
+        "resto.stock-counts.create": "auth",
+        "resto.stock-counts.destroy": "auth",
+        "resto.stock-counts.edit": "auth",
+        "resto.stock-counts.index": "auth",
+        "resto.stock-counts.show": "auth",
+        "resto.stock-counts.store": "auth",
+        "resto.stock-counts.update": "auth",
+        "resto.transfers.create": "auth",
+        "resto.transfers.destroy": "auth",
+        "resto.transfers.edit": "auth",
+        "resto.transfers.index": "auth",
+        "resto.transfers.receive": "auth",
+        "resto.transfers.show": "auth",
+        "resto.transfers.store": "auth",
+        "resto.transfers.update": "auth",
+        "sanctum.csrf-cookie": "public",
+        "services.destroy": [
+            "admin"
+        ],
+        "services.index": [
+            "admin"
+        ],
+        "services.store": [
+            "admin"
+        ],
+        "services.update": [
+            "admin"
+        ],
+        "spareparts.destroy": [
+            "admin"
+        ],
+        "spareparts.index": [
+            "admin"
+        ],
+        "spareparts.store": [
+            "admin"
+        ],
+        "spareparts.update": [
+            "admin"
+        ],
+        "storage.local": "public",
+        "storage.local.upload": "public",
+        "store.admin.orders.cancel": [
+            "admin"
+        ],
+        "store.admin.orders.complete": [
+            "admin"
+        ],
+        "store.admin.orders.index": [
+            "admin"
+        ],
+        "store.admin.orders.resolveDispute": [
+            "admin"
+        ],
+        "store.admin.orders.ship": [
+            "admin"
+        ],
+        "store.admin.orders.show": [
+            "admin"
+        ],
+        "store.admin.products.adjustStock": [
+            "admin"
+        ],
+        "store.admin.products.createCarListing": [
+            "admin"
+        ],
+        "store.admin.products.index": [
+            "admin"
+        ],
+        "store.admin.products.toggle": [
+            "admin"
+        ],
+        "store.c2c.buy": "auth",
+        "store.c2c.buyForm": "auth",
+        "store.c2c.cancel": "auth",
+        "store.c2c.confirm": "auth",
+        "store.c2c.dispute": "auth",
+        "store.c2c.handover": "auth",
+        "store.c2c.index": "public",
+        "store.c2c.mySales": "auth",
+        "store.c2c.store": "auth",
+        "store.c2c.unlist": "auth",
+        "store.cart.count": "auth",
+        "store.cart.destroy": "auth",
+        "store.cart.index": "auth",
+        "store.cart.store": "auth",
+        "store.cart.update": "auth",
+        "store.catalog.index": "public",
+        "store.checkout.index": "auth",
+        "store.checkout.process": "auth",
+        "store.orders.cancel": "auth",
+        "store.orders.confirm": "auth",
+        "store.orders.index": "auth",
+        "store.orders.show": "auth",
+        "store.products.show": "public",
+        "supplier.certifications.store": [
+            "admin",
+            "party_manager",
+            "procurement"
+        ],
+        "supplier.create": [
+            "admin",
+            "party_manager",
+            "procurement"
+        ],
+        "supplier.index": [
+            "admin",
+            "party_manager",
+            "procurement"
+        ],
+        "supplier.items.store": [
+            "admin",
+            "party_manager",
+            "procurement"
+        ],
+        "supplier.portal.asn.ship": [
+            "admin",
+            "supplier"
+        ],
+        "supplier.portal.asn.store": [
+            "admin",
+            "supplier"
+        ],
+        "supplier.portal.documents.store": [
+            "admin",
+            "supplier"
+        ],
+        "supplier.portal.home": [
+            "admin",
+            "supplier"
+        ],
+        "supplier.qualifications.approve": [
+            "admin",
+            "party_manager",
+            "procurement"
+        ],
+        "supplier.qualifications.store": [
+            "admin",
+            "party_manager",
+            "procurement"
+        ],
+        "supplier.scan-risks": [
+            "admin",
+            "party_manager",
+            "procurement"
+        ],
+        "supplier.scorecards.store": [
+            "admin",
+            "party_manager",
+            "procurement"
+        ],
+        "supplier.show": [
+            "admin",
+            "party_manager",
+            "procurement"
+        ],
+        "supplier.store": [
+            "admin",
+            "party_manager",
+            "procurement"
+        ],
+        "supplier.transition": [
+            "admin",
+            "party_manager",
+            "procurement"
+        ],
+        "track.index": "public",
+        "track.show": "public",
+        "trade.index": "auth",
+        "trade_finance.index": "auth",
+        "trade_finance.lcs": "auth",
+        "treasury.index": "auth",
+        "verification.notice": "auth",
+        "verification.send": "auth",
+        "verification.verify": "auth",
+        "wallet.index": "auth",
+        "wallet.mutasi": "auth",
+        "wallet.mutasi.export": "auth",
+        "wallet.pin.store": "auth",
+        "wallet.topup.store": "auth",
+        "wallet.transfer": "auth",
+        "wallet.transfer.lookup": "auth",
+        "wallet.transfer.store": "auth",
+        "wms.cycle-counts.apply": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.cycle-counts.store": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.cycle-counts.submit": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.dock.store": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.index": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.pick": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.putaway": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.replenishments.compute": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.transfers.receive": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.transfers.ship": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.transfers.store": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.warehouses.store": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.waves.release": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ],
+        "wms.waves.store": [
+            "admin",
+            "auditor",
+            "hub_operator",
+            "procurement"
+        ]
+    },
+    "approved_additions": [
+        {
+            "date": "2026-10-10",
+            "decision": "DECISIONS.md#2026-10-10-baseline-awal-detektor-lain-fase-r0-r09r011",
+            "entries": "baseline awal: 598 rute"
+        }
+    ]
+}

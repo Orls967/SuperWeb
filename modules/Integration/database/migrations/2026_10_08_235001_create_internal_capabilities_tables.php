@@ -63,7 +63,7 @@ return new class extends Migration
             $table->id();
             $table->string('detection_code')->unique();
             $table->string('business_line')->index();
-            $table->string('bypassed_capability_code')->index();
+            $table->string('bypassed_capability_code')->index('ppm_cap_dup_bypassed_code_idx');
             $table->string('shadow_project_name');
             $table->string('enforcement_action')->default('PREFER_PLATFORM_POLICY_ENFORCED'); // 235.6 edge case
             $table->timestamps();

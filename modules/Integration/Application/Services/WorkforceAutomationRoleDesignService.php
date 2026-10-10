@@ -85,7 +85,7 @@ class WorkforceAutomationRoleDesignService
 
         // Governance gate 319.2
         if (! $assessment->labor_governance_approved) {
-            throw new InvalidArgumentException("Governance breach: Just Transition plan requires approved labor governance on automation assessment (319.2).");
+            throw new InvalidArgumentException('Governance breach: Just Transition plan requires approved labor governance on automation assessment (319.2).');
         }
 
         // Edge case 319.5: 100% redeployment/reskilling must be fulfilled before layoff is ever permitted

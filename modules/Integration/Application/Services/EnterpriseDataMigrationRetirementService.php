@@ -67,7 +67,7 @@ class EnterpriseDataMigrationRetirementService
 
         // 473.6 Risk: Cleansing must pass before cutover execution
         if (! $m->pre_migration_cleansing_passed) {
-            throw new InvalidArgumentException("Migration blocked: Pre-migration data cleansing and deduplication acceptance criteria not met (473.2, 473.6).");
+            throw new InvalidArgumentException('Migration blocked: Pre-migration data cleansing and deduplication acceptance criteria not met (473.2, 473.6).');
         }
 
         $reconciled = ($m->source_records_count === $targetCount);
@@ -133,7 +133,7 @@ class EnterpriseDataMigrationRetirementService
 
         // 473.5 Edge case: Decommissioning requires explicit consumer sign-off or waiver
         if (! $consumerConfirmedOrWaived) {
-            throw new InvalidArgumentException("Decommissioning blocked: Downstream consumers have not confirmed cutoff, and no executive waiver was provided (473.5).");
+            throw new InvalidArgumentException('Decommissioning blocked: Downstream consumers have not confirmed cutoff, and no executive waiver was provided (473.5).');
         }
 
         DB::table('int_legacy_system_retirements')->where('id', $sys->id)->update([

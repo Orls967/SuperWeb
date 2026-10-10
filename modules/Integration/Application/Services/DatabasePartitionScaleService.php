@@ -43,7 +43,7 @@ class DatabasePartitionScaleService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Partition switch failed: Inconsistency detected during switch; safely rolled back to original partition (393.5).");
+            throw new InvalidArgumentException('Partition switch failed: Inconsistency detected during switch; safely rolled back to original partition (393.5).');
         }
 
         $id = DB::table('global_stress_partition_switches')->insertGetId([

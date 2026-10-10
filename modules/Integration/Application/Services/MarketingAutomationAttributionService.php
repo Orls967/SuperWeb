@@ -228,7 +228,7 @@ class MarketingAutomationAttributionService
         array $touchpointChannels
     ): object {
         if (empty($touchpointChannels)) {
-            throw new \InvalidArgumentException("Touchpoint channels cannot be empty.");
+            throw new \InvalidArgumentException('Touchpoint channels cannot be empty.');
         }
 
         $weights = [];
@@ -302,7 +302,7 @@ class MarketingAutomationAttributionService
             ->where('crm_campaign_dispatches.status', 'SENT')
             ->where(function ($q) {
                 $q->where('crm_customer_communication_profiles.opted_out', true)
-                  ->orWhere('crm_customer_communication_profiles.fatigue_suppressed', true);
+                    ->orWhere('crm_customer_communication_profiles.fatigue_suppressed', true);
             })
             ->count();
 

@@ -31,7 +31,7 @@ class DomainCapacityEnvelopesService
 
         // Risk gate 392.6: Envelopes must be based on sustainable 24h load, not momentary spikes
         if (! $sustainable24hBasis) {
-            throw new InvalidArgumentException("Capacity risk: Domain envelopes must be benchmarked against sustainable 24-hour operational load (392.6).");
+            throw new InvalidArgumentException('Capacity risk: Domain envelopes must be benchmarked against sustainable 24-hour operational load (392.6).');
         }
 
         $id = DB::table('global_stress_domain_capacity_envelopes')->updateOrInsert(

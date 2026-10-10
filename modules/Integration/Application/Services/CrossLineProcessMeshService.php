@@ -72,7 +72,7 @@ class CrossLineProcessMeshService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Replay safety breach: External side effects prohibited during event replay; only side-effect-free read model projections permitted (387.6).");
+            throw new InvalidArgumentException('Replay safety breach: External side effects prohibited during event replay; only side-effect-free read model projections permitted (387.6).');
         }
 
         $id = DB::table('global_process_mesh_event_replays')->insertGetId([

@@ -68,7 +68,7 @@ class CommunityValueSocialProcurementService
 
         // Core gate 335.4: Grievance closure requires independent confirmation by community representative
         if (! $confirmedByCommunityRep) {
-            throw new InvalidArgumentException("Social grievance violation: Closure strictly requires independent confirmation by elected community representative (335.4).");
+            throw new InvalidArgumentException('Social grievance violation: Closure strictly requires independent confirmation by elected community representative (335.4).');
         }
 
         $isClosed = ($remedyImplemented && $confirmedByCommunityRep);

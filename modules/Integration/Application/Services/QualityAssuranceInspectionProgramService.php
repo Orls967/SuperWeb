@@ -37,7 +37,7 @@ class QualityAssuranceInspectionProgramService
 
         // 412.2 & 412.4 Calibration gate
         if (! $calibrationValid || empty($toolCalibrationCert)) {
-            throw new InvalidArgumentException("Inspection blocked: Measurement tool lacks valid calibration certification (412.2, 412.4).");
+            throw new InvalidArgumentException('Inspection blocked: Measurement tool lacks valid calibration certification (412.2, 412.4).');
         }
 
         $id = DB::table('ops_quality_inspections')->insertGetId([

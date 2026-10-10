@@ -35,12 +35,12 @@ class NatureWaterCommunityFinanceService
 
         // Additionality check 330.6 Risk
         if (! $verifiedAdditionality) {
-            throw new InvalidArgumentException("Additionality failure: Nature credit issuance rejected due to lack of verifiable project additionality (330.6).");
+            throw new InvalidArgumentException('Additionality failure: Nature credit issuance rejected due to lack of verifiable project additionality (330.6).');
         }
 
         // Community consent & remediation gate 330.5 Edge Case
         if (! $communityConsentGranted && ! $socialRemediationFiled) {
-            throw new InvalidArgumentException("Social risk breach: Community objection halts project issuance until formal social remediation is filed (330.5).");
+            throw new InvalidArgumentException('Social risk breach: Community objection halts project issuance until formal social remediation is filed (330.5).');
         }
 
         // Benefit share reconciliation 330.4: exactly 30% proceeds disbursed to local community
@@ -77,7 +77,7 @@ class NatureWaterCommunityFinanceService
         $fCode = strtoupper($facilityCode);
 
         if (! $independentlyMeasured) {
-            throw new InvalidArgumentException("Measurement verification breach: Water stewardship performance payments require independent meter auditing (330.4).");
+            throw new InvalidArgumentException('Measurement verification breach: Water stewardship performance payments require independent meter auditing (330.4).');
         }
 
         $savingsM3 = max(0.00, round($baselineM3 - $actualM3, 2));

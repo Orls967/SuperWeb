@@ -1,0 +1,177 @@
+name: CI Quality Gate & Portability
+
+on:
+  push:
+    branches:
+      - master
+      - 'feature/**'
+  pull_request:
+    branches:
+      - master
+      - 'feature/**'
+  workflow_dispatch:
+    inputs:
+      fase:
+        description: 'ID Fase (mis. R0, R1, 55)'
+        required: false
+        default: ''
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate-sqlite:
+    name: PHP 8.4 × SQLite (Full Gate Suite)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, bcmath
+          coverage: none
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install npm dependencies & build assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Setup Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate --ansi
+
+      - name: Determine Phase ID
+        id: resolve-phase
+        run: |
+          FASE_INPUT="${{ github.event.inputs.fase }}"
+          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+          if [ -n "$FASE_INPUT" ]; then
+            FASE="$FASE_INPUT"
+          elif [[ "$BRANCH_NAME" =~ feature/fase-([a-zA-Z0-9]+) ]]; then
+            FASE="${BASH_REMATCH[1]}"
+          else
+            FASE="r0"
+          fi
+          FASE_LOWER=$(echo "$FASE" | tr '[:upper:]' '[:lower:]')
+          echo "fase=$FASE" >> $GITHUB_OUTPUT
+          echo "fase_lower=$FASE_LOWER" >> $GITHUB_OUTPUT
+
+      - name: Run Quality Gate (composer gate)
+        run: composer gate
+
+      - name: Generate Quality Gate Report
+        run: php artisan gate:report --fase="${{ steps.resolve-phase.outputs.fase }}"
+
+      - name: Upload Gate Manifest, Report & JUnit Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-report-fase-${{ steps.resolve-phase.outputs.fase_lower }}
+          if-no-files-found: error
+          path: |
+            storage/logs/gate-manifest.json
+            storage/logs/pest-junit.xml
+            storage/logs/arch-scan.json
+            docs/gates/fase-${{ steps.resolve-phase.outputs.fase_lower }}.md
+
+  portability-mysql:
+    name: PHP 8.4 × MySQL 8 (DB Portability)
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: superweb_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1 -proot" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, gd, zip, bcmath
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Setup Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate --ansi
+
+      - name: Run DB Portability Tests
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: superweb_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: |
+          php artisan migrate:fresh --seed --force
+          vendor/bin/pest --group=db-portability --log-junit=storage/logs/portability-junit.xml
+
+      - name: Upload MySQL Portability JUnit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portability-mysql-junit
+          path: storage/logs/portability-junit.xml
+
+  mutation-testing:
+    name: PHP 8.4 × Pest Mutation Testing (min 60%)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup PHP 8.4 (PCOV Coverage Driver)
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, pcov, bcmath
+          coverage: pcov
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Setup Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate --ansi
+
+      - name: Run Pest Mutation Testing on Touched Classes
+        run: php artisan test:mutate --git-diff --base="${{ github.base_ref || 'master' }}" --min=60

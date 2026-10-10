@@ -34,12 +34,12 @@ class LegalRegulatoryChangeExecutionService
 
         // Core gate 338.4: Gap closure requires verifiable evidence
         if (! $hasEvidence) {
-            throw new InvalidArgumentException("Compliance closure violation: Control gap cannot be marked closed without verification evidence (338.4).");
+            throw new InvalidArgumentException('Compliance closure violation: Control gap cannot be marked closed without verification evidence (338.4).');
         }
 
         // Edge case 338.5: Major system changes mandate formal replan approval
         if ($isMajorSystemChange && ! $replanApproved) {
-            throw new InvalidArgumentException("Regulatory governance breach: Major system changes require formal approved replan before deployment/closure (338.5).");
+            throw new InvalidArgumentException('Regulatory governance breach: Major system changes require formal approved replan before deployment/closure (338.5).');
         }
 
         $id = DB::table('regulatory_control_gap_closures')->insertGetId([
@@ -71,7 +71,7 @@ class LegalRegulatoryChangeExecutionService
 
         // Materiality determination gate 338.4
         if (! $materialityDocumented) {
-            throw new InvalidArgumentException("Accounting disclosure violation: Litigation provision requires documented materiality determination (338.4).");
+            throw new InvalidArgumentException('Accounting disclosure violation: Litigation provision requires documented materiality determination (338.4).');
         }
 
         $id = DB::table('litigation_enforcement_provisions')->insertGetId([
