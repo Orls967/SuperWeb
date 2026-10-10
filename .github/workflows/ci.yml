@@ -1,0 +1,104 @@
+name: CI Quality Gate & Portability
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
+      - 'feature/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate-sqlite:
+    name: PHP 8.4 × SQLite (Full Gate Suite)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, pcov, bcmath
+          coverage: pcov
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run Quality Gate (composer gate)
+        run: composer gate
+
+      - name: Run Architecture Scan
+        run: php artisan arch:scan
+
+      - name: Run Core Audit Commands
+        run: |
+          php artisan bank:reconcile
+          php artisan chain:audit-all
+          php artisan super:health-check
+
+      - name: Generate Quality Gate Report
+        run: php artisan gate:report --fase=R0
+
+      - name: Upload Gate Report & JUnit Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-report-fase-r0
+          path: |
+            docs/gates/fase-r0.md
+            storage/logs/pest-junit.xml
+
+  portability-mysql:
+    name: PHP 8.4 × MySQL 8 (DB Portability)
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: superweb_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, gd, zip, pcov, bcmath
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run DB Portability Tests
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: superweb_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: vendor/bin/pest --group=db-portability
