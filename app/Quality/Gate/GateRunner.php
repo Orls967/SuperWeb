@@ -96,6 +96,8 @@ final class GateRunner
             }
             if ($name === 'pest') {
                 $env['APP_ENV'] = 'testing';
+                $env['DB_CONNECTION'] = 'sqlite';
+                $env['DB_DATABASE'] = ':memory:';
             }
             $process = proc_open(
                 $cmd,
