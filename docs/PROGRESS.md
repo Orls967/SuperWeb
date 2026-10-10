@@ -501,6 +501,86 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 
 ### FASE R1 — LEDGER & UANG (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.
+
+#### DoR Fase R1 — Ledger & uang
+- Disetujui pemilik: [ ]   (tanggal / komentar — termasuk jawaban keputusan D1–D8 di bawah)
+- Tujuan bisnis: setiap rupiah dan unit aset di ledger punya arah posting yang benar, akun yang terdefinisi di kode produksi, key idempotensi yang stabil, dan presisi yang tidak berubah saat pindah dari SQLite ke MySQL. Hasilnya, laporan pendapatan/piutang per lini bisa dipercaya dan retry tidak menggandakan uang.
+- Modul pemilik & prefiks (KONSEP §A1) — bukan Integration:
+  - `Banking` (`bank_`): `LedgerService`, `bank:reconcile`, entri/transaksi ledger.
+  - `Shared`: `Money`, `PostingEntryDTO`, helper `Posting`, `AccountKind::normalSide()`.
+  - `Payment` (`pay_`): `pay_refunds`, validasi split.
+  - Setiap modul yang memposting: `modules/{M}/Ledger/{M}Accounts.php`. Service Integration yang memposting diperbaiki di tempat; tempat chart of accounts-nya menunggu keputusan D6.
+- Prasyarat & statusnya: **R0 🔵, menunggu verifikasi silang.** P5: prasyarat harus ✅. **Tidak ada kode R1 yang boleh ditulis sebelum R0 ✅.** DoR ini boleh disetujui lebih dulu.
+- Item yang dikerjakan & ukuran terukur (baseline 10 Okt 2026, wajib turun ke 0 sesuai kriteria terima):
+
+  | Item | Pagar & angka awal | Target |
+  |---|---|---|
+  | R1.1 | `LedgerNormalBalanceTest` memakai pemetaan sementara di test | dipindah ke `AccountKind::normalSide()` |
+  | R1.2 | `ledger-normal-balance.json` = 3 akun (`ast:fixed_assets`, `expense:resto:waste:IDR`, `liability:mall:points:PTS`); pemindaian K-10: ≥ 12 modul memposting pendapatan negatif | 0 |
+  | R1.3 | `ledger-accounts.json` = 172 kode akun tanpa provisi; `test-hygiene.json` T2 = 94 lokasi `LedgerAccount::create` di test | 0 dan 0 |
+  | R1.4 | `arch:scan` A5 = 101 (type transaksi > 32 karakter / di luar registry); 5 guard K-13 belum ada | 0 + 5 guard |
+  | R1.5 | `arch:scan` A4 = 44 (teks item menyebut 27 lokasi — detektor menghitung lebih lengkap) | 0 |
+  | R1.6 | refund tanpa entitas (K-15); pemanggil: `InvoicePaymentController::refund` (rute `bookings.refund`), `Store CancelOrderAction`, `Resto VoidOrderAction` | `pay_refunds` + key `refund:{id}` |
+  | R1.7 | split tidak divalidasi (K-17) | galat eksplisit |
+  | R1.8 | `arch:scan` A3 = 352 (float pada uang); 80 kolom `decimal` bernilai IDR (K-14) | 0 |
+  | R1.9 | `bank:reconcile` memakai `group_concat` (K-18); presisi 18 desimal hanya teruji di job CI MySQL | portabel + checkpoint |
+
+  Usulan pemecahan (P5, tanpa mengurangi isi item; teks item tidak diubah):
+  - R1.2 dipecah per kelompok modul: R1.2.a Hospital; R1.2.b Mining & Egy; R1.2.c Hotel, Venue, Ret, Tlx, Med, Edu; R1.2.d CloudKitchen, Vending, Proptech, EnterpriseFinance, Logistics, Trade; R1.2.e service Integration yang memposting.
+  - R1.3 dipecah per modul yang memposting.
+  - R1.8 dipecah: R1.8.a signature `Money`/DTO; R1.8.b kolom IDR `decimal`→`bigInteger`; R1.8.c HCM & PB1 Resto; R1.8.d parameter `float` modul lain.
+- Entitas/tabel + state machine:
+  - `pay_refunds` (id, `payment_intent_id` FK, `amount_minor` bigInteger, `asset_code`, `reason`, `status`: `requested → posted | rejected`, `ledger_tx_id`, timestamps; unique `(payment_intent_id, id)`).
+  - `bank_ledger_transactions.payload_hash` (char 64).
+  - FK ledger entri → `restrictOnDelete`.
+  - `bank_reconcile_checkpoints` (asset_code, `last_entry_id`, `balance_sum`, `checked_at`) untuk rekonsiliasi inkremental.
+  - Konversi kolom `decimal` IDR → `bigInteger` lewat **migrasi baru** (bukan mengedit migrasi lama), dengan langkah konversi data (lihat D3).
+- Posting ledger (kejadian → debit/kredit, akun di `{M}Accounts`):
+  - Semua posting lewat `Posting::lines()->debit()->credit()`. Kredit = +, debit = − (KONSEP §A2.1). Tanda tidak ditulis manual.
+  - R1.2 membalik posting di modul yang tercantum, contoh Hospital clinical trial: `DR hsp:trial_sponsor_receivable` (−) / `CR hsp:trial_research_revenue` (+).
+  - Refund (R1.6) membalik split capture secara proporsional: `DR` akun pendapatan/escrow per split (−), `CR` akun dana pembeli/clearing (+). Key `refund:{refund_id}`.
+- Event (KONSEP §A4.2): tidak ada event baru yang wajib. Bila refund perlu diketahui modul lain (Store/Resto), pakai event `PaymentRefunded` yang sudah ada atau tambahkan ke katalog (bagian dari D7).
+- Rute/UI/menu + role & policy: tidak ada rute baru. Rute `bookings.refund` (AutoServe) dan aksi pembatalan Store/Resto diubah untuk membuat `pay_refunds` lebih dulu, lalu memanggil `refund()` dengan id-nya. Role rute tetap; masuk matriks `route-roles.php`.
+- Command/jadwal: `bank:reconcile` (SUM native di MySQL/PostgreSQL; `chunkById` + BigDecimal di SQLite; opsi `--incremental` memakai checkpoint). Tanpa jadwal baru (jadwal harian → keputusan D8).
+- Audit dua-sumber + fixture korupsi:
+  - `bank:reconcile` sudah punya fixture. Tambah fixture **selisih 1 unit terkecil** (IDR 1 rupiah; aset 18 desimal 1e-18) dan fixture **checkpoint basi**.
+  - Guard R1.4 dibuktikan lewat test negatif, bukan audit.
+- Nama test (a)–(e) yang akan ditulis (selain yang disebut di teks item):
+  - `LedgerNormalBalanceTest` (R1.1/R1.2, tanpa pengecualian kecuali `clearing`/`exchange`);
+  - `PostingHelperTest` (tanda otomatis; menolak nominal ≤ 0);
+  - `LedgerAccountRegistryTest` (R1.3, baseline 0);
+  - `LedgerServiceGuardsTest` (satu test per guard R1.4: aset beda, payload beda, unique violation → pemenang, update/delete ditolak, type tidak terdaftar/> 32);
+  - `LedgerConcurrencyTest` (`@group db-portability`, dua koneksi);
+  - `IdempotentPostingTest` (R1.5, dataset per lokasi: panggil 2× → satu transaksi & state tidak bergeser);
+  - `RefundEntityTest` (HTTP `POST /bookings/{booking}/refund`: dua refund parsial bernominal sama → dua transaksi; retry refund yang sama → satu; role tak berhak → 403);
+  - `PaymentSplitValidationTest` (R1.7);
+  - `MoneyIntegerOnlyTest` (R1.8);
+  - `DecimalRoundTripTest` (`@group db-portability`, 18 desimal);
+  - `ReconcileDetectsOneUnitTest` (R1.9).
+- Tingkat simulasi & tier skala: tidak ada simulasi (invarian internal uang, X22). T0 untuk test; T1 untuk `migrate:fresh --seed`. Benchmark rekonsiliasi jutaan entri tidak menjadi kriteria centang (T2, opsional dengan hasil terlampir).
+- Jalan pintas yang harus dihindari:
+  - membalik ekspektasi test lama agar lulus tanpa `keputusan:` di Bukti (X17);
+  - menambah pengecualian/whitelist di `LedgerNormalBalanceTest` atau memberi `allow_negative = true` agar saldo "lolos";
+  - membuat akun di test (X5/X23);
+  - menaikkan baseline;
+  - `round()`/`(int)` pada float sebagai "penghapusan float" (X3);
+  - key berbasis `now()`/acak (X4);
+  - menangkap `QueryException` lalu diam (X25);
+  - mengedit migrasi lama untuk konversi tipe pada DB yang sudah berisi data;
+  - menaruh chart of accounts baru di `modules/Integration` tanpa keputusan D6 (IntegrationFreezeTest).
+- Keputusan pemilik yang dibutuhkan:
+  - **D1 (R1.9)** penyimpanan aset non-IDR:
+    - (a) integer minor unit per aset (satoshi/wei; kolom `bigInteger`/`decimal(65,0)`, tabel desimal per aset); atau
+    - (b) DB produksi wajib MySQL 8/PostgreSQL 16 dengan `DECIMAL(36,18)` eksak, dan SQLite hanya untuk test non-presisi.
+  - **D2 (R1.4.5)** registry `type`: satu enum `TransactionType` pusat, atau registry per modul (`{M}TransactionTypes`) yang digabung saat boot.
+  - **D3 (R1.8)** apakah ada database berisi data nyata (staging/produksi) yang harus dikonversi `decimal`→`bigInteger`? Bila ya: migrasi konversi + verifikasi jumlah sebelum/sesudah. Bila tidak: migrasi baru tetap dipakai, tanpa langkah data.
+  - **D4 (R1.2)** test lama yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest`) boleh diubah dengan `keputusan:` di Bukti. Setujui sekali untuk seluruh R1.2, atau per test.
+  - **D5 (P5)** setujui pemecahan sub-item R1.2/R1.3/R1.8 di atas. Usulan PR: satu PR per kelompok (R1.1–R1.3, R1.4–R1.7, R1.8–R1.9) agar bisa diverifikasi bertahap.
+  - **D6 (R1.3)** chart of accounts untuk service yang saat ini memposting dari `modules/Integration`:
+    - (a) tambah `Ledger/` ke allowlist `IntegrationFreeze` lewat DECISIONS; atau
+    - (b) tempatkan di modul domain pemiliknya sekarang (mendahului R4.4).
+  - **D7 (R1.6)** refund perlu event lintas modul (`PaymentRefunded`) atau cukup dipanggil sinkron oleh aksi pembatalan.
+  - **D8 (R1.9)** `bank:reconcile --incremental` dijadwalkan harian, atau tetap manual + gate.
 - [ ] R1.1 **Konvensi tanda tunggal** (K-10): `AccountKind::normalSide()` + helper `Posting::lines()->debit()->credit()` (kredit = +, debit = −); dokumentasikan tabel normal balance (`KONSEP.md` §A2); pindahkan pemetaan sementara dari `LedgerNormalBalanceTest`.
   - Test wajib: `LedgerNormalBalanceTest` — setelah `migrate:fresh --seed` + seluruh skenario golden, setiap akun memenuhi tanda sisi normalnya (pengecualian eksplisit untuk `clearing`/`exchange`).
 - [ ] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif) — dicatat sebagai `keputusan:` di Bukti (X17).
