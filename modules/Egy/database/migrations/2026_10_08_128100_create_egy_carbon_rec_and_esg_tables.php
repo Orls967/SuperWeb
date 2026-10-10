@@ -39,7 +39,7 @@ return new class extends Migration
             $table->timestamp('retired_at')->nullable();
             $table->timestamps();
 
-            $table->index(['owner_entity_id', 'is_retired']);
+            $table->index(['owner_entity_id', 'is_retired'], 'egy_rec_owner_retired_idx');
         });
 
         Schema::create('egy_cbam_certificates', function (Blueprint $table) {
