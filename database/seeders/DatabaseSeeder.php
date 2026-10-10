@@ -7,7 +7,7 @@ use App\Models\Sparepart;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Modules\Asset\Database\Seeders\AssetSeeder;
+use Modules\Asset\database\seeders\AssetSeeder;
 use Modules\Banking\Application\Actions\SetPinAction;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\database\seeders\BankingSeeder;
@@ -15,15 +15,15 @@ use Modules\Contract\database\seeders\ContractSeeder;
 use Modules\Core\database\seeders\PlatformSeeder;
 use Modules\Core\database\seeders\RbacSeeder;
 use Modules\Crypto\database\seeders\CryptoSeeder;
-use Modules\Distribution\Database\Seeders\DistributionSeeder;
+use Modules\Distribution\database\seeders\DistributionSeeder;
 use Modules\Logistics\database\seeders\LogisticsSeeder;
 use Modules\Mall\database\seeders\MallSeeder;
-use Modules\Manufacturing\Database\Seeders\ManufacturingSeeder;
+use Modules\Manufacturing\database\seeders\ManufacturingSeeder;
 use Modules\Party\database\seeders\PartySeeder;
 use Modules\Procurement\database\seeders\ProcurementSeeder;
 use Modules\Resto\database\seeders\RestoMenuSeeder;
 use Modules\Supplier\database\seeders\SupplierSeeder;
-use Modules\Wms\Database\Seeders\WmsSeeder;
+use Modules\Wms\database\seeders\WmsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
