@@ -12,9 +12,9 @@ it('ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 o
     $readme = (string) file_get_contents($root.'/README.md');
     $arch = (string) file_get_contents($root.'/docs/ARCHITECTURE.md');
 
-    expect($readme)->not->toContain('Laravel 11', 'README.md masih memuat klaim versi usang Laravel 11.')
-        ->and($arch)->not->toContain('Laravel 11', 'ARCHITECTURE.md masih memuat klaim versi usang Laravel 11.')
-        ->and($arch)->not->toContain('PHP 8.3', 'ARCHITECTURE.md masih memuat klaim versi PHP 8.3.');
+    expect($readme)->not->toContain('Laravel 11')
+        ->and($arch)->not->toContain('Laravel 11')
+        ->and($arch)->not->toContain('PHP 8.3');
 });
 
 it('ensures LAPORAN_AUDIT_GELOMBANG_2.md is explicitly marked as archived and invalid', function (): void {
