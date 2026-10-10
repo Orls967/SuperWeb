@@ -34,6 +34,12 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,contract_manager,legal
         Route::get('/create', [ContractController::class, 'create'])->name('create');
         Route::post('/', [ContractController::class, 'store'])->name('store');
 
+        // Dashboard kewajiban jatuh tempo (28.7)
+        Route::get('/obligations/due', [ContractController::class, 'obligations'])->name('obligations');
+
+        // Laporan paparan & audit subledger (29.8)
+        Route::get('/reports', [ContractFinanceController::class, 'reports'])->name('reports');
+
         // ── Contract Detail & Actions ──────────────────────────────────
         Route::get('/{contract}', [ContractController::class, 'show'])->name('show');
         Route::get('/{contract}/edit', [ContractController::class, 'edit'])->name('edit');
@@ -64,12 +70,6 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,contract_manager,legal
         // Attachments (Core DocumentStore, 28.6)
         Route::post('/{contract}/attachments', [ContractController::class, 'storeAttachment'])->name('attachment.store');
         Route::delete('/{contract}/attachments/{attachment}', [ContractController::class, 'destroyAttachment'])->name('attachment.destroy');
-
-        // Dashboard kewajiban jatuh tempo (28.7)
-        Route::get('/obligations/due', [ContractController::class, 'obligations'])->name('obligations');
-
-        // Laporan paparan & audit subledger (29.8)
-        Route::get('/reports', [ContractFinanceController::class, 'reports'])->name('reports');
 
         // Fase 29 — finansial per kontrak
         Route::post('/{contract}/schedule/build', [ContractFinanceController::class, 'buildSchedule'])->name('schedule.build');
