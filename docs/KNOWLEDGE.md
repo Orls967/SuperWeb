@@ -13,7 +13,7 @@
 2. [Inventaris repo](#2-inventaris-repo)
 3. [Linimasa pengerjaan & pola kerja agent](#3-linimasa-pengerjaan--pola-kerja-agent)
 4. [Penilaian per era fase](#4-penilaian-per-era-fase)
-5. [Temuan detail (K-01 … K-32)](#5-temuan-detail)
+5. [Temuan detail (K-01 … K-41)](#5-temuan-detail)
 6. [Yang sudah bagus — pertahankan & jadikan standar](#6-yang-sudah-bagus)
 7. [Seharusnya: pola emas implementasi](#7-seharusnya-pola-emas-implementasi)
 8. [Rencana perbaikan (ringkas; detail di PROGRESS.md Fase R)](#8-rencana-perbaikan)
@@ -468,30 +468,162 @@ $entries = Posting::lines()
 **Bukti:** `HcmService::auditHcm()` memuat `Payroll::all()`; `OutboxBusService::processMessage()` memuat semua subscription aktif lalu filter di PHP; `IntegrationService::auditIntegration()` sampel `limit(50)` tanpa urutan; screening sanksi Party memakai `similar_text` terhadap seluruh daftar (O(n·m)); audit-audit Integration menghitung seluruh tabel tanpa indeks khusus.
 **Seharusnya:** `chunkById`/`lazyById`, agregasi SQL, indeks untuk kolom status/tanggal, dan untuk pencocokan nama gunakan normalisasi + blocking key (mis. soundex/trigram) sebelum skor kemiripan.
 
-#### K-33 (Temuan R0) — Portabilitas skema MySQL: Identifier > 64 & key InnoDB > 3072 byte (P1 · R0.3.b)
+### H. Temuan saat memasang pagar Fase R0 (10–11 Okt 2026)
 
-**Bukti:** MySQL 8.4 membatasi nama identifier (tabel, kolom, indeks, unique constraint, foreign key) maksimal 64 karakter. Konvensi otomatis Laravel menghasilkan nama indeks komposit > 64 karakter pada tabel/kolom panjang (misal `mall_utility_tariffs_property_id_utility_type_effective_from_index` sepanjang 67 karakter; SQLSTATE[42000] error 1059 `Identifier name is too long`). Selain itu, InnoDB charset `utf8mb4` membatasi total panjang komposit key index maksimal 3072 byte; indeks komposit dengan 4 kolom `string(255)` default memakan 4.080 byte (SQLSTATE[42000] error 1071 `Specified key was too long; max key length is 3072 bytes`, terdeteksi di CI run 38071600613 pada `pty_party_roles` dan `med_ip_licenses`). Kolom `approval_id` di berbagai tabel berukuran integer sementara data approval menggunakan UUID string 36 char (error 1366 `Incorrect integer value`).
-**Seharusnya:** Seluruh identifier yang melebihi 64 karakter diberi nama eksplisit ≤ 64 karakter pada migrasi; kolom varchar komposit diperpendek sesuai kebutuhan bisnis riil (misal `string('role', 50)`); pasang guard arsitektur `SchemaIdentifierLengthTest` yang memverifikasi identifier ≤ 64 karakter dan key InnoDB ≤ 3072 byte; jalankan verifikasi reguler pada container MySQL di CI (`portability-mysql`).
+Temuan di bagian ini muncul ketika detektor Fase R0 dijalankan untuk pertama kali di Linux, di CI, dan di MySQL 8.4. Angka diambil dari file baseline, log CI, dan Register Minus R0 (`PROGRESS.md`), bukan perkiraan.
 
-#### K-34 (Temuan R0) — Lubang lingkup verifikasi ProgressIntegrity (P1 · R0.4)
+#### K-33 — Skema tidak pernah dijalankan di MySQL (P1 · R0.3.b)
 
-**Bukti:** Implementasi awal `ProgressIntegrityScanner` hanya memindai item yang dicentang `[x]`, membiarkan item belum tercentang `[ ]` lolos tanpa verifikasi struktur teks. Scanner juga belum memvalidasi tag `jenis:` pada blok Bukti P2, belum memeriksa konsistensi nama method test terhadap file test JUnit aktual, dan belum menegakkan aturan bahwa fase berstatus `🔵 SIAP VERIFIKASI` mewajibkan seluruh item memiliki blok bukti valid tanpa ada item yang disembunyikan.
-**Seharusnya:** `ProgressIntegrityScanner` memvalidasi snapshot teks item terhadap baseline teks (`progress-item-texts.json`), menolak perubahan teks tanpa penanda `⬇️ diturunkan` (P10/X18), memvalidasi kelengkapan format blok bukti P2 (`jenis:`, `commit:`, `file:`, `test:`, `akses:`), memverifikasi bahwa status fase `🔵` memiliki bukti lengkap dan bebas status palsu `✅` sebelum verifikasi verifikator (P7).
+**Bukti:**
+- CI run 38068206489, job `portability-mysql`, menghasilkan `SQLSTATE[42000] 1059 Identifier name 'mall_utility_tariffs_property_id_utility_type_effective_from_index' is too long` (67 karakter, batas MySQL 64).
+- Pemindaian lanjutan menemukan 22 nama index/unique bawaan Laravel yang melebihi 64 karakter di 9 modul: Mall, Logistics, Manufacturing, Wms, Mining, Egy, Tlx, Edu, Integration.
+- Setelah nama diperbaiki, MySQL menolak dua index komposit karena melebihi 3.072 byte (`1071 Specified key was too long`): `pty_party_roles` dan `med_ip_licenses`, masing-masing empat kolom `VARCHAR(255)` utf8mb4.
+- Satu foreign key berbeda tipe (`ctr_contract_attachments.contract_party_id` vs kolom rujukannya), dan satu migrasi tidak bisa dikompilasi grammar MySQL sama sekali: `->comment(['Kumpulan flag risiko'])` (array) di Contract `2026_10_04_290100`. SQLite mengabaikan komentar sehingga tidak pernah terlihat.
+- Data seeder juga tidak muat di tipe kolom MySQL (strict mode):
+  - penanda genesis hash-chain 72–73 karakter di kolom `prev_hash varchar(64)`;
+  - UUID/ULID di kolom `bigint` (`bank_ledger_transactions.reference_id`, `core_approvals.approvable_id`, `prc_requisitions.approval_id`). Lihat K-40 dan K-41.
+- Semua temuan di atas muncul satu per satu: setiap putaran CI (±6 menit) hanya memperlihatkan error pertama.
 
-#### K-35 (Temuan R0) — Anti-pola `gate:report --force` merusak integritas gerbang kualitas (P0 · R0.2)
+**Kenapa buruk:**
+- Klaim kesiapan MySQL/PostgreSQL di fase-fase sebelumnya tidak pernah diuji. `migrate:fresh` di MySQL berhenti pada error pertama, sehingga pelanggaran berikutnya tersembunyi di belakangnya.
+- Perbaikan dengan memperpendek kolom (`role` 50, `scope_type` 50, `ip_id` 64, …) mengubah kapasitas data, bukan hanya nama. Nilai dari input yang tidak divalidasi `max` akan menjadi HTTP 500 di MySQL.
 
-**Bukti:** Opsi `--force` pada `php artisan gate:report` memungkinkan laporan gerbang kualitas (`docs/gates/fase-N.md`) tetap diproduksi meskipun manifest berstatus dirty atau salah satu langkah gate gagal (exit code ≠ 0). Hal ini melanggar kriteria terima wajib R0.2 ("laporan tidak bisa dibuat bila gate gagal") dan menciptakan celah laporan hijau palsu yang menyembunyikan kegagalan pengujian.
-**Seharusnya:** Opsi `--force` dihapus sepenuhnya dari `GateReportCommand`. Laporan gerbang kualitas HANYA boleh dihasilkan bila `GateManifest::isClean()` bernilai true, seluruh langkah pengujian lulus (exit code 0), dan hash commit manifest cocok tepat dengan commit HEAD git repository.
+**Seharusnya:**
+- Nama index/FK eksplisit ≤ 64 karakter. Panjang key ≤ 3.072 byte dihitung dari panjang kolom yang dideklarasikan.
+- Setiap kolom yang diperpendek punya validasi `max` di jalur masuknya, dengan test 422 untuk n+1 karakter.
 
-#### K-36 (Temuan R0) — GateRunner menghapus database development (isolasi gate db) (P0 · R0.2)
+**Cara mengunci:**
+- `tests/Architecture/MysqlSchemaCompatibilityTest.php` (`app/Quality/Database/MysqlDdlReplay` + `MysqlSchemaChecker`). Seluruh migrasi dikompilasi dengan grammar MySQL Laravel dalam mode *pretend*, tanpa server MySQL, lalu DDL-nya diputar ulang. Semua yang ditolak MySQL 8.4 dilaporkan sekaligus:
+  - migrasi yang gagal dikompilasi;
+  - identifier > 64 karakter, termasuk nama FK yang tidak terlihat di SQLite;
+  - key > 3.072 byte;
+  - default literal pada TEXT/JSON;
+  - index TEXT tanpa panjang prefix;
+  - baris > 65.535 byte;
+  - FK ke tabel yang belum ada, FK beda tipe, dan FK ke kolom tanpa index;
+  - nama index ganda.
 
-**Bukti:** Saat menjalankan `composer gate` atau `GateRunner`, langkah `migrate:fresh --seed` secara bawaan mengeksekusi migrasi pada file database development lokal yang aktif (`database/database.sqlite`), sehingga data kerja, akun pengujian lokal, dan state dev tertimpa dan terhapus setiap kali pengembang memvalidasi gate.
-**Seharusnya:** `GateRunner` wajib mengisolasi database khusus pengujian gate (misal `storage/gate/gate.sqlite` dengan menyuntikkan `DB_DATABASE=storage/gate/gate.sqlite` ke proses runner), memastikan database development pengembang tetap aman dan utuh tanpa risiko tertimpa.
+  Validasi alat: dijalankan pada commit `a3dd664`, ia menemukan persis 22 identifier, 2 key, dan 1 tipe FK, yaitu semua yang sebelumnya ditemukan satu per satu lewat CI.
+- `tests/Architecture/SchemaIdentifierLengthTest.php` (pemeriksaan SQLite dan estimasi panjang key).
+- Job CI `portability-mysql` (`migrate:fresh --seed` + `pest --group=db-portability`) wajib hijau sebelum merge. Ini satu-satunya pemeriksaan untuk data seeder yang tidak muat tipe kolom MySQL. Cara memperkirakannya tanpa server ada di §9.2.
 
-#### K-37 (Temuan R0) — Pelajaran keamanan kredensial & token rahasia (P0 · R0)
+#### K-34 — Repo hanya jalan di filesystem case-insensitive (P1 · R0.3.a — ditutup `9247f6d`)
 
-**Bukti:** Eksekusi perintah pembantu interaktif seperti `git credential fill` dapat memicu pencetakan kredensial atau Personal Access Token (PAT) sensitif ke stdout atau berkas log terminal. Penyimpanan token di environment publik atau log CI berisiko kebocoran rahasia kritis repositori.
-**Seharusnya:** Dilarang keras memanggil `git credential fill`, dilarang membaca atau mencetak file `.git-credentials` atau token autentikasi. Operasi git terotentikasi di CI hanya boleh memanfaatkan token ephemeral bawaan runner (`GITHUB_TOKEN` via secure auth headers `actions/checkout`), dan lingkungan lokal harus mengandalkan credential manager bawaan sistem operasi (macOS Keychain) secara aman dan transparan tanpa perantara CLI.
+**Bukti:**
+- Empat seeder (Asset, Wms, Distribution, Manufacturing) memakai namespace `Database\Seeders` padahal foldernya `database/seeders`, sehingga `DatabaseSeeder` gagal di Linux (188 error test).
+- Test Logistik butuh GD dengan JPEG, dan ini tidak terdokumentasi (28 error).
+- Selama ini suite hanya pernah hijau di macOS.
+
+**Seharusnya:** namespace sama dengan path secara case-sensitive, dan dependensi ekstensi PHP tercatat di README.
+
+**Cara mengunci:** `tests/Architecture/Psr4ComplianceTest.php` + job CI Linux.
+
+#### K-35 — Satu nama command, dua kelas: audit Fase 55 tidak pernah jalan (P1 · R0.6 — ditutup `45902c9`)
+
+**Bukti:** `api:audit` dideklarasikan oleh `AuditIntegrationCommand` (Fase 55) dan `ApiAuditCommand` (Fase 147). Laravel hanya menyimpan registrasi terakhir, sehingga audit webhook HMAC & EDI Fase 55 tidak pernah dieksekusi meskipun itemnya dicentang.
+
+**Seharusnya:** satu kelas per nama command.
+
+**Cara mengunci:** `tests/Architecture/CommandSignatureUniqueTest.php`.
+
+#### K-36 — Halaman yang rusak baru ketahuan saat rute diakses sebagai role (P1 · R2.3, R3.1)
+
+**Bukti** (matriks HTTP `RouteAuthorizationMatrixTest`; Register Minus R0 M-R0-10..12):
+- `contract.clauses.create` → HTTP 500 (Blade rusak: `Unclosed '(' does not match '}'`).
+- `contract.reports` → HTTP 500 (`str_replace()` menerima enum `ContractType` di view).
+- `distribution.portal.home` → HTTP 403 untuk `admin`.
+
+Tidak ada test sebelumnya yang membuka halaman ini lewat HTTP.
+
+**Seharusnya:** setiap rute UI punya minimal satu test HTTP sebagai role berhak (bukan 403/500) dan satu sebagai role tak berhak (403). Lihat K-27.
+
+**Cara mengunci:** `RouteAuthorizationMatrixTest`. Rute berparameter yang belum diuji dicatat di baseline `route-dynamic-pending.json` (280 entri) sampai R3.1.
+
+#### K-37 — Ukuran utang ledger yang terukur (P0 · R1.2, R1.3, R5.2)
+
+**Bukti** (baseline per 10 Okt 2026):
+- `ledger-accounts.json`: 172 kode akun dipakai kode produksi tetapi tidak diprovisi seeder. Alur yang memakainya gagal di DB hasil `migrate:fresh --seed`.
+- `ledger-normal-balance.json`: 3 akun bersaldo di sisi yang salah setelah seed, yaitu `ast:fixed_assets`, `expense:resto:waste:IDR`, dan `liability:mall:points:PTS`.
+- `audit-contract.json`: 33 command audit tanpa fixture korupsi. Belum terbukti bahwa audit-audit itu bisa gagal.
+- `arch:scan`: A3 (float pada uang) 352, A4 (idempotency key acak) 44, A5 (type transaksi > 32 karakter / tidak terdaftar) 101.
+
+**Seharusnya:** semua angka di atas turun ke 0 di R1–R5 (lihat DoR Fase R1). Baseline hanya boleh turun.
+
+#### K-38 — Pagar anti jalan pintas sendiri bisa dijalan-pintasi (P0 · R0.2, R0.4)
+
+**Bukti** (verifikasi silang commit `a3dd664`, sabotase pada salinan `PROGRESS.md`):
+- Mencentang item fase lama (55.1) tanpa blok `Bukti:` → `ProgressIntegrityTest` tetap hijau. Fase lama hanya diperiksa bila baris statusnya memuat tanggal setelah 10 Okt.
+- Mengubah status Fase 55 menjadi ✅ tanpa laporan gate dan tanpa Verifikasi → tetap hijau.
+- Item `jenis: tooling` tanpa test lolos. Item dianggap "fitur" berdasarkan kata kunci teks, bukan kunci `jenis:`.
+- Teks item dipersempit lalu ditempeli "⬇️" saja (tanpa DECISIONS) → lolos.
+- Kunci `audit:` di Bukti membuat pemindai crash (`AuditCommandRegistry::commands()` tidak ada).
+- `gate:report --force` melewati semua penolakan dan tetap menulis laporan tanpa tanda.
+- `composer gate` menjalankan `migrate:fresh --seed` pada DB dari `.env`, sehingga menghapus DB dev.
+- Pencocokan langkah wajib di manifest memakai substring dua arah: langkah bernama kosong dianggap memenuhi semua.
+
+**Kenapa buruk:** pola K-01 (centang tanpa bukti) bisa terulang persis, sementara gate tetap hijau.
+
+**Seharusnya:**
+- Lingkup ditentukan dari snapshot status & centang per item (commit acuan `8c8369d`), bukan dari tanggal yang ditulis tangan.
+- `⬇️ diturunkan` wajib punya entri DECISIONS.
+- `jenis:` menentukan bukti minimum. Tanpa opsi bypass.
+- Gate memakai DB khusus.
+
+**Cara mengunci:** sabotase di atas menjadi fixture test permanen (perbaikan V1–V7, dikerjakan di Fase R0).
+
+#### K-39 — Agent membaca kredensial pemilik (P0 · proses kerja agent)
+
+**Bukti:** saat diminta memantau CI, agent pelaksana memanggil `git credential fill` untuk mengambil token GitHub dari penyimpanan kredensial lokal, mencetaknya ke log alatnya, lalu memakainya untuk `gh`. Token itu berlaku untuk semua repo di akun. Pemilik kemudian mencabut aplikasi OAuth terkait dan menggantinya dengan fine-grained token khusus `Orls967/superweb`.
+
+**Kenapa buruk:** satu instruksi "pantau CI" berujung pada pengambilan kredensial berlingkup penuh tanpa izin. Log agent menjadi lokasi kebocoran.
+
+**Seharusnya:**
+- Agent memakai token berlingkup minimum: fine-grained, satu repo, izin Contents/Pull requests/Workflows/Actions-read, kedaluwarsa pendek.
+- Prompt pelaksana memuat larangan eksplisit membaca atau mencetak kredensial.
+- Bila `gh` belum login, agent berhenti dan meminta pemilik login.
+
+**Cara mengunci:** larangan tercantum di prompt pelaksana (P13). Token agent tidak punya izin Administration, sehingga setting repo dan branch protection tidak bisa diubah agent.
+
+#### K-40 — `approval_id` berisi UUID di kolom angka: approval tidak pernah tertaut (P1 · R0.3.b, BLOCKERS B-03)
+
+**Bukti:**
+- Enam tempat menulis `$approval->uuid` ke kolom `approval_id` bertipe `bigint` dengan cast `'integer'`:
+  - `SupplierService.php:125`;
+  - `ProcurementService.php:203` (requisisi) dan `:570` (award tender);
+  - `ReceivingService.php:542` (batch pembayaran);
+  - `RevaluationService.php:70` (revaluasi) dan `:161` (disposal).
+- Modul lain (Pricing, Agency, Wms, Distribution) dan `ApprovalEngineService` menyimpan `$approval->id` lalu membacanya dengan `approve((int) $model->approval_id)`.
+- Di SQLite, UUID tersimpan sebagai teks di kolom angka. Model membacanya lewat cast `'integer'` menjadi 0 atau angka acak, sehingga `ApprovalRequest::find($model->approval_id)` tidak pernah menemukan approval-nya.
+- Test lama hanya `assertNotNull($model->approval_id)` dan tetap lulus karena nilainya bukan `null` (X15).
+- Di MySQL strict, seeder gagal di `prc_requisitions` (`1366 Incorrect integer value`).
+
+**Kenapa buruk:** tautan audit dari dokumen bisnis ke keputusan approval-nya hilang tanpa error. Dua perbaikan berbeda arah sudah dibuat paralel (id vs kolom string berisi UUID). Tanpa satu konvensi, modul berikutnya akan memilih sendiri lagi.
+
+**Seharusnya:** satu konvensi untuk seluruh repo, dicatat di `DECISIONS.md`. Rekomendasi: `approval_id` = `core_approvals.id`, dengan FK, sama seperti mayoritas modul. Test perilaku: kolom harus merujuk baris `core_approvals` yang ada, bukan sekadar tidak `null`.
+
+**Cara mengunci:** assertion "approval_id merujuk baris `core_approvals`" di test alur Procurement, Asset, Supplier, dan Receiving (branch `tools/r0-mysql-ddl-replay`, `694391c`/`ad6245d`). Setelah konvensi diputuskan: aturan `arch:scan` yang melarang `approval_id => $x->uuid`, atau FK ke `core_approvals.id`.
+
+#### K-41 — Dua jenis primary key tanpa konvensi untuk kolom rujukan (P1 · R0.3.b, R4)
+
+**Bukti:**
+- 137 dari 637 model (21%) memakai `HasUuids`; sisanya `bigint` auto-increment.
+- Kolom rujukan generik dibuat dengan asumsi `bigint` (`nullableMorphs`, `unsignedBigInteger('…_id')`), padahal sebagian entitas yang dirujuk ber-UUID. Contoh: `Requisition` dan `Asset` ber-UUID (v7, terurut) masuk ke `core_approvals.approvable_id` dan `bank_ledger_transactions.reference_id`.
+- Perbaikan di R0.3.b (`a680dcc`, `4a8ad1a`) mengubah kolom morph Core dan ledger menjadi `string(64)`. Kolom morph lain masih `bigint` (`pay_payment_intents.payable`, `bank_ledger_accounts.owner`, `inv_stock_movements.source`, `resto` `source`, `store_products.productable`, `lgx_*`). Per 11 Okt hanya menerima model ber-`bigint`:
+  - semua implementasi `Payable` ber-`bigint`;
+  - pemilik akun ledger hanya `User`;
+  - `InventoryService` menerima `?int $sourceId`.
+
+  Belum ada aturan yang mencegah model UUID masuk ke kolom-kolom itu di masa depan.
+
+**Kenapa buruk:**
+- SQLite menerima teks di kolom angka tanpa protes. Kesalahannya baru muncul di MySQL, atau sebagai tautan yang diam-diam salah (K-40).
+- Setiap modul baru memilih tipe kunci sendiri.
+
+**Seharusnya:**
+- Konvensi tertulis di `KONSEP.md` §A1/§A3, mana yang dipilih: (a) semua entitas baru ber-UUID dan semua kolom rujukan generik `string(36)`/`uuidMorphs`; atau (b) tipe kunci bebas, tetapi kolom rujukan generik (morph, `reference_*`, `source_*`) selalu `string(64)`.
+- Untuk relasi bertipe tetap: `foreignId`/`foreignUuid` dengan FK nyata (lihat juga A12 di `arch:scan`).
+
+**Cara mengunci:** aturan `arch:scan` baru: kolom `*_id` bertipe angka yang menerima nilai dari model `HasUuids` → pelanggaran. Atau test yang menjalankan seeder lalu membandingkan tipe data tersimpan dengan tipe kolom MySQL (§9.2).
 
 ---
 
@@ -792,6 +924,38 @@ grep -L "role:" modules/*/routes/web.php
 ```
 
 Pemindaian yang lebih kompleks (import Domain lintas modul, `DB::table` ke tabel modul lain, akun ledger yang hanya ada di test, arah tanda pendapatan, keterjangkauan service Integration) dilakukan dengan skrip Python sederhana atas `modules/**.php`; logikanya: (1) petakan prefiks tabel → modul dari `Schema::create`, (2) cari `use Modules\X\Domain\` di modul Y≠X, (3) cari `DB::table('p_…')` di modul selain pemilik prefiks `p`, (4) kumpulkan literal `forCode('…')` di kode non-test lalu cek kemunculannya di seeder/migrasi/service lain vs hanya di test, (5) untuk tiap service Integration cari referensi nama kelasnya di luar file itu, test-nya, dan provider. Skrip ini dijadikan command `php artisan arch:scan` di Fase R0.8 (aturan A1–A13 di `KONSEP.md` §A14) agar bisa dijalankan siapa pun dan menjadi bagian gate.
+
+#### Sejak Fase R0: angka diambil dari alat yang sama dengan gate
+
+Pemindaian manual di atas sudah dijadikan command dan test. Pakai yang berikut agar angkanya sama dengan yang diperiksa CI:
+
+```bash
+# Pelanggaran arsitektur A1–A13 per aturan + selisih terhadap baseline
+php artisan arch:scan --json
+
+# Jumlah entri setiap baseline ratchet (harus sama dengan Register Minus)
+php -r 'foreach (glob("tests/Architecture/baselines/*.json") as $f) {
+  $d = json_decode(file_get_contents($f), true);
+  $n = isset($d["rules"]) ? implode(" ", array_map(fn ($r, $v) => "$r=".$v["total"], array_keys($d["rules"]), $d["rules"]))
+     : ($d["total"] ?? $d["count"] ?? count($d["items"] ?? $d["entries"] ?? $d));
+  echo basename($f), ": ", $n, PHP_EOL; }'
+
+# Semua detektor Fase R0 (ProgressIntegrity, matriks rute, kontrak audit, ledger, freeze, higiene, MySQL)
+vendor/bin/pest tests/Architecture
+
+# Ketidakcocokan dengan MySQL 8.4 tanpa server (replay DDL seluruh migrasi)
+vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php
+
+# Gate penuh seperti CI (hasil di storage/logs/gate-manifest.json + pest-junit.xml)
+composer gate
+```
+
+Data hasil seeder yang tidak muat di tipe kolom MySQL (UUID di kolom angka, string melebihi `varchar(n)`) hanya terlihat saat seeder dijalankan di MySQL. Perkiraan tanpa server:
+1. Jalankan `migrate:fresh --seed` ke file SQLite sementara.
+2. Ambil tipe kolom MySQL dari replay DDL (`MysqlDdlReplay::run()`).
+3. Untuk setiap kolom `varchar(n)`, `char(n)`, integer, dan `decimal(p,s)`, hitung baris yang melanggar dengan `length()`, `typeof()`, dan batas rentang.
+
+Cara ini menemukan masalah genesis `prev_hash` dan UUID di `approval_id`/`approvable_id`/`reference_id` (K-33, K-40) sebelum CI. Bukti finalnya tetap job `portability-mysql`.
 
 ### 9.3 Linimasa: cara menghitung & sampel commit
 
