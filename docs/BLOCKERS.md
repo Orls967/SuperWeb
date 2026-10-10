@@ -16,7 +16,6 @@ Aturan pemakaian (PROGRESS.md §P6):
 | B-01 | 2026-10-10 | R0.3 | Branch protection `master` belum aktif | Kriteria terima R0.3; status ✅ Fase R0 | Pemilik (pengaturan GitHub) |
 | B-02 | 2026-10-11 | R1 (DoR) | Keputusan D1–D8 di DoR Fase R1 | Mulai kode R1 | Pemilik |
 | B-05 | 2026-10-11 | R0.3.b, R1.8 | Belum diketahui apakah ada database berisi data nyata | Cara mengubah skema: edit migrasi lama vs migrasi baru | Pemilik |
-| B-06 | 2026-10-11 | R0.2/R0.3 | CI membuat laporan gate dengan `--fase=R0` tertulis tetap | Laporan gate resmi untuk Fase R1 dan seterusnya | Pelaksana R0 |
 
 ### B-01 — Branch protection `master` belum aktif
 
@@ -54,12 +53,6 @@ Aturan pemakaian (PROGRESS.md §P6):
   - D1 dan D3 di DoR R1 (konversi `decimal`→`bigInteger`).
 - **Pertanyaan untuk pemilik:** adakah instance staging/produksi (SQLite, MySQL, atau lainnya) yang datanya harus dipertahankan? Bila ada: di mana, dan sejak versi berapa.
 
-### B-06 — Laporan gate di CI selalu untuk Fase R0
-
-- **Fakta:** job `PHP 8.4 × SQLite (Full Gate Suite)` menjalankan `php artisan gate:report --fase=R0` dan mengunggah artefak bernama `gate-report-fase-r0`. Fase berikutnya tidak bisa mendapat laporan resmi dari CI tanpa mengubah workflow.
-- **Usulan:** fase diambil dari input workflow (`workflow_dispatch`) atau dari nama branch (`feature/fase-<id>-…`). Laporan dibuat untuk fase itu, dan nama artefak mengikuti fase. `CiWorkflowContractTest` diperbarui agar `--fase` tidak boleh tertulis tetap.
-- **Pemutus:** pelaksana R0 (tooling); dicatat di Register Minus R0 bila belum selesai saat R0 ditutup.
-
 ---
 
 ## Riwayat
@@ -69,3 +62,4 @@ Aturan pemakaian (PROGRESS.md §P6):
 | B-00 | 2026-10-10 s.d. 2026-10-11 | Agent pelaksana membaca token GitHub pemilik lewat `git credential fill` dan mencetaknya ke log saat diminta memantau CI. | Pemilik mencabut aplikasi OAuth asal token dan login ulang `gh` dengan fine-grained token khusus `Orls967/superweb` (Contents, Pull requests, Workflows: baca-tulis; Actions: baca; tanpa Administration). Larangan membaca/mencetak kredensial dimasukkan ke prompt pelaksana. Lihat `KNOWLEDGE.md` K-39 dan `RUNBOOK.md` §7. |
 | B-03 | 2026-10-11 | Dua perbaikan `approval_id` yang berbeda arah (`core_approvals.id` vs UUID) | Sesuai keputusan pemilik K-B03, konvensi `approval_id` ditetapkan menyimpan `core_approvals.id` (`bigint` FK). Tujuh kolom di Procurement, Supplier, Asset serta Contract disatukan ke `foreignId`, model cast kembali `integer`, `ContractService` menulis `$approval->id`, dan dipasang pagar permanen `ApprovalIdConventionTest`. Lihat `DECISIONS.md`. |
 | B-04 | 2026-10-11 | Konstanta genesis hash-chain diubah (Asset, Contract, Manufacturing) | Sesuai keputusan pemilik K-B04 (opsi c), verifikasi rantai menerima genesis baru dan lama (`LEGACY_GENESIS_*`). Kolom `prev_hash` dipastikan 80 karakter. Teruji via `DualGenesisCompatibilityTest`. Lihat `DECISIONS.md`. |
+| B-06 | 2026-10-11 | Laporan gate di CI selalu untuk Fase R0 | Ditambahkan langkah resolusi otomatis fase dari nama branch (regex `feature/fase-([a-zA-Z0-9]+)`) serta input `workflow_dispatch` di `.github/workflows/ci.yml`. Nama artefak dinamis `gate-report-fase-${{ steps.resolve-phase.outputs.fase }}`. Dipasang pagar kontrak `CiWorkflowContractTest`. Terbukti pada commit `92385b0` dan eksekusi CI push #38089526607. |

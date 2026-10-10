@@ -477,7 +477,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Architecture/baselines/test-hygiene.json
     - test: tests/Architecture/IntegrationFreezeTest.php::it keeps modules/Integration frozen except for external adapters and intg_ tables
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
-- [ ] R0.12 **Mutation testing & coverage** (K-27): job CI menjalankan mutation testing Pest pada kelas Action/Service yang diubah PR (verifikasi opsi CLI via `vendor/bin/pest --help`; butuh driver coverage PCOV/Xdebug di CI — bukan dependensi composer); ambang skor 60%.
+- [x] R0.12 **Mutation testing & coverage** (K-27): job CI menjalankan mutation testing Pest pada kelas Action/Service yang diubah PR (verifikasi opsi CLI via `vendor/bin/pest --help`; butuh driver coverage PCOV/Xdebug di CI — bukan dependensi composer); ambang skor 60%.
   Bukti:
     - jenis: tooling
     - commit: aaa4827
@@ -511,7 +511,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-16 | R5.5 | Memori test suite penuh pada batas `memory_limit=512M` phpunit.xml terukur lulus tanpa crash: sekuensial durasi 285.00s peak RSS 685.1MB peak footprint 592.5MB; paralel 10 proses 57.48s peak RSS 389.5MB peak footprint 119.0MB | Risiko Out Of Memory bila test suite bertambah tanpa eksekusi paralel | P2 | R5.5 (K2) |
 | ~~M-R0-17~~ | R0.3 | ~~Portabilitas skema MySQL: 22 identifier ≤ 64 char, key InnoDB ≤ 3072 byte, approval_id disatukan bigint FK~~ | ~~Portabilitas skema MySQL tuntas~~ | ~~P0~~ | Tuntas di R0.3.b (commit `5b2828a`, `4a8ad1a`, diperkuat `2cd2003`; test `MysqlSchemaCompatibilityTest`) |
 | M-R0-18 | R3.1 | 37 rute tulis auditor (V8c) mencantumkan role auditor pada endpoint mutasi data (store/update/delete/settle/transition/decide) | Auditor seharusnya hanya memiliki hak baca (read-only) | P1 | R3.1 (K2) |
-| M-R0-19 | R0.3 | Workflow CI dinamis per-fase terpasang di `.github/workflows/ci.yml` (B-06), menunggu pembuktian eksekusi run CI | Penamaan artefak dan parameter fase otomatis mengikuti branch/input | P2 | Tuntas di commit `92385b0`, menunggu hasil CI |
+| ~~M-R0-19~~ | R0.3 | ~~Workflow CI dinamis per-fase terpasang di `.github/workflows/ci.yml` (B-06)~~ | ~~Workflow CI dinamis tuntas~~ | ~~P2~~ | Tuntas di commit `92385b0`, terbukti pada CI push run #38089526607 (artefak `gate-report-fase-r0`) |
 | M-R0-20 | R0.12 | Skor mutasi `App\Quality\Gate\GateRunner` mencapai 47.87% (131 killed mutants dari 282 total mutasi, naik dari 3.19%), sisa mutan untested pada konstanta MANDATORY_STEPS dan I/O shell | Pagar mutasi runner perlu penguatan lanjutan sampai ambang ≥ 60% | P2 | R5.5 (K2) |
 
 ### FASE R1 — LEDGER & UANG (P0)
