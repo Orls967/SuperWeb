@@ -5,7 +5,7 @@
 > **Posisi terhadap PROGRESS.md:** setiap pilar/lini dipetakan ke fase di PROGRESS (tabel pemetaan di bawah). Sebelum mengerjakan fase mana pun, selesaikan **FASE R (remediasi)** di PROGRESS.
 > **Sifat proyek:** sistem *dummy* monolitik terpadu (modular monolith; semua lini terhubung lewat Contract / Domain Event / Ledger / PaymentGateway / Outbox). Angka skala di bagian pilar adalah **visi (tier T3)**; kriteria selesai memakai tier T0–T2 (§A9).
 > **Prinsip yang diwarisi:** uang integer minor-unit tanpa float; double-entry Σ=0 **dan** saldo normal per jenis akun (§A2.1); hash-chain append-only; idempotensi key deterministik (§A2.5); test (a)–(e) yang bermakna (§A8); quality gate penuh + `*:audit` dua-sumber = 0 selisih (§A5); komunikasi antar-modul hanya via Contract/Event (§A4).
-> **Cara pakai:** baca **Bagian A** (aturan teknis lintas pilar) → bagian pilar/lini yang akan dikerjakan, terutama subbagian **"xF. Spesifikasi implementasi minimum"** → item fase di PROGRESS beserta baris status auditnya.
+> **Cara pakai:** baca **Bagian A** (A0–A17: aturan teknis, detektor otomatis, template kode normatif) → bagian pilar/lini yang akan dikerjakan, terutama subbagian **"xF. Spesifikasi implementasi minimum"** beserta **"Jalan pintas terlarang"** dan **"Bukti selesai minimum"** → item fase di PROGRESS beserta baris status & kriteria terima wajibnya. Untuk menjalankan agent, pakai template prompt pelaksana & verifikator di `PROGRESS.md` §P13.
 
 ---
 
@@ -63,7 +63,7 @@ Setiap pilar di bawah didefinisikan dengan 6 bagian: **Skala** (visi T3), **Oper
 | **KONSEP / PROGRESS / KNOWLEDGE** | KONSEP = spesifikasi tujuan (apa & bagaimana seharusnya). PROGRESS = rencana eksekusi + status per item + bukti. KNOWLEDGE = hasil audit (apa yang sebenarnya ada). |
 | **Vertical slice** | Potongan fitur yang lengkap dari DB sampai layar: migrasi → model → action → rute/controller → view/menu → role → akun ledger + seeder → command (bila periodik) → audit → test HTTP (a)–(e). Hanya vertical slice yang boleh dicentang. |
 | **Modul pemilik** | Satu-satunya modul yang boleh membuat & menulis tabel dengan prefiks tertentu (registry §A1). Modul lain membaca lewat Contract/Query milik pemilik. |
-| **Simulasi** | Proyek ini mensimulasikan bisnis nyata. Setiap aturan diberi tingkat: **S1** aturan disederhanakan & dinyatakan eksplisit (mis. "PPh 21 = tarif tetap 5% — simulasi S1"); **S2** aturan mengikuti regulasi dengan parameter di config (mis. tarif TER, PTKP); **S3** integrasi pihak luar lewat adapter tiruan berstatus `simulated_*`. Tingkat wajib ditulis di item PROGRESS & komentar kelas. |
+| **Simulasi** | Proyek ini mensimulasikan bisnis nyata. Setiap aturan diberi tingkat: **S1** aturan disederhanakan & dinyatakan eksplisit (mis. "PPh 21 = tarif tetap 5% — simulasi S1"); **S2** aturan mengikuti regulasi dengan parameter di config (mis. tarif TER, PTKP); **S3** integrasi pihak luar lewat adapter tiruan berstatus `simulated_*`. Tingkat wajib ditulis di item PROGRESS & komentar kelas. Simulasi **tidak pernah** melonggarkan invarian internal — uang, otorisasi, idempotensi, enkripsi data internal, dan audit tetap harus benar (larangan X22). |
 | **Tier skala T0–T3** | Lihat §A9. Angka "jutaan" di bagian pilar = T3 (visi), **bukan** syarat centang. |
 | **Status ✅/🟡/🟠/⬜** | Sama dengan legenda di `PROGRESS.md`. |
 
@@ -243,7 +243,7 @@ Partisi tabel & retensi hot/warm/cold hanya diimplementasikan di MySQL/PostgreSQ
 
 **Ready** (sebelum item dikerjakan): modul pemilik & prefiks jelas (§A1); akun ledger & arah posting tertulis di spesifikasi pilar (subbagian xF); event yang dipancarkan/dikonsumsi ada di katalog (§A4.2); role & rute ditentukan; audit dua-sumber dirumuskan; tingkat simulasi (S1/S2/S3) dan tier skala (T0/T1/T2) dinyatakan; prasyarat berstatus ✅.
 
-**Done:** vertical slice (§A0) + blok `Bukti:` di PROGRESS + gate penuh hijau + dokumen diperbarui. Detail protokol: `PROGRESS.md` §P1–P6.
+**Done:** vertical slice (§A0) + blok `Bukti:` di PROGRESS + gate penuh hijau + dokumen diperbarui. Detail protokol: `PROGRESS.md` §P1–P13 (DoR §P8, Register Minus §P9, verifikasi silang §P7).
 
 ## A12. Urutan pengerjaan lintas pilar (dependensi)
 
@@ -263,7 +263,220 @@ Party KYC + Payment ✅ ─── Lini 9 Rumah Sakit · Lini 10 Venue · Lini 11
 Lini 13–17 ────────────── setelah lini sumber datanya ✅ (Egy butuh Proptech meter; Tlx menjadi registry perangkat IoT tunggal; Ret memakai Inventory, bukan stok sendiri)
 ```
 
----
+## A13. Larangan teknis, alasannya, dan pola yang benar
+
+Larangan X1–X25 di `PROGRESS.md` §P3 berlaku sebagai aturan teknis yang mengikat. Tabel ini menjelaskan **kenapa** (temuan audit `KNOWLEDGE.md` §5) dan **pola benarnya** di dokumen ini, khusus untuk larangan yang menyangkut kode.
+
+| Larangan | Kenapa dilarang (bukti audit) | Pola yang benar |
+|---|---|---|
+| X2 fitur di `Integration` / prefiks modul lain | 857 dari 1.516 tabel jadi milik `Integration`; prefiks `esg_`/`hcm_`/`fin_`/`ins_`/`gov_` bentrok (K-05) | §A1 registry; §A15.6 struktur modul |
+| X3 float untuk uang | 302 parameter uang `float`; SQLite menyimpan `decimal` ±15 digit (K-14) | §A2.6; integer minor unit; basis poin |
+| X4 key idempotensi acak | 27 lokasi `Str::uuid/random/now()` → retry menggandakan posting (K-12) | §A2.5; §A15.1 langkah 3–4 |
+| X5/X23 akun & data hanya di test | 134 dari 174 akun hanya ada di test → alur gagal di DB hasil seed (K-11) | §A2.3; §A15.2 |
+| X6 tanda manual / pendapatan negatif | ≥ 12 modul memposting pendapatan negatif; Σ=0 tetap lolos (K-10) | §A2.1; helper `Posting` §A15.3 |
+| X7 flag boolean sebagai kontrol | 184 service menerima `$approved`/`$verified`/… dari pemanggil (K-21) | §A3 (id approval), §A15.1 langkah 2 |
+| X9 status sukses tanpa aksi | webhook `delivered` tanpa request, EDI `accepted` tanpa parsing (K-31) | §A4.5 (`simulated_*`) |
+| X10 "enkripsi" palsu | formula PLM `base64_encode`; NIK `sha256` tanpa kunci; tender plaintext (K-22) | §A6 kelas data P1 |
+| X11 rute hanya `auth` | customer bisa auto-debit tenant Mall & bayar supplier Resto (K-20) | §A6; §A15.4 |
+| X14 `Carbon::setTestNow()` di produksi | sim kernel menggeser jam seluruh proses (K-09) | §A10.1 `ClockInterface` |
+| X15 `back()->errors()` / `assertTrue(true)` | 15 jalur galat → HTTP 500; test tanpa efek (K-27, K-29) | §A15.4, §A15.5 |
+| X16 Domain/tabel lintas modul | 337 import Domain lintas modul, 47 `DB::table` lintas prefiks (K-07) | §A4.4 Contract; §A1 |
+| X21 menyalin kerangka `Integration` | kerangka memuat X3/X4/X6/X7 sekaligus | tulis ulang dari §A15 |
+| X22 "simulasi" melonggarkan invarian | komentar "Simulasi BPJS & PPh21 TER" menutupi tarif datar 5% (`HcmService`); item 59.4 menyebut "AES/base64" sebagai enkripsi | §A0: simulasi hanya untuk aturan eksternal |
+| X25 default diam-diam | faktor emisi 1.0 untuk aktivitas tak dikenal (`EsgService::recordEmission`), gaji 5 jt & rekening default (`HcmService::registerEmployee`), suhu oli 90 °C/tegangan 12,6 V (`TelematicsIngestService::ingestTick`) | validasi eksplisit → 422 |
+
+## A14. Spesifikasi detektor otomatis (pagar anti jalan pintas)
+
+Detektor dipasang di Fase R0 (`PROGRESS.md` §P11) dan wajib hijau di setiap gate. Semua detektor yang memeriksa kode lama memakai **baseline ratchet**: `tests/Architecture/baselines/{detektor}.json` menyimpan jumlah pelanggaran per aturan; gate gagal bila angka **naik**; PR yang menurunkan angka wajib memperbarui baseline; menaikkan baseline hanya dengan entri `DECISIONS.md` + persetujuan pemilik.
+
+**A14.1 `php artisan arch:scan`** — memindai `modules/**` (kecuali `tests/` bila tidak disebut), keluaran JSON per aturan + daftar lokasi.
+
+| Aturan | Mendeteksi | Cakupan & pengecualian | Perkiraan awal (audit 10 Okt 2026) |
+|---|---|---|---|
+| A1 | `use Modules\{B}\Domain\...` di modul A ≠ B | kecuali shared kernel yang tercatat di DECISIONS (mis. enum/DTO ledger setelah dipindah ke `Shared\Ledger`) | 337 import |
+| A2 | `DB::table('{p}_…')` atau `Schema::create('{p}_…')` di modul yang bukan pemilik prefiks `{p}` (registry §A1) | migrasi pemindahan yang disetujui | 47 akses + ±800 tabel milik Integration berprefiks lain |
+| A3 | parameter/properti `float` bernama uang (`*idr*`, `amount`, `price`, `cost`, `fee`, `revenue`, `salary`, `total`, `budget`, `balance`) dan kolom `decimal` bernama `*_idr` | kuantitas fisik (kWh, kg, jam) boleh float bila dinyatakan | ±302 parameter + 80 kolom |
+| A4 | `Str::uuid`, `Str::random`, `uniqid`, `random_bytes`, `now()`, `time()` di dalam argumen/variabel idempotency key | — | 27 lokasi |
+| A5 | `type:` posting ledger > 32 karakter atau tidak terdaftar di registry tipe | — | 12 tipe terlalu panjang |
+| A6 | parameter `bool` bernama kontrol (`$approved`, `$verified*`, `$passed`, `$compliant`, `$signed`, `$consent*`, `$evidence*`, `$attested`, `$certified`, `$*Granted`) di `Application/` | parameter filter tampilan dikecualikan lewat atribut `#[NotAControl]` + alasan | 184 service |
+| A7 | `base64_encode`/`hash()` tanpa kunci yang ditulis ke kolom bernama `*_encrypted`, `*secret*`, `*nik*`, `*npwp*`, `*passport*` | — | ≥ 3 lokasi |
+| A8 | `Carbon::setTestNow` / `Date::setTestNow` di luar `tests/` | — | 3 baris |
+| A9 | `Modules\Shared` atau `Modules\Core` memakai namespace modul bisnis | — | ≥ 2 file |
+| A10 | `$guarded = []` | — | 162 model |
+| A11 | file PHP tanpa `declare(strict_types=1)` | migrasi & view dikecualikan | 341 file |
+| A12 | kolom `*_id` intra-modul tanpa FK/index | kolom lintas modul (id + Contract) dikecualikan bila terdaftar | ±560 kolom (1.222 kolom `*_id` vs 661 deklarasi FK) |
+| A13 | `back()->errors()` | — | 15 lokasi |
+
+**A14.2 `ProgressIntegrityTest`** — mem-parse `docs/PROGRESS.md`; memvalidasi blok `Bukti:` sesuai `PROGRESS.md` §P2 (commit ada & menyentuh file yang disebut; file/test ada; test lulus di laporan gate; rute ada dengan middleware role yang sesuai; command/listener terdaftar; item fitur wajib punya `akses` + test HTTP/command). Juga gagal bila: status ✅ diberikan pada fase yang tidak punya bagian **Verifikasi** di `docs/gates/fase-N.md`; ada minus P0/P1 terbuka pada fase ✅; teks item berubah tanpa penanda `⬇️ diturunkan` (dibandingkan dengan snapshot item di baseline).
+
+**A14.3 `RouteAuthorizationMatrixTest`** — `tests/Architecture/route-roles.php` memetakan `nama rute => [role yang boleh]` (atau `'public'`); untuk setiap rute: tidak terdaftar → gagal; role berhak → bukan 403; satu role tak berhak acak → 403. Rute dengan parameter model memakai factory/seeder T0.
+
+**A14.4 `AuditCommandContractTest`** — setiap command `*:audit`, `verify-*`, `*:reconcile` wajib punya kelas fixture `{Command}CorruptionFixture` yang merusak satu sumber data; test: seed bersih → exit 0; fixture diterapkan → exit ≠ 0 dan keluaran menyebut entitas yang rusak.
+
+**A14.5 `LedgerAccountRegistryTest` & `LedgerNormalBalanceTest`** — (1) semua kode akun yang dipakai kode produksi (literal `forCode`, konstanta `{M}Accounts`) terdefinisi & terseed dengan `kind` yang cocok; (2) setelah seed + skenario golden, saldo setiap akun sesuai sisi normal §A2.1 (pengecualian `clearing`/`exchange`).
+
+**A14.6 `IntegrationFreezeTest`** — daftar file & tabel `modules/Integration` dibekukan di baseline; file baru hanya boleh di `Adapters/`, `Webhooks/`, `Edi/`, `Http/Controllers/Api/`; tabel baru hanya berprefiks `intg_`.
+
+**A14.7 `TestHygieneTest`** — T1 `assertTrue(true)`/`expect(true)->toBeTrue()`; T2 `LedgerAccount::create|firstOrCreate|updateOrCreate` di test; T3 `markTestSkipped`/`->skip()` tanpa rujukan BLOCKERS; T4 modul yang punya rute tetapi tidak satu pun test-nya melakukan request HTTP.
+
+**A14.8 Mutation testing** — mutation testing Pest untuk kelas Action/Service yang diubah PR (ditandai di test dengan `covers()`/`mutates()` sesuai versi Pest terpasang); skor minimal 60%; dijalankan di CI dengan driver coverage (PCOV/Xdebug).
+
+## A15. Template kode normatif
+
+Template ini adalah bentuk minimum yang **harus** diikuti; menyimpang dari template perlu alasan di DECISIONS. Nama kelas contoh memakai lini Rumah Sakit.
+
+**A15.1 Action keuangan** (gabungan pola baik `RecognizeFreightRevenueAction`, `PaymentGatewayService`, `VerifyPinAction`):
+
+```php
+final class BillTrialMilestoneAction
+{
+    public function __construct(private readonly Ledger $ledger, private readonly ClockInterface $clock) {}
+
+    public function execute(int $milestoneId, User $actor): TrialMilestone
+    {
+        return DB::transaction(function () use ($milestoneId, $actor): TrialMilestone {
+            // 1) kunci baris sumber kebenaran
+            $milestone = TrialMilestone::whereKey($milestoneId)->lockForUpdate()->firstOrFail();
+
+            // 2) otorisasi di domain (selain middleware rute)
+            Gate::forUser($actor)->authorize('bill', $milestone);
+
+            // 3) idempoten di level STATE
+            if ($milestone->billed_at !== null) {
+                return $milestone;
+            }
+            $milestone->status->assertCanTransitionTo(MilestoneStatus::Billed);
+
+            // 4) key deterministik + tanda lewat helper
+            $transaction = $this->ledger->post(new PostingDTO(
+                type: HospitalTransactionType::TrialMilestone->value,
+                description: "Tagihan milestone {$milestone->number}",
+                idempotencyKey: "hsp:trial-milestone:{$milestone->id}",
+                entries: Posting::lines()
+                    ->debit(HospitalAccounts::TRIAL_SPONSOR_RECEIVABLE, $milestone->amount_idr)
+                    ->credit(HospitalAccounts::TRIAL_RESEARCH_REVENUE, $milestone->amount_idr)
+                    ->toEntries('IDR'),
+                referenceType: TrialMilestone::class,
+                referenceId: $milestone->id,
+                createdBy: $actor->id,
+            ));
+
+            // 5) state + tautan ke transaksi ledger
+            $milestone->forceFill([
+                'status' => MilestoneStatus::Billed,
+                'billed_at' => $this->clock->now(),
+                'ledger_transaction_id' => $transaction->id,
+            ])->save();
+
+            // 6) event setelah commit
+            DB::afterCommit(fn () => event(new TrialMilestoneBilled($milestone->id)));
+
+            return $milestone;
+        });
+    }
+}
+```
+
+**A15.2 Chart of accounts modul:**
+
+```php
+final class HospitalAccounts implements ProvidesLedgerAccounts
+{
+    public const TRIAL_SPONSOR_RECEIVABLE = 'hsp:trial_sponsor_receivable:IDR';
+    public const TRIAL_RESEARCH_REVENUE = 'hsp:trial_research_revenue:IDR';
+
+    /** @return list<LedgerAccountDefinition> */
+    public static function definitions(): array
+    {
+        return [
+            new LedgerAccountDefinition(self::TRIAL_SPONSOR_RECEIVABLE, AccountKind::ASSET, 'IDR', allowNegative: true),
+            new LedgerAccountDefinition(self::TRIAL_RESEARCH_REVENUE, AccountKind::REVENUE, 'IDR', allowNegative: false),
+        ];
+    }
+
+    /** Akun per-subjek dibuat on demand oleh kode produksi, bukan oleh test. */
+    public static function patientReceivable(int $episodeId): string
+    {
+        return "ar:hsp:episode:{$episodeId}:IDR";
+    }
+}
+```
+
+**A15.3 Helper posting** (tanda tidak pernah ditulis manual):
+
+```php
+$entries = Posting::lines()
+    ->debit(HotelAccounts::folioReceivable($folio->id), $roomChargeIdr)   // → −amount (sisi debit)
+    ->credit(HotelAccounts::ROOM_REVENUE, $roomChargeIdr - $taxIdr)        // → +amount (sisi kredit)
+    ->credit(HotelAccounts::TAX_PAYABLE, $taxIdr)
+    ->toEntries('IDR');                                                    // gagal bila Σ ≠ 0
+```
+
+**A15.4 Rute, role, controller tipis, jalur galat:**
+
+```php
+Route::middleware(['web', 'auth', 'role:rs_admin,cashier_rs'])
+    ->prefix('hospital/billing')->name('hospital.billing.')
+    ->group(function (): void {
+        Route::post('trials/milestones/{milestone}/bill', [TrialBillingController::class, 'bill'])->name('trials.milestones.bill');
+    });
+
+public function bill(Request $request, TrialMilestone $milestone, BillTrialMilestoneAction $action): RedirectResponse
+{
+    try {
+        $action->execute($milestone->id, $request->user());
+    } catch (InvalidStateTransition $exception) {
+        return back()->withErrors(['milestone' => $exception->getMessage()])->withInput();
+    }
+
+    return back()->with('success', "Milestone {$milestone->number} ditagihkan.");
+}
+// + entri 'hospital.billing.trials.milestones.bill' => ['rs_admin', 'cashier_rs'] di tests/Architecture/route-roles.php
+```
+
+**A15.5 Test (a)–(e)** (Pest; sesuaikan nama factory/state dengan yang ada di repo):
+
+```php
+beforeEach(fn () => $this->seed([LedgerAccountsSeeder::class, HospitalDemoSeeder::class]));
+
+it('menagih milestone sekali walau tombol ditekan dua kali (a, c, d)', function (): void {
+    $admin = User::factory()->create(['role' => 'rs_admin']);
+    $milestone = TrialMilestone::factory()->pending()->create(['amount_idr' => 500_000_000]);
+
+    $this->actingAs($admin)->post(route('hospital.billing.trials.milestones.bill', $milestone))->assertRedirect();
+    $this->actingAs($admin)->post(route('hospital.billing.trials.milestones.bill', $milestone))->assertRedirect();
+
+    expect(LedgerTransaction::where('idempotency_key', "hsp:trial-milestone:{$milestone->id}")->count())->toBe(1)
+        ->and($milestone->fresh()->billed_at)->not->toBeNull();
+    $this->artisan('hosp:audit')->assertExitCode(0);
+});
+
+it('menolak role yang tidak berhak (b)', function (): void {
+    $nurse = User::factory()->create(['role' => 'nurse']);
+    $milestone = TrialMilestone::factory()->pending()->create();
+
+    $this->actingAs($nurse)->post(route('hospital.billing.trials.milestones.bill', $milestone))->assertForbidden();
+});
+
+it('hosp:audit gagal bila tagihan tidak cocok dengan ledger (audit negatif)', function (): void {
+    $milestone = TrialMilestone::factory()->billed()->create(['amount_idr' => 500_000_000]);
+    $milestone->forceFill(['amount_idr' => 400_000_000])->saveQuietly();   // rusak satu sumber
+
+    $this->artisan('hosp:audit')->assertExitCode(1);
+});
+```
+
+**A15.6 Audit dua-sumber:** baca sumber A (tabel modul) per `chunkById`, cocokkan dengan sumber B (posting ledger ber-key / movement / hash-chain), cetak tabel selisih, exit ≠ 0 bila ada selisih, dan sediakan `{Command}CorruptionFixture` (§A14.4).
+
+## A16. Aturan fase tema & keputusan modul baru
+
+- **Fase tema** (Fase 185–500, mis. "Governance Wave", "Platform Wave", "Final: Enterprise …") wajib diterjemahkan di DoR (`PROGRESS.md` §P8) menjadi perubahan nyata pada modul domain yang ada — rute, aksi, audit, test yang bisa ditunjuk — **atau** dinyatakan ditunda/tidak berlaku lewat aturan lingkup (§P10). Dilarang membuat service "skor/flag/maturity" yang hanya menyimpan angka masukan pemanggil.
+- **Tema rekayasa** (release train, SLO, DX tooling, observability) umumnya diwujudkan sebagai artefak engineering (workflow CI, konfigurasi, dashboard, runbook yang diuji), **bukan** tabel aplikasi.
+- **Modul baru** (mis. `Syariah`, `Crm`, `Grc`, `Marine`, `Forest`) hanya dibuat bila: domainnya tidak bisa menjadi sub-domain modul yang sudah ✅; prefiks didaftarkan di §A1; keputusan dicatat di `DECISIONS.md`; pemilik menyetujui (CLAUDE.md melarang folder dasar baru tanpa izin).
+
+## A17. Status, verifikasi, dan Register Minus
+
+Alur status (`⬜/🟠/🟡 → 🔨 → 🔵 → ✅/🔁`), checklist verifikator C1–C14, template DoR, kriteria vertical slice V1–V12, dan Register Minus didefinisikan di `PROGRESS.md` §P7–P9; template prompt pelaksana & verifikator di §P13. Prinsip yang mengikat seluruh KONSEP: **yang menulis kode tidak memverifikasi dirinya sendiri, dan setiap kekurangan harus tertulis** — fase dengan minus P0/P1 terbuka tidak pernah berstatus ✅.
 
 ---
 
@@ -326,6 +539,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Test kunci:** tick duplikat idempoten; anomali sama dalam satu hari → satu draf booking; unit grounded ditolak dispatch; stop sesi 2× → satu capture; tagihan bulan sama 2× → satu invoice & akumulasi tidak bergeser.
 - **Skala:** T1 = 200 kendaraan, 50 perangkat, 10 rb tick; T2 = 1 jt tick (benchmark ingest & query baseline); T3 = visi 1A.
 - **Di luar MVP:** InsurTech tersemat (Pilar 2), resale value oracle, recall engine.
+
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): baseline telematik berupa konstanta yang tidak pernah dihitung ulang; semua DTC dianggap kritis; akumulasi amortisasi sewa diubah sebelum posting ber-key; `Str::random` di key kompensasi SLA; akun `oto:*` dibuat di test; nilai sensor default diam-diam (90 °C, 12,6 V, BBM 100%).
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): rute `/oto/*` dengan role; test HTTP draf booking tepat sekali per anomali per hari; test stop sesi EV ganda → satu capture; test tagihan sewa bulan sama 2× → satu invoice & akumulasi tetap; `auto:audit` + fixture korupsi; seeder T1 Mobility.
 
 ---
 
@@ -391,6 +607,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Skala:** T1 = 20 aset RWA, 500 holder, 1 rb polis, 200 portofolio; T3 = visi 2A.
 - **Di luar MVP:** orderbook sekunder RWA, stablecoin internal (Pilar 7), credit scoring lintas pilar.
 
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): dividen dihitung dari angka masukan, bukan pendapatan terposting; kepemilikan token tanpa ledger aset; klaim dicairkan dengan flag `$approved`; premi diakui penuh saat dibayar; NAV/alokasi memakai float.
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): rute `/rwa`, `/insurance`, `/wealth` dengan role; test pembelian token tanpa KYC → 403; test dividen periode sama 2× → sekali & Σ pembulatan = deklarasi; test klaim ganda → satu; `fintech:audit` + fixture korupsi.
+
 ---
 
 # PILAR 3 — KULINER, RESTORAN & WARALABA
@@ -449,6 +668,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Audit dua sumber (`resto:audit`):** konsumsi bahan per batch = movement bahan; penjualan vending = stok keluar unit; Σ potongan katering = Σ baris payroll potongan.
 - **Test kunci:** hitung tagihan 2× → HPP sekali; potongan melebihi kuota → ditolak; forecast deterministik (seed); restock tidak membuat stok negatif.
 - **Skala:** T1 = 10 outlet, 2 dapur sentral, 20 vending, 5 rb order; T3 = visi 3A.
+
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): CloudKitchen menulis tabel `resto_*`; potongan katering di luar baris payroll; forecast acak tanpa seed; stok vending di luar Inventory; hitung tagihan hidang yang memotong HPP lagi saat dipanggil ulang (bug lama, R2.1).
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): rute `/cloud-kitchen`, `/vending` dengan role; test Σ potongan katering = konsumsi = baris payroll; test hitung tagihan 2× → HPP sekali; test forecast deterministik (seed); `resto:audit` + fixture korupsi.
 
 ---
 
@@ -509,6 +731,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Test kunci:** bacaan duplikat tidak menggandakan tagihan; booking flex overlap ditolak; kapitalisasi sebelum BAST final → ditolak; progres > 100% → ditolak.
 - **Skala:** T1 = 2 properti, 200 unit, 50 sensor × 7 hari per jam (±8 rb bacaan); T2 = 1 jt bacaan; T3 = visi 4A.
 
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): tagihan utilitas dari estimasi, bukan bacaan; Proptech/Epc menulis tabel modul lain (`mall_*`, `ast_*`); CIP/escrow sebagai kolom angka tanpa ledger; booking flex-space tanpa kunci slot.
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): rute `/proptech`, `/epc`, `/flex` dengan role; test bacaan duplikat tidak menggandakan tagihan; test kapitalisasi sebelum BAST final ditolak; test overlap booking ditolak; `proptech:audit` & `epc:audit` + fixture korupsi.
+
 ---
 
 # PILAR 5 — LOGISTIK MULTIMODA, SCM & GUDANG
@@ -566,6 +791,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Test kunci:** breach 9 menit → tidak hold; breach 11 menit → hold sekali walau pembacaan berulang; drone melebihi berat → ditolak saat perencanaan rute.
 - **Skala:** T1 = 2 rb shipment, 50 armada, 5 rb pembacaan suhu; T2 = 200 rb shipment (sudah pernah ada `LogisticsLargeSeeder`); T3 = visi 5A.
 
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): tahan pembayaran carrier berupa kolom status tanpa ledger; breach dihitung per pembacaan sehingga ganda; batas drone hanya ditegakkan di test; material daur ulang tanpa lot Manufaktur.
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): test breach 9 menit (tanpa hold) vs 11 menit (hold sekali walau pembacaan berulang); test lepas tahanan memulihkan utang; test drone melebihi berat ditolak saat perencanaan; `logi:circular-audit` + fixture korupsi.
+
 ---
 
 # PILAR 6 — MANUFAKTUR, DISTRIBUSI & KEBIJAKAN HARGA
@@ -614,6 +842,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Audit dua sumber:** setiap baris order = harga terkunci pada saat order (bukan tick terbaru); tick tidak melanggar floor/ceiling; auto-PO ≤ plafon kontrak.
 - **Test kunci:** tick di luar guardrail → ditolak & tercatat; order lama tidak berubah harga saat tick baru; VMI dipanggil ulang → satu PO; desain C2M tidak valid (dimensi di luar batas) → 422.
 - **Skala:** T1 = 1 rb SKU, 10 rb tick; T2 = 1 jt tick; T3 = visi 6A.
+
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): harga order mengikuti tick terbaru (bukan harga terkunci); tabel `prc_*` dibuat di Pricing; auto-PO tanpa plafon kontrak/approval; jalur galat `back()->errors()->add()`.
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): test harga order lama tidak berubah setelah tick baru; test tick di luar guardrail ditolak & tercatat; test VMI dipanggil ulang → satu PO; test HTTP jalur galat (redirect + pesan, bukan 500); `pricing:audit` + fixture korupsi.
 
 ---
 
@@ -668,6 +899,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Audit dua sumber (`clearing:audit`):** saldo escrow = Σ escrow terbuka; Σ rilis = Σ BL terverifikasi; sertifikat CBAM = emisi Esg terverifikasi.
 - **Test kunci:** rilis tanpa hash BL valid → ditolak; rilis dobel → sekali; usulan AI tanpa approval → tidak bisa submit; rekonstruksi usulan dari snapshot = identik.
 - **Skala:** T1 = 20 koridor, 100 L/C, 200 kontainer; T3 = visi 7A.
+
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): rilis escrow tanpa verifikasi hash BL/POD di custody chain; CBAM dari masukan emisi bebas; usulan AI langsung submit tanpa approval; usulan AI tanpa snapshot input (tidak bisa direkonstruksi).
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): test rilis tanpa hash valid ditolak & rilis ganda → sekali; test rekonstruksi usulan dari snapshot identik; test submit tanpa approval ditolak; `clearing:audit` + fixture korupsi.
 
 ---
 
@@ -725,6 +959,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Audit dua sumber:** Σ baris payroll = posting payroll; bounty terbayar = baris payroll bounty; Σ bobot suara = snapshot bobot; pencairan NDVI hanya pada scan ≥ ambang.
 - **Test kunci:** payroll periode sama 2× → sekali; bounty diklaim karyawan tanpa sertifikat → ditolak; voting setelah tutup → ditolak; proposal lolos tidak langsung mengeksekusi tanpa approval.
 - **Skala:** T1 = 500 karyawan, 3 bulan absensi, 100 petani, 20 proposal; T3 = visi 8A.
+
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): pajak/BPJS tarif datar tanpa label simulasi & persetujuan (P10); status payroll di-hard-code `approved`; gaji/rekening default diam-diam; bounty dibayar di luar payroll; voting tanpa snapshot bobot; proposal lolos langsung mengeksekusi; halaman gaji tanpa role.
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): rute `/hcm` hanya `hcm_manager`/`admin` (karyawan hanya slipnya sendiri); test payroll periode sama 2× → sekali; test bounty tanpa sertifikat ditolak; test voting setelah tutup ditolak; `hcm:audit` & `governance:audit` + fixture korupsi.
 
 ---
 
@@ -795,6 +1032,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Test kunci:** bed yang sama dialokasikan dua pasien bersamaan → satu gagal; discharge 2× → satu settlement; akses rekam medis pasien lain → 403 + tercatat; dispensing melebihi stok → ditolak.
 - **Skala:** T1 = 2 RS, 200 bed, 2 rb pasien, 5 rb encounter; T3 = visi 9A.
 
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI; "randomisasi blok" berupa paritas `crc32 % 2`.
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): rute `/hospital/*` dengan role per peran; test alokasi bed bersamaan → satu gagal; test akses rekam medis pasien lain → 403 + tercatat; test discharge 2× → satu settlement; `hosp:audit` + fixture korupsi.
+
 ---
 
 # PILAR 10 — BEACH CLUB, CLUB NASIONAL & INTERNATIONAL (NIGHTLIFE & ENTERTAINMENT)
@@ -856,6 +1096,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Test kunci:** tiket dipindai 2× → kedua ditolak; usia di bawah batas → ditolak; zona penuh → ditolak; no-show diproses 2× → sekali.
 - **Skala:** T1 = 3 venue, 20 event, 10 rb tiket; T3 = visi 10A.
 
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak di creator economy; pendapatan tiket diakui saat jual; prefiks `ven_` dipakai bersama Vending.
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): rute `/venue/gate` (layak di 375 px) dengan role `venue_staff`; test pindai 2× → kedua ditolak; test usia di bawah batas ditolak; test no-show diproses 2× → sekali; `venue:audit` + fixture korupsi.
+
 ---
 
 # PILAR 11 — PERHOTELAN & HOSPITALITY (HOTELS & RESORTS)
@@ -914,6 +1157,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Audit dua sumber (`hotel:audit`):** room-night terjual = baris room charge folio = posting `htl:room_revenue`; tidak ada tanggal dengan kamar terjual > inventori; folio ditutup bersaldo 0.
 - **Test kunci:** dua reservasi bersamaan untuk kamar terakhir → satu gagal; night audit 2× untuk tanggal sama → sekali; check-out folio bersaldo ≠ 0 → ditolak.
 - **Skala:** T1 = 3 properti, 300 kamar, 90 hari reservasi; T3 = visi 11A.
+
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): oversell kamar tanpa kunci inventori per malam; night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0.
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): rute `/hotel/*` dengan role per peran; test dua reservasi bersamaan untuk kamar terakhir → satu gagal; test night audit tanggal sama 2× → sekali; `hotel:audit` + fixture korupsi.
 
 ---
 
@@ -976,6 +1222,9 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Audit dua sumber (`mining:audit`):** Σ weighbridge = Σ mutasi stockpile = Σ pengapalan (± toleransi); royalti = produksi × tarif; BBM terbayar = konsumsi terukur ± toleransi; hash-chain weighbridge valid.
 - **Test kunci:** tiket timbang duplikat → ditolak; penalti untuk evaluasi yang sama 2× → sekali; izin kerja kedaluwarsa → aktivitas ditolak; royalti bulan sama 2× → sekali.
 - **Skala:** T1 = 2 situs, 5 pit, 50 alat, 5 rb tiket timbang; T2 = 500 rb tiket; T3 = visi 12A.
+
+- **Jalan pintas terlarang** (pola yang ditemukan audit atau paling mungkin muncul di pilar ini): key acak di penalti kontraktor & lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik.
+- **Bukti selesai minimum** (selain V1–V12 di `PROGRESS.md` §P8): rute `/mining/weighbridge` (layak di 375 px) dengan role `weighbridge_operator`; test tiket timbang duplikat ditolak; test royalti bulan sama 2× → sekali; test izin kerja kedaluwarsa menolak aktivitas; `mining:audit` + fixture korupsi.
 
 ---
 
@@ -1057,35 +1306,35 @@ Lini 13–17 ────────────── setelah lini sumber data
 - **Operasional:** grid dispatch unit-commitment sederhana, tarif time-of-use, net metering & PPA antar-entitas (intercompany billing), EV charging dijadwalkan off-peak (demand response), microgrid dengan islanding prioritas beban (RS > pabrik > mall), arbitrage battery, ESCO performance contract (bayar dari penghematan).
 - **Hasil:** tagihan utilitas terkonsolidasi per properti, PUE & renewable %, resilience scorecard per site, revenue energi hijau.
 - **Lanjutan:** carbon trading internal + REC marketplace, ESG-linked pricing (green lease), water & waste utility, waste-to-energy.
-- **Spesifikasi minimum (MVP):** modul `Egy` (`egy_`) · status 🟠 (17 tabel tanpa rute/UI, posting pendapatan terbalik, `egy:audit` tidak ada). Slice: meter pintar (`egy_smart_meters`) → bacaan 15 menit (T1: 50 meter × 7 hari) → tarif time-of-use (config) → tagihan utilitas terkonsolidasi per properti (DR `ar:egy:property:{id}:IDR` / CR `egy:utility_revenue:IDR`) → PPA antar-entitas lewat Intercompany (eliminasi saat konsolidasi). Event `egy.meter.read.v1` → Mall & Esg. Rute `/energy` (`energy_manager`; tenant melihat tagihannya). Audit `egy:audit`: Σ(kWh × tarif TOU) = baris tagihan = posting AR. Test: bacaan duplikat, tarif lintas periode TOU, PPA tereliminasi di konsolidasi.
+- **Spesifikasi minimum (MVP):** modul `Egy` (`egy_`) · status 🟠 (17 tabel tanpa rute/UI, posting pendapatan terbalik, `egy:audit` tidak ada). Slice: meter pintar (`egy_smart_meters`) → bacaan 15 menit (T1: 50 meter × 7 hari) → tarif time-of-use (config) → tagihan utilitas terkonsolidasi per properti (DR `ar:egy:property:{id}:IDR` / CR `egy:utility_revenue:IDR`) → PPA antar-entitas lewat Intercompany (eliminasi saat konsolidasi). Event `egy.meter.read.v1` → Mall & Esg. Rute `/energy` (`energy_manager`; tenant melihat tagihannya). Audit `egy:audit`: Σ(kWh × tarif TOU) = baris tagihan = posting AR. Test: bacaan duplikat, tarif lintas periode TOU, PPA tereliminasi di konsolidasi. **Jalan pintas terlarang:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik; akun `egy:*` dibuat di test.
 
 ### Lini 14 — Telekomunikasi & Data Center (modul `tlx_`)
 - **Skala:** 10.000 site jaringan, 50.000 link, 10 data center (PUE terukur), 1 juta subscriber SIM, 100 ribu ISP rumah, 100 juta perangkat IoT lintas 17 lini.
 - **Operasional:** IoT backbone terpusat untuk seluruh telematik/sensor platform, billing konektivitas antar-entitas, colocation & cloud chargeback, NOC alarm → ticket → MTTR, smart city services (parkir pintar, CCTV), churn & upsell analytics.
 - **Hasil:** NOC dashboard, DC utilization & PUE, IoT device registry tunggal, revenue B2B/B2C connectivity.
 - **Lanjutan:** edge computing untuk venue & site tambang, white-label ISP.
-- **Spesifikasi minimum (MVP):** modul `Tlx` (`tlx_`) · status 🟠. Peran kunci: **registry perangkat IoT tunggal** (`tlx_iot_devices`) yang dipakai Mobility, Proptech, Agri, Mining, Hospital — modul lain menyimpan `device_id` dan membaca lewat Contract `IotDeviceRegistry`. Slice: aktivasi perangkat & SIM → pemakaian data bulanan → tagihan konektivitas antar-entitas (Intercompany) → kontrak colocation DC (Contract) dengan tagihan bulanan. Rute `/telecom` (`noc_operator`, `telecom_admin`). Audit `tlx:audit`: perangkat aktif tertagih = perangkat aktif di registry; tagihan colocation = kontrak aktif.
+- **Spesifikasi minimum (MVP):** modul `Tlx` (`tlx_`) · status 🟠. Peran kunci: **registry perangkat IoT tunggal** (`tlx_iot_devices`) yang dipakai Mobility, Proptech, Agri, Mining, Hospital — modul lain menyimpan `device_id` dan membaca lewat Contract `IotDeviceRegistry`. Slice: aktivasi perangkat & SIM → pemakaian data bulanan → tagihan konektivitas antar-entitas (Intercompany) → kontrak colocation DC (Contract) dengan tagihan bulanan. Rute `/telecom` (`noc_operator`, `telecom_admin`). Audit `tlx:audit`: perangkat aktif tertagih = perangkat aktif di registry; tagihan colocation = kontrak aktif. **Jalan pintas terlarang:** registry perangkat ganda per modul; tagihan konektivitas untuk perangkat yang tidak aktif di registry; `tlx:audit` yang hanya menghitung baris.
 
 ### Lini 15 — Media & Kreatif (modul `med_`)
 - **Skala:** 500 studio (sound stage, podcast, virtual production), 5.000 proyek produksi/tahun, 100 ribu aset IP (merek, lagu, format), 1 miliar impressions iklan/bulan (OOH mall/venue/hotel + digital).
 - **Operasional:** production lifecycle (brief → shoot → post → delivery, kapitalisasi biaya kreatif), talent contract dengan backend %, IP registry → lisensi otomatis multi-kanal, sponsorship lintas lini, yield management inventaris iklan (dynamic price + floor), campaign measurement terverifikasi.
 - **Hasil:** IP portfolio & royalty statement per karya, studio utilization, campaign ROI per advertiser, split settlement multi-pihak.
 - **Lanjutan:** creator economy bridge ke venue (Fase 115), distribution revenue per view.
-- **Spesifikasi minimum (MVP):** modul `Med` (`med_`) · status 🟠. Slice: studio & booking (hold/capture, anti-overlap) → registri IP (`med_ip_assets`) → lisensi (Contract) → pendapatan lisensi → *royalty statement* dan settlement multi-pihak ber-key (baris terakhir menyerap pembulatan). Ledger: DR `ar:med:licensee:{party}:IDR` / CR `med:license_revenue:IDR`; DR `expense:med:royalty:IDR` / CR `ap:med:rightsholder:{party}:IDR`. Rute `/media` (`studio_manager`, `rights_manager`; pemegang hak melihat statement-nya). Audit `med:audit`: Σ royalti = Σ pendapatan lisensi × porsi kontrak.
+- **Spesifikasi minimum (MVP):** modul `Med` (`med_`) · status 🟠. Slice: studio & booking (hold/capture, anti-overlap) → registri IP (`med_ip_assets`) → lisensi (Contract) → pendapatan lisensi → *royalty statement* dan settlement multi-pihak ber-key (baris terakhir menyerap pembulatan). Ledger: DR `ar:med:licensee:{party}:IDR` / CR `med:license_revenue:IDR`; DR `expense:med:royalty:IDR` / CR `ap:med:rightsholder:{party}:IDR`. Rute `/media` (`studio_manager`, `rights_manager`; pemegang hak melihat statement-nya). Audit `med:audit`: Σ royalti = Σ pendapatan lisensi × porsi kontrak. **Jalan pintas terlarang:** royalti tanpa kontrak lisensi; settlement multi-pihak yang pembulatannya tidak diserap baris terakhir; booking studio tanpa kunci slot.
 
 ### Lini 16 — Pendidikan & Talent (modul `edu_`)
 - **Skala:** 10.000 program, 500 ribu enrollment/tahun, 5 juta sertifikat hash-chain, 1 juta talent pool, 100 ribu lowongan lintas lini/tahun.
 - **Operasional:** kurikulum berlapis + prerequisite graph (anti-siklus), assessment → sertifikat hash terverifikasi QR + masa berlaku (prasyarat role kritis: dokter, operator K3, mekanik), corporate L&D B2B (kuota karyawan tenant/pabrik/RS/tambang), talent matching engine deterministik, headhunter fee hold sampai garansi kerja, contingent workforce timesheet.
 - **Hasil:** kompetensi terverifikasi per karyawan, pipeline talenta 17 lini, laporan kepatuhan sertifikasi, revenue edukasi.
 - **Lanjutan:** internal mobility bridge ke gig economy (Fase 85/97), alumni → lowongan otomatis.
-- **Spesifikasi minimum (MVP):** modul `Edu` (`edu_`) · status 🟠. Slice: program → cohort → enrollment (kuota korporat B2B) → asesmen → sertifikat hash-chain bermasa berlaku (nomor gapless) → sertifikat menjadi **prasyarat** role/aksi di modul lain (mis. operator K3 Mining, mekanik AutoServe) lewat Contract `CredentialVerifier` → biaya pelatihan korporat ditagih. Rute `/academy` (`academy_admin`, `trainer`; peserta melihat sertifikatnya; publik memverifikasi QR). Audit `edu:audit`: sertifikat terbit = asesmen lulus; tagihan korporat = enrollment kuota.
+- **Spesifikasi minimum (MVP):** modul `Edu` (`edu_`) · status 🟠. Slice: program → cohort → enrollment (kuota korporat B2B) → asesmen → sertifikat hash-chain bermasa berlaku (nomor gapless) → sertifikat menjadi **prasyarat** role/aksi di modul lain (mis. operator K3 Mining, mekanik AutoServe) lewat Contract `CredentialVerifier` → biaya pelatihan korporat ditagih. Rute `/academy` (`academy_admin`, `trainer`; peserta melihat sertifikatnya; publik memverifikasi QR). Audit `edu:audit`: sertifikat terbit = asesmen lulus; tagihan korporat = enrollment kuota. **Jalan pintas terlarang:** sertifikat tanpa nomor gapless/hash; sertifikat tidak dipakai sebagai prasyarat lewat Contract; kuota korporat yang tidak ditagih.
 
 ### Lini 17 — Ritel & E-Commerce (modul `ret_`)
 - **Skala:** marketplace 3P 1 juta listing, 50 juta order/tahun, 100 dark store q-commerce (30 menit), omnichannel ke seluruh toko 17 lini, 5 juta pengguna super app.
 - **Operasional:** OMS unified inventory anti double-sell (lockForUpdate), split fulfillment (ship-as-store/FDC/dropship/drone/crowdshipping), pricing consistency MAP lintas channel, settlement seller T+N + komisi + chargeback, super app wallet & cashback lintas lini (liability terkendali + anti-abuse), bill payment hub, subscription bundle, packaging deposit loop (reverse).
 - **Hasil:** GMV terkonsolidasi, seller performance, unit economics per zone q-commerce, cashback liability = ledger.
 - **Lanjutan:** embedded finance untuk seller, white-label OMS.
-- **Spesifikasi minimum (MVP):** modul `Ret` (`ret_`) · status 🟠. Aturan: Ret **tidak** punya stok sendiri — memakai `InventoryService` (anti double-sell dengan reservasi). Slice: listing multi-channel (harga konsisten dengan Pricing) → order → reservasi stok → fulfillment split → settlement seller T+N lewat escrow (DR `escrow:payment:IDR` / CR `ap:ret:seller:{party}:IDR` + `ret:commission_revenue:IDR`) → cashback sebagai liabilitas (`ret:cashback_liability:IDR`, kredit) dengan batas anti-abuse. Rute `/retail` (`seller` portal, `marketplace_admin`, customer). Audit `ret:audit`: utang seller = Σ order − komisi − refund; liabilitas cashback = Σ cashback terbit − terpakai − kedaluwarsa.
+- **Spesifikasi minimum (MVP):** modul `Ret` (`ret_`) · status 🟠. Aturan: Ret **tidak** punya stok sendiri — memakai `InventoryService` (anti double-sell dengan reservasi). Slice: listing multi-channel (harga konsisten dengan Pricing) → order → reservasi stok → fulfillment split → settlement seller T+N lewat escrow (DR `escrow:payment:IDR` / CR `ap:ret:seller:{party}:IDR` + `ret:commission_revenue:IDR`) → cashback sebagai liabilitas (`ret:cashback_liability:IDR`, kredit) dengan batas anti-abuse. Rute `/retail` (`seller` portal, `marketplace_admin`, customer). Audit `ret:audit`: utang seller = Σ order − komisi − refund; liabilitas cashback = Σ cashback terbit − terpakai − kedaluwarsa. **Jalan pintas terlarang:** stok ritel terpisah dari Inventory (double-sell); cashback tanpa liabilitas ledger; settlement seller tanpa escrow; harga lintas kanal tidak konsisten dengan Pricing.
 
 ## PEMETAAN GELOMBANG 2 → FASE (104–150)
 
@@ -1180,6 +1429,10 @@ Lini 13–17 ────────────── setelah lini sumber data
 | 28 Fashion & Textile | **Manufacturing + Store** dengan atribut varian; modul **Fashion** (`fsh_`) hanya untuk sourcing musiman & koleksi | varian produk = master produk Inventory/Store | koleksi → sampel → PO produksi → varian ukuran/warna di Store | stok varian = movement; PO = penerimaan |
 | 29 Digital Identity & Telco Media | identitas di **Party/Core**, layanan di **Tlx** — tidak ada modul `identity_` terpisah | jangan duplikasi KYC | identitas digital terverifikasi (Party KYC) dipakai SSO lintas lini | setiap kredensial aktif tertaut ke pihak terverifikasi |
 | 30 City Operations & Smart District | modul **District** (`dst_`) sebagai orkestrator | sensor = Tlx registry; energi = Egy; gedung = Proptech | layanan kawasan (parkir pintar, CCTV, sampah) → tiket layanan → SLA | tiket ditutup dalam SLA = laporan; tagihan layanan = ledger |
+
+**Jalan pintas terlarang untuk lini 18–30:** (1) menambah service/tabel di `Integration` — kode Fase 151–184 di sana hanya referensi (X2, X21); (2) membuat modul baru tanpa keputusan irisan di `DECISIONS.md` dan persetujuan pemilik (§A16); (3) menyalin pola modul lain (mis. Agri → Marine) alih-alih memakai ulang lewat Contract; (4) akun bunga pada transaksi Syariah; (5) master data ganda (kapal, produk/varian, identitas, kontrak); (6) klaim kepatuhan/regulasi tanpa label tingkat simulasi.
+
+**Bukti selesai minimum per lini:** modul pemilik terdaftar di §A1 · rute & role · chart of accounts + seeder T1 · audit dua-sumber + fixture korupsi · test HTTP (a)–(e) · verifikasi silang ✅.
 
 ## STRUKTUR FASE 151–500
 
