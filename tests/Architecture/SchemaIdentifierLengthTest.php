@@ -223,3 +223,98 @@ test('semua pemanggilan comment pada kolom migrasi bertipe string bukan array', 
         .implode("\n", $invalidComments)
     );
 });
+
+test('evaluasi estimasi panjang key komposit menangkap Schema::table, string panjang eksplisit, char, dan uuid', function () {
+    $evaluator = function (string $migrationCode): array {
+        $tableColumns = [];
+        if (preg_match_all("/Schema::(?:create|table)\(\s*[\x27\"]([^\x27\"]+)[\x27\"]\s*,\s*function\s*\([^)]*\)\s*\{(.*?)\}\s*\);/s", $migrationCode, $tableMatches, PREG_SET_ORDER)) {
+            foreach ($tableMatches as $tm) {
+                $tableName = $tm[1];
+                $tableBody = $tm[2];
+
+                if (preg_match_all("/\\\$table->([a-zA-Z0-9_]+)\(\s*[\x27\"]([^\x27\"]+)[\x27\"](?:\s*,\s*([0-9]+))?/", $tableBody, $colMatches, PREG_SET_ORDER)) {
+                    foreach ($colMatches as $cm) {
+                        $type = $cm[1];
+                        $name = $cm[2];
+                        $len = isset($cm[3]) && is_numeric($cm[3]) ? (int) $cm[3] : null;
+
+                        if ($type === 'string') {
+                            $bytes = ($len ?? 255) * 4;
+                        } elseif ($type === 'char') {
+                            $bytes = ($len ?? 36) * 4;
+                        } elseif ($type === 'uuid') {
+                            $bytes = 36 * 4;
+                        } elseif ($type === 'text' || $type === 'longText') {
+                            $bytes = 3072;
+                        } elseif (in_array($type, ['integer', 'unsignedInteger'], true)) {
+                            $bytes = 4;
+                        } elseif (in_array($type, ['bigInteger', 'unsignedBigInteger', 'foreignId', 'id'], true)) {
+                            $bytes = 8;
+                        } elseif (in_array($type, ['tinyInteger', 'boolean'], true)) {
+                            $bytes = 1;
+                        } elseif (in_array($type, ['date', 'timestamp', 'dateTime'], true)) {
+                            $bytes = 8;
+                        } else {
+                            $bytes = ($len ?? 255) * 4;
+                        }
+
+                        $tableColumns[$tableName][$name] = $bytes;
+                    }
+                }
+            }
+        }
+
+        $violations = [];
+        if (preg_match_all("/Schema::(?:create|table)\(\s*[\x27\"]([^\x27\"]+)[\x27\"]\s*,\s*function\s*\([^)]*\)\s*\{(.*?)\}\s*\);/s", $migrationCode, $tableMatches, PREG_SET_ORDER)) {
+            foreach ($tableMatches as $tm) {
+                $tableName = $tm[1];
+                $tableBody = $tm[2];
+
+                if (preg_match_all("/\\\$table->(unique|index)\(\s*\[([^\]]+)\]/", $tableBody, $idxMatches, PREG_SET_ORDER)) {
+                    foreach ($idxMatches as $im) {
+                        $cols = array_map(fn ($c) => trim($c, " \t\n\r\0\x0B\x27\""), explode(',', $im[2]));
+                        $total = 0;
+                        foreach ($cols as $c) {
+                            $total += $tableColumns[$tableName][$c] ?? (255 * 4);
+                        }
+                        if ($total > 3072) {
+                            $violations[] = ['table' => $tableName, 'bytes' => $total];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $violations;
+    };
+
+    // Fixture 1: Schema::table adding index on composite exceeding 3072 bytes (4 default strings = 4080 bytes)
+    $violatingCode = <<<'PHP'
+Schema::create('sample_tbl', function ($table) {
+    $table->string('col_a');
+    $table->string('col_b');
+    $table->string('col_c');
+    $table->string('col_d');
+});
+Schema::table('sample_tbl', function ($table) {
+    $table->index(['col_a', 'col_b', 'col_c', 'col_d']);
+});
+PHP;
+    $result1 = $evaluator($violatingCode);
+    expect($result1)->toHaveCount(1)
+        ->and($result1[0]['bytes'])->toBe(4080);
+
+    // Fixture 2: Schema::table with uuid, char(10), and string(50) = 36*4 + 10*4 + 50*4 = 384 bytes <= 3072
+    $cleanCode = <<<'PHP'
+Schema::create('sample_tbl_2', function ($table) {
+    $table->uuid('uuid_col');
+    $table->char('char_col', 10);
+    $table->string('str_col', 50);
+});
+Schema::table('sample_tbl_2', function ($table) {
+    $table->index(['uuid_col', 'char_col', 'str_col']);
+});
+PHP;
+    $result2 = $evaluator($cleanCode);
+    expect($result2)->toBeEmpty();
+});
