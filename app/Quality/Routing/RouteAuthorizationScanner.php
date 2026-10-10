@@ -38,20 +38,22 @@ final class RouteAuthorizationScanner
     public static function routeProtection(Route $route): string|array
     {
         $middleware = $route->gatherMiddleware();
-        $roles = [];
+        $roles = null;
         $isAuth = false;
 
         foreach ($middleware as $m) {
             if (str_starts_with($m, 'role:')) {
                 $parsed = array_values(array_filter(array_map('trim', explode(',', substr($m, 5)))));
-                $roles = array_values(array_unique([...$roles, ...$parsed]));
+                $roles = $roles === null
+                    ? $parsed
+                    : array_values(array_intersect($roles, $parsed));
             }
             if ($m === 'auth' || str_starts_with($m, 'auth:')) {
                 $isAuth = true;
             }
         }
 
-        if ($roles !== []) {
+        if ($roles !== null && $roles !== []) {
             sort($roles);
 
             return ['roles' => $roles];
