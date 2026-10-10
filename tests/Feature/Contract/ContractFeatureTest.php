@@ -13,6 +13,7 @@ use Modules\Contract\Domain\Enums\MilestoneStatus;
 use Modules\Contract\Domain\Models\ClauseTemplate;
 use Modules\Contract\Domain\Models\Contract;
 use Modules\Contract\Domain\Models\ContractMilestone;
+use Modules\Contract\Domain\Models\ContractVersion;
 use Modules\Contract\Exceptions\ContractChainCorruptedException;
 use Modules\Contract\Exceptions\InsufficientPartiesException;
 use Modules\Contract\Exceptions\InvalidContractTransitionException;
@@ -460,6 +461,6 @@ class ContractFeatureTest extends TestCase
 
     public function test_genesis_prev_hash_length_does_not_exceed_column_capacity(): void
     {
-        $this->assertLessThanOrEqual(64, strlen(\Modules\Contract\Domain\Models\ContractVersion::GENESIS_HASH));
+        $this->assertLessThanOrEqual(64, strlen(ContractVersion::GENESIS_HASH));
     }
 }

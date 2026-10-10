@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Quality\Gate\GateManifest;
+use App\Quality\Gate\GateReportGenerator;
+use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Facades\File;
 
 /*
@@ -292,13 +294,13 @@ MD;
 });
 
 it('strictly removes --force option from gate:report command signature (V5)', function (): void {
-    $command = app(\Illuminate\Contracts\Console\Kernel::class)->all()['gate:report'] ?? null;
+    $command = app(Kernel::class)->all()['gate:report'] ?? null;
     expect($command)->not->toBeNull()
         ->and($command->getDefinition()->hasOption('force'))->toBeFalse('Opsi --force DILARANG pada gate:report (V5).');
 });
 
 it('preserves ## Verifikasi section regardless of custom header title or level (V5)', function (): void {
-    $generator = new \App\Quality\Gate\GateReportGenerator(base_path());
+    $generator = new GateReportGenerator(base_path());
     $reflection = new ReflectionClass($generator);
     $method = $reflection->getMethod('extractExistingVerification');
     $method->setAccessible(true);

@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Domain\Models\ApprovalHistory;
 use Modules\Core\Domain\Models\ApprovalRequest;
@@ -137,16 +139,19 @@ test('delegation and escalation function properly', function () {
 });
 
 test('approval request supports approvable entity with ULID or UUID string id and column is string', function () {
-    expect(\Illuminate\Support\Facades\Schema::getColumnType('core_approvals', 'approvable_id'))
+    expect(Schema::getColumnType('core_approvals', 'approvable_id'))
         ->toBeIn(['string', 'varchar']);
 
     $creator = User::factory()->create(['role' => 'admin']);
     $engine = app(ApprovalEngineInterface::class);
 
     $ulid = '01a12703-45d5-7066-ac25-e8fe0a1f98ee';
-    $mockApprovable = new class extends \Illuminate\Database\Eloquent\Model {
+    $mockApprovable = new class extends Model
+    {
         protected $table = 'prc_requisitions';
+
         public $incrementing = false;
+
         protected $keyType = 'string';
     };
     $mockApprovable->id = $ulid;

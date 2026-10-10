@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
@@ -115,7 +116,7 @@ test('posting yang menyebabkan saldo negatif pada non allow_negative melempar In
 })->throws(InsufficientFundsException::class);
 
 test('posting dengan reference UUID atau ULID string tersimpan dengan benar dan kolom bertipe string', function () {
-    expect(\Illuminate\Support\Facades\Schema::getColumnType('bank_ledger_transactions', 'reference_id'))
+    expect(Schema::getColumnType('bank_ledger_transactions', 'reference_id'))
         ->toBeIn(['string', 'varchar']);
 
     $userAcc = LedgerAccount::where('code', 'revenue:store:IDR')->firstOrFail();

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 use App\Models\User;
 use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Supplier\Domain\Models\Supplier;
 
 /**
  * Route authorization mapping (PROGRESS R0.9, KONSEP §A14.3).
@@ -582,8 +583,8 @@ return [
     'supplier.portal.asn.ship' => [
         'roles' => ['admin', 'supplier'],
         'setup' => function (User $user): void {
-            if (class_exists(\Modules\Supplier\Domain\Models\Supplier::class)) {
-                \Modules\Supplier\Domain\Models\Supplier::firstOrCreate(
+            if (class_exists(Supplier::class)) {
+                Supplier::firstOrCreate(
                     ['owner_user_id' => $user->id],
                     ['name' => 'Supplier Test', 'code' => 'SUP-'.$user->id, 'kind' => 'supplier', 'is_active' => true]
                 );
@@ -593,8 +594,8 @@ return [
     'supplier.portal.asn.store' => [
         'roles' => ['admin', 'supplier'],
         'setup' => function (User $user): void {
-            if (class_exists(\Modules\Supplier\Domain\Models\Supplier::class)) {
-                \Modules\Supplier\Domain\Models\Supplier::firstOrCreate(
+            if (class_exists(Supplier::class)) {
+                Supplier::firstOrCreate(
                     ['owner_user_id' => $user->id],
                     ['name' => 'Supplier Test', 'code' => 'SUP-'.$user->id, 'kind' => 'supplier', 'is_active' => true]
                 );
@@ -604,8 +605,8 @@ return [
     'supplier.portal.documents.store' => [
         'roles' => ['admin', 'supplier'],
         'setup' => function (User $user): void {
-            if (class_exists(\Modules\Supplier\Domain\Models\Supplier::class)) {
-                \Modules\Supplier\Domain\Models\Supplier::firstOrCreate(
+            if (class_exists(Supplier::class)) {
+                Supplier::firstOrCreate(
                     ['owner_user_id' => $user->id],
                     ['name' => 'Supplier Test', 'code' => 'SUP-'.$user->id, 'kind' => 'supplier', 'is_active' => true]
                 );
@@ -615,8 +616,8 @@ return [
     'supplier.portal.home' => [
         'roles' => ['admin', 'supplier'],
         'setup' => function (User $user): void {
-            if (class_exists(\Modules\Supplier\Domain\Models\Supplier::class)) {
-                \Modules\Supplier\Domain\Models\Supplier::firstOrCreate(
+            if (class_exists(Supplier::class)) {
+                Supplier::firstOrCreate(
                     ['owner_user_id' => $user->id],
                     ['name' => 'Supplier Test', 'code' => 'SUP-'.$user->id, 'kind' => 'supplier', 'is_active' => true]
                 );
