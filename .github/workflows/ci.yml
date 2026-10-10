@@ -3,11 +3,11 @@ name: CI Quality Gate & Portability
 on:
   push:
     branches:
-      - main
+      - master
       - 'feature/**'
   pull_request:
     branches:
-      - main
+      - master
       - 'feature/**'
 
 concurrency:
@@ -23,19 +23,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup PHP 8.4
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, pcov, bcmath
-          coverage: pcov
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, bcmath
+          coverage: none
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Setup Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate --ansi
 
       - name: Install npm dependencies
         run: npm ci
@@ -46,26 +52,20 @@ jobs:
       - name: Run Quality Gate (composer gate)
         run: composer gate
 
-      - name: Run Architecture Scan
-        run: php artisan arch:scan
-
-      - name: Run Core Audit Commands
-        run: |
-          php artisan bank:reconcile
-          php artisan chain:audit-all
-          php artisan super:health-check
-
       - name: Generate Quality Gate Report
         run: php artisan gate:report --fase=R0
 
-      - name: Upload Gate Report & JUnit Artifacts
+      - name: Upload Gate Manifest, Report & JUnit Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gate-report-fase-r0
+          if-no-files-found: error
           path: |
-            docs/gates/fase-r0.md
+            storage/logs/gate-manifest.json
             storage/logs/pest-junit.xml
+            storage/logs/arch-scan.json
+            docs/gates/fase-r0.md
 
   portability-mysql:
     name: PHP 8.4 × MySQL 8 (DB Portability)
@@ -73,26 +73,32 @@ jobs:
 
     services:
       mysql:
-        image: mysql:8.0
+        image: mysql:8.4
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: superweb_test
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1 -proot" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup PHP 8.4
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, gd, zip, pcov, bcmath
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, gd, zip, bcmath
           coverage: none
+
+      - name: Setup Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate --ansi
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
@@ -106,8 +112,16 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: root
         run: |
-          php artisan migrate:fresh --seed
-          vendor/bin/pest --group=db-portability
+          php artisan migrate:fresh --seed --force
+          vendor/bin/pest --group=db-portability --log-junit=storage/logs/portability-junit.xml
+
+      - name: Upload MySQL Portability JUnit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portability-mysql-junit
+          if-no-files-found: error
+          path: storage/logs/portability-junit.xml
 
   mutation-testing:
     name: PHP 8.4 × Pest Mutation Testing (min 60%)
@@ -119,6 +133,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup PHP 8.4 (PCOV Coverage Driver)
         uses: shivammathur/setup-php@v2
@@ -127,8 +142,13 @@ jobs:
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, pcov, bcmath
           coverage: pcov
 
+      - name: Setup Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate --ansi
+
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Run Pest Mutation Testing on Touched Classes
-        run: php artisan test:mutate --git-diff --min=60
+        run: php artisan test:mutate --git-diff --base="${{ github.base_ref || 'master' }}" --min=60

@@ -160,6 +160,11 @@ final class GateRunner
             $duration = microtime(true) - $start;
             $stepStatus = $exitCode === 0 ? 'PASS' : 'FAIL';
 
+            if ($name === 'arch:scan --json' && $exitCode === 0) {
+                File::ensureDirectoryExists($root.'/storage/logs');
+                File::put($root.'/storage/logs/arch-scan.json', $output);
+            }
+
             $executedSteps[] = [
                 'name' => $name,
                 'command' => $cmd,
