@@ -51,6 +51,11 @@
             "Composer\\Config::disableProcessTimeout",
             "@php artisan dev"
         ],
+        "gate": [
+            "vendor/bin/pest --log-junit=storage/logs/pest-junit.xml",
+            "vendor/bin/pint --test",
+            "npm run build"
+        ],
         "test": [
             "@php artisan config:clear --ansi @no_additional_args",
             "@php artisan test"

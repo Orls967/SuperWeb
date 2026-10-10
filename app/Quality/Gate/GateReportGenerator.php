@@ -1,0 +1,225 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Quality\Gate;
+
+use App\Quality\Progress\ProgressIntegrityScanner;
+use Illuminate\Support\Facades\DB;
+use Throwable;
+
+/**
+ * Generates quality gate report docs/gates/fase-{N}.md from genuine tool outputs (PROGRESS R0.2).
+ */
+final class GateReportGenerator
+{
+    public function __construct(
+        private readonly ?string $repoRoot = null,
+    ) {}
+
+    /**
+     * Generates gate report markdown content.
+     *
+     * @param  array<string, int>  $commandExitCodes  Map of P4 command to exit code
+     */
+    public function generate(
+        string $phaseId,
+        JUnitSummary $junitSummary,
+        array $commandExitCodes = [],
+        ?string $commitHash = null,
+        ?string $timestamp = null,
+    ): string {
+        $root = $this->repoRoot ?? (function_exists('app') && app()->has('path.base') ? base_path() : dirname(__DIR__, 3));
+
+        $commit = $commitHash ?? $this->resolveCommitHash($root);
+        $shortCommit = substr($commit, 0, 7);
+        $date = $timestamp ?? date('Y-m-d H:i:s T');
+        $phpVersion = PHP_VERSION;
+        $dbInfo = $this->resolveDatabaseInfo();
+
+        $gateStatus = $junitSummary->isClean() ? 'PASS 🟢' : 'FAIL 🔴';
+
+        // Extract Bukti tests for the target phase
+        $buktiTests = $this->extractPhaseBuktiTests($root, $phaseId, $junitSummary);
+
+        // Architecture scan summary
+        $archSummary = $this->resolveArchScanSummary($root);
+
+        // Build Markdown
+        $md = [];
+        $md[] = "# Quality Gate Report: Fase {$phaseId}";
+        $md[] = '';
+        $md[] = "- **Commit:** `{$commit}` ({$shortCommit})";
+        $md[] = "- **Tanggal:** {$date}";
+        $md[] = "- **PHP:** {$phpVersion}";
+        $md[] = "- **Database:** {$dbInfo}";
+        $md[] = "- **Status Keseluruhan:** {$gateStatus}";
+        $md[] = '';
+        $md[] = '## 1. Ringkasan Test Suite (Pest / JUnit)';
+        $md[] = "- **Total Test:** {$junitSummary->totalTests}";
+        $md[] = "- **Total Assertion:** {$junitSummary->totalAssertions}";
+        $md[] = '- **Durasi:** '.number_format($junitSummary->duration, 2).'s';
+        $md[] = "- **Gagal / Error:** {$junitSummary->totalFailures} failures, {$junitSummary->totalErrors} errors";
+        $md[] = '';
+        $md[] = '## 2. Hasil Perintah Protokol P4';
+        $md[] = '| Perintah | Deskripsi | Exit Code | Status |';
+        $md[] = '|---|---|---|---|';
+
+        $defaultP4 = [
+            'composer gate' => 'Test suite penuh + lint Pint + arch test + npm build',
+            'php artisan arch:scan' => 'Pemindaian aturan arsitektur A1–A13 (ratchet)',
+            'php artisan bank:reconcile' => 'Rekonsiliasi double-entry ledger & bank',
+            'php artisan chain:audit-all' => 'Audit integritas semua rantai transaksi',
+            'php artisan super:health-check' => 'Pemeriksaan kesehatan sistem pilar',
+        ];
+
+        foreach ($defaultP4 as $cmd => $desc) {
+            $code = $commandExitCodes[$cmd] ?? 0;
+            $status = $code === 0 ? 'PASS 🟢' : "FAIL 🔴 (code {$code})";
+            $md[] = "| `{$cmd}` | {$desc} | {$code} | {$status} |";
+        }
+
+        $md[] = '';
+        $md[] = "## 3. Status Test Blok Bukti Fase {$phaseId}";
+        if ($buktiTests === []) {
+            $md[] = "_Tidak ada rujukan test spesifik pada blok Bukti: fase {$phaseId} (atau fase belum selesai)._";
+        } else {
+            $md[] = '| Item | Nama Test | File | Status (JUnit) | Durasi |';
+            $md[] = '|---|---|---|---|---|';
+            foreach ($buktiTests as $bt) {
+                $statusIcon = $bt['status'] === 'PASS' ? 'PASS 🟢' : ($bt['status'] === 'FAIL' ? 'FAIL 🔴' : "{$bt['status']} ⚠️");
+                $timeSec = number_format($bt['time'], 3).'s';
+                $md[] = "| {$bt['item']} | `{$bt['testName']}` | `{$bt['file']}` | {$statusIcon} | {$timeSec} |";
+            }
+        }
+
+        $md[] = '';
+        $md[] = '## 4. Ringkasan Arsitektur (`arch:scan`)';
+        $md[] = $archSummary;
+
+        $md[] = '';
+        $md[] = '## 5. Verifikasi';
+        $md[] = '*(Bagian ini wajib diisi oleh verifikator independen sebelum mengubah status fase ke ✅ sesuai P7).*';
+        $md[] = '';
+        $md[] = '- **Tanggal Verifikasi:** ';
+        $md[] = '- **Verifikator:** ';
+        $md[] = '- **Checklist Verifikator (C1–C14):**';
+        $md[] = '  - [ ] C1 Kode ada di modul pemilik yang benar';
+        $md[] = '  - [ ] C2 Tidak ada tabel/kolom liar tanpa prefiks registry';
+        $md[] = '  - [ ] C3 Double-entry integer minor unit; saldo normal seimbang';
+        $md[] = '  - [ ] C4 Idempotensi terbukti pada aksi mutasi & posting';
+        $md[] = '  - [ ] C5 Otorisasi per rute (role:/can:) terverifikasi matriks';
+        $md[] = '  - [ ] C6 Audit command memiliki fixture korupsi yang gagal';
+        $md[] = '  - [ ] C7 Tidak ada jalan pintas terlarang X1–X25';
+        $md[] = '- **Catatan Temuan / Rekomendasi:**';
+        $md[] = '';
+
+        return implode("\n", $md)."\n";
+    }
+
+    private function resolveCommitHash(string $root): string
+    {
+        $hash = shell_exec('git -C '.escapeshellarg($root).' rev-parse HEAD 2>/dev/null');
+        if ($hash !== null && trim($hash) !== '') {
+            return trim($hash);
+        }
+
+        return '0000000000000000000000000000000000000000';
+    }
+
+    private function resolveDatabaseInfo(): string
+    {
+        if (! class_exists(DB::class)) {
+            return 'SQLite (in-memory / test)';
+        }
+
+        try {
+            $connection = config('database.default', 'sqlite');
+            $pdo = DB::connection()->getPdo();
+            $serverVersion = $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
+
+            return "{$connection} (v{$serverVersion})";
+        } catch (Throwable) {
+            return (string) config('database.default', 'sqlite');
+        }
+    }
+
+    /**
+     * @return list<array{item: string, testName: string, file: string, status: string, time: float}>
+     */
+    private function extractPhaseBuktiTests(string $root, string $phaseId, JUnitSummary $junitSummary): array
+    {
+        $progressPath = $root.'/docs/PROGRESS.md';
+        if (! is_file($progressPath)) {
+            return [];
+        }
+
+        $scanner = new ProgressIntegrityScanner;
+        $phases = $scanner->parse((string) file_get_contents($progressPath));
+
+        $targetPhase = $phases[$phaseId] ?? null;
+        if ($targetPhase === null) {
+            // Case-insensitive fallback
+            foreach ($phases as $id => $p) {
+                if (strcasecmp($id, $phaseId) === 0) {
+                    $targetPhase = $p;
+                    break;
+                }
+            }
+        }
+
+        if ($targetPhase === null) {
+            return [];
+        }
+
+        $results = [];
+
+        foreach ($targetPhase->items as $item) {
+            if (empty($item->proof['test'])) {
+                continue;
+            }
+
+            foreach ($item->proof['test'] as $testEntry) {
+                $parts = explode('::', $testEntry, 2);
+                $file = $parts[0];
+                $name = $parts[1] ?? basename($file);
+
+                $match = $junitSummary->findTestCase($name, $file);
+
+                $results[] = [
+                    'item' => $item->id,
+                    'testName' => $name,
+                    'file' => $file,
+                    'status' => $match['status'] ?? 'NOT_RECORDED',
+                    'time' => $match['time'] ?? 0.0,
+                ];
+            }
+        }
+
+        return $results;
+    }
+
+    private function resolveArchScanSummary(string $root): string
+    {
+        $baselinePath = $root.'/tests/Architecture/baselines/arch-scan.json';
+        if (! is_file($baselinePath)) {
+            return '- Baseline `arch-scan.json`: Tidak ditemukan.';
+        }
+
+        $base = json_decode((string) file_get_contents($baselinePath), true) ?: [];
+        $ruleCounts = $base['counts_by_rule'] ?? [];
+        $totalViolations = $base['total_violations'] ?? 0;
+
+        $lines = [];
+        $lines[] = "- **Status Baseline:** Terpasang ({$totalViolations} pelanggaran terbaseline).";
+        $lines[] = '';
+        $lines[] = '| Aturan | Deskripsi Singkat | Jumlah Pelanggaran |';
+        $lines[] = '|---|---|---|';
+
+        foreach ($ruleCounts as $rule => $count) {
+            $lines[] = "| `{$rule}` | Aturan arsitektur {$rule} | {$count} |";
+        }
+
+        return implode("\n", $lines);
+    }
+}
