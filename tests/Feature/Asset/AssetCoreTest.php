@@ -312,6 +312,6 @@ class AssetCoreTest extends TestCase
 
     public function test_genesis_hash_length_does_not_exceed_column_capacity(): void
     {
-        $this->assertLessThanOrEqual(64, strlen(\Modules\Asset\Application\Services\AssetService::GENESIS_HASH));
+        $this->assertLessThanOrEqual(64, strlen(AssetService::GENESIS_HASH));
     }
 }

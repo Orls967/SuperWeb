@@ -379,8 +379,10 @@ MD;
     - gate: docs/gates/fase-r1.md
 MD;
 
-    $mockInspector = new class extends GitCommitInspector {
-        public function diffFiles(string $fromCommit, string $toCommit = 'HEAD'): array {
+    $mockInspector = new class extends GitCommitInspector
+    {
+        public function diffFiles(string $fromCommit, string $toCommit = 'HEAD'): array
+        {
             return ['app/Services/SecretService.php', 'docs/PROGRESS.md'];
         }
     };

@@ -85,11 +85,11 @@ final class GateRunner
     {
         $root = $this->repoRoot ?? (function_exists('app') && app()->has('path.base') ? base_path() : dirname(__DIR__, 3));
         $manifestFile = $manifestPath ?? $root.'/storage/logs/gate-manifest.json';
-        $gateDb = $this->prepareGateDatabase($root);
-
         $headCommit = $this->resolveCommitHash($root);
         $isDirty = $this->resolveIsDirty($root);
         $timestamp = date('c');
+
+        $gateDb = $this->prepareGateDatabase($root);
 
         $executedSteps = [];
         $overallStatus = 'PASS';
@@ -255,7 +255,28 @@ final class GateRunner
     private function resolveIsDirty(string $root): bool
     {
         $status = shell_exec('git -C '.escapeshellarg($root).' status --porcelain 2>/dev/null');
+        if ($status === null || trim($status) === '') {
+            return false;
+        }
 
-        return $status !== null && trim($status) !== '';
+        $lines = array_filter(
+            explode("\n", trim($status)),
+            function (string $line): bool {
+                $file = trim(substr($line, 3));
+                if ($file === '') {
+                    return false;
+                }
+                if (str_starts_with($file, 'storage/gate/') || str_starts_with($file, 'storage/logs/')) {
+                    return false;
+                }
+                if ($file === 'database/database.sqlite' || str_ends_with($file, '.sqlite') || str_contains($file, '.sqlite-')) {
+                    return false;
+                }
+
+                return true;
+            }
+        );
+
+        return $lines !== [];
     }
 }

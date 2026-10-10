@@ -82,7 +82,7 @@ it('keeps pending dynamic routes within the ratchet baseline', function (): void
     );
 });
 
-it('enforces that unauthorized real roles receive 403 on role-protected routes (V8a)', function (): void {
+it('enforces that unauthorized roles receive 403 on role-protected routes', function (): void {
     $routes = Route::getRoutes()->getRoutes();
     $map = require __DIR__.'/route-roles.php';
     $executable = RouteAuthorizationScanner::executableRoleRoutes($routes, $map);
@@ -114,7 +114,7 @@ it('enforces that unauthorized real roles receive 403 on role-protected routes (
     }
 });
 
-it('confirms all authorized roles are not forbidden (not 403) on role-protected routes (V8a)', function (): void {
+it('confirms authorized roles are not forbidden (not 403) on role-protected routes', function (): void {
     $routes = Route::getRoutes()->getRoutes();
     $map = require __DIR__.'/route-roles.php';
     $executable = RouteAuthorizationScanner::executableRoleRoutes($routes, $map);
