@@ -30,7 +30,12 @@ final class ProgressItem
     {
         $kinds = $this->proof['jenis'] ?? [];
         if (! empty($kinds)) {
-            return strtolower(trim($kinds[0]));
+            $raw = strtolower(trim($kinds[0]));
+            if (preg_match('/^(tooling|konfigurasi|dokumen|fitur)\b/i', $raw, $matches)) {
+                return strtolower($matches[1]);
+            }
+
+            return $raw;
         }
 
         return 'fitur';

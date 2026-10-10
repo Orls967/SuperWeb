@@ -315,8 +315,37 @@ final class ProgressIntegrityScanner
                 } else {
                     $actualGate = is_file($gatePath) ? $gatePath : $altGatePath;
                     $gateContent = (string) file_get_contents($actualGate);
-                    if (! preg_match('/^#{1,3}\s+.*Verifikasi/mi', $gateContent)) {
+                    if (! preg_match('/^#{1,3}\s+.*Verifikasi.*$/mi', $gateContent, $matches, PREG_OFFSET_CAPTURE)) {
                         $violations[] = "Fase {$phase->id} berstatus ✅ tetapi docs/gates/fase-{$phase->id}.md tidak memiliki bagian Verifikasi.";
+                    } else {
+                        $verifSection = substr($gateContent, $matches[0][1]);
+
+                        // Validasi tanggal verifikasi
+                        if (! preg_match('/-\s+\*\*Tanggal(?:\s+Verifikasi)?:\*\*\s*([^\s\r\n].*)/iu', $verifSection, $tm) || trim($tm[1]) === '') {
+                            $violations[] = "Fase {$phase->id} berstatus ✅ tetapi bagian Verifikasi di {$actualGate} tidak sah: tanggal verifikasi kosong atau tidak ditemukan.";
+                        }
+
+                        // Validasi commit yang diverifikasi
+                        if (! preg_match('/-\s+\*\*Commit(?:\s+yang\s+diverifikasi)?:\*\*\s*([^\s\r\n].*)/iu', $verifSection, $cm) || trim($cm[1]) === '') {
+                            $violations[] = "Fase {$phase->id} berstatus ✅ tetapi bagian Verifikasi di {$actualGate} tidak sah: commit yang diverifikasi kosong atau tidak ditemukan.";
+                        }
+
+                        // Validasi verifikator
+                        if (! preg_match('/-\s+\*\*Verifikator:\*\*\s*([^\s\r\n].*)/iu', $verifSection, $vm) || trim($vm[1]) === '') {
+                            $violations[] = "Fase {$phase->id} berstatus ✅ tetapi bagian Verifikasi di {$actualGate} tidak sah: identitas verifikator kosong atau tidak ditemukan.";
+                        }
+
+                        // Validasi tabel C1–C14 bertanda lulus/gagal
+                        for ($i = 1; $i <= 14; $i++) {
+                            if (! preg_match('/\|\s*C'.$i.'\s*\|\s*([^|]+)\|/i', $verifSection, $rm)) {
+                                $violations[] = "Fase {$phase->id} berstatus ✅ tetapi bagian Verifikasi di {$actualGate} tidak sah: butir C{$i} tidak ditemukan di tabel verifikasi.";
+                            } else {
+                                $result = strtolower(trim($rm[1]));
+                                if (str_contains($result, 'belum diverifikasi') || (! str_contains($result, 'lulus') && ! str_contains($result, 'gagal') && ! str_contains($result, 'pass') && ! str_contains($result, 'fail'))) {
+                                    $violations[] = "Fase {$phase->id} berstatus ✅ tetapi bagian Verifikasi di {$actualGate} tidak sah: butir C{$i} belum bertanda lulus/gagal ('".trim($rm[1])."').";
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -356,6 +385,8 @@ final class ProgressIntegrityScanner
                     if (empty($item->proof['file'])) {
                         $violations[] = "Item dokumen {$item->id} wajib memiliki minimal satu entri 'file' di blok Bukti (PROGRESS.md §P2).";
                     }
+                } else {
+                    $violations[] = "Item {$item->id}: jenis '{$itemType}' tidak valid (hanya fitur, tooling, konfigurasi, dokumen).";
                 }
 
                 // V3: Validasi panjang alasan bila ada

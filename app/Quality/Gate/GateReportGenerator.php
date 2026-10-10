@@ -119,17 +119,19 @@ final class GateReportGenerator
             $md[] = '## 5. Verifikasi';
             $md[] = '*(Bagian ini wajib diisi oleh verifikator independen sebelum mengubah status fase ke ✅ sesuai P7).*';
             $md[] = '';
-            $md[] = '- **Tanggal Verifikasi:** ';
+            $md[] = '- **Tanggal:** ';
             $md[] = '- **Verifikator:** ';
-            $md[] = '- **Checklist Verifikator (C1–C14):**';
-            $md[] = '  - [ ] C1 Kode ada di modul pemilik yang benar';
-            $md[] = '  - [ ] C2 Tidak ada tabel/kolom liar tanpa prefiks registry';
-            $md[] = '  - [ ] C3 Double-entry integer minor unit; saldo normal seimbang';
-            $md[] = '  - [ ] C4 Idempotensi terbukti pada aksi mutasi & posting';
-            $md[] = '  - [ ] C5 Otorisasi per rute (role:/can:) terverifikasi matriks';
-            $md[] = '  - [ ] C6 Audit command memiliki fixture korupsi yang gagal';
-            $md[] = '  - [ ] C7 Tidak ada jalan pintas terlarang X1–X25';
-            $md[] = '- **Catatan Temuan / Rekomendasi:**';
+            $md[] = '- **Commit yang diverifikasi:** ';
+            $md[] = '- **Keputusan:** BELUM DIVERIFIKASI';
+            $md[] = '';
+            $md[] = '| # | Hasil | Bukti (command / commit / output) | Catatan |';
+            $md[] = '|---|---|---|---|';
+            for ($i = 1; $i <= 14; $i++) {
+                $md[] = "| C{$i} | BELUM DIVERIFIKASI | | |";
+            }
+            $md[] = '';
+            $md[] = '**Minus yang ditambahkan verifikator:** ';
+            $md[] = '**Alasan 🔁 (bila ada):** ';
         }
         $md[] = '';
 

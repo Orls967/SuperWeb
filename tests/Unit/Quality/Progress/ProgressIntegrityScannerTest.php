@@ -394,3 +394,42 @@ MD;
     expect($violations)->toContain("Item R1.1: test 'it test fail' tidak tercatat LULUS di laporan gate 'docs/gates/fase-r1.md'.")
         ->and(implode("\n", $violations))->toContain('terdapat perubahan di luar docs/ antara commit gate');
 });
+
+it('rejects sabotage S3 item with jenis tooling followed by reason but lacking test entry', function (): void {
+    $markdown = <<<'MD'
+### FASE R1 — LEDGER & UANG
+> **Status audit:** 🔨 DIKERJAKAN
+
+- [x] R1.1 Konvensi tanda tunggal
+  Bukti:
+    - jenis: tooling — alasan yang cukup panjang
+    - file: composer.json
+MD;
+
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, textBaseline: ['R1:R1.1' => 'Konvensi tanda tunggal']);
+
+    expect($violations)->toContain("Item tooling R1.1 wajib memiliki minimal satu entri 'test' di blok Bukti (PROGRESS.md §P2).");
+});
+
+it('rejects sabotage S7 phase marked verified ✅ when gate report verification section is only a template or lacks valid C1-C14 table', function (): void {
+    $tempDir = sys_get_temp_dir().'/progress_test_s7_'.uniqid();
+    mkdir($tempDir.'/docs/gates', 0777, true);
+    copy(base_path('docs/gates/fase-r0.md'), $tempDir.'/docs/gates/fase-r1.md');
+
+    $markdown = <<<'MD'
+### FASE R1 — LEDGER & UANG
+> **Status audit:** ✅ SELESAI
+
+- [ ] R1.1 Konvensi tanda tunggal
+MD;
+
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, repoRoot: $tempDir, textBaseline: ['R1:R1.1' => 'Konvensi tanda tunggal']);
+
+    expect(implode("\n", $violations))->toContain('bagian Verifikasi di')
+        ->and(implode("\n", $violations))->toContain('tidak sah');
+});
+
