@@ -1152,4 +1152,25 @@
   - `vendor/bin/pest tests/Architecture/ApprovalIdConventionTest.php` (2 passed, 5 assertions).
   - `vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php` (12 passed, 13 assertions).
 
+## 2026-10-11: Toleransi Dual Genesis Hash-Chain (Asset, Contract, Manufacturing)
+- **Context:**
+  - Penanda genesis `GENESIS_AST_…` (73 karakter) dan `GENESIS_CTR_…` (72 karakter) sebelumnya tidak muat di kolom `prev_hash varchar(64)` pada MySQL.
+  - Commit `0a21d42` dan `f6fbefd` mengubah konstanta genesis menjadi 60 karakter agar muat di kolom 64 karakter. Namun hal ini memicu risiko backward incompatibility di mana data/rantai hash yang sudah tersimpan dengan genesis lama akan dilaporkan rusak/tampered saat diverifikasi.
+  - Branch `tools/r0-mysql-ddl-replay` (`1d74ed1`) memperlebar kolom `prev_hash` menjadi 80 karakter.
+  - Rujukan BLOCKERS B-04 dan Keputusan Pemilik K-B04.
+- **Decision:**
+  - Sesuai Keputusan Pemilik K-B04 (opsi c):
+    1. Mempertahankan konstanta baru 60 karakter (`GENESIS_HASH` / `GENESIS`) untuk data baru yang dibuat.
+    2. Menambahkan konstanta genesis lama (`LEGACY_GENESIS_HASH` / `LEGACY_GENESIS`) pada kelas `AssetService`, `ContractVersion`, dan `ManufacturingService` dengan komentar asal-usul.
+    3. Memperbarui logika audit/verifikasi rantai hash di ketiga modul (`AssetService::verifyChain`, `ContractService::verifyHashChain`, `ManufacturingService::verifyFormulaChain`) agar menerima `prev_hash` event/versi pertama bernilai genesis baru ATAU genesis lama. Nilai selain kedua genesis tersebut tetap menggagalkan audit.
+    4. Memastikan kapasitas kolom fisik `prev_hash` di database tetap 80 karakter (pada tabel `ast_events`, `ctr_contract_versions`, `mfg_boms`, dan `mfg_formulas`) agar muat baik genesis lama maupun baru di MySQL 8.4 dan SQLite.
+    5. Menulis pengujian komprehensif di `tests/Feature/Portability/DualGenesisCompatibilityTest.php` yang memvalidasi bahwa genesis baru lulus, genesis lama lulus, dan genesis acak gagal (exit ≠ 0).
+- **Reason:**
+  - Menjaga keutuhan verifikasi integritas kriptografis dan mencegah audit kegagalan palsu pada data historis yang menggunakan genesis lama.
+  - Menjamin portabilitas skema database ke MySQL 8.4 dengan kolom `prev_hash varchar(80)` yang cukup menampung nilai lama tanpa truncation.
+- **Verification:**
+  - `vendor/bin/pest tests/Feature/Portability/DualGenesisCompatibilityTest.php` lulus (3 passed, 9 assertions).
+  - Test modul Asset (`AssetCoreTest`, `AssetPhase31Test`), Contract (`ContractFeatureTest`, `ContractObligationsTest`), dan Manufacturing (`ManufacturingPhase35Test`) lulus (75 passed, 288 assertions).
+
+
 

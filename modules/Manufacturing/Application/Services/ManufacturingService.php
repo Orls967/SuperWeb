@@ -25,6 +25,12 @@ class ManufacturingService
 {
     public const GENESIS = 'GENESIS_MFG_0000000000000000000000000000000000000000000000000000';
 
+    /**
+     * Legacy genesis hash 72 karakter sebelum diselaraskan pada commit f6fbefd (K-B04, B-04).
+     * Diterima oleh verifyFormulaChain untuk backward compatibility dengan formula lama.
+     */
+    public const LEGACY_GENESIS = 'GENESIS_MFG_000000000000000000000000000000000000000000000000000000000000';
+
     public function __construct(
         private readonly ApprovalEngineInterface $approvals,
     ) {}
@@ -406,10 +412,18 @@ class ManufacturingService
     public function verifyFormulaChain(Material $output): bool
     {
         $expectedPrev = self::GENESIS;
+        $isFirst = true;
 
         foreach (Formula::where('output_material_id', $output->id)->orderBy('version')->get() as $f) {
-            if ($f->prev_hash !== $expectedPrev) {
-                return false;
+            if ($isFirst) {
+                if ($f->prev_hash !== self::GENESIS && $f->prev_hash !== self::LEGACY_GENESIS) {
+                    return false;
+                }
+                $isFirst = false;
+            } else {
+                if ($f->prev_hash !== $expectedPrev) {
+                    return false;
+                }
             }
             $expectedPrev = (string) $f->hash;
         }

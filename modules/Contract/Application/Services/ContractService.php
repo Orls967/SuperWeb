@@ -247,8 +247,14 @@ class ContractService
                 throw new ContractChainCorruptedException("Urutan versi tidak konsisten pada kontrak {$contract->contract_number}: diharapkan {$expectedSeq}, ditemukan {$v->sequence}");
             }
 
-            if ($v->prev_hash !== $expectedPrevHash) {
-                throw new ContractChainCorruptedException("Rantai prev_hash rusak pada urutan {$v->sequence} kontrak {$contract->contract_number}");
+            if ($idx === 0) {
+                if ($v->prev_hash !== ContractVersion::GENESIS_HASH && $v->prev_hash !== ContractVersion::LEGACY_GENESIS_HASH) {
+                    throw new ContractChainCorruptedException("Rantai prev_hash rusak pada urutan {$v->sequence} kontrak {$contract->contract_number}: bukan genesis sah");
+                }
+            } else {
+                if ($v->prev_hash !== $expectedPrevHash) {
+                    throw new ContractChainCorruptedException("Rantai prev_hash rusak pada urutan {$v->sequence} kontrak {$contract->contract_number}");
+                }
             }
 
             $calculatedHash = ContractVersion::calculateHash(

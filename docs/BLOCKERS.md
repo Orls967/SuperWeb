@@ -15,7 +15,6 @@ Aturan pemakaian (PROGRESS.md §P6):
 |---|---|---|---|---|---|
 | B-01 | 2026-10-10 | R0.3 | Branch protection `master` belum aktif | Kriteria terima R0.3; status ✅ Fase R0 | Pemilik (pengaturan GitHub) |
 | B-02 | 2026-10-11 | R1 (DoR) | Keputusan D1–D8 di DoR Fase R1 | Mulai kode R1 | Pemilik |
-| B-04 | 2026-10-11 | R0.3.b | Konstanta genesis hash-chain diubah | Verifikasi rantai hash pada data lama | Pemilik (bergantung B-05) |
 | B-05 | 2026-10-11 | R0.3.b, R1.8 | Belum diketahui apakah ada database berisi data nyata | Cara mengubah skema: edit migrasi lama vs migrasi baru | Pemilik |
 | B-06 | 2026-10-11 | R0.2/R0.3 | CI membuat laporan gate dengan `--fase=R0` tertulis tetap | Laporan gate resmi untuk Fase R1 dan seterusnya | Pelaksana R0 |
 
@@ -47,18 +46,6 @@ Aturan pemakaian (PROGRESS.md §P6):
   - D8: jadwal rekonsiliasi.
 - **Yang terblokir:** seluruh kode R1. Prasyarat lain: R0 ✅.
 
-### B-04 — Konstanta genesis hash-chain diubah
-
-- **Fakta:** penanda genesis `GENESIS_AST_…` (73 karakter) dan `GENESIS_CTR_…` (72 karakter) tidak muat di kolom `prev_hash varchar(64)` di MySQL. Dua perbaikan berbeda arah:
-  - `feature/fase-r0-mac` (`0a21d42`, `f6fbefd`): **mengubah konstanta** genesis Asset, Contract, dan Manufacturing menjadi 64 karakter.
-  - `tools/r0-mysql-ddl-replay` (`1d74ed1`): **memperlebar kolom** `prev_hash` menjadi 80 karakter, konstanta tetap.
-- **Risiko mengubah konstanta:** verifikasi rantai membandingkan `prev_hash` event pertama dengan konstanta genesis. Rantai yang sudah tersimpan dengan genesis lama akan dilaporkan rusak oleh audit setelah upgrade.
-- **Pilihan:**
-  - (a) pertahankan konstanta baru dan pastikan tidak ada data lama (lihat B-05);
-  - (b) kembalikan konstanta lama dan pakai kolom 80 karakter;
-  - (c) konstanta baru, tetapi verifikasi menerima genesis lama maupun baru (dengan test).
-- **Rekomendasi:** (a) bila B-05 menjawab "tidak ada data nyata". Selain itu (c).
-
 ### B-05 — Apakah ada database berisi data nyata?
 
 - **Konteks:** `.env.example` dan `RUNBOOK.md` §4 (backup `database/database.sqlite`) mengarah ke SQLite sebagai database berjalan. Jawaban pertanyaan ini menentukan:
@@ -81,3 +68,4 @@ Aturan pemakaian (PROGRESS.md §P6):
 |---|---|---|---|
 | B-00 | 2026-10-10 s.d. 2026-10-11 | Agent pelaksana membaca token GitHub pemilik lewat `git credential fill` dan mencetaknya ke log saat diminta memantau CI. | Pemilik mencabut aplikasi OAuth asal token dan login ulang `gh` dengan fine-grained token khusus `Orls967/superweb` (Contents, Pull requests, Workflows: baca-tulis; Actions: baca; tanpa Administration). Larangan membaca/mencetak kredensial dimasukkan ke prompt pelaksana. Lihat `KNOWLEDGE.md` K-39 dan `RUNBOOK.md` §7. |
 | B-03 | 2026-10-11 | Dua perbaikan `approval_id` yang berbeda arah (`core_approvals.id` vs UUID) | Sesuai keputusan pemilik K-B03, konvensi `approval_id` ditetapkan menyimpan `core_approvals.id` (`bigint` FK). Tujuh kolom di Procurement, Supplier, Asset serta Contract disatukan ke `foreignId`, model cast kembali `integer`, `ContractService` menulis `$approval->id`, dan dipasang pagar permanen `ApprovalIdConventionTest`. Lihat `DECISIONS.md`. |
+| B-04 | 2026-10-11 | Konstanta genesis hash-chain diubah (Asset, Contract, Manufacturing) | Sesuai keputusan pemilik K-B04 (opsi c), verifikasi rantai menerima genesis baru dan lama (`LEGACY_GENESIS_*`). Kolom `prev_hash` dipastikan 80 karakter. Teruji via `DualGenesisCompatibilityTest`. Lihat `DECISIONS.md`. |

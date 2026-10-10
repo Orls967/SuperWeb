@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('effective_to')->nullable();
             $table->boolean('is_active')->default(true);
             $table->string('change_reason')->nullable();
-            $table->string('prev_hash', 64)->nullable();
+            $table->string('prev_hash', 80)->nullable();
             $table->string('hash', 64)->nullable();
             $table->timestamps();
 
@@ -97,7 +97,7 @@ return new class extends Migration
             $table->date('effective_to')->nullable();
             $table->string('status', 16)->default('draft')->comment('draft, pending_approval, approved, retired');
             $table->unsignedBigInteger('approval_id')->nullable();
-            $table->string('prev_hash', 64)->nullable();
+            $table->string('prev_hash', 80)->nullable();
             $table->string('hash', 64)->nullable();
             $table->string('change_reason')->nullable();
             $table->timestamps();
