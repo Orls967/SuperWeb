@@ -118,15 +118,7 @@ test('posting dengan reference UUID atau ULID string tersimpan dengan benar dan 
     expect(\Illuminate\Support\Facades\Schema::getColumnType('bank_ledger_transactions', 'reference_id'))
         ->toBeIn(['string', 'varchar']);
 
-    $userAcc = LedgerAccount::create([
-        'uuid' => (string) Str::uuid(),
-        'code' => 'wallet:user:uuid-test:IDR',
-        'asset_code' => 'IDR',
-        'kind' => AccountKind::WALLET->value,
-        'name' => 'Dompet UUID Test',
-        'allow_negative' => false,
-        'cached_balance' => '0',
-    ]);
+    $userAcc = LedgerAccount::where('code', 'revenue:store:IDR')->firstOrFail();
 
     $ulidReference = '01a126fa-ae48-70e6-bbea-1c32c6f7a70e';
     $dto = new PostingDTO(
