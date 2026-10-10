@@ -108,3 +108,10 @@ it('enforces mutation testing uses base_ref merge base and forbids covered-only'
         ->and($content)->toContain('--base="${{ github.base_ref || \'master\' }}"')
         ->and($content)->not->toContain('--covered-only');
 });
+
+it('enforces npm build for frontend assets in gate-sqlite job', function (): void {
+    $workflowPath = dirname(__DIR__, 2).'/.github/workflows/ci.yml';
+    $content = (string) file_get_contents($workflowPath);
+
+    expect($content)->toContain('npm run build');
+});

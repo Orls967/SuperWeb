@@ -83,7 +83,7 @@ class MutationTestCommand extends Command
         if ($mergeBase !== '') {
             $output = shell_exec("git diff --name-only {$mergeBase} HEAD 2>/dev/null");
         } else {
-            $output = shell_exec("git diff --name-only origin/{$baseBranch}...HEAD 2>/dev/null || git diff --name-only {$baseBranch}...HEAD 2>/dev/null || git diff --name-only HEAD~1 2>/dev/null");
+            $output = shell_exec("git diff --name-only origin/{$baseBranch}...HEAD 2>/dev/null || git diff --name-only {$baseBranch}...HEAD 2>/dev/null");
         }
 
         if ($output === null || trim($output) === '') {
