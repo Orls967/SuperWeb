@@ -102,19 +102,39 @@ final class GateRunner
             $output = '';
             if (is_resource($process)) {
                 fclose($pipes[0]);
+                stream_set_blocking($pipes[1], false);
+                stream_set_blocking($pipes[2], false);
+
                 while (! feof($pipes[1]) || ! feof($pipes[2])) {
-                    $stdoutChunk = fgets($pipes[1]);
-                    if ($stdoutChunk !== false && $stdoutChunk !== '') {
-                        $output .= $stdoutChunk;
-                        if ($logger !== null) {
-                            $logger('stdout', $stdoutChunk);
-                        }
+                    $read = [];
+                    if (! feof($pipes[1])) {
+                        $read[] = $pipes[1];
                     }
-                    $stderrChunk = fgets($pipes[2]);
-                    if ($stderrChunk !== false && $stderrChunk !== '') {
-                        $output .= $stderrChunk;
-                        if ($logger !== null) {
-                            $logger('stderr', $stderrChunk);
+                    if (! feof($pipes[2])) {
+                        $read[] = $pipes[2];
+                    }
+
+                    if ($read === []) {
+                        break;
+                    }
+
+                    $write = null;
+                    $except = null;
+                    $ready = @stream_select($read, $write, $except, 0, 200000);
+
+                    if ($ready === false) {
+                        break;
+                    }
+
+                    if ($ready > 0) {
+                        foreach ($read as $pipe) {
+                            $chunk = fread($pipe, 8192);
+                            if ($chunk !== false && $chunk !== '') {
+                                $output .= $chunk;
+                                if ($logger !== null) {
+                                    $logger($pipe === $pipes[1] ? 'stdout' : 'stderr', $chunk);
+                                }
+                            }
                         }
                     }
                 }
