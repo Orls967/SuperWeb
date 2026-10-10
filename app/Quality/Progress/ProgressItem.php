@@ -23,20 +23,24 @@ final class ProgressItem
     ) {}
 
     /**
-     * Determines if this is a feature item that requires access path and HTTP/command test.
-     * Tooling and doc items (such as R0 infra items or items labeled as documents) are exempted.
+     * Resolves item type based on P2 `jenis:` proof key.
+     * Default without explicit jenis is 'fitur'.
+     */
+    public function itemType(): string
+    {
+        $kinds = $this->proof['jenis'] ?? [];
+        if (! empty($kinds)) {
+            return strtolower(trim($kinds[0]));
+        }
+
+        return 'fitur';
+    }
+
+    /**
+     * Determines if this is a feature item (default or jenis: fitur).
      */
     public function isFeatureItem(): bool
     {
-        if (str_starts_with($this->id, 'R0.')) {
-            return false;
-        }
-
-        $lower = strtolower($this->text);
-        if (str_contains($lower, 'dokumen') || str_contains($lower, 'template pr') || str_contains($lower, 'readme') || str_contains($lower, 'dor')) {
-            return false;
-        }
-
-        return true;
+        return $this->itemType() === 'fitur';
     }
 }

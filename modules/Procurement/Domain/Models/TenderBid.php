@@ -19,7 +19,7 @@ class TenderBid extends Model
 
     protected $casts = [
         'sealed_at' => 'datetime', 'opened_at' => 'datetime', 'offer' => 'array',
-        'total_score' => 'decimal:4', 'is_winner' => 'boolean', 'approval_id' => 'integer',
+        'total_score' => 'decimal:4', 'is_winner' => 'boolean', 'approval_id' => 'string',
     ];
 
     public function tender(): BelongsTo

@@ -20,7 +20,7 @@ class AssetDisposal extends Model
 
     protected $casts = [
         'proceeds_idr' => 'integer', 'book_value_at_disposal_idr' => 'integer', 'gain_loss_idr' => 'integer',
-        'approval_id' => 'integer', 'source_id' => 'integer', 'disposed_at' => 'datetime',
+        'approval_id' => 'string', 'source_id' => 'integer', 'disposed_at' => 'datetime',
         'requested_by_user_id' => 'integer',
     ];
 

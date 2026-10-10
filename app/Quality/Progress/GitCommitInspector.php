@@ -45,4 +45,25 @@ class GitCommitInspector
 
         return array_values(array_filter($lines, static fn (string $line): bool => $line !== ''));
     }
+
+    /**
+     * Returns list of files changed between two commits.
+     *
+     * @return list<string>
+     */
+    public function diffFiles(string $fromCommit, string $toCommit = 'HEAD'): array
+    {
+        $cleanFrom = escapeshellarg(trim($fromCommit));
+        $cleanTo = escapeshellarg(trim($toCommit));
+        $cmd = 'git -C '.escapeshellarg((string) $this->repoRoot)." diff --name-only {$cleanFrom} {$cleanTo} 2>/dev/null";
+        $output = shell_exec($cmd);
+
+        if ($output === null || trim($output) === '') {
+            return [];
+        }
+
+        $lines = array_map('trim', explode("\n", trim($output)));
+
+        return array_values(array_filter($lines, static fn (string $line): bool => $line !== ''));
+    }
 }

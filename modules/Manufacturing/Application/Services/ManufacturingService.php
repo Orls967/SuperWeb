@@ -23,7 +23,7 @@ use Modules\Manufacturing\Domain\Models\Worker;
  */
 class ManufacturingService
 {
-    public const GENESIS = 'GENESIS_MFG_000000000000000000000000000000000000000000000000000000000000';
+    public const GENESIS = 'GENESIS_MFG_0000000000000000000000000000000000000000000000000000';
 
     public function __construct(
         private readonly ApprovalEngineInterface $approvals,

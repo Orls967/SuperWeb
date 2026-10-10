@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('core_approvals', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->nullableMorphs('approvable'); // Target entity being approved (Claim, PO, Contract, Asset, etc.)
+            $table->string('approvable_type', 160)->nullable();
+            $table->string('approvable_id', 64)->nullable();
             $table->string('approval_type', 50)->index(); // CLAIM, PO, CONTRACT, CARRIER_PAYMENT, ASSET_WRITE_OFF
             $table->string('title', 255);
             $table->decimal('amount', 18, 2)->nullable();
@@ -27,6 +28,8 @@ return new class extends Migration
             $table->timestamp('decided_at')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            $table->index(['approvable_type', 'approvable_id']);
         });
 
         // 2. Approval Steps (Workflow Definition & State per Level)

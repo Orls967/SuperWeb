@@ -161,7 +161,7 @@ MD;
 
     $violations = $scanner->validate($phases, textBaseline: $baseline);
 
-    expect($violations)->toContain("Teks item R0.1 (R0:R0.1) diubah tanpa penanda '⬇️ diturunkan' (X18 / P10).");
+    expect($violations)->toContain("Teks item R0.1 (R0:R0.1) diubah tanpa penanda '⬇️ diturunkan: <alasan>' dengan alasan minimal 10 karakter (X18 / P10).");
 });
 
 it('passes item text change when downgrade marker ⬇️ is present', function (): void {
@@ -169,7 +169,7 @@ it('passes item text change when downgrade marker ⬇️ is present', function (
 ### FASE R0 — LINGKUNGAN
 > **Status audit:** 🔨 DIKERJAKAN
 
-- [ ] R0.1 Teks baru ⬇️ diturunkan sesuai keputusan pemilik
+- [ ] R0.1 Teks baru ⬇️ diturunkan: sesuai keputusan pemilik nomor K01
 MD;
 
     $scanner = new ProgressIntegrityScanner;
@@ -213,7 +213,7 @@ MD;
 
     $scanner = new ProgressIntegrityScanner(gitInspector: $mockInspector);
     $phases = $scanner->parse($markdown);
-    $violations = $scanner->validate($phases);
+    $violations = $scanner->validate($phases, textBaseline: ['R0:R0.1' => 'Selaraskan versi PHP']);
 
     expect($violations)->toBe([]);
 });
@@ -263,4 +263,132 @@ PHP);
 
     // Case difference / fuzzy MUST fail
     expect(ProgressIntegrityScanner::testNameExistsInFile($testFilePath, 'RUNS EXACT TEST WITH PRECISION'))->toBeFalse();
+});
+
+it('catches sabotage (a) checking item 55.1 without Bukti block even when phase date is absent', function (): void {
+    $markdown = <<<'MD'
+### FASE 55 — INTEGRASI LOGISTIK
+> **Status audit:** 🔨 DIKERJAKAN
+
+- [x] 55.1 Item tanpa bukti
+MD;
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases);
+    expect($violations)->toContain('Item 55.1 tercentang [x] tanpa blok Bukti: (PROGRESS.md §P2).');
+});
+
+it('catches sabotage (b) setting phase 55 to verified without gate report or Verifikasi', function (): void {
+    $markdown = <<<'MD'
+### FASE 55 — INTEGRASI LOGISTIK
+> **Status audit:** ✅ SELESAI
+
+- [ ] 55.1 Item belum selesai
+MD;
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases);
+    expect($violations)->toContain('Fase 55 berstatus ✅ tetapi docs/gates/fase-55.md tidak ditemukan.');
+});
+
+it('catches sabotage (c) item R1.1 marked with jenis tooling but missing test entry', function (): void {
+    $markdown = <<<'MD'
+### FASE R1 — LEDGER & UANG
+> **Status audit:** 🔨 DIKERJAKAN
+
+- [x] R1.1 Tooling tanpa test
+  Bukti:
+    - jenis: tooling
+    - file: composer.json
+MD;
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases);
+    expect($violations)->toContain("Item tooling R1.1 wajib memiliki minimal satu entri 'test' di blok Bukti (PROGRESS.md §P2).");
+});
+
+it('catches sabotage (d) item R1.2 text modified with bare ⬇️ marker without reason or DECISIONS entry', function (): void {
+    $markdown = <<<'MD'
+### FASE R1 — LEDGER & UANG
+> **Status audit:** 🔨 DIKERJAKAN
+
+- [ ] R1.2 Teks dipersempit ⬇️
+MD;
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases);
+    expect($violations)->toContain("Teks item R1.2 (R1:R1.2) diubah tanpa penanda '⬇️ diturunkan: <alasan>' dengan alasan minimal 10 karakter (X18 / P10).");
+});
+
+it('validates audit command requires Artisan registration and corruption fixture (V2)', function (): void {
+    // Negative: command exists in Artisan but has no fixture
+    expect(ProgressIntegrityScanner::isAuditCommandValid('inspire'))->toBeFalse();
+    // Negative: non-existent command
+    expect(ProgressIntegrityScanner::isAuditCommandValid('non:existent:audit'))->toBeFalse();
+    // Positive: registered and has corruption fixture
+    expect(ProgressIntegrityScanner::isAuditCommandValid('bank:reconcile'))->toBeTrue();
+});
+
+it('validates item type jenis requirements and reason length (V3)', function (): void {
+    $markdown = <<<'MD'
+### FASE R1 — LEDGER & UANG
+> **Status audit:** 🔨 DIKERJAKAN
+
+- [x] R1.1 Dokumen tanpa file
+  Bukti:
+    - jenis: dokumen
+    - alasan: pendek
+
+- [x] R1.2 Konfigurasi tanpa test
+  Bukti:
+    - jenis: konfigurasi
+    - file: composer.json
+MD;
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases);
+    expect($violations)->toContain("Item dokumen R1.1 wajib memiliki minimal satu entri 'file' di blok Bukti (PROGRESS.md §P2).")
+        ->and($violations)->toContain("Item R1.1: alasan 'pendek' kurang dari 10 karakter.")
+        ->and($violations)->toContain("Item konfigurasi R1.2 wajib memiliki minimal satu entri 'test' di blok Bukti (PROGRESS.md §P2).");
+});
+
+it('validates gate report test pass status and detects non-docs diff against HEAD (V4)', function (): void {
+    $tempDir = sys_get_temp_dir().'/progress_test_gate_'.uniqid();
+    mkdir($tempDir.'/docs/gates', 0777, true);
+    mkdir($tempDir.'/tests', 0777, true);
+    file_put_contents($tempDir.'/tests/SomeTest.php', "<?php\nit('test pass', function () {});\nit('test fail', function () {});\n");
+
+    $gateReportContent = <<<'MD'
+# Quality Gate Report: Fase R1
+- **Commit:** `1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b` (1a2b3c4)
+## 3. Status Test Blok Bukti Fase R1
+| Item | Nama Test | File | Status (JUnit) | Durasi |
+|---|---|---|---|---|
+| R1.1 | `it test pass` | `tests/SomeTest.php` | PASS 🟢 | 0.01s |
+MD;
+    file_put_contents($tempDir.'/docs/gates/fase-r1.md', $gateReportContent);
+
+    $markdown = <<<'MD'
+### FASE R1 — LEDGER & UANG
+> **Status audit:** 🔨 DIKERJAKAN
+
+- [x] R1.1 Item dengan test tidak lulus di gate
+  Bukti:
+    - jenis: tooling
+    - test: tests/SomeTest.php::it test fail
+    - gate: docs/gates/fase-r1.md
+MD;
+
+    $mockInspector = new class extends GitCommitInspector {
+        public function diffFiles(string $fromCommit, string $toCommit = 'HEAD'): array {
+            return ['app/Services/SecretService.php', 'docs/PROGRESS.md'];
+        }
+    };
+
+    $scanner = new ProgressIntegrityScanner(gitInspector: $mockInspector);
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, repoRoot: $tempDir);
+
+    expect($violations)->toContain("Item R1.1: test 'it test fail' tidak tercatat LULUS di laporan gate 'docs/gates/fase-r1.md'.")
+        ->and(implode("\n", $violations))->toContain('terdapat perubahan di luar docs/ antara commit gate');
 });

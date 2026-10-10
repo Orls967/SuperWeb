@@ -290,3 +290,30 @@ MD;
         ->and($content)->toContain('- [x] C1 Kode ada di modul pemilik yang benar')
         ->and($content)->toContain('Verifikasi tahap satu disetujui bersyarat.');
 });
+
+it('strictly removes --force option from gate:report command signature (V5)', function (): void {
+    $command = app(\Illuminate\Contracts\Console\Kernel::class)->all()['gate:report'] ?? null;
+    expect($command)->not->toBeNull()
+        ->and($command->getDefinition()->hasOption('force'))->toBeFalse('Opsi --force DILARANG pada gate:report (V5).');
+});
+
+it('preserves ## Verifikasi section regardless of custom header title or level (V5)', function (): void {
+    $generator = new \App\Quality\Gate\GateReportGenerator(base_path());
+    $reflection = new ReflectionClass($generator);
+    $method = $reflection->getMethod('extractExistingVerification');
+    $method->setAccessible(true);
+
+    $doc = <<<'MD'
+# Header Laporan
+
+Beberapa teks laporan.
+
+### 5. Verifikasi Auditor
+- **Tanggal:** 2026-10-11
+- **Status:** LULUS
+MD;
+
+    $result = $method->invoke($generator, $doc);
+    expect($result)->toContain('### 5. Verifikasi Auditor')
+        ->and($result)->toContain('- **Status:** LULUS');
+});

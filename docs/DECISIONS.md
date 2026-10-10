@@ -1080,8 +1080,9 @@
   - Selain itu, MySQL InnoDB dengan charset `utf8mb4` membatasi panjang komposit key index maksimal 3072 byte. Index komposit dengan 4 kolom `string(255)` default memakan 4.080 byte, menyebabkan error MySQL 1071 (`Specified key was too long; max key length is 3072 bytes`, terdeteksi di CI run 38071600613 pada `pty_party_roles` [4.080 byte] dan `med_ip_licenses` [4.080 byte]).
 - **Decision:**
   - Sesuai Keputusan Pemilik K1 (mengikat): seluruh identifier yang melebihi 64 karakter diperbaiki langsung di file migrasinya dengan memberi nama eksplisit ≤ 64 karakter tanpa mengubah kolom, tipe data, atau semantik database.
-  - Seluruh index komposit yang melebihi 3072 byte diperbaiki dengan membatasi panjang kolom string yang menyusun index ke ukuran representatif (mis. `pty_party_roles`: `role` 50, `scope_type` 50, `scope_id` 100 = 836 byte; `med_ip_licenses`: `ip_id` 64, `channel` 50, `territory` 50, `status` 30 = 776 byte).
-  - Pagar otomatis `tests/Architecture/SchemaIdentifierLengthTest.php` diperluas untuk memvalidasi: (1) identifier name ≤ 64 karakter; dan (2) composite index key byte length ≤ 3072 byte.
+  - R0.3.b juga memperpendek kolom (bukan hanya nama): `pty_party_roles.role` (50), `pty_party_roles.scope_type` (50), `pty_party_roles.scope_id` (100); `med_ip_licenses.ip_id` (64), `med_ip_licenses.channel` (50), `med_ip_licenses.territory` (50), `med_ip_licenses.status` (30).
+  - R0.3.b juga menyamakan tipe foreign key `ctr_contract_attachments.contract_party_id` menjadi `unsignedBigInteger` agar kompatibel dengan `ctr_contract_parties.id` (mengatasi MySQL error 3780 incompatibility).
+  - Seluruh penulis nilai (`PartyService`, `PartyController`, `StudioAndContentProductionService`) telah diaudit: nilai maksimum sah berada di bawah batas (enum `PartyRoleType` terpanjang `distributor` 11 char; `channel` terpanjang `HOTEL_IN_ROOM` 13 char; `territory` terpanjang `GLOBAL` 6 char); validasi input `max:<n>` dipasang di `PartyController` (`role` max:50, `scope_type` max:50, `scope_id` max:100) dan guard exception di `StudioAndContentProductionService`; test HTTP membuktikan input n+1 karakter menghasilkan 422 dan input n karakter sukses (`Modules\Party\Tests\Feature\PartyColumnLengthValidationTest` dan `Modules\Med\tests\Feature\MedColumnLengthValidationTest`).
 - **Reason:**
   - Portabilitas penuh dengan MySQL 8.4 agar job CI `portability-mysql` hijau.
   - Struktur data fisik dan integritas constraint tetap utuh tanpa risiko overflow buffer InnoDB MySQL.
@@ -1089,3 +1090,5 @@
   - `vendor/bin/pest tests/Architecture/SchemaIdentifierLengthTest.php` lulus (2 tests, 2 assertions, exit 0).
   - Sabotase sementara dengan nama 65 karakter terbukti gagal (exit code 1).
   - Sabotase sementara dengan index 4.080 byte terbukti gagal (exit code 1).
+  - `vendor/bin/pest modules/Party/tests/Feature/PartyColumnLengthValidationTest.php` lulus (6 tests, 15 assertions, exit 0).
+  - `vendor/bin/pest modules/Med/tests/Feature/MedColumnLengthValidationTest.php` lulus (5 tests, 8 assertions, exit 0).

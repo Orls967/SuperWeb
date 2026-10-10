@@ -21,7 +21,7 @@ class PaymentBatch extends Model
 
     protected $casts = [
         'total_amount_idr' => 'integer', 'item_count' => 'integer',
-        'scheduled_date' => 'date', 'approval_id' => 'integer', 'created_by_user_id' => 'integer',
+        'scheduled_date' => 'date', 'approval_id' => 'string', 'created_by_user_id' => 'integer',
     ];
 
     public function items(): HasMany

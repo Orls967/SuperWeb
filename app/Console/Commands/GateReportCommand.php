@@ -30,7 +30,6 @@ final class GateReportCommand extends Command
         {--junit=storage/logs/pest-junit.xml : Path ke file log JUnit XML}
         {--output= : Path file output markdown (bawaan: docs/gates/fase-{fase}.md)}
         {--progress= : Path ke file PROGRESS.md alternatif (bawaan: docs/PROGRESS.md)}
-        {--force : Abaikan penolakan (hanya untuk keperluan pengujian khusus)}
         {--dry-run : Cetak laporan ke stdout tanpa menulis ke file}';
 
     protected $description = 'Hasilkan laporan resmi quality gate docs/gates/fase-{N}.md dari output asli test suite';
@@ -46,7 +45,6 @@ final class GateReportCommand extends Command
 
         $phaseId = trim($phaseId);
         $root = base_path();
-        $isForce = (bool) $this->option('force');
 
         // 1. Validasi manifest
         $manifestRel = (string) $this->option('manifest');
@@ -67,14 +65,14 @@ final class GateReportCommand extends Command
 
         // 2. Validasi langkah wajib di manifest
         $missingSteps = $manifest->missingRequiredSteps();
-        if ($missingSteps !== [] && ! $isForce) {
+        if ($missingSteps !== []) {
             $this->error('Langkah wajib gate hilang dari manifest: '.implode(', ', $missingSteps));
 
             return self::FAILURE;
         }
 
         // 3. Validasi kebersihan hasil eksekusi gate
-        if (! $manifest->isClean() && ! $isForce) {
+        if (! $manifest->isClean()) {
             $failedStep = $manifest->firstFailedStep();
             $stepName = $failedStep['name'] ?? 'tidak diketahui';
             $exitCode = $failedStep['exit_code'] ?? 1;
@@ -85,14 +83,14 @@ final class GateReportCommand extends Command
 
         // 4. Validasi commit manifest vs HEAD
         $headCommit = $this->resolveCurrentHeadCommit($root);
-        if (! $manifest->matchesCommit($headCommit) && ! $isForce) {
+        if (! $manifest->matchesCommit($headCommit)) {
             $this->error("Commit pada manifest ({$manifest->commit}) tidak cocok dengan HEAD ({$headCommit}). Laporan gate basi.");
 
             return self::FAILURE;
         }
 
         // 5. Validasi kebersihan working tree saat gate berjalan
-        if (! $manifest->isWorkingTreeClean() && ! $isForce) {
+        if (! $manifest->isWorkingTreeClean()) {
             $this->error('Gate dijalankan pada working tree yang kotor (dirty). Laporan hanya sah dari commit bersih.');
 
             return self::FAILURE;
@@ -116,7 +114,7 @@ final class GateReportCommand extends Command
             return self::FAILURE;
         }
 
-        if (! $junitSummary->isClean() && ! $isForce) {
+        if (! $junitSummary->isClean()) {
             $this->error("Quality gate GAGAL: JUnit mencatat {$junitSummary->totalFailures} kegagalan dan {$junitSummary->totalErrors} error.");
 
             return self::FAILURE;
@@ -131,13 +129,11 @@ final class GateReportCommand extends Command
         $generator = new GateReportGenerator($root);
         $phaseBuktiTests = $generator->extractPhaseBuktiTests($root, $phaseId, $junitSummary, $progressPath);
 
-        if (! $isForce) {
-            foreach ($phaseBuktiTests as $bt) {
-                if ($bt['status'] !== 'PASS') {
-                    $this->error("Test bukti '{$bt['testName']}' pada item {$bt['item']} gagal atau tidak ditemukan di JUnit ({$bt['status']}).");
+        foreach ($phaseBuktiTests as $bt) {
+            if ($bt['status'] !== 'PASS') {
+                $this->error("Test bukti '{$bt['testName']}' pada item {$bt['item']} gagal atau tidak ditemukan di JUnit ({$bt['status']}).");
 
-                    return self::FAILURE;
-                }
+                return self::FAILURE;
             }
         }
 

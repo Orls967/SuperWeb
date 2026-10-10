@@ -82,20 +82,39 @@ it('keeps pending dynamic routes within the ratchet baseline', function (): void
     );
 });
 
-it('enforces that unauthorized roles receive 403 on role-protected routes', function (): void {
+it('enforces that unauthorized real roles receive 403 on role-protected routes (V8a)', function (): void {
     $routes = Route::getRoutes()->getRoutes();
     $map = require __DIR__.'/route-roles.php';
     $executable = RouteAuthorizationScanner::executableRoleRoutes($routes, $map);
 
-    $unauthorizedUser = User::factory()->create(['role' => 'unauthorized_tester']);
+    $allKnownRoles = [
+        'admin', 'agent', 'auditor', 'procurement', 'asset_manager',
+        'mekanik', 'contract_manager', 'legal', 'distributor', 'operator',
+        'planner', 'qc_inspector', 'logistics_admin', 'party_manager',
+        'supplier', 'hub_operator',
+    ];
+
+    $usersByRole = [];
 
     foreach ($executable as $route) {
-        $response = $this->actingAs($unauthorizedUser)->call($route['method'], $route['uri']);
-        expect($response->status())->toBe(403, "Rute {$route['name']} ({$route['method']} {$route['uri']}) harus mengembalikan 403 untuk role tidak berhak.");
+        $allowedRoles = $route['roles'];
+        $unauthorizedRole = null;
+        foreach ($allKnownRoles as $role) {
+            if (! in_array($role, $allowedRoles, true)) {
+                $unauthorizedRole = $role;
+                break;
+            }
+        }
+
+        expect($unauthorizedRole)->not->toBeNull("Harus ada role nyata yang tidak berhak untuk rute {$route['name']}");
+
+        $user = $usersByRole[$unauthorizedRole] ??= User::factory()->create(['role' => $unauthorizedRole]);
+        $response = $this->actingAs($user)->call($route['method'], $route['uri']);
+        expect($response->status())->toBe(403, "Rute {$route['name']} ({$route['method']} {$route['uri']}) harus mengembalikan 403 untuk role nyata '{$unauthorizedRole}' yang tidak berhak.");
     }
 });
 
-it('confirms authorized roles are not forbidden (not 403) on role-protected routes', function (): void {
+it('confirms all authorized roles are not forbidden (not 403) on role-protected routes (V8a)', function (): void {
     $routes = Route::getRoutes()->getRoutes();
     $map = require __DIR__.'/route-roles.php';
     $executable = RouteAuthorizationScanner::executableRoleRoutes($routes, $map);
@@ -103,14 +122,32 @@ it('confirms authorized roles are not forbidden (not 403) on role-protected rout
     $usersByRole = [];
 
     foreach ($executable as $route) {
-        $allowedRole = $route['roles'][0];
-        $user = $usersByRole[$allowedRole] ??= User::factory()->create(['role' => $allowedRole]);
+        foreach ($route['roles'] as $allowedRole) {
+            $user = $usersByRole[$allowedRole] ??= User::factory()->create(['role' => $allowedRole]);
 
-        if (isset($route['setup']) && is_callable($route['setup'])) {
-            ($route['setup'])($user);
+            if (isset($route['setup']) && is_callable($route['setup'])) {
+                ($route['setup'])($user);
+            }
+
+            $response = $this->actingAs($user)->call($route['method'], $route['uri']);
+            expect($response->status())->not->toBe(403, "Rute {$route['name']} ({$route['method']} {$route['uri']}) tidak boleh 403 untuk role berhak '{$allowedRole}'.");
         }
-
-        $response = $this->actingAs($user)->call($route['method'], $route['uri']);
-        expect($response->status())->not->toBe(403, "Rute {$route['name']} ({$route['method']} {$route['uri']}) tidak boleh 403 untuk role berhak '{$allowedRole}'.");
     }
+});
+
+it('freezes auth entries in route-roles.php against baseline set (V8b)', function (): void {
+    $map = require __DIR__.'/route-roles.php';
+    $currentAuth = [];
+    foreach ($map as $route => $protection) {
+        if ($protection === 'auth') {
+            $currentAuth[] = $route;
+        }
+    }
+    sort($currentAuth);
+
+    $baselinePath = dirname(__DIR__, 2).'/tests/Architecture/baselines/route-auth-entries.json';
+    $baselineAuth = json_decode((string) file_get_contents($baselinePath), true, 512, JSON_THROW_ON_ERROR);
+
+    $newAuth = array_diff($currentAuth, $baselineAuth);
+    expect($newAuth)->toBe([], 'Entri auth baru dilarang tanpa BASELINE_DECISION (PROGRESS R0.9 / V8b). Entri baru: '.implode(', ', $newAuth));
 });
