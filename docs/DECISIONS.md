@@ -1073,18 +1073,19 @@
 - **Decision:** setiap detektor memakai file baseline ratchet di `tests/Architecture/baselines/` (format sama: hanya boleh turun; menambah entri wajib `BASELINE_DECISION="DECISIONS.md#…"` yang ada). Baseline awal dibuat dari kondisi kode 10 Okt 2026; angka per detektor dicatat di laporan gate Fase R0 dan Register Minus R0.
 - **Reason:** pagar langsung aktif untuk perubahan baru tanpa menunggu seluruh utang lama lunas.
 
-## 2026-10-10: Penamaan eksplisit identifier skema MySQL ≤ 64 karakter (Fase R0.3.b)
+## 2026-10-10: Portabilitas skema MySQL — identifier ≤ 64 karakter & key length ≤ 3072 byte (Fase R0.3.b)
 - **Context:**
   - MySQL 8.4 membatasi panjang nama identifier (tabel, kolom, index, unique constraint, foreign key) maksimal 64 karakter.
-  - Konvensi penamaan default Laravel menghasilkan nama index/unique > 64 karakter pada tabel/kolom dengan nama panjang (ditemukan pertama kali pada CI run 38068206489 job `portability-mysql`: `mall_utility_tariffs_property_id_utility_type_effective_from_index` sepanjang 67 karakter).
-  - Total 22 identifier melebihi batas 64 karakter terdeteksi di modul `Mall`, `Logistics`, `Manufacturing`, `Wms`, `Mining`, `Egy`, `Tlx`, `Edu`, dan `Integration`.
+  - Konvensi penamaan default Laravel menghasilkan nama index/unique > 64 karakter pada tabel/kolom dengan nama panjang (ditemukan pertama kali pada CI run 38068206489 job `portability-mysql`: `mall_utility_tariffs_property_id_utility_type_effective_from_index` sepanjang 67 karakter; total 22 identifier terdeteksi di modul `Mall`, `Logistics`, `Manufacturing`, `Wms`, `Mining`, `Egy`, `Tlx`, `Edu`, dan `Integration`).
+  - Selain itu, MySQL InnoDB dengan charset `utf8mb4` membatasi panjang komposit key index maksimal 3072 byte. Index komposit dengan 4 kolom `string(255)` default memakan 4.080 byte, menyebabkan error MySQL 1071 (`Specified key was too long; max key length is 3072 bytes`, terdeteksi di CI run 38071600613 pada `pty_party_roles` [4.080 byte] dan `med_ip_licenses` [4.080 byte]).
 - **Decision:**
   - Sesuai Keputusan Pemilik K1 (mengikat): seluruh identifier yang melebihi 64 karakter diperbaiki langsung di file migrasinya dengan memberi nama eksplisit ≤ 64 karakter tanpa mengubah kolom, tipe data, atau semantik database.
-  - Penyingkatan menggunakan singkatan domain yang konsisten (mis. `prop_type`, `eff_idx`, `stat_uniq`, `hh_contracts`).
-  - Dibuat arsitektur test `tests/Architecture/SchemaIdentifierLengthTest.php` untuk memvalidasi seluruh migrasi secara otomatis agar identifier > 64 karakter langsung menggagalkan CI.
+  - Seluruh index komposit yang melebihi 3072 byte diperbaiki dengan membatasi panjang kolom string yang menyusun index ke ukuran representatif (mis. `pty_party_roles`: `role` 50, `scope_type` 50, `scope_id` 100 = 836 byte; `med_ip_licenses`: `ip_id` 64, `channel` 50, `territory` 50, `status` 30 = 776 byte).
+  - Pagar otomatis `tests/Architecture/SchemaIdentifierLengthTest.php` diperluas untuk memvalidasi: (1) identifier name ≤ 64 karakter; dan (2) composite index key byte length ≤ 3072 byte.
 - **Reason:**
   - Portabilitas penuh dengan MySQL 8.4 agar job CI `portability-mysql` hijau.
-  - Tidak mengubah skema data fisik atau struktur relasi data, murni penamaan identifier metadata.
+  - Struktur data fisik dan integritas constraint tetap utuh tanpa risiko overflow buffer InnoDB MySQL.
 - **Verification:**
-  - `vendor/bin/pest tests/Architecture/SchemaIdentifierLengthTest.php` exit 0.
-  - Sabotase sementara dengan identifier 65 karakter terbukti menghasilkan exit code ≠ 0 (gagal).
+  - `vendor/bin/pest tests/Architecture/SchemaIdentifierLengthTest.php` lulus (2 tests, 2 assertions, exit 0).
+  - Sabotase sementara dengan nama 65 karakter terbukti gagal (exit code 1).
+  - Sabotase sementara dengan index 4.080 byte terbukti gagal (exit code 1).

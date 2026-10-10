@@ -94,3 +94,81 @@ it('enforces all database schema identifiers do not exceed 64 characters', funct
 
     expect($violationList)->toBeEmpty();
 });
+
+it('enforces all database index composite key lengths do not exceed 3072 bytes for MySQL utf8mb4 portability', function (): void {
+    $migrations = array_merge(
+        glob(base_path('modules/*/database/migrations/*.php')),
+        glob(database_path('migrations/*.php'))
+    );
+
+    $violations = [];
+
+    foreach ($migrations as $file) {
+        $code = (string) file_get_contents($file);
+        if (preg_match_all("/Schema::create\(\s*[\x27\"]([^\x27\"]+)[\x27\"]\s*,\s*function\s*\([^)]*\)\s*\{(.*?)\}\s*\);/s", $code, $tableMatches, PREG_SET_ORDER)) {
+            foreach ($tableMatches as $tm) {
+                $tableName = $tm[1];
+                $tableBody = $tm[2];
+
+                $colLengths = [];
+                if (preg_match_all("/\\\$table->([a-zA-Z0-9_]+)\(\s*[\x27\"]([^\x27\"]+)[\x27\"](?:\s*,\s*([0-9]+))?/", $tableBody, $colMatches, PREG_SET_ORDER)) {
+                    foreach ($colMatches as $cm) {
+                        $type = $cm[1];
+                        $name = $cm[2];
+                        $len = isset($cm[3]) && is_numeric($cm[3]) ? (int) $cm[3] : null;
+                        if ($type === 'string') {
+                            $colLengths[$name] = ($len ?? 255) * 4;
+                        } elseif ($type === 'uuid' || $type === 'char') {
+                            $colLengths[$name] = ($len ?? 36) * 4;
+                        } elseif ($type === 'text' || $type === 'longText') {
+                            $colLengths[$name] = 3072;
+                        } elseif (in_array($type, ['integer', 'unsignedInteger'], true)) {
+                            $colLengths[$name] = 4;
+                        } elseif (in_array($type, ['bigInteger', 'unsignedBigInteger', 'foreignId', 'id'], true)) {
+                            $colLengths[$name] = 8;
+                        } elseif (in_array($type, ['tinyInteger', 'boolean'], true)) {
+                            $colLengths[$name] = 1;
+                        } elseif (in_array($type, ['date', 'timestamp', 'dateTime'], true)) {
+                            $colLengths[$name] = 8;
+                        } else {
+                            $colLengths[$name] = ($len ?? 255) * 4;
+                        }
+                    }
+                }
+
+                if (preg_match_all("/\\\$table->(unique|index)\(\s*\[([^\]]+)\]/", $tableBody, $idxMatches, PREG_SET_ORDER)) {
+                    foreach ($idxMatches as $im) {
+                        $type = $im[1];
+                        $cols = array_map(fn ($c) => trim($c, " \t\n\r\0\x0B\x27\""), explode(',', $im[2]));
+                        $total = 0;
+                        foreach ($cols as $c) {
+                            $total += $colLengths[$c] ?? (255 * 4);
+                        }
+                        if ($total > 3072) {
+                            $violations[] = [
+                                'file' => basename($file),
+                                'table' => $tableName,
+                                'type' => $type,
+                                'cols' => implode(', ', $cols),
+                                'bytes' => $total,
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if ($violations !== []) {
+        $details = implode("\n", array_map(
+            fn ($v) => "- [{$v['file']}] {$v['table']} ({$v['type']}: [{$v['cols']}] = {$v['bytes']} bytes)",
+            $violations
+        ));
+
+        expect($violations)->toBeEmpty(
+            'Ditemukan index/unique melebihi batas 3072 byte (MySQL utf8mb4):'."\n".$details
+        );
+    }
+
+    expect($violations)->toBeEmpty();
+});
