@@ -98,6 +98,7 @@ final class GateRunner
                 $env['APP_ENV'] = 'testing';
                 $env['DB_CONNECTION'] = 'sqlite';
                 $env['DB_DATABASE'] = ':memory:';
+                $env['BCRYPT_ROUNDS'] = '4';
             }
             $process = proc_open(
                 $cmd,
@@ -147,6 +148,23 @@ final class GateRunner
                                     $logger($pipe === $pipes[1] ? 'stdout' : 'stderr', $chunk);
                                 }
                             }
+                        }
+                    } else {
+                        $pstatus = proc_get_status($process);
+                        if (! ($pstatus['running'] ?? true)) {
+                            while (($chunk = fread($pipes[1], 8192)) !== false && $chunk !== '') {
+                                $output .= $chunk;
+                                if ($logger !== null) {
+                                    $logger('stdout', $chunk);
+                                }
+                            }
+                            while (($chunk = fread($pipes[2], 8192)) !== false && $chunk !== '') {
+                                $output .= $chunk;
+                                if ($logger !== null) {
+                                    $logger('stderr', $chunk);
+                                }
+                            }
+                            break;
                         }
                     }
                 }
