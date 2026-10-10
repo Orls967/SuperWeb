@@ -25,6 +25,12 @@ final class CommandNameCollector
         $commands = [];
 
         foreach ($files as $file) {
+            if (! str_contains($file->contents, 'Command')
+                && ! str_contains($file->contents, 'Artisan')
+                && ! str_contains($file->contents, 'Signature')) {
+                continue;
+            }
+
             $tokens = $file->tokens();
             $isCommandClass = self::extendsCommand($tokens);
 
@@ -47,6 +53,8 @@ final class CommandNameCollector
                     $commands[] = ['name' => $name, 'path' => $file->relativePath, 'line' => $token->line];
                 }
             }
+
+            $file->releaseTokens();
         }
 
         return $commands;

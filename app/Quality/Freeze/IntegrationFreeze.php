@@ -102,6 +102,8 @@ final class IntegrationFreeze
             }
         }
 
+        $migration->releaseTokens();
+
         return $tables;
     }
 }

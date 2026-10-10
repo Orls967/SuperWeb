@@ -29,6 +29,7 @@ final class Psr4ComplianceChecker
 
         foreach ($files as $file) {
             $class = self::declaredClass($file);
+            $file->releaseTokens();
 
             if ($class === null) {
                 continue;

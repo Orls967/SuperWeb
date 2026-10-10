@@ -56,6 +56,8 @@ final class TestHygieneScan
             if ($module !== null && ! isset($found[$module]) && HttpTestDetector::performsHttpRequest($file)) {
                 $found[$module] = true;
             }
+
+            $file->releaseTokens();
         }
 
         $names = array_keys($found);

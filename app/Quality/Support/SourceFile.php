@@ -49,6 +49,15 @@ final class SourceFile
     }
 
     /**
+     * Releases cached tokens so long-running scans over thousands of files
+     * do not exhaust the PHP memory limit.
+     */
+    public function releaseTokens(): void
+    {
+        $this->significantTokens = null;
+    }
+
+    /**
      * Module name for files under `modules/{Module}/` (also when the scanned tree
      * lives in a sub-directory, e.g. a test fixture), otherwise null.
      */

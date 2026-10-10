@@ -89,6 +89,8 @@ final class ArchScanner
                     $violations[$rule->id()][] = $violation;
                 }
             }
+
+            $file->releaseTokens();
         }
 
         foreach ($violations as $ruleId => $ruleViolations) {
