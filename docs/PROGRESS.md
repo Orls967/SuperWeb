@@ -514,6 +514,23 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 
 ### FASE R1 — LEDGER & UANG (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.
+
+#### DoR Fase R1 — Ledger & Uang (P0)
+- Disetujui pemilik: [ ]   (menunggu persetujuan pemilik sebelum mulai coding R1)
+- Tujuan bisnis (1–2 kalimat): Menstandarkan integritas pembukuan double-entry di seluruh ekosistem konglomerasi dengan konvensi tanda tunggal (kredit = +, debit = −), mengeliminasi saldo terbalik, menghapus float pada uang, memvalidasi guard transaksi, dan menetapkan chart of accounts sebagai kode terdaftar.
+- Modul pemilik & prefiks (KONSEP §A1) — bukan Integration: Banking (`bank_`), Payment (`pay_`), serta domain modul yang memposting (`Modules\{M}\Ledger\{M}Accounts.php`).
+- Prasyarat & statusnya (harus ✅): R0: 🔵, menunggu verifikasi — R1 TIDAK boleh mulai coding sebelum R0 ✅.
+- Item yang dikerjakan sesi ini & yang ditunda (→ Register Minus): Dikerjakan: R1.1 s/d R1.10 (konvensi tanda tunggal, perbaikan posting terbalik, chart of accounts sebagai kode, guard LedgerService, idempotency key deterministik, entitas refund, validasi split pembayaran, hapus float, presisi rekonsiliasi portabel, gate R1). Utang teknis non-uang ditunda ke Fase R2–R5 (K2).
+- Entitas/tabel + state machine: `bank_ledger_accounts`, `bank_ledger_entries`, `bank_ledger_transactions`, `pay_refunds` (state: `requested` → `completed` / `rejected`).
+- Posting ledger (kejadian → debit/kredit, akun di {M}Accounts): Helper `Posting::lines()->debit()->credit()`; kredit = +, debit = −; semua akun didefinisikan di `{M}Accounts` konstanta resmi.
+- Event (produce/consume; katalog KONSEP §A4.2): `TransactionPosted`, `RefundCompleted`, `PaymentCaptured`.
+- Rute/UI/menu + role & policy: Endpoint refund API, rekonsiliasi command & audit view, role: `admin`, `finance_manager`, `auditor` (read-only).
+- Command/jadwal/tick handler: `php artisan bank:reconcile`, `php artisan ledger:audit-balances`.
+- Audit dua-sumber + fixture korupsi: `bank:reconcile` (membandingkan cached_balance vs `SUM(amount)` entri jurnal; fixture korupsi: selisih 1 Rupiah / 1 unit terkecil memicu exit code ≠ 0).
+- Nama test (a)–(e) yang akan ditulis: (a) `LedgerNormalBalanceTest` (semua akun sesuai sisi normal paska-seed), (b) `LedgerIdempotencyGuardTest` (key sama payload beda ditolak, key sama payload sama kembalikan transaksi pemenang), (c) `PaymentSplitValidationTest` (Σsplits != nominal ditolak), (d) `RefundEntityIdempotencyTest` (dua refund parsial nominal sama menghasilkan dua transaksi, retry refund sama menghasilkan 1 transaksi), (e) `PortabilityPrecisionTest` (18 desimal lolos roundtrip MySQL & SQLite).
+- Tingkat simulasi (S1/S2/S3) & tier skala (T0/T1/T2): S3 (Domain nyata akuntansi perbankan); T1 (Seeder default) & T2 (Stress test).
+- Jalan pintas yang harus dihindari (dari KONSEP xF & baris "Kriteria terima wajib"): Anti-pola X1 (centang tanpa test/bukti), X3 (menaikkan baseline tanpa DECISIONS), X5 (float pada uang), X8 (idempotency key acak/waktu), X10 (menghapus FK), X14 (membuat akun langsung di test tanpa seeder), X17 (mengunci perilaku salah/tanda terbalik di test).
+
 - [ ] R1.1 **Konvensi tanda tunggal** (K-10): `AccountKind::normalSide()` + helper `Posting::lines()->debit()->credit()` (kredit = +, debit = −); dokumentasikan tabel normal balance (`KONSEP.md` §A2); pindahkan pemetaan sementara dari `LedgerNormalBalanceTest`.
   - Test wajib: `LedgerNormalBalanceTest` — setelah `migrate:fresh --seed` + seluruh skenario golden, setiap akun memenuhi tanda sisi normalnya (pengecualian eksplisit untuk `clearing`/`exchange`).
 - [ ] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif) — dicatat sebagai `keputusan:` di Bukti (X17).
