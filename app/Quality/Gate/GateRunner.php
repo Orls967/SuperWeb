@@ -254,7 +254,7 @@ final class GateRunner
 
     private function resolveIsDirty(string $root): bool
     {
-        $status = shell_exec('git -C '.escapeshellarg($root).' status --porcelain 2>/dev/null');
+        $status = shell_exec('git -C '.escapeshellarg($root).' status --porcelain -uall 2>/dev/null');
         if ($status === null || trim($status) === '') {
             return false;
         }
