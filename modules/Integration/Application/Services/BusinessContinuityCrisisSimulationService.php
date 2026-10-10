@@ -97,7 +97,7 @@ class BusinessContinuityCrisisSimulationService
 
         // 452.4 & 452.6 Spokesperson approval chain is mandatory before broadcast release
         if (! $spokespersonApproved) {
-            throw new InvalidArgumentException("Broadcast blocked: Crisis communication release requires formal executive spokesperson sign-off (452.3, 452.4, 452.6).");
+            throw new InvalidArgumentException('Broadcast blocked: Crisis communication release requires formal executive spokesperson sign-off (452.3, 452.4, 452.6).');
         }
 
         DB::table('gov_crisis_communications')->where('id', $comms->id)->update([

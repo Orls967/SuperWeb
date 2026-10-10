@@ -80,11 +80,11 @@ class InvestorLenderReportingService
 
         // 439.6 Risk: Consistency with internal ledger reports is mandatory
         if (! $consistencyVerified) {
-            throw new InvalidArgumentException("Publication blocked: External disclosure must pass reconciliation consistency check against internal reports (439.3, 439.6).");
+            throw new InvalidArgumentException('Publication blocked: External disclosure must pass reconciliation consistency check against internal reports (439.3, 439.6).');
         }
 
         if (! $legalSignOff) {
-            throw new InvalidArgumentException("Publication blocked: Mandatory legal counsel sign-off missing (439.3, 439.4).");
+            throw new InvalidArgumentException('Publication blocked: Mandatory legal counsel sign-off missing (439.3, 439.4).');
         }
 
         DB::table('fin_investor_disclosures')->where('id', $d->id)->update([

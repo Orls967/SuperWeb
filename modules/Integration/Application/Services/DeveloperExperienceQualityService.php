@@ -153,9 +153,9 @@ class DeveloperExperienceQualityService
             ->where('gate_verdict', 'PASSED')
             ->where(function ($q) {
                 $q->where('lint_passed', false)
-                  ->orWhere('static_analysis_passed', false)
-                  ->orWhere('security_audit_passed', false)
-                  ->orWhere('mutation_score_pct', '<', 80.0);
+                    ->orWhere('static_analysis_passed', false)
+                    ->orWhere('security_audit_passed', false)
+                    ->orWhere('mutation_score_pct', '<', 80.0);
             })
             ->count();
 

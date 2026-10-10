@@ -68,7 +68,7 @@ class OperationsExcellenceService
 
         // Must have verified savings > 0 to recognize (276.6)
         if ($ledgerVerifiedSavingsUsd <= 0.0) {
-            throw new InvalidArgumentException("Finance verification failed: Claimed savings without audited ledger proof cannot be recognized (276.6).");
+            throw new InvalidArgumentException('Finance verification failed: Claimed savings without audited ledger proof cannot be recognized (276.6).');
         }
 
         DB::table('operations_dmaic_projects')

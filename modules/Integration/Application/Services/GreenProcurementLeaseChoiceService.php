@@ -36,7 +36,7 @@ class GreenProcurementLeaseChoiceService
 
         // Compliance gate check 332.1: Failing minimum compliance gate blocks award
         if (! $passedComplianceGate && $isAwarded) {
-            throw new InvalidArgumentException("Green procurement breach: Supplier failing minimum compliance gate cannot be awarded contract (332.1).");
+            throw new InvalidArgumentException('Green procurement breach: Supplier failing minimum compliance gate cannot be awarded contract (332.1).');
         }
 
         // Weighted score 332.1: 60% Carbon score + 40% Circularity score
@@ -74,7 +74,7 @@ class GreenProcurementLeaseChoiceService
 
         // Verification check 332.4: Incentive requires verified performance
         if (! $performanceVerified) {
-            throw new InvalidArgumentException("Lease incentive violation: Rebates require verified sub-meter performance data (332.4).");
+            throw new InvalidArgumentException('Lease incentive violation: Rebates require verified sub-meter performance data (332.4).');
         }
 
         // Edge case 332.5: If tenant refused green target, assign alternate tier with zero incentive rebate

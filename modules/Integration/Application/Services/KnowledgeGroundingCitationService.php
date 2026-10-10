@@ -33,10 +33,10 @@ class KnowledgeGroundingCitationService
 
         // Edge case 347.5: If not in corpus, refuse to hallucinate and state explicitly
         if (! $foundInCorpus) {
-            $answer = "tidak ada di sumber";
+            $answer = 'tidak ada di sumber';
             $refused = true;
         } else {
-            $answer = $candidateAnswer ?? "Verified grounded response based on source documents.";
+            $answer = $candidateAnswer ?? 'Verified grounded response based on source documents.';
             $refused = false;
         }
 
@@ -71,7 +71,7 @@ class KnowledgeGroundingCitationService
         $rejectedOrRephrased = (! $supportsClaim || $isStale);
 
         if (! $supportsClaim) {
-            throw new InvalidArgumentException("Citation verification failed: Cited passage does not support generated claim (347.3).");
+            throw new InvalidArgumentException('Citation verification failed: Cited passage does not support generated claim (347.3).');
         }
 
         $id = DB::table('knowledge_retrieval_citation_verifications')->insertGetId([

@@ -33,7 +33,7 @@ class ModelIncidentSafetyCaseService
 
         // Core gate 356.4: High-impact model cannot launch without approved safety case
         if ($tier === 'HIGH_IMPACT' && ! $hasApprovedCase) {
-            throw new InvalidArgumentException("AI Governance safety violation: High-impact model cannot launch without an approved safety case (356.4).");
+            throw new InvalidArgumentException('AI Governance safety violation: High-impact model cannot launch without an approved safety case (356.4).');
         }
 
         $id = DB::table('ai_high_impact_safety_cases')->insertGetId([

@@ -32,12 +32,12 @@ class DataResilienceMigrationService
 
         // Core gate 343.4: Incompatible migrations without versioned fallback are blocked
         if (! $isBackwardCompatible) {
-            throw new InvalidArgumentException("Database governance violation: Backward-incompatible migration proposal blocked (343.4).");
+            throw new InvalidArgumentException('Database governance violation: Backward-incompatible migration proposal blocked (343.4).');
         }
 
         // Risk check 343.6: Schema change lacking backfill plan rejected
         if (! $hasBackfillPlan) {
-            throw new InvalidArgumentException("CI gate rejection: Schema change proposal rejected due to absence of backfill execution plan (343.6).");
+            throw new InvalidArgumentException('CI gate rejection: Schema change proposal rejected due to absence of backfill execution plan (343.6).');
         }
 
         $id = DB::table('schema_change_governance_proposals')->insertGetId([

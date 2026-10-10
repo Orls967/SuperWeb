@@ -61,7 +61,7 @@ class SustainabilityFinanceDataService
 
         // Risk gate 380.6: Transition plans must link directly to project/asset/ledger views
         if (! $projectAssetLedgerLinked) {
-            throw new InvalidArgumentException("Integration violation: Transition plan capex must link to project asset ledger views (380.6).");
+            throw new InvalidArgumentException('Integration violation: Transition plan capex must link to project asset ledger views (380.6).');
         }
 
         $id = DB::table('global_sustainability_transition_plans')->insertGetId([

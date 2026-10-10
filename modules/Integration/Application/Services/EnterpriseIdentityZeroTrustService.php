@@ -62,7 +62,7 @@ class EnterpriseIdentityZeroTrustService
      */
     public function requestJitElevation(string $userId, string $type = 'jit_elevation', int $durationMinutes = 60): object
     {
-        $sessionCode = 'PAM-' . strtoupper(substr(md5($userId . $type . time()), 0, 8));
+        $sessionCode = 'PAM-'.strtoupper(substr(md5($userId.$type.time()), 0, 8));
 
         $id = DB::table('int_privileged_access_sessions')->insertGetId([
             'session_code' => $sessionCode,

@@ -103,7 +103,7 @@ class ReleaseManagementChangeAdvisoryService
         }
 
         if ($change->risk_class !== 'emergency') {
-            throw new InvalidArgumentException("Deploy blocked: Only emergency changes can bypass CAB approval for instant deployment (427.1, 427.5).");
+            throw new InvalidArgumentException('Deploy blocked: Only emergency changes can bypass CAB approval for instant deployment (427.1, 427.5).');
         }
 
         DB::table('plt_release_changes')->where('id', $change->id)->update([

@@ -55,7 +55,7 @@ class AssetAvailabilityProgramService
 
         // 410.5 Edge case: If reaching beyond usable units into maintenance reserve, strictly block
         if ($newAllocated > $usableUnits) {
-            throw new InvalidArgumentException("Allocation blocked: Exceeds operational limits and violates mandatory maintenance reserve (410.1, 410.4).");
+            throw new InvalidArgumentException('Allocation blocked: Exceeds operational limits and violates mandatory maintenance reserve (410.1, 410.4).');
         }
 
         DB::table('ops_asset_availability_pools')->where('id', $pool->id)->update([
@@ -77,7 +77,7 @@ class AssetAvailabilityProgramService
     ): object {
         // 410.6 Risk: substitution without quality gate approval is blocked
         if ($resolutionType === 'substitute' && ! $qualityGateApproved) {
-            throw new InvalidArgumentException("Quality gate violation: Asset substitution requires explicit quality approval (410.6).");
+            throw new InvalidArgumentException('Quality gate violation: Asset substitution requires explicit quality approval (410.6).');
         }
 
         $id = DB::table('ops_asset_shortage_escalations')->insertGetId([

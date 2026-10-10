@@ -49,7 +49,7 @@ class MnaDueDiligencePmiService
 
         $final = (float) $deal->initial_valuation - $discountAdjustment;
         if ($final <= 0) {
-            throw new InvalidArgumentException("Valuation adjustment invalid: Resulting valuation is zero or negative (453.1).");
+            throw new InvalidArgumentException('Valuation adjustment invalid: Resulting valuation is zero or negative (453.1).');
         }
 
         DB::table('gov_mna_due_diligence_deals')->where('id', $deal->id)->update([
@@ -95,7 +95,7 @@ class MnaDueDiligencePmiService
 
         // 453.4 Synergy must be measured from accounting ledgers, not arbitrary assumptions
         if ($measuredAmount < 0) {
-            throw new InvalidArgumentException("Measurement invalid: Synergy amount cannot be negative (453.4).");
+            throw new InvalidArgumentException('Measurement invalid: Synergy amount cannot be negative (453.4).');
         }
 
         $isUnderperforming = ($measuredAmount < ((float) $syn->target_synergy_amount * 0.70)); // < 70% of target

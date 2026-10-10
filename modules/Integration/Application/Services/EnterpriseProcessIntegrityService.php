@@ -76,7 +76,7 @@ class EnterpriseProcessIntegrityService
     ): object {
         $sev = strtolower($severity);
         $isCritical = in_array($sev, ['high', 'critical'], true);
-        $ticket = 'CAP-PROC-' . strtoupper(substr(md5($deviationCode . time()), 0, 8));
+        $ticket = 'CAP-PROC-'.strtoupper(substr(md5($deviationCode.time()), 0, 8));
 
         $id = DB::table('int_process_deviations')->insertGetId([
             'deviation_code' => strtoupper($deviationCode),

@@ -31,7 +31,7 @@ class TalentLifecycleService
         string $rehireEligibility = 'ELIGIBLE'
     ): object {
         if (! $consentGiven) {
-            throw new \InvalidArgumentException("Candidate consent required for processing application data.");
+            throw new \InvalidArgumentException('Candidate consent required for processing application data.');
         }
 
         $code = 'CAND-'.strtoupper(Str::random(8));

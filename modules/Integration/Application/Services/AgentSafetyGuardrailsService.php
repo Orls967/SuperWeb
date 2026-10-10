@@ -64,7 +64,7 @@ class AgentSafetyGuardrailsService
 
         // Core gate 346.4 & 346.6: Permission expansion strictly requires CI change approval
         if ($isExpansion && ! $ciApprovalGranted) {
-            throw new InvalidArgumentException("AI security violation: Agent tool permission expansion requires mandatory CI change approval (346.6).");
+            throw new InvalidArgumentException('AI security violation: Agent tool permission expansion requires mandatory CI change approval (346.6).');
         }
 
         $id = DB::table('ai_agent_tool_permissions')->insertGetId([

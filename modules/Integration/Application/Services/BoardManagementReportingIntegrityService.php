@@ -60,12 +60,12 @@ class BoardManagementReportingIntegrityService
 
         // Segregation of duties: preparer, reviewer, and approver must be distinct individuals
         if ($pack->preparer === $reviewer || $pack->preparer === $approver || $reviewer === $approver) {
-            throw new InvalidArgumentException("Segregation of duties violation: Preparer, Reviewer, and Approver must be separate individuals (405.2).");
+            throw new InvalidArgumentException('Segregation of duties violation: Preparer, Reviewer, and Approver must be separate individuals (405.2).');
         }
 
         // 405.5 Edge case: Narrative/reported numbers mismatch with ledger
         if (abs((float) $pack->reported_revenue - (float) $pack->ledger_verified_revenue) > 0.01) {
-            throw new InvalidArgumentException("Integrity mismatch: Reported revenue does not reconcile with ledger-verified revenue (405.5).");
+            throw new InvalidArgumentException('Integrity mismatch: Reported revenue does not reconcile with ledger-verified revenue (405.5).');
         }
 
         DB::table('gov_board_reporting_packs')->where('id', $pack->id)->update([

@@ -36,7 +36,7 @@ class CircularBusinessModelsRevenueService
 
         // Edge case 334.5: Unprofitable circular models cannot be maintained without redesign review
         if (! $isProfitable) {
-            throw new InvalidArgumentException("Commercial viability breach: Unprofitable circular model cannot be approved without business redesign review (334.5).");
+            throw new InvalidArgumentException('Commercial viability breach: Unprofitable circular model cannot be approved without business redesign review (334.5).');
         }
 
         $id = DB::table('circular_business_asset_leases')->insertGetId([

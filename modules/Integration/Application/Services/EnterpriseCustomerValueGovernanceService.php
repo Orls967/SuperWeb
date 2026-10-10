@@ -89,7 +89,7 @@ class EnterpriseCustomerValueGovernanceService
 
         // 463.6 Risk: Unsubstantiated value claim is blocked from sales enablement
         if (! $evidenceVerified) {
-            throw new InvalidArgumentException("Approval blocked: Sales value claim requires empirical evidence verification before commercial release (463.3, 463.6).");
+            throw new InvalidArgumentException('Approval blocked: Sales value claim requires empirical evidence verification before commercial release (463.3, 463.6).');
         }
 
         DB::table('int_value_selling_proof_points')->where('id', $pp->id)->update([

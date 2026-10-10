@@ -233,7 +233,7 @@ class PricingScienceRevenueOptimizationService
             ->where('pricing_change_proposals.status', 'APPROVED')
             ->where(function ($q) {
                 $q->whereRaw('pricing_change_proposals.proposed_price < pricing_policy_rules.price_floor')
-                  ->orWhereRaw('pricing_change_proposals.proposed_price > pricing_policy_rules.price_ceiling');
+                    ->orWhereRaw('pricing_change_proposals.proposed_price > pricing_policy_rules.price_ceiling');
             })
             ->count();
 
@@ -243,7 +243,7 @@ class PricingScienceRevenueOptimizationService
             ->where('status', 'APPROVED')
             ->where(function ($q) {
                 $q->whereNull('approved_by')
-                  ->orWhere('approved_by', 'NOT LIKE', '%VP_COMMERCIAL%');
+                    ->orWhere('approved_by', 'NOT LIKE', '%VP_COMMERCIAL%');
             })
             ->count();
 

@@ -35,14 +35,14 @@ class MarketplaceDisputeBuyerProtectionService
 
         // Core gate 373.4: Evidence required by dispute type
         if (! $hasEvidence) {
-            throw new InvalidArgumentException("Dispute filing rejected: Required evidence checklist incomplete (373.4).");
+            throw new InvalidArgumentException('Dispute filing rejected: Required evidence checklist incomplete (373.4).');
         }
 
         // Edge case 373.5: Conflicted reviewer replaced by neutral alternate reviewer
         $finalReviewer = $assignedReviewerId;
         if ($isConflicted) {
             if (empty($alternateReviewerId)) {
-                throw new InvalidArgumentException("Conflict of interest detected: Neutral alternate reviewer must be assigned (373.5).");
+                throw new InvalidArgumentException('Conflict of interest detected: Neutral alternate reviewer must be assigned (373.5).');
             }
             $finalReviewer = $alternateReviewerId;
         }
@@ -87,7 +87,7 @@ class MarketplaceDisputeBuyerProtectionService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Escrow safety violation: Hold release permitted only after formal dispute adjudication (373.4).");
+            throw new InvalidArgumentException('Escrow safety violation: Hold release permitted only after formal dispute adjudication (373.4).');
         }
 
         $id = DB::table('marketplace_buyer_protection_holds')->insertGetId([

@@ -36,7 +36,7 @@ class EsgAssuranceDisclosureControlService
 
         // Core gate 331.2 & 331.4: Unsubstantiated values cannot be published
         if (! $hasEvidence) {
-            throw new InvalidArgumentException("ESG disclosure violation: Unsubstantiated metric value lacking source evidence cannot be published (331.4).");
+            throw new InvalidArgumentException('ESG disclosure violation: Unsubstantiated metric value lacking source evidence cannot be published (331.4).');
         }
 
         $id = DB::table('esg_disclosure_publications')->insertGetId([

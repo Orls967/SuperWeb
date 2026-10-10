@@ -68,7 +68,7 @@ class EsgHumanRightsJustTransitionService
 
         // Constraint 288.5: Remediation closure requires affected-party verification
         if (! $affectedPartyVerified) {
-            throw new InvalidArgumentException("Remediation closure rejected: Affected community party must formally verify remediation satisfaction prior to closure (288.5).");
+            throw new InvalidArgumentException('Remediation closure rejected: Affected community party must formally verify remediation satisfaction prior to closure (288.5).');
         }
 
         DB::table('esg_community_grievances')
@@ -98,7 +98,7 @@ class EsgHumanRightsJustTransitionService
 
         // Budget requirement check (288.7): Must fund both training and income protection
         if ($reskillingBudgetUsd <= 0 || $incomeProtectionBudgetUsd <= 0) {
-            throw new InvalidArgumentException("Just Transition error: Plan must include verified allocations for both reskilling and income continuity protection (288.7).");
+            throw new InvalidArgumentException('Just Transition error: Plan must include verified allocations for both reskilling and income continuity protection (288.7).');
         }
 
         $id = DB::table('esg_just_transitions')->insertGetId([

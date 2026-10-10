@@ -232,7 +232,7 @@ class CorporateVentureIncubationService
             ->where('disbursed', true)
             ->where(function ($q) {
                 $q->where('milestone_achieved', false)
-                  ->orWhere('is_audited', false);
+                    ->orWhere('is_audited', false);
             })
             ->count();
 
@@ -241,7 +241,7 @@ class CorporateVentureIncubationService
             ->where('shared_platform_access_active', true)
             ->where(function ($q) {
                 $q->where('funnel_stage', 'KILLED')
-                  ->orWhere('non_compete_isolated', true);
+                    ->orWhere('non_compete_isolated', true);
             })
             ->count();
 

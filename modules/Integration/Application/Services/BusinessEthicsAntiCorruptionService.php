@@ -67,7 +67,7 @@ class BusinessEthicsAntiCorruptionService
 
         // Economic rationale gate 340.4 & 340.6
         if (! $hasEconomicRationale) {
-            throw new InvalidArgumentException("Intermediary due diligence breach: Payment requires documented economic rationale and performance proof (340.4).");
+            throw new InvalidArgumentException('Intermediary due diligence breach: Payment requires documented economic rationale and performance proof (340.4).');
         }
 
         // Edge case 340.5: Bribery/collusion suspicion flags independent investigation & blocks clearance

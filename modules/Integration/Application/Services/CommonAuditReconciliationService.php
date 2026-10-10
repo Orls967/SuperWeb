@@ -75,7 +75,7 @@ class CommonAuditReconciliationService
 
         // Core gate 389.4 & 389.6 Risk: PII redaction mandatory before evidence release
         if (! $piiRedacted || str_contains($evidenceData, 'RAW_PII_SSN')) {
-            throw new InvalidArgumentException("Data privacy breach: Unredacted PII detected in evidence payload; evidence distribution blocked (389.6).");
+            throw new InvalidArgumentException('Data privacy breach: Unredacted PII detected in evidence payload; evidence distribution blocked (389.6).');
         }
 
         $checksum = hash('sha256', $evidenceData);

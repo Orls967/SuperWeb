@@ -75,7 +75,7 @@ class EnterpriseFinancialIntegrityService
 
         // 480.6 Risk: Auditor sample testing must be verified
         if (! $sampleVerified) {
-            throw new InvalidArgumentException("Auditor opinion blocked: Independent sampling methodology has not been validated (480.6).");
+            throw new InvalidArgumentException('Auditor opinion blocked: Independent sampling methodology has not been validated (480.6).');
         }
 
         DB::table('int_enterprise_financial_integrity_statements')->where('id', $stmt->id)->update([

@@ -14,6 +14,7 @@ use Modules\ControlTower\ControlTowerServiceProvider;
 use Modules\Core\CoreServiceProvider;
 use Modules\Crypto\CryptoServiceProvider;
 use Modules\Distribution\DistributionServiceProvider;
+use Modules\Edu\EduServiceProvider;
 use Modules\Egy\EgyServiceProvider;
 use Modules\EnterpriseFinance\EnterpriseFinanceServiceProvider;
 use Modules\Epc\EpcServiceProvider;
@@ -32,6 +33,7 @@ use Modules\Inventory\InventoryServiceProvider;
 use Modules\Logistics\LogisticsServiceProvider;
 use Modules\Mall\MallServiceProvider;
 use Modules\Manufacturing\ManufacturingServiceProvider;
+use Modules\Med\MedServiceProvider;
 use Modules\Mining\MiningServiceProvider;
 use Modules\Partner\PartnerServiceProvider;
 use Modules\Party\PartyServiceProvider;
@@ -41,6 +43,7 @@ use Modules\Pricing\PricingServiceProvider;
 use Modules\Procurement\ProcurementServiceProvider;
 use Modules\Proptech\ProptechServiceProvider;
 use Modules\Resto\RestoServiceProvider;
+use Modules\Ret\RetServiceProvider;
 use Modules\Rwa\RwaServiceProvider;
 use Modules\Shared\SharedServiceProvider;
 use Modules\Store\StoreServiceProvider;
@@ -110,7 +113,7 @@ return [
     MiningServiceProvider::class,
     EgyServiceProvider::class,
     TlxServiceProvider::class,
-    \Modules\Med\MedServiceProvider::class,
-    \Modules\Edu\EduServiceProvider::class,
-    \Modules\Ret\RetServiceProvider::class,
+    MedServiceProvider::class,
+    EduServiceProvider::class,
+    RetServiceProvider::class,
 ];

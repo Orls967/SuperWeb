@@ -60,7 +60,7 @@ class OrgDesignChangeManagementService
 
         // 425.6 Risk: Headcount encumbrance budget must be cleared
         if (! $encumbranceCleared) {
-            throw new InvalidArgumentException("Position action blocked: Headcount encumbrance budget is not cleared (425.6).");
+            throw new InvalidArgumentException('Position action blocked: Headcount encumbrance budget is not cleared (425.6).');
         }
 
         $id = DB::table('hcm_restructuring_positions')->insertGetId([
@@ -86,12 +86,12 @@ class OrgDesignChangeManagementService
 
         // 425.4 Consultation gate
         if (! $consultationPassed) {
-            throw new InvalidArgumentException("Execution blocked: Mandatory employee consultation gate has not passed (425.3, 425.4).");
+            throw new InvalidArgumentException('Execution blocked: Mandatory employee consultation gate has not passed (425.3, 425.4).');
         }
 
         // 425.5 Edge case: Critical operational continuity must be verified
         if (! $sc->continuity_coverage_verified) {
-            throw new InvalidArgumentException("Execution blocked: Operational continuity coverage verification missing (425.5).");
+            throw new InvalidArgumentException('Execution blocked: Operational continuity coverage verification missing (425.5).');
         }
 
         DB::table('hcm_org_design_scenarios')->where('id', $sc->id)->update([

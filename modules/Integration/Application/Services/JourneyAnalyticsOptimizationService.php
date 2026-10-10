@@ -88,11 +88,11 @@ class JourneyAnalyticsOptimizationService
 
         // 417.4 & 417.6 Guardrails: Statistical significance AND journey-level regression check strictly required
         if (! $statSigReached) {
-            throw new InvalidArgumentException("Standardization blocked: Experiment has not reached required statistical significance (417.2, 417.4).");
+            throw new InvalidArgumentException('Standardization blocked: Experiment has not reached required statistical significance (417.2, 417.4).');
         }
 
         if (! $journeyLevelChecked) {
-            throw new InvalidArgumentException("Standardization blocked: Missing mandatory cross-step journey regression impact check (417.6).");
+            throw new InvalidArgumentException('Standardization blocked: Missing mandatory cross-step journey regression impact check (417.6).');
         }
 
         DB::table('crm_journey_experiments')->where('id', $exp->id)->update([

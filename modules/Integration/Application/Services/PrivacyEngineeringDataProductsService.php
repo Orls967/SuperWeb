@@ -41,7 +41,7 @@ class PrivacyEngineeringDataProductsService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Privacy fail-closed enforcement: Data processing blocked due to absence of valid consent proof (341.6).");
+            throw new InvalidArgumentException('Privacy fail-closed enforcement: Data processing blocked due to absence of valid consent proof (341.6).');
         }
 
         $id = DB::table('privacy_data_processing_proofs')->insertGetId([

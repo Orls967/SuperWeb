@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Integration\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Modules\Integration\Application\Services\FraudRiskAssessmentDetectionService;
 use Tests\TestCase;
 

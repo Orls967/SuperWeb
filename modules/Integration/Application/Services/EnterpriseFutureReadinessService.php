@@ -31,7 +31,7 @@ class EnterpriseFutureReadinessService
     ): object {
         // 482.6 Risk: Trigger monitoring owner and cadence are mandatory
         if (empty(trim($triggerOwner)) || empty(trim($cadence))) {
-            throw new InvalidArgumentException("Scenario registration blocked: Horizon trigger monitoring requires an assigned owner and review cadence (482.6).");
+            throw new InvalidArgumentException('Scenario registration blocked: Horizon trigger monitoring requires an assigned owner and review cadence (482.6).');
         }
 
         $id = DB::table('int_enterprise_future_scenarios')->insertGetId([
