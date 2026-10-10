@@ -112,7 +112,7 @@ return new class extends Migration
             $table->decimal('escalation_cap_percent', 8, 2)->nullable()->comment('Plafon kenaikan per periode');
             $table->string('arbitration_rules', 40)->nullable()->comment('BANI, ICC, SIAC — data referensi simulasi');
             $table->unsignedTinyInteger('risk_score')->default(0)->comment('Skor risiko 0-100 (aturan simulasi)');
-            $table->json('risk_flags')->nullable()->comment(['Kumpulan flag risiko']);
+            $table->json('risk_flags')->nullable()->comment('Kumpulan flag risiko');
             $table->bigInteger('used_value_idr')->default(0)->comment('Agregat nilai terpakai (cache dari ctr_usage_ledger)');
             $table->unsignedBigInteger('linked_rate_card_id')->nullable()->comment('lgx_rate_cards.id — link non-breaking (tanpa FK, akses via contract/event)');
             $table->uuid('linked_lease_id')->nullable()->comment('mall_leases.id — link non-breaking, bukan duplikasi');
