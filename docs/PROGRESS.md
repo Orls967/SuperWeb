@@ -328,7 +328,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 > Urutan R0 → R9 mengikuti dependensi. **R0 memasang pagar otomatis lebih dulu** sehingga sejak perbaikan pertama, jalan pintas langsung membuat gate merah. Setiap sub-fase R mengikuti P1–P13 (DoR boleh singkat karena tugas R sudah rinci) dan ditutup gate penuh + verifikasi silang. Rujukan temuan `K-xx` ada di `docs/KNOWLEDGE.md` §5.
 
 ### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS (ANTI JALAN PINTAS)
-> **Status audit:** 🔨 DIKERJAKAN (DoR disetujui 2026-10-10, branch `feature/fase-r0-pagar-otomatis`) · Prasyarat semua fase R lain. Semua detektor di R0 dipasang dengan baseline (ratchet) sehingga bisa langsung aktif walau kode lama masih melanggar.
+> **Status audit:** 🔵 SIAP VERIFIKASI (DoR disetujui 2026-10-10, branch `feature/fase-r0-pagar-otomatis`) · Prasyarat semua fase R lain. Semua detektor di R0 dipasang dengan baseline (ratchet) sehingga bisa langsung aktif walau kode lama masih melanggar.
 
 #### DoR Fase R0 — Lingkungan, gate & pagar otomatis
 - Disetujui pemilik: [x]   2026-10-10 (chat) — DoR disetujui; (1) `"php": "^8.4"` + `composer.lock` tetap di-commit; (2) folder `.github/` boleh dibuat, **push wajib ditanyakan dulu**; (3) DB kedua CI: **MySQL 8**; (4) merge dengan merge commit.
@@ -365,7 +365,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: app/Quality/Gate/GateReportGenerator.php
     - file: app/Quality/Gate/JUnitParser.php
     - file: app/Quality/Gate/JUnitSummary.php
-    - test: tests/Feature/Console/GateReportCommandTest.php::it generates gate report when test suite passes and matches JUnit fixture data
+    - test: tests/Feature/Console/GateReportCommandTest.php::it generates gate report when manifest and test suite are clean and match HEAD
     - akses: command gate:report
   - Kriteria terima: laporan tidak bisa dibuat bila gate gagal; test membandingkan isi laporan dengan JUnit fixture.
 - [ ] R0.3 **CI GitHub Actions** (K-04, K-28): workflow PR → PHP 8.4 × {SQLite, MySQL 8 *atau* PostgreSQL 16}; job kedua menjalankan test bertanda `@group db-portability` (presisi decimal, panjang kolom, `lockForUpdate` dua koneksi); unggah laporan gate sebagai artefak. Folder `.github/` baru → minta izin pemilik (CLAUDE.md).
