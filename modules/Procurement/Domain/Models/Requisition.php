@@ -23,7 +23,7 @@ class Requisition extends Model
 
     protected $casts = [
         'budget_center_id' => 'integer',
-        'approval_id' => 'string',
+        'approval_id' => 'integer',
         'total_estimated_idr' => 'integer',
         'requested_by_user_id' => 'integer',
         'approved_at' => 'datetime',

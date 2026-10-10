@@ -42,6 +42,7 @@ class Contract extends Model
     protected $casts = [
         'contract_type' => ContractType::class,
         'status' => ContractStatus::class,
+        'approval_id' => 'integer',
         'total_value_idr' => 'integer',
         'start_date' => 'date',
         'end_date' => 'date',

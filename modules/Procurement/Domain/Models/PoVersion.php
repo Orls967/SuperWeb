@@ -13,7 +13,7 @@ class PoVersion extends Model
 
     protected $fillable = ['po_id', 'version', 'change_summary', 'snapshot', 'status', 'approval_id', 'created_by_user_id'];
 
-    protected $casts = ['version' => 'integer', 'snapshot' => 'array', 'approval_id' => 'string', 'created_by_user_id' => 'integer'];
+    protected $casts = ['version' => 'integer', 'snapshot' => 'array', 'approval_id' => 'integer', 'created_by_user_id' => 'integer'];
 
     public function po(): BelongsTo
     {

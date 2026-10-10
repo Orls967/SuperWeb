@@ -6630,7 +6630,7 @@
             }
         },
         "A12": {
-            "total": 596,
+            "total": 588,
             "entries": {
                 "modules/Agency/database/migrations/2026_10_05_450100_create_agy_tables.php": {
                     "agy_agents.owner_user_id": 1,
@@ -6659,9 +6659,7 @@
                 },
                 "modules/Asset/database/migrations/2026_10_04_310100_create_asset_phase31_tables.php": {
                     "ast_depreciations.ledger_transaction_id": 1,
-                    "ast_disposals.approval_id": 1,
                     "ast_leases.contract_id": 1,
-                    "ast_revaluations.approval_id": 1,
                     "ast_work_orders.ledger_transaction_id": 1
                 },
                 "modules/B2b/database/migrations/2026_10_06_610100_create_b2b_tables.php": {
@@ -6676,7 +6674,6 @@
                     "b2b_wholesale_catalogs.vendor_id": 1
                 },
                 "modules/Contract/database/migrations/2026_10_04_280100_create_contract_core_tables.php": {
-                    "ctr_contracts.approval_id": 1,
                     "ctr_contracts.renewed_to_id": 1
                 },
                 "modules/Contract/database/migrations/2026_10_04_280200_create_contract_attachments_table.php": {
@@ -7536,7 +7533,6 @@
                     "pric_promotion_claims.distributor_id": 1
                 },
                 "modules/Procurement/database/migrations/2026_10_05_330100_create_procurement_tables.php": {
-                    "prc_po_versions.approval_id": 1,
                     "prc_purchase_orders.blanket_po_id": 1,
                     "prc_purchase_orders.contract_id": 1,
                     "prc_purchase_orders.encumbrance_id": 1,
@@ -7546,10 +7542,8 @@
                     "prc_purchase_orders.tender_id": 1,
                     "prc_quotes.supplier_id": 1,
                     "prc_requisition_lines.supplier_item_id": 1,
-                    "prc_requisitions.approval_id": 1,
                     "prc_requisitions.legal_entity_id": 1,
                     "prc_rfq_invitations.supplier_id": 1,
-                    "prc_tender_bids.approval_id": 1,
                     "prc_tender_bids.supplier_id": 1
                 },
                 "modules/Procurement/database/migrations/2026_10_05_340100_create_receiving_payables_tables.php": {
@@ -7558,7 +7552,6 @@
                     "prc_credit_memos.invoice_id": 1,
                     "prc_credit_memos.ledger_transaction_id": 1,
                     "prc_inspections.receiving_line_id": 1,
-                    "prc_payment_batches.approval_id": 1,
                     "prc_payment_items.invoice_id": 1,
                     "prc_payment_items.ledger_transaction_id": 1,
                     "prc_receiving_lines.po_line_id": 1,
@@ -7606,8 +7599,7 @@
                 "modules/Supplier/database/migrations/2026_10_04_320100_create_supplier_tables.php": {
                     "sup_asns.purchase_order_id": 1,
                     "sup_documents.document_id": 1,
-                    "sup_items.internal_product_id": 1,
-                    "sup_qualifications.approval_id": 1
+                    "sup_items.internal_product_id": 1
                 },
                 "modules/Supplier/database/migrations/2026_10_05_320101_add_contract_link_to_price_tiers.php": {
                     "sup_price_tiers.contract_id": 1

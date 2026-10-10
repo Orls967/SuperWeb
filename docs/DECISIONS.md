@@ -1111,3 +1111,45 @@
 - **Reason:** Menjamin scope integrity Fase R0 tetap fokus pada pagar otomatis dan tata kelola kualitas, sembari memberikan kepastian roadmap penyelesaian utang teknis warisan pada fase yang tepat.
 - **Verification:** Register Minus Fase R0 di `docs/PROGRESS.md` diselaraskan dengan rencana pengalihan K2; semua item minus warisan memiliki fase target yang jelas.
 
+## 2026-10-11: Konvensi approval_id = core_approvals.id (bigint + FK)
+- **Context:**
+  - Terjadi inkonsistensi semantik kolom `approval_id` di mana branch `feature/fase-r0-mac` (`5b2828a`) mengubah 7 kolom di modul Procurement, Supplier, dan Asset menjadi `string(64)` agar muat UUID, sementara branch `tools/r0-mysql-ddl-replay` (`ad6245d`) menulis `$approval->id`.
+  - Modul lain (Pricing, Agency, Wms, Distribution) serta `ApprovalEngineService` telah menggunakan `core_approvals.id` (`bigint`) via `approve((int) $model->approval_id)`.
+  - Rujukan BLOCKERS B-03 dan KNOWLEDGE K-40.
+- **Decision:**
+  - Sesuai Keputusan Pemilik K-B03 (mengikat):
+    1. Konvensi `approval_id` di seluruh repository menyimpan `core_approvals.id` (bigint) dengan foreign key `foreignId('approval_id')->nullable()->constrained('core_approvals')->nullOnDelete()`.
+    2. Mengembalikan 7 kolom di modul Procurement, Supplier, Asset (`prc_requisitions`, `prc_tender_bids`, `prc_po_versions`, `prc_payment_batches`, `sup_qualifications`, `ast_revaluations`, `ast_disposals`) dan 1 kolom di modul Contract (`ctr_contracts`) ke `foreignId('approval_id')->nullable()->constrained('core_approvals')->nullOnDelete()`.
+    3. Mengembalikan model cast ke `'approval_id' => 'integer'` pada seluruh model terkait (`Requisition`, `TenderBid`, `PoVersion`, `PaymentBatch`, `SupplierQualification`, `AssetRevaluation`, `AssetDisposal`, `Contract`).
+    4. Modul Contract (`ContractService::requestApproval`) diselaraskan untuk menulis `$approval->id` (bukan `$approval->uuid`).
+    5. Seluruh codebase diaudit: 0 tempat yang menulis `->uuid` ke `approval_id`.
+    6. Ditambahkan pagar permanen: test arsitektur `tests/Architecture/ApprovalIdConventionTest.php` yang menolak penulisan `->uuid` ke `approval_id` (dengan fixture positif dan negatif, baseline = 0).
+- **Reason:**
+  - Menghilangkan ambiguitas semantik dan menjaga konsistensi arsitektur relasional satu sistem penomoran approval lintas modul.
+  - Memungkinkan integritas referensial penuh (foreign key constraint ke `core_approvals.id`) baik di SQLite maupun MySQL 8.4.
+  - Menyelaraskan dengan `ApprovalEngineService` yang memproses approval berbasis ID integer.
+- **Daftar File yang Diubah:**
+  - `modules/Procurement/database/migrations/2026_10_05_330100_create_procurement_tables.php`
+  - `modules/Procurement/database/migrations/2026_10_05_340100_create_receiving_payables_tables.php`
+  - `modules/Supplier/database/migrations/2026_10_04_320100_create_supplier_tables.php`
+  - `modules/Asset/database/migrations/2026_10_04_310100_create_asset_phase31_tables.php`
+  - `modules/Contract/database/migrations/2026_10_04_280100_create_contract_core_tables.php`
+  - `modules/Procurement/Domain/Models/Requisition.php`
+  - `modules/Procurement/Domain/Models/TenderBid.php`
+  - `modules/Procurement/Domain/Models/PoVersion.php`
+  - `modules/Procurement/Domain/Models/PaymentBatch.php`
+  - `modules/Supplier/Domain/Models/SupplierQualification.php`
+  - `modules/Asset/Domain/Models/AssetRevaluation.php`
+  - `modules/Asset/Domain/Models/AssetDisposal.php`
+  - `modules/Contract/Domain/Models/Contract.php`
+  - `modules/Contract/Application/Services/ContractService.php`
+  - `tests/Feature/Portability/ApprovalIdPortabilityTest.php`
+  - `tests/Architecture/ApprovalIdConventionTest.php`
+  - `docs/DECISIONS.md`
+  - `docs/BLOCKERS.md`
+- **Verification:**
+  - `vendor/bin/pest tests/Feature/Portability/ApprovalIdPortabilityTest.php` (2 passed, 32 assertions).
+  - `vendor/bin/pest tests/Architecture/ApprovalIdConventionTest.php` (2 passed, 5 assertions).
+  - `vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php` (12 passed, 13 assertions).
+
+

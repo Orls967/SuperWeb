@@ -362,7 +362,7 @@ class ContractService
             );
 
             $contract->update([
-                'approval_id' => $approval->uuid,
+                'approval_id' => $approval->id,
                 'status' => ContractStatus::Review->value,
             ]);
         });

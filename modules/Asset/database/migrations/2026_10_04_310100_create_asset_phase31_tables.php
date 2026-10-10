@@ -55,7 +55,7 @@ return new class extends Migration
             $table->bigInteger('new_value_idr')->default(0);
             $table->bigInteger('difference_idr')->default(0)->comment('Selisih; surplus di ekuitas, defisit di beban');
             $table->string('reason')->nullable();
-            $table->string('approval_id', 64)->nullable();
+            $table->foreignId('approval_id')->nullable()->constrained('core_approvals')->nullOnDelete();
             $table->string('approval_status', 16)->default('pending')->comment('pending, approved, rejected');
             $table->foreignId('requested_by_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
@@ -73,7 +73,7 @@ return new class extends Migration
             $table->bigInteger('book_value_at_disposal_idr')->default(0);
             $table->bigInteger('gain_loss_idr')->default(0)->comment('Proceeds − book value; + = gain, − = loss');
             $table->string('reason')->nullable();
-            $table->string('approval_id', 64)->nullable();
+            $table->foreignId('approval_id')->nullable()->constrained('core_approvals')->nullOnDelete();
             $table->string('approval_status', 16)->default('pending');
             $table->string('source_type', 32)->nullable()->comment('store_order (31.4 link)');
             $table->unsignedBigInteger('source_id')->nullable();

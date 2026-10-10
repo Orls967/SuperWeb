@@ -19,7 +19,7 @@ class AssetRevaluation extends Model
 
     protected $casts = [
         'old_value_idr' => 'integer', 'new_value_idr' => 'integer', 'difference_idr' => 'integer',
-        'approval_id' => 'string', 'requested_by_user_id' => 'integer',
+        'approval_id' => 'integer', 'requested_by_user_id' => 'integer',
     ];
 
     public function asset(): BelongsTo

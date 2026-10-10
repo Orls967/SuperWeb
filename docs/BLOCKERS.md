@@ -15,7 +15,6 @@ Aturan pemakaian (PROGRESS.md §P6):
 |---|---|---|---|---|---|
 | B-01 | 2026-10-10 | R0.3 | Branch protection `master` belum aktif | Kriteria terima R0.3; status ✅ Fase R0 | Pemilik (pengaturan GitHub) |
 | B-02 | 2026-10-11 | R1 (DoR) | Keputusan D1–D8 di DoR Fase R1 | Mulai kode R1 | Pemilik |
-| B-03 | 2026-10-11 | R0.3.b | Dua perbaikan `approval_id` yang berbeda arah | Merge branch verifikator ke `feature/fase-r0-mac` (semantik kolom) | Pemilik, atas rekomendasi verifikator |
 | B-04 | 2026-10-11 | R0.3.b | Konstanta genesis hash-chain diubah | Verifikasi rantai hash pada data lama | Pemilik (bergantung B-05) |
 | B-05 | 2026-10-11 | R0.3.b, R1.8 | Belum diketahui apakah ada database berisi data nyata | Cara mengubah skema: edit migrasi lama vs migrasi baru | Pemilik |
 | B-06 | 2026-10-11 | R0.2/R0.3 | CI membuat laporan gate dengan `--fase=R0` tertulis tetap | Laporan gate resmi untuk Fase R1 dan seterusnya | Pelaksana R0 |
@@ -47,27 +46,6 @@ Aturan pemakaian (PROGRESS.md §P6):
   - D7: refund lewat event atau panggilan langsung.
   - D8: jadwal rekonsiliasi.
 - **Yang terblokir:** seluruh kode R1. Prasyarat lain: R0 ✅.
-
-### B-03 — Konvensi `approval_id`: id approval atau UUID approval?
-
-- **Fakta:** enam service menulis `$approval->uuid` ke kolom `approval_id` bertipe `bigint` dengan cast `'integer'`, yaitu:
-  - `SupplierService` (kualifikasi supplier);
-  - `ProcurementService` (requisisi, award tender);
-  - `ReceivingService` (batch pembayaran);
-  - `RevaluationService` (revaluasi, disposal).
-
-  Nilainya tidak merujuk approval mana pun, dan MySQL strict menolak seeder (`prc_requisitions`). Modul lain (Pricing, Agency, Wms, Distribution) dan `ApprovalEngineService` menyimpan `$approval->id` lalu membacanya dengan `approve((int) $model->approval_id)`.
-- **Dua perbaikan yang sudah ada:**
-  - Branch `tools/r0-mysql-ddl-replay` (`ad6245d`): service menulis `$approval->id`. Lima test diperkuat dengan assertion "approval_id merujuk baris `core_approvals`" (merah sebelum perbaikan). Kolom tetap `bigint`.
-  - Branch `feature/fase-r0-mac` (`5b2828a`): tujuh kolom `approval_id` di Procurement, Supplier, dan Asset diubah menjadi `string(64)` dengan cast `'string'`, sehingga UUID muat. Test hanya memeriksa tipe kolom.
-- **Bila keduanya di-merge apa adanya:** kolom `string` berisi id angka sebagai teks. Kode berjalan, tetapi konvensinya campur dan tidak tercatat di mana pun.
-- **Rekomendasi verifikator:** satu konvensi untuk seluruh repo, `approval_id` = `core_approvals.id` (bigint). Alasannya:
-  - sama dengan modul lain dan `ApprovalEngineService`;
-  - bisa diberi FK ke `core_approvals.id`;
-  - test perilaku sudah ada.
-
-  Bila dipilih, perubahan tipe kolom di `5b2828a` dibatalkan dengan commit baru (bukan rewrite). Bila pemilik memilih UUID, semua modul (termasuk Pricing/Agency/Wms/Distribution) wajib ikut, dan pembacaan `(int)` diganti pencarian per `uuid`.
-- **Keputusan dicatat:** `DECISIONS.md` (entri baru "Konvensi approval_id") + Bukti R0.3.b.
 
 ### B-04 — Konstanta genesis hash-chain diubah
 
@@ -102,3 +80,4 @@ Aturan pemakaian (PROGRESS.md §P6):
 | ID | Periode | Blocker | Penyelesaian |
 |---|---|---|---|
 | B-00 | 2026-10-10 s.d. 2026-10-11 | Agent pelaksana membaca token GitHub pemilik lewat `git credential fill` dan mencetaknya ke log saat diminta memantau CI. | Pemilik mencabut aplikasi OAuth asal token dan login ulang `gh` dengan fine-grained token khusus `Orls967/superweb` (Contents, Pull requests, Workflows: baca-tulis; Actions: baca; tanpa Administration). Larangan membaca/mencetak kredensial dimasukkan ke prompt pelaksana. Lihat `KNOWLEDGE.md` K-39 dan `RUNBOOK.md` §7. |
+| B-03 | 2026-10-11 | Dua perbaikan `approval_id` yang berbeda arah (`core_approvals.id` vs UUID) | Sesuai keputusan pemilik K-B03, konvensi `approval_id` ditetapkan menyimpan `core_approvals.id` (`bigint` FK). Tujuh kolom di Procurement, Supplier, Asset serta Contract disatukan ke `foreignId`, model cast kembali `integer`, `ContractService` menulis `$approval->id`, dan dipasang pagar permanen `ApprovalIdConventionTest`. Lihat `DECISIONS.md`. |

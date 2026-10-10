@@ -44,7 +44,7 @@ return new class extends Migration
             $table->unsignedBigInteger('budget_center_id')->nullable();
             $table->uuid('legal_entity_id')->nullable();
             $table->string('status', 24)->default('draft')->comment('draft, pending_approval, approved, rejected, ordered, cancelled');
-            $table->string('approval_id', 64)->nullable();
+            $table->foreignId('approval_id')->nullable()->constrained('core_approvals')->nullOnDelete();
             $table->bigInteger('total_estimated_idr')->default(0);
             $table->foreignId('requested_by_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('approved_at')->nullable();
@@ -142,7 +142,7 @@ return new class extends Migration
             $table->decimal('total_score', 8, 4)->nullable()->comment('Hasil evaluasi berbobot');
             $table->boolean('is_winner')->default(false);
             $table->string('notes')->nullable();
-            $table->string('approval_id', 64)->nullable();
+            $table->foreignId('approval_id')->nullable()->constrained('core_approvals')->nullOnDelete();
             $table->timestamps();
 
             $table->foreign('tender_id')->references('id')->on('prc_tenders')->cascadeOnDelete();
@@ -201,7 +201,7 @@ return new class extends Migration
             $table->string('change_summary', 500);
             $table->json('snapshot')->comment('Snapshot penuh PO pada versi ini');
             $table->string('status', 16)->default('recorded')->comment('recorded, approved, rejected');
-            $table->string('approval_id', 64)->nullable();
+            $table->foreignId('approval_id')->nullable()->constrained('core_approvals')->nullOnDelete();
             $table->timestamps();
 
             $table->foreign('po_id')->references('id')->on('prc_purchase_orders')->cascadeOnDelete();
