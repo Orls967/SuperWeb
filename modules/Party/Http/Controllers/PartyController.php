@@ -7,6 +7,7 @@ namespace Modules\Party\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Modules\Party\Application\Actions\ApproveKycDocumentAction;
 use Modules\Party\Application\Actions\RejectKycDocumentAction;
@@ -14,6 +15,7 @@ use Modules\Party\Application\Actions\SubmitKycDocumentAction;
 use Modules\Party\Application\Services\CreditScoringService;
 use Modules\Party\Application\Services\PartyService;
 use Modules\Party\Application\Services\SanctionScreeningService;
+use Modules\Party\Domain\Enums\PartyRoleType;
 use Modules\Party\Domain\Models\KycDocument;
 use Modules\Party\Domain\Models\LegalEntity;
 use Modules\Party\Domain\Models\Party;
@@ -73,7 +75,9 @@ class PartyController extends Controller
             'npwp' => 'nullable|string|max:30',
             'nik' => 'nullable|string|max:20',
             'nib' => 'nullable|string|max:20',
-            'role' => 'nullable|string',
+            'role' => ['nullable', 'string', 'max:50', Rule::enum(PartyRoleType::class)],
+            'scope_type' => 'nullable|string|max:50',
+            'scope_id' => 'nullable|string|max:100',
             'credit_limit_idr' => 'nullable|integer|min:0',
         ]);
 
