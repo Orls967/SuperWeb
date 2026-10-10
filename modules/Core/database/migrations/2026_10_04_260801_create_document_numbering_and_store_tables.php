@@ -33,7 +33,8 @@ return new class extends Migration
         Schema::create('core_documents', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->nullableMorphs('documentable'); // Model instance attached to
+            $table->string('documentable_type', 160)->nullable();
+            $table->string('documentable_id', 64)->nullable();
             $table->string('document_type', 50)->index(); // CONTRACT, INVOICE_PDF, RECEIPT_IMAGE, KYC_ID, ATTACHMENT
             $table->string('original_filename', 255);
             $table->string('stored_path', 500);
@@ -46,6 +47,8 @@ return new class extends Migration
             $table->date('retention_until')->nullable()->index(); // Date when retention expires
             $table->boolean('is_archived')->default(false);
             $table->timestamps();
+
+            $table->index(['documentable_type', 'documentable_id']);
         });
     }
 

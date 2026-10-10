@@ -42,7 +42,7 @@ class AssetService
 {
     public const ACCT_FIXED_ASSETS = 'ast:fixed_assets';
 
-    public const GENESIS_HASH = 'GENESIS_AST_0000000000000000000000000000000000000000000000000000000000000';
+    public const GENESIS_HASH = 'GENESIS_AST_0000000000000000000000000000000000000000000000000000';
 
     public function __construct(
         private readonly DocumentNumberingInterface $numbering,

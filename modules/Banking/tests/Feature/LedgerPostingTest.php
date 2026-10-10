@@ -114,6 +114,39 @@ test('posting yang menyebabkan saldo negatif pada non allow_negative melempar In
     $this->ledger->post($dto);
 })->throws(InsufficientFundsException::class);
 
+test('posting dengan reference UUID atau ULID string tersimpan dengan benar dan kolom bertipe string', function () {
+    expect(\Illuminate\Support\Facades\Schema::getColumnType('bank_ledger_transactions', 'reference_id'))
+        ->toBeIn(['string', 'varchar']);
+
+    $userAcc = LedgerAccount::create([
+        'uuid' => (string) Str::uuid(),
+        'code' => 'wallet:user:uuid-test:IDR',
+        'asset_code' => 'IDR',
+        'kind' => AccountKind::WALLET->value,
+        'name' => 'Dompet UUID Test',
+        'allow_negative' => false,
+        'cached_balance' => '0',
+    ]);
+
+    $ulidReference = '01a126fa-ae48-70e6-bbea-1c32c6f7a70e';
+    $dto = new PostingDTO(
+        type: TransactionType::MANUAL_ADJUSTMENT->value,
+        description: 'Test UUID reference',
+        idempotencyKey: 'test_uuid_ref_key',
+        entries: [
+            PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', -1000),
+            PostingEntryDTO::forAccount($userAcc->id, 'IDR', 1000),
+        ],
+        referenceType: 'Modules\Asset\Domain\Models\Asset',
+        referenceId: $ulidReference,
+    );
+
+    $tx = $this->ledger->post($dto);
+
+    expect($tx->reference_id)->toBe($ulidReference)
+        ->and($tx->reference_type)->toBe('Modules\Asset\Domain\Models\Asset');
+});
+
 test('posting pada akun yang frozen melempar AccountFrozenException', function () {
     $userAcc = LedgerAccount::create([
         'uuid' => (string) Str::uuid(),

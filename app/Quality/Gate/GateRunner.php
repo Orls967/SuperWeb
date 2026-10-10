@@ -35,7 +35,7 @@ final class GateRunner
         ],
         [
             'name' => 'migrate:fresh --seed',
-            'command' => 'php artisan migrate:fresh --seed',
+            'command' => 'php artisan migrate:fresh --seed --force',
         ],
         [
             'name' => 'bank:reconcile',
@@ -60,6 +60,22 @@ final class GateRunner
     ) {}
 
     /**
+     * Prepares isolated clean SQLite database storage/gate/gate.sqlite for gate runs (V7).
+     */
+    public function prepareGateDatabase(string $root): string
+    {
+        $gateDir = $root.'/storage/gate';
+        File::ensureDirectoryExists($gateDir);
+        $gateDb = $gateDir.'/gate.sqlite';
+        if (File::exists($gateDb)) {
+            File::delete($gateDb);
+        }
+        touch($gateDb);
+
+        return $gateDb;
+    }
+
+    /**
      * Executes all mandatory gate steps, writes storage/logs/gate-manifest.json,
      * and returns the overall exit code (0 on success, >0 on failure).
      *
@@ -69,6 +85,7 @@ final class GateRunner
     {
         $root = $this->repoRoot ?? (function_exists('app') && app()->has('path.base') ? base_path() : dirname(__DIR__, 3));
         $manifestFile = $manifestPath ?? $root.'/storage/logs/gate-manifest.json';
+        $gateDb = $this->prepareGateDatabase($root);
 
         $headCommit = $this->resolveCommitHash($root);
         $isDirty = $this->resolveIsDirty($root);
@@ -99,6 +116,9 @@ final class GateRunner
                 $env['DB_CONNECTION'] = 'sqlite';
                 $env['DB_DATABASE'] = ':memory:';
                 $env['BCRYPT_ROUNDS'] = '4';
+            } elseif (in_array($name, ['migrate:fresh --seed', 'bank:reconcile', 'chain:audit-all', 'super:health-check'], true)) {
+                $env['DB_CONNECTION'] = 'sqlite';
+                $env['DB_DATABASE'] = $gateDb;
             }
             $process = proc_open(
                 $cmd,

@@ -200,3 +200,26 @@ it('enforces all database index composite key lengths do not exceed 3072 bytes f
 
     expect($violations)->toBeEmpty();
 });
+
+test('semua pemanggilan comment pada kolom migrasi bertipe string bukan array', function () {
+    $migrations = glob(database_path('migrations/*.php'));
+    foreach (glob(base_path('modules/*/database/migrations/*.php')) as $modMig) {
+        $migrations[] = $modMig;
+    }
+
+    $invalidComments = [];
+    foreach ($migrations as $file) {
+        $code = (string) file_get_contents($file);
+        if (preg_match_all("/->comment\(\s*\[/s", $code, $matches, PREG_OFFSET_CAPTURE)) {
+            foreach ($matches[0] as $m) {
+                $line = substr_count(substr($code, 0, $m[1]), "\n") + 1;
+                $invalidComments[] = basename($file).":{$line}";
+            }
+        }
+    }
+
+    expect($invalidComments)->toBeEmpty(
+        'Ditemukan pemanggilan ->comment([...]) dengan array yang menyebabkan TypeError addslashes di MySQL Grammars:'."\n"
+        .implode("\n", $invalidComments)
+    );
+});

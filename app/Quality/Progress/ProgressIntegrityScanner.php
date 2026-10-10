@@ -233,8 +233,12 @@ final class ProgressIntegrityScanner
      * @param  array<string, string>  $textBaseline
      * @return list<string> List of violation error messages
      */
-    public function validate(array $phases, ?string $repoRoot = null, array $textBaseline = []): array
-    {
+    public function validate(
+        array $phases,
+        ?string $repoRoot = null,
+        array $textBaseline = [],
+        ?array $snapshot = null,
+    ): array {
         $root = $repoRoot ?? $this->repoRoot ?? (function_exists('app') && app()->has('path.base') ? base_path() : dirname(__DIR__, 3));
         $inspector = $this->gitInspector ?? new GitCommitInspector($root);
         $violations = [];
@@ -242,17 +246,36 @@ final class ProgressIntegrityScanner
         // Check if Fase R6 is completed; if so, all phases in PROGRESS.md are in scope.
         $allPhasesInScope = isset($phases['R6']) && $phases['R6']->isVerified();
 
+        if ($snapshot !== null) {
+            $snapshotPhases = $snapshot['phases'] ?? [];
+            $snapshotItems = $snapshot['items'] ?? [];
+        } else {
+            $snapshotPath = $root.'/tests/Architecture/baselines/progress-snapshot-8c8369d.json';
+            $snapshotData = is_file($snapshotPath)
+                ? json_decode((string) file_get_contents($snapshotPath), true)
+                : [];
+            $snapshotPhases = $snapshotData['phases'] ?? [];
+            $snapshotItems = $snapshotData['items'] ?? [];
+        }
+
+        $decisionsPath = $root.'/docs/DECISIONS.md';
+        $decisionsContent = is_file($decisionsPath) ? (string) file_get_contents($decisionsPath) : '';
+
         // 1. Validate ratchet text baseline (Anti-pola X18 / P10: teks item dilarang diubah tanpa penanda ⬇️)
         foreach ($phases as $phase) {
             foreach ($phase->items as $item) {
                 $key = $item->uniqueKey !== '' ? $item->uniqueKey : "{$item->phaseId}:{$item->id}";
-                if (isset($textBaseline[$key])) {
-                    $baseText = $textBaseline[$key];
-                    if ($item->text !== $baseText) {
-                        $hasDowngradeMarker = str_contains($item->text, '⬇️ diturunkan') || str_contains($item->text, '⬇️');
-                        if (! $hasDowngradeMarker) {
-                            $violations[] = "Teks item {$item->id} ({$key}) diubah tanpa penanda '⬇️ diturunkan' (X18 / P10).";
-                        }
+                $snapItem = $snapshotItems[$key] ?? null;
+                $baseText = $textBaseline !== [] ? ($textBaseline[$key] ?? null) : ($snapItem['text'] ?? null);
+
+                if ($baseText !== null && $item->text !== $baseText) {
+                    $hasValidDowngrade = preg_match('/⬇️\s*diturunkan:\s*(.+)$/u', $item->text, $dm) && mb_strlen(trim($dm[1])) >= 10;
+                    if (! $hasValidDowngrade) {
+                        $violations[] = "Teks item {$item->id} ({$key}) diubah tanpa penanda '⬇️ diturunkan: <alasan>' dengan alasan minimal 10 karakter (X18 / P10).";
+                    }
+
+                    if (! str_contains($decisionsContent, $item->id)) {
+                        $violations[] = "Teks item {$item->id} diturunkan tetapi ID item tidak disebutkan di docs/DECISIONS.md.";
                     }
                 }
             }
@@ -260,7 +283,23 @@ final class ProgressIntegrityScanner
 
         // 2. Validate phase & item rules for phases in scope
         foreach ($phases as $phase) {
-            $inScope = $allPhasesInScope || $phase->isFaseR() || $phase->isStatusChangedAfter('2026-10-10');
+            $phaseIconChanged = isset($snapshotPhases[$phase->id]) && $snapshotPhases[$phase->id] !== $phase->statusIcon;
+
+            $itemCheckedTransition = false;
+            foreach ($phase->items as $item) {
+                $key = $item->uniqueKey !== '' ? $item->uniqueKey : "{$item->phaseId}:{$item->id}";
+                $snapItem = $snapshotItems[$key] ?? null;
+                if ($snapItem !== null && ! ($snapItem['checked'] ?? false) && $item->isChecked) {
+                    $itemCheckedTransition = true;
+                    break;
+                }
+            }
+
+            $inScope = $allPhasesInScope
+                || $phase->isFaseR()
+                || $phase->isStatusChangedAfter('2026-10-10')
+                || $phaseIconChanged
+                || $itemCheckedTransition;
 
             if (! $inScope) {
                 continue;
@@ -298,6 +337,34 @@ final class ProgressIntegrityScanner
                     $violations[] = "Item {$item->id} tercentang [x] tanpa blok Bukti: (PROGRESS.md §P2).";
 
                     continue;
+                }
+
+                // V3: Validasi jenis item
+                $itemType = $item->itemType();
+                if ($itemType === 'fitur') {
+                    if (empty($item->proof['akses'])) {
+                        $violations[] = "Item fitur {$item->id} wajib memiliki minimal satu entri 'akses' di blok Bukti (PROGRESS.md §P2).";
+                    }
+                    if (empty($item->proof['test'])) {
+                        $violations[] = "Item fitur {$item->id} wajib memiliki minimal satu entri 'test' di blok Bukti (PROGRESS.md §P2).";
+                    }
+                } elseif (in_array($itemType, ['tooling', 'konfigurasi'], true)) {
+                    if (empty($item->proof['test'])) {
+                        $violations[] = "Item {$itemType} {$item->id} wajib memiliki minimal satu entri 'test' di blok Bukti (PROGRESS.md §P2).";
+                    }
+                } elseif ($itemType === 'dokumen') {
+                    if (empty($item->proof['file'])) {
+                        $violations[] = "Item dokumen {$item->id} wajib memiliki minimal satu entri 'file' di blok Bukti (PROGRESS.md §P2).";
+                    }
+                }
+
+                // V3: Validasi panjang alasan bila ada
+                if (! empty($item->proof['alasan'])) {
+                    foreach ($item->proof['alasan'] as $reason) {
+                        if (mb_strlen(trim($reason)) < 10) {
+                            $violations[] = "Item {$item->id}: alasan '{$reason}' kurang dari 10 karakter.";
+                        }
+                    }
                 }
 
                 // Validate commit: commit exists and touches at least one mentioned file
@@ -346,22 +413,42 @@ final class ProgressIntegrityScanner
                     }
                 }
 
-                // Validate gate: gate report file exists
+                // Validate gate: gate report file exists and records test PASS (V4)
                 if (! empty($item->proof['gate'])) {
                     foreach ($item->proof['gate'] as $gatePath) {
-                        if (! is_file($root.'/'.$gatePath)) {
+                        $fullGate = $root.'/'.$gatePath;
+                        if (! is_file($fullGate)) {
                             $violations[] = "Item {$item->id}: file laporan gate '{$gatePath}' tidak ditemukan.";
-                        }
-                    }
-                }
 
-                // Feature items must have at least one akses and test
-                if ($item->isFeatureItem()) {
-                    if (empty($item->proof['akses'])) {
-                        $violations[] = "Item fitur {$item->id} wajib memiliki minimal satu entri 'akses' di blok Bukti (PROGRESS.md §P2).";
-                    }
-                    if (empty($item->proof['test'])) {
-                        $violations[] = "Item fitur {$item->id} wajib memiliki minimal satu entri 'test' di blok Bukti (PROGRESS.md §P2).";
+                            continue;
+                        }
+
+                        $gateContent = (string) file_get_contents($fullGate);
+
+                        // V4: Test Bukti tercatat LULUS di laporan gate
+                        if (! empty($item->proof['test'])) {
+                            foreach ($item->proof['test'] as $testEntry) {
+                                $parts = explode('::', $testEntry, 2);
+                                $testName = $parts[1] ?? null;
+                                if ($testName !== null) {
+                                    $escapedTest = preg_quote($testName, '/');
+                                    if (! preg_match('/`'.$escapedTest.'`.*(?:PASS|🟢)/i', $gateContent) && ! preg_match('/'.$escapedTest.'.*PASS/i', $gateContent)) {
+                                        $violations[] = "Item {$item->id}: test '{$testName}' tidak tercatat LULUS di laporan gate '{$gatePath}'.";
+                                    }
+                                }
+                            }
+                        }
+
+                        // V4: Tidak ada perubahan di luar docs/ antara commit yang digate dan HEAD
+                        if (preg_match('/-\s+\*\*Commit:\*\*\s+`([a-f0-9]+)`/i', $gateContent, $cm)) {
+                            $gateCommit = $cm[1];
+                            $diffFiles = $inspector->diffFiles($gateCommit, 'HEAD');
+                            $nonDocs = array_filter($diffFiles, static fn ($f) => ! str_starts_with($f, 'docs/'));
+                            if ($nonDocs !== []) {
+                                $sample = implode(', ', array_slice(array_values($nonDocs), 0, 3));
+                                $violations[] = "Item {$item->id}: terdapat perubahan di luar docs/ antara commit gate ({$gateCommit}) dan HEAD: {$sample}.";
+                            }
+                        }
                     }
                 }
 
@@ -496,7 +583,7 @@ final class ProgressIntegrityScanner
     public static function isCommandRegistered(string $commandSignature): bool
     {
         if (! class_exists(Artisan::class)) {
-            return true;
+            return false;
         }
 
         try {
@@ -505,20 +592,27 @@ final class ProgressIntegrityScanner
 
             return isset($commands[$baseName]);
         } catch (Throwable) {
-            return true;
+            return false;
         }
     }
 
     public static function isAuditCommandValid(string $auditName): bool
     {
         $baseName = explode(' ', trim($auditName))[0];
-        if (class_exists(AuditCommandRegistry::class)) {
-            $commands = AuditCommandRegistry::commands();
-            if (isset($commands[$baseName])) {
-                return true;
-            }
+        if (! self::isCommandRegistered($baseName)) {
+            return false;
         }
 
-        return self::isCommandRegistered($baseName);
+        if (! class_exists(AuditCommandRegistry::class)) {
+            return false;
+        }
+
+        try {
+            $fixtures = AuditCommandRegistry::fixtures();
+
+            return isset($fixtures[$baseName]);
+        } catch (Throwable) {
+            return false;
+        }
     }
 }
