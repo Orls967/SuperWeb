@@ -457,4 +457,9 @@ class ContractFeatureTest extends TestCase
         $this->assertNotNull($updated->terminated_at);
         $this->assertStringContainsString('SLA', $updated->termination_reason);
     }
+
+    public function test_genesis_prev_hash_length_does_not_exceed_column_capacity(): void
+    {
+        $this->assertLessThanOrEqual(64, strlen(\Modules\Contract\Domain\Models\ContractVersion::GENESIS_HASH));
+    }
 }
