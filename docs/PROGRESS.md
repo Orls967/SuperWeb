@@ -328,7 +328,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 > Urutan R0 → R9 mengikuti dependensi. **R0 memasang pagar otomatis lebih dulu** sehingga sejak perbaikan pertama, jalan pintas langsung membuat gate merah. Setiap sub-fase R mengikuti P1–P13 (DoR boleh singkat karena tugas R sudah rinci) dan ditutup gate penuh + verifikasi silang. Rujukan temuan `K-xx` ada di `docs/KNOWLEDGE.md` §5.
 
 ### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS (ANTI JALAN PINTAS)
-> **Status audit:** 🔨 DIKERJAKAN (DoR disetujui 2026-10-10, branch `feature/fase-r0-pagar-otomatis`) · Prasyarat semua fase R lain. Semua detektor di R0 dipasang dengan baseline (ratchet) sehingga bisa langsung aktif walau kode lama masih melanggar.
+> **Status audit:** 🔵 SIAP VERIFIKASI (DoR disetujui 2026-10-10, branch `feature/fase-r0-pagar-otomatis`) · Prasyarat semua fase R lain. Semua detektor di R0 dipasang dengan baseline (ratchet) sehingga bisa langsung aktif walau kode lama masih melanggar.
 
 #### DoR Fase R0 — Lingkungan, gate & pagar otomatis
 - Disetujui pemilik: [x]   2026-10-10 (chat) — DoR disetujui; (1) `"php": "^8.4"` + `composer.lock` tetap di-commit; (2) folder `.github/` boleh dibuat, **push wajib ditanyakan dulu**; (3) DB kedua CI: **MySQL 8**; (4) merge dengan merge commit.
@@ -347,25 +347,171 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - Jalan pintas yang harus dihindari: detektor regex yang mudah dikelabui (pakai tokenizer PHP bawaan, tanpa dependensi baru); baseline berbasis jumlah saja (pakai sidik jari per pelanggaran agar "perbaiki satu, tambah satu" tetap gagal); detektor tanpa fixture negatif; laporan gate yang tetap bisa dibuat walau gate gagal atau untuk commit lain; test yang di-skip; mencentang item R0 tanpa blok `Bukti:`; memberi ✅ pada R0 sendiri.
 - Keputusan pemilik yang dibutuhkan: (1) `composer.json` → `"php": "^8.4"` (hanya constraint & hash lock; versi paket tidak berubah) dan `composer.lock` tetap di-commit; (2) izin folder baru `.github/` (workflow CI, template PR, `CODEOWNERS` untuk file baseline) dan push branch untuk menjalankan CI; (3) DB kedua di CI: MySQL 8 atau PostgreSQL 16; (4) PR di-merge dengan **merge commit** (bukan squash/rebase) agar hash `commit:` di blok Bukti tetap ada di riwayat; branch protection + review code owner diaktifkan pemilik setelah CI hijau.
 
-- [ ] R0.1 **Selaraskan versi PHP** (K-28): `composer.json` → `"php": "^8.4"` (sesuai `composer.lock` yang mewajibkan ≥ 8.4.1); dokumentasikan di README & CODEBASE; hapus instruksi "jangan commit composer.lock" atau sebaliknya keluarkan lock dari repo — pilih satu dan catat di DECISIONS.
+- [x] R0.1 **Selaraskan versi PHP** (K-28): `composer.json` → `"php": "^8.4"` (sesuai `composer.lock` yang mewajibkan ≥ 8.4.1); dokumentasikan di README & CODEBASE; hapus instruksi "jangan commit composer.lock" atau sebaliknya keluarkan lock dari repo — pilih satu dan catat di DECISIONS.
+  Bukti:
+    - commit: f84a64c
+    - file: composer.json
+    - file: README.md
+    - file: docs/CODEBASE.md
+    - file: docs/DECISIONS.md
+    - test: tests/Architecture/DocsVersionConsistencyTest.php::it ensures composer.json and README.md align on PHP ^8.4 requirement
+    - keputusan: docs/DECISIONS.md#2026-10-10-php-84-composer-lock
+    - gate: docs/gates/fase-r0.md
   - Kriteria terima: `composer install` bersih di PHP 8.4 tanpa `--ignore-platform-reqs`.
-- [ ] R0.2 **`composer gate` + `gate:report`** (K-02, K-04): script composer yang menjalankan `pest` (suite penuh, `--parallel` boleh, `--log-junit`), `pint --test`, test arsitektur, `npm run build`; exit ≠ 0 bila salah satu gagal. Command `php artisan gate:report --fase=N` menulis `docs/gates/fase-N.md` dari output asli: hash commit, tanggal, versi PHP/DB, jumlah test/assertion/durasi, exit code tiap command P4, status setiap test yang disebut di blok `Bukti:` fase N (dari JUnit), ringkasan `arch:scan`.
+- [x] R0.2 **`composer gate` + `gate:report`** (K-02, K-04): script composer yang menjalankan `pest` (suite penuh, `--parallel` boleh, `--log-junit`), `pint --test`, test arsitektur, `npm run build`; exit ≠ 0 bila salah satu gagal. Command `php artisan gate:report --fase=N` menulis `docs/gates/fase-N.md` dari output asli: hash commit, tanggal, versi PHP/DB, jumlah test/assertion/durasi, exit code tiap command P4, status setiap test yang disebut di blok `Bukti:` fase N (dari JUnit), ringkasan `arch:scan`.
+  Bukti:
+    - commit: 2eadbbc
+    - file: composer.json
+    - file: app/Console/Commands/GateReportCommand.php
+    - file: app/Quality/Gate/GateReportGenerator.php
+    - file: app/Quality/Gate/JUnitParser.php
+    - file: app/Quality/Gate/JUnitSummary.php
+    - test: tests/Feature/Console/GateReportCommandTest.php::it generates gate report when test suite passes and matches JUnit fixture data
+    - akses: command gate:report
+    - gate: docs/gates/fase-r0.md
   - Kriteria terima: laporan tidak bisa dibuat bila gate gagal; test membandingkan isi laporan dengan JUnit fixture.
-- [ ] R0.3 **CI GitHub Actions** (K-04, K-28): workflow PR → PHP 8.4 × {SQLite, MySQL 8 *atau* PostgreSQL 16}; job kedua menjalankan test bertanda `@group db-portability` (presisi decimal, panjang kolom, `lockForUpdate` dua koneksi); unggah laporan gate sebagai artefak. Folder `.github/` baru → minta izin pemilik (CLAUDE.md).
+- [x] R0.3 **CI GitHub Actions** (K-04, K-28): workflow PR → PHP 8.4 × {SQLite, MySQL 8 *atau* PostgreSQL 16}; job kedua menjalankan test bertanda `@group db-portability` (presisi decimal, panjang kolom, `lockForUpdate` dua koneksi); unggah laporan gate sebagai artefak. Folder `.github/` baru → minta izin pemilik (CLAUDE.md).
+  Bukti:
+    - commit: 12f8e4c
+    - file: .github/workflows/ci.yml
+    - file: tests/Architecture/CiWorkflowContractTest.php
+    - file: tests/Feature/Portability/DatabasePortabilityTest.php
+    - test: tests/Architecture/CiWorkflowContractTest.php::it verifies CI workflow configuration exists and satisfies R0.3 specifications
+    - test: tests/Feature/Portability/DatabasePortabilityTest.php::it preserves 64-bit integer money and 18-decimal precision across database engines
+    - gate: docs/gates/fase-r0.md
   - Kriteria terima: PR tidak bisa di-merge bila CI merah (branch protection — minta pemilik mengaktifkan).
-  - [ ] R0.3.a **Portabilitas Linux** (K-28; ditemukan saat suite pertama kali dijalankan di Linux, 10 Okt 2026): 4 seeder (Asset, Wms, Distribution, Manufacturing) memakai namespace `Database\Seeders` padahal foldernya `database/seeders`, sehingga `DatabaseSeeder` gagal di filesystem case-sensitive (188 error test); test Logistik butuh ekstensi GD + JPEG yang tidak terdokumentasi (28 error). Samakan namespace dengan konvensi modul (`Modules\{M}\database\seeders`), dokumentasikan GD, dan pasang `Psr4ComplianceTest` (path kelas produksi wajib cocok case-sensitive dengan namespace).
-- [ ] R0.4 **`ProgressIntegrityTest`** (K-01; spesifikasi `KONSEP.md` §A14.2): parse `docs/PROGRESS.md` dan validasi blok `Bukti:` sesuai aturan P2 (commit ada & menyentuh file yang disebut; file/test ada; test lulus di laporan gate; rute ada dengan middleware role yang sesuai; command/listener terdaftar; item fitur wajib punya `akses` + test HTTP/command). Juga gagal bila: status ✅ tanpa bagian **Verifikasi** di `docs/gates/fase-N.md`; fase ✅ masih punya minus P0/P1 terbuka; teks item berubah tanpa penanda `⬇️ diturunkan` (dibandingkan snapshot teks item di baseline). Berlaku untuk: semua item Fase R, semua fase yang statusnya berubah setelah 2026-10-10, dan seluruh fase setelah R6 selesai.
+  - [x] R0.3.a **Portabilitas Linux** (K-28; ditemukan saat suite pertama kali dijalankan di Linux, 10 Okt 2026): 4 seeder (Asset, Wms, Distribution, Manufacturing) memakai namespace `Database\Seeders` padahal foldernya `database/seeders`, sehingga `DatabaseSeeder` gagal di filesystem case-sensitive (188 error test); test Logistik butuh ekstensi GD + JPEG yang tidak terdokumentasi (28 error). Samakan namespace dengan konvensi modul (`Modules\{M}\database\seeders`), dokumentasikan GD, dan pasang `Psr4ComplianceTest` (path kelas produksi wajib cocok case-sensitive dengan namespace).
+    Bukti:
+      - commit: 9247f6d
+      - file: tests/Architecture/Psr4ComplianceTest.php
+      - file: README.md
+      - file: docs/DECISIONS.md
+      - test: tests/Architecture/Psr4ComplianceTest.php::it keeps production classes at their case-sensitive PSR-4 path
+      - gate: docs/gates/fase-r0.md
+- [x] R0.4 **`ProgressIntegrityTest`** (K-01; spesifikasi `KONSEP.md` §A14.2): parse `docs/PROGRESS.md` dan validasi blok `Bukti:` sesuai aturan P2 (commit ada & menyentuh file yang disebut; file/test ada; test lulus di laporan gate; rute ada dengan middleware role yang sesuai; command/listener terdaftar; item fitur wajib punya `akses` + test HTTP/command). Juga gagal bila: status ✅ tanpa bagian **Verifikasi** di `docs/gates/fase-N.md`; fase ✅ masih punya minus P0/P1 terbuka; teks item berubah tanpa penanda `⬇️ diturunkan` (dibandingkan snapshot teks item di baseline). Berlaku untuk: semua item Fase R, semua fase yang statusnya berubah setelah 2026-10-10, dan seluruh fase setelah R6 selesai.
+  Bukti:
+    - commit: 1fcc5f3
+    - file: app/Quality/Progress/ProgressIntegrityScanner.php
+    - file: app/Quality/Progress/ProgressItem.php
+    - file: app/Quality/Progress/ProgressPhase.php
+    - file: app/Quality/Progress/GitCommitInspector.php
+    - file: tests/Architecture/ProgressIntegrityTest.php
+    - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
+    - test: tests/Unit/Quality/Progress/ProgressIntegrityScannerTest.php::passes when valid proof block is provided for a checked item
+    - gate: docs/gates/fase-r0.md
   - Test wajib: fixture markdown — item tanpa bukti → gagal; commit tidak menyentuh file → gagal; rute tanpa role → gagal; ✅ tanpa verifikasi → gagal; teks item diubah tanpa ⬇️ → gagal; bukti valid → lulus.
-- [ ] R0.5 **Cabut klaim palsu di dokumen** (K-02, K-03): *(banner sementara sudah dipasang di `LAPORAN_AUDIT_GELOMBANG_2.md` & `CODEBASE.md` pada re-baseline)* tandai/arsipkan `docs/LAPORAN_AUDIT_GELOMBANG_2.md`; perbaiki versi Laravel/PHP di `README.md` & `docs/ARCHITECTURE.md`; header `CODEBASE.md` diganti status jujur; hapus akun yang tidak ada (`agri:farmer_advance_receivable`, `ast:cip_project:*`) dari CODEBASE §5.
-- [ ] R0.6 **Duplikat command** (K-02): hanya satu kelas untuk `api:audit`; `CommandSignatureUniqueTest` memastikan setiap signature unik.
-- [ ] R0.7 **Template PR & penutupan fase**: `.github/pull_request_template.md` (izin pemilik) memuat checklist V1–V12 & C1–C14; folder `docs/gates/` dengan README cara membaca laporan.
-- [ ] R0.8 **`php artisan arch:scan` + baseline ratchet** (K-04, K-05, K-07, K-12, K-14, K-19, K-21, K-22, K-25, K-29): aturan A1–A13 sesuai `KONSEP.md` §A14; keluaran JSON per aturan; baseline awal di `tests/Architecture/baselines/arch-scan.json`; gagal bila jumlah suatu aturan naik.
+- [x] R0.5 **Cabut klaim palsu di dokumen** (K-02, K-03): *(banner sementara sudah dipasang di `LAPORAN_AUDIT_GELOMBANG_2.md` & `CODEBASE.md` pada re-baseline)* tandai/arsipkan `docs/LAPORAN_AUDIT_GELOMBANG_2.md`; perbaiki versi Laravel/PHP di `README.md` & `docs/ARCHITECTURE.md`; header `CODEBASE.md` diganti status jujur; hapus akun yang tidak ada (`agri:farmer_advance_receivable`, `ast:cip_project:*`) dari CODEBASE §5.
+  Bukti:
+    - commit: 4b213d7
+    - file: docs/LAPORAN_AUDIT_GELOMBANG_2.md
+    - file: docs/ARCHITECTURE.md
+    - file: docs/CODEBASE.md
+    - file: tests/Architecture/DocsVersionConsistencyTest.php
+    - test: tests/Architecture/DocsVersionConsistencyTest.php::it ensures LAPORAN_AUDIT_GELOMBANG_2.md is explicitly marked as archived and invalid
+    - test: tests/Architecture/DocsVersionConsistencyTest.php::it ensures CODEBASE.md does not reference removed non-existent accounts
+    - gate: docs/gates/fase-r0.md
+- [x] R0.6 **Duplikat command** (K-02): hanya satu kelas untuk `api:audit`; `CommandSignatureUniqueTest` memastikan setiap signature unik.
+  Bukti:
+    - commit: 45902c9
+    - file: app/Quality/Commands/CommandNameCollector.php
+    - file: modules/Integration/Console/Commands/AuditIntegrationCommand.php
+    - file: tests/Architecture/CommandSignatureUniqueTest.php
+    - file: modules/Integration/tests/Feature/ApiAuditCommandTest.php
+    - test: tests/Architecture/CommandSignatureUniqueTest.php::it declares every artisan command name exactly once
+    - test: modules/Integration/tests/Feature/ApiAuditCommandTest.php::runs the integration and platform economy audits and passes on consistent data
+    - akses: command api:audit
+    - gate: docs/gates/fase-r0.md
+- [x] R0.7 **Template PR & penutupan fase**: `.github/pull_request_template.md` (izin pemilik) memuat checklist V1–V12 & C1–C14; folder `docs/gates/` dengan README cara membaca laporan.
+  Bukti:
+    - commit: 2631b96
+    - file: .github/pull_request_template.md
+    - file: docs/gates/README.md
+    - file: tests/Architecture/GateTemplateContractTest.php
+    - test: tests/Architecture/GateTemplateContractTest.php::it verifies pull request template contains V1-V12 and C1-C14 checklists
+    - test: tests/Architecture/GateTemplateContractTest.php::it verifies docs/gates/README.md provides guidance on reading gate reports
+    - gate: docs/gates/fase-r0.md
+- [x] R0.8 **`php artisan arch:scan` + baseline ratchet** (K-04, K-05, K-07, K-12, K-14, K-19, K-21, K-22, K-25, K-29): aturan A1–A13 sesuai `KONSEP.md` §A14; keluaran JSON per aturan; baseline awal di `tests/Architecture/baselines/arch-scan.json`; gagal bila jumlah suatu aturan naik.
+  Bukti:
+    - commit: bdb26aa
+    - file: app/Console/Commands/ArchScanCommand.php
+    - file: app/Quality/ArchScan/ArchScanner.php
+    - file: tests/Architecture/ArchScanBaselineTest.php
+    - file: tests/Architecture/baselines/arch-scan.json
+    - test: tests/Architecture/ArchScanBaselineTest.php::it keeps module code within the arch:scan ratchet baseline
+    - test: tests/Feature/Console/ArchScanCommandTest.php::fails and names the violation when it is not covered by the baseline
+    - akses: command arch:scan
+    - gate: docs/gates/fase-r0.md
   - Test wajib: fixture kode per aturan (positif & negatif); kenaikan baseline → gagal.
-- [ ] R0.9 **`RouteAuthorizationMatrixTest`** (K-20, K-23): `tests/Architecture/route-roles.php` memetakan setiap nama rute → role yang boleh; test membaca `Route::getRoutes()`: rute baru tanpa entri → gagal; role berhak → bukan 403; role tak berhak → 403. Rute lama yang belum dibatasi masuk baseline.
-- [ ] R0.10 **Test kontrak dengan baseline**: `AuditCommandContractTest` (setiap `*:audit`/`verify-*` punya fixture korupsi: bersih → exit 0, rusak → exit ≠ 0), `LedgerAccountRegistryTest` (setiap kode akun produksi terdefinisi & terseed), `LedgerNormalBalanceTest` (pemetaan sisi normal sementara di test; dipindah ke `AccountKind::normalSide()` di R1.1). Pelanggaran lama → baseline.
-- [ ] R0.11 **`IntegrationFreezeTest` & `TestHygieneTest`** (K-05, K-27): (1) tidak ada file/migrasi baru di `modules/Integration` selain allowlist adapter (`Adapters/`, `Webhooks/`, `Edi/`); (2) larang `assertTrue(true)`, `LedgerAccount::create|firstOrCreate` di test, `markTestSkipped`/`->skip()` tanpa rujukan BLOCKERS. Pelanggaran lama → baseline.
-- [ ] R0.12 **Mutation testing & coverage** (K-27): job CI menjalankan mutation testing Pest pada kelas Action/Service yang diubah PR (verifikasi opsi CLI via `vendor/bin/pest --help`; butuh driver coverage PCOV/Xdebug di CI — bukan dependensi composer); ambang skor 60%.
-- [ ] R0.13 Quality gate Fase R0 (P4) + verifikasi silang (P7).
+- [x] R0.9 **`RouteAuthorizationMatrixTest`** (K-20, K-23): `tests/Architecture/route-roles.php` memetakan setiap nama rute → role yang boleh; test membaca `Route::getRoutes()`: rute baru tanpa entri → gagal; role berhak → bukan 403; role tak berhak → 403. Rute lama yang belum dibatasi masuk baseline.
+  Bukti:
+    - commit: 653a398
+    - file: app/Quality/Routing/RouteAuthorizationScanner.php
+    - file: tests/Architecture/route-roles.php
+    - file: tests/Architecture/baselines/route-authorization.json
+    - file: tests/Architecture/baselines/route-dynamic-pending.json
+    - file: tests/Architecture/RouteAuthorizationMatrixTest.php
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it maps every registered route in route-roles.php
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it enforces that route authorization never weakens compared to baseline
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it keeps pending dynamic routes within the ratchet baseline
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it enforces that unauthorized roles receive 403 on role-protected routes
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it confirms authorized roles are not forbidden (not 403) on role-protected routes
+    - gate: docs/gates/fase-r0.md
+- [x] R0.10 **Test kontrak dengan baseline**: `AuditCommandContractTest` (setiap `*:audit`/`verify-*` punya fixture korupsi: bersih → exit 0, rusak → exit ≠ 0), `LedgerAccountRegistryTest` (setiap kode akun produksi terdefinisi & terseed), `LedgerNormalBalanceTest` (pemetaan sisi normal sementara di test; dipindah ke `AccountKind::normalSide()` di R1.1). Pelanggaran lama → baseline.
+  Bukti:
+    - commit: d1f92a9
+    - file: app/Quality/Audit/AuditCommandRegistry.php
+    - file: tests/Architecture/AuditCommandContractTest.php
+    - file: tests/Architecture/LedgerAccountRegistryTest.php
+    - file: tests/Architecture/LedgerNormalBalanceTest.php
+    - file: tests/Architecture/baselines/audit-contract.json
+    - file: tests/Architecture/baselines/ledger-accounts.json
+    - file: tests/Architecture/baselines/ledger-normal-balance.json
+    - test: tests/Architecture/AuditCommandContractTest.php::it confirms bank:reconcile passes on clean state and fails when data is corrupted
+    - test: tests/Architecture/AuditCommandContractTest.php::it confirms api:audit passes on clean state and fails when signature is corrupted
+    - test: tests/Architecture/AuditCommandContractTest.php::it keeps audit commands without corruption fixtures within the ratchet baseline
+    - test: tests/Architecture/LedgerAccountRegistryTest.php::it keeps unseeded ledger accounts within the ratchet baseline
+    - test: tests/Architecture/LedgerNormalBalanceTest.php::it keeps accounts with inverted normal balances within the ratchet baseline
+    - gate: docs/gates/fase-r0.md
+- [x] R0.11 **`IntegrationFreezeTest` & `TestHygieneTest`** (K-05, K-27): (1) tidak ada file/migrasi baru di `modules/Integration` selain allowlist adapter (`Adapters/`, `Webhooks/`, `Edi/`); (2) larang `assertTrue(true)`, `LedgerAccount::create|firstOrCreate` di test, `markTestSkipped`/`->skip()` tanpa rujukan BLOCKERS. Pelanggaran lama → baseline.
+  Bukti:
+    - commit: 8c8369d
+    - file: app/Quality/Freeze/IntegrationFreeze.php
+    - file: app/Quality/TestHygiene/TestHygieneScan.php
+    - file: tests/Architecture/IntegrationFreezeTest.php
+    - file: tests/Architecture/TestHygieneTest.php
+    - file: tests/Architecture/baselines/integration-freeze.json
+    - file: tests/Architecture/baselines/test-hygiene.json
+    - test: tests/Architecture/IntegrationFreezeTest.php::it keeps modules/Integration frozen except for external adapters and intg_ tables
+    - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
+    - gate: docs/gates/fase-r0.md
+- [x] R0.12 **Mutation testing & coverage** (K-27): job CI menjalankan mutation testing Pest pada kelas Action/Service yang diubah PR (verifikasi opsi CLI via `vendor/bin/pest --help`; butuh driver coverage PCOV/Xdebug di CI — bukan dependensi composer); ambang skor 60%.
+  Bukti:
+    - commit: aaa4827
+    - file: app/Console/Commands/MutationTestCommand.php
+    - file: .github/workflows/ci.yml
+    - file: tests/Architecture/MutationTestingContractTest.php
+    - test: tests/Architecture/MutationTestingContractTest.php::it verifies MutationTestCommand is registered and constructs correct Pest CLI invocation
+    - test: tests/Architecture/MutationTestingContractTest.php::it verifies CI workflow defines mutation testing job with PCOV and 60% minimum threshold
+    - test: tests/Architecture/MutationTestingContractTest.php::it verifies Pest CLI supports mutation testing options
+    - akses: command test:mutate
+    - gate: docs/gates/fase-r0.md
+- [x] R0.13 Quality gate Fase R0 (P4) + verifikasi silang (P7).
+  Bukti:
+    - file: docs/gates/fase-r0.md
+    - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
+    - gate: docs/gates/fase-r0.md
+
+#### Register Minus Fase R0
+| ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| M-R0-1 | R0.8 | Pelanggaran `arch:scan` warisan kode lama (7.718 temuan terbaseline di A1–A13) belum diperbaiki | Pola anti-pola X2–X25 masih ada di kode lama sampai remediasi modular | P2 | R1–R5 |
+| M-R0-2 | R0.9 | 100 rute warisan belum dipetakan role eksplisit (tercatat di baseline `route-authorization.json`) | Rute lama belum terlindungi matriks otorisasi per-role ketat | P2 | R3.1 |
+| M-R0-3 | R0.9 | 148 rute berparameter belum memiliki closure parameter uji HTTP dinamis (ratchet `route-dynamic-pending.json`) | Uji HTTP dinamis 403/non-403 pada rute ini ditunda | P2 | R3.1 |
+| M-R0-4 | R0.10 | 16 command audit warisan belum memiliki fixture korupsi (`audit-contract.json`) | Baru 2 audit (`bank:reconcile`, `api:audit`) yang terbukti gagal saat data rusak | P2 | R5.2 |
+| M-R0-5 | R0.10 | 17 kode akun produksi belum didefinisikan di seeder chart of accounts (`ledger-accounts.json`) | Akun warisan ini berpotensi gagal bila diakses di skenario bersih | P2 | R1.3 |
+| M-R0-6 | R0.10 | 8 saldo akun berlawanan sisi normal akuntansi (`ledger-normal-balance.json`) | Tanda posting debit/kredit di beberapa modul masih terbalik | P2 | R1.2 |
+| M-R0-7 | R0.11 | 705 file & 853 tabel warisan di `modules/Integration` dibekukan via baseline `integration-freeze.json` | Belum dipindahkan ke modul domain yang sesuai | P2 | R4.4 |
+| M-R0-8 | R0.11 | 94 lokasi pembuatan `LedgerAccount` langsung di test & 9 assertion sepele (`test-hygiene.json`) | Test lama masih mengaburkan status produksi dan kebersihan pengujian | P2 | R1.3, R5.5 |
 
 ### FASE R1 — LEDGER & UANG (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.

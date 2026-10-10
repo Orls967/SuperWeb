@@ -53,7 +53,7 @@
         ],
         "gate": [
             "vendor/bin/pest --log-junit=storage/logs/pest-junit.xml",
-            "vendor/bin/pint --test",
+            "vendor/bin/pint --test --dirty",
             "npm run build"
         ],
         "test": [

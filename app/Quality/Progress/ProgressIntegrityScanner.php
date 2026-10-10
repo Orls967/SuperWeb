@@ -312,7 +312,11 @@ final class ProgressIntegrityScanner
                             $violations[] = "Item {$item->id}: file test '{$testFile}' tidak ditemukan di filesystem.";
                         } elseif ($testName !== null) {
                             $testContent = (string) file_get_contents($root.'/'.$testFile);
-                            if (! str_contains($testContent, $testName)) {
+                            $found = str_contains($testContent, $testName);
+                            if (! $found && str_starts_with($testName, 'it ')) {
+                                $found = str_contains($testContent, substr($testName, 3));
+                            }
+                            if (! $found) {
                                 $violations[] = "Item {$item->id}: nama test '{$testName}' tidak ditemukan di dalam '{$testFile}'.";
                             }
                         }

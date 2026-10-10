@@ -207,17 +207,40 @@ final class GateReportGenerator
         }
 
         $base = json_decode((string) file_get_contents($baselinePath), true) ?: [];
-        $ruleCounts = $base['counts_by_rule'] ?? [];
-        $totalViolations = $base['total_violations'] ?? 0;
+        $rules = $base['rules'] ?? [];
+        $ruleDescriptions = [
+            'A1' => 'Import/penggunaan Domain modul lain',
+            'A2' => 'Tabel berprefiks modul lain / tidak terdaftar',
+            'A3' => 'Uang bertipe float / kolom IDR decimal',
+            'A4' => 'Idempotency key dari nilai acak/waktu',
+            'A5' => 'Tipe posting ledger > 32 char / di luar registry',
+            'A6' => 'Parameter bool kontrol di Application/',
+            'A7' => 'Hash tanpa kunci untuk data sensitif',
+            'A8' => 'Carbon/Date::setTestNow di produksi',
+            'A9' => 'Kernel bergantung pada modul bisnis',
+            'A10' => 'Model dengan $guarded = []',
+            'A11' => 'File PHP tanpa declare(strict_types=1)',
+            'A12' => 'Kolom *_id di migrasi tanpa FK',
+            'A13' => 'back()->errors() (HTTP 500 di jalur galat)',
+        ];
+
+        $totalViolations = 0;
+        $tableRows = [];
+
+        foreach ($rules as $rule => $data) {
+            $count = (int) ($data['total'] ?? 0);
+            $totalViolations += $count;
+            $desc = $ruleDescriptions[$rule] ?? "Aturan arsitektur {$rule}";
+            $tableRows[] = "| `{$rule}` | {$desc} | {$count} |";
+        }
 
         $lines = [];
         $lines[] = "- **Status Baseline:** Terpasang ({$totalViolations} pelanggaran terbaseline).";
         $lines[] = '';
         $lines[] = '| Aturan | Deskripsi Singkat | Jumlah Pelanggaran |';
         $lines[] = '|---|---|---|';
-
-        foreach ($ruleCounts as $rule => $count) {
-            $lines[] = "| `{$rule}` | Aturan arsitektur {$rule} | {$count} |";
+        foreach ($tableRows as $row) {
+            $lines[] = $row;
         }
 
         return implode("\n", $lines);
