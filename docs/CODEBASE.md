@@ -6,8 +6,8 @@
 > **Kewajiban:** setiap perubahan (modul, tabel, rute, command, event, contract, role, config, keputusan, angka gate) **harus memperbarui file ini pada commit yang sama**. Lihat §14 (Protokol Pembaruan).
 > Pelengkap: `docs/PROGRESS.md` (checklist tugas), `docs/DECISIONS.md` (alasan keputusan), `docs/ARCHITECTURE.md` (diagram & invarian), `docs/RUNBOOK.md` (operasi), `docs/AUDIT.md` (hasil gate).
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase selesai terakhir:** 148 (Konglomerasi Simulasi 12 Bulan & Golden Mega-Scenario) · **Berjalan:** Fase 149 · **Berikutnya:** Fase 149 Dokumentasi & Playbook Gelombang 2
-**Snapshot gate (akhir Fase 148):** 17 Lini Bisnis terintegrasi penuh · `bank:reconcile` 0 selisih · seluruh `*:audit` (17 lini) 0 diskrepansi · `super:health-check` 17 pilar HEALTHY · Pint, Arch test, dan seluruh suite test hijau.
+**Terakhir diperbarui:** 2026-10-10 · **Status re-baseline:** FASE R0 (Lingkungan, Gate & Pagar Otomatis) sedang dikerjakan · **Fase historis:** Dibuka kembali untuk remediasi (PROGRESS R0–R9)  
+**Snapshot gate:** Suite penuh Pest (2.433+ test) + arch:scan ratchet (A1–A13) + RouteAuthorizationMatrixTest (598 rute) + Audit/Ledger contract tests aktif di PHP 8.4.
 
 ---
 
@@ -95,7 +95,7 @@ Seeder: `DatabaseSeeder` → Banking, Platform, Crypto, Mall, Resto, Logistics (
 - Akun sistem Logistik (`Application/Services/LogisticsLedger.php`): `lgx:unearned_freight`, `lgx:freight_revenue`, `lgx:cod_fee_revenue`, `lgx:carrier_cost`, `lgx:claims_expense`, `lgx:dd_revenue`, `lgx:customs_duty_payable`, `lgx:fuel_expense`, `clearing:external:IDR`.
 - Akun escrow pembayaran `escrow:payment:IDR`; kolateral `escrow:finance:collateral:{ASSET}`.
 - Akun & tipe kontrak (Fase 29): `ctr:advance` (liabilitas uang muka), `ctr:retention_receivable`/`ctr:retention_payable`, `ctr:penalty_revenue:IDR`, `ctr:revenue:{contract_id}`; TransactionType `ctr_advance|ctr_payment|ctr_retention|ctr_penalty|ctr_expense`; aset `ast_acquire|ast_dispose|ast_transfer|ast_depreciation|ast_revaluation|ast_impairment|ast_work_order|ast_lease_amort` dengan akun `ast:fixed_assets`, `ast:accumulated_depreciation` (CONTRA_ASSET), `ast:depreciation_expense`, `ast:fiscal_*` (buku fiskal simulasi), `ast:right_of_use`, `ast:lease_liability`, `ast:lease_interest`, `maintenance:asset:IDR`.
-- Akun subledger lintas modul baru (Fase 38–63): Manufaktur `inv:wip`, `inv:materials`, `inv:finished_goods`, `expense:mfg_variance`, `expense:mfg_cogs`; Distribusi `dist:receivable`, `dist:ar:{id}`, `dist:rebate_payable`; Agensi `agy:commission_payable`, `agy:tax_withheld`; Treasury `trs:bank_operational`, `trs:cash_pool_header`, `trs:fx_gain_loss`; Trade `trd:customs_duty_payable`, `trd:landed_cost_clearing`; Intercompany `ic:mirror_clearing`, `ic:elimination_holding`; B2B Escrow `b2b:escrow_held:{account}`; Agri `agri:farmer_advance_receivable`, `agri:collection_clearing`; EPC `ast:cip_project:{project_id}`, `epc:retention_payable`.
+- Akun subledger lintas modul baru (Fase 38–63): Manufaktur `inv:wip`, `inv:materials`, `inv:finished_goods`, `expense:mfg_variance`, `expense:mfg_cogs`; Distribusi `dist:receivable`, `dist:ar:{id}`, `dist:rebate_payable`; Agensi `agy:commission_payable`, `agy:tax_withheld`; Treasury `trs:bank_operational`, `trs:cash_pool_header`, `trs:fx_gain_loss`; Trade `trd:customs_duty_payable`, `trd:landed_cost_clearing`; Intercompany `ic:mirror_clearing`, `ic:elimination_holding`; B2B Escrow `b2b:escrow_held:{account}`; Agri `agri:collection_clearing`; EPC `epc:retention_payable`.
 - Pembulatan: Brick Math `HalfUp`; PB1 resto 10% pembulatan Rp100; PPN 11% (config `logistics.vat_rate`).
 - **Audit:** `bank:reconcile` (Σ=0 & saldo cache = agregat entri, 140 akun seimbang), `chain:audit-all` (18 audit subledger rantai nilai terekonsiliasi 0 selisih), `super:health-check` (10 pilar HEALTHY).
 

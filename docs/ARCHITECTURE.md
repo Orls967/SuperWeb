@@ -1,6 +1,6 @@
 # Arsitektur Sistem AutoServe
 
-AutoServe adalah platform otomotif terpadu (*superwebsite*) berskala enterprise yang dirancang dengan pola **Modular Monolith** di atas framework Laravel 11. Arsitektur ini menggabungkan fleksibilitas pengembangan monolit dengan isolasi batas domain yang tegas antar-modul bisnis.
+AutoServe adalah platform otomotif terpadu (*superwebsite*) berskala enterprise yang dirancang dengan pola **Modular Monolith** di atas framework Laravel 13 (PHP ^8.4). Arsitektur ini menggabungkan fleksibilitas pengembangan monolit dengan isolasi batas domain yang tegas antar-modul bisnis.
 
 ---
 
@@ -15,7 +15,7 @@ modules/{Modul}/
 ├── Contracts/                 # Interface publik untuk konsumsi lintas modul
 ├── Console/                   # Artisan commands terjadwal / operasional
 ├── Domain/
-│   ├── Enums/                 # PHP 8.3 Backed Enums untuk state & tipe
+│   ├── Enums/                 # PHP 8.4 Backed Enums untuk state & tipe
 │   ├── Events/                # Domain events untuk integrasi asinkron / loose-coupling
 │   └── Models/                # Eloquent models dengan business rules terenkapsulasi
 ├── Http/Controllers/          # HTTP request handlers & view presenters

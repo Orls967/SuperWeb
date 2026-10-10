@@ -1,6 +1,6 @@
 # Superwebsite — Enterprise Multi-Business Modular Monolith Platform
 
-Platform ERP terpadu berskala *enterprise* (Ekosistem 45+ Modul) berbasis **Laravel 11, Blade + Tailwind CSS + Alpine.js**, mengintegrasikan 17 lini bisnis konglomerasi modern di atas pondasi **Double-Entry Multi-Asset Ledger (Zero-Discrepancy)**, **Cryptographic Hash-Chain**, dan **Universal Event Spine**:
+Platform ERP terpadu berskala *enterprise* (Ekosistem 45+ Modul) berbasis **Laravel 13 (PHP ^8.4), Blade + Tailwind CSS + Alpine.js**, mengintegrasikan 17 lini bisnis konglomerasi modern di atas pondasi **Double-Entry Multi-Asset Ledger (Zero-Discrepancy)**, **Cryptographic Hash-Chain**, dan **Universal Event Spine**:
 
 1. **Otomotif & Bengkel (Automotive)**: Bengkel Servis Mobil (*AutoServe*), Ensiklopedia (*AutoDex*), Marketplace Suku Cadang & Bursa Mobil C2C (*Store*), Pembiayaan Beragun Kripto (*Finance*).
 2. **Keuangan & Kripto (FinTech)**: Core Banking Double-Entry (*Banking*), Payment Hub (*Payment*), Bursa Kripto (*Crypto*), Multi-Currency Treasury (*Treasury*), Escrow B2B & Lelang Surplus (*B2B*).
