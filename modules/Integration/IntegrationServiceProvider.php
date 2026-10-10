@@ -348,7 +348,6 @@ use Modules\Integration\Application\Services\WorkforceLaborComplianceIntegritySe
 use Modules\Integration\Application\Services\WorkforceSkillsOperatingCapacityService;
 use Modules\Integration\Application\Services\WorkingCapitalScfService;
 use Modules\Integration\Application\Services\ZeroTrustService;
-use Modules\Integration\Console\Commands\ApiAuditCommand;
 use Modules\Integration\Console\Commands\AuditIntegrationCommand;
 use Modules\Integration\Console\Commands\DrAuditCommand;
 use Modules\Integration\Console\Commands\SecurityAuditCommand;
@@ -721,7 +720,6 @@ class IntegrationServiceProvider extends ServiceProvider
                 AuditIntegrationCommand::class,
                 SecurityAuditCommand::class,
                 DrAuditCommand::class,
-                ApiAuditCommand::class,
             ]);
         }
 
