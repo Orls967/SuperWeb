@@ -289,23 +289,23 @@ Larangan X1–X25 di `PROGRESS.md` §P3 berlaku sebagai aturan teknis yang mengi
 
 Detektor dipasang di Fase R0 (`PROGRESS.md` §P11) dan wajib hijau di setiap gate. Semua detektor yang memeriksa kode lama memakai **baseline ratchet**: `tests/Architecture/baselines/{detektor}.json` menyimpan jumlah pelanggaran per aturan; gate gagal bila angka **naik**; PR yang menurunkan angka wajib memperbarui baseline; menaikkan baseline hanya dengan entri `DECISIONS.md` + persetujuan pemilik.
 
-**A14.1 `php artisan arch:scan`** — memindai `modules/**` (kecuali `tests/` bila tidak disebut), keluaran JSON per aturan + daftar lokasi.
+**A14.1 `php artisan arch:scan`** — memindai `modules/**` (kecuali `tests/` bila tidak disebut), keluaran JSON per aturan + daftar lokasi. Implementasi: `app/Quality/ArchScan` (tokenizer PHP bawaan). Baseline: `tests/Architecture/baselines/arch-scan.json` per aturan → file → tanda tangan pelanggaran (tahan geser baris); gate: `tests/Architecture/ArchScanBaselineTest.php`. Kolom "Baseline terukur" adalah acuan resmi (DECISIONS 2026-10-10); perkiraan audit dipertahankan sebagai sejarah.
 
-| Aturan | Mendeteksi | Cakupan & pengecualian | Perkiraan awal (audit 10 Okt 2026) |
-|---|---|---|---|
-| A1 | `use Modules\{B}\Domain\...` di modul A ≠ B | kecuali shared kernel yang tercatat di DECISIONS (mis. enum/DTO ledger setelah dipindah ke `Shared\Ledger`) | 337 import |
-| A2 | `DB::table('{p}_…')` atau `Schema::create('{p}_…')` di modul yang bukan pemilik prefiks `{p}` (registry §A1) | migrasi pemindahan yang disetujui | 47 akses + ±800 tabel milik Integration berprefiks lain |
-| A3 | parameter/properti `float` bernama uang (`*idr*`, `amount`, `price`, `cost`, `fee`, `revenue`, `salary`, `total`, `budget`, `balance`) dan kolom `decimal` bernama `*_idr` | kuantitas fisik (kWh, kg, jam) boleh float bila dinyatakan | ±302 parameter + 80 kolom |
-| A4 | `Str::uuid`, `Str::random`, `uniqid`, `random_bytes`, `now()`, `time()` di dalam argumen/variabel idempotency key | — | 27 lokasi |
-| A5 | `type:` posting ledger > 32 karakter atau tidak terdaftar di registry tipe | — | 12 tipe terlalu panjang |
-| A6 | parameter `bool` bernama kontrol (`$approved`, `$verified*`, `$passed`, `$compliant`, `$signed`, `$consent*`, `$evidence*`, `$attested`, `$certified`, `$*Granted`) di `Application/` | parameter filter tampilan dikecualikan lewat atribut `#[NotAControl]` + alasan | 184 service |
-| A7 | `base64_encode`/`hash()` tanpa kunci yang ditulis ke kolom bernama `*_encrypted`, `*secret*`, `*nik*`, `*npwp*`, `*passport*` | — | ≥ 3 lokasi |
-| A8 | `Carbon::setTestNow` / `Date::setTestNow` di luar `tests/` | — | 3 baris |
-| A9 | `Modules\Shared` atau `Modules\Core` memakai namespace modul bisnis | — | ≥ 2 file |
-| A10 | `$guarded = []` | — | 162 model |
-| A11 | file PHP tanpa `declare(strict_types=1)` | migrasi & view dikecualikan | 341 file |
-| A12 | kolom `*_id` intra-modul tanpa FK/index | kolom lintas modul (id + Contract) dikecualikan bila terdaftar | ±560 kolom (1.222 kolom `*_id` vs 661 deklarasi FK) |
-| A13 | `back()->errors()` | — | 15 lokasi |
+| Aturan | Mendeteksi | Cakupan & pengecualian | Perkiraan awal (audit 10 Okt 2026) | Baseline terukur (R0.8) |
+|---|---|---|---|---|
+| A1 | `use Modules\{B}\Domain\...` di modul A ≠ B | kecuali shared kernel yang tercatat di DECISIONS (mis. enum/DTO ledger setelah dipindah ke `Shared\Ledger`) | 337 import | 428 |
+| A2 | `DB::table('{p}_…')`, `Schema::create/table('{p}_…')`, atau properti `$table` model di modul yang bukan pemilik prefiks `{p}` (registry §A1 = `config/modules.php`); prefiks tak terdaftar juga dihitung | migrasi pemindahan yang disetujui; tabel lama tanpa prefiks didaftarkan di `legacy_tables` | 47 akses + ±800 tabel milik Integration berprefiks lain | 5.254 (5.134 di `Integration`) |
+| A3 | parameter/properti `float` bernama uang (`*idr*`, `amount`, `price`, `cost`, `fee`, `revenue`, `salary`, `total`, `budget`, `balance`) dan kolom `decimal` bernama `*_idr` | kuantitas fisik (kWh, kg, jam), rasio/tarif persen, dan durasi/latensi tidak dihitung; nama ber-`idr` selalu uang; kata setelah `per` adalah satuan (`costPerDay` = uang) | ±302 parameter + 80 kolom | 352 |
+| A4 | `Str::uuid`, `Str::random`, `uniqid`, `random_bytes`, `now()`, `time()` di dalam argumen/variabel idempotency key | termasuk fallback acak (`?? Str::uuid()`) dan satu tingkat variabel perantara | 27 lokasi | 44 |
+| A5 | `type:` posting ledger > 32 karakter atau tidak terdaftar di registry tipe | literal yang sama dengan nilai `TransactionType` dianggap terdaftar; ekspresi dinamis dihitung karena tidak bisa diverifikasi | 12 tipe terlalu panjang | 101 |
+| A6 | parameter `bool` bernama kontrol (`$approved`, `$verified*`, `$passed`, `$compliant`, `$signed`, `$consent*`, `$evidence*`, `$attested`, `$certified`, `$*Granted`) di `Application/` | parameter filter tampilan dikecualikan lewat atribut `#[NotAControl('alasan ≥ 10 karakter')]` (`Modules\Shared\Domain\Attributes\NotAControl`) | 184 service | 133 |
+| A7 | `base64_encode`/`hash()` tanpa kunci yang ditulis ke kolom bernama `*_encrypted`, `*secret*`, `*nik*`, `*npwp*`, `*passport*` | `passport` berarti nomor paspor (`passport_number/no/id`); hash-chain *Vehicle Passport* bukan PII sehingga tidak dihitung; `hash_hmac` dan `encrypt` tidak dihitung | ≥ 3 lokasi | 5 |
+| A8 | `Carbon::setTestNow` / `Date::setTestNow` di luar `tests/` | — | 3 baris | 3 |
+| A9 | `Modules\Shared` atau `Modules\Core` memakai namespace modul bisnis | — | ≥ 2 file | 34 |
+| A10 | `$guarded = []` | — | 162 model | 162 |
+| A11 | file PHP tanpa `declare(strict_types=1)` | migrasi & view dikecualikan | 341 file | 146 |
+| A12 | kolom `*_id` intra-modul tanpa FK (index saja tidak cukup) | kolom lintas modul dikecualikan bila terdaftar di `cross_module_columns`; pasangan `{x}_id`+`{x}_type` (polimorfik) dikecualikan; FK yang ditambahkan di file migrasi lain belum terlihat (per file) | ±560 kolom (1.222 kolom `*_id` vs 661 deklarasi FK) | 596 |
+| A13 | `back()->errors()` | — | 15 lokasi | 15 |
 
 **A14.2 `ProgressIntegrityTest`** — mem-parse `docs/PROGRESS.md`; memvalidasi blok `Bukti:` sesuai `PROGRESS.md` §P2 (commit ada & menyentuh file yang disebut; file/test ada; test lulus di laporan gate; rute ada dengan middleware role yang sesuai; command/listener terdaftar; item fitur wajib punya `akses` + test HTTP/command). Juga gagal bila: status ✅ diberikan pada fase yang tidak punya bagian **Verifikasi** di `docs/gates/fase-N.md`; ada minus P0/P1 terbuka pada fase ✅; teks item berubah tanpa penanda `⬇️ diturunkan` (dibandingkan dengan snapshot item di baseline).
 

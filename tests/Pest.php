@@ -1,5 +1,9 @@
 <?php
 
+use App\Quality\ArchScan\Rule;
+use App\Quality\ArchScan\Violation;
+use App\Quality\Modules\ModuleRegistry;
+use App\Quality\Support\SourceFile;
 use Tests\TestCase;
 
 /*
@@ -45,4 +49,39 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/**
+ * Quality tooling (arch:scan, baselines): build an in-memory source file.
+ */
+function sourceFile(string $relativePath, string $code): SourceFile
+{
+    return new SourceFile($relativePath, $code);
+}
+
+/**
+ * Small, explicit module registry for quality-rule tests (independent of config/modules.php).
+ */
+function qualityTestRegistry(): ModuleRegistry
+{
+    return new ModuleRegistry(
+        tablePrefixes: ['hsp_' => 'Hospital', 'htl_' => 'Hotel', 'bank_' => 'Banking', 'intg_' => 'Integration', 'core_' => 'Core'],
+        legacyTables: ['users' => 'App', 'bookings' => 'AutoServe'],
+        kernelModules: ['Shared', 'Core'],
+        sharedKernelNamespaces: ['Modules\Banking\Domain\Kernel'],
+        crossModuleColumns: ['hsp_admissions.insurer_party_id' => 'Party dibaca lewat Contract'],
+    );
+}
+
+/**
+ * Run one quality rule over one in-memory file and return the violation signatures.
+ *
+ * @return list<string>
+ */
+function ruleSignatures(Rule $rule, string $relativePath, string $code): array
+{
+    return array_map(
+        static fn (Violation $violation): string => $violation->signature,
+        $rule->check(sourceFile($relativePath, $code), qualityTestRegistry()),
+    );
 }
