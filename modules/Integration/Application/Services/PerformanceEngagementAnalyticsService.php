@@ -54,7 +54,7 @@ class PerformanceEngagementAnalyticsService
         string $calibratedBy
     ): object {
         if (trim($justification) === '' || strlen(trim($justification)) < 10) {
-            throw new \InvalidArgumentException("Calibration justification required (minimum 10 characters) for audit trail.");
+            throw new \InvalidArgumentException('Calibration justification required (minimum 10 characters) for audit trail.');
         }
 
         // Determine bonus multiplier based on calibrated rating
@@ -244,7 +244,7 @@ class PerformanceEngagementAnalyticsService
             ->where('status', 'CALIBRATED')
             ->where(function ($q) {
                 $q->whereNull('calibration_justification')
-                  ->orWhereNull('calibrated_by');
+                    ->orWhereNull('calibrated_by');
             })
             ->count();
 
@@ -252,7 +252,7 @@ class PerformanceEngagementAnalyticsService
         $invalidRiskValues = DB::table('hcm_people_analytics_metrics')
             ->where(function ($q) {
                 $q->where('predicted_attrition_risk', '<', 0)
-                  ->orWhere('predicted_attrition_risk', '>', 1.0);
+                    ->orWhere('predicted_attrition_risk', '>', 1.0);
             })
             ->count();
 

@@ -94,7 +94,7 @@ class InternalControlMaturityTest extends TestCase
         $this->service->evaluateControl('CTRL-FAIL-003', '2026-07', false, true);
         // Fail 2nd time
         $this->service->evaluateControl('CTRL-FAIL-003', '2026-08', false, true);
-        
+
         $ctrl = DB::table('gov_internal_controls')->where('control_code', 'CTRL-FAIL-003')->first();
         $this->assertFalse((bool) $ctrl->requires_redesign);
 

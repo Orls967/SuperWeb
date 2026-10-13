@@ -28,7 +28,7 @@ class CostEfficiencyPerformanceService
     ): object {
         // 434.6 Risk: Mandatory verified baseline
         if ($baselineCostPerMonth <= 0.00) {
-            throw new InvalidArgumentException("Item blocked: A valid baseline cost (> 0) is mandatory before registering efficiency items (434.2, 434.6).");
+            throw new InvalidArgumentException('Item blocked: A valid baseline cost (> 0) is mandatory before registering efficiency items (434.2, 434.6).');
         }
 
         $id = DB::table('plt_efficiency_backlog_items')->insertGetId([
@@ -58,7 +58,7 @@ class CostEfficiencyPerformanceService
 
         // 434.5 Edge case: Trade-off approval required if quality is affected
         if (! $tradeoffApproved) {
-            throw new InvalidArgumentException("Validation blocked: Quality trade-off must be reviewed and approved (434.5).");
+            throw new InvalidArgumentException('Validation blocked: Quality trade-off must be reviewed and approved (434.5).');
         }
 
         $savings = max(0.00, (float) $item->baseline_cost_per_month - $postOptCost);

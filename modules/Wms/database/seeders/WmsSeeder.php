@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Wms\Database\Seeders;
+namespace Modules\Wms\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Wms\Application\Services\WmsService;

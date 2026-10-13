@@ -53,7 +53,7 @@ class EnterpriseArchitectureGovernanceService
 
         // 472.6 Risk: Core principles violation blocked
         if ($violatesCorePrinciples) {
-            throw new InvalidArgumentException("ADR proposal blocked: Proposal violates fundamental architectural principles (e.g. bypasses financial ledger / modular monolith boundaries) (472.1, 472.6).");
+            throw new InvalidArgumentException('ADR proposal blocked: Proposal violates fundamental architectural principles (e.g. bypasses financial ledger / modular monolith boundaries) (472.1, 472.6).');
         }
 
         $id = DB::table('int_architecture_decisions')->insertGetId([

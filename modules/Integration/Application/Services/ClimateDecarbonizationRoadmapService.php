@@ -174,7 +174,7 @@ class ClimateDecarbonizationRoadmapService
         // 229.7 Scope 3 estimasi: angka estimasi dilabeli, bukan diklaim terukur
         if ($claimAsMeasured) {
             throw new \InvalidArgumentException(
-                "Scope 3 disclosure violation: Modelled Scope 3 emission estimates cannot be claimed as measured without empirical primary metering."
+                'Scope 3 disclosure violation: Modelled Scope 3 emission estimates cannot be claimed as measured without empirical primary metering.'
             );
         }
 

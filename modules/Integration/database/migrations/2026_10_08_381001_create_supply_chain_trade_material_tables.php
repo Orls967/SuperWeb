@@ -22,7 +22,7 @@ return new class extends Migration
 
         Schema::create('global_supply_chain_reverse_manifests', function (Blueprint $table) {
             $table->id();
-            $table->string('reverse_manifest_code')->unique();
+            $table->string('reverse_manifest_code')->unique('gsc_reverse_manif_code_uniq');
             $table->string('lot_identifier')->index();
             $table->boolean('has_verified_contract')->default(false); // 381.3, 381.4, 381.6 Risk
             $table->boolean('has_pickup_manifest')->default(false);

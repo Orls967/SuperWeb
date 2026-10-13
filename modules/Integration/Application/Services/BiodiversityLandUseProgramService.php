@@ -47,7 +47,7 @@ class BiodiversityLandUseProgramService
             throw new InvalidArgumentException("Land plot '{$plotCode}' not found.");
         }
 
-        $taskId = 'TSK-BIO-REMED-' . strtoupper(substr(md5($plotCode . time()), 0, 8));
+        $taskId = 'TSK-BIO-REMED-'.strtoupper(substr(md5($plotCode.time()), 0, 8));
 
         DB::table('esg_biodiversity_land_plots')->where('id', $plot->id)->update([
             'disturbance_detected' => true,
@@ -110,11 +110,11 @@ class BiodiversityLandUseProgramService
 
         // 445.4 & 445.6 System strictly enforces avoid-first: offset cannot be approved if avoidance was feasible
         if (! $proj->avoidance_proven_infeasible) {
-            throw new InvalidArgumentException("Issuance blocked: Biodiversity offset cannot substitute for on-site avoidance; non-feasibility proof missing (445.1, 445.4, 445.6).");
+            throw new InvalidArgumentException('Issuance blocked: Biodiversity offset cannot substitute for on-site avoidance; non-feasibility proof missing (445.1, 445.4, 445.6).');
         }
 
         if (! $proj->additionality_verified || ! $proj->permanence_verified || ! $proj->community_consent_granted) {
-            throw new InvalidArgumentException("Issuance blocked: Offset quality criteria missing (additionality, permanence, or community consent) (445.3, 445.4).");
+            throw new InvalidArgumentException('Issuance blocked: Offset quality criteria missing (additionality, permanence, or community consent) (445.3, 445.4).');
         }
 
         DB::table('esg_biodiversity_offset_projects')->where('id', $proj->id)->update([

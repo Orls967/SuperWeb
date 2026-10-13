@@ -64,7 +64,7 @@ class CustomerPricingFairnessService
 
         // 419.3 & 419.6 Mandatory transparency breakdown
         if (empty($priceComponents)) {
-            throw new InvalidArgumentException("Offer blocked: Transparency breakdown of price components is mandatory (419.3, 419.6).");
+            throw new InvalidArgumentException('Offer blocked: Transparency breakdown of price components is mandatory (419.3, 419.6).');
         }
 
         $finalPrice = round($basePrice * (1 - ($discountPercent / 100)), 2);

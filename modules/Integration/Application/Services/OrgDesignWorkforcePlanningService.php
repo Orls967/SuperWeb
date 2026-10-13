@@ -64,7 +64,7 @@ class OrgDesignWorkforcePlanningService
     {
         if ($newParentPosCode !== null) {
             if (strtoupper($posCode) === strtoupper($newParentPosCode)) {
-                throw new \InvalidArgumentException("A position cannot report to itself.");
+                throw new \InvalidArgumentException('A position cannot report to itself.');
             }
 
             $parentExists = DB::table('hcm_positions')->where('position_code', strtoupper($newParentPosCode))->exists();

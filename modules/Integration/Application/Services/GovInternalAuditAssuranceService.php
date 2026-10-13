@@ -128,7 +128,7 @@ class GovInternalAuditAssuranceService
 
         // Constraint 293.5: Cannot close finding without verified evidence reference
         if (empty($evidenceDocRef)) {
-            throw new InvalidArgumentException("Finding closure blocked: Verified remediation evidence document reference is mandatory (293.5).");
+            throw new InvalidArgumentException('Finding closure blocked: Verified remediation evidence document reference is mandatory (293.5).');
         }
 
         DB::table('gov_internal_audit_findings')
@@ -149,7 +149,7 @@ class GovInternalAuditAssuranceService
     {
         // Safety constraint 293.4 & 293.5: External auditor portal must be strictly read-only
         if (! $isReadOnly) {
-            throw new InvalidArgumentException("External auditor access violation: External auditor role is strictly read-only (293.5).");
+            throw new InvalidArgumentException('External auditor access violation: External auditor role is strictly read-only (293.5).');
         }
 
         $id = DB::table('gov_external_auditor_access_logs')->insertGetId([

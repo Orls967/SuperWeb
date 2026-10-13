@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('slot_time_window'); // e.g. 2026-10-09 08:00-10:00
             $table->string('carrier_code');
             $table->string('status')->default('SCHEDULED'); // SCHEDULED, CANCELLED
-            $table->unique(['facility_code', 'dock_door_code', 'slot_time_window']);
+            $table->unique(['facility_code', 'dock_door_code', 'slot_time_window'], 'ops_sc_dock_appts_fac_door_slot_uniq');
             $table->timestamps();
         });
     }

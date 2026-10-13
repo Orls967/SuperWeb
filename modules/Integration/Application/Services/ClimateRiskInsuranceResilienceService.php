@@ -34,7 +34,7 @@ class ClimateRiskInsuranceResilienceService
 
         // Mitigation credit gate 329.4: Premium credit ONLY permitted if adaptation measure is verified
         if ($requestedMitigationCreditUsd > 0.0 && ! $verifiedAdaptationMeasure) {
-            throw new InvalidArgumentException("Actuarial audit breach: Risk mitigation premium credit requires verified adaptation engineering measures (329.4).");
+            throw new InvalidArgumentException('Actuarial audit breach: Risk mitigation premium credit requires verified adaptation engineering measures (329.4).');
         }
 
         $appliedCredit = $verifiedAdaptationMeasure ? $requestedMitigationCreditUsd : 0.00;
@@ -74,7 +74,7 @@ class ClimateRiskInsuranceResilienceService
         if ($status === 'OUTAGE_OFFLINE') {
             // Edge case 329.5: Sensor outage strictly requires manual fallback + official meteorological station data
             if (! $manualFallbackActivated || ! $hasOfficialMeteoData) {
-                throw new InvalidArgumentException("Parametric governance violation: Sensor outage requires manual fallback protocol with official meteorological data before evaluating claim (329.5).");
+                throw new InvalidArgumentException('Parametric governance violation: Sensor outage requires manual fallback protocol with official meteorological data before evaluating claim (329.5).');
             }
 
             if ($sensorValue !== null && $sensorValue >= $payoutThreshold) {

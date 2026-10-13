@@ -1051,17 +1051,155 @@
   - Seluruh quality gate command (`security:audit`, `dr:audit`, `api:audit`, `egy:audit`, `tlx:audit`, `med:audit`, `edu:audit`, `ret:audit`, dll.) lulus dengan 0 diskrepansi.
   - Pint linting clean 100%.
 
+## 2026-10-10: PHP 8.4 & composer.lock di-commit (Fase R0.1)
+- **Context:** `composer.json` menulis `"php": "^8.3"`, tetapi `composer.lock` berisi komponen Symfony 8 yang mewajibkan PHP ≥ 8.4.1, sehingga `composer install` gagal di PHP 8.3. `CODEBASE.md` sempat menyuruh memakai `platform.php 8.3.6` dan tidak meng-commit `composer.lock` — cara yang memasang paket di versi PHP yang tidak didukung (temuan K-28 di `KNOWLEDGE.md`).
+- **Decision:** `"php": "^8.4"`; `composer.lock` tetap di-commit dan menjadi sumber versi paket untuk dev, CI, dan produksi. Perubahan hanya pada constraint PHP, blok `platform` lock, dan `content-hash` (dihitung dengan `Composer\Package\Locker::getContentHash`); versi paket tidak berubah. Dilarang `--ignore-platform-reqs` dan `config.platform.php` palsu.
+- **Reason:** build yang bisa diulang; test berjalan di versi PHP yang sama dengan lock; disetujui pemilik pada DoR Fase R0.
+- **Verification:** `composer validate --strict --no-check-publish` exit 0 (hash lama → exit 2 "lock file is not up to date"); `composer install --dry-run` → "Nothing to install, update or remove" di PHP 8.4.26.
 
+## 2026-10-10: Baseline awal pagar otomatis arch:scan (Fase R0.8)
+- **Context:** `php artisan arch:scan` (aturan A1–A13, `KONSEP.md` §A14.1) menemukan pelanggaran lama di `modules/` yang tidak bisa diperbaiki sekaligus di R0. Tanpa baseline, gate akan merah selamanya; tanpa ratchet, pelanggaran baru bisa bersembunyi di balik angka lama.
+- **Decision:** semua pelanggaran per 10 Okt 2026 dicatat di `tests/Architecture/baselines/arch-scan.json` per aturan → file → tanda tangan pelanggaran (bukan nomor baris). Hitungan terukur: A1 428 · A2 5.254 (5.134 di `Integration`) · A3 352 · A4 44 · A5 101 · A6 133 · A7 5 · A8 3 · A9 34 · A10 162 · A11 146 · A12 596 · A13 15. Pelanggaran baru selalu menggagalkan gate; pelanggaran yang hilang wajib diturunkan dari baseline di perubahan yang sama (`--update-baseline`); menambah entri baseline hanya dengan `--allow-new="DECISIONS.md#…"` yang menunjuk keputusan yang benar-benar ada (diperiksa `ArchScanBaselineTest`).
+- **Reason:** pagar langsung aktif untuk kode baru sementara utang lama ditutup bertahap di R1–R5 (target baseline 0 di DoD Fase R).
+- **Catatan angka:** perkiraan audit di `KONSEP.md` §A14.1 berbeda dari hitungan terukur karena definisi detektor lebih lengkap (mis. A2 menghitung setiap pemanggilan `DB::table`, bukan per tabel; A11 tidak menghitung migrasi). Angka terukur di atas adalah acuan resmi.
 
+## 2026-10-10: Satu command api:audit untuk audit integrasi + platform economy (Fase R0.6)
+- **Context:** `api:audit` dideklarasikan oleh dua kelas (`AuditIntegrationCommand` Fase 55 dan `ApiAuditCommand` Fase 147). Laravel hanya menyimpan registrasi terakhir, sehingga audit webhook HMAC & EDI Fase 55 tidak pernah berjalan dan `IntegrationTest::test_55_9` gagal di Linux.
+- **Decision:** satu kelas `AuditIntegrationCommand` menjalankan kedua audit; command gagal bila salah satu menemukan selisih. Teks keluaran lama dipertahankan agar item 55.9, 102.5, dan 147.6 tetap merujuk command yang sama. `ApiAuditCommand` dihapus. `CommandSignatureUniqueTest` mencegah nama command ganda terulang.
+- **Reason:** ketiga item PROGRESS memakai nama `api:audit`; menggabungkan lebih jujur daripada mengganti nama salah satunya diam-diam.
 
+## 2026-10-10: Baseline awal detektor lain Fase R0 (R0.9–R0.11)
+- **Context:** detektor Fase R0 selain `arch:scan` juga menemukan pelanggaran lama yang baru akan ditutup di R1–R5 (rute tanpa role, audit tanpa fixture korupsi, akun ledger yang hanya ada di test, saldo berlawanan sisi normal, isi `modules/Integration`, higiene test).
+- **Decision:** setiap detektor memakai file baseline ratchet di `tests/Architecture/baselines/` (format sama: hanya boleh turun; menambah entri wajib `BASELINE_DECISION="DECISIONS.md#…"` yang ada). Baseline awal dibuat dari kondisi kode 10 Okt 2026; angka per detektor dicatat di laporan gate Fase R0 dan Register Minus R0.
+- **Reason:** pagar langsung aktif untuk perubahan baru tanpa menunggu seluruh utang lama lunas.
 
+## 2026-10-10: Portabilitas skema MySQL — identifier ≤ 64 karakter & key length ≤ 3072 byte (Fase R0.3.b)
+- **Context:**
+  - MySQL 8.4 membatasi panjang nama identifier (tabel, kolom, index, unique constraint, foreign key) maksimal 64 karakter.
+  - Konvensi penamaan default Laravel menghasilkan nama index/unique > 64 karakter pada tabel/kolom dengan nama panjang (ditemukan pertama kali pada CI run 38068206489 job `portability-mysql`: `mall_utility_tariffs_property_id_utility_type_effective_from_index` sepanjang 67 karakter; total 22 identifier terdeteksi di modul `Mall`, `Logistics`, `Manufacturing`, `Wms`, `Mining`, `Egy`, `Tlx`, `Edu`, dan `Integration`).
+  - Selain itu, MySQL InnoDB dengan charset `utf8mb4` membatasi panjang komposit key index maksimal 3072 byte. Index komposit dengan 4 kolom `string(255)` default memakan 4.080 byte, menyebabkan error MySQL 1071 (`Specified key was too long; max key length is 3072 bytes`, terdeteksi di CI run 38071600613 pada `pty_party_roles` [4.080 byte] dan `med_ip_licenses` [4.080 byte]).
+- **Decision:**
+  - Sesuai Keputusan Pemilik K1 (mengikat): seluruh identifier yang melebihi 64 karakter diperbaiki langsung di file migrasinya dengan memberi nama eksplisit ≤ 64 karakter tanpa mengubah kolom, tipe data, atau semantik database.
+  - R0.3.b juga memperpendek kolom (bukan hanya nama): `pty_party_roles.role` (50), `pty_party_roles.scope_type` (50), `pty_party_roles.scope_id` (100); `med_ip_licenses.ip_id` (64), `med_ip_licenses.channel` (50), `med_ip_licenses.territory` (50), `med_ip_licenses.status` (30).
+  - R0.3.b juga menyamakan tipe foreign key `ctr_contract_attachments.contract_party_id` menjadi `unsignedBigInteger` agar kompatibel dengan `ctr_contract_parties.id` (mengatasi MySQL error 3780 incompatibility).
+  - Seluruh penulis nilai (`PartyService`, `PartyController`, `StudioAndContentProductionService`) telah diaudit: nilai maksimum sah berada di bawah batas (enum `PartyRoleType` terpanjang `distributor` 11 char; `channel` terpanjang `HOTEL_IN_ROOM` 13 char; `territory` terpanjang `GLOBAL` 6 char); validasi input `max:<n>` dipasang di `PartyController` (`role` max:50, `scope_type` max:50, `scope_id` max:100) dan guard exception di `StudioAndContentProductionService`; test HTTP membuktikan input n+1 karakter menghasilkan 422 dan input n karakter sukses (`Modules\Party\Tests\Feature\PartyColumnLengthValidationTest` dan `Modules\Med\tests\Feature\MedColumnLengthValidationTest`).
+- **Reason:**
+  - Portabilitas penuh dengan MySQL 8.4 agar job CI `portability-mysql` hijau.
+  - Struktur data fisik dan integritas constraint tetap utuh tanpa risiko overflow buffer InnoDB MySQL.
+- **Verification:**
+  - `vendor/bin/pest tests/Architecture/SchemaIdentifierLengthTest.php` lulus (2 tests, 2 assertions, exit 0).
+  - Sabotase sementara dengan nama 65 karakter terbukti gagal (exit code 1).
+  - Sabotase sementara dengan index 4.080 byte terbukti gagal (exit code 1).
+  - `vendor/bin/pest modules/Party/tests/Feature/PartyColumnLengthValidationTest.php` lulus (6 tests, 15 assertions, exit 0).
+  - `vendor/bin/pest modules/Med/tests/Feature/MedColumnLengthValidationTest.php` lulus (5 tests, 8 assertions, exit 0).
 
+## 2026-10-10: Pengalihan minus warisan ke fase perbaikan spesifik (Keputusan K2)
+- **Context:**
+  - Audit Fase R0 dan penegakan pagar otomatis menemukan berbagai kekurangan dan utang teknis warisan (baseline `arch:scan` 7.273 temuan di A1–A13, 100 rute tanpa role terpetakan, 148 rute dinamis berparameter tertunda, 33 command audit tanpa fixture korupsi, 172 kode akun produksi belum terdaftar di seeder, 3 saldo akun berlawanan sisi normal, 705 file & 853 tabel di `modules/Integration`, 94 pembuatan `LedgerAccount` langsung di test, 37 rute tulis yang masih mengizinkan role auditor, error Blade view/tipe data pada contract clauses & reports, scanner A12/T4 heuristik, dan batas memori test suite).
+  - Fase R0 bertujuan membangun pagar otomatis, lingkungan CI, dan baseline ratchet tanpa membongkar logika bisnis secara prematur tanpa spesifikasi dan pengujian per-fase yang memadai.
+- **Decision:**
+  - Sesuai Keputusan Pemilik K2 (mengikat): seluruh minus warisan dialihkan secara terstruktur ke fase perbaikan yang relevan:
+    - M-R0-1 (pelanggaran `arch:scan` A1–A13): dialihkan ke remediasi bertahap Fase R1–R5 (target baseline 0 di DoD Fase R).
+    - M-R0-5 (172 kode akun produksi belum terdaftar) & M-R0-8 (94 `LedgerAccount` di test): dialihkan ke Fase R1.3.
+    - M-R0-6 (3 saldo akun berlawanan sisi normal): dialihkan ke Fase R1.2.
+    - M-R0-10 & M-R0-11 (view error contract clauses & reports): dialihkan ke Fase R2.3.
+    - M-R0-2 (100 rute warisan tanpa role), M-R0-3 (148 rute berparameter tertunda), M-R0-12 (distribution portal 403 admin), M-R0-13 (storage local signed route), dan M-R0-18 (37 rute tulis dengan role auditor dari V8c): dialihkan ke Fase R3.1.
+    - M-R0-7 (pembekuan `modules/Integration`): dialihkan ke Fase R4.4.
+    - M-R0-4 (33 audit command tanpa fixture korupsi) & M-R0-14 (detail record rusak `api:audit`): dialihkan ke Fase R5.2.
+    - M-R0-15 (scanner A12 & T4) & M-R0-16 (memori test suite): dialihkan ke Fase R5.5.
+  - Setiap minus dicatat secara jujur di Register Minus Fase R0 dan Register Minus fase tujuan, tanpa menyembunyikan fakta teknis (larangan anti-pola X1).
+- **Reason:** Menjamin scope integrity Fase R0 tetap fokus pada pagar otomatis dan tata kelola kualitas, sembari memberikan kepastian roadmap penyelesaian utang teknis warisan pada fase yang tepat.
+- **Verification:** Register Minus Fase R0 di `docs/PROGRESS.md` diselaraskan dengan rencana pengalihan K2; semua item minus warisan memiliki fase target yang jelas.
 
+## 2026-10-11: Konvensi approval_id = core_approvals.id (bigint + FK)
+- **Context:**
+  - Terjadi inkonsistensi semantik kolom `approval_id` di mana branch `feature/fase-r0-mac` (`5b2828a`) mengubah 7 kolom di modul Procurement, Supplier, dan Asset menjadi `string(64)` agar muat UUID, sementara branch `tools/r0-mysql-ddl-replay` (`ad6245d`) menulis `$approval->id`.
+  - Modul lain (Pricing, Agency, Wms, Distribution) serta `ApprovalEngineService` telah menggunakan `core_approvals.id` (`bigint`) via `approve((int) $model->approval_id)`.
+  - Rujukan BLOCKERS B-03 dan KNOWLEDGE K-40.
+- **Decision:**
+  - Sesuai Keputusan Pemilik K-B03 (mengikat):
+    1. Konvensi `approval_id` di seluruh repository menyimpan `core_approvals.id` (bigint) dengan foreign key `foreignId('approval_id')->nullable()->constrained('core_approvals')->nullOnDelete()`.
+    2. Mengembalikan 7 kolom di modul Procurement, Supplier, Asset (`prc_requisitions`, `prc_tender_bids`, `prc_po_versions`, `prc_payment_batches`, `sup_qualifications`, `ast_revaluations`, `ast_disposals`) dan 1 kolom di modul Contract (`ctr_contracts`) ke `foreignId('approval_id')->nullable()->constrained('core_approvals')->nullOnDelete()`.
+    3. Mengembalikan model cast ke `'approval_id' => 'integer'` pada seluruh model terkait (`Requisition`, `TenderBid`, `PoVersion`, `PaymentBatch`, `SupplierQualification`, `AssetRevaluation`, `AssetDisposal`, `Contract`).
+    4. Modul Contract (`ContractService::requestApproval`) diselaraskan untuk menulis `$approval->id` (bukan `$approval->uuid`).
+    5. Seluruh codebase diaudit: 0 tempat yang menulis `->uuid` ke `approval_id`.
+    6. Ditambahkan pagar permanen: test arsitektur `tests/Architecture/ApprovalIdConventionTest.php` yang menolak penulisan `->uuid` ke `approval_id` (dengan fixture positif dan negatif, baseline = 0).
+- **Reason:**
+  - Menghilangkan ambiguitas semantik dan menjaga konsistensi arsitektur relasional satu sistem penomoran approval lintas modul.
+  - Memungkinkan integritas referensial penuh (foreign key constraint ke `core_approvals.id`) baik di SQLite maupun MySQL 8.4.
+  - Menyelaraskan dengan `ApprovalEngineService` yang memproses approval berbasis ID integer.
+- **Daftar File yang Diubah:**
+  - `modules/Procurement/database/migrations/2026_10_05_330100_create_procurement_tables.php`
+  - `modules/Procurement/database/migrations/2026_10_05_340100_create_receiving_payables_tables.php`
+  - `modules/Supplier/database/migrations/2026_10_04_320100_create_supplier_tables.php`
+  - `modules/Asset/database/migrations/2026_10_04_310100_create_asset_phase31_tables.php`
+  - `modules/Contract/database/migrations/2026_10_04_280100_create_contract_core_tables.php`
+  - `modules/Procurement/Domain/Models/Requisition.php`
+  - `modules/Procurement/Domain/Models/TenderBid.php`
+  - `modules/Procurement/Domain/Models/PoVersion.php`
+  - `modules/Procurement/Domain/Models/PaymentBatch.php`
+  - `modules/Supplier/Domain/Models/SupplierQualification.php`
+  - `modules/Asset/Domain/Models/AssetRevaluation.php`
+  - `modules/Asset/Domain/Models/AssetDisposal.php`
+  - `modules/Contract/Domain/Models/Contract.php`
+  - `modules/Contract/Application/Services/ContractService.php`
+  - `tests/Feature/Portability/ApprovalIdPortabilityTest.php`
+  - `tests/Architecture/ApprovalIdConventionTest.php`
+  - `docs/DECISIONS.md`
+  - `docs/BLOCKERS.md`
+- **Verification:**
+  - `vendor/bin/pest tests/Feature/Portability/ApprovalIdPortabilityTest.php` (2 passed, 32 assertions).
+  - `vendor/bin/pest tests/Architecture/ApprovalIdConventionTest.php` (2 passed, 5 assertions).
+  - `vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php` (12 passed, 13 assertions).
 
+## 2026-10-11: Toleransi Dual Genesis Hash-Chain (Asset, Contract, Manufacturing)
+- **Context:**
+  - Penanda genesis `GENESIS_AST_…` (73 karakter) dan `GENESIS_CTR_…` (72 karakter) sebelumnya tidak muat di kolom `prev_hash varchar(64)` pada MySQL.
+  - Commit `0a21d42` dan `f6fbefd` mengubah konstanta genesis menjadi 60 karakter agar muat di kolom 64 karakter. Namun hal ini memicu risiko backward incompatibility di mana data/rantai hash yang sudah tersimpan dengan genesis lama akan dilaporkan rusak/tampered saat diverifikasi.
+  - Branch `tools/r0-mysql-ddl-replay` (`1d74ed1`) memperlebar kolom `prev_hash` menjadi 80 karakter.
+  - Rujukan BLOCKERS B-04 dan Keputusan Pemilik K-B04.
+- **Decision:**
+  - Sesuai Keputusan Pemilik K-B04 (opsi c):
+    1. Mempertahankan konstanta baru 60 karakter (`GENESIS_HASH` / `GENESIS`) untuk data baru yang dibuat.
+    2. Menambahkan konstanta genesis lama (`LEGACY_GENESIS_HASH` / `LEGACY_GENESIS`) pada kelas `AssetService`, `ContractVersion`, dan `ManufacturingService` dengan komentar asal-usul.
+    3. Memperbarui logika audit/verifikasi rantai hash di ketiga modul (`AssetService::verifyChain`, `ContractService::verifyHashChain`, `ManufacturingService::verifyFormulaChain`) agar menerima `prev_hash` event/versi pertama bernilai genesis baru ATAU genesis lama. Nilai selain kedua genesis tersebut tetap menggagalkan audit.
+    4. Memastikan kapasitas kolom fisik `prev_hash` di database tetap 80 karakter (pada tabel `ast_events`, `ctr_contract_versions`, `mfg_boms`, dan `mfg_formulas`) agar muat baik genesis lama maupun baru di MySQL 8.4 dan SQLite.
+    5. Menulis pengujian komprehensif di `tests/Feature/Portability/DualGenesisCompatibilityTest.php` yang memvalidasi bahwa genesis baru lulus, genesis lama lulus, dan genesis acak gagal (exit ≠ 0).
+- **Reason:**
+  - Menjaga keutuhan verifikasi integritas kriptografis dan mencegah audit kegagalan palsu pada data historis yang menggunakan genesis lama.
+  - Menjamin portabilitas skema database ke MySQL 8.4 dengan kolom `prev_hash varchar(80)` yang cukup menampung nilai lama tanpa truncation.
+- **Verification:**
+  - `vendor/bin/pest tests/Feature/Portability/DualGenesisCompatibilityTest.php` lulus (3 passed, 9 assertions).
+  - Test modul Asset (`AssetCoreTest`, `AssetPhase31Test`), Contract (`ContractFeatureTest`, `ContractObligationsTest`), dan Manufacturing (`ManufacturingPhase35Test`) lulus (75 passed, 288 assertions).
 
+## 2026-10-11: Peta Role R0 Adalah Potret Middleware Efektif (Bukan Spesifikasi Akses Akhir)
+- **Context:**
+  - File `tests/Architecture/route-roles.php` pernah ditulis ulang secara otomatis agar selaras persis dengan middleware efektif yang terpasang pada route registri per 10–11 Okt 2026.
+  - Hal ini diperlukan untuk membangun baseline ratchet (`route-authorization.json` 598 rute, `route-auth-entries.json` 299 rute, `route-dynamic-pending.json` 280 rute) agar tidak ada rute yang melemah tanpa terdeteksi.
+- **Decision:**
+  - Peta role di `route-roles.php` pada Fase R0 merupakan potret faktual middleware yang terpasang pada rute per 10–11 Okt 2026, **bukan spesifikasi hak akses akhir**.
+  - Spesifikasi granular dan pengetatan otorisasi per role (termasuk pembatasan role `admin`, `auditor`, dan operator bisnis) akan ditetapkan secara resmi pada **Fase R3.1** (Otorisasi & Matriks Peran).
+  - Sebanyak 37 rute tulis (mutasi data/POST/PUT/PATCH/DELETE) yang saat ini mengizinkan role `auditor` tetap dicatat secara jujur dan transparan di Register Minus **M-R0-18** (Prioritas P1) sesuai protokol P1/P7, dan akan diperbaiki pada Fase R3.1 agar auditor berstatus read-only murni.
+- **Reason:**
+  - Menghindari modifikasi sepihak atas rute operasional sebelum spesifikasi domain dan matriks peran difinalisasi di R3.1.
+  - Memastikan pagar otomatis `RouteAuthorizationMatrixTest` bekerja sebagai ratchet yang mencegah pelemahan hak akses rute (V8a, V8b, V8c).
+- **Verification:**
+  - `vendor/bin/pest tests/Architecture/RouteAuthorizationMatrixTest.php` lulus (7 passed, 1545 assertions).
+  - Register Minus `M-R0-18` tetap terbuka di `docs/PROGRESS.md` sebagai temuan P1.
 
-
-
+## 2026-10-11: Pengecualian database/database.sqlite pada resolveIsDirty GateRunner
+- **Context:**
+  - `database/database.sqlite` tercatat sebagai file terlacak git (`git ls-files database/database.sqlite`), namun file ini bertindak sebagai database lokal aktif di mana proses audit, migrasi, dan eksekusi test lokal dapat memodifikasi isi file atau menghasilkan berkas WAL/SHM (`.sqlite-wal`, `.sqlite-shm`).
+  - Sesuai protokol I1, keberadaan perubahan pada file sqlite lokal tidak boleh menggagalkan status clean working tree pada quality gate selama file kode sumber bersih.
+- **Decision:**
+  - `GateRunner::resolveIsDirty()` secara eksplisit mengecualikan perubahan pada `database/database.sqlite`, seluruh file berakhiran `.sqlite`, dan file berkas temporer sqlite (`.sqlite-wal`, `.sqlite-shm`), serta artefak log di `storage/logs/` dan `storage/gate/`.
+  - Pengecualian ini aman karena pipeline quality gate mengisolasi database pengujian ke `storage/gate/gate.sqlite` yang dibuat ulang dari awal dan migrasi diisolasi, sehingga modifikasi pada `database/database.sqlite` lokal tidak memengaruhi validitas artefak pengujian.
+  - Namun, untuk menjamin integritas working tree, file kode sumber lain di `app/`, `modules/`, `database/migrations/`, `routes/`, dll. yang terlacak git tetap terdeteksi secara ketat (`dirty=true`) menggunakan opsi `git status --porcelain -uall`.
+- **Reason:**
+  - Menghindari kegagalan gate akibat lock file atau modifikasi seeder/audit pada database SQLite lokal saat pelaksana atau CI menjalankan rangkaian pemeriksaan.
+  - Mempertahankan kebersihan working tree murni pada level kode sumber.
+- **Verification:**
+  - `vendor/bin/pest tests/Feature/Quality/GateRunnerTest.php` (`it accurately detects dirty working tree while ignoring sqlite and logs`) lulus (7 passed, 83 assertions).
 
 
 

@@ -34,12 +34,14 @@ return new class extends Migration
             $table->string('module', 30)->index();     // autoserve, autodex, banking, store, crypto
             $table->string('event', 50)->index();      // booking_created, trade_executed, etc.
             $table->string('description');
-            $table->nullableMorphs('subject');          // polymorphic to any model
+            $table->string('subject_type', 160)->nullable();
+            $table->string('subject_id', 64)->nullable();
             $table->json('properties')->nullable();     // extra details
             $table->timestamps();
 
             $table->index(['user_id', 'created_at']);
             $table->index(['module', 'created_at']);
+            $table->index(['subject_type', 'subject_id']);
         });
     }
 

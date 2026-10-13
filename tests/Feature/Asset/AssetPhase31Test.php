@@ -25,6 +25,7 @@ use Modules\Banking\database\seeders\BankingSeeder;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Core\Application\Services\SystemHealthService;
+use Modules\Core\Domain\Models\ApprovalRequest;
 use Tests\TestCase;
 
 /**
@@ -170,6 +171,7 @@ class AssetPhase31Test extends TestCase
         $requested = $service->request($asset, 'revaluation', 150_000_000, 'Kenaikan nilai wajar', $this->admin);
         $this->assertSame('pending', $requested['status']);
         $this->assertSame('pending', $requested['revaluation']->approval_status);
+        $this->assertTrue(ApprovalRequest::whereKey($requested['revaluation']->fresh()->approval_id)->exists(), 'approval_id revaluasi wajib merujuk id core_approvals, bukan uuid.');
         $this->assertSame(120_000_000, $asset->fresh()->book_value_idr); // belum berubah
 
         $applied = $service->apply($requested['revaluation']);
@@ -200,6 +202,7 @@ class AssetPhase31Test extends TestCase
 
         $disposal = $service->requestDisposal($asset, DisposalMethod::Sale, 130_000_000, 'Dijual ke pihak ketiga', $this->admin);
         $this->assertSame('pending', $disposal['disposal']->approval_status);
+        $this->assertTrue(ApprovalRequest::whereKey($disposal['disposal']->fresh()->approval_id)->exists(), 'approval_id disposal wajib merujuk id core_approvals, bukan uuid.');
         $this->assertSame(30_000_000, $disposal['disposal']->gain_loss_idr);
         $this->assertSame(AssetStatus::InUse, $asset->fresh()->status); // menunggu approval
 

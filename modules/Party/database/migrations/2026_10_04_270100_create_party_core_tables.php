@@ -58,9 +58,9 @@ return new class extends Migration
         Schema::create('pty_party_roles', function (Blueprint $table) {
             $table->id();
             $table->uuid('party_id');
-            $table->string('role'); // supplier, producer, distributor, agent, partner, customer, carrier, tenant, franchisee, shipper
-            $table->string('scope_type')->nullable(); // e.g. 'outlet', 'mall', 'entity'
-            $table->string('scope_id')->nullable();
+            $table->string('role', 50); // supplier, producer, distributor, agent, partner, customer, carrier, tenant, franchisee, shipper
+            $table->string('scope_type', 50)->nullable(); // e.g. 'outlet', 'mall', 'entity'
+            $table->string('scope_id', 100)->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 

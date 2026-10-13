@@ -34,7 +34,7 @@ class AnalyticsModelMonitoringService
 
         // Core gate 345.4: Model cannot serve without documentation
         if (! $hasDoc) {
-            throw new InvalidArgumentException("MLOps governance breach: Model cannot serve traffic without complete documentation (345.4).");
+            throw new InvalidArgumentException('MLOps governance breach: Model cannot serve traffic without complete documentation (345.4).');
         }
 
         $id = DB::table('analytics_model_deployments')->insertGetId([

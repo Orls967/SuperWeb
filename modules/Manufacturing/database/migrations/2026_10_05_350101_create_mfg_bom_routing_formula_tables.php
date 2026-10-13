@@ -22,13 +22,13 @@ return new class extends Migration
             $table->date('effective_to')->nullable();
             $table->boolean('is_active')->default(true);
             $table->string('change_reason')->nullable();
-            $table->string('prev_hash', 64)->nullable();
+            $table->string('prev_hash', 80)->nullable();
             $table->string('hash', 64)->nullable();
             $table->timestamps();
 
             $table->foreign('output_material_id')->references('id')->on('mfg_materials')->cascadeOnDelete();
             $table->unique(['output_material_id', 'version']);
-            $table->index(['output_material_id', 'is_active', 'effective_from', 'effective_to']);
+            $table->index(['output_material_id', 'is_active', 'effective_from', 'effective_to'], 'mfg_boms_out_mat_active_eff_idx');
         });
 
         Schema::create('mfg_bom_lines', function (Blueprint $table) {
@@ -97,7 +97,7 @@ return new class extends Migration
             $table->date('effective_to')->nullable();
             $table->string('status', 16)->default('draft')->comment('draft, pending_approval, approved, retired');
             $table->unsignedBigInteger('approval_id')->nullable();
-            $table->string('prev_hash', 64)->nullable();
+            $table->string('prev_hash', 80)->nullable();
             $table->string('hash', 64)->nullable();
             $table->string('change_reason')->nullable();
             $table->timestamps();

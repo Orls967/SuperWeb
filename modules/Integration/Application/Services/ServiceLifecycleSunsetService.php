@@ -66,7 +66,7 @@ class ServiceLifecycleSunsetService
 
         // Core gate 366.6 Risk: Archiving evidence mandatory before sunset
         if (! $archivedEvidenceRetained) {
-            throw new InvalidArgumentException("Sunset blocked: Archiving evidence mandatory before retirement (366.6).");
+            throw new InvalidArgumentException('Sunset blocked: Archiving evidence mandatory before retirement (366.6).');
         }
 
         DB::table('platform_api_service_sunsets')

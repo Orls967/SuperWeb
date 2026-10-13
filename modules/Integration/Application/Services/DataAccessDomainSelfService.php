@@ -37,7 +37,7 @@ class DataAccessDomainSelfService
 
         // Core gate 344.3 & 344.4: Untrained user blocked from sensitive domain tier
         if ($tier === 'RESTRICTED_SENSITIVE' && ! $userCertified) {
-            throw new InvalidArgumentException("Data literacy gate rejection: User requires certified training to access sensitive domain data (344.4).");
+            throw new InvalidArgumentException('Data literacy gate rejection: User requires certified training to access sensitive domain data (344.4).');
         }
 
         $id = DB::table('domain_data_access_grants')->insertGetId([
@@ -69,6 +69,7 @@ class DataAccessDomainSelfService
             DB::table('domain_data_access_grants')
                 ->where('grant_code', strtoupper($grantCode))
                 ->update(['access_active' => false, 'updated_at' => now()]);
+
             return false;
         }
 
@@ -88,7 +89,7 @@ class DataAccessDomainSelfService
 
         // Edge case 344.5: Domain templates must be formally established by governance council
         if (! $fromGovernanceCouncil) {
-            throw new InvalidArgumentException("Template governance breach: Domain product templates must be established by Governance Council (344.5).");
+            throw new InvalidArgumentException('Template governance breach: Domain product templates must be established by Governance Council (344.5).');
         }
 
         // CI gate check 344.4

@@ -31,7 +31,7 @@ class AiHumanAccountabilityService
 
         // Core gate 350.4: Material decisions require disclosure
         if (! $disclosureProvided) {
-            throw new InvalidArgumentException("AI ethics violation: Material outcome decision requires user transparency disclosure (350.4).");
+            throw new InvalidArgumentException('AI ethics violation: Material outcome decision requires user transparency disclosure (350.4).');
         }
 
         $id = DB::table('ai_material_outcome_decisions')->insertGetId([
@@ -62,7 +62,7 @@ class AiHumanAccountabilityService
 
         // Edge case 350.5: Appeals require human reviewer
         if (empty($humanReviewerId)) {
-            throw new InvalidArgumentException("AI accountability violation: Appeals against AI decisions require an assigned human reviewer (350.5).");
+            throw new InvalidArgumentException('AI accountability violation: Appeals against AI decisions require an assigned human reviewer (350.5).');
         }
 
         $slaBreached = ($turnaroundHours > $slaHours);

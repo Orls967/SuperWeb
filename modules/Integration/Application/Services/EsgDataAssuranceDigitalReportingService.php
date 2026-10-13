@@ -31,7 +31,7 @@ class EsgDataAssuranceDigitalReportingService
     ): object {
         // 449.1 & 449.4 Unsupported figure without evidence reference is blocked
         if (empty(trim($evidenceRef))) {
-            throw new InvalidArgumentException("Ingestion blocked: Unsupported disclosure figure! Audit evidence link reference is mandatory (449.1, 449.4).");
+            throw new InvalidArgumentException('Ingestion blocked: Unsupported disclosure figure! Audit evidence link reference is mandatory (449.1, 449.4).');
         }
 
         $id = DB::table('esg_digital_disclosures')->insertGetId([

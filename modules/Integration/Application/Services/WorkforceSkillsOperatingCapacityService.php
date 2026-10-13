@@ -39,7 +39,7 @@ class WorkforceSkillsOperatingCapacityService
 
         // Core gate 379.4 & 379.6 Risk: Rest rules and fatigue control
         if (! $restRulesRespected) {
-            throw new InvalidArgumentException("Fatigue policy violation: Mandatory rest period not met, cross-line deployment blocked (379.6).");
+            throw new InvalidArgumentException('Fatigue policy violation: Mandatory rest period not met, cross-line deployment blocked (379.6).');
         }
 
         $id = DB::table('global_workforce_cross_line_deployments')->insertGetId([

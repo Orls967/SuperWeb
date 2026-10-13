@@ -68,7 +68,7 @@ class InternalControlMaturityService
 
         // 401.6 Risk: manual control without dual review is invalid
         if (! $isAutomated && (empty($attestationBy) || empty($reviewedBy))) {
-            throw new InvalidArgumentException("Manual control requires dual review: both attestation and reviewer required (401.6).");
+            throw new InvalidArgumentException('Manual control requires dual review: both attestation and reviewer required (401.6).');
         }
 
         $newStreak = $testPassed ? 0 : ($control->failure_streak + 1);

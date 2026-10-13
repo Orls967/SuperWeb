@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('int_enterprise_financial_integrity_statements', function (Blueprint $table) {
             $table->id();
-            $table->string('statement_code')->unique();
+            $table->string('statement_code')->unique('int_ent_fin_integrity_stmt_code_uniq');
             $table->string('period'); // e.g. 2026-FY
             $table->integer('total_audits_evaluated');
             $table->integer('exception_count')->default(0); // 480.1 zero exceptions required

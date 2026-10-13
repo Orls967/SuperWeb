@@ -43,7 +43,7 @@ class KnowledgeGraphEnterpriseCopilotService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Knowledge freshness rejection: Stale graph value cannot be presented as current authoritative value (357.5).");
+            throw new InvalidArgumentException('Knowledge freshness rejection: Stale graph value cannot be presented as current authoritative value (357.5).');
         }
 
         $id = DB::table('knowledge_graph_authoritative_queries')->insertGetId([
@@ -74,7 +74,7 @@ class KnowledgeGraphEnterpriseCopilotService
 
         // Core gate 357.6: Incomplete provenance blocks answer serving
         if (! $isComplete) {
-            throw new InvalidArgumentException("Provenance gate breach: Incomplete provenance records prevent answer from being served (357.6).");
+            throw new InvalidArgumentException('Provenance gate breach: Incomplete provenance records prevent answer from being served (357.6).');
         }
 
         $id = DB::table('knowledge_graph_provenance_records')->insertGetId([

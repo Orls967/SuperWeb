@@ -47,11 +47,23 @@ class PartyService
 
             // Create initial role
             if (isset($data['role'])) {
+                $roleVal = $data['role'] instanceof PartyRoleType ? $data['role']->value : (string) $data['role'];
+                if (strlen($roleVal) > 50) {
+                    throw new \InvalidArgumentException('Role name exceeds maximum length of 50 characters.');
+                }
+                $scopeType = $data['scope_type'] ?? null;
+                if ($scopeType !== null && strlen((string) $scopeType) > 50) {
+                    throw new \InvalidArgumentException('Scope type exceeds maximum length of 50 characters.');
+                }
+                $scopeId = $data['scope_id'] ?? null;
+                if ($scopeId !== null && strlen((string) $scopeId) > 100) {
+                    throw new \InvalidArgumentException('Scope ID exceeds maximum length of 100 characters.');
+                }
                 PartyRole::create([
                     'party_id' => $party->id,
-                    'role' => $data['role'],
-                    'scope_type' => $data['scope_type'] ?? null,
-                    'scope_id' => $data['scope_id'] ?? null,
+                    'role' => $roleVal,
+                    'scope_type' => $scopeType,
+                    'scope_id' => $scopeId,
                     'is_active' => true,
                 ]);
             }
@@ -97,6 +109,13 @@ class PartyService
         ?string $scopeType = null,
         ?string $scopeId = null
     ): PartyRole {
+        if ($scopeType !== null && strlen($scopeType) > 50) {
+            throw new \InvalidArgumentException('Scope type exceeds maximum length of 50 characters.');
+        }
+        if ($scopeId !== null && strlen($scopeId) > 100) {
+            throw new \InvalidArgumentException('Scope ID exceeds maximum length of 100 characters.');
+        }
+
         return PartyRole::firstOrCreate(
             [
                 'party_id' => $party->id,

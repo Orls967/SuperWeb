@@ -43,7 +43,7 @@ return new class extends Migration
             $table->date('effective_from');
             $table->timestamps();
 
-            $table->index(['property_id', 'utility_type', 'effective_from']);
+            $table->index(['property_id', 'utility_type', 'effective_from'], 'mall_util_tariffs_prop_type_eff_idx');
         });
 
         // 3. mall_utility_readings

@@ -78,14 +78,14 @@ class ConglomerateSimulationService
         $runB = DB::table('sim_conglomerate_runs')->where('simulation_code', strtoupper($codeB))->first();
 
         if (! $runA || ! $runB) {
-            throw new InvalidArgumentException("One or both simulation runs not found.");
+            throw new InvalidArgumentException('One or both simulation runs not found.');
         }
 
         if ($runA->seed !== $runB->seed) {
             throw new InvalidArgumentException("Determinism comparison invalid: Seeds differ ('{$runA->seed}' vs '{$runB->seed}').");
         }
 
-        return ($runA->state_hash === $runB->state_hash);
+        return $runA->state_hash === $runB->state_hash;
     }
 
     public function audit(): array

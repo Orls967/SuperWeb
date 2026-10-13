@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('ledger_transaction_id')->nullable();
             $table->timestamps();
 
-            $table->index(['producer_site_id', 'consumer_entity_id']);
+            $table->index(['producer_site_id', 'consumer_entity_id'], 'min_renew_bill_prod_cons_idx');
         });
 
         Schema::create('min_carbon_credit_issuances', function (Blueprint $table) {

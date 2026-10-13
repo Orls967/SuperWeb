@@ -36,7 +36,7 @@ class EnterpriseStakeholderValueReportingService
 
         // 478.4 & 478.6 Metric must have source lineage reference
         if (empty(trim($lineageRef))) {
-            throw new InvalidArgumentException("Reporting blocked: Stakeholder value metric requires direct source lineage reference (478.2, 478.6).");
+            throw new InvalidArgumentException('Reporting blocked: Stakeholder value metric requires direct source lineage reference (478.2, 478.6).');
         }
 
         $id = DB::table('int_stakeholder_value_metrics')->insertGetId([
@@ -64,7 +64,7 @@ class EnterpriseStakeholderValueReportingService
     ): object {
         // 478.5 Edge case: Unaccommodated feedback must record explicit justification
         if (! $isAccommodated && empty(trim($nonAccommodationRationale ?? ''))) {
-            throw new InvalidArgumentException("Feedback logging blocked: Non-accommodated stakeholder feedback requires explicit documented rationale and priority rationale (478.5).");
+            throw new InvalidArgumentException('Feedback logging blocked: Non-accommodated stakeholder feedback requires explicit documented rationale and priority rationale (478.5).');
         }
 
         $id = DB::table('int_stakeholder_feedback_actions')->insertGetId([

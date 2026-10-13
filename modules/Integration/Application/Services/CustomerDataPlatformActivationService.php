@@ -84,7 +84,7 @@ class CustomerDataPlatformActivationService
     ): object {
         // 416.5 Edge case: Never auto-merge if manual review is not approved
         if (! $manualReviewApproved) {
-            throw new InvalidArgumentException("Merge blocked: Identity resolution conflict requires approved manual review (416.3, 416.5).");
+            throw new InvalidArgumentException('Merge blocked: Identity resolution conflict requires approved manual review (416.3, 416.5).');
         }
 
         $id = DB::table('crm_identity_merge_logs')->insertGetId([

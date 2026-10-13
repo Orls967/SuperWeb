@@ -42,12 +42,12 @@ class ReadWriteReplicaLagService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Consistency violation: Financial balance reads cannot route to eventual replica; authoritative primary routing required (395.4).");
+            throw new InvalidArgumentException('Consistency violation: Financial balance reads cannot route to eventual replica; authoritative primary routing required (395.4).');
         }
 
         // Risk gate 395.6: Eventual replica reads must have freshness label
         if (! $isFinancialOrCritical && ! $freshnessLabelAttached) {
-            throw new InvalidArgumentException("Transparency breach: Eventual replica views must attach data freshness timestamp label (395.6).");
+            throw new InvalidArgumentException('Transparency breach: Eventual replica views must attach data freshness timestamp label (395.6).');
         }
 
         $id = DB::table('global_stress_read_routing_queries')->insertGetId([

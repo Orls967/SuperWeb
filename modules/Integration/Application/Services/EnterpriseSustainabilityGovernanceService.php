@@ -32,17 +32,17 @@ class EnterpriseSustainabilityGovernanceService
     ): object {
         // 464.1 & 464.5 Trade-off rationale cannot be empty
         if (empty(trim($tradeoffRationale))) {
-            throw new InvalidArgumentException("Decision blocked: Explicit documented trade-off rationale between cost, carbon, and social impact is mandatory (464.1, 464.5).");
+            throw new InvalidArgumentException('Decision blocked: Explicit documented trade-off rationale between cost, carbon, and social impact is mandatory (464.1, 464.5).');
         }
 
         // 464.6 Risk: Execution accountability
         if (empty(trim($owner)) || empty(trim($dueDate))) {
-            throw new InvalidArgumentException("Decision blocked: Steering actions must have a designated owner and due date (464.6).");
+            throw new InvalidArgumentException('Decision blocked: Steering actions must have a designated owner and due date (464.6).');
         }
 
         // 464.3 Scorecard inclusion strictly requires verified metrics
         if (! $verifiedMetrics) {
-            throw new InvalidArgumentException("Scorecard blocked: Sustainability steering KPI metrics must be third-party verified (464.3, 464.4).");
+            throw new InvalidArgumentException('Scorecard blocked: Sustainability steering KPI metrics must be third-party verified (464.3, 464.4).');
         }
 
         $id = DB::table('int_enterprise_sustainability_steering')->insertGetId([

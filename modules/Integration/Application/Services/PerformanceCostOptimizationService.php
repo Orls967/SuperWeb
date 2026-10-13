@@ -165,7 +165,7 @@ class PerformanceCostOptimizationService
             ->where('is_regression_failed', false)
             ->where(function ($q) {
                 $q->whereRaw('p95_latency_ms > budget_max_p95_ms')
-                  ->orWhere('detected_n_plus_one', true);
+                    ->orWhere('detected_n_plus_one', true);
             })
             ->count();
 

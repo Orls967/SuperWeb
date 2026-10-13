@@ -14,13 +14,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('action', 100)->index();
-            $table->nullableMorphs('auditable');
+            $table->string('auditable_type', 160)->nullable();
+            $table->string('auditable_id', 64)->nullable();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->json('old_values')->nullable();
             $table->json('new_values')->nullable();
             $table->json('context')->nullable();
             $table->timestamp('created_at')->useCurrent()->index();
+
+            $table->index(['auditable_type', 'auditable_id']);
         });
     }
 

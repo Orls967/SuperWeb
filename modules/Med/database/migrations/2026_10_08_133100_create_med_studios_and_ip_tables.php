@@ -90,15 +90,15 @@ return new class extends Migration
         Schema::create('med_ip_licenses', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('license_code')->unique();
-            $table->string('ip_id');
+            $table->string('ip_id', 64);
             $table->string('licensee_entity_id');
-            $table->string('channel'); // VENUE, HOTEL_IN_ROOM, STORE_MERCH, STREAMING
-            $table->string('territory'); // ID, SG, GLOBAL
+            $table->string('channel', 50); // VENUE, HOTEL_IN_ROOM, STORE_MERCH, STREAMING
+            $table->string('territory', 50); // ID, SG, GLOBAL
             $table->date('start_date');
             $table->date('end_date');
             $table->double('royalty_rate_pct', 5, 2);
             $table->bigInteger('minimum_guarantee_minor')->default(0);
-            $table->string('status')->default('ACTIVE');
+            $table->string('status', 30)->default('ACTIVE');
             $table->timestamps();
 
             $table->index(['ip_id', 'channel', 'territory', 'status']);

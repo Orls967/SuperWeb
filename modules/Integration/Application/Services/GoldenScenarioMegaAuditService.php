@@ -168,7 +168,7 @@ class GoldenScenarioMegaAuditService
         $failedCrisisRecoveries = DB::table('mega_crisis_recovery_records')
             ->where(function ($q) {
                 $q->where('recovery_successful', false)
-                  ->orWhere('zero_discrepancy_verified', false);
+                    ->orWhere('zero_discrepancy_verified', false);
             })
             ->count();
 

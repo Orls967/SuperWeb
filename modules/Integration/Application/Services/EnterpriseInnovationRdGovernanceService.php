@@ -104,7 +104,7 @@ class EnterpriseInnovationRdGovernanceService
         }
 
         if (! $renew && empty(trim($abandonReason ?? ''))) {
-            throw new InvalidArgumentException("Abandonment blocked: Abandoning an IP asset requires documented commercial/strategic reasoning (460.5).");
+            throw new InvalidArgumentException('Abandonment blocked: Abandoning an IP asset requires documented commercial/strategic reasoning (460.5).');
         }
 
         $newStatus = $renew ? 'renewed' : 'abandoned';

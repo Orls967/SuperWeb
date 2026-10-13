@@ -77,7 +77,7 @@ return new class extends Migration
             $table->unsignedInteger('sequence');
             $table->string('event_type', 40)->comment('acquisition, move, repair, revaluation, disposal, insurance, assignment, stocktake');
             $table->json('payload');
-            $table->string('prev_hash', 64);
+            $table->string('prev_hash', 80)->comment('hash event sebelumnya (64) atau penanda genesis GENESIS_AST_… (73)');
             $table->string('hash', 64);
             $table->string('created_by_name')->nullable();
             $table->timestamp('occurred_at');

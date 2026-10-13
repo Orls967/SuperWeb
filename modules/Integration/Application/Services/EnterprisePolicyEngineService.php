@@ -137,12 +137,12 @@ class EnterprisePolicyEngineService
 
         // Architectural barrier 290.8: Ledger invariants cannot be bypassed under any circumstances
         if ($attemptLedgerBypass) {
-            throw new InvalidArgumentException("Architectural violation: Emergency override cannot bypass core financial ledger invariants (290.8).");
+            throw new InvalidArgumentException('Architectural violation: Emergency override cannot bypass core financial ledger invariants (290.8).');
         }
 
         // Dual approval requirement (290.3)
         if (empty($secondaryApproverId) || $initiatorId === $secondaryApproverId) {
-            throw new InvalidArgumentException("Break-glass rejected: Emergency override requires two distinct authorized approvers (290.3).");
+            throw new InvalidArgumentException('Break-glass rejected: Emergency override requires two distinct authorized approvers (290.3).');
         }
 
         $token = 'BG-TOKEN-'.strtoupper(Str::random(12));

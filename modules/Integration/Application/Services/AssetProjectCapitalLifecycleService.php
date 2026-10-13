@@ -65,7 +65,7 @@ class AssetProjectCapitalLifecycleService
 
         // Edge case 377.5: Unrealized post-capex benefit flagged as failed, requiring learning actions
         if ($benefitFailed && empty($learningActionItems)) {
-            throw new InvalidArgumentException("Governance breach: Post-investment benefit realization failed (< 50%) requiring documented organizational learning action items (377.5).");
+            throw new InvalidArgumentException('Governance breach: Post-investment benefit realization failed (< 50%) requiring documented organizational learning action items (377.5).');
         }
 
         $id = DB::table('global_post_investment_reviews')->insertGetId([

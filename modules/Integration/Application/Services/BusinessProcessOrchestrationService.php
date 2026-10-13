@@ -89,7 +89,7 @@ class BusinessProcessOrchestrationService
 
         // Edge case 367.5: Cross-domain compensation must use contract bridge / saga
         if (! $usesContractBridge) {
-            throw new InvalidArgumentException("Architectural violation: Cross-domain compensation must use contract bridge or saga, direct module writes forbidden (367.5).");
+            throw new InvalidArgumentException('Architectural violation: Cross-domain compensation must use contract bridge or saga, direct module writes forbidden (367.5).');
         }
 
         $id = DB::table('platform_process_cross_domain_sagas')->insertGetId([

@@ -75,7 +75,7 @@ class ProblemManagementRootCauseService
 
         // 428.4 Closure strictly requires verified effectiveness
         if (! $effectivenessVerified) {
-            throw new InvalidArgumentException("Closure blocked: Problem closure requires verified permanent countermeasure effectiveness (428.2, 428.4).");
+            throw new InvalidArgumentException('Closure blocked: Problem closure requires verified permanent countermeasure effectiveness (428.2, 428.4).');
         }
 
         DB::table('plt_problem_records')->where('id', $prob->id)->update([

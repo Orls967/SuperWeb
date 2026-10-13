@@ -76,7 +76,7 @@ class EnergyDatacenterResilienceService
 
         // Edge case 383.5: In emergency, critical workloads MUST be sheltered and non-critical throttled WITH notice
         if ($status === 'EMERGENCY' && (! $criticalSheltered || ! $nonCriticalThrottledWithNotice)) {
-            throw new InvalidArgumentException("Resilience plan failure: Grid emergency requires critical workloads to be sheltered and non-critical throttled with notice (383.5).");
+            throw new InvalidArgumentException('Resilience plan failure: Grid emergency requires critical workloads to be sheltered and non-critical throttled with notice (383.5).');
         }
 
         $id = DB::table('global_grid_event_resilience_plans')->insertGetId([

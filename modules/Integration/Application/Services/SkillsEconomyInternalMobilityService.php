@@ -68,17 +68,17 @@ class SkillsEconomyInternalMobilityService
 
         // Capacity guardrail 317.4 & 317.6: Total hours cannot exceed 40 hours/week cap
         if (($existingWorkloadHoursPerWeek + $allocatedHoursPerWeek) > 40) {
-            throw new InvalidArgumentException("Capacity overload breach: Combined weekly workload (" . ($existingWorkloadHoursPerWeek + $allocatedHoursPerWeek) . " hrs) exceeds 40 hours/week ceiling (317.6).");
+            throw new InvalidArgumentException('Capacity overload breach: Combined weekly workload ('.($existingWorkloadHoursPerWeek + $allocatedHoursPerWeek).' hrs) exceeds 40 hours/week ceiling (317.6).');
         }
 
         // Manager approval check 317.1
         if (! $managerApprovalGranted) {
-            throw new InvalidArgumentException("Manager approval violation: Gig assignments require formal manager visibility & approval (317.1).");
+            throw new InvalidArgumentException('Manager approval violation: Gig assignments require formal manager visibility & approval (317.1).');
         }
 
         // Edge case 317.5: Mandatory continuity plan & handover documentation
         if (! $continuityHandoverFiled) {
-            throw new InvalidArgumentException("Continuity risk: Reassigning critical talent requires mandatory handover & continuity documentation (317.5).");
+            throw new InvalidArgumentException('Continuity risk: Reassigning critical talent requires mandatory handover & continuity documentation (317.5).');
         }
 
         $id = DB::table('internal_talent_assignments')->insertGetId([
@@ -111,7 +111,7 @@ class SkillsEconomyInternalMobilityService
 
         // Headcount check 317.4: Permanent conversion must strictly obey headcount budget approval
         if (! $headcountApproved) {
-            throw new InvalidArgumentException("Headcount governance breach: Permanent talent conversion strictly requires authorized headcount budget approval (317.4).");
+            throw new InvalidArgumentException('Headcount governance breach: Permanent talent conversion strictly requires authorized headcount budget approval (317.4).');
         }
 
         DB::table('internal_talent_assignments')

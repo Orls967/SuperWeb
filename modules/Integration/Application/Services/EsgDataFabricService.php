@@ -162,8 +162,8 @@ class EsgDataFabricService
             ->where('public_disclosure_eligible', true)
             ->where(function ($q) {
                 $q->where('quality_score', '<', 0.70)
-                  ->orWhere('is_data_gap', true)
-                  ->orWhereNull('reported_value');
+                    ->orWhere('is_data_gap', true)
+                    ->orWhereNull('reported_value');
             })
             ->count();
 
@@ -173,8 +173,8 @@ class EsgDataFabricService
             ->where('d.compliance_status', 'COMPLIANT')
             ->where(function ($q) {
                 $q->where('m.is_data_gap', true)
-                  ->orWhereNull('m.reported_value')
-                  ->orWhereNull('d.evidence_attachment_uri');
+                    ->orWhereNull('m.reported_value')
+                    ->orWhereNull('d.evidence_attachment_uri');
             })
             ->count();
 

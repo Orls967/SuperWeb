@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Distribution\Database\Seeders;
+namespace Modules\Distribution\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Distribution\Domain\Models\Tier;

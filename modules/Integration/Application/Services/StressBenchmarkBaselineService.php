@@ -34,7 +34,7 @@ class StressBenchmarkBaselineService
 
         // Risk gate 391.6: Incomplete test suites strictly rejected
         if (! $suiteCompletenessVerified) {
-            throw new InvalidArgumentException("Completeness check failed: Workloads missing from stress suite against domain registry (391.6).");
+            throw new InvalidArgumentException('Completeness check failed: Workloads missing from stress suite against domain registry (391.6).');
         }
 
         // Edge case 391.5: Verify performance is within acceptable variance band (e.g. +/- 20%)

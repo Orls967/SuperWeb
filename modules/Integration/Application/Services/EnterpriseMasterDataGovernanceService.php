@@ -51,7 +51,7 @@ class EnterpriseMasterDataGovernanceService
         $tgt = DB::table('int_master_golden_records')->where('golden_id', strtoupper($targetGoldenId))->first();
 
         if (! $src || ! $tgt) {
-            throw new InvalidArgumentException("Merge failed: Source or target golden record not found (456.2).");
+            throw new InvalidArgumentException('Merge failed: Source or target golden record not found (456.2).');
         }
 
         if ($src->is_merged) {
@@ -97,7 +97,7 @@ class EnterpriseMasterDataGovernanceService
      */
     public function queuePropagation(string $goldenId, string $consumerSystem): object
     {
-        $propCode = 'PROP-' . strtoupper(substr(md5($goldenId . $consumerSystem . time()), 0, 10));
+        $propCode = 'PROP-'.strtoupper(substr(md5($goldenId.$consumerSystem.time()), 0, 10));
 
         $id = DB::table('int_master_data_propagations')->insertGetId([
             'propagation_code' => $propCode,

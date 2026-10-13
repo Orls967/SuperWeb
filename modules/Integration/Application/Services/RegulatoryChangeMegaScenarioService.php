@@ -53,12 +53,12 @@ class RegulatoryChangeMegaScenarioService
         }
 
         if (! $controlsTested) {
-            throw new InvalidArgumentException("Compliance certification blocked: Controls must be fully implemented and verified via automated test suite (468.2, 468.4).");
+            throw new InvalidArgumentException('Compliance certification blocked: Controls must be fully implemented and verified via automated test suite (468.2, 468.4).');
         }
 
         // 468.6 Risk: Mandatory transparency on interim gaps
         if (! $gapDisclosed) {
-            throw new InvalidArgumentException("Compliance blocked: Transparency violation! Unaddressed compliance gaps must be disclosed to independent auditor (468.6).");
+            throw new InvalidArgumentException('Compliance blocked: Transparency violation! Unaddressed compliance gaps must be disclosed to independent auditor (468.6).');
         }
 
         DB::table('sim_regulatory_change_events')->where('id', $reg->id)->update([

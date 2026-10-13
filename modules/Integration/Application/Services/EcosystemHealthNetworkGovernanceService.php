@@ -44,7 +44,7 @@ class EcosystemHealthNetworkGovernanceService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Fair competition violation: Self-preferencing boosts for platform items strictly prohibited (375.2).");
+            throw new InvalidArgumentException('Fair competition violation: Self-preferencing boosts for platform items strictly prohibited (375.2).');
         }
 
         $id = DB::table('ecosystem_fairness_search_rankings')->insertGetId([

@@ -15,6 +15,7 @@ use Modules\Banking\database\seeders\BankingSeeder;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Core\Contracts\DocumentStoreInterface;
 use Modules\Core\Database\Seeders\RbacSeeder;
+use Modules\Core\Domain\Models\ApprovalRequest;
 use Modules\Party\database\seeders\PartySeeder;
 use Modules\Party\Domain\Models\LegalEntity;
 use Modules\Supplier\Application\Services\SupplierService;
@@ -96,6 +97,7 @@ class SupplierManagementTest extends TestCase
         $this->assertSame(88, $qualification->total_score);
         $this->assertSame('pass', $qualification->result);
         $this->assertNotNull($qualification->approval_id);
+        $this->assertTrue(ApprovalRequest::whereKey($qualification->fresh()->approval_id)->exists(), 'approval_id kualifikasi wajib merujuk id core_approvals, bukan uuid.');
         $this->assertSame('pending', $qualification->approval_status);
 
         $this->service->approveQualification($qualification, $this->admin);

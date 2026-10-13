@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 /**
@@ -86,7 +85,7 @@ class GovernanceDataRetentionDiscoveryService
 
         // Ledger invariant 291.3 & 291.5: Financial ledger records can never be deleted
         if ($record->is_financial_ledger_immutable) {
-            throw new InvalidArgumentException("Retention invariant violation: Financial ledger records are strictly immutable and cannot be deleted or purged (291.5).");
+            throw new InvalidArgumentException('Retention invariant violation: Financial ledger records are strictly immutable and cannot be deleted or purged (291.5).');
         }
 
         // Legal hold check 291.2, 291.5, 291.6 Edge Case: Active legal hold skips deletion

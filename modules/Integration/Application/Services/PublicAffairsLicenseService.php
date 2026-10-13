@@ -35,7 +35,7 @@ class PublicAffairsLicenseService
 
         // Core gate 339.4: Releasing statement strictly requires CorpComms approval
         if ($releaseStatement && ! $approvedByCorpComms) {
-            throw new InvalidArgumentException("Public affairs breach: Cannot release holding statement without CorpComms executive approval (339.4).");
+            throw new InvalidArgumentException('Public affairs breach: Cannot release holding statement without CorpComms executive approval (339.4).');
         }
 
         // Edge case 339.5: Critical viral issue mandates immediate crisis comms activation
@@ -71,7 +71,7 @@ class PublicAffairsLicenseService
 
         // Core gate 339.4: Must be screened for conflict of interest
         if (! $conflictScreened) {
-            throw new InvalidArgumentException("Government relations compliance breach: Engagement must be screened for conflicts of interest (339.4).");
+            throw new InvalidArgumentException('Government relations compliance breach: Engagement must be screened for conflicts of interest (339.4).');
         }
 
         $id = DB::table('government_engagement_registers')->insertGetId([

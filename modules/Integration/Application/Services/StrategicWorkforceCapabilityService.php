@@ -69,7 +69,7 @@ class StrategicWorkforceCapabilityService
 
             // Non-critical role can be deferred, but strictly requires formal deferral plan
             if (empty($deferralPlan)) {
-                throw new InvalidArgumentException("Non-critical role deferral requires formal deferral plan documentation (321.5).");
+                throw new InvalidArgumentException('Non-critical role deferral requires formal deferral plan documentation (321.5).');
             }
 
             $allocated = $availableCapacityFte;

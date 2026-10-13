@@ -180,7 +180,7 @@ class DataGovernanceLineageService
         $unaddressedDqIssues = DB::table('data_quality_rule_evaluations')
             ->where(function ($q) {
                 $q->where('dq_score_pct', '<', 90.0)
-                  ->orWhere('quarantined_record_count', '>', 0);
+                    ->orWhere('quarantined_record_count', '>', 0);
             })
             ->whereNull('owner_ticket_code')
             ->count();

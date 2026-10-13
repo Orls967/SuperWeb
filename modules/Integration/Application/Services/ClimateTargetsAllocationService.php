@@ -60,7 +60,7 @@ class ClimateTargetsAllocationService
         if ($isMissed) {
             // 442.5 Edge case: Automatic corrective action opening
             $actionOpened = true;
-            $ticket = 'CAP-ESG-' . strtoupper(substr(md5($code . time()), 0, 8));
+            $ticket = 'CAP-ESG-'.strtoupper(substr(md5($code.time()), 0, 8));
         }
 
         DB::table('esg_climate_milestones')->where('id', $m->id)->update([

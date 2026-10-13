@@ -36,7 +36,7 @@ class TrustSafetyModerationProtectionTest extends TestCase
 
         $this->assertTrue((bool) $report->reporter_identity_redacted);
         $this->assertNotEquals($rawContact, $report->reporter_anonymized_hash);
-        $this->assertEquals(hash('sha256', 'REPORTER_SALT_' . $rawContact), $report->reporter_anonymized_hash);
+        $this->assertEquals(hash('sha256', 'REPORTER_SALT_'.$rawContact), $report->reporter_anonymized_hash);
         $this->assertTrue((bool) $report->sla_met);
     }
 

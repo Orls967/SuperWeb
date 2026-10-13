@@ -61,7 +61,7 @@ class WhistleblowingEthicsService
     ): object {
         if (strtoupper($primaryInvestigator) === strtoupper($secondaryInvestigator)) {
             throw new \InvalidArgumentException(
-                "Four-eyes principle violation: Primary and secondary investigators must be two distinct individuals."
+                'Four-eyes principle violation: Primary and secondary investigators must be two distinct individuals.'
             );
         }
 
@@ -183,8 +183,8 @@ class WhistleblowingEthicsService
             ->where('status', 'INVESTIGATING')
             ->where(function ($q) {
                 $q->whereNull('primary_investigator_id')
-                  ->orWhereNull('secondary_investigator_id')
-                  ->orWhereColumn('primary_investigator_id', '=', 'secondary_investigator_id');
+                    ->orWhereNull('secondary_investigator_id')
+                    ->orWhereColumn('primary_investigator_id', '=', 'secondary_investigator_id');
             })
             ->count();
 

@@ -32,7 +32,7 @@ class SyntheticDataTrainingGovernanceService
         // Core gate 359.4 & 359.6 Risk: Datasets without lineage cannot enter training pipeline
         $hasLineage = ! empty($lineageHash);
         if (! $hasLineage) {
-            throw new InvalidArgumentException("Training data governance violation: Dataset without recorded lineage is strictly blocked from training pipeline (359.6).");
+            throw new InvalidArgumentException('Training data governance violation: Dataset without recorded lineage is strictly blocked from training pipeline (359.6).');
         }
 
         $id = DB::table('training_data_catalog_datasets')->insertGetId([

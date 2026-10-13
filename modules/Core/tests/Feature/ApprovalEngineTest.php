@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Domain\Models\ApprovalHistory;
 use Modules\Core\Domain\Models\ApprovalRequest;
@@ -134,4 +136,33 @@ test('delegation and escalation function properly', function () {
     // Escalation test
     $escalated = $engine->escalate($delegated, 'SLA telah terlampaui 48 jam');
     expect($escalated->status)->toBe('escalated');
+});
+
+test('approval request supports approvable entity with ULID or UUID string id and column is string', function () {
+    expect(Schema::getColumnType('core_approvals', 'approvable_id'))
+        ->toBeIn(['string', 'varchar']);
+
+    $creator = User::factory()->create(['role' => 'admin']);
+    $engine = app(ApprovalEngineInterface::class);
+
+    $ulid = '01a12703-45d5-7066-ac25-e8fe0a1f98ee';
+    $mockApprovable = new class extends Model
+    {
+        protected $table = 'prc_requisitions';
+
+        public $incrementing = false;
+
+        protected $keyType = 'string';
+    };
+    $mockApprovable->id = $ulid;
+
+    $approval = $engine->submit(
+        approvalType: 'PURCHASE_REQUISITION',
+        title: 'PR Testing String ID',
+        creator: $creator,
+        approvable: $mockApprovable,
+        steps: [['role' => 'admin']]
+    );
+
+    expect($approval->approvable_id)->toBe($ulid);
 });

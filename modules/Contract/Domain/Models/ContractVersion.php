@@ -12,6 +12,14 @@ class ContractVersion extends Model
 {
     use HasUuids;
 
+    public const GENESIS_HASH = 'GENESIS_CTR_0000000000000000000000000000000000000000000000000000';
+
+    /**
+     * Legacy genesis hash 72 karakter sebelum diselaraskan pada commit 0a21d42 (K-B04, B-04).
+     * Diterima oleh verifyHashChain untuk backward compatibility dengan versi kontrak lama.
+     */
+    public const LEGACY_GENESIS_HASH = 'GENESIS_CTR_000000000000000000000000000000000000000000000000000000000000';
+
     public $timestamps = false;
 
     protected $table = 'ctr_contract_versions';

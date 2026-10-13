@@ -31,7 +31,7 @@ class MarketDisruptionSimulationService
     ): object {
         // 469.3 & 469.4 Zero real data modification: Simulation must run strictly in sandbox
         if (! $sandboxOnly) {
-            throw new InvalidArgumentException("Simulation blocked: Market disruption modeling must be restricted to isolated sandbox (469.3, 469.4).");
+            throw new InvalidArgumentException('Simulation blocked: Market disruption modeling must be restricted to isolated sandbox (469.3, 469.4).');
         }
 
         // 469.5 Edge case: Severe loss (> 20% drop) requires logging mitigation plan

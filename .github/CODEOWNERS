@@ -1,0 +1,22 @@
+# CODEOWNERS for SuperWeb (PROGRESS R0.7, DoR R0 #2)
+# Menjaga file sensitif baseline, konfigurasi gate, dokumentasi, dan tooling kualitas
+
+# Architecture baselines & route roles
+/tests/Architecture/baselines/ @Orls967
+/tests/Architecture/route-roles.php @Orls967
+
+# CI / CD and GitHub configurations
+/.github/ @Orls967
+
+# Test suite and environment configurations
+/phpunit.xml @Orls967
+/composer.json @Orls967
+/composer.lock @Orls967
+
+# Audit and decision documentation
+/docs/PROGRESS.md @Orls967
+/docs/DECISIONS.md @Orls967
+/docs/gates/ @Orls967
+
+# Quality gate and scanning tooling
+/app/Quality/ @Orls967

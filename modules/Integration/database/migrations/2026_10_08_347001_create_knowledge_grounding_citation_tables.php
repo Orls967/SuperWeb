@@ -22,7 +22,7 @@ return new class extends Migration
 
         Schema::create('knowledge_retrieval_citation_verifications', function (Blueprint $table) {
             $table->id();
-            $table->string('verification_code')->unique();
+            $table->string('verification_code')->unique('knw_retrieval_cit_verif_code_uniq');
             $table->string('query_code')->index();
             $table->string('cited_document_id');
             $table->string('document_version');

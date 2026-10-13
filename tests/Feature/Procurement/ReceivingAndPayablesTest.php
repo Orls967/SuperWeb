@@ -9,6 +9,7 @@ use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Core\Application\Services\SystemHealthService;
+use Modules\Core\Domain\Models\ApprovalRequest;
 use Modules\Procurement\Application\Services\ProcurementService;
 use Modules\Procurement\Application\Services\ReceivingService;
 use Modules\Procurement\Domain\Models\PurchaseOrder;
@@ -221,6 +222,7 @@ class ReceivingAndPayablesTest extends TestCase
         $this->assertSame('pending_approval', $batch->status);
         $this->assertSame(5_000_000, (int) $batch->total_amount_idr);
         $this->assertNotNull($batch->approval_id);
+        $this->assertTrue(ApprovalRequest::whereKey($batch->fresh()->approval_id)->exists(), 'approval_id batch pembayaran wajib merujuk id core_approvals, bukan uuid.');
 
         // Eksekusi sebelum approval ditolak.
         try {

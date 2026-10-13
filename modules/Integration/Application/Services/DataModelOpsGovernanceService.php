@@ -31,12 +31,12 @@ class DataModelOpsGovernanceService
     ): object {
         // 432.5 Edge case: Missing rollback plan blocks proposal/deploy in CI
         if (empty(trim($rollbackPlan)) || strlen($rollbackPlan) < 10) {
-            throw new InvalidArgumentException("Deployment blocked: Mandatory rollback plan is missing or insufficient (432.1, 432.5).");
+            throw new InvalidArgumentException('Deployment blocked: Mandatory rollback plan is missing or insufficient (432.1, 432.5).');
         }
 
         // 432.2 & 432.6 Lineage-based impact analysis verification
         if (empty($affectedLineageEntities)) {
-            throw new InvalidArgumentException("Approval blocked: Lineage-based impact analysis must document affected downstream entities (432.2, 432.6).");
+            throw new InvalidArgumentException('Approval blocked: Lineage-based impact analysis must document affected downstream entities (432.2, 432.6).');
         }
 
         $id = DB::table('plt_data_model_deployments')->insertGetId([

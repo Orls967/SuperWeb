@@ -94,7 +94,7 @@ class PartnerOnboardingEcosystemService
 
         // Risk gate 371.6: Revoke proof mandatory before contract closure
         if (! $apiAccessRevoked) {
-            throw new InvalidArgumentException("Offboarding security violation: API access must be formally revoked before contract closure (371.6).");
+            throw new InvalidArgumentException('Offboarding security violation: API access must be formally revoked before contract closure (371.6).');
         }
 
         $closurePermitted = ($apiAccessRevoked && $balancesSettled);

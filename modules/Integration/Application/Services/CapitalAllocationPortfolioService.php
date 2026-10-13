@@ -82,12 +82,12 @@ class CapitalAllocationPortfolioService
 
         // 437.6 Check independent review
         if (! $prop->independent_reviewer_approved) {
-            throw new InvalidArgumentException("Funding blocked: Independent reviewer approval is required before capital allocation (437.6).");
+            throw new InvalidArgumentException('Funding blocked: Independent reviewer approval is required before capital allocation (437.6).');
         }
 
         // 437.3 & 437.4 Check prior tranche post-investment review
         if (! $prop->post_investment_review_completed) {
-            throw new InvalidArgumentException("Funding blocked: Prior tranche post-investment review must be completed before releasing next tranche (437.3, 437.4).");
+            throw new InvalidArgumentException('Funding blocked: Prior tranche post-investment review must be completed before releasing next tranche (437.3, 437.4).');
         }
 
         $newTotalRelease = (float) $prop->approved_funding_release + $trancheAmount;

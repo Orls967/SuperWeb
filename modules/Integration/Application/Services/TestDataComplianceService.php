@@ -30,7 +30,7 @@ class TestDataComplianceService
 
         // 474.1 & 474.4 Production data copying strictly requires explicit approval
         if ($t === 'production_clone' && ! $productionCopyApproved) {
-            throw new InvalidArgumentException("Test data policy violation: Unapproved cloning of production database into non-prod environment blocked (474.1, 474.4).");
+            throw new InvalidArgumentException('Test data policy violation: Unapproved cloning of production database into non-prod environment blocked (474.1, 474.4).');
         }
 
         $id = DB::table('int_test_data_environments')->insertGetId([
@@ -76,7 +76,7 @@ class TestDataComplianceService
             throw new InvalidArgumentException("Environment '{$envCode}' not found.");
         }
 
-        $purgeCode = 'PURGE-' . strtoupper(substr(md5($envCode . time()), 0, 8));
+        $purgeCode = 'PURGE-'.strtoupper(substr(md5($envCode.time()), 0, 8));
 
         DB::table('int_pii_remediation_purges')->insert([
             'purge_code' => $purgeCode,

@@ -23,7 +23,7 @@ return new class extends Migration
         Schema::create('synthetic_dataset_privacy_evaluations', function (Blueprint $table) {
             $table->id();
             $table->string('evaluation_code')->unique();
-            $table->string('synthetic_dataset_code')->index();
+            $table->string('synthetic_dataset_code')->index('synth_dataset_priv_eval_code_idx');
             $table->decimal('reidentification_risk_score', 5, 4);
             $table->decimal('max_allowed_risk_threshold', 5, 4)->default(0.0500);
             $table->boolean('privacy_check_passed')->default(false); // 359.2 & 359.4

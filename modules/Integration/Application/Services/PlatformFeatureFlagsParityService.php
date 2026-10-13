@@ -35,7 +35,7 @@ class PlatformFeatureFlagsParityService
 
         // Security invariant 296.4: Secrets must only be stored as vault references (e.g. vault://...)
         if ($isSecret && ! str_starts_with($value, 'vault://')) {
-            throw new InvalidArgumentException("Secrets lifecycle violation: Raw secrets are prohibited; must reference external vault token (vault://...) (296.4).");
+            throw new InvalidArgumentException('Secrets lifecycle violation: Raw secrets are prohibited; must reference external vault token (vault://...) (296.4).');
         }
 
         // Schema validation check 296.1
@@ -121,7 +121,7 @@ class PlatformFeatureFlagsParityService
         }
 
         // Rollout scope check (296.5)
-        return ($flag->rollout_scope === 'GLOBAL' || $flag->rollout_scope === strtoupper($targetScope));
+        return $flag->rollout_scope === 'GLOBAL' || $flag->rollout_scope === strtoupper($targetScope);
     }
 
     /**

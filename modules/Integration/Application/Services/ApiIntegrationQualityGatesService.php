@@ -73,7 +73,7 @@ class ApiIntegrationQualityGatesService
 
         // 429.1, 429.2, 429.5, 429.6 Gates
         if (! $p->sandbox_suite_passed || ! $p->schema_compatibility_passed || ! $p->semantic_contract_approved) {
-            throw new InvalidArgumentException("Production enablement blocked: Partner has not passed sandbox test suite, schema compatibility, or semantic contract approval (429.2, 429.5, 429.6).");
+            throw new InvalidArgumentException('Production enablement blocked: Partner has not passed sandbox test suite, schema compatibility, or semantic contract approval (429.2, 429.5, 429.6).');
         }
 
         $certToken = 'CERT-'.strtoupper($partnerCode).'-'.bin2hex(random_bytes(8));

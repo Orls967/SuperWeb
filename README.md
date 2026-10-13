@@ -1,6 +1,6 @@
 # Superwebsite — Enterprise Multi-Business Modular Monolith Platform
 
-Platform ERP terpadu berskala *enterprise* (Ekosistem 45+ Modul) berbasis **Laravel 11, Blade + Tailwind CSS + Alpine.js**, mengintegrasikan 17 lini bisnis konglomerasi modern di atas pondasi **Double-Entry Multi-Asset Ledger (Zero-Discrepancy)**, **Cryptographic Hash-Chain**, dan **Universal Event Spine**:
+Platform ERP terpadu berskala *enterprise* (Ekosistem 45+ Modul) berbasis **Laravel 13 (PHP ^8.4), Blade + Tailwind CSS + Alpine.js**, mengintegrasikan 17 lini bisnis konglomerasi modern di atas pondasi **Double-Entry Multi-Asset Ledger (Zero-Discrepancy)**, **Cryptographic Hash-Chain**, dan **Universal Event Spine**:
 
 1. **Otomotif & Bengkel (Automotive)**: Bengkel Servis Mobil (*AutoServe*), Ensiklopedia (*AutoDex*), Marketplace Suku Cadang & Bursa Mobil C2C (*Store*), Pembiayaan Beragun Kripto (*Finance*).
 2. **Keuangan & Kripto (FinTech)**: Core Banking Double-Entry (*Banking*), Payment Hub (*Payment*), Bursa Kripto (*Crypto*), Multi-Currency Treasury (*Treasury*), Escrow B2B & Lelang Surplus (*B2B*).
@@ -78,7 +78,7 @@ modules/                     # 38 Modular Monolith Domains
 ## 🚀 Panduan Instalasi & Menjalankan
 
 ### Persyaratan Sistem
-- **PHP**: $\ge$ 8.2 (ekstensi `sqlite3`, `bcmath`, `curl`, `mbstring`, `pdo`)
+- **PHP**: `^8.4` (minimal 8.4.1, sesuai `composer.lock`) dengan ekstensi `ctype`, `dom`, `fileinfo`, `filter`, `iconv`, `mbstring`, `openssl`, `pdo_sqlite`, `session`, `simplexml`, `tokenizer`, `xml`, `xmlwriter` (+ `bcmath` disarankan untuk `brick/math`; `gd` dengan dukungan JPEG wajib untuk menjalankan test karena `UploadedFile::fake()->image()`). Jangan memakai `--ignore-platform-reqs`.
 - **Composer**: $\ge$ 2.5
 - **Node.js**: $\ge$ 18.x & **NPM**
 

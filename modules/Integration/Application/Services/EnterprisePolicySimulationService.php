@@ -33,7 +33,7 @@ class EnterprisePolicySimulationService
 
         // Core gate 336.4: Simulation must never mutate live/seed data
         if ($mutatesData) {
-            throw new InvalidArgumentException("Data safety violation: Policy simulation engine must run read-only and never mutate seed data (336.4).");
+            throw new InvalidArgumentException('Data safety violation: Policy simulation engine must run read-only and never mutate seed data (336.4).');
         }
 
         $disruptionPct = $sampleCount > 0 ? round(($blockedCount / $sampleCount) * 100.0, 2) : 0.00;

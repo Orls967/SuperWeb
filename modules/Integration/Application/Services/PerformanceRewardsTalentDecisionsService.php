@@ -53,7 +53,7 @@ class PerformanceRewardsTalentDecisionsService
         }
 
         if (! $isApproved) {
-            throw new InvalidArgumentException("Goal adjustment blocked: Mid-period changes require formal committee approval (423.1, 423.5).");
+            throw new InvalidArgumentException('Goal adjustment blocked: Mid-period changes require formal committee approval (423.1, 423.5).');
         }
 
         DB::table('hcm_performance_goals')->where('id', $goal->id)->update([
@@ -113,7 +113,7 @@ class PerformanceRewardsTalentDecisionsService
         }
 
         if (! $rating->rating_locked) {
-            throw new InvalidArgumentException("Reward blocked: Performance rating must be calibrated and locked prior to payout (423.4).");
+            throw new InvalidArgumentException('Reward blocked: Performance rating must be calibrated and locked prior to payout (423.4).');
         }
 
         DB::table('hcm_talent_ratings')->where('id', $rating->id)->update([

@@ -75,7 +75,7 @@ class SupplyChainTradeMaterialFlowsService
 
         // Risk gate 381.6: Reverse flow without ownership contract & manifest strictly blocked
         if (! $hasVerifiedContract || ! $hasPickupManifest) {
-            throw new InvalidArgumentException("Reverse logistics security violation: Mandatory contract and pickup manifest required before pickup authorization (381.6).");
+            throw new InvalidArgumentException('Reverse logistics security violation: Mandatory contract and pickup manifest required before pickup authorization (381.6).');
         }
 
         $id = DB::table('global_supply_chain_reverse_manifests')->insertGetId([

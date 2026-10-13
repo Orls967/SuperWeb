@@ -35,7 +35,7 @@ class MultiModalVisionIntegrationService
 
         // Edge case 351.5: Extractions require human verification before posting to financial ledger
         if ($postToLedger && ! $humanVerified) {
-            throw new InvalidArgumentException("Financial posting violation: Extracted document fields must be human-verified before posting to financial ledger (351.5).");
+            throw new InvalidArgumentException('Financial posting violation: Extracted document fields must be human-verified before posting to financial ledger (351.5).');
         }
 
         $id = DB::table('multimodal_financial_document_extractions')->insertGetId([

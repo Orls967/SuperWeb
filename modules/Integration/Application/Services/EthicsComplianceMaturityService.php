@@ -72,12 +72,12 @@ class EthicsComplianceMaturityService
 
         // Channel verification gate 337.4: Speak-up channel must be tested & verified
         if (! $speakUpChannelVerified) {
-            throw new InvalidArgumentException("Ethics compliance breach: Vendor case processing requires verified speak-up hotline channel (337.4).");
+            throw new InvalidArgumentException('Ethics compliance breach: Vendor case processing requires verified speak-up hotline channel (337.4).');
         }
 
         // Termination validation 337.2: Termination requires substantiated violation evidence
         if ($exerciseTermination && ! $violationSubstantiated) {
-            throw new InvalidArgumentException("Due process violation: Contractual termination right requires substantiated violation evidence (337.2).");
+            throw new InvalidArgumentException('Due process violation: Contractual termination right requires substantiated violation evidence (337.2).');
         }
 
         $id = DB::table('third_party_vendor_ethics_cases')->insertGetId([

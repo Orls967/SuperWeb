@@ -32,7 +32,7 @@ class AutonomousFieldFleetService
 
         // Risk check 306.6: Speed cap must be strictly enforceable
         if ($speedCapKmh <= 0.0 || $speedCapKmh > 50.0) {
-            throw new InvalidArgumentException("Safety cage violation: Autonomous unit speed cap must be between 1 and 50 km/h (306.6).");
+            throw new InvalidArgumentException('Safety cage violation: Autonomous unit speed cap must be between 1 and 50 km/h (306.6).');
         }
 
         $id = DB::table('autonomous_fleet_units')->insertGetId([

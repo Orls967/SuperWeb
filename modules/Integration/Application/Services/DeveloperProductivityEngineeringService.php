@@ -58,12 +58,12 @@ class DeveloperProductivityEngineeringService
 
         // 471.5 Edge case: Flaky tests must be quarantined with due date
         if ($type === 'flaky_test' && ! $quarantine) {
-            throw new InvalidArgumentException("Debt registration blocked: Flaky tests must be formally quarantined with a strict remediation due date (471.5).");
+            throw new InvalidArgumentException('Debt registration blocked: Flaky tests must be formally quarantined with a strict remediation due date (471.5).');
         }
 
         // 471.6 Risk: Debt paydown budget must be confirmed
         if (! $budgetAllocated) {
-            throw new InvalidArgumentException("Debt registration blocked: Technical debt item requires an allocated paydown budget (471.6).");
+            throw new InvalidArgumentException('Debt registration blocked: Technical debt item requires an allocated paydown budget (471.6).');
         }
 
         $id = DB::table('int_engineering_tech_debt_items')->insertGetId([

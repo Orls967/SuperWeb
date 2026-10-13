@@ -119,6 +119,7 @@ class ManufacturingPhase35Test extends TestCase
             'output_material_id' => $material->id, 'name' => 'Formula B', 'effective_from' => '2026-10-05',
         ], $this->admin);
 
+        $this->assertLessThanOrEqual(64, strlen(ManufacturingService::GENESIS));
         $this->assertSame(ManufacturingService::GENESIS, $first->prev_hash);
         $this->assertSame($first->hash, $second->prev_hash);
         $this->assertTrue($this->service->verifyFormulaChain($material));

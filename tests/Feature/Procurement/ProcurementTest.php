@@ -7,6 +7,7 @@ namespace Tests\Feature\Procurement;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Core\Domain\Models\ApprovalRequest;
 use Modules\Logistics\Domain\Models\Shipment;
 use Modules\Procurement\Application\Services\InboundShipmentService;
 use Modules\Procurement\Application\Services\ProcurementService;
@@ -68,6 +69,7 @@ class ProcurementTest extends TestCase
         $this->assertStringStartsWith('PR/', $pr->number);
         $this->assertSame(20_000_000, (int) $pr->total_estimated_idr);
         $this->assertSame('pending_approval', $pr->status);
+        $this->assertTrue(ApprovalRequest::whereKey($pr->fresh()->approval_id)->exists(), 'approval_id requisisi wajib merujuk id core_approvals, bukan uuid.');
 
         $this->service->approveRequisition($pr->fresh());
 

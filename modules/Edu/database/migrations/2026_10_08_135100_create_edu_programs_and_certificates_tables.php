@@ -76,7 +76,7 @@ return new class extends Migration
             $table->string('status')->default('ACTIVE'); // ACTIVE, EXPIRED, REVOKED
             $table->timestamps();
 
-            $table->index(['student_party_id', 'skill_competency_code', 'status']);
+            $table->index(['student_party_id', 'skill_competency_code', 'status'], 'edu_cert_student_skill_stat_idx');
         });
     }
 

@@ -156,7 +156,7 @@ class EndToEndTalentService
             ->where('is_active', true)
             ->where(function ($q) {
                 $q->whereNull('next_action_required')
-                  ->orWhere('next_action_required', '');
+                    ->orWhere('next_action_required', '');
             })
             ->count();
 

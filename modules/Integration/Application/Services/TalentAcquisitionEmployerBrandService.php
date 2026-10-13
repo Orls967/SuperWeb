@@ -57,7 +57,7 @@ class TalentAcquisitionEmployerBrandService
 
         // 421.1, 421.4, 421.5 Edge case: Automated assessment requires explicit fairness bias verification
         if (! $fairnessBiasChecked) {
-            throw new InvalidArgumentException("Screening blocked: Automated screening lacks certified fairness bias check (421.1, 421.5).");
+            throw new InvalidArgumentException('Screening blocked: Automated screening lacks certified fairness bias check (421.1, 421.5).');
         }
 
         $status = $score >= 70.00 ? 'offered' : 'rejected';

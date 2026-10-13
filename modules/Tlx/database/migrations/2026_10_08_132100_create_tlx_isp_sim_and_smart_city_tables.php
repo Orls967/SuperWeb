@@ -63,7 +63,7 @@ return new class extends Migration
             $table->string('status')->default('SETTLED');
             $table->timestamps();
 
-            $table->index(['partner_operator_code', 'period_month']);
+            $table->index(['partner_operator_code', 'period_month'], 'tlx_settle_partner_month_idx');
         });
 
         // 132.3 Smart City Contracts & Services

@@ -92,7 +92,7 @@ class AgentMarketplaceGovernedToolsService
 
         // Risk gate 358.6: Secrets must never be exposed to agent context
         if ($secretExposed) {
-            throw new InvalidArgumentException("Security violation: Secrets leaked to agent context detected and blocked (358.6).");
+            throw new InvalidArgumentException('Security violation: Secrets leaked to agent context detected and blocked (358.6).');
         }
 
         $id = DB::table('agent_marketplace_tool_executions')->insertGetId([

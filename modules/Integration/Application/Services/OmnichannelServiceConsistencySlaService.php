@@ -137,7 +137,7 @@ class OmnichannelServiceConsistencySlaService
 
         // Edge case 281.6: Empty context transfer is prohibited
         if (empty($handoffContext) || ! isset($handoffContext['root_cause_summary'])) {
-            throw new InvalidArgumentException("Lossless handoff error: Escalation requires mandatory context template including root cause summary (281.6).");
+            throw new InvalidArgumentException('Lossless handoff error: Escalation requires mandatory context template including root cause summary (281.6).');
         }
 
         DB::table('customer_support_cases')

@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('global_personnel_credential_authorizations', function (Blueprint $table) {
             $table->id();
-            $table->string('credential_code')->unique();
+            $table->string('credential_code')->unique('global_personnel_cred_auth_code_uniq');
             $table->string('worker_id');
             $table->string('role_domain'); // HEALTHCARE, AVIATION, MINING, ENERGY
             $table->boolean('is_active')->default(true); // 384.1 & 384.4

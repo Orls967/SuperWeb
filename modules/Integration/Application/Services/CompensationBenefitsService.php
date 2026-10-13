@@ -285,12 +285,12 @@ class CompensationBenefitsService
         $bandViolations = DB::table('hcm_employee_compensations as c')
             ->join('hcm_pay_structures as s', function ($join) {
                 $join->on('c.grade_band', '=', 's.grade_band')
-                     ->on('c.country_code', '=', 's.country_code');
+                    ->on('c.country_code', '=', 's.country_code');
             })
             ->where('c.is_current', true)
             ->where(function ($q) {
                 $q->whereColumn('c.base_salary', '<', 's.min_salary')
-                  ->orWhereColumn('c.base_salary', '>', 's.max_salary');
+                    ->orWhereColumn('c.base_salary', '>', 's.max_salary');
             })
             ->count();
 

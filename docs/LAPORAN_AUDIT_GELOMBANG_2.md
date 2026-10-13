@@ -1,10 +1,10 @@
-# LAPORAN AUDIT & SERAH TERIMA GELOMBANG 2 (FASE 104–149)
+# [DIARSIPKAN] LAPORAN AUDIT & SERAH TERIMA GELOMBANG 2 (FASE 104–149) (ARSIP HISTORIS)
 
-> ⛔ **TIDAK VALID (audit 10 Oktober 2026).** Laporan ini mencantumkan 9 command audit yang tidak ada di kode (`hosp:audit`, `venue:audit`, `hotel:audit`, `mining:audit`, `egy:audit`, `tlx:audit`, `med:audit`, `edu:audit`, `ret:audit`), klaim failover multi-region tanpa implementasi, dan versi framework yang salah (proyek memakai Laravel 13). Jangan dijadikan acuan; lihat `docs/KNOWLEDGE.md` §5 (K-02) dan status per fase di `docs/PROGRESS.md`.
+> ⛔ **TIDAK VALID / DIARSIPKAN (audit 10 Oktober 2026).** Laporan ini mencantumkan 9 command audit yang tidak ada di kode (`hosp:audit`, `venue:audit`, `hotel:audit`, `mining:audit`, `egy:audit`, `tlx:audit`, `med:audit`, `edu:audit`, `ret:audit`), klaim failover multi-region tanpa implementasi, dan versi framework yang salah (proyek memakai Laravel 13, PHP ^8.4). Jangan dijadikan acuan; lihat `docs/KNOWLEDGE.md` §5 (K-02), `docs/PROGRESS.md` (Fase R), dan laporan resmi di `docs/gates/`.
 ## 17 Lini Bisnis dalam Satu Sistem Modular Monolith Terpadu
 
 Tanggal: 2026-10-08  
-Status: **PASSED (100% HEALTHY, 0 DISKREPANSI)**
+Status: **⛔ DIARSIPKAN (KLAIM HISTORIS TIDAK VALID — LIHAT KNOWLEDGE.MD & GATES)**
 
 ---
 

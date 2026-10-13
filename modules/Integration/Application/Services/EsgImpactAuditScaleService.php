@@ -143,7 +143,7 @@ class EsgImpactAuditScaleService
 
         // Anti-greenwashing check (286.4 & 286.8): Evidence reference cannot be blank
         if (empty($evidenceDocRef)) {
-            throw new InvalidArgumentException("Anti-greenwashing violation: Public ESG claim requires verified evidence document mapping (286.4).");
+            throw new InvalidArgumentException('Anti-greenwashing violation: Public ESG claim requires verified evidence document mapping (286.4).');
         }
 
         $id = DB::table('esg_public_claims')->insertGetId([

@@ -41,7 +41,7 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->index(['origin_location_id', 'destination_location_id', 'etd']);
+            $table->index(['origin_location_id', 'destination_location_id', 'etd'], 'lgx_sched_orig_dest_etd_idx');
             $table->index(['voyage_number', 'sequence']);
             $table->index('status');
         });

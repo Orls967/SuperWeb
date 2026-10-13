@@ -256,3 +256,129 @@ tar -czvf backups/storage_$(date +%Y%m%d_%H%M%S).tar.gz storage/app/public
   1. Jalankan `php artisan dr:audit` untuk memvalidasi replikasi Jakarta $\to$ Singapore (SG-2).
   2. Pastikan RPO = 0 (zero ledger discrepancy) dan RTO $< 15$ menit untuk lini critical (RS, Energi, Pembayaran).
   3. Periksa kepatuhan residensi data kedaulatan data lokal.
+
+---
+
+## 6. Quality Gate, CI & Portabilitas Database
+
+Bagian ini untuk pengembang dan agent yang menutup fase. Aturan lengkapnya ada di `docs/PROGRESS.md` §P4/§P7, `docs/gates/README.md`, dan `docs/gates/VERIFIKATOR.md`.
+
+### 6.1 Sebelum push
+
+```bash
+vendor/bin/pint --dirty --format agent            # rapikan file yang diubah
+vendor/bin/pest tests/Architecture                # semua pagar otomatis (baseline ratchet)
+vendor/bin/pest --filter=<NamaTestYangDisentuh>   # test fitur yang diubah
+```
+
+Bila sebuah pagar baseline merah:
+- **Pelanggaran baru** (`BARU (tidak ada di baseline)`): perbaiki kodenya. Menambah entri baseline hanya boleh dengan keputusan pemilik yang tercatat:
+  ```bash
+  UPDATE_BASELINES=1 BASELINE_DECISION="DECISIONS.md#<anchor>" vendor/bin/pest --filter=<NamaTest>
+  ```
+  Khusus `arch:scan`: `php artisan arch:scan --update-baseline --allow-new="DECISIONS.md#<anchor>"`.
+- **Pelanggaran hilang** (`stale`): turunkan baseline di commit yang sama:
+  ```bash
+  UPDATE_BASELINES=1 vendor/bin/pest --filter=<NamaTest>
+  ```
+  Khusus `arch:scan`: `php artisan arch:scan --update-baseline`.
+
+### 6.2 Gate penuh
+
+```bash
+composer gate     # validate, pest penuh (--parallel), pint --test, arch:scan, migrate:fresh --seed (DB khusus gate),
+                  # bank:reconcile, chain:audit-all, super:health-check, npm run build
+```
+
+Manifest dan JUnit ditulis ke `storage/logs/gate-manifest.json` dan `storage/logs/pest-junit.xml`. Gate memakai database SQLite khusus, sehingga database dev dari `.env` tidak tersentuh.
+
+Laporan resmi fase hanya diambil dari artefak CI (`docs/gates/README.md` §3). Gate lokal hanya pemeriksaan awal.
+
+### 6.3 Job CI dan artinya
+
+| Job | Isi | Bila merah |
+|---|---|---|
+| `PHP 8.4 × SQLite (Full Gate Suite)` | `composer gate` + `gate:report` + unggah artefak | Buka step yang gagal; jalankan test yang sama secara lokal |
+| `PHP 8.4 × MySQL 8 (DB Portability)` | `migrate:fresh --seed` di MySQL 8.4 + `pest --group=db-portability` | Lihat §6.4 |
+| `PHP 8.4 × Pest Mutation Testing (min 60%)` | mutation testing kelas Action/Service yang diubah PR (hanya pada pull request) | Perkuat test kelas yang disebut; jangan turunkan ambang |
+
+Membaca hasil CI tanpa membuka browser:
+```bash
+gh run list --repo Orls967/superweb --branch <branch> --limit 3
+gh api repos/Orls967/superweb/actions/runs/<run-id>/jobs \
+  --jq '.jobs[] | "\(.name): \(.conclusion) | gagal di: \([.steps[] | select(.conclusion=="failure") | .name] | join(","))"'
+gh run view <run-id> --repo Orls967/superweb --log-failed
+```
+
+### 6.4 Job MySQL merah
+
+`migrate:fresh` di MySQL berhenti di error pertama. Sebelum memperbaiki satu per satu lewat CI, kumpulkan semua masalah sekaligus:
+
+```bash
+vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php   # semua DDL yang ditolak MySQL 8.4
+```
+
+Penyebab yang sudah pernah terjadi (`KNOWLEDGE.md` K-33, K-40, K-41):
+
+| Error MySQL | Penyebab | Perbaikan yang benar |
+|---|---|---|
+| `1059 Identifier name … is too long` | nama index/FK bawaan Laravel > 64 karakter | beri nama eksplisit ≤ 64 karakter |
+| `1071 Specified key was too long` | index komposit > 3.072 byte (`VARCHAR(255)` × 4 byte) | perpendek kolom **hanya** bila semua penulis nilainya divalidasi `max`; atau ubah urutan/isi index |
+| `TypeError addslashes()` saat migrasi | `->comment([...])` berisi array | komentar berupa string |
+| `1366 Incorrect integer value` saat seeder | UUID ditulis ke kolom angka (`*_id`, morph) | pakai id yang benar, atau kolom rujukan generik `string(64)` (tunggu konvensi K-41) |
+| `1406 Data too long` saat seeder | konstanta/nilai lebih panjang dari `varchar(n)` | perlebar kolom; jangan ubah konstanta yang sudah tersimpan di data |
+| `3780` FK beda tipe | kolom FK `integer`/`string` merujuk `bigint unsigned` | samakan tipe (`foreignId`, `foreignUuid`) |
+
+Menjalankan MySQL sendiri (bila Docker tersedia):
+```bash
+docker run -d --name superweb-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=superweb -p 3306:3306 mysql:8.4
+DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_DATABASE=superweb DB_USERNAME=root DB_PASSWORD=password php artisan migrate:fresh --seed --force
+DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_DATABASE=superweb DB_USERNAME=root DB_PASSWORD=password vendor/bin/pest --group=db-portability
+```
+
+---
+
+## 7. Akses GitHub untuk Agent & Respons Insiden Kredensial
+
+### 7.1 Token untuk agent
+
+Agent (pelaksana/verifikator) bekerja dengan **fine-grained personal access token** khusus repo ini, bukan login penuh pemilik:
+
+| Pengaturan | Nilai |
+|---|---|
+| Repository access | *Only select repositories* → `Orls967/superweb` |
+| Contents | Read and write (push) |
+| Pull requests | Read and write (draft PR) |
+| Workflows | Read and write (push perubahan `.github/workflows`) |
+| Actions | Read-only (log & artefak CI) |
+| Metadata | Read-only (otomatis) |
+| Administration dan lainnya | **tidak diberikan** (branch protection & setting repo tetap di tangan pemilik) |
+| Expiration | 7–30 hari |
+
+Pasang di mesin agent:
+```bash
+gh auth logout
+pbpaste | gh auth login -h github.com --with-token   # macOS; salin token dulu, jangan diketik di kolom tersembunyi
+gh auth setup-git                                    # git push memakai token yang sama
+gh auth status                                       # Token: github_pat_…
+```
+
+Prompt agent wajib memuat larangan: hanya repo `Orls967/superweb`; dilarang `git credential fill`, `gh auth token`, atau cara lain membaca/mencetak token; bila `gh` belum login, berhenti dan minta pemilik.
+
+### 7.2 Bila token/kredensial bocor (mis. tercetak di log agent)
+
+1. **Kenali jenis token** tanpa mencetak isinya (hanya 4 huruf awal):
+   ```bash
+   printf "protocol=https\nhost=github.com\n\n" | git credential fill | grep '^password=' | cut -c1-13
+   ```
+   - `gho_`: token aplikasi OAuth. Cabut di *github.com/settings/applications → Authorized OAuth Apps* (mis. "Visual Studio Code", yang dipakai editor turunan VS Code untuk login git).
+   - `ghu_`: token GitHub App. Cabut di tab *Authorized GitHub Apps*.
+   - `ghp_` / `github_pat_`: personal access token. Hapus di *Developer settings → Personal access tokens*.
+2. **Hapus salinan lokal** dan login ulang:
+   ```bash
+   printf "protocol=https\nhost=github.com\n\n" | git credential reject
+   gh auth logout
+   ```
+   Lalu pasang token baru sesuai §7.1.
+3. **Hapus log** yang memuat token (folder kerja/log alat agent). Setelah token dicabut, isinya sudah tidak berlaku, tetapi tetap dibersihkan.
+4. **Catat** di `docs/BLOCKERS.md` (Riwayat) tanpa menuliskan nilai token.

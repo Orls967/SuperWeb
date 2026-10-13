@@ -67,7 +67,7 @@ class RevaluationService
                 'new_value_idr' => $newValueIdr,
                 'difference_idr' => $newValueIdr - $oldValue,
                 'reason' => $reason,
-                'approval_id' => $approval->uuid,
+                'approval_id' => $approval->id,
                 'approval_status' => 'pending',
                 'requested_by_user_id' => $creator->id,
             ]);
@@ -158,7 +158,7 @@ class RevaluationService
                 'book_value_at_disposal_idr' => $bookValue,
                 'gain_loss_idr' => $gainLoss,
                 'reason' => $reason,
-                'approval_id' => $approval->uuid,
+                'approval_id' => $approval->id,
                 'approval_status' => 'pending',
                 'requested_by_user_id' => $creator->id,
             ]);

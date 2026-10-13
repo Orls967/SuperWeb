@@ -39,7 +39,7 @@ class SuperAppMiniAppPlatformService
 
         // Anti-lockin risk 315.6: Data portability exit clause must be agreed
         if (! $exitClauseAgreed) {
-            throw new InvalidArgumentException("Platform governance breach: Mini-app registration requires agreement to data portability and exit clause (315.6).");
+            throw new InvalidArgumentException('Platform governance breach: Mini-app registration requires agreement to data portability and exit clause (315.6).');
         }
 
         $id = DB::table('super_app_mini_app_registry')->insertGetId([
@@ -95,7 +95,7 @@ class SuperAppMiniAppPlatformService
 
         // Consent check 315.2: Context handoff strictly requires explicit user consent
         if (! $consentGranted) {
-            throw new InvalidArgumentException("Privacy violation: Session handoff requires explicit user consent (315.2).");
+            throw new InvalidArgumentException('Privacy violation: Session handoff requires explicit user consent (315.2).');
         }
 
         $id = DB::table('super_app_session_handoffs')->insertGetId([

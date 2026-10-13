@@ -32,12 +32,12 @@ class GenerativeEngineeringCopilotService
 
         // Edge case 352.5: Components failing FTO are rejected
         if (! $passedFto) {
-            throw new InvalidArgumentException("Intellectual property violation: Component failed Freedom-To-Operate (FTO) IP review and cannot be adopted into ECO (352.5).");
+            throw new InvalidArgumentException('Intellectual property violation: Component failed Freedom-To-Operate (FTO) IP review and cannot be adopted into ECO (352.5).');
         }
 
         // Core gate 352.4: Must be reviewed and validated by engineer before ECO adoption
         if (! $engineerValidated) {
-            throw new InvalidArgumentException("Engineering governance breach: Design suggestion must be validated by licensed engineer before ECO adoption (352.4).");
+            throw new InvalidArgumentException('Engineering governance breach: Design suggestion must be validated by licensed engineer before ECO adoption (352.4).');
         }
 
         $id = DB::table('copilot_engineering_design_ecos')->insertGetId([
@@ -67,12 +67,12 @@ class GenerativeEngineeringCopilotService
 
         // Core gate 352.2: Zero direct production writes allowed
         if ($directWriteAttempt) {
-            throw new InvalidArgumentException("Code safety violation: Copilot direct production writes are strictly prohibited (352.2).");
+            throw new InvalidArgumentException('Code safety violation: Copilot direct production writes are strictly prohibited (352.2).');
         }
 
         // Core gate 352.4: Code cannot merge without human approval + CI pass
         if (! $humanApproved || ! $ciPassed) {
-            throw new InvalidArgumentException("CI/CD governance breach: Code proposal cannot merge without human approval and passing CI tests (352.4).");
+            throw new InvalidArgumentException('CI/CD governance breach: Code proposal cannot merge without human approval and passing CI tests (352.4).');
         }
 
         $id = DB::table('copilot_code_generation_proposals')->insertGetId([

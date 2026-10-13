@@ -75,7 +75,7 @@ class EnterpriseLearningFlywheelService
         }
 
         if (empty(trim($remediationNote))) {
-            throw new InvalidArgumentException("Remediation blocked: Remediation actions must be explicitly recorded (483.5).");
+            throw new InvalidArgumentException('Remediation blocked: Remediation actions must be explicitly recorded (483.5).');
         }
 
         DB::table('int_enterprise_learning_loops')->where('id', $loop->id)->update([

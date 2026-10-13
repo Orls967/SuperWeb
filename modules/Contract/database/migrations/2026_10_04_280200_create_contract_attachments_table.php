@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('contract_id');
             $table->unsignedBigInteger('document_id')->comment('FK ke core_documents (DocumentStore)');
-            $table->uuid('contract_party_id')->nullable()->comment('Tautan ke penandatangan bila dokumen terkait tanda tangan');
+            $table->unsignedBigInteger('contract_party_id')->nullable()->comment('Tautan ke penandatangan bila dokumen terkait tanda tangan');
             $table->uuid('legal_entity_id')->nullable()->comment('Tautan ke entitas hukum pemegang kontrak');
             $table->string('label')->comment('Nama tampilan lampiran');
             $table->string('kind')->default('supporting')->comment('signed_copy, annex, supporting, kyc');

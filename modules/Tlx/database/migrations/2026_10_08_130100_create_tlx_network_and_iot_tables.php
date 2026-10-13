@@ -69,7 +69,7 @@ return new class extends Migration
             $table->string('ledger_transaction_id')->nullable();
             $table->timestamps();
 
-            $table->index(['owner_entity_id', 'billing_period']);
+            $table->index(['owner_entity_id', 'billing_period'], 'tlx_iot_inv_owner_period_idx');
         });
 
         Schema::create('tlx_noc_network_tickets', function (Blueprint $table) {

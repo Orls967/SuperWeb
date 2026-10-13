@@ -36,7 +36,7 @@ class ProductStewardshipEprService
 
         // Grounding check 289.8: Repairability score > 7.0 requires actual BOM spare part availability
         if ($repairabilityScore > 7.0 && ! $bomSparePartsAvailable) {
-            throw new InvalidArgumentException("Repairability score ground truth failure: Score > 7.0 requires documented BOM spare parts availability in inventory (289.8).");
+            throw new InvalidArgumentException('Repairability score ground truth failure: Score > 7.0 requires documented BOM spare parts availability in inventory (289.8).');
         }
 
         $qrUrl = "https://autoserve.corp/passport/{$pCode}";

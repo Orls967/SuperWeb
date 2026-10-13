@@ -29,7 +29,7 @@ class EsgOperatingModelOwnershipService
         string $assuranceProvider
     ): object {
         if (empty(trim($steward))) {
-            throw new InvalidArgumentException("Ownership invalid: Metric must have a named steward to prevent orphaned status (441.1, 441.6).");
+            throw new InvalidArgumentException('Ownership invalid: Metric must have a named steward to prevent orphaned status (441.1, 441.6).');
         }
 
         $id = DB::table('esg_metric_ownership_matrices')->insertGetId([
@@ -63,7 +63,7 @@ class EsgOperatingModelOwnershipService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Transfer failed: New steward cannot be empty, metric marked as orphaned (441.6).");
+            throw new InvalidArgumentException('Transfer failed: New steward cannot be empty, metric marked as orphaned (441.6).');
         }
 
         DB::table('esg_metric_ownership_matrices')->where('id', $metric->id)->update([
@@ -111,7 +111,7 @@ class EsgOperatingModelOwnershipService
 
         // 441.4 Metric must be independently verified by assurance
         if (! $card->metric_verified_by_assurance) {
-            throw new InvalidArgumentException("Payout blocked: ESG performance outcome must be independently verified by external assurance provider (441.3, 441.4).");
+            throw new InvalidArgumentException('Payout blocked: ESG performance outcome must be independently verified by external assurance provider (441.3, 441.4).');
         }
 
         // 441.5 Edge case: Anti-gaming guardrail violation blocks payout
@@ -121,7 +121,7 @@ class EsgOperatingModelOwnershipService
                 'updated_at' => now(),
             ]);
 
-            throw new InvalidArgumentException("Payout blocked: Metric gaming / manipulation detected by sustainability counter-metric guardrail (441.3, 441.5).");
+            throw new InvalidArgumentException('Payout blocked: Metric gaming / manipulation detected by sustainability counter-metric guardrail (441.3, 441.5).');
         }
 
         DB::table('esg_leadership_incentive_scorecards')->where('id', $card->id)->update([

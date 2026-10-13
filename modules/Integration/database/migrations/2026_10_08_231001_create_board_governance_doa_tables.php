@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('min_value', 15, 2)->default(0);
             $table->decimal('max_value', 15, 2);
             $table->timestamps();
-            $table->unique(['decision_type', 'authority_level']);
+            $table->unique(['decision_type', 'authority_level'], 'gov_doa_matrix_dec_auth_uniq');
         });
 
         Schema::create('gov_board_meetings', function (Blueprint $table) {

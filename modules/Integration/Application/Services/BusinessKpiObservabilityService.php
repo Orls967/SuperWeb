@@ -70,7 +70,7 @@ class BusinessKpiObservabilityService
         $dropPercent = (($priorValue - $currentValue) / $priorValue) * 100.00;
 
         if ($dropPercent >= 20.00) {
-            $anomalyCode = 'ANOM-' . strtoupper(substr(md5($kpiCode . time()), 0, 8));
+            $anomalyCode = 'ANOM-'.strtoupper(substr(md5($kpiCode.time()), 0, 8));
 
             $id = DB::table('int_business_kpi_anomalies')->insertGetId([
                 'anomaly_code' => $anomalyCode,

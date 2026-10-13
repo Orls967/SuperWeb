@@ -66,7 +66,7 @@ class ClimateTransitionFinanceService
 
         // Anti-greenwashing check 326.6: Must have verified abatement plan evidence
         if (! $hasEvidencedAbatementPlan) {
-            throw new InvalidArgumentException("Greenwashing violation: Transition instrument issuance strictly requires verified evidence of direct carbon abatement plan (326.6).");
+            throw new InvalidArgumentException('Greenwashing violation: Transition instrument issuance strictly requires verified evidence of direct carbon abatement plan (326.6).');
         }
 
         // Target evaluation & step-up logic 326.5 Edge Case

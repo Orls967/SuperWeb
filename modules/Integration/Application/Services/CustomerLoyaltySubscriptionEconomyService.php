@@ -38,7 +38,7 @@ class CustomerLoyaltySubscriptionEconomyService
 
         // Edge case 378.5: Must reference single unified policy rule rather than conflicting line rules
         if (empty($singlePolicyRuleId) || str_contains($singlePolicyRuleId, 'CONFLICT')) {
-            throw new InvalidArgumentException("Policy conflict: Entitlement requires resolution via single unified group policy (378.5).");
+            throw new InvalidArgumentException('Policy conflict: Entitlement requires resolution via single unified group policy (378.5).');
         }
 
         $id = DB::table('global_customer_cross_line_entitlements')->insertGetId([

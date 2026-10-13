@@ -23,7 +23,7 @@ return new class extends Migration
 
         Schema::create('decision_optimization_recommendation_audits', function (Blueprint $table) {
             $table->id();
-            $table->string('recommendation_code')->unique();
+            $table->string('recommendation_code')->unique('dec_opt_rec_audits_rec_code_uniq');
             $table->string('problem_code')->index();
             $table->decimal('recommended_value', 15, 2);
             $table->decimal('safety_min_bound', 15, 2);

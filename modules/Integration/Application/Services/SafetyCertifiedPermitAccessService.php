@@ -61,7 +61,7 @@ class SafetyCertifiedPermitAccessService
         ]);
 
         if (! $accessGranted) {
-            throw new InvalidArgumentException("Safety access violation: Worker is not certified, credentials expired, or lacking required supervisor signoff (323.4).");
+            throw new InvalidArgumentException('Safety access violation: Worker is not certified, credentials expired, or lacking required supervisor signoff (323.4).');
         }
 
         return (object) DB::table('safety_certified_access_permits')->find($id);
