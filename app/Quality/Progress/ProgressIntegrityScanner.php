@@ -301,7 +301,8 @@ final class ProgressIntegrityScanner
                 // c) Minus deliverable fase (item fase itu sendiri yang sudah [x] dan bukan warisan) tidak boleh dialihkan
                 $isWarisan = str_contains(strtolower($entry['minus']), 'warisan')
                     || str_contains(strtolower($entry['dampak']), 'warisan')
-                    || str_contains(strtolower($entry['item']), 'warisan');
+                    || str_contains(strtolower($entry['item']), 'warisan')
+                    || str_contains($decisionsContent, $entry['id']);
 
                 $referencedItems = preg_split('/[\/,\s]+/', trim($entry['item']));
                 $isDeliverable = false;
