@@ -8,7 +8,7 @@ use App\Quality\Mutation\MutationTargetResolver;
 use Illuminate\Console\Command;
 
 /**
- * Mutation testing runner using Pest --mutate (PROGRESS R0.12, KONSEP §A14.8, K-27).
+ * Mutation testing runner using Pest --mutate (PROGRESS R0.12, KONSEP §A14.8, K-MUT).
  *
  * Runs mutation testing on touched Action/Service classes with a minimum threshold of 60%.
  * Note: --covered-only is forbidden in CI as it artificially inflates scores.
@@ -43,42 +43,63 @@ class MutationTestCommand extends Command
             $classes = array_values(array_unique([...$classes, ...$detected]));
         }
 
-        if ($classes === [] && $this->option('git-diff')) {
-            $this->info('Tidak ada kelas Action/Service yang disentuh pada branch ini. Mutation testing dilewati.');
+        if ($classes === []) {
+            $this->info('tidak ada kelas Action/Service berubah');
 
             return self::SUCCESS;
         }
 
-        $cmdParts = [
-            'vendor/bin/pest',
-            '--mutate',
-            "--min={$minScore}",
-            '--ignore-min-score-on-zero-mutations',
-        ];
+        $overallExitCode = self::SUCCESS;
+        $commands = [];
 
-        if ($this->option('bail')) {
-            $cmdParts[] = '--bail';
+        foreach ($classes as $class) {
+            $testPath = MutationTargetResolver::resolveTestPathForClass($class, base_path());
+            $cmdParts = [
+                'vendor/bin/pest',
+            ];
+            if ($testPath !== null && $testPath !== '') {
+                $cmdParts[] = $testPath;
+            }
+            $cmdParts[] = '--mutate';
+            $cmdParts[] = "--min={$minScore}";
+            $cmdParts[] = "--class='{$class}'";
+
+            if ($this->option('bail')) {
+                $cmdParts[] = '--bail';
+            }
+
+            $cmd = implode(' ', $cmdParts);
+            $commands[] = [
+                'class' => $class,
+                'cmd' => $cmd,
+            ];
         }
-
-        if ($classes !== []) {
-            $classArg = implode(',', $classes);
-            $cmdParts[] = "--class={$classArg}";
-        }
-
-        $fullCmd = implode(' ', $cmdParts);
 
         if ($this->option('dry-run')) {
-            $this->info("Perintah mutasi yang disiapkan:\n{$fullCmd}");
+            $this->info('Daftar kelas target mutasi ('.count($classes).'):');
+            foreach ($commands as $item) {
+                $this->line("- Kelas: {$item['class']}");
+                $this->line("  Perintah: {$item['cmd']}");
+            }
 
             return self::SUCCESS;
         }
 
-        $this->info("Menjalankan Pest Mutation Testing (ambang skor minimum: {$minScore}%)...");
-        $this->line("Perintah: {$fullCmd}");
+        $this->info("Menjalankan Pest Mutation Testing per kelas (ambang batas: {$minScore}%)...");
+        foreach ($commands as $item) {
+            $this->line("==> Menjalankan mutasi untuk: {$item['class']}");
+            $this->line("Perintah: {$item['cmd']}");
+            passthru($item['cmd'], $code);
 
-        passthru($fullCmd, $exitCode);
+            if ($code !== 0) {
+                $overallExitCode = $code;
+                if ($this->option('bail')) {
+                    break;
+                }
+            }
+        }
 
-        return $exitCode;
+        return $overallExitCode;
     }
 
     /**
@@ -86,15 +107,17 @@ class MutationTestCommand extends Command
      */
     private function detectChangedClasses(string $baseBranch): ?array
     {
+        $cleanBase = trim($baseBranch);
         $mergeBaseOutput = [];
         $mergeBaseCode = 1;
-        exec("git merge-base origin/{$baseBranch} HEAD 2>/dev/null || git merge-base {$baseBranch} HEAD 2>/dev/null", $mergeBaseOutput, $mergeBaseCode);
+
+        exec("git merge-base {$cleanBase} HEAD 2>/dev/null || git merge-base origin/{$cleanBase} HEAD 2>/dev/null", $mergeBaseOutput, $mergeBaseCode);
         $mergeBase = trim(implode("\n", $mergeBaseOutput));
 
         if ($mergeBaseCode !== 0 || $mergeBase === '') {
             $diffOutput = [];
             $diffCode = 1;
-            exec("git diff --name-only origin/{$baseBranch}...HEAD 2>/dev/null || git diff --name-only {$baseBranch}...HEAD 2>/dev/null", $diffOutput, $diffCode);
+            exec("git diff --name-only {$cleanBase}...HEAD 2>/dev/null || git diff --name-only origin/{$cleanBase}...HEAD 2>/dev/null", $diffOutput, $diffCode);
 
             if ($diffCode !== 0) {
                 return null;

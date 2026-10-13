@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Quality\Mutation\MutationTargetResolver;
 
 /*
-| PROGRESS R0.12: MutationTargetResolverTest.
+| PROGRESS R0.12: MutationTargetResolverTest (K-MUT, KONSEP §A14.8).
 | Memverifikasi logika resolusi kelas Action/Service dari daftar file git diff.
 */
 
@@ -15,8 +15,8 @@ it('resolves Action and Service classes from changed files and ignores unrelated
         'modules/Hospital/Application/Actions/AdmitPatientAction.php', // duplicate to test array_unique
         'modules/Billing/Application/Services/InvoiceGenerationService.php',
         'app/Quality/Gate/JUnitParser.php',
-        'modules/Core/Actions/AuditLogAction.php',
-        'modules/Core/Services/HealthService.php',
+        'modules/Core/Actions/AuditLogAction.php', // non-Application ignored
+        'modules/Core/Services/HealthService.php', // non-Application ignored
         'modules/Hospital/tests/Feature/AdmitPatientTest.php', // test ignored
         'tests/Architecture/ArchTest.php', // test ignored
         'database/migrations/2026_10_10_000000_create_test_table.php', // migration ignored
@@ -26,6 +26,7 @@ it('resolves Action and Service classes from changed files and ignores unrelated
         'resources/views/welcome.blade.php', // view ignored
         'docs/PROGRESS.md', // markdown ignored
         'modules/Billing/Domain/Models/Invoice.php', // model not action/service
+        'app/Http/Controllers/SomeController.php', // non-Quality app class ignored
     ];
 
     $resolved = MutationTargetResolver::resolveClasses($files);
@@ -33,8 +34,6 @@ it('resolves Action and Service classes from changed files and ignores unrelated
     expect($resolved)->toBe([
         'App\Quality\Gate\JUnitParser',
         'Modules\Billing\Application\Services\InvoiceGenerationService',
-        'Modules\Core\Actions\AuditLogAction',
-        'Modules\Core\Services\HealthService',
         'Modules\Hospital\Application\Actions\AdmitPatientAction',
     ]);
 });
@@ -49,9 +48,20 @@ it('returns empty array when no Action or Service classes are changed', function
         'database/seeders/DatabaseSeeder.php',
         'config/database.php',
         'modules/Inventory/Domain/Models/Item.php',
+        'modules/Inventory/Domain/Repositories/ItemRepository.php',
     ];
 
     $resolved = MutationTargetResolver::resolveClasses($files);
 
     expect($resolved)->toBe([]);
+});
+
+it('resolves associated test paths for classes by convention', function (): void {
+    $appQualityTest = MutationTargetResolver::resolveTestPathForClass('App\\Quality\\Progress\\ProgressIntegrityScanner', base_path());
+    expect($appQualityTest)->not->toBeNull()
+        ->and($appQualityTest)->toContain('ProgressIntegrityScannerTest.php');
+
+    $gateRunnerTest = MutationTargetResolver::resolveTestPathForClass('App\\Quality\\Gate\\GateRunner', base_path());
+    expect($gateRunnerTest)->not->toBeNull()
+        ->and($gateRunnerTest)->toContain('GateRunnerTest.php');
 });
