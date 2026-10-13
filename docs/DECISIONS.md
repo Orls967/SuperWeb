@@ -1244,6 +1244,27 @@
 - **Verification:**
   - `vendor/bin/pest tests/Architecture/MutationFenceContractTest.php` lulus (4 passed, fixture positif dan 3 fixture negatif).
 
+## 2026-10-10: Pembekuan Snapshot Baseline PROGRESS (2026-10-10-progress-snapshot-8c8369d)
+<a id="2026-10-10-progress-snapshot-8c8369d"></a>
+- **Context:**
+  - Audit dan re-baseline 10 Oktober 2026 menghasilkan kondisi awal teks seluruh item pada `docs/PROGRESS.md`.
+  - Untuk mencegah penurunan spesifikasi atau manipulasi diam-diam terhadap teks item tanpa pengawasan (anti-pola X18 dan aturan P10), teks item dan status fase dibekukan dalam snapshot baseline.
+  - Snapshot baseline ini sebelumnya belum memiliki entri dokumentasi formal di `docs/DECISIONS.md`, yang dicatat sebagai kekurangan pada `M-R0-23`.
+- **Decision:**
+  - Menetapkan snapshot baseline formal yang dibekukan pada commit `8c8369d`:
+    1. **Apa yang dibekukan:** Teks seluruh item progress (kunci per fase dan item ID) serta status audit awal seluruh fase yang tercatat pada `docs/PROGRESS.md` saat commit `8c8369d`.
+    2. **File baseline:** Tersimpan di `tests/Architecture/baselines/progress-snapshot-8c8369d.json` (struktur data JSON teks item dan status fase) dan `tests/Architecture/baselines/progress-snapshot-8c8369d.md` (salinan markdown utuh). Selain itu, `tests/Architecture/baselines/progress-item-texts.json` digunakan oleh `ProgressIntegrityTest` untuk perbandingan langsung.
+    3. **Mekanisme Update (Ratchet):**
+       - Teks item TIDAK BOLEH diubah secara sembarangan.
+       - Bila cakupan atau spesifikasi suatu item harus diturunkan secara sah, teks item wajib diberi penanda eksplisit `⬇️ diturunkan` dan disertai rujukan entri keputusan di `docs/DECISIONS.md` yang menjelaskan justifikasi penurunan tersebut.
+       - Pelanggaran tanpa penanda `⬇️ diturunkan` akan secara otomatis digagalkan oleh `ProgressIntegrityTest` (P10/X18).
+- **Reason:**
+  - Menjamin integritas dan transparansi riwayat proyek sehingga kriteria terima dan spesifikasi tidak dapat dikurangi secara sepihak di tengah jalan.
+  - Menegakkan kepatuhan aturan P10 dan melengkapi pelacakan formal untuk deliverable R0.4.
+- **Verification:**
+  - `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` (`it enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker`) memverifikasi snapshot dan mendeteksi perubahan ilegal pada teks item.
+
+
 
 
 

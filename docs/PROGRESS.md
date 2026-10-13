@@ -526,7 +526,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-20 | R0.12 | Skor mutasi `App\Quality\Gate\GateRunner` mencapai 47.87% (131 killed mutants dari 282 total mutasi, naik dari 3.19%), sisa mutan untested pada konstanta MANDATORY_STEPS dan I/O shell | Pagar mutasi runner perlu penguatan lanjutan sampai ambang ≥ 60% | P1 | R0 putaran 2 (T5/T6) |
 | M-R0-21 | R0.4 / R0.12 | Skor mutasi `App\Quality\Progress\ProgressIntegrityScanner` 59.24% (327 killed dari 552 mutasi) berada di bawah ambang batas pagar ≥ 60.0% | Integritas dokumen dan bukti berpotensi lolos dari deteksi bila pagar mutasi scanner di bawah ambang batas | P1 | R0 putaran 2 (T5/T6) |
 | M-R0-22 | R0.3 / R0.12 | Job CI `PHP 8.4 × Pest Mutation Testing (min 60%)` pada PR #8 gagal (exit 2, run ID 38090351376) akibat crash proses PHP pada `ModuleBoundariesTest` | Pipeline CI PR merah dan tidak dapat memvalidasi mutasi kelas Action/Service secara stabil | P1 | Perbaikan alokasi memori / isolasi runner mutation di CI (T8) |
-| M-R0-23 | R0.4 | Snapshot baseline teks `docs/PROGRESS.md` (`progress-snapshot-8c8369d`) belum memiliki entri dokumentasi di `docs/DECISIONS.md` | Alasan pembekuan snapshot teks baseline dan mekanisme update tidak terlacak di log keputusan | P2 | DECISIONS.md (T10) |
+| ~~M-R0-23~~ | R0.4 | ~~Snapshot baseline teks `docs/PROGRESS.md` (`progress-snapshot-8c8369d`) belum memiliki entri dokumentasi di `docs/DECISIONS.md`~~ | ~~Alasan pembekuan snapshot teks baseline dan mekanisme update tidak terlacak di log keputusan~~ | ~~P2~~ | Tuntas di DECISIONS.md#2026-10-10-progress-snapshot-8c8369d |
 
 ### FASE R1 — LEDGER & UANG (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.
