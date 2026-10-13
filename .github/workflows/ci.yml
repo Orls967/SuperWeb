@@ -165,6 +165,7 @@ jobs:
           php-version: '8.4'
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, pcov, bcmath
           coverage: pcov
+          ini-values: memory_limit=1G
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction

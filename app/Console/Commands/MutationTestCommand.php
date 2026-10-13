@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Quality\Mutation\MutationTargetResolver;
 use Illuminate\Console\Command;
+use Symfony\Component\Process\Process;
 
 /**
  * Mutation testing runner using Pest --mutate (PROGRESS R0.12, KONSEP §A14.8, K-MUT).
@@ -92,8 +93,12 @@ class MutationTestCommand extends Command
         $this->info("Menjalankan Pest Mutation Testing per kelas (ambang batas: {$minScore}%)...");
         foreach ($commands as $item) {
             $this->line("==> Menjalankan mutasi untuk: {$item['class']}");
-            $this->line("Perintah: {$item['cmd']}");
-            passthru($item['cmd'], $code);
+            $process = Process::fromShellCommandline($item['cmd'], base_path());
+            $process->setTimeout(null);
+            $process->run(function (string $type, string $buffer): void {
+                echo $buffer;
+            });
+            $code = (int) $process->getExitCode();
 
             if ($code !== 0) {
                 $overallExitCode = $code;

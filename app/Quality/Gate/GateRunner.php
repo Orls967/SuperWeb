@@ -6,6 +6,7 @@ namespace App\Quality\Gate;
 
 use Closure;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\Process\Process;
 
 /**
  * Executes the full quality gate pipeline with genuine metric capture (PROGRESS R0.2, P4).
@@ -184,32 +185,18 @@ final class GateRunner
      */
     private function runDefaultProcess(string $cmd, string $cwd, array $env, ?Closure $logger = null): array
     {
-        $descriptors = [
-            0 => ['pipe', 'r'],
-            1 => ['pipe', 'w'],
-            2 => ['pipe', 'w'],
-        ];
-
-        $process = proc_open($cmd, $descriptors, $pipes, $cwd, $env);
-        if (! is_resource($process)) {
-            return ['exit_code' => 1, 'output' => ''];
-        }
-
-        fclose($pipes[0]);
-        $stdout = stream_get_contents($pipes[1]);
-        fclose($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]);
-        fclose($pipes[2]);
-
-        $exitCode = proc_close($process);
-        $output = ($stdout !== false ? $stdout : '').($stderr !== false ? $stderr : '');
-
-        if ($logger !== null && $output !== '') {
-            $logger('output', $output);
-        }
+        $process = Process::fromShellCommandline($cmd, $cwd, $env);
+        $process->setTimeout(120.0);
+        $output = '';
+        $process->run(function (string $type, string $buffer) use ($logger, &$output): void {
+            $output .= $buffer;
+            if ($logger !== null) {
+                $logger('output', $buffer);
+            }
+        });
 
         return [
-            'exit_code' => $exitCode,
+            'exit_code' => (int) $process->getExitCode(),
             'output' => $output,
         ];
     }
