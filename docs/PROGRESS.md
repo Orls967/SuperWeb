@@ -638,6 +638,158 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0 (boleh paralel dengan R1/R2).
+
+#### DoR Fase R3 — Otorisasi & data sensitif
+- Disetujui pemilik: [ ]   (tanggal / komentar — termasuk jawaban keputusan D1–D6 di bawah)
+- Tujuan bisnis: Menjamin seluruh rute operasional dan mutasi platform dilindungi kontrol akses berbasis peran (RBAC) granular dengan prinsip pemisahan tugas (auditor read-only, mutasi keuangan/stok terbatas pada role bisnis berwenang/admin), melindungi data pribadi dan rahasia dagang (NIK, NPWP, formula, kunci API, webhook secrets, gaji) dengan enkripsi kuat serta blind index HMAC ber-pepper, mengeliminasi bypass kontrol boolean tidak terpercaya pada jalur bernilai uang/kepatuhan non-Integration, serta menegakkan rate limit per klien API.
+- Modul pemilik & prefiks (KONSEP §A1) — bukan Integration:
+  - Tooling & RBAC Kernel: `Core` (`roles`, `permissions`, `user_role`, middleware `CheckRole`, trait `HasRbacRoles`) & `Shared` (security helper, blind index HMAC).
+  - Modul domain yang rute & datanya diperketat: `Mall` (`mall_`), `Resto` (`resto_`), `Hcm` (`hcm_`), `Treasury` (`trs_`), `Trade` (`trd_`), `TradeFinance` (`tf_`), `International` (`intl_`), `Intercompany` (`ico_`), `ControlTower` (`ct_`), `EnterpriseFinance` (`ef_`), `Esg` (`esg_`), `B2b` (`b2b_`), `Agri` (`agr_`), `Epc` (`epc_`), `Plm` (`plm_`), `Manufacturing` (`mfg_`), `Pricing` (`pric_`), `Partner` (`ptnr_`), `Logistics` (`lgx_`), `Store` (`sto_`), `AutoServe` (`srv_`), `Finance` (`fin_`), `Banking` (`bank_`), `Crypto` (`crp_`), `Venue` (`ven_`).
+  - Endpoint integrasi: `Integration` (`intg_` / proteksi halaman `/integration` & penegakan rate limit klien API).
+- Prasyarat & statusnya (harus ✅):
+  - R0 ✅ (PR #9 di-merge ke master pada commit `4171528`).
+  - Sesuai instruksi: Fase R3 berstatus P0 dan dapat berjalan paralel dengan R1/R2 (aturan mutlak: dilarang menyentuh modul ledger/payment kecuali rute & otorisasinya).
+- Item yang dikerjakan sesi ini & yang ditunda (→ Register Minus):
+  - Sesi ini: R3.1 (Tutup rute tanpa role & perbaikan M-R0-12, M-R0-13, M-R0-18), R3.2 (Enkripsi PII & rahasia, blind index HMAC, policy gaji), R3.3 (Hapus flag kontrol A6 non-Integration di `VenueCreatorEconomyService`), R3.4 (Kuota API & proteksi `/integration`), R3.5 (Quality gate, mutation test, CI PR).
+  - Ditunda: Perbaikan logika bisnis domain murni yang bukan masalah otorisasi (→ R2); pemecahan 345 service Integration di luar A6/kuota (→ R4.4); migrasi prefiks tabel (→ R4.2).
+
+- Angka awal terukur (output asli per 14 Okt 2026):
+
+  | Metrik / Pagar | Nilai Awal Terukur | Target R3 | Status & Keterangan |
+  |---|---|---|---|
+  | `route-auth-entries.json` | 299 rute | 0 rute keuangan/mutasi (target 0 total) | 299 rute warisan hanya bertipe `'auth'` tanpa role granular |
+  | `route-dynamic-pending.json` | 280 rute | Berkurang sesuai rute berparameter yang dipetakan params nyata | Rute berparameter tanpa closure parameter HTTP generator |
+  | `route-authorization.json` | 598 rute | Snapshot proteksi rute diperkuat (0 melemah) | Baseline proteksi rute platform |
+  | `arch:scan` A6 (Non-Integration) | 1 pelanggaran | 0 pelanggaran | `modules/Venue/Application/Services/VenueCreatorEconomyService.php:94` (`bool $windowPassed @ releaseRoyaltyPayout()`) |
+  | `arch:scan` A6 (Integration) | 132 pelanggaran | 132 (dibekukan sampai R4.4) | Masuk lingkup perombakan modular Fase R4.4 |
+  | `arch:scan` A7 | 5 pelanggaran | 0 pelanggaran | Hcm (1), Plm (1), Integration (3) |
+  | Register Minus M-R0-2 | 299 rute | Ditutup di R3.1 | Rute operasional 'auth' tanpa role |
+  | Register Minus M-R0-3 | 280 rute | Ditutup di R3.1 | Rute berparameter tertunda |
+  | Register Minus M-R0-12 | HTTP 403 admin | Selesai sesuai keputusan D3 | `distribution.portal.home` abort 403 untuk admin tanpa record Distributor |
+  | Register Minus M-R0-13 | storage upload | Terdokumentasi `'signed'` | `storage.local.upload` rute closure signed Laravel |
+  | Register Minus M-R0-18 | 37 rute tulis | 0 rute tulis ber-role auditor | 37 rute POST mutasi mengizinkan auditor (Mfg 23, Pricing 12, Partner 2) |
+
+  *Rincian 299 rute `route-auth-entries.json` per kelompok modul:*
+  - Resto: 89 rute (`resto.*`)
+  - Logistics: 63 rute (`logistics.*`, `api.v1.logistics.*`)
+  - Mall: 47 rute (`mall.*`)
+  - Store: 20 rute (`store.*`)
+  - Finance: 8 rute (`finance.*`)
+  - Wallet: 8 rute (`wallet.*`)
+  - AutoServe / Bookings: 7 rute (`bookings.*`)
+  - Crypto: 6 rute (`crypto.*`)
+  - API / Search: 5 rute (`api.*`)
+  - AutoDex: 5 rute (`autodex.*`)
+  - Notifications: 5 rute (`notifications.*`)
+  - Profile: 5 rute (`profile.*`)
+  - Verification: 3 rute (`verification.*`)
+  - Control Tower: 2 rute (`control_tower.index`, `control_tower.show`)
+  - Enterprise Finance: 2 rute (`enterprise_finance.index`, `enterprise_finance.show`)
+  - Estimates: 2 rute (`estimates.*`)
+  - Integration: 2 rute (`integration.index`, `integration.show`)
+  - Intercompany: 2 rute (`intercompany.index`, `intercompany.show`)
+  - International: 2 rute (`international.index`, `international.show`)
+  - Password: 2 rute (`password.*`)
+  - Trade Finance: 2 rute (`trade_finance.index`, `trade_finance.show`)
+  - Modul tunggal (1 rute masing-masing): `POST confirm-password`, `activity.index`, `agri.index`, `b2b.index`, `dashboard`, `epc.index`, `esg.index`, `hcm.index`, `logout`, `plm.index`, `trade.index`, `treasury.index`.
+
+  *Rincian 5 pelanggaran `arch:scan` A7:*
+  1. `modules/Hcm/Application/Services/HcmService.php:22` (`nik_hash = isset($data['nik'])?hash('sha256',$data['nik']):null`)
+  2. `modules/Plm/Application/Services/PlmService.php:121` (`formula_payload_encrypted = base64_encode($secretFormula)`)
+  3. `modules/Integration/Application/Services/GovEthicsAiBiometricsService.php:26` (`encrypted_template_hash = $templateHash`)
+  4. `modules/Integration/Application/Services/SdmWellnessOccupationalHealthService.php:28` (`encrypted_medical_vault_token = $vaultToken`)
+  5. `modules/Integration/Application/Services/WhistleblowingEthicsSpeakUpService.php:33` (`allegation_encrypted = base64_encode($allegationDetails)`)
+
+  *Rincian 37 rute tulis M-R0-18 yang mengizinkan auditor (akan dicabut):*
+  - Manufacturing Costing (2): `POST manufacturing/costing/versions/{version}/submit`, `POST manufacturing/costing/versions/{version}/approve`.
+  - Manufacturing Quality (12): `POST manufacturing/quality/plans`, `POST manufacturing/quality/inspections`, `POST manufacturing/quality/inspections/{inspection}/waiver`, `POST manufacturing/quality/inspections/{inspection}/approve`, `POST manufacturing/quality/ncrs`, `POST manufacturing/quality/ncrs/{ncr}/capas`, `POST manufacturing/quality/capas/{capa}/complete`, `POST manufacturing/quality/lots/{lot}/certificates`, `POST manufacturing/quality/lots/{lot}/release`, `POST manufacturing/quality/lots/{lot}/recall`, `POST manufacturing/quality/recalls/{recall}/notify`, `POST manufacturing/quality/recalls/{recall}/complete`.
+  - Manufacturing Maintenance (9): `POST manufacturing/maintenance/orders`, `POST manufacturing/maintenance/orders/{order}/transition`, `POST manufacturing/maintenance/sensors`, `POST manufacturing/maintenance/oee`, `POST manufacturing/maintenance/parts`, `POST manufacturing/maintenance/incidents`, `POST manufacturing/maintenance/incidents/{incident}/close`, `POST manufacturing/maintenance/permits`, `POST manufacturing/maintenance/permits/{permit}/approve`.
+  - Partners (2): `POST partners`, `POST partners/{partner}/transition`.
+  - Pricing (12): `POST pricing/price-lists`, `POST pricing/price-lists/items`, `POST pricing/price-lists/{list}/activate`, `POST pricing/discounts`, `POST pricing/promotions`, `POST pricing/promotions/claims`, `POST pricing/claims/{claim}/validate`, `POST pricing/claims/{claim}/settle`, `POST pricing/margin-policies`, `POST pricing/overrides`, `POST pricing/overrides/{override}/decide`, `POST pricing/analytics`.
+
+- Daftar role yang ada & usulan matriks role per kelompok rute:
+  - *Daftar role yang ada di `RbacSeeder.php` (26 role):* `admin`, `customer`, `mekanik`, `tenant`, `outlet_manager`, `kitchen`, `cashier`, `shipper`, `driver`, `dispatcher`, `hub_operator`, `logistics_admin`, `party_manager`, `contract_manager`, `legal`, `asset_manager`, `auditor`, `supplier`, `procurement`, `distributor`, `agent`, `partner`, `treasury`, `planner`, `operator`, `qc_inspector`.
+  - *Role tambahan di `User.php`:* `mall_admin`, `technician`.
+  - *Usulan penambahan role baru di RBAC Seeder (sesuai `CODEBASE.md`):* `hcm_manager`, `rnd_specialist`, `esg_officer`, `b2b_buyer`, `farmer`, `epc_manager`. Total pool: 34 role.
+  - *Prinsip utama:* Auditor read-only murni (hanya GET/index/show/laporan; HTTP 403 untuk seluruh mutasi tulis POST/PUT/PATCH/DELETE). Mutasi keuangan & aset hanya role berwenang + `admin`.
+  - *Usulan matriks role per kelompok rute (R3.1):*
+    1. **Mall** (47 rute): Operasional & tagihan (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants): `['admin', 'mall_admin']` (baca: + `auditor`); utilitas & parkir: `['admin', 'mall_admin', 'technician']`; portal tenant (lihat/bayar invoice tenant): `['admin', 'tenant']`. Action `MallAutoDebitAction` memvalidasi role pemanggil.
+    2. **Resto** (89 rute): Master menu/outlet/resep: `['admin', 'outlet_manager']`; transfer bahan & stock count: `['admin', 'outlet_manager', 'kitchen']`; order POS & billing: `['admin', 'cashier', 'outlet_manager']`; dapur/KDS: `['admin', 'kitchen', 'outlet_manager']`; pembelian bahan & pembayaran PO supplier (`POST resto/purchases/{id}/pay`): `['admin', 'outlet_manager']` (baca: + `auditor`). Action `PaySupplierAction` memvalidasi role pemanggil.
+    3. **HCM** (`/hcm`, 1 rute): `['admin', 'hcm_manager']` (karyawan umum hanya slip sendiri; policy data gaji).
+    4. **Treasury** (`/treasury`, 1 rute): `['admin', 'treasury']` (baca: + `auditor`).
+    5. **Trade & Trade Finance** (3 rute): `['admin', 'treasury', 'procurement']` (baca: + `auditor`).
+    6. **International & Intercompany** (4 rute): `['admin', 'treasury', 'legal']` (baca: + `auditor`).
+    7. **Control Tower** (2 rute): `['admin', 'logistics_admin', 'planner', 'auditor']`.
+    8. **Enterprise Finance** (2 rute): `['admin', 'treasury']` (baca: + `auditor`).
+    9. **ESG** (`/esg`, 1 rute): `['admin', 'esg_officer']` (baca: + `auditor`).
+    10. **B2B, Agri, EPC, PLM** (4 rute): B2B `['admin', 'b2b_buyer', 'procurement']`; Agri `['admin', 'farmer', 'procurement']`; EPC `['admin', 'epc_manager', 'asset_manager']`; PLM `['admin', 'rnd_specialist']` (seluruhnya baca: + `auditor`).
+    11. **Integration** (2 rute): Halaman `/integration` dibatasi `['admin']`.
+    12. **Logistics** (63 rute): `['admin', 'logistics_admin', 'dispatcher', 'hub_operator', 'driver', 'shipper']` dipetakan granular sesuai tugas per endpoint; baca: + `auditor`.
+    13. **Store & AutoServe** (27 rute): Store admin `['admin']`, checkout publik `['admin', 'customer']`; AutoServe operasional bengkel `['admin', 'mekanik']`, booking mandiri `['admin', 'customer']`.
+    14. **Finance, Wallet, Crypto** (22 rute): Wallet publik customer `['admin', 'customer']`; modul finance & transfer ledger internal `['admin', 'treasury']`.
+
+- Kolom PII & rahasia yang akan dienkripsi (R3.2):
+  | Tabel | Kolom Asli | Sifat Data | Tindakan R3.2 | Kolom Blind Index | Kebutuhan Cari | Strategi Data Lama (D3 R1) |
+  |---|---|---|---|---|---|---|
+  | `hcm_employees` | `nik_hash` | PII Pegawai | Tambah kolom `nik` (cast `encrypted`), ganti unkeyed hash | `nik_bidx` (char 64, HMAC-SHA256 dgn pepper) | YA (exact match NIK) | Migrasi baru; command enkripsi & backfill blind index |
+  | `mall_tenants` | `npwp` (varchar) | PII Tenant | Cast `encrypted` pada model | `npwp_bidx` (char 64, HMAC-SHA256 dgn pepper) | YA (exact match NPWP) | Migrasi penambahan `npwp_bidx`; command enkripsi & backfill data lama |
+  | `pty_legal_entities` | `npwp` (varchar) | PII Badan Hukum | Cast `encrypted` pada model | `npwp_bidx` (char 64, HMAC-SHA256 dgn pepper) | YA (exact match NPWP) | Migrasi penambahan `npwp_bidx`; command enkripsi & backfill data lama |
+  | `pty_parties` | `nik_hash`, `npwp_hash` | PII Identitas | Cast `encrypted` pada nilai asli | `nik_bidx`, `npwp_bidx` (HMAC) | YA | Migrasi penyesuaian |
+  | `plm_lab_notebooks` | `formula_payload_encrypted` | Rahasia Dagang (R&D) | Ganti `base64_encode` menjadi cast `encrypted` Laravel | Tidak butuh | TIDAK (hanya dibaca utuh) | Migrasi decode base64 lama dan re-encrypt dengan `Crypt::encryptString` |
+  | `intg_webhook_subscriptions` | `secret_key` | Kredensial Webhook | Cast `encrypted` (perlu dibaca untuk signing HMAC payload) | Tidak butuh | TIDAK | Enkripsi data lama jika ada |
+  | `lgx_webhook_endpoints` | `secret` | Kredensial Webhook Logistik | Cast `encrypted` (perlu dibaca untuk signing HMAC payload) | Tidak butuh | TIDAK | Enkripsi data lama |
+  | `core_outbox_subscriptions` | `secret` | Kredensial Webhook Kernel | Cast `encrypted` (perlu dibaca untuk signing HMAC payload) | Tidak butuh | TIDAK | Enkripsi data lama |
+  | `intg_api_clients` | `api_key_hash` | Kunci API Klien | Hash satu arah (`hash('sha256', $key)`); raw key hanya saat create | Tidak butuh | YA (lookup by hash) | Sudah berformat hash |
+  | `pe_developer_accounts` | `api_key` | Kunci API Developer | Hash satu arah (`api_key_hash`) | Tidak butuh | YA (lookup by hash) | Konversi plaintext ke hash |
+  | `plt_api_partner_certifications` | `production_api_key` | Kunci API Partner | Hash satu arah (`production_api_key_hash`) | Tidak butuh | YA (lookup by hash) | Konversi plaintext ke hash |
+  | `hcm_employees` & `hcm_payrolls` | `basic_salary_idr`, `gross_salary_idr`, `net_salary_idr` | Data Keuangan Sensitif (Gaji) | Proteksi otorisasi Policy/Gate: hanya `hcm_manager` dan `admin`; karyawan lain 403 | Tidak butuh | TIDAK | Proteksi layer otorisasi aplikasi |
+
+- Daftar parameter bool kontrol (A6) non-Integration yang akan diganti (R3.3):
+  - Target: `modules/Venue/Application/Services/VenueCreatorEconomyService.php:94` — parameter `bool $windowPassed = true` pada method `releaseRoyaltyPayout(RightsContract $contract, bool $windowPassed = true): int`.
+  - Jalur: Jalur mutasi uang (pencairan royalti dari akun escrow `ven:creator_held_royalty_escrow:IDR` ke utang `ven:creator_payable:IDR`).
+  - Penggantian: Hapus parameter `$windowPassed` dari pemanggil; turunkan verifikasi langsung dari waktu/status nyata tersimpan: `$isWindowPassed = now()->greaterThanOrEqualTo($contract->created_at->addDays($contract->payout_hold_window_days));` bila belum terpenuhi atau ada dispute aktif, tolak transaksi (`RuntimeException`).
+  - Target kriteria terima: `arch:scan` A6 modul non-Integration = 0 (132 sisanya di modul Integration mengikuti Fase R4.4).
+
+- Entitas/tabel + state machine:
+  - Migrasi penambahan kolom blind index: `hcm_employees.nik` (encrypted text), `hcm_employees.nik_bidx` (char 64 index), `mall_tenants.npwp_bidx` (char 64 index), `pty_legal_entities.npwp_bidx` (char 64 index).
+  - Cast `encrypted` pada model Eloquent: `Employee`, `MallTenant`, `LegalEntity`, `Party`, `LabNotebook`, `WebhookSubscription`, `WebhookEndpoint`, `OutboxSubscription`.
+  - Rate limiting cache key: `api-client:{client_id}` tracking minute counter.
+
+- Posting ledger: Tidak ada akun baru. Otorisasi pada aksi pembuat posting (`MallAutoDebitAction`, `PaySupplierAction`, `VenueCreatorEconomyService::releaseRoyaltyPayout`) dijaga ketat agar hanya role sah yang dapat memicu posting.
+- Event: Logging audit otorisasi & rate limit terintegrasi ke log standar aplikasi.
+- Rute/UI/menu + role & policy:
+  - Seluruh 299 rute `auth` di `route-auth-entries.json` dipetakan ke role spesifik di `routes/web.php` dan `tests/Architecture/route-roles.php`.
+  - 37 rute tulis auditor dicabut dari `auditor`, dipasangi role bisnis + `admin`.
+  - Rute `/integration` dibatasi untuk `admin`.
+  - Halaman/data gaji dilindungi Policy `hcm_manager` / `admin`.
+- Command/jadwal: Artisan command `app:migrate-sensitive-data` sekali jalan (idempoten) untuk enkripsi & backfill data lama dengan pencocokan jumlah baris.
+- Audit dua-sumber + fixture korupsi:
+  - Ditegakkan lewat pagar otomatis arsitektur: `RouteAuthorizationMatrixTest` (menjamin matriks proteksi statis & HTTP), `arch:scan` A6 (non-Integration = 0) dan A7 (= 0).
+- Nama test yang akan ditulis:
+  - `Tests\Architecture\RouteAuthorizationMatrixTest` (baseline update, ratchet dynamic pending, 0 rute keuangan ber-role `auth`);
+  - `Tests\Feature\Authorization\AuditorReadOnlyPolicyTest` (menguji ke-37 rute tulis mengembalikan 403 untuk auditor);
+  - `Tests\Feature\Authorization\ModuleRouteAuthorizationTest` (Mall, Resto, HCM, Treasury, Trade, dll.: role berhak lolos, role tidak berhak 403, guest 302);
+  - `Tests\Feature\Security\SensitiveDataEncryptionTest` (DB memuat ciphertext ≠ plaintext, pencarian blind index HMAC SHA-256 presisi, rotasi pepper);
+  - `Tests\Feature\Authorization\SalaryAuthorizationPolicyTest` (hanya `hcm_manager`/`admin` yang dapat mengakses data gaji; role lain 403);
+  - `Tests\Feature\Venue\CreatorRoyaltyPayoutGuardTest` (pencairan royalti menolak bypass boolean pemanggil bila window hold belum lewat);
+  - `Tests\Feature\Integration\ApiClientRateLimitingTest` (request ke-(n+1) dalam satu menit mengembalikan 429 + header `Retry-After`; role non-admin akses `/integration` → 403).
+- Tingkat simulasi & tier skala: S1; T1.
+- Jalan pintas yang harus dihindari:
+  - Menetapkan semua rute ke role `admin` saja;
+  - Membiarkan role `auditor` memiliki hak mutasi pada rute tulis;
+  - Menyimpan plaintext kunci enkripsi / pepper di kode sumber atau repositori (wajib via config/env);
+  - Menggunakan `base64_encode` atau hash tanpa key untuk PII/rahasia (A7);
+  - Mempertahankan bypass parameter boolean dengan alasan kenyamanan pengujian;
+  - Mengubah teks item atau menurunkan baseline tanpa verifikasi.
+
+- Keputusan pemilik yang dibutuhkan:
+  - **D1 (Role Baru di RBAC):** Persetujuan untuk menambahkan 8 role baru ke dalam `RbacSeeder.php` dan tabel RBAC: `hcm_manager`, `rnd_specialist`, `esg_officer`, `b2b_buyer`, `farmer`, `epc_manager`, `mall_admin`, `technician`.
+  - **D2 (Kebijakan Pepper Blind Index):** Pepper untuk blind index disimpan di `config('app.blind_index_pepper')` dari env `BLIND_INDEX_PEPPER` (dengan nilai default untuk testing di `.env.example`). Prosedur rotasi pepper didokumentasikan di `docs/RUNBOOK.md`.
+  - **D3 (Akses Admin di Portal Distributor, M-R0-12):** Pada `distribution.portal.home`, admin tanpa data distributor diarahkan ke seleksi distributor atau role `admin` dicabut dari portal tersebut (portal khusus role `distributor`). Usulan: sediakan fallback distributor pertama/selector untuk admin agar supervisi tetap berjalan tanpa 403.
+  - **D4 (Dokumentasi Rute Signed, M-R0-13):** Konfirmasi bahwa rute `storage.local.upload` secara resmi didokumentasikan di `route-roles.php` sebagai tipe `'signed'` (menggunakan mekanisme temporary URL signature Laravel).
+  - **D5 (Pencabutan Hak Tulis Auditor, M-R0-18):** Persetujuan mencabut role `auditor` dari seluruh 37 rute POST mutasi di Manufacturing (23 rute), Pricing (12 rute), dan Partner (2 rute), sehingga auditor murni read-only.
+  - **D6 (Rate Limit Default Klien API, R3.4):** Untuk klien API tanpa konfigurasi kustom `rate_limit_per_minute`, limit default ditetapkan 600 req/menit dengan format respons JSON 429 dan header `Retry-After: 60`.
+
 - [ ] R3.1 **Tutup rute tanpa role** (K-20): isi `route-roles.php` untuk semua rute dan perbaiki minimal: Mall (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants, utilities, parking admin), Resto (menu, ingredients, outlets, purchases + `pay`, transfers, stock counts, POS), HCM, Treasury, Trade, Trade Finance, International, Intercompany, Control Tower, Enterprise Finance, ESG, B2B, Agri, EPC, PLM, Integration; tambah pemeriksaan role di Action uang (`MallAutoDebitAction`, `PaySupplierAction`).
   - Kriteria terima: baseline `RouteAuthorizationMatrixTest` = 0; tidak ada rute mutasi/keuangan yang hanya `auth`.
 - [ ] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin` (baseline `arch:scan` A7 = 0).
