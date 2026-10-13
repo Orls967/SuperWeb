@@ -57,7 +57,7 @@ final class GateRunner
 
     public function __construct(
         private readonly ?string $repoRoot = null,
-        private readonly ProcessRunnerInterface|Closure|null $processRunner = null,
+        private readonly ?Closure $processRunner = null,
     ) {}
 
     /**
@@ -95,7 +95,6 @@ final class GateRunner
         $executedSteps = [];
         $overallStatus = 'PASS';
         $finalExitCode = 0;
-        $runner = $this->processRunner ?? new ShellProcessRunner;
 
         foreach (self::MANDATORY_STEPS as $stepDef) {
             $name = $stepDef['name'];
@@ -122,10 +121,10 @@ final class GateRunner
                 $env['DB_DATABASE'] = $gateDb;
             }
 
-            if ($runner instanceof ProcessRunnerInterface) {
-                $execResult = $runner->run($cmd, $root, $env, $logger);
+            if ($this->processRunner !== null) {
+                $execResult = ($this->processRunner)($cmd, $root, $env, $logger);
             } else {
-                $execResult = $runner($cmd, $root, $env, $logger);
+                $execResult = $this->runDefaultProcess($cmd, $root, $env, $logger);
             }
 
             $exitCode = $execResult['exit_code'];
@@ -176,6 +175,43 @@ final class GateRunner
         );
 
         return $finalExitCode;
+    }
+
+    /**
+     * @param  array<string, string>  $env
+     * @param  (Closure(string, string): void)|null  $logger
+     * @return array{exit_code: int, output: string}
+     */
+    private function runDefaultProcess(string $cmd, string $cwd, array $env, ?Closure $logger = null): array
+    {
+        $descriptors = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+        ];
+
+        $process = proc_open($cmd, $descriptors, $pipes, $cwd, $env);
+        if (! is_resource($process)) {
+            return ['exit_code' => 1, 'output' => ''];
+        }
+
+        fclose($pipes[0]);
+        $stdout = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+
+        $exitCode = proc_close($process);
+        $output = ($stdout !== false ? $stdout : '').($stderr !== false ? $stderr : '');
+
+        if ($logger !== null && $output !== '') {
+            $logger('output', $output);
+        }
+
+        return [
+            'exit_code' => $exitCode,
+            'output' => $output,
+        ];
     }
 
     private function resolveCommitHash(string $root): string
