@@ -16,6 +16,13 @@ Aturan pemakaian (PROGRESS.md §P6):
 | B-01 | 2026-10-10 | R0.3 | Branch protection `master` belum aktif | Kriteria terima R0.3; status ✅ Fase R0 | Pemilik (pengaturan GitHub) |
 | B-02 | 2026-10-11 | R1 (DoR) | Keputusan D1–D8 di DoR Fase R1 | Mulai kode R1 | Pemilik |
 | B-05 | 2026-10-11 | R0.3.b, R1.8 | Belum diketahui apakah ada database berisi data nyata | Cara mengubah skema: edit migrasi lama vs migrasi baru | Pemilik |
+| B-07 | 2026-10-13 | R0.3, R0.12 | CI PR #8 Job Pest Mutation Testing gagal (exit 2, run 38090351376) | Status hijau CI PR #8 & penyelesaian R0 | Pelaksana / konfig CI |
+
+### B-07 — CI PR #8 Pest Mutation Testing gagal (run 38090351376)
+
+- **Konteks:** Eksekusi workflow CI pada Draft PR #8 (`PHP 8.4 × Pest Mutation Testing (min 60%)`, commit `3493ed1`) mengalami kegagalan setelah 1 jam 50 menit dengan `Fatal error: Premature end of PHP process ... exit code 2` saat menjalankan mutasi pada `ModuleBoundariesTest`.
+- **Dampak:** CI pull request tidak berstatus hijau, menghalangi kriteria terima R0.3 dan verifikasi penuh R0.
+- **Rekomendasi tindak lanjut:** Pelaksana perlu mengisolasi cakupan runner mutasi per modul/subset kelas yang relevan atau meninjau alokasi memori/timeout di GitHub Actions.
 
 ### B-01 — Branch protection `master` belum aktif
 

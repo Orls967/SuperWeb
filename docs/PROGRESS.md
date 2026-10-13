@@ -328,7 +328,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 > Urutan R0 → R9 mengikuti dependensi. **R0 memasang pagar otomatis lebih dulu** sehingga sejak perbaikan pertama, jalan pintas langsung membuat gate merah. Setiap sub-fase R mengikuti P1–P13 (DoR boleh singkat karena tugas R sudah rinci) dan ditutup gate penuh + verifikasi silang. Rujukan temuan `K-xx` ada di `docs/KNOWLEDGE.md` §5.
 
 ### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS (ANTI JALAN PINTAS)
-> **Status audit:** 🔵 SIAP VERIFIKASI (DoR disetujui 2026-10-10, branch `feature/fase-r0-mac`) · Prasyarat semua fase R lain. Semua detektor di R0 dipasang dengan baseline (ratchet) sehingga bisa langsung aktif walau kode lama masih melanggar.
+> **Status audit:** 🔁 DIBUKA KEMBALI (2026-10-13, B-01 branch protection belum aktif, CI PR #8 mutation gagal, skor mutasi ProgressIntegrityScanner 59.24% < 60%, GateRunner 47.87% < 60%, R0.3.b [ ]).
 
 #### DoR Fase R0 — Lingkungan, gate & pagar otomatis
 - Disetujui pemilik: [x]   2026-10-10 (chat) — DoR disetujui; (1) `"php": "^8.4"` + `composer.lock` tetap di-commit; (2) folder `.github/` boleh dibuat, **push wajib ditanyakan dulu**; (3) DB kedua CI: **MySQL 8**; (4) merge dengan merge commit.
@@ -513,6 +513,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-18 | R3.1 | 37 rute tulis auditor (V8c) mencantumkan role auditor pada endpoint mutasi data (store/update/delete/settle/transition/decide) | Auditor seharusnya hanya memiliki hak baca (read-only) | P1 | R3.1 (K2) |
 | ~~M-R0-19~~ | R0.3 | ~~Workflow CI dinamis per-fase terpasang di `.github/workflows/ci.yml` (B-06)~~ | ~~Workflow CI dinamis tuntas~~ | ~~P2~~ | Tuntas di commit `92385b0`, terbukti pada CI push run #38089526607 (artefak `gate-report-fase-r0`) |
 | M-R0-20 | R0.12 | Skor mutasi `App\Quality\Gate\GateRunner` mencapai 47.87% (131 killed mutants dari 282 total mutasi, naik dari 3.19%), sisa mutan untested pada konstanta MANDATORY_STEPS dan I/O shell | Pagar mutasi runner perlu penguatan lanjutan sampai ambang ≥ 60% | P2 | R5.5 (K2) |
+| M-R0-21 | R0.4 / R0.12 | Skor mutasi `App\Quality\Progress\ProgressIntegrityScanner` 59.24% (327 killed dari 552 mutasi) berada di bawah ambang batas pagar ≥ 60.0% | P1 | R5.5 (K2) |
+| M-R0-22 | R0.3 / R0.12 | Job CI `PHP 8.4 × Pest Mutation Testing (min 60%)` pada PR #8 gagal (exit 2, run ID 38090351376) akibat crash proses PHP pada `ModuleBoundariesTest` | P1 | Perbaikan alokasi memori / isolasi runner mutation di CI |
+| M-R0-23 | R0.4 | Snapshot baseline teks `docs/PROGRESS.md` (`progress-snapshot-8c8369d`) belum memiliki entri dokumentasi di `docs/DECISIONS.md` | P2 | DECISIONS.md |
 
 ### FASE R1 — LEDGER & UANG (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.
