@@ -149,12 +149,18 @@
      - Dicatat pada `docs/DECISIONS.md#2026-10-10-progress-snapshot-8c8369d`.
      - Minus `M-R0-23` dicoret di Register Minus.
   9. **Quality Gate Penuh (T11):**
-     - `composer gate` penuh (9 langkah wajib) dieksekusi pada commit bersih dan sukses 100% (exit 0, 2.601 test, 11.504 asersi).
+     - `composer gate` penuh (9 langkah wajib) dieksekusi pada commit bersih dan sukses 100% (exit 0, 2.607 test, 11.521 asersi).
      - Status Fase R0 di `docs/PROGRESS.md` dialihkan menjadi `🔵 SIAP VERIFIKASI`.
+  10. **Verifikasi Penuh CI PR #10 (Run ID: 38470484709):**
+     - Job 1: `PHP 8.4 × MySQL 8 (DB Portability)` LULUS 🟢 (1m 59s, ID 115548088213).
+     - Job 2: `PHP 8.4 × SQLite (Full Gate Suite)` LULUS 🟢 (6m 29s, ID 115548087803).
+     - Job 3: `PHP 8.4 × Pest Mutation Testing (min 60%)` LULUS 🟢 (12m 39s, ID 115548088305).
+     - Pagar mutasi 5 kelas R0 dan kelas diubah PR terbukti lulus ambang batas ≥ 60%.
+     - Seluruh 3 job CI PR #10 hijau penuh. Minus `M-R0-22` resmi dicoret di Register Minus.
 - **Status Minus R0 Deliverable:**
-  - `M-R0-20`: ~~DICORET~~ (terbukti 69.28% ≥ 60%)
-  - `M-R0-21`: ~~DICORET~~ (terbukti 75.16% ≥ 60%)
-  - `M-R0-22`: MENUNGGU CI (perbaikan runner & alokasi memori selesai; menunggu pembukaan PR dan verifikasi eksekusi GitHub Actions)
+  - `M-R0-20`: ~~DICORET~~ (terbukti 64.97% ≥ 60% via Symfony Process)
+  - `M-R0-21`: ~~DICORET~~ (terbukti 72.89% ≥ 60%)
+  - `M-R0-22`: ~~DICORET~~ (CI PR #10 run ID #38470484709 hijau penuh 3/3 jobs)
   - `M-R0-23`: ~~DICORET~~ (entri keputusan snapshot selesai)
 
 
