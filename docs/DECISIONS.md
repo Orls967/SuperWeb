@@ -1229,6 +1229,22 @@
   - Pagar integritas `ProgressIntegrityScanner` memverifikasi aturan P9: keberadaan item tujuan di PROGRESS.md, validitas anchor DECISIONS.md, penolakan pengalihan deliverable fase, serta pemblokiran status ✅ fase tujuan selama minus belum dicoret.
   - `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` lulus.
 
+## 2026-10-14: Penggantian Test Skor Hardcode dengan Pagar Nyata (2026-10-14-ganti-test-skor-hardcode)
+<a id="2026-10-14-ganti-test-skor-hardcode"></a>
+- **Context:**
+  - Verifikator independen sebelumnya menambahkan `tests/Architecture/Verifikasi/ProgressScannerMutationScoreTest.php` yang memuat nilai konstan hardcode (`$achievedScore = 59.24;` dan `$achievedScore = 47.87;`) untuk membuktikan kegagalan ambang batas mutasi 60% pada `ProgressIntegrityScanner` dan `GateRunner`.
+  - Keberadaan file test dengan konstanta kegagalan hardcode tersebut menghalangi test suite lokal dan CI untuk lulus meskipun pengujian mutasi riil telah dinaikkan dan diverifikasi oleh pagar otomatis.
+- **Decision:**
+  - Sesuai Keputusan Pemilik K-TEST (mengikat):
+    1. Test hardcode `tests/Architecture/Verifikasi/ProgressScannerMutationScoreTest.php` dihapus (izin hapus test khusus untuk file ini saja).
+    2. Digantikan dengan pagar kontrak nyata `tests/Architecture/MutationFenceContractTest.php` yang memverifikasi konfigurasi workflow CI (`.github/workflows/ci.yml`) secara permanen.
+    3. Pagar baru memastikan seluruh 5 kelas pagar R0 (`ProgressIntegrityScanner`, `GateRunner`, `GateReportCommand`, `GateManifest`, `RouteAuthorizationScanner`) dijalankan dengan `--min=60`, tanpa `continue-on-error`, dan tanpa `|| true`, dilengkapi fixture negatif pengujian.
+- **Reason:**
+  - Menggantikan asersi statis buatan dengan mekanisme pagar arsitektur otomatis yang menegakkan kepatuhan ambang mutasi riil di lingkungan CI tanpa celah bypass.
+- **Verification:**
+  - `vendor/bin/pest tests/Architecture/MutationFenceContractTest.php` lulus (4 passed, fixture positif dan 3 fixture negatif).
+
+
 
 
 

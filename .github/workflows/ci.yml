@@ -149,6 +149,7 @@ jobs:
   mutation-testing:
     name: PHP 8.4 × Pest Mutation Testing (min 60%)
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     if: github.event_name == 'pull_request'
 
     steps:
@@ -173,5 +174,14 @@ jobs:
           cp .env.example .env
           php artisan key:generate --ansi
 
-      - name: Run Pest Mutation Testing on Touched Classes
-        run: php artisan test:mutate --git-diff --base="${{ github.base_ref || 'master' }}" --min=60
+      - name: Mutation pagar R0
+        run: |
+          php -d memory_limit=1G vendor/bin/pest tests/Unit/Quality/Progress tests/Architecture/ProgressIntegrityTest.php --mutate --parallel --class='App\Quality\Progress\ProgressIntegrityScanner' --min=60
+          php -d memory_limit=1G vendor/bin/pest tests/Feature/Quality/GateRunnerTest.php --mutate --parallel --class='App\Quality\Gate\GateRunner' --min=60
+          php -d memory_limit=1G vendor/bin/pest tests/Feature/Console/GateReportCommandTest.php --mutate --parallel --class='App\Console\Commands\GateReportCommand' --min=60
+          php -d memory_limit=1G vendor/bin/pest tests/Unit/Quality/Gate/GateManifestTest.php --mutate --parallel --class='App\Quality\Gate\GateManifest' --min=60
+          php -d memory_limit=1G vendor/bin/pest tests/Unit/Quality/Routing tests/Architecture/RouteAuthorizationMatrixTest.php --mutate --parallel --class='App\Quality\Routing\RouteAuthorizationScanner' --min=60
+
+      - name: Mutation kelas diubah PR
+        run: php -d memory_limit=1G artisan test:mutate --git-diff --base=origin/${{ github.base_ref }} --min=60
+
