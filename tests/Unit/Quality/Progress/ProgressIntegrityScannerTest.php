@@ -416,7 +416,16 @@ MD;
 it('rejects sabotage S7 phase marked verified ✅ when gate report verification section is only a template or lacks valid C1-C14 table', function (): void {
     $tempDir = sys_get_temp_dir().'/progress_test_s7_'.uniqid();
     mkdir($tempDir.'/docs/gates', 0777, true);
-    copy(base_path('docs/gates/fase-r0.md'), $tempDir.'/docs/gates/fase-r1.md');
+    file_put_contents($tempDir.'/docs/gates/fase-r1.md', <<<'MD'
+# Quality Gate Report: Fase r1
+## 5. Verifikasi
+*(Bagian ini wajib diisi oleh verifikator independen)*
+- **Tanggal:** 
+- **Verifikator:** 
+- **Commit yang diverifikasi:** 
+- **Keputusan:** BELUM DIVERIFIKASI
+MD
+    );
 
     $markdown = <<<'MD'
 ### FASE R1 — LEDGER & UANG
@@ -431,4 +440,231 @@ MD;
 
     expect(implode("\n", $violations))->toContain('bagian Verifikasi di')
         ->and(implode("\n", $violations))->toContain('tidak sah');
+});
+
+it('passes valid redirected minus without blocking origin phase', function (): void {
+    $tempDir = sys_get_temp_dir().'/progress_test_k_p9_valid_'.uniqid();
+    mkdir($tempDir.'/docs/gates', 0777, true);
+    file_put_contents($tempDir.'/docs/DECISIONS.md', "# Decisions\n\n## 2026-10-14-p9-minus-dialihkan\n");
+    copy(base_path('docs/gates/fase-r0.md'), $tempDir.'/docs/gates/fase-r0.md');
+
+    $markdown = <<<'MD'
+### FASE R0 — PAGAR OTOMATIS
+> **Status audit:** ✅ SELESAI
+
+- [x] R0.1 Pagar awal
+  Bukti:
+    - jenis: konfigurasi
+    - commit: 4171528
+    - file: composer.json
+    - test: tests/Unit/SampleTest.php::it passes
+    - gate: docs/gates/fase-r0.md
+
+#### Register Minus Fase R0
+| ID | Item | Minus | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| M-R0-6 | R1.2 | Saldo akun warisan terbalik | Data saldo terbalik | P0 | ↪️ dialihkan ke R1.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+
+### FASE R1 — LEDGER & UANG
+> **Status audit:** ⬜ BELUM
+
+- [ ] R1.2 Koreksi saldo terbalik
+MD;
+
+    $mockInspector = new class extends GitCommitInspector
+    {
+        public function isValidCommit(string $hash): bool
+        {
+            return true;
+        }
+
+        public function changedFiles(string $hash): array
+        {
+            return ['composer.json'];
+        }
+    };
+
+    $scanner = new ProgressIntegrityScanner(gitInspector: $mockInspector);
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, repoRoot: $tempDir, textBaseline: ['R0:R0.1' => 'Pagar awal', 'R1:R1.2' => 'Koreksi saldo terbalik']);
+
+    expect(implode("\n", $violations))->not->toContain('M-R0-6')
+        ->and(implode("\n", $violations))->not->toContain('P0/P1 terbuka');
+});
+
+it('fails when redirected destination item does not exist in PROGRESS.md', function (): void {
+    $markdown = <<<'MD'
+### FASE R0 — PAGAR OTOMATIS
+> **Status audit:** 🔨 DIKERJAKAN
+
+- [ ] R0.1 Pagar awal
+
+#### Register Minus Fase R0
+| ID | Item | Minus | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| M-R0-6 | R99.99 | Saldo akun warisan terbalik | Data saldo terbalik | P0 | ↪️ dialihkan ke R99.99 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+MD;
+
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, textBaseline: ['R0:R0.1' => 'Pagar awal']);
+
+    expect(implode("\n", $violations))->toContain('tujuan pengalihan tidak ada')
+        ->and(implode("\n", $violations))->toContain('R99.99');
+});
+
+it('fails when redirected minus lacks DECISIONS anchor', function (): void {
+    $markdown = <<<'MD'
+### FASE R0 — PAGAR OTOMATIS
+> **Status audit:** 🔨 DIKERJAKAN
+
+- [ ] R0.1 Pagar awal
+
+#### Register Minus Fase R0
+| ID | Item | Minus | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| M-R0-6 | R1.2 | Saldo akun warisan terbalik | Data saldo terbalik | P0 | ↪️ dialihkan ke R1.2 |
+
+### FASE R1 — LEDGER & UANG
+> **Status audit:** ⬜ BELUM
+
+- [ ] R1.2 Koreksi saldo terbalik
+MD;
+
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, textBaseline: ['R0:R0.1' => 'Pagar awal', 'R1:R1.2' => 'Koreksi saldo terbalik']);
+
+    expect(implode("\n", $violations))->toContain('wajib menyertakan anchor')
+        ->and(implode("\n", $violations))->toContain('DECISIONS.md#');
+});
+
+it('fails when redirected anchor does not exist in docs/DECISIONS.md', function (): void {
+    $markdown = <<<'MD'
+### FASE R0 — PAGAR OTOMATIS
+> **Status audit:** 🔨 DIKERJAKAN
+
+- [ ] R0.1 Pagar awal
+
+#### Register Minus Fase R0
+| ID | Item | Minus | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| M-R0-6 | R1.2 | Saldo akun warisan terbalik | Data saldo terbalik | P0 | ↪️ dialihkan ke R1.2 (DECISIONS.md#non-existent-anchor-123456789) |
+
+### FASE R1 — LEDGER & UANG
+> **Status audit:** ⬜ BELUM
+
+- [ ] R1.2 Koreksi saldo terbalik
+MD;
+
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, textBaseline: ['R0:R0.1' => 'Pagar awal', 'R1:R1.2' => 'Koreksi saldo terbalik']);
+
+    expect(implode("\n", $violations))->toContain('anchor')
+        ->and(implode("\n", $violations))->toContain('tidak ditemukan di docs/DECISIONS.md');
+});
+
+it('fails when destination phase is verified ✅ while redirected minus remains unclosed', function (): void {
+    $tempDir = sys_get_temp_dir().'/progress_test_dest_blocked_'.uniqid();
+    mkdir($tempDir.'/docs/gates', 0777, true);
+    file_put_contents($tempDir.'/docs/DECISIONS.md', "# Decisions\n\n## 2026-10-14-p9-minus-dialihkan\n");
+    copy(base_path('docs/gates/fase-r0.md'), $tempDir.'/docs/gates/fase-r1.md');
+
+    $markdown = <<<'MD'
+### FASE R0 — PAGAR OTOMATIS
+> **Status audit:** 🔵 SELESAI
+
+- [ ] R0.1 Pagar awal
+
+#### Register Minus Fase R0
+| ID | Item | Minus | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| M-R0-6 | R1.2 | Saldo akun warisan terbalik | Data saldo terbalik | P0 | ↪️ dialihkan ke R1.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+
+### FASE R1 — LEDGER & UANG
+> **Status audit:** ✅ SELESAI
+
+- [ ] R1.2 Koreksi saldo terbalik
+MD;
+
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, repoRoot: $tempDir, textBaseline: ['R0:R0.1' => 'Pagar awal', 'R1:R1.2' => 'Koreksi saldo terbalik']);
+
+    expect(implode("\n", $violations))->toContain('M-R0-6')
+        ->and(implode("\n", $violations))->toContain('belum dicoret');
+});
+
+it('fails when deliverable item of origin phase is redirected', function (): void {
+    $tempDir = sys_get_temp_dir().'/progress_test_deliverable_'.uniqid();
+    mkdir($tempDir.'/docs', 0777, true);
+    file_put_contents($tempDir.'/docs/DECISIONS.md', "# Decisions\n\n## 2026-10-14-p9-minus-dialihkan\n");
+
+    $markdown = <<<'MD'
+### FASE R0 — PAGAR OTOMATIS
+> **Status audit:** 🔨 DIKERJAKAN
+
+- [x] R0.12 Pagar mutasi
+  Bukti:
+    - jenis: tooling
+    - commit: 4171528
+    - file: app/Quality/Progress/ProgressIntegrityScanner.php
+    - test: tests/Unit/SampleTest.php::it passes
+    - gate: docs/gates/fase-r0.md
+
+#### Register Minus Fase R0
+| ID | Item | Minus | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| M-R0-20 | R0.12 | Skor mutasi GateRunner di bawah 60% | Pagar mutasi kurang kuat | P1 | ↪️ dialihkan ke R5.5 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+
+### FASE R5 — AUDIT & HARDENING
+> **Status audit:** ⬜ BELUM
+
+- [ ] R5.5 Pagar mutasi lanjutan
+MD;
+
+    $mockInspector = new class extends GitCommitInspector
+    {
+        public function isValidCommit(string $hash): bool
+        {
+            return true;
+        }
+
+        public function changedFiles(string $hash): array
+        {
+            return ['app/Quality/Progress/ProgressIntegrityScanner.php'];
+        }
+    };
+
+    $scanner = new ProgressIntegrityScanner(gitInspector: $mockInspector);
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, repoRoot: $tempDir, textBaseline: ['R0:R0.12' => 'Pagar mutasi', 'R5:R5.5' => 'Pagar mutasi lanjutan']);
+
+    expect(implode("\n", $violations))->toContain('deliverable fase R0 yang sudah tercentang [x]')
+        ->and(implode("\n", $violations))->toContain('pengalihan ditolak');
+});
+
+it('still fails when ordinary open P0 minus is present in verified phase (V-S3 regression)', function (): void {
+    $tempDir = sys_get_temp_dir().'/progress_test_p0_ordinary_'.uniqid();
+    mkdir($tempDir.'/docs/gates', 0777, true);
+    copy(base_path('docs/gates/fase-r0.md'), $tempDir.'/docs/gates/fase-r0.md');
+
+    $markdown = <<<'MD'
+### FASE R0 — PAGAR OTOMATIS
+> **Status audit:** ✅ SELESAI
+
+- [ ] R0.1 Pagar awal
+
+#### Register Minus Fase R0
+| ID | Item | Minus | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| M-R0-99 | R0.1 | Bug fatal belum diperbaiki | Sistem crash | P0 | Belum ada rencana perbaikan |
+MD;
+
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, repoRoot: $tempDir, textBaseline: ['R0:R0.1' => 'Pagar awal']);
+
+    expect(implode("\n", $violations))->toContain('Fase R0 berstatus ✅ tetapi masih memiliki minus P0/P1 terbuka: M-R0-99');
 });

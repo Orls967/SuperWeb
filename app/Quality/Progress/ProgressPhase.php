@@ -44,6 +44,7 @@ final class ProgressPhase
 
     /**
      * Returns list of open (unclosed) P0 or P1 minus IDs.
+     * Minus with Rencana '↪️ dialihkan ke ...' is not considered open for origin phase.
      *
      * @return list<string>
      */
@@ -52,6 +53,9 @@ final class ProgressPhase
         $critical = [];
         foreach ($this->minusEntries as $entry) {
             if ($entry['is_closed']) {
+                continue;
+            }
+            if (preg_match('/↪️\s*dialihkan\s+ke\s+/u', (string) ($entry['rencana'] ?? ''))) {
                 continue;
             }
             $pri = strtoupper(trim((string) ($entry['prioritas'] ?? '')));
