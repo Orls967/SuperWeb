@@ -380,7 +380,18 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
       - file: README.md
       - file: docs/DECISIONS.md
       - test: tests/Architecture/Psr4ComplianceTest.php::it keeps production classes at their case-sensitive PSR-4 path
-  - [ ] R0.3.b **Portabilitas skema MySQL** (K-28; ditemukan CI run 38068206489, 10 Okt 2026): migrasi gagal di MySQL 8.4 karena nama identifier > 64 karakter (contoh `mall_utility_tariffs_property_id_utility_type_effective_from_index`, 67 karakter). Temukan SEMUA identifier (tabel, kolom, index, unique, foreign key) yang melebihi batas, beri nama eksplisit ≤ 64 karakter tanpa mengubah kolom/semantik, dan pasang `SchemaIdentifierLengthTest` agar nama baru yang terlalu panjang langsung gagal.
+  - [x] R0.3.b **Portabilitas skema MySQL** (K-28; ditemukan CI run 38068206489, 10 Okt 2026): migrasi gagal di MySQL 8.4 karena nama identifier > 64 karakter (contoh `mall_utility_tariffs_property_id_utility_type_effective_from_index`, 67 karakter). Temukan SEMUA identifier (tabel, kolom, index, unique, foreign key) yang melebihi batas, beri nama eksplisit ≤ 64 karakter tanpa mengubah kolom/semantik, dan pasang `SchemaIdentifierLengthTest` agar nama baru yang terlalu panjang langsung gagal.
+    Bukti:
+      - jenis: konfigurasi
+      - commit: d2f5154
+      - commit: 6901960
+      - file: tests/Architecture/SchemaIdentifierLengthTest.php
+      - file: tests/Architecture/MysqlSchemaCompatibilityTest.php
+      - file: docs/DECISIONS.md
+      - test: tests/Architecture/SchemaIdentifierLengthTest.php::it enforces all database schema identifiers do not exceed 64 characters
+      - test: tests/Architecture/SchemaIdentifierLengthTest.php::it enforces all database index composite key lengths do not exceed 3072 bytes for MySQL utf8mb4 portability
+      - test: tests/Architecture/MysqlSchemaCompatibilityTest.php::it compiles every project migration to MySQL 8.4 DDL that MySQL accepts
+      - keputusan: docs/DECISIONS.md#2026-10-10-portabilitas-skema-mysql-identifier-64-karakter-key-length-3072-byte-fase-r0-3-b
 - [x] R0.4 **`ProgressIntegrityTest`** (K-01; spesifikasi `KONSEP.md` §A14.2): parse `docs/PROGRESS.md` dan validasi blok `Bukti:` sesuai aturan P2 (commit ada & menyentuh file yang disebut; file/test ada; test lulus di laporan gate; rute ada dengan middleware role yang sesuai; command/listener terdaftar; item fitur wajib punya `akses` + test HTTP/command). Juga gagal bila: status ✅ tanpa bagian **Verifikasi** di `docs/gates/fase-N.md`; fase ✅ masih punya minus P0/P1 terbuka; teks item berubah tanpa penanda `⬇️ diturunkan` (dibandingkan snapshot teks item di baseline). Berlaku untuk: semua item Fase R, semua fase yang statusnya berubah setelah 2026-10-10, dan seluruh fase setelah R6 selesai.
   Bukti:
     - jenis: tooling
