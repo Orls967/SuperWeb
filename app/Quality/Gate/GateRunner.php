@@ -186,7 +186,7 @@ final class GateRunner
     private function runDefaultProcess(string $cmd, string $cwd, array $env, ?Closure $logger = null): array
     {
         $process = Process::fromShellCommandline($cmd, $cwd, $env);
-        $process->setTimeout(120.0);
+        $process->setTimeout(null);
         $output = '';
         $process->run(function (string $type, string $buffer) use ($logger, &$output): void {
             $output .= $buffer;
