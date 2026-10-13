@@ -183,5 +183,5 @@ jobs:
           php -d memory_limit=1G vendor/bin/pest tests/Unit/Quality/Routing/RouteAuthorizationScannerTest.php --mutate --parallel --class='App\Quality\Routing\RouteAuthorizationScanner' --min=60
 
       - name: Mutation kelas diubah PR
-        run: php -d memory_limit=1G artisan test:mutate --git-diff --base="${{ github.base_ref || 'master' }}" --min=60
+        run: php -d memory_limit=1G artisan test:mutate --git-diff --parallel --base="${{ github.base_ref || 'master' }}" --min=60
 

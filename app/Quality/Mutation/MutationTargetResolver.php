@@ -40,11 +40,16 @@ final class MutationTargetResolver
                 continue;
             }
 
-            // Scope strictly to modules/<Module>/Application/(Actions|Services)/** and app/(Actions|Services)/**
-            $isModuleApp = (bool) preg_match('#^modules/[^/]+/Application/(Actions|Services)/.+\.php$#', $trimmed);
-            $isAppActionOrService = (bool) preg_match('#^app/(Actions|Services)/.+\.php$#', $trimmed);
+            // Exclude interface files
+            if (str_ends_with($trimmed, 'Interface.php')) {
+                continue;
+            }
 
-            if (! $isModuleApp && ! $isAppActionOrService) {
+            // Scope strictly to modules/<Module>/Application/** and app/Quality/**
+            $isModuleApp = (bool) preg_match('#^modules/[^/]+/Application/.+\.php$#', $trimmed);
+            $isAppQuality = (bool) preg_match('#^app/Quality/.+\.php$#', $trimmed);
+
+            if (! $isModuleApp && ! $isAppQuality) {
                 continue;
             }
 

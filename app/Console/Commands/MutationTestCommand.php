@@ -21,6 +21,7 @@ class MutationTestCommand extends Command
         {--git-diff : Deteksi otomatis kelas Action/Service yang disentuh git branch terhadap origin/master}
         {--base=master : Base branch untuk git diff (bawaan: master)}
         {--bail : Hentikan eksekusi pada mutasi pertama yang gagal}
+        {--parallel : Jalankan Pest secara paralel bila didukung}
         {--dry-run : Tampilkan perintah pest yang akan dijalankan tanpa mengeksekusi}';
 
     protected $description = 'Jalankan mutation testing Pest (--mutate) dengan ambang skor minimum 60%';
@@ -61,6 +62,9 @@ class MutationTestCommand extends Command
                 $cmdParts[] = $testPath;
             }
             $cmdParts[] = '--mutate';
+            if ($this->option('parallel')) {
+                $cmdParts[] = '--parallel';
+            }
             $cmdParts[] = "--min={$minScore}";
             $cmdParts[] = "--class='{$class}'";
 

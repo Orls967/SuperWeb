@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Quality;
 
 use App\Quality\Gate\GateRunner;
-use App\Quality\Gate\ProcessRunnerInterface;
 use Illuminate\Support\Facades\File;
 
 it('isolates gate db commands to storage/gate/gate.sqlite and recreates it (V7)', function (): void {
@@ -415,20 +414,14 @@ it('verifies exact order, names, commands, and environment variables across all 
     File::deleteDirectory($tempDir);
 });
 
-it('handles default null repoRoot in GateRunner constructor and executes via ProcessRunnerInterface', function (): void {
+it('handles default null repoRoot in GateRunner constructor and executes via custom runner closure', function (): void {
     $tempDir = sys_get_temp_dir().'/runner_default_root_'.uniqid();
     File::ensureDirectoryExists($tempDir);
     $manifestPath = $tempDir.'/manifest.json';
 
-    $mockInterface = new class implements ProcessRunnerInterface
-    {
-        public function run(string $command, string $cwd, array $env = [], ?\Closure $logger = null): array
-        {
-            return ['exit_code' => 1, 'output' => 'stopped immediately'];
-        }
-    };
+    $mockRunner = fn (string $command, string $cwd, array $env = [], ?\Closure $logger = null): array => ['exit_code' => 1, 'output' => 'stopped immediately'];
 
-    $runner = new GateRunner(repoRoot: null, processRunner: $mockInterface);
+    $runner = new GateRunner(repoRoot: null, processRunner: $mockRunner);
     $exitCode = $runner->run($manifestPath);
 
     expect($exitCode)->toBe(1)
