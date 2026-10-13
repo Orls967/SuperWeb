@@ -14,7 +14,9 @@ it('resolves Action and Service classes from changed files and ignores unrelated
         'modules/Hospital/Application/Actions/AdmitPatientAction.php',
         'modules/Hospital/Application/Actions/AdmitPatientAction.php', // duplicate to test array_unique
         'modules/Billing/Application/Services/InvoiceGenerationService.php',
-        'app/Quality/Gate/JUnitParser.php',
+        'app/Services/AuditLogService.php',
+        'app/Actions/CreateUserAction.php',
+        'app/Quality/Gate/JUnitParser.php', // non-Action/Service ignored
         'modules/Core/Actions/AuditLogAction.php', // non-Application ignored
         'modules/Core/Services/HealthService.php', // non-Application ignored
         'modules/Hospital/tests/Feature/AdmitPatientTest.php', // test ignored
@@ -32,7 +34,8 @@ it('resolves Action and Service classes from changed files and ignores unrelated
     $resolved = MutationTargetResolver::resolveClasses($files);
 
     expect($resolved)->toBe([
-        'App\Quality\Gate\JUnitParser',
+        'App\Actions\CreateUserAction',
+        'App\Services\AuditLogService',
         'Modules\Billing\Application\Services\InvoiceGenerationService',
         'Modules\Hospital\Application\Actions\AdmitPatientAction',
     ]);
@@ -57,11 +60,12 @@ it('returns empty array when no Action or Service classes are changed', function
 });
 
 it('resolves associated test paths for classes by convention', function (): void {
-    $appQualityTest = MutationTargetResolver::resolveTestPathForClass('App\\Quality\\Progress\\ProgressIntegrityScanner', base_path());
+    $root = dirname(__DIR__, 4);
+    $appQualityTest = MutationTargetResolver::resolveTestPathForClass('App\\Quality\\Progress\\ProgressIntegrityScanner', $root);
     expect($appQualityTest)->not->toBeNull()
         ->and($appQualityTest)->toContain('ProgressIntegrityScannerTest.php');
 
-    $gateRunnerTest = MutationTargetResolver::resolveTestPathForClass('App\\Quality\\Gate\\GateRunner', base_path());
+    $gateRunnerTest = MutationTargetResolver::resolveTestPathForClass('App\\Quality\\Gate\\GateRunner', $root);
     expect($gateRunnerTest)->not->toBeNull()
         ->and($gateRunnerTest)->toContain('GateRunnerTest.php');
 });
