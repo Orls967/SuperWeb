@@ -22,6 +22,10 @@ class DistributorPortalController extends Controller
     {
         $distributor = Distributor::where('owner_user_id', $request->user()->id)->first();
 
+        if ($distributor === null && $request->user()->isAdmin()) {
+            $distributor = Distributor::first();
+        }
+
         if ($distributor === null) {
             abort(403, 'Akun ini belum terhubung ke distributor manapun.');
         }
