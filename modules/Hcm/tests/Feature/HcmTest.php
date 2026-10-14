@@ -95,7 +95,7 @@ class HcmTest extends TestCase
 
     public function test_hcm_web_index_accessible(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'hcm_manager']);
 
         $response = $this->actingAs($user)->get(route('hcm.index'));
         $response->assertStatus(200);

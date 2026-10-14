@@ -244,7 +244,7 @@ class TreasuryTest extends TestCase
 
     public function test_treasury_web_route_accessible_by_authenticated_user(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'treasury']);
 
         $this->actingAs($user)
             ->get(route('treasury.index'))
