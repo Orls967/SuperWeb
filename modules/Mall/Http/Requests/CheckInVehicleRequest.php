@@ -14,7 +14,12 @@ class CheckInVehicleRequest extends FormRequest
     {
         $user = $this->user();
 
-        return $user !== null && ($user->isAdmin() || $user->isMallAdmin());
+        return $user !== null && (
+            $user->isAdmin() ||
+            $user->isMallAdmin() ||
+            $user->isTechnician() ||
+            (method_exists($user, 'hasRbacRole') && $user->hasRbacRole('technician'))
+        );
     }
 
     /**

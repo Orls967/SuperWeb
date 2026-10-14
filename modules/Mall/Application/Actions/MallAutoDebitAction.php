@@ -22,6 +22,16 @@ class MallAutoDebitAction
      */
     public function execute(Invoice $invoice, ?string $idempotencyKey = null): array
     {
+        if (auth()->check()) {
+            $user = auth()->user();
+            $isAuthorized = $user->isAdmin() ||
+                (method_exists($user, 'hasRbacRole') && $user->hasRbacRole('mall_admin')) ||
+                $user->role === 'mall_admin';
+            if (! $isAuthorized) {
+                abort(403, 'Hanya role admin atau mall_admin yang berhak menjalankan auto-debit tagihan mall.');
+            }
+        }
+
         $needed = $invoice->remainingAmount();
         if ($needed <= 0) {
             return [
@@ -95,6 +105,16 @@ class MallAutoDebitAction
      */
     public function autoDebitAll(?string $periodMonth = null): array
     {
+        if (auth()->check()) {
+            $user = auth()->user();
+            $isAuthorized = $user->isAdmin() ||
+                (method_exists($user, 'hasRbacRole') && $user->hasRbacRole('mall_admin')) ||
+                $user->role === 'mall_admin';
+            if (! $isAuthorized) {
+                abort(403, 'Hanya role admin atau mall_admin yang berhak menjalankan auto-debit tagihan mall.');
+            }
+        }
+
         $query = Invoice::whereIn('status', [InvoiceStatus::ISSUED, InvoiceStatus::PARTIALLY_PAID, InvoiceStatus::OVERDUE]);
         if ($periodMonth !== null) {
             $query->where('period_month', $periodMonth);

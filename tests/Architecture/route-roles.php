@@ -3,6 +3,14 @@
 declare(strict_types=1);
 use App\Models\User;
 use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Mall\database\seeders\MallSeeder;
+use Modules\Mall\Domain\Enums\TenantCategory;
+use Modules\Mall\Domain\Models\Invoice;
+use Modules\Mall\Domain\Models\Lease;
+use Modules\Mall\Domain\Models\Property;
+use Modules\Mall\Domain\Models\Tenant;
+use Modules\Mall\Domain\Models\VoucherTemplate;
+use Modules\Mall\Domain\Models\WorkOrder;
 use Modules\Supplier\Domain\Models\Supplier;
 
 /**
@@ -270,54 +278,288 @@ return [
     'logistics.shipments.store' => 'auth',
     'logistics.shipments.template' => 'auth',
     'logout' => 'auth',
-    'mall.billing.apply-penalties' => 'auth',
-    'mall.billing.generate' => 'auth',
-    'mall.billing.index' => 'auth',
+    'mall.billing.apply-penalties' => ['roles' => ['admin', 'mall_admin']],
+    'mall.billing.generate' => ['roles' => ['admin', 'mall_admin']],
+    'mall.billing.index' => ['roles' => ['admin', 'auditor', 'mall_admin']],
     'mall.directory.index' => 'public',
-    'mall.events.index' => 'auth',
-    'mall.events.store' => 'auth',
-    'mall.facilities.bill-tenant' => 'auth',
-    'mall.facilities.generate-pm' => 'auth',
-    'mall.facilities.index' => 'auth',
-    'mall.invoices.auto-debit' => 'auth',
-    'mall.invoices.show' => 'auth',
-    'mall.leases.activate' => 'auth',
-    'mall.leases.create' => 'auth',
-    'mall.leases.index' => 'auth',
-    'mall.leases.renew' => 'auth',
-    'mall.leases.show' => 'auth',
-    'mall.leases.store' => 'auth',
-    'mall.leases.terminate' => 'auth',
-    'mall.loyalty.claim' => 'auth',
-    'mall.loyalty.index' => 'auth',
-    'mall.loyalty.redeem' => 'auth',
-    'mall.loyalty.settle' => 'auth',
-    'mall.loyalty.use' => 'auth',
-    'mall.parking.footfall' => 'auth',
-    'mall.parking.gate.check-in' => 'auth',
-    'mall.parking.gate.check-out' => 'auth',
-    'mall.parking.gate.entry' => 'auth',
-    'mall.parking.gate.exit' => 'auth',
-    'mall.parking.gate.lost-ticket' => 'auth',
-    'mall.parking.gate.settle' => 'auth',
-    'mall.parking.index' => 'auth',
-    'mall.parking.members' => 'auth',
-    'mall.parking.members.store' => 'auth',
-    'mall.parking.occupancy' => 'auth',
-    'mall.parking.validate' => 'auth',
-    'mall.portal.index' => 'auth',
-    'mall.portal.invoice' => 'auth',
-    'mall.portal.overtime' => 'auth',
-    'mall.portal.pay' => 'auth',
-    'mall.portal.sales' => 'auth',
-    'mall.portal.sales.store' => 'auth',
-    'mall.site-plan.index' => 'auth',
-    'mall.tenants.create' => 'auth',
-    'mall.tenants.index' => 'auth',
-    'mall.tenants.show' => 'auth',
-    'mall.tenants.store' => 'auth',
-    'mall.utilities.batch' => 'auth',
-    'mall.utilities.index' => 'auth',
+    'mall.events.index' => ['roles' => ['admin', 'auditor', 'mall_admin']],
+    'mall.events.store' => ['roles' => ['admin', 'mall_admin']],
+    'mall.facilities.bill-tenant' => [
+        'roles' => ['admin', 'mall_admin', 'technician'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['workOrder' => WorkOrder::first()?->id ?? 1];
+        },
+    ],
+    'mall.facilities.generate-pm' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.facilities.index' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
+    'mall.invoices.auto-debit' => [
+        'roles' => ['admin', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['id' => Invoice::first()?->id ?? 1];
+        },
+    ],
+    'mall.invoices.show' => [
+        'roles' => ['admin', 'auditor', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['id' => Invoice::first()?->id ?? 1];
+        },
+    ],
+    'mall.leases.activate' => [
+        'roles' => ['admin', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['lease' => Lease::first()?->id ?? 1];
+        },
+    ],
+    'mall.leases.create' => ['roles' => ['admin', 'mall_admin']],
+    'mall.leases.index' => ['roles' => ['admin', 'auditor', 'mall_admin']],
+    'mall.leases.renew' => [
+        'roles' => ['admin', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['lease' => Lease::first()?->id ?? 1];
+        },
+    ],
+    'mall.leases.show' => [
+        'roles' => ['admin', 'auditor', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['lease' => Lease::first()?->id ?? 1];
+        },
+    ],
+    'mall.leases.store' => ['roles' => ['admin', 'mall_admin']],
+    'mall.leases.terminate' => [
+        'roles' => ['admin', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['lease' => Lease::first()?->id ?? 1];
+        },
+    ],
+    'mall.loyalty.claim' => ['roles' => ['admin', 'customer', 'mall_admin']],
+    'mall.loyalty.index' => ['roles' => ['admin', 'auditor', 'customer', 'mall_admin']],
+    'mall.loyalty.redeem' => [
+        'roles' => ['admin', 'customer', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['template' => VoucherTemplate::first()?->id ?? 1];
+        },
+    ],
+    'mall.loyalty.settle' => ['roles' => ['admin', 'mall_admin']],
+    'mall.loyalty.use' => ['roles' => ['admin', 'customer', 'mall_admin']],
+    'mall.parking.footfall' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
+    'mall.parking.gate.check-in' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.parking.gate.check-out' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.parking.gate.entry' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.parking.gate.exit' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.parking.gate.lost-ticket' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.parking.gate.settle' => [
+        'roles' => ['admin', 'mall_admin', 'technician'],
+        'params' => function (): array {
+            return ['ticketNumber' => 'TKT-TEST-001'];
+        },
+    ],
+    'mall.parking.index' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
+    'mall.parking.members' => ['roles' => ['admin', 'auditor', 'customer', 'mall_admin', 'technician']],
+    'mall.parking.members.store' => ['roles' => ['admin', 'customer', 'mall_admin', 'technician']],
+    'mall.parking.occupancy' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
+    'mall.parking.validate' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.portal.index' => [
+        'roles' => ['admin', 'tenant'],
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+            }
+        },
+    ],
+    'mall.portal.invoice' => [
+        'roles' => ['admin', 'tenant'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['id' => Invoice::first()?->id ?? 1];
+        },
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                $tenant = Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+                $invoice = Invoice::first();
+                if ($invoice) {
+                    $invoice->update(['tenant_id' => $tenant->id]);
+                }
+            }
+        },
+    ],
+    'mall.portal.overtime' => [
+        'roles' => ['admin', 'tenant'],
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+            }
+        },
+    ],
+    'mall.portal.pay' => [
+        'roles' => ['admin', 'tenant'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['id' => Invoice::first()?->id ?? 1];
+        },
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                $tenant = Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+                $invoice = Invoice::first();
+                if ($invoice) {
+                    $invoice->update(['tenant_id' => $tenant->id]);
+                }
+            }
+        },
+    ],
+    'mall.portal.sales' => [
+        'roles' => ['admin', 'tenant'],
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+            }
+        },
+    ],
+    'mall.portal.sales.store' => [
+        'roles' => ['admin', 'tenant'],
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+            }
+        },
+    ],
+    'mall.site-plan.index' => ['roles' => ['admin', 'auditor', 'mall_admin']],
+    'mall.tenants.create' => ['roles' => ['admin', 'mall_admin']],
+    'mall.tenants.index' => ['roles' => ['admin', 'auditor', 'mall_admin']],
+    'mall.tenants.show' => [
+        'roles' => ['admin', 'auditor', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['tenant' => Tenant::first()?->id ?? 1];
+        },
+    ],
+    'mall.tenants.store' => ['roles' => ['admin', 'mall_admin']],
+    'mall.utilities.batch' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.utilities.index' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
     'manufacturing.boms.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.costing.index' => ['roles' => ['admin', 'auditor', 'planner']],
     'manufacturing.costing.versions.approve' => ['roles' => ['admin', 'planner']],
