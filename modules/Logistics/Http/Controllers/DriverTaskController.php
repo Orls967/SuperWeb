@@ -28,9 +28,12 @@ class DriverTaskController extends Controller
     {
         $user = $request->user();
 
-        abort_unless($user && $user->isDriver(), 403, 'Akses ditolak. Halaman khusus pengemudi ekspedisi.');
+        abort_unless($user && ($user->isDriver() || $user->isAdmin() || $user->isLogisticsAdmin()), 403, 'Akses ditolak. Halaman khusus pengemudi ekspedisi.');
 
         $driver = Driver::where('user_id', $user->id)->first();
+        if (! $driver && ($user->isAdmin() || $user->isLogisticsAdmin())) {
+            $driver = Driver::first();
+        }
         abort_unless($driver, 403, 'Akun Anda belum terdaftar sebagai pengemudi.');
 
         return $driver;

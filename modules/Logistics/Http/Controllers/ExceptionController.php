@@ -27,7 +27,7 @@ class ExceptionController extends Controller
         $user = $request->user();
 
         abort_unless(
-            $user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isHubOperator()),
+            $user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isHubOperator() || $user->isAuditor()),
             403,
             'Akses ditolak. Halaman exception dan SLA khusus staf operasional logistik.'
         );

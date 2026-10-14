@@ -105,6 +105,26 @@ class User extends Authenticatable
         return $this->role === 'shipper';
     }
 
+    public function isAuditor(): bool
+    {
+        return $this->role === 'auditor';
+    }
+
+    public function isTreasury(): bool
+    {
+        return $this->role === 'treasury';
+    }
+
+    public function isProcurement(): bool
+    {
+        return $this->role === 'procurement';
+    }
+
+    public function isPlanner(): bool
+    {
+        return $this->role === 'planner';
+    }
+
     public function isStaff(): bool
     {
         return in_array($this->role, [

@@ -26,7 +26,7 @@ class DemurrageController extends Controller
     {
         $user = $request->user();
 
-        abort_unless($user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher()), 403, 'Akses ditolak. Halaman D&D khusus manajemen logistik.');
+        abort_unless($user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isAuditor() || $user->isTreasury()), 403, 'Akses ditolak. Halaman D&D khusus manajemen logistik.');
     }
 
     protected function authorizeManage(Request $request): void

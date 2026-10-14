@@ -30,91 +30,155 @@ Route::middleware(['web', 'throttle:30,1'])->group(function () {
 
 Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {
-        Route::get('/', [LogisticsDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/control-tower', [ControlTowerController::class, 'index'])->name('control-tower.index');
+        // Operational Overview & Fleet View
+        Route::middleware(['role:admin,auditor,dispatcher,hub_operator,logistics_admin'])->group(function () {
+            Route::get('/', [LogisticsDashboardController::class, 'index'])->name('dashboard');
+            Route::get('/fleet', [FleetController::class, 'index'])->name('fleet.index');
+            Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
+            Route::get('/exceptions', [ExceptionController::class, 'index'])->name('exceptions.index');
+        });
 
-        // Lokasi & Jaringan (Locations)
-        Route::resource('locations', LocationController::class)->except(['show']);
+        // Control Tower
+        Route::middleware(['role:admin,logistics_admin'])->group(function () {
+            Route::get('/control-tower', [ControlTowerController::class, 'index'])->name('control-tower.index');
+        });
 
-        // Jalur Transportasi (Lanes)
-        Route::get('/lanes', [LaneController::class, 'index'])->name('lanes.index');
-        Route::post('/lanes', [LaneController::class, 'store'])->name('lanes.store');
-        Route::delete('/lanes/{lane}', [LaneController::class, 'destroy'])->name('lanes.destroy');
+        // Fleet Fuel Logging Read
+        Route::middleware(['role:admin,auditor,dispatcher,driver,logistics_admin'])->group(function () {
+            Route::get('/fuel', [FuelLogController::class, 'index'])->name('fuel.index');
+        });
 
-        // Armada Multimoda (Fleet)
-        Route::get('/fleet', [FleetController::class, 'index'])->name('fleet.index');
-        // Pengemudi (Drivers)
-        Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
-        // Pengiriman & Shipper Portal
-        Route::get('/shipments', [ShipperPortalController::class, 'index'])->name('shipments.index');
-        Route::get('/shipments/create', [ShipperPortalController::class, 'create'])->name('shipments.create');
-        Route::post('/shipments', [ShipperPortalController::class, 'store'])->name('shipments.store');
-        Route::get('/shipments/bulk', [ShipperPortalController::class, 'bulkUploadForm'])->name('shipments.bulk');
-        Route::post('/shipments/bulk', [ShipperPortalController::class, 'processBulkUpload'])->name('shipments.bulk.process');
-        Route::get('/shipments/template', [ShipperPortalController::class, 'downloadTemplate'])->name('shipments.template');
-        Route::get('/shipments/errors/{batchId}', [ShipperPortalController::class, 'downloadErrorReport'])->name('shipments.errors');
-        Route::get('/shipments/{id}', [ShipperPortalController::class, 'show'])->name('shipments.show');
-        Route::get('/shipments/{id}/label', [ShipperPortalController::class, 'label'])->name('shipments.label');
+        // General Operational Monitoring
+        Route::middleware(['role:admin,auditor,dispatcher,logistics_admin'])->group(function () {
+            Route::get('/lanes', [LaneController::class, 'index'])->name('lanes.index');
+            Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
+            Route::get('/dispatch', [DispatchBoardController::class, 'index'])->name('dispatch.index');
+        });
 
-        // Papan Dispatch (dispatcher)
-        Route::get('/dispatch', [DispatchBoardController::class, 'index'])->name('dispatch.index');
-        Route::post('/dispatch/assign', [DispatchBoardController::class, 'assign'])->name('dispatch.assign');
-        Route::delete('/dispatch/{schedule}/release', [DispatchBoardController::class, 'release'])->name('dispatch.release');
-        Route::post('/dispatch/assign-shipment', [DispatchBoardController::class, 'assignShipment'])->name('dispatch.assign-shipment');
+        // Hub Operations Monitoring
+        Route::middleware(['role:admin,auditor,hub_operator,logistics_admin'])->group(function () {
+            Route::get('/hub', [HubOperationsController::class, 'index'])->name('hub.index');
+        });
 
-        // Operasi Hub (Inbound, Sort, Outbound)
-        Route::get('/hub', [HubOperationsController::class, 'index'])->name('hub.index');
-        Route::post('/hub/inbound', [HubOperationsController::class, 'inbound'])->name('hub.inbound');
-        Route::post('/hub/sort', [HubOperationsController::class, 'sort'])->name('hub.sort');
-        Route::post('/hub/outbound', [HubOperationsController::class, 'outbound'])->name('hub.outbound');
+        // Financial & Settlement Read-Only
+        Route::middleware(['role:admin,auditor,dispatcher,logistics_admin,procurement,treasury'])->group(function () {
+            Route::get('/margins', [CarrierController::class, 'margins'])->name('margins');
+            Route::get('/carriers', [CarrierController::class, 'index'])->name('carriers.index');
+        });
 
-        // Carrier subkontrak & margin
-        Route::get('/carriers', [CarrierController::class, 'index'])->name('carriers.index');
-        Route::post('/carriers', [CarrierController::class, 'store'])->name('carriers.store');
-        Route::post('/carriers/{carrier}/pay', [CarrierController::class, 'pay'])->name('carriers.pay');
-        Route::post('/legs/{leg}/assign-carrier', [CarrierController::class, 'assignLeg'])->name('legs.assign-carrier');
-        Route::post('/legs/{leg}/complete', [CarrierController::class, 'completeLeg'])->name('legs.complete');
-        Route::get('/margins', [CarrierController::class, 'margins'])->name('margins');
+        Route::middleware(['role:admin,auditor,dispatcher,hub_operator,logistics_admin,treasury'])->group(function () {
+            Route::get('/cod', [CodController::class, 'index'])->name('cod.index');
+        });
 
-        // Klaim
-        Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
-        Route::post('/claims', [ClaimController::class, 'store'])->name('claims.store');
-        Route::post('/claims/{claim}/submit', [ClaimController::class, 'submit'])->name('claims.submit');
-        Route::post('/claims/{claim}/decide', [ClaimController::class, 'decide'])->name('claims.decide');
-        Route::post('/claims/{claim}/pay', [ClaimController::class, 'pay'])->name('claims.pay');
+        Route::middleware(['role:admin,auditor,dispatcher,logistics_admin,treasury'])->group(function () {
+            Route::get('/demurrage', [DemurrageController::class, 'index'])->name('dd.index');
+        });
 
-        // Demurrage & Detention
-        Route::get('/demurrage', [DemurrageController::class, 'index'])->name('dd.index');
-        Route::post('/demurrage/tariffs', [DemurrageController::class, 'storeTariff'])->name('dd.tariffs.store');
-        Route::post('/demurrage/start', [DemurrageController::class, 'start'])->name('dd.start');
-        Route::post('/demurrage/{dwell}/end', [DemurrageController::class, 'end'])->name('dd.end');
-        Route::post('/demurrage/invoice', [DemurrageController::class, 'invoice'])->name('dd.invoice');
+        Route::middleware(['role:admin,auditor,dispatcher,logistics_admin,shipper,treasury'])->group(function () {
+            Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
+            Route::get('/customs', [CustomsController::class, 'index'])->name('customs.index');
+        });
 
-        // Bea Cukai
-        Route::get('/customs', [CustomsController::class, 'index'])->name('customs.index');
-        Route::post('/customs', [CustomsController::class, 'store'])->name('customs.store');
-        Route::post('/customs/tariffs', [CustomsController::class, 'storeTariff'])->name('customs.tariffs.store');
-        Route::post('/customs/{declaration}/pay', [CustomsController::class, 'pay'])->name('customs.pay');
-        Route::post('/customs/{declaration}/clear', [CustomsController::class, 'clear'])->name('customs.clear');
+        // Shipments Read-Only
+        Route::middleware(['role:admin,auditor,dispatcher,logistics_admin,shipper'])->group(function () {
+            Route::get('/shipments', [ShipperPortalController::class, 'index'])->name('shipments.index');
+        });
 
-        // BBM & biaya truk
-        Route::get('/fuel', [FuelLogController::class, 'index'])->name('fuel.index');
-        Route::post('/fuel', [FuelLogController::class, 'store'])->name('fuel.store');
+        // Network & Master Data Management
+        Route::middleware(['role:admin,logistics_admin'])->group(function () {
+            Route::get('/locations/create', [LocationController::class, 'create'])->name('locations.create');
+            Route::post('/locations', [LocationController::class, 'store'])->name('locations.store');
+            Route::get('/locations/{location}/edit', [LocationController::class, 'edit'])->name('locations.edit');
+            Route::match(['put', 'patch'], '/locations/{location}', [LocationController::class, 'update'])->name('locations.update');
+            Route::delete('/locations/{location}', [LocationController::class, 'destroy'])->name('locations.destroy');
+            Route::delete('/lanes/{lane}', [LaneController::class, 'destroy'])->name('lanes.destroy');
+            Route::post('/customs/tariffs', [CustomsController::class, 'storeTariff'])->name('customs.tariffs.store');
+            Route::post('/legs/{leg}/assign-carrier', [CarrierController::class, 'assignLeg'])->name('legs.assign-carrier');
+        });
 
-        // COD
-        Route::get('/cod', [CodController::class, 'index'])->name('cod.index');
-        Route::post('/cod/deposit', [CodController::class, 'deposit'])->name('cod.deposit');
+        Route::middleware(['role:admin,logistics_admin,shipper'])->group(function () {
+            Route::post('/customs/{declaration}/clear', [CustomsController::class, 'clear'])->name('customs.clear');
+        });
 
-        // Exception & SLA
-        Route::get('/exceptions', [ExceptionController::class, 'index'])->name('exceptions.index');
-        Route::post('/exceptions', [ExceptionController::class, 'store'])->name('exceptions.store');
-        Route::post('/exceptions/{exception}/resolve', [ExceptionController::class, 'resolve'])->name('exceptions.resolve');
+        // Dispatch & Route Operations
+        Route::middleware(['role:admin,dispatcher,logistics_admin'])->group(function () {
+            Route::post('/lanes', [LaneController::class, 'store'])->name('lanes.store');
+            Route::post('/dispatch/assign', [DispatchBoardController::class, 'assign'])->name('dispatch.assign');
+            Route::delete('/dispatch/{schedule}/release', [DispatchBoardController::class, 'release'])->name('dispatch.release');
+            Route::post('/dispatch/assign-shipment', [DispatchBoardController::class, 'assignShipment'])->name('dispatch.assign-shipment');
+            Route::post('/legs/{leg}/complete', [CarrierController::class, 'completeLeg'])->name('legs.complete');
+            Route::post('/exceptions/{exception}/resolve', [ExceptionController::class, 'resolve'])->name('exceptions.resolve');
+            Route::post('/claims/{claim}/decide', [ClaimController::class, 'decide'])->name('claims.decide');
+        });
 
-        // Aplikasi Driver (mobile)
-        Route::get('/driver/tasks', [DriverTaskController::class, 'index'])->name('driver.tasks');
-        Route::post('/driver/pickup', [DriverTaskController::class, 'pickup'])->name('driver.pickup');
-        Route::post('/driver/shipments/{shipment}/start-delivery', [DriverTaskController::class, 'startDelivery'])->name('driver.start-delivery');
-        Route::post('/driver/shipments/{shipment}/deliver', [DriverTaskController::class, 'deliver'])->name('driver.deliver');
-        Route::post('/driver/shipments/{shipment}/fail', [DriverTaskController::class, 'fail'])->name('driver.fail');
+        Route::middleware(['role:admin,dispatcher,hub_operator,logistics_admin'])->group(function () {
+            Route::post('/exceptions', [ExceptionController::class, 'store'])->name('exceptions.store');
+        });
+
+        // Shipper & Booking Operations
+        Route::middleware(['role:admin,dispatcher,logistics_admin,shipper'])->group(function () {
+            Route::get('/shipments/create', [ShipperPortalController::class, 'create'])->name('shipments.create');
+            Route::post('/shipments', [ShipperPortalController::class, 'store'])->name('shipments.store');
+            Route::get('/shipments/bulk', [ShipperPortalController::class, 'bulkUploadForm'])->name('shipments.bulk');
+            Route::post('/shipments/bulk', [ShipperPortalController::class, 'processBulkUpload'])->name('shipments.bulk.process');
+            Route::get('/shipments/template', [ShipperPortalController::class, 'downloadTemplate'])->name('shipments.template');
+            Route::get('/shipments/errors/{batchId}', [ShipperPortalController::class, 'downloadErrorReport'])->name('shipments.errors');
+            Route::post('/claims', [ClaimController::class, 'store'])->name('claims.store');
+            Route::post('/claims/{claim}/submit', [ClaimController::class, 'submit'])->name('claims.submit');
+            Route::post('/customs', [CustomsController::class, 'store'])->name('customs.store');
+        });
+
+        Route::middleware(['role:admin,auditor,dispatcher,driver,hub_operator,logistics_admin,shipper'])->group(function () {
+            Route::get('/shipments/{id}', [ShipperPortalController::class, 'show'])->name('shipments.show')->whereNumber('id');
+            Route::get('/shipments/{id}/label', [ShipperPortalController::class, 'label'])->name('shipments.label')->whereNumber('id');
+        });
+
+        // Hub Floor Operations
+        Route::middleware(['role:admin,hub_operator,logistics_admin'])->group(function () {
+            Route::post('/hub/inbound', [HubOperationsController::class, 'inbound'])->name('hub.inbound');
+            Route::post('/hub/sort', [HubOperationsController::class, 'sort'])->name('hub.sort');
+            Route::post('/hub/outbound', [HubOperationsController::class, 'outbound'])->name('hub.outbound');
+        });
+
+        // Carrier Procurement
+        Route::middleware(['role:admin,logistics_admin,procurement'])->group(function () {
+            Route::post('/carriers', [CarrierController::class, 'store'])->name('carriers.store');
+        });
+
+        // Fleet Fuel Logging
+        Route::middleware(['role:admin,dispatcher,driver,logistics_admin'])->group(function () {
+            Route::post('/fuel', [FuelLogController::class, 'store'])->name('fuel.store');
+        });
+
+        // Mobile Driver Tasks
+        Route::middleware(['role:admin,driver,logistics_admin'])->group(function () {
+            Route::get('/driver/tasks', [DriverTaskController::class, 'index'])->name('driver.tasks');
+            Route::post('/driver/pickup', [DriverTaskController::class, 'pickup'])->name('driver.pickup');
+            Route::post('/driver/shipments/{shipment}/start-delivery', [DriverTaskController::class, 'startDelivery'])->name('driver.start-delivery');
+            Route::post('/driver/shipments/{shipment}/deliver', [DriverTaskController::class, 'deliver'])->name('driver.deliver');
+            Route::post('/driver/shipments/{shipment}/fail', [DriverTaskController::class, 'fail'])->name('driver.fail');
+        });
+
+        // Demurrage Billing Operations
+        Route::middleware(['role:admin,logistics_admin'])->group(function () {
+            Route::post('/demurrage/tariffs', [DemurrageController::class, 'storeTariff'])->name('dd.tariffs.store');
+            Route::post('/demurrage/start', [DemurrageController::class, 'start'])->name('dd.start');
+            Route::post('/demurrage/{dwell}/end', [DemurrageController::class, 'end'])->name('dd.end');
+            Route::post('/demurrage/invoice', [DemurrageController::class, 'invoice'])->name('dd.invoice');
+        });
+
+        // Direct Financial Mutations (Strictly Finance / Logistics Admin Roles, Auditor Forbidden)
+        Route::middleware(['role:admin,logistics_admin,treasury'])->group(function () {
+            Route::post('/carriers/{carrier}/pay', [CarrierController::class, 'pay'])->name('carriers.pay');
+            Route::post('/claims/{claim}/pay', [ClaimController::class, 'pay'])->name('claims.pay');
+        });
+
+        Route::middleware(['role:admin,shipper,treasury'])->group(function () {
+            Route::post('/customs/{declaration}/pay', [CustomsController::class, 'pay'])->name('customs.pay');
+        });
+
+        Route::middleware(['role:admin,hub_operator,logistics_admin'])->group(function () {
+            Route::post('/cod/deposit', [CodController::class, 'deposit'])->name('cod.deposit');
+        });
     });
 });

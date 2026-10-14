@@ -40,7 +40,7 @@ class ShipperPortalController extends Controller
             ->latest();
 
         // Shippers only see their own shipments
-        if (! $user->isAdmin() && ! $user->isLogisticsAdmin() && ! $user->isDispatcher() && ! $user->isHubOperator()) {
+        if (! $user->isAdmin() && ! $user->isLogisticsAdmin() && ! $user->isDispatcher() && ! $user->isHubOperator() && ! $user->isAuditor()) {
             $query->where('shipper_id', $user->id);
         }
 

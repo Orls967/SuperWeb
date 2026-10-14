@@ -24,7 +24,7 @@ class ClaimController extends Controller
     {
         $user = $request->user();
 
-        return $user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher());
+        return $user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isAuditor() || $user->isTreasury());
     }
 
     protected function authorizeAccess(Request $request): void

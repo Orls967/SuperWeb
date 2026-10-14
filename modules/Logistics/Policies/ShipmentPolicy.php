@@ -15,12 +15,13 @@ class ShipmentPolicy
             || $user->isDispatcher()
             || $user->isHubOperator()
             || $user->isDriver()
-            || $user->isShipper();
+            || $user->isShipper()
+            || $user->isAuditor();
     }
 
     public function view(User $user, mixed $shipment = null): bool
     {
-        if ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isHubOperator()) {
+        if ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isHubOperator() || $user->isAuditor()) {
             return true;
         }
 

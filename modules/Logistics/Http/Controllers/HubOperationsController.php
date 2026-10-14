@@ -48,7 +48,7 @@ class HubOperationsController extends Controller
             return $hub;
         }
 
-        if ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher()) {
+        if ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isAuditor()) {
             $requestedHubId = $request->query('hub_id', $request->input('hub_id'));
             if ($requestedHubId) {
                 $hub = Location::find((int) $requestedHubId);

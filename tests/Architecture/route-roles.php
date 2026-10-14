@@ -3,6 +3,20 @@
 declare(strict_types=1);
 use App\Models\User;
 use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Logistics\Domain\Enums\LocationType;
+use Modules\Logistics\Domain\Models\Carrier;
+use Modules\Logistics\Domain\Models\Claim;
+use Modules\Logistics\Domain\Models\Container;
+use Modules\Logistics\Domain\Models\ContainerDwell;
+use Modules\Logistics\Domain\Models\CustomsDeclaration;
+use Modules\Logistics\Domain\Models\Driver;
+use Modules\Logistics\Domain\Models\HubOperator;
+use Modules\Logistics\Domain\Models\Lane;
+use Modules\Logistics\Domain\Models\Location;
+use Modules\Logistics\Domain\Models\Schedule;
+use Modules\Logistics\Domain\Models\Shipment;
+use Modules\Logistics\Domain\Models\ShipmentException;
+use Modules\Logistics\Domain\Models\ShipmentLeg;
 use Modules\Mall\database\seeders\MallSeeder;
 use Modules\Mall\Domain\Enums\TenantCategory;
 use Modules\Mall\Domain\Models\Invoice;
@@ -86,6 +100,155 @@ $restoSeedHelper = function (): void {
         ['outlet_id' => $outlet->id],
         ['number' => 'CAT-001', 'customer_name' => 'Budi', 'customer_phone' => '081', 'event_date' => now()->addDays(5), 'event_time' => '12:00:00', 'pax' => 50, 'delivery_address' => 'Jl Test', 'subtotal' => 1000000, 'grand_total' => 1000000, 'status' => 'inquiry']
     );
+};
+
+$logisticsSeedHelper = function () {
+    $hubA = Location::firstOrCreate(
+        ['code' => 'HUB-BDJ'],
+        [
+            'name' => 'Hub Banjarmasin',
+            'type' => LocationType::HUB,
+            'city' => 'Banjarmasin',
+            'province' => 'Kalimantan Selatan',
+            'country' => 'ID',
+            'lat_e6' => -3300000,
+            'lng_e6' => 114500000,
+            'timezone' => 'Asia/Makassar',
+            'min_connection_minutes' => 60,
+            'is_active' => true,
+        ]
+    );
+
+    $hubB = Location::firstOrCreate(
+        ['code' => 'HUB-BJB'],
+        [
+            'name' => 'Hub Banjarbaru',
+            'type' => LocationType::HUB,
+            'city' => 'Banjarbaru',
+            'province' => 'Kalimantan Selatan',
+            'country' => 'ID',
+            'lat_e6' => -3400000,
+            'lng_e6' => 114800000,
+            'timezone' => 'Asia/Makassar',
+            'min_connection_minutes' => 60,
+            'is_active' => true,
+        ]
+    );
+
+    $lane = Lane::firstOrCreate(
+        ['origin_id' => $hubA->id, 'destination_id' => $hubB->id, 'mode' => 'road'],
+        ['distance_m' => 35000, 'standard_transit_minutes' => 90, 'is_active' => true]
+    );
+
+    $shipper = User::firstOrCreate(
+        ['email' => 'shipper_helper@autoserve.test'],
+        ['name' => 'Shipper Helper', 'password' => 'secret', 'role' => 'shipper']
+    );
+
+    $shipment = Shipment::firstOrCreate(
+        ['tracking_number' => 'LGX-SEED-0001'],
+        [
+            'shipper_id' => $shipper->id,
+            'consignee_name' => 'Penerima Helper',
+            'consignee_phone' => '081234567890',
+            'consignee_address' => ['street' => 'Jl. A. Yani', 'city' => 'Banjarbaru'],
+            'origin_location_id' => $hubA->id,
+            'destination_location_id' => $hubB->id,
+            'service_level' => 'regular',
+            'mode' => 'road',
+            'payment_terms' => 'prepaid',
+            'status' => 'booked',
+            'total_chargeable_weight_g' => 2000,
+            'total_amount_idr' => 25000,
+            'booked_at' => now(),
+        ]
+    );
+
+    $carrier = Carrier::firstOrCreate(
+        ['code' => 'CRR-HELPER'],
+        ['name' => 'Barito Carrier Helper', 'mode' => 'road', 'payment_terms_days' => 7, 'is_active' => true]
+    );
+
+    $leg = ShipmentLeg::firstOrCreate(
+        ['shipment_id' => $shipment->id, 'leg_sequence' => 1],
+        ['mode' => 'road', 'origin_location_id' => $hubA->id, 'destination_location_id' => $hubB->id, 'estimated_departure' => now(), 'estimated_arrival' => now()->addHours(2), 'status' => 'pending']
+    );
+
+    $claim = Claim::firstOrCreate(
+        ['shipment_id' => $shipment->id],
+        ['claim_number' => 'CLM-0001', 'created_by' => $shipper->id, 'claim_type' => 'damage', 'claimed_amount_idr' => 50000, 'cap_amount_idr' => 50000, 'description' => 'Rusak', 'status' => 'draft']
+    );
+
+    $schedule = Schedule::firstOrCreate(
+        ['schedule_number' => 'SCH-0001'],
+        [
+            'mode' => 'road',
+            'origin_location_id' => $hubA->id,
+            'destination_location_id' => $hubB->id,
+            'etd' => now()->addDay(),
+            'eta' => now()->addDay()->addHours(2),
+            'cutoff_at' => now()->addHours(12),
+            'status' => 'scheduled',
+            'cap_weight_kg' => '5000.000',
+            'cap_volume_dm3' => 14000,
+        ]
+    );
+
+    $container = Container::firstOrCreate(
+        ['container_number' => 'CSQU3054383'],
+        ['size_type' => '22G1', 'tare_kg' => 2200, 'max_gross_kg' => 30480, 'status' => 'available', 'current_location_id' => $hubA->id]
+    );
+
+    $dwell = ContainerDwell::firstOrCreate(
+        ['container_id' => $container->id, 'shipment_id' => $shipment->id],
+        ['shipper_id' => $shipper->id, 'location_id' => $hubA->id, 'kind' => 'demurrage', 'started_at' => now()->subDays(5), 'status' => 'open']
+    );
+
+    $declaration = CustomsDeclaration::firstOrCreate(
+        ['shipment_id' => $shipment->id],
+        ['declaration_number' => 'PIB-0001', 'type' => 'PIB', 'status' => 'draft', 'customs_value_idr' => 1000000, 'lines' => [], 'total_duty_idr' => 100000, 'submitted_at' => now()]
+    );
+
+    $exception = ShipmentException::firstOrCreate(
+        ['shipment_id' => $shipment->id],
+        ['reported_by' => $shipper->id, 'type' => 'damaged', 'severity' => 'critical', 'description' => 'Test exception', 'status' => 'open', 'detected_at' => now()]
+    );
+
+    $reportDir = storage_path('app/logistics/bulk_reports');
+    if (! is_dir($reportDir)) {
+        mkdir($reportDir, 0755, true);
+    }
+    file_put_contents($reportDir.'/batch-test-01_errors.csv', "row,error\n1,Invalid phone\n");
+
+    return compact('hubA', 'hubB', 'lane', 'shipment', 'carrier', 'leg', 'claim', 'schedule', 'dwell', 'declaration', 'exception');
+};
+
+$driverSetup = function (User $user) use ($logisticsSeedHelper): void {
+    $d = $logisticsSeedHelper();
+    $driverUser = $user->isDriver() ? $user : User::firstOrCreate(
+        ['email' => 'driver_seed@autoserve.test'],
+        ['name' => 'Driver Seed', 'password' => 'secret', 'role' => 'driver']
+    );
+    Driver::firstOrCreate(
+        ['user_id' => $driverUser->id],
+        [
+            'driver_number' => 'DRV-'.$driverUser->id,
+            'home_hub_id' => $d['hubA']->id,
+            'license_class' => 'SIM B1 Umum',
+            'license_expiry' => now()->addYear()->toDateString(),
+            'status' => 'available',
+        ]
+    );
+};
+
+$hubOperatorSetup = function (User $user) use ($logisticsSeedHelper): void {
+    if ($user->isHubOperator()) {
+        $d = $logisticsSeedHelper();
+        HubOperator::firstOrCreate(
+            ['user_id' => $user->id],
+            ['hub_id' => $d['hubA']->id, 'is_active' => true]
+        );
+    }
 };
 
 return [
@@ -281,69 +444,153 @@ return [
     'international.index' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
     'international.jvs' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
     'login' => 'public',
-    'logistics.carriers.index' => 'auth',
-    'logistics.carriers.pay' => 'auth',
-    'logistics.carriers.store' => 'auth',
-    'logistics.claims.decide' => 'auth',
-    'logistics.claims.index' => 'auth',
-    'logistics.claims.pay' => 'auth',
-    'logistics.claims.store' => 'auth',
-    'logistics.claims.submit' => 'auth',
-    'logistics.cod.deposit' => 'auth',
-    'logistics.cod.index' => 'auth',
-    'logistics.control-tower.index' => 'auth',
-    'logistics.customs.clear' => 'auth',
-    'logistics.customs.index' => 'auth',
-    'logistics.customs.pay' => 'auth',
-    'logistics.customs.store' => 'auth',
-    'logistics.customs.tariffs.store' => 'auth',
-    'logistics.dashboard' => 'auth',
-    'logistics.dd.end' => 'auth',
-    'logistics.dd.index' => 'auth',
-    'logistics.dd.invoice' => 'auth',
-    'logistics.dd.start' => 'auth',
-    'logistics.dd.tariffs.store' => 'auth',
-    'logistics.dispatch.assign' => 'auth',
-    'logistics.dispatch.assign-shipment' => 'auth',
-    'logistics.dispatch.index' => 'auth',
-    'logistics.dispatch.release' => 'auth',
-    'logistics.driver.deliver' => 'auth',
-    'logistics.driver.fail' => 'auth',
-    'logistics.driver.pickup' => 'auth',
-    'logistics.driver.start-delivery' => 'auth',
-    'logistics.driver.tasks' => 'auth',
-    'logistics.drivers.index' => 'auth',
-    'logistics.exceptions.index' => 'auth',
-    'logistics.exceptions.resolve' => 'auth',
-    'logistics.exceptions.store' => 'auth',
-    'logistics.fleet.index' => 'auth',
-    'logistics.fuel.index' => 'auth',
-    'logistics.fuel.store' => 'auth',
-    'logistics.hub.inbound' => 'auth',
-    'logistics.hub.index' => 'auth',
-    'logistics.hub.outbound' => 'auth',
-    'logistics.hub.sort' => 'auth',
-    'logistics.lanes.destroy' => 'auth',
-    'logistics.lanes.index' => 'auth',
-    'logistics.lanes.store' => 'auth',
-    'logistics.legs.assign-carrier' => 'auth',
-    'logistics.legs.complete' => 'auth',
-    'logistics.locations.create' => 'auth',
-    'logistics.locations.destroy' => 'auth',
-    'logistics.locations.edit' => 'auth',
-    'logistics.locations.index' => 'auth',
-    'logistics.locations.store' => 'auth',
-    'logistics.locations.update' => 'auth',
-    'logistics.margins' => 'auth',
-    'logistics.shipments.bulk' => 'auth',
-    'logistics.shipments.bulk.process' => 'auth',
-    'logistics.shipments.create' => 'auth',
-    'logistics.shipments.errors' => 'auth',
-    'logistics.shipments.index' => 'auth',
-    'logistics.shipments.label' => 'auth',
-    'logistics.shipments.show' => 'auth',
-    'logistics.shipments.store' => 'auth',
-    'logistics.shipments.template' => 'auth',
+    'logistics.carriers.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'procurement', 'treasury']],
+    'logistics.carriers.pay' => ['roles' => ['admin', 'logistics_admin', 'treasury'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['carrier' => $d['carrier']->id];
+    }],
+    'logistics.carriers.store' => ['roles' => ['admin', 'logistics_admin', 'procurement']],
+    'logistics.claims.decide' => ['roles' => ['admin', 'dispatcher', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['claim' => $d['claim']->id];
+    }],
+    'logistics.claims.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'shipper', 'treasury']],
+    'logistics.claims.pay' => ['roles' => ['admin', 'logistics_admin', 'treasury'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['claim' => $d['claim']->id];
+    }],
+    'logistics.claims.store' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.claims.submit' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['claim' => $d['claim']->id];
+    }],
+    'logistics.cod.deposit' => ['roles' => ['admin', 'hub_operator', 'logistics_admin'], 'setup' => $hubOperatorSetup],
+    'logistics.cod.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin', 'treasury']],
+    'logistics.control-tower.index' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.customs.clear' => ['roles' => ['admin', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['declaration' => $d['declaration']->id];
+    }],
+    'logistics.customs.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'shipper', 'treasury']],
+    'logistics.customs.pay' => ['roles' => ['admin', 'shipper', 'treasury'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['declaration' => $d['declaration']->id];
+    }],
+    'logistics.customs.store' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.customs.tariffs.store' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.dashboard' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.dd.end' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['dwell' => $d['dwell']->id];
+    }],
+    'logistics.dd.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'treasury']],
+    'logistics.dd.invoice' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.dd.start' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.dd.tariffs.store' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.dispatch.assign' => ['roles' => ['admin', 'dispatcher', 'logistics_admin']],
+    'logistics.dispatch.assign-shipment' => ['roles' => ['admin', 'dispatcher', 'logistics_admin']],
+    'logistics.dispatch.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin']],
+    'logistics.dispatch.release' => ['roles' => ['admin', 'dispatcher', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['schedule' => $d['schedule']->id];
+    }],
+    'logistics.driver.deliver' => ['roles' => ['admin', 'driver', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['shipment' => $d['shipment']->id];
+    }, 'setup' => $driverSetup],
+    'logistics.driver.fail' => ['roles' => ['admin', 'driver', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['shipment' => $d['shipment']->id];
+    }, 'setup' => $driverSetup],
+    'logistics.driver.pickup' => ['roles' => ['admin', 'driver', 'logistics_admin'], 'setup' => $driverSetup],
+    'logistics.driver.start-delivery' => ['roles' => ['admin', 'driver', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['shipment' => $d['shipment']->id];
+    }, 'setup' => $driverSetup],
+    'logistics.driver.tasks' => ['roles' => ['admin', 'driver', 'logistics_admin'], 'setup' => $driverSetup],
+    'logistics.drivers.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin']],
+    'logistics.exceptions.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.exceptions.resolve' => ['roles' => ['admin', 'dispatcher', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['exception' => $d['exception']->id];
+    }],
+    'logistics.exceptions.store' => ['roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.fleet.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.fuel.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'logistics_admin']],
+    'logistics.fuel.store' => ['roles' => ['admin', 'dispatcher', 'driver', 'logistics_admin']],
+    'logistics.hub.inbound' => ['roles' => ['admin', 'hub_operator', 'logistics_admin'], 'setup' => $hubOperatorSetup],
+    'logistics.hub.index' => ['roles' => ['admin', 'auditor', 'hub_operator', 'logistics_admin'], 'setup' => $hubOperatorSetup],
+    'logistics.hub.outbound' => ['roles' => ['admin', 'hub_operator', 'logistics_admin'], 'setup' => $hubOperatorSetup],
+    'logistics.hub.sort' => ['roles' => ['admin', 'hub_operator', 'logistics_admin'], 'setup' => $hubOperatorSetup],
+    'logistics.lanes.destroy' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['lane' => $d['lane']->id];
+    }],
+    'logistics.lanes.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin']],
+    'logistics.lanes.store' => ['roles' => ['admin', 'dispatcher', 'logistics_admin']],
+    'logistics.legs.assign-carrier' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['leg' => $d['leg']->id];
+    }],
+    'logistics.legs.complete' => ['roles' => ['admin', 'dispatcher', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['leg' => $d['leg']->id];
+    }],
+    'logistics.locations.create' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.locations.destroy' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['location' => $d['hubB']->id];
+    }],
+    'logistics.locations.edit' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['location' => $d['hubB']->id];
+    }],
+    'logistics.locations.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.locations.store' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.locations.update' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['location' => $d['hubB']->id];
+    }],
+    'logistics.margins' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'procurement', 'treasury']],
+    'logistics.shipments.bulk' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.shipments.bulk.process' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.shipments.create' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.shipments.errors' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
+        $logisticsSeedHelper();
+
+        return ['batchId' => 'batch-test-01'];
+    }],
+    'logistics.shipments.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.shipments.label' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['id' => $d['shipment']->id];
+    }],
+    'logistics.shipments.show' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['id' => $d['shipment']->id];
+    }],
+    'logistics.shipments.store' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.shipments.template' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
     'logout' => 'auth',
     'mall.billing.apply-penalties' => ['roles' => ['admin', 'mall_admin']],
     'mall.billing.generate' => ['roles' => ['admin', 'mall_admin']],
