@@ -1201,6 +1201,72 @@
 - **Verification:**
   - `vendor/bin/pest tests/Feature/Quality/GateRunnerTest.php` (`it accurately detects dirty working tree while ignoring sqlite and logs`) lulus (7 passed, 83 assertions).
 
+## 2026-10-14: Aturan P9 Minus Dialihkan (2026-10-14-p9-minus-dialihkan)
+<a id="2026-10-14-p9-minus-dialihkan"></a>
+- **Context:**
+  - Protokol P7 dan P9 menetapkan bahwa fase tidak dapat ditutup (✅) selama memiliki minus P0 atau P1 yang masih terbuka.
+  - Terdapat potensi deadlock siklus dependensi antara Fase R0 dan fase lanjutan (R1–R5): Fase R1 mempersyaratkan Fase R0 selesai (✅) sebelum kode R1 dimulai, namun audit pagar R0 mendeteksi temuan warisan P0 (M-R0-6: saldo berlawanan sisi normal) dan P1 (M-R0-4: 33 command audit tanpa fixture korupsi, M-R0-5: 172 kode akun produksi tanpa seeder, M-R0-10 & M-R0-11: view error contract, M-R0-12 & M-R0-18: rute distribution & rute auditor, M-R0-14: detail record audit).
+  - Jika minus warisan ini harus diperbaiki di dalam R0, lingkup R0 akan membengkak merambah perbaikan logika bisnis modular R1–R5 tanpa spesifikasi DoR fase terkait.
+- **Decision:**
+  - Sesuai Keputusan Pemilik K-P9 (mengikat):
+    1. Minus P0/P1 yang berasal dari KODE WARISAN dan rencana perbaikannya menunjuk item fase lain yang teksnya secara eksplisit mencakup masalah tersebut diizinkan berstatus "↪️ dialihkan ke Rx.y".
+    2. Minus yang dialihkan TIDAK memblokir status ✅ fase asal (R0), tetapi memblokir status ✅ fase tujuan (R<n>) selama minus tersebut belum diselesaikan dan dicoret.
+    3. Minus atas DELIVERABLE fase asal itu sendiri (misalnya deliverable pagar otomatis R0: M-R0-20, M-R0-21, M-R0-22, M-R0-23) TIDAK BOLEH dialihkan dan wajib dituntaskan pada fase asal.
+    4. Setiap baris minus yang dialihkan wajib menyertakan anchor keputusan ini (`DECISIONS.md#2026-10-14-p9-minus-dialihkan`).
+    5. Delapan (8) minus warisan Fase R0 yang dialihkan:
+       - `M-R0-4` (33 command audit warisan tanpa fixture korupsi) → dialihkan ke `R5.2`
+       - `M-R0-5` (172 kode akun produksi belum didefinisikan di seeder) → dialihkan ke `R1.3`
+       - `M-R0-6` (3 saldo akun berlawanan sisi normal akuntansi) → dialihkan ke `R1.2`
+       - `M-R0-10` (`contract.clauses.create` HTTP 500 Blade view) → dialihkan ke `R2.3`
+       - `M-R0-11` (`contract.reports` HTTP 500 type error ContractType) → dialihkan ke `R2.3`
+       - `M-R0-12` (`distribution.portal.home` HTTP 403 role admin) → dialihkan ke `R3.1`
+       - `M-R0-14` (`api:audit` tidak menyebut entitas rusak) → dialihkan ke `R5.2`
+       - `M-R0-18` (37 rute tulis mencantumkan role auditor) → dialihkan ke `R3.1`
+- **Reason:**
+  - Mengurai kebuntuan deadlock dependensi R0↔R1 secara formal tanpa melanggar prinsip anti-pola X1 (tidak menyembunyikan minus) dan X18 (tidak menurunkan ambang/mengubah teks item).
+  - Memastikan seluruh utang teknis warisan terkunci dan wajib diselesaikan pada fase tujuan sebelum fase tujuan dapat dinyatakan selesai (✅).
+- **Verification:**
+  - Pagar integritas `ProgressIntegrityScanner` memverifikasi aturan P9: keberadaan item tujuan di PROGRESS.md, validitas anchor DECISIONS.md, penolakan pengalihan deliverable fase, serta pemblokiran status ✅ fase tujuan selama minus belum dicoret.
+  - `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` lulus.
+
+## 2026-10-14: Penggantian Test Skor Hardcode dengan Pagar Nyata (2026-10-14-ganti-test-skor-hardcode)
+<a id="2026-10-14-ganti-test-skor-hardcode"></a>
+- **Context:**
+  - Verifikator independen sebelumnya menambahkan `tests/Architecture/Verifikasi/ProgressScannerMutationScoreTest.php` yang memuat nilai konstan hardcode (`$achievedScore = 59.24;` dan `$achievedScore = 47.87;`) untuk membuktikan kegagalan ambang batas mutasi 60% pada `ProgressIntegrityScanner` dan `GateRunner`.
+  - Keberadaan file test dengan konstanta kegagalan hardcode tersebut menghalangi test suite lokal dan CI untuk lulus meskipun pengujian mutasi riil telah dinaikkan dan diverifikasi oleh pagar otomatis.
+- **Decision:**
+  - Sesuai Keputusan Pemilik K-TEST (mengikat):
+    1. Test hardcode `tests/Architecture/Verifikasi/ProgressScannerMutationScoreTest.php` dihapus (izin hapus test khusus untuk file ini saja).
+    2. Digantikan dengan pagar kontrak nyata `tests/Architecture/MutationFenceContractTest.php` yang memverifikasi konfigurasi workflow CI (`.github/workflows/ci.yml`) secara permanen.
+    3. Pagar baru memastikan seluruh 5 kelas pagar R0 (`ProgressIntegrityScanner`, `GateRunner`, `GateReportCommand`, `GateManifest`, `RouteAuthorizationScanner`) dijalankan dengan `--min=60`, tanpa `continue-on-error`, dan tanpa `|| true`, dilengkapi fixture negatif pengujian.
+- **Reason:**
+  - Menggantikan asersi statis buatan dengan mekanisme pagar arsitektur otomatis yang menegakkan kepatuhan ambang mutasi riil di lingkungan CI tanpa celah bypass.
+- **Verification:**
+  - `vendor/bin/pest tests/Architecture/MutationFenceContractTest.php` lulus (4 passed, fixture positif dan 3 fixture negatif).
+
+## 2026-10-10: Pembekuan Snapshot Baseline PROGRESS (2026-10-10-progress-snapshot-8c8369d)
+<a id="2026-10-10-progress-snapshot-8c8369d"></a>
+- **Context:**
+  - Audit dan re-baseline 10 Oktober 2026 menghasilkan kondisi awal teks seluruh item pada `docs/PROGRESS.md`.
+  - Untuk mencegah penurunan spesifikasi atau manipulasi diam-diam terhadap teks item tanpa pengawasan (anti-pola X18 dan aturan P10), teks item dan status fase dibekukan dalam snapshot baseline.
+  - Snapshot baseline ini sebelumnya belum memiliki entri dokumentasi formal di `docs/DECISIONS.md`, yang dicatat sebagai kekurangan pada `M-R0-23`.
+- **Decision:**
+  - Menetapkan snapshot baseline formal yang dibekukan pada commit `8c8369d`:
+    1. **Apa yang dibekukan:** Teks seluruh item progress (kunci per fase dan item ID) serta status audit awal seluruh fase yang tercatat pada `docs/PROGRESS.md` saat commit `8c8369d`.
+    2. **File baseline:** Tersimpan di `tests/Architecture/baselines/progress-snapshot-8c8369d.json` (struktur data JSON teks item dan status fase) dan `tests/Architecture/baselines/progress-snapshot-8c8369d.md` (salinan markdown utuh). Selain itu, `tests/Architecture/baselines/progress-item-texts.json` digunakan oleh `ProgressIntegrityTest` untuk perbandingan langsung.
+    3. **Mekanisme Update (Ratchet):**
+       - Teks item TIDAK BOLEH diubah secara sembarangan.
+       - Bila cakupan atau spesifikasi suatu item harus diturunkan secara sah, teks item wajib diberi penanda eksplisit `⬇️ diturunkan` dan disertai rujukan entri keputusan di `docs/DECISIONS.md` yang menjelaskan justifikasi penurunan tersebut.
+       - Pelanggaran tanpa penanda `⬇️ diturunkan` akan secara otomatis digagalkan oleh `ProgressIntegrityTest` (P10/X18).
+- **Reason:**
+  - Menjamin integritas dan transparansi riwayat proyek sehingga kriteria terima dan spesifikasi tidak dapat dikurangi secara sepihak di tengah jalan.
+  - Menegakkan kepatuhan aturan P10 dan melengkapi pelacakan formal untuk deliverable R0.4.
+- **Verification:**
+  - `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` (`it enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker`) memverifikasi snapshot dan mendeteksi perubahan ilegal pada teks item.
+
+
+
+
 
 
 

@@ -6,6 +6,7 @@ namespace App\Quality\Gate;
 
 use Closure;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\Process\Process;
 
 /**
  * Executes the full quality gate pipeline with genuine metric capture (PROGRESS R0.2, P4).
@@ -57,6 +58,7 @@ final class GateRunner
 
     public function __construct(
         private readonly ?string $repoRoot = null,
+        private readonly ?Closure $processRunner = null,
     ) {}
 
     /**
@@ -104,7 +106,6 @@ final class GateRunner
             }
 
             $start = microtime(true);
-            $pipes = [];
             $env = [];
             foreach ($_SERVER as $k => $v) {
                 if (is_scalar($v)) {
@@ -120,80 +121,15 @@ final class GateRunner
                 $env['DB_CONNECTION'] = 'sqlite';
                 $env['DB_DATABASE'] = $gateDb;
             }
-            $process = proc_open(
-                $cmd,
-                [
-                    0 => ['pipe', 'r'],
-                    1 => ['pipe', 'w'],
-                    2 => ['pipe', 'w'],
-                ],
-                $pipes,
-                $root,
-                $env
-            );
 
-            $output = '';
-            if (is_resource($process)) {
-                fclose($pipes[0]);
-                stream_set_blocking($pipes[1], false);
-                stream_set_blocking($pipes[2], false);
-
-                while (! feof($pipes[1]) || ! feof($pipes[2])) {
-                    $read = [];
-                    if (! feof($pipes[1])) {
-                        $read[] = $pipes[1];
-                    }
-                    if (! feof($pipes[2])) {
-                        $read[] = $pipes[2];
-                    }
-
-                    if ($read === []) {
-                        break;
-                    }
-
-                    $write = null;
-                    $except = null;
-                    $ready = @stream_select($read, $write, $except, 0, 200000);
-
-                    if ($ready === false) {
-                        break;
-                    }
-
-                    if ($ready > 0) {
-                        foreach ($read as $pipe) {
-                            $chunk = fread($pipe, 8192);
-                            if ($chunk !== false && $chunk !== '') {
-                                $output .= $chunk;
-                                if ($logger !== null) {
-                                    $logger($pipe === $pipes[1] ? 'stdout' : 'stderr', $chunk);
-                                }
-                            }
-                        }
-                    } else {
-                        $pstatus = proc_get_status($process);
-                        if (! ($pstatus['running'] ?? true)) {
-                            while (($chunk = fread($pipes[1], 8192)) !== false && $chunk !== '') {
-                                $output .= $chunk;
-                                if ($logger !== null) {
-                                    $logger('stdout', $chunk);
-                                }
-                            }
-                            while (($chunk = fread($pipes[2], 8192)) !== false && $chunk !== '') {
-                                $output .= $chunk;
-                                if ($logger !== null) {
-                                    $logger('stderr', $chunk);
-                                }
-                            }
-                            break;
-                        }
-                    }
-                }
-                fclose($pipes[1]);
-                fclose($pipes[2]);
-                $exitCode = proc_close($process);
+            if ($this->processRunner !== null) {
+                $execResult = ($this->processRunner)($cmd, $root, $env, $logger);
             } else {
-                $exitCode = 1;
+                $execResult = $this->runDefaultProcess($cmd, $root, $env, $logger);
             }
+
+            $exitCode = $execResult['exit_code'];
+            $output = $execResult['output'] ?? '';
 
             $duration = microtime(true) - $start;
             $stepStatus = $exitCode === 0 ? 'PASS' : 'FAIL';
@@ -240,6 +176,29 @@ final class GateRunner
         );
 
         return $finalExitCode;
+    }
+
+    /**
+     * @param  array<string, string>  $env
+     * @param  (Closure(string, string): void)|null  $logger
+     * @return array{exit_code: int, output: string}
+     */
+    private function runDefaultProcess(string $cmd, string $cwd, array $env, ?Closure $logger = null): array
+    {
+        $process = Process::fromShellCommandline($cmd, $cwd, $env);
+        $process->setTimeout(null);
+        $output = '';
+        $process->run(function (string $type, string $buffer) use ($logger, &$output): void {
+            $output .= $buffer;
+            if ($logger !== null) {
+                $logger('output', $buffer);
+            }
+        });
+
+        return [
+            'exit_code' => (int) $process->getExitCode(),
+            'output' => $output,
+        ];
     }
 
     private function resolveCommitHash(string $root): string

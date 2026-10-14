@@ -288,3 +288,149 @@ it('executes full 9-step gate pipeline successfully and produces clean manifest 
 
     File::deleteDirectory($tempDir);
 });
+
+it('stops execution and returns exact non-zero exit code when step k fails for k = 1, 5, 9', function (): void {
+    foreach ([1, 5, 9] as $failStepIndex) {
+        $tempDir = sys_get_temp_dir().'/runner_fail_step_'.$failStepIndex.'_'.uniqid();
+        File::ensureDirectoryExists($tempDir);
+
+        $executedCommands = [];
+        $runner = new GateRunner(
+            repoRoot: $tempDir,
+            processRunner: function (string $cmd, string $cwd, array $env, ?\Closure $logger) use (&$executedCommands, $failStepIndex): array {
+                $stepNumber = count($executedCommands) + 1;
+                $executedCommands[] = $cmd;
+
+                if ($stepNumber === $failStepIndex) {
+                    return [
+                        'exit_code' => 50 + $failStepIndex,
+                        'output' => "error at step {$stepNumber}",
+                    ];
+                }
+
+                return [
+                    'exit_code' => 0,
+                    'output' => "ok at step {$stepNumber}",
+                ];
+            }
+        );
+
+        $manifestPath = $tempDir.'/storage/logs/gate-manifest.json';
+        $logged = [];
+        $exitCode = $runner->run($manifestPath, function (string $type, string $buffer) use (&$logged): void {
+            $logged[] = [$type, $buffer];
+        });
+
+        expect($exitCode)->toBe(50 + $failStepIndex)
+            ->and(File::exists($manifestPath))->toBeTrue()
+            ->and($executedCommands)->toHaveCount($failStepIndex);
+
+        $content = json_decode(File::get($manifestPath), true);
+        expect($content['overall_status'])->toBe('FAIL')
+            ->and($content['steps'])->toHaveCount($failStepIndex);
+
+        $lastStep = $content['steps'][$failStepIndex - 1];
+        $expectedStepDef = GateRunner::MANDATORY_STEPS[$failStepIndex - 1];
+        expect($lastStep['name'])->toBe($expectedStepDef['name'])
+            ->and($lastStep['command'])->toBe($expectedStepDef['command'])
+            ->and($lastStep['exit_code'])->toBe(50 + $failStepIndex)
+            ->and($lastStep['status'])->toBe('FAIL')
+            ->and($lastStep['duration'])->toBeGreaterThanOrEqual(0.0);
+
+        if ($failStepIndex > 1) {
+            $prevStep = $content['steps'][$failStepIndex - 2];
+            expect($prevStep['status'])->toBe('PASS')
+                ->and($prevStep['exit_code'])->toBe(0);
+        }
+
+        File::deleteDirectory($tempDir);
+    }
+});
+
+it('verifies exact order, names, commands, and environment variables across all 9 steps', function (): void {
+    $tempDir = sys_get_temp_dir().'/runner_mock_full_'.uniqid();
+    File::ensureDirectoryExists($tempDir);
+
+    $capturedSteps = [];
+    $runner = new GateRunner(
+        repoRoot: $tempDir,
+        processRunner: function (string $cmd, string $cwd, array $env, ?\Closure $logger) use (&$capturedSteps): array {
+            $capturedSteps[] = [
+                'command' => $cmd,
+                'env' => $env,
+            ];
+
+            $output = $cmd === 'php artisan arch:scan --json' ? '{"violations":[]}' : 'ok';
+
+            return [
+                'exit_code' => 0,
+                'output' => $output,
+            ];
+        }
+    );
+
+    $manifestPath = $tempDir.'/storage/logs/gate-manifest.json';
+    $exitCode = $runner->run($manifestPath);
+
+    expect($exitCode)->toBe(0)
+        ->and(File::exists($manifestPath))->toBeTrue()
+        ->and(File::exists($tempDir.'/storage/logs/arch-scan.json'))->toBeTrue()
+        ->and(File::get($tempDir.'/storage/logs/arch-scan.json'))->toBe('{"violations":[]}');
+
+    $manifest = json_decode(File::get($manifestPath), true);
+    expect($manifest['overall_status'])->toBe('PASS')
+        ->and($manifest['steps'])->toHaveCount(9);
+
+    for ($i = 0; $i < 9; $i++) {
+        $expected = GateRunner::MANDATORY_STEPS[$i];
+        $recorded = $manifest['steps'][$i];
+        $captured = $capturedSteps[$i];
+
+        expect($recorded['name'])->toBe($expected['name'])
+            ->and($recorded['command'])->toBe($expected['command'])
+            ->and($captured['command'])->toBe($expected['command'])
+            ->and($recorded['status'])->toBe('PASS')
+            ->and($recorded['exit_code'])->toBe(0)
+            ->and($recorded['duration'])->toBeGreaterThanOrEqual(0.0);
+    }
+
+    // Assert pest env
+    $pestEnv = $capturedSteps[1]['env'];
+    expect($pestEnv['APP_ENV'])->toBe('testing')
+        ->and($pestEnv['DB_CONNECTION'])->toBe('sqlite')
+        ->and($pestEnv['DB_DATABASE'])->toBe(':memory:')
+        ->and($pestEnv['BCRYPT_ROUNDS'])->toBe('4');
+
+    // Assert DB steps env
+    foreach ([4, 5, 6, 7] as $stepIndex) {
+        $stepEnv = $capturedSteps[$stepIndex]['env'];
+        expect($stepEnv['DB_CONNECTION'])->toBe('sqlite')
+            ->and($stepEnv['DB_DATABASE'])->toBe($tempDir.'/storage/gate/gate.sqlite');
+    }
+
+    // Assert JUnit path
+    expect(GateRunner::MANDATORY_STEPS[1]['command'])->toContain('--log-junit=storage/logs/pest-junit.xml');
+
+    File::deleteDirectory($tempDir);
+});
+
+it('handles default null repoRoot in GateRunner constructor and executes via custom runner closure', function (): void {
+    $tempDir = sys_get_temp_dir().'/runner_default_root_'.uniqid();
+    File::ensureDirectoryExists($tempDir);
+    $manifestPath = $tempDir.'/manifest.json';
+
+    $mockRunner = fn (string $command, string $cwd, array $env = [], ?\Closure $logger = null): array => ['exit_code' => 1, 'output' => 'stopped immediately'];
+
+    $runner = new GateRunner(repoRoot: null, processRunner: $mockRunner);
+    $exitCode = $runner->run($manifestPath);
+
+    expect($exitCode)->toBe(1)
+        ->and(File::exists($manifestPath))->toBeTrue();
+
+    File::deleteDirectory($tempDir);
+});
+
+it('handles default null processRunner in GateRunner constructor', function (): void {
+    $runner = new GateRunner(repoRoot: null, processRunner: null);
+    expect($runner)->toBeInstanceOf(GateRunner::class);
+});
