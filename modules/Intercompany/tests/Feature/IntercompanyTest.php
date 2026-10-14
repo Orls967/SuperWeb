@@ -157,7 +157,7 @@ class IntercompanyTest extends TestCase
 
     public function test_52_8_http_endpoints(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'treasury']);
 
         $this->actingAs($user)
             ->get(route('intercompany.index'))

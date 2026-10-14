@@ -196,7 +196,7 @@ class TradeTest extends TestCase
 
     public function test_trade_web_route_accessible_by_authenticated_user(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'procurement']);
 
         $this->actingAs($user)
             ->get(route('trade.index'))
