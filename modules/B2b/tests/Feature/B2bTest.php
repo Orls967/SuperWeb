@@ -111,7 +111,7 @@ class B2bTest extends TestCase
 
     public function test_b2b_web_index_accessible(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'b2b_buyer']);
 
         $response = $this->actingAs($user)->get(route('b2b.index'));
         $response->assertStatus(200);

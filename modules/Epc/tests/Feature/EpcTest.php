@@ -124,7 +124,7 @@ class EpcTest extends TestCase
 
     public function test_epc_web_index_accessible(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'epc_manager']);
 
         $response = $this->actingAs($user)->get(route('epc.index'));
         $response->assertStatus(200);

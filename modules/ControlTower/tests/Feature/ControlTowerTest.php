@@ -141,7 +141,7 @@ class ControlTowerTest extends TestCase
 
     public function test_53_10_http_endpoints(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'planner']);
 
         $this->actingAs($user)
             ->get(route('control_tower.index'))

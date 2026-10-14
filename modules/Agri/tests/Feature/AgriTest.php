@@ -142,7 +142,7 @@ class AgriTest extends TestCase
 
     public function test_agri_web_index_accessible(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'farmer']);
 
         $response = $this->actingAs($user)->get(route('agri.index'));
         $response->assertStatus(200);
