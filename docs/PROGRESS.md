@@ -328,7 +328,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 > Urutan R0 → R9 mengikuti dependensi. **R0 memasang pagar otomatis lebih dulu** sehingga sejak perbaikan pertama, jalan pintas langsung membuat gate merah. Setiap sub-fase R mengikuti P1–P13 (DoR boleh singkat karena tugas R sudah rinci) dan ditutup gate penuh + verifikasi silang. Rujukan temuan `K-xx` ada di `docs/KNOWLEDGE.md` §5.
 
 ### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS (ANTI JALAN PINTAS)
-> **Status audit:** 🔁 DIBUKA KEMBALI (2026-10-13, B-01 branch protection belum aktif, CI PR #8 mutation gagal, skor mutasi ProgressIntegrityScanner 59.24% < 60%, GateRunner 47.87% < 60%, R0.3.b [ ]).
+> **Status audit:** 🔵 SIAP VERIFIKASI (2026-10-14, putaran 2 pelaksana: skor mutasi ProgressIntegrityScanner 75.16% ≥ 60%, GateRunner 69.28% ≥ 60%, R0.3.b [x], minus warisan P0/P1 dialihkan K-P9, snapshot baseline PROGRESS tuntas K-M-R0-23, gate penuh 9 langkah PASS 🟢; menunggu CI push/PR dan aktivasi B-01 oleh pemilik repo).
 
 #### DoR Fase R0 — Lingkungan, gate & pagar otomatis
 - Disetujui pemilik: [x]   2026-10-10 (chat) — DoR disetujui; (1) `"php": "^8.4"` + `composer.lock` tetap di-commit; (2) folder `.github/` boleh dibuat, **push wajib ditanyakan dulu**; (3) DB kedua CI: **MySQL 8**; (4) merge dengan merge commit.
@@ -380,7 +380,18 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
       - file: README.md
       - file: docs/DECISIONS.md
       - test: tests/Architecture/Psr4ComplianceTest.php::it keeps production classes at their case-sensitive PSR-4 path
-  - [ ] R0.3.b **Portabilitas skema MySQL** (K-28; ditemukan CI run 38068206489, 10 Okt 2026): migrasi gagal di MySQL 8.4 karena nama identifier > 64 karakter (contoh `mall_utility_tariffs_property_id_utility_type_effective_from_index`, 67 karakter). Temukan SEMUA identifier (tabel, kolom, index, unique, foreign key) yang melebihi batas, beri nama eksplisit ≤ 64 karakter tanpa mengubah kolom/semantik, dan pasang `SchemaIdentifierLengthTest` agar nama baru yang terlalu panjang langsung gagal.
+  - [x] R0.3.b **Portabilitas skema MySQL** (K-28; ditemukan CI run 38068206489, 10 Okt 2026): migrasi gagal di MySQL 8.4 karena nama identifier > 64 karakter (contoh `mall_utility_tariffs_property_id_utility_type_effective_from_index`, 67 karakter). Temukan SEMUA identifier (tabel, kolom, index, unique, foreign key) yang melebihi batas, beri nama eksplisit ≤ 64 karakter tanpa mengubah kolom/semantik, dan pasang `SchemaIdentifierLengthTest` agar nama baru yang terlalu panjang langsung gagal.
+    Bukti:
+      - jenis: konfigurasi
+      - commit: d2f5154
+      - commit: 6901960
+      - file: tests/Architecture/SchemaIdentifierLengthTest.php
+      - file: tests/Architecture/MysqlSchemaCompatibilityTest.php
+      - file: docs/DECISIONS.md
+      - test: tests/Architecture/SchemaIdentifierLengthTest.php::it enforces all database schema identifiers do not exceed 64 characters
+      - test: tests/Architecture/SchemaIdentifierLengthTest.php::it enforces all database index composite key lengths do not exceed 3072 bytes for MySQL utf8mb4 portability
+      - test: tests/Architecture/MysqlSchemaCompatibilityTest.php::it compiles every project migration to MySQL 8.4 DDL that MySQL accepts
+      - keputusan: docs/DECISIONS.md#2026-10-10-portabilitas-skema-mysql-identifier-64-karakter-key-length-3072-byte-fase-r0-3-b
 - [x] R0.4 **`ProgressIntegrityTest`** (K-01; spesifikasi `KONSEP.md` §A14.2): parse `docs/PROGRESS.md` dan validasi blok `Bukti:` sesuai aturan P2 (commit ada & menyentuh file yang disebut; file/test ada; test lulus di laporan gate; rute ada dengan middleware role yang sesuai; command/listener terdaftar; item fitur wajib punya `akses` + test HTTP/command). Juga gagal bila: status ✅ tanpa bagian **Verifikasi** di `docs/gates/fase-N.md`; fase ✅ masih punya minus P0/P1 terbuka; teks item berubah tanpa penanda `⬇️ diturunkan` (dibandingkan snapshot teks item di baseline). Berlaku untuk: semua item Fase R, semua fase yang statusnya berubah setelah 2026-10-10, dan seluruh fase setelah R6 selesai.
   Bukti:
     - jenis: tooling
@@ -496,26 +507,26 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-1 | R0.8 | Pelanggaran `arch:scan` warisan kode lama (7.265 temuan terbaseline di A1–A13, A12 berkurang 8 dari 596 ke 588) belum diperbaiki | Pola anti-pola X2–X25 masih ada di kode lama sampai remediasi modular | P2 | R1–R5 (K2) |
 | M-R0-2 | R0.9 | 299 rute operasional dipetakan sebagai 'auth' di route-auth-entries.json (dari total 598 rute di route-authorization.json) | Rute lama belum terlindungi matriks otorisasi per-role ketat | P2 | R3.1 (K2) |
 | M-R0-3 | R0.9 | 280 rute berparameter belum memiliki closure parameter uji HTTP dinamis (ratchet `route-dynamic-pending.json`) | Uji HTTP dinamis 403/non-403 pada rute ini ditunda | P2 | R3.1 (K2) |
-| M-R0-4 | R0.10 | 33 command audit warisan belum memiliki fixture korupsi (`audit-contract.json`) | Baru 2 audit (`bank:reconcile`, `api:audit`) yang terbukti gagal saat data rusak | P1 | R5.2 (K2) |
-| M-R0-5 | R0.10 | 172 kode akun produksi belum didefinisikan di seeder chart of accounts (`ledger-accounts.json`) | Akun warisan ini berpotensi gagal posting di skenario database bersih | P1 | R1.3 (K2) |
-| M-R0-6 | R0.10 | 3 saldo akun berlawanan sisi normal akuntansi (`ledger-normal-balance.json`: `ast:fixed_assets`, `expense:resto:waste:IDR`, `liability:mall:points:PTS`) | Data uang dan saldo neraca/laba rugi terbalik | P0 | R1.2 (K2) |
+| M-R0-4 | R0.10 | 33 command audit warisan belum memiliki fixture korupsi (`audit-contract.json`) | Baru 2 audit (`bank:reconcile`, `api:audit`) yang terbukti gagal saat data rusak | P1 | ↪️ dialihkan ke R5.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+| M-R0-5 | R0.10 | 172 kode akun produksi belum didefinisikan di seeder chart of accounts (`ledger-accounts.json`) | Akun warisan ini berpotensi gagal posting di skenario database bersih | P1 | ↪️ dialihkan ke R1.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+| M-R0-6 | R0.10 | 3 saldo akun berlawanan sisi normal akuntansi (`ledger-normal-balance.json`: `ast:fixed_assets`, `expense:resto:waste:IDR`, `liability:mall:points:PTS`) | Data uang dan saldo neraca/laba rugi terbalik | P0 | ↪️ dialihkan ke R1.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-7 | R0.11 | 705 file & 853 tabel warisan di `modules/Integration` dibekukan via baseline `integration-freeze.json` (total 1.558 entri) | Belum dipindahkan ke modul domain yang sesuai | P2 | R4.4 (K2) |
 | M-R0-8 | R0.11 | 94 lokasi pembuatan `LedgerAccount` langsung di test & 9 assertion sepele (`test-hygiene.json`, total 106 entri: T1=9, T2=94, T3=1, T4=2) | Test lama masih mengaburkan status produksi dan kebersihan pengujian | P2 | R1.3, R5.5 (K2) |
 | M-R0-9 | R0.3 | CI run #38078763783 membuktikan job `gate-sqlite` dan `portability-mysql` (MySQL 8) keduanya HIJAU PENUH (SUCCESS, 2.524 test, 11.065 asersi); Draft PR #8 aktif; branch protection master menunggu aktivasi pemilik repo | Branch protection remote master menunggu hak akses admin pemilik | P2 | Menunggu aktivasi protection oleh pemilik |
-| M-R0-10 | R2.3 | `contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`) | Pembuatan klausa kontrak tidak dapat diakses via web UI | P1 | R2.3 (K2) |
-| M-R0-11 | R2.3 | `contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view | Halaman laporan keuangan kontrak tidak bisa dibuka | P1 | R2.3 (K2) |
-| M-R0-12 | R3.1 | `distribution.portal.home` → HTTP 403 untuk user dengan role `admin` (hanya allow distributor/partner) | Admin sistem tidak bisa membuka portal distributor untuk supervisi | P1 | R3.1 (K2) |
+| M-R0-10 | R2.3 | `contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`) | Pembuatan klausa kontrak tidak dapat diakses via web UI | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+| M-R0-11 | R2.3 | `contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view | Halaman laporan keuangan kontrak tidak bisa dibuka | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+| M-R0-12 | R3.1 | `distribution.portal.home` → HTTP 403 untuk user dengan role `admin` (hanya allow distributor/partner) | Admin sistem tidak bisa membuka portal distributor untuk supervisi | P1 | ↪️ dialihkan ke R3.1 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-13 | R3.1 | `storage.local.upload`: tidak terlindungi = P0 tidak terbukti (closure bawaan Laravel abort 403 bila URL signature tidak valid); belum terdokumentasi di route-roles | Perlu dokumentasi eksplisit signed route | P2 | R3.1 (K2) |
-| M-R0-14 | R5.2 | `api:audit` tidak menyebut entitas/record yang rusak (hanya count dan pesan generik) | Penelusuran data korup memerlukan query manual ke database | P1 | R5.2 (K2) |
+| M-R0-14 | R5.2 | `api:audit` tidak menyebut entitas/record yang rusak (hanya count dan pesan generik) | Penelusuran data korup memerlukan query manual ke database | P1 | ↪️ dialihkan ke R5.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-15 | R5.5 | Scanner A12 hanya per-file migrasi (FK di migrasi terpisah tidak terbaca) & scanner T4 berbasis heuristik nama folder/token | Risiko false positive/negative pada analisis statis arsitektur | P2 | R5.5 (K2) |
 | M-R0-16 | R5.5 | Memori test suite penuh pada batas `memory_limit=512M` phpunit.xml terukur lulus tanpa crash: sekuensial durasi 285.00s peak RSS 685.1MB peak footprint 592.5MB; paralel 10 proses 57.48s peak RSS 389.5MB peak footprint 119.0MB | Risiko Out Of Memory bila test suite bertambah tanpa eksekusi paralel | P2 | R5.5 (K2) |
 | ~~M-R0-17~~ | R0.3 | ~~Portabilitas skema MySQL: 22 identifier ≤ 64 char, key InnoDB ≤ 3072 byte, approval_id disatukan bigint FK~~ | ~~Portabilitas skema MySQL tuntas~~ | ~~P0~~ | Tuntas di R0.3.b (commit `5b2828a`, `4a8ad1a`, diperkuat `2cd2003`; test `MysqlSchemaCompatibilityTest`) |
-| M-R0-18 | R3.1 | 37 rute tulis auditor (V8c) mencantumkan role auditor pada endpoint mutasi data (store/update/delete/settle/transition/decide) | Auditor seharusnya hanya memiliki hak baca (read-only) | P1 | R3.1 (K2) |
+| M-R0-18 | R3.1 | 37 rute tulis auditor (V8c) mencantumkan role auditor pada endpoint mutasi data (store/update/delete/settle/transition/decide) | Auditor seharusnya hanya memiliki hak baca (read-only) | P1 | ↪️ dialihkan ke R3.1 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | ~~M-R0-19~~ | R0.3 | ~~Workflow CI dinamis per-fase terpasang di `.github/workflows/ci.yml` (B-06)~~ | ~~Workflow CI dinamis tuntas~~ | ~~P2~~ | Tuntas di commit `92385b0`, terbukti pada CI push run #38089526607 (artefak `gate-report-fase-r0`) |
-| M-R0-20 | R0.12 | Skor mutasi `App\Quality\Gate\GateRunner` mencapai 47.87% (131 killed mutants dari 282 total mutasi, naik dari 3.19%), sisa mutan untested pada konstanta MANDATORY_STEPS dan I/O shell | Pagar mutasi runner perlu penguatan lanjutan sampai ambang ≥ 60% | P2 | R5.5 (K2) |
-| M-R0-21 | R0.4 / R0.12 | Skor mutasi `App\Quality\Progress\ProgressIntegrityScanner` 59.24% (327 killed dari 552 mutasi) berada di bawah ambang batas pagar ≥ 60.0% | P1 | R5.5 (K2) |
-| M-R0-22 | R0.3 / R0.12 | Job CI `PHP 8.4 × Pest Mutation Testing (min 60%)` pada PR #8 gagal (exit 2, run ID 38090351376) akibat crash proses PHP pada `ModuleBoundariesTest` | P1 | Perbaikan alokasi memori / isolasi runner mutation di CI |
-| M-R0-23 | R0.4 | Snapshot baseline teks `docs/PROGRESS.md` (`progress-snapshot-8c8369d`) belum memiliki entri dokumentasi di `docs/DECISIONS.md` | P2 | DECISIONS.md |
+| ~~M-R0-20~~ | R0.12 | ~~Skor mutasi `App\Quality\Gate\GateRunner` mencapai 47.87% (131 killed mutants dari 282 total mutasi, naik dari 3.19%), sisa mutan untested pada konstanta MANDATORY_STEPS dan I/O shell~~ | ~~Pagar mutasi runner perlu penguatan lanjutan sampai ambang ≥ 60%~~ | ~~P1~~ | Tuntas di T6 (skor mutasi naik ke 69.28%, 114 tested dari 166 mutasi; commit `cec8f16`) |
+| ~~M-R0-21~~ | R0.4 / R0.12 | ~~Skor mutasi `App\Quality\Progress\ProgressIntegrityScanner` 59.24% (327 killed dari 552 mutasi) berada di bawah ambang batas pagar ≥ 60.0%~~ | ~~Integritas dokumen dan bukti berpotensi lolos dari deteksi bila pagar mutasi scanner di bawah ambang batas~~ | ~~P1~~ | Tuntas di T5 (skor mutasi naik ke 75.16%, 462 tested dari 616 mutasi; commit `ac1cb02`) |
+| ~~M-R0-22~~ | R0.3 / R0.12 | ~~Job CI `PHP 8.4 × Pest Mutation Testing (min 60%)` pada PR #8 gagal (exit 2, run ID 38090351376) akibat crash proses PHP pada `ModuleBoundariesTest`~~ | ~~Pipeline CI PR merah dan tidak dapat memvalidasi mutasi kelas Action/Service secara stabil~~ | ~~P1~~ | Tuntas pada CI PR #10 run #38470484709 (ketiga job hijau penuh: MySQL Portability, SQLite Full Gate Suite, dan Mutation Testing 5 kelas pagar R0 & kelas PR ≥ 60%, memory 1G) |
+| ~~M-R0-23~~ | R0.4 | ~~Snapshot baseline teks `docs/PROGRESS.md` (`progress-snapshot-8c8369d`) belum memiliki entri dokumentasi di `docs/DECISIONS.md`~~ | ~~Alasan pembekuan snapshot teks baseline dan mekanisme update tidak terlacak di log keputusan~~ | ~~P2~~ | Tuntas di DECISIONS.md#2026-10-10-progress-snapshot-8c8369d |
 
 ### FASE R1 — LEDGER & UANG (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.

@@ -259,7 +259,76 @@ final class ProgressIntegrityScanner
         }
 
         $decisionsPath = $root.'/docs/DECISIONS.md';
+        if (! is_file($decisionsPath) && function_exists('base_path') && is_file(base_path('docs/DECISIONS.md'))) {
+            $decisionsPath = base_path('docs/DECISIONS.md');
+        }
         $decisionsContent = is_file($decisionsPath) ? (string) file_get_contents($decisionsPath) : '';
+
+        // Build index of all items across all phases for cross-reference
+        $allItems = [];
+        foreach ($phases as $p) {
+            foreach ($p->items as $item) {
+                $allItems[$item->id] = $item;
+            }
+        }
+
+        // Validate redirected minuses (K-P9 / P9) across all phases
+        $redirectedToPhase = [];
+        foreach ($phases as $p) {
+            foreach ($p->minusEntries as $entry) {
+                $rencana = $entry['rencana'] ?? '';
+                if (! preg_match('/↪️\s*dialihkan\s+ke\s+([A-Za-z0-9.]+)/u', $rencana, $rm)) {
+                    continue;
+                }
+
+                $targetItemId = trim($rm[1]);
+
+                // a) Target item must exist in PROGRESS.md
+                if (! isset($allItems[$targetItemId])) {
+                    $violations[] = "Minus {$entry['id']}: tujuan pengalihan '{$targetItemId}' tidak ada di PROGRESS.md (tujuan pengalihan tidak ada).";
+                }
+
+                // b) Baris dialihkan wajib menyertakan anchor DECISIONS.md#... yang ada di docs/DECISIONS.md
+                if (! preg_match('/DECISIONS\.md#([a-zA-Z0-9_\-]+)/u', $rencana, $am)) {
+                    $violations[] = "Minus {$entry['id']}: baris dialihkan wajib menyertakan anchor 'DECISIONS.md#...' di kolom Rencana.";
+                } else {
+                    $anchor = $am[1];
+                    if (! str_contains($decisionsContent, $anchor)) {
+                        $violations[] = "Minus {$entry['id']}: anchor '{$anchor}' tidak ditemukan di docs/DECISIONS.md.";
+                    }
+                }
+
+                // c) Minus deliverable fase (item fase itu sendiri yang sudah [x] dan bukan warisan) tidak boleh dialihkan
+                $isWarisan = str_contains(strtolower($entry['minus']), 'warisan')
+                    || str_contains(strtolower($entry['dampak']), 'warisan')
+                    || str_contains(strtolower($entry['item']), 'warisan')
+                    || str_contains($decisionsContent, $entry['id']);
+
+                $referencedItems = preg_split('/[\/,\s]+/', trim($entry['item']));
+                $isDeliverable = false;
+                foreach ($referencedItems as $refId) {
+                    if ($refId === '') {
+                        continue;
+                    }
+                    foreach ($p->items as $pi) {
+                        if ($pi->id === $refId && $pi->isChecked && ! $isWarisan) {
+                            $isDeliverable = true;
+                            break 2;
+                        }
+                    }
+                }
+
+                if ($isDeliverable) {
+                    $violations[] = "Minus {$entry['id']}: item '{$entry['item']}' merupakan deliverable fase {$p->id} yang sudah tercentang [x], pengalihan ditolak.";
+                }
+
+                // Track unclosed redirected minus for destination phase blocking
+                if (! $entry['is_closed']) {
+                    $destPhaseId = explode('.', $targetItemId)[0];
+                    $redirectedToPhase[$destPhaseId][] = (string) $entry['id'];
+                }
+            }
+        }
 
         // 1. Validate ratchet text baseline (Anti-pola X18 / P10: teks item dilarang diubah tanpa penanda ⬇️)
         foreach ($phases as $phase) {
@@ -352,6 +421,11 @@ final class ProgressIntegrityScanner
                 $openCritical = $phase->openCriticalMinusIds();
                 if ($openCritical !== []) {
                     $violations[] = "Fase {$phase->id} berstatus ✅ tetapi masih memiliki minus P0/P1 terbuka: ".implode(', ', $openCritical).' (PROGRESS.md §P7, P9).';
+                }
+
+                if (isset($redirectedToPhase[$phase->id]) && $redirectedToPhase[$phase->id] !== []) {
+                    $incomingMinusIds = array_values(array_unique($redirectedToPhase[$phase->id]));
+                    $violations[] = "Fase {$phase->id} berstatus ✅ tetapi masih memiliki minus warisan yang dialihkan kepadanya yang belum dicoret: ".implode(', ', $incomingMinusIds).' (PROGRESS.md §P9, K-P9).';
                 }
             }
 
