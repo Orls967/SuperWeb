@@ -11,6 +11,19 @@ use Modules\Mall\Domain\Models\Property;
 use Modules\Mall\Domain\Models\Tenant;
 use Modules\Mall\Domain\Models\VoucherTemplate;
 use Modules\Mall\Domain\Models\WorkOrder;
+use Modules\Resto\database\seeders\RestoMenuSeeder;
+use Modules\Resto\Domain\Models\CateringOrder;
+use Modules\Resto\Domain\Models\Delivery;
+use Modules\Resto\Domain\Models\DisplayTray;
+use Modules\Resto\Domain\Models\Ingredient;
+use Modules\Resto\Domain\Models\MenuItem;
+use Modules\Resto\Domain\Models\Order;
+use Modules\Resto\Domain\Models\Outlet;
+use Modules\Resto\Domain\Models\PurchaseOrder;
+use Modules\Resto\Domain\Models\RestoTable;
+use Modules\Resto\Domain\Models\StockCount;
+use Modules\Resto\Domain\Models\StockTransfer;
+use Modules\Resto\Domain\Models\TableSession;
 use Modules\Supplier\Domain\Models\Supplier;
 
 /**
@@ -21,6 +34,60 @@ use Modules\Supplier\Domain\Models\Supplier;
  * - "auth": requires authenticated user
  * - ["roles" => [...], "params" => fn () => [...]]
  */
+$restoSeedHelper = function (): void {
+    if (! MenuItem::exists()) {
+        (new RestoMenuSeeder)->run();
+    }
+    $outlet = Outlet::first();
+    $item = MenuItem::first();
+    $table = RestoTable::first();
+
+    $supplier = Modules\Resto\Domain\Models\Supplier::firstOrCreate(
+        ['name' => 'Supplier Test'],
+        ['contact' => '081', 'terms_days' => 30, 'is_active' => true]
+    );
+
+    DisplayTray::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['menu_item_id' => $item->id, 'cooked_at' => now(), 'expires_at' => now()->addHours(4), 'status' => 'displayed', 'portions_remaining' => 5]
+    );
+
+    TableSession::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['table_id' => $table?->id ?? 1, 'opened_by' => 1, 'session_code' => 'SES-001', 'guest_count' => 2, 'status' => 'open', 'opened_at' => now()]
+    );
+
+    $order = Order::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['order_number' => 'ORD-TEST-001', 'channel' => 'dine_in', 'status' => 'pending', 'subtotal' => 50000, 'tax' => 5000, 'total' => 55000]
+    );
+
+    PurchaseOrder::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['number' => 'PO-TEST-001', 'supplier_id' => $supplier->id, 'status' => 'draft', 'created_by' => 1]
+    );
+
+    StockTransfer::firstOrCreate(
+        ['from_outlet_id' => $outlet->id],
+        ['number' => 'TRF-TEST-001', 'to_outlet_id' => $outlet->id, 'status' => 'draft']
+    );
+
+    StockCount::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['date' => now()->toDateString(), 'status' => 'draft', 'counted_by' => 1]
+    );
+
+    Delivery::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['order_id' => $order->id, 'delivery_number' => 'DEL-001', 'status' => 'preparing', 'recipient_name' => 'Budi', 'recipient_phone' => '081', 'delivery_address' => 'Jl Test', 'fee' => 10000]
+    );
+
+    CateringOrder::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['number' => 'CAT-001', 'customer_name' => 'Budi', 'customer_phone' => '081', 'event_date' => now()->addDays(5), 'event_time' => '12:00:00', 'pax' => 50, 'delivery_address' => 'Jl Test', 'subtotal' => 1000000, 'grand_total' => 1000000, 'status' => 'inquiry']
+    );
+};
+
 return [
     'GET /' => 'public',
     'GET up' => 'public',
@@ -685,95 +752,452 @@ return [
     'profile.edit' => 'auth',
     'profile.update' => 'auth',
     'register' => 'public',
-    'resto.analytics.index' => 'auth',
-    'resto.catering.cancel' => 'auth',
-    'resto.catering.complete' => 'auth',
-    'resto.catering.create' => 'auth',
-    'resto.catering.deposit' => 'auth',
-    'resto.catering.destroy' => 'auth',
-    'resto.catering.edit' => 'auth',
-    'resto.catering.index' => 'auth',
-    'resto.catering.show' => 'auth',
-    'resto.catering.store' => 'auth',
-    'resto.catering.update' => 'auth',
-    'resto.deliveries.create' => 'auth',
-    'resto.deliveries.destroy' => 'auth',
-    'resto.deliveries.edit' => 'auth',
-    'resto.deliveries.fail' => 'auth',
-    'resto.deliveries.index' => 'auth',
-    'resto.deliveries.show' => 'auth',
-    'resto.deliveries.status' => 'auth',
-    'resto.deliveries.store' => 'auth',
-    'resto.deliveries.update' => 'auth',
-    'resto.franchise.contract.store' => 'auth',
-    'resto.franchise.index' => 'auth',
-    'resto.franchise.royalty.run' => 'auth',
-    'resto.ingredients.conversions.store' => 'auth',
-    'resto.ingredients.create' => 'auth',
-    'resto.ingredients.destroy' => 'auth',
-    'resto.ingredients.edit' => 'auth',
-    'resto.ingredients.index' => 'auth',
-    'resto.ingredients.show' => 'auth',
-    'resto.ingredients.store' => 'auth',
-    'resto.ingredients.update' => 'auth',
-    'resto.kitchen.cook' => 'auth',
-    'resto.kitchen.index' => 'auth',
-    'resto.kitchen.simulate' => 'auth',
-    'resto.kitchen.trays.discard' => 'auth',
-    'resto.kitchen.trays.recirculate' => 'auth',
-    'resto.menu.calculate-cost' => 'auth',
-    'resto.menu.create' => 'auth',
-    'resto.menu.destroy' => 'auth',
-    'resto.menu.edit' => 'auth',
-    'resto.menu.index' => 'auth',
-    'resto.menu.show' => 'auth',
-    'resto.menu.store' => 'auth',
-    'resto.menu.update' => 'auth',
-    'resto.outlets.create' => 'auth',
-    'resto.outlets.destroy' => 'auth',
-    'resto.outlets.edit' => 'auth',
-    'resto.outlets.index' => 'auth',
-    'resto.outlets.show' => 'auth',
-    'resto.outlets.store' => 'auth',
-    'resto.outlets.update' => 'auth',
-    'resto.pos.index' => 'auth',
-    'resto.pos.order.pay' => 'auth',
-    'resto.pos.order.receipt' => 'auth',
-    'resto.pos.order.validate-parking' => 'auth',
-    'resto.pos.order.void' => 'auth',
-    'resto.pos.session.bill' => 'auth',
-    'resto.pos.session.hidang' => 'auth',
-    'resto.pos.session.item' => 'auth',
-    'resto.pos.session.open' => 'auth',
-    'resto.pos.session.show' => 'auth',
-    'resto.pos.shift.close' => 'auth',
-    'resto.pos.shift.open' => 'auth',
-    'resto.pos.shift.settle' => 'auth',
-    'resto.purchases.create' => 'auth',
-    'resto.purchases.destroy' => 'auth',
-    'resto.purchases.edit' => 'auth',
-    'resto.purchases.index' => 'auth',
-    'resto.purchases.pay' => 'auth',
-    'resto.purchases.receive' => 'auth',
-    'resto.purchases.show' => 'auth',
-    'resto.purchases.store' => 'auth',
-    'resto.purchases.update' => 'auth',
-    'resto.stock-counts.approve' => 'auth',
-    'resto.stock-counts.create' => 'auth',
-    'resto.stock-counts.destroy' => 'auth',
-    'resto.stock-counts.edit' => 'auth',
-    'resto.stock-counts.index' => 'auth',
-    'resto.stock-counts.show' => 'auth',
-    'resto.stock-counts.store' => 'auth',
-    'resto.stock-counts.update' => 'auth',
-    'resto.transfers.create' => 'auth',
-    'resto.transfers.destroy' => 'auth',
-    'resto.transfers.edit' => 'auth',
-    'resto.transfers.index' => 'auth',
-    'resto.transfers.receive' => 'auth',
-    'resto.transfers.show' => 'auth',
-    'resto.transfers.store' => 'auth',
-    'resto.transfers.update' => 'auth',
+    'resto.analytics.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.catering.cancel' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.complete' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.create' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.catering.deposit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.destroy' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['catering' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.edit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['catering' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.catering.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['catering' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.catering.update' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['catering' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.create' => ['roles' => ['admin', 'driver', 'outlet_manager']],
+    'resto.deliveries.destroy' => [
+        'roles' => ['admin', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.edit' => [
+        'roles' => ['admin', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.fail' => [
+        'roles' => ['admin', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.index' => ['roles' => ['admin', 'auditor', 'driver', 'outlet_manager']],
+    'resto.deliveries.show' => [
+        'roles' => ['admin', 'auditor', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.status' => [
+        'roles' => ['admin', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.store' => ['roles' => ['admin', 'driver', 'outlet_manager']],
+    'resto.deliveries.update' => [
+        'roles' => ['admin', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.franchise.contract.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.franchise.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.franchise.royalty.run' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.ingredients.conversions.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.ingredients.create' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.ingredients.destroy' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['ingredient' => Ingredient::first()?->id ?? 1];
+        },
+    ],
+    'resto.ingredients.edit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['ingredient' => Ingredient::first()?->id ?? 1];
+        },
+    ],
+    'resto.ingredients.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.ingredients.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['ingredient' => Ingredient::first()?->id ?? 1];
+        },
+    ],
+    'resto.ingredients.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.ingredients.update' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['ingredient' => Ingredient::first()?->id ?? 1];
+        },
+    ],
+    'resto.kitchen.cook' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'resto.kitchen.index' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'resto.kitchen.simulate' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'resto.kitchen.trays.discard' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['tray' => DisplayTray::first()?->id ?? 1];
+        },
+    ],
+    'resto.kitchen.trays.recirculate' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['tray' => DisplayTray::first()?->id ?? 1];
+        },
+    ],
+    'resto.menu.calculate-cost' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.menu.create' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.menu.destroy' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['menu' => MenuItem::first()?->id ?? 1];
+        },
+    ],
+    'resto.menu.edit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['menu' => MenuItem::first()?->id ?? 1];
+        },
+    ],
+    'resto.menu.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.menu.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['menu' => MenuItem::first()?->id ?? 1];
+        },
+    ],
+    'resto.menu.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.menu.update' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['menu' => MenuItem::first()?->id ?? 1];
+        },
+    ],
+    'resto.outlets.create' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.outlets.destroy' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['outlet' => Outlet::first()?->id ?? 1];
+        },
+    ],
+    'resto.outlets.edit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['outlet' => Outlet::first()?->id ?? 1];
+        },
+    ],
+    'resto.outlets.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.outlets.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['outlet' => Outlet::first()?->id ?? 1];
+        },
+    ],
+    'resto.outlets.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.outlets.update' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['outlet' => Outlet::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.index' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
+    'resto.pos.order.pay' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => Order::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.order.receipt' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => Order::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.order.validate-parking' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => Order::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.order.void' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => Order::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.session.bill' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['session' => TableSession::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.session.hidang' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['session' => TableSession::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.session.item' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['session' => TableSession::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.session.open' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
+    'resto.pos.session.show' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['session' => TableSession::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.shift.close' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
+    'resto.pos.shift.open' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
+    'resto.pos.shift.settle' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
+    'resto.purchases.create' => ['roles' => ['admin', 'outlet_manager', 'procurement']],
+    'resto.purchases.destroy' => [
+        'roles' => ['admin', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.purchases.edit' => [
+        'roles' => ['admin', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.purchases.index' => ['roles' => ['admin', 'auditor', 'outlet_manager', 'procurement']],
+    'resto.purchases.pay' => [
+        'roles' => ['admin', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.purchases.receive' => [
+        'roles' => ['admin', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.purchases.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.purchases.store' => ['roles' => ['admin', 'outlet_manager', 'procurement']],
+    'resto.purchases.update' => [
+        'roles' => ['admin', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.stock-counts.approve' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['stock_count' => StockCount::first()?->id ?? 1];
+        },
+    ],
+    'resto.stock-counts.create' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.stock-counts.destroy' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['stock_count' => StockCount::first()?->id ?? 1];
+        },
+    ],
+    'resto.stock-counts.edit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['stock_count' => StockCount::first()?->id ?? 1];
+        },
+    ],
+    'resto.stock-counts.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.stock-counts.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['stock_count' => StockCount::first()?->id ?? 1];
+        },
+    ],
+    'resto.stock-counts.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.stock-counts.update' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['stock_count' => StockCount::first()?->id ?? 1];
+        },
+    ],
+    'resto.transfers.create' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'resto.transfers.destroy' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['transfer' => StockTransfer::first()?->id ?? 1];
+        },
+    ],
+    'resto.transfers.edit' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['transfer' => StockTransfer::first()?->id ?? 1];
+        },
+    ],
+    'resto.transfers.index' => ['roles' => ['admin', 'auditor', 'kitchen', 'outlet_manager']],
+    'resto.transfers.receive' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['transfer' => StockTransfer::first()?->id ?? 1];
+        },
+    ],
+    'resto.transfers.show' => [
+        'roles' => ['admin', 'auditor', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['transfer' => StockTransfer::first()?->id ?? 1];
+        },
+    ],
+    'resto.transfers.store' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'resto.transfers.update' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['transfer' => StockTransfer::first()?->id ?? 1];
+        },
+    ],
     'sanctum.csrf-cookie' => 'public',
     'services.destroy' => ['roles' => ['admin']],
     'services.index' => ['roles' => ['admin']],

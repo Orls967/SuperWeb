@@ -33,6 +33,16 @@ class PaySupplierAction
         ?string $note = null,
         ?string $idempotencyKey = null
     ): LedgerTransaction {
+        if (auth()->check()) {
+            $user = auth()->user();
+            $isAuthorized = $user->isAdmin() ||
+                (method_exists($user, 'hasRbacRole') && ($user->hasRbacRole('outlet_manager') || $user->hasRbacRole('procurement') || $user->hasRbacRole('treasury'))) ||
+                in_array($user->role, ['outlet_manager', 'procurement', 'treasury'], true);
+            if (! $isAuthorized) {
+                abort(403, 'Hanya role admin, outlet_manager, procurement, atau treasury yang berhak melakukan pembayaran supplier.');
+            }
+        }
+
         if ($amount <= 0) {
             throw new InvalidArgumentException('Nominal pembayaran supplier harus lebih besar dari 0.');
         }
