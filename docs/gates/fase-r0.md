@@ -163,4 +163,40 @@
   - `M-R0-22`: ~~DICORET~~ (CI PR #10 run ID #38470484709 hijau penuh 3/3 jobs)
   - `M-R0-23`: ~~DICORET~~ (entri keputusan snapshot selesai)
 
+### Putaran 2 — Verifikasi Independen (2026-10-14)
+
+- **Tanggal:** 2026-10-14
+- **Verifikator:** Agent Verifikator Sesi 2026-10-14 (Putaran 2)
+- **Commit yang diverifikasi:** `87244374a76ea479647850aefcb3b91412c7eafb` (8724437) — CI PR #10 run ID `38472460462`: SQLite ✅ (5m 22s), MySQL ✅ (1m 59s), Mutation Testing ✅ (11m 45s < 45 menit); CI push master run ID `38534875698` ✅
+- **Keputusan:** 🔁 DIBUKA KEMBALI
+
+| # | Hasil | Bukti (command / commit / output) | Catatan |
+|---|---|---|---|
+| C1 | ❌ GAGAL | `./vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` exit 0 (1 passed, 11 assertions). Sabotase S1–S8 & S10–S12 ditolak (exit 1). Sabotase S9: lolos deteksi (ProgressIntegrityScanner salah mengklasifikasikan M-R0-21 sebagai minus warisan karena tercantum di DECISIONS.md). | Dibuktikan dengan test merah `tests/Architecture/Verifikasi/SabotageDeliverableMinusTest.php` (Minus M-R0-24, P1). |
+| C2 | ⚠️ CATATAN | `composer gate` lokal exit 0 (9 langkah wajib lulus, 2.607 test, 11.521 asersi). JUnit CI run 38472460462: 2.607 test cases, 5.257 tests, 23.103 assertions, 0 failures, 0 errors (100% cocok). | `diff -u` artefak vs `docs/gates/fase-r0.md` tidak kosong karena laporan di git HEAD belum disinkronkan ke commit `8724437` (Minus M-R0-26, P2). |
+| C3 | 🟢 LULUS | `git diff 4171528..HEAD -- docs/PROGRESS.md` hanya mengubah kotak centang `R0.3.b`. Bukti R0.3.b valid: commit `d2f5154` dan `6901960` menyentuh file yang dicantumkan. | Teks item terjaga utuh. |
+| C4 | 🟢 LULUS | `./vendor/bin/pest tests/Architecture/RouteAuthorizationMatrixTest.php` exit 0 (5 passed, 45 assertions). Matrix route 100% terpetakan; rute role-protected aman 403 bagi non-hak. | Rute dan middleware terisolasi sesuai matriks peran. |
+| C5 | 🟢 LULUS | `./vendor/bin/pest tests/Architecture/LedgerAccountRegistryTest.php tests/Architecture/LedgerNormalBalanceTest.php tests/Architecture/TestHygieneTest.php` exit 0 (3 passed, 32 assertions). | Saldo normal valid, akun terdaftar di seeder & registry, tidak ada `LedgerAccount::create` di test baru. |
+| C6 | 🟢 LULUS | Tamper `bank:reconcile`: `DB::table("bank_ledger_accounts")->increment("cached_balance", 1)` → exit 1 `Account Balance Discrepancy`. Tamper `api:audit`: `update intg_webhooks signature` → exit 1 `Signature or message discrepancy detected`. | Audit terbukti gagal mendeteksi korupsi data riil dan menolak manipulasi saldo/tanda tangan. |
+| C7 | 🟢 LULUS | Skor mutasi kelima kelas pagar (PCOV, threshold min 60%): `ProgressIntegrityScanner` 75.16% (selisih 0.00%), `GateRunner` 65.71% (selisih +0.74%), `GateReportCommand` 64.15% (selisih 0.00%), `GateManifest` 62.79% (selisih 0.00%), `RouteAuthorizationScanner` 84.56% (selisih 0.00%). | Seluruhnya ≥ 60.0% (selisih vs klaim < 1 poin). Tidak ada assertion palsu pada test T5/T6. |
+| C8 | 🟢 LULUS | `git diff 4171528..HEAD -- tests/Architecture/baselines/` kosong. `./vendor/bin/pest tests/Architecture/IntegrationFreezeTest.php tests/Architecture/ArchScanBaselineTest.php` exit 0. | Baseline arsitektur tidak naik; isolasi modul Integration terjaga. |
+| C9 | 🟢 LULUS | `git diff 4171528..HEAD -- docs/PROGRESS.md | grep -E '^\+.*⬇️'` exit 1 (kosong). | Tidak ada teks item yang diturunkan tanpa izin formal. |
+| C10 | 🟢 LULUS | `./vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php` exit 0 (1 passed, 233 assertions). `php artisan migrate:fresh --seed` exit 0. Job CI MySQL 8.4 lulus (1m 59s). | Portabilitas skema SQLite & MySQL terverifikasi. |
+| C11 | ❌ GAGAL | Minus M-R0-4, M-R0-5, M-R0-6, M-R0-12, M-R0-14, M-R0-18 dialihkan sah. Minus M-R0-10 & M-R0-11 dialihkan ke R2.3 TIDAK SAH (item R2.3 hanya mencakup `back()->errors()` di Pricing/Agency/Distribution, bukan bug 500 modul Contract). Minus deliverable M-R0-20..M-R0-23 dicoret sah. | Minus M-R0-25 (P1) ditambahkan karena bug Contract tidak terlindungi di fase tujuan. |
+| C12 | ❌ GAGAL | Tiga anchor `docs/DECISIONS.md` (`p9-minus-dialihkan`, `ganti-test-skor-hardcode`, `progress-snapshot-8c8369d`) valid. Namun status Blocker B-01: `gh api repos/Orls967/superweb/branches/master/protection` mengembalikan HTTP 404 (Branch not protected). | Blocker B-01 belum diselesaikan pemilik repositori. |
+| C13 | 🟢 LULUS | `git log origin/master..HEAD` terdiri dari 16 commit atomik terstruktur. Tidak ada percampuran detektor dengan pengisian bukti, tidak ada commit lintas fase yang dicentang. | Kerapian riwayat commit memenuhi standar V10. |
+| C14 | 🟢 LULUS | Pemeriksaan red flags P12 bersih: ukuran commit non-test proporsional, tidak ada test hijau instan tanpa jejak perbaikan, tidak ada modifikasi credential/token. | Bebas dari red flags P12. |
+
+**Minus yang ditambahkan verifikator:**
+- `M-R0-24` (P1): S9 lolos deteksi — minus deliverable fase yang tercentang [x] (M-R0-21) yang disebut di DECISIONS.md salah diklasifikasikan sebagai warisan oleh ProgressIntegrityScanner.
+- `M-R0-25` (P1): Pengalihan minus M-R0-10 & M-R0-11 ke R2.3 tidak sah karena deskripsi item tujuan R2.3 tidak mencakup modul Contract.
+- `M-R0-26` (P2): Laporan gate `docs/gates/fase-r0.md` di git HEAD out-of-sync dengan artefak CI commit `8724437`.
+
+**Alasan 🔁 (DIBUKA KEMBALI):**
+1. **Blocker B-01 Belum Aktif:** Branch protection branch `master` belum dikonfigurasi di GitHub Settings (HTTP 404).
+2. **Sabotase S9 Lolos (M-R0-24 - P1):** `ProgressIntegrityScanner` memiliki celah pada pembedaan minus warisan vs deliverable tercentang.
+3. **Pengalihan Minus M-R0-10 & M-R0-11 Tidak Sah (M-R0-25 - P1):** Modul Contract tidak tercakup dalam deskripsi item tujuan R2.3.
+4. **Laporan Gate Out-of-Sync (M-R0-26 - P2):** Laporan repository belum digenerate ulang pada commit HEAD CI.
+
+
 
