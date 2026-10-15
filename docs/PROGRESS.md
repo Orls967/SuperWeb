@@ -654,7 +654,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - [ ] R2.10 Quality gate Fase R2 + verifikasi silang.
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
-> **Status audit:** ⬜ BELUM · Prasyarat: R0 (boleh paralel dengan R1/R2).
+> **Status audit:** 🔵 SIAP VERIFIKASI · Prasyarat: R0 (boleh paralel dengan R1/R2).
 
 #### DoR Fase R3 — Otorisasi & data sensitif
 - Disetujui pemilik: [x] 2026-10-15 (chat) — D1–D6 sesuai prompt disetujui
@@ -856,8 +856,33 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - akses: command hcm:encrypt-legacy
     - gate: docs/gates/fase-r3.md
   - Test wajib: nilai di DB tidak sama dengan plaintext; pencarian via blind index bekerja.
-- [ ] R3.3 **Hapus flag-sebagai-kontrol** (K-21) pada jalur yang menyentuh uang, akses data, atau kepatuhan: status diturunkan dari ApprovalEngine/DocumentStore/hasil pemeriksaan tersimpan (baseline `arch:scan` A6 untuk modul non-Integration = 0; sisanya mengikuti R4.4).
-- [ ] R3.4 **Kuota API ditegakkan** (K-23): `RateLimiter` per klien API dari `rate_limit_per_minute`; halaman `/integration` hanya role admin/integrasi.
+- [x] R3.3 **Hapus flag-sebagai-kontrol** (K-21) pada jalur yang menyentuh uang, akses data, atau kepatuhan: status diturunkan dari ApprovalEngine/DocumentStore/hasil pemeriksaan tersimpan (baseline `arch:scan` A6 untuk modul non-Integration = 0; sisanya mengikuti R4.4).
+  Bukti:
+    - jenis: tooling
+    - commit: aa0c007
+    - file: modules/Venue/Application/Services/VenueCreatorEconomyService.php
+    - file: tests/Architecture/baselines/arch-scan.json
+    - file: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php
+    - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout rejected when hold window has not passed
+    - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout succeeds when hold window has passed
+    - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout rejected when contract is disputed
+    - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout returns zero when no held royalties
+    - gate: docs/gates/fase-r3.md
+- [x] R3.4 **Kuota API ditegakkan** (K-23): `RateLimiter` per klien API dari `rate_limit_per_minute`; halaman `/integration` hanya role admin/integrasi.
+  Bukti:
+    - commit: 53cc681
+    - file: app/Providers/AppServiceProvider.php
+    - file: modules/Integration/routes/web.php
+    - file: tests/Architecture/route-roles.php
+    - file: tests/Feature/Integration/ApiClientRateLimitingTest.php
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::non admin cannot access integration dashboard
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::admin can access integration dashboard
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::unauthenticated user redirected from integration dashboard
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiting enforced by api key
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiting enforced by client id header
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiter resets after clearing
+    - akses: route GET /integration [role: admin]
+    - gate: docs/gates/fase-r3.md
 - [ ] R3.5 Quality gate Fase R3 + verifikasi silang.
 
 ### FASE R4 — BATAS MODUL & KEPEMILIKAN DATA
