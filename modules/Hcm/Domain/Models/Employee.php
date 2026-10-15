@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hcm\Domain\Models;
 
+use App\Models\User;
 use App\Security\BlindIndex;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ class Employee extends Model
     protected $table = 'hcm_employees';
 
     protected $fillable = [
+        'user_id',
         'employee_number',
         'name',
         'nik',
@@ -48,6 +50,11 @@ class Employee extends Model
         $bidx = BlindIndex::forNik($nik);
 
         return self::where('nik_bidx', $bidx)->first();
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function department(): BelongsTo
