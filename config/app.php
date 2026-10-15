@@ -105,6 +105,8 @@ return [
         ),
     ],
 
+    'blind_index_pepper' => env('BLIND_INDEX_PEPPER', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver

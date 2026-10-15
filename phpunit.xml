@@ -44,5 +44,6 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <env name="BLIND_INDEX_PEPPER" value="testing-blind-index-pepper-secret-key-vector"/>
     </php>
 </phpunit>

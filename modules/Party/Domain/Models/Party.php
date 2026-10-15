@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Party\Domain\Models;
 
+use App\Security\BlindIndex;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,11 +22,14 @@ class Party extends Model
 
     protected $fillable = [
         'legal_entity_id', 'type', 'name', 'name_normalized', 'short_name',
-        'npwp_hash', 'npwp_masked', 'nik_hash', 'nik_masked', 'nib',
+        'nik', 'nik_bidx', 'nik_hash', 'nik_masked',
+        'npwp', 'npwp_bidx', 'npwp_hash', 'npwp_masked', 'nib',
         'status', 'kyb_status', 'merged_into_id', 'merged_at', 'merge_reason', 'is_active',
     ];
 
     protected $casts = [
+        'nik' => 'encrypted',
+        'npwp' => 'encrypted',
         'type' => PartyType::class,
         'status' => PartyStatus::class,
         'kyb_status' => KybStatus::class,
@@ -33,6 +37,38 @@ class Party extends Model
         'merge_reason' => 'array',
         'is_active' => 'boolean',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $party) {
+            if ($party->isDirty('nik')) {
+                $party->nik_bidx = BlindIndex::forNik($party->nik);
+            }
+            if ($party->isDirty('npwp')) {
+                $party->npwp_bidx = BlindIndex::forNpwp($party->npwp);
+            }
+        });
+    }
+
+    /**
+     * Find party by NIK via deterministic blind index.
+     */
+    public static function findByNik(string $nik): ?self
+    {
+        $bidx = BlindIndex::forNik($nik);
+
+        return self::where('nik_bidx', $bidx)->first();
+    }
+
+    /**
+     * Find party by NPWP via deterministic blind index.
+     */
+    public static function findByNpwp(string $npwp): ?self
+    {
+        $bidx = BlindIndex::forNpwp($npwp);
+
+        return self::where('npwp_bidx', $bidx)->first();
+    }
 
     public function legalEntity(): BelongsTo
     {

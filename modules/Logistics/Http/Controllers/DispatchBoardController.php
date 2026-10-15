@@ -30,7 +30,7 @@ class DispatchBoardController extends Controller
         $user = $request->user();
 
         abort_unless(
-            $user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher()),
+            $user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || ($request->isMethod('GET') && $user->isAuditor())),
             403,
             'Akses ditolak. Papan dispatch khusus dispatcher dan admin logistik.'
         );

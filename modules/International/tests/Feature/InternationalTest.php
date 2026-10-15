@@ -237,7 +237,7 @@ class InternationalTest extends TestCase
 
     public function test_51_10_http_endpoints(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'legal']);
 
         $this->actingAs($user)
             ->get(route('international.index'))

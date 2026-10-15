@@ -107,7 +107,7 @@ class PlmTest extends TestCase
 
     public function test_plm_web_index_accessible(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'rnd_specialist']);
 
         $response = $this->actingAs($user)->get(route('plm.index'));
         $response->assertStatus(200);

@@ -7,6 +7,7 @@ namespace Modules\Plm;
 use Illuminate\Support\ServiceProvider;
 use Modules\Plm\Application\Services\PlmService;
 use Modules\Plm\Console\Commands\AuditPlmCommand;
+use Modules\Plm\Console\Commands\EncryptLegacyFormulaPayloadCommand;
 
 class PlmServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,7 @@ class PlmServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AuditPlmCommand::class,
+                EncryptLegacyFormulaPayloadCommand::class,
             ]);
         }
     }

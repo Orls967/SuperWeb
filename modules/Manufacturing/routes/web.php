@@ -61,47 +61,53 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,operator,qc_in
         Route::post('/downtimes/{downtime}/end', [ProductionController::class, 'endDowntime'])->name('downtimes.end');
     });
 
-Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,auditor'])
+Route::middleware(['web', 'auth', 'verified'])
     ->prefix('manufacturing')
     ->name('manufacturing.')
     ->group(function () {
-        Route::get('/costing', [ProductionController::class, 'costing'])->name('costing.index');
-        Route::post('/costing/versions/{version}/submit', [ProductionController::class, 'submitCostVersion'])->name('costing.versions.submit');
-        Route::post('/costing/versions/{version}/approve', [ProductionController::class, 'approveCostVersion'])->name('costing.versions.approve');
+        Route::get('/costing', [ProductionController::class, 'costing'])->middleware('role:admin,planner,auditor')->name('costing.index');
+        Route::middleware('role:admin,planner')->group(function () {
+            Route::post('/costing/versions/{version}/submit', [ProductionController::class, 'submitCostVersion'])->name('costing.versions.submit');
+            Route::post('/costing/versions/{version}/approve', [ProductionController::class, 'approveCostVersion'])->name('costing.versions.approve');
+        });
     });
 
-Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,qc_inspector,auditor'])
+Route::middleware(['web', 'auth', 'verified'])
     ->prefix('manufacturing')
     ->name('manufacturing.')
     ->group(function () {
-        Route::get('/quality', [QualityController::class, 'index'])->name('quality.index');
-        Route::post('/quality/plans', [QualityController::class, 'storePlan'])->name('quality.plans.store');
-        Route::post('/quality/inspections', [QualityController::class, 'inspect'])->name('quality.inspections.store');
-        Route::post('/quality/inspections/{inspection}/waiver', [QualityController::class, 'submitWaiver'])->name('quality.inspections.waiver');
-        Route::post('/quality/inspections/{inspection}/approve', [QualityController::class, 'approveWaiver'])->name('quality.inspections.approve');
-        Route::post('/quality/ncrs', [QualityController::class, 'storeNcr'])->name('quality.ncrs.store');
-        Route::post('/quality/ncrs/{ncr}/capas', [QualityController::class, 'storeCapa'])->name('quality.capas.store');
-        Route::post('/quality/capas/{capa}/complete', [QualityController::class, 'completeCapa'])->name('quality.capas.complete');
-        Route::post('/quality/lots/{lot}/certificates', [QualityController::class, 'addCertificate'])->name('quality.lots.certificates');
-        Route::post('/quality/lots/{lot}/release', [QualityController::class, 'releaseLot'])->name('quality.lots.release');
-        Route::get('/quality/lots/{lot}/trace', [QualityController::class, 'trace'])->name('quality.lots.trace');
-        Route::post('/quality/lots/{lot}/recall', [QualityController::class, 'storeRecall'])->name('quality.lots.recall');
-        Route::post('/quality/recalls/{recall}/notify', [QualityController::class, 'notifyRecall'])->name('quality.recalls.notify');
-        Route::post('/quality/recalls/{recall}/complete', [QualityController::class, 'completeRecall'])->name('quality.recalls.complete');
+        Route::get('/quality', [QualityController::class, 'index'])->middleware('role:admin,planner,qc_inspector,auditor')->name('quality.index');
+        Route::get('/quality/lots/{lot}/trace', [QualityController::class, 'trace'])->middleware('role:admin,planner,qc_inspector,auditor')->name('quality.lots.trace');
+        Route::middleware('role:admin,planner,qc_inspector')->group(function () {
+            Route::post('/quality/plans', [QualityController::class, 'storePlan'])->name('quality.plans.store');
+            Route::post('/quality/inspections', [QualityController::class, 'inspect'])->name('quality.inspections.store');
+            Route::post('/quality/inspections/{inspection}/waiver', [QualityController::class, 'submitWaiver'])->name('quality.inspections.waiver');
+            Route::post('/quality/inspections/{inspection}/approve', [QualityController::class, 'approveWaiver'])->name('quality.inspections.approve');
+            Route::post('/quality/ncrs', [QualityController::class, 'storeNcr'])->name('quality.ncrs.store');
+            Route::post('/quality/ncrs/{ncr}/capas', [QualityController::class, 'storeCapa'])->name('quality.capas.store');
+            Route::post('/quality/capas/{capa}/complete', [QualityController::class, 'completeCapa'])->name('quality.capas.complete');
+            Route::post('/quality/lots/{lot}/certificates', [QualityController::class, 'addCertificate'])->name('quality.lots.certificates');
+            Route::post('/quality/lots/{lot}/release', [QualityController::class, 'releaseLot'])->name('quality.lots.release');
+            Route::post('/quality/lots/{lot}/recall', [QualityController::class, 'storeRecall'])->name('quality.lots.recall');
+            Route::post('/quality/recalls/{recall}/notify', [QualityController::class, 'notifyRecall'])->name('quality.recalls.notify');
+            Route::post('/quality/recalls/{recall}/complete', [QualityController::class, 'completeRecall'])->name('quality.recalls.complete');
+        });
     });
 
-Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,operator,asset_manager,auditor'])
+Route::middleware(['web', 'auth', 'verified'])
     ->prefix('manufacturing')
     ->name('manufacturing.')
     ->group(function () {
-        Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('maintenance.index');
-        Route::post('/maintenance/orders', [MaintenanceController::class, 'storeOrder'])->name('maintenance.orders.store');
-        Route::post('/maintenance/orders/{order}/transition', [MaintenanceController::class, 'transitionOrder'])->name('maintenance.orders.transition');
-        Route::post('/maintenance/sensors', [MaintenanceController::class, 'storeSensor'])->name('maintenance.sensors.store');
-        Route::post('/maintenance/oee', [MaintenanceController::class, 'computeOee'])->name('maintenance.oee.compute');
-        Route::post('/maintenance/parts', [MaintenanceController::class, 'storePart'])->name('maintenance.parts.store');
-        Route::post('/maintenance/incidents', [MaintenanceController::class, 'storeIncident'])->name('maintenance.incidents.store');
-        Route::post('/maintenance/incidents/{incident}/close', [MaintenanceController::class, 'closeIncident'])->name('maintenance.incidents.close');
-        Route::post('/maintenance/permits', [MaintenanceController::class, 'storePermit'])->name('maintenance.permits.store');
-        Route::post('/maintenance/permits/{permit}/approve', [MaintenanceController::class, 'approvePermit'])->name('maintenance.permits.approve');
+        Route::get('/maintenance', [MaintenanceController::class, 'index'])->middleware('role:admin,planner,operator,asset_manager,auditor')->name('maintenance.index');
+        Route::middleware('role:admin,planner,operator,asset_manager')->group(function () {
+            Route::post('/maintenance/orders', [MaintenanceController::class, 'storeOrder'])->name('maintenance.orders.store');
+            Route::post('/maintenance/orders/{order}/transition', [MaintenanceController::class, 'transitionOrder'])->name('maintenance.orders.transition');
+            Route::post('/maintenance/sensors', [MaintenanceController::class, 'storeSensor'])->name('maintenance.sensors.store');
+            Route::post('/maintenance/oee', [MaintenanceController::class, 'computeOee'])->name('maintenance.oee.compute');
+            Route::post('/maintenance/parts', [MaintenanceController::class, 'storePart'])->name('maintenance.parts.store');
+            Route::post('/maintenance/incidents', [MaintenanceController::class, 'storeIncident'])->name('maintenance.incidents.store');
+            Route::post('/maintenance/incidents/{incident}/close', [MaintenanceController::class, 'closeIncident'])->name('maintenance.incidents.close');
+            Route::post('/maintenance/permits', [MaintenanceController::class, 'storePermit'])->name('maintenance.permits.store');
+            Route::post('/maintenance/permits/{permit}/approve', [MaintenanceController::class, 'approvePermit'])->name('maintenance.permits.approve');
+        });
     });

@@ -141,7 +141,7 @@ class EnterpriseFinanceTest extends TestCase
 
     public function test_54_10_http_endpoints(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'treasury']);
 
         $this->actingAs($user)
             ->get(route('enterprise_finance.index'))

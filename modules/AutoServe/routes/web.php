@@ -10,18 +10,32 @@ use Modules\AutoServe\Http\Controllers\ServiceController;
 use Modules\AutoServe\Http\Controllers\SparepartController;
 
 Route::middleware(['web', 'auth', 'verified'])->group(function () {
-    // Booking
-    Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
-    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
-    Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
-    Route::get('/bookings/{booking}/invoice', [BookingController::class, 'invoice'])->name('bookings.invoice');
-    Route::post('/bookings/{booking}/pay', [InvoicePaymentController::class, 'pay'])->name('bookings.pay');
-    Route::post('/bookings/{booking}/refund', [InvoicePaymentController::class, 'refund'])->name('bookings.refund');
+    // Read: form create booking (customer, admin, auditor)
+    Route::get('/bookings/create', [BookingController::class, 'create'])
+        ->middleware('role:admin,customer,auditor')
+        ->name('bookings.create');
 
-    // Smart Repair Escrow: persetujuan customer
-    Route::post('/estimates/{estimate}/approve', [EstimateController::class, 'approve'])->name('estimates.approve');
-    Route::post('/estimates/{estimate}/reject', [EstimateController::class, 'reject'])->name('estimates.reject');
-    Route::post('/bookings/{booking}/extra-charge/approve', [EstimateController::class, 'approveExtra'])->name('bookings.approveExtra');
+    // Read: detail booking & invoice (admin, customer, mekanik, auditor)
+    Route::middleware('role:admin,customer,mekanik,auditor')->group(function () {
+        Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
+        Route::get('/bookings/{booking}/invoice', [BookingController::class, 'invoice'])->name('bookings.invoice');
+    });
+
+    // Mutations: booking customer (admin, customer - auditor forbidden)
+    Route::middleware('role:admin,customer')->group(function () {
+        Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+        Route::post('/bookings/{booking}/pay', [InvoicePaymentController::class, 'pay'])->name('bookings.pay');
+
+        // Smart Repair Escrow: persetujuan customer
+        Route::post('/estimates/{estimate}/approve', [EstimateController::class, 'approve'])->name('estimates.approve');
+        Route::post('/estimates/{estimate}/reject', [EstimateController::class, 'reject'])->name('estimates.reject');
+        Route::post('/bookings/{booking}/extra-charge/approve', [EstimateController::class, 'approveExtra'])->name('bookings.approveExtra');
+    });
+
+    // Mutation: admin only refund
+    Route::post('/bookings/{booking}/refund', [InvoicePaymentController::class, 'refund'])
+        ->middleware('role:admin')
+        ->name('bookings.refund');
 
     // Staff only (Admin & Mekanik)
     Route::middleware('role:admin,mekanik')->group(function () {

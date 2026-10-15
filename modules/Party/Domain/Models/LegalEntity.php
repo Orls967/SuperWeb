@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Party\Domain\Models;
 
+use App\Security\BlindIndex;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,14 +18,34 @@ class LegalEntity extends Model
 
     protected $fillable = [
         'name', 'short_name', 'entity_type', 'parent_id',
-        'npwp', 'nib', 'functional_currency', 'fiscal_year_start',
+        'npwp', 'npwp_bidx', 'nib', 'functional_currency', 'fiscal_year_start',
         'ledger_prefix', 'account_map', 'is_active',
     ];
 
     protected $casts = [
+        'npwp' => 'encrypted',
         'account_map' => 'array',
         'is_active' => 'boolean',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $entity) {
+            if ($entity->isDirty('npwp')) {
+                $entity->npwp_bidx = BlindIndex::forNpwp($entity->npwp);
+            }
+        });
+    }
+
+    /**
+     * Find legal entity by NPWP via deterministic blind index.
+     */
+    public static function findByNpwp(string $npwp): ?self
+    {
+        $bidx = BlindIndex::forNpwp($npwp);
+
+        return self::where('npwp_bidx', $bidx)->first();
+    }
 
     public function parent(): BelongsTo
     {

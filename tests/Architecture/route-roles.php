@@ -2,7 +2,60 @@
 
 declare(strict_types=1);
 use App\Models\User;
+use Illuminate\Support\Str;
+use Modules\AutoDex\Domain\Models\Brand;
+use Modules\AutoDex\Domain\Models\Car;
+use Modules\AutoServe\Domain\Enums\EstimateStatus;
+use Modules\AutoServe\Domain\Models\Booking;
+use Modules\AutoServe\Domain\Models\Estimate;
+use Modules\AutoServe\Domain\Models\Service;
+use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\Core\Domain\Models\AuditLog;
+use Modules\Core\Domain\Models\Role;
+use Modules\Crypto\Domain\Enums\AlertCondition;
+use Modules\Crypto\Domain\Models\CryptoAlert;
+use Modules\Crypto\Domain\Models\CryptoAsset;
+use Modules\Crypto\Domain\Models\CryptoPriceTick;
 use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Finance\Domain\Models\Loan;
+use Modules\Logistics\Domain\Enums\LocationType;
+use Modules\Logistics\Domain\Models\Carrier;
+use Modules\Logistics\Domain\Models\Claim;
+use Modules\Logistics\Domain\Models\Container;
+use Modules\Logistics\Domain\Models\ContainerDwell;
+use Modules\Logistics\Domain\Models\CustomsDeclaration;
+use Modules\Logistics\Domain\Models\Driver;
+use Modules\Logistics\Domain\Models\HubOperator;
+use Modules\Logistics\Domain\Models\Lane;
+use Modules\Logistics\Domain\Models\Location;
+use Modules\Logistics\Domain\Models\Schedule;
+use Modules\Logistics\Domain\Models\Shipment;
+use Modules\Logistics\Domain\Models\ShipmentException;
+use Modules\Logistics\Domain\Models\ShipmentLeg;
+use Modules\Mall\database\seeders\MallSeeder;
+use Modules\Mall\Domain\Enums\TenantCategory;
+use Modules\Mall\Domain\Models\Invoice;
+use Modules\Mall\Domain\Models\Lease;
+use Modules\Mall\Domain\Models\Property;
+use Modules\Mall\Domain\Models\Tenant;
+use Modules\Mall\Domain\Models\VoucherTemplate;
+use Modules\Mall\Domain\Models\WorkOrder;
+use Modules\Partner\Domain\Models\Partner;
+use Modules\Resto\database\seeders\RestoMenuSeeder;
+use Modules\Resto\Domain\Models\CateringOrder;
+use Modules\Resto\Domain\Models\Delivery;
+use Modules\Resto\Domain\Models\DisplayTray;
+use Modules\Resto\Domain\Models\Ingredient;
+use Modules\Resto\Domain\Models\MenuItem;
+use Modules\Resto\Domain\Models\Order;
+use Modules\Resto\Domain\Models\Outlet;
+use Modules\Resto\Domain\Models\PurchaseOrder;
+use Modules\Resto\Domain\Models\RestoTable;
+use Modules\Resto\Domain\Models\StockCount;
+use Modules\Resto\Domain\Models\StockTransfer;
+use Modules\Resto\Domain\Models\TableSession;
+use Modules\Store\Domain\Enums\OrderStatus;
+use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
 
 /**
@@ -13,6 +66,392 @@ use Modules\Supplier\Domain\Models\Supplier;
  * - "auth": requires authenticated user
  * - ["roles" => [...], "params" => fn () => [...]]
  */
+$restoSeedHelper = function (): void {
+    if (! MenuItem::exists()) {
+        (new RestoMenuSeeder)->run();
+    }
+    $outlet = Outlet::first();
+    $item = MenuItem::first();
+    $table = RestoTable::first();
+
+    $supplier = Modules\Resto\Domain\Models\Supplier::firstOrCreate(
+        ['name' => 'Supplier Test'],
+        ['contact' => '081', 'terms_days' => 30, 'is_active' => true]
+    );
+
+    DisplayTray::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['menu_item_id' => $item->id, 'cooked_at' => now(), 'expires_at' => now()->addHours(4), 'status' => 'displayed', 'portions_remaining' => 5]
+    );
+
+    TableSession::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['table_id' => $table?->id ?? 1, 'opened_by' => 1, 'session_code' => 'SES-001', 'guest_count' => 2, 'status' => 'open', 'opened_at' => now()]
+    );
+
+    $order = Order::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['order_number' => 'ORD-TEST-001', 'channel' => 'dine_in', 'status' => 'pending', 'subtotal' => 50000, 'tax' => 5000, 'total' => 55000]
+    );
+
+    PurchaseOrder::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['number' => 'PO-TEST-001', 'supplier_id' => $supplier->id, 'status' => 'draft', 'created_by' => 1]
+    );
+
+    StockTransfer::firstOrCreate(
+        ['from_outlet_id' => $outlet->id],
+        ['number' => 'TRF-TEST-001', 'to_outlet_id' => $outlet->id, 'status' => 'draft']
+    );
+
+    StockCount::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['date' => now()->toDateString(), 'status' => 'draft', 'counted_by' => 1]
+    );
+
+    Delivery::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['order_id' => $order->id, 'delivery_number' => 'DEL-001', 'status' => 'preparing', 'recipient_name' => 'Budi', 'recipient_phone' => '081', 'delivery_address' => 'Jl Test', 'fee' => 10000]
+    );
+
+    CateringOrder::firstOrCreate(
+        ['outlet_id' => $outlet->id],
+        ['number' => 'CAT-001', 'customer_name' => 'Budi', 'customer_phone' => '081', 'event_date' => now()->addDays(5), 'event_time' => '12:00:00', 'pax' => 50, 'delivery_address' => 'Jl Test', 'subtotal' => 1000000, 'grand_total' => 1000000, 'status' => 'inquiry']
+    );
+};
+
+$logisticsSeedHelper = function () {
+    $hubA = Location::firstOrCreate(
+        ['code' => 'HUB-BDJ'],
+        [
+            'name' => 'Hub Banjarmasin',
+            'type' => LocationType::HUB,
+            'city' => 'Banjarmasin',
+            'province' => 'Kalimantan Selatan',
+            'country' => 'ID',
+            'lat_e6' => -3300000,
+            'lng_e6' => 114500000,
+            'timezone' => 'Asia/Makassar',
+            'min_connection_minutes' => 60,
+            'is_active' => true,
+        ]
+    );
+
+    $hubB = Location::firstOrCreate(
+        ['code' => 'HUB-BJB'],
+        [
+            'name' => 'Hub Banjarbaru',
+            'type' => LocationType::HUB,
+            'city' => 'Banjarbaru',
+            'province' => 'Kalimantan Selatan',
+            'country' => 'ID',
+            'lat_e6' => -3400000,
+            'lng_e6' => 114800000,
+            'timezone' => 'Asia/Makassar',
+            'min_connection_minutes' => 60,
+            'is_active' => true,
+        ]
+    );
+
+    $lane = Lane::firstOrCreate(
+        ['origin_id' => $hubA->id, 'destination_id' => $hubB->id, 'mode' => 'road'],
+        ['distance_m' => 35000, 'standard_transit_minutes' => 90, 'is_active' => true]
+    );
+
+    $shipper = User::firstOrCreate(
+        ['email' => 'shipper_helper@autoserve.test'],
+        ['name' => 'Shipper Helper', 'password' => 'secret', 'role' => 'shipper']
+    );
+
+    $shipment = Shipment::firstOrCreate(
+        ['tracking_number' => 'LGX-SEED-0001'],
+        [
+            'shipper_id' => $shipper->id,
+            'consignee_name' => 'Penerima Helper',
+            'consignee_phone' => '081234567890',
+            'consignee_address' => ['street' => 'Jl. A. Yani', 'city' => 'Banjarbaru'],
+            'origin_location_id' => $hubA->id,
+            'destination_location_id' => $hubB->id,
+            'service_level' => 'regular',
+            'mode' => 'road',
+            'payment_terms' => 'prepaid',
+            'status' => 'booked',
+            'total_chargeable_weight_g' => 2000,
+            'total_amount_idr' => 25000,
+            'booked_at' => now(),
+        ]
+    );
+
+    $carrier = Carrier::firstOrCreate(
+        ['code' => 'CRR-HELPER'],
+        ['name' => 'Barito Carrier Helper', 'mode' => 'road', 'payment_terms_days' => 7, 'is_active' => true]
+    );
+
+    $leg = ShipmentLeg::firstOrCreate(
+        ['shipment_id' => $shipment->id, 'leg_sequence' => 1],
+        ['mode' => 'road', 'origin_location_id' => $hubA->id, 'destination_location_id' => $hubB->id, 'estimated_departure' => now(), 'estimated_arrival' => now()->addHours(2), 'status' => 'pending']
+    );
+
+    $claim = Claim::firstOrCreate(
+        ['shipment_id' => $shipment->id],
+        ['claim_number' => 'CLM-0001', 'created_by' => $shipper->id, 'claim_type' => 'damage', 'claimed_amount_idr' => 50000, 'cap_amount_idr' => 50000, 'description' => 'Rusak', 'status' => 'draft']
+    );
+
+    $schedule = Schedule::firstOrCreate(
+        ['schedule_number' => 'SCH-0001'],
+        [
+            'mode' => 'road',
+            'origin_location_id' => $hubA->id,
+            'destination_location_id' => $hubB->id,
+            'etd' => now()->addDay(),
+            'eta' => now()->addDay()->addHours(2),
+            'cutoff_at' => now()->addHours(12),
+            'status' => 'scheduled',
+            'cap_weight_kg' => '5000.000',
+            'cap_volume_dm3' => 14000,
+        ]
+    );
+
+    $container = Container::firstOrCreate(
+        ['container_number' => 'CSQU3054383'],
+        ['size_type' => '22G1', 'tare_kg' => 2200, 'max_gross_kg' => 30480, 'status' => 'available', 'current_location_id' => $hubA->id]
+    );
+
+    $dwell = ContainerDwell::firstOrCreate(
+        ['container_id' => $container->id, 'shipment_id' => $shipment->id],
+        ['shipper_id' => $shipper->id, 'location_id' => $hubA->id, 'kind' => 'demurrage', 'started_at' => now()->subDays(5), 'status' => 'open']
+    );
+
+    $declaration = CustomsDeclaration::firstOrCreate(
+        ['shipment_id' => $shipment->id],
+        ['declaration_number' => 'PIB-0001', 'type' => 'PIB', 'status' => 'draft', 'customs_value_idr' => 1000000, 'lines' => [], 'total_duty_idr' => 100000, 'submitted_at' => now()]
+    );
+
+    $exception = ShipmentException::firstOrCreate(
+        ['shipment_id' => $shipment->id],
+        ['reported_by' => $shipper->id, 'type' => 'damaged', 'severity' => 'critical', 'description' => 'Test exception', 'status' => 'open', 'detected_at' => now()]
+    );
+
+    $reportDir = storage_path('app/logistics/bulk_reports');
+    if (! is_dir($reportDir)) {
+        mkdir($reportDir, 0755, true);
+    }
+    file_put_contents($reportDir.'/batch-test-01_errors.csv', "row,error\n1,Invalid phone\n");
+
+    return compact('hubA', 'hubB', 'lane', 'shipment', 'carrier', 'leg', 'claim', 'schedule', 'dwell', 'declaration', 'exception');
+};
+
+$driverSetup = function (User $user) use ($logisticsSeedHelper): void {
+    $d = $logisticsSeedHelper();
+    $driverUser = $user->isDriver() ? $user : User::firstOrCreate(
+        ['email' => 'driver_seed@autoserve.test'],
+        ['name' => 'Driver Seed', 'password' => 'secret', 'role' => 'driver']
+    );
+    Driver::firstOrCreate(
+        ['user_id' => $driverUser->id],
+        [
+            'driver_number' => 'DRV-'.$driverUser->id,
+            'home_hub_id' => $d['hubA']->id,
+            'license_class' => 'SIM B1 Umum',
+            'license_expiry' => now()->addYear()->toDateString(),
+            'status' => 'available',
+        ]
+    );
+};
+
+$hubOperatorSetup = function (User $user) use ($logisticsSeedHelper): void {
+    if ($user->isHubOperator()) {
+        $d = $logisticsSeedHelper();
+        HubOperator::firstOrCreate(
+            ['user_id' => $user->id],
+            ['hub_id' => $d['hubA']->id, 'is_active' => true]
+        );
+    }
+};
+
+$storeAutoServeSeedHelper = function (): array {
+    $owner = User::firstOrCreate(
+        ['id' => 1],
+        ['name' => 'Arch User', 'email' => 'arch@test.test', 'password' => 'secret', 'role' => 'customer']
+    );
+
+    $brand = Brand::firstOrCreate(
+        ['slug' => 'toyota-arch'],
+        ['name' => 'Toyota Arch', 'country' => 'Japan', 'category' => 'jdm']
+    );
+
+    $car = Car::firstOrCreate(
+        ['slug' => 'corolla-arch'],
+        ['brand_id' => $brand->id, 'model' => 'Corolla Arch', 'year_start' => 2022, 'body_type' => 'sedan', 'fuel_type' => 'gasoline', 'is_active' => true]
+    );
+
+    $product = Product::firstOrCreate(
+        ['slug' => 'product-arch-test'],
+        [
+            'uuid' => (string) Str::uuid(),
+            'sku' => 'SKU-ARCH-001',
+            'name' => 'Product Arch Test',
+            'price' => 150000,
+            'cached_stock' => 10,
+            'is_listed' => true,
+        ]
+    );
+
+    $order = Modules\Store\Domain\Models\Order::firstOrCreate(
+        ['number' => 'ORD-ARCH-001'],
+        [
+            'user_id' => $owner->id,
+            'status' => OrderStatus::PENDING_PAYMENT->value,
+            'total_amount' => 150000,
+        ]
+    );
+
+    $service = Service::firstOrCreate(
+        ['name' => 'Servis Arch Test'],
+        ['price' => 150000, 'is_active' => true]
+    );
+
+    $sparepart = Sparepart::firstOrCreate(
+        ['code' => 'SP-ARCH-001'],
+        ['name' => 'Sparepart Arch Test', 'price' => 50000, 'stock' => 10, 'unit' => 'pcs', 'is_active' => true]
+    );
+
+    $booking = Booking::firstOrCreate(
+        ['booking_code' => 'SRV-ARCH-001'],
+        [
+            'customer_id' => $owner->id,
+            'service_id' => $service->id,
+            'plate_number' => 'B1234ARC',
+            'vehicle_brand' => 'Toyota',
+            'complaint' => 'Bunyi mesin',
+            'booking_date' => now()->toDateString(),
+            'status' => 'pending',
+            'service_fee' => 150000,
+            'total_cost' => 150000,
+        ]
+    );
+
+    $estimate = Estimate::firstOrCreate(
+        ['booking_id' => $booking->id],
+        [
+            'items' => [['type' => 'service', 'ref_id' => $service->id, 'name' => 'Jasa', 'qty' => 1, 'unit_price' => 100000, 'subtotal' => 100000]],
+            'status' => EstimateStatus::Sent,
+            'total' => 100000,
+            'service_total' => 100000,
+            'parts_total' => 0,
+            'note' => 'Estimasi Arch Test',
+        ]
+    );
+
+    return compact('brand', 'car', 'product', 'order', 'service', 'sparepart', 'booking', 'estimate');
+};
+
+$storeAutoServeCustomerSetup = function (User $user) use ($storeAutoServeSeedHelper): void {
+    $d = $storeAutoServeSeedHelper();
+    if ($user->isCustomer()) {
+        $d['order']->user_id = $user->id;
+        $d['order']->save();
+
+        $d['booking']->customer_id = $user->id;
+        $d['booking']->save();
+    }
+};
+
+$financeCryptoSeedHelper = function (): array {
+    $owner = User::firstOrCreate(
+        ['id' => 1],
+        ['name' => 'Arch User', 'email' => 'arch@test.test', 'password' => 'secret', 'role' => 'customer']
+    );
+
+    $asset = CryptoAsset::firstOrCreate(
+        ['symbol' => 'BTC'],
+        ['name' => 'Bitcoin', 'decimals' => 8, 'volatility' => 0.03, 'is_active' => true]
+    );
+
+    CryptoPriceTick::firstOrCreate(
+        ['asset_id' => $asset->id],
+        ['price_idr' => '1000000000', 'recorded_at' => now()]
+    );
+
+    $brand = Brand::firstOrCreate(
+        ['slug' => 'toyota-fin'],
+        ['name' => 'Toyota Finance', 'country' => 'Japan', 'category' => 'jdm']
+    );
+
+    $car = Car::firstOrCreate(
+        ['slug' => 'corolla-fin'],
+        ['brand_id' => $brand->id, 'model' => 'Corolla Finance', 'year_start' => 2022, 'body_type' => 'sedan', 'fuel_type' => 'gasoline', 'is_active' => true]
+    );
+
+    $product = Product::firstOrCreate(
+        ['slug' => 'lexus-lc300-fin'],
+        [
+            'uuid' => (string) Str::uuid(),
+            'sku' => 'SKU-FIN-001',
+            'name' => 'Lexus LC 300 Finance',
+            'price' => 300000000,
+            'cached_stock' => 5,
+            'is_listed' => true,
+        ]
+    );
+
+    $loan = Loan::firstOrCreate(
+        ['uuid' => '99999999-9999-9999-9999-999999999999'],
+        [
+            'user_id' => $owner->id,
+            'status' => 'active',
+            'principal' => 100000000,
+            'outstanding_principal' => 100000000,
+            'interest_rate_annual' => 0.08,
+            'tenor_months' => 12,
+            'collateral_asset_id' => $asset->id,
+            'collateral_qty' => '0.2',
+            'ltv_at_open' => 0.5,
+            'opened_at' => now(),
+        ]
+    );
+
+    $alert = CryptoAlert::firstOrCreate(
+        ['user_id' => $owner->id, 'asset_id' => $asset->id],
+        [
+            'condition' => AlertCondition::ABOVE,
+            'target_price_idr' => '1100000000',
+            'is_triggered' => false,
+        ]
+    );
+
+    return compact('owner', 'asset', 'product', 'loan', 'alert');
+};
+
+$financeCryptoCustomerSetup = function (User $user) use ($financeCryptoSeedHelper): void {
+    $d = $financeCryptoSeedHelper();
+    if ($user->isCustomer()) {
+        $d['loan']->user_id = $user->id;
+        $d['loan']->save();
+
+        $d['alert']->user_id = $user->id;
+        $d['alert']->save();
+    }
+};
+
+$distributorParamHelper = function (): array {
+    $dist = Distributor::firstOrCreate(
+        ['code' => 'DST-DYNAMIC-01'],
+        ['name' => 'Dist Dynamic', 'tier' => 'bronze', 'is_active' => true]
+    );
+
+    return ['distributor' => $dist->id];
+};
+
+$partnerParamHelper = function (): array {
+    $ptn = Partner::firstOrCreate(
+        ['code' => 'PTN-DYNAMIC-01'],
+        ['name' => 'Partner Dynamic', 'kind' => 'strategic', 'status' => 'active']
+    );
+
+    return ['partner' => $ptn->id];
+};
+
 return [
     'GET /' => 'public',
     'GET up' => 'public',
@@ -21,7 +460,10 @@ return [
     'POST register' => 'public',
     'activity.index' => 'auth',
     'admin.audit-logs.index' => ['roles' => ['admin']],
-    'admin.audit-logs.show' => ['roles' => ['admin']],
+    'admin.audit-logs.show' => [
+        'roles' => ['admin'],
+        'params' => fn () => ['auditLog' => AuditLog::firstOrCreate(['action' => 'test_action'], ['entity_type' => 'test', 'entity_id' => 1])->id],
+    ],
     'admin.group-dashboard' => ['roles' => ['admin']],
     'admin.health.index' => ['roles' => ['admin']],
     'admin.health.run' => ['roles' => ['admin']],
@@ -32,9 +474,15 @@ return [
     'admin.rbac.assign' => ['roles' => ['admin']],
     'admin.rbac.index' => ['roles' => ['admin']],
     'admin.rbac.revoke' => ['roles' => ['admin']],
-    'admin.rbac.role' => ['roles' => ['admin']],
+    'admin.rbac.role' => [
+        'roles' => ['admin'],
+        'params' => fn () => ['role' => Role::firstOrCreate(['name' => 'admin'], ['label' => 'Administrator', 'is_system' => true])->id],
+    ],
     'admin.rbac.toggle-permission' => ['roles' => ['admin']],
-    'admin.rbac.user' => ['roles' => ['admin']],
+    'admin.rbac.user' => [
+        'roles' => ['admin'],
+        'params' => fn () => ['user' => User::firstOrCreate(['email' => 'admin_test@test.test'], ['name' => 'Admin Test', 'password' => 'secret', 'role' => 'admin'])->id],
+    ],
     'agency.accruals.clawback' => ['roles' => ['admin', 'procurement']],
     'agency.accruals.release' => ['roles' => ['admin', 'procurement']],
     'agency.accruals.store' => ['roles' => ['admin', 'procurement']],
@@ -52,12 +500,13 @@ return [
     'agency.payouts.store' => ['roles' => ['admin', 'procurement']],
     'agency.schemes.store' => ['roles' => ['admin', 'procurement']],
     'agency.show' => ['roles' => ['admin', 'agent', 'auditor', 'procurement']],
-    'agri.index' => 'auth',
+    'agri.index' => ['roles' => ['admin', 'farmer', 'procurement']],
     'api.global-search' => 'auth',
-    'api.v1.logistics.quotes.store' => 'auth',
-    'api.v1.logistics.shipments.index' => 'auth',
-    'api.v1.logistics.shipments.show' => 'auth',
-    'api.v1.logistics.shipments.store' => 'auth',
+    'api.v1.integration.ping' => 'public',
+    'api.v1.logistics.quotes.store' => ['roles' => ['admin', 'customer', 'dispatcher', 'logistics_admin', 'shipper']],
+    'api.v1.logistics.shipments.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper']],
+    'api.v1.logistics.shipments.show' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper'], 'params' => fn () => ['tracking_number' => $logisticsSeedHelper()['shipment']->tracking_number]],
+    'api.v1.logistics.shipments.store' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
     'api.v1.logistics.tracking.show' => 'public',
     'asset.audit' => ['roles' => ['admin', 'asset_manager']],
     'asset.checkin' => ['roles' => ['admin', 'asset_manager']],
@@ -83,23 +532,23 @@ return [
     'asset.verify-chain' => ['roles' => ['admin', 'asset_manager']],
     'asset.work-orders.complete' => ['roles' => ['admin', 'asset_manager']],
     'asset.work-orders.store' => ['roles' => ['admin', 'asset_manager']],
-    'autodex.garage.index' => 'auth',
-    'autodex.garage.toggle' => 'auth',
-    'autodex.index' => 'auth',
-    'autodex.show' => 'auth',
-    'autodex.wishlist.toggle' => 'auth',
-    'b2b.index' => 'auth',
-    'bookings.addSparepart' => ['roles' => ['admin', 'mekanik']],
-    'bookings.approveExtra' => 'auth',
-    'bookings.assign' => ['roles' => ['admin', 'mekanik']],
-    'bookings.create' => 'auth',
-    'bookings.invoice' => 'auth',
-    'bookings.pay' => 'auth',
-    'bookings.refund' => 'auth',
-    'bookings.removeSparepart' => ['roles' => ['admin', 'mekanik']],
-    'bookings.show' => 'auth',
-    'bookings.store' => 'auth',
-    'bookings.updateStatus' => ['roles' => ['admin', 'mekanik']],
+    'autodex.garage.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'autodex.garage.toggle' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['car' => $storeAutoServeSeedHelper()['car']->id]],
+    'autodex.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'autodex.show' => ['roles' => ['admin', 'auditor', 'customer'], 'params' => fn () => ['car' => $storeAutoServeSeedHelper()['car']->slug]],
+    'autodex.wishlist.toggle' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['car' => $storeAutoServeSeedHelper()['car']->id]],
+    'b2b.index' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
+    'bookings.addSparepart' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
+    'bookings.approveExtra' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'bookings.assign' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
+    'bookings.create' => ['roles' => ['admin', 'auditor', 'customer']],
+    'bookings.invoice' => ['roles' => ['admin', 'auditor', 'customer', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'bookings.pay' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'bookings.refund' => ['roles' => ['admin'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
+    'bookings.removeSparepart' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id, 'sparepart' => $storeAutoServeSeedHelper()['sparepart']->id]],
+    'bookings.show' => ['roles' => ['admin', 'auditor', 'customer', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'bookings.store' => ['roles' => ['admin', 'customer']],
+    'bookings.updateStatus' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
     'boost.browser-logs' => 'public',
     'contract.advance.pay' => ['roles' => ['admin', 'contract_manager', 'legal']],
     'contract.amend' => ['roles' => ['admin', 'contract_manager', 'legal']],
@@ -141,27 +590,27 @@ return [
     'contract.usage.sync' => ['roles' => ['admin', 'contract_manager', 'legal']],
     'contract.version-diff' => ['roles' => ['admin', 'contract_manager', 'legal']],
     'contract.versions' => ['roles' => ['admin', 'contract_manager', 'legal']],
-    'control_tower.index' => 'auth',
-    'control_tower.promises' => 'auth',
-    'crypto.alerts.destroy' => 'auth',
-    'crypto.alerts.index' => 'auth',
-    'crypto.alerts.store' => 'auth',
+    'control_tower.index' => ['roles' => ['admin', 'logistics_admin', 'planner', 'auditor']],
+    'control_tower.promises' => ['roles' => ['admin', 'logistics_admin', 'planner', 'auditor']],
+    'crypto.alerts.destroy' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['alert' => $financeCryptoSeedHelper()['alert']->id], 'setup' => $financeCryptoCustomerSetup],
+    'crypto.alerts.index' => ['roles' => ['admin', 'auditor', 'customer', 'treasury']],
+    'crypto.alerts.store' => ['roles' => ['admin', 'customer', 'treasury']],
     'crypto.api.chart' => 'public',
     'crypto.api.prices' => 'public',
     'crypto.market.index' => 'public',
     'crypto.market.show' => 'public',
-    'crypto.portfolio.index' => 'auth',
-    'crypto.trade.execute' => 'auth',
-    'crypto.trade.quote' => 'auth',
+    'crypto.portfolio.index' => ['roles' => ['admin', 'auditor', 'customer', 'treasury']],
+    'crypto.trade.execute' => ['roles' => ['admin', 'customer', 'treasury']],
+    'crypto.trade.quote' => ['roles' => ['admin', 'customer', 'treasury']],
     'dashboard' => 'auth',
     'distribution.coverages.store' => ['roles' => ['admin', 'procurement']],
     'distribution.distributors.store' => ['roles' => ['admin', 'procurement']],
     'distribution.index' => ['roles' => ['admin', 'auditor', 'distributor', 'procurement']],
     'distribution.invoices.pay' => ['roles' => ['admin', 'procurement']],
     'distribution.invoices.store' => ['roles' => ['admin', 'procurement']],
-    'distribution.onboarding.approve' => ['roles' => ['admin', 'procurement']],
-    'distribution.onboarding.submit' => ['roles' => ['admin', 'procurement']],
-    'distribution.outlets.store' => ['roles' => ['admin', 'procurement']],
+    'distribution.onboarding.approve' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
+    'distribution.onboarding.submit' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
+    'distribution.outlets.store' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
     'distribution.portal.home' => [
         'roles' => ['admin', 'distributor'],
         'setup' => function (User $user): void {
@@ -174,168 +623,486 @@ return [
         },
     ],
     'distribution.scorecards.store' => ['roles' => ['admin', 'procurement']],
-    'distribution.securities.store' => ['roles' => ['admin', 'procurement']],
-    'distribution.show' => ['roles' => ['admin', 'auditor', 'distributor', 'procurement']],
+    'distribution.securities.store' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
+    'distribution.show' => ['roles' => ['admin', 'auditor', 'distributor', 'procurement'], 'params' => $distributorParamHelper],
     'distribution.sweep' => ['roles' => ['admin', 'procurement']],
     'distribution.targets.store' => ['roles' => ['admin', 'procurement']],
     'distribution.territories.store' => ['roles' => ['admin', 'procurement']],
-    'distribution.tier.evaluate' => ['roles' => ['admin', 'procurement']],
-    'distribution.transition' => ['roles' => ['admin', 'procurement']],
-    'enterprise_finance.budgets' => 'auth',
-    'enterprise_finance.index' => 'auth',
-    'epc.index' => 'auth',
-    'esg.index' => 'auth',
-    'estimates.approve' => 'auth',
-    'estimates.receiveBackorder' => ['roles' => ['admin', 'mekanik']],
-    'estimates.reject' => 'auth',
-    'estimates.send' => ['roles' => ['admin', 'mekanik']],
-    'estimates.store' => ['roles' => ['admin', 'mekanik']],
-    'finance.loans.index' => 'auth',
-    'finance.loans.payInstallment' => 'auth',
-    'finance.loans.payOff' => 'auth',
-    'finance.loans.quote' => 'auth',
-    'finance.loans.show' => 'auth',
-    'finance.loans.simulate' => 'auth',
-    'finance.loans.store' => 'auth',
-    'finance.loans.topUpCollateral' => 'auth',
-    'hcm.index' => 'auth',
-    'integration.index' => 'auth',
-    'integration.webhooks' => 'auth',
-    'intercompany.index' => 'auth',
-    'intercompany.transactions' => 'auth',
-    'international.index' => 'auth',
-    'international.jvs' => 'auth',
+    'distribution.tier.evaluate' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
+    'distribution.transition' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
+    'enterprise_finance.budgets' => ['roles' => ['admin', 'auditor', 'treasury']],
+    'enterprise_finance.index' => ['roles' => ['admin', 'auditor', 'treasury']],
+    'epc.index' => ['roles' => ['admin', 'epc_manager', 'asset_manager']],
+    'esg.index' => ['roles' => ['admin', 'esg_officer', 'auditor']],
+    'estimates.approve' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'estimates.receiveBackorder' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id]],
+    'estimates.reject' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'estimates.send' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id]],
+    'estimates.store' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
+    'finance.loans.index' => ['roles' => ['admin', 'auditor', 'customer', 'treasury']],
+    'finance.loans.payInstallment' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['loan' => $financeCryptoSeedHelper()['loan']->uuid], 'setup' => $financeCryptoCustomerSetup],
+    'finance.loans.payOff' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['loan' => $financeCryptoSeedHelper()['loan']->uuid], 'setup' => $financeCryptoCustomerSetup],
+    'finance.loans.quote' => ['roles' => ['admin', 'customer', 'treasury']],
+    'finance.loans.show' => ['roles' => ['admin', 'auditor', 'customer', 'treasury'], 'params' => fn () => ['loan' => $financeCryptoSeedHelper()['loan']->uuid], 'setup' => $financeCryptoCustomerSetup],
+    'finance.loans.simulate' => ['roles' => ['admin', 'auditor', 'customer', 'treasury'], 'params' => fn () => ['product' => $financeCryptoSeedHelper()['product']->slug]],
+    'finance.loans.store' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['product' => $financeCryptoSeedHelper()['product']->slug]],
+    'finance.loans.topUpCollateral' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['loan' => $financeCryptoSeedHelper()['loan']->uuid], 'setup' => $financeCryptoCustomerSetup],
+    'hcm.index' => ['roles' => ['admin', 'hcm_manager']],
+    'integration.index' => ['roles' => ['admin']],
+    'integration.webhooks' => ['roles' => ['admin']],
+    'intercompany.index' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
+    'intercompany.transactions' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
+    'international.index' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
+    'international.jvs' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
     'login' => 'public',
-    'logistics.carriers.index' => 'auth',
-    'logistics.carriers.pay' => 'auth',
-    'logistics.carriers.store' => 'auth',
-    'logistics.claims.decide' => 'auth',
-    'logistics.claims.index' => 'auth',
-    'logistics.claims.pay' => 'auth',
-    'logistics.claims.store' => 'auth',
-    'logistics.claims.submit' => 'auth',
-    'logistics.cod.deposit' => 'auth',
-    'logistics.cod.index' => 'auth',
-    'logistics.control-tower.index' => 'auth',
-    'logistics.customs.clear' => 'auth',
-    'logistics.customs.index' => 'auth',
-    'logistics.customs.pay' => 'auth',
-    'logistics.customs.store' => 'auth',
-    'logistics.customs.tariffs.store' => 'auth',
-    'logistics.dashboard' => 'auth',
-    'logistics.dd.end' => 'auth',
-    'logistics.dd.index' => 'auth',
-    'logistics.dd.invoice' => 'auth',
-    'logistics.dd.start' => 'auth',
-    'logistics.dd.tariffs.store' => 'auth',
-    'logistics.dispatch.assign' => 'auth',
-    'logistics.dispatch.assign-shipment' => 'auth',
-    'logistics.dispatch.index' => 'auth',
-    'logistics.dispatch.release' => 'auth',
-    'logistics.driver.deliver' => 'auth',
-    'logistics.driver.fail' => 'auth',
-    'logistics.driver.pickup' => 'auth',
-    'logistics.driver.start-delivery' => 'auth',
-    'logistics.driver.tasks' => 'auth',
-    'logistics.drivers.index' => 'auth',
-    'logistics.exceptions.index' => 'auth',
-    'logistics.exceptions.resolve' => 'auth',
-    'logistics.exceptions.store' => 'auth',
-    'logistics.fleet.index' => 'auth',
-    'logistics.fuel.index' => 'auth',
-    'logistics.fuel.store' => 'auth',
-    'logistics.hub.inbound' => 'auth',
-    'logistics.hub.index' => 'auth',
-    'logistics.hub.outbound' => 'auth',
-    'logistics.hub.sort' => 'auth',
-    'logistics.lanes.destroy' => 'auth',
-    'logistics.lanes.index' => 'auth',
-    'logistics.lanes.store' => 'auth',
-    'logistics.legs.assign-carrier' => 'auth',
-    'logistics.legs.complete' => 'auth',
-    'logistics.locations.create' => 'auth',
-    'logistics.locations.destroy' => 'auth',
-    'logistics.locations.edit' => 'auth',
-    'logistics.locations.index' => 'auth',
-    'logistics.locations.store' => 'auth',
-    'logistics.locations.update' => 'auth',
-    'logistics.margins' => 'auth',
-    'logistics.shipments.bulk' => 'auth',
-    'logistics.shipments.bulk.process' => 'auth',
-    'logistics.shipments.create' => 'auth',
-    'logistics.shipments.errors' => 'auth',
-    'logistics.shipments.index' => 'auth',
-    'logistics.shipments.label' => 'auth',
-    'logistics.shipments.show' => 'auth',
-    'logistics.shipments.store' => 'auth',
-    'logistics.shipments.template' => 'auth',
+    'logistics.carriers.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'procurement', 'treasury']],
+    'logistics.carriers.pay' => ['roles' => ['admin', 'logistics_admin', 'treasury'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['carrier' => $d['carrier']->id];
+    }],
+    'logistics.carriers.store' => ['roles' => ['admin', 'logistics_admin', 'procurement']],
+    'logistics.claims.decide' => ['roles' => ['admin', 'dispatcher', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['claim' => $d['claim']->id];
+    }],
+    'logistics.claims.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'shipper', 'treasury']],
+    'logistics.claims.pay' => ['roles' => ['admin', 'logistics_admin', 'treasury'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['claim' => $d['claim']->id];
+    }],
+    'logistics.claims.store' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.claims.submit' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['claim' => $d['claim']->id];
+    }],
+    'logistics.cod.deposit' => ['roles' => ['admin', 'hub_operator', 'logistics_admin'], 'setup' => $hubOperatorSetup],
+    'logistics.cod.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin', 'treasury']],
+    'logistics.control-tower.index' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.customs.clear' => ['roles' => ['admin', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['declaration' => $d['declaration']->id];
+    }],
+    'logistics.customs.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'shipper', 'treasury']],
+    'logistics.customs.pay' => ['roles' => ['admin', 'shipper', 'treasury'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['declaration' => $d['declaration']->id];
+    }],
+    'logistics.customs.store' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.customs.tariffs.store' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.dashboard' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.dd.end' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['dwell' => $d['dwell']->id];
+    }],
+    'logistics.dd.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'treasury']],
+    'logistics.dd.invoice' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.dd.start' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.dd.tariffs.store' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.dispatch.assign' => ['roles' => ['admin', 'dispatcher', 'logistics_admin']],
+    'logistics.dispatch.assign-shipment' => ['roles' => ['admin', 'dispatcher', 'logistics_admin']],
+    'logistics.dispatch.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin']],
+    'logistics.dispatch.release' => ['roles' => ['admin', 'dispatcher', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['schedule' => $d['schedule']->id];
+    }],
+    'logistics.driver.deliver' => ['roles' => ['admin', 'driver', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['shipment' => $d['shipment']->id];
+    }, 'setup' => $driverSetup],
+    'logistics.driver.fail' => ['roles' => ['admin', 'driver', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['shipment' => $d['shipment']->id];
+    }, 'setup' => $driverSetup],
+    'logistics.driver.pickup' => ['roles' => ['admin', 'driver', 'logistics_admin'], 'setup' => $driverSetup],
+    'logistics.driver.start-delivery' => ['roles' => ['admin', 'driver', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['shipment' => $d['shipment']->id];
+    }, 'setup' => $driverSetup],
+    'logistics.driver.tasks' => ['roles' => ['admin', 'driver', 'logistics_admin'], 'setup' => $driverSetup],
+    'logistics.drivers.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin']],
+    'logistics.exceptions.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.exceptions.resolve' => ['roles' => ['admin', 'dispatcher', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['exception' => $d['exception']->id];
+    }],
+    'logistics.exceptions.store' => ['roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.fleet.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.fuel.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'logistics_admin']],
+    'logistics.fuel.store' => ['roles' => ['admin', 'dispatcher', 'driver', 'logistics_admin']],
+    'logistics.hub.inbound' => ['roles' => ['admin', 'hub_operator', 'logistics_admin'], 'setup' => $hubOperatorSetup],
+    'logistics.hub.index' => ['roles' => ['admin', 'auditor', 'hub_operator', 'logistics_admin'], 'setup' => $hubOperatorSetup],
+    'logistics.hub.outbound' => ['roles' => ['admin', 'hub_operator', 'logistics_admin'], 'setup' => $hubOperatorSetup],
+    'logistics.hub.sort' => ['roles' => ['admin', 'hub_operator', 'logistics_admin'], 'setup' => $hubOperatorSetup],
+    'logistics.lanes.destroy' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['lane' => $d['lane']->id];
+    }],
+    'logistics.lanes.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin']],
+    'logistics.lanes.store' => ['roles' => ['admin', 'dispatcher', 'logistics_admin']],
+    'logistics.legs.assign-carrier' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['leg' => $d['leg']->id];
+    }],
+    'logistics.legs.complete' => ['roles' => ['admin', 'dispatcher', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['leg' => $d['leg']->id];
+    }],
+    'logistics.locations.create' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.locations.destroy' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['location' => $d['hubB']->id];
+    }],
+    'logistics.locations.edit' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['location' => $d['hubB']->id];
+    }],
+    'logistics.locations.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.locations.store' => ['roles' => ['admin', 'logistics_admin']],
+    'logistics.locations.update' => ['roles' => ['admin', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['location' => $d['hubB']->id];
+    }],
+    'logistics.margins' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'procurement', 'treasury']],
+    'logistics.shipments.bulk' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.shipments.bulk.process' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.shipments.create' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.shipments.errors' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
+        $logisticsSeedHelper();
+
+        return ['batchId' => 'batch-test-01'];
+    }],
+    'logistics.shipments.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.shipments.label' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['id' => $d['shipment']->id];
+    }],
+    'logistics.shipments.show' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
+        $d = $logisticsSeedHelper();
+
+        return ['id' => $d['shipment']->id];
+    }],
+    'logistics.shipments.store' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
+    'logistics.shipments.template' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
     'logout' => 'auth',
-    'mall.billing.apply-penalties' => 'auth',
-    'mall.billing.generate' => 'auth',
-    'mall.billing.index' => 'auth',
+    'mall.billing.apply-penalties' => ['roles' => ['admin', 'mall_admin']],
+    'mall.billing.generate' => ['roles' => ['admin', 'mall_admin']],
+    'mall.billing.index' => ['roles' => ['admin', 'auditor', 'mall_admin']],
     'mall.directory.index' => 'public',
-    'mall.events.index' => 'auth',
-    'mall.events.store' => 'auth',
-    'mall.facilities.bill-tenant' => 'auth',
-    'mall.facilities.generate-pm' => 'auth',
-    'mall.facilities.index' => 'auth',
-    'mall.invoices.auto-debit' => 'auth',
-    'mall.invoices.show' => 'auth',
-    'mall.leases.activate' => 'auth',
-    'mall.leases.create' => 'auth',
-    'mall.leases.index' => 'auth',
-    'mall.leases.renew' => 'auth',
-    'mall.leases.show' => 'auth',
-    'mall.leases.store' => 'auth',
-    'mall.leases.terminate' => 'auth',
-    'mall.loyalty.claim' => 'auth',
-    'mall.loyalty.index' => 'auth',
-    'mall.loyalty.redeem' => 'auth',
-    'mall.loyalty.settle' => 'auth',
-    'mall.loyalty.use' => 'auth',
-    'mall.parking.footfall' => 'auth',
-    'mall.parking.gate.check-in' => 'auth',
-    'mall.parking.gate.check-out' => 'auth',
-    'mall.parking.gate.entry' => 'auth',
-    'mall.parking.gate.exit' => 'auth',
-    'mall.parking.gate.lost-ticket' => 'auth',
-    'mall.parking.gate.settle' => 'auth',
-    'mall.parking.index' => 'auth',
-    'mall.parking.members' => 'auth',
-    'mall.parking.members.store' => 'auth',
-    'mall.parking.occupancy' => 'auth',
-    'mall.parking.validate' => 'auth',
-    'mall.portal.index' => 'auth',
-    'mall.portal.invoice' => 'auth',
-    'mall.portal.overtime' => 'auth',
-    'mall.portal.pay' => 'auth',
-    'mall.portal.sales' => 'auth',
-    'mall.portal.sales.store' => 'auth',
-    'mall.site-plan.index' => 'auth',
-    'mall.tenants.create' => 'auth',
-    'mall.tenants.index' => 'auth',
-    'mall.tenants.show' => 'auth',
-    'mall.tenants.store' => 'auth',
-    'mall.utilities.batch' => 'auth',
-    'mall.utilities.index' => 'auth',
+    'mall.events.index' => ['roles' => ['admin', 'auditor', 'mall_admin']],
+    'mall.events.store' => ['roles' => ['admin', 'mall_admin']],
+    'mall.facilities.bill-tenant' => [
+        'roles' => ['admin', 'mall_admin', 'technician'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['workOrder' => WorkOrder::first()?->id ?? 1];
+        },
+    ],
+    'mall.facilities.generate-pm' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.facilities.index' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
+    'mall.invoices.auto-debit' => [
+        'roles' => ['admin', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['id' => Invoice::first()?->id ?? 1];
+        },
+    ],
+    'mall.invoices.show' => [
+        'roles' => ['admin', 'auditor', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['id' => Invoice::first()?->id ?? 1];
+        },
+    ],
+    'mall.leases.activate' => [
+        'roles' => ['admin', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['lease' => Lease::first()?->id ?? 1];
+        },
+    ],
+    'mall.leases.create' => ['roles' => ['admin', 'mall_admin']],
+    'mall.leases.index' => ['roles' => ['admin', 'auditor', 'mall_admin']],
+    'mall.leases.renew' => [
+        'roles' => ['admin', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['lease' => Lease::first()?->id ?? 1];
+        },
+    ],
+    'mall.leases.show' => [
+        'roles' => ['admin', 'auditor', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['lease' => Lease::first()?->id ?? 1];
+        },
+    ],
+    'mall.leases.store' => ['roles' => ['admin', 'mall_admin']],
+    'mall.leases.terminate' => [
+        'roles' => ['admin', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['lease' => Lease::first()?->id ?? 1];
+        },
+    ],
+    'mall.loyalty.claim' => ['roles' => ['admin', 'customer', 'mall_admin']],
+    'mall.loyalty.index' => ['roles' => ['admin', 'auditor', 'customer', 'mall_admin']],
+    'mall.loyalty.redeem' => [
+        'roles' => ['admin', 'customer', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['template' => VoucherTemplate::first()?->id ?? 1];
+        },
+    ],
+    'mall.loyalty.settle' => ['roles' => ['admin', 'mall_admin']],
+    'mall.loyalty.use' => ['roles' => ['admin', 'customer', 'mall_admin']],
+    'mall.parking.footfall' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
+    'mall.parking.gate.check-in' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.parking.gate.check-out' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.parking.gate.entry' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.parking.gate.exit' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.parking.gate.lost-ticket' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.parking.gate.settle' => [
+        'roles' => ['admin', 'mall_admin', 'technician'],
+        'params' => function (): array {
+            return ['ticketNumber' => 'TKT-TEST-001'];
+        },
+    ],
+    'mall.parking.index' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
+    'mall.parking.members' => ['roles' => ['admin', 'auditor', 'customer', 'mall_admin', 'technician']],
+    'mall.parking.members.store' => ['roles' => ['admin', 'customer', 'mall_admin', 'technician']],
+    'mall.parking.occupancy' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
+    'mall.parking.validate' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.portal.index' => [
+        'roles' => ['admin', 'tenant'],
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+            }
+        },
+    ],
+    'mall.portal.invoice' => [
+        'roles' => ['admin', 'tenant'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['id' => Invoice::first()?->id ?? 1];
+        },
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                $tenant = Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+                $invoice = Invoice::first();
+                if ($invoice) {
+                    $invoice->update(['tenant_id' => $tenant->id]);
+                }
+            }
+        },
+    ],
+    'mall.portal.overtime' => [
+        'roles' => ['admin', 'tenant'],
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+            }
+        },
+    ],
+    'mall.portal.pay' => [
+        'roles' => ['admin', 'tenant'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['id' => Invoice::first()?->id ?? 1];
+        },
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                $tenant = Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+                $invoice = Invoice::first();
+                if ($invoice) {
+                    $invoice->update(['tenant_id' => $tenant->id]);
+                }
+            }
+        },
+    ],
+    'mall.portal.sales' => [
+        'roles' => ['admin', 'tenant'],
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+            }
+        },
+    ],
+    'mall.portal.sales.store' => [
+        'roles' => ['admin', 'tenant'],
+        'setup' => function (User $user): void {
+            if ($user->role === 'tenant') {
+                if (! Property::where('code', 'DM-BJM')->exists()) {
+                    (new MallSeeder)->run();
+                }
+                Tenant::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_name' => 'PT Tenant '.$user->id,
+                        'brand_name' => 'Brand '.$user->id,
+                        'category' => TenantCategory::FNB,
+                        'pic_name' => 'PIC '.$user->name,
+                        'pic_email' => $user->email,
+                        'pic_phone' => '0812345678',
+                        'is_active' => true,
+                    ]
+                );
+            }
+        },
+    ],
+    'mall.site-plan.index' => ['roles' => ['admin', 'auditor', 'mall_admin']],
+    'mall.tenants.create' => ['roles' => ['admin', 'mall_admin']],
+    'mall.tenants.index' => ['roles' => ['admin', 'auditor', 'mall_admin']],
+    'mall.tenants.show' => [
+        'roles' => ['admin', 'auditor', 'mall_admin'],
+        'params' => function (): array {
+            if (! Property::where('code', 'DM-BJM')->exists()) {
+                (new MallSeeder)->run();
+            }
+
+            return ['tenant' => Tenant::first()?->id ?? 1];
+        },
+    ],
+    'mall.tenants.store' => ['roles' => ['admin', 'mall_admin']],
+    'mall.utilities.batch' => ['roles' => ['admin', 'mall_admin', 'technician']],
+    'mall.utilities.index' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
     'manufacturing.boms.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.costing.index' => ['roles' => ['admin', 'auditor', 'planner']],
-    'manufacturing.costing.versions.approve' => ['roles' => ['admin', 'auditor', 'planner']],
-    'manufacturing.costing.versions.submit' => ['roles' => ['admin', 'auditor', 'planner']],
+    'manufacturing.costing.versions.approve' => ['roles' => ['admin', 'planner']],
+    'manufacturing.costing.versions.submit' => ['roles' => ['admin', 'planner']],
     'manufacturing.formulas.approve' => ['roles' => ['admin', 'qc_inspector']],
     'manufacturing.formulas.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.formulas.submit' => ['roles' => ['admin', 'planner']],
     'manufacturing.index' => ['roles' => ['admin', 'operator', 'planner', 'qc_inspector']],
-    'manufacturing.maintenance.incidents.close' => ['roles' => ['admin', 'asset_manager', 'auditor', 'operator', 'planner']],
-    'manufacturing.maintenance.incidents.store' => ['roles' => ['admin', 'asset_manager', 'auditor', 'operator', 'planner']],
+    'manufacturing.maintenance.incidents.close' => ['roles' => ['admin', 'asset_manager', 'operator', 'planner']],
+    'manufacturing.maintenance.incidents.store' => ['roles' => ['admin', 'asset_manager', 'operator', 'planner']],
     'manufacturing.maintenance.index' => ['roles' => ['admin', 'asset_manager', 'auditor', 'operator', 'planner']],
-    'manufacturing.maintenance.oee.compute' => ['roles' => ['admin', 'asset_manager', 'auditor', 'operator', 'planner']],
-    'manufacturing.maintenance.orders.store' => ['roles' => ['admin', 'asset_manager', 'auditor', 'operator', 'planner']],
-    'manufacturing.maintenance.orders.transition' => ['roles' => ['admin', 'asset_manager', 'auditor', 'operator', 'planner']],
-    'manufacturing.maintenance.parts.store' => ['roles' => ['admin', 'asset_manager', 'auditor', 'operator', 'planner']],
-    'manufacturing.maintenance.permits.approve' => ['roles' => ['admin', 'asset_manager', 'auditor', 'operator', 'planner']],
-    'manufacturing.maintenance.permits.store' => ['roles' => ['admin', 'asset_manager', 'auditor', 'operator', 'planner']],
-    'manufacturing.maintenance.sensors.store' => ['roles' => ['admin', 'asset_manager', 'auditor', 'operator', 'planner']],
+    'manufacturing.maintenance.oee.compute' => ['roles' => ['admin', 'asset_manager', 'operator', 'planner']],
+    'manufacturing.maintenance.orders.store' => ['roles' => ['admin', 'asset_manager', 'operator', 'planner']],
+    'manufacturing.maintenance.orders.transition' => ['roles' => ['admin', 'asset_manager', 'operator', 'planner']],
+    'manufacturing.maintenance.parts.store' => ['roles' => ['admin', 'asset_manager', 'operator', 'planner']],
+    'manufacturing.maintenance.permits.approve' => ['roles' => ['admin', 'asset_manager', 'operator', 'planner']],
+    'manufacturing.maintenance.permits.store' => ['roles' => ['admin', 'asset_manager', 'operator', 'planner']],
+    'manufacturing.maintenance.sensors.store' => ['roles' => ['admin', 'asset_manager', 'operator', 'planner']],
     'manufacturing.materials.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.planning.balances.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.planning.forecast.activate' => ['roles' => ['admin', 'planner']],
@@ -359,20 +1126,20 @@ return [
     'manufacturing.production.orders.scrap' => ['roles' => ['admin', 'operator', 'planner', 'qc_inspector']],
     'manufacturing.production.orders.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.production.orders.transition' => ['roles' => ['admin', 'operator', 'planner', 'qc_inspector']],
-    'manufacturing.quality.capas.complete' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
-    'manufacturing.quality.capas.store' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
+    'manufacturing.quality.capas.complete' => ['roles' => ['admin', 'planner', 'qc_inspector']],
+    'manufacturing.quality.capas.store' => ['roles' => ['admin', 'planner', 'qc_inspector']],
     'manufacturing.quality.index' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
-    'manufacturing.quality.inspections.approve' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
-    'manufacturing.quality.inspections.store' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
-    'manufacturing.quality.inspections.waiver' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
-    'manufacturing.quality.lots.certificates' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
-    'manufacturing.quality.lots.recall' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
-    'manufacturing.quality.lots.release' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
+    'manufacturing.quality.inspections.approve' => ['roles' => ['admin', 'planner', 'qc_inspector']],
+    'manufacturing.quality.inspections.store' => ['roles' => ['admin', 'planner', 'qc_inspector']],
+    'manufacturing.quality.inspections.waiver' => ['roles' => ['admin', 'planner', 'qc_inspector']],
+    'manufacturing.quality.lots.certificates' => ['roles' => ['admin', 'planner', 'qc_inspector']],
+    'manufacturing.quality.lots.recall' => ['roles' => ['admin', 'planner', 'qc_inspector']],
+    'manufacturing.quality.lots.release' => ['roles' => ['admin', 'planner', 'qc_inspector']],
     'manufacturing.quality.lots.trace' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
-    'manufacturing.quality.ncrs.store' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
-    'manufacturing.quality.plans.store' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
-    'manufacturing.quality.recalls.complete' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
-    'manufacturing.quality.recalls.notify' => ['roles' => ['admin', 'auditor', 'planner', 'qc_inspector']],
+    'manufacturing.quality.ncrs.store' => ['roles' => ['admin', 'planner', 'qc_inspector']],
+    'manufacturing.quality.plans.store' => ['roles' => ['admin', 'planner', 'qc_inspector']],
+    'manufacturing.quality.recalls.complete' => ['roles' => ['admin', 'planner', 'qc_inspector']],
+    'manufacturing.quality.recalls.notify' => ['roles' => ['admin', 'planner', 'qc_inspector']],
     'manufacturing.routings.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.workers.store' => ['roles' => ['admin', 'planner']],
     'notifications.index' => 'auth',
@@ -381,9 +1148,9 @@ return [
     'notifications.read' => 'auth',
     'notifications.recent' => 'auth',
     'partners.index' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'partners.show' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'partners.store' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'partners.transition' => ['roles' => ['admin', 'auditor', 'procurement']],
+    'partners.show' => ['roles' => ['admin', 'auditor', 'procurement'], 'params' => $partnerParamHelper],
+    'partners.store' => ['roles' => ['admin', 'procurement']],
+    'partners.transition' => ['roles' => ['admin', 'procurement'], 'params' => $partnerParamHelper],
     'party.create' => ['roles' => ['admin', 'logistics_admin', 'party_manager']],
     'party.index' => ['roles' => ['admin', 'logistics_admin', 'party_manager']],
     'party.kyc.approve' => ['roles' => ['admin', 'logistics_admin', 'party_manager']],
@@ -402,20 +1169,20 @@ return [
     'password.reset' => 'public',
     'password.store' => 'public',
     'password.update' => 'auth',
-    'plm.index' => 'auth',
-    'pricing.analytics.compute' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'pricing.claims.settle' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'pricing.claims.validate' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'pricing.discounts.store' => ['roles' => ['admin', 'auditor', 'procurement']],
+    'plm.index' => ['roles' => ['admin', 'rnd_specialist']],
+    'pricing.analytics.compute' => ['roles' => ['admin', 'procurement']],
+    'pricing.claims.settle' => ['roles' => ['admin', 'procurement']],
+    'pricing.claims.validate' => ['roles' => ['admin', 'procurement']],
+    'pricing.discounts.store' => ['roles' => ['admin', 'procurement']],
     'pricing.index' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'pricing.margin-policies.store' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'pricing.overrides.decide' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'pricing.overrides.store' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'pricing.price-lists.activate' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'pricing.price-lists.items.store' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'pricing.price-lists.store' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'pricing.promotions.claims.store' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'pricing.promotions.store' => ['roles' => ['admin', 'auditor', 'procurement']],
+    'pricing.margin-policies.store' => ['roles' => ['admin', 'procurement']],
+    'pricing.overrides.decide' => ['roles' => ['admin', 'procurement']],
+    'pricing.overrides.store' => ['roles' => ['admin', 'procurement']],
+    'pricing.price-lists.activate' => ['roles' => ['admin', 'procurement']],
+    'pricing.price-lists.items.store' => ['roles' => ['admin', 'procurement']],
+    'pricing.price-lists.store' => ['roles' => ['admin', 'procurement']],
+    'pricing.promotions.claims.store' => ['roles' => ['admin', 'procurement']],
+    'pricing.promotions.store' => ['roles' => ['admin', 'procurement']],
     'procurement.dashboard' => ['roles' => ['admin', 'procurement']],
     'procurement.pos.cancel' => ['roles' => ['admin', 'procurement']],
     'procurement.pos.close' => ['roles' => ['admin', 'procurement']],
@@ -443,138 +1210,495 @@ return [
     'profile.edit' => 'auth',
     'profile.update' => 'auth',
     'register' => 'public',
-    'resto.analytics.index' => 'auth',
-    'resto.catering.cancel' => 'auth',
-    'resto.catering.complete' => 'auth',
-    'resto.catering.create' => 'auth',
-    'resto.catering.deposit' => 'auth',
-    'resto.catering.destroy' => 'auth',
-    'resto.catering.edit' => 'auth',
-    'resto.catering.index' => 'auth',
-    'resto.catering.show' => 'auth',
-    'resto.catering.store' => 'auth',
-    'resto.catering.update' => 'auth',
-    'resto.deliveries.create' => 'auth',
-    'resto.deliveries.destroy' => 'auth',
-    'resto.deliveries.edit' => 'auth',
-    'resto.deliveries.fail' => 'auth',
-    'resto.deliveries.index' => 'auth',
-    'resto.deliveries.show' => 'auth',
-    'resto.deliveries.status' => 'auth',
-    'resto.deliveries.store' => 'auth',
-    'resto.deliveries.update' => 'auth',
-    'resto.franchise.contract.store' => 'auth',
-    'resto.franchise.index' => 'auth',
-    'resto.franchise.royalty.run' => 'auth',
-    'resto.ingredients.conversions.store' => 'auth',
-    'resto.ingredients.create' => 'auth',
-    'resto.ingredients.destroy' => 'auth',
-    'resto.ingredients.edit' => 'auth',
-    'resto.ingredients.index' => 'auth',
-    'resto.ingredients.show' => 'auth',
-    'resto.ingredients.store' => 'auth',
-    'resto.ingredients.update' => 'auth',
-    'resto.kitchen.cook' => 'auth',
-    'resto.kitchen.index' => 'auth',
-    'resto.kitchen.simulate' => 'auth',
-    'resto.kitchen.trays.discard' => 'auth',
-    'resto.kitchen.trays.recirculate' => 'auth',
-    'resto.menu.calculate-cost' => 'auth',
-    'resto.menu.create' => 'auth',
-    'resto.menu.destroy' => 'auth',
-    'resto.menu.edit' => 'auth',
-    'resto.menu.index' => 'auth',
-    'resto.menu.show' => 'auth',
-    'resto.menu.store' => 'auth',
-    'resto.menu.update' => 'auth',
-    'resto.outlets.create' => 'auth',
-    'resto.outlets.destroy' => 'auth',
-    'resto.outlets.edit' => 'auth',
-    'resto.outlets.index' => 'auth',
-    'resto.outlets.show' => 'auth',
-    'resto.outlets.store' => 'auth',
-    'resto.outlets.update' => 'auth',
-    'resto.pos.index' => 'auth',
-    'resto.pos.order.pay' => 'auth',
-    'resto.pos.order.receipt' => 'auth',
-    'resto.pos.order.validate-parking' => 'auth',
-    'resto.pos.order.void' => 'auth',
-    'resto.pos.session.bill' => 'auth',
-    'resto.pos.session.hidang' => 'auth',
-    'resto.pos.session.item' => 'auth',
-    'resto.pos.session.open' => 'auth',
-    'resto.pos.session.show' => 'auth',
-    'resto.pos.shift.close' => 'auth',
-    'resto.pos.shift.open' => 'auth',
-    'resto.pos.shift.settle' => 'auth',
-    'resto.purchases.create' => 'auth',
-    'resto.purchases.destroy' => 'auth',
-    'resto.purchases.edit' => 'auth',
-    'resto.purchases.index' => 'auth',
-    'resto.purchases.pay' => 'auth',
-    'resto.purchases.receive' => 'auth',
-    'resto.purchases.show' => 'auth',
-    'resto.purchases.store' => 'auth',
-    'resto.purchases.update' => 'auth',
-    'resto.stock-counts.approve' => 'auth',
-    'resto.stock-counts.create' => 'auth',
-    'resto.stock-counts.destroy' => 'auth',
-    'resto.stock-counts.edit' => 'auth',
-    'resto.stock-counts.index' => 'auth',
-    'resto.stock-counts.show' => 'auth',
-    'resto.stock-counts.store' => 'auth',
-    'resto.stock-counts.update' => 'auth',
-    'resto.transfers.create' => 'auth',
-    'resto.transfers.destroy' => 'auth',
-    'resto.transfers.edit' => 'auth',
-    'resto.transfers.index' => 'auth',
-    'resto.transfers.receive' => 'auth',
-    'resto.transfers.show' => 'auth',
-    'resto.transfers.store' => 'auth',
-    'resto.transfers.update' => 'auth',
+    'resto.analytics.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.catering.cancel' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.complete' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.create' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.catering.deposit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.destroy' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['catering' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.edit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['catering' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.catering.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['catering' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.catering.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.catering.update' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['catering' => CateringOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.create' => ['roles' => ['admin', 'driver', 'outlet_manager']],
+    'resto.deliveries.destroy' => [
+        'roles' => ['admin', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.edit' => [
+        'roles' => ['admin', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.fail' => [
+        'roles' => ['admin', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.index' => ['roles' => ['admin', 'auditor', 'driver', 'outlet_manager']],
+    'resto.deliveries.show' => [
+        'roles' => ['admin', 'auditor', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.status' => [
+        'roles' => ['admin', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.deliveries.store' => ['roles' => ['admin', 'driver', 'outlet_manager']],
+    'resto.deliveries.update' => [
+        'roles' => ['admin', 'driver', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['delivery' => Delivery::first()?->id ?? 1];
+        },
+    ],
+    'resto.franchise.contract.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.franchise.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.franchise.royalty.run' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.ingredients.conversions.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.ingredients.create' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.ingredients.destroy' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['ingredient' => Ingredient::first()?->id ?? 1];
+        },
+    ],
+    'resto.ingredients.edit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['ingredient' => Ingredient::first()?->id ?? 1];
+        },
+    ],
+    'resto.ingredients.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.ingredients.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['ingredient' => Ingredient::first()?->id ?? 1];
+        },
+    ],
+    'resto.ingredients.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.ingredients.update' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['ingredient' => Ingredient::first()?->id ?? 1];
+        },
+    ],
+    'resto.kitchen.cook' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'resto.kitchen.index' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'resto.kitchen.simulate' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'resto.kitchen.trays.discard' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['tray' => DisplayTray::first()?->id ?? 1];
+        },
+    ],
+    'resto.kitchen.trays.recirculate' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['tray' => DisplayTray::first()?->id ?? 1];
+        },
+    ],
+    'resto.menu.calculate-cost' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.menu.create' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.menu.destroy' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['menu' => MenuItem::first()?->id ?? 1];
+        },
+    ],
+    'resto.menu.edit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['menu' => MenuItem::first()?->id ?? 1];
+        },
+    ],
+    'resto.menu.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.menu.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['menu' => MenuItem::first()?->id ?? 1];
+        },
+    ],
+    'resto.menu.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.menu.update' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['menu' => MenuItem::first()?->id ?? 1];
+        },
+    ],
+    'resto.outlets.create' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.outlets.destroy' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['outlet' => Outlet::first()?->id ?? 1];
+        },
+    ],
+    'resto.outlets.edit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['outlet' => Outlet::first()?->id ?? 1];
+        },
+    ],
+    'resto.outlets.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.outlets.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['outlet' => Outlet::first()?->id ?? 1];
+        },
+    ],
+    'resto.outlets.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.outlets.update' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['outlet' => Outlet::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.index' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
+    'resto.pos.order.pay' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => Order::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.order.receipt' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => Order::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.order.validate-parking' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => Order::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.order.void' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['order' => Order::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.session.bill' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['session' => TableSession::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.session.hidang' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['session' => TableSession::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.session.item' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['session' => TableSession::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.session.open' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
+    'resto.pos.session.show' => [
+        'roles' => ['admin', 'cashier', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['session' => TableSession::first()?->id ?? 1];
+        },
+    ],
+    'resto.pos.shift.close' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
+    'resto.pos.shift.open' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
+    'resto.pos.shift.settle' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
+    'resto.purchases.create' => ['roles' => ['admin', 'outlet_manager', 'procurement']],
+    'resto.purchases.destroy' => [
+        'roles' => ['admin', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.purchases.edit' => [
+        'roles' => ['admin', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.purchases.index' => ['roles' => ['admin', 'auditor', 'outlet_manager', 'procurement']],
+    'resto.purchases.pay' => [
+        'roles' => ['admin', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.purchases.receive' => [
+        'roles' => ['admin', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.purchases.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.purchases.store' => ['roles' => ['admin', 'outlet_manager', 'procurement']],
+    'resto.purchases.update' => [
+        'roles' => ['admin', 'outlet_manager', 'procurement'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['purchase' => PurchaseOrder::first()?->id ?? 1];
+        },
+    ],
+    'resto.stock-counts.approve' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['stock_count' => StockCount::first()?->id ?? 1];
+        },
+    ],
+    'resto.stock-counts.create' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.stock-counts.destroy' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['stock_count' => StockCount::first()?->id ?? 1];
+        },
+    ],
+    'resto.stock-counts.edit' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['stock_count' => StockCount::first()?->id ?? 1];
+        },
+    ],
+    'resto.stock-counts.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
+    'resto.stock-counts.show' => [
+        'roles' => ['admin', 'auditor', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['stock_count' => StockCount::first()?->id ?? 1];
+        },
+    ],
+    'resto.stock-counts.store' => ['roles' => ['admin', 'outlet_manager']],
+    'resto.stock-counts.update' => [
+        'roles' => ['admin', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['stock_count' => StockCount::first()?->id ?? 1];
+        },
+    ],
+    'resto.transfers.create' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'resto.transfers.destroy' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['transfer' => StockTransfer::first()?->id ?? 1];
+        },
+    ],
+    'resto.transfers.edit' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['transfer' => StockTransfer::first()?->id ?? 1];
+        },
+    ],
+    'resto.transfers.index' => ['roles' => ['admin', 'auditor', 'kitchen', 'outlet_manager']],
+    'resto.transfers.receive' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['transfer' => StockTransfer::first()?->id ?? 1];
+        },
+    ],
+    'resto.transfers.show' => [
+        'roles' => ['admin', 'auditor', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['transfer' => StockTransfer::first()?->id ?? 1];
+        },
+    ],
+    'resto.transfers.store' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'resto.transfers.update' => [
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
+        'params' => function () use ($restoSeedHelper): array {
+            $restoSeedHelper();
+
+            return ['transfer' => StockTransfer::first()?->id ?? 1];
+        },
+    ],
     'sanctum.csrf-cookie' => 'public',
-    'services.destroy' => ['roles' => ['admin']],
+    'services.destroy' => ['roles' => ['admin'], 'params' => fn () => ['service' => $storeAutoServeSeedHelper()['service']->id]],
     'services.index' => ['roles' => ['admin']],
     'services.store' => ['roles' => ['admin']],
-    'services.update' => ['roles' => ['admin']],
-    'spareparts.destroy' => ['roles' => ['admin']],
+    'services.update' => ['roles' => ['admin'], 'params' => fn () => ['service' => $storeAutoServeSeedHelper()['service']->id]],
+    'spareparts.destroy' => ['roles' => ['admin'], 'params' => fn () => ['sparepart' => $storeAutoServeSeedHelper()['sparepart']->id]],
     'spareparts.index' => ['roles' => ['admin']],
     'spareparts.store' => ['roles' => ['admin']],
-    'spareparts.update' => ['roles' => ['admin']],
+    'spareparts.update' => ['roles' => ['admin'], 'params' => fn () => ['sparepart' => $storeAutoServeSeedHelper()['sparepart']->id]],
     'storage.local' => 'public',
-    'storage.local.upload' => 'public',
-    'store.admin.orders.cancel' => ['roles' => ['admin']],
-    'store.admin.orders.complete' => ['roles' => ['admin']],
+    'storage.local.upload' => 'signed',
+    'store.admin.orders.cancel' => ['roles' => ['admin'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid]],
+    'store.admin.orders.complete' => ['roles' => ['admin'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid]],
     'store.admin.orders.index' => ['roles' => ['admin']],
-    'store.admin.orders.resolveDispute' => ['roles' => ['admin']],
-    'store.admin.orders.ship' => ['roles' => ['admin']],
-    'store.admin.orders.show' => ['roles' => ['admin']],
-    'store.admin.products.adjustStock' => ['roles' => ['admin']],
+    'store.admin.orders.resolveDispute' => ['roles' => ['admin'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid]],
+    'store.admin.orders.ship' => ['roles' => ['admin'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid]],
+    'store.admin.orders.show' => ['roles' => ['admin'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid]],
+    'store.admin.products.adjustStock' => ['roles' => ['admin'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->id]],
     'store.admin.products.createCarListing' => ['roles' => ['admin']],
     'store.admin.products.index' => ['roles' => ['admin']],
-    'store.admin.products.toggle' => ['roles' => ['admin']],
-    'store.c2c.buy' => 'auth',
-    'store.c2c.buyForm' => 'auth',
-    'store.c2c.cancel' => 'auth',
-    'store.c2c.confirm' => 'auth',
-    'store.c2c.dispute' => 'auth',
-    'store.c2c.handover' => 'auth',
+    'store.admin.products.toggle' => ['roles' => ['admin'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->id]],
+    'store.c2c.buy' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->slug]],
+    'store.c2c.buyForm' => ['roles' => ['admin', 'auditor', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->slug]],
+    'store.c2c.cancel' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
+    'store.c2c.confirm' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
+    'store.c2c.dispute' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
+    'store.c2c.handover' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
     'store.c2c.index' => 'public',
-    'store.c2c.mySales' => 'auth',
-    'store.c2c.store' => 'auth',
-    'store.c2c.unlist' => 'auth',
-    'store.cart.count' => 'auth',
-    'store.cart.destroy' => 'auth',
-    'store.cart.index' => 'auth',
-    'store.cart.store' => 'auth',
-    'store.cart.update' => 'auth',
+    'store.c2c.mySales' => ['roles' => ['admin', 'auditor', 'customer']],
+    'store.c2c.store' => ['roles' => ['admin', 'customer']],
+    'store.c2c.unlist' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->id]],
+    'store.cart.count' => ['roles' => ['admin', 'auditor', 'customer']],
+    'store.cart.destroy' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->id]],
+    'store.cart.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'store.cart.store' => ['roles' => ['admin', 'customer']],
+    'store.cart.update' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->id]],
     'store.catalog.index' => 'public',
-    'store.checkout.index' => 'auth',
-    'store.checkout.process' => 'auth',
-    'store.orders.cancel' => 'auth',
-    'store.orders.confirm' => 'auth',
-    'store.orders.index' => 'auth',
-    'store.orders.show' => 'auth',
+    'store.checkout.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'store.checkout.process' => ['roles' => ['admin', 'customer']],
+    'store.orders.cancel' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
+    'store.orders.confirm' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
+    'store.orders.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'store.orders.show' => ['roles' => ['admin', 'auditor', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
     'store.products.show' => 'public',
     'supplier.certifications.store' => ['roles' => ['admin', 'party_manager', 'procurement']],
     'supplier.create' => ['roles' => ['admin', 'party_manager', 'procurement']],
@@ -633,21 +1757,21 @@ return [
     'supplier.transition' => ['roles' => ['admin', 'party_manager', 'procurement']],
     'track.index' => 'public',
     'track.show' => 'public',
-    'trade.index' => 'auth',
-    'trade_finance.index' => 'auth',
-    'trade_finance.lcs' => 'auth',
-    'treasury.index' => 'auth',
+    'trade.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade_finance.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade_finance.lcs' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'treasury.index' => ['roles' => ['admin', 'auditor', 'treasury']],
     'verification.notice' => 'auth',
     'verification.send' => 'auth',
     'verification.verify' => 'auth',
-    'wallet.index' => 'auth',
-    'wallet.mutasi' => 'auth',
-    'wallet.mutasi.export' => 'auth',
-    'wallet.pin.store' => 'auth',
-    'wallet.topup.store' => 'auth',
-    'wallet.transfer' => 'auth',
-    'wallet.transfer.lookup' => 'auth',
-    'wallet.transfer.store' => 'auth',
+    'wallet.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'wallet.mutasi' => ['roles' => ['admin', 'auditor', 'customer']],
+    'wallet.mutasi.export' => ['roles' => ['admin', 'auditor', 'customer']],
+    'wallet.pin.store' => ['roles' => ['admin', 'customer']],
+    'wallet.topup.store' => ['roles' => ['admin', 'customer']],
+    'wallet.transfer' => ['roles' => ['admin', 'auditor', 'customer']],
+    'wallet.transfer.lookup' => ['roles' => ['admin', 'customer']],
+    'wallet.transfer.store' => ['roles' => ['admin', 'customer']],
     'wms.cycle-counts.apply' => ['roles' => ['admin']],
     'wms.cycle-counts.store' => ['roles' => ['admin', 'hub_operator']],
     'wms.cycle-counts.submit' => ['roles' => ['admin', 'hub_operator']],

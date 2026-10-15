@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hcm\Application\Services;
 
+use App\Security\BlindIndex;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Hcm\Domain\Models\Employee;
@@ -19,7 +20,9 @@ class HcmService
                 'id' => (string) Str::uuid(),
                 'employee_number' => $data['employee_number'] ?? 'EMP-'.strtoupper(Str::random(6)),
                 'name' => $data['name'],
-                'nik_hash' => isset($data['nik']) ? hash('sha256', $data['nik']) : null,
+                'nik' => $data['nik'] ?? null,
+                'nik_bidx' => isset($data['nik']) ? BlindIndex::forNik($data['nik']) : null,
+                'nik_hash' => null,
                 'email' => $data['email'] ?? null,
                 'department_id' => $data['department_id'] ?? null,
                 'position' => $data['position'] ?? 'Staff',

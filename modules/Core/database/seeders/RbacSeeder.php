@@ -50,6 +50,14 @@ class RbacSeeder extends Seeder
             ['name' => 'planner', 'label' => 'Perencana Produksi', 'description' => 'Mengelola BOM, routing, formula, dan MPS/MRP.'],
             ['name' => 'operator', 'label' => 'Operator Produksi', 'description' => 'Menjalankan order produksi di pabrik.'],
             ['name' => 'qc_inspector', 'label' => 'Inspektor QC', 'description' => 'Inspeksi mutu di titik pemeriksaan produksi.'],
+            ['name' => 'mall_admin', 'label' => 'Admin Mall', 'description' => 'Mengelola billing, sewa tenant, utilitas, dan parkir Duta Mall.'],
+            ['name' => 'technician', 'label' => 'Teknisi Mall', 'description' => 'Pemeliharaan utilitas dan operasional parkir.'],
+            ['name' => 'hcm_manager', 'label' => 'Manajer HCM', 'description' => 'Mengelola data karyawan, payroll, gaji, dan alokasi jam kerja.'],
+            ['name' => 'rnd_specialist', 'label' => 'Spesialis R&D', 'description' => 'Mengelola formula PLM, lab notebook, dan perubahan teknik.'],
+            ['name' => 'esg_officer', 'label' => 'Petugas ESG', 'description' => 'Mengelola emisi, keberlanjutan, dan audit ESG.'],
+            ['name' => 'b2b_buyer', 'label' => 'Pembeli B2B', 'description' => 'Katalog grosir, RFQ, dan transaksi B2B.'],
+            ['name' => 'farmer', 'label' => 'Petani / Mitra Agri', 'description' => 'Portal petani: panen, NDVI, dan penyerahan komoditas.'],
+            ['name' => 'epc_manager', 'label' => 'Manajer EPC', 'description' => 'Mengelola proyek rekayasa, konstruksi, dan sertifikasi termin.'],
         ];
 
         foreach ($roles as $r) {

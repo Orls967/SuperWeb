@@ -32,13 +32,18 @@ Route::middleware(['api', 'auth:sanctum', 'throttle:60,1'])
     ->group(function () {
         // Quotes
         Route::post('/quotes', [LogisticsApiController::class, 'createQuote'])
+            ->middleware('role:admin,customer,dispatcher,logistics_admin,shipper')
             ->name('quotes.store');
 
         // Shipments (CRUD)
-        Route::get('/shipments', [LogisticsApiController::class, 'listShipments'])
-            ->name('shipments.index');
+        Route::middleware('role:admin,auditor,dispatcher,driver,hub_operator,logistics_admin,shipper')->group(function () {
+            Route::get('/shipments', [LogisticsApiController::class, 'listShipments'])
+                ->name('shipments.index');
+            Route::get('/shipments/{tracking_number}', [LogisticsApiController::class, 'showShipment'])
+                ->name('shipments.show');
+        });
+
         Route::post('/shipments', [LogisticsApiController::class, 'createShipment'])
+            ->middleware('role:admin,dispatcher,logistics_admin,shipper')
             ->name('shipments.store');
-        Route::get('/shipments/{tracking_number}', [LogisticsApiController::class, 'showShipment'])
-            ->name('shipments.show');
     });

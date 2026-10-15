@@ -17,6 +17,7 @@ class WebhookEndpoint extends LogisticsEntity
     ];
 
     protected $casts = [
+        'secret' => 'encrypted',
         'events' => 'array',
         'is_active' => 'boolean',
     ];

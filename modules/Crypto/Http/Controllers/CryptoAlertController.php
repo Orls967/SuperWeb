@@ -50,7 +50,9 @@ class CryptoAlertController extends Controller
 
     public function destroy(Request $request, CryptoAlert $alert): RedirectResponse
     {
-        if ($alert->user_id !== $request->user()->id) {
+        if ($alert->user_id !== $request->user()->id
+            && ! $request->user()->isAdmin()
+            && ! $request->user()->isTreasury()) {
             abort(403);
         }
 

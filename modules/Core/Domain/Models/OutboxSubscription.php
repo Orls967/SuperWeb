@@ -22,6 +22,7 @@ class OutboxSubscription extends Model
     ];
 
     protected $casts = [
+        'secret' => 'encrypted',
         'events' => 'array',
         'is_active' => 'boolean',
         'timeout_seconds' => 'integer',

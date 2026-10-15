@@ -10,12 +10,12 @@ class DriverPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher();
+        return $user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isAuditor();
     }
 
     public function view(User $user, mixed $driver = null): bool
     {
-        if ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher()) {
+        if ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isAuditor()) {
             return true;
         }
 

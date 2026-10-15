@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Mall\Domain\Models;
 
 use App\Models\User;
+use App\Security\BlindIndex;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,15 +28,36 @@ class Tenant extends Model
         'pic_phone',
         'pic_email',
         'npwp',
+        'npwp_bidx',
         'external_ref',
         'category',
         'is_active',
     ];
 
     protected $casts = [
+        'npwp' => 'encrypted',
         'category' => TenantCategory::class,
         'is_active' => 'boolean',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $tenant) {
+            if ($tenant->isDirty('npwp')) {
+                $tenant->npwp_bidx = BlindIndex::forNpwp($tenant->npwp);
+            }
+        });
+    }
+
+    /**
+     * Find tenant by NPWP via deterministic blind index.
+     */
+    public static function findByNpwp(string $npwp): ?self
+    {
+        $bidx = BlindIndex::forNpwp($npwp);
+
+        return self::where('npwp_bidx', $bidx)->first();
+    }
 
     public function user(): BelongsTo
     {

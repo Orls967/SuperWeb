@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('name', 100);
             $table->string('target_type', 50)->default('webhook'); // webhook, listener, queue
             $table->string('target', 255); // URL or handler class
-            $table->string('secret', 128)->nullable();
+            $table->text('secret')->nullable();
             $table->json('events')->comment('Array of subscribed event types or ["*"]');
             $table->boolean('is_active')->default(true);
             $table->unsignedSmallInteger('timeout_seconds')->default(10);

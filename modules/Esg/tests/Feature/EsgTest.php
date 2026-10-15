@@ -109,7 +109,7 @@ class EsgTest extends TestCase
 
     public function test_esg_web_index_accessible(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'esg_officer']);
 
         $response = $this->actingAs($user)->get(route('esg.index'));
         $response->assertStatus(200);

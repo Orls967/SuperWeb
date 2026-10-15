@@ -59,8 +59,16 @@ final class RouteAuthorizationScanner
             return ['roles' => $roles];
         }
 
+        if ($route->getName() === 'storage.local.upload') {
+            return 'signed';
+        }
+
         if ($isAuth) {
             return 'auth';
+        }
+
+        if (in_array('signed', $middleware, true)) {
+            return 'signed';
         }
 
         return 'public';
@@ -84,8 +92,12 @@ final class RouteAuthorizationScanner
             return false;
         }
 
+        if ($baseline === 'signed') {
+            return $current !== 'signed';
+        }
+
         if ($baseline === 'auth') {
-            return $current === 'public';
+            return $current === 'public' || $current === 'signed';
         }
 
         // Baseline is role-restricted

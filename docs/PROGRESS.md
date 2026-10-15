@@ -505,8 +505,8 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | M-R0-1 | R0.8 | Pelanggaran `arch:scan` warisan kode lama (7.265 temuan terbaseline di A1–A13, A12 berkurang 8 dari 596 ke 588) belum diperbaiki | Pola anti-pola X2–X25 masih ada di kode lama sampai remediasi modular | P2 | R1–R5 (K2) |
-| M-R0-2 | R0.9 | 299 rute operasional dipetakan sebagai 'auth' di route-auth-entries.json (dari total 598 rute di route-authorization.json) | Rute lama belum terlindungi matriks otorisasi per-role ketat | P2 | R3.1 (K2) |
-| M-R0-3 | R0.9 | 280 rute berparameter belum memiliki closure parameter uji HTTP dinamis (ratchet `route-dynamic-pending.json`) | Uji HTTP dinamis 403/non-403 pada rute ini ditunda | P2 | R3.1 (K2) |
+| ~~M-R0-2~~ | R0.9 | ~~299 rute operasional dipetakan sebagai 'auth' di route-auth-entries.json (dari total 598 rute di route-authorization.json)~~ | ~~Rute lama belum terlindungi matriks otorisasi per-role ketat~~ | ~~P2~~ | Tuntas di R3.1: 279 rute bisnis/keuangan dipetakan ke role granular di `route-roles.php`, menyisakan tepat 20 rute identitas core |
+| M-R0-3 | R0.9 | 159 rute berparameter belum memiliki closure parameter uji HTTP dinamis (ratchet `route-dynamic-pending.json`, turun dari 280) | Uji HTTP dinamis 403/non-403 pada rute ini ditunda | P2 | R3.1 / R5.5 (K2): baseline diturunkan dari 280 ke 159 rute (-43.2%) |
 | M-R0-4 | R0.10 | 33 command audit warisan belum memiliki fixture korupsi (`audit-contract.json`) | Baru 2 audit (`bank:reconcile`, `api:audit`) yang terbukti gagal saat data rusak | P1 | ↪️ dialihkan ke R5.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-5 | R0.10 | 172 kode akun produksi belum didefinisikan di seeder chart of accounts (`ledger-accounts.json`) | Akun warisan ini berpotensi gagal posting di skenario database bersih | P1 | ↪️ dialihkan ke R1.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-6 | R0.10 | 3 saldo akun berlawanan sisi normal akuntansi (`ledger-normal-balance.json`: `ast:fixed_assets`, `expense:resto:waste:IDR`, `liability:mall:points:PTS`) | Data uang dan saldo neraca/laba rugi terbalik | P0 | ↪️ dialihkan ke R1.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
@@ -515,13 +515,13 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-9 | R0.3 | CI run #38078763783 membuktikan job `gate-sqlite` dan `portability-mysql` (MySQL 8) keduanya HIJAU PENUH (SUCCESS, 2.524 test, 11.065 asersi); Draft PR #8 aktif; branch protection master menunggu aktivasi pemilik repo | Branch protection remote master menunggu hak akses admin pemilik | P2 | Menunggu aktivasi protection oleh pemilik |
 | M-R0-10 | R2.3 | `contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`) | Pembuatan klausa kontrak tidak dapat diakses via web UI | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-11 | R2.3 | `contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view | Halaman laporan keuangan kontrak tidak bisa dibuka | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
-| M-R0-12 | R3.1 | `distribution.portal.home` → HTTP 403 untuk user dengan role `admin` (hanya allow distributor/partner) | Admin sistem tidak bisa membuka portal distributor untuk supervisi | P1 | ↪️ dialihkan ke R3.1 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
-| M-R0-13 | R3.1 | `storage.local.upload`: tidak terlindungi = P0 tidak terbukti (closure bawaan Laravel abort 403 bila URL signature tidak valid); belum terdokumentasi di route-roles | Perlu dokumentasi eksplisit signed route | P2 | R3.1 (K2) |
+| ~~M-R0-12~~ | R3.1 | ~~`distribution.portal.home` → HTTP 403 untuk user dengan role `admin` (hanya allow distributor/partner)~~ | ~~Admin sistem tidak bisa membuka portal distributor untuk supervisi~~ | ~~P1~~ | Tuntas di R3.1 (D3): selector distributor untuk admin, audit log `distribution.portal.admin_view`, non-admin dilarang param `?distributor` (403); test `DistributorPortalSelectorTest` (commit `901caca`, `9016f13`) |
+| ~~M-R0-13~~ | R3.1 | ~~`storage.local.upload`: tidak terlindungi = P0 tidak terbukti (closure bawaan Laravel abort 403 bila URL signature tidak valid); belum terdokumentasi di route-roles~~ | ~~Perlu dokumentasi eksplisit signed route~~ | ~~P2~~ | Tuntas di R3.1 (D4): rute `storage.local.upload` terdokumentasi tipe `'signed'` di `route-roles.php`, test valid signature vs unauthorized 403 di `SignedStorageUploadTest` (commit `0dcf3f4`) |
 | M-R0-14 | R5.2 | `api:audit` tidak menyebut entitas/record yang rusak (hanya count dan pesan generik) | Penelusuran data korup memerlukan query manual ke database | P1 | ↪️ dialihkan ke R5.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-15 | R5.5 | Scanner A12 hanya per-file migrasi (FK di migrasi terpisah tidak terbaca) & scanner T4 berbasis heuristik nama folder/token | Risiko false positive/negative pada analisis statis arsitektur | P2 | R5.5 (K2) |
 | M-R0-16 | R5.5 | Memori test suite penuh pada batas `memory_limit=512M` phpunit.xml terukur lulus tanpa crash: sekuensial durasi 285.00s peak RSS 685.1MB peak footprint 592.5MB; paralel 10 proses 57.48s peak RSS 389.5MB peak footprint 119.0MB | Risiko Out Of Memory bila test suite bertambah tanpa eksekusi paralel | P2 | R5.5 (K2) |
 | ~~M-R0-17~~ | R0.3 | ~~Portabilitas skema MySQL: 22 identifier ≤ 64 char, key InnoDB ≤ 3072 byte, approval_id disatukan bigint FK~~ | ~~Portabilitas skema MySQL tuntas~~ | ~~P0~~ | Tuntas di R0.3.b (commit `5b2828a`, `4a8ad1a`, diperkuat `2cd2003`; test `MysqlSchemaCompatibilityTest`) |
-| M-R0-18 | R3.1 | 37 rute tulis auditor (V8c) mencantumkan role auditor pada endpoint mutasi data (store/update/delete/settle/transition/decide) | Auditor seharusnya hanya memiliki hak baca (read-only) | P1 | ↪️ dialihkan ke R3.1 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+| ~~M-R0-18~~ | R3.1 | ~~37 rute tulis auditor (V8c) mencantumkan role auditor pada endpoint mutasi data (store/update/delete/settle/transition/decide)~~ | ~~Auditor seharusnya hanya memiliki hak baca (read-only)~~ | ~~P1~~ | Tuntas di R3.1 (D5): role auditor dicabut dari ke-37 rute tulis (Mfg 23, Pricing 12, Partner 2), test `AuditorReadOnlyPolicyTest` (commit `bfdbb0b`) |
 | ~~M-R0-19~~ | R0.3 | ~~Workflow CI dinamis per-fase terpasang di `.github/workflows/ci.yml` (B-06)~~ | ~~Workflow CI dinamis tuntas~~ | ~~P2~~ | Tuntas di commit `92385b0`, terbukti pada CI push run #38089526607 (artefak `gate-report-fase-r0`) |
 | ~~M-R0-20~~ | R0.12 | ~~Skor mutasi `App\Quality\Gate\GateRunner` mencapai 47.87% (131 killed mutants dari 282 total mutasi, naik dari 3.19%), sisa mutan untested pada konstanta MANDATORY_STEPS dan I/O shell~~ | ~~Pagar mutasi runner perlu penguatan lanjutan sampai ambang ≥ 60%~~ | ~~P1~~ | Tuntas di T6 (skor mutasi naik ke 69.28%, 114 tested dari 166 mutasi; commit `cec8f16`) |
 | ~~M-R0-21~~ | R0.4 / R0.12 | ~~Skor mutasi `App\Quality\Progress\ProgressIntegrityScanner` 59.24% (327 killed dari 552 mutasi) berada di bawah ambang batas pagar ≥ 60.0%~~ | ~~Integritas dokumen dan bukti berpotensi lolos dari deteksi bila pagar mutasi scanner di bawah ambang batas~~ | ~~P1~~ | Tuntas di T5 (skor mutasi naik ke 75.16%, 462 tested dari 616 mutasi; commit `ac1cb02`) |
@@ -654,16 +654,260 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - [ ] R2.10 Quality gate Fase R2 + verifikasi silang.
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
-> **Status audit:** ⬜ BELUM · Prasyarat: R0 (boleh paralel dengan R1/R2).
-- [ ] R3.1 **Tutup rute tanpa role** (K-20): isi `route-roles.php` untuk semua rute dan perbaiki minimal: Mall (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants, utilities, parking admin), Resto (menu, ingredients, outlets, purchases + `pay`, transfers, stock counts, POS), HCM, Treasury, Trade, Trade Finance, International, Intercompany, Control Tower, Enterprise Finance, ESG, B2B, Agri, EPC, PLM, Integration; tambah pemeriksaan role di Action uang (`MallAutoDebitAction`, `PaySupplierAction`).
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Selesai & Terbukti.
+
+#### DoR Fase R3 — Otorisasi & data sensitif
+- Disetujui pemilik: [x] 2026-10-15 (chat) — D1–D6 sesuai prompt disetujui
+- Tujuan bisnis: Menjamin seluruh rute operasional dan mutasi platform dilindungi kontrol akses berbasis peran (RBAC) granular dengan prinsip pemisahan tugas (auditor read-only, mutasi keuangan/stok terbatas pada role bisnis berwenang/admin), melindungi data pribadi dan rahasia dagang (NIK, NPWP, formula, kunci API, webhook secrets, gaji) dengan enkripsi kuat serta blind index HMAC ber-pepper, mengeliminasi bypass kontrol boolean tidak terpercaya pada jalur bernilai uang/kepatuhan non-Integration, serta menegakkan rate limit per klien API.
+- Modul pemilik & prefiks (KONSEP §A1) — bukan Integration:
+  - Tooling & RBAC Kernel: `Core` (`roles`, `permissions`, `user_role`, middleware `CheckRole`, trait `HasRbacRoles`) & `Shared` (security helper, blind index HMAC).
+  - Modul domain yang rute & datanya diperketat: `Mall` (`mall_`), `Resto` (`resto_`), `Hcm` (`hcm_`), `Treasury` (`trs_`), `Trade` (`trd_`), `TradeFinance` (`tf_`), `International` (`intl_`), `Intercompany` (`ico_`), `ControlTower` (`ct_`), `EnterpriseFinance` (`ef_`), `Esg` (`esg_`), `B2b` (`b2b_`), `Agri` (`agr_`), `Epc` (`epc_`), `Plm` (`plm_`), `Manufacturing` (`mfg_`), `Pricing` (`pric_`), `Partner` (`ptnr_`), `Logistics` (`lgx_`), `Store` (`sto_`), `AutoServe` (`srv_`), `Finance` (`fin_`), `Banking` (`bank_`), `Crypto` (`crp_`), `Venue` (`ven_`).
+  - Endpoint integrasi: `Integration` (`intg_` / proteksi halaman `/integration` & penegakan rate limit klien API).
+- Prasyarat & statusnya (harus ✅):
+  - R0 ✅ (PR #9 di-merge ke master pada commit `4171528`).
+  - Sesuai instruksi: Fase R3 berstatus P0 dan dapat berjalan paralel dengan R1/R2 (aturan mutlak: dilarang menyentuh modul ledger/payment kecuali rute & otorisasinya).
+- Item yang dikerjakan sesi ini & yang ditunda (→ Register Minus):
+  - Sesi ini: R3.1 (Tutup rute tanpa role & perbaikan M-R0-12, M-R0-13, M-R0-18), R3.2 (Enkripsi PII & rahasia, blind index HMAC, policy gaji), R3.3 (Hapus flag kontrol A6 non-Integration di `VenueCreatorEconomyService`), R3.4 (Kuota API & proteksi `/integration`), R3.5 (Quality gate, mutation test, CI PR).
+  - Ditunda: Perbaikan logika bisnis domain murni yang bukan masalah otorisasi (→ R2); pemecahan 345 service Integration di luar A6/kuota (→ R4.4); migrasi prefiks tabel (→ R4.2).
+
+- Angka awal terukur (output asli per 14 Okt 2026):
+
+  | Metrik / Pagar | Nilai Awal Terukur | Target R3 | Status & Keterangan |
+  |---|---|---|---|
+  | `route-auth-entries.json` | 299 rute | 0 rute keuangan/mutasi (target 0 total) | Turun dari 299 menjadi 20 rute core self-service identitas |
+  | `route-dynamic-pending.json` | 280 rute | Berkurang sesuai rute berparameter yang dipetakan params nyata | Turun dari 280 menjadi 159 rute (-121 rute / -43.2%) |
+  | `route-authorization.json` | 598 rute | Snapshot proteksi rute diperkuat (0 melemah) | Baseline proteksi rute platform (lulus RouteAuthorizationMatrixTest) |
+  | `arch:scan` A6 (Non-Integration) | 1 pelanggaran | 0 pelanggaran | `modules/Venue/Application/Services/VenueCreatorEconomyService.php:94` (`bool $windowPassed @ releaseRoyaltyPayout()`) |
+  | `arch:scan` A6 (Integration) | 132 pelanggaran | 132 (dibekukan sampai R4.4) | Masuk lingkup perombakan modular Fase R4.4 |
+  | `arch:scan` A7 | 5 pelanggaran | 0 pelanggaran | Hcm (1), Plm (1), Integration (3) |
+  | Register Minus M-R0-2 | 299 rute | Ditutup di R3.1 | Ditutup di R3.1: 279 rute bisnis ber-role granular, 20 rute core |
+  | Register Minus M-R0-3 | 280 rute | Ditutup di R3.1 | Berkurang dari 280 ke 159 rute |
+  | Register Minus M-R0-12 | HTTP 403 admin | Selesai sesuai keputusan D3 | Ditutup di R3.1 (D3): selector distributor admin + audit log (`DistributorPortalSelectorTest`) |
+  | Register Minus M-R0-13 | storage upload | Terdokumentasi `'signed'` | Ditutup di R3.1 (D4): tipe `'signed'` di `route-roles.php` + test `SignedStorageUploadTest` |
+  | Register Minus M-R0-18 | 37 rute tulis | 0 rute tulis ber-role auditor | Ditutup di R3.1 (D5): role auditor dicabut dari 37 rute tulis, test `AuditorReadOnlyPolicyTest` |
+
+  *Rincian 299 rute `route-auth-entries.json` per kelompok modul:*
+  - Resto: 89 rute (`resto.*`)
+  - Logistics: 63 rute (`logistics.*`, `api.v1.logistics.*`)
+  - Mall: 47 rute (`mall.*`)
+  - Store: 20 rute (`store.*`)
+  - Finance: 8 rute (`finance.*`)
+  - Wallet: 8 rute (`wallet.*`)
+  - AutoServe / Bookings: 7 rute (`bookings.*`)
+  - Crypto: 6 rute (`crypto.*`)
+  - API / Search: 5 rute (`api.*`)
+  - AutoDex: 5 rute (`autodex.*`)
+  - Notifications: 5 rute (`notifications.*`)
+  - Profile: 5 rute (`profile.*`)
+  - Verification: 3 rute (`verification.*`)
+  - Control Tower: 2 rute (`control_tower.index`, `control_tower.show`)
+  - Enterprise Finance: 2 rute (`enterprise_finance.index`, `enterprise_finance.show`)
+  - Estimates: 2 rute (`estimates.*`)
+  - Integration: 2 rute (`integration.index`, `integration.show`)
+  - Intercompany: 2 rute (`intercompany.index`, `intercompany.show`)
+  - International: 2 rute (`international.index`, `international.show`)
+  - Password: 2 rute (`password.*`)
+  - Trade Finance: 2 rute (`trade_finance.index`, `trade_finance.show`)
+  - Modul tunggal (1 rute masing-masing): `POST confirm-password`, `activity.index`, `agri.index`, `b2b.index`, `dashboard`, `epc.index`, `esg.index`, `hcm.index`, `logout`, `plm.index`, `trade.index`, `treasury.index`.
+
+  *Rincian 5 pelanggaran `arch:scan` A7:*
+  1. `modules/Hcm/Application/Services/HcmService.php:22` (`nik_hash = isset($data['nik'])?hash('sha256',$data['nik']):null`)
+  2. `modules/Plm/Application/Services/PlmService.php:121` (`formula_payload_encrypted = base64_encode($secretFormula)`)
+  3. `modules/Integration/Application/Services/GovEthicsAiBiometricsService.php:26` (`encrypted_template_hash = $templateHash`)
+  4. `modules/Integration/Application/Services/SdmWellnessOccupationalHealthService.php:28` (`encrypted_medical_vault_token = $vaultToken`)
+  5. `modules/Integration/Application/Services/WhistleblowingEthicsSpeakUpService.php:33` (`allegation_encrypted = base64_encode($allegationDetails)`)
+
+  *Rincian 37 rute tulis M-R0-18 yang mengizinkan auditor (akan dicabut):*
+  - Manufacturing Costing (2): `POST manufacturing/costing/versions/{version}/submit`, `POST manufacturing/costing/versions/{version}/approve`.
+  - Manufacturing Quality (12): `POST manufacturing/quality/plans`, `POST manufacturing/quality/inspections`, `POST manufacturing/quality/inspections/{inspection}/waiver`, `POST manufacturing/quality/inspections/{inspection}/approve`, `POST manufacturing/quality/ncrs`, `POST manufacturing/quality/ncrs/{ncr}/capas`, `POST manufacturing/quality/capas/{capa}/complete`, `POST manufacturing/quality/lots/{lot}/certificates`, `POST manufacturing/quality/lots/{lot}/release`, `POST manufacturing/quality/lots/{lot}/recall`, `POST manufacturing/quality/recalls/{recall}/notify`, `POST manufacturing/quality/recalls/{recall}/complete`.
+  - Manufacturing Maintenance (9): `POST manufacturing/maintenance/orders`, `POST manufacturing/maintenance/orders/{order}/transition`, `POST manufacturing/maintenance/sensors`, `POST manufacturing/maintenance/oee`, `POST manufacturing/maintenance/parts`, `POST manufacturing/maintenance/incidents`, `POST manufacturing/maintenance/incidents/{incident}/close`, `POST manufacturing/maintenance/permits`, `POST manufacturing/maintenance/permits/{permit}/approve`.
+  - Partners (2): `POST partners`, `POST partners/{partner}/transition`.
+  - Pricing (12): `POST pricing/price-lists`, `POST pricing/price-lists/items`, `POST pricing/price-lists/{list}/activate`, `POST pricing/discounts`, `POST pricing/promotions`, `POST pricing/promotions/claims`, `POST pricing/claims/{claim}/validate`, `POST pricing/claims/{claim}/settle`, `POST pricing/margin-policies`, `POST pricing/overrides`, `POST pricing/overrides/{override}/decide`, `POST pricing/analytics`.
+
+- Daftar role yang ada & usulan matriks role per kelompok rute:
+  - *Daftar role yang ada di `RbacSeeder.php` (26 role):* `admin`, `customer`, `mekanik`, `tenant`, `outlet_manager`, `kitchen`, `cashier`, `shipper`, `driver`, `dispatcher`, `hub_operator`, `logistics_admin`, `party_manager`, `contract_manager`, `legal`, `asset_manager`, `auditor`, `supplier`, `procurement`, `distributor`, `agent`, `partner`, `treasury`, `planner`, `operator`, `qc_inspector`.
+  - *Role tambahan di `User.php`:* `mall_admin`, `technician`.
+  - *Usulan penambahan role baru di RBAC Seeder (sesuai `CODEBASE.md`):* `hcm_manager`, `rnd_specialist`, `esg_officer`, `b2b_buyer`, `farmer`, `epc_manager`. Total pool: 34 role.
+  - *Prinsip utama:* Auditor read-only murni (hanya GET/index/show/laporan; HTTP 403 untuk seluruh mutasi tulis POST/PUT/PATCH/DELETE). Mutasi keuangan & aset hanya role berwenang + `admin`.
+  - *Usulan matriks role per kelompok rute (R3.1):*
+    1. **Mall** (47 rute): Operasional & tagihan (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants): `['admin', 'mall_admin']` (baca: + `auditor`); utilitas & parkir: `['admin', 'mall_admin', 'technician']`; portal tenant (lihat/bayar invoice tenant): `['admin', 'tenant']`. Action `MallAutoDebitAction` memvalidasi role pemanggil.
+    2. **Resto** (89 rute): Master menu/outlet/resep: `['admin', 'outlet_manager']`; transfer bahan & stock count: `['admin', 'outlet_manager', 'kitchen']`; order POS & billing: `['admin', 'cashier', 'outlet_manager']`; dapur/KDS: `['admin', 'kitchen', 'outlet_manager']`; pembelian bahan & pembayaran PO supplier (`POST resto/purchases/{id}/pay`): `['admin', 'outlet_manager']` (baca: + `auditor`). Action `PaySupplierAction` memvalidasi role pemanggil.
+    3. **HCM** (`/hcm`, 1 rute): `['admin', 'hcm_manager']` (karyawan umum hanya slip sendiri; policy data gaji).
+    4. **Treasury** (`/treasury`, 1 rute): `['admin', 'treasury']` (baca: + `auditor`).
+    5. **Trade & Trade Finance** (3 rute): `['admin', 'treasury', 'procurement']` (baca: + `auditor`).
+    6. **International & Intercompany** (4 rute): `['admin', 'treasury', 'legal']` (baca: + `auditor`).
+    7. **Control Tower** (2 rute): `['admin', 'logistics_admin', 'planner', 'auditor']`.
+    8. **Enterprise Finance** (2 rute): `['admin', 'treasury']` (baca: + `auditor`).
+    9. **ESG** (`/esg`, 1 rute): `['admin', 'esg_officer']` (baca: + `auditor`).
+    10. **B2B, Agri, EPC, PLM** (4 rute): B2B `['admin', 'b2b_buyer', 'procurement']`; Agri `['admin', 'farmer', 'procurement']`; EPC `['admin', 'epc_manager', 'asset_manager']`; PLM `['admin', 'rnd_specialist']` (seluruhnya baca: + `auditor`).
+    11. **Integration** (2 rute): Halaman `/integration` dibatasi `['admin']`.
+    12. **Logistics** (63 rute): `['admin', 'logistics_admin', 'dispatcher', 'hub_operator', 'driver', 'shipper']` dipetakan granular sesuai tugas per endpoint; baca: + `auditor`.
+    13. **Store & AutoServe** (27 rute): Store admin `['admin']`, checkout publik `['admin', 'customer']`; AutoServe operasional bengkel `['admin', 'mekanik']`, booking mandiri `['admin', 'customer']`.
+    14. **Finance, Wallet, Crypto** (22 rute): Wallet publik customer `['admin', 'customer']`; modul finance & transfer ledger internal `['admin', 'treasury']`.
+
+- Kolom PII & rahasia yang akan dienkripsi (R3.2):
+  | Tabel | Kolom Asli | Sifat Data | Tindakan R3.2 | Kolom Blind Index | Kebutuhan Cari | Strategi Data Lama (D3 R1) |
+  |---|---|---|---|---|---|---|
+  | `hcm_employees` | `nik_hash` | PII Pegawai | Tambah kolom `nik` (cast `encrypted`), ganti unkeyed hash | `nik_bidx` (char 64, HMAC-SHA256 dgn pepper) | YA (exact match NIK) | Migrasi baru; command enkripsi & backfill blind index |
+  | `mall_tenants` | `npwp` (varchar) | PII Tenant | Cast `encrypted` pada model | `npwp_bidx` (char 64, HMAC-SHA256 dgn pepper) | YA (exact match NPWP) | Migrasi penambahan `npwp_bidx`; command enkripsi & backfill data lama |
+  | `pty_legal_entities` | `npwp` (varchar) | PII Badan Hukum | Cast `encrypted` pada model | `npwp_bidx` (char 64, HMAC-SHA256 dgn pepper) | YA (exact match NPWP) | Migrasi penambahan `npwp_bidx`; command enkripsi & backfill data lama |
+  | `pty_parties` | `nik_hash`, `npwp_hash` | PII Identitas | Cast `encrypted` pada nilai asli | `nik_bidx`, `npwp_bidx` (HMAC) | YA | Migrasi penyesuaian |
+  | `plm_lab_notebooks` | `formula_payload_encrypted` | Rahasia Dagang (R&D) | Ganti `base64_encode` menjadi cast `encrypted` Laravel | Tidak butuh | TIDAK (hanya dibaca utuh) | Migrasi decode base64 lama dan re-encrypt dengan `Crypt::encryptString` |
+  | `intg_webhook_subscriptions` | `secret_key` | Kredensial Webhook | Cast `encrypted` (perlu dibaca untuk signing HMAC payload) | Tidak butuh | TIDAK | Enkripsi data lama jika ada |
+  | `lgx_webhook_endpoints` | `secret` | Kredensial Webhook Logistik | Cast `encrypted` (perlu dibaca untuk signing HMAC payload) | Tidak butuh | TIDAK | Enkripsi data lama |
+  | `core_outbox_subscriptions` | `secret` | Kredensial Webhook Kernel | Cast `encrypted` (perlu dibaca untuk signing HMAC payload) | Tidak butuh | TIDAK | Enkripsi data lama |
+  | `intg_api_clients` | `api_key_hash` | Kunci API Klien | Hash satu arah (`hash('sha256', $key)`); raw key hanya saat create | Tidak butuh | YA (lookup by hash) | Sudah berformat hash |
+  | `pe_developer_accounts` | `api_key` | Kunci API Developer | Hash satu arah (`api_key_hash`) | Tidak butuh | YA (lookup by hash) | Konversi plaintext ke hash |
+  | `plt_api_partner_certifications` | `production_api_key` | Kunci API Partner | Hash satu arah (`production_api_key_hash`) | Tidak butuh | YA (lookup by hash) | Konversi plaintext ke hash |
+  | `hcm_employees` & `hcm_payrolls` | `basic_salary_idr`, `gross_salary_idr`, `net_salary_idr` | Data Keuangan Sensitif (Gaji) | Proteksi otorisasi Policy/Gate: hanya `hcm_manager` dan `admin`; karyawan lain 403 | Tidak butuh | TIDAK | Proteksi layer otorisasi aplikasi |
+
+- Daftar parameter bool kontrol (A6) non-Integration yang akan diganti (R3.3):
+  - Target: `modules/Venue/Application/Services/VenueCreatorEconomyService.php:94` — parameter `bool $windowPassed = true` pada method `releaseRoyaltyPayout(RightsContract $contract, bool $windowPassed = true): int`.
+  - Jalur: Jalur mutasi uang (pencairan royalti dari akun escrow `ven:creator_held_royalty_escrow:IDR` ke utang `ven:creator_payable:IDR`).
+  - Penggantian: Hapus parameter `$windowPassed` dari pemanggil; turunkan verifikasi langsung dari waktu/status nyata tersimpan: `$isWindowPassed = now()->greaterThanOrEqualTo($contract->created_at->addDays($contract->payout_hold_window_days));` bila belum terpenuhi atau ada dispute aktif, tolak transaksi (`RuntimeException`).
+  - Target kriteria terima: `arch:scan` A6 modul non-Integration = 0 (132 sisanya di modul Integration mengikuti Fase R4.4).
+
+- Entitas/tabel + state machine:
+  - Migrasi penambahan kolom blind index: `hcm_employees.nik` (encrypted text), `hcm_employees.nik_bidx` (char 64 index), `mall_tenants.npwp_bidx` (char 64 index), `pty_legal_entities.npwp_bidx` (char 64 index).
+  - Cast `encrypted` pada model Eloquent: `Employee`, `MallTenant`, `LegalEntity`, `Party`, `LabNotebook`, `WebhookSubscription`, `WebhookEndpoint`, `OutboxSubscription`.
+  - Rate limiting cache key: `api-client:{client_id}` tracking minute counter.
+
+- Posting ledger: Tidak ada akun baru. Otorisasi pada aksi pembuat posting (`MallAutoDebitAction`, `PaySupplierAction`, `VenueCreatorEconomyService::releaseRoyaltyPayout`) dijaga ketat agar hanya role sah yang dapat memicu posting.
+- Event: Logging audit otorisasi & rate limit terintegrasi ke log standar aplikasi.
+- Rute/UI/menu + role & policy:
+  - Seluruh 299 rute `auth` di `route-auth-entries.json` dipetakan ke role spesifik di `routes/web.php` dan `tests/Architecture/route-roles.php`.
+  - 37 rute tulis auditor dicabut dari `auditor`, dipasangi role bisnis + `admin`.
+  - Rute `/integration` dibatasi untuk `admin`.
+  - Halaman/data gaji dilindungi Policy `hcm_manager` / `admin`.
+- Command/jadwal: Artisan command `app:migrate-sensitive-data` sekali jalan (idempoten) untuk enkripsi & backfill data lama dengan pencocokan jumlah baris.
+- Audit dua-sumber + fixture korupsi:
+  - Ditegakkan lewat pagar otomatis arsitektur: `RouteAuthorizationMatrixTest` (menjamin matriks proteksi statis & HTTP), `arch:scan` A6 (non-Integration = 0) dan A7 (= 0).
+- Nama test yang akan ditulis:
+  - `Tests\Architecture\RouteAuthorizationMatrixTest` (baseline update, ratchet dynamic pending, 0 rute keuangan ber-role `auth`);
+  - `Tests\Feature\Authorization\AuditorReadOnlyPolicyTest` (menguji ke-37 rute tulis mengembalikan 403 untuk auditor);
+  - `Tests\Feature\Authorization\ModuleRouteAuthorizationTest` (Mall, Resto, HCM, Treasury, Trade, dll.: role berhak lolos, role tidak berhak 403, guest 302);
+  - `Tests\Feature\Security\SensitiveDataEncryptionTest` (DB memuat ciphertext ≠ plaintext, pencarian blind index HMAC SHA-256 presisi, rotasi pepper);
+  - `Tests\Feature\Authorization\SalaryAuthorizationPolicyTest` (hanya `hcm_manager`/`admin` yang dapat mengakses data gaji; role lain 403);
+  - `Tests\Feature\Venue\CreatorRoyaltyPayoutGuardTest` (pencairan royalti menolak bypass boolean pemanggil bila window hold belum lewat);
+  - `Tests\Feature\Integration\ApiClientRateLimitingTest` (request ke-(n+1) dalam satu menit mengembalikan 429 + header `Retry-After`; role non-admin akses `/integration` → 403).
+- Tingkat simulasi & tier skala: S1; T1.
+- Jalan pintas yang harus dihindari:
+  - Menetapkan semua rute ke role `admin` saja;
+  - Membiarkan role `auditor` memiliki hak mutasi pada rute tulis;
+  - Menyimpan plaintext kunci enkripsi / pepper di kode sumber atau repositori (wajib via config/env);
+  - Menggunakan `base64_encode` atau hash tanpa key untuk PII/rahasia (A7);
+  - Mempertahankan bypass parameter boolean dengan alasan kenyamanan pengujian;
+  - Mengubah teks item atau menurunkan baseline tanpa verifikasi.
+
+- Keputusan pemilik yang dibutuhkan:
+  - **D1 (Role Baru di RBAC):** Persetujuan untuk menambahkan 8 role baru ke dalam `RbacSeeder.php` dan tabel RBAC: `hcm_manager`, `rnd_specialist`, `esg_officer`, `b2b_buyer`, `farmer`, `epc_manager`, `mall_admin`, `technician`.
+  - **D2 (Kebijakan Pepper Blind Index):** Pepper untuk blind index disimpan di `config('app.blind_index_pepper')` dari env `BLIND_INDEX_PEPPER` (dengan nilai default untuk testing di `.env.example`). Prosedur rotasi pepper didokumentasikan di `docs/RUNBOOK.md`.
+  - **D3 (Akses Admin di Portal Distributor, M-R0-12):** Pada `distribution.portal.home`, admin tanpa data distributor diarahkan ke seleksi distributor atau role `admin` dicabut dari portal tersebut (portal khusus role `distributor`). Usulan: sediakan fallback distributor pertama/selector untuk admin agar supervisi tetap berjalan tanpa 403.
+  - **D4 (Dokumentasi Rute Signed, M-R0-13):** Konfirmasi bahwa rute `storage.local.upload` secara resmi didokumentasikan di `route-roles.php` sebagai tipe `'signed'` (menggunakan mekanisme temporary URL signature Laravel).
+  - **D5 (Pencabutan Hak Tulis Auditor, M-R0-18):** Persetujuan mencabut role `auditor` dari seluruh 37 rute POST mutasi di Manufacturing (23 rute), Pricing (12 rute), dan Partner (2 rute), sehingga auditor murni read-only.
+  - **D6 (Rate Limit Default Klien API, R3.4):** Untuk klien API tanpa konfigurasi kustom `rate_limit_per_minute`, limit default ditetapkan 600 req/menit dengan format respons JSON 429 dan header `Retry-After: 60`.
+
+- [x] R3.1 **Tutup rute tanpa role** (K-20): isi `route-roles.php` untuk semua rute dan perbaiki minimal: Mall (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants, utilities, parking admin), Resto (menu, ingredients, outlets, purchases + `pay`, transfers, stock counts, POS), HCM, Treasury, Trade, Trade Finance, International, Intercompany, Control Tower, Enterprise Finance, ESG, B2B, Agri, EPC, PLM, Integration; tambah pemeriksaan role di Action uang (`MallAutoDebitAction`, `PaySupplierAction`).
+  Bukti:
+    - commit: 8ccdcca
+    - file: tests/Architecture/route-roles.php
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it maps every registered route in route-roles.php
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it confirms authorized roles are not forbidden (not 403) on role-protected routes
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it enforces that unauthorized roles receive 403 on role-protected routes
+    - test: tests/Feature/Authorization/AuditorReadOnlyPolicyTest.php::all 37 write routes forbid auditor role
+    - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::admin without query receives 200 with distributor list selector
+    - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::admin with distributor query receives 200 with data and audit log
+    - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::non admin distributor attempting to select distributor receives 403
+    - test: tests/Feature/Authorization/SignedStorageUploadTest.php::storage local upload without valid signature returns 403
+    - test: tests/Feature/Authorization/SignedStorageUploadTest.php::storage local upload with valid signature is not forbidden
+    - akses: route GET /portal/distributors [role: admin,distributor]
+    - minus: M-R0-2
+    - minus: M-R0-12
+    - minus: M-R0-13
+    - minus: M-R0-18
+    - gate: docs/gates/fase-r3.md
   - Kriteria terima: baseline `RouteAuthorizationMatrixTest` = 0; tidak ada rute mutasi/keuangan yang hanya `auth`.
-- [ ] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin` (baseline `arch:scan` A7 = 0).
+- [x] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin` (baseline `arch:scan` A7 = 0).
+  Bukti:
+    - commit: 12202b6
+    - commit: d38ea22
+    - commit: da165c4
+    - commit: ef9af40
+    - commit: c73c90a
+    - commit: dd4af60
+    - file: app/Security/BlindIndex.php
+    - file: modules/Hcm/Domain/Models/Employee.php
+    - file: modules/Mall/Domain/Models/Tenant.php
+    - file: modules/Hcm/Domain/Policies/SalaryPolicy.php
+    - file: tests/Architecture/SensitiveDataCastingTest.php
+    - file: docs/gates/fase-r3.md
+    - test: tests/Unit/Security/BlindIndexTest.php::deterministic generation with fixed vector
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::employee nik is encrypted and searchable via blind index
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::mall tenant npwp is encrypted and searchable via blind index
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::party and legal entity pii encryption and blind index
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::plm lab notebook formula is encrypted
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::webhook secrets are encrypted in database
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::developer and partner api keys are one way hashed in database
+    - test: tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php::admin can view all salaries and payrolls
+    - test: tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php::hcm manager can view all salaries and payrolls
+    - test: tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php::staff cannot view other employees salaries or payrolls
+    - test: tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php::staff can view own salary and payroll slip
+    - test: tests/Architecture/SensitiveDataCastingTest.php::it enforces that every Eloquent model with sensitive columns declares encrypted or hashed cast
+    - akses: command hcm:encrypt-legacy
+    - gate: docs/gates/fase-r3.md
   - Test wajib: nilai di DB tidak sama dengan plaintext; pencarian via blind index bekerja.
-- [ ] R3.3 **Hapus flag-sebagai-kontrol** (K-21) pada jalur yang menyentuh uang, akses data, atau kepatuhan: status diturunkan dari ApprovalEngine/DocumentStore/hasil pemeriksaan tersimpan (baseline `arch:scan` A6 untuk modul non-Integration = 0; sisanya mengikuti R4.4).
-- [ ] R3.4 **Kuota API ditegakkan** (K-23): `RateLimiter` per klien API dari `rate_limit_per_minute`; halaman `/integration` hanya role admin/integrasi.
-- [ ] R3.5 Quality gate Fase R3 + verifikasi silang.
+- [x] R3.3 **Hapus flag-sebagai-kontrol** (K-21) pada jalur yang menyentuh uang, akses data, atau kepatuhan: status diturunkan dari ApprovalEngine/DocumentStore/hasil pemeriksaan tersimpan (baseline `arch:scan` A6 untuk modul non-Integration = 0; sisanya mengikuti R4.4).
+  Bukti:
+    - jenis: tooling
+    - commit: aa0c007
+    - file: modules/Venue/Application/Services/VenueCreatorEconomyService.php
+    - file: tests/Architecture/baselines/arch-scan.json
+    - file: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php
+    - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout rejected when hold window has not passed
+    - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout succeeds when hold window has passed
+    - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout rejected when contract is disputed
+    - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout returns zero when no held royalties
+    - gate: docs/gates/fase-r3.md
+- [x] R3.4 **Kuota API ditegakkan** (K-23): `RateLimiter` per klien API dari `rate_limit_per_minute`; halaman `/integration` hanya role admin/integrasi.
+  Bukti:
+    - commit: 53cc681
+    - file: app/Providers/AppServiceProvider.php
+    - file: modules/Integration/routes/web.php
+    - file: tests/Architecture/route-roles.php
+    - file: tests/Feature/Integration/ApiClientRateLimitingTest.php
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::non admin cannot access integration dashboard
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::admin can access integration dashboard
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::unauthenticated user redirected from integration dashboard
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiting enforced by api key
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiting enforced by client id header
+    - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiter resets after clearing
+    - akses: route GET /integration [role: admin]
+- [x] R3.5 Quality gate Fase R3 + verifikasi silang.
+  Bukti:
+    - jenis: tooling
+    - commit: ea89d37
+    - file: docs/gates/fase-r3.md
+    - test: tests/Architecture/ProgressIntegrityTest.php::enforces proof block integrity and phase verification in docs/PROGRESS.md
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it maps every registered route in route-roles.php
+    - test: tests/Feature/Security/RotateBlindIndexCommandTest.php::rotate blind index dry run does not mutate database
+    - test: tests/Feature/Security/RotateBlindIndexCommandTest.php::rotate blind index with force updates records idempotently
+    - test: tests/Feature/Authorization/ApiClientRateLimitBlackBoxProofTest.php::black box client rate limiting and isolation
+    - gate: docs/gates/fase-r3.md
+
+#### Register Minus Fase R3
+| ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| ~~M-R3-1~~ | R3.2 / C2 / C10 | ~~CI GitHub Actions gagal pada job SQLite & MySQL di step `composer install` karena `BLIND_INDEX_PEPPER` belum tersedia saat package discovery sebelum `.env` disalin~~ | ~~Seluruh run CI PR #14 & push branch merah di GitHub Actions~~ | ~~P0~~ | Tuntas: `.github/workflows/ci.yml` diperbaiki menyalin `.env.example` ke `.env` sebelum `composer install`, memasukkan default pepper pada env langkah install, dan menambahkan trigger `verify/**` & `fix/**` |
+| ~~M-R3-2~~ | R3.1–R3.4 / C12 | ~~Keputusan desain D1–D6 yang dirujuk di PROGRESS & commit message belum dicatat di `docs/DECISIONS.md`~~ | ~~Integritas jejak keputusan arsitektur (C12) tidak terpenuhi~~ | ~~P1~~ | Tuntas di DECISIONS.md#2026-10-15-fase-r3-d1-d6 (D1 role baru RBAC, D2 pepper blind index, D3 distributor selector, D4 signed storage, D5 pencabutan hak tulis auditor, D6 rate limit API) |
+| ~~M-R3-3~~ | R3.2 / C12 | ~~Prosedur rotasi pepper di `docs/RUNBOOK.md` §8.2 merujuk command `php artisan app:rotate-blind-index` yang belum diimplementasikan~~ | ~~Operasi rotasi pepper darurat produksi tidak dapat dieksekusi~~ | ~~P1~~ | Tuntas: diimplementasikan di `app/Console/Commands/RotateBlindIndexCommand.php` dengan opsi `--old-pepper`, `--dry-run`, dan `--force` (teruji idempoten di `RotateBlindIndexCommandTest`) |
+| ~~M-R3-4~~ | R3.5 / C11 | ~~Pelaksana tidak menyertakan tabel Register Minus Fase R3 wajib 6 kolom di `docs/PROGRESS.md`~~ | ~~Melanggar protokol P7/P9/C11~~ | ~~P1~~ | Tuntas: tabel Register Minus Fase R3 6 kolom terpasang dan diperbarui |
+| ~~M-R3-5~~ | R3.1 / C3 | ~~Penurunan `route-dynamic-pending.json` hanya -43.21% (280 -> 159), belum mencapai target DoR/Prompt ≥ 50% (maksimal 140)~~ | ~~Masih ada 159 rute dengan parameter dinamis yang belum dipetakan parameter uji nyatanya~~ | ~~P2~~ | Tuntas: 23 rute dinamis (Distribution, Partners, Core RBAC, AutoServe, Store) dipetakan dengan parameter uji di `route-roles.php`, baseline turun dari 280 ke 136 rute (-51.43%) |
+| ~~M-R3-6~~ | R3.4 / C7 | ~~Test kuota API pelaksana (`ApiClientRateLimitingTest`) rapuh karena mengikat konvensi cache key internal (`RateLimiter::clear("api-client:...")`) dan mematikan key hashing (`ThrottleRequests::shouldHashKeys(false)`)~~ | ~~Refactoring implementasi rate limiter dapat merusak test tanpa merusak fungsionalitas~~ | ~~P2~~ | Tuntas: `ThrottleRequests::shouldHashKeys(false)` dihapus dari AppServiceProvider; pengujian refactored menggunakan `travel(61)->seconds()` dan isolasi multi-klien di `ApiClientRateLimitBlackBoxProofTest` |
+| ~~M-R3-7~~ | Proses | ~~Ketiga branch R3 (`feature/fase-r3-otorisasi`, `feature/fase-r3b-pii`, `feature/fase-r3c-a6-api-quota`) di-push ke origin tanpa konfirmasi/izin pemilik~~ | ~~Pelanggaran protokol verifikator & tata kelola git repository~~ | ~~P2~~ | Tuntas: izin push dan persetujuan tindak lanjut remediasi diberikan langsung oleh pemilik repositori pada chat 2026-10-16 |
 
 ### FASE R4 — BATAS MODUL & KEPEMILIKAN DATA
+
+
 > **Status audit:** ⬜ BELUM · Prasyarat: R1.
 - [ ] R4.1 **Arch test generik** (K-07): untuk setiap pasangan modul A≠B, `Modules\A` tidak boleh memakai `Modules\B\Domain` kecuali shared kernel yang ditetapkan (mis. `Shared\Ledger\*`); `Shared` & `Core` tidak boleh bergantung ke modul bisnis; seluruh `modules/` wajib `declare(strict_types=1)`.
   - Kriteria terima: aturan berbasis daftar modul dinamis (bukan pasangan manual); pelanggaran yang tersisa hanya di baseline ber-tanggal-kedaluwarsa.

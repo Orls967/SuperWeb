@@ -40,11 +40,21 @@ final class JUnitSummary
 
         // 2. Partial match on name
         $search = strtolower(trim($nameOrSignature));
+        $fileClean = $file !== null ? strtolower(str_replace(['/', '\\', '.php'], '', $file)) : null;
+
         foreach ($this->testCases as $key => $case) {
             $caseName = strtolower($case['name']);
             if (str_contains($caseName, $search) || str_contains(strtolower($key), $search)) {
                 if ($file === null || $case['file'] === null || str_contains($case['file'], $file)) {
                     return $case;
+                }
+
+                if ($fileClean !== null) {
+                    $caseFileClean = strtolower(str_replace(['/', '\\', '.php'], '', $case['file'] ?? ''));
+                    $caseClassClean = strtolower(str_replace(['/', '\\', '.php'], '', $case['class'] ?? ''));
+                    if (str_contains($caseFileClean, $fileClean) || str_contains($caseClassClean, $fileClean) || str_contains($fileClean, $caseClassClean)) {
+                        return $case;
+                    }
                 }
             }
         }

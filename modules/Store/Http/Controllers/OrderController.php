@@ -37,7 +37,8 @@ class OrderController extends Controller
         $user = $request->user();
         if ($order->user_id !== $user->id
             && (int) $order->seller_id !== (int) $user->id
-            && ! $user->isAdmin()) {
+            && ! $user->isAdmin()
+            && ! $user->isAuditor()) {
             abort(403, 'Akses tidak diizinkan.');
         }
 

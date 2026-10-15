@@ -89,12 +89,20 @@ class VenueCreatorEconomyService
     }
 
     /**
-     * 115.2 & 115.6 (b) Release Held Royalty Payout after Window Closes
+     * 115.2 & 115.6 (b) Release Held Royalty Payout after Window Closes (R3.3: Anti-pola X7 / A6 remediated)
      */
-    public function releaseRoyaltyPayout(RightsContract $contract, bool $windowPassed = true): int
+    public function releaseRoyaltyPayout(RightsContract $contract): int
     {
-        if (! $windowPassed) {
-            throw new RuntimeException("Payout hold active: Cannot release royalties before claim dispute window of {$contract->payout_hold_window_days} days expires");
+        if ($contract->status === 'DISPUTED') {
+            throw new RuntimeException("Payout hold active: Cannot release royalties while contract {$contract->contract_code} is under dispute");
+        }
+
+        $holdDays = (int) $contract->payout_hold_window_days;
+        $createdAt = $contract->created_at ?? now();
+        $isWindowPassed = now()->greaterThanOrEqualTo($createdAt->copy()->addDays($holdDays));
+
+        if (! $isWindowPassed) {
+            throw new RuntimeException("Payout hold active: Cannot release royalties before claim dispute window of {$holdDays} days expires");
         }
 
         $amountToPay = $contract->held_royalties_idr;

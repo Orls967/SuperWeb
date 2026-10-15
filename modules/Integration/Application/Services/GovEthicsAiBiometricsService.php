@@ -82,8 +82,8 @@ class GovEthicsAiBiometricsService
             throw new InvalidArgumentException('Accessibility violation: Non-biometric alternative verification path is mandatory (294.8).');
         }
 
-        // Template protection 294.2
-        $templateHash = hash('sha256', $rawBiometricData.'-SALT-ENCLAVE');
+        // Template protection 294.2 (Keyed HMAC-SHA256)
+        $templateHash = hash_hmac('sha256', $rawBiometricData, (string) config('app.key'));
 
         DB::table('gov_biometric_identities')->updateOrInsert(
             ['subject_identity_id' => $sId],

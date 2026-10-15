@@ -23,7 +23,7 @@ class PayClaimAction
      */
     public function execute(User $payer, Claim $claim): Claim
     {
-        if (! ($payer->isAdmin() || $payer->isLogisticsAdmin())) {
+        if (! ($payer->isAdmin() || $payer->isLogisticsAdmin() || $payer->isTreasury())) {
             throw ClaimException::forbidden('membayarkan klaim');
         }
 

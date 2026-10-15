@@ -124,7 +124,7 @@ class IntegrationTest extends TestCase
 
     public function test_55_10_http_endpoints(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
 
         $this->actingAs($user)
             ->get(route('integration.index'))

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Integration\Application\Services;
 
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -38,7 +39,7 @@ class WhistleblowingEthicsSpeakUpService
             'case_code' => $cCode,
             'channel' => strtolower($channel),
             'category' => strtolower($category),
-            'allegation_encrypted' => base64_encode($allegationDetails),
+            'allegation_encrypted' => Crypt::encryptString($allegationDetails),
             'is_anonymous' => $isAnonymous,
             'whistleblower_pseudonym' => $assignedPseudonym,
             'status' => 'triage',

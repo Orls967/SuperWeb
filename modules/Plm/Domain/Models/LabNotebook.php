@@ -24,6 +24,7 @@ class LabNotebook extends Model
     ];
 
     protected $casts = [
+        'formula_payload_encrypted' => 'encrypted',
         'sensory_score' => 'decimal:1',
     ];
 

@@ -32,7 +32,7 @@ class PriceEngineService implements PriceFeed
 
         $tick = $asset->latestTick;
         if (! $tick) {
-            return BigDecimal::of($this->getBasePriceFor($symbol));
+            return BigDecimal::of((string) $this->getBasePriceFor($symbol));
         }
 
         return BigDecimal::of((string) $tick->price_idr);

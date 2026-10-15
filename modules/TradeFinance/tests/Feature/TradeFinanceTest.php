@@ -215,7 +215,7 @@ class TradeFinanceTest extends TestCase
 
     public function test_50_9_http_endpoints(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'treasury']);
 
         $this->actingAs($user)
             ->get(route('trade_finance.index'))

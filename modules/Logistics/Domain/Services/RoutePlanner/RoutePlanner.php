@@ -84,16 +84,16 @@ class RoutePlanner
                 // 5. Connection & Cut-off timing constraints
                 if (empty($legs)) {
                     // First leg: must depart after ready time and before/at cut-off
-                    if ($edge->etd->lessThan($request->readyAt) || $edge->cutoffAt->lessThan($request->readyAt)) {
+                    if ($edge->etd < $request->readyAt || $edge->cutoffAt < $request->readyAt) {
                         continue;
                     }
                 } else {
                     // Subsequent leg: check transfer connection time at intermediate hub
                     $node = $graph->getNode($currentLocId);
                     $minConnMinutes = $node?->minConnectionMinutes ?? 60;
-                    $earliestValidDeparture = $currentTime->copy()->addMinutes($minConnMinutes);
+                    $earliestValidTimestamp = $currentTime->getTimestamp() + ($minConnMinutes * 60);
 
-                    if ($edge->etd->lessThan($earliestValidDeparture) || $edge->cutoffAt->lessThan($currentTime)) {
+                    if ($edge->etd->getTimestamp() < $earliestValidTimestamp || $edge->cutoffAt < $currentTime) {
                         continue;
                     }
                 }

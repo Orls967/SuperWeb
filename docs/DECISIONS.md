@@ -1266,8 +1266,50 @@
 - **Reason:**
   - Menjamin integritas dan transparansi riwayat proyek sehingga kriteria terima dan spesifikasi tidak dapat dikurangi secara sepihak di tengah jalan.
   - Menegakkan kepatuhan aturan P10 dan melengkapi pelacakan formal untuk deliverable R0.4.
+## 2026-10-15: Arsitektur Otorisasi & Perlindungan Data Sensitif Fase R3 (D1–D6)
+<a id="2026-10-15-fase-r3-d1-d6"></a>
+<a id="2026-10-15-fase-r3-d1-rbac-roles"></a>
+<a id="2026-10-15-fase-r3-d2-blind-index-pepper"></a>
+<a id="2026-10-15-fase-r3-d3-distributor-portal-admin"></a>
+<a id="2026-10-15-fase-r3-d4-signed-storage-upload"></a>
+<a id="2026-10-15-fase-r3-d5-auditor-read-only"></a>
+<a id="2026-10-15-fase-r3-d6-api-client-rate-limit"></a>
+- **Context:**
+  - Fase R3 (Otorisasi & Data Sensitif) memperkuat kontrol akses granular, melindungi kerahasiaan PII dan rahasia dagang, mengeliminasi bypass boolean A6 non-Integration, serta menegakkan rate limit per klien API.
+  - Terdapat 6 keputusan desain (D1–D6) yang disepakati bersama pemilik pada DoR Fase R3 untuk memandu implementasi R3.1 hingga R3.5.
+- **Decision:**
+  - **D1 (Role Baru di RBAC Kernel & Seeder):** Menambahkan 8 role bisnis baru ke dalam `RbacSeeder.php` dan tabel RBAC: `hcm_manager`, `rnd_specialist`, `esg_officer`, `b2b_buyer`, `farmer`, `epc_manager`, `mall_admin`, dan `technician`. Total pool role platform bertambah dari 26 menjadi 34 role resmi.
+  - **D2 (Kebijakan Pepper Blind Index & Enkripsi PII):**
+    - Kunci HMAC pepper untuk blind index disimpan di `config('app.blind_index_pepper')` bersumber dari environment `BLIND_INDEX_PEPPER`.
+    - Di lingkungan production (`APP_ENV=production`), ketiadaan pepper melempar `RuntimeException` saat inisialisasi aplikasi untuk mencegah pembuatan blind index tanpa pengamanan.
+    - Nilai default placeholder pengujian disediakan di `.env.example` untuk testing/CI.
+    - Prosedur rotasi pepper didokumentasikan di `docs/RUNBOOK.md` §8.2 dan didukung oleh artisan command `app:rotate-blind-index`.
+  - **D3 (Akses Admin di Portal Distributor, M-R0-12):**
+    - Rute `distribution.portal.home` memberikan akses ke role `admin` dan `distributor`.
+    - Jika pengguna dengan role `admin` mengakses tanpa parameter distributor, sistem menyajikan view selector (`distribution::selector`) berisi daftar distributor aktif (HTTP 200).
+    - Jika admin memilih distributor via query `?distributor={id}`, sistem mengizinkan akses dan mencatat log audit ke `core_audit_logs` dengan aksi `distribution.portal.admin_view`.
+    - Pengguna non-admin yang mencoba memanipulasi query `?distributor={id}` langsung ditolak dengan HTTP 403.
+  - **D4 (Dokumentasi Rute Signed, M-R0-13):**
+    - Rute `storage.local.upload` secara resmi didokumentasikan di `route-roles.php` sebagai tipe `'signed'` (menggunakan URL bertanda tangan kriptografis sementara dari Laravel).
+    - Permintaan tanpa signature sah ditolak dengan HTTP 403, sedangkan signature sah diizinkan tanpa membatasi role pengguna tertentu.
+  - **D5 (Pencabutan Hak Tulis Role Auditor, M-R0-18):**
+    - Role `auditor` dicabut dari seluruh 37 rute POST mutasi data pada modul Manufacturing (23 rute), Pricing (12 rute), dan Partner (2 rute).
+    - Auditor berstatus murni read-only (hanya memiliki hak akses pada rute GET/laporan dan selalu menerima HTTP 403 pada rute tulis).
+  - **D6 (Rate Limit Default Klien API, R3.4):**
+    - Middleware kuota API per klien menerapkan rate limiter dengan batas yang diambil dari `intg_api_clients.rate_limit_per_minute`.
+    - Untuk klien yang tidak mendefinisikan limit kustom (atau bernilai null/0), limit default ditetapkan 600 request per menit.
+    - Permintaan yang melebihi kuota menerima respons HTTP 429 bertipe JSON `{"error":"Too Many Requests","message":"API rate limit exceeded. Retry after indicated seconds."}` disertai header `Retry-After: 60`.
+- **Reason:**
+  - Menegakkan prinsip least privilege, pemisahan tugas (separation of duties), dan perlindungan berlapis terhadap kebocoran PII dan serangan denial of service pada endpoint integrasi.
 - **Verification:**
-  - `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` (`it enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker`) memverifikasi snapshot dan mendeteksi perubahan ilegal pada teks item.
+  - `vendor/bin/pest tests/Architecture/RouteAuthorizationMatrixTest.php`
+  - `vendor/bin/pest tests/Feature/Authorization/AuditorReadOnlyPolicyTest.php`
+  - `vendor/bin/pest tests/Feature/Authorization/DistributorPortalSelectorTest.php`
+  - `vendor/bin/pest tests/Feature/Authorization/SignedStorageUploadTest.php`
+  - `vendor/bin/pest tests/Feature/Security/SensitiveDataEncryptionTest.php`
+  - `vendor/bin/pest tests/Unit/Security/BlindIndexTest.php`
+  - `vendor/bin/pest tests/Feature/Authorization/ApiClientRateLimitBlackBoxProofTest.php`
+
 
 
 

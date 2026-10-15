@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('lgx_webhook_endpoints', function (Blueprint $table) {
             $table->id();
             $table->string('url');
-            $table->string('secret', 128);
+            $table->text('secret');
             $table->json('events')->comment('Array of subscribed event types');
             $table->boolean('is_active')->default(true);
             $table->foreignId('shipper_id')->nullable()->constrained('users')->cascadeOnDelete();

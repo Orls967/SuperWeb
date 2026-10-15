@@ -10,12 +10,12 @@ class FleetPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isHubOperator();
+        return $user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isHubOperator() || $user->isAuditor();
     }
 
     public function view(User $user): bool
     {
-        return $user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isHubOperator();
+        return $user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isHubOperator() || $user->isAuditor();
     }
 
     public function create(User $user): bool

@@ -21,7 +21,7 @@ class CodController extends Controller
         $user = $request->user();
 
         abort_unless(
-            $user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isHubOperator()),
+            $user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isHubOperator() || $user->isAuditor() || $user->isTreasury()),
             403,
             'Akses ditolak. Dashboard COD khusus staf operasional logistik.'
         );

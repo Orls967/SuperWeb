@@ -24,7 +24,7 @@ class CarrierController extends Controller
         $user = $request->user();
 
         abort_unless(
-            $user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher()),
+            $user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isDispatcher() || $user->isAuditor() || $user->isProcurement() || $user->isTreasury()),
             403,
             'Akses ditolak. Halaman carrier dan margin khusus manajemen logistik.'
         );
@@ -34,7 +34,7 @@ class CarrierController extends Controller
     {
         $user = $request->user();
 
-        abort_unless($user && ($user->isAdmin() || $user->isLogisticsAdmin()), 403, 'Hanya admin logistik yang dapat mengelola carrier dan pembayarannya.');
+        abort_unless($user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isProcurement()), 403, 'Hanya admin logistik atau procurement yang dapat mengelola carrier.');
     }
 
     public function index(Request $request): View
@@ -109,7 +109,8 @@ class CarrierController extends Controller
 
     public function pay(Request $request, Carrier $carrier, PayCarriersAction $action): RedirectResponse
     {
-        $this->authorizeManage($request);
+        $user = $request->user();
+        abort_unless($user && ($user->isAdmin() || $user->isLogisticsAdmin() || $user->isTreasury()), 403, 'Hanya admin atau treasury yang dapat memproses pembayaran carrier.');
 
         $payment = $action->execute($carrier, $request->user()->id);
 
