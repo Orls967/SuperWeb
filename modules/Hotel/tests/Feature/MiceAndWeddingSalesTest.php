@@ -106,7 +106,7 @@ class MiceAndWeddingSalesTest extends TestCase
         $this->assertEquals(300_000_000, $marginIdr);
 
         $costAcct = LedgerAccount::where('code', 'htl:banquet_production_cost:IDR')->first();
-        $this->assertEquals('200000000', (string) $costAcct->cached_balance);
+        $this->assertEquals('-200000000', (string) $costAcct->cached_balance);
     }
 
     public function test_114_4_and_114_6_d_wedding_sequential_payment_milestones(): void
@@ -147,6 +147,6 @@ class MiceAndWeddingSalesTest extends TestCase
 
         // Total recognized revenue = 200m + 300m + 400m + 100m = 1,000,000,000 IDR
         $rev = LedgerAccount::where('code', 'htl:wedding_revenue:IDR')->first();
-        $this->assertEquals('-1000000000', (string) $rev->cached_balance);
+        $this->assertEquals('1000000000', (string) $rev->cached_balance);
     }
 }

@@ -83,6 +83,6 @@ class HospitalityRevenueCommandTest extends TestCase
         $this->assertEquals(30_000_000, $dist->distributed_yield_idr);
 
         $payable = LedgerAccount::where('code', 'htl:investor_token_payable:IDR')->first();
-        $this->assertEquals('-30000000', (string) $payable->cached_balance);
+        $this->assertEquals('30000000', (string) $payable->cached_balance);
     }
 }

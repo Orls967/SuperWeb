@@ -7,8 +7,8 @@ namespace Modules\Hotel\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Hotel\Domain\Models\BrandStandardAudit;
 use Modules\Hotel\Domain\Models\FranchiseContract;
 use Modules\Hotel\Domain\Models\HotelProperty;
@@ -83,10 +83,10 @@ class HotelFranchiseAndBrandService
                     type: 'HOTEL_FRANCHISE_FEE_BILLING',
                     description: "Initial franchise fee for property {$property->name}",
                     idempotencyKey: "HTL-FEE-{$contract->contract_code}",
-                    entries: [
-                        PostingEntryDTO::forCode('htl:franchise_receivable:IDR', 'IDR', $initialFeeIdr),
-                        PostingEntryDTO::forCode('htl:franchise_fee_revenue:IDR', 'IDR', -$initialFeeIdr),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('htl:franchise_receivable:IDR', $initialFeeIdr)
+                        ->credit('htl:franchise_fee_revenue:IDR', $initialFeeIdr)
+                        ->toEntries('IDR'),
                     referenceType: 'HOTEL_FRANCHISE_CONTRACT',
                     referenceId: $contract->id,
                 ));
@@ -110,10 +110,10 @@ class HotelFranchiseAndBrandService
                 type: 'HOTEL_FRANCHISE_ROYALTY_BILLING',
                 description: "Monthly franchise royalty for contract {$contract->contract_code}",
                 idempotencyKey: "HTL-ROY-{$contract->contract_code}-".now()->format('Ym'),
-                entries: [
-                    PostingEntryDTO::forCode('htl:franchise_receivable:IDR', 'IDR', $royaltyAmountIdr),
-                    PostingEntryDTO::forCode('htl:royalty_revenue:IDR', 'IDR', -$royaltyAmountIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('htl:franchise_receivable:IDR', $royaltyAmountIdr)
+                    ->credit('htl:royalty_revenue:IDR', $royaltyAmountIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'HOTEL_FRANCHISE_CONTRACT',
                 referenceId: $contract->id,
             ));
@@ -154,10 +154,10 @@ class HotelFranchiseAndBrandService
                 type: 'HOTEL_RATE_PARITY_PENALTY_ACCRUAL',
                 description: "Rate parity undercut penalty levy on {$otaChannel} for property {$property->property_code}",
                 idempotencyKey: "HTL-RPV-{$violation->violation_code}",
-                entries: [
-                    PostingEntryDTO::forCode('htl:ota_penalty_receivable:IDR', 'IDR', $penaltyIdr),
-                    PostingEntryDTO::forCode('htl:parity_penalty_revenue:IDR', 'IDR', -$penaltyIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('htl:ota_penalty_receivable:IDR', $penaltyIdr)
+                    ->credit('htl:parity_penalty_revenue:IDR', $penaltyIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'RATE_PARITY_VIOLATION',
                 referenceId: $violation->id,
             ));

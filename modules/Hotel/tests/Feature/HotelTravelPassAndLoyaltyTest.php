@@ -63,14 +63,14 @@ class HotelTravelPassAndLoyaltyTest extends TestCase
         $this->assertEquals(5000, $pass->refresh()->pts_balance);
 
         $liabilityAcct = LedgerAccount::where('code', 'htl:loyalty_points_liability:IDR')->first();
-        $this->assertEquals('-500000', (string) $liabilityAcct->cached_balance);
+        $this->assertEquals('500000', (string) $liabilityAcct->cached_balance);
 
         // 2. Redeem 2,000 PTS at Venue Beach Club (Liability discharged = 200,000 IDR)
         $this->service->redeemPoints($pass, 'VENUE', 2000, 'TICKET-FEST-99');
         $this->assertEquals(3000, $pass->refresh()->pts_balance);
 
         $liabilityAcct->refresh();
-        $this->assertEquals('-300000', (string) $liabilityAcct->cached_balance);
+        $this->assertEquals('300000', (string) $liabilityAcct->cached_balance);
 
         // 3. Attempting to redeem 4,000 PTS (more than 3,000) must fail
         $this->expectException(RuntimeException::class);

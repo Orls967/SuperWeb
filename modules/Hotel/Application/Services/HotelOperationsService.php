@@ -7,8 +7,8 @@ namespace Modules\Hotel\Application\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Support\Posting;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelReservation;
@@ -163,10 +163,10 @@ class HotelOperationsService
                 type: 'HOTEL_FOLIO_SETTLEMENT',
                 description: "Hotel folio settlement for reservation {$reservation->reservation_number}",
                 idempotencyKey: "htl_folio_settle:{$folio->id}:{$paymentAmount}",
-                entries: [
-                    PostingEntryDTO::forCode('htl:settlement_clearing:IDR', 'IDR', -$paymentAmount),
-                    PostingEntryDTO::forCode('htl:room_revenue:IDR', 'IDR', $paymentAmount),
-                ],
+                entries: Posting::lines()
+                    ->debit('htl:settlement_clearing:IDR', $paymentAmount)
+                    ->credit('htl:room_revenue:IDR', $paymentAmount)
+                    ->toEntries('IDR'),
                 referenceType: 'htl_folios',
                 referenceId: $folio->id,
             ));

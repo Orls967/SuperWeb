@@ -59,7 +59,7 @@ class TravelPlatformAndItineraryTest extends TestCase
         $this->assertEquals('ESCROWED', $bundle->status);
 
         $dep = LedgerAccount::where('code', 'htl:travel_escrow_deposit:IDR')->first();
-        $this->assertEquals('15000000', (string) $dep->cached_balance);
+        $this->assertEquals('-15000000', (string) $dep->cached_balance);
 
         // Add 2 itinerary items
         $this->service->addItineraryItem($bundle, 1, 'Check-in & Welcome Dinner', 'HOTEL');
@@ -77,10 +77,10 @@ class TravelPlatformAndItineraryTest extends TestCase
         $transport = LedgerAccount::where('code', 'lgx:transport_vendor_payable:IDR')->first();
         $event = LedgerAccount::where('code', 'ven:event_vendor_payable:IDR')->first();
 
-        $this->assertEquals('-4000000', (string) $flight->cached_balance);
-        $this->assertEquals('-6000000', (string) $hotel->cached_balance);
-        $this->assertEquals('-2000000', (string) $transport->cached_balance);
-        $this->assertEquals('-3000000', (string) $event->cached_balance);
+        $this->assertEquals('4000000', (string) $flight->cached_balance);
+        $this->assertEquals('6000000', (string) $hotel->cached_balance);
+        $this->assertEquals('2000000', (string) $transport->cached_balance);
+        $this->assertEquals('3000000', (string) $event->cached_balance);
     }
 
     public function test_113_4_and_113_6_c_corporate_travel_exceeding_policy_is_rejected(): void

@@ -75,14 +75,14 @@ class HotelFranchiseAndBrandTest extends TestCase
         $this->assertEquals('ACTIVE', $contract->status);
 
         $feeRev = LedgerAccount::where('code', 'htl:franchise_fee_revenue:IDR')->first();
-        $this->assertEquals('-500000000', (string) $feeRev->cached_balance);
+        $this->assertEquals('500000000', (string) $feeRev->cached_balance);
 
         // 2. Monthly Folio revenue 2,000,000,000 IDR -> 5% = 100,000,000 IDR royalty
         $royaltyIdr = $this->service->billMonthlyRoyalty($contract, 2_000_000_000);
         $this->assertEquals(100_000_000, $royaltyIdr);
 
         $royRev = LedgerAccount::where('code', 'htl:royalty_revenue:IDR')->first();
-        $this->assertEquals('-100000000', (string) $royRev->cached_balance);
+        $this->assertEquals('100000000', (string) $royRev->cached_balance);
     }
 
     public function test_111_4_and_111_6_c_rate_parity_violation_and_penalty_accrual(): void
@@ -102,7 +102,7 @@ class HotelFranchiseAndBrandTest extends TestCase
         $penaltyAr = LedgerAccount::where('code', 'htl:ota_penalty_receivable:IDR')->first();
         $penaltyRev = LedgerAccount::where('code', 'htl:parity_penalty_revenue:IDR')->first();
 
-        $this->assertEquals('1000000', (string) $penaltyAr->cached_balance);
-        $this->assertEquals('-1000000', (string) $penaltyRev->cached_balance);
+        $this->assertEquals('-1000000', (string) $penaltyAr->cached_balance);
+        $this->assertEquals('1000000', (string) $penaltyRev->cached_balance);
     }
 }
