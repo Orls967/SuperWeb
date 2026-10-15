@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Egy\Domain\Models\BackupGeneratorTest;
 use Modules\Egy\Domain\Models\BessArbitrageRun;
 use Modules\Egy\Domain\Models\MicrogridController;
@@ -98,10 +98,10 @@ class MicrogridAndResilienceService
                 type: 'ENERGY_BESS_ARBITRAGE_PROFIT',
                 description: "Battery arbitrage net profit for run {$runCode}",
                 idempotencyKey: 'EGY-BESS-'.$runCode,
-                entries: [
-                    PostingEntryDTO::forCode('egy:utility_receivable:IDR', 'IDR', $netProfit),
-                    PostingEntryDTO::forCode('egy:bess_arbitrage_revenue:IDR', 'IDR', -$netProfit),
-                ],
+                entries: Posting::lines()
+                    ->debit('egy:utility_receivable:IDR', $netProfit)
+                    ->credit('egy:bess_arbitrage_revenue:IDR', $netProfit)
+                    ->toEntries('IDR'),
                 referenceType: 'BESS_ARBITRAGE_RUN',
                 referenceId: $runCode,
             ));
