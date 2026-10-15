@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Tlx\Domain\Models\IotConnectivityInvoice;
 use Modules\Tlx\Domain\Models\IotDevice;
 use Modules\Tlx\Domain\Models\NocNetworkTicket;
@@ -117,10 +117,10 @@ class TelecomNetworkAndIotService
                 type: 'TELECOM_IOT_CONNECTIVITY_BILLING',
                 description: "IoT connectivity intercompany billing for {$ownerEntityId} ({$billingPeriod})",
                 idempotencyKey: 'TLX-IOT-'.$invoiceNumber,
-                entries: [
-                    PostingEntryDTO::forCode('tlx:intercompany_receivable:IDR', 'IDR', $totalCharge),
-                    PostingEntryDTO::forCode('tlx:iot_service_revenue:IDR', 'IDR', -$totalCharge),
-                ],
+                entries: Posting::lines()
+                    ->debit('tlx:intercompany_receivable:IDR', $totalCharge)
+                    ->credit('tlx:iot_service_revenue:IDR', $totalCharge)
+                    ->toEntries('IDR'),
                 referenceType: 'IOT_INVOICE',
                 referenceId: $invoiceNumber,
             ));

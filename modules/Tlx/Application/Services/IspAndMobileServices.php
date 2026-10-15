@@ -7,8 +7,8 @@ namespace Modules\Tlx\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Tlx\Domain\Models\ChurnPrediction;
 use Modules\Tlx\Domain\Models\InterconnectSettlement;
 use Modules\Tlx\Domain\Models\IspSubscription;
@@ -133,16 +133,25 @@ class IspAndMobileServices
         return DB::transaction(function () use ($params, $inboundMin, $outboundMin, $inboundReceivable, $outboundPayable, $netSettlement) {
             $batchCode = 'IC-'.strtoupper(Str::random(8));
 
+            $lines = Posting::lines();
+            if ($inboundReceivable > 0) {
+                $lines->debit('tlx:interconnect_clearing:IDR', $inboundReceivable);
+            }
+            if ($outboundPayable > 0) {
+                $lines->credit('tlx:interconnect_clearing:IDR', $outboundPayable);
+            }
+            if ($netSettlement > 0) {
+                $lines->credit('tlx:interconnect_net_settlement:IDR', $netSettlement);
+            } elseif ($netSettlement < 0) {
+                $lines->debit('tlx:interconnect_net_settlement:IDR', abs($netSettlement));
+            }
+
             // Balanced ledger posting (sum = 0)
             $this->ledgerService->post(new PostingDTO(
                 type: 'TELECOM_INTERCONNECT_SETTLEMENT',
                 description: "Interconnect settlement for {$params['partner_operator_code']} period {$params['period_month']}",
                 idempotencyKey: 'TLX-'.$batchCode,
-                entries: [
-                    PostingEntryDTO::forCode('tlx:interconnect_clearing:IDR', 'IDR', $inboundReceivable),
-                    PostingEntryDTO::forCode('tlx:interconnect_clearing:IDR', 'IDR', -$outboundPayable),
-                    PostingEntryDTO::forCode('tlx:interconnect_net_settlement:IDR', 'IDR', -$netSettlement),
-                ],
+                entries: $lines->toEntries('IDR'),
                 referenceType: 'INTERCONNECT',
                 referenceId: $batchCode,
             ));

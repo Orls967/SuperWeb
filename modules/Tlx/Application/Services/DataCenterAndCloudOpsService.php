@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Tlx\Domain\Models\CloudComputeInstance;
 use Modules\Tlx\Domain\Models\ColocationContract;
 use Modules\Tlx\Domain\Models\DrRestoreDrill;
@@ -104,10 +104,10 @@ class DataCenterAndCloudOpsService
                 type: 'TELECOM_CLOUD_COMPUTE_CHARGEBACK',
                 description: "Internal compute chargeback for {$vm->consumer_entity_id} ({$vm->instance_code})",
                 idempotencyKey: 'TLX-VM-'.$vm->instance_code.'-H'.$hours,
-                entries: [
-                    PostingEntryDTO::forCode('tlx:cloud_chargeback_receivable:IDR', 'IDR', $chargeAmount),
-                    PostingEntryDTO::forCode('tlx:cloud_infrastructure_revenue:IDR', 'IDR', -$chargeAmount),
-                ],
+                entries: Posting::lines()
+                    ->debit('tlx:cloud_chargeback_receivable:IDR', $chargeAmount)
+                    ->credit('tlx:cloud_infrastructure_revenue:IDR', $chargeAmount)
+                    ->toEntries('IDR'),
                 referenceType: 'CLOUD_INSTANCE',
                 referenceId: $vm->instance_code,
             ));
