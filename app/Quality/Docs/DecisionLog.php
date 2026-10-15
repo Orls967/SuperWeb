@@ -62,7 +62,15 @@ final class DecisionLog
                 continue;
             }
 
-            if ($inFence || preg_match('/^#{1,6}\s+(.+?)\s*#*\s*$/', $line, $matches) !== 1) {
+            if ($inFence) {
+                continue;
+            }
+
+            if (preg_match('/<a\s+(?:[^>]*?\s+)?(?:id|name)=["\']([^"\']+)["\']/i', $line, $matches) === 1) {
+                $anchors[] = strtolower($matches[1]);
+            }
+
+            if (preg_match('/^#{1,6}\s+(.+?)\s*#*\s*$/', $line, $matches) !== 1) {
                 continue;
             }
 
