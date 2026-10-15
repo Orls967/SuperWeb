@@ -72,8 +72,10 @@ jobs:
           BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
           if [ -n "$FASE_INPUT" ]; then
             FASE="$FASE_INPUT"
-          elif [[ "$BRANCH_NAME" =~ feature/fase-([a-zA-Z0-9]+) ]]; then
-            FASE="${BASH_REMATCH[1]}"
+          elif [[ "$BRANCH_NAME" =~ (feature|verify|fix)/fase-(r[0-9]+|[0-9]+) ]]; then
+            FASE="${BASH_REMATCH[2]}"
+          elif [[ "$BRANCH_NAME" =~ (feature|verify|fix)/fase-([a-zA-Z0-9]+) ]]; then
+            FASE="${BASH_REMATCH[2]}"
           else
             FASE="r0"
           fi

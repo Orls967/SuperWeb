@@ -197,7 +197,17 @@ final class GateReportGenerator
         if ($targetPhase === null) {
             // Case-insensitive fallback
             foreach ($phases as $id => $p) {
-                if (strcasecmp($id, $phaseId) === 0) {
+                if (strcasecmp((string) $id, $phaseId) === 0) {
+                    $targetPhase = $p;
+                    break;
+                }
+            }
+        }
+
+        if ($targetPhase === null && preg_match('/^(r\d+|\d+)/i', $phaseId, $pm)) {
+            $baseId = $pm[1];
+            foreach ($phases as $id => $p) {
+                if (strcasecmp((string) $id, $baseId) === 0) {
                     $targetPhase = $p;
                     break;
                 }
