@@ -7,8 +7,8 @@ namespace Modules\EnterpriseFinance\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\EnterpriseFinance\Domain\Models\EfCapexProposal;
 use Modules\EnterpriseFinance\Domain\Models\EfMaAcquisition;
 use Modules\EnterpriseFinance\Domain\Models\EfSegmentFinancialReport;
@@ -39,10 +39,10 @@ class ConglomerateCapitalAndGovernanceService
                 type: 'HOLDING_DIVIDEND_DECLARATION',
                 description: "Holding dividend declared from {$params['subholding_name']} ({$params['subsidiary_entity_id']})",
                 idempotencyKey: 'EF-'.$divCode,
-                entries: [
-                    PostingEntryDTO::forCode('ef:holding_dividend_receivable:IDR', 'IDR', $declaredMinor),
-                    PostingEntryDTO::forCode('ef:holding_dividend_income:IDR', 'IDR', -$declaredMinor),
-                ],
+                entries: Posting::lines()
+                    ->debit('ef:holding_dividend_receivable:IDR', $declaredMinor)
+                    ->credit('ef:holding_dividend_income:IDR', $declaredMinor)
+                    ->toEntries('IDR'),
                 referenceType: 'SUBHOLDING_DIVIDEND',
                 referenceId: $divCode,
             ));
