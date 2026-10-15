@@ -654,7 +654,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - [ ] R2.10 Quality gate Fase R2 + verifikasi silang.
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
-> **Status audit:** 🔁 DIBUKA KEMBALI (2026-10-16) · Prasyarat: R0.
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Selesai & Terbukti.
 
 #### DoR Fase R3 — Otorisasi & data sensitif
 - Disetujui pemilik: [x] 2026-10-15 (chat) — D1–D6 sesuai prompt disetujui
@@ -882,8 +882,17 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiting enforced by client id header
     - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiter resets after clearing
     - akses: route GET /integration [role: admin]
+- [x] R3.5 Quality gate Fase R3 + verifikasi silang.
+  Bukti:
+    - jenis: tooling
+    - commit: ea89d37
+    - file: docs/gates/fase-r3.md
+    - test: tests/Architecture/ProgressIntegrityTest.php::enforces proof block integrity and phase verification in docs/PROGRESS.md
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it maps every registered route in route-roles.php
+    - test: tests/Feature/Security/RotateBlindIndexCommandTest.php::rotate blind index dry run does not mutate database
+    - test: tests/Feature/Security/RotateBlindIndexCommandTest.php::rotate blind index with force updates records idempotently
+    - test: tests/Feature/Authorization/ApiClientRateLimitBlackBoxProofTest.php::black box client rate limiting and isolation
     - gate: docs/gates/fase-r3.md
-- [ ] R3.5 Quality gate Fase R3 + verifikasi silang.
 
 #### Register Minus Fase R3
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
