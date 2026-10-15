@@ -3,8 +3,8 @@
 namespace Modules\Hospital\Application\Services;
 
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Hospital\Domain\Models\ClinicalTrial;
 use Modules\Hospital\Domain\Models\DataVaultAccess;
 use Modules\Hospital\Domain\Models\Patient;
@@ -67,10 +67,10 @@ class ClinicalTrialAndResearchService
             type: 'CLINICAL_TRIAL_MILESTONE',
             description: "Sponsor billing milestone: {$milestoneName} for trial {$trial->trial_code}",
             idempotencyKey: "HSP-TRL-{$trial->trial_code}-".strtoupper(str_replace(' ', '_', $milestoneName)),
-            entries: [
-                PostingEntryDTO::forCode('hsp:trial_sponsor_receivable:IDR', 'IDR', $amountIdr),
-                PostingEntryDTO::forCode('hsp:trial_research_revenue:IDR', 'IDR', -$amountIdr),
-            ],
+            entries: Posting::lines()
+                ->debit('hsp:trial_sponsor_receivable:IDR', $amountIdr)
+                ->credit('hsp:trial_research_revenue:IDR', $amountIdr)
+                ->toEntries('IDR'),
             referenceType: 'CLINICAL_TRIAL',
             referenceId: (string) $trial->id,
         ));

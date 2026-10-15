@@ -4,8 +4,8 @@ namespace Modules\Hospital\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Hospital\Domain\Models\BillingEpisode;
 use Modules\Hospital\Domain\Models\BpjsClaimBatch;
 use Modules\Hospital\Domain\Models\BpjsClaimItem;
@@ -97,10 +97,10 @@ class HospitalPublicHealthAndBpjsService
                     type: 'BPJS_BATCH_CLAIM_SETTLED',
                     description: "BPJS batch claim adjudication settlement for {$batch->batch_number}",
                     idempotencyKey: "HSP-BPJS-{$batch->batch_number}",
-                    entries: [
-                        PostingEntryDTO::forCode('hsp:bpjs_receivable:IDR', 'IDR', $approvedTotal),
-                        PostingEntryDTO::forCode('hsp:hospital_revenue:IDR', 'IDR', -$approvedTotal),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('hsp:bpjs_receivable:IDR', $approvedTotal)
+                        ->credit('hsp:hospital_revenue:IDR', $approvedTotal)
+                        ->toEntries('IDR'),
                     referenceType: 'BPJS_CLAIM_BATCH',
                     referenceId: (string) $batch->id,
                 ));

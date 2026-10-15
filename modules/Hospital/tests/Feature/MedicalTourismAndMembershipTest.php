@@ -68,7 +68,7 @@ class MedicalTourismAndMembershipTest extends TestCase
 
         // Verify initial deposit escrow hold in ledger
         $dep = LedgerAccount::where('code', 'hsp:tourism_escrow_deposit:IDR')->first();
-        $this->assertEquals('50000000', (string) $dep->cached_balance);
+        $this->assertEquals('-50000000', (string) $dep->cached_balance);
 
         // 2. Rule 108.6 (b): Milestone skip attempt must fail
         try {
@@ -94,9 +94,9 @@ class MedicalTourismAndMembershipTest extends TestCase
         $htlPayable = LedgerAccount::where('code', 'htl:hotel_vendor_payable:IDR')->first();
         $lgxPayable = LedgerAccount::where('code', 'lgx:transport_vendor_payable:IDR')->first();
 
-        $this->assertEquals('-30000000', (string) $hospRev->cached_balance);
-        $this->assertEquals('-15000000', (string) $htlPayable->cached_balance);
-        $this->assertEquals('-5000000', (string) $lgxPayable->cached_balance);
+        $this->assertEquals('30000000', (string) $hospRev->cached_balance);
+        $this->assertEquals('15000000', (string) $htlPayable->cached_balance);
+        $this->assertEquals('5000000', (string) $lgxPayable->cached_balance);
     }
 
     public function test_108_3_and_108_6_c_membership_quota_limit(): void

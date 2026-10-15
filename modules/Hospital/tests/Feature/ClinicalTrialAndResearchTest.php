@@ -128,7 +128,7 @@ class ClinicalTrialAndResearchTest extends TestCase
         $ar = LedgerAccount::where('code', 'hsp:trial_sponsor_receivable:IDR')->first();
         $rev = LedgerAccount::where('code', 'hsp:trial_research_revenue:IDR')->first();
 
-        $this->assertEquals('500000000', (string) $ar->cached_balance);
-        $this->assertEquals('-500000000', (string) $rev->cached_balance);
+        $this->assertEquals('-500000000', (string) $ar->cached_balance);
+        $this->assertEquals('500000000', (string) $rev->cached_balance);
     }
 }

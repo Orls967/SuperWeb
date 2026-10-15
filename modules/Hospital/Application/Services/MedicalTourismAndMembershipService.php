@@ -4,8 +4,8 @@ namespace Modules\Hospital\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Hospital\Domain\Models\HealthMembership;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\TourismPackage;
@@ -57,10 +57,10 @@ class MedicalTourismAndMembershipService
                 type: 'MEDICAL_TOURISM_ESCROW_DEPOSIT',
                 description: "Escrow deposit for medical tourism package {$package->package_code}",
                 idempotencyKey: "HSP-MTP-DEP-{$package->package_code}",
-                entries: [
-                    PostingEntryDTO::forCode('hsp:tourism_escrow_deposit:IDR', 'IDR', $totalPriceIdr),
-                    PostingEntryDTO::forCode('hsp:tourism_unearned_escrow:IDR', 'IDR', -$totalPriceIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('hsp:tourism_escrow_deposit:IDR', $totalPriceIdr)
+                    ->credit('hsp:tourism_unearned_escrow:IDR', $totalPriceIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'TOURISM_PACKAGE',
                 referenceId: (string) $package->id,
             ));
@@ -97,12 +97,12 @@ class MedicalTourismAndMembershipService
                     type: 'MEDICAL_TOURISM_FINAL_SETTLEMENT',
                     description: "Final multi-vendor settlement for package {$package->package_code}",
                     idempotencyKey: "HSP-MTP-SETTLE-{$package->package_code}",
-                    entries: [
-                        PostingEntryDTO::forCode('hsp:tourism_unearned_escrow:IDR', 'IDR', $package->total_price_idr),
-                        PostingEntryDTO::forCode('hsp:hospital_revenue:IDR', 'IDR', -$package->hospital_share_idr),
-                        PostingEntryDTO::forCode('htl:hotel_vendor_payable:IDR', 'IDR', -$package->hotel_share_idr),
-                        PostingEntryDTO::forCode('lgx:transport_vendor_payable:IDR', 'IDR', -$package->transport_share_idr),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('hsp:tourism_unearned_escrow:IDR', $package->total_price_idr)
+                        ->credit('hsp:hospital_revenue:IDR', $package->hospital_share_idr)
+                        ->credit('htl:hotel_vendor_payable:IDR', $package->hotel_share_idr)
+                        ->credit('lgx:transport_vendor_payable:IDR', $package->transport_share_idr)
+                        ->toEntries('IDR'),
                     referenceType: 'TOURISM_PACKAGE',
                     referenceId: (string) $package->id,
                 ));

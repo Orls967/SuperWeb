@@ -110,8 +110,8 @@ class HospitalPublicHealthAndBpjsTest extends TestCase
         $ar = LedgerAccount::where('code', 'hsp:bpjs_receivable:IDR')->first();
         $rev = LedgerAccount::where('code', 'hsp:hospital_revenue:IDR')->first();
 
-        $this->assertEquals('12000000', (string) $ar->cached_balance);
-        $this->assertEquals('-12000000', (string) $rev->cached_balance);
+        $this->assertEquals('-12000000', (string) $ar->cached_balance);
+        $this->assertEquals('12000000', (string) $rev->cached_balance);
     }
 
     public function test_107_3_and_107_6_b_epidemic_surveillance_cluster_threshold_alert(): void

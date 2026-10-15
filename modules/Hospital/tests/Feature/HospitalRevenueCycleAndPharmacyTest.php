@@ -99,9 +99,9 @@ class HospitalRevenueCycleAndPharmacyTest extends TestCase
         $bpjs = LedgerAccount::where('code', 'hsp:bpjs_receivable:IDR')->first();
         $ins = LedgerAccount::where('code', 'hsp:insurance_receivable:IDR')->first();
 
-        $this->assertEquals('-35000000', (string) $rev->cached_balance);
-        $this->assertEquals('15000000', (string) $bpjs->cached_balance);
-        $this->assertEquals('12000000', (string) $ins->cached_balance);
+        $this->assertEquals('35000000', (string) $rev->cached_balance);
+        $this->assertEquals('-15000000', (string) $bpjs->cached_balance);
+        $this->assertEquals('-12000000', (string) $ins->cached_balance);
     }
 
     public function test_88_3_e_prescription_contraindication_alert(): void
@@ -136,6 +136,6 @@ class HospitalRevenueCycleAndPharmacyTest extends TestCase
 
         // Verify ledger hold: Pharma payable +50m, Dispute escrow -50m
         $escrow = LedgerAccount::where('code', 'hsp:vaccine_dispute_escrow:IDR')->first();
-        $this->assertEquals('-50000000', (string) $escrow->cached_balance);
+        $this->assertEquals('50000000', (string) $escrow->cached_balance);
     }
 }

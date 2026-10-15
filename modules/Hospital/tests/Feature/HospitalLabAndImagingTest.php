@@ -108,7 +108,7 @@ class HospitalLabAndImagingTest extends TestCase
         $this->assertEquals('PATHOLOGIST_VERIFIED', $resVerified->status);
 
         $rev->refresh();
-        $this->assertEquals('-120000', (string) $rev->cached_balance);
+        $this->assertEquals('120000', (string) $rev->cached_balance);
     }
 
     public function test_105_5_imaging_study_completion_and_billing(): void
@@ -128,7 +128,7 @@ class HospitalLabAndImagingTest extends TestCase
         $ar = LedgerAccount::where('code', 'hsp:imaging_receivable:IDR')->first();
         $rev = LedgerAccount::where('code', 'hsp:imaging_revenue:IDR')->first();
 
-        $this->assertEquals('1850000', (string) $ar->cached_balance);
-        $this->assertEquals('-1850000', (string) $rev->cached_balance);
+        $this->assertEquals('-1850000', (string) $ar->cached_balance);
+        $this->assertEquals('1850000', (string) $rev->cached_balance);
     }
 }

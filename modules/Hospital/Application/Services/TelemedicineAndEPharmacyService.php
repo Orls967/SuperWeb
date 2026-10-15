@@ -4,8 +4,8 @@ namespace Modules\Hospital\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Hospital\Domain\Models\EPharmacyOrder;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\PharmacyBranch;
@@ -114,10 +114,10 @@ class TelemedicineAndEPharmacyService
                 type: 'EPHARMACY_SALE',
                 description: "e-Pharmacy prescription fulfillment for order {$order->order_code}",
                 idempotencyKey: "HSP-EPO-{$order->order_code}",
-                entries: [
-                    PostingEntryDTO::forCode('hsp:epharmacy_receivable:IDR', 'IDR', $totalPriceIdr),
-                    PostingEntryDTO::forCode('hsp:epharmacy_revenue:IDR', 'IDR', -$totalPriceIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('hsp:epharmacy_receivable:IDR', $totalPriceIdr)
+                    ->credit('hsp:epharmacy_revenue:IDR', $totalPriceIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'EPHARMACY_ORDER',
                 referenceId: (string) $order->id,
             ));

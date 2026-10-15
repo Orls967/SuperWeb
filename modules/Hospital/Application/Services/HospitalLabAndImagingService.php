@@ -4,8 +4,8 @@ namespace Modules\Hospital\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Hospital\Domain\Models\ImagingStudy;
 use Modules\Hospital\Domain\Models\LabCatalog;
 use Modules\Hospital\Domain\Models\LabResult;
@@ -131,10 +131,10 @@ class HospitalLabAndImagingService
                     type: 'LAB_TEST_BILLING',
                     description: "Laboratory test fee for test {$testCode} on specimen {$specimen->specimen_barcode}",
                     idempotencyKey: "HSP-LAB-{$result->result_code}",
-                    entries: [
-                        PostingEntryDTO::forCode('hsp:lab_receivable:IDR', 'IDR', $priceIdr),
-                        PostingEntryDTO::forCode('hsp:lab_revenue:IDR', 'IDR', -$priceIdr),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('hsp:lab_receivable:IDR', $priceIdr)
+                        ->credit('hsp:lab_revenue:IDR', $priceIdr)
+                        ->toEntries('IDR'),
                     referenceType: 'LAB_RESULT',
                     referenceId: (string) $result->id,
                 ));
@@ -172,10 +172,10 @@ class HospitalLabAndImagingService
                 type: 'IMAGING_STUDY_BILLING',
                 description: "Imaging study fee for {$modality} {$bodyPart}",
                 idempotencyKey: "HSP-IMG-{$study->study_instance_uid}",
-                entries: [
-                    PostingEntryDTO::forCode('hsp:imaging_receivable:IDR', 'IDR', $feeIdr),
-                    PostingEntryDTO::forCode('hsp:imaging_revenue:IDR', 'IDR', -$feeIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('hsp:imaging_receivable:IDR', $feeIdr)
+                    ->credit('hsp:imaging_revenue:IDR', $feeIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'IMAGING_STUDY',
                 referenceId: (string) $study->id,
             ));

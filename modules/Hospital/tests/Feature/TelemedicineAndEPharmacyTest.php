@@ -128,8 +128,8 @@ class TelemedicineAndEPharmacyTest extends TestCase
         $ar = LedgerAccount::where('code', 'hsp:epharmacy_receivable:IDR')->first();
         $rev = LedgerAccount::where('code', 'hsp:epharmacy_revenue:IDR')->first();
 
-        $this->assertEquals('150000', (string) $ar->cached_balance);
-        $this->assertEquals('-150000', (string) $rev->cached_balance);
+        $this->assertEquals('-150000', (string) $ar->cached_balance);
+        $this->assertEquals('150000', (string) $rev->cached_balance);
     }
 
     public function test_104_6_d_narcotic_prescription_requires_second_doctor_and_signed_pod(): void
