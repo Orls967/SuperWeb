@@ -13,4 +13,3 @@ Route::middleware(['web', 'auth', 'role:admin'])->prefix('integration')->name('i
 Route::middleware(['throttle:api-client'])->prefix('api/v1/integration')->name('api.v1.integration.')->group(function () {
     Route::get('/ping', fn () => response()->json(['status' => 'OK', 'timestamp' => now()->toIso8601String()]))->name('ping');
 });
-

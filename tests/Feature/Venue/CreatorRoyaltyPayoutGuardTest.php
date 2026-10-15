@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\Venue;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Banking\Application\Services\LedgerService;
 use Modules\Venue\Application\Services\VenueCreatorEconomyService;
 use Modules\Venue\Domain\Models\Creator;
-use Modules\Venue\Domain\Models\RightsContract;
 use RuntimeException;
 use Tests\TestCase;
 
@@ -23,8 +23,8 @@ class CreatorRoyaltyPayoutGuardTest extends TestCase
     {
         parent::setUp();
 
-        $ledgerMock = $this->createMock(\Modules\Banking\Application\Services\LedgerService::class);
-        $this->app->instance(\Modules\Banking\Application\Services\LedgerService::class, $ledgerMock);
+        $ledgerMock = $this->createMock(LedgerService::class);
+        $this->app->instance(LedgerService::class, $ledgerMock);
 
         $this->service = app(VenueCreatorEconomyService::class);
         $this->creator = $this->service->registerCreator('DJ Nusantara Beat', 'ELECTRONIC');
