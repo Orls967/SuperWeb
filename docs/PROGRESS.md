@@ -328,7 +328,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 > Urutan R0 → R9 mengikuti dependensi. **R0 memasang pagar otomatis lebih dulu** sehingga sejak perbaikan pertama, jalan pintas langsung membuat gate merah. Setiap sub-fase R mengikuti P1–P13 (DoR boleh singkat karena tugas R sudah rinci) dan ditutup gate penuh + verifikasi silang. Rujukan temuan `K-xx` ada di `docs/KNOWLEDGE.md` §5.
 
 ### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS (ANTI JALAN PINTAS)
-> **Status audit 2026-10-14:** 🔁 DIBUKA KEMBALI (Putaran 2 — 2026-10-14: B-01 belum aktif, S9 lolos pengalihan deliverable M-R0-21, pengalihan M-R0-10 & M-R0-11 ke R2.3 tidak sah, laporan gate repo out-of-sync; lihat M-R0-24..M-R0-26).
+> **Status audit:** 🔵 SIAP VERIFIKASI (Putaran 2 remediasi — pelaksana: M-R0-24 detektor S9 diperbaiki & test sabotase hijau, M-R0-25 DoR R2 diperluas resmi mencakup bug Contract M-R0-10/11 di DECISIONS.md, M-R0-26 laporan gate disinkronkan, B-01 menunggu aktivasi branch protection master oleh pemilik)
 
 #### DoR Fase R0 — Lingkungan, gate & pagar otomatis
 - Disetujui pemilik: [x]   2026-10-10 (chat) — DoR disetujui; (1) `"php": "^8.4"` + `composer.lock` tetap di-commit; (2) folder `.github/` boleh dibuat, **push wajib ditanyakan dulu**; (3) DB kedua CI: **MySQL 8**; (4) merge dengan merge commit.
@@ -529,7 +529,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R0-23~~ | R0.4 | ~~Snapshot baseline teks `docs/PROGRESS.md` (`progress-snapshot-8c8369d`) belum memiliki entri dokumentasi di `docs/DECISIONS.md`~~ | ~~Alasan pembekuan snapshot teks baseline dan mekanisme update tidak terlacak di log keputusan~~ | ~~P2~~ | Tuntas di DECISIONS.md#2026-10-10-progress-snapshot-8c8369d |
 | ~~M-R0-24~~ | R0.4 | ~~S9 lolos deteksi: minus deliverable fase (M-R0-21) yang disebut di DECISIONS.md lolos pengalihan di ProgressIntegrityScanner karena salah diklasifikasikan sebagai warisan~~ | ~~Pagar integritas berpotensi meloloskan pengalihan deliverable fase tercentang [x]~~ | ~~P1~~ | Tuntas (pembedaan deliverable vs warisan diperbaiki di ProgressIntegrityScanner, SabotageDeliverableMinusTest lulus; skor mutasi 74.61%) |
 | ~~M-R0-25~~ | R0.4 / R2.3 | ~~Pengalihan minus M-R0-10 dan M-R0-11 ke R2.3 tidak sah: item tujuan R2.3 hanya mencakup 15 back()->errors() di Pricing/Agency/Distribution, tidak mencakup bug view/enum 500 Contract~~ | ~~Bug HTTP 500 modul Contract tidak terlindungi di fase tujuan yang tepat~~ | ~~P1~~ | Tuntas di DECISIONS.md#2026-10-14-p9-minus-dialihkan (DoR R2 diperluas resmi mencakup bug Contract M-R0-10 & M-R0-11) |
-| M-R0-26 | R0.2 | Laporan gate docs/gates/fase-r0.md di repository belum disinkronkan dengan artefak CI commit 8724437 (masih mencatat commit 48b5529 dan 2.588 test) | Laporan quality gate lokal tidak mencerminkan commit kode terakhir | P2 | Jalankan php artisan gate:report --fase=r0 dan sinkronkan dengan artefak CI |
+| ~~M-R0-26~~ | R0.2 | ~~Laporan gate docs/gates/fase-r0.md di repository belum disinkronkan dengan artefak CI commit 8724437 (masih mencatat commit 48b5529 dan 2.588 test)~~ | ~~Laporan quality gate lokal tidak mencerminkan commit kode terakhir~~ | ~~P2~~ | Tuntas (laporan disinkronkan via gate:report pada commit bersih 9bdc642, 2.608 test lulus) |
 
 ### FASE R1 — LEDGER & UANG (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.
