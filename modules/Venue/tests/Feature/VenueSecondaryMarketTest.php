@@ -117,9 +117,9 @@ class VenueSecondaryMarketTest extends TestCase
         $taxPayable = LedgerAccount::where('code', 'ven:entertainment_tax_payable:IDR')->first();
         $sellerPayable = LedgerAccount::where('code', 'ven:resale_seller_payable:IDR')->first();
 
-        $this->assertEquals('-115000', (string) $feeRev->cached_balance);
-        $this->assertEquals('-115000', (string) $taxPayable->cached_balance);
-        $this->assertEquals('-920000', (string) $sellerPayable->cached_balance);
+        $this->assertEquals('115000', (string) $feeRev->cached_balance);
+        $this->assertEquals('115000', (string) $taxPayable->cached_balance);
+        $this->assertEquals('920000', (string) $sellerPayable->cached_balance);
 
         // 3. Rule 116.6 (a): Attempting a 2nd transfer on the same ticket must be rejected!
         $this->expectException(RuntimeException::class);

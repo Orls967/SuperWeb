@@ -4,8 +4,8 @@ namespace Modules\Venue\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
@@ -45,10 +45,10 @@ class VenueOperationsService
                 type: 'VENUE_TICKET_SALE',
                 description: "Ticket sale for event {$event->event_code} ticket {$ticketNo}",
                 idempotencyKey: "TCK-SALE-{$ticketNo}",
-                entries: [
-                    PostingEntryDTO::forCode('ven:ticket_clearing:IDR', 'IDR', $pricePaidIdr),
-                    PostingEntryDTO::forCode('ven:ticket_revenue:IDR', 'IDR', -$pricePaidIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('ven:ticket_clearing:IDR', $pricePaidIdr)
+                    ->credit('ven:ticket_revenue:IDR', $pricePaidIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'VENUE_TICKET',
                 referenceId: (string) $ticket->id,
             ));
@@ -124,10 +124,10 @@ class VenueOperationsService
                 type: 'VENUE_VIP_TABLE_ESCROW',
                 description: "VIP table deposit for {$tableNumber} event {$event->event_code}",
                 idempotencyKey: "TBL-DEP-{$booking->booking_code}",
-                entries: [
-                    PostingEntryDTO::forCode('ven:vip_escrow:IDR', 'IDR', $depositAmount),
-                    PostingEntryDTO::forCode('ven:vip_unearned_rev:IDR', 'IDR', -$depositAmount),
-                ],
+                entries: Posting::lines()
+                    ->debit('ven:vip_escrow:IDR', $depositAmount)
+                    ->credit('ven:vip_unearned_rev:IDR', $depositAmount)
+                    ->toEntries('IDR'),
                 referenceType: 'VENUE_TABLE_BOOKING',
                 referenceId: (string) $booking->id,
             ));
@@ -156,10 +156,10 @@ class VenueOperationsService
                 type: 'VENUE_TABLE_NO_SHOW_FEE',
                 description: "Table no-show fee forfeited for {$locked->booking_code}",
                 idempotencyKey: "TBL-NS-{$locked->booking_code}",
-                entries: [
-                    PostingEntryDTO::forCode('ven:vip_unearned_rev:IDR', 'IDR', $dep),
-                    PostingEntryDTO::forCode('ven:vip_noshow_rev:IDR', 'IDR', -$dep),
-                ],
+                entries: Posting::lines()
+                    ->debit('ven:vip_unearned_rev:IDR', $dep)
+                    ->credit('ven:vip_noshow_rev:IDR', $dep)
+                    ->toEntries('IDR'),
                 referenceType: 'VENUE_TABLE_BOOKING',
                 referenceId: (string) $locked->id,
             ));

@@ -4,8 +4,8 @@ namespace Modules\Venue\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\TicketResale;
 use Modules\Venue\Domain\Models\TicketWaitlist;
@@ -97,12 +97,12 @@ class VenueSecondaryMarketService
                 type: 'TICKET_SECONDARY_RESALE_SETTLEMENT',
                 description: "Secondary ticket resale settlement for listing {$resale->resale_code}",
                 idempotencyKey: "VEN-RSL-{$resale->resale_code}",
-                entries: [
-                    PostingEntryDTO::forCode('ven:secondary_ticket_clearing:IDR', 'IDR', $totalPrice),
-                    PostingEntryDTO::forCode('ven:resale_seller_payable:IDR', 'IDR', -$sellerPayout),
-                    PostingEntryDTO::forCode('ven:resale_platform_fee_revenue:IDR', 'IDR', -$platformFee),
-                    PostingEntryDTO::forCode('ven:entertainment_tax_payable:IDR', 'IDR', -$entertainmentTax),
-                ],
+                entries: Posting::lines()
+                    ->debit('ven:secondary_ticket_clearing:IDR', $totalPrice)
+                    ->credit('ven:resale_seller_payable:IDR', $sellerPayout)
+                    ->credit('ven:resale_platform_fee_revenue:IDR', $platformFee)
+                    ->credit('ven:entertainment_tax_payable:IDR', $entertainmentTax)
+                    ->toEntries('IDR'),
                 referenceType: 'TICKET_RESALE',
                 referenceId: (string) $resale->id,
             ));

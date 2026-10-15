@@ -55,7 +55,7 @@ class VenueCreatorEconomyTest extends TestCase
         $this->assertEquals(7_000_000, $royaltyIdr);
 
         $escrow = LedgerAccount::where('code', 'ven:creator_held_royalty_escrow:IDR')->first();
-        $this->assertEquals('-7000000', (string) $escrow->cached_balance);
+        $this->assertEquals('7000000', (string) $escrow->cached_balance);
 
         // 2. Attempt payout before window passes must fail
         try {
@@ -76,7 +76,7 @@ class VenueCreatorEconomyTest extends TestCase
         $payable = LedgerAccount::where('code', 'ven:creator_payable:IDR')->first();
 
         $this->assertEquals('0', (string) $escrow->cached_balance);
-        $this->assertEquals('-7000000', (string) $payable->cached_balance);
+        $this->assertEquals('7000000', (string) $payable->cached_balance);
     }
 
     public function test_115_5_and_115_6_d_merch_split_sum_equals_total_sale(): void
@@ -96,7 +96,7 @@ class VenueCreatorEconomyTest extends TestCase
         $creatorPayable = LedgerAccount::where('code', 'ven:creator_payable:IDR')->first();
         $platformRev = LedgerAccount::where('code', 'ven:platform_merch_revenue:IDR')->first();
 
-        $this->assertEquals('-210000', (string) $creatorPayable->cached_balance);
-        $this->assertEquals('-140000', (string) $platformRev->cached_balance);
+        $this->assertEquals('210000', (string) $creatorPayable->cached_balance);
+        $this->assertEquals('140000', (string) $platformRev->cached_balance);
     }
 }

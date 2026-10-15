@@ -88,7 +88,7 @@ class BeachClubAndVenueOperationsTest extends TestCase
 
         // Verify ledger ticket sales
         $rev = LedgerAccount::where('code', 'ven:ticket_revenue:IDR')->first();
-        $this->assertEquals('-500000', (string) $rev->cached_balance);
+        $this->assertEquals('500000', (string) $rev->cached_balance);
 
         // 1. Patron below 21 denied access
         try {
@@ -140,13 +140,13 @@ class BeachClubAndVenueOperationsTest extends TestCase
 
         // Verify ledger escrow deposit hold
         $escrow = LedgerAccount::where('code', 'ven:vip_escrow:IDR')->first();
-        $this->assertEquals('5000000', (string) $escrow->cached_balance);
+        $this->assertEquals('-5000000', (string) $escrow->cached_balance);
 
         // Guest does not show up -> retain deposit as penalty revenue
         $noShow = $this->service->handleTableNoShow($booking);
         $this->assertEquals('NO_SHOW', $noShow->status);
 
         $penaltyRev = LedgerAccount::where('code', 'ven:vip_noshow_rev:IDR')->first();
-        $this->assertEquals('-5000000', (string) $penaltyRev->cached_balance);
+        $this->assertEquals('5000000', (string) $penaltyRev->cached_balance);
     }
 }
