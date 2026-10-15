@@ -314,9 +314,10 @@ class DistributionTest extends TestCase
     public function test_distributor_portal_renders_for_linked_user(): void
     {
         $d = $this->makeApproved();
-        $d->update(['owner_user_id' => $this->admin->id]);
+        $distUser = User::factory()->create(['role' => 'distributor']);
+        $d->update(['owner_user_id' => $distUser->id]);
 
-        $this->actingAs($this->admin)
+        $this->actingAs($distUser)
             ->get(route('distribution.portal.home'))
             ->assertOk()
             ->assertSee('Portal Distributor');
@@ -324,7 +325,9 @@ class DistributionTest extends TestCase
 
     public function test_portal_forbidden_without_link(): void
     {
-        $this->actingAs($this->admin)
+        $distUser = User::factory()->create(['role' => 'distributor']);
+
+        $this->actingAs($distUser)
             ->get(route('distribution.portal.home'))
             ->assertForbidden();
     }

@@ -7,36 +7,75 @@ namespace Modules\Distribution\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
+use Modules\Core\Domain\Models\AuditLog;
 use Modules\Distribution\Application\Services\DistributionService;
 use Modules\Distribution\Domain\Models\Distributor;
 
 /**
- * 42.6 Portal distributor (role `distributor`): katalog harga tier,
- * tagihan, laporan stok/kinerja — tanpa menyentuh domain lain.
+ * 42.6 Portal distributor (role `distributor` dan `admin` untuk supervisi):
+ * katalog harga tier, tagihan, laporan stok/kinerja.
+ * Admin diarahkan ke selector distributor jika tanpa query ?distributor=<id>.
  */
 class DistributorPortalController extends Controller
 {
     public function __construct(private readonly DistributionService $service) {}
 
-    private function currentDistributor(Request $request): Distributor
+    public function home(Request $request): View
     {
-        $distributor = Distributor::where('owner_user_id', $request->user()->id)->first();
+        $user = $request->user();
 
-        if ($distributor === null && $request->user()->isAdmin()) {
-            $distributor = Distributor::first();
+        // Non-admin dilarang memanipulasi query parameter ?distributor
+        if ($request->has('distributor') && ! $user->isAdmin()) {
+            abort(403, 'Hanya administrator yang dapat memilih distributor spesifik.');
         }
 
+        // Alur Administrator
+        if ($user->isAdmin()) {
+            $distributorId = $request->query('distributor');
+
+            // Default admin tanpa query ?distributor: halaman selector distributor (D3)
+            if (! $distributorId) {
+                $distributors = Distributor::query()
+                    ->orderBy('code')
+                    ->get();
+
+                return view('distribution::selector', [
+                    'distributors' => $distributors,
+                ]);
+            }
+
+            // Admin dengan query ?distributor=<id>
+            $distributor = Distributor::find($distributorId);
+            if ($distributor === null) {
+                abort(404, 'Distributor tidak ditemukan.');
+            }
+
+            // Catat akses admin ke audit log (D3 / A5)
+            AuditLog::record(
+                action: 'distribution.portal.admin_view',
+                auditable: $distributor,
+                context: [
+                    'admin_user_id' => $user->id,
+                    'distributor_id' => $distributor->id,
+                    'distributor_code' => $distributor->code,
+                ],
+                impactType: 'security'
+            );
+
+            return $this->renderPortalView($distributor);
+        }
+
+        // Alur User Distributor
+        $distributor = Distributor::where('owner_user_id', $user->id)->first();
         if ($distributor === null) {
             abort(403, 'Akun ini belum terhubung ke distributor manapun.');
         }
 
-        return $distributor;
+        return $this->renderPortalView($distributor);
     }
 
-    public function home(Request $request): View
+    private function renderPortalView(Distributor $distributor): View
     {
-        $distributor = $this->currentDistributor($request);
-
         return view('distribution::portal', [
             'distributor' => $distributor,
             'discount' => $this->service->tierDiscountPercent($distributor->tier),
