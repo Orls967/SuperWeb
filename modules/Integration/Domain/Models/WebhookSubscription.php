@@ -14,6 +14,7 @@ class WebhookSubscription extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'secret_key' => 'encrypted',
         'is_active' => 'boolean',
     ];
 

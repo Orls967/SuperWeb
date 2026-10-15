@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('short_name')->nullable();
             $table->string('entity_type')->default('company'); // company, subsidiary, branch
             $table->uuid('parent_id')->nullable(); // self-referential for group structure
-            $table->string('npwp', 30)->nullable()->comment('Tax ID (partially masked in app)');
+            $table->text('npwp')->nullable()->comment('Tax ID (partially masked in app)');
             $table->string('nib', 20)->nullable()->comment('Business Registration Number');
             $table->string('functional_currency', 3)->default('IDR');
             $table->string('fiscal_year_start', 5)->default('01-01')->comment('MM-DD');

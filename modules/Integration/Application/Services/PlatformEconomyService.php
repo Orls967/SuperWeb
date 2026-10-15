@@ -43,7 +43,7 @@ class PlatformEconomyService
         $tierUpper = strtoupper($tier);
         $tierConfig = self::TIERS[$tierUpper] ?? self::TIERS['FREE'];
         $code = 'DEV-'.strtoupper(Str::random(8));
-        $apiKey = 'agy_live_'.Str::random(32);
+        $rawApiKey = 'agy_live_'.Str::random(32);
 
         $id = DB::table('pe_developer_accounts')->insertGetId([
             'developer_code' => $code,
@@ -52,13 +52,16 @@ class PlatformEconomyService
             'tier' => $tierUpper,
             'rate_limit_per_min' => $tierConfig['rate_limit'],
             'billing_rate_per_1k_calls' => $tierConfig['rate_per_1k'],
-            'api_key' => $apiKey,
+            'api_key' => hash('sha256', $rawApiKey),
             'status' => 'ACTIVE',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        return (object) DB::table('pe_developer_accounts')->find($id);
+        $dev = DB::table('pe_developer_accounts')->find($id);
+        $dev->raw_api_key = $rawApiKey;
+
+        return (object) $dev;
     }
 
     /**

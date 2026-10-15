@@ -65,7 +65,7 @@ return new class extends Migration
             $table->string('pic_name', 100);
             $table->string('pic_phone', 30);
             $table->string('pic_email', 100);
-            $table->string('npwp', 30)->nullable();
+            $table->text('npwp')->nullable();
             $table->string('category', 30)->default('fnb'); // fnb, fashion, automotive, etc.
             $table->boolean('is_active')->default(true);
             $table->timestamps();

@@ -77,17 +77,20 @@ class ApiIntegrationQualityGatesService
         }
 
         $certToken = 'CERT-'.strtoupper($partnerCode).'-'.bin2hex(random_bytes(8));
-        $apiKey = 'sk_live_'.bin2hex(random_bytes(16));
+        $rawApiKey = 'sk_live_'.bin2hex(random_bytes(16));
 
         DB::table('plt_api_partner_certifications')->where('id', $p->id)->update([
             'certificate_token' => $certToken,
             'certificate_expiry_date' => $expiryDate,
-            'production_api_key' => $apiKey,
+            'production_api_key' => hash('sha256', $rawApiKey),
             'production_enabled' => true,
             'updated_at' => now(),
         ]);
 
-        return (object) DB::table('plt_api_partner_certifications')->where('id', $p->id)->first();
+        $res = DB::table('plt_api_partner_certifications')->where('id', $p->id)->first();
+        $res->raw_api_key = $rawApiKey;
+
+        return (object) $res;
     }
 
     /**

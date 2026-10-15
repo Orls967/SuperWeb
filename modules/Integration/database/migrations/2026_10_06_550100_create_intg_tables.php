@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('partner_id', 32);
             $table->string('event_type', 64); // order.paid, shipment.delivered, po.issued
             $table->string('target_url');
-            $table->string('secret_key', 64);
+            $table->text('secret_key');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
