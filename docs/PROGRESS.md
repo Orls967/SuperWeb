@@ -328,7 +328,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 > Urutan R0 → R9 mengikuti dependensi. **R0 memasang pagar otomatis lebih dulu** sehingga sejak perbaikan pertama, jalan pintas langsung membuat gate merah. Setiap sub-fase R mengikuti P1–P13 (DoR boleh singkat karena tugas R sudah rinci) dan ditutup gate penuh + verifikasi silang. Rujukan temuan `K-xx` ada di `docs/KNOWLEDGE.md` §5.
 
 ### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS (ANTI JALAN PINTAS)
-> **Status audit:** 🔵 SIAP VERIFIKASI (Putaran 2 remediasi — pelaksana: M-R0-24 detektor S9 diperbaiki & test sabotase hijau, M-R0-25 DoR R2 diperluas resmi mencakup bug Contract M-R0-10/11 di DECISIONS.md, M-R0-26 laporan gate disinkronkan, B-01 menunggu aktivasi branch protection master oleh pemilik)
+> **Status audit:** 🔁 DIBUKA KEMBALI (Putaran 2 Verifikasi 2026-10-15: Kode, gate, dan CI lulus, menunggu aktivasi B-01 branch protection master & persetujuan resmi pemilik atas DoR R2)
 
 #### DoR Fase R0 — Lingkungan, gate & pagar otomatis
 - Disetujui pemilik: [x]   2026-10-10 (chat) — DoR disetujui; (1) `"php": "^8.4"` + `composer.lock` tetap di-commit; (2) folder `.github/` boleh dibuat, **push wajib ditanyakan dulu**; (3) DB kedua CI: **MySQL 8**; (4) merge dengan merge commit.

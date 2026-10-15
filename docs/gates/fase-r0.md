@@ -225,4 +225,57 @@
   5. **Status Blocker B-01:**
      - `gh api repos/Orls967/superweb/branches/master/protection` mengembalikan HTTP 404 (`Branch not protected`). Menunggu pemilik mengaktifkan required status checks di GitHub repository settings.
 
+### Putaran 2 — Verifikasi Silang Independen Pasca-Remediasi (2026-10-15)
+
+- **Tanggal:** 2026-10-15
+- **Verifikator:** Agent Verifikator Sesi 2026-10-15 (Putaran 2)
+- **Commit yang diverifikasi:** `fdd509e9ca67490bee53cfd0a0c863eaf85d50b6` (`fdd509e`) — CI PR #12 run ID `38701397424`: SQLite ✅ (6m 24s), MySQL ✅ (1m 50s), Mutation Testing ✅ (7m 58s < 45 menit); CI PR #12 run ID `38698698291` ✅; CI push master run ID `38534875698` ✅
+- **Keputusan:** 🔁 DIBUKA KEMBALI (Menunggu tindakan konfigurasi repository B-01 oleh pemilik & persetujuan formal DoR R2)
+
+| # | Hasil | Bukti (command / commit / output) | Catatan |
+|---|---|---|---|
+| C1 | 🟢 LULUS | `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` exit 0 (2 passed, 2 assertions). Seluruh katalog sabotase S1–S12 ditolak (exit 1). Sabotase S9 kini ditolak: `Minus M-R0-21: item 'R0.4 / R0.12' merupakan deliverable fase R0 yang sudah tercentang [x], pengalihan ditolak.` (M-R0-24 tuntas). Test pembukti `SabotageDeliverableMinusTest` PASS 🟢. | Celah S9 berhasil ditutup oleh pelaksana di commit `9bdc642`. |
+| C2 | 🟢 LULUS | `composer gate` lokal exit 0 (9 langkah wajib lulus, 2.608 tests / 11.523 assertions). JUnit CI PR #12 run ID 38701397424 identik 100%: 2.608 tests, 11.523 assertions, 0 errors, 0 failures. `diff -u` artefak vs dokumen repositori bersih pada metrik tes & 9 langkah gate (M-R0-26 tuntas). | Eksekusi gate penuh berhasil diverifikasi deterministik. |
+| C3 | 🟢 LULUS | `git diff 4171528..HEAD -- docs/PROGRESS.md` hanya mencentang `R0.3.b`. Bukti R0.3.b valid: commit `d2f5154` dan `6901960` menyentuh file yang dicantumkan. Teks seluruh item lainnya tidak berubah. | Integritas kontrak teks PROGRESS terjaga (P10). |
+| C4 | 🟢 LULUS | `vendor/bin/pest tests/Architecture/RouteAuthorizationMatrixTest.php` exit 0 (7 passed, 537 assertions). Rute berhak bebas 403, rute tak berhak 403, pemetaan route-roles lengkap. | Matriks otorisasi rute dan middleware terisolasi aman. |
+| C5 | 🟢 LULUS | `vendor/bin/pest tests/Architecture/LedgerAccountRegistryTest.php tests/Architecture/LedgerNormalBalanceTest.php tests/Architecture/TestHygieneTest.php` exit 0 (3 passed, 8 assertions). | Saldo normal valid, akun terdaftar di seeder & registry, tidak ada `LedgerAccount::create` baru di test. |
+| C6 | 🟢 LULUS | Tamper `bank:reconcile`: bersih exit 0 (`Semua akun seimbang dan total global per aset = 0`); rusak `cached_balance` +1 exit 1 (`Account Balance Discrepancy`). Tamper `api:audit`: bersih exit 0; rusak signature exit 1 (`Integration audit FAILED: Signature or message discrepancy detected!`). | Uji dua-sumber terbukti menolak manipulasi data riil. |
+| C7 | 🟢 LULUS | Pengukuran ulang 5 kelas pagar R0 (PCOV, ambang min 60.0%): `ProgressIntegrityScanner` 74.29% (klaim 74.61%, selisih 0.32%), `GateRunner` 65.71% (klaim 65.71%, selisih 0.00%), `GateReportCommand` 64.15% (klaim 64.15%, selisih 0.00%), `GateManifest` 62.79% (klaim 62.79%, selisih 0.00%), `RouteAuthorizationScanner` 84.56% (klaim 84.56%, selisih 0.00%). | Seluruh kelas ≥ 60.0% (selisih < 1 poin). Tidak ditemukan asersi kosong/palsu pada test baru T5/T6. |
+| C8 | 🟢 LULUS | `git diff 4171528..HEAD --stat -- tests/Architecture/baselines/` kosong. `vendor/bin/pest tests/Architecture/IntegrationFreezeTest.php tests/Architecture/ArchScanBaselineTest.php` exit 0 (3 passed, 5 assertions). | Baseline arsitektur tidak naik; isolasi `modules/Integration` terjaga. |
+| C9 | 🟢 LULUS | `git diff 4171528..HEAD -- docs/PROGRESS.md | grep -E '^[-+]\s*- \[[ x]\]'` hanya menyentuh `R0.3.b`. Tidak ada teks item yang diturunkan atau diubah. | Kepatuhan kontrak teks item penuh. |
+| C10 | 🟢 LULUS | `vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php` exit 0 (12 passed, 13 assertions). `php artisan migrate:fresh --seed` exit 0 (SQLite). Job CI MySQL 8.4 lulus (1m 50s pada run 38701397424). | Skema DDL dan seeder portabel ke MySQL 8.4. |
+| C11 | ⚠️ CATATAN | Minus M-R0-4, 5, 6, 12, 14, 18 dialihkan sah ke fase tujuan dengan teks yang mencakup masalah. Minus deliverable M-R0-20..23 dicoret sah. Minus M-R0-10 & M-R0-11 dialihkan ke R2.3 melalui perluasan DoR Fase R2 di DECISIONS & PROGRESS, namun perluasan DoR R2 tersebut belum memiliki persetujuan eksplisit pemilik repositori. | Menunggu konfirmasi pemilik atas perluasan DoR Fase R2. |
+| C12 | ❌ GAGAL | Tiga anchor `docs/DECISIONS.md` (`p9-minus-dialihkan`, `ganti-test-skor-hardcode`, `progress-snapshot-8c8369d`) valid. Namun status Blocker B-01: `gh api repos/Orls967/superweb/branches/master/protection` mengembalikan HTTP 404 (`Branch not protected`). | Syarat mutlak verifikasi V9: fase tidak dapat ✅ selama B-01 belum aktif di setting branch protection master. |
+| C13 | 🟢 LULUS | `git log origin/master..HEAD` terdiri dari 7 commit rapi dan atomik di PR #12 (menggabungkan hasil verifikasi PR #11 dan commit remediasi terfokus). | Riwayat commit atomik dan terlacak. |
+| C14 | 🟢 LULUS | Red flags P12 diperiksa bersih: hanya 1 file produksi diubah (`ProgressIntegrityScanner.php`, +14 -2), bebas dari bypass kredensial, modifikasi token, atau pelemahan test. | Bebas dari red flags P12. |
+
+**Pengukuran Ulang Mutasi 5 Kelas Pagar R0 (Verifikator vs Klaim Pelaksana):**
+
+| Kelas Pagar | Skor Verifikator | Klaim Pelaksana | Selisih | Ambang Batas | Status |
+|---|---|---|---|---|---|
+| `App\Quality\Progress\ProgressIntegrityScanner` | 74.29% (473/638) | 74.61% (475/638) | 0.32% | ≥ 60.0% | LULUS 🟢 |
+| `App\Quality\Gate\GateRunner` | 65.71% (114/173) | 65.71% (114/173) | 0.00% | ≥ 60.0% | LULUS 🟢 |
+| `App\Console\Commands\GateReportCommand` | 64.15% (68/106) | 64.15% (68/106) | 0.00% | ≥ 60.0% | LULUS 🟢 |
+| `App\Quality\Gate\GateManifest` | 62.79% (81/129) | 62.79% (81/129) | 0.00% | ≥ 60.0% | LULUS 🟢 |
+| `App\Quality\Routing\RouteAuthorizationScanner` | 84.56% (126/149) | 84.56% (126/149) | 0.00% | ≥ 60.0% | LULUS 🟢 |
+
+**Alasan Keputusan 🔁 (DIBUKA KEMBALI):**
+1. **Blocker B-01 Terbuka (Wajib V9):** `gh api repos/Orls967/superweb/branches/master/protection` mengembalikan HTTP 404 (`Branch not protected`). Master branch protection belum diaktifkan di GitHub repository settings. Sesuai aturan V9, status ✅ tidak dapat diberikan sebelum branch protection aktif dengan 3 required checks: `PHP 8.4 × SQLite (Full Gate Suite)`, `PHP 8.4 × MySQL 8 (DB Portability)`, dan `PHP 8.4 × Pest Mutation Testing (min 60%)`.
+2. **Persetujuan Pemilik atas DoR Fase R2:** Penambahan blok DoR Fase R2 pada `docs/PROGRESS.md` dan adendum keputusan `docs/DECISIONS.md#2026-10-14-p9-minus-dialihkan` yang mencakup bug HTTP 500 Contract (`contract.clauses.create` dan `contract.reports` — M-R0-10 & M-R0-11) dilakukan secara sepihak oleh pelaksana tanpa persetujuan eksplisit pemilik. Pemilik perlu mengonfirmasi atau menyetujui perluasan DoR ini.
+
+**Daftar Tindakan Pemilik untuk Penutupan ✅ Fase R0:**
+1. **Aktifkan Branch Protection `master` (B-01):**
+   - Masuk ke GitHub Repository Settings ➔ Branches ➔ Add branch protection rule untuk branch `master`.
+   - Centang: *Require status checks to pass before merging*.
+   - Tambahkan 3 nama job:
+     - `PHP 8.4 × SQLite (Full Gate Suite)`
+     - `PHP 8.4 × MySQL 8 (DB Portability)`
+     - `PHP 8.4 × Pest Mutation Testing (min 60%)`
+   - Pastikan API `gh api repos/Orls967/superweb/branches/master/protection --jq '.required_status_checks.contexts'` mengembalikan ketiga job tersebut (bukan HTTP 404).
+2. **Persetujuan DoR Fase R2:**
+   - Konfirmasi persetujuan pemilik atas perluasan DoR Fase R2 untuk mencakup perbaikan bug HTTP 500 modul Contract (M-R0-10 & M-R0-11).
+3. **Pemberian Status ✅ Final:**
+   - Setelah B-01 aktif dan DoR R2 disetujui, centang `[x] R0.3` dan `[x] R0.13` di `docs/PROGRESS.md`, ubah status Fase R0 menjadi `✅ TERVERIFIKASI (2026-10-15)`, dan merge PR #12 ke master dengan merge commit.
+
+
 
