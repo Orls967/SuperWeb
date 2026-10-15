@@ -657,7 +657,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 > **Status audit:** ⬜ BELUM · Prasyarat: R0 (boleh paralel dengan R1/R2).
 
 #### DoR Fase R3 — Otorisasi & data sensitif
-- Disetujui pemilik: [ ]   (tanggal / komentar — termasuk jawaban keputusan D1–D6 di bawah)
+- Disetujui pemilik: [x] 2026-10-15 (chat) — D1–D6 sesuai prompt disetujui
 - Tujuan bisnis: Menjamin seluruh rute operasional dan mutasi platform dilindungi kontrol akses berbasis peran (RBAC) granular dengan prinsip pemisahan tugas (auditor read-only, mutasi keuangan/stok terbatas pada role bisnis berwenang/admin), melindungi data pribadi dan rahasia dagang (NIK, NPWP, formula, kunci API, webhook secrets, gaji) dengan enkripsi kuat serta blind index HMAC ber-pepper, mengeliminasi bypass kontrol boolean tidak terpercaya pada jalur bernilai uang/kepatuhan non-Integration, serta menegakkan rate limit per klien API.
 - Modul pemilik & prefiks (KONSEP §A1) — bukan Integration:
   - Tooling & RBAC Kernel: `Core` (`roles`, `permissions`, `user_role`, middleware `CheckRole`, trait `HasRbacRoles`) & `Shared` (security helper, blind index HMAC).

@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 use App\Models\User;
+use Illuminate\Support\Str;
+use Modules\AutoDex\Domain\Models\Brand;
+use Modules\AutoDex\Domain\Models\Car;
+use Modules\AutoServe\Domain\Enums\EstimateStatus;
+use Modules\AutoServe\Domain\Models\Booking;
+use Modules\AutoServe\Domain\Models\Estimate;
+use Modules\AutoServe\Domain\Models\Service;
+use Modules\AutoServe\Domain\Models\Sparepart;
 use Modules\Distribution\Domain\Models\Distributor;
 use Modules\Logistics\Domain\Enums\LocationType;
 use Modules\Logistics\Domain\Models\Carrier;
@@ -38,6 +46,8 @@ use Modules\Resto\Domain\Models\RestoTable;
 use Modules\Resto\Domain\Models\StockCount;
 use Modules\Resto\Domain\Models\StockTransfer;
 use Modules\Resto\Domain\Models\TableSession;
+use Modules\Store\Domain\Enums\OrderStatus;
+use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
 
 /**
@@ -251,6 +261,94 @@ $hubOperatorSetup = function (User $user) use ($logisticsSeedHelper): void {
     }
 };
 
+$storeAutoServeSeedHelper = function (): array {
+    $owner = User::firstOrCreate(
+        ['id' => 1],
+        ['name' => 'Arch User', 'email' => 'arch@test.test', 'password' => 'secret', 'role' => 'customer']
+    );
+
+    $brand = Brand::firstOrCreate(
+        ['slug' => 'toyota-arch'],
+        ['name' => 'Toyota Arch', 'country' => 'Japan', 'category' => 'jdm']
+    );
+
+    $car = Car::firstOrCreate(
+        ['slug' => 'corolla-arch'],
+        ['brand_id' => $brand->id, 'model' => 'Corolla Arch', 'year_start' => 2022, 'body_type' => 'sedan', 'fuel_type' => 'gasoline', 'is_active' => true]
+    );
+
+    $product = Product::firstOrCreate(
+        ['slug' => 'product-arch-test'],
+        [
+            'uuid' => (string) Str::uuid(),
+            'sku' => 'SKU-ARCH-001',
+            'name' => 'Product Arch Test',
+            'price' => 150000,
+            'cached_stock' => 10,
+            'is_listed' => true,
+        ]
+    );
+
+    $order = Modules\Store\Domain\Models\Order::firstOrCreate(
+        ['number' => 'ORD-ARCH-001'],
+        [
+            'user_id' => $owner->id,
+            'status' => OrderStatus::PENDING_PAYMENT->value,
+            'total_amount' => 150000,
+        ]
+    );
+
+    $service = Service::firstOrCreate(
+        ['name' => 'Servis Arch Test'],
+        ['price' => 150000, 'is_active' => true]
+    );
+
+    $sparepart = Sparepart::firstOrCreate(
+        ['code' => 'SP-ARCH-001'],
+        ['name' => 'Sparepart Arch Test', 'price' => 50000, 'stock' => 10, 'unit' => 'pcs', 'is_active' => true]
+    );
+
+    $booking = Booking::firstOrCreate(
+        ['booking_code' => 'SRV-ARCH-001'],
+        [
+            'customer_id' => $owner->id,
+            'service_id' => $service->id,
+            'plate_number' => 'B1234ARC',
+            'vehicle_brand' => 'Toyota',
+            'complaint' => 'Bunyi mesin',
+            'booking_date' => now()->toDateString(),
+            'status' => 'pending',
+            'service_fee' => 150000,
+            'total_cost' => 150000,
+        ]
+    );
+
+    $estimate = Estimate::firstOrCreate(
+        ['booking_id' => $booking->id],
+        [
+            'items' => [['type' => 'service', 'ref_id' => $service->id, 'name' => 'Jasa', 'qty' => 1, 'unit_price' => 100000, 'subtotal' => 100000]],
+            'status' => EstimateStatus::Sent,
+            'total' => 100000,
+            'service_total' => 100000,
+            'parts_total' => 0,
+            'note' => 'Estimasi Arch Test',
+        ]
+    );
+
+    return compact('brand', 'car', 'product', 'order', 'service', 'sparepart', 'booking', 'estimate');
+};
+
+$storeAutoServeCustomerSetup = function (User $user) use ($storeAutoServeSeedHelper): void {
+    $d = $storeAutoServeSeedHelper();
+    if ($user->isCustomer()) {
+        $d['order']->user_id = $user->id;
+        $d['order']->save();
+
+        $d['booking']->customer_id = $user->id;
+        $d['booking']->save();
+    }
+};
+
 return [
     'GET /' => 'public',
     'GET up' => 'public',
@@ -321,23 +419,23 @@ return [
     'asset.verify-chain' => ['roles' => ['admin', 'asset_manager']],
     'asset.work-orders.complete' => ['roles' => ['admin', 'asset_manager']],
     'asset.work-orders.store' => ['roles' => ['admin', 'asset_manager']],
-    'autodex.garage.index' => 'auth',
-    'autodex.garage.toggle' => 'auth',
-    'autodex.index' => 'auth',
-    'autodex.show' => 'auth',
-    'autodex.wishlist.toggle' => 'auth',
+    'autodex.garage.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'autodex.garage.toggle' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['car' => $storeAutoServeSeedHelper()['car']->id]],
+    'autodex.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'autodex.show' => ['roles' => ['admin', 'auditor', 'customer'], 'params' => fn () => ['car' => $storeAutoServeSeedHelper()['car']->slug]],
+    'autodex.wishlist.toggle' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['car' => $storeAutoServeSeedHelper()['car']->id]],
     'b2b.index' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
-    'bookings.addSparepart' => ['roles' => ['admin', 'mekanik']],
-    'bookings.approveExtra' => 'auth',
-    'bookings.assign' => ['roles' => ['admin', 'mekanik']],
-    'bookings.create' => 'auth',
-    'bookings.invoice' => 'auth',
-    'bookings.pay' => 'auth',
-    'bookings.refund' => 'auth',
-    'bookings.removeSparepart' => ['roles' => ['admin', 'mekanik']],
-    'bookings.show' => 'auth',
-    'bookings.store' => 'auth',
-    'bookings.updateStatus' => ['roles' => ['admin', 'mekanik']],
+    'bookings.addSparepart' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
+    'bookings.approveExtra' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'bookings.assign' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
+    'bookings.create' => ['roles' => ['admin', 'auditor', 'customer']],
+    'bookings.invoice' => ['roles' => ['admin', 'auditor', 'customer', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'bookings.pay' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'bookings.refund' => ['roles' => ['admin'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
+    'bookings.removeSparepart' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id, 'sparepart' => $storeAutoServeSeedHelper()['sparepart']->id]],
+    'bookings.show' => ['roles' => ['admin', 'auditor', 'customer', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'bookings.store' => ['roles' => ['admin', 'customer']],
+    'bookings.updateStatus' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
     'boost.browser-logs' => 'public',
     'contract.advance.pay' => ['roles' => ['admin', 'contract_manager', 'legal']],
     'contract.amend' => ['roles' => ['admin', 'contract_manager', 'legal']],
@@ -423,11 +521,11 @@ return [
     'enterprise_finance.index' => ['roles' => ['admin', 'auditor', 'treasury']],
     'epc.index' => ['roles' => ['admin', 'epc_manager', 'asset_manager']],
     'esg.index' => ['roles' => ['admin', 'esg_officer', 'auditor']],
-    'estimates.approve' => 'auth',
-    'estimates.receiveBackorder' => ['roles' => ['admin', 'mekanik']],
-    'estimates.reject' => 'auth',
-    'estimates.send' => ['roles' => ['admin', 'mekanik']],
-    'estimates.store' => ['roles' => ['admin', 'mekanik']],
+    'estimates.approve' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'estimates.receiveBackorder' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id]],
+    'estimates.reject' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id], 'setup' => $storeAutoServeCustomerSetup],
+    'estimates.send' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id]],
+    'estimates.store' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
     'finance.loans.index' => 'auth',
     'finance.loans.payInstallment' => 'auth',
     'finance.loans.payOff' => 'auth',
@@ -1466,28 +1564,28 @@ return [
     'store.admin.products.createCarListing' => ['roles' => ['admin']],
     'store.admin.products.index' => ['roles' => ['admin']],
     'store.admin.products.toggle' => ['roles' => ['admin']],
-    'store.c2c.buy' => 'auth',
-    'store.c2c.buyForm' => 'auth',
-    'store.c2c.cancel' => 'auth',
-    'store.c2c.confirm' => 'auth',
-    'store.c2c.dispute' => 'auth',
-    'store.c2c.handover' => 'auth',
+    'store.c2c.buy' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->slug]],
+    'store.c2c.buyForm' => ['roles' => ['admin', 'auditor', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->slug]],
+    'store.c2c.cancel' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
+    'store.c2c.confirm' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
+    'store.c2c.dispute' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
+    'store.c2c.handover' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
     'store.c2c.index' => 'public',
-    'store.c2c.mySales' => 'auth',
-    'store.c2c.store' => 'auth',
-    'store.c2c.unlist' => 'auth',
-    'store.cart.count' => 'auth',
-    'store.cart.destroy' => 'auth',
-    'store.cart.index' => 'auth',
-    'store.cart.store' => 'auth',
-    'store.cart.update' => 'auth',
+    'store.c2c.mySales' => ['roles' => ['admin', 'auditor', 'customer']],
+    'store.c2c.store' => ['roles' => ['admin', 'customer']],
+    'store.c2c.unlist' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->id]],
+    'store.cart.count' => ['roles' => ['admin', 'auditor', 'customer']],
+    'store.cart.destroy' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->id]],
+    'store.cart.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'store.cart.store' => ['roles' => ['admin', 'customer']],
+    'store.cart.update' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->id]],
     'store.catalog.index' => 'public',
-    'store.checkout.index' => 'auth',
-    'store.checkout.process' => 'auth',
-    'store.orders.cancel' => 'auth',
-    'store.orders.confirm' => 'auth',
-    'store.orders.index' => 'auth',
-    'store.orders.show' => 'auth',
+    'store.checkout.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'store.checkout.process' => ['roles' => ['admin', 'customer']],
+    'store.orders.cancel' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
+    'store.orders.confirm' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
+    'store.orders.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'store.orders.show' => ['roles' => ['admin', 'auditor', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
     'store.products.show' => 'public',
     'supplier.certifications.store' => ['roles' => ['admin', 'party_manager', 'procurement']],
     'supplier.create' => ['roles' => ['admin', 'party_manager', 'procurement']],
