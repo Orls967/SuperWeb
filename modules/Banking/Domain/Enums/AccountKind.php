@@ -46,4 +46,50 @@ enum AccountKind: string
             self::POINTS => 'Poin Loyalitas',
         };
     }
+
+    /**
+     * Sisi normal buku besar sesuai konvensi tanda tunggal (KONSEP.md §A2.1).
+     * Debit = − (saldo normal <= 0), Kredit = + (saldo normal >= 0).
+     *
+     * @return 'debit'|'credit'|'free'
+     */
+    public function normalSide(): string
+    {
+        return match ($this) {
+            self::ASSET,
+            self::CASH,
+            self::INVENTORY,
+            self::LOAN_RECEIVABLE,
+            self::EXPENSE => 'debit',
+
+            self::REVENUE,
+            self::FEE,
+            self::LIABILITY,
+            self::AP,
+            self::DEPOSIT,
+            self::ESCROW,
+            self::WALLET,
+            self::POINTS,
+            self::CONTRA_ASSET,
+            self::COLLATERAL => 'credit',
+
+            self::CLEARING,
+            self::EXCHANGE => 'free',
+        };
+    }
+
+    public function isDebitNormal(): bool
+    {
+        return $this->normalSide() === 'debit';
+    }
+
+    public function isCreditNormal(): bool
+    {
+        return $this->normalSide() === 'credit';
+    }
+
+    public function isFree(): bool
+    {
+        return $this->normalSide() === 'free';
+    }
 }

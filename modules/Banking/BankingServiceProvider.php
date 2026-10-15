@@ -13,6 +13,7 @@ use Modules\Banking\Console\Commands\ReconcileBankLedgerCommand;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Listeners\CreateUserWalletListener;
+use Modules\Banking\Support\Posting;
 use Modules\Shared\Application\MenuRegistry;
 
 class BankingServiceProvider extends ServiceProvider
@@ -24,6 +25,10 @@ class BankingServiceProvider extends ServiceProvider
             VerifiesWalletPin::class,
             VerifyPinAction::class
         );
+
+        if (! class_exists('Posting')) {
+            class_alias(Posting::class, 'Posting');
+        }
     }
 
     public function boot(): void
