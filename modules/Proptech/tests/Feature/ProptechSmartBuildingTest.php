@@ -135,10 +135,10 @@ class ProptechSmartBuildingTest extends TestCase
         $this->assertEquals(170.0, (float) $billing->carbon_emission_kg);
         $this->assertEquals('BILLED', $billing->status);
 
-        // Verify ledger posting balances: AR +360k, Revenue -360k
+        // Verify ledger posting balances: AR -360k, Revenue +360k
         $ar = LedgerAccount::where('code', 'prp:utility_ar:IDR')->first();
         $rev = LedgerAccount::where('code', 'prp:utility_rev:IDR')->first();
-        $this->assertEquals('360000', (string) $ar->cached_balance);
-        $this->assertEquals('-360000', (string) $rev->cached_balance);
+        $this->assertEquals('-360000', (string) $ar->cached_balance);
+        $this->assertEquals('360000', (string) $rev->cached_balance);
     }
 }

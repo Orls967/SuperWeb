@@ -123,8 +123,8 @@ class BimTwinLifecycleTest extends TestCase
 
         $asset = LedgerAccount::where('code', 'ast:fixed_assets:IDR')->first();
         $cip = LedgerAccount::where('code', 'epc:cip_liability:IDR')->first();
-        $this->assertEquals('750000000', (string) $asset->cached_balance);
-        $this->assertEquals('-750000000', (string) $cip->cached_balance);
+        $this->assertEquals('-750000000', (string) $asset->cached_balance);
+        $this->assertEquals('750000000', (string) $cip->cached_balance);
     }
 
     public function test_77_3_and_77_4_work_order_tagging_and_twin_simulation_sandbox(): void

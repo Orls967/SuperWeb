@@ -5,8 +5,8 @@ namespace Modules\Proptech\Application\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Proptech\Domain\Models\BuildingSensor;
 use Modules\Proptech\Domain\Models\BuildingZone;
 use Modules\Proptech\Domain\Models\HvacCommand;
@@ -130,10 +130,10 @@ class ProptechService
                 type: 'PROPTECH_UTILITY_BILLING',
                 description: "Utility bill zone {$zone->zone_code} on {$billingDate->toDateString()}",
                 idempotencyKey: "PRP-BLG-{$billing->billing_code}",
-                entries: [
-                    PostingEntryDTO::forCode('prp:utility_ar:IDR', 'IDR', $totalAmountIdr),
-                    PostingEntryDTO::forCode('prp:utility_rev:IDR', 'IDR', -$totalAmountIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('prp:utility_ar:IDR', $totalAmountIdr)
+                    ->credit('prp:utility_rev:IDR', $totalAmountIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'PROPTECH_BILLING',
                 referenceId: (string) $billing->id,
             ));

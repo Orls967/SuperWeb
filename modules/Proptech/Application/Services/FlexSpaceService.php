@@ -5,8 +5,8 @@ namespace Modules\Proptech\Application\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Proptech\Domain\Models\BuildingSensor;
 use Modules\Proptech\Domain\Models\Flex\FlexBooking;
 use Modules\Proptech\Domain\Models\Flex\FlexSpace;
@@ -69,10 +69,10 @@ class FlexSpaceService
                 type: 'FLEX_DEPOSIT_HOLD',
                 description: "Deposit hold for flex space booking {$booking->booking_code}",
                 idempotencyKey: "FBK-DEP-{$booking->booking_code}",
-                entries: [
-                    PostingEntryDTO::forCode('prp:flex_escrow:IDR', 'IDR', $depositAmount),
-                    PostingEntryDTO::forCode('prp:flex_revenue_unearned:IDR', 'IDR', -$depositAmount),
-                ],
+                entries: Posting::lines()
+                    ->debit('prp:flex_escrow:IDR', $depositAmount)
+                    ->credit('prp:flex_revenue_unearned:IDR', $depositAmount)
+                    ->toEntries('IDR'),
                 referenceType: 'FLEX_BOOKING',
                 referenceId: (string) $booking->id,
             ));
@@ -113,11 +113,11 @@ class FlexSpaceService
                 type: 'FLEX_CAPTURE_REVENUE',
                 description: "Capture revenue for flex space {$locked->booking_code}",
                 idempotencyKey: "FBK-CAP-{$locked->booking_code}",
-                entries: [
-                    PostingEntryDTO::forCode('prp:flex_revenue_unearned:IDR', 'IDR', $locked->deposit_amount_idr),
-                    PostingEntryDTO::forCode('prp:flex_escrow:IDR', 'IDR', $remaining),
-                    PostingEntryDTO::forCode('prp:flex_revenue:IDR', 'IDR', -$locked->total_price_idr),
-                ],
+                entries: Posting::lines()
+                    ->debit('prp:flex_revenue_unearned:IDR', $locked->deposit_amount_idr)
+                    ->debit('prp:flex_escrow:IDR', $remaining)
+                    ->credit('prp:flex_revenue:IDR', $locked->total_price_idr)
+                    ->toEntries('IDR'),
                 referenceType: 'FLEX_BOOKING',
                 referenceId: (string) $locked->id,
             ));
@@ -157,10 +157,10 @@ class FlexSpaceService
                 type: 'FLEX_NO_SHOW_FEE',
                 description: "Forfeit deposit as penalty fee for {$locked->booking_code}",
                 idempotencyKey: "FBK-NS-{$locked->booking_code}",
-                entries: [
-                    PostingEntryDTO::forCode('prp:flex_revenue_unearned:IDR', 'IDR', $locked->deposit_amount_idr),
-                    PostingEntryDTO::forCode('prp:flex_penalty_rev:IDR', 'IDR', -$locked->deposit_amount_idr),
-                ],
+                entries: Posting::lines()
+                    ->debit('prp:flex_revenue_unearned:IDR', $locked->deposit_amount_idr)
+                    ->credit('prp:flex_penalty_rev:IDR', $locked->deposit_amount_idr)
+                    ->toEntries('IDR'),
                 referenceType: 'FLEX_BOOKING',
                 referenceId: (string) $locked->id,
             ));
