@@ -43,5 +43,44 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('exports-imports', function (Request $request) {
             return Limit::perMinute(5)->by($request->user()?->id ?: $request->ip());
         });
+
+        // R3.4: B2B API Client Rate Limiting (K-23 / D6: key "api-client:{client_id}")
+        \Illuminate\Routing\Middleware\ThrottleRequests::shouldHashKeys(false);
+
+        $apiClientLimiter = function (Request $request) {
+            $apiKey = $request->header('X-API-Key') ?? $request->bearerToken();
+            $clientId = $request->header('X-Client-ID');
+
+            $client = null;
+            if ($apiKey) {
+                $hash = hash('sha256', (string) $apiKey);
+                $client = \Modules\Integration\Domain\Models\ApiClient::where('api_key_hash', $hash)->first();
+            }
+
+            if (! $client && $clientId) {
+                $client = \Modules\Integration\Domain\Models\ApiClient::where('client_id', (string) $clientId)->first();
+            }
+
+            $id = $client?->client_id ?: ($clientId ?: $request->ip());
+            $limit = (int) ($client?->rate_limit_per_minute ?: 600);
+
+            return Limit::perMinute($limit)
+                ->by($id)
+                ->response(function (Request $request, array $headers) use ($limit, $id) {
+                    $retryAfter = (int) ($headers['Retry-After'] ?? 60);
+
+                    return response()->json([
+                        'message' => 'Too Many Requests: API rate limit exceeded.',
+                        'client_id' => $id,
+                        'limit_per_minute' => $limit,
+                        'retry_after' => $retryAfter,
+                    ], 429, array_merge($headers, [
+                        'Retry-After' => (string) $retryAfter,
+                    ]));
+                });
+        };
+
+        RateLimiter::for('api-client', $apiClientLimiter);
+        RateLimiter::for('partner-api', $apiClientLimiter);
     }
 }

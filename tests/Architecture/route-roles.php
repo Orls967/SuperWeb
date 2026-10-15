@@ -472,6 +472,7 @@ return [
     'agency.show' => ['roles' => ['admin', 'agent', 'auditor', 'procurement']],
     'agri.index' => ['roles' => ['admin', 'farmer', 'procurement']],
     'api.global-search' => 'auth',
+    'api.v1.integration.ping' => 'public',
     'api.v1.logistics.quotes.store' => ['roles' => ['admin', 'customer', 'dispatcher', 'logistics_admin', 'shipper']],
     'api.v1.logistics.shipments.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper']],
     'api.v1.logistics.shipments.show' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper'], 'params' => fn () => ['tracking_number' => $logisticsSeedHelper()['shipment']->tracking_number]],
