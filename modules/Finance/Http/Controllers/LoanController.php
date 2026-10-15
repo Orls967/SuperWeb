@@ -53,7 +53,10 @@ class LoanController extends Controller
     public function show(Request $request, Loan $loan): View
     {
         $user = $request->user();
-        if ((int) $loan->user_id !== (int) $user->id && ! $user->isAdmin()) {
+        if ((int) $loan->user_id !== (int) $user->id
+            && ! $user->isAdmin()
+            && ! $user->isAuditor()
+            && ! $user->isTreasury()) {
             abort(403, 'Akses tidak diizinkan.');
         }
 
@@ -174,7 +177,9 @@ class LoanController extends Controller
     public function payInstallment(Request $request, Loan $loan): RedirectResponse
     {
         $user = $request->user();
-        if ((int) $loan->user_id !== (int) $user->id && ! $user->isAdmin()) {
+        if ((int) $loan->user_id !== (int) $user->id
+            && ! $user->isAdmin()
+            && ! $user->isTreasury()) {
             abort(403, 'Akses tidak diizinkan.');
         }
 
@@ -195,7 +200,9 @@ class LoanController extends Controller
     public function payOff(Request $request, Loan $loan): RedirectResponse
     {
         $user = $request->user();
-        if ((int) $loan->user_id !== (int) $user->id && ! $user->isAdmin()) {
+        if ((int) $loan->user_id !== (int) $user->id
+            && ! $user->isAdmin()
+            && ! $user->isTreasury()) {
             abort(403, 'Akses tidak diizinkan.');
         }
 

@@ -1,6 +1,6 @@
 {
     "about": "Rute berparameter tanpa closure params (PROGRESS R0.9, KONSEP §A14.3). Hanya boleh menyusut saat closure params dilengkapi (ditutup di R3.1).",
-    "total": 167,
+    "total": 160,
     "entries": [
         "route:admin.audit-logs.show",
         "route:admin.ledger.adjust",
@@ -65,7 +65,6 @@
         "route:contract.usage.sync",
         "route:contract.version-diff",
         "route:contract.versions",
-        "route:crypto.alerts.destroy",
         "route:crypto.api.chart",
         "route:crypto.market.show",
         "route:distribution.onboarding.approve",
@@ -75,12 +74,6 @@
         "route:distribution.show",
         "route:distribution.tier.evaluate",
         "route:distribution.transition",
-        "route:finance.loans.payInstallment",
-        "route:finance.loans.payOff",
-        "route:finance.loans.show",
-        "route:finance.loans.simulate",
-        "route:finance.loans.store",
-        "route:finance.loans.topUpCollateral",
         "route:manufacturing.costing.versions.approve",
         "route:manufacturing.costing.versions.submit",
         "route:manufacturing.formulas.approve",

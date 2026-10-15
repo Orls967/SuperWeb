@@ -10,7 +10,12 @@ use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\Crypto\Domain\Enums\AlertCondition;
+use Modules\Crypto\Domain\Models\CryptoAlert;
+use Modules\Crypto\Domain\Models\CryptoAsset;
+use Modules\Crypto\Domain\Models\CryptoPriceTick;
 use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Finance\Domain\Models\Loan;
 use Modules\Logistics\Domain\Enums\LocationType;
 use Modules\Logistics\Domain\Models\Carrier;
 use Modules\Logistics\Domain\Models\Claim;
@@ -349,6 +354,83 @@ $storeAutoServeCustomerSetup = function (User $user) use ($storeAutoServeSeedHel
     }
 };
 
+$financeCryptoSeedHelper = function (): array {
+    $owner = User::firstOrCreate(
+        ['id' => 1],
+        ['name' => 'Arch User', 'email' => 'arch@test.test', 'password' => 'secret', 'role' => 'customer']
+    );
+
+    $asset = CryptoAsset::firstOrCreate(
+        ['symbol' => 'BTC'],
+        ['name' => 'Bitcoin', 'decimals' => 8, 'volatility' => 0.03, 'is_active' => true]
+    );
+
+    CryptoPriceTick::firstOrCreate(
+        ['asset_id' => $asset->id],
+        ['price_idr' => '1000000000', 'recorded_at' => now()]
+    );
+
+    $brand = Brand::firstOrCreate(
+        ['slug' => 'toyota-fin'],
+        ['name' => 'Toyota Finance', 'country' => 'Japan', 'category' => 'jdm']
+    );
+
+    $car = Car::firstOrCreate(
+        ['slug' => 'corolla-fin'],
+        ['brand_id' => $brand->id, 'model' => 'Corolla Finance', 'year_start' => 2022, 'body_type' => 'sedan', 'fuel_type' => 'gasoline', 'is_active' => true]
+    );
+
+    $product = Product::firstOrCreate(
+        ['slug' => 'lexus-lc300-fin'],
+        [
+            'uuid' => (string) Str::uuid(),
+            'sku' => 'SKU-FIN-001',
+            'name' => 'Lexus LC 300 Finance',
+            'price' => 300000000,
+            'cached_stock' => 5,
+            'is_listed' => true,
+        ]
+    );
+
+    $loan = Loan::firstOrCreate(
+        ['uuid' => '99999999-9999-9999-9999-999999999999'],
+        [
+            'user_id' => $owner->id,
+            'status' => 'active',
+            'principal' => 100000000,
+            'outstanding_principal' => 100000000,
+            'interest_rate_annual' => 0.08,
+            'tenor_months' => 12,
+            'collateral_asset_id' => $asset->id,
+            'collateral_qty' => '0.2',
+            'ltv_at_open' => 0.5,
+            'opened_at' => now(),
+        ]
+    );
+
+    $alert = CryptoAlert::firstOrCreate(
+        ['user_id' => $owner->id, 'asset_id' => $asset->id],
+        [
+            'condition' => AlertCondition::ABOVE,
+            'target_price_idr' => '1100000000',
+            'is_triggered' => false,
+        ]
+    );
+
+    return compact('owner', 'asset', 'product', 'loan', 'alert');
+};
+
+$financeCryptoCustomerSetup = function (User $user) use ($financeCryptoSeedHelper): void {
+    $d = $financeCryptoSeedHelper();
+    if ($user->isCustomer()) {
+        $d['loan']->user_id = $user->id;
+        $d['loan']->save();
+
+        $d['alert']->user_id = $user->id;
+        $d['alert']->save();
+    }
+};
+
 return [
     'GET /' => 'public',
     'GET up' => 'public',
@@ -479,16 +561,16 @@ return [
     'contract.versions' => ['roles' => ['admin', 'contract_manager', 'legal']],
     'control_tower.index' => ['roles' => ['admin', 'logistics_admin', 'planner', 'auditor']],
     'control_tower.promises' => ['roles' => ['admin', 'logistics_admin', 'planner', 'auditor']],
-    'crypto.alerts.destroy' => 'auth',
-    'crypto.alerts.index' => 'auth',
-    'crypto.alerts.store' => 'auth',
+    'crypto.alerts.destroy' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['alert' => $financeCryptoSeedHelper()['alert']->id], 'setup' => $financeCryptoCustomerSetup],
+    'crypto.alerts.index' => ['roles' => ['admin', 'auditor', 'customer', 'treasury']],
+    'crypto.alerts.store' => ['roles' => ['admin', 'customer', 'treasury']],
     'crypto.api.chart' => 'public',
     'crypto.api.prices' => 'public',
     'crypto.market.index' => 'public',
     'crypto.market.show' => 'public',
-    'crypto.portfolio.index' => 'auth',
-    'crypto.trade.execute' => 'auth',
-    'crypto.trade.quote' => 'auth',
+    'crypto.portfolio.index' => ['roles' => ['admin', 'auditor', 'customer', 'treasury']],
+    'crypto.trade.execute' => ['roles' => ['admin', 'customer', 'treasury']],
+    'crypto.trade.quote' => ['roles' => ['admin', 'customer', 'treasury']],
     'dashboard' => 'auth',
     'distribution.coverages.store' => ['roles' => ['admin', 'procurement']],
     'distribution.distributors.store' => ['roles' => ['admin', 'procurement']],
@@ -526,14 +608,14 @@ return [
     'estimates.reject' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id], 'setup' => $storeAutoServeCustomerSetup],
     'estimates.send' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id]],
     'estimates.store' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
-    'finance.loans.index' => 'auth',
-    'finance.loans.payInstallment' => 'auth',
-    'finance.loans.payOff' => 'auth',
-    'finance.loans.quote' => 'auth',
-    'finance.loans.show' => 'auth',
-    'finance.loans.simulate' => 'auth',
-    'finance.loans.store' => 'auth',
-    'finance.loans.topUpCollateral' => 'auth',
+    'finance.loans.index' => ['roles' => ['admin', 'auditor', 'customer', 'treasury']],
+    'finance.loans.payInstallment' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['loan' => $financeCryptoSeedHelper()['loan']->uuid], 'setup' => $financeCryptoCustomerSetup],
+    'finance.loans.payOff' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['loan' => $financeCryptoSeedHelper()['loan']->uuid], 'setup' => $financeCryptoCustomerSetup],
+    'finance.loans.quote' => ['roles' => ['admin', 'customer', 'treasury']],
+    'finance.loans.show' => ['roles' => ['admin', 'auditor', 'customer', 'treasury'], 'params' => fn () => ['loan' => $financeCryptoSeedHelper()['loan']->uuid], 'setup' => $financeCryptoCustomerSetup],
+    'finance.loans.simulate' => ['roles' => ['admin', 'auditor', 'customer', 'treasury'], 'params' => fn () => ['product' => $financeCryptoSeedHelper()['product']->slug]],
+    'finance.loans.store' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['product' => $financeCryptoSeedHelper()['product']->slug]],
+    'finance.loans.topUpCollateral' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['loan' => $financeCryptoSeedHelper()['loan']->uuid], 'setup' => $financeCryptoCustomerSetup],
     'hcm.index' => ['roles' => ['admin', 'hcm_manager']],
     'integration.index' => ['roles' => ['admin']],
     'integration.webhooks' => ['roles' => ['admin']],
@@ -1651,14 +1733,14 @@ return [
     'verification.notice' => 'auth',
     'verification.send' => 'auth',
     'verification.verify' => 'auth',
-    'wallet.index' => 'auth',
-    'wallet.mutasi' => 'auth',
-    'wallet.mutasi.export' => 'auth',
-    'wallet.pin.store' => 'auth',
-    'wallet.topup.store' => 'auth',
-    'wallet.transfer' => 'auth',
-    'wallet.transfer.lookup' => 'auth',
-    'wallet.transfer.store' => 'auth',
+    'wallet.index' => ['roles' => ['admin', 'auditor', 'customer']],
+    'wallet.mutasi' => ['roles' => ['admin', 'auditor', 'customer']],
+    'wallet.mutasi.export' => ['roles' => ['admin', 'auditor', 'customer']],
+    'wallet.pin.store' => ['roles' => ['admin', 'customer']],
+    'wallet.topup.store' => ['roles' => ['admin', 'customer']],
+    'wallet.transfer' => ['roles' => ['admin', 'auditor', 'customer']],
+    'wallet.transfer.lookup' => ['roles' => ['admin', 'customer']],
+    'wallet.transfer.store' => ['roles' => ['admin', 'customer']],
     'wms.cycle-counts.apply' => ['roles' => ['admin']],
     'wms.cycle-counts.store' => ['roles' => ['admin', 'hub_operator']],
     'wms.cycle-counts.submit' => ['roles' => ['admin', 'hub_operator']],

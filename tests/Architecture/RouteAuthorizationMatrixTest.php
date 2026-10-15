@@ -110,7 +110,8 @@ it('enforces that unauthorized roles receive 403 on role-protected routes', func
 
         $user = $usersByRole[$unauthorizedRole] ??= User::factory()->create(['role' => $unauthorizedRole]);
         $response = $this->actingAs($user)->call($route['method'], $route['uri']);
-        expect($response->status())->toBe(403, "Rute {$route['name']} ({$route['method']} {$route['uri']}) harus mengembalikan 403 untuk role nyata '{$unauthorizedRole}' yang tidak berhak.");
+        $statusCode = method_exists($response, 'status') ? $response->status() : $response->getStatusCode();
+        expect($statusCode)->toBe(403, "Rute {$route['name']} ({$route['method']} {$route['uri']}) harus mengembalikan 403 untuk role nyata '{$unauthorizedRole}' yang tidak berhak.");
     }
 });
 
@@ -130,7 +131,8 @@ it('confirms authorized roles are not forbidden (not 403) on role-protected rout
             }
 
             $response = $this->actingAs($user)->call($route['method'], $route['uri']);
-            expect($response->status())->not->toBe(403, "Rute {$route['name']} ({$route['method']} {$route['uri']}) tidak boleh 403 untuk role berhak '{$allowedRole}'.");
+            $statusCode = method_exists($response, 'status') ? $response->status() : $response->getStatusCode();
+            expect($statusCode)->not->toBe(403, "Rute {$route['name']} ({$route['method']} {$route['uri']}) tidak boleh 403 untuk role berhak '{$allowedRole}'.");
         }
     }
 });

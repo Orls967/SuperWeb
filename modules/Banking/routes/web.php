@@ -11,21 +11,21 @@ use Modules\Banking\Http\Controllers\TransferController;
 use Modules\Banking\Http\Controllers\WalletController;
 
 Route::middleware(['web', 'auth'])->group(function () {
-    // Wallet & PIN
-    Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
-    Route::post('/wallet/pin', [WalletController::class, 'setPin'])->name('wallet.pin.store');
+    // Read: Wallet & Mutasi (admin, customer, auditor)
+    Route::middleware('role:admin,customer,auditor')->group(function () {
+        Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
+        Route::get('/wallet/transfer', [TransferController::class, 'index'])->name('wallet.transfer');
+        Route::get('/wallet/mutasi', [MutationController::class, 'index'])->name('wallet.mutasi');
+        Route::get('/wallet/mutasi/export', [MutationController::class, 'export'])->name('wallet.mutasi.export');
+    });
 
-    // Top Up
-    Route::post('/wallet/topup', [TopUpController::class, 'store'])->name('wallet.topup.store');
-
-    // Transfer
-    Route::get('/wallet/transfer', [TransferController::class, 'index'])->name('wallet.transfer');
-    Route::post('/wallet/transfer/lookup', [TransferController::class, 'lookup'])->name('wallet.transfer.lookup');
-    Route::post('/wallet/transfer', [TransferController::class, 'store'])->name('wallet.transfer.store');
-
-    // Mutasi
-    Route::get('/wallet/mutasi', [MutationController::class, 'index'])->name('wallet.mutasi');
-    Route::get('/wallet/mutasi/export', [MutationController::class, 'export'])->name('wallet.mutasi.export');
+    // Mutation: PIN, Top Up, Transfer (admin, customer - auditor forbidden)
+    Route::middleware('role:admin,customer')->group(function () {
+        Route::post('/wallet/pin', [WalletController::class, 'setPin'])->name('wallet.pin.store');
+        Route::post('/wallet/topup', [TopUpController::class, 'store'])->name('wallet.topup.store');
+        Route::post('/wallet/transfer/lookup', [TransferController::class, 'lookup'])->name('wallet.transfer.lookup');
+        Route::post('/wallet/transfer', [TransferController::class, 'store'])->name('wallet.transfer.store');
+    });
 
     // Admin Ledger & Group P&L Dashboard
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {

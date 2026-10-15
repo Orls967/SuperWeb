@@ -17,13 +17,18 @@ Route::middleware(['web'])->group(function () {
 
     // Authenticated Trading & Portfolio
     Route::middleware(['auth'])->group(function () {
-        Route::get('/crypto/portfolio', [CryptoPortfolioController::class, 'index'])->name('crypto.portfolio.index');
-        Route::post('/crypto/quote', [CryptoTradeController::class, 'quote'])->name('crypto.trade.quote');
-        Route::post('/crypto/trade/execute', [CryptoTradeController::class, 'execute'])->name('crypto.trade.execute');
+        // Read: Portfolio & Alerts (admin, customer, treasury, auditor)
+        Route::middleware('role:admin,customer,treasury,auditor')->group(function () {
+            Route::get('/crypto/portfolio', [CryptoPortfolioController::class, 'index'])->name('crypto.portfolio.index');
+            Route::get('/crypto/alerts', [CryptoAlertController::class, 'index'])->name('crypto.alerts.index');
+        });
 
-        // Alerts
-        Route::get('/crypto/alerts', [CryptoAlertController::class, 'index'])->name('crypto.alerts.index');
-        Route::post('/crypto/alerts', [CryptoAlertController::class, 'store'])->name('crypto.alerts.store');
-        Route::delete('/crypto/alerts/{alert}', [CryptoAlertController::class, 'destroy'])->name('crypto.alerts.destroy');
+        // Mutations: Trades & Alerts (admin, customer, treasury - auditor forbidden)
+        Route::middleware('role:admin,customer,treasury')->group(function () {
+            Route::post('/crypto/quote', [CryptoTradeController::class, 'quote'])->name('crypto.trade.quote');
+            Route::post('/crypto/trade/execute', [CryptoTradeController::class, 'execute'])->name('crypto.trade.execute');
+            Route::post('/crypto/alerts', [CryptoAlertController::class, 'store'])->name('crypto.alerts.store');
+            Route::delete('/crypto/alerts/{alert}', [CryptoAlertController::class, 'destroy'])->name('crypto.alerts.destroy');
+        });
     });
 });
