@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\CloudKitchen\Domain\Models\CateringOrder;
 use Modules\CloudKitchen\Domain\Models\CateringSubscription;
 use Modules\CloudKitchen\Domain\Models\CloudKitchen;
@@ -52,10 +52,10 @@ class CloudKitchenService
                 type: 'hcm_meal_payroll_deduction',
                 description: "Monthly Catering Payroll Deduction for User {$userId}",
                 idempotencyKey: "ck:sub:{$sub->id}",
-                entries: [
-                    PostingEntryDTO::forCode('hcm:meals_deduction:IDR', 'IDR', -$monthlyFeeIdr),
-                    PostingEntryDTO::forCode('resto:catering_revenue:IDR', 'IDR', $monthlyFeeIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('hcm:meals_deduction:IDR', $monthlyFeeIdr)
+                    ->credit('resto:catering_revenue:IDR', $monthlyFeeIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'catering_subscription',
                 referenceId: (string) $sub->id,
             ));
@@ -123,10 +123,10 @@ class CloudKitchenService
                 type: 'catering_refund',
                 description: "Refund for cancelled catering order {$order->order_code}",
                 idempotencyKey: "ck:refund:{$order->id}",
-                entries: [
-                    PostingEntryDTO::forCode('resto:catering_revenue:IDR', 'IDR', -$order->meal_cost_idr),
-                    PostingEntryDTO::forCode('hcm:meals_deduction:IDR', 'IDR', $order->meal_cost_idr),
-                ],
+                entries: Posting::lines()
+                    ->debit('resto:catering_revenue:IDR', $order->meal_cost_idr)
+                    ->credit('hcm:meals_deduction:IDR', $order->meal_cost_idr)
+                    ->toEntries('IDR'),
                 referenceType: 'catering_order',
                 referenceId: (string) $order->id,
             ));
