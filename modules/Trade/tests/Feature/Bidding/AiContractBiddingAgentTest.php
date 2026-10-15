@@ -125,8 +125,8 @@ class AiContractBiddingAgentTest extends TestCase
         $this->assertEquals('WON', $won->status);
         $this->assertNotNull($won->created_contract_code);
 
-        // Check ledger: AR +1,020,000,000, Unearned Rev -1,020,000,000
+        // Check ledger: AR -1,020,000,000, Unearned Rev +1,020,000,000
         $ar = LedgerAccount::where('code', 'trd:tender_contract_ar:IDR')->first();
-        $this->assertEquals('1020000000', (string) $ar->cached_balance);
+        $this->assertEquals('-1020000000', (string) $ar->cached_balance);
     }
 }
