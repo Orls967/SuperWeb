@@ -1,7 +1,7 @@
 # Quality Gate Report: Fase R0
 
-- **Commit:** `9bdc6426bc6564bcf1fda8b051c8372f870fc67e` (9bdc642)
-- **Tanggal:** 2026-10-15T07:05:41+00:00
+- **Commit:** `de00cc53776b7920ddb5ceb61cfbdb7226738388` (de00cc5)
+- **Tanggal:** 2026-10-15T07:16:00+00:00
 - **PHP:** 8.4.26
 - **Database:** sqlite (v3.53.4)
 - **Status Keseluruhan:** PASS 🟢
@@ -9,56 +9,56 @@
 ## 1. Ringkasan Test Suite (Pest / JUnit)
 - **Total Test:** 2595
 - **Total Assertion:** 11492
-- **Durasi:** 639.04s
+- **Durasi:** 708.08s
 - **Gagal / Error:** 0 failures, 0 errors
 
 ## 2. Hasil Perintah Protokol P4
 | Perintah | Deskripsi | Exit Code | Status |
 |---|---|---|---|
-| `composer validate --strict` | Langkah gate: composer validate --strict (0.20s) | 0 | PASS 🟢 |
-| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest (72.66s) | 0 | PASS 🟢 |
-| `vendor/bin/pint --test` | Langkah gate: pint --test (0.99s) | 0 | PASS 🟢 |
-| `php artisan arch:scan --json` | Langkah gate: arch:scan --json (2.64s) | 0 | PASS 🟢 |
-| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed (26.92s) | 0 | PASS 🟢 |
-| `php artisan bank:reconcile` | Langkah gate: bank:reconcile (0.31s) | 0 | PASS 🟢 |
-| `php artisan chain:audit-all` | Langkah gate: chain:audit-all (0.21s) | 0 | PASS 🟢 |
-| `php artisan super:health-check` | Langkah gate: super:health-check (0.34s) | 0 | PASS 🟢 |
-| `npm run build` | Langkah gate: npm run build (1.15s) | 0 | PASS 🟢 |
+| `composer validate --strict` | Langkah gate: composer validate --strict (0.34s) | 0 | PASS 🟢 |
+| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest (79.99s) | 0 | PASS 🟢 |
+| `vendor/bin/pint --test` | Langkah gate: pint --test (0.38s) | 0 | PASS 🟢 |
+| `php artisan arch:scan --json` | Langkah gate: arch:scan --json (2.75s) | 0 | PASS 🟢 |
+| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed (26.89s) | 0 | PASS 🟢 |
+| `php artisan bank:reconcile` | Langkah gate: bank:reconcile (0.32s) | 0 | PASS 🟢 |
+| `php artisan chain:audit-all` | Langkah gate: chain:audit-all (0.22s) | 0 | PASS 🟢 |
+| `php artisan super:health-check` | Langkah gate: super:health-check (0.22s) | 0 | PASS 🟢 |
+| `npm run build` | Langkah gate: npm run build (1.07s) | 0 | PASS 🟢 |
 
 ## 3. Status Test Blok Bukti Fase R0
 | Item | Nama Test | File | Status (JUnit) | Durasi |
 |---|---|---|---|---|
-| R0.1 | `it ensures composer.json and README.md align on PHP ^8.4 requirement` | `tests/Architecture/DocsVersionConsistencyTest.php` | PASS 🟢 | 0.000s |
-| R0.2 | `it generates gate report when manifest and test suite are clean and match HEAD` | `tests/Feature/Console/GateReportCommandTest.php` | PASS 🟢 | 0.081s |
-| R0.3.a | `it keeps production classes at their case-sensitive PSR-4 path` | `tests/Architecture/Psr4ComplianceTest.php` | PASS 🟢 | 0.471s |
-| R0.3.b | `it enforces all database schema identifiers do not exceed 64 characters` | `tests/Architecture/SchemaIdentifierLengthTest.php` | PASS 🟢 | 0.067s |
-| R0.3.b | `it enforces all database index composite key lengths do not exceed 3072 bytes for MySQL utf8mb4 portability` | `tests/Architecture/SchemaIdentifierLengthTest.php` | PASS 🟢 | 0.081s |
-| R0.3.b | `it compiles every project migration to MySQL 8.4 DDL that MySQL accepts` | `tests/Architecture/MysqlSchemaCompatibilityTest.php` | PASS 🟢 | 0.856s |
-| R0.4 | `it enforces proof block integrity and phase verification in docs/PROGRESS.md` | `tests/Architecture/ProgressIntegrityTest.php` | PASS 🟢 | 0.876s |
-| R0.4 | `passes when valid proof block is provided for a checked item` | `tests/Unit/Quality/Progress/ProgressIntegrityScannerTest.php` | PASS 🟢 | 0.022s |
+| R0.1 | `it ensures composer.json and README.md align on PHP ^8.4 requirement` | `tests/Architecture/DocsVersionConsistencyTest.php` | PASS 🟢 | 0.001s |
+| R0.2 | `it generates gate report when manifest and test suite are clean and match HEAD` | `tests/Feature/Console/GateReportCommandTest.php` | PASS 🟢 | 0.067s |
+| R0.3.a | `it keeps production classes at their case-sensitive PSR-4 path` | `tests/Architecture/Psr4ComplianceTest.php` | PASS 🟢 | 0.589s |
+| R0.3.b | `it enforces all database schema identifiers do not exceed 64 characters` | `tests/Architecture/SchemaIdentifierLengthTest.php` | PASS 🟢 | 0.105s |
+| R0.3.b | `it enforces all database index composite key lengths do not exceed 3072 bytes for MySQL utf8mb4 portability` | `tests/Architecture/SchemaIdentifierLengthTest.php` | PASS 🟢 | 0.171s |
+| R0.3.b | `it compiles every project migration to MySQL 8.4 DDL that MySQL accepts` | `tests/Architecture/MysqlSchemaCompatibilityTest.php` | PASS 🟢 | 1.038s |
+| R0.4 | `it enforces proof block integrity and phase verification in docs/PROGRESS.md` | `tests/Architecture/ProgressIntegrityTest.php` | PASS 🟢 | 0.800s |
+| R0.4 | `passes when valid proof block is provided for a checked item` | `tests/Unit/Quality/Progress/ProgressIntegrityScannerTest.php` | PASS 🟢 | 0.030s |
 | R0.5 | `it ensures LAPORAN_AUDIT_GELOMBANG_2.md is explicitly marked as archived and invalid` | `tests/Architecture/DocsVersionConsistencyTest.php` | PASS 🟢 | 0.001s |
-| R0.5 | `it ensures CODEBASE.md does not reference removed non-existent accounts` | `tests/Architecture/DocsVersionConsistencyTest.php` | PASS 🟢 | 0.001s |
-| R0.6 | `it declares every artisan command name exactly once` | `tests/Architecture/CommandSignatureUniqueTest.php` | PASS 🟢 | 0.245s |
-| R0.6 | `runs the integration and platform economy audits and passes on consistent data` | `modules/Integration/tests/Feature/ApiAuditCommandTest.php` | PASS 🟢 | 0.031s |
+| R0.5 | `it ensures CODEBASE.md does not reference removed non-existent accounts` | `tests/Architecture/DocsVersionConsistencyTest.php` | PASS 🟢 | 0.007s |
+| R0.6 | `it declares every artisan command name exactly once` | `tests/Architecture/CommandSignatureUniqueTest.php` | PASS 🟢 | 0.347s |
+| R0.6 | `runs the integration and platform economy audits and passes on consistent data` | `modules/Integration/tests/Feature/ApiAuditCommandTest.php` | PASS 🟢 | 0.039s |
 | R0.7 | `it verifies pull request template contains V1-V12 and C1-C14 checklists` | `tests/Architecture/GateTemplateContractTest.php` | PASS 🟢 | 0.002s |
-| R0.7 | `it verifies docs/gates/README.md provides guidance on reading gate reports` | `tests/Architecture/GateTemplateContractTest.php` | PASS 🟢 | 0.000s |
-| R0.8 | `it keeps module code within the arch:scan ratchet baseline` | `tests/Architecture/ArchScanBaselineTest.php` | PASS 🟢 | 4.151s |
-| R0.8 | `fails and names the violation when it is not covered by the baseline` | `tests/Feature/Console/ArchScanCommandTest.php` | PASS 🟢 | 0.042s |
-| R0.9 | `it maps every registered route in route-roles.php` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 0.020s |
-| R0.9 | `it enforces that route authorization never weakens compared to baseline` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 0.029s |
-| R0.9 | `it keeps pending dynamic routes within the ratchet baseline` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 0.025s |
-| R0.9 | `it enforces that unauthorized roles receive 403 on role-protected routes` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 0.273s |
-| R0.9 | `it confirms authorized roles are not forbidden (not 403) on role-protected routes` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 1.674s |
-| R0.10 | `it confirms bank:reconcile passes on clean state and fails when data is corrupted` | `tests/Architecture/AuditCommandContractTest.php` | PASS 🟢 | 0.030s |
-| R0.10 | `it confirms api:audit passes on clean state and fails when signature is corrupted` | `tests/Architecture/AuditCommandContractTest.php` | PASS 🟢 | 0.037s |
-| R0.10 | `it keeps audit commands without corruption fixtures within the ratchet baseline` | `tests/Architecture/AuditCommandContractTest.php` | PASS 🟢 | 0.032s |
-| R0.10 | `it keeps unseeded ledger accounts within the ratchet baseline` | `tests/Architecture/LedgerAccountRegistryTest.php` | PASS 🟢 | 2.664s |
-| R0.10 | `it keeps accounts with inverted normal balances within the ratchet baseline` | `tests/Architecture/LedgerNormalBalanceTest.php` | PASS 🟢 | 2.533s |
-| R0.11 | `it keeps modules/Integration frozen except for external adapters and intg_ tables` | `tests/Architecture/IntegrationFreezeTest.php` | PASS 🟢 | 0.105s |
-| R0.11 | `it keeps tests within the hygiene ratchet baseline` | `tests/Architecture/TestHygieneTest.php` | PASS 🟢 | 1.373s |
-| R0.12 | `it verifies MutationTestCommand is registered and constructs correct Pest CLI invocation` | `tests/Architecture/MutationTestingContractTest.php` | PASS 🟢 | 0.015s |
-| R0.12 | `it verifies CI workflow defines mutation testing job with PCOV and 60% minimum threshold` | `tests/Architecture/MutationTestingContractTest.php` | PASS 🟢 | 0.014s |
-| R0.12 | `it verifies Pest CLI supports mutation testing options` | `tests/Architecture/MutationTestingContractTest.php` | PASS 🟢 | 0.279s |
+| R0.7 | `it verifies docs/gates/README.md provides guidance on reading gate reports` | `tests/Architecture/GateTemplateContractTest.php` | PASS 🟢 | 0.001s |
+| R0.8 | `it keeps module code within the arch:scan ratchet baseline` | `tests/Architecture/ArchScanBaselineTest.php` | PASS 🟢 | 6.022s |
+| R0.8 | `fails and names the violation when it is not covered by the baseline` | `tests/Feature/Console/ArchScanCommandTest.php` | PASS 🟢 | 0.059s |
+| R0.9 | `it maps every registered route in route-roles.php` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 0.042s |
+| R0.9 | `it enforces that route authorization never weakens compared to baseline` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 0.081s |
+| R0.9 | `it keeps pending dynamic routes within the ratchet baseline` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 0.125s |
+| R0.9 | `it enforces that unauthorized roles receive 403 on role-protected routes` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 0.962s |
+| R0.9 | `it confirms authorized roles are not forbidden (not 403) on role-protected routes` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 2.593s |
+| R0.10 | `it confirms bank:reconcile passes on clean state and fails when data is corrupted` | `tests/Architecture/AuditCommandContractTest.php` | PASS 🟢 | 0.048s |
+| R0.10 | `it confirms api:audit passes on clean state and fails when signature is corrupted` | `tests/Architecture/AuditCommandContractTest.php` | PASS 🟢 | 0.043s |
+| R0.10 | `it keeps audit commands without corruption fixtures within the ratchet baseline` | `tests/Architecture/AuditCommandContractTest.php` | PASS 🟢 | 0.053s |
+| R0.10 | `it keeps unseeded ledger accounts within the ratchet baseline` | `tests/Architecture/LedgerAccountRegistryTest.php` | PASS 🟢 | 4.777s |
+| R0.10 | `it keeps accounts with inverted normal balances within the ratchet baseline` | `tests/Architecture/LedgerNormalBalanceTest.php` | PASS 🟢 | 4.030s |
+| R0.11 | `it keeps modules/Integration frozen except for external adapters and intg_ tables` | `tests/Architecture/IntegrationFreezeTest.php` | PASS 🟢 | 0.109s |
+| R0.11 | `it keeps tests within the hygiene ratchet baseline` | `tests/Architecture/TestHygieneTest.php` | PASS 🟢 | 2.439s |
+| R0.12 | `it verifies MutationTestCommand is registered and constructs correct Pest CLI invocation` | `tests/Architecture/MutationTestingContractTest.php` | PASS 🟢 | 0.028s |
+| R0.12 | `it verifies CI workflow defines mutation testing job with PCOV and 60% minimum threshold` | `tests/Architecture/MutationTestingContractTest.php` | PASS 🟢 | 0.023s |
+| R0.12 | `it verifies Pest CLI supports mutation testing options` | `tests/Architecture/MutationTestingContractTest.php` | PASS 🟢 | 0.265s |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** Terpasang (7265 pelanggaran terbaseline).
