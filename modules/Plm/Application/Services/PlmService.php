@@ -118,7 +118,7 @@ class PlmService
                 'project_id' => $project->id,
                 'experiment_code' => $code,
                 'title' => $title,
-                'formula_payload_encrypted' => base64_encode($secretFormula),
+                'formula_payload_encrypted' => $secretFormula,
                 'stability_test_result' => $stability,
                 'sensory_score' => $sensoryScore,
             ]);

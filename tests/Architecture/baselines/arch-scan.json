@@ -5601,24 +5601,8 @@
             }
         },
         "A7": {
-            "total": 5,
-            "entries": {
-                "modules/Hcm/Application/Services/HcmService.php": {
-                    "nik_hash = isset($data['nik'])?hash('sha256',$data['nik']):null": 1
-                },
-                "modules/Integration/Application/Services/GovEthicsAiBiometricsService.php": {
-                    "encrypted_template_hash = $templateHash": 1
-                },
-                "modules/Integration/Application/Services/SdmWellnessOccupationalHealthService.php": {
-                    "encrypted_medical_vault_token = $vaultToken": 1
-                },
-                "modules/Integration/Application/Services/WhistleblowingEthicsSpeakUpService.php": {
-                    "allegation_encrypted = base64_encode($allegationDetails)": 1
-                },
-                "modules/Plm/Application/Services/PlmService.php": {
-                    "formula_payload_encrypted = base64_encode($secretFormula)": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "A8": {
             "total": 3,

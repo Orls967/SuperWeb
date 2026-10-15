@@ -7,6 +7,7 @@ namespace Modules\Hcm;
 use Illuminate\Support\ServiceProvider;
 use Modules\Hcm\Application\Services\HcmService;
 use Modules\Hcm\Console\Commands\AuditHcmCommand;
+use Modules\Hcm\Console\Commands\EncryptLegacyEmployeeNikCommand;
 
 class HcmServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,7 @@ class HcmServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AuditHcmCommand::class,
+                EncryptLegacyEmployeeNikCommand::class,
             ]);
         }
     }

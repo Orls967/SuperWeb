@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hcm\Domain\Models;
 
+use App\Security\BlindIndex;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +19,8 @@ class Employee extends Model
     protected $fillable = [
         'employee_number',
         'name',
+        'nik',
+        'nik_bidx',
         'nik_hash',
         'email',
         'department_id',
@@ -31,10 +34,21 @@ class Employee extends Model
     ];
 
     protected $casts = [
+        'nik' => 'encrypted',
         'basic_salary_idr' => 'integer',
         'allowances_idr' => 'integer',
         'is_active' => 'boolean',
     ];
+
+    /**
+     * Find employee by NIK via deterministic blind index.
+     */
+    public static function findByNik(string $nik): ?self
+    {
+        $bidx = BlindIndex::forNik($nik);
+
+        return self::where('nik_bidx', $bidx)->first();
+    }
 
     public function department(): BelongsTo
     {

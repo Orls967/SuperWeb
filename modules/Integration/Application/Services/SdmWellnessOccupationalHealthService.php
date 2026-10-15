@@ -33,8 +33,8 @@ class SdmWellnessOccupationalHealthService
     ): object {
         $code = strtoupper($surveillanceCode);
 
-        // Medical record encrypted into vault token (285.1)
-        $vaultToken = 'VAULT-MED-'.hash('sha256', $rawMedicalRecordData);
+        // Medical record encrypted into vault token (285.1 Keyed HMAC-SHA256)
+        $vaultToken = 'VAULT-MED-'.hash_hmac('sha256', $rawMedicalRecordData, (string) config('app.key'));
 
         $id = DB::table('sdm_occupational_health_surveillances')->insertGetId([
             'surveillance_code' => $code,
