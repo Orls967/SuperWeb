@@ -7,7 +7,7 @@ namespace Modules\Distribution\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
-use Modules\Core\Domain\Models\AuditLog;
+use Modules\Core\Contracts\AuditTrailInterface;
 use Modules\Distribution\Application\Services\DistributionService;
 use Modules\Distribution\Domain\Models\Distributor;
 
@@ -18,7 +18,10 @@ use Modules\Distribution\Domain\Models\Distributor;
  */
 class DistributorPortalController extends Controller
 {
-    public function __construct(private readonly DistributionService $service) {}
+    public function __construct(
+        private readonly DistributionService $service,
+        private readonly AuditTrailInterface $auditTrail
+    ) {}
 
     public function home(Request $request): View
     {
@@ -51,7 +54,7 @@ class DistributorPortalController extends Controller
             }
 
             // Catat akses admin ke audit log (D3 / A5)
-            AuditLog::record(
+            $this->auditTrail->record(
                 action: 'distribution.portal.admin_view',
                 auditable: $distributor,
                 context: [
