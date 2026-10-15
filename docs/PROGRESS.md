@@ -827,7 +827,34 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - minus: M-R0-18
     - gate: docs/gates/fase-r3.md
   - Kriteria terima: baseline `RouteAuthorizationMatrixTest` = 0; tidak ada rute mutasi/keuangan yang hanya `auth`.
-- [ ] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin` (baseline `arch:scan` A7 = 0).
+- [x] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin` (baseline `arch:scan` A7 = 0).
+  Bukti:
+    - commit: 12202b6
+    - commit: d38ea22
+    - commit: da165c4
+    - commit: ef9af40
+    - commit: c73c90a
+    - commit: dd4af60
+    - file: app/Security/BlindIndex.php
+    - file: modules/Hcm/Domain/Models/Employee.php
+    - file: modules/Mall/Domain/Models/Tenant.php
+    - file: modules/Hcm/Domain/Policies/SalaryPolicy.php
+    - file: tests/Architecture/SensitiveDataCastingTest.php
+    - file: docs/gates/fase-r3.md
+    - test: tests/Unit/Security/BlindIndexTest.php::deterministic generation with fixed vector
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::employee nik is encrypted and searchable via blind index
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::mall tenant npwp is encrypted and searchable via blind index
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::party and legal entity pii encryption and blind index
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::plm lab notebook formula is encrypted
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::webhook secrets are encrypted in database
+    - test: tests/Feature/Security/SensitiveDataEncryptionTest.php::developer and partner api keys are one way hashed in database
+    - test: tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php::admin can view all salaries and payrolls
+    - test: tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php::hcm manager can view all salaries and payrolls
+    - test: tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php::staff cannot view other employees salaries or payrolls
+    - test: tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php::staff can view own salary and payroll slip
+    - test: tests/Architecture/SensitiveDataCastingTest.php::it enforces that every Eloquent model with sensitive columns declares encrypted or hashed cast
+    - akses: command hcm:encrypt-legacy
+    - gate: docs/gates/fase-r3.md
   - Test wajib: nilai di DB tidak sama dengan plaintext; pencarian via blind index bekerja.
 - [ ] R3.3 **Hapus flag-sebagai-kontrol** (K-21) pada jalur yang menyentuh uang, akses data, atau kepatuhan: status diturunkan dari ApprovalEngine/DocumentStore/hasil pemeriksaan tersimpan (baseline `arch:scan` A6 untuk modul non-Integration = 0; sisanya mengikuti R4.4).
 - [ ] R3.4 **Kuota API ditegakkan** (K-23): `RateLimiter` per klien API dari `rate_limit_per_minute`; halaman `/integration` hanya role admin/integrasi.
