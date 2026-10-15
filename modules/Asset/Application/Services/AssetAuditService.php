@@ -81,9 +81,10 @@ class AssetAuditService
         // 3: ledger vs subledger.
         $ledger = $this->ledgerBalances();
         $subledgerBookValue = (int) $ledgerPostedAssets->sum('book_value_idr');
-        // Akumulasi penyusutan adalah kontra-aset ber-saldo negatif (kredit),
-        // sehingga nilai buku ledger = fixed_assets + accumulated.
-        $ledgerNet = $ledger['fixed_assets'] + $ledger['accumulated'];
+        // Konvensi tanda tunggal: fixed_assets adalah aset (debit <= 0, bernilai negatif).
+        // Akumulasi penyusutan adalah kontra-aset (kredit >= 0, bernilai positif).
+        // Nilai buku ledger = abs(fixed_assets) - accumulated.
+        $ledgerNet = abs($ledger['fixed_assets']) - $ledger['accumulated'];
 
         if ($ledgerNet !== $subledgerBookValue) {
             $discrepancies[] = [

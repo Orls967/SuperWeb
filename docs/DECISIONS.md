@@ -1351,6 +1351,9 @@
       - `ColdChainAndDroneRoboticsTest::test_80_1_temp_breach_holds_carrier_payment_only_when_exceeding_ten_minutes`: asersi lama `escrow: -7500000` → baru `escrow: 7500000` (escrow sengketa carrier adalah liabilitas/kredit +).
       - `ReverseLogisticsCircularTest::test_79_3_circular_intake_posts_to_ledger_and_updates_status`: asersi lama `mfgScrap: 2500000`, `lgxRev: -2500000` → baru `mfgScrap: -2500000`, `lgxRev: 2500000` (persediaan scrap inbound adalah aset/debit −, pendapatan circular logistics adalah revenue/kredit +).
       - `AiContractBiddingAgentTest::test_84_4_and_84_5_four_eyes_approval_mandatory_and_post_win_budget_commitment`: asersi lama `ar: 1020000000` → baru `ar: -1020000000` (piutang kontrak tender adalah aset/debit −).
+      - `AssetCoreTest::test_acquisition_posts_to_ledger_when_flagged`: asersi lama `fixed: 1050000000` → baru `fixed: -1050000000` (aset tetap adalah aset/debit −).
+      - `AssetPhase31Test::test_straight_line_depreciation_is_monthly_and_idempotent`: asersi lama `expense: 1250000` → baru `expense: -1250000` (beban penyusutan adalah beban/debit −).
+      - `AssetPhase31Test::test_work_order_expense_posts_to_expense_account`: asersi lama `expense: 7000000` → baru `expense: -7000000` (beban pemeliharaan aset adalah beban/debit −).
   - **D5 (Pemecahan PR bertahap, P5):** Disetujui pemecahan eksekusi menjadi 3 PR terpisah: PR 1 (R1.1–R1.3: Ledger Foundation & Chart of Accounts), PR 2 (R1.4–R1.7: Ledger Guards, Idempotency & Refunds), dan PR 3 (R1.8–R1.9: Integer Money & Reconcile).
   - **D6 (Chart of accounts modul Integration, R1.3):** Menambahkan direktori `Ledger/` ke dalam allowlist `IntegrationFreeze` lewat keputusan ini. Pemindahan modul domain tetap dijadwalkan pada Fase R4.4.
   - **D7 (Pola eksekusi refund, R1.6):** Refund dieksekusi secara sinkron langsung oleh aksi pembatalan terkait; event `PaymentRefunded` dipancarkan setelah transaksi komit untuk konsumen asynchronous lain.

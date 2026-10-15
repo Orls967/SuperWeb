@@ -90,7 +90,7 @@ class AssetPhase31Test extends TestCase
 
         // Ledger tercatat sekali, kunci deterministik.
         $this->assertSame(1, LedgerTransaction::where('idempotency_key', 'ast:depreciate:'.$asset->id.':2026-09:commercial')->count());
-        $this->assertSame(1_250_000, (int) LedgerAccount::where('code', 'ast:depreciation_expense')->first()->money()->amount->toInt());
+        $this->assertSame(-1_250_000, (int) LedgerAccount::where('code', 'ast:depreciation_expense')->first()->money()->amount->toInt());
 
         $this->artisan('bank:reconcile')->assertSuccessful();
     }
@@ -246,11 +246,11 @@ class AssetPhase31Test extends TestCase
 
         // Expense tidak menambah nilai aset.
         $this->assertSame(100_000_000, $asset->fresh()->book_value_idr);
-        $this->assertSame(7_000_000, (int) LedgerAccount::where('code', 'maintenance:asset:IDR')->first()->money()->amount->toInt());
+        $this->assertSame(-7_000_000, (int) LedgerAccount::where('code', 'maintenance:asset:IDR')->first()->money()->amount->toInt());
 
         // Complete ganda tidak menggandakan biaya (idempoten).
         $service->complete($completed);
-        $this->assertSame(7_000_000, (int) LedgerAccount::where('code', 'maintenance:asset:IDR')->first()->money()->amount->toInt());
+        $this->assertSame(-7_000_000, (int) LedgerAccount::where('code', 'maintenance:asset:IDR')->first()->money()->amount->toInt());
         $this->artisan('bank:reconcile')->assertSuccessful();
     }
 

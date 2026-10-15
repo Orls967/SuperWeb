@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Asset\Application\Services;
 
-use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -13,12 +12,12 @@ use Modules\Asset\Domain\Models\Asset;
 use Modules\Asset\Domain\Models\AssetUsageLog;
 use Modules\Asset\Domain\Models\AssetWorkOrder;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Banking\Support\Posting;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 
 /**
@@ -198,7 +197,7 @@ class WorkOrderService
                 'uuid' => (string) Str::uuid(),
                 'name' => 'Beban Pemeliharaan Aset',
                 'kind' => AccountKind::EXPENSE->value,
-                'allow_negative' => false,
+                'allow_negative' => true,
                 'cached_balance' => '0',
                 'is_frozen' => false,
             ]
@@ -208,10 +207,10 @@ class WorkOrderService
             type: TransactionType::ASSET_WORK_ORDER->value,
             description: "Biaya pemeliharaan {$wo->number} — {$asset->asset_number}",
             idempotencyKey: 'ast:wo:'.$wo->id,
-            entries: [
-                PostingEntryDTO::forCode($expenseCode, 'IDR', BigDecimal::of($total)),
-                PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', BigDecimal::of($total)->negated()),
-            ],
+            entries: Posting::lines()
+                ->debit($expenseCode, $total)
+                ->credit('clearing:external:IDR', $total)
+                ->toEntries('IDR'),
             referenceType: AssetWorkOrder::class,
             referenceId: $wo->id,
             meta: [

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Asset\Application\Services;
 
 use App\Models\User;
-use Brick\Math\BigDecimal;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -21,12 +20,12 @@ use Modules\Asset\Domain\Models\AssetInsurance;
 use Modules\Asset\Domain\Models\AssetLocation;
 use Modules\Asset\Domain\Models\AssetStocktake;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Banking\Support\Posting;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Core\Contracts\DocumentStoreInterface;
@@ -67,7 +66,7 @@ class AssetService
                 'uuid' => (string) Str::uuid(),
                 'name' => 'Aset Tetap',
                 'kind' => AccountKind::ASSET->value,
-                'allow_negative' => false,
+                'allow_negative' => true,
                 'cached_balance' => '0',
                 'is_frozen' => false,
             ]
@@ -226,10 +225,10 @@ class AssetService
             type: TransactionType::ASSET_ACQUISITION->value,
             description: "Akuisisi aset {$asset->asset_number} — {$asset->name}",
             idempotencyKey: 'ast:acquire:'.$asset->id,
-            entries: [
-                PostingEntryDTO::forCode(self::ACCT_FIXED_ASSETS, 'IDR', BigDecimal::of($total)),
-                PostingEntryDTO::forCode($creditCode, 'IDR', BigDecimal::of($total)->negated()),
-            ],
+            entries: Posting::lines()
+                ->debit(self::ACCT_FIXED_ASSETS, $total)
+                ->credit($creditCode, $total)
+                ->toEntries('IDR'),
             referenceType: Asset::class,
             referenceId: $asset->id,
             meta: [
