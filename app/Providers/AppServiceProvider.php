@@ -22,6 +22,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // D2: Aplikasi wajib gagal boot di production bila BLIND_INDEX_PEPPER kosong
+        if ($this->app->environment('production') && empty(config('app.blind_index_pepper'))) {
+            throw new \RuntimeException('BLIND_INDEX_PEPPER environment variable is required in production environment.');
+        }
+
         // 57B.4 Granular rate limiters
         RateLimiter::for('transactions', function (Request $request) {
             return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());

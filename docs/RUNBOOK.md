@@ -381,4 +381,32 @@ Prompt agent wajib memuat larangan: hanya repo `Orls967/superweb`; dilarang `git
    ```
    Lalu pasang token baru sesuai §7.1.
 3. **Hapus log** yang memuat token (folder kerja/log alat agent). Setelah token dicabut, isinya sudah tidak berlaku, tetapi tetap dibersihkan.
-4. **Catat** di `docs/BLOCKERS.md` (Riwayat) tanpa menuliskan nilai token.
+384: 4. **Catat** di `docs/BLOCKERS.md` (Riwayat) tanpa menuliskan nilai token.
+385: 
+---
+
+## 8. Prosedur Rotasi Pepper Blind Index & Kunci Enkripsi (Fase R3 / D2)
+
+### 8.1 Arsitektur Blind Index & Pepper
+Kolom data pribadi terenkripsi (seperti NIK pada `hcm_employees` dan NPWP pada `mall_tenants`/`pty_legal_entities`) menggunakan mekanisme **Blind Index HMAC-SHA256** melalui kelas `App\Security\BlindIndex`.
+Pepper rahasia dimuat dari variabel lingkungan `BLIND_INDEX_PEPPER` (`config('app.blind_index_pepper')`).
+
+**Aturan Keamanan Mutlak:**
+- Nilai pepper dilarang di-commit ke repositori Git.
+- Pada lingkungan produksi (`APP_ENV=production`), aplikasi secara otomatis menolak booting (`RuntimeException`) bila `BLIND_INDEX_PEPPER` kosong.
+
+### 8.2 Prosedur Operasional Rotasi Pepper
+Rotasi pepper dilakukan ketika terjadi pergantian kunci berkala atau dugaan kompromi kredensial:
+1. **Persiapan Pepper Baru**: Buat string acak kriptografis 32+ karakter (misal via `openssl rand -hex 32`).
+2. **Mode Transisi**:
+   - Simpan pepper lama sebagai variabel sementara (misal `BLIND_INDEX_PEPPER_OLD`).
+   - Perbarui nilai `BLIND_INDEX_PEPPER` di environment server (misal `.env` / AWS Secrets Manager).
+3. **Eksekusi Re-Indexing Idempoten**:
+   Jalankan command re-index untuk memperbarui kolom `*_bidx` pada basis data:
+   ```bash
+   php artisan app:rotate-blind-index --old-pepper="<PEPPER_LAMA>" --dry-run
+   php artisan app:rotate-blind-index --old-pepper="<PEPPER_LAMA>" --force
+   ```
+4. **Verifikasi Pencarian**:
+   Uji pencarian exact-match NIK/NPWP untuk memastikan data dapat ditemukan menggunakan pepper baru.
+5. **Pembersihan**: Hapus variabel `BLIND_INDEX_PEPPER_OLD` setelah re-indexing selesai 100%.
