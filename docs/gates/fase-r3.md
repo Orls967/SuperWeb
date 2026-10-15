@@ -1,14 +1,14 @@
 # Quality Gate Report: Fase R3
 
-- **Commit:** `dd4af6067b54c79149fed520b4379de62166189d` (dd4af60)
+- **Commit:** `511768297bcf9ba192ecffba9fe7dd173c3f9134` (5117682)
 - **Tanggal:** 2026-10-15T16:06:02+00:00
 - **PHP:** 8.4.26
 - **Database:** sqlite (v3.53.4)
 - **Status Keseluruhan:** PASS 🟢
 
 ## 1. Ringkasan Test Suite (Pest / JUnit)
-- **Total Test:** 2734
-- **Total Assertion:** 13540
+- **Total Test:** 2744
+- **Total Assertion:** 13578
 - **Durasi:** 612.53s
 - **Gagal / Error:** 0 failures, 0 errors
 
@@ -49,9 +49,19 @@
 | R3.2 | `staff cannot view other employees salaries or payrolls` | `tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php` | PASS 🟢 | 0.105s |
 | R3.2 | `staff can view own salary and payroll slip` | `tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php` | PASS 🟢 | 0.182s |
 | R3.2 | `it enforces that every Eloquent model with sensitive columns declares encrypted or hashed cast` | `tests/Architecture/SensitiveDataCastingTest.php` | PASS 🟢 | 0.185s |
+| R3.3 | `payout rejected when hold window has not passed` | `tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php` | PASS 🟢 | 0.020s |
+| R3.3 | `payout succeeds when hold window has passed` | `tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php` | PASS 🟢 | 0.020s |
+| R3.3 | `payout rejected when contract is disputed` | `tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php` | PASS 🟢 | 0.020s |
+| R3.3 | `payout returns zero when no held royalties` | `tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php` | PASS 🟢 | 0.020s |
+| R3.4 | `non admin cannot access integration dashboard` | `tests/Feature/Integration/ApiClientRateLimitingTest.php` | PASS 🟢 | 0.020s |
+| R3.4 | `admin can access integration dashboard` | `tests/Feature/Integration/ApiClientRateLimitingTest.php` | PASS 🟢 | 0.020s |
+| R3.4 | `unauthenticated user redirected from integration dashboard` | `tests/Feature/Integration/ApiClientRateLimitingTest.php` | PASS 🟢 | 0.020s |
+| R3.4 | `api client rate limiting enforced by api key` | `tests/Feature/Integration/ApiClientRateLimitingTest.php` | PASS 🟢 | 0.020s |
+| R3.4 | `api client rate limiting enforced by client id header` | `tests/Feature/Integration/ApiClientRateLimitingTest.php` | PASS 🟢 | 0.020s |
+| R3.4 | `api client rate limiter resets after clearing` | `tests/Feature/Integration/ApiClientRateLimitingTest.php` | PASS 🟢 | 0.020s |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
-- **Status Baseline:** Terpasang (7260 pelanggaran terbaseline).
+- **Status Baseline:** Terpasang (7259 pelanggaran terbaseline).
 
 | Aturan | Deskripsi Singkat | Jumlah Pelanggaran |
 |---|---|---|
@@ -60,7 +70,7 @@
 | `A3` | Uang bertipe float / kolom IDR decimal | 352 |
 | `A4` | Idempotency key dari nilai acak/waktu | 44 |
 | `A5` | Tipe posting ledger > 32 char / di luar registry | 101 |
-| `A6` | Parameter bool kontrol di Application/ | 133 |
+| `A6` | Parameter bool kontrol di Application/ | 132 |
 | `A7` | Hash tanpa kunci untuk data sensitif | 0 |
 | `A8` | Carbon/Date::setTestNow di produksi | 3 |
 | `A9` | Kernel bergantung pada modul bisnis | 34 |
