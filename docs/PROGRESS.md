@@ -505,8 +505,8 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | M-R0-1 | R0.8 | Pelanggaran `arch:scan` warisan kode lama (7.265 temuan terbaseline di A1–A13, A12 berkurang 8 dari 596 ke 588) belum diperbaiki | Pola anti-pola X2–X25 masih ada di kode lama sampai remediasi modular | P2 | R1–R5 (K2) |
-| M-R0-2 | R0.9 | 299 rute operasional dipetakan sebagai 'auth' di route-auth-entries.json (dari total 598 rute di route-authorization.json) | Rute lama belum terlindungi matriks otorisasi per-role ketat | P2 | R3.1 (K2) |
-| M-R0-3 | R0.9 | 280 rute berparameter belum memiliki closure parameter uji HTTP dinamis (ratchet `route-dynamic-pending.json`) | Uji HTTP dinamis 403/non-403 pada rute ini ditunda | P2 | R3.1 (K2) |
+| ~~M-R0-2~~ | R0.9 | ~~299 rute operasional dipetakan sebagai 'auth' di route-auth-entries.json (dari total 598 rute di route-authorization.json)~~ | ~~Rute lama belum terlindungi matriks otorisasi per-role ketat~~ | ~~P2~~ | Tuntas di R3.1: 279 rute bisnis/keuangan dipetakan ke role granular di `route-roles.php`, menyisakan tepat 20 rute identitas core |
+| M-R0-3 | R0.9 | 159 rute berparameter belum memiliki closure parameter uji HTTP dinamis (ratchet `route-dynamic-pending.json`, turun dari 280) | Uji HTTP dinamis 403/non-403 pada rute ini ditunda | P2 | R3.1 / R5.5 (K2): baseline diturunkan dari 280 ke 159 rute (-43.2%) |
 | M-R0-4 | R0.10 | 33 command audit warisan belum memiliki fixture korupsi (`audit-contract.json`) | Baru 2 audit (`bank:reconcile`, `api:audit`) yang terbukti gagal saat data rusak | P1 | ↪️ dialihkan ke R5.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-5 | R0.10 | 172 kode akun produksi belum didefinisikan di seeder chart of accounts (`ledger-accounts.json`) | Akun warisan ini berpotensi gagal posting di skenario database bersih | P1 | ↪️ dialihkan ke R1.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-6 | R0.10 | 3 saldo akun berlawanan sisi normal akuntansi (`ledger-normal-balance.json`: `ast:fixed_assets`, `expense:resto:waste:IDR`, `liability:mall:points:PTS`) | Data uang dan saldo neraca/laba rugi terbalik | P0 | ↪️ dialihkan ke R1.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
@@ -515,13 +515,13 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-9 | R0.3 | CI run #38078763783 membuktikan job `gate-sqlite` dan `portability-mysql` (MySQL 8) keduanya HIJAU PENUH (SUCCESS, 2.524 test, 11.065 asersi); Draft PR #8 aktif; branch protection master menunggu aktivasi pemilik repo | Branch protection remote master menunggu hak akses admin pemilik | P2 | Menunggu aktivasi protection oleh pemilik |
 | M-R0-10 | R2.3 | `contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`) | Pembuatan klausa kontrak tidak dapat diakses via web UI | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-11 | R2.3 | `contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view | Halaman laporan keuangan kontrak tidak bisa dibuka | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
-| M-R0-12 | R3.1 | `distribution.portal.home` → HTTP 403 untuk user dengan role `admin` (hanya allow distributor/partner) | Admin sistem tidak bisa membuka portal distributor untuk supervisi | P1 | ↪️ dialihkan ke R3.1 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
-| M-R0-13 | R3.1 | `storage.local.upload`: tidak terlindungi = P0 tidak terbukti (closure bawaan Laravel abort 403 bila URL signature tidak valid); belum terdokumentasi di route-roles | Perlu dokumentasi eksplisit signed route | P2 | R3.1 (K2) |
+| ~~M-R0-12~~ | R3.1 | ~~`distribution.portal.home` → HTTP 403 untuk user dengan role `admin` (hanya allow distributor/partner)~~ | ~~Admin sistem tidak bisa membuka portal distributor untuk supervisi~~ | ~~P1~~ | Tuntas di R3.1 (D3): selector distributor untuk admin, audit log `distribution.portal.admin_view`, non-admin dilarang param `?distributor` (403); test `DistributorPortalSelectorTest` (commit `901caca`, `9016f13`) |
+| ~~M-R0-13~~ | R3.1 | ~~`storage.local.upload`: tidak terlindungi = P0 tidak terbukti (closure bawaan Laravel abort 403 bila URL signature tidak valid); belum terdokumentasi di route-roles~~ | ~~Perlu dokumentasi eksplisit signed route~~ | ~~P2~~ | Tuntas di R3.1 (D4): rute `storage.local.upload` terdokumentasi tipe `'signed'` di `route-roles.php`, test valid signature vs unauthorized 403 di `SignedStorageUploadTest` (commit `0dcf3f4`) |
 | M-R0-14 | R5.2 | `api:audit` tidak menyebut entitas/record yang rusak (hanya count dan pesan generik) | Penelusuran data korup memerlukan query manual ke database | P1 | ↪️ dialihkan ke R5.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-15 | R5.5 | Scanner A12 hanya per-file migrasi (FK di migrasi terpisah tidak terbaca) & scanner T4 berbasis heuristik nama folder/token | Risiko false positive/negative pada analisis statis arsitektur | P2 | R5.5 (K2) |
 | M-R0-16 | R5.5 | Memori test suite penuh pada batas `memory_limit=512M` phpunit.xml terukur lulus tanpa crash: sekuensial durasi 285.00s peak RSS 685.1MB peak footprint 592.5MB; paralel 10 proses 57.48s peak RSS 389.5MB peak footprint 119.0MB | Risiko Out Of Memory bila test suite bertambah tanpa eksekusi paralel | P2 | R5.5 (K2) |
 | ~~M-R0-17~~ | R0.3 | ~~Portabilitas skema MySQL: 22 identifier ≤ 64 char, key InnoDB ≤ 3072 byte, approval_id disatukan bigint FK~~ | ~~Portabilitas skema MySQL tuntas~~ | ~~P0~~ | Tuntas di R0.3.b (commit `5b2828a`, `4a8ad1a`, diperkuat `2cd2003`; test `MysqlSchemaCompatibilityTest`) |
-| M-R0-18 | R3.1 | 37 rute tulis auditor (V8c) mencantumkan role auditor pada endpoint mutasi data (store/update/delete/settle/transition/decide) | Auditor seharusnya hanya memiliki hak baca (read-only) | P1 | ↪️ dialihkan ke R3.1 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+| ~~M-R0-18~~ | R3.1 | ~~37 rute tulis auditor (V8c) mencantumkan role auditor pada endpoint mutasi data (store/update/delete/settle/transition/decide)~~ | ~~Auditor seharusnya hanya memiliki hak baca (read-only)~~ | ~~P1~~ | Tuntas di R3.1 (D5): role auditor dicabut dari ke-37 rute tulis (Mfg 23, Pricing 12, Partner 2), test `AuditorReadOnlyPolicyTest` (commit `bfdbb0b`) |
 | ~~M-R0-19~~ | R0.3 | ~~Workflow CI dinamis per-fase terpasang di `.github/workflows/ci.yml` (B-06)~~ | ~~Workflow CI dinamis tuntas~~ | ~~P2~~ | Tuntas di commit `92385b0`, terbukti pada CI push run #38089526607 (artefak `gate-report-fase-r0`) |
 | ~~M-R0-20~~ | R0.12 | ~~Skor mutasi `App\Quality\Gate\GateRunner` mencapai 47.87% (131 killed mutants dari 282 total mutasi, naik dari 3.19%), sisa mutan untested pada konstanta MANDATORY_STEPS dan I/O shell~~ | ~~Pagar mutasi runner perlu penguatan lanjutan sampai ambang ≥ 60%~~ | ~~P1~~ | Tuntas di T6 (skor mutasi naik ke 69.28%, 114 tested dari 166 mutasi; commit `cec8f16`) |
 | ~~M-R0-21~~ | R0.4 / R0.12 | ~~Skor mutasi `App\Quality\Progress\ProgressIntegrityScanner` 59.24% (327 killed dari 552 mutasi) berada di bawah ambang batas pagar ≥ 60.0%~~ | ~~Integritas dokumen dan bukti berpotensi lolos dari deteksi bila pagar mutasi scanner di bawah ambang batas~~ | ~~P1~~ | Tuntas di T5 (skor mutasi naik ke 75.16%, 462 tested dari 616 mutasi; commit `ac1cb02`) |
@@ -674,17 +674,17 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 
   | Metrik / Pagar | Nilai Awal Terukur | Target R3 | Status & Keterangan |
   |---|---|---|---|
-  | `route-auth-entries.json` | 299 rute | 0 rute keuangan/mutasi (target 0 total) | 299 rute warisan hanya bertipe `'auth'` tanpa role granular |
-  | `route-dynamic-pending.json` | 280 rute | Berkurang sesuai rute berparameter yang dipetakan params nyata | Rute berparameter tanpa closure parameter HTTP generator |
-  | `route-authorization.json` | 598 rute | Snapshot proteksi rute diperkuat (0 melemah) | Baseline proteksi rute platform |
+  | `route-auth-entries.json` | 299 rute | 0 rute keuangan/mutasi (target 0 total) | Turun dari 299 menjadi 20 rute core self-service identitas |
+  | `route-dynamic-pending.json` | 280 rute | Berkurang sesuai rute berparameter yang dipetakan params nyata | Turun dari 280 menjadi 159 rute (-121 rute / -43.2%) |
+  | `route-authorization.json` | 598 rute | Snapshot proteksi rute diperkuat (0 melemah) | Baseline proteksi rute platform (lulus RouteAuthorizationMatrixTest) |
   | `arch:scan` A6 (Non-Integration) | 1 pelanggaran | 0 pelanggaran | `modules/Venue/Application/Services/VenueCreatorEconomyService.php:94` (`bool $windowPassed @ releaseRoyaltyPayout()`) |
   | `arch:scan` A6 (Integration) | 132 pelanggaran | 132 (dibekukan sampai R4.4) | Masuk lingkup perombakan modular Fase R4.4 |
   | `arch:scan` A7 | 5 pelanggaran | 0 pelanggaran | Hcm (1), Plm (1), Integration (3) |
-  | Register Minus M-R0-2 | 299 rute | Ditutup di R3.1 | Rute operasional 'auth' tanpa role |
-  | Register Minus M-R0-3 | 280 rute | Ditutup di R3.1 | Rute berparameter tertunda |
-  | Register Minus M-R0-12 | HTTP 403 admin | Selesai sesuai keputusan D3 | `distribution.portal.home` abort 403 untuk admin tanpa record Distributor |
-  | Register Minus M-R0-13 | storage upload | Terdokumentasi `'signed'` | `storage.local.upload` rute closure signed Laravel |
-  | Register Minus M-R0-18 | 37 rute tulis | 0 rute tulis ber-role auditor | 37 rute POST mutasi mengizinkan auditor (Mfg 23, Pricing 12, Partner 2) |
+  | Register Minus M-R0-2 | 299 rute | Ditutup di R3.1 | Ditutup di R3.1: 279 rute bisnis ber-role granular, 20 rute core |
+  | Register Minus M-R0-3 | 280 rute | Ditutup di R3.1 | Berkurang dari 280 ke 159 rute |
+  | Register Minus M-R0-12 | HTTP 403 admin | Selesai sesuai keputusan D3 | Ditutup di R3.1 (D3): selector distributor admin + audit log (`DistributorPortalSelectorTest`) |
+  | Register Minus M-R0-13 | storage upload | Terdokumentasi `'signed'` | Ditutup di R3.1 (D4): tipe `'signed'` di `route-roles.php` + test `SignedStorageUploadTest` |
+  | Register Minus M-R0-18 | 37 rute tulis | 0 rute tulis ber-role auditor | Ditutup di R3.1 (D5): role auditor dicabut dari 37 rute tulis, test `AuditorReadOnlyPolicyTest` |
 
   *Rincian 299 rute `route-auth-entries.json` per kelompok modul:*
   - Resto: 89 rute (`resto.*`)
@@ -807,7 +807,25 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - **D5 (Pencabutan Hak Tulis Auditor, M-R0-18):** Persetujuan mencabut role `auditor` dari seluruh 37 rute POST mutasi di Manufacturing (23 rute), Pricing (12 rute), dan Partner (2 rute), sehingga auditor murni read-only.
   - **D6 (Rate Limit Default Klien API, R3.4):** Untuk klien API tanpa konfigurasi kustom `rate_limit_per_minute`, limit default ditetapkan 600 req/menit dengan format respons JSON 429 dan header `Retry-After: 60`.
 
-- [ ] R3.1 **Tutup rute tanpa role** (K-20): isi `route-roles.php` untuk semua rute dan perbaiki minimal: Mall (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants, utilities, parking admin), Resto (menu, ingredients, outlets, purchases + `pay`, transfers, stock counts, POS), HCM, Treasury, Trade, Trade Finance, International, Intercompany, Control Tower, Enterprise Finance, ESG, B2B, Agri, EPC, PLM, Integration; tambah pemeriksaan role di Action uang (`MallAutoDebitAction`, `PaySupplierAction`).
+- [x] R3.1 **Tutup rute tanpa role** (K-20): isi `route-roles.php` untuk semua rute dan perbaiki minimal: Mall (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants, utilities, parking admin), Resto (menu, ingredients, outlets, purchases + `pay`, transfers, stock counts, POS), HCM, Treasury, Trade, Trade Finance, International, Intercompany, Control Tower, Enterprise Finance, ESG, B2B, Agri, EPC, PLM, Integration; tambah pemeriksaan role di Action uang (`MallAutoDebitAction`, `PaySupplierAction`).
+  Bukti:
+    - commit: 8ccdcca
+    - file: tests/Architecture/route-roles.php
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it maps every registered route in route-roles.php
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it confirms authorized roles are not forbidden (not 403) on role-protected routes
+    - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it enforces that unauthorized roles receive 403 on role-protected routes
+    - test: tests/Feature/Authorization/AuditorReadOnlyPolicyTest.php::all 37 write routes forbid auditor role
+    - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::admin without query receives 200 with distributor list selector
+    - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::admin with distributor query receives 200 with data and audit log
+    - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::non admin distributor attempting to select distributor receives 403
+    - test: tests/Feature/Authorization/SignedStorageUploadTest.php::storage local upload without valid signature returns 403
+    - test: tests/Feature/Authorization/SignedStorageUploadTest.php::storage local upload with valid signature is not forbidden
+    - akses: route GET /portal/distributors [role: admin,distributor]
+    - minus: M-R0-2
+    - minus: M-R0-12
+    - minus: M-R0-13
+    - minus: M-R0-18
+    - gate: docs/gates/fase-r3.md
   - Kriteria terima: baseline `RouteAuthorizationMatrixTest` = 0; tidak ada rute mutasi/keuangan yang hanya `auth`.
 - [ ] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin` (baseline `arch:scan` A7 = 0).
   - Test wajib: nilai di DB tidak sama dengan plaintext; pencarian via blind index bekerja.
