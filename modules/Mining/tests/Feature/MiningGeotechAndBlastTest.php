@@ -142,7 +142,7 @@ class MiningGeotechAndBlastTest extends TestCase
         $freightExp = LedgerAccount::where('code', 'min:marine_freight_expense:IDR')->first();
         $vendorPayable = LedgerAccount::where('code', 'min:marine_vendor_payable:IDR')->first();
 
-        $this->assertEquals('450000000', (string) $freightExp->cached_balance);
-        $this->assertEquals('-450000000', (string) $vendorPayable->cached_balance);
+        $this->assertEquals('-450000000', (string) $freightExp->cached_balance);
+        $this->assertEquals('450000000', (string) $vendorPayable->cached_balance);
     }
 }

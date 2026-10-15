@@ -6,8 +6,8 @@ namespace Modules\Mining\Application\Services;
 
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Support\Posting;
 use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Mining\Domain\Models\MiningWorkPermit;
 use Modules\Mining\Domain\Models\RoyaltyCalculation;
@@ -86,10 +86,10 @@ class MiningComplianceAndRoyaltyService
                 type: 'MINING_ROYALTY_ACCRUAL',
                 description: "PNBP mining royalty accrual for site {$site->name} ({$period})",
                 idempotencyKey: "min_royalty:{$siteId}:{$period}",
-                entries: [
-                    PostingEntryDTO::forCode('expense:mining_royalty:IDR', 'IDR', -$royaltyDue),
-                    PostingEntryDTO::forCode('min:royalty_payable:IDR', 'IDR', $royaltyDue),
-                ],
+                entries: Posting::lines()
+                    ->debit('expense:mining_royalty:IDR', $royaltyDue)
+                    ->credit('min:royalty_payable:IDR', $royaltyDue)
+                    ->toEntries('IDR'),
                 referenceType: 'min_royalty_calculations',
                 referenceId: $royalty->id,
             ));

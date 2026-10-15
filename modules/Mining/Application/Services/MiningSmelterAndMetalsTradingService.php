@@ -7,8 +7,8 @@ namespace Modules\Mining\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Mining\Domain\Models\MetalsTradingPosition;
 use Modules\Mining\Domain\Models\MetalWarehouseReceipt;
 use Modules\Mining\Domain\Models\OfftakerContract;
@@ -42,10 +42,10 @@ class MiningSmelterAndMetalsTradingService
                 type: 'MINING_BYPRODUCT_SALES',
                 description: "By-product slag sales revenue for run {$params['run_code']}",
                 idempotencyKey: 'MIN-BYP-'.$params['run_code'],
-                entries: [
-                    PostingEntryDTO::forCode('min:byproduct_receivable:IDR', 'IDR', $byproductRevenueIdr),
-                    PostingEntryDTO::forCode('min:byproduct_sales_revenue:IDR', 'IDR', -$byproductRevenueIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('min:byproduct_receivable:IDR', $byproductRevenueIdr)
+                    ->credit('min:byproduct_sales_revenue:IDR', $byproductRevenueIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'SMELTER_RUN',
                 referenceId: $params['run_code'],
             ));
@@ -86,10 +86,10 @@ class MiningSmelterAndMetalsTradingService
                 type: 'MINING_OFFTAKER_INVOICE',
                 description: "LME-linked metals invoice for contract {$contractNumber}",
                 idempotencyKey: 'MIN-INV-'.$contractNumber,
-                entries: [
-                    PostingEntryDTO::forCode('min:trade_receivable:IDR', 'IDR', $totalAmountIdr),
-                    PostingEntryDTO::forCode('min:metal_sales_revenue:IDR', 'IDR', -$totalAmountIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('min:trade_receivable:IDR', $totalAmountIdr)
+                    ->credit('min:metal_sales_revenue:IDR', $totalAmountIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'OFFTAKER_CONTRACT',
                 referenceId: $contractNumber,
             ));
