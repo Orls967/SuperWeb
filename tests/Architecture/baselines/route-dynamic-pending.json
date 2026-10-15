@@ -1,6 +1,6 @@
 {
     "about": "Rute berparameter tanpa closure params (PROGRESS R0.9, KONSEP §A14.3). Hanya boleh menyusut saat closure params dilengkapi (ditutup di R3.1).",
-    "total": 160,
+    "total": 159,
     "entries": [
         "route:admin.audit-logs.show",
         "route:admin.ledger.adjust",
@@ -19,7 +19,6 @@
         "route:agency.payouts.store",
         "route:agency.schemes.store",
         "route:agency.show",
-        "route:api.v1.logistics.shipments.show",
         "route:api.v1.logistics.tracking.show",
         "route:asset.checkin",
         "route:asset.checkout",
