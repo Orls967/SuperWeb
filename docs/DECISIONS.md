@@ -1310,6 +1310,28 @@
   - `vendor/bin/pest tests/Unit/Security/BlindIndexTest.php`
   - `vendor/bin/pest tests/Feature/Authorization/ApiClientRateLimitBlackBoxProofTest.php`
 
+## 2026-10-16: Persetujuan Definition of Ready (DoR) Fase R1 Ledger & Uang (D1–D8) (2026-10-16-dor-r1)
+<a id="2026-10-16-dor-r1"></a>
+<a id="2026-10-16-r1-d4-test-tanda-salah"></a>
+- **Context:**
+  - Definition of Ready (DoR) untuk Fase R1 (Ledger & Uang) memerlukan persetujuan pemilik terkait 8 keputusan desain utama (D1–D8) sebelum pelaksanaan teknis dimulai.
+  - Kesepakatan ini mengikat seluruh rangkaian pengerjaan Fase R1 (R1.1–R1.10).
+- **Decision:**
+  - **D1 (Penyimpanan aset non-IDR, R1.9):** Menggunakan integer minor unit per aset (satoshi/wei/dll.) dengan tabel desimal per aset di kode/konfigurasi, tanpa ketergantungan pada kekhususan driver database tertentu.
+  - **D2 (Registry tipe transaksi, R1.4.5):** Menggunakan registry per modul `{M}TransactionTypes` (enum string backed, ≤ 32 karakter) yang mengimplementasikan interface tunggal `TransactionTypeRegistry`, dikompilasi/digabung saat boot framework; satu tes arsitektur memastikan tidak ada nilai ganda lintas modul.
+  - **D3 (Database data nyata & migrasi, R1.8):** Dikonfirmasi oleh pemilik bahwa TIDAK ada database staging/produksi dengan data riil yang perlu dikonversi (B-05 ditutup). Migrasi skema baru diterapkan tanpa langkah migrasi data riil.
+  - **D4 (Pembaruan test lama dengan tanda salah, R1.2):** Disetujui sekali secara menyeluruh untuk seluruh rangkaian perbaikan R1.2. Setiap test lama yang mengassert tanda salah boleh diubah dengan mencantumkan `keputusan: docs/DECISIONS.md#2026-10-16-r1-d4-test-tanda-salah` di blok Bukti dan mendaftarkan test tersebut di bawah ini:
+    - *Daftar perbaikan test tanda salah R1.2 (diisi bertahap saat A2):*
+  - **D5 (Pemecahan PR bertahap, P5):** Disetujui pemecahan eksekusi menjadi 3 PR terpisah: PR 1 (R1.1–R1.3: Ledger Foundation & Chart of Accounts), PR 2 (R1.4–R1.7: Ledger Guards, Idempotency & Refunds), dan PR 3 (R1.8–R1.9: Integer Money & Reconcile).
+  - **D6 (Chart of accounts modul Integration, R1.3):** Menambahkan direktori `Ledger/` ke dalam allowlist `IntegrationFreeze` lewat keputusan ini. Pemindahan modul domain tetap dijadwalkan pada Fase R4.4.
+  - **D7 (Pola eksekusi refund, R1.6):** Refund dieksekusi secara sinkron langsung oleh aksi pembatalan terkait; event `PaymentRefunded` dipancarkan setelah transaksi komit untuk konsumen asynchronous lain.
+  - **D8 (Jadwal rekonsiliasi inkremental, R1.9):** Perintah `bank:reconcile --incremental` dijalankan secara manual dan diverifikasi lewat quality gate; otomatisasi penjadwalan harian ditunda hingga infrastruktur background scheduler Fase R5.
+- **Reason:**
+  - Menegakkan prinsip konvensi tanda tunggal (single sign convention), integritas akuntansi double-entry, immutabilitas ledger, presisi matematis integer pada nilai moneter, dan kepatuhan batas modul.
+- **Verification:**
+  - DoR Fase R1 tercentang `[x]`, dokumen `docs/PROGRESS.md` dan `docs/DECISIONS.md` disinkronkan, dipantau oleh `ProgressIntegrityTest`.
+
+
 
 
 

@@ -535,7 +535,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.
 
 #### DoR Fase R1 — Ledger & uang
-- Disetujui pemilik: [ ]   (tanggal / komentar — termasuk jawaban keputusan D1–D8 di bawah)
+- Disetujui pemilik: [x] 2026-10-16 (chat) — D1–D8 sesuai prompt 9
 - Tujuan bisnis: setiap rupiah dan unit aset di ledger punya arah posting yang benar, akun yang terdefinisi di kode produksi, key idempotensi yang stabil, dan presisi yang tidak berubah saat pindah dari SQLite ke MySQL. Hasilnya, laporan pendapatan/piutang per lini bisa dipercaya dan retry tidak menggandakan uang.
 - Modul pemilik & prefiks (KONSEP §A1) — bukan Integration:
   - `Banking` (`bank_`): `LedgerService`, `bank:reconcile`, entri/transaksi ledger.
@@ -601,18 +601,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - mengedit migrasi lama untuk konversi tipe pada DB yang sudah berisi data;
   - menaruh chart of accounts baru di `modules/Integration` tanpa keputusan D6 (IntegrationFreezeTest).
 - Keputusan pemilik yang dibutuhkan:
-  - **D1 (R1.9)** penyimpanan aset non-IDR:
-    - (a) integer minor unit per aset (satoshi/wei; kolom `bigInteger`/`decimal(65,0)`, tabel desimal per aset); atau
-    - (b) DB produksi wajib MySQL 8/PostgreSQL 16 dengan `DECIMAL(36,18)` eksak, dan SQLite hanya untuk test non-presisi.
-  - **D2 (R1.4.5)** registry `type`: satu enum `TransactionType` pusat, atau registry per modul (`{M}TransactionTypes`) yang digabung saat boot.
-  - **D3 (R1.8)** apakah ada database berisi data nyata (staging/produksi) yang harus dikonversi `decimal`→`bigInteger`? Bila ya: migrasi konversi + verifikasi jumlah sebelum/sesudah. Bila tidak: migrasi baru tetap dipakai, tanpa langkah data.
-  - **D4 (R1.2)** test lama yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest`) boleh diubah dengan `keputusan:` di Bukti. Setujui sekali untuk seluruh R1.2, atau per test.
-  - **D5 (P5)** setujui pemecahan sub-item R1.2/R1.3/R1.8 di atas. Usulan PR: satu PR per kelompok (R1.1–R1.3, R1.4–R1.7, R1.8–R1.9) agar bisa diverifikasi bertahap.
-  - **D6 (R1.3)** chart of accounts untuk service yang saat ini memposting dari `modules/Integration`:
-    - (a) tambah `Ledger/` ke allowlist `IntegrationFreeze` lewat DECISIONS; atau
-    - (b) tempatkan di modul domain pemiliknya sekarang (mendahului R4.4).
-  - **D7 (R1.6)** refund perlu event lintas modul (`PaymentRefunded`) atau cukup dipanggil sinkron oleh aksi pembatalan.
-  - **D8 (R1.9)** `bank:reconcile --incremental` dijadwalkan harian, atau tetap manual + gate.
+  - **D1 (R1.9)** penyimpanan aset non-IDR: (a) integer minor unit per aset (satoshi/wei/dll.), tabel desimal per aset; tidak bergantung pada DB.
+  - **D2 (R1.4.5)** registry `type`: registry per modul `{M}TransactionTypes` (enum string backed, ≤ 32 char) yang mengimplementasikan satu interface `TransactionTypeRegistry`, digabung saat boot; satu tes memastikan tidak ada nilai ganda lintas modul.
+  - **D3 (R1.8)** apakah ada database berisi data nyata (staging/produksi) yang harus dikonversi `decimal`→`bigInteger`? TIDAK ada DB berisi data nyata (pemilik konfirmasi; B-05 ditutup). Migrasi baru tanpa langkah konversi data.
+  - **D4 (R1.2)** test lama yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest`) boleh diubah dengan `keputusan:` di Bukti. Disetujui sekali untuk seluruh R1.2, dengan daftar di DECISIONS (`docs/DECISIONS.md#2026-10-16-r1-d4-test-tanda-salah`).
+  - **D5 (P5)** setujui pemecahan sub-item R1.2/R1.3/R1.8 di atas. Setuju pemecahan; 3 PR (R1.1–R1.3, R1.4–R1.7, R1.8–R1.9).
+  - **D6 (R1.3)** chart of accounts untuk service yang saat ini memposting dari `modules/Integration`: (a) tambah `Ledger/` ke allowlist `IntegrationFreeze` lewat DECISIONS (perpindahan modul tetap di R4.4).
+  - **D7 (R1.6)** refund perlu event lintas modul (`PaymentRefunded`) atau cukup dipanggil sinkron oleh aksi pembatalan: refund dipanggil sinkron oleh aksi pembatalan sekarang; event `PaymentRefunded` dipancarkan setelah commit untuk konsumen lain.
+  - **D8 (R1.9)** `bank:reconcile --incremental` dijadwalkan harian, atau tetap manual + gate: `bank:reconcile --incremental` manual + gate sekarang; penjadwalan harian menunggu infrastruktur scheduler (minus P2 → R5).
 - [ ] R1.1 **Konvensi tanda tunggal** (K-10): `AccountKind::normalSide()` + helper `Posting::lines()->debit()->credit()` (kredit = +, debit = −); dokumentasikan tabel normal balance (`KONSEP.md` §A2); pindahkan pemetaan sementara dari `LedgerNormalBalanceTest`.
   - Test wajib: `LedgerNormalBalanceTest` — setelah `migrate:fresh --seed` + seluruh skenario golden, setiap akun memenuhi tanda sisi normalnya (pengecualian eksplisit untuk `clearing`/`exchange`).
 - [ ] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif) — dicatat sebagai `keputusan:` di Bukti (X17).
