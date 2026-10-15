@@ -328,7 +328,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 > Urutan R0 → R9 mengikuti dependensi. **R0 memasang pagar otomatis lebih dulu** sehingga sejak perbaikan pertama, jalan pintas langsung membuat gate merah. Setiap sub-fase R mengikuti P1–P13 (DoR boleh singkat karena tugas R sudah rinci) dan ditutup gate penuh + verifikasi silang. Rujukan temuan `K-xx` ada di `docs/KNOWLEDGE.md` §5.
 
 ### FASE R0 — LINGKUNGAN, GATE & PAGAR OTOMATIS (ANTI JALAN PINTAS)
-> **Status audit:** 🔵 SIAP VERIFIKASI (2026-10-14, putaran 2 pelaksana: skor mutasi ProgressIntegrityScanner 75.16% ≥ 60%, GateRunner 69.28% ≥ 60%, R0.3.b [x], minus warisan P0/P1 dialihkan K-P9, snapshot baseline PROGRESS tuntas K-M-R0-23, gate penuh 9 langkah PASS 🟢; menunggu CI push/PR dan aktivasi B-01 oleh pemilik repo).
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-15)
 
 #### DoR Fase R0 — Lingkungan, gate & pagar otomatis
 - Disetujui pemilik: [x]   2026-10-10 (chat) — DoR disetujui; (1) `"php": "^8.4"` + `composer.lock` tetap di-commit; (2) folder `.github/` boleh dibuat, **push wajib ditanyakan dulu**; (3) DB kedua CI: **MySQL 8**; (4) merge dengan merge commit.
@@ -525,8 +525,11 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R0-19~~ | R0.3 | ~~Workflow CI dinamis per-fase terpasang di `.github/workflows/ci.yml` (B-06)~~ | ~~Workflow CI dinamis tuntas~~ | ~~P2~~ | Tuntas di commit `92385b0`, terbukti pada CI push run #38089526607 (artefak `gate-report-fase-r0`) |
 | ~~M-R0-20~~ | R0.12 | ~~Skor mutasi `App\Quality\Gate\GateRunner` mencapai 47.87% (131 killed mutants dari 282 total mutasi, naik dari 3.19%), sisa mutan untested pada konstanta MANDATORY_STEPS dan I/O shell~~ | ~~Pagar mutasi runner perlu penguatan lanjutan sampai ambang ≥ 60%~~ | ~~P1~~ | Tuntas di T6 (skor mutasi naik ke 69.28%, 114 tested dari 166 mutasi; commit `cec8f16`) |
 | ~~M-R0-21~~ | R0.4 / R0.12 | ~~Skor mutasi `App\Quality\Progress\ProgressIntegrityScanner` 59.24% (327 killed dari 552 mutasi) berada di bawah ambang batas pagar ≥ 60.0%~~ | ~~Integritas dokumen dan bukti berpotensi lolos dari deteksi bila pagar mutasi scanner di bawah ambang batas~~ | ~~P1~~ | Tuntas di T5 (skor mutasi naik ke 75.16%, 462 tested dari 616 mutasi; commit `ac1cb02`) |
-| ~~M-R0-22~~ | R0.3 / R0.12 | ~~Job CI `PHP 8.4 × Pest Mutation Testing (min 60%)` pada PR #8 gagal (exit 2, run ID 38090351376) akibat crash proses PHP pada `ModuleBoundariesTest`~~ | ~~Pipeline CI PR merah dan tidak dapat memvalidasi mutasi kelas Action/Service secara stabil~~ | ~~P1~~ | Tuntas pada CI PR #10 run #38470484709 (ketiga job hijau penuh: MySQL Portability, SQLite Full Gate Suite, dan Mutation Testing 5 kelas pagar R0 & kelas PR ≥ 60%, memory 1G) |
+| ~~M-R0-22~~ | R0.3 / R0.12 | ~~Job CI `PHP 8.4 × Pest Mutation Testing (min 60%)` pada PR #8 gagal (exit 2, run ID 38090351376) akibat crash proses PHP pada `ModuleBoundariesTest`~~ | ~~Pipeline CI PR merah dan tidak dapat memvalidasi mutasi kelas Action/Service secara stabil~~ | ~~P1~~ | Tuntas pada CI PR #10 run #38470484709 dan divalidasi ulang hijau penuh pada CI PR #12 run #38698698291 (ketiga job hijau: MySQL Portability, SQLite Full Gate Suite, dan Mutation Testing 5 kelas pagar R0 & kelas PR ≥ 60%, memory 1G) |
 | ~~M-R0-23~~ | R0.4 | ~~Snapshot baseline teks `docs/PROGRESS.md` (`progress-snapshot-8c8369d`) belum memiliki entri dokumentasi di `docs/DECISIONS.md`~~ | ~~Alasan pembekuan snapshot teks baseline dan mekanisme update tidak terlacak di log keputusan~~ | ~~P2~~ | Tuntas di DECISIONS.md#2026-10-10-progress-snapshot-8c8369d |
+| ~~M-R0-24~~ | R0.4 | ~~S9 lolos deteksi: minus deliverable fase (M-R0-21) yang disebut di DECISIONS.md lolos pengalihan di ProgressIntegrityScanner karena salah diklasifikasikan sebagai warisan~~ | ~~Pagar integritas berpotensi meloloskan pengalihan deliverable fase tercentang [x]~~ | ~~P1~~ | Tuntas (pembedaan deliverable vs warisan diperbaiki di ProgressIntegrityScanner, SabotageDeliverableMinusTest lulus; skor mutasi 74.61%) |
+| ~~M-R0-25~~ | R0.4 / R2.3 | ~~Pengalihan minus M-R0-10 dan M-R0-11 ke R2.3 tidak sah: item tujuan R2.3 hanya mencakup 15 back()->errors() di Pricing/Agency/Distribution, tidak mencakup bug view/enum 500 Contract~~ | ~~Bug HTTP 500 modul Contract tidak terlindungi di fase tujuan yang tepat~~ | ~~P1~~ | Tuntas di DECISIONS.md#2026-10-14-p9-minus-dialihkan (DoR R2 diperluas resmi mencakup bug Contract M-R0-10 & M-R0-11) |
+| ~~M-R0-26~~ | R0.2 | ~~Laporan gate docs/gates/fase-r0.md di repository belum disinkronkan dengan artefak CI commit 8724437 (masih mencatat commit 48b5529 dan 2.588 test)~~ | ~~Laporan quality gate lokal tidak mencerminkan commit kode terakhir~~ | ~~P2~~ | Tuntas (laporan disinkronkan dari artefak CI PR #12 run #38698698291 pada commit d58263a, 2.595 test / 11.492 asersi lulus) |
 
 ### FASE R1 — LEDGER & UANG (P0)
 > **Status audit:** ⬜ BELUM · Prasyarat: R0.
@@ -631,6 +634,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 
 ### FASE R2 — BUG FUNGSIONAL TERVERIFIKASI
 > **Status audit:** ⬜ BELUM · Prasyarat: R1.
+
+#### DoR Fase R2 — Bug fungsional terverifikasi
+- Disetujui pemilik: [x]   2026-10-14 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) — DoR mencakup perbaikan bug fungsional K-16, K-22, K-29, serta perluasan lingkup untuk bug HTTP 500 modul Contract (M-R0-10 & M-R0-11) sesuai adendum M-R0-25.
 - [ ] R2.1 **Hitung tagihan hidang idempoten** (K-16): `CalculateHidangBillAction` hanya memproses item yang belum diputuskan; key HPP per item; pemanggilan ulang tanpa efek samping.
   - Test wajib: panggil 2× → HPP terposting sekali, porsi etalase berkurang sekali, item `RETURNED` tidak diresirkulasi ulang.
 - [ ] R2.2 **Tender benar-benar tersegel** (K-22): skema commit–reveal atau isi penawaran terenkripsi sampai `openBids()`; perbaiki `TenderBid::isSealIntact()` (formula hash sama dengan saat menyegel) dan panggil saat pembukaan; tolak bid yang segelnya tidak cocok.
