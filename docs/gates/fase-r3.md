@@ -80,30 +80,30 @@
 | `A13` | back()->errors() (HTTP 500 di jalur galat) | 15 |
 
 ## 5. Verifikasi
-*(Bagian ini wajib diisi oleh verifikator independen sebelum mengubah status fase ke ✅ sesuai P7).*
 
-- **Tanggal:** 
-- **Verifikator:** 
-- **Commit yang diverifikasi:** 
-- **Keputusan:** BELUM DIVERIFIKASI
+- **Tanggal:** 2026-10-16
+- **Verifikator:** Antigravity Independent Verifier
+- **Commit yang diverifikasi:** `61b1f67534560e07f32c650255117defdb02c8ec` (feature/fase-r3c-a6-api-quota)
+- **Keputusan:** 🔁 DIBUKA KEMBALI
 
 | # | Hasil | Bukti (command / commit / output) | Catatan |
 |---|---|---|---|
-| C1 | BELUM DIVERIFIKASI | | |
-| C2 | BELUM DIVERIFIKASI | | |
-| C3 | BELUM DIVERIFIKASI | | |
-| C4 | BELUM DIVERIFIKASI | | |
-| C5 | BELUM DIVERIFIKASI | | |
-| C6 | BELUM DIVERIFIKASI | | |
-| C7 | BELUM DIVERIFIKASI | | |
-| C8 | BELUM DIVERIFIKASI | | |
-| C9 | BELUM DIVERIFIKASI | | |
-| C10 | BELUM DIVERIFIKASI | | |
-| C11 | BELUM DIVERIFIKASI | | |
-| C12 | BELUM DIVERIFIKASI | | |
-| C13 | BELUM DIVERIFIKASI | | |
-| C14 | BELUM DIVERIFIKASI | | |
+| C1 | lulus | `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` exit 0 (2 passed). Sabotase S1–S7 terbukti merah di test harness. | Integritas format progress dan validasi bukti teruji. |
+| C2 | gagal | CI push run `38771396609` (r3c) dan PR #14 run `38772879400` gagal (exit 1) pada step `Install Composer dependencies`: `RuntimeException: BLIND_INDEX_PEPPER environment variable is required in production environment.` Lokal `composer gate` exit 0 (9/9 langkah, 2.754 passed). | CI GitHub Actions merah akibat crash `package:discover` saat `composer install` sebelum `.env` dipasang. |
+| C3 | gagal | `route-dynamic-pending.json` turun dari 280 ke 159 (-121 rute / -43.21%), belum mencapai target DoR/Prompt ≥ 50% (target ≤ 140 rute). | Minus P2 (M-R3-5). Teks item R3.1–R3.4 utuh tanpa modifikasi. |
+| C4 | lulus | `RouteAuthorizationMatrixTest` 7 passed (1.940 asersi); 37 rute tulis POST Manufacturing/Pricing/Partner 403 untuk auditor (`AuditorReadOnlyPolicyTest`); test kepemilikan resource customer (`CustomerResourceOwnershipTest`) 403 untuk customer B. | Otorisasi RBAC granular dan isolasi data kepemilikan terbukti. |
+| C5 | lulus | `php artisan bank:reconcile` exit 0 (129 akun balance 0 selisih); `VenueCreatorEconomyServiceTest` dan `CreatorRoyaltyPayoutGuardTest` lulus tanpa menaikkan baseline TestHygiene. | Ledger balance & invarian terpenuhi. |
+| C6 | lulus | `php artisan chain:audit-all` exit 0 (18 audit modul lulus). Korupsi data sumber memicu kegagalan audit. | Audit rantai pasok dan operasional lulus. |
+| C7 | lulus | Mutasi sabotase S-R3-1 s/d S-R3-6 semuanya berbalik merah dan menghentikan pipeline. Test pembukti mengeksekusi kode nyata tanpa konstanta tiruan (`CustomerResourceOwnershipTest`, `ApiClientRateLimitBlackBoxProofTest`). | Uji verifikasi aktif dan menguji fungsionalitas nyata. |
+| C8 | lulus | `arch-scan.json` A6 turun 133→132 (hanya VenueCreatorEconomyService), A7 turun 5→0 (bersih); `route-auth-entries.json` turun 299→20 (tersisa identitas user core); baseline tidak ada yang bertambah. | Baseline tidak bocor; approved_additions utuh. |
+| C9 | lulus | `git diff origin/master..HEAD -- docs/PROGRESS.md | grep -E '^[-+]\s*- \[[ x]\]'` hanya mengubah `[ ]` menjadi `[x]`, teks item R3.1–R3.4 100% identik karakter per karakter. | Integritas teks item terjaga. |
+| C10 | lulus | SQLite `migrate:fresh --seed` exit 0; `MysqlSchemaCompatibilityTest` (12 passed) & `SchemaIdentifierLengthTest` (4 passed) exit 0. Kolom sensitif terenkripsi dan blind index ber-pepper. | Portabilitas skema SQLite & MySQL 8.4 terverifikasi. |
+| C11 | gagal | Pelaksana belum membuat tabel 6 kolom `Register Minus Fase R3` di `docs/PROGRESS.md`. M-R0-2, 12, 13, 18 dicoret sah; M-R0-3 terbuka dengan rincian. Verifikator menambahkan tabel Register Minus R3 (M-R3-1 s/d M-R3-7). | Minus P1 (M-R3-4). |
+| C12 | gagal | `docs/DECISIONS.md` tidak memiliki entri/anchor untuk keputusan D1 s/d D6 R3 (`git diff origin/master..HEAD -- docs/DECISIONS.md` kosong). Prosedur `docs/RUNBOOK.md` §8.2 merujuk command fiktif `app:rotate-blind-index` yang belum diimplementasikan. | Minus P1 (M-R3-2, M-R3-3). |
+| C13 | lulus | 34 commit terdistribusi rapi per branch (`fase-r3-otorisasi` 19 commit, `fase-r3b-pii` 7 commit, `fase-r3c-a6-api-quota` 8 commit). Basis ter-stack rapi: r3b berpangkal pada r3, r3c berpangkal pada r3b. | Riwayat commit jelas dan terdokumentasi per modul/item. |
+| C14 | lulus | `git diff origin/master..HEAD -U0 -- '*Test.php' | grep -nE "assertTrue\(true\)|markTestSkipped|->skip\(|toBeTrue\(\)$"` exit 1 (0 temuan). Tidak ada red flags test palsu. | Test suite kredibel dan bebas pemalsuan asersi. |
 
-**Minus yang ditambahkan verifikator:** 
-**Alasan 🔁 (bila ada):**
+**Minus yang ditambahkan verifikator:** M-R3-1 (P0: Blocker CI BLIND_INDEX_PEPPER), M-R3-2 (P1: Entri D1-D6 di DECISIONS.md hilang), M-R3-3 (P1: Command RUNBOOK app:rotate-blind-index belum ada), M-R3-4 (P1: Register Minus R3 belum dibuat), M-R3-5 (P2: Target dynamic pending 43.2% < 50%), M-R3-6 (P2: Test rate limit pelaksana rapuh), M-R3-7 (P2: Push 3 branch tanpa izin pemilik).
+**Alasan 🔁 (bila ada):** CI PR/push merah akibat deadlock `BLIND_INDEX_PEPPER` saat `composer install`, keputusan arsitektur D1–D6 belum ditulis di `DECISIONS.md`, command rotasi di `RUNBOOK.md` belum ada di kode, Register Minus R3 belum dibuat pelaksana, dan ratchet pending dynamic routes (43.2%) belum mencapai target ≥ 50%.
+
 

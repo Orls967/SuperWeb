@@ -654,7 +654,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - [ ] R2.10 Quality gate Fase R2 + verifikasi silang.
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
-> **Status audit:** 🔵 SIAP VERIFIKASI · Prasyarat: R0 (boleh paralel dengan R1/R2).
+> **Status audit:** 🔁 DIBUKA KEMBALI (2026-10-16) · Prasyarat: R0.
 
 #### DoR Fase R3 — Otorisasi & data sensitif
 - Disetujui pemilik: [x] 2026-10-15 (chat) — D1–D6 sesuai prompt disetujui
@@ -885,7 +885,20 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - gate: docs/gates/fase-r3.md
 - [ ] R3.5 Quality gate Fase R3 + verifikasi silang.
 
+#### Register Minus Fase R3
+| ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| M-R3-1 | R3.2 / C2 / C10 | CI GitHub Actions gagal pada job SQLite & MySQL di step `composer install` karena `BLIND_INDEX_PEPPER` belum tersedia saat package discovery sebelum `.env` disalin | Seluruh run CI PR #14 & push branch merah di GitHub Actions | P0 | Perbaiki `.github/workflows/ci.yml` agar menyalin `.env.example` ke `.env` sebelum `composer install` atau sediakan fallback default di env CI |
+| M-R3-2 | R3.1–R3.4 / C12 | Keputusan desain D1–D6 yang dirujuk di PROGRESS & commit message belum dicatat di `docs/DECISIONS.md` | Integritas jejak keputusan arsitektur (C12) tidak terpenuhi | P1 | Tambahkan entri resmi D1–D6 Fase R3 lengkap dengan anchor di `docs/DECISIONS.md` |
+| M-R3-3 | R3.2 / C12 | Prosedur rotasi pepper di `docs/RUNBOOK.md` §8.2 merujuk command `php artisan app:rotate-blind-index` yang belum diimplementasikan | Operasi rotasi pepper darurat produksi tidak dapat dieksekusi | P1 | Implementasikan command `app:rotate-blind-index` dengan flag `--old-pepper`, `--dry-run`, dan `--force` atau sesuaikan dokumentasi runbook |
+| M-R3-4 | R3.5 / C11 | Pelaksana tidak menyertakan tabel Register Minus Fase R3 wajib 6 kolom di `docs/PROGRESS.md` | Melanggar protokol P7/P9/C11 | P1 | Ditambahkan oleh verifikator independen dalam verifikasi ini |
+| M-R3-5 | R3.1 / C3 | Penurunan `route-dynamic-pending.json` hanya -43.21% (280 -> 159), belum mencapai target DoR/Prompt ≥ 50% (maksimal 140) | Masih ada 159 rute dengan parameter dinamis yang belum dipetakan parameter uji nyatanya | P2 | Tambahkan pemetaan parameter uji untuk minimal 19 rute dinamis tersisa di Fase R3 iterasi perbaikan |
+| M-R3-6 | R3.4 / C7 | Test kuota API pelaksana (`ApiClientRateLimitingTest`) rapuh karena mengikat konvensi cache key internal (`RateLimiter::clear("api-client:...")`) dan mematikan key hashing (`ThrottleRequests::shouldHashKeys(false)`) | Refactoring implementasi rate limiter dapat merusak test tanpa merusak fungsionalitas | P2 | Lengkapi/gantikan dengan pengujian black-box HTTP berbasis IP/header waktu nyata tanpa manipulasi internals limiter (telah dibuat oleh verifikator di `ApiClientRateLimitBlackBoxProofTest`) |
+| M-R3-7 | Proses | Ketiga branch R3 (`feature/fase-r3-otorisasi`, `feature/fase-r3b-pii`, `feature/fase-r3c-a6-api-quota`) di-push ke origin tanpa konfirmasi/izin pemilik | Pelanggaran protokol verifikator & tata kelola git repository | P2 | Tunggu persetujuan pemilik sebelum tindakan push atau pembukaan/merge PR berikutnya |
+
 ### FASE R4 — BATAS MODUL & KEPEMILIKAN DATA
+
+
 > **Status audit:** ⬜ BELUM · Prasyarat: R1.
 - [ ] R4.1 **Arch test generik** (K-07): untuk setiap pasangan modul A≠B, `Modules\A` tidak boleh memakai `Modules\B\Domain` kecuali shared kernel yang ditetapkan (mis. `Shared\Ledger\*`); `Shared` & `Core` tidak boleh bergantung ke modul bisnis; seluruh `modules/` wajib `declare(strict_types=1)`.
   - Kriteria terima: aturan berbasis daftar modul dinamis (bukan pasangan manual); pelanggaran yang tersisa hanya di baseline ber-tanggal-kedaluwarsa.
