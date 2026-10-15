@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Support\Posting;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Resto\Domain\Enums\TransferStatus;
@@ -128,16 +128,14 @@ class ShipStockTransferAction
                 $this->ensureLedgerAccountExists($fromInvCode, "Persediaan Resto {$fromOutlet->name}", AccountKind::INVENTORY);
                 $this->ensureLedgerAccountExists($transitCode, 'Persediaan Dalam Perjalanan (In Transit)', AccountKind::INVENTORY);
 
-                $costBd = BigDecimal::of($totalTransferCost);
-
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::PRODUCTION->value,
                     description: "Pengiriman transfer #{$transfer->number} dari {$fromOutlet->name} ke {$toOutlet->name}",
                     idempotencyKey: "resto:trf:ship:{$transfer->id}:".Str::uuid(),
-                    entries: [
-                        PostingEntryDTO::forCode($fromInvCode, 'IDR', $costBd->negated()),
-                        PostingEntryDTO::forCode($transitCode, 'IDR', $costBd),
-                    ],
+                    entries: Posting::lines()
+                        ->credit($fromInvCode, $totalTransferCost)
+                        ->debit($transitCode, $totalTransferCost)
+                        ->toEntries('IDR'),
                     referenceType: 'resto_transfer',
                     referenceId: $transfer->id,
                     createdBy: $shipper->id

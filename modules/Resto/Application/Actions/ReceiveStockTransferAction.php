@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Banking\Support\Posting;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Resto\Domain\Enums\TransferStatus;
@@ -144,27 +144,18 @@ class ReceiveStockTransferAction
                 $this->ensureLedgerAccountExists($toInvCode, "Persediaan Resto {$toOutlet->name}", AccountKind::INVENTORY);
                 $this->ensureLedgerAccountExists($transitCode, 'Persediaan Dalam Perjalanan (In Transit)', AccountKind::INVENTORY);
 
-                $entries = [
-                    PostingEntryDTO::forCode($transitCode, 'IDR', BigDecimal::of($totalShippedCost)->negated()),
-                ];
+                $lines = Posting::lines()->credit($transitCode, $totalShippedCost);
 
                 if ($totalReceivedCost > 0) {
-                    $entries[] = PostingEntryDTO::forCode($toInvCode, 'IDR', BigDecimal::of($totalReceivedCost));
+                    $lines->debit($toInvCode, $totalReceivedCost);
                 }
 
                 if ($totalDiscrepancyCost > 0) {
                     $this->ensureLedgerAccountExists($wasteCode, 'Beban Limbah/Waste Makanan Resto', AccountKind::EXPENSE);
-                    $entries[] = PostingEntryDTO::forCode($wasteCode, 'IDR', BigDecimal::of($totalDiscrepancyCost));
+                    $lines->debit($wasteCode, $totalDiscrepancyCost);
                 }
 
-                // Balance adjustment if 1 IDR rounding artifact exists
-                $sumCheck = BigDecimal::of($totalShippedCost)->negated()
-                    ->plus(BigDecimal::of($totalReceivedCost))
-                    ->plus(BigDecimal::of($totalDiscrepancyCost));
-
-                if (! $sumCheck->isZero()) {
-                    $entries[1] = PostingEntryDTO::forCode($toInvCode, 'IDR', BigDecimal::of($totalReceivedCost)->minus($sumCheck));
-                }
+                $entries = $lines->toEntries('IDR');
 
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::PRODUCTION->value,
