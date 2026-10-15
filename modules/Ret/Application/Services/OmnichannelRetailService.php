@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Ret\Domain\Models\RetChannel;
 use Modules\Ret\Domain\Models\RetCouponRedemption;
 use Modules\Ret\Domain\Models\RetFulfillmentSplit;
@@ -85,11 +85,11 @@ class OmnichannelRetailService
                 type: 'RETAIL_MARKETPLACE_SELLER_SETTLEMENT',
                 description: "Marketplace settlement for seller {$sellerPartyId} batch {$batchCode}",
                 idempotencyKey: 'RET-'.$batchCode,
-                entries: [
-                    PostingEntryDTO::forCode('ret:escrow_receivable:IDR', 'IDR', $verifiedGmvMinor),
-                    PostingEntryDTO::forCode('ret:marketplace_commission_revenue:IDR', 'IDR', -$commissionFee),
-                    PostingEntryDTO::forCode('ret:seller_payable:IDR', 'IDR', -$netPayout),
-                ],
+                entries: Posting::lines()
+                    ->debit('ret:escrow_receivable:IDR', $verifiedGmvMinor)
+                    ->credit('ret:marketplace_commission_revenue:IDR', $commissionFee)
+                    ->credit('ret:seller_payable:IDR', $netPayout)
+                    ->toEntries('IDR'),
                 referenceType: 'SELLER_SETTLEMENT',
                 referenceId: $batchCode,
             ));

@@ -7,8 +7,8 @@ namespace Modules\Ret\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Ret\Domain\Models\RetBillPayment;
 use Modules\Ret\Domain\Models\RetBundleSubscription;
 use Modules\Ret\Domain\Models\RetCashbackTransaction;
@@ -43,10 +43,10 @@ class SuperAppAndCashbackService
                     type: 'RETAIL_CASHBACK_ISSUANCE',
                     description: "Cashback earned from {$sourceLine} for {$customerId}",
                     idempotencyKey: 'RET-'.$code,
-                    entries: [
-                        PostingEntryDTO::forCode('ret:cashback_expense:IDR', 'IDR', $cashbackEarned),
-                        PostingEntryDTO::forCode('ret:cashback_liability:IDR', 'IDR', -$cashbackEarned),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('ret:cashback_expense:IDR', $cashbackEarned)
+                        ->credit('ret:cashback_liability:IDR', $cashbackEarned)
+                        ->toEntries('IDR'),
                     referenceType: 'CASHBACK',
                     referenceId: $code,
                 ));
@@ -85,11 +85,11 @@ class SuperAppAndCashbackService
                 type: 'RETAIL_BILL_PAYMENT_COLLECTION',
                 description: "Bill payment {$receiptNum} for {$params['bill_type']}",
                 idempotencyKey: 'RET-'.$receiptNum,
-                entries: [
-                    PostingEntryDTO::forCode('ret:bill_payment_receivable:IDR', 'IDR', $totalPaid),
-                    PostingEntryDTO::forCode('ret:bill_payment_fee_revenue:IDR', 'IDR', -$adminFee),
-                    PostingEntryDTO::forCode('ret:biller_payable:IDR', 'IDR', -$billAmount),
-                ],
+                entries: Posting::lines()
+                    ->debit('ret:bill_payment_receivable:IDR', $totalPaid)
+                    ->credit('ret:bill_payment_fee_revenue:IDR', $adminFee)
+                    ->credit('ret:biller_payable:IDR', $billAmount)
+                    ->toEntries('IDR'),
                 referenceType: 'BILL_PAYMENT',
                 referenceId: $receiptNum,
             ));
@@ -140,20 +140,18 @@ class SuperAppAndCashbackService
             $subCode = 'SUB-'.strtoupper(Str::random(8));
 
             // Post internal multi-line settlement
-            $entries = [
-                PostingEntryDTO::forCode('ret:bundle_receivable:IDR', 'IDR', $bundle->monthly_price_minor),
-            ];
+            $lines = Posting::lines()->debit('ret:bundle_receivable:IDR', $bundle->monthly_price_minor);
 
             foreach ($bundle->line_settlement_breakdown as $line => $amount) {
                 $accountCode = "ret:internal_settlement_{$line}:IDR";
-                $entries[] = PostingEntryDTO::forCode($accountCode, 'IDR', -$amount);
+                $lines->credit($accountCode, $amount);
             }
 
             $this->ledgerService->post(new PostingDTO(
                 type: 'RETAIL_BUNDLE_SUBSCRIPTION_BILLING',
                 description: "Cross-lini bundle subscription {$subCode} for period {$period}",
                 idempotencyKey: 'RET-'.$subCode,
-                entries: $entries,
+                entries: $lines->toEntries('IDR'),
                 referenceType: 'BUNDLE_SUBSCRIPTION',
                 referenceId: $subCode,
             ));

@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Ret\Domain\Models\RetCrowdshippingTask;
 use Modules\Ret\Domain\Models\RetPackagingDeposit;
 use Modules\Ret\Domain\Models\RetQuickCommerceOrder;
@@ -65,10 +65,10 @@ class FulfillmentAndQuickCommerceService
                 type: 'RETAIL_SLA_BREACH_COMPENSATION',
                 description: "Automatic voucher credit for breached Q-Commerce delivery {$order->order_code}",
                 idempotencyKey: 'RET-BREACH-'.$order->order_code,
-                entries: [
-                    PostingEntryDTO::forCode('ret:sla_compensation_expense:IDR', 'IDR', $compensation),
-                    PostingEntryDTO::forCode('ret:customer_credit_liability:IDR', 'IDR', -$compensation),
-                ],
+                entries: Posting::lines()
+                    ->debit('ret:sla_compensation_expense:IDR', $compensation)
+                    ->credit('ret:customer_credit_liability:IDR', $compensation)
+                    ->toEntries('IDR'),
                 referenceType: 'QC_ORDER',
                 referenceId: $order->order_code,
             ));
@@ -124,10 +124,10 @@ class FulfillmentAndQuickCommerceService
                 type: 'RETAIL_PACKAGING_DEPOSIT_RECEIPT',
                 description: "Deposit received for reusable packaging {$code}",
                 idempotencyKey: 'RET-'.$code,
-                entries: [
-                    PostingEntryDTO::forCode('ret:packaging_deposit_cash:IDR', 'IDR', $depositAmountMinor),
-                    PostingEntryDTO::forCode('ret:packaging_deposit_liability:IDR', 'IDR', -$depositAmountMinor),
-                ],
+                entries: Posting::lines()
+                    ->debit('ret:packaging_deposit_cash:IDR', $depositAmountMinor)
+                    ->credit('ret:packaging_deposit_liability:IDR', $depositAmountMinor)
+                    ->toEntries('IDR'),
                 referenceType: 'PACKAGING_DEPOSIT',
                 referenceId: $code,
             ));
@@ -160,10 +160,10 @@ class FulfillmentAndQuickCommerceService
                 type: 'RETAIL_PACKAGING_DEPOSIT_REFUND',
                 description: "Deposit refund for returned reusable packaging {$deposit->deposit_code}",
                 idempotencyKey: 'RET-REFUND-'.$deposit->deposit_code,
-                entries: [
-                    PostingEntryDTO::forCode('ret:packaging_deposit_liability:IDR', 'IDR', $deposit->deposit_amount_minor),
-                    PostingEntryDTO::forCode('ret:packaging_deposit_cash:IDR', 'IDR', -$deposit->deposit_amount_minor),
-                ],
+                entries: Posting::lines()
+                    ->debit('ret:packaging_deposit_liability:IDR', $deposit->deposit_amount_minor)
+                    ->credit('ret:packaging_deposit_cash:IDR', $deposit->deposit_amount_minor)
+                    ->toEntries('IDR'),
                 referenceType: 'PACKAGING_DEPOSIT',
                 referenceId: $deposit->deposit_code,
             ));
