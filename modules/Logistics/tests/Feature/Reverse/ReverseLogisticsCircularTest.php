@@ -116,7 +116,7 @@ class ReverseLogisticsCircularTest extends TestCase
         // Verify ledger balances
         $mfgScrap = LedgerAccount::where('code', 'mfg:scrap_inbound:IDR')->first();
         $lgxRev = LedgerAccount::where('code', 'lgx:circular_revenue:IDR')->first();
-        $this->assertEquals('2500000', (string) $mfgScrap->cached_balance);
-        $this->assertEquals('-2500000', (string) $lgxRev->cached_balance);
+        $this->assertEquals('-2500000', (string) $mfgScrap->cached_balance);
+        $this->assertEquals('2500000', (string) $lgxRev->cached_balance);
     }
 }

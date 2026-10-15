@@ -4,8 +4,8 @@ namespace Modules\Logistics\Application\Services\Autonomous;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Logistics\Domain\Models\Autonomous\DroneMission;
 use Modules\Logistics\Domain\Models\Autonomous\DroneUnit;
 use Modules\Logistics\Domain\Models\Autonomous\TempBreachHold;
@@ -63,10 +63,10 @@ class AutonomousLogisticsService
                 type: 'COLD_CHAIN_TEMP_BREACH_HOLD',
                 description: "Hold carrier payment due to temp breach on shipment {$shipmentCode}",
                 idempotencyKey: "CC-HOLD-{$breachCode}",
-                entries: [
-                    PostingEntryDTO::forCode('lgx:carrier_payable:IDR', 'IDR', $carrierPayableIdr),
-                    PostingEntryDTO::forCode('lgx:dispute_escrow:IDR', 'IDR', -$carrierPayableIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('lgx:carrier_payable:IDR', $carrierPayableIdr)
+                    ->credit('lgx:dispute_escrow:IDR', $carrierPayableIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'TEMP_BREACH_HOLD',
                 referenceId: (string) $hold->id,
             ));
@@ -94,10 +94,10 @@ class AutonomousLogisticsService
                 type: 'COLD_CHAIN_HOLD_RELEASED',
                 description: "Release hold after dispute resolution on breach {$locked->breach_code}",
                 idempotencyKey: "CC-REL-{$locked->breach_code}",
-                entries: [
-                    PostingEntryDTO::forCode('lgx:dispute_escrow:IDR', 'IDR', $locked->hold_amount_idr),
-                    PostingEntryDTO::forCode('lgx:carrier_payable:IDR', 'IDR', -$locked->hold_amount_idr),
-                ],
+                entries: Posting::lines()
+                    ->debit('lgx:dispute_escrow:IDR', $locked->hold_amount_idr)
+                    ->credit('lgx:carrier_payable:IDR', $locked->hold_amount_idr)
+                    ->toEntries('IDR'),
                 referenceType: 'TEMP_BREACH_HOLD',
                 referenceId: (string) $locked->id,
             ));

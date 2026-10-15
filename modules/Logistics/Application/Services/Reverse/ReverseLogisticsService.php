@@ -4,8 +4,8 @@ namespace Modules\Logistics\Application\Services\Reverse;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Logistics\Domain\Models\Reverse\ReverseItem;
 use Modules\Logistics\Domain\Models\Reverse\ReverseOrder;
 
@@ -116,10 +116,10 @@ class ReverseLogisticsService
                     type: 'CIRCULAR_ECONOMY_INTAKE',
                     description: "Circular intake from reverse order {$locked->reverse_code}",
                     idempotencyKey: "CIR-INT-{$locked->reverse_code}",
-                    entries: [
-                        PostingEntryDTO::forCode('mfg:scrap_inbound:IDR', 'IDR', $val),
-                        PostingEntryDTO::forCode('lgx:circular_revenue:IDR', 'IDR', -$val),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('mfg:scrap_inbound:IDR', $val)
+                        ->credit('lgx:circular_revenue:IDR', $val)
+                        ->toEntries('IDR'),
                     referenceType: 'REVERSE_LOGISTICS',
                     referenceId: (string) $locked->id,
                 ));

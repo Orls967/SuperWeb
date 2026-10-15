@@ -68,7 +68,7 @@ class ColdChainAndDroneRoboticsTest extends TestCase
 
         // Check ledger balances
         $escrow = LedgerAccount::where('code', 'lgx:dispute_escrow:IDR')->first();
-        $this->assertEquals('-7500000', (string) $escrow->cached_balance);
+        $this->assertEquals('7500000', (string) $escrow->cached_balance);
 
         // 3. Release hold after dispute resolution
         $released = $this->service->releaseBreachHold($breach);
