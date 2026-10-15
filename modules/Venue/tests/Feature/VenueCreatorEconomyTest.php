@@ -59,14 +59,17 @@ class VenueCreatorEconomyTest extends TestCase
 
         // 2. Attempt payout before window passes must fail
         try {
-            $this->service->releaseRoyaltyPayout($contract, false);
+            $this->service->releaseRoyaltyPayout($contract);
             $this->fail('Expected hold window exception');
         } catch (RuntimeException $e) {
             $this->assertStringContainsString('Payout hold active', $e->getMessage());
         }
 
         // 3. Release payout after window passes
-        $paid = $this->service->releaseRoyaltyPayout($contract, true);
+        $contract->created_at = now()->subDays(15);
+        $contract->save();
+
+        $paid = $this->service->releaseRoyaltyPayout($contract);
         $this->assertEquals(7_000_000, $paid);
 
         $escrow->refresh();

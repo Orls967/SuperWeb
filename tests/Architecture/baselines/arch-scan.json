@@ -5247,7 +5247,7 @@
             }
         },
         "A6": {
-            "total": 133,
+            "total": 132,
             "entries": {
                 "modules/Integration/Application/Services/AcademicIndustryResearchService.php": {
                     "bool $implementationFollowThroughVerified @ releaseChallengePrize()": 1
@@ -5594,9 +5594,6 @@
                 },
                 "modules/Integration/Application/Services/WorkforceSkillsOperatingCapacityService.php": {
                     "bool $qualificationGatePassed @ deployWorkerCrossLine()": 1
-                },
-                "modules/Venue/Application/Services/VenueCreatorEconomyService.php": {
-                    "bool $windowPassed @ releaseRoyaltyPayout()": 1
                 }
             }
         },
