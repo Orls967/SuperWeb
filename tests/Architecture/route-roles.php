@@ -10,6 +10,8 @@ use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\Core\Domain\Models\AuditLog;
+use Modules\Core\Domain\Models\Role;
 use Modules\Crypto\Domain\Enums\AlertCondition;
 use Modules\Crypto\Domain\Models\CryptoAlert;
 use Modules\Crypto\Domain\Models\CryptoAsset;
@@ -38,6 +40,7 @@ use Modules\Mall\Domain\Models\Property;
 use Modules\Mall\Domain\Models\Tenant;
 use Modules\Mall\Domain\Models\VoucherTemplate;
 use Modules\Mall\Domain\Models\WorkOrder;
+use Modules\Partner\Domain\Models\Partner;
 use Modules\Resto\database\seeders\RestoMenuSeeder;
 use Modules\Resto\Domain\Models\CateringOrder;
 use Modules\Resto\Domain\Models\Delivery;
@@ -431,6 +434,24 @@ $financeCryptoCustomerSetup = function (User $user) use ($financeCryptoSeedHelpe
     }
 };
 
+$distributorParamHelper = function (): array {
+    $dist = Distributor::firstOrCreate(
+        ['code' => 'DST-DYNAMIC-01'],
+        ['name' => 'Dist Dynamic', 'tier' => 'bronze', 'is_active' => true]
+    );
+
+    return ['distributor' => $dist->id];
+};
+
+$partnerParamHelper = function (): array {
+    $ptn = Partner::firstOrCreate(
+        ['code' => 'PTN-DYNAMIC-01'],
+        ['name' => 'Partner Dynamic', 'kind' => 'strategic', 'status' => 'active']
+    );
+
+    return ['partner' => $ptn->id];
+};
+
 return [
     'GET /' => 'public',
     'GET up' => 'public',
@@ -439,7 +460,10 @@ return [
     'POST register' => 'public',
     'activity.index' => 'auth',
     'admin.audit-logs.index' => ['roles' => ['admin']],
-    'admin.audit-logs.show' => ['roles' => ['admin']],
+    'admin.audit-logs.show' => [
+        'roles' => ['admin'],
+        'params' => fn () => ['auditLog' => AuditLog::firstOrCreate(['action' => 'test_action'], ['entity_type' => 'test', 'entity_id' => 1])->id],
+    ],
     'admin.group-dashboard' => ['roles' => ['admin']],
     'admin.health.index' => ['roles' => ['admin']],
     'admin.health.run' => ['roles' => ['admin']],
@@ -450,9 +474,15 @@ return [
     'admin.rbac.assign' => ['roles' => ['admin']],
     'admin.rbac.index' => ['roles' => ['admin']],
     'admin.rbac.revoke' => ['roles' => ['admin']],
-    'admin.rbac.role' => ['roles' => ['admin']],
+    'admin.rbac.role' => [
+        'roles' => ['admin'],
+        'params' => fn () => ['role' => Role::firstOrCreate(['name' => 'admin'], ['label' => 'Administrator', 'is_system' => true])->id],
+    ],
     'admin.rbac.toggle-permission' => ['roles' => ['admin']],
-    'admin.rbac.user' => ['roles' => ['admin']],
+    'admin.rbac.user' => [
+        'roles' => ['admin'],
+        'params' => fn () => ['user' => User::firstOrCreate(['email' => 'admin_test@test.test'], ['name' => 'Admin Test', 'password' => 'secret', 'role' => 'admin'])->id],
+    ],
     'agency.accruals.clawback' => ['roles' => ['admin', 'procurement']],
     'agency.accruals.release' => ['roles' => ['admin', 'procurement']],
     'agency.accruals.store' => ['roles' => ['admin', 'procurement']],
@@ -578,9 +608,9 @@ return [
     'distribution.index' => ['roles' => ['admin', 'auditor', 'distributor', 'procurement']],
     'distribution.invoices.pay' => ['roles' => ['admin', 'procurement']],
     'distribution.invoices.store' => ['roles' => ['admin', 'procurement']],
-    'distribution.onboarding.approve' => ['roles' => ['admin', 'procurement']],
-    'distribution.onboarding.submit' => ['roles' => ['admin', 'procurement']],
-    'distribution.outlets.store' => ['roles' => ['admin', 'procurement']],
+    'distribution.onboarding.approve' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
+    'distribution.onboarding.submit' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
+    'distribution.outlets.store' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
     'distribution.portal.home' => [
         'roles' => ['admin', 'distributor'],
         'setup' => function (User $user): void {
@@ -593,13 +623,13 @@ return [
         },
     ],
     'distribution.scorecards.store' => ['roles' => ['admin', 'procurement']],
-    'distribution.securities.store' => ['roles' => ['admin', 'procurement']],
-    'distribution.show' => ['roles' => ['admin', 'auditor', 'distributor', 'procurement']],
+    'distribution.securities.store' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
+    'distribution.show' => ['roles' => ['admin', 'auditor', 'distributor', 'procurement'], 'params' => $distributorParamHelper],
     'distribution.sweep' => ['roles' => ['admin', 'procurement']],
     'distribution.targets.store' => ['roles' => ['admin', 'procurement']],
     'distribution.territories.store' => ['roles' => ['admin', 'procurement']],
-    'distribution.tier.evaluate' => ['roles' => ['admin', 'procurement']],
-    'distribution.transition' => ['roles' => ['admin', 'procurement']],
+    'distribution.tier.evaluate' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
+    'distribution.transition' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
     'enterprise_finance.budgets' => ['roles' => ['admin', 'auditor', 'treasury']],
     'enterprise_finance.index' => ['roles' => ['admin', 'auditor', 'treasury']],
     'epc.index' => ['roles' => ['admin', 'epc_manager', 'asset_manager']],
@@ -1118,9 +1148,9 @@ return [
     'notifications.read' => 'auth',
     'notifications.recent' => 'auth',
     'partners.index' => ['roles' => ['admin', 'auditor', 'procurement']],
-    'partners.show' => ['roles' => ['admin', 'auditor', 'procurement']],
+    'partners.show' => ['roles' => ['admin', 'auditor', 'procurement'], 'params' => $partnerParamHelper],
     'partners.store' => ['roles' => ['admin', 'procurement']],
-    'partners.transition' => ['roles' => ['admin', 'procurement']],
+    'partners.transition' => ['roles' => ['admin', 'procurement'], 'params' => $partnerParamHelper],
     'party.create' => ['roles' => ['admin', 'logistics_admin', 'party_manager']],
     'party.index' => ['roles' => ['admin', 'logistics_admin', 'party_manager']],
     'party.kyc.approve' => ['roles' => ['admin', 'logistics_admin', 'party_manager']],
@@ -1627,26 +1657,26 @@ return [
         },
     ],
     'sanctum.csrf-cookie' => 'public',
-    'services.destroy' => ['roles' => ['admin']],
+    'services.destroy' => ['roles' => ['admin'], 'params' => fn () => ['service' => $storeAutoServeSeedHelper()['service']->id]],
     'services.index' => ['roles' => ['admin']],
     'services.store' => ['roles' => ['admin']],
-    'services.update' => ['roles' => ['admin']],
-    'spareparts.destroy' => ['roles' => ['admin']],
+    'services.update' => ['roles' => ['admin'], 'params' => fn () => ['service' => $storeAutoServeSeedHelper()['service']->id]],
+    'spareparts.destroy' => ['roles' => ['admin'], 'params' => fn () => ['sparepart' => $storeAutoServeSeedHelper()['sparepart']->id]],
     'spareparts.index' => ['roles' => ['admin']],
     'spareparts.store' => ['roles' => ['admin']],
-    'spareparts.update' => ['roles' => ['admin']],
+    'spareparts.update' => ['roles' => ['admin'], 'params' => fn () => ['sparepart' => $storeAutoServeSeedHelper()['sparepart']->id]],
     'storage.local' => 'public',
     'storage.local.upload' => 'signed',
-    'store.admin.orders.cancel' => ['roles' => ['admin']],
-    'store.admin.orders.complete' => ['roles' => ['admin']],
+    'store.admin.orders.cancel' => ['roles' => ['admin'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid]],
+    'store.admin.orders.complete' => ['roles' => ['admin'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid]],
     'store.admin.orders.index' => ['roles' => ['admin']],
-    'store.admin.orders.resolveDispute' => ['roles' => ['admin']],
-    'store.admin.orders.ship' => ['roles' => ['admin']],
-    'store.admin.orders.show' => ['roles' => ['admin']],
-    'store.admin.products.adjustStock' => ['roles' => ['admin']],
+    'store.admin.orders.resolveDispute' => ['roles' => ['admin'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid]],
+    'store.admin.orders.ship' => ['roles' => ['admin'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid]],
+    'store.admin.orders.show' => ['roles' => ['admin'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid]],
+    'store.admin.products.adjustStock' => ['roles' => ['admin'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->id]],
     'store.admin.products.createCarListing' => ['roles' => ['admin']],
     'store.admin.products.index' => ['roles' => ['admin']],
-    'store.admin.products.toggle' => ['roles' => ['admin']],
+    'store.admin.products.toggle' => ['roles' => ['admin'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->id]],
     'store.c2c.buy' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->slug]],
     'store.c2c.buyForm' => ['roles' => ['admin', 'auditor', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->slug]],
     'store.c2c.cancel' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],

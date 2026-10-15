@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Modules\Integration\Domain\Models\ApiClient;
@@ -47,8 +46,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // R3.4: B2B API Client Rate Limiting (K-23 / D6: key "api-client:{client_id}")
-        ThrottleRequests::shouldHashKeys(false);
-
         $apiClientLimiter = function (Request $request) {
             $apiKey = $request->header('X-API-Key') ?? $request->bearerToken();
             $clientId = $request->header('X-Client-ID');

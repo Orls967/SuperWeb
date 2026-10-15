@@ -5,10 +5,14 @@ on:
     branches:
       - master
       - 'feature/**'
+      - 'verify/**'
+      - 'fix/**'
   pull_request:
     branches:
       - master
       - 'feature/**'
+      - 'verify/**'
+      - 'fix/**'
   workflow_dispatch:
     inputs:
       fase:
@@ -44,18 +48,22 @@ jobs:
         with:
           node-version: 20
 
+      - name: Setup Environment File
+        run: cp .env.example .env
+
       - name: Install npm dependencies & build assets
         run: |
           npm ci
           npm run build
 
       - name: Install Composer dependencies
+        env:
+          APP_ENV: local
+          BLIND_INDEX_PEPPER: your-blind-index-pepper-placeholder
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Setup Environment
-        run: |
-          cp .env.example .env
-          php artisan key:generate --ansi
+      - name: Generate Application Key
+        run: php artisan key:generate --ansi
 
       - name: Determine Phase ID
         id: resolve-phase
@@ -119,13 +127,17 @@ jobs:
           extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, gd, zip, bcmath
           coverage: none
 
+      - name: Setup Environment File
+        run: cp .env.example .env
+
       - name: Install Composer dependencies
+        env:
+          APP_ENV: local
+          BLIND_INDEX_PEPPER: your-blind-index-pepper-placeholder
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Setup Environment
-        run: |
-          cp .env.example .env
-          php artisan key:generate --ansi
+      - name: Generate Application Key
+        run: php artisan key:generate --ansi
 
       - name: Run DB Portability Tests
         env:
@@ -167,13 +179,17 @@ jobs:
           coverage: pcov
           ini-values: memory_limit=1G
 
+      - name: Setup Environment File
+        run: cp .env.example .env
+
       - name: Install Composer dependencies
+        env:
+          APP_ENV: local
+          BLIND_INDEX_PEPPER: your-blind-index-pepper-placeholder
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Setup Environment
-        run: |
-          cp .env.example .env
-          php artisan key:generate --ansi
+      - name: Generate Application Key
+        run: php artisan key:generate --ansi
 
       - name: Mutation pagar R0
         run: |

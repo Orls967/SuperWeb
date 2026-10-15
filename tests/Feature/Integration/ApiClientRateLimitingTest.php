@@ -6,7 +6,6 @@ namespace Tests\Feature\Integration;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\RateLimiter;
 use Modules\Integration\Application\Services\IntegrationService;
 use Modules\Integration\Domain\Models\ApiClient;
 use Tests\TestCase;
@@ -60,7 +59,6 @@ class ApiClientRateLimitingTest extends TestCase
 
         // Set low limit for testing
         $client->update(['rate_limit_per_minute' => 3]);
-        RateLimiter::clear("api-client:{$client->client_id}");
 
         // 3 requests allowed
         for ($i = 0; $i < 3; $i++) {
@@ -92,7 +90,6 @@ class ApiClientRateLimitingTest extends TestCase
         /** @var ApiClient $client */
         $client = $registered['client'];
         $client->update(['rate_limit_per_minute' => 2]);
-        RateLimiter::clear("api-client:{$client->client_id}");
 
         // 2 requests allowed
         for ($i = 0; $i < 2; $i++) {
@@ -116,7 +113,6 @@ class ApiClientRateLimitingTest extends TestCase
         /** @var ApiClient $client */
         $client = $registered['client'];
         $client->update(['rate_limit_per_minute' => 1]);
-        RateLimiter::clear("api-client:{$client->client_id}");
 
         $first = $this->withHeaders(['X-Client-ID' => $client->client_id])
             ->getJson(route('api.v1.integration.ping'));
@@ -126,8 +122,8 @@ class ApiClientRateLimitingTest extends TestCase
             ->getJson(route('api.v1.integration.ping'));
         $second->assertStatus(429);
 
-        // Reset limiter
-        RateLimiter::clear("api-client:{$client->client_id}");
+        // Reset limiter via natural window expiry
+        $this->travel(61)->seconds();
 
         $third = $this->withHeaders(['X-Client-ID' => $client->client_id])
             ->getJson(route('api.v1.integration.ping'));
