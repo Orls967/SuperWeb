@@ -299,10 +299,22 @@ final class ProgressIntegrityScanner
                 }
 
                 // c) Minus deliverable fase (item fase itu sendiri yang sudah [x] dan bukan warisan) tidak boleh dialihkan
-                $isWarisan = str_contains(strtolower($entry['minus']), 'warisan')
+                $isForbiddenDeliverable = (bool) preg_match(
+                    '/(?:DELIVERABLE[^\n]*`?'.preg_quote($entry['id'], '/').'`?|`?'.preg_quote($entry['id'], '/').'`?[^\n]*TIDAK BOLEH dialihkan)/iu',
+                    $decisionsContent
+                );
+
+                $isExplicitlyAllowedLegacy = (bool) preg_match(
+                    '/(?:^|\n)[ \t]*[-*]\s*`?'.preg_quote($entry['id'], '/').'`?.*?[→↪️]\s*dialihkan/u',
+                    $decisionsContent
+                );
+
+                $isWarisan = ! $isForbiddenDeliverable && (
+                    str_contains(strtolower($entry['minus']), 'warisan')
                     || str_contains(strtolower($entry['dampak']), 'warisan')
                     || str_contains(strtolower($entry['item']), 'warisan')
-                    || str_contains($decisionsContent, $entry['id']);
+                    || $isExplicitlyAllowedLegacy
+                );
 
                 $referencedItems = preg_split('/[\/,\s]+/', trim($entry['item']));
                 $isDeliverable = false;

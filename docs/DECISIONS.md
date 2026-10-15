@@ -1222,6 +1222,11 @@
        - `M-R0-12` (`distribution.portal.home` HTTP 403 role admin) → dialihkan ke `R3.1`
        - `M-R0-14` (`api:audit` tidak menyebut entitas rusak) → dialihkan ke `R5.2`
        - `M-R0-18` (37 rute tulis mencantumkan role auditor) → dialihkan ke `R3.1`
+- **Adendum 2026-10-15 (Penyelesaian Temuan Verifikasi M-R0-25):**
+  - Sesuai temuan verifikasi independen putaran 2 (M-R0-25), deskripsi item R2.3 pada baseline teks PROGRESS berfokus pada 15 `back()->errors()` di modul Pricing/Agency/Distribution.
+  - Untuk mencegah bug HTTP 500 modul Contract (`contract.clauses.create` dan `contract.reports`) tidak terlindungi di fase tujuan, Pemilik menyetujui penegasan Definition of Ready (DoR) Fase R2:
+    1. DoR Fase R2 secara resmi mencakup penyelesaian bug fungsional terverifikasi K-16, K-22, K-29, serta diperluas secara eksplisit mencakup perbaikan galat HTTP 500 modul Contract (M-R0-10: perbaikan sintaks Blade view `contract.clauses.create` dan M-R0-11: perbaikan type error `ContractType` enum pada `contract.reports`).
+    2. Status pengalihan M-R0-10 dan M-R0-11 ke R2.3 ditegaskan sah, mengikat, dan memblokir status ✅ Fase R2 sampai diselesaikan.
 - **Reason:**
   - Mengurai kebuntuan deadlock dependensi R0↔R1 secara formal tanpa melanggar prinsip anti-pola X1 (tidak menyembunyikan minus) dan X18 (tidak menurunkan ambang/mengubah teks item).
   - Memastikan seluruh utang teknis warisan terkunci dan wajib diselesaikan pada fase tujuan sebelum fase tujuan dapat dinyatakan selesai (✅).
