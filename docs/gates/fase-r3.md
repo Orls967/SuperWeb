@@ -1,7 +1,7 @@
 # Quality Gate Report: Fase R3
 
-- **Commit:** `c26e50ea0d2675528d7294d860e66fa257264144` (c26e50e)
-- **Tanggal:** 2026-10-15T11:25:58+00:00
+- **Commit:** `49c943f158348c7f73bd6cee4b2ab3a9e1cfe576` (49c943f)
+- **Tanggal:** 2026-10-15T11:36:41+00:00
 - **PHP:** 8.4.26
 - **Database:** sqlite (v3.53.4)
 - **Status Keseluruhan:** PASS 🟢
@@ -9,34 +9,34 @@
 ## 1. Ringkasan Test Suite (Pest / JUnit)
 - **Total Test:** 2716
 - **Total Assertion:** 13448
-- **Durasi:** 1,231.60s
+- **Durasi:** 684.65s
 - **Gagal / Error:** 0 failures, 0 errors
 
 ## 2. Hasil Perintah Protokol P4
 | Perintah | Deskripsi | Exit Code | Status |
 |---|---|---|---|
-| `composer validate --strict` | Langkah gate: composer validate --strict (0.20s) | 0 | PASS 🟢 |
-| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest (135.32s) | 0 | PASS 🟢 |
-| `vendor/bin/pint --test` | Langkah gate: pint --test (3.74s) | 0 | PASS 🟢 |
-| `php artisan arch:scan --json` | Langkah gate: arch:scan --json (2.67s) | 0 | PASS 🟢 |
-| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed (27.44s) | 0 | PASS 🟢 |
-| `php artisan bank:reconcile` | Langkah gate: bank:reconcile (0.31s) | 0 | PASS 🟢 |
-| `php artisan chain:audit-all` | Langkah gate: chain:audit-all (0.29s) | 0 | PASS 🟢 |
-| `php artisan super:health-check` | Langkah gate: super:health-check (0.22s) | 0 | PASS 🟢 |
-| `npm run build` | Langkah gate: npm run build (1.18s) | 0 | PASS 🟢 |
+| `composer validate --strict` | Langkah gate: composer validate --strict (0.19s) | 0 | PASS 🟢 |
+| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest (81.74s) | 0 | PASS 🟢 |
+| `vendor/bin/pint --test` | Langkah gate: pint --test (0.76s) | 0 | PASS 🟢 |
+| `php artisan arch:scan --json` | Langkah gate: arch:scan --json (2.79s) | 0 | PASS 🟢 |
+| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed (28.42s) | 0 | PASS 🟢 |
+| `php artisan bank:reconcile` | Langkah gate: bank:reconcile (0.30s) | 0 | PASS 🟢 |
+| `php artisan chain:audit-all` | Langkah gate: chain:audit-all (0.21s) | 0 | PASS 🟢 |
+| `php artisan super:health-check` | Langkah gate: super:health-check (0.21s) | 0 | PASS 🟢 |
+| `npm run build` | Langkah gate: npm run build (1.21s) | 0 | PASS 🟢 |
 
 ## 3. Status Test Blok Bukti Fase R3
 | Item | Nama Test | File | Status (JUnit) | Durasi |
 |---|---|---|---|---|
-| R3.1 | `it maps every registered route in route-roles.php` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 0.030s |
-| R3.1 | `it confirms authorized roles are not forbidden (not 403) on role-protected routes` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 11.104s |
-| R3.1 | `it enforces that unauthorized roles receive 403 on role-protected routes` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 1.088s |
-| R3.1 | `all 37 write routes forbid auditor role` | `tests/Feature/Authorization/AuditorReadOnlyPolicyTest.php` | PASS 🟢 | 2.608s |
-| R3.1 | `admin without query receives 200 with distributor list selector` | `tests/Feature/Authorization/DistributorPortalSelectorTest.php` | PASS 🟢 | 5.443s |
-| R3.1 | `admin with distributor query receives 200 with data and audit log` | `tests/Feature/Authorization/DistributorPortalSelectorTest.php` | PASS 🟢 | 5.472s |
-| R3.1 | `non admin distributor attempting to select distributor receives 403` | `tests/Feature/Authorization/DistributorPortalSelectorTest.php` | PASS 🟢 | 5.328s |
-| R3.1 | `storage local upload without valid signature returns 403` | `tests/Feature/Authorization/SignedStorageUploadTest.php` | PASS 🟢 | 0.045s |
-| R3.1 | `storage local upload with valid signature is not forbidden` | `tests/Feature/Authorization/SignedStorageUploadTest.php` | PASS 🟢 | 0.062s |
+| R3.1 | `it maps every registered route in route-roles.php` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 0.028s |
+| R3.1 | `it confirms authorized roles are not forbidden (not 403) on role-protected routes` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 13.224s |
+| R3.1 | `it enforces that unauthorized roles receive 403 on role-protected routes` | `tests/Architecture/RouteAuthorizationMatrixTest.php` | PASS 🟢 | 1.354s |
+| R3.1 | `all 37 write routes forbid auditor role` | `tests/Feature/Authorization/AuditorReadOnlyPolicyTest.php` | PASS 🟢 | 2.154s |
+| R3.1 | `admin without query receives 200 with distributor list selector` | `tests/Feature/Authorization/DistributorPortalSelectorTest.php` | PASS 🟢 | 3.203s |
+| R3.1 | `admin with distributor query receives 200 with data and audit log` | `tests/Feature/Authorization/DistributorPortalSelectorTest.php` | PASS 🟢 | 3.315s |
+| R3.1 | `non admin distributor attempting to select distributor receives 403` | `tests/Feature/Authorization/DistributorPortalSelectorTest.php` | PASS 🟢 | 2.502s |
+| R3.1 | `storage local upload without valid signature returns 403` | `tests/Feature/Authorization/SignedStorageUploadTest.php` | PASS 🟢 | 0.025s |
+| R3.1 | `storage local upload with valid signature is not forbidden` | `tests/Feature/Authorization/SignedStorageUploadTest.php` | PASS 🟢 | 0.026s |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** Terpasang (7265 pelanggaran terbaseline).
