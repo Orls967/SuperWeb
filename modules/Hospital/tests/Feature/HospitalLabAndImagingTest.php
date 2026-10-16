@@ -2,6 +2,7 @@
 
 namespace Modules\Hospital\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hospital\Application\Services\HospitalLabAndImagingService;
@@ -42,23 +43,7 @@ class HospitalLabAndImagingTest extends TestCase
         ]);
 
         // Register hospital ledger accounts
-        $accounts = [
-            'hsp:lab_receivable:IDR' => 'asset',
-            'hsp:lab_revenue:IDR' => 'revenue',
-            'hsp:imaging_receivable:IDR' => 'asset',
-            'hsp:imaging_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Hospital {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_105_2_and_105_6_a_cold_chain_breach_rejects_specimen_and_blocks_results(): void

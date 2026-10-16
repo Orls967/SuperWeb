@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -34,24 +35,7 @@ class HotelFranchiseAndBrandTest extends TestCase
         ]);
 
         // Register hotel ledger accounts
-        $accounts = [
-            'htl:franchise_receivable:IDR' => 'asset',
-            'htl:franchise_fee_revenue:IDR' => 'revenue',
-            'htl:royalty_revenue:IDR' => 'revenue',
-            'htl:ota_penalty_receivable:IDR' => 'asset',
-            'htl:parity_penalty_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Hotel {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_111_1_and_111_6_d_brand_standard_audit_determines_listing_status(): void

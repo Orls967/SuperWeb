@@ -2,6 +2,7 @@
 
 namespace Modules\Hospital\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hospital\Application\Services\HospitalPublicHealthAndBpjsService;
@@ -64,21 +65,7 @@ class HospitalPublicHealthAndBpjsTest extends TestCase
         ]);
 
         // Register hospital ledger accounts
-        $accounts = [
-            'hsp:bpjs_receivable:IDR' => 'asset',
-            'hsp:hospital_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Hospital {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_107_1_and_107_6_a_gapless_claim_batch_and_denial_no_accrual(): void

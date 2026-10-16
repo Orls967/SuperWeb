@@ -2,6 +2,7 @@
 
 namespace Modules\Hospital\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hospital\Application\Services\HospitalRevenueCycleService;
@@ -39,27 +40,7 @@ class HospitalRevenueCycleAndPharmacyTest extends TestCase
         ]);
 
         // Register hospital ledger accounts
-        $accounts = [
-            'hsp:hospital_revenue:IDR' => 'revenue',
-            'hsp:patient_deposit_escrow:IDR' => 'liability',
-            'hsp:unearned_deposit:IDR' => 'liability',
-            'hsp:bpjs_receivable:IDR' => 'asset',
-            'hsp:insurance_receivable:IDR' => 'asset',
-            'hsp:patient_self_pay:IDR' => 'asset',
-            'hsp:pharma_supplier_payable:IDR' => 'liability',
-            'hsp:vaccine_dispute_escrow:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Hospital {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund(): void

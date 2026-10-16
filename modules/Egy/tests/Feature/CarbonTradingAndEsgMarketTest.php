@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Egy\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Egy\Application\Services\CarbonTradingAndEsgMarketService;
 use RuntimeException;
@@ -22,25 +22,7 @@ class CarbonTradingAndEsgMarketTest extends TestCase
         parent::setUp();
         $this->service = app(CarbonTradingAndEsgMarketService::class);
 
-        $accounts = [
-            'egy:carbon_credit_inventory:IDR' => 'asset',
-            'egy:carbon_credit_sales:IDR' => 'revenue',
-            'egy:cbam_receivable:IDR' => 'asset',
-            'egy:cbam_revenue:IDR' => 'revenue',
-            'egy:green_incentive_contra_revenue:IDR' => 'expense',
-            'egy:utility_receivable:IDR' => 'asset',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Energy {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_128_1_and_128_6_a_internal_carbon_exchange_trade(): void

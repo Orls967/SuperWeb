@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Egy\tests\Feature;
 
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
 use RuntimeException;
@@ -23,23 +23,7 @@ class EnergyGridAndMeteringTest extends TestCase
         parent::setUp();
         $this->service = app(EnergyGridAndMeteringService::class);
 
-        $accounts = [
-            'egy:utility_receivable:IDR' => 'asset',
-            'egy:grid_electricity_revenue:IDR' => 'revenue',
-            'egy:power_purchase_expense:IDR' => 'expense',
-            'egy:producer_payable:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Energy {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_126_2_and_126_6_b_smart_metering_tou_billing_and_ledger(): void

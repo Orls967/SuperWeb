@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Egy\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Egy\Application\Services\DistrictUtilityAndEscoService;
 use RuntimeException;
@@ -22,23 +22,7 @@ class DistrictUtilityAndEscoTest extends TestCase
         parent::setUp();
         $this->service = app(DistrictUtilityAndEscoService::class);
 
-        $accounts = [
-            'egy:utility_receivable:IDR' => 'asset',
-            'egy:utility_consolidated_revenue:IDR' => 'revenue',
-            'egy:esco_fee_receivable:IDR' => 'asset',
-            'egy:esco_service_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Energy {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_127_1_and_127_6_a_water_balance_conservation(): void

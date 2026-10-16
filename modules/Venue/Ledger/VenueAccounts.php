@@ -40,6 +40,13 @@ final class VenueAccounts
                 'allow_negative' => true,
             ],
             [
+                'code' => 'artist:payable:00000000-0000-0000-0000-000000000001:IDR',
+                'name' => 'Artist Payable 001',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
                 'code' => 'escrow:venue_bundle:IDR',
                 'name' => 'Festival Staycation Escrow Bundle Holding',
                 'kind' => AccountKind::ESCROW,
@@ -168,6 +175,13 @@ final class VenueAccounts
             [
                 'code' => 'ven:vip_unearned_rev:IDR',
                 'name' => 'VIP Daybed Advance Booking Unearned Revenue Liability',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'venue:beachclub:IDR',
+                'name' => 'Venue Beach Club Vendor Liability',
                 'kind' => AccountKind::LIABILITY,
                 'asset_code' => 'IDR',
                 'allow_negative' => true,

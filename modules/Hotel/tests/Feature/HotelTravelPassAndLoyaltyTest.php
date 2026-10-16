@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -35,22 +36,7 @@ class HotelTravelPassAndLoyaltyTest extends TestCase
         ]);
 
         // Register hotel ledger accounts
-        $accounts = [
-            'htl:loyalty_program_expense:IDR' => 'expense',
-            'htl:loyalty_points_liability:IDR' => 'liability',
-            'htl:loyalty_redemption_settlement:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Hotel {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_112_2_and_112_6_a_and_b_earn_and_redeem_points_matches_liability(): void

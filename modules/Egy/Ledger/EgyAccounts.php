@@ -72,7 +72,7 @@ final class EgyAccounts
                 'name' => 'Green Incentive Contra Revenue',
                 'kind' => AccountKind::REVENUE,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'egy:grid_electricity_revenue:IDR',

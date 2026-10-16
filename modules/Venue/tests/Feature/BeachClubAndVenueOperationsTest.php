@@ -2,6 +2,7 @@
 
 namespace Modules\Venue\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Venue\Application\Services\VenueOperationsService;
@@ -55,24 +56,7 @@ class BeachClubAndVenueOperationsTest extends TestCase
         ]);
 
         // Ledger accounts setup
-        $accounts = [
-            'ven:ticket_clearing:IDR' => 'asset',
-            'ven:ticket_revenue:IDR' => 'revenue',
-            'ven:vip_escrow:IDR' => 'liability',
-            'ven:vip_unearned_rev:IDR' => 'liability',
-            'ven:vip_noshow_rev:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Venue {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_89_3_ticket_purchase_and_anti_replay_gate_scan(): void

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -35,23 +36,7 @@ class MiceAndWeddingSalesTest extends TestCase
         ]);
 
         // Register MICE ledger accounts
-        $accounts = [
-            'htl:wedding_receivable:IDR' => 'asset',
-            'htl:wedding_revenue:IDR' => 'revenue',
-            'htl:banquet_production_cost:IDR' => 'expense',
-            'htl:banquet_vendor_payable:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Hotel {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_114_2_and_114_6_a_room_block_release_at_h_minus_30(): void

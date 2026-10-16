@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Mining\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Mining\Application\Services\MiningComplianceAndRoyaltyService;
 use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Mining\Domain\Models\MiningWorkPermit;
@@ -33,23 +33,7 @@ class MiningWeighbridgeRoyaltyAndHseTest extends TestCase
             'location' => 'Central Halmahera',
         ]);
 
-        $accounts = [
-            'expense:mining_royalty:IDR' => 'expense',
-            'min:royalty_payable:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::firstOrCreate(
-                ['code' => $code],
-                [
-                    'name' => "Account {$code}",
-                    'kind' => $kind,
-                    'asset_code' => 'IDR',
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                ]
-            );
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_weighbridge_ticket_hash_chain(): void

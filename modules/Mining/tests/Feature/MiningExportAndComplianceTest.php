@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Mining\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mining\Application\Services\MiningExportAndComplianceService;
 use RuntimeException;
@@ -22,23 +22,7 @@ class MiningExportAndComplianceTest extends TestCase
         parent::setUp();
         $this->service = app(MiningExportAndComplianceService::class);
 
-        $accounts = [
-            'min:trade_receivable:IDR' => 'asset',
-            'min:demurrage_receivable:IDR' => 'asset',
-            'min:demurrage_revenue:IDR' => 'revenue',
-            'min:circular_economy_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Mining {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_122_1_and_122_6_c_stockpile_inventory_reconciliation(): void

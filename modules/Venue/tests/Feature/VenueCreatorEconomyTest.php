@@ -2,6 +2,7 @@
 
 namespace Modules\Venue\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Venue\Application\Services\VenueCreatorEconomyService;
@@ -25,25 +26,7 @@ class VenueCreatorEconomyTest extends TestCase
         $this->creator = $this->service->registerCreator('DJ ElectroNusantara', 'MELODIC_TECHNO');
 
         // Register venue ledger accounts
-        $accounts = [
-            'ven:streaming_receivable:IDR' => 'asset',
-            'ven:platform_streaming_revenue:IDR' => 'revenue',
-            'ven:creator_held_royalty_escrow:IDR' => 'liability',
-            'ven:creator_payable:IDR' => 'liability',
-            'ven:merch_sales_receivable:IDR' => 'asset',
-            'ven:platform_merch_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Venue {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_115_2_and_115_6_a_and_b_streaming_royalty_hold_and_payout(): void

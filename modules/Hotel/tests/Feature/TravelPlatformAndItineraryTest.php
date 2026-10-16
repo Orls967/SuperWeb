@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hotel\Application\Services\TravelPlatformAndItineraryService;
@@ -22,25 +23,7 @@ class TravelPlatformAndItineraryTest extends TestCase
         $this->service = app(TravelPlatformAndItineraryService::class);
 
         // Register travel ledger accounts
-        $accounts = [
-            'htl:travel_escrow_deposit:IDR' => 'asset',
-            'htl:travel_unearned_escrow:IDR' => 'liability',
-            'air:flight_partner_payable:IDR' => 'liability',
-            'htl:hotel_vendor_payable:IDR' => 'liability',
-            'lgx:transport_vendor_payable:IDR' => 'liability',
-            'ven:event_vendor_payable:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Travel {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_113_1_and_113_6_a_bundle_settlement_sum_equals_total_payment(): void

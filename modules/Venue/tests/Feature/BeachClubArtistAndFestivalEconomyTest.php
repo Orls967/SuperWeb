@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Venue\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Venue\Application\Services\VenueEconomyService;
 use Modules\Venue\Domain\Models\ArtistContract;
 use Modules\Venue\Domain\Models\BundleOrder;
@@ -25,42 +25,12 @@ class BeachClubArtistAndFestivalEconomyTest extends TestCase
         parent::setUp();
         $this->economyService = app(VenueEconomyService::class);
 
-        $accounts = [
-            'expense:venue_artist_fee:IDR' => 'expense',
-            'escrow:venue_bundle:IDR' => 'escrow',
-            'hotel:resort:IDR' => 'liability',
-            'transport:shuttle:IDR' => 'liability',
-            'venue:beachclub:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::firstOrCreate(
-                ['code' => $code],
-                [
-                    'name' => "Account {$code}",
-                    'kind' => $kind,
-                    'asset_code' => 'IDR',
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                ]
-            );
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_artist_door_share_calculation_minus_advance(): void
     {
-        $contractId = (string) Str::uuid();
-        LedgerAccount::firstOrCreate(
-            ['code' => "artist:payable:{$contractId}:IDR"],
-            [
-                'name' => "Artist Payable {$contractId}",
-                'kind' => 'liability',
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]
-        );
-
+        $contractId = '00000000-0000-0000-0000-000000000001';
         $contract = ArtistContract::create([
             'id' => $contractId,
             'venue_id' => (string) Str::uuid(),

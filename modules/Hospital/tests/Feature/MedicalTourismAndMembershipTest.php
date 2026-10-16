@@ -2,6 +2,7 @@
 
 namespace Modules\Hospital\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hospital\Application\Services\MedicalTourismAndMembershipService;
@@ -31,24 +32,7 @@ class MedicalTourismAndMembershipTest extends TestCase
         ]);
 
         // Register ledger accounts
-        $accounts = [
-            'hsp:tourism_escrow_deposit:IDR' => 'asset',
-            'hsp:tourism_unearned_escrow:IDR' => 'liability',
-            'hsp:hospital_revenue:IDR' => 'revenue',
-            'htl:hotel_vendor_payable:IDR' => 'liability',
-            'lgx:transport_vendor_payable:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Hospital {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_108_1_and_108_6_a_and_b_medical_tourism_milestones_and_multi_vendor_settlement(): void
