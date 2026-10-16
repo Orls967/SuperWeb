@@ -10,7 +10,15 @@ class DisruptionAlert extends Model
 {
     protected $table = 'sct_disruption_alerts';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'alert_code',
+        'severity',
+        'category',
+        'title',
+        'description',
+        'affected_orders_count',
+        'status',
+    ];
 
     protected $casts = [
         'affected_orders_count' => 'integer',

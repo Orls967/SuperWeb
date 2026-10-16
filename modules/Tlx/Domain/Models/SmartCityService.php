@@ -14,7 +14,16 @@ class SmartCityService extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'service_code',
+        'municipality_name',
+        'service_type',
+        'active_sensor_count',
+        'sla_target_pct',
+        'sla_achieved_pct',
+        'monthly_contract_value_minor',
+        'status',
+    ];
 
     protected $casts = [
         'active_sensor_count' => 'integer',

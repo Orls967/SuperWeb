@@ -11,7 +11,16 @@ class BiddingAgent extends Model
 {
     protected $table = 'trd_bidding_agents';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'agent_code',
+        'entity_code',
+        'commodity_code',
+        'min_price_floor_idr',
+        'max_price_ceiling_idr',
+        'target_margin_pct',
+        'max_risk_score',
+        'status',
+    ];
 
     protected $casts = [
         'target_margin_pct' => 'decimal:2',

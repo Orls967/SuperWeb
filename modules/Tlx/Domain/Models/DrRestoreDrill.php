@@ -14,7 +14,16 @@ class DrRestoreDrill extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'drill_code',
+        'dataset_class',
+        'target_rpo_minutes',
+        'target_rto_minutes',
+        'actual_data_loss_minutes',
+        'actual_recovery_time_minutes',
+        'is_sla_compliant',
+        'drill_conducted_at',
+    ];
 
     protected $casts = [
         'target_rpo_minutes' => 'integer',

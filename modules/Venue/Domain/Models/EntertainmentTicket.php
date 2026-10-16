@@ -11,7 +11,15 @@ class EntertainmentTicket extends Model
 {
     protected $table = 'ven_entertainment_tickets';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'ticket_number',
+        'event_id',
+        'buyer_user_id',
+        'price_paid_idr',
+        'ticket_hash',
+        'status',
+        'scanned_at',
+    ];
 
     protected $casts = [
         'scanned_at' => 'datetime',

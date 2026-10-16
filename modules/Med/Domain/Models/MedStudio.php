@@ -14,7 +14,15 @@ class MedStudio extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'studio_code',
+        'name',
+        'facility_type',
+        'location_city',
+        'hourly_rate_minor',
+        'full_day_rate_minor',
+        'status',
+    ];
 
     protected $casts = [
         'hourly_rate_minor' => 'integer',

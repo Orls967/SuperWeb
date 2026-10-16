@@ -14,5 +14,11 @@ class MedIpAsset extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'ip_code',
+        'title',
+        'ip_type',
+        'owner_entity_id',
+        'status',
+    ];
 }

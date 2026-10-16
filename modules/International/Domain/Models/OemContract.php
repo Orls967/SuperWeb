@@ -11,7 +11,17 @@ class OemContract extends Model
 {
     protected $table = 'intl_oem_contracts';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'contract_number',
+        'foreign_entity_id',
+        'type',
+        'product_design_name',
+        'tolling_fee_per_unit_idr',
+        'consignment_materials_tracked',
+        'nda_signed',
+        'qa_standard',
+        'status',
+    ];
 
     protected $casts = [
         'tolling_fee_per_unit_idr' => 'integer',

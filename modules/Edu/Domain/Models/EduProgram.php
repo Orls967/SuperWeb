@@ -14,7 +14,15 @@ class EduProgram extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'program_code',
+        'title',
+        'industry_sector',
+        'prerequisite_program_id',
+        'total_sessions',
+        'tuition_fee_minor',
+        'status',
+    ];
 
     protected $casts = [
         'total_sessions' => 'integer',

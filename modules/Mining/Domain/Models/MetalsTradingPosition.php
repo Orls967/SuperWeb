@@ -14,7 +14,16 @@ class MetalsTradingPosition extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'desk_code',
+        'commodity',
+        'position_type',
+        'tonnage',
+        'entry_price_usd',
+        'current_mark_price_usd',
+        'unrealized_pnl_minor',
+        'status',
+    ];
 
     protected $casts = [
         'tonnage' => 'float',

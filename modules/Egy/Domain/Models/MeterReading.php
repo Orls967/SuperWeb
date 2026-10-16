@@ -14,7 +14,15 @@ class MeterReading extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'meter_id',
+        'kwh_consumed',
+        'is_peak_hour',
+        'rate_per_kwh_minor',
+        'total_charge_minor',
+        'interval_start',
+        'interval_end',
+    ];
 
     protected $casts = [
         'kwh_consumed' => 'float',

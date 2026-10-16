@@ -14,7 +14,16 @@ class MedStudioBooking extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'booking_code',
+        'studio_id',
+        'project_id',
+        'client_entity_id',
+        'start_time',
+        'end_time',
+        'total_price_minor',
+        'status',
+    ];
 
     protected $casts = [
         'start_time' => 'datetime',

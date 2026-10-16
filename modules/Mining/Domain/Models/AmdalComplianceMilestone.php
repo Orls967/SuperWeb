@@ -14,7 +14,14 @@ class AmdalComplianceMilestone extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'site_id',
+        'milestone_code',
+        'document_type',
+        'regulator_approval_number',
+        'is_fully_approved',
+        'approved_at',
+    ];
 
     protected $casts = [
         'is_fully_approved' => 'boolean',

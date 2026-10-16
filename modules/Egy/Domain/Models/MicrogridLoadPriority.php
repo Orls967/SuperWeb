@@ -14,7 +14,14 @@ class MicrogridLoadPriority extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'microgrid_id',
+        'load_name',
+        'tier',
+        'priority_rank',
+        'required_load_kw',
+        'is_shed',
+    ];
 
     protected $casts = [
         'priority_rank' => 'integer',

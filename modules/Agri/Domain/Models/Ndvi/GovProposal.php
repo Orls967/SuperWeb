@@ -11,7 +11,19 @@ class GovProposal extends Model
 {
     protected $table = 'gov_proposals';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'proposal_code',
+        'title',
+        'proposal_type',
+        'description',
+        'action_payload',
+        'quorum_weight_required',
+        'total_yes_weight',
+        'total_no_weight',
+        'total_abstain_weight',
+        'status',
+        'execution_reference_code',
+    ];
 
     protected $casts = [
         'action_payload' => 'array',

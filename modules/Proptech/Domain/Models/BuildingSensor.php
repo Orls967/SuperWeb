@@ -11,7 +11,14 @@ class BuildingSensor extends Model
 {
     protected $table = 'prp_building_sensors';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'sensor_code',
+        'zone_id',
+        'sensor_type',
+        'reading_value',
+        'idempotency_key',
+        'recorded_at',
+    ];
 
     protected $casts = [
         'recorded_at' => 'datetime',

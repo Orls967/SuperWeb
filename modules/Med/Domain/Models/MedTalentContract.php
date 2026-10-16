@@ -14,7 +14,16 @@ class MedTalentContract extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'contract_code',
+        'project_id',
+        'talent_party_id',
+        'role_name',
+        'upfront_fee_minor',
+        'backend_percentage',
+        'calculated_royalty_minor',
+        'payout_status',
+    ];
 
     protected $casts = [
         'upfront_fee_minor' => 'integer',

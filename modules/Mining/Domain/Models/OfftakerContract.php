@@ -14,7 +14,18 @@ class OfftakerContract extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'contract_number',
+        'buyer_party_id',
+        'commodity',
+        'contracted_tonnage',
+        'base_lme_price_usd_per_ton',
+        'premium_discount_usd',
+        'invoiced_amount_minor',
+        'currency',
+        'settlement_status',
+        'ledger_transaction_id',
+    ];
 
     protected $casts = [
         'contracted_tonnage' => 'float',

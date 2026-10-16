@@ -14,7 +14,15 @@ class RetCrowdshippingTask extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'task_code',
+        'order_code',
+        'crowd_driver_id',
+        'order_value_minor',
+        'delivery_fee_minor',
+        'pod_hash',
+        'status',
+    ];
 
     protected $casts = [
         'order_value_minor' => 'integer',

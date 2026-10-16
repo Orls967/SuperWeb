@@ -11,7 +11,15 @@ class WebhookDelivery extends Model
 {
     protected $table = 'intg_webhook_deliveries';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'subscription_id',
+        'event_id',
+        'payload',
+        'signature',
+        'http_status',
+        'delivery_status',
+        'attempt_count',
+    ];
 
     protected $casts = [
         'http_status' => 'integer',

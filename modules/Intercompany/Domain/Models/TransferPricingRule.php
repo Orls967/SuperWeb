@@ -10,7 +10,15 @@ class TransferPricingRule extends Model
 {
     protected $table = 'ic_transfer_pricing_rules';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'rule_code',
+        'product_category',
+        'tp_method',
+        'min_arms_length_margin_percent',
+        'max_arms_length_margin_percent',
+        'benchmark_industry_source',
+        'is_active',
+    ];
 
     protected $casts = [
         'min_arms_length_margin_percent' => 'float',

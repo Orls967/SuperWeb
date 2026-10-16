@@ -11,7 +11,16 @@ class VendingTransaction extends Model
 {
     protected $table = 'ven_vending_transactions';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'tx_code',
+        'vending_unit_id',
+        'item_code',
+        'qty',
+        'price_idr',
+        'payment_method',
+        'biometric_token_hash',
+        'status',
+    ];
 
     public function unit(): BelongsTo
     {

@@ -14,7 +14,15 @@ class ChurnPrediction extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'subscriber_id',
+        'subscriber_type',
+        'usage_decline_pct',
+        'support_tickets_count',
+        'churn_risk_score',
+        'risk_level',
+        'recommended_action',
+    ];
 
     protected $casts = [
         'usage_decline_pct' => 'float',

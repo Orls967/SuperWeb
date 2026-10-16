@@ -11,7 +11,16 @@ class BuildingZone extends Model
 {
     protected $table = 'prp_building_zones';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'zone_code',
+        'building_code',
+        'name',
+        'floor_level',
+        'area_sqm',
+        'current_temp_c',
+        'current_occupancy',
+        'current_kwh_rate',
+    ];
 
     public function sensors(): HasMany
     {

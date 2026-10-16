@@ -12,7 +12,14 @@ class Encounter extends Model
 {
     protected $table = 'hsp_encounters';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'encounter_code',
+        'patient_id',
+        'encounter_type',
+        'admitted_at',
+        'discharged_at',
+        'status',
+    ];
 
     protected $casts = [
         'admitted_at' => 'datetime',

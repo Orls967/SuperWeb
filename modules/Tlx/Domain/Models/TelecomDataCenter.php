@@ -14,7 +14,16 @@ class TelecomDataCenter extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'dc_code',
+        'name',
+        'city',
+        'total_facility_power_kw',
+        'it_load_power_kw',
+        'measured_pue',
+        'total_racks_capacity',
+        'occupied_racks',
+    ];
 
     protected $casts = [
         'total_facility_power_kw' => 'float',

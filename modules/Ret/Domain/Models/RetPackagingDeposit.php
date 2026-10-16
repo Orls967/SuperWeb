@@ -14,7 +14,13 @@ class RetPackagingDeposit extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'deposit_code',
+        'customer_id',
+        'packaging_type',
+        'deposit_amount_minor',
+        'status',
+    ];
 
     protected $casts = [
         'deposit_amount_minor' => 'integer',

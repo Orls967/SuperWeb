@@ -14,7 +14,13 @@ class EfSegmentFinancialReport extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'report_code',
+        'period_quarter',
+        'segment_contributions',
+        'total_consolidated_revenue_minor',
+        'total_consolidated_ebitda_minor',
+    ];
 
     protected $casts = [
         'segment_contributions' => 'array',

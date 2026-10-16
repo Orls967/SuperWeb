@@ -11,7 +11,15 @@ class EntertainmentTableBooking extends Model
 {
     protected $table = 'ven_entertainment_table_bookings';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'booking_code',
+        'event_id',
+        'table_number',
+        'user_id',
+        'minimum_spend_idr',
+        'deposit_amount_idr',
+        'status',
+    ];
 
     public function event(): BelongsTo
     {

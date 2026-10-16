@@ -14,7 +14,17 @@ class InterconnectSettlement extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'settlement_batch_code',
+        'partner_operator_code',
+        'period_month',
+        'inbound_minutes',
+        'outbound_minutes',
+        'inbound_receivable_minor',
+        'outbound_payable_minor',
+        'net_settlement_minor',
+        'status',
+    ];
 
     protected $casts = [
         'inbound_minutes' => 'integer',

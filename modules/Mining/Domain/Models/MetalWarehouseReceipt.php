@@ -14,7 +14,17 @@ class MetalWarehouseReceipt extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'receipt_number',
+        'warehouse_id',
+        'commodity',
+        'stored_tonnage',
+        'receipt_hash',
+        'is_collateralized',
+        'collateral_facility_id',
+        'financing_amount_minor',
+        'status',
+    ];
 
     protected $casts = [
         'stored_tonnage' => 'float',

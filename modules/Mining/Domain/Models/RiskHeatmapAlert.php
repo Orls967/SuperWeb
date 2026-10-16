@@ -14,7 +14,16 @@ class RiskHeatmapAlert extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'site_id',
+        'risk_type',
+        'threshold_pct',
+        'actual_variance_pct',
+        'severity',
+        'remediation_action',
+        'c_suite_notified',
+        'triggered_at',
+    ];
 
     protected $casts = [
         'threshold_pct' => 'float',

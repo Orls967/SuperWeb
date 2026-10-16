@@ -14,7 +14,18 @@ class ResourceCommandSnapshot extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'site_id',
+        'snapshot_date',
+        'pit_production_tonnage',
+        'plant_processing_tonnage',
+        'terminal_loaded_tonnage',
+        'live_commodity_price_usd',
+        'fleet_utilization_rate_pct',
+        'realized_revenue_minor',
+        'total_operating_cost_minor',
+        'net_mine_to_market_margin_minor',
+    ];
 
     protected $casts = [
         'pit_production_tonnage' => 'float',

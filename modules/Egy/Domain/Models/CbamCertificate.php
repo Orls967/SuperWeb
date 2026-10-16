@@ -14,7 +14,16 @@ class CbamCertificate extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'cbam_certificate_number',
+        'exporter_entity_id',
+        'container_id',
+        'embedded_emissions_tons_co2',
+        'cbam_price_per_ton_minor',
+        'total_cbam_fee_minor',
+        'billed_to_party_id',
+        'ledger_transaction_id',
+    ];
 
     protected $casts = [
         'embedded_emissions_tons_co2' => 'float',

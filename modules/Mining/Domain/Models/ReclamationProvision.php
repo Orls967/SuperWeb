@@ -14,7 +14,17 @@ class ReclamationProvision extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'site_id',
+        'plan_code',
+        'target_hectares',
+        'provision_accrued_idr',
+        'provision_released_idr',
+        'verified_growth_ndvi',
+        'status',
+        'accrual_ledger_tx_id',
+        'release_ledger_tx_id',
+    ];
 
     protected $casts = [
         'target_hectares' => 'float',

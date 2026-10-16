@@ -14,7 +14,16 @@ class IotDevice extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'device_uuid',
+        'device_type',
+        'owner_entity_id',
+        'active_sim_iccid',
+        'data_quota_mb_monthly',
+        'consumed_mb_monthly',
+        'rate_per_mb_minor',
+        'status',
+    ];
 
     protected $casts = [
         'data_quota_mb_monthly' => 'float',

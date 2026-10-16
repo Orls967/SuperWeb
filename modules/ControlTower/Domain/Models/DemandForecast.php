@@ -10,7 +10,17 @@ class DemandForecast extends Model
 {
     protected $table = 'sct_demand_forecasts';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'forecast_code',
+        'item_code',
+        'period',
+        'algorithm_model',
+        'forecast_qty',
+        'actual_qty',
+        'mape_percent',
+        'is_overridden',
+        'override_reason',
+    ];
 
     protected $casts = [
         'forecast_qty' => 'integer',

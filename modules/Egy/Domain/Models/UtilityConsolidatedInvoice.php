@@ -14,7 +14,18 @@ class UtilityConsolidatedInvoice extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'invoice_number',
+        'property_id',
+        'billing_period',
+        'electricity_charge_minor',
+        'water_charge_minor',
+        'district_cooling_charge_minor',
+        'gas_charge_minor',
+        'total_consolidated_minor',
+        'status',
+        'ledger_transaction_id',
+    ];
 
     protected $casts = [
         'electricity_charge_minor' => 'integer',

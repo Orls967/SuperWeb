@@ -14,7 +14,15 @@ class EfMaAcquisition extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'deal_code',
+        'target_company_name',
+        'target_industry',
+        'valuation_minor',
+        'deal_value_minor',
+        'integration_playbook_status',
+        'backfilled_entity_ids',
+    ];
 
     protected $casts = [
         'valuation_minor' => 'integer',

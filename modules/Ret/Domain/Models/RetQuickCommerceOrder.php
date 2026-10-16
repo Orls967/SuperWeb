@@ -14,7 +14,19 @@ class RetQuickCommerceOrder extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'order_code',
+        'dark_store_id',
+        'customer_id',
+        'placed_at',
+        'promised_delivery_at',
+        'actual_delivered_at',
+        'picking_duration_seconds',
+        'is_sla_breached',
+        'auto_credit_compensation_minor',
+        'compensation_issued',
+        'status',
+    ];
 
     protected $casts = [
         'placed_at' => 'datetime',

@@ -14,7 +14,13 @@ class RetChannel extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'channel_code',
+        'channel_name',
+        'channel_type',
+        'default_commission_pct',
+        'status',
+    ];
 
     protected $casts = [
         'default_commission_pct' => 'float',

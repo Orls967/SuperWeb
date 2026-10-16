@@ -11,7 +11,19 @@ class TechnologyLicense extends Model
 {
     protected $table = 'intl_technology_licenses';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'license_code',
+        'title',
+        'foreign_entity_id',
+        'license_type',
+        'territory',
+        'is_exclusive',
+        'royalty_rate_percent',
+        'minimum_annual_guarantee_idr',
+        'start_date',
+        'expiry_date',
+        'status',
+    ];
 
     protected $casts = [
         'is_exclusive' => 'boolean',

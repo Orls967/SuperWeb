@@ -11,7 +11,15 @@ class GovBountyPof extends Model
 {
     protected $table = 'gov_bounty_pofs';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'pof_code',
+        'bounty_claim_id',
+        'actual_hours_worked',
+        'geo_location_hash',
+        'supervisor_user_id',
+        'calculated_overtime_pay_idr',
+        'status',
+    ];
 
     protected $casts = [
         'actual_hours_worked' => 'decimal:2',

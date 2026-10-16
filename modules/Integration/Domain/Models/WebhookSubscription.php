@@ -11,7 +11,13 @@ class WebhookSubscription extends Model
 {
     protected $table = 'intg_webhook_subscriptions';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'partner_id',
+        'event_type',
+        'target_url',
+        'secret_key',
+        'is_active',
+    ];
 
     protected $casts = [
         'secret_key' => 'encrypted',

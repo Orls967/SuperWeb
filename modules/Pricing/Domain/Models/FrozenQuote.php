@@ -10,7 +10,16 @@ class FrozenQuote extends Model
 {
     protected $table = 'prc_frozen_quotes';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'quote_code',
+        'sku',
+        'frozen_price_idr',
+        'floor_price_idr',
+        'ceiling_price_idr',
+        'quote_hash',
+        'locked_until',
+        'status',
+    ];
 
     protected $casts = [
         'locked_until' => 'datetime',

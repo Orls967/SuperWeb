@@ -14,7 +14,18 @@ class IspSubscription extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'subscription_code',
+        'customer_id',
+        'plan_type',
+        'speed_mbps',
+        'monthly_usage_cap_gb',
+        'current_usage_gb',
+        'monthly_fee_minor',
+        'billing_type',
+        'service_status',
+        'is_overdue',
+    ];
 
     protected $casts = [
         'speed_mbps' => 'float',

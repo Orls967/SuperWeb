@@ -11,7 +11,12 @@ class VendingRestockTask extends Model
 {
     protected $table = 'ven_restock_tasks';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'task_code',
+        'vending_unit_id',
+        'suggested_qty',
+        'status',
+    ];
 
     public function unit(): BelongsTo
     {

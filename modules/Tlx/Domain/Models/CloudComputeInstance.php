@@ -14,7 +14,18 @@ class CloudComputeInstance extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'instance_code',
+        'consumer_entity_id',
+        'sku_flavor',
+        'vcpus',
+        'ram_gb',
+        'storage_gb',
+        'hourly_rate_minor',
+        'running_hours_billed',
+        'total_chargeback_minor',
+        'status',
+    ];
 
     protected $casts = [
         'vcpus' => 'integer',

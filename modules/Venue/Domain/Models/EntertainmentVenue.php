@@ -11,7 +11,14 @@ class EntertainmentVenue extends Model
 {
     protected $table = 'ven_entertainment_venues';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'venue_code',
+        'name',
+        'venue_type',
+        'city',
+        'max_legal_capacity',
+        'min_age_requirement',
+    ];
 
     public function zones(): HasMany
     {

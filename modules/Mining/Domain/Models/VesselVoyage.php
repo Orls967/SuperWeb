@@ -14,7 +14,21 @@ class VesselVoyage extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'voyage_number',
+        'vessel_name',
+        'buyer_party_id',
+        'destination_country',
+        'contracted_tonnage',
+        'loaded_tonnage',
+        'bill_of_lading_hash',
+        'allowed_laytime_hours',
+        'actual_laytime_hours',
+        'demurrage_rate_per_hour_minor',
+        'demurrage_total_minor',
+        'sanctions_blocked',
+        'status',
+    ];
 
     protected $casts = [
         'contracted_tonnage' => 'float',

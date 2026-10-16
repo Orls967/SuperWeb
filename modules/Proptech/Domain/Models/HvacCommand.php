@@ -11,7 +11,13 @@ class HvacCommand extends Model
 {
     protected $table = 'prp_hvac_commands';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'zone_id',
+        'command_type',
+        'target_value',
+        'trigger_reason',
+        'estimated_kwh_saved',
+    ];
 
     public function zone(): BelongsTo
     {

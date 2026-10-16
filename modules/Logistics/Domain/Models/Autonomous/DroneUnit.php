@@ -11,7 +11,14 @@ class DroneUnit extends Model
 {
     protected $table = 'lgx_drone_units';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'drone_code',
+        'model_name',
+        'battery_percent',
+        'max_payload_kg',
+        'max_range_km',
+        'status',
+    ];
 
     public function missions(): HasMany
     {

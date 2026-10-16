@@ -14,7 +14,14 @@ class ExportTerminalStockpile extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'terminal_code',
+        'stockpile_code',
+        'commodity',
+        'opening_tonnage',
+        'loaded_tonnage',
+        'remaining_tonnage',
+    ];
 
     protected $casts = [
         'opening_tonnage' => 'float',

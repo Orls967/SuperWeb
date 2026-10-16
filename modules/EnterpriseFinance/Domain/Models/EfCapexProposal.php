@@ -14,7 +14,18 @@ class EfCapexProposal extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'proposal_code',
+        'line_code',
+        'project_title',
+        'requested_budget_minor',
+        'allocated_treasury_budget_minor',
+        'actual_spent_minor',
+        'irr_pct',
+        'npv_minor',
+        'esg_score',
+        'status',
+    ];
 
     protected $casts = [
         'requested_budget_minor' => 'integer',

@@ -14,7 +14,16 @@ class EfSubholdingDividend extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'dividend_code',
+        'subholding_name',
+        'subsidiary_entity_id',
+        'verified_net_profit_minor',
+        'dividend_payout_ratio_pct',
+        'dividend_declared_minor',
+        'fiscal_year',
+        'status',
+    ];
 
     protected $casts = [
         'verified_net_profit_minor' => 'integer',

@@ -11,7 +11,16 @@ class HospitalOrder extends Model
 {
     protected $table = 'hsp_orders';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'order_code',
+        'encounter_id',
+        'order_type',
+        'description',
+        'sequence_step',
+        'scheduled_at',
+        'status',
+        'delay_alert_sent',
+    ];
 
     protected $casts = [
         'scheduled_at' => 'datetime',

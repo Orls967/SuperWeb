@@ -14,7 +14,15 @@ class ContractorSafetyEvaluation extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'contractor_party_id',
+        'safety_score',
+        'total_incidents',
+        'tier',
+        'tender_eligible',
+        'penalty_amount_minor',
+        'penalty_ledger_tx_id',
+    ];
 
     protected $casts = [
         'safety_score' => 'integer',

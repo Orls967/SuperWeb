@@ -14,7 +14,19 @@ class EduCertificate extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'certificate_number',
+        'enrollment_id',
+        'student_party_id',
+        'program_id',
+        'skill_competency_code',
+        'certificate_hash',
+        'qr_verification_url',
+        'issued_at',
+        'expires_at',
+        'cpd_points_earned',
+        'status',
+    ];
 
     protected $casts = [
         'issued_at' => 'date',

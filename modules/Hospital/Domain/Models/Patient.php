@@ -11,7 +11,15 @@ class Patient extends Model
 {
     protected $table = 'hsp_patients';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'mrn',
+        'name',
+        'date_of_birth',
+        'blood_type',
+        'encrypted_allergies',
+        'encrypted_chronic_diagnoses',
+        'passport_hash',
+    ];
 
     protected $casts = [
         'date_of_birth' => 'date',

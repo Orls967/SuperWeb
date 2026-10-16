@@ -11,7 +11,18 @@ class GovBounty extends Model
 {
     protected $table = 'gov_bounties';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'bounty_code',
+        'business_unit_cost_center',
+        'title',
+        'description',
+        'shift_start',
+        'shift_end',
+        'duration_hours',
+        'hourly_rate_idr',
+        'required_certification',
+        'status',
+    ];
 
     protected $casts = [
         'shift_start' => 'datetime',

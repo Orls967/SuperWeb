@@ -14,7 +14,16 @@ class CarbonCreditIssuance extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'project_code',
+        'site_id',
+        'project_type',
+        'verified_ndvi_score',
+        'verified_carbon_tons',
+        'issued_credits_tons',
+        'registry_serial_number',
+        'status',
+    ];
 
     protected $casts = [
         'verified_ndvi_score' => 'float',

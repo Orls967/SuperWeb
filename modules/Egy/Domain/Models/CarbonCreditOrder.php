@@ -14,7 +14,17 @@ class CarbonCreditOrder extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'order_code',
+        'seller_entity_id',
+        'buyer_entity_id',
+        'vintage_year',
+        'carbon_credits_tons',
+        'price_per_ton_minor',
+        'total_value_minor',
+        'status',
+        'ledger_transaction_id',
+    ];
 
     protected $casts = [
         'carbon_credits_tons' => 'float',

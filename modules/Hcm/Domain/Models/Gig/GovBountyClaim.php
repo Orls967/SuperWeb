@@ -12,7 +12,13 @@ class GovBountyClaim extends Model
 {
     protected $table = 'gov_bounty_claims';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'claim_code',
+        'bounty_id',
+        'employee_id',
+        'claimed_at',
+        'status',
+    ];
 
     protected $casts = [
         'claimed_at' => 'datetime',
