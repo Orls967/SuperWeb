@@ -10,6 +10,7 @@ use Modules\AutoServe\Domain\Models\Service;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Payment\Contracts\Payable;
 use Modules\Payment\Contracts\PaymentGateway;
 use Modules\Shared\Domain\ValueObjects\Money;
 
@@ -248,6 +249,168 @@ test('capture dan release retry dengan key sama tidak menggandakan saldo', funct
     $retried = $this->gateway->release($intent->fresh(), 'probe_rel_key');
     expect($retried->isReleased())->toBeTrue()
         ->and($this->user->fresh()->walletBalance('IDR')->amount->toInt())->toBe($afterFirst);
+
+    $this->artisan('bank:reconcile')->assertSuccessful();
+});
+
+class TestSplitBooking extends Booking
+{
+    protected $table = 'serve_bookings';
+
+    /** @var array<string, Money>|null */
+    public static ?array $customSplits = null;
+
+    public static ?Money $customAmount = null;
+
+    public function payableAmount(): Money
+    {
+        return static::$customAmount ?? parent::payableAmount();
+    }
+
+    public function revenueSplits(): array
+    {
+        return static::$customSplits !== null ? static::$customSplits : parent::revenueSplits();
+    }
+}
+
+test('charge dan capture menolak split revenue yang kurang dari nominal', function () {
+    $booking = createMockPayable(userId: $this->user->id, amount: 1000000);
+    $payable = TestSplitBooking::find($booking->id);
+
+    // 1. Charge: nominal 1.000.000 tapi split hanya 800.000
+    TestSplitBooking::$customAmount = Money::IDR(1000000);
+    TestSplitBooking::$customSplits = ['revenue:autoserve:service:IDR' => Money::IDR(800000)];
+
+    expect(fn () => $this->gateway->charge($payable, 'split_kurang_charge'))
+        ->toThrow(InvalidArgumentException::class, 'tidak sama dengan nominal charge');
+
+    // 2. Capture: hold 1.000.000, payable splits 700.000, finalAmount 1.000.000
+    TestSplitBooking::$customAmount = Money::IDR(1000000);
+    TestSplitBooking::$customSplits = [];
+    $intent = $this->gateway->hold($payable, Money::IDR(1000000), 'split_kurang_hold');
+
+    TestSplitBooking::$customSplits = ['revenue:autoserve:service:IDR' => Money::IDR(700000)];
+    expect(fn () => $this->gateway->capture($intent, Money::IDR(1000000)))
+        ->toThrow(InvalidArgumentException::class, 'tidak sama dengan nominal capture');
+
+    TestSplitBooking::$customSplits = null;
+    TestSplitBooking::$customAmount = null;
+});
+
+test('charge dan capture menolak split revenue yang lebih dari nominal', function () {
+    $booking = createMockPayable(userId: $this->user->id, amount: 1000000);
+    $payable = TestSplitBooking::find($booking->id);
+
+    // 1. Charge: nominal 1.000.000 tapi split 1.200.000
+    TestSplitBooking::$customAmount = Money::IDR(1000000);
+    TestSplitBooking::$customSplits = ['revenue:autoserve:service:IDR' => Money::IDR(1200000)];
+
+    expect(fn () => $this->gateway->charge($payable, 'split_lebih_charge'))
+        ->toThrow(InvalidArgumentException::class, 'tidak sama dengan nominal charge');
+
+    // 2. Capture: hold 1.000.000, payable splits 1.500.000, finalAmount 1.000.000
+    TestSplitBooking::$customSplits = [];
+    $intent = $this->gateway->hold($payable, Money::IDR(1000000), 'split_lebih_hold');
+
+    TestSplitBooking::$customSplits = ['revenue:autoserve:service:IDR' => Money::IDR(1500000)];
+    expect(fn () => $this->gateway->capture($intent, Money::IDR(1000000)))
+        ->toThrow(InvalidArgumentException::class, 'tidak sama dengan nominal capture');
+
+    TestSplitBooking::$customSplits = null;
+    TestSplitBooking::$customAmount = null;
+});
+
+test('charge dan capture menolak split revenue bernilai nol', function () {
+    $booking = createMockPayable(userId: $this->user->id, amount: 1000000);
+    $payable = TestSplitBooking::find($booking->id);
+
+    // Charge dengan split 0
+    TestSplitBooking::$customAmount = Money::IDR(1000000);
+    TestSplitBooking::$customSplits = [
+        'revenue:autoserve:service:IDR' => Money::IDR(1000000),
+        'revenue:autoserve:parts:IDR' => Money::IDR(0),
+    ];
+
+    expect(fn () => $this->gateway->charge($payable, 'split_nol_charge'))
+        ->toThrow(InvalidArgumentException::class, 'harus lebih besar dari 0');
+
+    // Capture dengan split 0
+    TestSplitBooking::$customSplits = [];
+    $intent = $this->gateway->hold($payable, Money::IDR(1000000), 'split_nol_hold');
+
+    TestSplitBooking::$customSplits = [
+        'revenue:autoserve:service:IDR' => Money::IDR(1000000),
+        'revenue:autoserve:parts:IDR' => Money::IDR(0),
+    ];
+
+    expect(fn () => $this->gateway->capture($intent, Money::IDR(1000000)))
+        ->toThrow(InvalidArgumentException::class, 'harus lebih besar dari 0');
+
+    TestSplitBooking::$customSplits = null;
+    TestSplitBooking::$customAmount = null;
+});
+
+test('charge dan capture menolak split revenue bernilai negatif', function () {
+    $booking = createMockPayable(userId: $this->user->id, amount: 1000000);
+    $payable = TestSplitBooking::find($booking->id);
+
+    // Charge dengan split negatif
+    TestSplitBooking::$customAmount = Money::IDR(1000000);
+    TestSplitBooking::$customSplits = [
+        'revenue:autoserve:service:IDR' => Money::IDR(1200000),
+        'revenue:autoserve:parts:IDR' => Money::IDR(-200000),
+    ];
+
+    expect(fn () => $this->gateway->charge($payable, 'split_negatif_charge'))
+        ->toThrow(InvalidArgumentException::class, 'harus lebih besar dari 0');
+
+    // Capture dengan split negatif
+    TestSplitBooking::$customSplits = [];
+    $intent = $this->gateway->hold($payable, Money::IDR(1000000), 'split_negatif_hold');
+
+    TestSplitBooking::$customSplits = [
+        'revenue:autoserve:service:IDR' => Money::IDR(1200000),
+        'revenue:autoserve:parts:IDR' => Money::IDR(-200000),
+    ];
+
+    expect(fn () => $this->gateway->capture($intent, Money::IDR(1000000)))
+        ->toThrow(InvalidArgumentException::class, 'harus lebih besar dari 0');
+
+    TestSplitBooking::$customSplits = null;
+    TestSplitBooking::$customAmount = null;
+});
+
+test('charge dan capture berhasil bila total split pas sama dengan nominal', function () {
+    $booking = createMockPayable(userId: $this->user->id, amount: 1000000);
+    $payable = TestSplitBooking::find($booking->id);
+
+    // Charge pas: 700.000 + 300.000 = 1.000.000
+    TestSplitBooking::$customAmount = Money::IDR(1000000);
+    TestSplitBooking::$customSplits = [
+        'revenue:autoserve:service:IDR' => Money::IDR(700000),
+        'revenue:autoserve:parts:IDR' => Money::IDR(300000),
+    ];
+
+    $intentCharge = $this->gateway->charge($payable, 'split_pas_charge');
+    expect($intentCharge->isCaptured())->toBeTrue();
+
+    // Capture pas: hold 2.000.000, capture 1.000.000 dengan split pas 600.000 + 400.000
+    $booking2 = createMockPayable(userId: $this->user->id, amount: 2000000);
+    $payable2 = TestSplitBooking::find($booking2->id);
+
+    TestSplitBooking::$customAmount = Money::IDR(2000000);
+    TestSplitBooking::$customSplits = [];
+    $intentHold = $this->gateway->hold($payable2, Money::IDR(2000000), 'split_pas_hold');
+
+    TestSplitBooking::$customSplits = [
+        'revenue:autoserve:service:IDR' => Money::IDR(600000),
+        'revenue:autoserve:parts:IDR' => Money::IDR(400000),
+    ];
+    $captured = $this->gateway->capture($intentHold, Money::IDR(1000000));
+    expect($captured->isCaptured())->toBeTrue();
+
+    TestSplitBooking::$customSplits = null;
+    TestSplitBooking::$customAmount = null;
 
     $this->artisan('bank:reconcile')->assertSuccessful();
 });

@@ -58,10 +58,21 @@ class PaymentGatewayService implements PaymentGateway
                 $defaultRevCode = $amount->assetCode === 'IDR' ? 'revenue:store:IDR' : "revenue:store:{$amount->assetCode}";
                 $entries[] = PostingEntryDTO::forCode($defaultRevCode, $amount->assetCode, $amount->amount);
             } else {
+                $splitSum = BigDecimal::zero();
                 foreach ($splits as $accountCode => $splitMoney) {
-                    if ($splitMoney->isPositive()) {
-                        $entries[] = PostingEntryDTO::forCode($accountCode, $splitMoney->assetCode, $splitMoney->amount);
+                    if ($splitMoney->amount->isLessThanOrEqualTo(0)) {
+                        throw new InvalidArgumentException("Split revenue untuk akun '{$accountCode}' harus lebih besar dari 0 (diberikan: {$splitMoney->amount}).");
                     }
+                    $splitSum = $splitSum->plus($splitMoney->amount);
+                    $entries[] = PostingEntryDTO::forCode($accountCode, $splitMoney->assetCode, $splitMoney->amount);
+                }
+
+                if (! $splitSum->isEqualTo($amount->amount)) {
+                    $diff = $splitSum->minus($amount->amount);
+                    $payableName = method_exists($payable, 'getMorphClass') ? $payable->getMorphClass() : get_class($payable);
+                    throw new InvalidArgumentException(
+                        "Total split revenue ({$splitSum}) tidak sama dengan nominal charge ({$amount->amount}) untuk payable {$payableName}. Selisih: {$diff}."
+                    );
                 }
             }
 
@@ -217,10 +228,21 @@ class PaymentGatewayService implements PaymentGateway
             if ($payable instanceof Payable) {
                 $splits = $payable->revenueSplits();
                 if (! empty($splits)) {
+                    $splitSum = BigDecimal::zero();
                     foreach ($splits as $accountCode => $splitMoney) {
-                        if ($splitMoney->isPositive()) {
-                            $entries[] = PostingEntryDTO::forCode($accountCode, $splitMoney->assetCode, $splitMoney->amount);
+                        if ($splitMoney->amount->isLessThanOrEqualTo(0)) {
+                            throw new InvalidArgumentException("Split revenue untuk akun '{$accountCode}' harus lebih besar dari 0 (diberikan: {$splitMoney->amount}).");
                         }
+                        $splitSum = $splitSum->plus($splitMoney->amount);
+                        $entries[] = PostingEntryDTO::forCode($accountCode, $splitMoney->assetCode, $splitMoney->amount);
+                    }
+
+                    if (! $splitSum->isEqualTo($finalAmount->amount)) {
+                        $diff = $splitSum->minus($finalAmount->amount);
+                        $payableClass = get_class($payable);
+                        throw new InvalidArgumentException(
+                            "Total split revenue ({$splitSum}) tidak sama dengan nominal capture ({$finalAmount->amount}) untuk payable {$payableClass}. Selisih: {$diff}."
+                        );
                     }
                 } else {
                     $entries[] = PostingEntryDTO::forCode("revenue:store:{$holdAmount->assetCode}", $holdAmount->assetCode, $finalAmount->amount);
