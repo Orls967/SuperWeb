@@ -10,6 +10,7 @@ use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Exceptions\AccountFrozenException;
+use Modules\Banking\Domain\Exceptions\AssetMismatchException;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
 use Modules\Banking\Domain\Exceptions\UnbalancedTransactionException;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -161,3 +162,21 @@ test('idempotency: posting ulang dengan key yang sama mengembalikan transaksi ya
         ->and($tx2->uuid)->toBe($tx1->uuid)
         ->and((float) $userAcc->fresh()->cached_balance)->toBe(250000.0); // Tidak berlipat ganda
 });
+
+test('posting dengan asset_code entri tidak cocok dengan aset akun melempar AssetMismatchException', function () {
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
+
+    // Kedua entri memakai assetCode 'BTC' (seimbang 0), namun akun bertipe aset 'IDR'
+    $dto = new PostingDTO(
+        type: TransactionType::TOPUP->value,
+        description: 'Asset mismatch tx',
+        idempotencyKey: 'test_asset_mismatch_btc_idr',
+        entries: [
+            PostingEntryDTO::forCode('clearing:external:IDR', 'BTC', -1),
+            PostingEntryDTO::forAccount($userAcc->id, 'BTC', 1),
+        ],
+    );
+
+    $this->ledger->post($dto);
+})->throws(AssetMismatchException::class);

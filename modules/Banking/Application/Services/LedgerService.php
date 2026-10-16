@@ -12,6 +12,7 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Exceptions\AccountFrozenException;
+use Modules\Banking\Domain\Exceptions\AssetMismatchException;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
 use Modules\Banking\Domain\Exceptions\UnbalancedTransactionException;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -101,7 +102,7 @@ class LedgerService implements Ledger
                 }
             }
 
-            // Map code-based entries to their account ID
+            // Map code-based entries to their account ID and validate asset_code
             $resolvedEntries = [];
             foreach ($dto->entries as $entry) {
                 $accountId = $entry->accountId;
@@ -109,9 +110,16 @@ class LedgerService implements Ledger
                     $found = $accounts->firstWhere('code', $entry->accountCode);
                     $accountId = $found->id;
                 }
+
+                $account = $accounts[$accountId] ?? null;
+                $entryAssetCode = strtoupper(trim($entry->assetCode));
+                if ($account !== null && strtoupper(trim($account->asset_code)) !== $entryAssetCode) {
+                    throw new AssetMismatchException($entryAssetCode, $account->code, (string) $account->asset_code);
+                }
+
                 $resolvedEntries[] = [
                     'account_id' => $accountId,
-                    'asset_code' => strtoupper(trim($entry->assetCode)),
+                    'asset_code' => $entryAssetCode,
                     'amount' => $entry->amount,
                 ];
             }
