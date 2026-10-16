@@ -1434,13 +1434,25 @@
 - **Verification:**
   - `php artisan arch:scan --json` membuktikan 0 pelanggaran A3 di luar `modules/Integration` (total A3 = 319, seluruhnya di `modules/Integration`).
 
-
-
-
-
-
-
-
-
-
-
+<a id="2026-10-16-r4-baseline-ratchet-a1-a2"></a>
+## 2026-10-16: Ratchet Baseline Batas Modul A1 dan A2 Serta Allowlist Shared Kernel (R4.5)
+- **Context:**
+  - `arch:scan` aturan A1 (Domain lintas modul) dan A2 (tabel berprefiks modul lain) mendeteksi batas arsitektur modular (KONSEP §A1, K-05, K-07).
+  - Pada R4.3, seluruh 34 dependensi terbalik kernel ke modul bisnis (A9) berhasil dieliminasi ke 0 (`A9 = 0`).
+  - Baseline A1 turun (ratchet down) dari 246 ke 219 temuan setelah refactor decouple event listeners dan port/adapter di modul Shared dan Core.
+  - Sisa 219 temuan A1 didominasi oleh dependensi modul bisnis terhadap model `LedgerAccount` / `LedgerTransaction` di modul Banking sebelum enkapsulasi ledger penuh di shared kernel yang dijadwalkan pada perombakan per lini (Fase R7).
+  - Baseline A2 (5.240 entri tabel warisan) dibekukan dan dikunci secara ketat agar tidak ada penambahan akses tabel lintas batas baru di luar modul pemilik.
+- **Decision:**
+  - Mengunci baseline A1 pada nilai ratchet baru (219 temuan, turun 27 dari 246).
+  - Menetapkan daftar allowlist shared kernel resmi pada `config/modules.php` (`shared_kernel_namespaces`):
+    - `Modules\Shared\Domain\`
+    - `Modules\Banking\Domain\Enums\`
+    - `Modules\Banking\Support\`
+    - `Modules\Banking\Contracts\`
+    - `Modules\Banking\Application\DTOs\`
+    - `Modules\Core\Domain\Enums\`
+  - Sisa temuan A1 dan A2 di luar allowlist tetap berada di bawah pengawasan baseline ratchet dan akan diselesaikan secara bertahap bersamaan dengan pemecahan per lini domain di Fase R7.
+- **Reason:**
+  - Mencegah regresi arsitektur dan menjamin bahwa dependensi baru antar modul domain dilarang keras, sembari mempertahankan stabilitas sistem hingga pemisahan skema fisik dilakukan di Fase R7.
+- **Verification:**
+  - `php artisan arch:scan` membuktikan 0 pelanggaran baru, A1 = 219, A2 = 5.240, dan A9 = 0.
