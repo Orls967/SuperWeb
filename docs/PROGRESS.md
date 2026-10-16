@@ -532,7 +532,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R0-26~~ | R0.2 | ~~Laporan gate docs/gates/fase-r0.md di repository belum disinkronkan dengan artefak CI commit 8724437 (masih mencatat commit 48b5529 dan 2.588 test)~~ | ~~Laporan quality gate lokal tidak mencerminkan commit kode terakhir~~ | ~~P2~~ | Tuntas (laporan disinkronkan dari artefak CI PR #12 run #38698698291 pada commit d58263a, 2.595 test / 11.492 asersi lulus) |
 
 ### FASE R1 — LEDGER & UANG (P0)
-> **Status audit:** 🔵 SIAP VERIFIKASI (2026-10-16) · Prasyarat: R0 ✅.
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Prasyarat: R0 ✅.
 
 #### DoR Fase R1 — Ledger & uang
 - Disetujui pemilik: [x] 2026-10-16 (chat) — D1–D8 sesuai prompt 9
@@ -824,7 +824,12 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Banking/ReconcileDetectsOneUnitTest.php::incremental reconcile detects stale or corrupted checkpoint
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d1-non-idr-minor-units
     - gate: docs/gates/fase-r1.md
-- [ ] R1.10 Quality gate Fase R1 + verifikasi silang.
+- [x] R1.10 Quality gate Fase R1 + verifikasi silang.
+  Bukti:
+    - jenis: dokumen
+    - commit: 23be941
+    - file: docs/gates/fase-r1.md
+    - gate: docs/gates/fase-r1.md
 
 #### Register Minus Fase R1
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
@@ -839,7 +844,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R1-8~~ | R1.10 | ~~Laporan gate `docs/gates/fase-r1.md` basi (mencatat commit `f17b6f1`, bukan HEAD `4f287a1`)~~ | ~~Laporan quality gate lokal tidak mencerminkan HEAD commit repositori~~ | ~~P2~~ | Tuntas (laporan quality gate docs/gates/fase-r1.md digenerate ulang dan disinkronkan dengan commit HEAD terakhir) |
 
 ### FASE R2 — BUG FUNGSIONAL TERVERIFIKASI
-> **Status audit:** ⬜ BELUM · Prasyarat: R1.
+> **Status audit:** 🟡 IN PROGRESS (2026-10-16) · Prasyarat: R1 ✅.
 
 #### DoR Fase R2 — Bug fungsional terverifikasi
 - Disetujui pemilik: [x]   2026-10-14 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) — DoR mencakup perbaikan bug fungsional K-16, K-22, K-29, serta perluasan lingkup untuk bug HTTP 500 modul Contract (M-R0-10 & M-R0-11) sesuai adendum M-R0-25.

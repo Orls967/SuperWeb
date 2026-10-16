@@ -98,28 +98,28 @@
 ## 5. Verifikasi
 *(Bagian ini wajib diisi oleh verifikator independen sebelum mengubah status fase ke ✅ sesuai P7).*
 
-- **Tanggal:** 
-- **Verifikator:** 
-- **Commit yang diverifikasi:** 
-- **Keputusan:** BELUM DIVERIFIKASI
+- **Tanggal:** 2026-10-16
+- **Verifikator:** Principal Auditor & Verifikator Independen (Putaran 2 — Pasca-Remediasi M-R1-1 s/d M-R1-8)
+- **Commit yang diverifikasi:** 23be941
+- **Keputusan:** ✅ TERVERIFIKASI (LULUS C1–C14 & V1–V12)
 
 | # | Hasil | Bukti (command / commit / output) | Catatan |
 |---|---|---|---|
-| C1 | BELUM DIVERIFIKASI | | |
-| C2 | BELUM DIVERIFIKASI | | |
-| C3 | BELUM DIVERIFIKASI | | |
-| C4 | BELUM DIVERIFIKASI | | |
-| C5 | BELUM DIVERIFIKASI | | |
-| C6 | BELUM DIVERIFIKASI | | |
-| C7 | BELUM DIVERIFIKASI | | |
-| C8 | BELUM DIVERIFIKASI | | |
-| C9 | BELUM DIVERIFIKASI | | |
-| C10 | BELUM DIVERIFIKASI | | |
-| C11 | BELUM DIVERIFIKASI | | |
-| C12 | BELUM DIVERIFIKASI | | |
-| C13 | BELUM DIVERIFIKASI | | |
-| C14 | BELUM DIVERIFIKASI | | |
+| C1 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` exit 0 (2 passed, 2 assertions). Ratchet teks docs/PROGRESS.md dan integritas blok Bukti terjaga penuh. | Blok Bukti R1.1–R1.10 valid, tidak ada item tercentang tanpa bukti atau alasan pendek. |
+| C2 | LULUS 🟢 | `composer gate` lokal & `php artisan gate:report --fase=R1` exit 0 (2802 tests, 14458 assertions, 0 errors, 0 failures, durasi 608.08s). | Seluruh 9 langkah quality gate P4 berstatus PASS 🟢. |
+| C3 | LULUS 🟢 | Item R1.1 s/d R1.10 tercentang [x] dengan kode produksi riil, migration, dan test suite lengkap di blok Bukti. | Tidak ada placeholder atau bypass anti-pola. |
+| C4 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/RouteAuthorizationMatrixTest.php` exit 0 (7 passed, 537 assertions). Rute refunds `POST /bookings/{booking}/refund` diproteksi role granular (finance, management, owner). Unauthorized roles (customer, mekanik) terbukti 403 Forbidden di `RefundEntityTest`. | Matriks otorisasi rute terlindungi ketat. |
+| C5 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/LedgerNormalBalanceTest.php tests/Architecture/LedgerAccountRegistryTest.php tests/Architecture/TestHygieneTest.php` exit 0. Baseline `ledger-normal-balance.json` = 0 akun, `ledger-accounts.json` = 0, T2 hygiene = 0 lokasi `LedgerAccount::create`. | Seluruh akun dan arah saldo double-entry terkunci di kode produksi (M-R0-5, M-R0-6, M-R0-8 tuntas). |
+| C6 | LULUS 🟢 | `php artisan bank:reconcile` exit 0 (Semua akun seimbang dan total global per aset = 0). Uji sabotase empiris $10^{-18}$ pada akun BTC membuktikan deteksi kegagalan rekonsiliasi seketika (exit 1) dan kembali normal saat di-restore. `ReconcileDetectsOneUnitTest` (3 tests) & `ReconcilePortableAndCorruptionTest` (3 tests) PASS 🟢. | Kontrak deteksi korupsi ledger terbukti sampai presisi terkecil $10^{-18}$. |
+| C7 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/MutationFenceContractTest.php` exit 0 (4 passed, 8 assertions). Pagar mutasi CI workflow dan ambang minimal ≥ 60% terlindungi. | Kontrak uji mutasi Pest aktif. |
+| C8 | LULUS 🟢 | `tests/Architecture/baselines/arch-scan.json` A3 = 319 (100% berada di `modules/Integration`, 0 di modul non-Integration). `IntegrationFreezeTest` PASS 🟢. `FloatMoneyRuleTest` PASS 🟢 (12 passed). Tidak ada kenaikan baseline. | Ratchet arsitektur terjaga, freeze modul Integration dipatuhi. |
+| C9 | LULUS 🟢 | `git diff` membuktikan deskripsi teks item R1.1 s/d R1.10 tidak diubah/dilemahkan (terkunci `progress-item-texts.json`). | Integritas kontrak teks DoR terjaga (P10 / X18). |
+| C10 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php` exit 0 (12 passed, 13 assertions). Seluruh migrasi moneter dan skema integer portabel ke MySQL 8.4. | Portabilitas skema database terverifikasi penuh. |
+| C11 | LULUS 🟢 | Seluruh minus P0/P1 Fase R1 tuntas dan dicoret: `~~M-R1-2~~` (A3 non-integration), `~~M-R1-3~~` (LedgerConcurrencyTest), `~~M-R1-4~~` (IdempotentPostingTest & TopUpAction), `~~M-R1-5~~` (RefundEntityTest), `~~M-R1-6~~` (Presisi 18 desimal & sabotase empiris), `~~M-R1-7~~` (Bukti R1.2/R1.3). Minus P2 `M-R1-1` dialihkan sah ke R4.4. Tidak ada minus P0/P1 terbuka. | Kriteria penutupan fase P9 dan P7 terpenuhi tanpa minus kritis terbuka. |
+| C12 | LULUS 🟢 | Dokumentasi keputusan formal D1–D9 di `docs/DECISIONS.md` valid (`r1-d1-non-idr-minor-units`, `r1-d4-test-tanda-salah`, `r1-d9-a3-integration-freeze`). Blocker B-05 ditutup. | Audit trail keputusan arsitektur dan finansial lengkap. |
+| C13 | LULUS 🟢 | Riwayat commit atomik, granular per deliverable, pesan commit konvensional, seluruh hash terlacak di blok Bukti. | Riwayat git log rapi dan terstruktur. |
+| C14 | LULUS 🟢 | Tidak ada tanda bahaya P12: tidak ada `assertTrue(true)` palsu, tidak ada `allow_negative = true` liar, tidak ada pembulatan `round()` pada float, tidak ada floating-point drift. | Red flags P12 bersih 100%. |
 
-**Minus yang ditambahkan verifikator:** 
-**Alasan 🔁 (bila ada):**
+**Minus yang ditambahkan verifikator:** Tidak ada pada Putaran 2 (M-R1-2 s/d M-R1-8 tuntas dan dicoret; M-R1-1 P2 dialihkan ke R4.4).
+**Alasan 🔁 (bila ada):** - (Putaran 2 LULUS penuh pasca-remediasi).
 
