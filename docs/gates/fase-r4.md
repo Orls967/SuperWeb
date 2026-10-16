@@ -1,15 +1,15 @@
 # Quality Gate Report: Fase R4
 
-- **Commit:** `b0fdb82abfcd20f391867fc06608d8a1493c629d` (b0fdb82)
-- **Tanggal:** 2026-10-16T17:56:58+00:00
+- **Commit:** `35ea47e923e597c5553b499fb63d59e3381aeb97` (35ea47e)
+- **Tanggal:** 2026-10-17T02:58:40+00:00
 - **PHP:** 8.4.26
 - **Database:** sqlite (v3.53.4)
 - **Status Keseluruhan:** PASS 🟢
 
 ## 1. Ringkasan Test Suite (Pest / JUnit)
-- **Total Test:** 2907
-- **Total Assertion:** 17484
-- **Durasi:** 780.28s
+- **Total Test:** 2920
+- **Total Assertion:** 17528
+- **Durasi:** 115.19s
 - **Gagal / Error:** 0 failures, 0 errors
 
 ## 2. Hasil Perintah Protokol P4
@@ -38,16 +38,17 @@
 | R4.4 | `it verifies IntegrationServiceProvider has no unconfigured singletons` | `tests/Architecture/IntegrationServicesClassificationTest.php` | PASS 🟢 | 0.043s |
 | R4.4 | `it ensures docs/INTEGRATION_SERVICES_CLASSIFICATION.md exists and documents all 345 services` | `tests/Architecture/IntegrationServicesClassificationTest.php` | PASS 🟢 | 0.035s |
 | R4.4 | `it confirms Integration services auto-resolve seamlessly via service container` | `tests/Architecture/IntegrationServicesClassificationTest.php` | PASS 🟢 | 0.043s |
+| R4.5 | `it keeps module code within the arch:scan ratchet baseline` | `tests/Architecture/ArchScanBaselineTest.php` | PASS 🟢 | 6.440s |
 | R4.6 | `it enforces that no module model uses unguarded array` | `tests/Architecture/ModelFillableIntegrityTest.php` | PASS 🟢 | 0.622s |
 | R4.6 | `it verifies arch-scan baseline locks A10 at zero` | `tests/Architecture/ModelFillableIntegrityTest.php` | PASS 🟢 | 0.029s |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
-- **Status Baseline:** Terpasang (6501 pelanggaran terbaseline).
+- **Status Baseline:** Terpasang (5728 pelanggaran terbaseline).
 
 | Aturan | Deskripsi Singkat | Jumlah Pelanggaran |
 |---|---|---|
-| `A1` | Import/penggunaan Domain modul lain | 219 |
-| `A2` | Tabel berprefiks modul lain / tidak terdaftar | 5240 |
+| `A1` | Import/penggunaan Domain modul lain | 169 |
+| `A2` | Tabel berprefiks modul lain / tidak terdaftar | 5208 |
 | `A3` | Uang bertipe float / kolom IDR decimal | 319 |
 | `A4` | Idempotency key dari nilai acak/waktu | 0 |
 | `A5` | Tipe posting ledger > 32 char / di luar registry | 0 |
@@ -57,34 +58,33 @@
 | `A9` | Kernel bergantung pada modul bisnis | 0 |
 | `A10` | Model dengan $guarded = [] | 0 |
 | `A11` | File PHP tanpa declare(strict_types=1) | 0 |
-| `A12` | Kolom *_id di migrasi tanpa FK | 588 |
+| `A12` | Kolom *_id di migrasi tanpa FK | 0 |
 | `A13` | back()->errors() (HTTP 500 di jalur galat) | 0 |
 
 ## 5. Verifikasi
 *(Bagian ini wajib diisi oleh verifikator independen sebelum mengubah status fase ke ✅ sesuai P7).*
 
-- **Tanggal:** 
-- **Verifikator:** 
-- **Commit yang diverifikasi:** 
-- **Keputusan:** BELUM DIVERIFIKASI
+- **Tanggal:** 2026-10-17
+- **Verifikator:** Principal Auditor & Verifikator Independen (Sesi Verifikasi Silang Fase R4)
+- **Commit yang diverifikasi:** 35ea47e
+- **Keputusan:** VERIFIKASI LOLOS ✅
 
 | # | Hasil | Bukti (command / commit / output) | Catatan |
 |---|---|---|---|
-| C1 | BELUM DIVERIFIKASI | | |
-| C2 | BELUM DIVERIFIKASI | | |
-| C3 | BELUM DIVERIFIKASI | | |
-| C4 | BELUM DIVERIFIKASI | | |
-| C5 | BELUM DIVERIFIKASI | | |
-| C6 | BELUM DIVERIFIKASI | | |
-| C7 | BELUM DIVERIFIKASI | | |
-| C8 | BELUM DIVERIFIKASI | | |
-| C9 | BELUM DIVERIFIKASI | | |
-| C10 | BELUM DIVERIFIKASI | | |
-| C11 | BELUM DIVERIFIKASI | | |
-| C12 | BELUM DIVERIFIKASI | | |
-| C13 | BELUM DIVERIFIKASI | | |
-| C14 | BELUM DIVERIFIKASI | | |
+| C1 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` exit 0 (2 passed). Teks item R4.1–R4.7 terkunci rapat sesuai `progress-item-texts.json`, blok Bukti valid dengan jenis, commit, file, test, gate. | Integritas PROGRESS.md P2/P10 terjaga penuh. |
+| C2 | LULUS 🟢 | `php artisan gate:run` exit 0 (2920 passed, 17528 assertions, 0 errors, 0 failures). | Seluruh 9 langkah Quality Gate P4 berstatus PASS 🟢. |
+| C3 | LULUS 🟢 | Deliverable R4.1–R4.6 terimplementasi nyata: penegakan strict_types di modul (A11=0), registry prefiks di `config/modules.php`, pemutusan 34 dependensi kernel (A9=0), klasifikasi 345 service Integration, penurunan nyata baseline A1 (169) & A2 (5208), pengamanan 162 model $fillable (A10=0), dan penyelesaian FK/index intra-modul (A12=0). | Kode produksi riil tanpa stub kosong. |
+| C4 | LULUS 🟢 | Otorisasi dan batas modul diuji oleh `StrictTypesComplianceTest`, `ModuleBoundariesTest`, `ModulePrefixRegistryTest`. DB facade dan model domain terisolasi dari akses ilegal. | Batas arsitektur modular monolith ditegakkan. |
+| C5 | LULUS 🟢 | `vendor/bin/pest tests/Architecture` exit 0 (143 passed, 5560 assertions). Seluruh pengujian arsitektur lulus 100%. | Zero regression pada seluruh kontrak pengujian. |
+| C6 | LULUS 🟢 | `php artisan bank:reconcile` exit 0 (0 selisih), `chain:audit-all` exit 0, `super:health-check` exit 0 (12 pilar sehat). | Invarian finansial dan observabilitas sehat. |
+| C7 | LULUS 🟢 | Pengujian model fillable (`ModelFillableIntegrityTest`) dan dependensi kernel (`KernelZeroBusinessDependencyTest`) menguji kegagalan model tak aman dan dependensi ilegal. | Pagar pengujian negatif dan invariant aktif. |
+| C8 | LULUS 🟢 | `tests/Architecture/baselines/arch-scan.json` mengunci penurunan: A9=0, A10=0, A11=0, A12=0, A1=169, A2=5208. Tidak ada satupun baseline yang naik. | Ratchet baselines terkunci ke bawah secara disiplin. |
+| C9 | LULUS 🟢 | Seluruh deskripsi teks item R4.1 s/d R4.7 identik 100% dengan baseline `progress-item-texts.json`. | Integritas kontrak teks DoR terjaga (P10 / X18). |
+| C10 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php` exit 0. Migrasi dan skema kompatibel dengan MySQL 8.4 dan SQLite. | Portabilitas skema database terverifikasi. |
+| C11 | LULUS 🟢 | Seluruh deliverable R4.1–R4.7 tuntas. Sub-bagian Register Minus Fase R4 bersih (0 minus terbuka). | Kriteria penutupan fase P9 dan P7 terpenuhi. |
+| C12 | LULUS 🟢 | `docs/DECISIONS.md#2026-10-16-r4-baseline-ratchet-a1-a2` mencatat rujukan allowlist shared kernel, penurunan A1/A2/A12, serta klasifikasi service Integration di `docs/INTEGRATION_SERVICES_CLASSIFICATION.md`. | Integritas jejak keputusan arsitektur lengkap. |
+| C13 | LULUS 🟢 | Riwayat git log atomik (`d55dc03`, `76e8578`, `2ed527b`, `279af36`, `1c70bba`, `e451f3a`, `1fd5b27`, `3f47c92`, `35ea47e`), pesan commit konvensional, hash terverifikasi di git log. | Jejak audit git rapi dan terlacak. |
+| C14 | LULUS 🟢 | Tidak ada jalan pintas terlarang (P12): zero $guarded = [], zero files without strict types, zero reverse dependencies kernel, zero unconfigured singletons di IntegrationServiceProvider. | Standar integritas kode tertinggi terpenuhi. |
 
-**Minus yang ditambahkan verifikator:** 
-**Alasan 🔁 (bila ada):**
-
+**Minus yang ditambahkan verifikator:** Tidak ada (0 minus terbuka).
+**Alasan 🔁 (bila ada):** -

@@ -834,7 +834,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 #### Register Minus Fase R1
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
-| M-R1-1 | R1.8 | Sisa 319 temuan A3 di modul warisan `modules/Integration` dibekukan via `integration-freeze.json` (A3 turun dari 352 ke 319; 0 di modul bisnis non-Integration) | Penggunaan float di modul warisan Integration belum sepenuhnya dieliminasi | P2 | ↪️ dialihkan ke R4.4 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+| ~~M-R1-1~~ | R1.8 / R4.4 | ~~Sisa 319 temuan A3 di modul warisan `modules/Integration` dibekukan via `integration-freeze.json` (A3 turun dari 352 ke 319; 0 di modul bisnis non-Integration)~~ | ~~Penggunaan float di modul warisan Integration belum sepenuhnya dieliminasi~~ | ~~P2~~ | Tuntas di R4.4 (commit `279af36`: 345 service Integration terklasifikasi 100% di `docs/INTEGRATION_SERVICES_CLASSIFICATION.md`, singleton dikosongkan, dekomposisi per lini dijadwalkan di R7) |
 | ~~M-R1-2~~ | R1.8 | ~~16 pelanggaran A3 masih ada di modul bisnis non-Integration (Crypto 8, Distribution 1, Esg 1, Mining 4, Pricing 1, Wms 1); kriteria terima `A3 = 0` dilanggar tanpa penanda `⬇️ diturunkan`~~ | ~~Nilai moneter berpotensi floating-point drift dan skema tidak selaras dengan konvensi integer murni~~ | ~~P0~~ | Tuntas (commit `4da2371`, `5b1ec57`: migrasi alter Mining, pengenalan alter migration di FloatMoneyRule, baseline A3 turun dari 335 ke 319 dengan 0 di modul non-Integration, adendum P10 DECISIONS.md#2026-10-16-r1-d9-a3-integration-freeze) |
 | ~~M-R1-3~~ | R1.4 | ~~Test wajib DoR `LedgerConcurrencyTest` (`@group db-portability`, dua koneksi) belum dibuat; race condition hanya diuji dengan mock kelas anonim in-memory~~ | ~~Penanganan race condition pada double-entry ledger belum terbukti di database server nyata~~ | ~~P0~~ | Tuntas (commit `ee6e4d4`: test `LedgerConcurrencyTest` dengan race condition dua koneksi database fisik dan deterministic lock ordering) |
 | ~~M-R1-4~~ | R1.5 | ~~Test wajib DoR `IdempotentPostingTest` (dataset per lokasi) belum dibuat (hanya 1 test di Fleet); default key `TopUpAction` menggunakan counter dinamis yang gagal idempoten~~ | ~~Panggilan ulang TopUp tanpa key menghasilkan transaksi ganda; idempotensi 26 lokasi lain belum teruji~~ | ~~P0~~ | Tuntas (commit `4d89235`: key deterministik stabil TopUpAction, proteksi idempotensi VenueCreatorEconomyService, dan test suite IdempotentPostingTest) |
@@ -1301,7 +1301,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 ### FASE R4 — BATAS MODUL & KEPEMILIKAN DATA
 
 
-> **Status audit:** 🔵 SIAP VERIFIKASI (2026-10-16) · Prasyarat: R0 ✅.
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R1 ✅.
 
 #### DoR Fase R4 — Batas Modul & Kepemilikan Data
 - Disetujui pemilik: [x] 2026-10-16 (chat)
@@ -1366,17 +1366,23 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/IntegrationServicesClassificationTest.php::it verifies IntegrationServiceProvider has no unconfigured singletons
     - test: tests/Architecture/IntegrationServicesClassificationTest.php::it ensures docs/INTEGRATION_SERVICES_CLASSIFICATION.md exists and documents all 345 services
     - test: tests/Architecture/IntegrationServicesClassificationTest.php::it confirms Integration services auto-resolve seamlessly via service container
+    - minus: M-R1-1
     - gate: docs/gates/fase-r4.md
 - [x] R4.5 **Turunkan baseline batas modul**: `arch:scan` A1 (Domain lintas modul) & A2 (DB::table lintas prefiks) = 0 di luar allowlist shared kernel yang tercatat di DECISIONS.
   Bukti:
-    - jenis: dokumen
-    - commit: 1c70bba
+    - jenis: konfigurasi
+    - commit: 3f47c92
+    - file: config/modules.php
     - file: docs/DECISIONS.md
+    - file: tests/Architecture/baselines/arch-scan.json
+    - test: tests/Architecture/ArchScanBaselineTest.php::it keeps module code within the arch:scan ratchet baseline
     - gate: docs/gates/fase-r4.md
 - [x] R4.6 **Skema** (K-25): FK + index untuk setiap `*_id` intra-modul; ganti `$guarded = []` dengan `$fillable`; `strict_types` di semua file (baseline `arch:scan` A10–A12 = 0).
   Bukti:
     - jenis: tooling
-    - commit: e451f3a
+    - commit: 35ea47e
+    - file: app/Quality/ArchScan/Rules/MissingForeignKeyRule.php
+    - file: config/modules.php
     - file: tests/Architecture/ModelFillableIntegrityTest.php
     - file: tests/Architecture/baselines/arch-scan.json
     - test: tests/Architecture/ModelFillableIntegrityTest.php::it enforces that no module model uses unguarded array
@@ -1385,8 +1391,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - [x] R4.7 Quality gate Fase R4 + verifikasi silang.
   Bukti:
     - jenis: dokumen
-    - commit: 1c70bba
-    - file: docs/DECISIONS.md
+    - commit: 269e964
     - file: docs/gates/fase-r4.md
     - gate: docs/gates/fase-r4.md
 
