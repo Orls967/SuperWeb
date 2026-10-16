@@ -51,7 +51,7 @@ class TransferAction extends BaseAction
     public function execute(
         User $sender,
         User $recipient,
-        BigDecimal|string|int|float $amount,
+        BigDecimal|string|int $amount,
         string $pin,
         ?string $note = null,
         ?string $idempotencyKey = null,

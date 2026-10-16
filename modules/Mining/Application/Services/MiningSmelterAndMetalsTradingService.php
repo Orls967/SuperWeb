@@ -134,15 +134,16 @@ class MiningSmelterAndMetalsTradingService
         ]);
     }
 
-    public function markToMarketTradingPosition(string $positionId, float $newMarkPriceUsd): MetalsTradingPosition
+    public function markToMarketTradingPosition(string $positionId, int|string $newMarkPriceUsd): MetalsTradingPosition
     {
+        $markPrice = (float) $newMarkPriceUsd;
         $pos = MetalsTradingPosition::findOrFail($positionId);
         $pnlUsd = $pos->position_type === 'LONG'
-            ? ($newMarkPriceUsd - $pos->entry_price_usd) * $pos->tonnage
-            : ($pos->entry_price_usd - $newMarkPriceUsd) * $pos->tonnage;
+            ? ($markPrice - $pos->entry_price_usd) * $pos->tonnage
+            : ($pos->entry_price_usd - $markPrice) * $pos->tonnage;
 
         $pos->update([
-            'current_mark_price_usd' => $newMarkPriceUsd,
+            'current_mark_price_usd' => $markPrice,
             'unrealized_pnl_minor' => (int) round($pnlUsd * 100),
         ]);
 

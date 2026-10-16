@@ -14,8 +14,12 @@ final readonly class Money
         public BigDecimal $amount,
     ) {}
 
-    public static function of(string $assetCode, string|int|float|BigDecimal $amount): self
+    public static function of(string $assetCode, string|int|BigDecimal $amount): self
     {
+        if (is_float($amount)) {
+            throw new \InvalidArgumentException('Nilai moneter tidak boleh bertipe float; gunakan int atau string desimal.');
+        }
+
         $bd = $amount instanceof BigDecimal
             ? $amount
             : BigDecimal::of((string) $amount);
@@ -23,12 +27,12 @@ final readonly class Money
         return new self($assetCode, $bd);
     }
 
-    public static function IDR(string|int|float|BigDecimal $amount): self
+    public static function IDR(string|int|BigDecimal $amount): self
     {
         return self::of('IDR', $amount);
     }
 
-    public static function fromIdr(string|int|float|BigDecimal $amount): self
+    public static function fromIdr(string|int|BigDecimal $amount): self
     {
         return self::IDR($amount);
     }
@@ -52,8 +56,12 @@ final readonly class Money
         return new self($this->assetCode, $this->amount->minus($other->amount));
     }
 
-    public function multiply(string|int|float|BigDecimal $factor): self
+    public function multiply(string|int|BigDecimal $factor): self
     {
+        if (is_float($factor)) {
+            throw new \InvalidArgumentException('Faktor pengali tidak boleh bertipe float; gunakan int, string, atau BigDecimal.');
+        }
+
         $f = $factor instanceof BigDecimal ? $factor : BigDecimal::of((string) $factor);
 
         return new self($this->assetCode, $this->amount->multipliedBy($f));

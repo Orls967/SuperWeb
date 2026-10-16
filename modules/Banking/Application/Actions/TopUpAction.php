@@ -21,7 +21,7 @@ class TopUpAction
         protected Ledger $ledger,
     ) {}
 
-    public function execute(User $user, BigDecimal|string|int|float $amount, ?string $idempotencyKey = null): LedgerTransaction
+    public function execute(User $user, BigDecimal|string|int $amount, ?string $idempotencyKey = null): LedgerTransaction
     {
         $amountBd = $amount instanceof BigDecimal ? $amount : BigDecimal::of((string) $amount);
 

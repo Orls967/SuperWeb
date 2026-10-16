@@ -30,22 +30,22 @@ class UnitConversion extends Model
     }
 
     /**
-     * Convert an amount from from_unit to base unit factor using BigDecimal.
+     * Convert quantity from from_unit to base unit factor using BigDecimal.
      */
-    public function toBase(BigDecimal|string|int|float $amount): BigDecimal
+    public function toBase(BigDecimal|string|int $quantity): BigDecimal
     {
-        $amt = $amount instanceof BigDecimal ? $amount : BigDecimal::of((string) $amount);
+        $amt = $quantity instanceof BigDecimal ? $quantity : BigDecimal::of((string) $quantity);
         $factor = BigDecimal::of($this->to_base_factor);
 
         return $amt->multipliedBy($factor);
     }
 
     /**
-     * Convert an amount from base unit to from_unit factor using BigDecimal.
+     * Convert quantity from base unit to from_unit factor using BigDecimal.
      */
-    public function fromBase(BigDecimal|string|int|float $baseAmount, int $scale = 6): BigDecimal
+    public function fromBase(BigDecimal|string|int $baseQuantity, int $scale = 6): BigDecimal
     {
-        $amt = $baseAmount instanceof BigDecimal ? $baseAmount : BigDecimal::of((string) $baseAmount);
+        $amt = $baseQuantity instanceof BigDecimal ? $baseQuantity : BigDecimal::of((string) $baseQuantity);
         $factor = BigDecimal::of($this->to_base_factor);
 
         return $amt->dividedBy($factor, $scale, RoundingMode::HalfUp);

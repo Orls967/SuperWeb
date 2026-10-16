@@ -114,7 +114,7 @@ class CrossBorderClearingService
         float $netMassTons,
         float $embeddedEmissionsTco2,
         int $eurToIdrRate = 17_000,
-        float $cbamPriceEurPerTon = 80.0
+        int $cbamPriceEurPerTon = 80
     ): CbamCertificate {
         $existing = CbamCertificate::where('container_number', $containerNumber)->first();
         if ($existing) {

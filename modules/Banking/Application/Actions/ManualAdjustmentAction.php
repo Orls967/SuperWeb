@@ -22,7 +22,7 @@ class ManualAdjustmentAction
 
     public function execute(
         LedgerAccount $account,
-        BigDecimal|string|int|float $amount,
+        BigDecimal|string|int $amount,
         string $reason,
         User $adminUser,
         ?string $idempotencyKey = null,

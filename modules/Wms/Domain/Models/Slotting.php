@@ -22,7 +22,7 @@ class Slotting extends Model
     }
 
     /** Kelas ABC dari nilai tahunan: A ≥ 80%, B ≥ 95%, sisanya C. */
-    public static function classify(float $annualValue, float $grandTotal): string
+    public static function classify(int $annualValue, int $grandTotal): string
     {
         if ($grandTotal <= 0) {
             return 'C';
