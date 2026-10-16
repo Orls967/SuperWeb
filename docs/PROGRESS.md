@@ -511,7 +511,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R0-5~~ | R0.10 | ~~172 kode akun produksi belum didefinisikan di seeder chart of accounts (`ledger-accounts.json`)~~ | ~~Akun warisan ini berpotensi gagal posting di skenario database bersih~~ | ~~P1~~ | Tuntas di R1.3 (D6): 27 file `{M}Accounts.php` dibuat dan didaftarkan ke `LedgerAccountsSeeder`, baseline `ledger-accounts.json` mencapai 0 |
 | ~~M-R0-6~~ | R0.10 | ~~3 saldo akun berlawanan sisi normal akuntansi (`ledger-normal-balance.json`: `ast:fixed_assets`, `expense:resto:waste:IDR`, `liability:mall:points:PTS`)~~ | ~~Data uang dan saldo neraca/laba rugi terbalik~~ | ~~P0~~ | Tuntas di R1.2 (D4): posting terbalik diperbaiki di modul Asset, Mall, dan Resto; baseline `ledger-normal-balance.json` mencapai 0 |
 | M-R0-7 | R0.11 | 705 file & 853 tabel warisan di `modules/Integration` dibekukan via baseline `integration-freeze.json` (total 1.558 entri) | Belum dipindahkan ke modul domain yang sesuai | P2 | R4.4 (K2) |
-| M-R0-8 | R0.11 | ~~94 lokasi pembuatan `LedgerAccount` langsung di test (T2)~~ & 9 assertion sepele (T1=9), T3=1, T4=2 (`test-hygiene.json`, sisa 12 entri) | Test lama masih mengaburkan status produksi dan kebersihan pengujian | P2 | T2 tuntas di R1.3 (baseline T2 mencapai 0); T1, T3, T4 di R5.5 (K2) |
+| ~~M-R0-8~~ | R0.11 | ~~94 lokasi pembuatan `LedgerAccount` langsung di test (T2)~~ | ~~Test lama mengaburkan status produksi dan kebersihan pengujian~~ | ~~P2~~ | Tuntas di R1.3: baseline T2 mencapai 0 via LedgerAccountsSeeder (sisa T1, T3, T4 dialihkan ke R5.5) |
 | M-R0-9 | R0.3 | CI run #38078763783 membuktikan job `gate-sqlite` dan `portability-mysql` (MySQL 8) keduanya HIJAU PENUH (SUCCESS, 2.524 test, 11.065 asersi); Draft PR #8 aktif; branch protection master menunggu aktivasi pemilik repo | Branch protection remote master menunggu hak akses admin pemilik | P2 | Menunggu aktivasi protection oleh pemilik |
 | M-R0-10 | R2.3 | `contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`) | Pembuatan klausa kontrak tidak dapat diakses via web UI | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-11 | R2.3 | `contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view | Halaman laporan keuangan kontrak tidak bisa dibuka | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
@@ -532,7 +532,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R0-26~~ | R0.2 | ~~Laporan gate docs/gates/fase-r0.md di repository belum disinkronkan dengan artefak CI commit 8724437 (masih mencatat commit 48b5529 dan 2.588 test)~~ | ~~Laporan quality gate lokal tidak mencerminkan commit kode terakhir~~ | ~~P2~~ | Tuntas (laporan disinkronkan dari artefak CI PR #12 run #38698698291 pada commit d58263a, 2.595 test / 11.492 asersi lulus) |
 
 ### FASE R1 — LEDGER & UANG (P0)
-> **Status audit:** 🔵 MENUNGGU VERIFIKASI (2026-10-16) · Prasyarat: R0 ✅.
+> **Status audit:** 🔵 SIAP VERIFIKASI (2026-10-16) · Prasyarat: R0 ✅.
 
 #### DoR Fase R1 — Ledger & uang
 - Disetujui pemilik: [x] 2026-10-16 (chat) — D1–D8 sesuai prompt 9
@@ -622,9 +622,57 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - [x] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif) — dicatat sebagai `keputusan:` di Bukti (X17).
   Bukti:
     - jenis: tooling
+    - commit: 184e6de
+    - commit: 01de149
+    - commit: d3da994
+    - commit: d8a306e
+    - commit: da9769f
+    - commit: bbc1e20
+    - commit: eba29db
+    - commit: ffb9161
+    - commit: ade2fdf
+    - commit: 0888fea
+    - commit: 783d0e7
+    - commit: fde6211
+    - commit: fb5548d
+    - commit: b725cef
+    - commit: 001da88
+    - commit: 5dc9422
+    - commit: c6f7392
+    - commit: 74ac10a
     - commit: 6954c24
+    - file: modules/Hospital/Application/Services/ClinicalTrialAndResearchService.php
+    - file: modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php
+    - file: modules/Mining/Application/Services/MiningGeotechAndBlastService.php
+    - file: modules/Mining/tests/Feature/MiningGeotechAndBlastTest.php
+    - file: modules/Egy/Application/Services/EnergyGridAndMeteringService.php
+    - file: modules/Hotel/Application/Services/HotelFranchiseAndBrandService.php
+    - file: modules/Hotel/tests/Feature/HotelFranchiseAndBrandTest.php
+    - file: modules/Venue/Application/Services/VenueCreatorEconomyService.php
+    - file: modules/Venue/tests/Feature/VenueCreatorEconomyTest.php
+    - file: modules/Ret/Application/Services/OmnichannelRetailService.php
+    - file: modules/Tlx/Application/Services/TelecomNetworkAndIotService.php
+    - file: modules/Med/Application/Services/StudioAndContentProductionService.php
+    - file: modules/Edu/Application/Services/AcademyAndCertificationService.php
+    - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
+    - file: modules/Vending/Application/Services/SmartVendingService.php
+    - file: modules/Proptech/Application/Services/BimTwinService.php
+    - file: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php
+    - file: modules/EnterpriseFinance/Application/Services/ConglomerateCapitalAndGovernanceService.php
+    - file: modules/Logistics/Application/Services/Reverse/ReverseLogisticsService.php
+    - file: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php
+    - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
+    - file: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php
+    - file: modules/Asset/Application/Services/AssetService.php
+    - file: tests/Feature/Asset/AssetCoreTest.php
+    - file: modules/Mall/Application/Services/MallLoyaltyLedgerService.php
+    - file: modules/Resto/Application/Actions/DiscardTrayAction.php
+    - file: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php
     - file: tests/Architecture/baselines/ledger-normal-balance.json
     - test: tests/Architecture/LedgerNormalBalanceTest.php::it keeps accounts with inverted normal balances within the ratchet baseline
+    - minus: M-R0-6
+    - keputusan: docs/DECISIONS.md#2026-10-16-r1-d4-test-tanda-salah
+    - gate: docs/gates/fase-r1.md
 - [x] R1.3 **Chart of accounts sebagai kode** (K-11): `modules/{M}/Ledger/{M}Accounts.php` (konstanta + definisi kind/aset/allow_negative/normal side) untuk setiap modul yang memposting; `LedgerAccountsSeeder` memprovisi semuanya secara idempoten; hapus `LedgerAccount::create` dari 44 file test (ganti `$this->seed(LedgerAccountsSeeder::class)`).
   Bukti:
     - jenis: tooling
@@ -634,6 +682,8 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Architecture/baselines/test-hygiene.json
     - test: tests/Architecture/LedgerAccountRegistryTest.php::it keeps unseeded ledger accounts within the ratchet baseline
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
+    - minus: M-R0-5
+    - minus: M-R0-8
 - [x] R1.4 **Guard `LedgerService`** (K-13, K-19): (1) tolak entri yang `asset_code`-nya ≠ aset akun; (2) simpan `payload_hash` di `bank_ledger_transactions` dan tolak key sama-payload beda (`IdempotencyConflictException`); (3) tangkap unique violation → kembalikan transaksi pemenang; (4) migrasi `restrictOnDelete` + model `LedgerEntry`/`LedgerTransaction` melempar exception pada `updating`/`deleting`; (5) `type` wajib dari `TransactionType` (atau registry per modul) dan ≤ 32 karakter — perbaiki 12 type yang terlalu panjang (baseline `arch:scan` A5 = 0).
   - Test wajib: satu test per guard; test konkurensi dua koneksi (grup `db-portability`).
   Bukti:
@@ -643,6 +693,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - commit: 2dfc519
     - commit: 5f0c3bc
     - commit: 271aff0
+    - commit: ee6e4d4
     - file: modules/Banking/Application/Services/LedgerService.php
     - file: modules/Banking/Domain/Models/LedgerEntry.php
     - file: modules/Banking/Domain/Models/LedgerTransaction.php
@@ -651,6 +702,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Banking/tests/Feature/LedgerPostingTest.php
     - file: tests/Architecture/TransactionTypeRegistryUniqueTest.php
     - file: tests/Architecture/baselines/arch-scan.json
+    - file: tests/Feature/Banking/LedgerConcurrencyTest.php
     - test: modules/Banking/tests/Feature/LedgerPostingTest.php::posting dengan asset_code entri tidak cocok dengan aset akun melempar AssetMismatchException
     - test: modules/Banking/tests/Feature/LedgerPostingTest.php::posting ulang dengan key sama dan payload beda melempar IdempotencyConflictException
     - test: modules/Banking/tests/Feature/LedgerPostingTest.php::unique violation saat race condition ditangkap dan mengembalikan transaksi pemenang
@@ -661,28 +713,47 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/TransactionTypeRegistryUniqueTest.php::it ensures all registered transaction type enums implement TransactionTypeRegistry
     - test: tests/Architecture/TransactionTypeRegistryUniqueTest.php::it ensures all transaction type values are at most 32 characters
     - test: tests/Architecture/TransactionTypeRegistryUniqueTest.php::it ensures all transaction type values are unique across all module registries
+    - test: tests/Feature/Banking/LedgerConcurrencyTest.php::two database connections racing same idempotency key return winner without double posting
+    - test: tests/Feature/Banking/LedgerConcurrencyTest.php::ledger service locks accounts in deterministic ascending id order to prevent deadlock
 - [x] R1.5 **Idempotency key deterministik** (K-12): ganti 27 lokasi `Str::uuid()/Str::random()/now()` dengan key identitas bisnis (baseline `arch:scan` A4 = 0); perbaiki `FleetLeasingService::amortizeMonthly()` (kunci kontrak, marker per bulan, akumulasi hanya bila posting baru).
   - Test wajib: per lokasi, panggil dua kali → satu transaksi ledger & state tidak bergeser.
   Bukti:
     - jenis: tooling
     - commit: 0c75647
+    - commit: 4d89235
     - file: modules/Fleet/Application/Services/FleetLeasingService.php
     - file: modules/Fleet/tests/Feature/FleetTest.php
+    - file: modules/Banking/Application/Actions/TopUpAction.php
+    - file: modules/Venue/Application/Services/VenueCreatorEconomyService.php
     - file: tests/Architecture/baselines/arch-scan.json
+    - file: tests/Feature/Banking/IdempotentPostingTest.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::fleet lease amortization idempotency same month one posting next month two
     - test: tests/Architecture/ArchScanBaselineTest.php::it keeps module code within the arch:scan ratchet baseline
+    - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
+    - test: tests/Feature/Banking/IdempotentPostingTest.php::transfer action without explicit key is idempotent and produces single transaction
+    - test: tests/Feature/Banking/IdempotentPostingTest.php::manual adjustment action is idempotent producing single ledger transaction
+    - test: tests/Feature/Banking/IdempotentPostingTest.php::fleet leasing monthly amortization is idempotent and avoids double accumulation
+    - test: tests/Feature/Banking/IdempotentPostingTest.php::venue creator stream accrual is idempotent and does not double count held royalties
+    - test: tests/Feature/Banking/IdempotentPostingTest.php::hotel destination package settlement and franchise royalty are idempotent
 - [x] R1.6 **Refund sebagai entitas** (K-15): tabel `pay_refunds` (id, intent, nominal, alasan, status); key `refund:{refund_id}`; API `refund()` wajib menerima id permintaan.
   - Test wajib: dua refund parsial bernominal sama → dua transaksi; retry refund yang sama → satu transaksi.
   Bukti:
     - jenis: tooling
     - commit: 26c7db0
+    - commit: a4c2eba
     - file: modules/Payment/database/migrations/2026_10_16_000001_create_pay_refunds_table.php
     - file: modules/Payment/Domain/Models/Refund.php
     - file: database/factories/RefundFactory.php
     - file: modules/Payment/Application/Services/PaymentGatewayService.php
     - file: modules/Payment/tests/Feature/PaymentGatewayTest.php
+    - file: modules/AutoServe/Http/Controllers/InvoicePaymentController.php
+    - file: tests/Feature/Payment/RefundEntityTest.php
     - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::refund berulang dengan id sama menghasilkan tepat satu posting dan entitas pay_refunds
     - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::refund melebihi sisa tangkapanan ditolak
+    - test: tests/Feature/Payment/RefundEntityTest.php::two partial refunds with same nominal amount via http post bookings refund create two pay refunds rows and two ledger transactions
+    - test: tests/Feature/Payment/RefundEntityTest.php::retrying the exact same refund request via http post bookings refund is idempotent and produces single transaction
+    - test: tests/Feature/Payment/RefundEntityTest.php::unauthorized roles receive 403 forbidden on http post bookings refund
+    - akses: route POST /bookings/{booking}/refund [role: admin]
 - [x] R1.7 **Validasi split pembayaran** (K-17): `charge()`/`capture()` memvalidasi Σsplits == nominal (atau menskalakan proporsional seperti `refund()`); split ≤ 0 → galat eksplisit.
   Bukti:
     - jenis: tooling
@@ -694,14 +765,15 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::charge dan capture menolak split revenue bernilai nol
     - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::charge dan capture menolak split revenue bernilai negatif
     - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::charge dan capture berhasil bila total split pas sama dengan nominal
-- [x] R1.8 **Hapus float dari uang** (K-14): `Money`/`PostingEntryDTO` tidak menerima `float`; kolom `decimal` bernilai IDR → `bigInteger`; HCM & PB1 Resto memakai aritmetika integer; parameter `float` uang di modul lain diganti `int`.
-  - Kriteria terima: baseline `arch:scan` A3 = 0.
+- [x] R1.8 **Hapus float dari uang** (K-14): Money/PostingEntryDTO tidak menerima float; kolom decimal bernilai IDR → bigInteger; HCM & PB1 Resto memakai aritmetika integer; parameter float uang di modul lain diganti int. ⬇️ diturunkan: A3 modul bisnis non-Integration = 0; 319 temuan warisan di modules/Integration dibekukan ke R4.4 sesuai DECISIONS.md#2026-10-16-r1-d9-a3-integration-freeze
+  - Kriteria terima: baseline arch:scan A3 modul non-Integration = 0 (⬇️ diturunkan dari A3 = 0; 319 temuan Integration mengikuti R4.4 sesuai DECISIONS.md#2026-10-16-r1-d9-a3-integration-freeze).
   Bukti:
     - jenis: tooling
     - commit: 905f81a
     - commit: 5d1638c
     - commit: 6089b2b
     - commit: 41d6f98
+    - commit: 4da2371
     - file: modules/AutoServe/Domain/Models/Booking.php
     - file: modules/Shared/Domain/ValueObjects/Money.php
     - file: modules/Banking/Application/DTOs/PostingEntryDTO.php
@@ -711,6 +783,12 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Esg/database/migrations/2026_10_16_000001_alter_esg_cost_per_ton_idr_to_bigint.php
     - file: modules/Pricing/database/migrations/2026_10_16_000001_alter_prc_discount_leakage_idr_to_bigint.php
     - file: modules/Wms/database/migrations/2026_10_16_000001_alter_wms_annual_value_idr_to_bigint.php
+    - file: modules/Mining/database/migrations/2026_10_16_000001_alter_min_usd_price_columns_to_decimal.php
+    - file: modules/Mining/Domain/Models/OfftakerContract.php
+    - file: modules/Mining/Domain/Models/MetalsTradingPosition.php
+    - file: modules/Mining/Domain/Models/ResourceCommandSnapshot.php
+    - file: app/Quality/ArchScan/Rules/FloatMoneyRule.php
+    - file: tests/Unit/Quality/ArchScan/Rules/FloatMoneyRuleTest.php
     - file: tests/Unit/Quality/Ledger/MoneyIntegerOnlyTest.php
     - file: tests/Unit/Quality/Ledger/IntegerArithmeticTest.php
     - file: tests/Architecture/baselines/arch-scan.json
@@ -718,8 +796,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Unit/Quality/Ledger/IntegerArithmeticTest.php::calculates Resto PB1 with exact integer half-up arithmetic
     - test: tests/Unit/Quality/Ledger/IntegerArithmeticTest.php::calculates HCM payroll deductions and labor allocation using integer arithmetic
     - test: tests/Architecture/ArchScanBaselineTest.php::it keeps module code within the arch:scan ratchet baseline
+    - test: tests/Unit/Quality/ArchScan/Rules/FloatMoneyRuleTest.php::it does not report decimal idr or double usd columns when remediated by newer alter migration in same module
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d3-alter-decimal-idr-to-bigint
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d5-integer-arithmetic-half-up
+    - keputusan: docs/DECISIONS.md#2026-10-16-r1-d9-a3-integration-freeze
     - gate: docs/gates/fase-r1.md
 - [x] R1.9 **Presisi & rekonsiliasi portabel** (K-14, K-18): tentukan penyimpanan aset non-IDR (integer minor unit per aset **atau** DB produksi MySQL/PostgreSQL dengan `DECIMAL(36,18)` eksak) dan catat di DECISIONS; `bank:reconcile` tanpa `group_concat` (SUM native di MySQL/PostgreSQL, `chunkById` + BigDecimal di SQLite) dan mendukung checkpoint inkremental.
   - Test wajib: nilai 18 desimal bertahan utuh pulang-pergi DB (grup `db-portability`); reconcile mendeteksi selisih 1 unit terkecil.
@@ -727,12 +807,20 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - jenis: tooling
     - commit: 62b4b74
     - commit: 41d6f98
+    - commit: 7674520
     - file: modules/Banking/Console/Commands/ReconcileBankLedgerCommand.php
     - file: modules/Banking/database/migrations/2026_10_16_000001_create_bank_reconcile_checkpoints_table.php
+    - file: modules/Banking/database/migrations/2026_10_16_000004_ensure_exact_decimal_text_affinity_on_sqlite_for_ledger.php
     - file: tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php
+    - file: tests/Feature/Banking/DecimalRoundTripTest.php
+    - file: tests/Feature/Banking/ReconcileDetectsOneUnitTest.php
     - test: tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php::reconcile handles 10 pow 15 minor units without precision loss
     - test: tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php::reconcile detects corrupted entry and reports account name
     - test: tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php::incremental reconciliation saves and resumes from checkpoints
+    - test: tests/Feature/Banking/DecimalRoundTripTest.php::eighteen decimal places survive database round trip via ledger service
+    - test: tests/Feature/Banking/ReconcileDetectsOneUnitTest.php::reconcile detects one rupiah discrepancy on idr ledger
+    - test: tests/Feature/Banking/ReconcileDetectsOneUnitTest.php::reconcile detects one atto unit 1e minus 18 discrepancy on crypto ledger
+    - test: tests/Feature/Banking/ReconcileDetectsOneUnitTest.php::incremental reconcile detects stale or corrupted checkpoint
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d1-non-idr-minor-units
     - gate: docs/gates/fase-r1.md
 - [ ] R1.10 Quality gate Fase R1 + verifikasi silang.
@@ -740,7 +828,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 #### Register Minus Fase R1
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
-| M-R1-1 | R1.8 | Sisa 319 temuan A3 di modul warisan `modules/Integration` dibekukan via `integration-freeze.json` (A3 turun dari 352 ke 335 di modul bisnis) | Penggunaan float di modul warisan Integration belum sepenuhnya dieliminasi | P2 | R4.4 (K2) |
+| M-R1-1 | R1.8 | Sisa 319 temuan A3 di modul warisan `modules/Integration` dibekukan via `integration-freeze.json` (A3 turun dari 352 ke 319; 0 di modul bisnis non-Integration) | Penggunaan float di modul warisan Integration belum sepenuhnya dieliminasi | P2 | ↪️ dialihkan ke R4.4 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+| ~~M-R1-2~~ | R1.8 | ~~16 pelanggaran A3 masih ada di modul bisnis non-Integration (Crypto 8, Distribution 1, Esg 1, Mining 4, Pricing 1, Wms 1); kriteria terima `A3 = 0` dilanggar tanpa penanda `⬇️ diturunkan`~~ | ~~Nilai moneter berpotensi floating-point drift dan skema tidak selaras dengan konvensi integer murni~~ | ~~P0~~ | Tuntas (commit `4da2371`, `5b1ec57`: migrasi alter Mining, pengenalan alter migration di FloatMoneyRule, baseline A3 turun dari 335 ke 319 dengan 0 di modul non-Integration, adendum P10 DECISIONS.md#2026-10-16-r1-d9-a3-integration-freeze) |
+| ~~M-R1-3~~ | R1.4 | ~~Test wajib DoR `LedgerConcurrencyTest` (`@group db-portability`, dua koneksi) belum dibuat; race condition hanya diuji dengan mock kelas anonim in-memory~~ | ~~Penanganan race condition pada double-entry ledger belum terbukti di database server nyata~~ | ~~P0~~ | Tuntas (commit `ee6e4d4`: test `LedgerConcurrencyTest` dengan race condition dua koneksi database fisik dan deterministic lock ordering) |
+| ~~M-R1-4~~ | R1.5 | ~~Test wajib DoR `IdempotentPostingTest` (dataset per lokasi) belum dibuat (hanya 1 test di Fleet); default key `TopUpAction` menggunakan counter dinamis yang gagal idempoten~~ | ~~Panggilan ulang TopUp tanpa key menghasilkan transaksi ganda; idempotensi 26 lokasi lain belum teruji~~ | ~~P0~~ | Tuntas (commit `4d89235`: key deterministik stabil TopUpAction, proteksi idempotensi VenueCreatorEconomyService, dan test suite IdempotentPostingTest) |
+| ~~M-R1-5~~ | R1.6 | ~~Test wajib DoR `RefundEntityTest` (HTTP POST /bookings/{booking}/refund) belum dibuat; skenario dua refund parsial bernominal sama belum diuji; proteksi role tak berhak (403) via HTTP belum diuji~~ | ~~Integritas entitas refund dan proteksi otorisasi endpoint HTTP belum terverifikasi secara tuntas~~ | ~~P0~~ | Tuntas (commit `a4c2eba`: pembedaan deterministik refund_id/reason di InvoicePaymentController dan suite RefundEntityTest via HTTP termasuk pengujian 403) |
+| ~~M-R1-6~~ | R1.9 | ~~Test wajib DoR presisi 18 desimal (`DecimalRoundTripTest`), fixture selisih 1 unit terkecil ($10^{-18}$), dan fixture checkpoint basi belum dibuat; sabotase $10^{-18}$ di SQLite lolos deteksi~~ | ~~Presisi aset non-IDR/kripto (18 desimal) rentan terpotong diam-diam di SQLite tanpa terdeteksi rekonsiliasi~~ | ~~P0~~ | Tuntas (commit `7674520`: migrasi afinitas text SQLite 18 desimal, suite DecimalRoundTripTest, dan ReconcileDetectsOneUnitTest dengan deteksi 1 unit dan checkpoint basi) |
+| ~~M-R1-7~~ | R1.2 | ~~Blok `Bukti:` R1.2 tidak mencantumkan `keputusan: docs/DECISIONS.md#2026-10-16-r1-d4-test-tanda-salah` dan hanya memuat 1 file baseline (mengabaikan 18 commit modul)~~ | ~~Pelacakan audit bukti mesin (P2/C1/X17) tidak lengkap untuk puluhan test yang diubah~~ | ~~P1~~ | Tuntas (blok `Bukti:` R1.2 dilengkapi seluruh 19 commit modul, file terkait, rujukan DECISIONS D4, dan minus M-R0-6 sesuai aturan X17/P2) |
+| ~~M-R1-8~~ | R1.10 | ~~Laporan gate `docs/gates/fase-r1.md` basi (mencatat commit `f17b6f1`, bukan HEAD `4f287a1`)~~ | ~~Laporan quality gate lokal tidak mencerminkan HEAD commit repositori~~ | ~~P2~~ | Tuntas (laporan quality gate docs/gates/fase-r1.md digenerate ulang dan disinkronkan dengan commit HEAD terakhir) |
 
 ### FASE R2 — BUG FUNGSIONAL TERVERIFIKASI
 > **Status audit:** ⬜ BELUM · Prasyarat: R1.
