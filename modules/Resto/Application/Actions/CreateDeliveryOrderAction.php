@@ -209,7 +209,7 @@ class CreateDeliveryOrderAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::PAYMENT->value,
                     description: "Pembayaran order delivery #{$order->number}",
-                    idempotencyKey: "resto:dlv:pay:{$order->id}:".Str::uuid(),
+                    idempotencyKey: "resto:dlv:pay:{$order->id}",
                     entries: [
                         PostingEntryDTO::forCode($walletAccCode, 'IDR', BigDecimal::of($grandTotal)->negated()),
                         PostingEntryDTO::forCode($foodRevAcc, 'IDR', BigDecimal::of($foodShare)),

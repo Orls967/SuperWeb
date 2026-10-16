@@ -118,7 +118,7 @@ class CalculateHidangBillAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::PRODUCTION->value,
                     description: "HPP porsi terjual hidang pesanan {$order->number}",
-                    idempotencyKey: "resto:order:cogs:{$order->id}:".Str::uuid(),
+                    idempotencyKey: "resto:order:cogs:{$order->id}",
                     entries: [
                         PostingEntryDTO::forCode($invAccCode, 'IDR', $cogsBd->negated()),
                         PostingEntryDTO::forCode($cogsAccCode, 'IDR', $cogsBd),

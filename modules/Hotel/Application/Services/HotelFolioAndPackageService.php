@@ -75,7 +75,7 @@ class HotelFolioAndPackageService
                 $this->ledger->post(new PostingDTO(
                     type: 'HTL_TIMESHARE_DIVIDEND',
                     description: "Timeshare dividend for investor {$investor->investor_user_id} unit {$unit->unit_code}",
-                    idempotencyKey: "htl_ts_div:{$unit->id}:{$investor->id}:".now()->toDateString(),
+                    idempotencyKey: "hotel:timeshare_dividend:{$unit->id}:{$investor->id}:daily",
                     entries: Posting::lines()
                         ->debit('expense:htl_timeshare_payout:IDR', $dividend)
                         ->credit("investor:dividend:{$investor->investor_user_id}:IDR", $dividend)
@@ -117,7 +117,7 @@ class HotelFolioAndPackageService
             $this->ledger->post(new PostingDTO(
                 type: 'HTL_DESTINATION_PKG_SETTLE',
                 description: "Destination package settlement for {$package->package_code}",
-                idempotencyKey: "htl_pkg_settle:{$package->id}:".(string) Str::uuid(),
+                idempotencyKey: "hotel:package_settle:{$package->id}",
                 entries: $lines->toEntries('IDR'),
                 referenceType: 'htl_destination_packages',
                 referenceId: $package->id,

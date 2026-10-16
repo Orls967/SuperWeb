@@ -59,7 +59,7 @@ class FailDeliveryAction
                     $this->ledger->post(new PostingDTO(
                         type: TransactionType::REFUND->value,
                         description: "Refund parsial makanan untuk delivery gagal #{$order->number}: {$failureReason}",
-                        idempotencyKey: "resto:dlv:fail_refund:{$lockedDelivery->id}:".Str::uuid(),
+                        idempotencyKey: "resto:dlv:fail_refund:{$lockedDelivery->id}",
                         entries: [
                             PostingEntryDTO::forCode($foodRevAcc, 'IDR', $refundBd->negated()),
                             PostingEntryDTO::forCode($walletAccCode, 'IDR', $refundBd),

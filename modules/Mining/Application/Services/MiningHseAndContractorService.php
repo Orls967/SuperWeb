@@ -144,7 +144,7 @@ class MiningHseAndContractorService
             $ledgerTx = $this->ledgerService->post(new PostingDTO(
                 type: 'MINING_CONTRACTOR_PENALTY',
                 description: "Contractor safety violation penalty for {$contractorPartyId}",
-                idempotencyKey: 'CNTR-PEN-'.Str::random(10),
+                idempotencyKey: "mining:contractor_penalty:{$contractorPartyId}:score{$safetyScore}:inc{$incidentCount}",
                 entries: Posting::lines()
                     ->debit('min:contractor_receivable:IDR', $penaltyAmountMinor)
                     ->credit('min:safety_penalty_revenue:IDR', $penaltyAmountMinor)

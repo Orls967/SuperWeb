@@ -6,7 +6,6 @@ namespace Modules\Banking\Application\Actions;
 
 use App\Models\User;
 use Brick\Math\BigDecimal;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
@@ -41,7 +40,7 @@ class ManualAdjustmentAction
         $asset = $account->asset_code;
         $clearingCode = "clearing:external:{$asset}";
 
-        $key = $idempotencyKey ?? ('adj_'.$account->id.'_'.Str::random(16));
+        $key = $idempotencyKey ?? sprintf('banking:manual_adjustment:%s:%s', $account->id, sha1($adminUser->id.':'.$amountBd->__toString().':'.$trimmedReason));
 
         $dto = new PostingDTO(
             type: TransactionType::MANUAL_ADJUSTMENT->value,

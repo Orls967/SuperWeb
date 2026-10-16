@@ -51,7 +51,7 @@ class HoldCateringDepositAction
                 ]
             );
 
-            $idempotencyKey = "resto:catering:hold:{$locked->id}:".Str::uuid();
+            $idempotencyKey = "resto:catering:hold:{$locked->id}";
             $holdAmount = Money::idr($locked->deposit_amount);
 
             $intent = $this->paymentGateway->hold(

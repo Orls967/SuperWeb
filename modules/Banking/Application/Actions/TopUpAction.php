@@ -6,7 +6,6 @@ namespace Modules\Banking\Application\Actions;
 
 use App\Models\User;
 use Brick\Math\BigDecimal;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
@@ -35,7 +34,7 @@ class TopUpAction
         }
 
         $userWallet = $user->walletAccount('IDR');
-        $key = $idempotencyKey ?? ('topup_'.$user->id.'_'.Str::random(16));
+        $key = $idempotencyKey ?? sprintf('banking:topup:%s:%s', $user->id, sha1($amountBd->__toString()));
 
         $dto = new PostingDTO(
             type: TransactionType::TOPUP->value,

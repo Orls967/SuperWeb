@@ -43,7 +43,7 @@ class CancelCateringAction
                     // Batal H-3 atau lebih lama: deposit dikembalikan penuh (release hold dari escrow)
                     $this->paymentGateway->release(
                         intent: $depositIntent,
-                        idempotencyKey: "resto:catering:release:{$locked->id}:".Str::uuid()
+                        idempotencyKey: "resto:catering:release:{$locked->id}"
                     );
                 } else {
                     // Batal < 3 hari: deposit hangus & diakui sebagai pendapatan denda pembatalan katering
@@ -67,7 +67,7 @@ class CancelCateringAction
                     $this->paymentGateway->capture(
                         intent: $depositIntent,
                         finalAmount: Money::idr($locked->deposit_amount),
-                        idempotencyKey: "resto:catering:forfeit:{$locked->id}:".Str::uuid()
+                        idempotencyKey: "resto:catering:forfeit:{$locked->id}"
                     );
                 }
             }

@@ -57,9 +57,10 @@ class PaySupplierAction
             // A manual payment is a distinct business event every time, so a fixed per-supplier
             // key would wrongly collapse two legitimate payments. A caller-supplied key (one per
             // submitted form) is what makes a double submit safe.
+            $fallback = ($po ? "po:{$po->id}" : 'direct').':'.$amount.':'.sha1($note ?? '');
             $ledgerKey = $idempotencyKey !== null && $idempotencyKey !== ''
                 ? "resto:supplier:pay:{$supplier->id}:{$idempotencyKey}"
-                : "resto:supplier:pay:{$supplier->id}:".Str::uuid();
+                : "resto:supplier:pay:{$supplier->id}:{$fallback}";
 
             $existing = LedgerTransaction::where('idempotency_key', $ledgerKey)->first();
             if ($existing !== null) {

@@ -6,7 +6,6 @@ namespace Modules\Core\Application\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Core\Domain\Models\OutboxDispatch;
 use Modules\Core\Domain\Models\OutboxMessage;
@@ -25,7 +24,9 @@ class OutboxBusService implements OutboxBusInterface
         ?Model $aggregate = null,
         ?array $headers = null
     ): OutboxMessage {
-        $key = $idempotencyKey ?? (string) Str::uuid();
+        $aggType = $aggregate ? class_basename($aggregate) : 'event';
+        $aggId = $aggregate ? (string) $aggregate->getKey() : sha1(json_encode($payload));
+        $key = $idempotencyKey ?? sprintf('outbox:%s:%s:%s', strtolower(str_replace(['\\', '.'], '_', $eventType)), $aggType, $aggId);
 
         return OutboxMessage::firstOrCreate(
             ['idempotency_key' => $key],

@@ -8,7 +8,6 @@ use App\Models\User;
 use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
@@ -92,9 +91,8 @@ class TransferAction extends BaseAction
             $senderWallet = $sender->walletAccount('IDR');
             $recipientWallet = $recipient->walletAccount('IDR');
 
-            // A transfer has no natural source identifier. Without a caller key,
-            // preserve distinct transfers rather than deduping them incorrectly.
-            $key = $idempotencyKey ?? ('xfer_'.$sender->id.'_'.Str::random(16));
+            // Deterministic key based on business identity if caller key is omitted.
+            $key = $idempotencyKey ?? sprintf('banking:transfer:%s:%s:%s', $sender->id, $recipient->id, sha1($amountBd->__toString().':'.($note ?? '')));
 
             $entries = [
                 PostingEntryDTO::forAccount($senderWallet->id, 'IDR', $totalDeduction->negated()),

@@ -45,7 +45,7 @@ class DiscardTrayAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::WASTE->value,
                     description: "Waste piring etalase #{$tray->id} ({$tray->menuItem?->name}): {$portionsToDiscard} porsi. Alasan: {$reason}",
-                    idempotencyKey: "resto:tray:waste:{$tray->id}:".Str::uuid(),
+                    idempotencyKey: "resto:tray:waste:{$tray->id}",
                     entries: Posting::lines()
                         ->debit($wasteAccCode, $wasteValue)
                         ->credit($invAccCode, $wasteValue)

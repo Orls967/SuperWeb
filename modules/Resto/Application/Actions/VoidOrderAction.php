@@ -7,7 +7,6 @@ namespace Modules\Resto\Application\Actions;
 use App\Models\User;
 use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
@@ -62,7 +61,7 @@ class VoidOrderAction
                             intent: $intent,
                             refundAmount: $lockedOrder->payableAmount(),
                             reason: "Void pesanan #{$lockedOrder->number}: {$reason}",
-                            idempotencyKey: "resto:order:refund:{$lockedOrder->id}:".Str::uuid()
+                            idempotencyKey: "resto:order:refund:{$lockedOrder->id}"
                         );
                     }
                 } elseif ($lockedOrder->payment_method === 'cash') {
@@ -83,7 +82,7 @@ class VoidOrderAction
                     $this->ledger->post(new PostingDTO(
                         type: TransactionType::REFUND->value,
                         description: "Pembatalan/Refund tunai pesanan {$lockedOrder->number}. Alasan: {$reason}",
-                        idempotencyKey: "resto:order:void:cash:{$lockedOrder->id}:".Str::uuid(),
+                        idempotencyKey: "resto:order:void:cash:{$lockedOrder->id}",
                         entries: $entries,
                         referenceType: 'resto_order',
                         referenceId: $lockedOrder->id,

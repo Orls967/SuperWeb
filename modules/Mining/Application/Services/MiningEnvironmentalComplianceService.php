@@ -116,7 +116,7 @@ class MiningEnvironmentalComplianceService
             $tx = $this->ledgerService->post(new PostingDTO(
                 type: 'MINING_WATER_MONITOR_SETTLE',
                 description: "Water usage fee and compliance audit for {$siteId}",
-                idempotencyKey: 'MIN-WTR-'.Str::random(10),
+                idempotencyKey: "mining:water_monitor:{$siteId}:{$params['sampling_point']}",
                 entries: $lines->toEntries('IDR'),
                 referenceType: 'WATER_READING',
                 referenceId: $params['sampling_point'],

@@ -73,7 +73,7 @@ class ResilienceWave2Service
      */
     public function resolveConflict(array $data): object
     {
-        $key = $data['idempotency_key'] ?? Str::uuid()->toString();
+        $key = $data['idempotency_key'] ?? sprintf('int:conflict:%s:%s', $data['entity_type'] ?? 'entity', $data['entity_id'] ?? sha1(json_encode($data)));
 
         $existing = \DB::table('res_conflict_resolution_log')
             ->where('idempotency_key', $key)
@@ -126,7 +126,7 @@ class ResilienceWave2Service
      */
     public function queueEdgeEvent(string $nodeCode, string $eventType, array $payload): object
     {
-        $key = $nodeCode.':'.$eventType.':'.($payload['ref'] ?? Str::uuid()->toString());
+        $key = $nodeCode.':'.$eventType.':'.($payload['ref'] ?? sha1(json_encode($payload)));
 
         $existing = \DB::table('res_edge_sync_queue')
             ->where('idempotency_key', $key)

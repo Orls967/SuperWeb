@@ -58,7 +58,7 @@ class CloseShiftAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::CASH_VARIANCE->value,
                     description: "Selisih kas tutup shift #{$lockedShift->id} ({$lockedShift->cashier?->name}): Rp ".number_format($variance, 0, ',', '.'),
-                    idempotencyKey: "resto:shift:variance:{$lockedShift->id}:".Str::uuid(),
+                    idempotencyKey: "resto:shift:variance:{$lockedShift->id}",
                     entries: [
                         PostingEntryDTO::forCode($cashAccCode, 'IDR', $varianceBd->negated()),
                         PostingEntryDTO::forCode($varAccCode, 'IDR', $varianceBd),

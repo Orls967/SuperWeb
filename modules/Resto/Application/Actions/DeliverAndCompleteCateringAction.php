@@ -42,7 +42,7 @@ class DeliverAndCompleteCateringAction
                 $this->paymentGateway->capture(
                     intent: $depositIntent,
                     finalAmount: Money::idr($locked->deposit_amount),
-                    idempotencyKey: "resto:catering:capture:{$locked->id}:".Str::uuid()
+                    idempotencyKey: "resto:catering:capture:{$locked->id}"
                 );
             }
 
@@ -66,7 +66,7 @@ class DeliverAndCompleteCateringAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::PAYMENT->value,
                     description: "Pelunasan sisa 70% katering #{$locked->number}",
-                    idempotencyKey: "resto:catering:settle:{$locked->id}:".Str::uuid(),
+                    idempotencyKey: "resto:catering:settle:{$locked->id}",
                     entries: [
                         PostingEntryDTO::forCode($walletAccCode, 'IDR', $remBd->negated()),
                         PostingEntryDTO::forCode($cateringRevAcc, 'IDR', $remBd),

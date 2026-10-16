@@ -67,6 +67,8 @@ class VenueCreatorEconomyService
         $royaltyAmountIdr = (int) round(($streamGrossRevenueIdr * $contract->royalty_share_percent) / 100);
 
         return DB::transaction(function () use ($contract, $streamGrossRevenueIdr, $royaltyAmountIdr) {
+            $batch = 'rev_'.$streamGrossRevenueIdr.'_acc'.((int) $contract->accrued_royalties_idr + $royaltyAmountIdr);
+
             $contract->increment('accrued_royalties_idr', $royaltyAmountIdr);
             $contract->increment('held_royalties_idr', $royaltyAmountIdr);
 
@@ -74,7 +76,7 @@ class VenueCreatorEconomyService
             $this->ledgerService->post(new PostingDTO(
                 type: 'CREATOR_STREAM_ROYALTY_ACCRUAL',
                 description: "Accrue creator streaming royalty for contract {$contract->contract_code}",
-                idempotencyKey: "VEN-RGT-{$contract->contract_code}-".time().'-'.rand(100, 999),
+                idempotencyKey: "venue:stream_accrual:{$contract->contract_code}:{$batch}",
                 entries: Posting::lines()
                     ->debit('ven:streaming_receivable:IDR', $streamGrossRevenueIdr)
                     ->credit('ven:platform_streaming_revenue:IDR', $streamGrossRevenueIdr - $royaltyAmountIdr)
@@ -120,7 +122,7 @@ class VenueCreatorEconomyService
             $this->ledgerService->post(new PostingDTO(
                 type: 'CREATOR_ROYALTY_PAYOUT_RELEASE',
                 description: "Release held royalty payout to creator for contract {$contract->contract_code}",
-                idempotencyKey: "VEN-REL-{$contract->contract_code}-".time(),
+                idempotencyKey: "venue:royalty_release:{$contract->contract_code}:{$contract->paid_royalties_idr}",
                 entries: Posting::lines()
                     ->debit('ven:creator_held_royalty_escrow:IDR', $amountToPay)
                     ->credit('ven:creator_payable:IDR', $amountToPay)

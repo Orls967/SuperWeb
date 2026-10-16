@@ -120,4 +120,36 @@ class FleetTest extends TestCase
         $service->recordSlaBreachCompensation($contract, 36, 1500000);
         $this->assertTrue(true);
     }
+
+    public function test_fleet_lease_amortization_idempotency_same_month_one_posting_next_month_two(): void
+    {
+        /** @var FleetLeasingService $service */
+        $service = app(FleetLeasingService::class);
+
+        $contract = $service->createLeaseContract(
+            partyId: 501,
+            durationMonths: 6,
+            monthlyRentalIdr: 10000000,
+            vehicleIds: [$this->vehicle2->id],
+            startDate: Carbon::parse('2026-01-01')
+        );
+
+        // 1. Jalankan pertama kali di bulan 1 -> 1 posting, saldo bertambah 10jt
+        $service->amortizeMonthly($contract, 1);
+        $contract->refresh();
+        $this->assertEquals(10000000, $contract->accumulated_amortized_idr);
+        $this->assertDatabaseCount('bank_ledger_transactions', 1);
+
+        // 2. Jalankan kedua kali di bulan 1 yang sama -> tetap 1 posting, saldo tetap 10jt
+        $service->amortizeMonthly($contract, 1);
+        $contract->refresh();
+        $this->assertEquals(10000000, $contract->accumulated_amortized_idr);
+        $this->assertDatabaseCount('bank_ledger_transactions', 1);
+
+        // 3. Jalankan di bulan berikutnya (bulan 2) -> total 2 posting, saldo 20jt
+        $service->amortizeMonthly($contract, 2);
+        $contract->refresh();
+        $this->assertEquals(20000000, $contract->accumulated_amortized_idr);
+        $this->assertDatabaseCount('bank_ledger_transactions', 2);
+    }
 }

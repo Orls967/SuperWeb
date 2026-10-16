@@ -73,26 +73,33 @@ class FleetLeasingService
     public function amortizeMonthly(FleetContract $contract, int $monthIndex): void
     {
         DB::transaction(function () use ($contract, $monthIndex) {
-            $monthlyRent = $contract->monthly_rental_idr;
-
-            $contract->accumulated_amortized_idr += $monthlyRent;
-            if ($contract->accumulated_amortized_idr >= $contract->total_lease_value_idr) {
-                $contract->status = 'completed';
-            }
-            $contract->save();
+            $lockedContract = FleetContract::whereKey($contract->getKey())->lockForUpdate()->firstOrFail();
+            $monthlyRent = $lockedContract->monthly_rental_idr;
+            $key = "fleet:amort:{$lockedContract->id}:m{$monthIndex}";
 
             // Double-entry posting: Debit AR Lease, Credit Lease Revenue
-            $this->ledgerService->post(new PostingDTO(
+            $tx = $this->ledgerService->post(new PostingDTO(
                 type: 'lease_amortization',
                 description: "Fleet Lease Month {$monthIndex} Amortization",
-                idempotencyKey: "fleet:amort:{$contract->id}:m{$monthIndex}",
+                idempotencyKey: $key,
                 entries: [
-                    PostingEntryDTO::forCode("ar:fleet:party:{$contract->party_id}:IDR", 'IDR', -$monthlyRent),
+                    PostingEntryDTO::forCode("ar:fleet:party:{$lockedContract->party_id}:IDR", 'IDR', -$monthlyRent),
                     PostingEntryDTO::forCode('oto:fleet_lease_revenue:IDR', 'IDR', $monthlyRent),
                 ],
                 referenceType: 'fleet_contract',
-                referenceId: (string) $contract->id,
+                referenceId: (string) $lockedContract->id,
             ));
+
+            // Akumulasi hanya bila posting baru (idempotent: running 2x di bulan yang sama menghasilkan 1 posting)
+            if ($tx->wasRecentlyCreated) {
+                $lockedContract->accumulated_amortized_idr += $monthlyRent;
+                if ($lockedContract->accumulated_amortized_idr >= $lockedContract->total_lease_value_idr) {
+                    $lockedContract->status = 'completed';
+                }
+                $lockedContract->save();
+            }
+
+            $contract->refresh();
         });
     }
 
@@ -103,7 +110,7 @@ class FleetLeasingService
             $this->ledgerService->post(new PostingDTO(
                 type: 'sla_compensation',
                 description: "Fleet SLA Breach Compensation for {$downtimeHours}h excess downtime",
-                idempotencyKey: "fleet:sla_comp:{$contract->id}:".Str::random(6),
+                idempotencyKey: "fleet:sla_comp:{$contract->id}:{$downtimeHours}h:{$compensationCreditIdr}",
                 entries: [
                     PostingEntryDTO::forCode('expense:fleet:sla_penalties:IDR', 'IDR', -$compensationCreditIdr),
                     PostingEntryDTO::forCode("ar:fleet:party:{$contract->party_id}:IDR", 'IDR', $compensationCreditIdr),

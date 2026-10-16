@@ -76,7 +76,7 @@ class TwelveLinesCrossEcosystemService
             $this->ledger->post(new PostingDTO(
                 type: 'CROSS_VENUE_FOLIO_CHARGE',
                 description: "Cross-line venue charge ({$venueTicketNumber}) to folio {$folio->id}: {$chargeDescription}",
-                idempotencyKey: "cross_charge:{$folio->id}:".(string) Str::uuid(),
+                idempotencyKey: "core:cross_charge:{$folio->id}:{$venueTicketNumber}",
                 entries: [
                     PostingEntryDTO::forCode('htl:city_ledger_receivable:IDR', 'IDR', -$amountIdr),
                     PostingEntryDTO::forCode('ven:pos_revenue:IDR', 'IDR', $amountIdr),
