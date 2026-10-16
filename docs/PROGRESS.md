@@ -1312,7 +1312,25 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - [ ] R4.7 Quality gate Fase R4 + verifikasi silang.
 
 ### FASE R5 — DOKUMENTASI, AUDIT & TEST YANG JUJUR
-> **Status audit:** ⬜ BELUM · Prasyarat: R0.
+> **Status audit:** 🟡 IN PROGRESS (2026-10-16) · Prasyarat: R0 ✅.
+
+#### DoR Fase R5 — Dokumentasi, audit & test yang jujur
+- Disetujui pemilik: [x] 2026-10-16 (chat)
+- Tujuan bisnis: Menjadikan dokumentasi arsitektur (`CODEBASE.md`, `AUDIT.md`) sinkron dan jujur secara otomatis dengan kode aktual via `docs:inventory`, memastikan seluruh 33 command audit warisan memiliki fixture korupsi yang terbukti menggagalkan audit jika ada data rusak (baseline `audit-contract.json` = 0), memastikan `super:health-check` hanya melaporkan pilar yang terverifikasi dua-sumber nyata, serta menaikkan higiene test suite (`test-hygiene.json` T1–T4 = 0) dan menutup minus warisan M-R0-4, M-R0-14, M-R0-15, M-R0-16.
+- Modul pemilik: `Core`, `Shared`, serta seluruh modul pemilik command `*:audit` (Agri, Asset, B2b, Contract, Dist, Dr, Epc, Esg, Group, Hcm, Intl, Logistics, Mall, Mfg, Plm, Pricing, Procurement, Partner, Security, Trade, Treasury, Wms).
+- Prasyarat & statusnya: R0 ✅.
+- Tabel angka awal vs target:
+  - `audit-contract.json`: 33 → 0
+  - `test-hygiene.json`: T1=9, T2=0, T3=1, T4=1 → 0
+  - Penutupan minus: M-R0-4, M-R0-14, M-R0-15, M-R0-16
+- Daftar test wajib:
+  - `CodebaseInventorySyncTest`
+  - `AuditCommandContractTest`
+  - `HonestSuperHealthCheckTest`
+  - `AuditDocGateFormatTest`
+  - `TestHygieneTest`
+- Jalan pintas yang dihindari: fixture palsu yang tidak memicu failure pada command audit, asersi kosong / `assertTrue(true)` baru, skipping test tanpa blocker sah, klaim status sehat tanpa verifikasi DB nyata.
+
 - [ ] R5.1 **CODEBASE otomatis** (K-03): `php artisan docs:inventory` menghasilkan bagian faktual `CODEBASE.md` (modul, prefiks, jumlah tabel, rute per modul + middleware, command & jadwal, akun ledger per modul); test gagal bila hasil generate ≠ isi file.
 - [ ] R5.2 **Fixture korupsi untuk semua audit** (K-02): baseline `AuditCommandContractTest` = 0 — setiap `*:audit` terdaftar membandingkan dua sumber dan punya fixture yang membuatnya gagal.
 - [ ] R5.3 **`super:health-check` jujur**: hanya melaporkan pilar yang benar-benar dicek; tambahkan pilar baru hanya bersama audit dua-sumbernya.
