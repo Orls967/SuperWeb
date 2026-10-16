@@ -1,6 +1,6 @@
 # Quality Gate Report: Fase R2
 
-- **Commit:** `b1d5a00778f03ac0022248031ad79e05af8ae1be` (b1d5a00)
+- **Commit:** `af921c7ea73e600117098727899e500009efe820` (af921c7)
 - **Tanggal:** 2026-10-16T12:18:25+00:00
 - **PHP:** 8.4.26
 - **Database:** sqlite (v3.53.4)
