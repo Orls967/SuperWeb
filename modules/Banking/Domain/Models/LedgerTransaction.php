@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Modules\Banking\Domain\Exceptions\ImmutableRecordException;
 use Modules\Shared\Domain\Traits\HasUuid;
 
 class LedgerTransaction extends Model
@@ -34,6 +35,17 @@ class LedgerTransaction extends Model
         'meta' => 'array',
         'posted_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::updating(function (self $model): void {
+            throw new ImmutableRecordException(self::class, 'update');
+        });
+
+        static::deleting(function (self $model): void {
+            throw new ImmutableRecordException(self::class, 'delete');
+        });
+    }
 
     public function entries(): HasMany
     {

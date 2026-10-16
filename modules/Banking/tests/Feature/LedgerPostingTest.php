@@ -15,6 +15,7 @@ use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Exceptions\AccountFrozenException;
 use Modules\Banking\Domain\Exceptions\AssetMismatchException;
 use Modules\Banking\Domain\Exceptions\IdempotencyConflictException;
+use Modules\Banking\Domain\Exceptions\ImmutableRecordException;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
 use Modules\Banking\Domain\Exceptions\UnbalancedTransactionException;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -255,4 +256,49 @@ test('unique violation saat race condition ditangkap dan mengembalikan transaksi
     expect($result)->toBeInstanceOf(LedgerTransaction::class)
         ->and($result->id)->toBe($winner->id)
         ->and($result->idempotency_key)->toBe('race_simulation_key_001');
+});
+
+test('model LedgerTransaction melempar ImmutableRecordException pada updating dan deleting', function () {
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
+
+    $dto = new PostingDTO(
+        type: TransactionType::TOPUP->value,
+        description: 'Immutable tx test',
+        idempotencyKey: 'immutable_tx_key_001',
+        entries: [
+            PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', -10000),
+            PostingEntryDTO::forAccount($userAcc->id, 'IDR', 10000),
+        ],
+    );
+
+    $tx = $this->ledger->post($dto);
+
+    expect(fn () => $tx->update(['description' => 'Hacked']))
+        ->toThrow(ImmutableRecordException::class)
+        ->and(fn () => $tx->delete())
+        ->toThrow(ImmutableRecordException::class);
+});
+
+test('model LedgerEntry melempar ImmutableRecordException pada updating dan deleting', function () {
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
+
+    $dto = new PostingDTO(
+        type: TransactionType::TOPUP->value,
+        description: 'Immutable entry test',
+        idempotencyKey: 'immutable_entry_key_001',
+        entries: [
+            PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', -20000),
+            PostingEntryDTO::forAccount($userAcc->id, 'IDR', 20000),
+        ],
+    );
+
+    $tx = $this->ledger->post($dto);
+    $entry = $tx->entries->first();
+
+    expect(fn () => $entry->update(['amount' => '999999']))
+        ->toThrow(ImmutableRecordException::class)
+        ->and(fn () => $entry->delete())
+        ->toThrow(ImmutableRecordException::class);
 });

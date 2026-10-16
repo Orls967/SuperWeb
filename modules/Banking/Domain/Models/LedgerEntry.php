@@ -6,6 +6,7 @@ namespace Modules\Banking\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Banking\Domain\Exceptions\ImmutableRecordException;
 use Modules\Shared\Domain\ValueObjects\Money;
 
 class LedgerEntry extends Model
@@ -28,6 +29,17 @@ class LedgerEntry extends Model
         'balance_after' => 'string',
         'created_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::updating(function (self $model): void {
+            throw new ImmutableRecordException(self::class, 'update');
+        });
+
+        static::deleting(function (self $model): void {
+            throw new ImmutableRecordException(self::class, 'delete');
+        });
+    }
 
     public function transaction(): BelongsTo
     {
