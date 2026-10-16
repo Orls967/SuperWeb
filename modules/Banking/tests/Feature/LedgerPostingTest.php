@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Exceptions\AccountFrozenException;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
@@ -24,15 +23,8 @@ beforeEach(function () {
 });
 
 test('posting seimbang berhasil dan memperbarui saldo rekening dengan benar', function () {
-    $userAcc = LedgerAccount::create([
-        'uuid' => (string) Str::uuid(),
-        'code' => 'wallet:user:999:IDR',
-        'asset_code' => 'IDR',
-        'kind' => AccountKind::WALLET->value,
-        'name' => 'Dompet Test',
-        'allow_negative' => false,
-        'cached_balance' => '0',
-    ]);
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
 
     $dto = new PostingDTO(
         type: TransactionType::TOPUP->value,
@@ -55,15 +47,8 @@ test('posting seimbang berhasil dan memperbarui saldo rekening dengan benar', fu
 });
 
 test('posting tidak seimbang melempar UnbalancedTransactionException', function () {
-    $userAcc = LedgerAccount::create([
-        'uuid' => (string) Str::uuid(),
-        'code' => 'wallet:user:998:IDR',
-        'asset_code' => 'IDR',
-        'kind' => AccountKind::WALLET->value,
-        'name' => 'Dompet Unbalanced Test',
-        'allow_negative' => false,
-        'cached_balance' => '0',
-    ]);
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
 
     $dto = new PostingDTO(
         type: TransactionType::TOPUP->value,
@@ -92,15 +77,9 @@ test('posting dengan kurang dari 2 entri melempar InvalidArgumentException', fun
 })->throws(InvalidArgumentException::class);
 
 test('posting yang menyebabkan saldo negatif pada non allow_negative melempar InsufficientFundsException', function () {
-    $userAcc = LedgerAccount::create([
-        'uuid' => (string) Str::uuid(),
-        'code' => 'wallet:user:997:IDR',
-        'asset_code' => 'IDR',
-        'kind' => AccountKind::WALLET->value,
-        'name' => 'Dompet Miskin',
-        'allow_negative' => false,
-        'cached_balance' => '100000',
-    ]);
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
+    $userAcc->forceFill(['cached_balance' => '100000'])->save();
 
     $dto = new PostingDTO(
         type: TransactionType::TRANSFER->value,
@@ -141,16 +120,9 @@ test('posting dengan reference UUID atau ULID string tersimpan dengan benar dan 
 });
 
 test('posting pada akun yang frozen melempar AccountFrozenException', function () {
-    $userAcc = LedgerAccount::create([
-        'uuid' => (string) Str::uuid(),
-        'code' => 'wallet:user:996:IDR',
-        'asset_code' => 'IDR',
-        'kind' => AccountKind::WALLET->value,
-        'name' => 'Dompet Beku',
-        'allow_negative' => false,
-        'cached_balance' => '500000',
-        'is_frozen' => true,
-    ]);
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
+    $userAcc->forceFill(['cached_balance' => '500000', 'is_frozen' => true])->save();
 
     $dto = new PostingDTO(
         type: TransactionType::TRANSFER->value,
@@ -166,15 +138,8 @@ test('posting pada akun yang frozen melempar AccountFrozenException', function (
 })->throws(AccountFrozenException::class);
 
 test('idempotency: posting ulang dengan key yang sama mengembalikan transaksi yang sama tanpa menambah saldo ganda', function () {
-    $userAcc = LedgerAccount::create([
-        'uuid' => (string) Str::uuid(),
-        'code' => 'wallet:user:995:IDR',
-        'asset_code' => 'IDR',
-        'kind' => AccountKind::WALLET->value,
-        'name' => 'Dompet Idempotent',
-        'allow_negative' => false,
-        'cached_balance' => '0',
-    ]);
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
 
     $dto = new PostingDTO(
         type: TransactionType::TOPUP->value,

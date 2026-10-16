@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\EnterpriseFinance\Application\Services\ConglomerateCapitalAndGovernanceService;
 use Modules\EnterpriseFinance\Domain\Models\EfCapexProposal;
 use Modules\EnterpriseFinance\Domain\Models\EfMaAcquisition;
@@ -13,23 +13,7 @@ use Modules\EnterpriseFinance\Domain\Models\EfSubholdingDividend;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $accounts = [
-        'ef:holding_dividend_receivable:IDR' => 'asset',
-        'ef:holding_dividend_income:IDR' => 'revenue',
-    ];
-
-    foreach ($accounts as $code => $kind) {
-        LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'kind' => $kind,
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'name' => "Enterprise Finance {$code}",
-            ]
-        );
-    }
+    $this->seed(LedgerAccountsSeeder::class);
 });
 
 test('(a) dividen holding = verified net profit * payout ratio and balances ledger', function () {

@@ -3,6 +3,7 @@
 namespace Modules\Agri\tests\Feature\Ndvi;
 
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Agri\Application\Services\Ndvi\PrecisionAgriAndDaoService;
 use Modules\Agri\Domain\Models\Ndvi\AgriFinancingInstallment;
@@ -22,23 +23,7 @@ class PrecisionAgriAndDaoGovernanceTest extends TestCase
         parent::setUp();
         $this->service = app(PrecisionAgriAndDaoService::class);
 
-        LedgerAccount::create([
-            'code' => 'agri:farmer_loan_ar:IDR',
-            'name' => 'Agri Farmer Microfinance Receivable',
-            'asset_code' => 'IDR',
-            'kind' => 'asset',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'agri:escrow_disbursement:IDR',
-            'name' => 'Agri Loan Escrow Disbursement Account',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_86_1_and_86_2_satellite_ndvi_scan_and_conditional_loan_disbursement(): void

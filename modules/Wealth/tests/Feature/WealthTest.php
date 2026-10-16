@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Wealth\tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Wealth\Application\Services\RoboAdvisorService;
 use Modules\Wealth\Domain\Models\WmHolding;
 use Tests\TestCase;
@@ -23,23 +23,9 @@ class WealthTest extends TestCase
 
         $this->user = User::factory()->create();
 
-        LedgerAccount::create([
-            'code' => "wallet:user:{$this->user->id}:IDR",
-            'name' => "User {$this->user->id} Wallet",
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '25000000',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'treasury:pool:IDR',
-            'name' => 'Treasury Pool',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
+        $wallet = $this->user->walletAccount('IDR');
+        $wallet->forceFill(['cached_balance' => '25000000'])->save();
     }
 
     public function test_liquidity_guardrail_prevents_investing_emergency_fund(): void

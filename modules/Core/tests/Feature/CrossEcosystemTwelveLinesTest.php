@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Core\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Core\Application\Services\TwelveLinesCrossEcosystemService;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Tests\TestCase;
@@ -22,27 +22,7 @@ class CrossEcosystemTwelveLinesTest extends TestCase
         parent::setUp();
         $this->service = app(TwelveLinesCrossEcosystemService::class);
 
-        $accounts = [
-            'escrow:medical_tourism:IDR' => 'escrow',
-            'hsp:billing_clearing:IDR' => 'revenue',
-            'htl:settlement_clearing:IDR' => 'revenue',
-            'lgx:freight_revenue' => 'revenue',
-            'htl:city_ledger_receivable:IDR' => 'asset',
-            'ven:pos_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::firstOrCreate(
-                ['code' => $code],
-                [
-                    'name' => "Account {$code}",
-                    'kind' => $kind,
-                    'asset_code' => 'IDR',
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                ]
-            );
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_medical_tourism_bundle_settlement_cross_3_lines(): void

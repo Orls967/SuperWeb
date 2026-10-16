@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Core\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Core\Application\Services\UniversalCrossLineFintechService;
 use Tests\TestCase;
 
@@ -20,26 +20,7 @@ class UniversalCrossLineFintechTest extends TestCase
         parent::setUp();
         $this->service = app(UniversalCrossLineFintechService::class);
 
-        $accounts = [
-            'reserve:insurance_pool:IDR' => ['liability', 'IDR'],
-            'claimant:payable:CL-LOGISTICS-01:IDR' => ['liability', 'IDR'],
-            'claimant:payable:CL-MINING-02:IDR' => ['liability', 'IDR'],
-            'clearing:stablecoin:MINE_MOROWALI:USDC' => ['clearing', 'USDC'],
-            'clearing:stablecoin:SMELTER_SINGAPORE:USDC' => ['clearing', 'USDC'],
-        ];
-
-        foreach ($accounts as $code => [$kind, $asset]) {
-            LedgerAccount::firstOrCreate(
-                ['code' => $code],
-                [
-                    'name' => "Account {$code}",
-                    'kind' => $kind,
-                    'asset_code' => $asset,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                ]
-            );
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_universal_claims_autopilot_across_lines(): void

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Treasury\tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Str;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Treasury\Application\Services\TreasuryService;
 use Modules\Treasury\Domain\Models\Currency;
@@ -68,25 +68,11 @@ class TreasuryTest extends TestCase
         $user = User::factory()->create();
 
         // Create ledger accounts for USD
-        $accFrom = LedgerAccount::create([
-            'uuid' => (string) Str::uuid(),
-            'code' => 'TRS_USD_SRC',
-            'asset_code' => 'USD',
-            'kind' => 'ASSET',
-            'name' => 'USD Source Account',
-            'allow_negative' => true,
-            'cached_balance' => '1000',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
+        $accFrom = LedgerAccount::where('code', 'TRS_USD_SRC')->first();
+        $accFrom->forceFill(['cached_balance' => '1000'])->save();
 
-        $accTo = LedgerAccount::create([
-            'uuid' => (string) Str::uuid(),
-            'code' => 'TRS_USD_DEST',
-            'asset_code' => 'USD',
-            'kind' => 'ASSET',
-            'name' => 'USD Dest Account',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $accTo = LedgerAccount::where('code', 'TRS_USD_DEST')->first();
 
         // Post foreign currency transfer
         $res = $this->service->postMultiCurrency(
