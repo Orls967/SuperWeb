@@ -36,6 +36,21 @@ class LedgerAccount extends Model
         'cached_balance' => 'string',
     ];
 
+    public function getCachedBalanceAttribute(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (str_contains($value, '.')) {
+            $trimmed = rtrim(rtrim($value, '0'), '.');
+
+            return $trimmed === '' || $trimmed === '-' ? '0' : $trimmed;
+        }
+
+        return $value;
+    }
+
     public function owner(): MorphTo
     {
         return $this->morphTo();

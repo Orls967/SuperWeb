@@ -35,7 +35,7 @@ class TwelveLinesComprehensiveAuditCommand extends Command
         // 4. Audit Core Banking Ledger Invariants
         $negativeAssetDiscrepancies = LedgerAccount::where('kind', 'asset')
             ->where('allow_negative', false)
-            ->where('cached_balance', '<', 0)
+            ->whereRaw('CAST(cached_balance AS NUMERIC) < 0')
             ->count();
 
         if ($negativeAssetDiscrepancies > 0) {
