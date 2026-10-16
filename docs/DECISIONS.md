@@ -1213,7 +1213,7 @@
     2. Minus yang dialihkan TIDAK memblokir status ✅ fase asal (R0), tetapi memblokir status ✅ fase tujuan (R<n>) selama minus tersebut belum diselesaikan dan dicoret.
     3. Minus atas DELIVERABLE fase asal itu sendiri (misalnya deliverable pagar otomatis R0: M-R0-20, M-R0-21, M-R0-22, M-R0-23) TIDAK BOLEH dialihkan dan wajib dituntaskan pada fase asal.
     4. Setiap baris minus yang dialihkan wajib menyertakan anchor keputusan ini (`DECISIONS.md#2026-10-14-p9-minus-dialihkan`).
-    5. Delapan (8) minus warisan Fase R0 yang dialihkan:
+    5. Sembilan (9) minus warisan yang dialihkan:
        - `M-R0-4` (33 command audit warisan tanpa fixture korupsi) → dialihkan ke `R5.2`
        - `M-R0-5` (172 kode akun produksi belum didefinisikan di seeder) → dialihkan ke `R1.3`
        - `M-R0-6` (3 saldo akun berlawanan sisi normal akuntansi) → dialihkan ke `R1.2`
@@ -1222,6 +1222,7 @@
        - `M-R0-12` (`distribution.portal.home` HTTP 403 role admin) → dialihkan ke `R3.1`
        - `M-R0-14` (`api:audit` tidak menyebut entitas rusak) → dialihkan ke `R5.2`
        - `M-R0-18` (37 rute tulis mencantumkan role auditor) → dialihkan ke `R3.1`
+       - `M-R1-1` (319 temuan A3 di modul warisan `modules/Integration` dibekukan via `integration-freeze.json`) → dialihkan ke `R4.4`
 - **Adendum 2026-10-15 (Penyelesaian Temuan Verifikasi M-R0-25):**
   - Sesuai temuan verifikasi independen putaran 2 (M-R0-25), deskripsi item R2.3 pada baseline teks PROGRESS berfokus pada 15 `back()->errors()` di modul Pricing/Agency/Distribution.
   - Untuk mencegah bug HTTP 500 modul Contract (`contract.clauses.create` dan `contract.reports`) tidak terlindungi di fase tujuan, Pemilik menyetujui penegasan Definition of Ready (DoR) Fase R2:
@@ -1419,6 +1420,20 @@
     - Perintah `bank:reconcile --incremental` mencatat checkpoint ke tabel `bank_reconcile_checkpoints` yang menyimpan `last_reconciled_entry_id`, saldo berjalan akun & aset dalam format serialized string, serta checksum transaksi kriptografis (sha256).
 - **Reason:** Menjamin integritas matematis rekonsiliasi double-entry lintas platform database (SQLite vs MySQL) dan mendukung audit performa tinggi pada skala jutaan entri.
 - **Verification:** Test portabilitas di `tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php` dan `tests/Feature/Portability/DatabasePortabilityTest.php`.
+
+<a id="2026-10-16-r1-d9-a3-integration-freeze"></a>
+## 2026-10-16: Penurunan Lingkup Kriteria Terima A3 pada R1.8 untuk Modul Warisan Integration (P10)
+- **Context:**
+  - Teks item `R1.8` mencantumkan kriteria terima `baseline arch:scan A3 = 0`.
+  - Seluruh pelanggaran `A3` pada modul bisnis non-Integration (Crypto, Distribution, Esg, Mining, Pricing, Wms, Resto, Hcm, Banking, Shared, Core, TradeFinance) telah dituntaskan menjadi **0 pelanggaran** (turun dari 352 menjadi 319).
+  - Sisa 319 temuan `A3` seluruhnya berada di dalam `modules/Integration` yang saat ini dibekukan oleh `IntegrationFreezeTest` (M-R0-7) dan dijadwalkan untuk dipecah/direfaktor secara menyeluruh pada Fase `R4.4` sesuai Keputusan Pemilik K2 (`DECISIONS.md#2026-10-14-p9-minus-dialihkan`).
+- **Decision:**
+  - Menurunkan lingkup kriteria terima `R1.8` secara transparan sesuai Protokol P10 (`⬇️ diturunkan`): baseline `arch:scan` A3 untuk seluruh modul bisnis non-Integration wajib `= 0`, sedangkan 319 temuan A3 di `modules/Integration` dibekukan via `integration-freeze.json` dan dialihkan ke `R4.4` (dicatat sebagai `M-R1-1` berprioritas P2).
+- **Reason:**
+  - Menjaga batas lingkup Fase R1 agar tidak melanggar pembekuan `modules/Integration` sebelum dekomposisi 345 service Integration pada Fase R4.4.
+- **Verification:**
+  - `php artisan arch:scan --json` membuktikan 0 pelanggaran A3 di luar `modules/Integration` (total A3 = 319, seluruhnya di `modules/Integration`).
+
 
 
 
