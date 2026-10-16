@@ -19,7 +19,7 @@ class DistOrderLine extends Model
 
     protected $casts = [
         'product_id' => 'integer', 'qty' => 'decimal:6', 'allocated_qty' => 'decimal:6',
-        'shipped_qty' => 'decimal:6', 'unit_price_idr' => 'decimal:2', 'line_total_idr' => 'integer',
+        'shipped_qty' => 'decimal:6', 'unit_price_idr' => 'integer', 'line_total_idr' => 'integer',
     ];
 
     public function order(): BelongsTo

@@ -3879,31 +3879,8 @@
             }
         },
         "A3": {
-            "total": 352,
+            "total": 335,
             "entries": {
-                "modules/Banking/Application/Actions/ManualAdjustmentAction.php": {
-                    "param float $amount @ execute()": 1
-                },
-                "modules/Banking/Application/Actions/TopUpAction.php": {
-                    "param float $amount @ execute()": 1
-                },
-                "modules/Banking/Application/Actions/TransferAction.php": {
-                    "param float $amount @ execute()": 1
-                },
-                "modules/Banking/Application/DTOs/PostingEntryDTO.php": {
-                    "param float $amount @ __construct()": 1,
-                    "param float $amount @ forAccount()": 1,
-                    "param float $amount @ forCode()": 1
-                },
-                "modules/Banking/Domain/Models/LedgerAccount.php": {
-                    "param float $amount @ canCover()": 1
-                },
-                "modules/Core/Application/Services/ApprovalEngineService.php": {
-                    "param float $amount @ submit()": 1
-                },
-                "modules/Core/Contracts/ApprovalEngineInterface.php": {
-                    "param float $amount @ submit()": 1
-                },
                 "modules/Crypto/database/migrations/2026_09_29_040001_create_crypto_assets_and_ticks_table.php": {
                     "column decimal('price_idr')": 1
                 },
@@ -4568,9 +4545,6 @@
                 "modules/Integration/database/migrations/2026_10_09_482001_create_future_readiness_tables.php": {
                     "column decimal('option_investment_idr')": 1
                 },
-                "modules/Mining/Application/Services/MiningSmelterAndMetalsTradingService.php": {
-                    "param float $newMarkPriceUsd @ markToMarketTradingPosition()": 1
-                },
                 "modules/Mining/database/migrations/2026_10_08_121100_create_min_smelter_and_metals_trading_tables.php": {
                     "column double('base_lme_price_usd_per_ton')": 1,
                     "column double('current_mark_price_usd')": 1,
@@ -4581,21 +4555,6 @@
                 },
                 "modules/Pricing/database/migrations/2026_10_05_440100_create_prc_pricing_tables.php": {
                     "column decimal('discount_leakage_idr')": 1
-                },
-                "modules/Resto/Domain/Models/UnitConversion.php": {
-                    "param float $amount @ toBase()": 1,
-                    "param float $baseAmount @ fromBase()": 1
-                },
-                "modules/Shared/Domain/ValueObjects/Money.php": {
-                    "param float $amount @ IDR()": 1,
-                    "param float $amount @ fromIdr()": 1,
-                    "param float $amount @ of()": 1
-                },
-                "modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php": {
-                    "param float $cbamPriceEurPerTon @ issueCbamCertificate()": 1
-                },
-                "modules/Wms/Domain/Models/Slotting.php": {
-                    "param float $grandTotal @ classify()": 1
                 },
                 "modules/Wms/database/migrations/2026_10_05_410100_create_wms_tables.php": {
                     "column decimal('annual_value_idr')": 1

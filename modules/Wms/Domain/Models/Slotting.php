@@ -14,7 +14,7 @@ class Slotting extends Model
 
     protected $fillable = ['product_id', 'abc_class', 'annual_value_idr', 'suggested_zone_id'];
 
-    protected $casts = ['product_id' => 'integer', 'annual_value_idr' => 'decimal:2', 'suggested_zone_id' => 'integer'];
+    protected $casts = ['product_id' => 'integer', 'annual_value_idr' => 'integer', 'suggested_zone_id' => 'integer'];
 
     public function zone(): BelongsTo
     {
