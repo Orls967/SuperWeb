@@ -166,3 +166,72 @@ it('captures unique violation on race condition across two connections and retur
         ->and($winner['idempotency_key'])->toBe($key)
         ->and($winner['description'])->toBe('Dual connection winner');
 })->group('db-portability');
+
+it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native SUM', function (): void {
+    $largeAmount = '1000000000000000'; // 10^15 minor units
+    $srcId = DB::table('bank_ledger_accounts')->insertGetId([
+        'code' => 'portability:source:'.uniqid(),
+        'name' => 'Portability Large Source',
+        'asset_code' => 'IDR',
+        'kind' => 'cash',
+        'normal_balance' => 'debit',
+        'allow_negative' => 1,
+        'cached_balance' => "-{$largeAmount}",
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    $dstId = DB::table('bank_ledger_accounts')->insertGetId([
+        'code' => 'portability:dest:'.uniqid(),
+        'name' => 'Portability Large Dest',
+        'asset_code' => 'IDR',
+        'kind' => 'revenue',
+        'normal_balance' => 'credit',
+        'allow_negative' => 1,
+        'cached_balance' => $largeAmount,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    $txId = DB::table('bank_ledger_transactions')->insertGetId([
+        'uuid' => (string) Str::uuid(),
+        'type' => 'transfer',
+        'description' => 'Portability 10^15 Transfer',
+        'posted_at' => now(),
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    DB::table('bank_ledger_entries')->insert([
+        [
+            'transaction_id' => $txId,
+            'account_id' => $srcId,
+            'asset_code' => 'IDR',
+            'amount' => "-{$largeAmount}",
+            'created_at' => now(),
+            'updated_at' => now(),
+        ],
+        [
+            'transaction_id' => $txId,
+            'account_id' => $dstId,
+            'asset_code' => 'IDR',
+            'amount' => $largeAmount,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ],
+    ]);
+
+    // Test native SUM(amount) precision on MySQL
+    $srcSum = DB::table('bank_ledger_entries')
+        ->where('account_id', $srcId)
+        ->selectRaw('CAST(SUM(amount) AS CHAR) as total')
+        ->value('total');
+
+    $dstSum = DB::table('bank_ledger_entries')
+        ->where('account_id', $dstId)
+        ->selectRaw('CAST(SUM(amount) AS CHAR) as total')
+        ->value('total');
+
+    expect($srcSum)->toBe("-{$largeAmount}")
+        ->and($dstSum)->toBe($largeAmount);
+})->group('db-portability');

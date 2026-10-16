@@ -1380,6 +1380,30 @@
 - **Reason:** Mencegah floating-point drift dan menjamin keakuratan rekonsiliasi akuntansi double-entry bernilai 0 discrepancy di setiap transaksi.
 - **Verification:** Unit test konkret di `tests/Unit/Quality/Ledger/IntegerArithmeticTest.php` dan suite test modul Resto serta HCM.
 
+## 2026-10-16: Tabel Minor Unit Aset Non-IDR & Rekonsiliasi Ledger Portabel (R1.9)
+- **Context:** Ledger mendukung aset multi-currency termasuk fiat IDR, crypto, dan komoditas/kredit karbon. Penjumlahan decimal(36,18) di database harus bebas drift di SQLite maupun MySQL, dan rekonsiliasi berkala memerlukan mekanisme inkremental agar efisien pada volume transaksi tinggi.
+- **Decision:**
+  - **Tabel Minor Unit Aset Non-IDR:**
+    | Kode Aset | Nama Aset | Satuan Dasar / Minor Unit | Desimal (Skala) | Faktor Konversi |
+    |---|---|---|---|---|
+    | IDR | Rupiah Indonesia | Rupiah (integer) | 0 | 1 |
+    | BTC | Bitcoin | Satoshi | 8 | 10^8 |
+    | ETH | Ethereum | Wei | 18 | 10^18 |
+    | SOL | Solana | Lamport | 9 | 10^9 |
+    | BNB | BNB Chain | Jwei | 18 | 10^18 |
+    | USDT | Tether USD | Micro-USDT | 6 | 10^6 |
+    | NICKEL | Komoditas Nikel | Gram | 6 | 10^6 (per ton metrik) |
+    | COPPER | Komoditas Tembaga | Gram | 6 | 10^6 (per ton metrik) |
+    | COBALT | Komoditas Kobalt | Gram | 6 | 10^6 (per ton metrik) |
+    | CARBON | Kredit Karbon (tCO2e)| Gram CO2e | 6 | 10^6 (per tCO2e) |
+  - **`bank:reconcile` Portabel:**
+    - Pada MySQL: Menggunakan native `CAST(SUM(amount) AS CHAR)` berpresisi tetap untuk agregasi cepat per akun dan per aset.
+    - Pada SQLite: Menggunakan `chunkById(1000)` dan akumulasi in-memory menggunakan `BigDecimal`, menghapus ketergantungan pada `group_concat` dan batas buffer string.
+  - **Rekonsiliasi Inkremental:**
+    - Perintah `bank:reconcile --incremental` mencatat checkpoint ke tabel `bank_reconcile_checkpoints` yang menyimpan `last_reconciled_entry_id`, saldo berjalan akun & aset dalam format serialized string, serta checksum transaksi kriptografis (sha256).
+- **Reason:** Menjamin integritas matematis rekonsiliasi double-entry lintas platform database (SQLite vs MySQL) dan mendukung audit performa tinggi pada skala jutaan entri.
+- **Verification:** Test portabilitas di `tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php` dan `tests/Feature/Portability/DatabasePortabilityTest.php`.
+
 
 
 
