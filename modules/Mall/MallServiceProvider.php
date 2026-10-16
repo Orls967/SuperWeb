@@ -10,6 +10,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Core\Domain\Events\VehicleOwnershipTransferred;
 use Modules\Mall\Application\Actions\ValidateParkingAction;
 use Modules\Mall\Application\Services\MallLoyaltyLedgerService;
+use Modules\Mall\Application\Services\MallSearchProvider;
 use Modules\Mall\Application\Services\TenantSalesService;
 use Modules\Mall\Console\Commands\ApplyPenaltiesCommand;
 use Modules\Mall\Console\Commands\AuditBillingCommand;
@@ -47,6 +48,7 @@ use Modules\Mall\Domain\Models\WorkOrder;
 use Modules\Mall\Domain\Models\Zone;
 use Modules\Mall\Listeners\CancelParkingMembershipOnVehicleTransfer;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Shared\Application\SearchRegistry;
 
 class MallServiceProvider extends ServiceProvider
 {
@@ -263,6 +265,11 @@ class MallServiceProvider extends ServiceProvider
                 group: 'Properti',
                 activePattern: 'mall/facilities*'
             );
+        }
+
+        if ($this->app->bound(SearchRegistry::class)) {
+            $this->app->make(SearchRegistry::class)
+                ->registerProvider(new MallSearchProvider);
         }
     }
 }

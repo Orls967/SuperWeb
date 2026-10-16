@@ -2,7 +2,7 @@
     "about": "Baseline ratchet `php artisan arch:scan` (PROGRESS.md §P11, KONSEP.md §A14.1). Hanya boleh turun lewat `--update-baseline`; penambahan wajib `--allow-new=\"DECISIONS.md#…\"` dan tercatat di approved_additions.",
     "rules": {
         "A1": {
-            "total": 246,
+            "total": 219,
             "entries": {
                 "modules/Agency/Application/Services/AgencyService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
@@ -106,41 +106,6 @@
                     "use Modules\\Party\\Domain\\Models\\LegalEntity": 1,
                     "use Modules\\Party\\Domain\\Models\\Party": 1
                 },
-                "modules/Core/Application/Listeners/NotifyBookingCompleted.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1
-                },
-                "modules/Core/Application/Listeners/NotifyPaymentCaptured.php": {
-                    "use Modules\\Payment\\Domain\\Events\\PaymentCaptured": 1
-                },
-                "modules/Core/Application/Listeners/NotifyPaymentRefunded.php": {
-                    "use Modules\\Payment\\Domain\\Events\\PaymentRefunded": 1
-                },
-                "modules/Core/Application/Listeners/RecordBookingCompletedPassportEvent.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1
-                },
-                "modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php": {
-                    "use Modules\\Hotel\\Domain\\Models\\HotelFolio": 1
-                },
-                "modules/Core/Console/Commands/TwelveLinesComprehensiveAuditCommand.php": {
-                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Hotel\\Domain\\Models\\HotelProperty": 1,
-                    "use Modules\\Mining\\Domain\\Models\\MiningSite": 1,
-                    "use Modules\\Venue\\Domain\\Models\\EntertainmentVenue": 1
-                },
-                "modules/Core/CoreServiceProvider.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1,
-                    "use Modules\\Payment\\Domain\\Events\\PaymentCaptured": 1,
-                    "use Modules\\Payment\\Domain\\Events\\PaymentRefunded": 1
-                },
-                "modules/Core/Domain/Models/Vehicle.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1
-                },
-                "modules/Core/Http/Controllers/DashboardController.php": {
-                    "use Modules\\Store\\Domain\\Models\\Order": 1
-                },
-                "modules/Core/database/seeders/PlatformSeeder.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1
-                },
                 "modules/Crypto/Application/Services/TradeExecutionService.php": {
                     "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1
                 },
@@ -193,12 +158,6 @@
                 "modules/Fleet/Domain/Models/FleetContractUnit.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
-                "modules/Inventory/Application/Services/InventoryService.php": {
-                    "use Modules\\Store\\Domain\\Models\\Product": 1
-                },
-                "modules/Inventory/Domain/Models/StockMovement.php": {
-                    "use Modules\\Store\\Domain\\Models\\Product": 1
-                },
                 "modules/Logistics/Application/Actions/BookShipmentAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
@@ -208,7 +167,6 @@
                     "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Logistics/Application/Actions/DeliverVehicleByCarrierAction.php": {
-                    "use Modules\\Core\\Domain\\Enums\\VehicleEventType": 1,
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1,
                     "use Modules\\Core\\Domain\\Models\\VehicleEvent": 1
                 },
@@ -486,17 +444,6 @@
                 "modules/Resto/database/seeders/RestoMenuSeeder.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
-                },
-                "modules/Shared/Application/Queries/GlobalSearchQuery.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1,
-                    "use Modules\\AutoServe\\Domain\\Models\\Booking": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Lease": 1,
-                    "use Modules\\Mall\\Domain\\Models\\ParkingSession": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Tenant": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Unit": 1,
-                    "use Modules\\Resto\\Domain\\Models\\MenuItem": 1,
-                    "use Modules\\Resto\\Domain\\Models\\Order": 1,
-                    "use Modules\\Store\\Domain\\Models\\StoreItem": 1
                 },
                 "modules/Store/Application/Actions/CancelC2cOrderAction.php": {
                     "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1
@@ -4897,71 +4844,8 @@
             }
         },
         "A9": {
-            "total": 34,
-            "entries": {
-                "modules/Core/Application/Listeners/NotifyBookingCompleted.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1
-                },
-                "modules/Core/Application/Listeners/NotifyPaymentCaptured.php": {
-                    "use Modules\\Payment\\Domain\\Events\\PaymentCaptured": 1
-                },
-                "modules/Core/Application/Listeners/NotifyPaymentRefunded.php": {
-                    "use Modules\\Payment\\Domain\\Events\\PaymentRefunded": 1
-                },
-                "modules/Core/Application/Listeners/RecordBookingCompletedPassportEvent.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1
-                },
-                "modules/Core/Application/Services/TwelveLinesCommandCenterService.php": {
-                    "use Modules\\Banking\\Contracts\\Ledger": 1
-                },
-                "modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php": {
-                    "use Modules\\Banking\\Application\\DTOs\\PostingDTO": 1,
-                    "use Modules\\Banking\\Application\\DTOs\\PostingEntryDTO": 1,
-                    "use Modules\\Banking\\Contracts\\Ledger": 1,
-                    "use Modules\\Hotel\\Domain\\Models\\HotelFolio": 1
-                },
-                "modules/Core/Application/Services/TwelveLinesGoldenScenarioService.php": {
-                    "use Modules\\Banking\\Application\\DTOs\\PostingDTO": 1,
-                    "use Modules\\Banking\\Application\\DTOs\\PostingEntryDTO": 1,
-                    "use Modules\\Banking\\Contracts\\Ledger": 1
-                },
-                "modules/Core/Application/Services/UniversalCrossLineFintechService.php": {
-                    "use Modules\\Banking\\Application\\DTOs\\PostingDTO": 1,
-                    "use Modules\\Banking\\Application\\DTOs\\PostingEntryDTO": 1,
-                    "use Modules\\Banking\\Contracts\\Ledger": 1
-                },
-                "modules/Core/Console/Commands/TwelveLinesComprehensiveAuditCommand.php": {
-                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Hotel\\Domain\\Models\\HotelProperty": 1,
-                    "use Modules\\Mining\\Domain\\Models\\MiningSite": 1,
-                    "use Modules\\Venue\\Domain\\Models\\EntertainmentVenue": 1
-                },
-                "modules/Core/CoreServiceProvider.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1,
-                    "use Modules\\Payment\\Domain\\Events\\PaymentCaptured": 1,
-                    "use Modules\\Payment\\Domain\\Events\\PaymentRefunded": 1
-                },
-                "modules/Core/Domain/Models/Vehicle.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1
-                },
-                "modules/Core/Http/Controllers/DashboardController.php": {
-                    "use Modules\\Store\\Domain\\Models\\Order": 1
-                },
-                "modules/Core/database/seeders/PlatformSeeder.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1
-                },
-                "modules/Shared/Application/Queries/GlobalSearchQuery.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1,
-                    "use Modules\\AutoServe\\Domain\\Models\\Booking": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Lease": 1,
-                    "use Modules\\Mall\\Domain\\Models\\ParkingSession": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Tenant": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Unit": 1,
-                    "use Modules\\Resto\\Domain\\Models\\MenuItem": 1,
-                    "use Modules\\Resto\\Domain\\Models\\Order": 1,
-                    "use Modules\\Store\\Domain\\Models\\StoreItem": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "A10": {
             "total": 162,

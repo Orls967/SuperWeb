@@ -8,13 +8,19 @@ use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Hotel\Domain\Models\HotelFolio;
+use Modules\Core\Contracts\HotelFolioPort;
 
 class TwelveLinesCrossEcosystemService
 {
     public function __construct(
-        protected ?Ledger $ledger = null
+        protected ?Ledger $ledger = null,
+        protected ?HotelFolioPort $hotelFolioPort = null,
     ) {}
+
+    protected function getHotelFolioPort(): HotelFolioPort
+    {
+        return $this->hotelFolioPort ?? app(HotelFolioPort::class);
+    }
 
     /**
      * Cross-line Medical Tourism Package (Hospital + Hotel + Logistics Shuttle)
@@ -64,28 +70,12 @@ class TwelveLinesCrossEcosystemService
         string $venueTicketNumber,
         string $chargeDescription,
         int $amountIdr
-    ): HotelFolio {
-        $folio = HotelFolio::findOrFail($hotelFolioId);
-
-        $folio->increment('total_addon_charges', $amountIdr);
-        $folio->update([
-            'outstanding_balance' => ($folio->total_room_charges + $folio->total_addon_charges) - $folio->total_paid,
-        ]);
-
-        if ($this->ledger) {
-            $this->ledger->post(new PostingDTO(
-                type: 'CROSS_VENUE_FOLIO_CHARGE',
-                description: "Cross-line venue charge ({$venueTicketNumber}) to folio {$folio->id}: {$chargeDescription}",
-                idempotencyKey: "core:cross_charge:{$folio->id}:{$venueTicketNumber}",
-                entries: [
-                    PostingEntryDTO::forCode('htl:city_ledger_receivable:IDR', 'IDR', -$amountIdr),
-                    PostingEntryDTO::forCode('ven:pos_revenue:IDR', 'IDR', $amountIdr),
-                ],
-                referenceType: 'htl_folios',
-                referenceId: $folio->id,
-            ));
-        }
-
-        return $folio->fresh();
+    ): object {
+        return $this->getHotelFolioPort()->chargeVenueConsumption(
+            $hotelFolioId,
+            $venueTicketNumber,
+            $chargeDescription,
+            $amountIdr
+        );
     }
 }

@@ -8,13 +8,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Modules\AutoServe\Domain\Events\BookingCompleted;
 use Modules\Core\Application\Actions\AcquireVehicleAction;
 use Modules\Core\Application\Actions\TransferVehicleOwnershipAction;
-use Modules\Core\Application\Listeners\NotifyBookingCompleted;
-use Modules\Core\Application\Listeners\NotifyPaymentCaptured;
-use Modules\Core\Application\Listeners\NotifyPaymentRefunded;
-use Modules\Core\Application\Listeners\RecordBookingCompletedPassportEvent;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
 use Modules\Core\Application\Services\ActivityLogger;
 use Modules\Core\Application\Services\ApprovalEngineService;
@@ -44,8 +39,6 @@ use Modules\Core\Contracts\SimClockInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Core\Domain\Events\VehicleAcquired;
 use Modules\Core\Domain\Models\Vehicle;
-use Modules\Payment\Domain\Events\PaymentCaptured;
-use Modules\Payment\Domain\Events\PaymentRefunded;
 use Modules\Shared\Application\MenuRegistry;
 
 class CoreServiceProvider extends ServiceProvider
@@ -198,14 +191,6 @@ class CoreServiceProvider extends ServiceProvider
         }
 
         // === Event Listeners ===
-
-        // Passport Hash-Chain
         Event::listen(VehicleAcquired::class, RecordVehicleAcquiredPassportEvent::class);
-        Event::listen(BookingCompleted::class, RecordBookingCompletedPassportEvent::class);
-
-        // Platform Notifications + Activity Log
-        Event::listen(BookingCompleted::class, NotifyBookingCompleted::class);
-        Event::listen(PaymentCaptured::class, NotifyPaymentCaptured::class);
-        Event::listen(PaymentRefunded::class, NotifyPaymentRefunded::class);
     }
 }

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Modules\AutoDex;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\AutoDex\Application\Services\AutoDexSearchProvider;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Shared\Application\SearchRegistry;
 
 class AutoDexServiceProvider extends ServiceProvider
 {
@@ -37,5 +39,10 @@ class AutoDexServiceProvider extends ServiceProvider
             group: 'Otomotif',
             activePattern: 'autodex.garage.*',
         );
+
+        if ($this->app->bound(SearchRegistry::class)) {
+            $this->app->make(SearchRegistry::class)
+                ->registerProvider(new AutoDexSearchProvider);
+        }
     }
 }

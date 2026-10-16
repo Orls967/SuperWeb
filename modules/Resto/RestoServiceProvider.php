@@ -9,6 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Resto\Application\Services\IngredientReferenceCostUpdater;
 use Modules\Resto\Application\Services\RecipeCostCalculator;
 use Modules\Resto\Application\Services\RestoIngredientStockService;
+use Modules\Resto\Application\Services\RestoSearchProvider;
 use Modules\Resto\Application\Services\RestoTenantSalesProvider;
 use Modules\Resto\Console\Commands\CloseDayCommand;
 use Modules\Resto\Console\Commands\ExpireDisplayTraysCommand;
@@ -33,6 +34,7 @@ use Modules\Resto\Domain\Models\StockCount;
 use Modules\Resto\Domain\Models\StockTransfer;
 use Modules\Resto\Domain\Models\TableSession;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Shared\Application\SearchRegistry;
 use Modules\Supplier\Contracts\ReferenceCostUpdater;
 
 class RestoServiceProvider extends ServiceProvider
@@ -214,6 +216,11 @@ class RestoServiceProvider extends ServiceProvider
                 MonitorStockLevelsCommand::class,
                 PostFranchiseRoyaltyCommand::class,
             ]);
+        }
+
+        if ($this->app->bound(SearchRegistry::class)) {
+            $this->app->make(SearchRegistry::class)
+                ->registerProvider(new RestoSearchProvider);
         }
     }
 }

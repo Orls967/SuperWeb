@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-use Modules\AutoDex\Domain\Models\Car;
 use Modules\Shared\Domain\Traits\HasUuid;
 
 class Vehicle extends Model
@@ -51,7 +50,7 @@ class Vehicle extends Model
 
     public function car(): BelongsTo
     {
-        return $this->belongsTo(Car::class, 'car_id');
+        return $this->belongsTo('Modules\AutoDex\Domain\Models\Car', 'car_id');
     }
 
     public function acquiredVia(): MorphTo

@@ -7,12 +7,14 @@ namespace Modules\Shared;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Shared\Application\SearchRegistry;
 
 class SharedServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->app->singleton(MenuRegistry::class, fn () => new MenuRegistry);
+        $this->app->singleton(SearchRegistry::class, fn () => new SearchRegistry);
     }
 
     public function boot(): void

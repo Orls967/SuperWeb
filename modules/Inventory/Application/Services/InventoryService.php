@@ -10,12 +10,13 @@ use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Inventory\Domain\Exceptions\InsufficientStockException;
 use Modules\Inventory\Domain\Models\StockMovement;
 use Modules\Resto\Contracts\RestoIngredientStockPort;
-use Modules\Store\Domain\Models\Product;
+use Modules\Store\Contracts\StoreProductStockPort;
 
 class InventoryService implements InventoryServiceContract
 {
     public function __construct(
         private readonly ?RestoIngredientStockPort $restoStock = null,
+        private readonly ?StoreProductStockPort $storeStock = null,
     ) {}
 
     private function getRestoStock(): RestoIngredientStockPort
@@ -23,9 +24,14 @@ class InventoryService implements InventoryServiceContract
         return $this->restoStock ?? app(RestoIngredientStockPort::class);
     }
 
+    private function getStoreStock(): StoreProductStockPort
+    {
+        return $this->storeStock ?? app(StoreProductStockPort::class);
+    }
+
     public function available(int $productId): int
     {
-        return (int) (Product::where('id', $productId)->value('cached_stock') ?? 0);
+        return $this->getStoreStock()->getCachedStock($productId);
     }
 
     public function reserve(
@@ -41,17 +47,14 @@ class InventoryService implements InventoryServiceContract
         }
 
         return DB::transaction(function () use ($productId, $qty, $sourceType, $sourceId, $note, $userId) {
-            /** @var Product $product */
-            $product = Product::where('id', $productId)->lockForUpdate()->firstOrFail();
-
-            if ($product->cached_stock < $qty) {
-                throw new InsufficientStockException(
-                    "Stok tidak mencukupi untuk {$product->name}. Tersedia: {$product->cached_stock}, diminta: {$qty}"
-                );
+            try {
+                $this->getStoreStock()->reserveStock($productId, $qty);
+            } catch (\RuntimeException $e) {
+                throw new InsufficientStockException($e->getMessage(), (int) $e->getCode(), $e);
             }
 
-            $movement = StockMovement::create([
-                'product_id' => $product->id,
+            return StockMovement::create([
+                'product_id' => $productId,
                 'qty' => -$qty,
                 'reason' => StockMovementReason::RESERVATION,
                 'source_type' => $sourceType,
@@ -60,11 +63,6 @@ class InventoryService implements InventoryServiceContract
                 'created_by' => $userId ?? auth()->id(),
                 'created_at' => now(),
             ]);
-
-            $product->cached_stock -= $qty;
-            $product->save();
-
-            return $movement;
         });
     }
 
@@ -124,11 +122,10 @@ class InventoryService implements InventoryServiceContract
 
             $qtyToRelease = abs($reservation->qty);
 
-            /** @var Product $product */
-            $product = Product::where('id', $reservation->product_id)->lockForUpdate()->firstOrFail();
+            $this->getStoreStock()->releaseStock($reservation->product_id, $qtyToRelease);
 
-            $releaseMovement = StockMovement::create([
-                'product_id' => $product->id,
+            return StockMovement::create([
+                'product_id' => $reservation->product_id,
                 'qty' => $qtyToRelease,
                 'reason' => StockMovementReason::RESERVATION_RELEASE,
                 'source_type' => $reservation->source_type,
@@ -138,11 +135,6 @@ class InventoryService implements InventoryServiceContract
                 'created_by' => auth()->id(),
                 'created_at' => now(),
             ]);
-
-            $product->cached_stock += $qtyToRelease;
-            $product->save();
-
-            return $releaseMovement;
         });
     }
 
@@ -158,18 +150,14 @@ class InventoryService implements InventoryServiceContract
         $reasonEnum = is_string($reason) ? StockMovementReason::from($reason) : $reason;
 
         return DB::transaction(function () use ($productId, $qty, $reasonEnum, $sourceType, $sourceId, $note, $userId) {
-            /** @var Product $product */
-            $product = Product::where('id', $productId)->lockForUpdate()->firstOrFail();
-
-            $newStock = $product->cached_stock + $qty;
-            if ($newStock < 0) {
-                throw new InsufficientStockException(
-                    "Stok tidak mencukupi untuk {$product->name}. Tersedia: {$product->cached_stock}, perubahan: {$qty}"
-                );
+            try {
+                $this->getStoreStock()->adjustStock($productId, $qty);
+            } catch (\RuntimeException $e) {
+                throw new InsufficientStockException($e->getMessage(), (int) $e->getCode(), $e);
             }
 
-            $movement = StockMovement::create([
-                'product_id' => $product->id,
+            return StockMovement::create([
+                'product_id' => $productId,
                 'qty' => $qty,
                 'reason' => $reasonEnum,
                 'source_type' => $sourceType,
@@ -178,11 +166,6 @@ class InventoryService implements InventoryServiceContract
                 'created_by' => $userId ?? auth()->id(),
                 'created_at' => now(),
             ]);
-
-            $product->cached_stock = $newStock;
-            $product->save();
-
-            return $movement;
         });
     }
 

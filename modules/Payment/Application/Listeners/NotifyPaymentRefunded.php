@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Core\Application\Listeners;
+namespace Modules\Payment\Application\Listeners;
 
 use Modules\Core\Application\Services\ActivityLogger;
 use Modules\Core\Application\Services\NotificationService;

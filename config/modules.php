@@ -120,6 +120,9 @@ return [
         'Modules\\Shared\\Domain\\',
         'Modules\\Banking\\Domain\\Enums\\',
         'Modules\\Banking\\Support\\',
+        'Modules\\Banking\\Contracts\\',
+        'Modules\\Banking\\Application\\DTOs\\',
+        'Modules\\Core\\Domain\\Enums\\',
     ],
 
     /*

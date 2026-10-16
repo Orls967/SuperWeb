@@ -8,9 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
-use Modules\Store\Domain\Models\Product;
 
 class StockMovement extends Model
 {
@@ -52,7 +50,7 @@ class StockMovement extends Model
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class, 'product_id');
+        return $this->belongsTo('Modules\Store\Domain\Models\Product', 'product_id');
     }
 
     public function referenceMovement(): BelongsTo

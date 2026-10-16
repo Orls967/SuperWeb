@@ -8,9 +8,15 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Modules\AutoDex\Domain\Models\Car;
 use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\Core\Contracts\StoreDashboardPort;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Shared\Application\SearchRegistry;
+use Modules\Store\Application\Services\StoreDashboardAdapter;
+use Modules\Store\Application\Services\StoreProductStockAdapter;
+use Modules\Store\Application\Services\StoreSearchProvider;
 use Modules\Store\Console\Commands\AutoCaptureC2cOrdersCommand;
 use Modules\Store\Console\Commands\CancelStaleOrdersCommand;
+use Modules\Store\Contracts\StoreProductStockPort;
 use Modules\Store\Domain\Models\Order;
 use Modules\Store\Domain\Models\StoreItem;
 
@@ -18,7 +24,14 @@ class StoreServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->bind(
+            StoreDashboardPort::class,
+            StoreDashboardAdapter::class
+        );
+        $this->app->bind(
+            StoreProductStockPort::class,
+            StoreProductStockAdapter::class
+        );
     }
 
     public function boot(): void
@@ -76,6 +89,11 @@ class StoreServiceProvider extends ServiceProvider
                 group: 'Otomotif',
                 activePattern: 'store/orders*',
             );
+        }
+
+        if ($this->app->bound(SearchRegistry::class)) {
+            $this->app->make(SearchRegistry::class)
+                ->registerProvider(new StoreSearchProvider);
         }
     }
 }

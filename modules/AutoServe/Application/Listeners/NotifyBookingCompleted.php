@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Core\Application\Listeners;
+namespace Modules\AutoServe\Application\Listeners;
 
 use Modules\AutoServe\Domain\Events\BookingCompleted;
 use Modules\Core\Application\Services\ActivityLogger;
