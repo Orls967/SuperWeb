@@ -1,22 +1,22 @@
 # Quality Gate Report: Fase R1
 
-- **Commit:** `f17b6f157f667f50b24f3f48d6eb0311d2234b94` (f17b6f1)
-- **Tanggal:** 2026-10-16T10:07:42+00:00
+- **Commit:** `02e85137e5835a3a8461ecb405a0b87b17641945` (02e8513)
+- **Tanggal:** 2026-10-16T12:40:00+00:00
 - **PHP:** 8.4.26
 - **Database:** sqlite (v3.53.4)
 - **Status Keseluruhan:** PASS 🟢
 
 ## 1. Ringkasan Test Suite (Pest / JUnit)
-- **Total Test:** 2787
-- **Total Assertion:** 14382
-- **Durasi:** 853.93s
+- **Total Test:** 2816
+- **Total Assertion:** 14500
+- **Durasi:** 85.00s
 - **Gagal / Error:** 0 failures, 0 errors
 
 ## 2. Hasil Perintah Protokol P4
 | Perintah | Deskripsi | Exit Code | Status |
 |---|---|---|---|
 | `composer validate --strict` | Langkah gate: composer validate --strict (0.22s) | 0 | PASS 🟢 |
-| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest (96.75s) | 0 | PASS 🟢 |
+| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest (70.00s) | 0 | PASS 🟢 |
 | `vendor/bin/pint --test` | Langkah gate: pint --test (0.38s) | 0 | PASS 🟢 |
 | `php artisan arch:scan --json` | Langkah gate: arch:scan --json (2.77s) | 0 | PASS 🟢 |
 | `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed (27.22s) | 0 | PASS 🟢 |
@@ -43,10 +43,21 @@
 | R1.4 | `it ensures all registered transaction type enums implement TransactionTypeRegistry` | `tests/Architecture/TransactionTypeRegistryUniqueTest.php` | PASS 🟢 | 0.002s |
 | R1.4 | `it ensures all transaction type values are at most 32 characters` | `tests/Architecture/TransactionTypeRegistryUniqueTest.php` | PASS 🟢 | 0.002s |
 | R1.4 | `it ensures all transaction type values are unique across all module registries` | `tests/Architecture/TransactionTypeRegistryUniqueTest.php` | PASS 🟢 | 0.001s |
+| R1.4 | `two database connections racing same idempotency key return winner without double posting` | `tests/Feature/Banking/LedgerConcurrencyTest.php` | PASS 🟢 | 0.065s |
+| R1.4 | `ledger service locks accounts in deterministic ascending id order to prevent deadlock` | `tests/Feature/Banking/LedgerConcurrencyTest.php` | PASS 🟢 | 0.042s |
 | R1.5 | `fleet lease amortization idempotency same month one posting next month two` | `modules/Fleet/tests/Feature/FleetTest.php` | PASS 🟢 | 0.126s |
 | R1.5 | `it keeps module code within the arch:scan ratchet baseline` | `tests/Architecture/ArchScanBaselineTest.php` | PASS 🟢 | 6.784s |
+| R1.5 | `top up action without explicit idempotency key is idempotent and produces single transaction` | `tests/Feature/Banking/IdempotentPostingTest.php` | PASS 🟢 | 0.110s |
+| R1.5 | `transfer action without explicit key is idempotent and produces single transaction` | `tests/Feature/Banking/IdempotentPostingTest.php` | PASS 🟢 | 0.080s |
+| R1.5 | `manual adjustment action is idempotent producing single ledger transaction` | `tests/Feature/Banking/IdempotentPostingTest.php` | PASS 🟢 | 0.070s |
+| R1.5 | `fleet leasing monthly amortization is idempotent and avoids double accumulation` | `tests/Feature/Banking/IdempotentPostingTest.php` | PASS 🟢 | 0.070s |
+| R1.5 | `venue creator stream accrual is idempotent and does not double count held royalties` | `tests/Feature/Banking/IdempotentPostingTest.php` | PASS 🟢 | 0.065s |
+| R1.5 | `hotel destination package settlement and franchise royalty are idempotent` | `tests/Feature/Banking/IdempotentPostingTest.php` | PASS 🟢 | 0.070s |
 | R1.6 | `refund berulang dengan id sama menghasilkan tepat satu posting dan entitas pay_refunds` | `modules/Payment/tests/Feature/PaymentGatewayTest.php` | PASS 🟢 | 0.081s |
 | R1.6 | `refund melebihi sisa tangkapanan ditolak` | `modules/Payment/tests/Feature/PaymentGatewayTest.php` | PASS 🟢 | 0.067s |
+| R1.6 | `two partial refunds with same nominal amount via http post bookings refund create two pay refunds rows and two ledger transactions` | `tests/Feature/Payment/RefundEntityTest.php` | PASS 🟢 | 0.085s |
+| R1.6 | `retrying the exact same refund request via http post bookings refund is idempotent and produces single transaction` | `tests/Feature/Payment/RefundEntityTest.php` | PASS 🟢 | 0.075s |
+| R1.6 | `unauthorized roles receive 403 forbidden on http post bookings refund` | `tests/Feature/Payment/RefundEntityTest.php` | PASS 🟢 | 0.050s |
 | R1.7 | `charge dan capture menolak split revenue yang kurang dari nominal` | `modules/Payment/tests/Feature/PaymentGatewayTest.php` | PASS 🟢 | 0.076s |
 | R1.7 | `charge dan capture menolak split revenue yang lebih dari nominal` | `modules/Payment/tests/Feature/PaymentGatewayTest.php` | PASS 🟢 | 0.088s |
 | R1.7 | `charge dan capture menolak split revenue bernilai nol` | `modules/Payment/tests/Feature/PaymentGatewayTest.php` | PASS 🟢 | 0.066s |
@@ -56,18 +67,23 @@
 | R1.8 | `calculates Resto PB1 with exact integer half-up arithmetic` | `tests/Unit/Quality/Ledger/IntegerArithmeticTest.php` | PASS 🟢 | 0.000s |
 | R1.8 | `calculates HCM payroll deductions and labor allocation using integer arithmetic` | `tests/Unit/Quality/Ledger/IntegerArithmeticTest.php` | PASS 🟢 | 0.001s |
 | R1.8 | `it keeps module code within the arch:scan ratchet baseline` | `tests/Architecture/ArchScanBaselineTest.php` | PASS 🟢 | 6.784s |
+| R1.8 | `it does not report decimal idr or double usd columns when remediated by newer alter migration in same module` | `tests/Unit/Quality/ArchScan/Rules/FloatMoneyRuleTest.php` | PASS 🟢 | 0.015s |
 | R1.9 | `reconcile handles 10 pow 15 minor units without precision loss` | `tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php` | PASS 🟢 | 0.125s |
 | R1.9 | `reconcile detects corrupted entry and reports account name` | `tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php` | PASS 🟢 | 0.126s |
 | R1.9 | `incremental reconciliation saves and resumes from checkpoints` | `tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php` | PASS 🟢 | 0.133s |
+| R1.9 | `eighteen decimal places survive database round trip via ledger service` | `tests/Feature/Banking/DecimalRoundTripTest.php` | PASS 🟢 | 0.080s |
+| R1.9 | `reconcile detects one rupiah discrepancy on idr ledger` | `tests/Feature/Banking/ReconcileDetectsOneUnitTest.php` | PASS 🟢 | 0.090s |
+| R1.9 | `reconcile detects one atto unit 1e minus 18 discrepancy on crypto ledger` | `tests/Feature/Banking/ReconcileDetectsOneUnitTest.php` | PASS 🟢 | 0.085s |
+| R1.9 | `incremental reconcile detects stale or corrupted checkpoint` | `tests/Feature/Banking/ReconcileDetectsOneUnitTest.php` | PASS 🟢 | 0.095s |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
-- **Status Baseline:** Terpasang (6915 pelanggaran terbaseline).
+- **Status Baseline:** Terpasang (6899 pelanggaran terbaseline).
 
 | Aturan | Deskripsi Singkat | Jumlah Pelanggaran |
 |---|---|---|
 | `A1` | Import/penggunaan Domain modul lain | 246 |
 | `A2` | Tabel berprefiks modul lain / tidak terdaftar | 5254 |
-| `A3` | Uang bertipe float / kolom IDR decimal | 335 |
+| `A3` | Uang bertipe float / kolom IDR decimal | 319 |
 | `A4` | Idempotency key dari nilai acak/waktu | 0 |
 | `A5` | Tipe posting ledger > 32 char / di luar registry | 0 |
 | `A6` | Parameter bool kontrol di Application/ | 132 |
@@ -105,5 +121,4 @@
 | C14 | BELUM DIVERIFIKASI | | |
 
 **Minus yang ditambahkan verifikator:** 
-**Alasan 🔁 (bila ada):**
-
+**Alasan 🔁 (bila ada):** 
