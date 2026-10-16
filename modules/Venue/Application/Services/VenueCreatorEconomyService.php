@@ -69,8 +69,6 @@ class VenueCreatorEconomyService
         return DB::transaction(function () use ($contract, $streamGrossRevenueIdr, $royaltyAmountIdr, $idempotencyKey) {
             $key = $idempotencyKey ?? "venue:stream_accrual:{$contract->contract_code}:{$streamGrossRevenueIdr}";
 
-            $locked = RightsContract::query()->lockForUpdate()->findOrFail($contract->id);
-
             // Post revenue & hold liability
             $tx = $this->ledgerService->post(new PostingDTO(
                 type: 'CREATOR_STREAM_ROYALTY_ACCRUAL',
@@ -85,10 +83,10 @@ class VenueCreatorEconomyService
                 referenceId: (string) $contract->id,
             ));
 
-            if ($tx->wasRecentlyCreated) {
-                $locked->increment('accrued_royalties_idr', $royaltyAmountIdr);
-                $locked->increment('held_royalties_idr', $royaltyAmountIdr);
-                $contract->refresh();
+            $isReplay = ($tx->getKey() !== null && ! $tx->wasRecentlyCreated);
+            if (! $isReplay) {
+                $contract->increment('accrued_royalties_idr', $royaltyAmountIdr);
+                $contract->increment('held_royalties_idr', $royaltyAmountIdr);
             }
 
             return $royaltyAmountIdr;
