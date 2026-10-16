@@ -1,39 +1,39 @@
 # Quality Gate Report: Fase R7
 
-- **Commit:** `c5a0c75`
-- **Tanggal:** 2026-10-17T03:28:00+00:00
+- **Commit:** `f0adb074fcc0a579cb47fb9668b969ad31d6cd4d` (f0adb07)
+- **Tanggal:** 2026-10-16T19:30:31+00:00
 - **PHP:** 8.4.26
 - **Database:** sqlite (v3.53.4)
 - **Status Keseluruhan:** PASS 🟢
 
 ## 1. Ringkasan Test Suite (Pest / JUnit)
-- **Total Test:** 2920
-- **Total Assertion:** 17528
-- **Durasi:** 120.00s
+- **Total Test:** 2907
+- **Total Assertion:** 17486
+- **Durasi:** 795.95s
 - **Gagal / Error:** 0 failures, 0 errors
 
 ## 2. Hasil Perintah Protokol P4
 | Perintah | Deskripsi | Exit Code | Status |
 |---|---|---|---|
-| `composer validate --strict` | Langkah gate: composer validate --strict | 0 | PASS 🟢 |
-| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest | 0 | PASS 🟢 |
-| `vendor/bin/pint --test` | Langkah gate: pint --test | 0 | PASS 🟢 |
-| `php artisan arch:scan --json` | Langkah gate: arch:scan --json | 0 | PASS 🟢 |
-| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed | 0 | PASS 🟢 |
-| `php artisan bank:reconcile` | Langkah gate: bank:reconcile | 0 | PASS 🟢 |
-| `php artisan chain:audit-all` | Langkah gate: chain:audit-all | 0 | PASS 🟢 |
-| `php artisan super:health-check` | Langkah gate: super:health-check | 0 | PASS 🟢 |
-| `npm run build` | Langkah gate: npm run build | 0 | PASS 🟢 |
+| `composer validate --strict` | Langkah gate: composer validate --strict (0.20s) | 0 | PASS 🟢 |
+| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest (91.17s) | 0 | PASS 🟢 |
+| `vendor/bin/pint --test` | Langkah gate: pint --test (0.63s) | 0 | PASS 🟢 |
+| `php artisan arch:scan --json` | Langkah gate: arch:scan --json (6.77s) | 0 | PASS 🟢 |
+| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed (27.78s) | 0 | PASS 🟢 |
+| `php artisan bank:reconcile` | Langkah gate: bank:reconcile (0.32s) | 0 | PASS 🟢 |
+| `php artisan chain:audit-all` | Langkah gate: chain:audit-all (0.22s) | 0 | PASS 🟢 |
+| `php artisan super:health-check` | Langkah gate: super:health-check (0.23s) | 0 | PASS 🟢 |
+| `npm run build` | Langkah gate: npm run build (0.99s) | 0 | PASS 🟢 |
 
 ## 3. Status Test Blok Bukti Fase R7
 | Item | Nama Test | File | Status (JUnit) | Durasi |
 |---|---|---|---|---|
-| R7.1 | `test_106_6_a_duplicate_subject_enrollment_in_same_study_is_rejected` | `modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php` | PASS 🟢 | 0.052s |
-| R7.2 | `it classifies all 345 services in modules/Integration/Application/Services` | `tests/Architecture/IntegrationServicesClassificationTest.php` | PASS 🟢 | 0.047s |
-| R7.3 | `controllers do not use DB facade directly` | `tests/Architecture/ModuleBoundariesTest.php` | PASS 🟢 | 0.035s |
+| R7.1 | `test_106_6_a_duplicate_subject_enrollment_in_same_study_is_rejected` | `modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php` | PASS 🟢 | 0.115s |
+| R7.2 | `it classifies all 345 services in modules/Integration/Application/Services` | `tests/Architecture/IntegrationServicesClassificationTest.php` | PASS 🟢 | 0.036s |
+| R7.3 | `controllers do not use DB facade directly` | `tests/Architecture/ModuleBoundariesTest.php` | PASS 🟢 | 0.056s |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
-- **Status Baseline:** Terpasang (5725 pelanggaran terbaseline).
+- **Status Baseline:** Terpasang (5828 pelanggaran terbaseline).
 
 | Aturan | Deskripsi Singkat | Jumlah Pelanggaran |
 |---|---|---|
@@ -78,3 +78,4 @@
 
 **Minus yang ditambahkan verifikator:** Tidak ada (0 minus terbuka).
 **Alasan 🔁 (bila ada):** -
+
