@@ -1,42 +1,42 @@
 # Quality Gate Report: Fase R6
 
-- **Commit:** `43e2ba7`
-- **Tanggal:** 2026-10-17T03:20:00+00:00
+- **Commit:** `d7eb68c3c4df647249a2a94bff1e2f28463377aa` (d7eb68c)
+- **Tanggal:** 2026-10-16T19:23:25+00:00
 - **PHP:** 8.4.26
 - **Database:** sqlite (v3.53.4)
 - **Status Keseluruhan:** PASS 🟢
 
 ## 1. Ringkasan Test Suite (Pest / JUnit)
-- **Total Test:** 2920
-- **Total Assertion:** 17528
-- **Durasi:** 120.00s
+- **Total Test:** 2907
+- **Total Assertion:** 17485
+- **Durasi:** 738.31s
 - **Gagal / Error:** 0 failures, 0 errors
 
 ## 2. Hasil Perintah Protokol P4
 | Perintah | Deskripsi | Exit Code | Status |
 |---|---|---|---|
-| `composer validate --strict` | Langkah gate: composer validate --strict | 0 | PASS 🟢 |
-| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest | 0 | PASS 🟢 |
-| `vendor/bin/pint --test` | Langkah gate: pint --test | 0 | PASS 🟢 |
-| `php artisan arch:scan --json` | Langkah gate: arch:scan --json | 0 | PASS 🟢 |
-| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed | 0 | PASS 🟢 |
-| `php artisan bank:reconcile` | Langkah gate: bank:reconcile | 0 | PASS 🟢 |
-| `php artisan chain:audit-all` | Langkah gate: chain:audit-all | 0 | PASS 🟢 |
-| `php artisan super:health-check` | Langkah gate: super:health-check | 0 | PASS 🟢 |
-| `npm run build` | Langkah gate: npm run build | 0 | PASS 🟢 |
+| `composer validate --strict` | Langkah gate: composer validate --strict (0.22s) | 0 | PASS 🟢 |
+| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest (84.22s) | 0 | PASS 🟢 |
+| `vendor/bin/pint --test` | Langkah gate: pint --test (0.63s) | 0 | PASS 🟢 |
+| `php artisan arch:scan --json` | Langkah gate: arch:scan --json (6.65s) | 0 | PASS 🟢 |
+| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed (26.48s) | 0 | PASS 🟢 |
+| `php artisan bank:reconcile` | Langkah gate: bank:reconcile (0.31s) | 0 | PASS 🟢 |
+| `php artisan chain:audit-all` | Langkah gate: chain:audit-all (0.21s) | 0 | PASS 🟢 |
+| `php artisan super:health-check` | Langkah gate: super:health-check (0.23s) | 0 | PASS 🟢 |
+| `npm run build` | Langkah gate: npm run build (1.04s) | 0 | PASS 🟢 |
 
 ## 3. Status Test Blok Bukti Fase R6
 | Item | Nama Test | File | Status (JUnit) | Durasi |
 |---|---|---|---|---|
-| R6.3 | `test_can_register_employee_and_generate_payroll` | `modules/Hcm/tests/Feature/HcmTest.php` | PASS 🟢 | 0.021s |
+| R6.3 | `test_can_register_employee_and_generate_payroll` | `modules/Hcm/tests/Feature/HcmTest.php` | PASS 🟢 | 0.018s |
 | R6.3 | `test_can_allocate_labor_cost_to_production` | `modules/Hcm/tests/Feature/HcmTest.php` | PASS 🟢 | 0.015s |
-| R6.3 | `test_hcm_audit_passes_with_zero_discrepancy` | `modules/Hcm/tests/Feature/HcmTest.php` | PASS 🟢 | 0.018s |
-| R6.4 | `test_can_purchase_and_retire_carbon_credits` | `modules/Esg/tests/Feature/EsgTest.php` | PASS 🟢 | 0.016s |
-| R6.4 | `test_esg_audit_passes_cleanly` | `modules/Esg/tests/Feature/EsgTest.php` | PASS 🟢 | 0.017s |
-| R6.5 | `test_simulation_clock_advancement_is_deterministic` | `modules/Core/tests/Feature/SimulationKernelTest.php` | PASS 🟢 | 1.610s |
+| R6.3 | `test_hcm_audit_passes_with_zero_discrepancy` | `modules/Hcm/tests/Feature/HcmTest.php` | PASS 🟢 | 0.029s |
+| R6.4 | `test_can_purchase_and_retire_carbon_credits` | `modules/Esg/tests/Feature/EsgTest.php` | PASS 🟢 | 0.035s |
+| R6.4 | `test_esg_audit_passes_cleanly` | `modules/Esg/tests/Feature/EsgTest.php` | PASS 🟢 | 0.028s |
+| R6.5 | `test_simulation_clock_advancement_is_deterministic` | `modules/Core/tests/Feature/SimulationKernelTest.php` | PASS 🟢 | 0.025s |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
-- **Status Baseline:** Terpasang (5725 pelanggaran terbaseline).
+- **Status Baseline:** Terpasang (5828 pelanggaran terbaseline).
 
 | Aturan | Deskripsi Singkat | Jumlah Pelanggaran |
 |---|---|---|
@@ -46,8 +46,8 @@
 | `A4` | Idempotency key dari nilai acak/waktu | 0 |
 | `A5` | Tipe posting ledger > 32 char / di luar registry | 0 |
 | `A6` | Parameter bool kontrol di Application/ | 132 |
-| `A7` | base64/hash tanpa kunci data rahasia | 0 |
-| `A8` | Carbon/Date::setTestNow di luar tests/ | 0 |
+| `A7` | Hash tanpa kunci untuk data sensitif | 0 |
+| `A8` | Carbon/Date::setTestNow di produksi | 0 |
 | `A9` | Kernel bergantung pada modul bisnis | 0 |
 | `A10` | Model dengan $guarded = [] | 0 |
 | `A11` | File PHP tanpa declare(strict_types=1) | 0 |
@@ -81,3 +81,4 @@
 
 **Minus yang ditambahkan verifikator:** Tidak ada (0 minus terbuka).
 **Alasan 🔁 (bila ada):** -
+
