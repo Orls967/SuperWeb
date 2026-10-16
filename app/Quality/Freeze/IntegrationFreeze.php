@@ -21,7 +21,7 @@ final class IntegrationFreeze
     public const MODULE_PATH = 'modules/Integration';
 
     /** Directories (relative to the module) where new adapter code may still be added. */
-    public const ALLOWED_DIRECTORIES = ['Adapters/', 'Webhooks/', 'Edi/', 'Http/Controllers/Api/', 'tests/'];
+    public const ALLOWED_DIRECTORIES = ['Adapters/', 'Webhooks/', 'Edi/', 'Http/Controllers/Api/', 'tests/', 'Ledger/'];
 
     public const ALLOWED_TABLE_PREFIX = 'intg_';
 
