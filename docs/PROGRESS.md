@@ -508,10 +508,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R0-2~~ | R0.9 | ~~299 rute operasional dipetakan sebagai 'auth' di route-auth-entries.json (dari total 598 rute di route-authorization.json)~~ | ~~Rute lama belum terlindungi matriks otorisasi per-role ketat~~ | ~~P2~~ | Tuntas di R3.1: 279 rute bisnis/keuangan dipetakan ke role granular di `route-roles.php`, menyisakan tepat 20 rute identitas core |
 | M-R0-3 | R0.9 | 159 rute berparameter belum memiliki closure parameter uji HTTP dinamis (ratchet `route-dynamic-pending.json`, turun dari 280) | Uji HTTP dinamis 403/non-403 pada rute ini ditunda | P2 | R3.1 / R5.5 (K2): baseline diturunkan dari 280 ke 159 rute (-43.2%) |
 | M-R0-4 | R0.10 | 33 command audit warisan belum memiliki fixture korupsi (`audit-contract.json`) | Baru 2 audit (`bank:reconcile`, `api:audit`) yang terbukti gagal saat data rusak | P1 | ↪️ dialihkan ke R5.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
-| M-R0-5 | R0.10 | 172 kode akun produksi belum didefinisikan di seeder chart of accounts (`ledger-accounts.json`) | Akun warisan ini berpotensi gagal posting di skenario database bersih | P1 | ↪️ dialihkan ke R1.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+| ~~M-R0-5~~ | R0.10 | ~~172 kode akun produksi belum didefinisikan di seeder chart of accounts (`ledger-accounts.json`)~~ | ~~Akun warisan ini berpotensi gagal posting di skenario database bersih~~ | ~~P1~~ | Tuntas di R1.3 (D6): 27 file `{M}Accounts.php` dibuat dan didaftarkan ke `LedgerAccountsSeeder`, baseline `ledger-accounts.json` mencapai 0 |
 | ~~M-R0-6~~ | R0.10 | ~~3 saldo akun berlawanan sisi normal akuntansi (`ledger-normal-balance.json`: `ast:fixed_assets`, `expense:resto:waste:IDR`, `liability:mall:points:PTS`)~~ | ~~Data uang dan saldo neraca/laba rugi terbalik~~ | ~~P0~~ | Tuntas di R1.2 (D4): posting terbalik diperbaiki di modul Asset, Mall, dan Resto; baseline `ledger-normal-balance.json` mencapai 0 |
 | M-R0-7 | R0.11 | 705 file & 853 tabel warisan di `modules/Integration` dibekukan via baseline `integration-freeze.json` (total 1.558 entri) | Belum dipindahkan ke modul domain yang sesuai | P2 | R4.4 (K2) |
-| M-R0-8 | R0.11 | 94 lokasi pembuatan `LedgerAccount` langsung di test & 9 assertion sepele (`test-hygiene.json`, total 106 entri: T1=9, T2=94, T3=1, T4=2) | Test lama masih mengaburkan status produksi dan kebersihan pengujian | P2 | R1.3, R5.5 (K2) |
+| M-R0-8 | R0.11 | ~~94 lokasi pembuatan `LedgerAccount` langsung di test (T2)~~ & 9 assertion sepele (T1=9), T3=1, T4=2 (`test-hygiene.json`, sisa 12 entri) | Test lama masih mengaburkan status produksi dan kebersihan pengujian | P2 | T2 tuntas di R1.3 (baseline T2 mencapai 0); T1, T3, T4 di R5.5 (K2) |
 | M-R0-9 | R0.3 | CI run #38078763783 membuktikan job `gate-sqlite` dan `portability-mysql` (MySQL 8) keduanya HIJAU PENUH (SUCCESS, 2.524 test, 11.065 asersi); Draft PR #8 aktif; branch protection master menunggu aktivasi pemilik repo | Branch protection remote master menunggu hak akses admin pemilik | P2 | Menunggu aktivasi protection oleh pemilik |
 | M-R0-10 | R2.3 | `contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`) | Pembuatan klausa kontrak tidak dapat diakses via web UI | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
 | M-R0-11 | R2.3 | `contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view | Halaman laporan keuangan kontrak tidak bisa dibuka | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
@@ -532,7 +532,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R0-26~~ | R0.2 | ~~Laporan gate docs/gates/fase-r0.md di repository belum disinkronkan dengan artefak CI commit 8724437 (masih mencatat commit 48b5529 dan 2.588 test)~~ | ~~Laporan quality gate lokal tidak mencerminkan commit kode terakhir~~ | ~~P2~~ | Tuntas (laporan disinkronkan dari artefak CI PR #12 run #38698698291 pada commit d58263a, 2.595 test / 11.492 asersi lulus) |
 
 ### FASE R1 — LEDGER & UANG (P0)
-> **Status audit:** ⬜ BELUM · Prasyarat: R0.
+> **Status audit:** 🟡 DALAM PENGERJAAN (Bagian A: R1.1–R1.3 🔵 Selesai di branch `feature/fase-r1a-ledger`, R1.4–R1.10 belum dimulai) · Prasyarat: R0 ✅.
 
 #### DoR Fase R1 — Ledger & uang
 - Disetujui pemilik: [x] 2026-10-16 (chat) — D1–D8 sesuai prompt 9
@@ -609,12 +609,31 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - **D6 (R1.3)** chart of accounts untuk service yang saat ini memposting dari `modules/Integration`: (a) tambah `Ledger/` ke allowlist `IntegrationFreeze` lewat DECISIONS (perpindahan modul tetap di R4.4).
   - **D7 (R1.6)** refund perlu event lintas modul (`PaymentRefunded`) atau cukup dipanggil sinkron oleh aksi pembatalan: refund dipanggil sinkron oleh aksi pembatalan sekarang; event `PaymentRefunded` dipancarkan setelah commit untuk konsumen lain.
   - **D8 (R1.9)** `bank:reconcile --incremental` dijadwalkan harian, atau tetap manual + gate: `bank:reconcile --incremental` manual + gate sekarang; penjadwalan harian menunggu infrastruktur scheduler (minus P2 → R5).
-- [ ] R1.1 **Konvensi tanda tunggal** (K-10): `AccountKind::normalSide()` + helper `Posting::lines()->debit()->credit()` (kredit = +, debit = −); dokumentasikan tabel normal balance (`KONSEP.md` §A2); pindahkan pemetaan sementara dari `LedgerNormalBalanceTest`.
-  - Test wajib: `LedgerNormalBalanceTest` — setelah `migrate:fresh --seed` + seluruh skenario golden, setiap akun memenuhi tanda sisi normalnya (pengecualian eksplisit untuk `clearing`/`exchange`).
-- [ ] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif) — dicatat sebagai `keputusan:` di Bukti (X17).
-  - Kriteria terima: baseline `LedgerNormalBalanceTest` = 0.
-- [ ] R1.3 **Chart of accounts sebagai kode** (K-11): `modules/{M}/Ledger/{M}Accounts.php` (konstanta + definisi kind/aset/allow_negative/normal side) untuk setiap modul yang memposting; `LedgerAccountsSeeder` memprovisi semuanya secara idempoten; hapus `LedgerAccount::create` dari 44 file test (ganti `$this->seed(LedgerAccountsSeeder::class)`).
-  - Kriteria terima: baseline `LedgerAccountRegistryTest` = 0 dan baseline `TestHygieneTest` aturan T2 = 0.
+- [x] R1.1 **Konvensi tanda tunggal** (K-10): `AccountKind::normalSide()` + helper `Posting::lines()->debit()->credit()` (kredit = +, debit = −); dokumentasikan tabel normal balance (`KONSEP.md` §A2); pindahkan pemetaan sementara dari `LedgerNormalBalanceTest`.
+  Bukti:
+    - jenis: tooling
+    - commit: f7f252f
+    - file: modules/Banking/Domain/Enums/AccountKind.php
+    - file: modules/Banking/Support/PostingLines.php
+    - file: modules/Shared/Support/Posting.php
+    - file: tests/Unit/Quality/Ledger/PostingHelperTest.php
+    - test: tests/Unit/Quality/Ledger/PostingHelperTest.php::it maps every AccountKind to its correct normal side
+    - test: tests/Unit/Quality/Ledger/PostingHelperTest.php::it enforces single sign convention with debit as negative and credit as positive
+- [x] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif) — dicatat sebagai `keputusan:` di Bukti (X17).
+  Bukti:
+    - jenis: tooling
+    - commit: 6954c24
+    - file: tests/Architecture/baselines/ledger-normal-balance.json
+    - test: tests/Architecture/LedgerNormalBalanceTest.php::it keeps accounts with inverted normal balances within the ratchet baseline
+- [x] R1.3 **Chart of accounts sebagai kode** (K-11): `modules/{M}/Ledger/{M}Accounts.php` (konstanta + definisi kind/aset/allow_negative/normal side) untuk setiap modul yang memposting; `LedgerAccountsSeeder` memprovisi semuanya secara idempoten; hapus `LedgerAccount::create` dari 44 file test (ganti `$this->seed(LedgerAccountsSeeder::class)`).
+  Bukti:
+    - jenis: tooling
+    - commit: b687f1d
+    - file: database/seeders/LedgerAccountsSeeder.php
+    - file: tests/Architecture/baselines/ledger-accounts.json
+    - file: tests/Architecture/baselines/test-hygiene.json
+    - test: tests/Architecture/LedgerAccountRegistryTest.php::it keeps unseeded ledger accounts within the ratchet baseline
+    - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
 - [ ] R1.4 **Guard `LedgerService`** (K-13, K-19): (1) tolak entri yang `asset_code`-nya ≠ aset akun; (2) simpan `payload_hash` di `bank_ledger_transactions` dan tolak key sama-payload beda (`IdempotencyConflictException`); (3) tangkap unique violation → kembalikan transaksi pemenang; (4) migrasi `restrictOnDelete` + model `LedgerEntry`/`LedgerTransaction` melempar exception pada `updating`/`deleting`; (5) `type` wajib dari `TransactionType` (atau registry per modul) dan ≤ 32 karakter — perbaiki 12 type yang terlalu panjang (baseline `arch:scan` A5 = 0).
   - Test wajib: satu test per guard; test konkurensi dua koneksi (grup `db-portability`).
 - [ ] R1.5 **Idempotency key deterministik** (K-12): ganti 27 lokasi `Str::uuid()/Str::random()/now()` dengan key identitas bisnis (baseline `arch:scan` A4 = 0); perbaiki `FleetLeasingService::amortizeMonthly()` (kunci kontrak, marker per bulan, akumulasi hanya bila posting baru).
