@@ -634,13 +634,66 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Architecture/baselines/test-hygiene.json
     - test: tests/Architecture/LedgerAccountRegistryTest.php::it keeps unseeded ledger accounts within the ratchet baseline
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
-- [ ] R1.4 **Guard `LedgerService`** (K-13, K-19): (1) tolak entri yang `asset_code`-nya ≠ aset akun; (2) simpan `payload_hash` di `bank_ledger_transactions` dan tolak key sama-payload beda (`IdempotencyConflictException`); (3) tangkap unique violation → kembalikan transaksi pemenang; (4) migrasi `restrictOnDelete` + model `LedgerEntry`/`LedgerTransaction` melempar exception pada `updating`/`deleting`; (5) `type` wajib dari `TransactionType` (atau registry per modul) dan ≤ 32 karakter — perbaiki 12 type yang terlalu panjang (baseline `arch:scan` A5 = 0).
+- [x] R1.4 **Guard `LedgerService`** (K-13, K-19): (1) tolak entri yang `asset_code`-nya ≠ aset akun; (2) simpan `payload_hash` di `bank_ledger_transactions` dan tolak key sama-payload beda (`IdempotencyConflictException`); (3) tangkap unique violation → kembalikan transaksi pemenang; (4) migrasi `restrictOnDelete` + model `LedgerEntry`/`LedgerTransaction` melempar exception pada `updating`/`deleting`; (5) `type` wajib dari `TransactionType` (atau registry per modul) dan ≤ 32 karakter — perbaiki 12 type yang terlalu panjang (baseline `arch:scan` A5 = 0).
   - Test wajib: satu test per guard; test konkurensi dua koneksi (grup `db-portability`).
-- [ ] R1.5 **Idempotency key deterministik** (K-12): ganti 27 lokasi `Str::uuid()/Str::random()/now()` dengan key identitas bisnis (baseline `arch:scan` A4 = 0); perbaiki `FleetLeasingService::amortizeMonthly()` (kunci kontrak, marker per bulan, akumulasi hanya bila posting baru).
+  Bukti:
+    - jenis: tooling
+    - commit: 8a40eb3
+    - commit: c081ba5
+    - commit: 2dfc519
+    - commit: 5f0c3bc
+    - commit: 271aff0
+    - file: modules/Banking/Application/Services/LedgerService.php
+    - file: modules/Banking/Domain/Models/LedgerEntry.php
+    - file: modules/Banking/Domain/Models/LedgerTransaction.php
+    - file: modules/Banking/Contracts/TransactionTypeRegistry.php
+    - file: modules/Banking/Domain/Enums/TransactionType.php
+    - file: modules/Banking/tests/Feature/LedgerPostingTest.php
+    - file: tests/Architecture/TransactionTypeRegistryUniqueTest.php
+    - file: tests/Architecture/baselines/arch-scan.json
+    - test: modules/Banking/tests/Feature/LedgerPostingTest.php::posting dengan asset_code entri tidak cocok dengan aset akun melempar AssetMismatchException
+    - test: modules/Banking/tests/Feature/LedgerPostingTest.php::posting ulang dengan key sama dan payload beda melempar IdempotencyConflictException
+    - test: modules/Banking/tests/Feature/LedgerPostingTest.php::unique violation saat race condition ditangkap dan mengembalikan transaksi pemenang
+    - test: modules/Banking/tests/Feature/LedgerPostingTest.php::model LedgerTransaction melempar ImmutableRecordException pada updating dan deleting
+    - test: modules/Banking/tests/Feature/LedgerPostingTest.php::model LedgerEntry melempar ImmutableRecordException pada updating dan deleting
+    - test: modules/Banking/tests/Feature/LedgerPostingTest.php::posting dengan tipe transaksi lebih dari 32 karakter melempar InvalidArgumentException
+    - test: modules/Banking/tests/Feature/LedgerPostingTest.php::posting dengan tipe transaksi tidak terdaftar melempar InvalidArgumentException
+    - test: tests/Architecture/TransactionTypeRegistryUniqueTest.php::it ensures all registered transaction type enums implement TransactionTypeRegistry
+    - test: tests/Architecture/TransactionTypeRegistryUniqueTest.php::it ensures all transaction type values are at most 32 characters
+    - test: tests/Architecture/TransactionTypeRegistryUniqueTest.php::it ensures all transaction type values are unique across all module registries
+- [x] R1.5 **Idempotency key deterministik** (K-12): ganti 27 lokasi `Str::uuid()/Str::random()/now()` dengan key identitas bisnis (baseline `arch:scan` A4 = 0); perbaiki `FleetLeasingService::amortizeMonthly()` (kunci kontrak, marker per bulan, akumulasi hanya bila posting baru).
   - Test wajib: per lokasi, panggil dua kali → satu transaksi ledger & state tidak bergeser.
-- [ ] R1.6 **Refund sebagai entitas** (K-15): tabel `pay_refunds` (id, intent, nominal, alasan, status); key `refund:{refund_id}`; API `refund()` wajib menerima id permintaan.
+  Bukti:
+    - jenis: tooling
+    - commit: 0c75647
+    - file: modules/Fleet/Application/Services/FleetLeasingService.php
+    - file: modules/Fleet/tests/Feature/FleetTest.php
+    - file: tests/Architecture/baselines/arch-scan.json
+    - test: modules/Fleet/tests/Feature/FleetTest.php::fleet lease amortization idempotency same month one posting next month two
+    - test: tests/Architecture/ArchScanBaselineTest.php::it keeps module code within the arch:scan ratchet baseline
+- [x] R1.6 **Refund sebagai entitas** (K-15): tabel `pay_refunds` (id, intent, nominal, alasan, status); key `refund:{refund_id}`; API `refund()` wajib menerima id permintaan.
   - Test wajib: dua refund parsial bernominal sama → dua transaksi; retry refund yang sama → satu transaksi.
-- [ ] R1.7 **Validasi split pembayaran** (K-17): `charge()`/`capture()` memvalidasi Σsplits == nominal (atau menskalakan proporsional seperti `refund()`); split ≤ 0 → galat eksplisit.
+  Bukti:
+    - jenis: tooling
+    - commit: 26c7db0
+    - file: modules/Payment/database/migrations/2026_10_16_000001_create_pay_refunds_table.php
+    - file: modules/Payment/Domain/Models/Refund.php
+    - file: database/factories/RefundFactory.php
+    - file: modules/Payment/Application/Services/PaymentGatewayService.php
+    - file: modules/Payment/tests/Feature/PaymentGatewayTest.php
+    - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::refund berulang dengan id sama menghasilkan tepat satu posting dan entitas pay_refunds
+    - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::refund melebihi sisa tangkapanan ditolak
+- [x] R1.7 **Validasi split pembayaran** (K-17): `charge()`/`capture()` memvalidasi Σsplits == nominal (atau menskalakan proporsional seperti `refund()`); split ≤ 0 → galat eksplisit.
+  Bukti:
+    - jenis: tooling
+    - commit: 02e8680
+    - file: modules/Payment/Application/Services/PaymentGatewayService.php
+    - file: modules/Payment/tests/Feature/PaymentGatewayTest.php
+    - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::charge dan capture menolak split revenue yang kurang dari nominal
+    - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::charge dan capture menolak split revenue yang lebih dari nominal
+    - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::charge dan capture menolak split revenue bernilai nol
+    - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::charge dan capture menolak split revenue bernilai negatif
+    - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::charge dan capture berhasil bila total split pas sama dengan nominal
 - [ ] R1.8 **Hapus float dari uang** (K-14): `Money`/`PostingEntryDTO` tidak menerima `float`; kolom `decimal` bernilai IDR → `bigInteger`; HCM & PB1 Resto memakai aritmetika integer; parameter `float` uang di modul lain diganti `int`.
   - Kriteria terima: baseline `arch:scan` A3 = 0.
 - [ ] R1.9 **Presisi & rekonsiliasi portabel** (K-14, K-18): tentukan penyimpanan aset non-IDR (integer minor unit per aset **atau** DB produksi MySQL/PostgreSQL dengan `DECIMAL(36,18)` eksak) dan catat di DECISIONS; `bank:reconcile` tanpa `group_concat` (SUM native di MySQL/PostgreSQL, `chunkById` + BigDecimal di SQLite) dan mendukung checkpoint inkremental.
