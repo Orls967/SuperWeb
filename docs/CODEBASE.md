@@ -488,7 +488,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 8 | **CloudKitchen** | `ckt_` | 1 |
 | 9 | **Contract** | `ctr_` | 3 |
 | 10 | **ControlTower** | `sct_` | 1 |
-| 11 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 13 |
+| 11 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 15 |
 | 12 | **Crypto** | `crypto_` | 4 |
 | 13 | **Distribution** | `dist_` | 5 |
 | 14 | **Edu** | `edu_` | 2 |
@@ -534,7 +534,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 54 | **Venue** | `ven_` | 5 |
 | 55 | **Wealth** | `wm_` | 1 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **541 Migrasi** |
+| | **Total: 56 Modul** | | **543 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -595,6 +595,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `bank:reconcile` | **`daily()`** | Rekonsiliasi ledger: verifikasi cached_balance tiap akun dengan SUM(entries) dan SUM global per aset = 0 |
 | `chain:audit-all` | `manual` | Jalankan orkestrasi audit menyeluruh seluruh rantai nilai ekosistem (Double-Entry Ledger, Treasury, Trade, TF, Proc, Mfg, Dist, Agency, Group, SCT, EF, API) |
 | `contracts:verify-chain` | **`dailyAt('03:00')`** | Verify the append-only cryptographic hash-chain across all contract versions |
+| `core:consume-spine` | `manual` | Worker to consume events from the event spine by consumer group with persistent offset and idempotent replay |
 | `core:process-outbox` | `manual` | Process pending transactional outbox events and dispatch to subscribers |
 | `core:verify-passports` | `manual` | Verifikasi keabsahan kriptografis rantai hash-chain seluruh Paspor Kendaraan |
 | `crypto:tick` | **`everyMinute()`** | Simulate real-time crypto price ticks via geometric random walk |
@@ -670,7 +671,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `security:audit` | `manual` | Wave 2: Security & Compliance audit — Zero Trust, Privacy Vault, Regulatory, SOC & Pentest |
 | `serve` | `manual` | Serve the application on the PHP development server |
 | `session:table` | `manual` | Create a migration for the session database table |
-| `sim:run` | `manual` | Run or advance the deterministic Simulation Kernel virtual clock |
+| `sim:run` | `manual` | Run or advance the deterministic Simulation Kernel virtual clock with daily tick handlers and state checkpoints |
 | `store:auto-capture-c2c` | **`hourly()`** | Cairkan dana escrow C2C ke penjual bila pembeli tidak konfirmasi dalam 3 hari |
 | `store:cancel-stale-orders` | **`everyTenMinutes()`** | Batalkan pesanan pending payment yang melewati batas waktu dan lepaskan reservasi stok |
 | `sup:remind-certifications` | **`dailyAt('07:10')`** | Peringatkan sertifikasi pemasok yang akan kedaluwarsa atau sudah kedaluwarsa |
@@ -685,7 +686,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `treasury:audit` | `manual` | Audit multi-currency, bank reconciliation, credit facilities, and treasury balances |
 | `up` | `manual` | Bring the application out of maintenance mode |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 104 Command** | **37 Terjadwal** | |
+| **Total: 105 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

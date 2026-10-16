@@ -22,6 +22,7 @@ use Modules\Core\Application\Services\NotificationService;
 use Modules\Core\Application\Services\OutboxBusService;
 use Modules\Core\Application\Services\RbacService;
 use Modules\Core\Application\Services\SimClockService;
+use Modules\Core\Console\Commands\ConsumeSpineCommand;
 use Modules\Core\Console\Commands\ProcessOutboxCommand;
 use Modules\Core\Console\Commands\RunSimulationCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
@@ -30,6 +31,7 @@ use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\AuditTrailInterface;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Core\Contracts\DocumentStoreInterface;
@@ -78,6 +80,11 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->bind(
             ApprovalEngineInterface::class,
             ApprovalEngineService::class
+        );
+
+        $this->app->bind(
+            ClockInterface::class,
+            SimClockService::class
         );
 
         $this->app->bind(
@@ -185,6 +192,7 @@ class CoreServiceProvider extends ServiceProvider
                 VerifyPassportsCommand::class,
                 SuperHealthCheckCommand::class,
                 ProcessOutboxCommand::class,
+                ConsumeSpineCommand::class,
                 RunSimulationCommand::class,
                 TwelveLinesComprehensiveAuditCommand::class,
             ]);
