@@ -128,6 +128,9 @@
 
 ---
 
+> [!IMPORTANT]
+> **Catatan Historis Pre-R0:** Seluruh entri gate historis Fase 1–63 di bawah ini berstatus **tidak representatif (hanya menguji sub-suite modul sebelum pagar kualitas penuh Fase R0)**. Pengujian pada fase-fase tersebut belum menjalankan audit komprehensif seluruh test suite, 13 scanner arsitektur statis (`arch:scan`), dual-engine CI (SQLite & MySQL 8), dan penegakan invariant rantai audit yang baru dibakukan secara ketat mulai Fase R0. Untuk laporan audit gate resmi dan representatif, lihat bagian [Quality Gates Resmi Fase R](#quality-gates-resmi-fase-r-remediasi-arsitektur--kualitas-penuh) yang menautkan dokumen di `docs/gates/fase-r*.md`.
+
 ## Baseline sebelum Fase 19–25 — 2026-09-30
 
 - **Waktu Audit:** 2026-09-30 20:46 WITA (12:46 UTC)
@@ -1063,9 +1066,17 @@
 4. **Dokumentasi Terpadu:**
    - [docs/CODEBASE.md](file:///Users/orl123456/Documents/typeshit/autoserve/docs/CODEBASE.md), [docs/PROGRESS.md](file:///Users/orl123456/Documents/typeshit/autoserve/docs/PROGRESS.md), [docs/DECISIONS.md](file:///Users/orl123456/Documents/typeshit/autoserve/docs/DECISIONS.md), dan [docs/AUDIT.md](file:///Users/orl123456/Documents/typeshit/autoserve/docs/AUDIT.md) telah disinkronkan secara menyeluruh.
 
+---
 
+## Quality Gates Resmi Fase R (Remediasi Arsitektur & Kualitas Penuh)
 
+Sesuai Protokol Disiplin Arsitektur P2 dan PROGRESS R5.4, seluruh verifikasi gate pasca-R0 wajib didokumentasikan dalam laporan gate resmi yang dihasilkan oleh `php artisan gate:report --fase=R*` dan disimpan di direktori `docs/gates/`:
 
-
+| Fase | Tanggal Verifikasi | Status Gate | Laporan Resmi Gate | Ringkasan Verifikasi |
+|---|---|:---:|---|---|
+| **Fase R0** | 2026-10-15 | ✅ TERVERIFIKASI | [docs/gates/fase-r0.md](docs/gates/fase-r0.md) | Pagar kualitas penuh, CI dual-engine (SQLite & MySQL 8), 13 scanner arsitektur |
+| **Fase R1** | 2026-10-16 | ✅ TERVERIFIKASI | [docs/gates/fase-r1.md](docs/gates/fase-r1.md) | Rekonsiliasi ledger, seeder akun COA lengkap, audit uang & subledger |
+| **Fase R2** | 2026-10-16 | ✅ TERVERIFIKASI | [docs/gates/fase-r2.md](docs/gates/fase-r2.md) | Remediasi bug fungsional, eliminasi duplikasi route, view blade valid |
+| **Fase R3** | 2026-10-16 | ✅ TERVERIFIKASI | [docs/gates/fase-r3.md](docs/gates/fase-r3.md) | Otorisasi granular RBAC 598 rute, eliminasi role auditor pada mutasi tulis |
 
 
