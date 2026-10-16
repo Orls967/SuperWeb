@@ -25,7 +25,7 @@ final class MissingForeignKeyRule implements Rule
     ];
 
     private const FOREIGN_KEY_CHAIN_METHODS = [
-        'constrained', 'references', 'cascadeondelete', 'restrictondelete', 'nullondelete', 'index', 'unique', 'primary',
+        'constrained', 'references', 'cascadeondelete', 'restrictondelete', 'nullondelete',
     ];
 
     private const EXTERNAL_IDENTIFIERS = [
@@ -120,7 +120,8 @@ final class MissingForeignKeyRule implements Rule
         self::$allModuleIndexes = [];
         self::$allModuleMorphs = [];
 
-        $migrationFiles = glob(base_path('modules/*/database/migrations/*.php')) ?: [];
+        $root = dirname(__DIR__, 4);
+        $migrationFiles = glob($root.'/modules/*/database/migrations/*.php') ?: [];
 
         foreach ($migrationFiles as $path) {
             $code = @file_get_contents($path);
@@ -128,7 +129,7 @@ final class MissingForeignKeyRule implements Rule
                 continue;
             }
 
-            $relPath = ltrim(str_replace(base_path(), '', $path), '/');
+            $relPath = ltrim(str_replace($root, '', $path), '/');
             $sourceFile = new SourceFile($relPath, $code);
             $tokens = $sourceFile->tokens();
 
@@ -261,7 +262,7 @@ final class MissingForeignKeyRule implements Rule
                     }
                 }
 
-                if (in_array($first['method'], ['foreign', 'index', 'unique', 'primary'], true)) {
+                if ($first['method'] === 'foreign') {
                     foreach ($first['strings'] as $column) {
                         $foreignKeyColumns[$column] = true;
                     }
