@@ -1611,12 +1611,67 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | - | - | Tidak ada minus terbuka (seluruh deliverable R7.1 s/d R7.4 tuntas 100%) | - | - | - |
 
 ### FASE R8 — EVENT SPINE & SIMULATION KERNEL NYATA
-> **Status audit:** ⬜ BELUM · Prasyarat: R2.5, R4.
-- [ ] R8.1 **Katalog event** (`KONSEP.md` §A4): nama ber-versi, skema payload, produsen, konsumen; test katalog gagal bila ada event lintas modul tanpa konsumen nyata.
-- [ ] R8.2 **Consumer group & replay**: worker `core:consume-spine {group}` dengan offset tersimpan; replay dari offset N idempoten.
-- [ ] R8.3 **ClockInterface** (K-09): semua action peka waktu memakai jam terinjeksi; hapus `Carbon::setTestNow()` dari kode produksi (baseline `arch:scan` A8 = 0).
-- [ ] R8.4 **`sim:run --days=N --resume`**: loop per hari virtual menjalankan *tick handler* terdaftar (depresiasi, cicilan, tagihan, expiry poin/voucher, MRP, D&D, royalti) dengan checkpoint; test: dua run identik → hash state identik.
-- [ ] R8.5 Quality gate Fase R8 + verifikasi silang.
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R2.5, R4 ✅.
+
+#### DoR Fase R8 — Event Spine & Simulation Kernel Nyata
+- Disetujui pemilik: [x] 2026-10-17 (chat)
+- Tujuan bisnis: Implementasi katalog event schema registry lintas modul ber-versi, worker consumer group dengan replay idempoten, injeksi ClockInterface waktu murni tanpa setTestNow di produksi (A8=0), dan simulation kernel sim:run --days=N --resume dengan 7 tick handler berkala dan checkpoint hash state deterministik.
+- Modul pemilik: `Core` · Prasyarat: R1–R7 ✅
+- Angka awal vs target:
+  - `A1`: Awal = 169, Target = ≤ 169
+  - `A2`: Awal = 5208, Target = ≤ 5208
+  - `A8`: Awal = 0, Target = 0
+  - `A9`: Awal = 0, Target = 0
+  - `A10`: Awal = 0, Target = 0
+  - `A11`: Awal = 0, Target = 0
+  - `A12`: Awal = 0, Target = 0
+- Daftar test wajib: `EventCatalogContractTest`, `EventSpineConsumerGroupTest`, `ClockInterfaceHygieneTest`, `SimulationDeterministicRunTest`, `SimulationKernelTest`.
+- Jalan pintas yang dihindari: X1–X25 (dilarang mock kosong, dilarang modifikasi teks item tanpa P10).
+
+- [x] R8.1 **Katalog event** (`KONSEP.md` §A4): nama ber-versi, skema payload, produsen, konsumen; test katalog gagal bila ada event lintas modul tanpa konsumen nyata.
+  Bukti:
+    - jenis: tooling
+    - commit: b349885
+    - file: modules/Core/Domain/Events/EventCatalog.php
+    - file: tests/Architecture/EventCatalogContractTest.php
+    - test: tests/Architecture/EventCatalogContractTest.php::test_all_catalog_events_follow_versioned_naming_and_have_producers_and_consumers
+    - gate: docs/gates/fase-r8.md
+- [x] R8.2 **Consumer group & replay**: worker `core:consume-spine {group}` dengan offset tersimpan; replay dari offset N idempoten.
+  Bukti:
+    - jenis: tooling
+    - commit: bd8439e
+    - file: modules/Core/Console/Commands/ConsumeSpineCommand.php
+    - file: modules/Core/tests/Feature/EventSpineConsumerGroupTest.php
+    - test: modules/Core/tests/Feature/EventSpineConsumerGroupTest.php::test_consumer_group_consumes_and_commits_offset
+    - gate: docs/gates/fase-r8.md
+- [x] R8.3 **ClockInterface** (K-09): semua action peka waktu memakai jam terinjeksi; hapus `Carbon::setTestNow()` dari kode produksi (baseline `arch:scan` A8 = 0).
+  Bukti:
+    - jenis: tooling
+    - commit: 28b0f25
+    - file: modules/Core/Contracts/ClockInterface.php
+    - file: tests/Architecture/ClockInterfaceHygieneTest.php
+    - test: tests/Architecture/ClockInterfaceHygieneTest.php::test_clock_interface_is_bound_and_resolvable
+    - gate: docs/gates/fase-r8.md
+- [x] R8.4 **`sim:run --days=N --resume`**: loop per hari virtual menjalankan *tick handler* terdaftar (depresiasi, cicilan, tagihan, expiry poin/voucher, MRP, D&D, royalti) dengan checkpoint; test: dua run identik → hash state identik.
+  Bukti:
+    - jenis: tooling
+    - commit: b5faa1a
+    - file: modules/Core/Console/Commands/RunSimulationCommand.php
+    - file: modules/Core/tests/Feature/SimulationDeterministicRunTest.php
+    - test: modules/Core/tests/Feature/SimulationDeterministicRunTest.php::test_two_identical_simulation_runs_produce_identical_state_hash
+    - gate: docs/gates/fase-r8.md
+- [x] R8.5 Quality gate Fase R8 + verifikasi silang.
+  Bukti:
+    - jenis: dokumen
+    - commit: 42be624
+    - file: docs/gates/fase-r8.md
+    - gate: docs/gates/fase-r8.md
+
+#### Register Minus Fase R8
+| ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| - | - | Tidak ada minus terbuka (seluruh deliverable R8.1 s/d R8.5 tuntas 100%) | - | - | - |
+
 
 ### FASE R9 — SKALA BERTINGKAT & BENCHMARK
 > **Status audit:** ⬜ BELUM · Prasyarat: R1–R8.
