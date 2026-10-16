@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('bank_reconcile_checkpoints', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('last_reconciled_entry_id')->index();
+            $table->foreignId('last_reconciled_entry_id')->nullable()->constrained('bank_ledger_entries')->cascadeOnDelete();
             $table->json('account_balances');
             $table->json('asset_balances');
             $table->string('transaction_checksum', 64);

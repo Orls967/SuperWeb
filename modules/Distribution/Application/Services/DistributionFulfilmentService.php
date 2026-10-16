@@ -898,7 +898,7 @@ class DistributionFulfilmentService
                 approvalType: 'DIST_REBATE_SETTLEMENT',
                 title: "Penyelesaian rebate {$period} (".number_format($total).')',
                 creator: $creator,
-                amount: (float) $total,
+                amount: (int) $total,
                 steps: [['role' => 'procurement'], ['role' => 'admin']],
                 slaHours: 48,
                 metadata: ['period' => $period, 'total_idr' => $total, 'count' => $pending->count()],

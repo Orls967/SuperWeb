@@ -190,7 +190,7 @@ class ProcurementService
             title: "PR {$requisition->number}: {$requisition->title}",
             creator: $creator,
             approvable: $requisition,
-            amount: (float) (int) $requisition->total_estimated_idr,
+            amount: (int) $requisition->total_estimated_idr,
             steps: $steps,
             slaHours: 72,
             metadata: [
@@ -556,7 +556,7 @@ class ProcurementService
                 title: "Penetapan pemenang {$tender->number}: {$bid->supplier?->name}",
                 creator: $actor,
                 approvable: $tender,
-                amount: (float) (int) ($bid->offer['total_price_idr'] ?? 0),
+                amount: (int) ($bid->offer['total_price_idr'] ?? 0),
                 steps: [['role' => 'procurement'], ['role' => 'admin']],
                 slaHours: 72,
                 metadata: [
@@ -690,7 +690,7 @@ class ProcurementService
                 title: "Revisi PO {$po->number}: {$reason}",
                 creator: $actor,
                 approvable: $po,
-                amount: (float) (int) $po->total_amount,
+                amount: (int) $po->total_amount,
                 steps: [['role' => 'procurement'], ['role' => 'admin']],
                 slaHours: 48,
                 metadata: ['po_number' => $po->number, 'reason' => $reason, 'changes' => array_keys($changes)],

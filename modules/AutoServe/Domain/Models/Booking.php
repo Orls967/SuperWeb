@@ -211,9 +211,9 @@ class Booking extends Model implements Payable
     public function revenueSplits(): array
     {
         $splits = [];
-        $serviceCost = (float) ($this->service_cost ?: 0);
-        $sparepartCost = (float) ($this->sparepart_cost ?: 0);
-        $grandTotal = (float) ($this->grand_total ?: 0);
+        $serviceCost = (int) ($this->service_cost ?: 0);
+        $sparepartCost = (int) ($this->sparepart_cost ?: 0);
+        $grandTotal = (int) ($this->grand_total ?: 0);
 
         if ($serviceCost > 0) {
             $splits['revenue:autoserve:service:IDR'] = Money::IDR($serviceCost);

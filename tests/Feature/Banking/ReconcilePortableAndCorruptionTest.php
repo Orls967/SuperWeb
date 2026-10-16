@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Banking;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Tests\TestCase;
 
@@ -15,26 +15,20 @@ class ReconcilePortableAndCorruptionTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(LedgerAccountsSeeder::class);
+    }
+
     public function test_reconcile_handles_10_pow_15_minor_units_without_precision_loss(): void
     {
         $largeAmount = '1000000000000000'; // 10^15 minor units
-        $sourceAccount = LedgerAccount::create([
-            'code' => 'test:large_val:source:IDR',
-            'name' => 'Test Large Source',
-            'asset_code' => 'IDR',
-            'kind' => AccountKind::CASH,
-            'allow_negative' => true,
-            'cached_balance' => "-{$largeAmount}",
-        ]);
+        $sourceAccount = LedgerAccount::where('code', 'clearing:external:IDR')->firstOrFail();
+        $sourceAccount->update(['cached_balance' => "-{$largeAmount}"]);
 
-        $destAccount = LedgerAccount::create([
-            'code' => 'test:large_val:dest:IDR',
-            'name' => 'Test Large Dest',
-            'asset_code' => 'IDR',
-            'kind' => AccountKind::REVENUE,
-            'allow_negative' => true,
-            'cached_balance' => $largeAmount,
-        ]);
+        $destAccount = LedgerAccount::where('code', 'resto:catering_revenue:IDR')->firstOrFail();
+        $destAccount->update(['cached_balance' => $largeAmount]);
 
         $txId = DB::table('bank_ledger_transactions')->insertGetId([
             'uuid' => (string) Str::uuid(),
@@ -73,23 +67,11 @@ class ReconcilePortableAndCorruptionTest extends TestCase
 
     public function test_reconcile_detects_corrupted_entry_and_reports_account_name(): void
     {
-        $accountA = LedgerAccount::create([
-            'code' => 'test:corrupt:source:IDR',
-            'name' => 'Akun Uji Korupsi Sumber',
-            'asset_code' => 'IDR',
-            'kind' => AccountKind::CASH,
-            'allow_negative' => true,
-            'cached_balance' => '-50000',
-        ]);
+        $accountA = LedgerAccount::where('code', 'clearing:external:IDR')->firstOrFail();
+        $accountA->update(['cached_balance' => '-50000']);
 
-        $accountB = LedgerAccount::create([
-            'code' => 'test:corrupt:dest:IDR',
-            'name' => 'Akun Uji Korupsi Tujuan',
-            'asset_code' => 'IDR',
-            'kind' => AccountKind::REVENUE,
-            'allow_negative' => true,
-            'cached_balance' => '50000',
-        ]);
+        $accountB = LedgerAccount::where('code', 'resto:catering_revenue:IDR')->firstOrFail();
+        $accountB->update(['cached_balance' => '50000']);
 
         $txId = DB::table('bank_ledger_transactions')->insertGetId([
             'uuid' => (string) Str::uuid(),
@@ -129,28 +111,16 @@ class ReconcilePortableAndCorruptionTest extends TestCase
         // Jalankan rekonsiliasi: harus gagal dan menyebutkan nama/kode akun yang korup
         $this->artisan('bank:reconcile')
             ->assertFailed()
-            ->expectsOutputToContain('Ketidakcocokan saldo pada akun: test:corrupt:source:IDR');
+            ->expectsOutputToContain('Ketidakcocokan saldo pada akun: clearing:external:IDR');
     }
 
     public function test_incremental_reconciliation_saves_and_resumes_from_checkpoints(): void
     {
-        $accountA = LedgerAccount::create([
-            'code' => 'test:inc:a:IDR',
-            'name' => 'Akun Inkremental A',
-            'asset_code' => 'IDR',
-            'kind' => AccountKind::CASH,
-            'allow_negative' => true,
-            'cached_balance' => '-10000',
-        ]);
+        $accountA = LedgerAccount::where('code', 'clearing:external:IDR')->firstOrFail();
+        $accountA->update(['cached_balance' => '-10000']);
 
-        $accountB = LedgerAccount::create([
-            'code' => 'test:inc:b:IDR',
-            'name' => 'Akun Inkremental B',
-            'asset_code' => 'IDR',
-            'kind' => AccountKind::REVENUE,
-            'allow_negative' => true,
-            'cached_balance' => '10000',
-        ]);
+        $accountB = LedgerAccount::where('code', 'resto:catering_revenue:IDR')->firstOrFail();
+        $accountB->update(['cached_balance' => '10000']);
 
         $tx1 = DB::table('bank_ledger_transactions')->insertGetId([
             'uuid' => (string) Str::uuid(),
