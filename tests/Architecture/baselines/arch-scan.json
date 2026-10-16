@@ -5486,7 +5486,7 @@
             }
         },
         "A11": {
-            "total": 146,
+            "total": 145,
             "entries": {
                 "modules/Agri/AgriServiceProvider.php": {
                     "declare(strict_types=1) tidak ada": 1
@@ -5585,9 +5585,6 @@
                     "declare(strict_types=1) tidak ada": 1
                 },
                 "modules/Epc/routes/web.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Esg/Application/Services/EsgService.php": {
                     "declare(strict_types=1) tidak ada": 1
                 },
                 "modules/Esg/Console/Commands/AuditEsgCommand.php": {
