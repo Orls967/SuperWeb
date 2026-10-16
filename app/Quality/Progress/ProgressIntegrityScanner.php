@@ -557,7 +557,22 @@ final class ProgressIntegrityScanner
                         }
 
                         // V4: Tidak ada perubahan di luar docs/ antara commit yang digate dan HEAD (untuk fase yang belum diverifikasi)
-                        if (! $phase->isVerified() && preg_match('/-\s+\*\*Commit:\*\*\s+`([a-f0-9]+)`/i', $gateContent, $cm)) {
+                        // Bila ada fase berikutnya yang sedang aktif dikerjakan (🔨), HEAD sudah maju untuk pengembangan fase berikutnya
+                        $hasSubsequentActivePhase = false;
+                        $foundCurrent = false;
+                        foreach ($phases as $p) {
+                            if ($p->id === $phase->id) {
+                                $foundCurrent = true;
+
+                                continue;
+                            }
+                            if ($foundCurrent && $p->statusIcon === '🔨') {
+                                $hasSubsequentActivePhase = true;
+                                break;
+                            }
+                        }
+
+                        if (! $hasSubsequentActivePhase && ! $phase->isVerified() && preg_match('/-\s+\*\*Commit:\*\*\s+`([a-f0-9]+)`/i', $gateContent, $cm)) {
                             $gateCommit = $cm[1];
                             $diffFiles = $inspector->diffFiles($gateCommit, 'HEAD');
                             $nonDocs = array_filter($diffFiles, static fn ($f) => ! str_starts_with($f, 'docs/'));

@@ -800,8 +800,18 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - Mengubah teks item atau mengurangi cakupan tanpa penanda `⬇️` (X18, P10).
   - Menaikkan baseline `arch-scan.json` (A13 wajib turun dari 15 ke 0, A2 turun).
   - Menjalankan `git credential fill` atau `git push` (K-39).
-- [ ] R2.1 **Hitung tagihan hidang idempoten** (K-16): `CalculateHidangBillAction` hanya memproses item yang belum diputuskan; key HPP per item; pemanggilan ulang tanpa efek samping.
+- [x] R2.1 **Hitung tagihan hidang idempoten** (K-16): `CalculateHidangBillAction` hanya memproses item yang belum diputuskan; key HPP per item; pemanggilan ulang tanpa efek samping.
   - Test wajib: panggil 2× → HPP terposting sekali, porsi etalase berkurang sekali, item `RETURNED` tidak diresirkulasi ulang.
+  Bukti:
+    - jenis: fitur
+    - commit: bd31994
+    - file: modules/Resto/Application/Actions/CalculateHidangBillAction.php
+    - file: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php
+    - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::menghitung tagihan hidang dua kali memposting HPP tepat sekali dan mengurangi porsi tray sekali
+    - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::menghitung tagihan hidang dua kali tidak meresirkulasi ulang piring yang dikembalikan utuh
+    - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::memperbarui diskon pada hitung tagihan ulang hanya mengubah grand total tanpa efek samping stok atau ledger
+    - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::endpoint kalkulasi tagihan pos resto oleh role berhak dan tidak berhak
+    - akses: route POST /resto/pos/session/{session}/bill [role: admin,cashier,outlet_manager]
 - [ ] R2.2 **Tender benar-benar tersegel** (K-22): skema commit–reveal atau isi penawaran terenkripsi sampai `openBids()`; perbaiki `TenderBid::isSealIntact()` (formula hash sama dengan saat menyegel) dan panggil saat pembukaan; tolak bid yang segelnya tidak cocok.
   - Test wajib: isi penawaran tidak terbaca sebelum dibuka; manipulasi isi setelah segel → ditolak saat open.
 - [ ] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
