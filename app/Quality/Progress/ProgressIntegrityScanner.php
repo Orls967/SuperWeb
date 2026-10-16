@@ -243,8 +243,7 @@ final class ProgressIntegrityScanner
         $inspector = $this->gitInspector ?? new GitCommitInspector($root);
         $violations = [];
 
-        // Check if Fase R6 is completed; if so, all phases in PROGRESS.md are in scope.
-        $allPhasesInScope = isset($phases['R6']) && $phases['R6']->isVerified();
+        $allPhasesInScope = false;
 
         if ($snapshot !== null) {
             $snapshotPhases = $snapshot['phases'] ?? [];

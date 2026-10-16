@@ -4674,12 +4674,8 @@
             "entries": {}
         },
         "A8": {
-            "total": 3,
-            "entries": {
-                "modules/Core/Application/Services/SimClockService.php": {
-                    "Carbon::setTestNow": 3
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "A9": {
             "total": 0,
