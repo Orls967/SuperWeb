@@ -3,10 +3,13 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
+use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Exceptions\AccountFrozenException;
@@ -212,3 +215,44 @@ test('posting ulang dengan key sama dan payload beda melempar IdempotencyConflic
 
     $this->ledger->post($dto2);
 })->throws(IdempotencyConflictException::class);
+
+test('unique violation saat race condition ditangkap dan mengembalikan transaksi pemenang', function () {
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
+
+    $dto = new PostingDTO(
+        type: TransactionType::TOPUP->value,
+        description: 'Simulated race transaction',
+        idempotencyKey: 'race_simulation_key_001',
+        entries: [
+            PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', -50000),
+            PostingEntryDTO::forAccount($userAcc->id, 'IDR', 50000),
+        ],
+    );
+
+    // 1. Pemenang (transaksi pertama) berhasil diposting
+    $winner = $this->ledger->post($dto);
+
+    // 2. Simulasi proses kedua yang mengalami race condition dan menabrak unique constraint saat insert
+    $simulatedService = new class extends LedgerService
+    {
+        public bool $triggerUnique = true;
+
+        protected function executeTransaction(callable $callback): mixed
+        {
+            if ($this->triggerUnique) {
+                $this->triggerUnique = false;
+                $pdoEx = new PDOException('UNIQUE constraint failed: bank_ledger_transactions.idempotency_key', 23000);
+                throw new QueryException('sqlite', 'insert into bank_ledger_transactions...', [], $pdoEx);
+            }
+
+            return DB::transaction($callback);
+        }
+    };
+
+    $result = $simulatedService->post($dto);
+
+    expect($result)->toBeInstanceOf(LedgerTransaction::class)
+        ->and($result->id)->toBe($winner->id)
+        ->and($result->idempotency_key)->toBe('race_simulation_key_001');
+});

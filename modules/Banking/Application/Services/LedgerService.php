@@ -6,6 +6,7 @@ namespace Modules\Banking\Application\Services;
 
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -44,172 +45,216 @@ class LedgerService implements Ledger
             }
         }
 
-        return DB::transaction(function () use ($dto) {
-            $payloadHash = $this->computePayloadHash($dto);
+        $payloadHash = $this->computePayloadHash($dto);
 
-            // Idempotency check: if transaction exists, check payload_hash
-            $existing = LedgerTransaction::with('entries.account')
-                ->where('idempotency_key', $dto->idempotencyKey)
-                ->first();
+        try {
+            return $this->executeTransaction(function () use ($dto, $payloadHash) {
+                // Idempotency check: if transaction exists, check payload_hash
+                $existing = LedgerTransaction::with('entries.account')
+                    ->where('idempotency_key', $dto->idempotencyKey)
+                    ->first();
 
-            if ($existing !== null) {
-                if ($existing->payload_hash !== null && $existing->payload_hash !== $payloadHash) {
-                    throw new IdempotencyConflictException(
-                        $dto->idempotencyKey,
-                        (string) $existing->payload_hash,
-                        $payloadHash
-                    );
-                }
-
-                return $existing;
-            }
-
-            // Resolve account IDs
-            $accountMap = [];
-            foreach ($dto->entries as $entry) {
-                if ($entry->accountId !== null) {
-                    $accountMap[] = ['type' => 'id', 'val' => $entry->accountId];
-                } elseif ($entry->accountCode !== null) {
-                    $accountMap[] = ['type' => 'code', 'val' => $entry->accountCode];
-                } else {
-                    throw new InvalidArgumentException('Setiap entri harus memiliki accountId atau accountCode.');
-                }
-            }
-
-            $rawIds = [];
-            $rawCodes = [];
-            foreach ($accountMap as $item) {
-                if ($item['type'] === 'id') {
-                    $rawIds[] = (int) $item['val'];
-                } else {
-                    $rawCodes[] = (string) $item['val'];
-                }
-            }
-
-            if (! empty($rawCodes)) {
-                $codeIds = LedgerAccount::whereIn('code', array_unique($rawCodes))->pluck('id', 'code');
-                foreach ($rawCodes as $code) {
-                    if (! isset($codeIds[$code])) {
-                        throw new InvalidArgumentException("Akun dengan kode '{$code}' tidak ditemukan.");
+                if ($existing !== null) {
+                    if ($existing->payload_hash !== null && $existing->payload_hash !== $payloadHash) {
+                        throw new IdempotencyConflictException(
+                            $dto->idempotencyKey,
+                            (string) $existing->payload_hash,
+                            $payloadHash
+                        );
                     }
-                    $rawIds[] = $codeIds[$code];
-                }
-            }
 
-            $uniqueAccountIds = array_values(array_unique($rawIds));
-            sort($uniqueAccountIds, SORT_NUMERIC);
-
-            // Lock accounts in ascending ID order to prevent deadlocks
-            $accounts = LedgerAccount::whereIn('id', $uniqueAccountIds)
-                ->orderBy('id', 'asc')
-                ->lockForUpdate()
-                ->get()
-                ->keyBy('id');
-
-            // Check if all accounts exist
-            foreach ($uniqueAccountIds as $id) {
-                if (! isset($accounts[$id])) {
-                    throw new InvalidArgumentException("Akun dengan ID {$id} tidak ditemukan.");
-                }
-            }
-
-            // Map code-based entries to their account ID and validate asset_code
-            $resolvedEntries = [];
-            foreach ($dto->entries as $entry) {
-                $accountId = $entry->accountId;
-                if ($accountId === null && $entry->accountCode !== null) {
-                    $found = $accounts->firstWhere('code', $entry->accountCode);
-                    $accountId = $found->id;
+                    return $existing;
                 }
 
-                $account = $accounts[$accountId] ?? null;
-                $entryAssetCode = strtoupper(trim($entry->assetCode));
-                if ($account !== null && strtoupper(trim($account->asset_code)) !== $entryAssetCode) {
-                    throw new AssetMismatchException($entryAssetCode, $account->code, (string) $account->asset_code);
+                // Resolve account IDs
+                $accountMap = [];
+                foreach ($dto->entries as $entry) {
+                    if ($entry->accountId !== null) {
+                        $accountMap[] = ['type' => 'id', 'val' => $entry->accountId];
+                    } elseif ($entry->accountCode !== null) {
+                        $accountMap[] = ['type' => 'code', 'val' => $entry->accountCode];
+                    } else {
+                        throw new InvalidArgumentException('Setiap entri harus memiliki accountId atau accountCode.');
+                    }
                 }
 
-                $resolvedEntries[] = [
-                    'account_id' => $accountId,
-                    'asset_code' => $entryAssetCode,
-                    'amount' => $entry->amount,
-                ];
-            }
-
-            // Check frozen status
-            foreach ($accounts as $account) {
-                if ($account->is_frozen) {
-                    throw new AccountFrozenException($account->code);
-                }
-            }
-
-            // Track running balances and validate sufficient funds
-            $runningBalances = [];
-            foreach ($accounts as $account) {
-                $runningBalances[$account->id] = BigDecimal::of($account->cached_balance ?: '0');
-            }
-
-            $calculatedEntries = [];
-            foreach ($resolvedEntries as $item) {
-                $accId = $item['account_id'];
-                $account = $accounts[$accId];
-                $amount = $item['amount'];
-
-                $currentBal = $runningBalances[$accId];
-                $balanceAfter = $currentBal->plus($amount);
-
-                if (! $account->allow_negative && $balanceAfter->isNegative()) {
-                    throw new InsufficientFundsException(
-                        $account->code,
-                        $currentBal->toScale(2, RoundingMode::HalfUp)->__toString(),
-                        $amount->abs()->toScale(2, RoundingMode::HalfUp)->__toString()
-                    );
+                $rawIds = [];
+                $rawCodes = [];
+                foreach ($accountMap as $item) {
+                    if ($item['type'] === 'id') {
+                        $rawIds[] = (int) $item['val'];
+                    } else {
+                        $rawCodes[] = (string) $item['val'];
+                    }
                 }
 
-                $runningBalances[$accId] = $balanceAfter;
+                if (! empty($rawCodes)) {
+                    $codeIds = LedgerAccount::whereIn('code', array_unique($rawCodes))->pluck('id', 'code');
+                    foreach ($rawCodes as $code) {
+                        if (! isset($codeIds[$code])) {
+                            throw new InvalidArgumentException("Akun dengan kode '{$code}' tidak ditemukan.");
+                        }
+                        $rawIds[] = $codeIds[$code];
+                    }
+                }
 
-                $calculatedEntries[] = [
-                    'account_id' => $accId,
-                    'asset_code' => $item['asset_code'],
-                    'amount' => $amount->toScale(18, RoundingMode::HalfUp)->__toString(),
-                    'balance_after' => $balanceAfter->toScale(18, RoundingMode::HalfUp)->__toString(),
-                ];
-            }
+                $uniqueAccountIds = array_values(array_unique($rawIds));
+                sort($uniqueAccountIds, SORT_NUMERIC);
 
-            // Create transaction
-            $transaction = LedgerTransaction::create([
-                'uuid' => (string) Str::uuid(),
-                'type' => $dto->type,
-                'reference_type' => $dto->referenceType,
-                'reference_id' => $dto->referenceId,
-                'idempotency_key' => $dto->idempotencyKey,
-                'payload_hash' => $payloadHash,
-                'description' => $dto->description,
-                'meta' => $dto->meta,
-                'posted_at' => $dto->postedAt ?? now(),
-                'created_by' => $dto->createdBy,
-            ]);
+                // Lock accounts in ascending ID order to prevent deadlocks
+                $accounts = LedgerAccount::whereIn('id', $uniqueAccountIds)
+                    ->orderBy('id', 'asc')
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id');
 
-            // Save entries & update account cached balances
-            $now = now();
-            foreach ($calculatedEntries as $entryData) {
-                LedgerEntry::create([
-                    'transaction_id' => $transaction->id,
-                    'account_id' => $entryData['account_id'],
-                    'asset_code' => $entryData['asset_code'],
-                    'amount' => $entryData['amount'],
-                    'balance_after' => $entryData['balance_after'],
-                    'created_at' => $now,
+                // Check if all accounts exist
+                foreach ($uniqueAccountIds as $id) {
+                    if (! isset($accounts[$id])) {
+                        throw new InvalidArgumentException("Akun dengan ID {$id} tidak ditemukan.");
+                    }
+                }
+
+                // Map code-based entries to their account ID and validate asset_code
+                $resolvedEntries = [];
+                foreach ($dto->entries as $entry) {
+                    $accountId = $entry->accountId;
+                    if ($accountId === null && $entry->accountCode !== null) {
+                        $found = $accounts->firstWhere('code', $entry->accountCode);
+                        $accountId = $found->id;
+                    }
+
+                    $account = $accounts[$accountId] ?? null;
+                    $entryAssetCode = strtoupper(trim($entry->assetCode));
+                    if ($account !== null && strtoupper(trim($account->asset_code)) !== $entryAssetCode) {
+                        throw new AssetMismatchException($entryAssetCode, $account->code, (string) $account->asset_code);
+                    }
+
+                    $resolvedEntries[] = [
+                        'account_id' => $accountId,
+                        'asset_code' => $entryAssetCode,
+                        'amount' => $entry->amount,
+                    ];
+                }
+
+                // Check frozen status
+                foreach ($accounts as $account) {
+                    if ($account->is_frozen) {
+                        throw new AccountFrozenException($account->code);
+                    }
+                }
+
+                // Track running balances and validate sufficient funds
+                $runningBalances = [];
+                foreach ($accounts as $account) {
+                    $runningBalances[$account->id] = BigDecimal::of($account->cached_balance ?: '0');
+                }
+
+                $calculatedEntries = [];
+                foreach ($resolvedEntries as $item) {
+                    $accId = $item['account_id'];
+                    $account = $accounts[$accId];
+                    $amount = $item['amount'];
+
+                    $currentBal = $runningBalances[$accId];
+                    $balanceAfter = $currentBal->plus($amount);
+
+                    if (! $account->allow_negative && $balanceAfter->isNegative()) {
+                        throw new InsufficientFundsException(
+                            $account->code,
+                            $currentBal->toScale(2, RoundingMode::HalfUp)->__toString(),
+                            $amount->abs()->toScale(2, RoundingMode::HalfUp)->__toString()
+                        );
+                    }
+
+                    $runningBalances[$accId] = $balanceAfter;
+
+                    $calculatedEntries[] = [
+                        'account_id' => $accId,
+                        'asset_code' => $item['asset_code'],
+                        'amount' => $amount->toScale(18, RoundingMode::HalfUp)->__toString(),
+                        'balance_after' => $balanceAfter->toScale(18, RoundingMode::HalfUp)->__toString(),
+                    ];
+                }
+
+                // Create transaction
+                $transaction = LedgerTransaction::create([
+                    'uuid' => (string) Str::uuid(),
+                    'type' => $dto->type,
+                    'reference_type' => $dto->referenceType,
+                    'reference_id' => $dto->referenceId,
+                    'idempotency_key' => $dto->idempotencyKey,
+                    'payload_hash' => $payloadHash,
+                    'description' => $dto->description,
+                    'meta' => $dto->meta,
+                    'posted_at' => $dto->postedAt ?? now(),
+                    'created_by' => $dto->createdBy,
                 ]);
+
+                // Save entries & update account cached balances
+                $now = now();
+                foreach ($calculatedEntries as $entryData) {
+                    LedgerEntry::create([
+                        'transaction_id' => $transaction->id,
+                        'account_id' => $entryData['account_id'],
+                        'asset_code' => $entryData['asset_code'],
+                        'amount' => $entryData['amount'],
+                        'balance_after' => $entryData['balance_after'],
+                        'created_at' => $now,
+                    ]);
+                }
+
+                foreach ($accounts as $accId => $account) {
+                    $finalBalance = $runningBalances[$accId];
+                    $account->cached_balance = $finalBalance->toScale(18, RoundingMode::HalfUp)->__toString();
+                    $account->save();
+                }
+
+                return $transaction->load('entries.account');
+            });
+        } catch (QueryException $e) {
+            if ($this->isUniqueViolation($e)) {
+                $winner = LedgerTransaction::with('entries.account')
+                    ->where('idempotency_key', $dto->idempotencyKey)
+                    ->first();
+
+                if ($winner !== null) {
+                    if ($winner->payload_hash !== null && $winner->payload_hash !== $payloadHash) {
+                        throw new IdempotencyConflictException(
+                            $dto->idempotencyKey,
+                            (string) $winner->payload_hash,
+                            $payloadHash
+                        );
+                    }
+
+                    return $winner;
+                }
             }
 
-            foreach ($accounts as $accId => $account) {
-                $finalBalance = $runningBalances[$accId];
-                $account->cached_balance = $finalBalance->toScale(18, RoundingMode::HalfUp)->__toString();
-                $account->save();
-            }
+            throw $e;
+        }
+    }
 
-            return $transaction->load('entries.account');
-        });
+    protected function executeTransaction(callable $callback): mixed
+    {
+        return DB::transaction($callback);
+    }
+
+    private function isUniqueViolation(QueryException $e): bool
+    {
+        $message = strtolower($e->getMessage());
+        $code = (string) $e->getCode();
+
+        $isConstraintViolation = in_array($code, ['23000', '23505'], true)
+            || ($e->errorInfo[1] ?? null) === 1062
+            || ($e->errorInfo[1] ?? null) === 19;
+
+        if (! $isConstraintViolation) {
+            return false;
+        }
+
+        return str_contains($message, 'bank_ledger_transactions')
+            || str_contains($message, 'idempotency_key');
     }
 
     public function computePayloadHash(PostingDTO $dto): string

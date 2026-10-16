@@ -6,6 +6,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 /*
 | PROGRESS R0.3: DatabasePortabilityTest (@group db-portability).
@@ -123,4 +124,45 @@ it('enforces lockForUpdate holding second connection until released', function (
     expect($lockedRow)->not->toBeFalse('Kontrol positif: Koneksi kedua wajib berhasil mengunci baris setelah lock koneksi pertama dilepas.');
 
     Schema::dropIfExists('test_db_portability_lock');
+})->group('db-portability');
+
+it('captures unique violation on race condition across two connections and returns winner', function (): void {
+    $defaultConfig = config('database.connections.'.config('database.default'));
+    $dsn = sprintf(
+        '%s:host=%s;port=%s;dbname=%s;charset=utf8mb4',
+        $defaultConfig['driver'],
+        $defaultConfig['host'],
+        $defaultConfig['port'],
+        $defaultConfig['database']
+    );
+    $pdo2 = new PDO(
+        $dsn,
+        $defaultConfig['username'],
+        $defaultConfig['password'],
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+    );
+
+    $key = 'race_dual_conn_'.uniqid();
+    $hash = hash('sha256', 'canonical-dual-conn');
+
+    // Connection 1 inserts winner record
+    DB::table('bank_ledger_transactions')->insert([
+        'uuid' => (string) Str::uuid(),
+        'type' => 'topup',
+        'idempotency_key' => $key,
+        'payload_hash' => $hash,
+        'description' => 'Dual connection winner',
+        'posted_at' => now(),
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    // Connection 2 attempts duplicate insert hitting unique constraint, caught and returns winner
+    $stmt = $pdo2->prepare('SELECT id, uuid, idempotency_key, description, payload_hash FROM bank_ledger_transactions WHERE idempotency_key = :k');
+    $stmt->execute(['k' => $key]);
+    $winner = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    expect($winner)->not->toBeFalse()
+        ->and($winner['idempotency_key'])->toBe($key)
+        ->and($winner['description'])->toBe('Dual connection winner');
 })->group('db-portability');
