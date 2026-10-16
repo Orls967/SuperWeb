@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Banking\Domain\Enums;
 
-enum TransactionType: string
+use Modules\Banking\Contracts\TransactionTypeRegistry;
+
+enum TransactionType: string implements TransactionTypeRegistry
 {
     case TOPUP = 'topup';
     case TRANSFER = 'transfer';

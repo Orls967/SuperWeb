@@ -302,3 +302,39 @@ test('model LedgerEntry melempar ImmutableRecordException pada updating dan dele
         ->and(fn () => $entry->delete())
         ->toThrow(ImmutableRecordException::class);
 });
+
+test('posting dengan tipe transaksi lebih dari 32 karakter melempar InvalidArgumentException', function () {
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
+
+    $dto = new PostingDTO(
+        type: str_repeat('A', 33),
+        description: 'Type length exceeding 32 chars',
+        idempotencyKey: 'type_len_key_001',
+        entries: [
+            PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', -20000),
+            PostingEntryDTO::forAccount($userAcc->id, 'IDR', 20000),
+        ],
+    );
+
+    expect(fn () => $this->ledger->post($dto))
+        ->toThrow(InvalidArgumentException::class, 'melebihi batas 32 karakter');
+});
+
+test('posting dengan tipe transaksi tidak terdaftar melempar InvalidArgumentException', function () {
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
+
+    $dto = new PostingDTO(
+        type: 'UNREGISTERED_TYPE_XYZ',
+        description: 'Unregistered transaction type',
+        idempotencyKey: 'unreg_type_key_001',
+        entries: [
+            PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', -20000),
+            PostingEntryDTO::forAccount($userAcc->id, 'IDR', 20000),
+        ],
+    );
+
+    expect(fn () => $this->ledger->post($dto))
+        ->toThrow(InvalidArgumentException::class, 'tidak terdaftar di registry');
+});

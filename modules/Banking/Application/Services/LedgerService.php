@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
+use Modules\Banking\Application\Registry\TransactionTypeRegistry;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Exceptions\AccountFrozenException;
 use Modules\Banking\Domain\Exceptions\AssetMismatchException;
@@ -25,6 +26,14 @@ class LedgerService implements Ledger
 {
     public function post(PostingDTO $dto): LedgerTransaction
     {
+        if (strlen($dto->type) > 32) {
+            throw new InvalidArgumentException("Tipe transaksi '{$dto->type}' melebihi batas 32 karakter.");
+        }
+
+        if (! TransactionTypeRegistry::isValid($dto->type)) {
+            throw new InvalidArgumentException("Tipe transaksi '{$dto->type}' tidak terdaftar di registry enum tipe transaksi.");
+        }
+
         if (count($dto->entries) < 2) {
             throw new InvalidArgumentException('Transaksi ledger harus memiliki minimal 2 entri.');
         }

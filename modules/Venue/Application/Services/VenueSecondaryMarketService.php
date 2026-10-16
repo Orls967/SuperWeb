@@ -94,7 +94,7 @@ class VenueSecondaryMarketService
 
             // Ledger posting: Buyer pays totalPrice -> Seller payout + Platform Fee + Entertainment Tax
             $this->ledgerService->post(new PostingDTO(
-                type: 'TICKET_SECONDARY_RESALE_SETTLEMENT',
+                type: 'TICKET_SECONDARY_RESALE_SETTLE',
                 description: "Secondary ticket resale settlement for listing {$resale->resale_code}",
                 idempotencyKey: "VEN-RSL-{$resale->resale_code}",
                 entries: Posting::lines()

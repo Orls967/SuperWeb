@@ -151,7 +151,7 @@ class HotelFranchiseAndBrandService
             ]);
 
             $this->ledgerService->post(new PostingDTO(
-                type: 'HOTEL_RATE_PARITY_PENALTY_ACCRUAL',
+                type: 'HOTEL_RATE_PARITY_PENALTY',
                 description: "Rate parity undercut penalty levy on {$otaChannel} for property {$property->property_code}",
                 idempotencyKey: "HTL-RPV-{$violation->violation_code}",
                 entries: Posting::lines()

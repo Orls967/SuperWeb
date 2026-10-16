@@ -148,7 +148,7 @@ class SuperAppAndCashbackService
             }
 
             $this->ledgerService->post(new PostingDTO(
-                type: 'RETAIL_BUNDLE_SUBSCRIPTION_BILLING',
+                type: 'RETAIL_BUNDLE_SUB_BILLING',
                 description: "Cross-lini bundle subscription {$subCode} for period {$period}",
                 idempotencyKey: 'RET-'.$subCode,
                 entries: $lines->toEntries('IDR'),

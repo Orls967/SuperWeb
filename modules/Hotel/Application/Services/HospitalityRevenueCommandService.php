@@ -80,7 +80,7 @@ class HospitalityRevenueCommandService
 
             // Post syndication rental yield in ledger
             $this->ledgerService->post(new PostingDTO(
-                type: 'HOTEL_SYNDICATION_YIELD_DISTRIBUTION',
+                type: 'HTL_SYNDICATE_YIELD_DISTRIB',
                 description: "Syndication token rental yield for property {$property->property_code} to investor {$investorUserId}",
                 idempotencyKey: "HTL-SYN-{$syndication->id}",
                 entries: Posting::lines()

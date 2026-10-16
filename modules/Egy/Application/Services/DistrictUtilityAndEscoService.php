@@ -74,7 +74,7 @@ class DistrictUtilityAndEscoService
 
         return DB::transaction(function () use ($params, $elec, $water, $cooling, $gas, $total, $invoiceNumber) {
             $tx = $this->ledgerService->post(new PostingDTO(
-                type: 'ENERGY_CONSOLIDATED_UTILITY_INVOICE',
+                type: 'ENERGY_CONSOLIDATED_UTILITY',
                 description: "Consolidated utility invoice {$invoiceNumber} for property {$params['property_id']}",
                 idempotencyKey: 'EGY-INV-'.$invoiceNumber,
                 entries: Posting::lines()
