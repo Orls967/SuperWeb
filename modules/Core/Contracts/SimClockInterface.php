@@ -7,7 +7,7 @@ namespace Modules\Core\Contracts;
 use Carbon\CarbonInterface;
 use Modules\Core\Domain\Models\SimRun;
 
-interface SimClockInterface
+interface SimClockInterface extends ClockInterface
 {
     /**
      * Get the current virtual timestamp.
