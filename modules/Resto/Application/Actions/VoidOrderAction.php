@@ -59,9 +59,9 @@ class VoidOrderAction
                     if ($intent) {
                         $this->paymentGateway->refund(
                             intent: $intent,
+                            refundId: "resto_order_refund_{$lockedOrder->id}",
                             refundAmount: $lockedOrder->payableAmount(),
                             reason: "Void pesanan #{$lockedOrder->number}: {$reason}",
-                            idempotencyKey: "resto:order:refund:{$lockedOrder->id}"
                         );
                     }
                 } elseif ($lockedOrder->payment_method === 'cash') {

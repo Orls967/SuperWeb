@@ -93,7 +93,8 @@ class InvoicePaymentController extends Controller
                 ? Money::IDR($validated['amount'])
                 : null;
 
-            $paymentGateway->refund($intent, $refundMoney, $validated['reason']);
+            $refundId = "refund_booking_{$booking->id}_".($validated['amount'] ?? 'full');
+            $paymentGateway->refund($intent, $refundId, $refundMoney, $validated['reason']);
 
             return back()->with('success', "Refund untuk invoice {$booking->booking_code} berhasil diproses.");
         } catch (\Throwable $e) {

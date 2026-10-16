@@ -41,7 +41,7 @@ class CancelOrderAction extends BaseAction
                     ->first();
 
                 if ($intent) {
-                    $this->paymentGateway->refund($intent, $order->payableAmount(), $reason);
+                    $this->paymentGateway->refund($intent, "order_cancel_{$order->id}", $order->payableAmount(), $reason);
 
                     return $order->fresh();
                 }

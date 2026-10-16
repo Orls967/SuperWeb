@@ -26,6 +26,7 @@ use Modules\Payment\Domain\Events\PaymentRefunded;
 use Modules\Payment\Domain\Events\PaymentReleased;
 use Modules\Payment\Domain\Exceptions\InvalidPaymentStateException;
 use Modules\Payment\Domain\Models\PaymentIntent;
+use Modules\Payment\Domain\Models\Refund;
 use Modules\Shared\Domain\ValueObjects\Money;
 
 class PaymentGatewayService implements PaymentGateway
@@ -321,11 +322,27 @@ class PaymentGatewayService implements PaymentGateway
         });
     }
 
-    public function refund(PaymentIntent $intent, ?Money $refundAmount = null, string $reason = '', ?string $idempotencyKey = null): PaymentIntent
-    {
-        return DB::transaction(function () use ($intent, $refundAmount, $reason, $idempotencyKey) {
+    public function refund(
+        PaymentIntent $intent,
+        string $refundId,
+        ?Money $refundAmount = null,
+        string $reason = '',
+        ?string $idempotencyKey = null
+    ): PaymentIntent {
+        $trimmedRefundId = trim($refundId);
+        if ($trimmedRefundId === '') {
+            throw new InvalidArgumentException('ID permintaan refund wajib diisi.');
+        }
+
+        return DB::transaction(function () use ($intent, $trimmedRefundId, $refundAmount, $reason, $idempotencyKey) {
             /** @var PaymentIntent $locked */
             $locked = PaymentIntent::query()->lockForUpdate()->findOrFail($intent->getKey());
+
+            $existingRefund = Refund::find($trimmedRefundId);
+            if ($existingRefund !== null) {
+                // Refund dengan ID permintaan yang sama sudah pernah diproses: idempotent replay
+                return $locked;
+            }
 
             $capturedAmount = $locked->money();
             $alreadyRefunded = Money::of($locked->currency, $locked->refunded_amount ?: '0');
@@ -344,8 +361,8 @@ class PaymentGatewayService implements PaymentGateway
                 throw new InvalidArgumentException('Nominal refund tidak boleh negatif.');
             }
 
-            // Deterministic key: intent + refund amount (no randomness) so retries deduplicate.
-            $key = $idempotencyKey ?? ('tx_ref_'.$locked->id.'_'.$actualRefund->amount->__toString());
+            // Key deterministik sesuai R1.6: refund:{refund_id}
+            $key = $idempotencyKey ?? "refund:{$trimmedRefundId}";
 
             // Replay guard must run before any state/limit checks so retries return the original result.
             if (LedgerTransaction::where('idempotency_key', $key)->exists()) {
@@ -414,13 +431,25 @@ class PaymentGatewayService implements PaymentGateway
                 referenceId: $locked->id,
                 meta: [
                     'intent_id' => $locked->id,
+                    'refund_id' => $trimmedRefundId,
                     'refund_amount' => $actualRefund->amount->__toString(),
                     'reason' => $reason,
                 ],
                 postedAt: now(),
             );
 
-            $this->ledger->post($dto);
+            $ledgerTx = $this->ledger->post($dto);
+
+            // Simpan entitas Refund di tabel pay_refunds
+            Refund::create([
+                'id' => $trimmedRefundId,
+                'payment_intent_id' => $locked->id,
+                'amount' => $actualRefund->amount->__toString(),
+                'currency' => $actualRefund->assetCode,
+                'reason' => $reason,
+                'status' => 'succeeded',
+                'ledger_transaction_id' => $ledgerTx->id,
+            ]);
 
             $newRefunded = $alreadyRefunded->add($actualRefund);
             $locked->refunded_amount = $newRefunded->amount->__toString();

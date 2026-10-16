@@ -9,6 +9,7 @@ use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Payment\Contracts\PaymentGateway;
 use Modules\Shared\Domain\ValueObjects\Money;
 
@@ -129,10 +130,17 @@ test('refund mengembalikan dana yang telah di-charge ke dompet pembayar', functi
     $intent = $this->gateway->charge($payable, 'charge_to_refund');
     expect($this->user->walletBalance('IDR')->amount->toInt())->toBe(4200000);
 
-    $refunded = $this->gateway->refund($intent, Money::IDR(800000), 'Customer batal');
+    $refunded = $this->gateway->refund($intent, 'ref_basic_800k', Money::IDR(800000), 'Customer batal');
     expect($refunded->isRefunded())->toBeTrue()
         ->and($this->user->walletBalance('IDR')->amount->toInt())->toBe(5000000)
         ->and($payable->fresh()->isRefunded())->toBeTrue();
+
+    $this->assertDatabaseHas('pay_refunds', [
+        'id' => 'ref_basic_800k',
+        'payment_intent_id' => $intent->id,
+        'amount' => '800000',
+        'status' => 'succeeded',
+    ]);
 });
 
 test('command payment:release-expired-holds melepaskan intent yang sudah expired', function () {
@@ -172,7 +180,7 @@ test('partial refund membalik pendapatan proporsional sehingga ledger tetap seim
     $before = $this->user->fresh()->walletBalance('IDR')->amount->toInt();
 
     // Refund 30% -> ledger wajib tetap seimbang (sebelumnya membalik full split -> Unbalanced)
-    $refunded = $this->gateway->refund($intent, Money::IDR(300000), 'bayar sebagian', 'probe_partial_refund_r1');
+    $refunded = $this->gateway->refund($intent, 'probe_partial_refund_r1', Money::IDR(300000), 'bayar sebagian');
 
     expect($this->user->fresh()->walletBalance('IDR')->amount->toInt())->toBe($before + 300000)
         ->and($refunded->isCaptured())->toBeTrue()
@@ -184,7 +192,7 @@ test('partial refund membalik pendapatan proporsional sehingga ledger tetap seim
     $this->artisan('bank:reconcile')->assertSuccessful();
 });
 
-test('refund berulang dengan key sama tidak menggandakan pengembalian', function () {
+test('refund berulang dengan id sama menghasilkan tepat satu posting dan entitas pay_refunds', function () {
     $payable = createMockPayable(
         userId: $this->user->id,
         amount: 500000,
@@ -194,13 +202,22 @@ test('refund berulang dengan key sama tidak menggandakan pengembalian', function
     $intent = $this->gateway->charge($payable, 'probe_idem_refund');
     $start = $this->user->fresh()->walletBalance('IDR')->amount->toInt();
 
-    $this->gateway->refund($intent, Money::IDR(500000), 'full', 'probe_idem_refund_key');
+    $this->gateway->refund($intent, 'probe_idem_refund_key', Money::IDR(500000), 'full');
     $afterFirst = $this->user->fresh()->walletBalance('IDR')->amount->toInt();
 
-    // Retry identik -> tidak menambah saldo lagi
-    $this->gateway->refund($intent->fresh(), Money::IDR(500000), 'full', 'probe_idem_refund_key');
+    // Pastikan 1 entitas pay_refunds tercatat
+    $this->assertDatabaseCount('pay_refunds', 1);
+    $initialTxCount = LedgerTransaction::where('idempotency_key', 'refund:probe_idem_refund_key')->count();
+    expect($initialTxCount)->toBe(1);
+
+    // Retry identik dengan id sama -> tidak menambah saldo lagi dan tidak menambah posting
+    $this->gateway->refund($intent->fresh(), 'probe_idem_refund_key', Money::IDR(500000), 'full');
     expect($this->user->fresh()->walletBalance('IDR')->amount->toInt())->toBe($afterFirst)
         ->and($afterFirst)->toBe($start + 500000);
+
+    $this->assertDatabaseCount('pay_refunds', 1);
+    $afterRetryTxCount = LedgerTransaction::where('idempotency_key', 'refund:probe_idem_refund_key')->count();
+    expect($afterRetryTxCount)->toBe(1);
 
     $this->artisan('bank:reconcile')->assertSuccessful();
 });
@@ -209,9 +226,9 @@ test('refund melebihi sisa tangkapanan ditolak', function () {
     $payable = createMockPayable(userId: $this->user->id, amount: 400000);
     $intent = $this->gateway->charge($payable, 'probe_over_refund');
 
-    $this->gateway->refund($intent, Money::IDR(300000), 'partial', 'probe_over_1');
+    $this->gateway->refund($intent, 'probe_over_1', Money::IDR(300000), 'partial');
 
-    expect(fn () => $this->gateway->refund($intent->fresh(), Money::IDR(300000), 'lagi', 'probe_over_2'))
+    expect(fn () => $this->gateway->refund($intent->fresh(), 'probe_over_2', Money::IDR(300000), 'lagi'))
         ->toThrow(InvalidArgumentException::class, 'melebihi jumlah yang di-capture');
 
     $this->artisan('bank:reconcile')->assertSuccessful();
