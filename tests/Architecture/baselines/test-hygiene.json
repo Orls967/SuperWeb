@@ -40,13 +40,10 @@
             }
         },
         "T4": {
-            "total": 2,
+            "total": 1,
             "entries": {
                 "modules/Asset/routes/web.php": {
                     "modul Asset tanpa test HTTP": 1
-                },
-                "modules/Payment/routes/web.php": {
-                    "modul Payment tanpa test HTTP": 1
                 }
             }
         }

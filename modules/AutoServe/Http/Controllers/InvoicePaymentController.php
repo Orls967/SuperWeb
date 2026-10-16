@@ -79,6 +79,8 @@ class InvoicePaymentController extends Controller
         $validated = $request->validate([
             'reason' => ['required', 'string', 'min:3', 'max:255'],
             'amount' => ['nullable', 'numeric', 'min:1'],
+            'refund_id' => ['nullable', 'string', 'max:128'],
+            'idempotency_key' => ['nullable', 'string', 'max:128'],
         ], [
             'reason.required' => 'Alasan refund wajib diisi.',
         ]);
@@ -93,7 +95,19 @@ class InvoicePaymentController extends Controller
                 ? Money::IDR($validated['amount'])
                 : null;
 
-            $refundId = "refund_booking_{$booking->id}_".($validated['amount'] ?? 'full');
+            $explicitId = $validated['refund_id']
+                ?? $validated['idempotency_key']
+                ?? $request->header('Idempotency-Key');
+
+            $refundId = ($explicitId !== null && trim((string) $explicitId) !== '')
+                ? trim((string) $explicitId)
+                : sprintf(
+                    'refund_booking_%s_%s_%s',
+                    $booking->id,
+                    $validated['amount'] ?? 'full',
+                    substr(sha1(trim((string) $validated['reason'])), 0, 12)
+                );
+
             $paymentGateway->refund($intent, $refundId, $refundMoney, $validated['reason']);
 
             return back()->with('success', "Refund untuk invoice {$booking->booking_code} berhasil diproses.");
