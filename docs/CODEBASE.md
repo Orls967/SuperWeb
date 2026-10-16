@@ -675,7 +675,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `store:cancel-stale-orders` | **`everyTenMinutes()`** | Batalkan pesanan pending payment yang melewati batas waktu dan lepaskan reservasi stok |
 | `sup:remind-certifications` | **`dailyAt('07:10')`** | Peringatkan sertifikasi pemasok yang akan kedaluwarsa atau sudah kedaluwarsa |
 | `sup:scan-risks` | **`dailyAt('06:45')`** | Pindai risiko pemasok: konsentrasi, sertifikasi kedaluwarsa, sanksi, dan skor rendah |
-| `super:health-check` | `manual` | Jalankan diagnosa komprehensif kesehatan seluruh ekosistem platform (DB, Cache, Storage, Ledger, Passport, Mall, Resto) |
+| `super:health-check` | `manual` | Jalankan diagnosa komprehensif kesehatan seluruh ekosistem platform 12 pilar (DB, Cache, Storage, Ledger, Passport, Mall, Resto, Logistik, Aset, Pembelian, Kontrak, Manufaktur) |
 | `test` | `manual` | Run the application tests |
 | `test:mutate` | `manual` | Jalankan mutation testing Pest (--mutate) dengan ambang skor minimum 60% |
 | `tf:audit` | `manual` | Audit trade finance instruments (L/C exposure, bank guarantees, trade loans, and collections) |
