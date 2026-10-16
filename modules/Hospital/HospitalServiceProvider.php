@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Hospital;
 
 use Illuminate\Support\ServiceProvider;

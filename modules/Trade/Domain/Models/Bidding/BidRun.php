@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Trade\Domain\Models\Bidding;
 
 use Illuminate\Database\Eloquent\Model;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Hcm\Domain\Models\Gig;
 
 use Illuminate\Database\Eloquent\Model;

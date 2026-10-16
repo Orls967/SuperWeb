@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Logistics\Application\Services\Autonomous;
 
 use Illuminate\Support\Facades\DB;

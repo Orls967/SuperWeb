@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Proptech\Domain\Models\Bim;
 
 use Illuminate\Database\Eloquent\Model;

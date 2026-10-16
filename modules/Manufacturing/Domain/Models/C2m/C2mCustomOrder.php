@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Manufacturing\Domain\Models\C2m;
 
 use Illuminate\Database\Eloquent\Model;

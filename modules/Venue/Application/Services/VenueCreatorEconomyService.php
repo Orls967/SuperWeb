@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Venue\Application\Services;
 
 use Illuminate\Support\Facades\DB;

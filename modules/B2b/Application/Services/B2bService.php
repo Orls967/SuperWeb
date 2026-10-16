@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\B2b\Application\Services;
 
 use Illuminate\Support\Facades\DB;

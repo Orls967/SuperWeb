@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\TradeFinance\Application\Services\CrossBorder;
 
 use Illuminate\Support\Facades\DB;

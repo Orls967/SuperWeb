@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Logistics\Application\Services\Reverse;
 
 use Illuminate\Support\Facades\DB;

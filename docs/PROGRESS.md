@@ -1301,7 +1301,28 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 ### FASE R4 — BATAS MODUL & KEPEMILIKAN DATA
 
 
-> **Status audit:** ⬜ BELUM · Prasyarat: R1.
+> **Status audit:** 🟡 IN PROGRESS (2026-10-16) · Prasyarat: R0 ✅.
+
+#### DoR Fase R4 — Batas Modul & Kepemilikan Data
+- Disetujui pemilik: [x] 2026-10-16 (chat)
+- Tujuan bisnis: Menegakkan batas arsitektur modular yang ketat dan kepemilikan data antar-modul, mengeliminasi dependensi terbalik kernel ke modul bisnis (A9 = 0), memberlakukan deklarasi strict types di seluruh modul (A11 = 0), memetakan registrasi prefiks tabel di config/modules.php, mengklasifikasikan 345 service di modul Integration, meratchet baseline A1 dan A2 dengan dokumentasi keputusan P10, mengamankan model Eloquent dari mass-assignment rentan ($guarded = [] diganti $fillable eksplisit, A10 = 0), serta memasang foreign key dan index pada kolom relasi intra-modul (A12 = 0).
+- Modul pemilik: Seluruh modul platform (Core, Shared, Integration, serta 23 modul bisnis).
+- Prasyarat & statusnya: R0 ✅, R1 ✅, R2 ✅, R3 ✅, R5 ✅.
+- Tabel angka awal vs target:
+  - `arch:scan` A9 (dependensi terbalik kernel): 34 → 0
+  - `arch:scan` A10 ($guarded = []): 162 → 0
+  - `arch:scan` A11 (tanpa strict_types): 145 → 0
+  - `arch:scan` A12 (FK missing intra-modul): 588 → 0 (atau terbaseline bersih)
+  - `arch:scan` A1 (Domain lintas modul) & A2 (lintas prefiks tabel): diratchet turun
+- Daftar test wajib:
+  - `ModuleBoundariesTest`
+  - `ModulePrefixRegistryTest`
+  - `KernelZeroBusinessDependencyTest`
+  - `IntegrationServicesClassificationTest`
+  - `StrictTypesComplianceTest`
+  - `ModelFillableIntegrityTest`
+- Jalan pintas yang dihindari: menaikkan baseline tanpa keputusan pemilik, mengabaikan reverse dependencies dengan allowlist liar, mass-assignment bypass tanpa fillable eksplisit, strict_types dilewati pada file baru/modifikasi.
+
 - [ ] R4.1 **Arch test generik** (K-07): untuk setiap pasangan modul A≠B, `Modules\A` tidak boleh memakai `Modules\B\Domain` kecuali shared kernel yang ditetapkan (mis. `Shared\Ledger\*`); `Shared` & `Core` tidak boleh bergantung ke modul bisnis; seluruh `modules/` wajib `declare(strict_types=1)`.
   - Kriteria terima: aturan berbasis daftar modul dinamis (bukan pasangan manual); pelanggaran yang tersisa hanya di baseline ber-tanggal-kedaluwarsa.
 - [ ] R4.2 **Registry prefiks tabel** (K-05): `config/modules.php` (atau setara) memetakan prefiks → modul; `arch:scan` A2 menolak `Schema::create` dengan prefiks milik modul lain dan `DB::table('{prefiks lain}_…')`. Selesaikan bentrokan: `prc_` (Pricing → `pric_`), `ven_` (Vending → `vnd_`), `resto_` di CloudKitchen → `ckt_`, `oto_` (gabung Telematics/Ev/Fleet jadi modul Mobility), serta tabel `esg_/hcm_/fin_/ins_/gov_/platform_/sim_/…` buatan Integration → pindah ke modul pemilik.

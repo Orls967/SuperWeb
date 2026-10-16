@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Hcm\Application\Services\Gig;
 
 use Carbon\Carbon;

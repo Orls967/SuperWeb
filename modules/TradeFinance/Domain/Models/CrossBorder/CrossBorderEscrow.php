@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\TradeFinance\Domain\Models\CrossBorder;
 
 use Illuminate\Database\Eloquent\Model;

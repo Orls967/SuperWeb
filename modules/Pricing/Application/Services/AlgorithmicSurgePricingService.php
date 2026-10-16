@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Pricing\Application\Services;
 
 use Carbon\Carbon;

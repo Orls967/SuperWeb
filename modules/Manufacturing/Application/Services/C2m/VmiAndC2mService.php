@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Manufacturing\Application\Services\C2m;
 
 use Illuminate\Support\Facades\DB;
