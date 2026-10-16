@@ -1467,3 +1467,32 @@
   - Mencegah regresi arsitektur dan menjamin bahwa dependensi baru antar modul domain dilarang keras, sembari mempertahankan stabilitas sistem hingga pemisahan skema fisik dilakukan di Fase R7.
 - **Verification:**
   - `php artisan arch:scan` membuktikan 0 pelanggaran baru, A1 = 169, A2 = 5.208, A9 = 0, A10 = 0, A11 = 0, dan A12 = 0.
+
+<a id="2026-10-17-r6-domain-and-reconciliation"></a>
+## 2026-10-17: Verifikasi Ulang Item Fase 26–63, Eliminasi A8 (setTestNow), Kebenaran Domain & Integrasi Uang (Fase R6)
+- **Context:**
+  - Sesuai PROGRESS R6.1–R6.6, Fase R6 bertugas memverifikasi ulang integritas item fase 26–63, mengoreksi domain (K-30), menyelesaikan integrasi uang di modul 60–63, dan menuntaskan eliminasi residu aturan arsitektur A8.
+- **Decision:**
+  1. **Eliminasi Penuh Aturan A8 (setTestNow di Luar Tests):**
+     - Membuang pemanggilan `Carbon::setTestNow()` pada `Modules\Core\Application\Services\SimClockService` (metode `initRun`, `advanceSeconds`, dan `reset`). `SimClockService` beroperasi secara mandiri mengelola waktu virtual tanpa mencemari clock global Carbon proses. Baseline A8 turun dari 3 menjadi 0 (`A8 = 0`).
+  2. **Kebenaran Domain Telematics & OBD2 DTC (K-30 / R6.5):**
+     - `TelematicsIngestService` menetapkan konstanta `CRITICAL_DTC_CODES` (P0217, P0219, P0300–P0304, P0520, P0524, P0606, P0A80) yang secara tegas mengaktifkan penghentian darurat armada (grounding) dan membuat draf booking servis. Kode DTC penasehat/informasional (mis. efisiensi katalis P0420) tidak melakukan grounding perangkat.
+  3. **Kebenaran Domain HCM & Pajak/BPJS (K-30 / R6.3):**
+     - `HcmService` menghitung potongan BPJS Ketenagakerjaan (3%), BPJS Kesehatan (1%), dan PPh 21 tarif efektif rata-rata (TER 5%) dengan pembulatan integer half-up tanpa floating-point. Biaya tenaga kerja dialokasikan secara presisi ke perintah kerja manufaktur melalui `allocateLaborToProduction`.
+  4. **Kebenaran Domain Riset Klinis, PLM & Sewa Armada (K-30 / R6.5):**
+     - Riset klinis RS (`ClinicalTrialAndResearchService`): Menggunakan alokasi pseudo-random deterministik dengan hash anonim SHA-256 dan validasi penolakan subjek ganda pada studi yang sama.
+     - PLM (`PlmService`): Tahapan stage-gate (`ideation` hingga `commercial_launch`) diverifikasi dengan validasi transisi non-reverting, dilengkapi rantai hash kriptografis ECO yang diaudit via `plm:audit`.
+     - Sewa armada (`FleetLeasingService`): Mengunci armada terhadap double-leasing, mencatat amortisasi pendapatan sewa bulanan idempoten, terhubung dengan akuntansi hak guna aset/ROU pada `Asset\LeaseService`.
+  5. **Integrasi Finansial Modul 60–63 (R6.4):**
+     - ESG: Pencatatan inventaris sertifikat kredit karbon terverifikasi dan retirement offset terhubung dengan pelaporan emisi Scope 1 & 2 serta audit integritas `esg:audit`.
+     - B2B Marketplace: Sistem escrow pesanan grosir dan lelang surplus diaudit dengan nol diskrepansi melalui `b2b:audit`.
+     - Agribisnis: Penerimaan panen komoditas, grading mutu, dan pemotongan talangan uang muka petani terverifikasi melalui `agri:audit`.
+     - EPC: Akumulasi WBS S-Curve, sertifikat progres bulanan, pemotongan retensi, dan kapitalisasi CIP ke akun Aset Tetap terverifikasi via `epc:audit`.
+  6. **Penataan Lingkup Fase R7 (P10 / R6.1 & R6.2):**
+     - Sisa implementasi perluasan vertikal lini bisnis modular (Rumah Sakit, Hotel, Venue, Tambang, dsb.) dialihkan secara terstruktur ke siklus per lini Fase R7 (R7.1–R7.4) sesuai `docs/INTEGRATION_SERVICES_CLASSIFICATION.md`.
+- **Reason:**
+  - Menghilangkan utang teknis jam global (A8=0), menegakkan invarian domain medis, industri, dan keuangan yang jujur tanpa penyederhanaan fiktif, serta memastikan setiap aliran nilai terhubung dengan audit rantai nilai global.
+- **Verification:**
+  - `php artisan arch:scan` A8 = 0.
+  - Seluruh pengujian fitur terkait (`SimulationKernelTest`, `ClinicalTrialAndResearchTest`, `PlmTest`, `FleetTest`, `TelematicsTest`, `HcmTest`, `EsgTest`, `B2bTest`, `AgriTest`, `EpcTest`) lolos 100% (46 passed, 133 assertions).
+  - 12 audit modul rantai nilai (`chain:audit-all`) lulus 0 selisih.

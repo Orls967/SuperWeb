@@ -1491,7 +1491,20 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | - | - | Tidak ada minus terbuka (seluruh deliverable R5.1 s/d R5.6 serta minus warisan M-R0-4, M-R0-14, M-R0-15, M-R0-16 tuntas 100%) | - | - | - |
 
 ### FASE R6 — VERIFIKASI ULANG ITEM FASE 26–63
-> **Status audit:** ⬜ BELUM · Prasyarat: R1–R5.
+> **Status audit:** 🟡 IN PROGRESS (2026-10-17) · Prasyarat: R1–R5 ✅.
+
+#### DoR Fase R6 — Verifikasi Ulang Item Fase 26–63
+- Disetujui pemilik: [x] 2026-10-17 (chat)
+- Tujuan bisnis: Verifikasi ulang integritas deliverable fase 26–63, audit kebenaran domain HCM & Telematics, integrasi finansial ledger modul 60–63, dan eliminasi residu A8 (setTestNow di luar tests = 0).
+- Modul pemilik: `Party`, `Contract`, `Asset`, `Hcm`, `Telematics`, `Plm`, `Esg`, `B2b`, `Agri`, `Epc`, `Hospital`, `Fleet`, `Core` · Prasyarat: R1–R5 ✅
+- Angka awal vs target:
+  - `A8` (`setTestNow` di luar `tests/`): Awal = 3, Target = 0
+  - `A10` (`$guarded = []`): Awal = 0, Target = 0
+  - `A11` (`strict_types`): Awal = 0, Target = 0
+  - `A12` (`MissingForeignKeyRule`): Awal = 0, Target = 0
+- Daftar test wajib: `Modules\Core\tests\Feature\SimulationKernelTest`, `Modules\Hospital\tests\Feature\ClinicalTrialAndResearchTest`, `Modules\Plm\tests\Feature\PlmTest`, `Modules\Fleet\tests\Feature\FleetTest`, `Modules\Telematics\tests\Feature\TelematicsTest`, `Modules\Hcm\tests\Feature\HcmTest`, `Modules\Esg\tests\Feature\EsgTest`, `Modules\B2b\tests\Feature\B2bTest`, `Modules\Agri\tests\Feature\AgriTest`, `Modules\Epc\tests\Feature\EpcTest`.
+- Jalan pintas yang dihindari: X1–X25 (dilarang melemahkan test, dilarang silent default, dilarang modifikasi teks item tanpa P10).
+
 - [ ] R6.1 Untuk setiap item fase 26–46 bertanda ✅: tambahkan blok `Bukti:` (P2). Item yang ternyata tidak terbukti → `[ ]` + Register Minus.
 - [ ] R6.2 Untuk fase 🟡 (41, 47–54, 56, 57, 57B, 59–63): verifikasi per item; lengkapi yang kurang sebagai vertical slice atau turunkan klaim item lewat P10.
 - [ ] R6.3 Kerjakan ulang Fase 55 (API v2, webhook nyata, EDI parser minimal, scoping multi-entitas) dan Fase 58 (HCM: shift & absensi, payroll dengan aturan pajak/BPJS yang dinyatakan eksplisit, jurnal payroll & alokasi biaya ke Manufaktur) sesuai item aslinya.
