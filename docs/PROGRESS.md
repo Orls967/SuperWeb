@@ -513,8 +513,8 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-7 | R0.11 | 705 file & 853 tabel warisan di `modules/Integration` dibekukan via baseline `integration-freeze.json` (total 1.558 entri) | Belum dipindahkan ke modul domain yang sesuai | P2 | R4.4 (K2) |
 | ~~M-R0-8~~ | R0.11 | ~~94 lokasi pembuatan `LedgerAccount` langsung di test (T2)~~ | ~~Test lama mengaburkan status produksi dan kebersihan pengujian~~ | ~~P2~~ | Tuntas di R1.3: baseline T2 mencapai 0 via LedgerAccountsSeeder (sisa T1, T3, T4 dialihkan ke R5.5) |
 | M-R0-9 | R0.3 | CI run #38078763783 membuktikan job `gate-sqlite` dan `portability-mysql` (MySQL 8) keduanya HIJAU PENUH (SUCCESS, 2.524 test, 11.065 asersi); Draft PR #8 aktif; branch protection master menunggu aktivasi pemilik repo | Branch protection remote master menunggu hak akses admin pemilik | P2 | Menunggu aktivasi protection oleh pemilik |
-| M-R0-10 | R2.3 | `contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`) | Pembuatan klausa kontrak tidak dapat diakses via web UI | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
-| M-R0-11 | R2.3 | `contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view | Halaman laporan keuangan kontrak tidak bisa dibuka | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+| ~~M-R0-10~~ | R2.3 | ~~`contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`)~~ | ~~Pembuatan klausa kontrak tidak dapat diakses via web UI~~ | ~~P1~~ | Tuntas di R2.3 (commit `4d55b93`): escape sintaks `@{{nama_variabel}}` resmi Blade; test `ControllerErrorPathsAndContractViewsTest` |
+| ~~M-R0-11~~ | R2.3 | ~~`contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view~~ | ~~Halaman laporan keuangan kontrak tidak bisa dibuka~~ | ~~P1~~ | Tuntas di R2.3 (commit `4d55b93`): penanganan string/BackedEnum aman pada `contract_type`; test `ControllerErrorPathsAndContractViewsTest` |
 | ~~M-R0-12~~ | R3.1 | ~~`distribution.portal.home` → HTTP 403 untuk user dengan role `admin` (hanya allow distributor/partner)~~ | ~~Admin sistem tidak bisa membuka portal distributor untuk supervisi~~ | ~~P1~~ | Tuntas di R3.1 (D3): selector distributor untuk admin, audit log `distribution.portal.admin_view`, non-admin dilarang param `?distributor` (403); test `DistributorPortalSelectorTest` (commit `901caca`, `9016f13`) |
 | ~~M-R0-13~~ | R3.1 | ~~`storage.local.upload`: tidak terlindungi = P0 tidak terbukti (closure bawaan Laravel abort 403 bila URL signature tidak valid); belum terdokumentasi di route-roles~~ | ~~Perlu dokumentasi eksplisit signed route~~ | ~~P2~~ | Tuntas di R3.1 (D4): rute `storage.local.upload` terdokumentasi tipe `'signed'` di `route-roles.php`, test valid signature vs unauthorized 403 di `SignedStorageUploadTest` (commit `0dcf3f4`) |
 | M-R0-14 | R5.2 | `api:audit` tidak menyebut entitas/record yang rusak (hanya count dan pesan generik) | Penelusuran data korup memerlukan query manual ke database | P1 | ↪️ dialihkan ke R5.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
@@ -844,24 +844,196 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R1-8~~ | R1.10 | ~~Laporan gate `docs/gates/fase-r1.md` basi (mencatat commit `f17b6f1`, bukan HEAD `4f287a1`)~~ | ~~Laporan quality gate lokal tidak mencerminkan HEAD commit repositori~~ | ~~P2~~ | Tuntas (laporan quality gate docs/gates/fase-r1.md digenerate ulang dan disinkronkan dengan commit HEAD terakhir) |
 
 ### FASE R2 — BUG FUNGSIONAL TERVERIFIKASI
-> **Status audit:** 🟡 IN PROGRESS (2026-10-16) · Prasyarat: R1 ✅.
+> **Status audit:** 🔵 SIAP VERIFIKASI (2026-10-16) · Prasyarat: R1 ✅.
 
 #### DoR Fase R2 — Bug fungsional terverifikasi
 - Disetujui pemilik: [x]   2026-10-14 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) — DoR mencakup perbaikan bug fungsional K-16, K-22, K-29, serta perluasan lingkup untuk bug HTTP 500 modul Contract (M-R0-10 & M-R0-11) sesuai adendum M-R0-25.
-- [ ] R2.1 **Hitung tagihan hidang idempoten** (K-16): `CalculateHidangBillAction` hanya memproses item yang belum diputuskan; key HPP per item; pemanggilan ulang tanpa efek samping.
+- Tujuan bisnis: Memperbaiki 10 bug fungsional kritis terverifikasi di modul operasional utama (Resto, Procurement, Inventory, Core Outbox, Telematics, ESG, Integration, HCM, Contract) yang mengancam integritas stok fisik, kerahasiaan tender, reliabilitas event/webhook, dan akurasi data emisi/karyawan, mengeliminasi false success & silent default, serta menghapus seluruh error path HTTP 500 (A13=0) tanpa jalan pintas.
+- Modul pemilik & prefiks (KONSEP §A1) — bukan Integration:
+  - `Resto` (`resto_`): `CalculateHidangBillAction`, `RestoIngredientStockService`, `OrderItem`, `DisplayTray`.
+  - `Procurement` (`prc_`): `ProcurementService`, `TenderBid`.
+  - `Inventory` (`inv_`): `InventoryService`, `StockMovement`.
+  - `Core` (`core_`): `OutboxBusService`, `OutboxMessage`, `OutboxDispatch`, `DocumentNumberingService`.
+  - `Telematics` (`tlm_`): `TelematicsIngestService`, `TelematicsBaseline`, `TelematicsTick`.
+  - `Esg` (`esg_`): `EsgService`, `EsgEmissionRecord`.
+  - `Integration` (`intg_`): `IntegrationService`, `EnterpriseDigitalTrustService` (perbaikan bug & eliminasi status palsu).
+  - `Hcm` (`hcm_`): `HcmService`.
+  - `Contract` (`ctr_`): views Blade & casting enum.
+  - `Pricing`, `Agency`, `Distribution`: perbaikan jalur galat controller.
+- Prasyarat & statusnya (harus ✅): R0 ✅, R1 ✅.
+- Item yang dikerjakan sesi ini & yang ditunda (→ Register Minus):
+  - Dikerjakan: R2.1 (Hitung tagihan hidang idempoten), R2.2 (Blind tender), R2.3 (Jalur galat A13=0 & view Contract M-R0-10/M-R0-11), R2.4 (Inventory append-only & kontrak stok resto), R2.5 (Outbox andal, retry per-subscriber, klaim atomik, anti-SSRF), R2.6 (Telematics rolling baseline 7 hari, DTC kritis, dedup afterCommit), R2.7 (ESG validasi aktivitas emisi & penomoran dokumen urut), R2.8 (Eliminasi status sukses palsu EDI/webhook/trust), R2.9 (Hapus silent default HCM/Telematics/ESG), R2.10 (Quality gate penuh & penyiapan verifikasi).
+  - Ditunda: Tidak ada item R2 yang ditunda.
+- Entitas/tabel + state machine:
+  - `resto_order_items` (`consumed_state`: null → `consumed` | `returned`)
+  - `prc_tender_bids` (tambah kolom `offer_ciphertext` nullable; kolom `offer` tetap null sampai `openBids()`)
+  - `inv_stock_movements` (tambah kolom `reference_movement_id` bigint nullable FK; model immutable pada update/delete)
+  - `resto_ingredient_stocks` (unique composite index pada `outlet_id, ingredient_id`)
+  - `core_outbox_messages` & `core_outbox_dispatches` (klaim atomik, status per subscription: `pending` → `processing` → `success` | `failed`)
+- Posting ledger (kejadian → debit/kredit, akun di {M}Accounts):
+  - R2.1: HPP hidang diposting per item baru yang `consumed` (`key: resto:order:{order_id}:item:{item_id}:cogs`) menggunakan `Posting::lines()->debit(cogs)->credit(inventory)` (atau tanda sesuai `RestoAccounts` normal balance).
+- Event (produce/consume; katalog KONSEP §A4.2):
+  - `VehicleAnomalyDetected` dipancarkan di dalam `DB::afterCommit` dengan kunci dedup per jam `anomaly:{vehicleId}:{type}:{severity}:{hourBucket}`.
+- Rute/UI/menu + role & policy:
+  - Rute POS Resto: `POST /resto/pos/session/{session}/bill` (`[role: admin,cashier,outlet_manager]`).
+  - Rute Contract: `GET /contract/clauses/create` dan `GET /contract/reports` (`[role: admin,contract_manager]`).
+  - Rute Pricing, Agency, Distribution: perbaikan response redirect 302 + session error `withErrors()`.
+- Command/jadwal/tick handler:
+  - `TelematicsIngestService::ingestTick` menangani tick telematika dengan validasi 422, rolling baseline 7 hari, dan grounding hanya untuk DTC kritis.
+- Audit dua-sumber + fixture korupsi:
+  - `bank:reconcile`, `api:audit`, `chain:audit-all` tetap hijau.
+- Nama test (a)–(e) yang akan ditulis:
+  - `HidangBillIdempotencyTest` (R2.1)
+  - `BlindTenderSealTest` (R2.2)
+  - `ControllerErrorPathsAndContractViewsTest` (R2.3)
+  - `InventoryAppendOnlyAndContractTest` (R2.4)
+  - `OutboxReliabilityAndSsrfTest` (R2.5)
+  - `TelematicsTest` (R2.6)
+  - `EsgTest` (R2.7)
+  - `FakeStatusEliminationTest` (R2.8)
+  - `SilentDefaultEliminationTest` (R2.9)
+- Tingkat simulasi & tier skala: S1 (anti-SSRF, parsing EDI nyata, verifikasi dokumen riil), T0/T1.
+- Jalan pintas yang harus dihindari:
+  - Menghilangkan validasi atau mendiamkan exception (X25).
+  - Menyimpan plaintext tender sebelum `openBids()` (K-22).
+  - Memutasi baris `StockMovement` lama alih-alih append movement baru (K-24).
+  - Menandai sukses outbox/webhook/EDI tanpa eksekusi/respons nyata (K-31, X9).
+  - Mengubah teks item atau mengurangi cakupan tanpa penanda `⬇️` (X18, P10).
+  - Menaikkan baseline `arch-scan.json` (A13 wajib turun dari 15 ke 0, A2 turun).
+  - Menjalankan `git credential fill` atau `git push` (K-39).
+- [x] R2.1 **Hitung tagihan hidang idempoten** (K-16): `CalculateHidangBillAction` hanya memproses item yang belum diputuskan; key HPP per item; pemanggilan ulang tanpa efek samping.
   - Test wajib: panggil 2× → HPP terposting sekali, porsi etalase berkurang sekali, item `RETURNED` tidak diresirkulasi ulang.
-- [ ] R2.2 **Tender benar-benar tersegel** (K-22): skema commit–reveal atau isi penawaran terenkripsi sampai `openBids()`; perbaiki `TenderBid::isSealIntact()` (formula hash sama dengan saat menyegel) dan panggil saat pembukaan; tolak bid yang segelnya tidak cocok.
+  Bukti:
+    - jenis: fitur
+    - commit: bd31994
+    - file: modules/Resto/Application/Actions/CalculateHidangBillAction.php
+    - file: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php
+    - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::menghitung tagihan hidang dua kali memposting HPP tepat sekali dan mengurangi porsi tray sekali
+    - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::menghitung tagihan hidang dua kali tidak meresirkulasi ulang piring yang dikembalikan utuh
+    - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::memperbarui diskon pada hitung tagihan ulang hanya mengubah grand total tanpa efek samping stok atau ledger
+    - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::endpoint kalkulasi tagihan pos resto oleh role berhak dan tidak berhak
+    - akses: route POST /resto/pos/session/{session}/bill [role: admin,cashier,outlet_manager]
+    - gate: docs/gates/fase-r2.md
+- [x] R2.2 **Tender benar-benar tersegel** (K-22): skema commit–reveal atau isi penawaran terenkripsi sampai `openBids()`; perbaiki `TenderBid::isSealIntact()` (formula hash sama dengan saat menyegel) dan panggil saat pembukaan; tolak bid yang segelnya tidak cocok.
   - Test wajib: isi penawaran tidak terbaca sebelum dibuka; manipulasi isi setelah segel → ditolak saat open.
-- [ ] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
+  Bukti:
+    - jenis: fitur
+    - commit: a0124bc
+    - file: modules/Procurement/Application/Services/ProcurementService.php
+    - file: modules/Procurement/Domain/Models/TenderBid.php
+    - file: modules/Procurement/database/migrations/2026_10_16_000001_add_offer_ciphertext_to_prc_tender_bids_table.php
+    - file: modules/Procurement/tests/Feature/BlindTenderSealTest.php
+    - test: modules/Procurement/tests/Feature/BlindTenderSealTest.php::isi penawaran tidak terbaca offer null dan terenkripsi sebelum tender dibuka
+    - test: modules/Procurement/tests/Feature/BlindTenderSealTest.php::is seal intact mengembalikan true untuk penawaran sah dan false bila dimanipulasi
+    - test: modules/Procurement/tests/Feature/BlindTenderSealTest.php::open bids membuka seluruh penawaran tersegel dan memulihkan offer setelah tenggat
+    - test: modules/Procurement/tests/Feature/BlindTenderSealTest.php::manipulasi isi penawaran atau seal hash setelah segel ditolak saat open bids
+    - akses: route POST /procurement/tenders/{tender}/seal [role: admin,procurement,supplier]
+    - akses: route POST /procurement/tenders/{tender}/open [role: admin,procurement]
+    - gate: docs/gates/fase-r2.md
+- [x] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
   - Test wajib: test HTTP per jalur galat → redirect + session error (bukan 500).
-- [ ] R2.4 **Inventory benar-benar append-only** (K-24): `commit()`/`release()` membuat movement baru yang menautkan reservasi (tanpa mengubah baris lama); unique index `(outlet_id, ingredient_id)` + upsert atomik; akses tabel `resto_*` dipindah ke Contract milik Resto.
-- [ ] R2.5 **Outbox yang benar** (K-08, K-23, K-31): status dispatch per subscriber (retry hanya yang gagal); klaim pesan atomik antar-worker; target non-webhook dieksekusi lewat handler terdaftar (bukan ditandai sukses); allowlist host + tolak IP privat/link-local; `IntegrationService::dispatchWebhook()` lewat outbox nyata (atau diganti status `simulated_*`).
+  Bukti:
+    - jenis: fitur
+    - commit: 4d55b93
+    - file: modules/Agency/Http/Controllers/AgencyController.php
+    - file: modules/Distribution/Http/Controllers/DistributionController.php
+    - file: modules/Pricing/Http/Controllers/PricingController.php
+    - file: modules/Contract/resources/views/contract/clauses/create.blade.php
+    - file: modules/Contract/resources/views/contract/reports.blade.php
+    - file: tests/Feature/ControllerErrorPathsAndContractViewsTest.php
+    - test: tests/Feature/ControllerErrorPathsAndContractViewsTest.php::test_contract_clauses_create_renders_successfully
+    - test: tests/Feature/ControllerErrorPathsAndContractViewsTest.php::test_contract_reports_renders_successfully_with_active_contract
+    - test: tests/Feature/ControllerErrorPathsAndContractViewsTest.php::test_agency_approve_payout_redirects_with_errors_on_domain_exception
+    - test: tests/Feature/ControllerErrorPathsAndContractViewsTest.php::test_distribution_cover_territory_redirects_with_errors_on_domain_exception
+    - test: tests/Feature/ControllerErrorPathsAndContractViewsTest.php::test_pricing_store_price_list_item_redirects_with_errors_on_domain_exception
+    - minus: M-R0-10
+    - minus: M-R0-11
+    - akses: route GET /contracts/clauses/create [role: admin,contract_manager,legal]
+    - akses: route GET /contracts/reports [role: admin,contract_manager,legal]
+    - gate: docs/gates/fase-r2.md
+- [x] R2.4 **Inventory benar-benar append-only** (K-24): `commit()`/`release()` membuat movement baru yang menautkan reservasi (tanpa mengubah baris lama); unique index `(outlet_id, ingredient_id)` + upsert atomik; akses tabel `resto_*` dipindah ke Contract milik Resto.
+  Bukti:
+    - jenis: fitur
+    - commit: 35a6542
+    - file: modules/Inventory/Application/Services/InventoryService.php
+    - file: modules/Inventory/Domain/Models/StockMovement.php
+    - file: modules/Inventory/database/migrations/2026_10_16_000001_add_reference_movement_id_to_inv_stock_movements_table.php
+    - file: modules/Resto/Contracts/RestoIngredientStockPort.php
+    - file: modules/Resto/Application/Services/RestoIngredientStockService.php
+    - file: modules/Resto/database/migrations/2026_10_16_000002_add_unique_index_outlet_ingredient_to_resto_ingredient_stocks_table.php
+    - file: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php
+    - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::commit dan release membuat baris stock movement baru yang menautkan reservasi tanpa memutasi baris lama
+    - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::memanggil commit atau release dua kali pada reservasi yang sama bersifat idempoten
+    - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::model stock movement menolak update dan delete secara langsung
+    - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::deduct ingredient dan add ingredient bekerja secara atomik lewat kontrak resto dengan unique constraint outlet id dan ingredient id
+    - akses: route POST /resto/pos/session/{session}/bill [role: admin,cashier,outlet_manager]
+    - gate: docs/gates/fase-r2.md
+- [x] R2.5 **Outbox yang benar** (K-08, K-23, K-31): status dispatch per subscriber (retry hanya yang gagal); klaim pesan atomik antar-worker; target non-webhook dieksekusi lewat handler terdaftar (bukan ditandai sukses); allowlist host + tolak IP privat/link-local; `IntegrationService::dispatchWebhook()` lewat outbox nyata (atau diganti status `simulated_*`).
   - Test wajib: subscriber A sukses + B gagal → retry hanya ke B; dua worker paralel → satu pengiriman; URL `http://169.254.169.254` ditolak.
-- [ ] R2.6 **Telematics** (K-26, K-30): baseline rolling 7 hari dari tick nyata; hanya DTC dari daftar kritis yang `critical`/`grounded`; event domain dipancarkan `afterCommit` dan dedup per jam sama seperti publish spine.
-- [ ] R2.7 **ESG faktor emisi**: `recordEmission()` menolak jenis aktivitas tak dikenal (sekarang diam-diam faktor 1.0); nomor dokumen lewat `DocumentNumberingInterface` (bukan `Str::random`).
-- [ ] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
+  Bukti:
+    - jenis: fitur
+    - commit: 41ffd7c
+    - file: modules/Core/Application/Services/OutboxBusService.php
+    - file: modules/Integration/Application/Services/IntegrationService.php
+    - file: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php
+    - test: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php::test_subscriber_a_sukses_dan_subscriber_b_gagal_pada_dispatch_pertama_maka_retry_hanya_mengirim_ulang_ke_subscriber_b
+    - test: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php::test_dua_worker_outbox_paralel_mengklaim_pesan_secara_atomik_tanpa_duplikasi_pengiriman
+    - test: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php::test_url_webhook_privat_localhost_dan_cloud_metadata_169_254_169_254_ditolak_oleh_guard_anti_ssrf
+    - test: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php::test_target_subscriber_non_webhook_dieksekusi_lewat_handler_terdaftar_dan_gagal_jika_handler_tidak_ditemukan
+    - akses: route GET /integration/webhooks [role: admin]
+    - gate: docs/gates/fase-r2.md
+- [x] R2.6 **Telematics** (K-26, K-30): baseline rolling 7 hari dari tick nyata; hanya DTC dari daftar kritis yang `critical`/`grounded`; event domain dipancarkan `afterCommit` dan dedup per jam sama seperti publish spine.
+  Bukti:
+    - jenis: fitur
+    - commit: 39f9a2f
+    - file: modules/Telematics/Application/Services/TelematicsIngestService.php
+    - file: modules/Telematics/tests/Feature/TelematicsTest.php
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_critical_dtc_grounds_vehicle_device
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_non_critical_dtc_does_not_ground_device_and_does_not_trigger_critical_anomaly
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_seven_day_rolling_baseline_calculated_from_actual_historical_ticks
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_anomaly_event_dispatched_after_commit_and_deduplicated_hourly
+    - akses: route GET /logistics/fleet [role: admin,auditor,dispatcher,hub_operator,logistics_admin]
+    - gate: docs/gates/fase-r2.md
+- [x] R2.7 **ESG faktor emisi**: `recordEmission()` menolak jenis aktivitas tak dikenal (sekarang diam-diam faktor 1.0); nomor dokumen lewat `DocumentNumberingInterface` (bukan `Str::random`).
+  Bukti:
+    - jenis: fitur
+    - commit: bc0f475
+    - file: modules/Esg/Application/Services/EsgService.php
+    - file: modules/Esg/tests/Feature/EsgTest.php
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_can_record_ghg_emissions
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_record_emission_rejects_unknown_activity_type_without_silent_default
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_document_numbering_uses_gapless_sequence_instead_of_random
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_can_purchase_and_retire_carbon_credits
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_esg_web_index_accessible
+    - akses: route GET /esg [role: admin,esg_officer,auditor]
+    - gate: docs/gates/fase-r2.md
+- [x] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
   - Test wajib: adapter gagal → status gagal tercatat (bukan sukses).
-- [ ] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
+  Bukti:
+    - jenis: fitur
+    - commit: 9d1ec63
+    - file: modules/Integration/Application/Services/IntegrationService.php
+    - file: modules/Integration/Application/Services/EnterpriseDigitalTrustService.php
+    - file: modules/Integration/tests/Feature/FakeStatusEliminationTest.php
+    - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_webhook_dispatch_failure_records_failed_status_instead_of_fake_success
+    - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_malformed_edi_message_is_rejected_rather_than_faked_accepted
+    - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_claim_without_evidence_attachment_is_marked_simulated_unverified
+    - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_claim_with_persisted_evidence_document_is_published_verified
+    - akses: route GET /integration [role: admin]
+    - gate: docs/gates/fase-r2.md
+- [x] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
+  Bukti:
+    - jenis: fitur
+    - commit: 556f804
+    - file: modules/Hcm/Application/Services/HcmService.php
+    - file: modules/Telematics/Application/Services/TelematicsIngestService.php
+    - file: tests/Feature/SilentDefaultEliminationTest.php
+    - test: tests/Feature/SilentDefaultEliminationTest.php::test_hcm_register_employee_rejects_missing_salary_and_bank_details_with_validation_exception
+    - test: tests/Feature/SilentDefaultEliminationTest.php::test_telematics_ingest_tick_rejects_missing_sensor_metrics_with_validation_exception
+    - test: tests/Feature/SilentDefaultEliminationTest.php::test_esg_record_emission_rejects_unknown_activity_without_silent_default_factor
+    - test: tests/Feature/SilentDefaultEliminationTest.php::test_explicit_valid_payloads_create_records_cleanly_without_hidden_defaults
+    - akses: route GET /hcm [role: admin,hcm_manager]
+    - gate: docs/gates/fase-r2.md
 - [ ] R2.10 Quality gate Fase R2 + verifikasi silang.
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)

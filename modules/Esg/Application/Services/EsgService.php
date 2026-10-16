@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Esg\Application\Services;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Esg\Domain\Models\CarbonCredit;
 use Modules\Esg\Domain\Models\EsgEmission;
 use Modules\Esg\Domain\Models\OffsetRetirement;
@@ -18,25 +20,48 @@ class EsgService
      * - electricity_grid: 0.79 kg / kWh (Jawa-Madura-Bali grid average)
      * - freight_road: 0.12 kg / ton-km
      */
+    public const array KNOWN_ACTIVITY_TYPES = [
+        'fuel_diesel' => 2.68,
+        'fuel_gasoline' => 2.31,
+        'electricity_grid' => 0.79,
+        'freight_road' => 0.12,
+    ];
+
+    private readonly DocumentNumberingInterface $numbering;
+
+    public function __construct(
+        ?DocumentNumberingInterface $numbering = null
+    ) {
+        $this->numbering = $numbering ?? app(DocumentNumberingInterface::class);
+    }
+
     public function recordEmission(array $data): EsgEmission
     {
         return DB::transaction(function () use ($data) {
+            $activityType = $data['activity_type'] ?? '';
+            if (! array_key_exists($activityType, self::KNOWN_ACTIVITY_TYPES)) {
+                throw new \InvalidArgumentException("Jenis aktivitas emisi tidak dikenal: '{$activityType}'. Wajib salah satu dari: ".implode(', ', array_keys(self::KNOWN_ACTIVITY_TYPES)));
+            }
+
             $amount = (float) $data['activity_data_amount'];
-            $factor = (float) ($data['emission_factor'] ?? match ($data['activity_type']) {
-                'fuel_diesel' => 2.68,
-                'fuel_gasoline' => 2.31,
-                'electricity_grid' => 0.79,
-                'freight_road' => 0.12,
-                default => 1.0,
-            });
+            if ($amount < 0) {
+                throw new \InvalidArgumentException('Jumlah data aktivitas emisi tidak boleh bernilai negatif.');
+            }
+
+            $factor = (float) ($data['emission_factor'] ?? self::KNOWN_ACTIVITY_TYPES[$activityType]);
+            if ($factor <= 0) {
+                throw new \InvalidArgumentException('Faktor emisi harus bernilai lebih besar dari 0.');
+            }
 
             $co2eKg = round($amount * $factor, 4);
 
+            $emissionNumber = $data['emission_number'] ?? $this->numbering->nextNumber('ESG', 'EM', false, 'EM/{ENT}/');
+
             return EsgEmission::create([
-                'emission_number' => $data['emission_number'] ?? 'EM-'.strtoupper(Str::random(8)),
+                'emission_number' => $emissionNumber,
                 'entity_id' => $data['entity_id'],
                 'scope' => $data['scope'],
-                'activity_type' => $data['activity_type'],
+                'activity_type' => $activityType,
                 'activity_data_amount' => $amount,
                 'activity_uom' => $data['activity_uom'],
                 'emission_factor' => $factor,
@@ -56,8 +81,10 @@ class EsgService
             $costPerTon = (float) ($data['cost_per_ton_idr'] ?? 150000);
             $totalCost = (int) round($tons * $costPerTon);
 
+            $certificateNumber = $data['certificate_number'] ?? $this->numbering->nextNumber('ESG', 'CC', false, 'CC/{ENT}/');
+
             return CarbonCredit::create([
-                'certificate_number' => $data['certificate_number'] ?? 'CC-'.strtoupper(Str::random(10)),
+                'certificate_number' => $certificateNumber,
                 'registry' => $data['registry'] ?? 'IDX_CARBON',
                 'project_name' => $data['project_name'],
                 'project_type' => $data['project_type'] ?? 'reforestation',
@@ -81,8 +108,10 @@ class EsgService
                 throw new \InvalidArgumentException('Retirement exceeds available carbon credit balance.');
             }
 
+            $retirementNumber = $data['retirement_number'] ?? $this->numbering->nextNumber('ESG', 'RET', false, 'RET/{ENT}/');
+
             $retirement = OffsetRetirement::create([
-                'retirement_number' => $data['retirement_number'] ?? 'RET-'.strtoupper(Str::random(8)),
+                'retirement_number' => $retirementNumber,
                 'carbon_credit_id' => $credit->id,
                 'entity_id' => $data['entity_id'],
                 'retired_quantity_tons' => $retiredQty,

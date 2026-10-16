@@ -37,6 +37,10 @@ class SensitiveDataEncryptionTest extends TestCase
             'employee_number' => 'EMP-SEC-01',
             'name' => 'John Doe',
             'nik' => $rawNik,
+            'basic_salary_idr' => 7000000,
+            'allowances_idr' => 1500000,
+            'bank_name' => 'Bank Mandiri',
+            'bank_account_number' => '1230009876541',
         ]);
 
         // 1. Raw DB value must be ciphertext != plaintext

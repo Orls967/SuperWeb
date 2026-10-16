@@ -62,7 +62,7 @@ class PricingController extends Controller
         try {
             $this->service->setPriceListItem($list, $data['sku'], (int) $data['price_idr'], (float) $data['min_qty']);
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('item', $e->getMessage());
+            return back()->withErrors(['item' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Item harga disimpan.');
@@ -73,7 +73,7 @@ class PricingController extends Controller
         try {
             $this->service->activatePriceList($list);
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('list', $e->getMessage());
+            return back()->withErrors(['list' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', "Price list {$list->code} aktif.");
@@ -124,7 +124,7 @@ class PricingController extends Controller
                 $request->user(), $data['evidence_note'],
             );
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('claim', $e->getMessage());
+            return back()->withErrors(['claim' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', "Klaim {$claim->source_ref} terkirim.");
@@ -135,7 +135,7 @@ class PricingController extends Controller
         try {
             $this->service->approvePromotionClaim($claim, $request->user());
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('claim', $e->getMessage());
+            return back()->withErrors(['claim' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Klaim tervalidasi (menunggu settlement four-eyes).');
@@ -146,7 +146,7 @@ class PricingController extends Controller
         try {
             $this->service->settlePromotionClaim($claim, $request->user());
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('claim', $e->getMessage());
+            return back()->withErrors(['claim' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Klaim promo disettle.');
@@ -178,7 +178,7 @@ class PricingController extends Controller
                 $data['sku'], $data['channel'], (int) $data['proposed_price_idr'], $data['reason'], $request->user(),
             );
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('override', $e->getMessage());
+            return back()->withErrors(['override' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', "Override #{$override->id} diajukan (four-eyes).");
@@ -192,7 +192,7 @@ class PricingController extends Controller
         try {
             $this->service->decideOverride($override, $request->user(), $data['decision'] === 'approve', $data['note'] ?? null);
         } catch (\InvalidArgumentException|\RuntimeException $e) {
-            return back()->errors()->add('override', $e->getMessage());
+            return back()->withErrors(['override' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Keputusan override tercatat.');

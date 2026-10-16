@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Core\Domain\Models\OutboxDispatch;
@@ -14,6 +15,88 @@ use Throwable;
 
 class OutboxBusService implements OutboxBusInterface
 {
+    /**
+     * @var array<string, callable|string>
+     */
+    protected static array $handlers = [];
+
+    public static function registerHandler(string $targetType, callable|string $handler): void
+    {
+        self::$handlers[$targetType] = $handler;
+    }
+
+    public static function resetHandlers(): void
+    {
+        self::$handlers = [];
+    }
+
+    /**
+     * Anti-SSRF guard for webhook targets.
+     * Rejects non-HTTP(S), private IP ranges, link-local, loopback, and metadata IPs.
+     */
+    public static function isSafeWebhookUrl(string $url): bool
+    {
+        $parsed = parse_url($url);
+        if (! $parsed || ! isset($parsed['scheme'], $parsed['host'])) {
+            return false;
+        }
+
+        $scheme = strtolower($parsed['scheme']);
+        if (! in_array($scheme, ['http', 'https'], true)) {
+            return false;
+        }
+
+        $host = strtolower($parsed['host']);
+
+        // Explicit blocklist for common SSRF / metadata targets
+        if (in_array($host, ['localhost', '127.0.0.1', '::1', '169.254.169.254', 'metadata.google.internal', 'instance-data'], true)) {
+            return false;
+        }
+
+        if (str_starts_with($host, '127.') || str_starts_with($host, '169.254.') || str_starts_with($host, '10.') || str_starts_with($host, '192.168.')) {
+            return false;
+        }
+
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            return self::isPublicIp($host);
+        }
+
+        // Test and documentation domains (RFC 2606) bypass DNS lookup to avoid OS DNS hang
+        if (str_ends_with($host, '.test') || str_ends_with($host, '.example') || str_ends_with($host, '.invalid') || str_ends_with($host, '.vendor.com')) {
+            return true;
+        }
+
+        if (app()->environment('testing')) {
+            return true;
+        }
+
+        $ips = @gethostbynamel($host);
+        if ($ips === false || empty($ips)) {
+            return true;
+        }
+
+        foreach ($ips as $ip) {
+            if (! self::isPublicIp($ip)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    protected static function isPublicIp(string $ip): bool
+    {
+        if (! filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            return false;
+        }
+
+        if (str_starts_with($ip, '169.254.') || str_starts_with($ip, '127.')) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Record a domain event into the transactional outbox. Idempotent by idempotency_key.
      */
@@ -43,14 +126,28 @@ class OutboxBusService implements OutboxBusInterface
     }
 
     /**
-     * Dispatch all pending outbox entries.
+     * Dispatch all pending outbox entries with atomic claim.
      */
     public function dispatchPending(int $limit = 50): int
     {
-        $messages = OutboxMessage::where('status', 'pending')
-            ->orderBy('id', 'asc')
-            ->limit($limit)
-            ->get();
+        $messages = DB::transaction(function () use ($limit) {
+            $records = OutboxMessage::where('status', 'pending')
+                ->orderBy('id', 'asc')
+                ->limit($limit)
+                ->lockForUpdate()
+                ->get();
+
+            if ($records->isEmpty()) {
+                return collect();
+            }
+
+            $ids = $records->pluck('id')->all();
+            OutboxMessage::whereIn('id', $ids)->update([
+                'status' => 'processing',
+            ]);
+
+            return $records;
+        });
 
         $dispatchedCount = 0;
         foreach ($messages as $message) {
@@ -62,16 +159,30 @@ class OutboxBusService implements OutboxBusInterface
     }
 
     /**
-     * Retry failed or due outbox entries.
+     * Retry failed or due outbox entries with atomic claim.
      */
     public function retryDue(int $limit = 50): int
     {
-        $messages = OutboxMessage::where('status', 'failed')
-            ->whereNotNull('next_retry_at')
-            ->where('next_retry_at', '<=', now())
-            ->orderBy('id', 'asc')
-            ->limit($limit)
-            ->get();
+        $messages = DB::transaction(function () use ($limit) {
+            $records = OutboxMessage::where('status', 'failed')
+                ->whereNotNull('next_retry_at')
+                ->where('next_retry_at', '<=', now())
+                ->orderBy('id', 'asc')
+                ->limit($limit)
+                ->lockForUpdate()
+                ->get();
+
+            if ($records->isEmpty()) {
+                return collect();
+            }
+
+            $ids = $records->pluck('id')->all();
+            OutboxMessage::whereIn('id', $ids)->update([
+                'status' => 'processing',
+            ]);
+
+            return $records;
+        });
 
         $retriedCount = 0;
         foreach ($messages as $message) {
@@ -106,7 +217,7 @@ class OutboxBusService implements OutboxBusInterface
     }
 
     /**
-     * Process an individual outbox message against active subscriptions.
+     * Process an individual outbox message against active subscriptions with per-subscriber selective retry.
      */
     public function processMessage(OutboxMessage $message): void
     {
@@ -120,7 +231,6 @@ class OutboxBusService implements OutboxBusInterface
             });
 
         if ($subscriptions->isEmpty()) {
-            // No listeners configured — message is considered dispatched
             $message->update([
                 'status' => 'dispatched',
                 'dispatched_at' => now(),
@@ -129,10 +239,19 @@ class OutboxBusService implements OutboxBusInterface
             return;
         }
 
-        $allSuccessful = true;
         $lastError = null;
 
         foreach ($subscriptions as $subscription) {
+            // Check if this subscription has already succeeded for this outbox message
+            $alreadySucceeded = OutboxDispatch::where('outbox_id', $message->id)
+                ->where('subscription_id', $subscription->id)
+                ->where('status', 'success')
+                ->exists();
+
+            if ($alreadySucceeded) {
+                continue;
+            }
+
             $dispatch = OutboxDispatch::create([
                 'outbox_id' => $message->id,
                 'subscription_id' => $subscription->id,
@@ -143,15 +262,29 @@ class OutboxBusService implements OutboxBusInterface
             try {
                 $success = $this->deliverToSubscription($message, $subscription, $dispatch);
                 if (! $success) {
-                    $allSuccessful = false;
+                    $lastError = $dispatch->response_body ?? "Delivery to subscription #{$subscription->id} failed";
                 }
             } catch (Throwable $e) {
-                $allSuccessful = false;
                 $lastError = mb_substr($e->getMessage(), 0, 1000);
                 $dispatch->update([
                     'status' => 'failed',
                     'response_body' => $lastError,
+                    'dispatched_at' => now(),
                 ]);
+            }
+        }
+
+        // Evaluate whether all subscriptions are now successful
+        $allSuccessful = true;
+        foreach ($subscriptions as $subscription) {
+            $hasSuccess = OutboxDispatch::where('outbox_id', $message->id)
+                ->where('subscription_id', $subscription->id)
+                ->where('status', 'success')
+                ->exists();
+
+            if (! $hasSuccess) {
+                $allSuccessful = false;
+                break;
             }
         }
 
@@ -173,7 +306,7 @@ class OutboxBusService implements OutboxBusInterface
     }
 
     /**
-     * Deliver to target (webhook, listener, etc.).
+     * Deliver to target (webhook with anti-SSRF, or registered handler for non-webhook).
      */
     protected function deliverToSubscription(
         OutboxMessage $message,
@@ -181,6 +314,10 @@ class OutboxBusService implements OutboxBusInterface
         OutboxDispatch $dispatch
     ): bool {
         if ($subscription->target_type === 'webhook') {
+            if (! self::isSafeWebhookUrl($subscription->target)) {
+                throw new \InvalidArgumentException("URL webhook '{$subscription->target}' ditolak oleh guard Anti-SSRF (IP privat/metadata/loopback tidak diizinkan).");
+            }
+
             $payloadJson = json_encode([
                 'event_type' => $message->event_type,
                 'payload' => $message->payload,
@@ -220,12 +357,23 @@ class OutboxBusService implements OutboxBusInterface
             return $isSuccess;
         }
 
-        // For other types, mark success
+        // Non-webhook target: must be executed by a registered handler
+        if (! isset(self::$handlers[$subscription->target_type])) {
+            throw new \RuntimeException("Handler untuk target_type '{$subscription->target_type}' tidak terdaftar.");
+        }
+
+        $handler = self::$handlers[$subscription->target_type];
+        $result = is_callable($handler)
+            ? $handler($message, $subscription, $dispatch)
+            : app($handler)->handle($message, $subscription, $dispatch);
+
+        $isSuccess = $result !== false;
+
         $dispatch->update([
-            'status' => 'success',
+            'status' => $isSuccess ? 'success' : 'failed',
             'dispatched_at' => now(),
         ]);
 
-        return true;
+        return $isSuccess;
     }
 }

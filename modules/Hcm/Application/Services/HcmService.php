@@ -6,7 +6,9 @@ namespace Modules\Hcm\Application\Services;
 
 use App\Security\BlindIndex;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Modules\Hcm\Domain\Models\Employee;
 use Modules\Hcm\Domain\Models\Payroll;
 use Modules\Hcm\Domain\Models\ProductionLaborAllocation;
@@ -15,6 +17,18 @@ class HcmService
 {
     public function registerEmployee(array $data): Employee
     {
+        $validator = Validator::make($data, [
+            'name' => ['required', 'string', 'max:160'],
+            'basic_salary_idr' => ['required', 'integer', 'min:0'],
+            'allowances_idr' => ['required', 'integer', 'min:0'],
+            'bank_name' => ['required', 'string', 'max:60'],
+            'bank_account_number' => ['required', 'string', 'max:60'],
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
         return DB::transaction(function () use ($data) {
             return Employee::create([
                 'id' => (string) Str::uuid(),
@@ -27,10 +41,10 @@ class HcmService
                 'department_id' => $data['department_id'] ?? null,
                 'position' => $data['position'] ?? 'Staff',
                 'employment_type' => $data['employment_type'] ?? 'PKWTT',
-                'basic_salary_idr' => (int) ($data['basic_salary_idr'] ?? 5000000),
-                'allowances_idr' => (int) ($data['allowances_idr'] ?? 1000000),
-                'bank_name' => $data['bank_name'] ?? 'Bank Mandiri',
-                'bank_account_number' => $data['bank_account_number'] ?? '1230004567890',
+                'basic_salary_idr' => (int) $data['basic_salary_idr'],
+                'allowances_idr' => (int) $data['allowances_idr'],
+                'bank_name' => (string) $data['bank_name'],
+                'bank_account_number' => (string) $data['bank_account_number'],
                 'is_active' => true,
             ]);
         });

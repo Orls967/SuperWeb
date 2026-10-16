@@ -26,6 +26,7 @@ class StockMovement extends Model
         'reason',
         'source_type',
         'source_id',
+        'reference_movement_id',
         'note',
         'created_by',
         'created_at',
@@ -34,12 +35,29 @@ class StockMovement extends Model
     protected $casts = [
         'qty' => 'integer',
         'reason' => StockMovementReason::class,
+        'reference_movement_id' => 'integer',
         'created_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::updating(function (self $model): void {
+            throw new \RuntimeException('StockMovement adalah catatan immutable (append-only) dan tidak boleh diubah.');
+        });
+
+        static::deleting(function (self $model): void {
+            throw new \RuntimeException('StockMovement adalah catatan immutable (append-only) dan tidak boleh dihapus.');
+        });
+    }
 
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function referenceMovement(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'reference_movement_id');
     }
 
     public function source(): MorphTo

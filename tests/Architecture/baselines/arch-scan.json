@@ -567,7 +567,7 @@
             }
         },
         "A2": {
-            "total": 5254,
+            "total": 5240,
             "entries": {
                 "modules/Agency/Console/Commands/AuditAgencyCommand.php": {
                     "DB::table('bank_ledger_accounts')": 1
@@ -3764,11 +3764,6 @@
                     "Schema::create('int_enterprise_trust_scores')": 1,
                     "Schema::create('int_verifiable_enterprise_claims')": 1
                 },
-                "modules/Inventory/Application/Services/InventoryService.php": {
-                    "DB::table('resto_ingredient_movements')": 3,
-                    "DB::table('resto_ingredient_stocks')": 10,
-                    "DB::table('resto_ingredients')": 1
-                },
                 "modules/Logistics/database/seeders/LogisticsLargeSeeder.php": {
                     "DB::table('core_vehicles')": 1,
                     "DB::table('dex_cars')": 1,
@@ -5460,7 +5455,7 @@
             }
         },
         "A11": {
-            "total": 146,
+            "total": 145,
             "entries": {
                 "modules/Agri/AgriServiceProvider.php": {
                     "declare(strict_types=1) tidak ada": 1
@@ -5559,9 +5554,6 @@
                     "declare(strict_types=1) tidak ada": 1
                 },
                 "modules/Epc/routes/web.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Esg/Application/Services/EsgService.php": {
                     "declare(strict_types=1) tidak ada": 1
                 },
                 "modules/Esg/Console/Commands/AuditEsgCommand.php": {
@@ -6956,18 +6948,8 @@
             }
         },
         "A13": {
-            "total": 15,
-            "entries": {
-                "modules/Agency/Http/Controllers/AgencyController.php": {
-                    "back()->errors()": 1
-                },
-                "modules/Distribution/Http/Controllers/DistributionController.php": {
-                    "back()->errors()": 7
-                },
-                "modules/Pricing/Http/Controllers/PricingController.php": {
-                    "back()->errors()": 7
-                }
-            }
+            "total": 0,
+            "entries": {}
         }
     },
     "approved_additions": [
