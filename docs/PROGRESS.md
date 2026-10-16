@@ -912,7 +912,18 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_claim_without_evidence_attachment_is_marked_simulated_unverified
     - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_claim_with_persisted_evidence_document_is_published_verified
     - akses: route GET /integration [role: admin]
-- [ ] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
+- [x] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
+  Bukti:
+    - jenis: fitur
+    - commit: 556f804
+    - file: modules/Hcm/Application/Services/HcmService.php
+    - file: modules/Telematics/Application/Services/TelematicsIngestService.php
+    - file: tests/Feature/SilentDefaultEliminationTest.php
+    - test: tests/Feature/SilentDefaultEliminationTest.php::test_hcm_register_employee_rejects_missing_salary_and_bank_details_with_validation_exception
+    - test: tests/Feature/SilentDefaultEliminationTest.php::test_telematics_ingest_tick_rejects_missing_sensor_metrics_with_validation_exception
+    - test: tests/Feature/SilentDefaultEliminationTest.php::test_esg_record_emission_rejects_unknown_activity_without_silent_default_factor
+    - test: tests/Feature/SilentDefaultEliminationTest.php::test_explicit_valid_payloads_create_records_cleanly_without_hidden_defaults
+    - akses: route GET /hcm [role: admin,hcm_manager]
 - [ ] R2.10 Quality gate Fase R2 + verifikasi silang.
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
