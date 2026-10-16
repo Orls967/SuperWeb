@@ -13,6 +13,7 @@ use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Exceptions\AccountFrozenException;
 use Modules\Banking\Domain\Exceptions\AssetMismatchException;
+use Modules\Banking\Domain\Exceptions\IdempotencyConflictException;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
 use Modules\Banking\Domain\Exceptions\UnbalancedTransactionException;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -44,12 +45,22 @@ class LedgerService implements Ledger
         }
 
         return DB::transaction(function () use ($dto) {
-            // Idempotency check: if transaction exists, return it
+            $payloadHash = $this->computePayloadHash($dto);
+
+            // Idempotency check: if transaction exists, check payload_hash
             $existing = LedgerTransaction::with('entries.account')
                 ->where('idempotency_key', $dto->idempotencyKey)
                 ->first();
 
             if ($existing !== null) {
+                if ($existing->payload_hash !== null && $existing->payload_hash !== $payloadHash) {
+                    throw new IdempotencyConflictException(
+                        $dto->idempotencyKey,
+                        (string) $existing->payload_hash,
+                        $payloadHash
+                    );
+                }
+
                 return $existing;
             }
 
@@ -171,6 +182,7 @@ class LedgerService implements Ledger
                 'reference_type' => $dto->referenceType,
                 'reference_id' => $dto->referenceId,
                 'idempotency_key' => $dto->idempotencyKey,
+                'payload_hash' => $payloadHash,
                 'description' => $dto->description,
                 'meta' => $dto->meta,
                 'posted_at' => $dto->postedAt ?? now(),
@@ -198,5 +210,59 @@ class LedgerService implements Ledger
 
             return $transaction->load('entries.account');
         });
+    }
+
+    public function computePayloadHash(PostingDTO $dto): string
+    {
+        $canonicalEntries = [];
+        foreach ($dto->entries as $entry) {
+            $e = [
+                'account_code' => $entry->accountCode,
+                'account_id' => $entry->accountId !== null ? (string) $entry->accountId : null,
+                'amount' => (string) $entry->amount,
+                'asset_code' => strtoupper(trim($entry->assetCode)),
+            ];
+            ksort($e, SORT_STRING);
+            $canonicalEntries[] = $e;
+        }
+
+        usort($canonicalEntries, static fn (array $a, array $b): int => json_encode($a) <=> json_encode($b));
+
+        $payload = [
+            'description' => $dto->description,
+            'entries' => $canonicalEntries,
+            'idempotency_key' => $dto->idempotencyKey,
+            'meta' => $dto->meta !== null ? $this->canonicalizeMeta($dto->meta) : null,
+            'reference_id' => $dto->referenceId !== null ? (string) $dto->referenceId : null,
+            'reference_type' => $dto->referenceType,
+            'type' => $dto->type,
+        ];
+        ksort($payload, SORT_STRING);
+
+        $json = (string) json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        return hash('sha256', $json);
+    }
+
+    private function canonicalizeMeta(mixed $data): mixed
+    {
+        if (! is_array($data)) {
+            if (is_int($data) || is_float($data)) {
+                return (string) $data;
+            }
+
+            return $data;
+        }
+
+        $isAssoc = ! array_is_list($data);
+        $result = [];
+        foreach ($data as $k => $v) {
+            $result[$k] = $this->canonicalizeMeta($v);
+        }
+        if ($isAssoc) {
+            ksort($result, SORT_STRING);
+        }
+
+        return $result;
     }
 }

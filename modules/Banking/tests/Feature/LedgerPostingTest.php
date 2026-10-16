@@ -11,6 +11,7 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Exceptions\AccountFrozenException;
 use Modules\Banking\Domain\Exceptions\AssetMismatchException;
+use Modules\Banking\Domain\Exceptions\IdempotencyConflictException;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
 use Modules\Banking\Domain\Exceptions\UnbalancedTransactionException;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -180,3 +181,34 @@ test('posting dengan asset_code entri tidak cocok dengan aset akun melempar Asse
 
     $this->ledger->post($dto);
 })->throws(AssetMismatchException::class);
+
+test('posting ulang dengan key sama dan payload beda melempar IdempotencyConflictException', function () {
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
+
+    $dto1 = new PostingDTO(
+        type: TransactionType::TOPUP->value,
+        description: 'First attempt',
+        idempotencyKey: 'conflict_key_123',
+        entries: [
+            PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', -100000),
+            PostingEntryDTO::forAccount($userAcc->id, 'IDR', 100000),
+        ],
+    );
+
+    $tx1 = $this->ledger->post($dto1);
+    expect($tx1->payload_hash)->not->toBeNull();
+
+    // Payload berbeda (nominal 200000 vs 100000) dengan idempotency key yang sama
+    $dto2 = new PostingDTO(
+        type: TransactionType::TOPUP->value,
+        description: 'Second attempt with different amount',
+        idempotencyKey: 'conflict_key_123',
+        entries: [
+            PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', -200000),
+            PostingEntryDTO::forAccount($userAcc->id, 'IDR', 200000),
+        ],
+    );
+
+    $this->ledger->post($dto2);
+})->throws(IdempotencyConflictException::class);

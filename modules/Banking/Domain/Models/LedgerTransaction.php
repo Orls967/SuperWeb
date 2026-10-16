@@ -23,6 +23,7 @@ class LedgerTransaction extends Model
         'reference_type',
         'reference_id',
         'idempotency_key',
+        'payload_hash',
         'description',
         'meta',
         'posted_at',
