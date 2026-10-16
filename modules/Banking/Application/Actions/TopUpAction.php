@@ -34,12 +34,9 @@ class TopUpAction
         }
 
         $userWallet = $user->walletAccount('IDR');
-        $txCount = LedgerTransaction::query()
-            ->where('reference_type', User::class)
-            ->where('reference_id', $user->id)
-            ->where('type', TransactionType::TOPUP->value)
-            ->count();
-        $key = $idempotencyKey ?? sprintf('banking:topup:%s:%d', $user->id, $txCount + 1);
+        $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
+            ? trim($idempotencyKey)
+            : sprintf('banking:topup:%s:%s', $user->id, $amountBd->__toString());
 
         $dto = new PostingDTO(
             type: TransactionType::TOPUP->value,

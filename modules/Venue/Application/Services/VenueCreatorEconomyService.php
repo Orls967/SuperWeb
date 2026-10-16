@@ -62,21 +62,20 @@ class VenueCreatorEconomyService
     /**
      * 115.2 & 115.6 (a) Accrue Stream Revenue and Hold in Escrow until Claim Window Passes
      */
-    public function accrueStreamRevenue(RightsContract $contract, int $streamGrossRevenueIdr): int
+    public function accrueStreamRevenue(RightsContract $contract, int $streamGrossRevenueIdr, ?string $idempotencyKey = null): int
     {
         $royaltyAmountIdr = (int) round(($streamGrossRevenueIdr * $contract->royalty_share_percent) / 100);
 
-        return DB::transaction(function () use ($contract, $streamGrossRevenueIdr, $royaltyAmountIdr) {
-            $batch = 'rev_'.$streamGrossRevenueIdr.'_acc'.((int) $contract->accrued_royalties_idr + $royaltyAmountIdr);
+        return DB::transaction(function () use ($contract, $streamGrossRevenueIdr, $royaltyAmountIdr, $idempotencyKey) {
+            $key = $idempotencyKey ?? "venue:stream_accrual:{$contract->contract_code}:{$streamGrossRevenueIdr}";
 
-            $contract->increment('accrued_royalties_idr', $royaltyAmountIdr);
-            $contract->increment('held_royalties_idr', $royaltyAmountIdr);
+            $locked = RightsContract::query()->lockForUpdate()->findOrFail($contract->id);
 
             // Post revenue & hold liability
-            $this->ledgerService->post(new PostingDTO(
+            $tx = $this->ledgerService->post(new PostingDTO(
                 type: 'CREATOR_STREAM_ROYALTY_ACCRUAL',
                 description: "Accrue creator streaming royalty for contract {$contract->contract_code}",
-                idempotencyKey: "venue:stream_accrual:{$contract->contract_code}:{$batch}",
+                idempotencyKey: $key,
                 entries: Posting::lines()
                     ->debit('ven:streaming_receivable:IDR', $streamGrossRevenueIdr)
                     ->credit('ven:platform_streaming_revenue:IDR', $streamGrossRevenueIdr - $royaltyAmountIdr)
@@ -85,6 +84,12 @@ class VenueCreatorEconomyService
                 referenceType: 'RIGHTS_CONTRACT',
                 referenceId: (string) $contract->id,
             ));
+
+            if ($tx->wasRecentlyCreated) {
+                $locked->increment('accrued_royalties_idr', $royaltyAmountIdr);
+                $locked->increment('held_royalties_idr', $royaltyAmountIdr);
+                $contract->refresh();
+            }
 
             return $royaltyAmountIdr;
         });

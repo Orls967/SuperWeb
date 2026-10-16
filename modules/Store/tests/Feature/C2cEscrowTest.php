@@ -55,10 +55,12 @@ class C2cEscrowTest extends TestCase
         // Top up dibatasi Rp 50 juta per transaksi, jadi isi saldo bertahap
         $topUp = app(TopUpAction::class);
         $remaining = $balance;
+        $chunkIndex = 0;
         while ($remaining > 0) {
             $chunk = min($remaining, 50_000_000);
-            $topUp->execute($user, $chunk);
+            $topUp->execute($user, $chunk, "seed_topup_{$user->id}_{$chunkIndex}");
             $remaining -= $chunk;
+            $chunkIndex++;
         }
 
         return $user;
