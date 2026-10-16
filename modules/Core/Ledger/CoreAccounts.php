@@ -19,6 +19,13 @@ final class CoreAccounts
     {
         return [
             [
+                'code' => 'clearing:external:IDR',
+                'name' => 'Rekening Kliring Eksternal IDR',
+                'kind' => AccountKind::CLEARING,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
                 'code' => 'clearing:golden_scenario:IDR',
                 'name' => 'Golden Scenario Clearing Account',
                 'kind' => AccountKind::CLEARING,

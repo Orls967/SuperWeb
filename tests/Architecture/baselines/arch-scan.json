@@ -2,55 +2,35 @@
     "about": "Baseline ratchet `php artisan arch:scan` (PROGRESS.md §P11, KONSEP.md §A14.1). Hanya boleh turun lewat `--update-baseline`; penambahan wajib `--allow-new=\"DECISIONS.md#…\"` dan tercatat di approved_additions.",
     "rules": {
         "A1": {
-            "total": 428,
+            "total": 246,
             "entries": {
                 "modules/Agency/Application/Services/AgencyService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Asset/Application/Services/AssetAuditService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Asset/Application/Services/AssetService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Asset/Application/Services/DepreciationService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Asset/Application/Services/LeaseService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Asset/Application/Services/WorkOrderService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Asset/Domain/Models/Asset.php": {
                     "use Modules\\Core\\Domain\\Models\\DocumentAttachment": 1
                 },
-                "modules/AutoDex/Domain/Models/Brand.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/AutoDex/Domain/Models/Car.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/AutoServe/Application/Actions/ApproveEstimateAction.php": {
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
                 "modules/AutoServe/Application/Actions/ApproveExtraChargeAction.php": {
                     "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1
                 },
                 "modules/AutoServe/Application/Actions/BackorderPartsAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Store\\Domain\\Enums\\OrderStatus": 1,
                     "use Modules\\Store\\Domain\\Models\\Order": 1,
@@ -63,8 +43,7 @@
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Inventory\\Domain\\Exceptions\\InsufficientStockException": 1,
                     "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1,
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/AutoServe/Application/Actions/ReceiveBackorderAction.php": {
                     "use Modules\\Store\\Domain\\Models\\Order": 1
@@ -89,22 +68,10 @@
                 },
                 "modules/AutoServe/Domain/Models/Booking.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1,
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\Exceptions\\InvalidStateTransition": 1,
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/AutoServe/Domain/Models/Estimate.php": {
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\Exceptions\\InvalidStateTransition": 1,
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/AutoServe/Domain/Models/Service.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/AutoServe/Domain/Models/Sparepart.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/AutoServe/Http/Controllers/BookingController.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
@@ -112,34 +79,9 @@
                 "modules/AutoServe/Http/Controllers/InvoicePaymentController.php": {
                     "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1,
                     "use Modules\\Banking\\Domain\\Exceptions\\InvalidPinException": 1,
-                    "use Modules\\Banking\\Domain\\Exceptions\\PinLockedException": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Banking/Application/DTOs/PostingEntryDTO.php": {
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Banking/Domain/Models/LedgerAccount.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Banking/Domain/Models/LedgerEntry.php": {
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Banking/Domain/Models/LedgerTransaction.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Banking/Domain/Traits/HasLedgerAccounts.php": {
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Banking/Http/Controllers/TopUpController.php": {
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Banking/Http/Controllers/TransferController.php": {
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Banking\\Domain\\Exceptions\\PinLockedException": 1
                 },
                 "modules/Contract/Application/Services/ContractFinanceService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Contract/Application/Services/ContractService.php": {
@@ -190,21 +132,8 @@
                     "use Modules\\Payment\\Domain\\Events\\PaymentCaptured": 1,
                     "use Modules\\Payment\\Domain\\Events\\PaymentRefunded": 1
                 },
-                "modules/Core/Domain/Models/ActivityLog.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Core/Domain/Models/ApprovalRequest.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Core/Domain/Models/DocumentAttachment.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Core/Domain/Models/PlatformNotification.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
                 "modules/Core/Domain/Models/Vehicle.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1,
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
+                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1
                 },
                 "modules/Core/Http/Controllers/DashboardController.php": {
                     "use Modules\\Store\\Domain\\Models\\Order": 1
@@ -213,37 +142,27 @@
                     "use Modules\\AutoDex\\Domain\\Models\\Car": 1
                 },
                 "modules/Crypto/Application/Services/TradeExecutionService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1
                 },
                 "modules/Crypto/Domain/Models/CryptoTrade.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Distribution/Application/Services/DistributionFulfilmentService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Inventory\\Domain\\Models\\StockMovement": 1,
                     "use Modules\\Store\\Domain\\Models\\Product": 1
                 },
                 "modules/Distribution/Application/Services/DistributionService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Ev/Domain/Models/EvSession.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
                 "modules/Finance/Application/Actions/AddCollateralAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
-                "modules/Finance/Application/Actions/LiquidateLoanAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
                 "modules/Finance/Application/Actions/OpenLoanAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
                     "use Modules\\Crypto\\Domain\\Models\\CryptoAsset": 1,
                     "use Modules\\Store\\Domain\\Enums\\OrderStatus": 1,
@@ -252,20 +171,13 @@
                     "use Modules\\Store\\Domain\\Models\\Product": 1
                 },
                 "modules/Finance/Application/Actions/PayInstallmentAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1
                 },
-                "modules/Finance/Application/Actions/ReleaseCollateralAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
                 "modules/Finance/Domain/Models/Installment.php": {
-                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
-                    "use Modules\\Shared\\Domain\\Exceptions\\InvalidStateTransition": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Finance/Domain/Models/Loan.php": {
                     "use Modules\\Crypto\\Domain\\Models\\CryptoAsset": 1,
-                    "use Modules\\Shared\\Domain\\Exceptions\\InvalidStateTransition": 1,
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1,
                     "use Modules\\Store\\Domain\\Models\\Order": 1
                 },
                 "modules/Finance/FinanceServiceProvider.php": {
@@ -287,22 +199,10 @@
                 "modules/Inventory/Domain/Models/StockMovement.php": {
                     "use Modules\\Store\\Domain\\Models\\Product": 1
                 },
-                "modules/Logistics/Application/Actions/AccrueDemurrageDetentionAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
-                "modules/Logistics/Application/Actions/AccrueLegCostAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
                 "modules/Logistics/Application/Actions/BookShipmentAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
-                "modules/Logistics/Application/Actions/BookShipmentForOrderAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
                 "modules/Logistics/Application/Actions/CancelShipmentAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1,
                     "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
@@ -312,37 +212,12 @@
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1,
                     "use Modules\\Core\\Domain\\Models\\VehicleEvent": 1
                 },
-                "modules/Logistics/Application/Actions/DepositCodCashAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
-                "modules/Logistics/Application/Actions/PayCarriersAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
-                "modules/Logistics/Application/Actions/PayClaimAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
-                "modules/Logistics/Application/Actions/PayCustomsDutyAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
                 "modules/Logistics/Application/Actions/PayLogisticsInvoiceAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Logistics/Application/Actions/ReceiveReeferReplenishmentAction.php": {
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Inventory\\Domain\\Models\\StockMovement": 1
-                },
-                "modules/Logistics/Application/Actions/RecognizeFreightRevenueAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
-                "modules/Logistics/Application/Actions/RecordCodCollectionAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
-                "modules/Logistics/Application/Actions/RecordFuelLogAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
-                "modules/Logistics/Application/Actions/SettleCodAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
                 },
                 "modules/Logistics/Application/Listeners/CreateShipmentOnOrderPaid.php": {
                     "use Modules\\Store\\Domain\\Events\\OrderPaid": 1,
@@ -352,18 +227,14 @@
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Logistics/Application/Services/LogisticsLedger.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Logistics/Domain/Models/LogisticsInvoice.php": {
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Logistics/Domain/Models/Shipment.php": {
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Logistics/Domain/Models/Truck.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
@@ -377,14 +248,10 @@
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Mall/Application/Actions/ActivateLeaseAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Mall/Application/Actions/AllocatePaymentAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
@@ -392,48 +259,29 @@
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
                 "modules/Mall/Application/Actions/ClaimReceiptPointsAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Mall/Application/Actions/ExpirePointsAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Mall/Application/Actions/ExpireVouchersAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Mall/Application/Actions/RedeemVoucherAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Mall/Application/Actions/RegisterParkingMemberAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
-                "modules/Mall/Application/Actions/RenewParkingMembershipAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
-                "modules/Mall/Application/Actions/SettleParkingSessionAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
                 "modules/Mall/Application/Actions/SettleVouchersAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Mall/Application/Actions/TerminateLeaseAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Mall/Application/Queries/AuditBillingQuery.php": {
@@ -442,81 +290,22 @@
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Mall/Application/Services/MallLedgerAccounts.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Mall/Application/Services/MallLoyaltyLedgerService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
-                "modules/Mall/Domain/Models/Asset.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
                 "modules/Mall/Domain/Models/EventBooking.php": {
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Mall/Domain/Models/EventSpace.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Mall/Domain/Models/Invoice.php": {
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Mall/Domain/Models/Lease.php": {
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Mall/Domain/Models/LoyaltyMember.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/OvertimeRequest.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/ParkingMember.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Mall/Domain/Models/ParkingSession.php": {
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Mall/Domain/Models/ParkingZone.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/PointBatch.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/Property.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/ReceiptClaim.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/Tenant.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/TenantSalesReport.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/Unit.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/Voucher.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/VoucherTemplate.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/WorkOrder.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Mall/Domain/Models/Zone.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Mall/Http/Controllers/ParkingController.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
@@ -528,7 +317,6 @@
                     "use Modules\\Core\\Domain\\Events\\VehicleOwnershipTransferred": 1
                 },
                 "modules/Mall/database/seeders/MallSeeder.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
@@ -536,8 +324,6 @@
                     "use Modules\\Store\\Domain\\Events\\OrderPaid": 1
                 },
                 "modules/Manufacturing/Application/Services/CostingService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
@@ -547,35 +333,17 @@
                 "modules/Manufacturing/Application/Services/ProductionService.php": {
                     "use Modules\\Logistics\\Domain\\Models\\Shipment": 1
                 },
-                "modules/Manufacturing/Application/Services/QualityService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1
-                },
                 "modules/Manufacturing/ManufacturingServiceProvider.php": {
                     "use Modules\\Store\\Domain\\Events\\OrderPaid": 1
                 },
                 "modules/Partner/Application/Services/PartnerService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Payment/Application/Services/PaymentGatewayService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
-                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Payment/Contracts/Payable.php": {
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Payment/Contracts/PaymentGateway.php": {
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Payment/Domain/Events/PaymentRefunded.php": {
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Payment/Domain/Models/PaymentIntent.php": {
-                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Pricing/Application/Listeners/PostSalePriceLockListener.php": {
                     "use Modules\\Store\\Domain\\Events\\OrderPaid": 1
@@ -591,8 +359,6 @@
                     "use Modules\\Supplier\\Domain\\Models\\Supplier": 1
                 },
                 "modules/Procurement/Application/Services/ReceivingService.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Supplier\\Domain\\Models\\Supplier": 1
@@ -628,105 +394,71 @@
                     "use Modules\\Supplier\\Domain\\Models\\Supplier": 1
                 },
                 "modules/Resto/Application/Actions/ApproveStockCountAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
                 },
                 "modules/Resto/Application/Actions/CalculateHidangBillAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/CancelCateringAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/CloseBusinessDayAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerEntry": 1
                 },
                 "modules/Resto/Application/Actions/CloseShiftAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/CookBatchAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
                 },
                 "modules/Resto/Application/Actions/CreateDeliveryOrderAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
                 },
                 "modules/Resto/Application/Actions/DeliverAndCompleteCateringAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1,
-                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/DiscardTrayAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/FailDeliveryAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/HoldCateringDepositAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/PayOrderAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/PaySupplierAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Resto/Application/Actions/ReceiveGoodsAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
                 },
                 "modules/Resto/Application/Actions/ReceiveStockTransferAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
                 },
                 "modules/Resto/Application/Actions/SettleCashAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Resto/Application/Actions/ShipStockTransferAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
                 },
                 "modules/Resto/Application/Actions/VoidOrderAction.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Resto/Application/Services/RestoAnalyticsService.php": {
@@ -740,43 +472,18 @@
                     "use Modules\\Banking\\Domain\\Models\\LedgerEntry": 1
                 },
                 "modules/Resto/Console/Commands/PostFranchiseRoyaltyCommand.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
-                    "use Modules\\Banking\\Domain\\Enums\\TransactionType": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Domain/Models/CateringOrder.php": {
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Resto/Domain/Models/CateringPackage.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Resto/Domain/Models/Delivery.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Resto/Domain/Models/Ingredient.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Resto/Domain/Models/MenuItem.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Resto/Domain/Models/Order.php": {
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
-                },
-                "modules/Resto/Domain/Models/Outlet.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
-                },
-                "modules/Resto/Domain/Models/OutletContract.php": {
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Resto/Domain/Models/RoyaltyPosting.php": {
-                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
-                    "use Modules\\Shared\\Domain\\Traits\\HasUuid": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Resto/database/seeders/RestoMenuSeeder.php": {
-                    "use Modules\\Banking\\Domain\\Enums\\AccountKind": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
                 },
@@ -798,8 +505,7 @@
                     "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1
                 },
                 "modules/Store/Application/Actions/ConfirmC2cReceiptAction.php": {
-                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1
                 },
                 "modules/Store/Application/Actions/ListCarProductAction.php": {
                     "use Modules\\AutoDex\\Domain\\Models\\Car": 1,
@@ -813,8 +519,7 @@
                 },
                 "modules/Store/Application/Actions/PurchaseC2cVehicleAction.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1,
-                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1
                 },
                 "modules/Store/Application/Actions/UpdateOrderStatusAction.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
@@ -824,8 +529,7 @@
                 },
                 "modules/Store/Domain/Models/Order.php": {
                     "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
-                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1,
-                    "use Modules\\Shared\\Domain\\ValueObjects\\Money": 1
+                    "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Store/Domain/Models/Product.php": {
                     "use Modules\\Inventory\\Domain\\Models\\StockMovement": 1

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Resto\database\seeders;
 
 use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
@@ -45,6 +46,10 @@ class RestoMenuSeeder extends Seeder
 {
     public function run(): void
     {
+        if (! LedgerAccount::where('code', 'clearing:external:IDR')->exists()) {
+            $this->call(LedgerAccountsSeeder::class);
+        }
+
         // 1. Outlets
         $dmOutlet = Outlet::updateOrCreate(
             ['code' => 'DM-01'],

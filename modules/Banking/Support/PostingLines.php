@@ -19,17 +19,17 @@ final class PostingLines implements Countable, IteratorAggregate
     /** @var list<array{account: string|int|LedgerAccount, amount: BigDecimal, assetCode: ?string, side: string}> */
     private array $lines = [];
 
-    public function debit(string|int|LedgerAccount $account, BigDecimal|string|int|float|Money $amount, ?string $assetCode = null): self
+    public function debit(string|int|LedgerAccount $account, BigDecimal|string|int|Money $amount, ?string $assetCode = null): self
     {
         return $this->addLine($account, $amount, $assetCode, 'debit');
     }
 
-    public function credit(string|int|LedgerAccount $account, BigDecimal|string|int|float|Money $amount, ?string $assetCode = null): self
+    public function credit(string|int|LedgerAccount $account, BigDecimal|string|int|Money $amount, ?string $assetCode = null): self
     {
         return $this->addLine($account, $amount, $assetCode, 'credit');
     }
 
-    private function addLine(string|int|LedgerAccount $account, BigDecimal|string|int|float|Money $amount, ?string $assetCode, string $side): self
+    private function addLine(string|int|LedgerAccount $account, BigDecimal|string|int|Money $amount, ?string $assetCode, string $side): self
     {
         $decimal = $this->resolveAmount($amount);
 
@@ -134,7 +134,7 @@ final class PostingLines implements Countable, IteratorAggregate
         return count($this->lines);
     }
 
-    private function resolveAmount(BigDecimal|string|int|float|Money $amount): BigDecimal
+    private function resolveAmount(BigDecimal|string|int|Money $amount): BigDecimal
     {
         if ($amount instanceof Money) {
             return $amount->amount;
