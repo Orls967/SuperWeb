@@ -15,6 +15,7 @@ class SimSubscription extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'msisdn',
         'iccid',
         'account_tier',

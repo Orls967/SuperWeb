@@ -15,6 +15,7 @@ class GreenMineralSale extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'contract_number',
         'buyer_party_id',
         'commodity',

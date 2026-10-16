@@ -15,6 +15,7 @@ class MedProject extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'project_code',
         'title',
         'genre',

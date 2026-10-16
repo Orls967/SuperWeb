@@ -15,6 +15,7 @@ class MedSponsorshipPackage extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'package_code',
         'sponsor_brand_id',
         'event_or_entity_ref',

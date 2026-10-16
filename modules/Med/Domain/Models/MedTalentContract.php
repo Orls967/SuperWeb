@@ -15,6 +15,7 @@ class MedTalentContract extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'contract_code',
         'project_id',
         'talent_party_id',

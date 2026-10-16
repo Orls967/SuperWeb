@@ -15,6 +15,7 @@ class MicrogridController extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'microgrid_code',
         'site_name',
         'grid_mode',

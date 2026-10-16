@@ -15,6 +15,7 @@ class LifeOfMineModel extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'site_id',
         'model_code',
         'proven_reserves_tonnage',

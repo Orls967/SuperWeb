@@ -15,6 +15,7 @@ class GenerationAsset extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'asset_code',
         'name',
         'asset_type',

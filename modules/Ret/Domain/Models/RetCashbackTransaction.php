@@ -15,6 +15,7 @@ class RetCashbackTransaction extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'cashback_code',
         'customer_id',
         'source_line',

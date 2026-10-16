@@ -134,6 +134,8 @@ class DashboardController extends Controller
      */
     private function customerDashboard(User $user): View
     {
+        $port = $this->storeDashboard ?? (app()->bound(StoreDashboardPort::class) ? app(StoreDashboardPort::class) : null);
+
         $stats = [
             'total_bookings' => $user->customerBookings()->count(),
             'pending_bookings' => $user->customerBookings()->where('status', 'pending')->count(),
@@ -141,7 +143,7 @@ class DashboardController extends Controller
             'completed' => $user->customerBookings()->whereIn('status', ['completed', 'invoiced'])->count(),
             'vehicles_count' => $user->vehicles()->where('status', 'active')->count(),
             'wishlist_count' => $user->wishlistCars()->count(),
-            'orders_count' => Order::where('user_id', $user->id)->count(),
+            'orders_count' => $port?->getUserOrdersCount($user->id) ?? 0,
         ];
 
         $bookings = $user->customerBookings()
@@ -157,10 +159,7 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        $recentOrders = Order::where('user_id', $user->id)
-            ->latest()
-            ->limit(5)
-            ->get();
+        $recentOrders = $port?->getUserRecentOrders($user->id, 5) ?? collect();
 
         $recentActivities = $this->activity->recentForUser($user->id, 10);
         $unreadNotifications = $this->notifications->recent($user->id, 5);

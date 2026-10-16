@@ -15,6 +15,7 @@ class CoreAutonomousOperation extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'operation_code',
         'line_code',
         'autonomy_level',

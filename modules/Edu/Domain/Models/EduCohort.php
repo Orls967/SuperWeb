@@ -15,6 +15,7 @@ class EduCohort extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'cohort_code',
         'program_id',
         'instructor_party_id',

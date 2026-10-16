@@ -15,6 +15,7 @@ class RetPackagingDeposit extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'deposit_code',
         'customer_id',
         'packaging_type',

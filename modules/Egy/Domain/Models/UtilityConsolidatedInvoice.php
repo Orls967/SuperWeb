@@ -15,6 +15,7 @@ class UtilityConsolidatedInvoice extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'invoice_number',
         'property_id',
         'billing_period',

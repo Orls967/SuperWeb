@@ -15,6 +15,7 @@ class SmelterRun extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'site_id',
         'run_code',
         'output_commodity',

@@ -15,6 +15,7 @@ class IotDevice extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'device_uuid',
         'device_type',
         'owner_entity_id',

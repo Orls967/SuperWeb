@@ -15,6 +15,7 @@ class EduCertificate extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'certificate_number',
         'enrollment_id',
         'student_party_id',

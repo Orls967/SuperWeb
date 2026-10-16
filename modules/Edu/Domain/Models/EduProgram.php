@@ -15,6 +15,7 @@ class EduProgram extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'program_code',
         'title',
         'industry_sector',

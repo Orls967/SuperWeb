@@ -15,6 +15,7 @@ class CoreAiDecisionSnapshot extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'decision_code',
         'model_name',
         'model_version',

@@ -15,6 +15,7 @@ class ExportTerminalStockpile extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'terminal_code',
         'stockpile_code',
         'commodity',

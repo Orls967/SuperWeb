@@ -15,6 +15,7 @@ class BackupGeneratorTest extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'test_code',
         'property_id',
         'generator_asset_id',

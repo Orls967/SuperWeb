@@ -15,6 +15,7 @@ class CargoQualityDispute extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'dispute_number',
         'voyage_id',
         'surveyor_party_id',

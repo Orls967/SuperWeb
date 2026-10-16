@@ -15,6 +15,7 @@ class MicrogridLoadPriority extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'microgrid_id',
         'load_name',
         'tier',

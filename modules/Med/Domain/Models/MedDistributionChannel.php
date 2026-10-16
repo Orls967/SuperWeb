@@ -15,6 +15,7 @@ class MedDistributionChannel extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'channel_code',
         'name',
         'channel_type',

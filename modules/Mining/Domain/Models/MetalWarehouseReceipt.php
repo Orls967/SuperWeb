@@ -15,6 +15,7 @@ class MetalWarehouseReceipt extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'receipt_number',
         'warehouse_id',
         'commodity',

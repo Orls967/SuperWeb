@@ -15,6 +15,7 @@ class EduTalentProfile extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'candidate_id',
         'full_name',
         'city',

@@ -15,6 +15,7 @@ class RetOrder extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'order_number',
         'customer_id',
         'channel_id',

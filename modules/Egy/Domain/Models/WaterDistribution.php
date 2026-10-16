@@ -15,6 +15,7 @@ class WaterDistribution extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'distribution_code',
         'consumer_property_id',
         'input_volume_m3',

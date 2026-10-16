@@ -15,6 +15,7 @@ class RetCouponRedemption extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'coupon_code',
         'customer_id',
         'order_id',

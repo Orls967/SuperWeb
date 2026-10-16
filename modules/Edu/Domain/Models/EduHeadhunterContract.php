@@ -15,6 +15,7 @@ class EduHeadhunterContract extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'placement_code',
         'headhunter_agency_id',
         'candidate_id',

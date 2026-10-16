@@ -15,6 +15,7 @@ class SafetyIncident extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'site_id',
         'incident_type',
         'severity',

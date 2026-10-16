@@ -15,6 +15,7 @@ class InterconnectSettlement extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'settlement_batch_code',
         'partner_operator_code',
         'period_month',

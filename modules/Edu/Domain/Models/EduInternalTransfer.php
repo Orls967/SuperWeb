@@ -15,6 +15,7 @@ class EduInternalTransfer extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'transfer_code',
         'employee_id',
         'from_entity_id',

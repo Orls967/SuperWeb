@@ -15,6 +15,7 @@ class CircularFlyAshSale extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'order_number',
         'cement_buyer_party_id',
         'fly_ash_tonnage',

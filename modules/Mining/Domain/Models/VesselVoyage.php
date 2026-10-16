@@ -15,6 +15,7 @@ class VesselVoyage extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'voyage_number',
         'vessel_name',
         'buyer_party_id',

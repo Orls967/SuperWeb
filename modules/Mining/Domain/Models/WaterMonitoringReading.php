@@ -15,6 +15,7 @@ class WaterMonitoringReading extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'site_id',
         'sampling_point',
         'water_volume_m3',

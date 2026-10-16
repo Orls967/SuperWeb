@@ -15,6 +15,7 @@ class EfSegmentFinancialReport extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'report_code',
         'period_quarter',
         'segment_contributions',

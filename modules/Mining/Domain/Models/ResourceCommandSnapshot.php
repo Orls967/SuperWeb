@@ -15,6 +15,7 @@ class ResourceCommandSnapshot extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'site_id',
         'snapshot_date',
         'pit_production_tonnage',

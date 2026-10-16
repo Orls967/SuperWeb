@@ -15,6 +15,7 @@ class CarbonCreditOrder extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'order_code',
         'seller_entity_id',
         'buyer_entity_id',

@@ -15,6 +15,7 @@ class DistrictCoolingMeter extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'meter_code',
         'building_property_id',
         'thermal_kwh_consumed',

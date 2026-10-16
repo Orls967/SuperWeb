@@ -15,6 +15,7 @@ class GreenLeaseDiscount extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'discount_code',
         'tenant_property_id',
         'esg_score',

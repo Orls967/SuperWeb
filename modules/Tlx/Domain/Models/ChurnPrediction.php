@@ -15,6 +15,7 @@ class ChurnPrediction extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'subscriber_id',
         'subscriber_type',
         'usage_decline_pct',

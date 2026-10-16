@@ -15,6 +15,7 @@ class ColocationContract extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'contract_number',
         'tenant_party_id',
         'dc_id',

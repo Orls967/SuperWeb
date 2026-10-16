@@ -15,6 +15,7 @@ class EduContingentContract extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'contract_code',
         'worker_id',
         'client_entity_id',

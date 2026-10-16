@@ -15,6 +15,7 @@ class MedAdCampaign extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'campaign_code',
         'advertiser_entity_id',
         'agency_entity_id',

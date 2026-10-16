@@ -15,6 +15,7 @@ class CloudComputeInstance extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'instance_code',
         'consumer_entity_id',
         'sku_flavor',

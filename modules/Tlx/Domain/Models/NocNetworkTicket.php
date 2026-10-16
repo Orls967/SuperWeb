@@ -15,6 +15,7 @@ class NocNetworkTicket extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'ticket_number',
         'idempotency_alarm_key',
         'link_id',

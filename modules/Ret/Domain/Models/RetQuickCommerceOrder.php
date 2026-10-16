@@ -15,6 +15,7 @@ class RetQuickCommerceOrder extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'order_code',
         'dark_store_id',
         'customer_id',

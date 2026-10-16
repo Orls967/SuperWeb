@@ -15,6 +15,7 @@ class CarbonCreditIssuance extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'project_code',
         'site_id',
         'project_type',

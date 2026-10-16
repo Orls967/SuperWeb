@@ -15,6 +15,7 @@ class IotConnectivityInvoice extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'invoice_number',
         'owner_entity_id',
         'billing_period',

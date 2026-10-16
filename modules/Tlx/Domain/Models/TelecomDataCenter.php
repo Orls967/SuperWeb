@@ -15,6 +15,7 @@ class TelecomDataCenter extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'dc_code',
         'name',
         'city',

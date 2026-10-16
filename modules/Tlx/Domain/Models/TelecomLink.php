@@ -15,6 +15,7 @@ class TelecomLink extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'link_code',
         'origin_site_id',
         'dest_site_id',

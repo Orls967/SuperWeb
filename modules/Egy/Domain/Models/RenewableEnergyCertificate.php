@@ -15,6 +15,7 @@ class RenewableEnergyCertificate extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'certificate_serial',
         'generation_asset_id',
         'owner_entity_id',

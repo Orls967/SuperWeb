@@ -15,6 +15,7 @@ class RenewableEnergyBilling extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'billing_number',
         'producer_site_id',
         'consumer_entity_id',

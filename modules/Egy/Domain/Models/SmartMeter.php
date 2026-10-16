@@ -15,6 +15,7 @@ class SmartMeter extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'meter_serial_number',
         'consumer_property_type',
         'consumer_property_id',

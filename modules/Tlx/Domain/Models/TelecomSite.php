@@ -15,6 +15,7 @@ class TelecomSite extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'site_code',
         'site_name',
         'site_type',

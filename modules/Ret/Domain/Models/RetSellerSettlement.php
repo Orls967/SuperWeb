@@ -15,6 +15,7 @@ class RetSellerSettlement extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'settlement_code',
         'seller_party_id',
         'verified_gmv_minor',

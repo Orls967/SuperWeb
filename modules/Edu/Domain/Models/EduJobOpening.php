@@ -15,6 +15,7 @@ class EduJobOpening extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'job_code',
         'title',
         'hiring_entity_id',

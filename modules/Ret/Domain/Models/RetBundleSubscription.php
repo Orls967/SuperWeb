@@ -15,6 +15,7 @@ class RetBundleSubscription extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'subscription_code',
         'bundle_id',
         'customer_id',

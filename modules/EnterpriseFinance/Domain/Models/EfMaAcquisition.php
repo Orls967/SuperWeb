@@ -15,6 +15,7 @@ class EfMaAcquisition extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'deal_code',
         'target_company_name',
         'target_industry',

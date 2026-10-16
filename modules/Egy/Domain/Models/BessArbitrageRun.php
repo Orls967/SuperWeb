@@ -15,6 +15,7 @@ class BessArbitrageRun extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'bess_asset_id',
         'run_code',
         'energy_discharged_kwh',

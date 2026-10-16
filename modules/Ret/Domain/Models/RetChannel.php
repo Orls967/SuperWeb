@@ -15,6 +15,7 @@ class RetChannel extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'channel_code',
         'channel_name',
         'channel_type',

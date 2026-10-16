@@ -15,6 +15,7 @@ class MedStudioBooking extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'booking_code',
         'studio_id',
         'project_id',

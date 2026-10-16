@@ -15,6 +15,7 @@ class ReclamationProvision extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'site_id',
         'plan_code',
         'target_hectares',

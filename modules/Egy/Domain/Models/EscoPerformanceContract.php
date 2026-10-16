@@ -15,6 +15,7 @@ class EscoPerformanceContract extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'contract_number',
         'client_property_id',
         'baseline_energy_cost_minor',

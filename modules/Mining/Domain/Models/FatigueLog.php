@@ -15,6 +15,7 @@ class FatigueLog extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'site_id',
         'operator_party_id',
         'equipment_id',

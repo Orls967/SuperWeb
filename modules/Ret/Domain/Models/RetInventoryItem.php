@@ -15,6 +15,7 @@ class RetInventoryItem extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'sku',
         'product_name',
         'stock_available',

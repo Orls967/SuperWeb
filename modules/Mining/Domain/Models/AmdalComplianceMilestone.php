@@ -15,6 +15,7 @@ class AmdalComplianceMilestone extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'site_id',
         'milestone_code',
         'document_type',

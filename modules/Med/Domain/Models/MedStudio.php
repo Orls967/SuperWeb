@@ -15,6 +15,7 @@ class MedStudio extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'studio_code',
         'name',
         'facility_type',

@@ -15,6 +15,7 @@ class EfCapexProposal extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'proposal_code',
         'line_code',
         'project_title',

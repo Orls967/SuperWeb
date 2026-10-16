@@ -15,6 +15,7 @@ class EfSubholdingDividend extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'dividend_code',
         'subholding_name',
         'subsidiary_entity_id',

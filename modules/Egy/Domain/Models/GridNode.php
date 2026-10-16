@@ -15,6 +15,7 @@ class GridNode extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'node_code',
         'name',
         'substation_region',

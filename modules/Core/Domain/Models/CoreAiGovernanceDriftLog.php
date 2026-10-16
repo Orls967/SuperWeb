@@ -15,6 +15,7 @@ class CoreAiGovernanceDriftLog extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'log_code',
         'model_name',
         'data_drift_score',

@@ -15,6 +15,7 @@ class RetBillPayment extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'receipt_number',
         'receipt_sequence',
         'customer_id',

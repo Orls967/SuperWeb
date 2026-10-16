@@ -15,6 +15,7 @@ class MetalsTradingPosition extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'desk_code',
         'commodity',
         'position_type',

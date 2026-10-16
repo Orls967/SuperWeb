@@ -15,6 +15,7 @@ class ContractorSafetyEvaluation extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'contractor_party_id',
         'safety_score',
         'total_incidents',

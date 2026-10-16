@@ -15,6 +15,7 @@ class EduEnrollment extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'enrollment_code',
         'student_party_id',
         'cohort_id',

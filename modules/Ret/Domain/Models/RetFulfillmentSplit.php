@@ -15,6 +15,7 @@ class RetFulfillmentSplit extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'split_code',
         'order_id',
         'sku',

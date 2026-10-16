@@ -15,6 +15,7 @@ class MedIpLicense extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'license_code',
         'ip_id',
         'licensee_entity_id',

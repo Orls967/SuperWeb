@@ -15,6 +15,7 @@ class MeterReading extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'meter_id',
         'kwh_consumed',
         'is_peak_hour',

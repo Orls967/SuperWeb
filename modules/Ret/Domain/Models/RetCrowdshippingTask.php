@@ -15,6 +15,7 @@ class RetCrowdshippingTask extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'task_code',
         'order_code',
         'crowd_driver_id',

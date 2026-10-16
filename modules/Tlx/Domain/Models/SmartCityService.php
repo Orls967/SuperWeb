@@ -15,6 +15,7 @@ class SmartCityService extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'service_code',
         'municipality_name',
         'service_type',

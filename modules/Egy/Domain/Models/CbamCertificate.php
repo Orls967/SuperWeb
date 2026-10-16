@@ -15,6 +15,7 @@ class CbamCertificate extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'cbam_certificate_number',
         'exporter_entity_id',
         'container_id',

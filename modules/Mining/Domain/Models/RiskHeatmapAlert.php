@@ -15,6 +15,7 @@ class RiskHeatmapAlert extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'site_id',
         'risk_type',
         'threshold_pct',

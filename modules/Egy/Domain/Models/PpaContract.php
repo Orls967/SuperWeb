@@ -15,6 +15,7 @@ class PpaContract extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'contract_number',
         'producer_entity_id',
         'grid_offtaker_id',

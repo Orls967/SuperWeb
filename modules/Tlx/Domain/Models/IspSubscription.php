@@ -15,6 +15,7 @@ class IspSubscription extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'subscription_code',
         'customer_id',
         'plan_type',
