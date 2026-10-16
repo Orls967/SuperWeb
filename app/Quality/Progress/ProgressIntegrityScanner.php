@@ -641,6 +641,8 @@ final class ProgressIntegrityScanner
             $candidates[] = substr($declaredTestName, 3);
         } elseif (str_starts_with($declaredTestName, 'test ')) {
             $candidates[] = substr($declaredTestName, 5);
+        } elseif (str_starts_with($declaredTestName, 'test_')) {
+            $candidates[] = substr($declaredTestName, 5);
         }
 
         foreach ($candidates as $candidate) {
@@ -652,6 +654,10 @@ final class ProgressIntegrityScanner
             // 2. Exact PHPUnit method declaration
             $snake = 'test_'.str_replace([' ', '-'], '_', strtolower($candidate));
             if (str_contains(strtolower($content), 'function '.$snake.'(')) {
+                return true;
+            }
+
+            if (str_contains(strtolower($content), 'function '.strtolower($candidate).'(')) {
                 return true;
             }
         }

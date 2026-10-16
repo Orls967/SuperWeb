@@ -513,8 +513,8 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R0-7 | R0.11 | 705 file & 853 tabel warisan di `modules/Integration` dibekukan via baseline `integration-freeze.json` (total 1.558 entri) | Belum dipindahkan ke modul domain yang sesuai | P2 | R4.4 (K2) |
 | M-R0-8 | R0.11 | ~~94 lokasi pembuatan `LedgerAccount` langsung di test (T2)~~ & 9 assertion sepele (T1=9), T3=1, T4=2 (`test-hygiene.json`, sisa 12 entri) | Test lama masih mengaburkan status produksi dan kebersihan pengujian | P2 | T2 tuntas di R1.3 (baseline T2 mencapai 0); T1, T3, T4 di R5.5 (K2) |
 | M-R0-9 | R0.3 | CI run #38078763783 membuktikan job `gate-sqlite` dan `portability-mysql` (MySQL 8) keduanya HIJAU PENUH (SUCCESS, 2.524 test, 11.065 asersi); Draft PR #8 aktif; branch protection master menunggu aktivasi pemilik repo | Branch protection remote master menunggu hak akses admin pemilik | P2 | Menunggu aktivasi protection oleh pemilik |
-| M-R0-10 | R2.3 | `contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`) | Pembuatan klausa kontrak tidak dapat diakses via web UI | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
-| M-R0-11 | R2.3 | `contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view | Halaman laporan keuangan kontrak tidak bisa dibuka | P1 | ↪️ dialihkan ke R2.3 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
+| ~~M-R0-10~~ | R2.3 | ~~`contract.clauses.create` → HTTP 500 (Blade view rusak: `Unclosed '(' does not match '}'`)~~ | ~~Pembuatan klausa kontrak tidak dapat diakses via web UI~~ | ~~P1~~ | Tuntas di R2.3 (commit `4d55b93`): escape sintaks `@{{nama_variabel}}` resmi Blade; test `ControllerErrorPathsAndContractViewsTest` |
+| ~~M-R0-11~~ | R2.3 | ~~`contract.reports`: tertutup contracts/{contract} tidak terbukti (route cocok), tetapi HTTP 500 karena type error `str_replace()` pada `ContractType` enum di view~~ | ~~Halaman laporan keuangan kontrak tidak bisa dibuka~~ | ~~P1~~ | Tuntas di R2.3 (commit `4d55b93`): penanganan string/BackedEnum aman pada `contract_type`; test `ControllerErrorPathsAndContractViewsTest` |
 | ~~M-R0-12~~ | R3.1 | ~~`distribution.portal.home` → HTTP 403 untuk user dengan role `admin` (hanya allow distributor/partner)~~ | ~~Admin sistem tidak bisa membuka portal distributor untuk supervisi~~ | ~~P1~~ | Tuntas di R3.1 (D3): selector distributor untuk admin, audit log `distribution.portal.admin_view`, non-admin dilarang param `?distributor` (403); test `DistributorPortalSelectorTest` (commit `901caca`, `9016f13`) |
 | ~~M-R0-13~~ | R3.1 | ~~`storage.local.upload`: tidak terlindungi = P0 tidak terbukti (closure bawaan Laravel abort 403 bila URL signature tidak valid); belum terdokumentasi di route-roles~~ | ~~Perlu dokumentasi eksplisit signed route~~ | ~~P2~~ | Tuntas di R3.1 (D4): rute `storage.local.upload` terdokumentasi tipe `'signed'` di `route-roles.php`, test valid signature vs unauthorized 403 di `SignedStorageUploadTest` (commit `0dcf3f4`) |
 | M-R0-14 | R5.2 | `api:audit` tidak menyebut entitas/record yang rusak (hanya count dan pesan generik) | Penelusuran data korup memerlukan query manual ke database | P1 | ↪️ dialihkan ke R5.2 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) |
@@ -827,8 +827,26 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Procurement/tests/Feature/BlindTenderSealTest.php::manipulasi isi penawaran atau seal hash setelah segel ditolak saat open bids
     - akses: route POST /procurement/tenders/{tender}/seal [role: admin,procurement,supplier]
     - akses: route POST /procurement/tenders/{tender}/open [role: admin,procurement]
-- [ ] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
+- [x] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
   - Test wajib: test HTTP per jalur galat → redirect + session error (bukan 500).
+  Bukti:
+    - jenis: fitur
+    - commit: 4d55b93
+    - file: modules/Agency/Http/Controllers/AgencyController.php
+    - file: modules/Distribution/Http/Controllers/DistributionController.php
+    - file: modules/Pricing/Http/Controllers/PricingController.php
+    - file: modules/Contract/resources/views/contract/clauses/create.blade.php
+    - file: modules/Contract/resources/views/contract/reports.blade.php
+    - file: tests/Feature/ControllerErrorPathsAndContractViewsTest.php
+    - test: tests/Feature/ControllerErrorPathsAndContractViewsTest.php::test_contract_clauses_create_renders_successfully
+    - test: tests/Feature/ControllerErrorPathsAndContractViewsTest.php::test_contract_reports_renders_successfully_with_active_contract
+    - test: tests/Feature/ControllerErrorPathsAndContractViewsTest.php::test_agency_approve_payout_redirects_with_errors_on_domain_exception
+    - test: tests/Feature/ControllerErrorPathsAndContractViewsTest.php::test_distribution_cover_territory_redirects_with_errors_on_domain_exception
+    - test: tests/Feature/ControllerErrorPathsAndContractViewsTest.php::test_pricing_store_price_list_item_redirects_with_errors_on_domain_exception
+    - minus: M-R0-10
+    - minus: M-R0-11
+    - akses: route GET /contracts/clauses/create [role: admin,contract_manager,legal]
+    - akses: route GET /contracts/reports [role: admin,contract_manager,legal]
 - [ ] R2.4 **Inventory benar-benar append-only** (K-24): `commit()`/`release()` membuat movement baru yang menautkan reservasi (tanpa mengubah baris lama); unique index `(outlet_id, ingredient_id)` + upsert atomik; akses tabel `resto_*` dipindah ke Contract milik Resto.
 - [ ] R2.5 **Outbox yang benar** (K-08, K-23, K-31): status dispatch per subscriber (retry hanya yang gagal); klaim pesan atomik antar-worker; target non-webhook dieksekusi lewat handler terdaftar (bukan ditandai sukses); allowlist host + tolak IP privat/link-local; `IntegrationService::dispatchWebhook()` lewat outbox nyata (atau diganti status `simulated_*`).
   - Test wajib: subscriber A sukses + B gagal → retry hanya ke B; dua worker paralel → satu pengiriman; URL `http://169.254.169.254` ditolak.
