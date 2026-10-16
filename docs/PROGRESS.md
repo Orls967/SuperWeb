@@ -812,8 +812,21 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::memperbarui diskon pada hitung tagihan ulang hanya mengubah grand total tanpa efek samping stok atau ledger
     - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::endpoint kalkulasi tagihan pos resto oleh role berhak dan tidak berhak
     - akses: route POST /resto/pos/session/{session}/bill [role: admin,cashier,outlet_manager]
-- [ ] R2.2 **Tender benar-benar tersegel** (K-22): skema commit–reveal atau isi penawaran terenkripsi sampai `openBids()`; perbaiki `TenderBid::isSealIntact()` (formula hash sama dengan saat menyegel) dan panggil saat pembukaan; tolak bid yang segelnya tidak cocok.
+- [x] R2.2 **Tender benar-benar tersegel** (K-22): skema commit–reveal atau isi penawaran terenkripsi sampai `openBids()`; perbaiki `TenderBid::isSealIntact()` (formula hash sama dengan saat menyegel) dan panggil saat pembukaan; tolak bid yang segelnya tidak cocok.
   - Test wajib: isi penawaran tidak terbaca sebelum dibuka; manipulasi isi setelah segel → ditolak saat open.
+  Bukti:
+    - jenis: fitur
+    - commit: a0124bc
+    - file: modules/Procurement/Application/Services/ProcurementService.php
+    - file: modules/Procurement/Domain/Models/TenderBid.php
+    - file: modules/Procurement/database/migrations/2026_10_16_000001_add_offer_ciphertext_to_prc_tender_bids_table.php
+    - file: modules/Procurement/tests/Feature/BlindTenderSealTest.php
+    - test: modules/Procurement/tests/Feature/BlindTenderSealTest.php::isi penawaran tidak terbaca offer null dan terenkripsi sebelum tender dibuka
+    - test: modules/Procurement/tests/Feature/BlindTenderSealTest.php::is seal intact mengembalikan true untuk penawaran sah dan false bila dimanipulasi
+    - test: modules/Procurement/tests/Feature/BlindTenderSealTest.php::open bids membuka seluruh penawaran tersegel dan memulihkan offer setelah tenggat
+    - test: modules/Procurement/tests/Feature/BlindTenderSealTest.php::manipulasi isi penawaran atau seal hash setelah segel ditolak saat open bids
+    - akses: route POST /procurement/tenders/{tender}/seal [role: admin,procurement,supplier]
+    - akses: route POST /procurement/tenders/{tender}/open [role: admin,procurement]
 - [ ] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
   - Test wajib: test HTTP per jalur galat → redirect + session error (bukan 500).
 - [ ] R2.4 **Inventory benar-benar append-only** (K-24): `commit()`/`release()` membuat movement baru yang menautkan reservasi (tanpa mengubah baris lama); unique index `(outlet_id, ingredient_id)` + upsert atomik; akses tabel `resto_*` dipindah ke Contract milik Resto.
