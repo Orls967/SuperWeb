@@ -42,9 +42,43 @@ final class JUnitSummary
         $search = strtolower(trim($nameOrSignature));
         $fileClean = $file !== null ? strtolower(str_replace(['/', '\\', '.php'], '', $file)) : null;
 
+        $searchVariants = array_unique(array_filter([
+            $search,
+            str_replace('_', ' ', $search),
+            (string) preg_replace('/^test[\s_]+/', '', $search),
+            (string) preg_replace('/^test[\s_]+/', '', str_replace('_', ' ', $search)),
+            str_replace(' ', '_', $search),
+        ]));
+
         foreach ($this->testCases as $key => $case) {
             $caseName = strtolower($case['name']);
-            if (str_contains($caseName, $search) || str_contains(strtolower($key), $search)) {
+            $keyLower = strtolower($key);
+            $caseVariants = array_unique(array_filter([
+                $caseName,
+                str_replace('_', ' ', $caseName),
+                (string) preg_replace('/^test[\s_]+/', '', $caseName),
+                (string) preg_replace('/^test[\s_]+/', '', str_replace('_', ' ', $caseName)),
+                str_replace(' ', '_', $caseName),
+            ]));
+
+            $matched = false;
+            foreach ($searchVariants as $sv) {
+                if ($sv === '') {
+                    continue;
+                }
+                if (str_contains($keyLower, $sv)) {
+                    $matched = true;
+                    break;
+                }
+                foreach ($caseVariants as $cv) {
+                    if ($cv !== '' && (str_contains($cv, $sv) || str_contains($sv, $cv))) {
+                        $matched = true;
+                        break 2;
+                    }
+                }
+            }
+
+            if ($matched) {
                 if ($file === null || $case['file'] === null || str_contains($case['file'], $file)) {
                     return $case;
                 }

@@ -566,7 +566,7 @@ final class ProgressIntegrityScanner
 
                                 continue;
                             }
-                            if ($foundCurrent && $p->statusIcon === '🔨') {
+                            if ($foundCurrent && in_array($p->statusIcon, ['🔨', '🔵'], true)) {
                                 $hasSubsequentActivePhase = true;
                                 break;
                             }
