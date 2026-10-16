@@ -1519,3 +1519,43 @@
   - `php artisan chain:audit-all` lolos dengan 0 selisih pada seluruh 12 pilar.
   - `php artisan bank:reconcile` seimbang dengan 0 selisih di 330 akun ledger.
   - Seluruh test feature vertikal (`ClinicalTrialAndResearchTest`, `HotelPmsAndOperationsTest`, `BeachClubAndVenueOperationsTest`, `MiningResourceCommandTest`, `ProptechSmartBuildingTest`) lolos 100%.
+
+<a id="2026-10-17-r8-event-spine-and-simulation-kernel"></a>
+## 2026-10-17: Universal Event Spine, ClockInterface, dan Simulation Kernel Nyata (Fase R8)
+- **Context:**
+  - Fase R8 menuntaskan spesifikasi `KONSEP.md` §A4 (Event & Integrasi) dan §A10.1 (Simulation Kernel) dengan arsitektur Event Spine nyata, schema registry ber-versi, worker consumer group dengan replay idempoten, injeksi `ClockInterface` murni tanpa `setTestNow` di kode produksi, serta simulation loop `sim:run --days=N --resume` dengan 7 tick handler terjadwal dan checkpoint hash state deterministik.
+- **Decision:**
+  1. **Katalog Event & Schema Registry (R8.1):**
+     - Dibuat `Modules\Core\Domain\Events\EventCatalog` yang mendefinisikan 16 event minimum lintas modul sesuai `KONSEP.md` §A4.2 dengan penamaan ber-versi `{domain}.{entitas}.{kejadian}.v{n}`.
+     - Setiap event lintas modul wajib memiliki produsen dan konsumen nyata; dilarang keras event lintas modul tanpa konsumen nyata.
+     - Dibuat tabel `core_event_schemas` (`CoreEventSchema` model) dan diuji via `EventCatalogContractTest`.
+  2. **Consumer Group & Replay (R8.2):**
+     - Worker `core:consume-spine {group}` mengonsumsi event spine berdasarkan consumer group dengan offset tersimpan di tabel `sim_event_consumers`.
+     - Didukung opsi `--topic=*`, `--from-offset=N`, dan `--replay` yang menjamin dispatch idempoten melalui `SpineConsumerRegistry` tanpa efek samping duplikat.
+     - Diuji via `EventSpineConsumerGroupTest`.
+  3. **ClockInterface & Higiene Waktu Bersih (R8.3):**
+     - Dibuat kontrak `Modules\Core\Contracts\ClockInterface` sebagai induk `SimClockInterface`, terdaftar di container service provider.
+     - Seluruh kode produksi bersih dari `Carbon::setTestNow()` (baseline `arch:scan` A8 = 0 terkunci ketat).
+     - Diuji via `ClockInterfaceHygieneTest`.
+  4. **Simulation Loop & State Hash Deterministik (R8.4):**
+     - Command `sim:run --days=N [--resume] [--seed=S]` mengeksekusi loop per hari virtual dengan mengeksekusi 7 tick handler terdaftar melalui `SimTickRegistry`:
+       1. Depresiasi aset tetap (`ast:depreciate`) bulanan/hari 1
+       2. Cicilan pinjaman HODL-to-Drive (`finance:charge-installments`) harian
+       3. Tagihan Mall & utilitas (`mall:generate-invoices`) bulanan/hari 1
+       4. Expiry poin & voucher Mall (`mall:expire-points`, `mall:expire-vouchers`) harian
+       5. Perencanaan kebutuhan material / MRP manufaktur (`mfg:run-mrp`) harian
+       6. Akrual Demurrage & Detention logistik (`lgx:accrue-dd`) harian
+       7. Royalti & marketing fee waralaba Resto (`resto:post-royalty`) harian
+     - Checkpoint `last_completed_day` dan `last_state_hash` tersimpan di tabel `sim_runs` setiap hari virtual.
+     - Dua eksekusi dengan seed yang sama menghasilkan hash state identik 100%, dan eksekusi bertahap `--resume` menghasilkan hash identik dengan eksekusi kontinu.
+     - Diuji via `SimulationDeterministicRunTest`.
+- **Reason:**
+  - Mengakhiri keterbatasan kernel simulasi warisan (K-09), meniadakan risiko state polusi waktu di worker produksi, serta mewujudkan orkestrasi event spine asinkron lintas lini konglomerasi dengan jaminan replay idempoten.
+- **Verification:**
+  - `vendor/bin/pest modules/Core/tests/Feature/EventSpineConsumerGroupTest.php` PASS (2 passed).
+  - `vendor/bin/pest modules/Core/tests/Feature/SimulationDeterministicRunTest.php` PASS (3 passed).
+  - `vendor/bin/pest tests/Architecture/EventCatalogContractTest.php` PASS (5 passed).
+  - `vendor/bin/pest tests/Architecture/ClockInterfaceHygieneTest.php` PASS (3 passed).
+  - `php artisan arch:scan` A8 = 0 bersih.
+  - `php artisan docs:inventory --check` sinkron 100%.
+
