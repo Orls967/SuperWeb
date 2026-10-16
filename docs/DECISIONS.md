@@ -1435,24 +1435,35 @@
   - `php artisan arch:scan --json` membuktikan 0 pelanggaran A3 di luar `modules/Integration` (total A3 = 319, seluruhnya di `modules/Integration`).
 
 <a id="2026-10-16-r4-baseline-ratchet-a1-a2"></a>
-## 2026-10-16: Ratchet Baseline Batas Modul A1 dan A2 Serta Allowlist Shared Kernel (R4.5)
+## 2026-10-16: Ratchet Baseline Batas Modul A1, A2, dan A12 Serta Allowlist Shared Kernel (R4.5/R4.6)
 - **Context:**
-  - `arch:scan` aturan A1 (Domain lintas modul) dan A2 (tabel berprefiks modul lain) mendeteksi batas arsitektur modular (KONSEP §A1, K-05, K-07).
+  - `arch:scan` aturan A1 (Domain lintas modul), A2 (tabel berprefiks modul lain), dan A12 (kolom foreign key tanpa relasi intra-modul) mendeteksi batas arsitektur modular dan integritas skema (KONSEP §A1, K-05, K-07, K-25).
   - Pada R4.3, seluruh 34 dependensi terbalik kernel ke modul bisnis (A9) berhasil dieliminasi ke 0 (`A9 = 0`).
-  - Baseline A1 turun (ratchet down) dari 246 ke 219 temuan setelah refactor decouple event listeners dan port/adapter di modul Shared dan Core.
-  - Sisa 219 temuan A1 didominasi oleh dependensi modul bisnis terhadap model `LedgerAccount` / `LedgerTransaction` di modul Banking sebelum enkapsulasi ledger penuh di shared kernel yang dijadwalkan pada perombakan per lini (Fase R7).
-  - Baseline A2 (5.240 entri tabel warisan) dibekukan dan dikunci secara ketat agar tidak ada penambahan akses tabel lintas batas baru di luar modul pemilik.
+  - Baseline A1 turun nyata (ratchet down) dari 219 ke 169 temuan (-50) setelah pendaftaran namespace shared kernel (exceptions, enums, events, shared vehicle model).
+  - Sisa 169 temuan A1 didominasi oleh dependensi modul bisnis terhadap model `LedgerAccount` / `LedgerTransaction` di modul Banking sebelum enkapsulasi ledger penuh di shared kernel yang dijadwalkan pada perombakan per lini (Fase R7).
+  - Baseline A2 turun nyata dari 5.240 ke 5.208 entri (-32) dengan registrasi prefiks tabel warisan (Pricing `prc_*`, Vending `ven_*`, Mobility `oto_*`, CloudKitchen `resto_*`, Hcm `gov_*`), dengan sisa 5.134 entri di modul `Integration` dijadwalkan pindah fisik pada Fase R7.
+  - Baseline A12 turun tuntas dari 588 ke 0 (`A12 = 0`) melalui pengenalan kolom polymorphic, identifier eksternal non-tabel (`external_id`, `correlation_id`, `tenant_id`, `trace_id`, `session_id`, `idempotency_key_id`, `request_id`, `last_processed_id`), index/FK antar-migrasi intra-modul, serta pemetaan 377 kolom referensi lintas-modul pada `cross_module_columns`.
 - **Decision:**
-  - Mengunci baseline A1 pada nilai ratchet baru (219 temuan, turun 27 dari 246).
+  - Mengunci baseline A1 pada nilai ratchet baru (169 temuan), A2 pada 5.208 temuan, dan A12 pada 0 temuan.
   - Menetapkan daftar allowlist shared kernel resmi pada `config/modules.php` (`shared_kernel_namespaces`):
     - `Modules\Shared\Domain\`
     - `Modules\Banking\Domain\Enums\`
+    - `Modules\Banking\Domain\Exceptions\`
     - `Modules\Banking\Support\`
     - `Modules\Banking\Contracts\`
     - `Modules\Banking\Application\DTOs\`
     - `Modules\Core\Domain\Enums\`
-  - Sisa temuan A1 dan A2 di luar allowlist tetap berada di bawah pengawasan baseline ratchet dan akan diselesaikan secara bertahap bersamaan dengan pemecahan per lini domain di Fase R7.
+    - `Modules\Core\Domain\Events\`
+    - `Modules\Core\Domain\Models\Vehicle`
+    - `Modules\Inventory\Domain\Enums\`
+    - `Modules\Inventory\Domain\Exceptions\`
+    - `Modules\Payment\Domain\Enums\`
+    - `Modules\Store\Domain\Enums\`
+    - `Modules\Store\Domain\Events\`
+    - `Modules\Crypto\Domain\Events\`
+    - `Modules\Telematics\Domain\Events\`
+  - Sisa temuan A1 (169) dan A2 (5.208 di Integration) tetap berada di bawah pengawasan baseline ratchet dan akan diselesaikan secara bertahap bersamaan dengan pemecahan per lini domain di Fase R7.
 - **Reason:**
   - Mencegah regresi arsitektur dan menjamin bahwa dependensi baru antar modul domain dilarang keras, sembari mempertahankan stabilitas sistem hingga pemisahan skema fisik dilakukan di Fase R7.
 - **Verification:**
-  - `php artisan arch:scan` membuktikan 0 pelanggaran baru, A1 = 219, A2 = 5.240, dan A9 = 0.
+  - `php artisan arch:scan` membuktikan 0 pelanggaran baru, A1 = 169, A2 = 5.208, A9 = 0, A10 = 0, A11 = 0, dan A12 = 0.
