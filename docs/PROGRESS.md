@@ -1312,7 +1312,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - [ ] R4.7 Quality gate Fase R4 + verifikasi silang.
 
 ### FASE R5 — DOKUMENTASI, AUDIT & TEST YANG JUJUR
-> **Status audit:** 🟡 IN PROGRESS (2026-10-16) · Prasyarat: R0 ✅.
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Prasyarat: R0 ✅.
 
 #### DoR Fase R5 — Dokumentasi, audit & test yang jujur
 - Disetujui pemilik: [x] 2026-10-16 (chat)
@@ -1331,12 +1331,74 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - `TestHygieneTest`
 - Jalan pintas yang dihindari: fixture palsu yang tidak memicu failure pada command audit, asersi kosong / `assertTrue(true)` baru, skipping test tanpa blocker sah, klaim status sehat tanpa verifikasi DB nyata.
 
-- [ ] R5.1 **CODEBASE otomatis** (K-03): `php artisan docs:inventory` menghasilkan bagian faktual `CODEBASE.md` (modul, prefiks, jumlah tabel, rute per modul + middleware, command & jadwal, akun ledger per modul); test gagal bila hasil generate ≠ isi file.
-- [ ] R5.2 **Fixture korupsi untuk semua audit** (K-02): baseline `AuditCommandContractTest` = 0 — setiap `*:audit` terdaftar membandingkan dua sumber dan punya fixture yang membuatnya gagal.
-- [ ] R5.3 **`super:health-check` jujur**: hanya melaporkan pilar yang benar-benar dicek; tambahkan pilar baru hanya bersama audit dua-sumbernya.
-- [ ] R5.4 **Format gate di AUDIT.md**: hanya tautan ke `docs/gates/fase-N.md` hasil `gate:report`; entri lama yang hanya sub-suite diberi catatan "tidak representatif".
-- [ ] R5.5 **Higiene test** (K-27): baseline `TestHygieneTest` = 0; setiap modul yang punya rute memiliki test HTTP (role berhak & tak berhak); setiap fitur uang punya test (c) retry dan (d) invarian.
-- [ ] R5.6 Quality gate Fase R5 + verifikasi silang.
+- [x] R5.1 **CODEBASE otomatis** (K-03): `php artisan docs:inventory` menghasilkan bagian faktual `CODEBASE.md` (modul, prefiks, jumlah tabel, rute per modul + middleware, command & jadwal, akun ledger per modul); test gagal bila hasil generate ≠ isi file.
+  Bukti:
+    - jenis: tooling
+    - commit: 4407dcb
+    - file: app/Console/Commands/DocsInventoryCommand.php
+    - file: tests/Architecture/CodebaseInventorySyncTest.php
+    - file: docs/CODEBASE.md
+    - test: tests/Architecture/CodebaseInventorySyncTest.php::it ensures php artisan docs:inventory passes and verifies synchronization with CODEBASE.md
+    - gate: docs/gates/fase-r5.md
+- [x] R5.2 **Fixture korupsi untuk semua audit** (K-02): baseline `AuditCommandContractTest` = 0 — setiap `*:audit` terdaftar membandingkan dua sumber dan punya fixture yang membuatnya gagal.
+  Bukti:
+    - jenis: tooling
+    - commit: 6824e6f
+    - file: tests/Architecture/AuditCommandContractTest.php
+    - file: tests/Architecture/baselines/audit-contract.json
+    - file: modules/Integration/Console/Commands/AuditIntegrationCommand.php
+    - test: tests/Architecture/AuditCommandContractTest.php::it keeps audit commands without corruption fixtures within the ratchet baseline
+    - test: tests/Architecture/AuditCommandContractTest.php::it confirms bank:reconcile passes on clean state and fails when data is corrupted
+    - test: tests/Architecture/AuditCommandContractTest.php::it confirms api:audit passes on clean state and fails when signature is corrupted
+    - gate: docs/gates/fase-r5.md
+- [x] R5.3 **`super:health-check` jujur**: hanya melaporkan pilar yang benar-benar dicek; tambahkan pilar baru hanya bersama audit dua-sumbernya.
+  Bukti:
+    - jenis: fitur
+    - commit: ccea63b
+    - file: modules/Core/Application/Services/SystemHealthService.php
+    - file: modules/Core/Console/Commands/SuperHealthCheckCommand.php
+    - file: tests/Feature/Quality/HonestSuperHealthCheckTest.php
+    - test: tests/Feature/Quality/HonestSuperHealthCheckTest.php::it confirms super:health-check passes on clean state and verifies all 12 pillars
+    - test: tests/Feature/Quality/HonestSuperHealthCheckTest.php::it fails honestly when the contracts chain pillar is corrupted
+    - test: tests/Feature/Quality/HonestSuperHealthCheckTest.php::it fails honestly when the ledger pillar is corrupted
+    - test: tests/Feature/Quality/HonestSuperHealthCheckTest.php::it fails honestly when the mall billing pillar is corrupted
+    - akses: command super:health-check
+    - gate: docs/gates/fase-r5.md
+- [x] R5.4 **Format gate di AUDIT.md**: hanya tautan ke `docs/gates/fase-N.md` hasil `gate:report`; entri lama yang hanya sub-suite diberi catatan "tidak representatif".
+  Bukti:
+    - jenis: dokumen
+    - commit: a230e54
+    - file: docs/AUDIT.md
+    - file: tests/Architecture/AuditDocGateFormatTest.php
+    - test: tests/Architecture/AuditDocGateFormatTest.php::it verifies that docs/AUDIT.md exists and contains the unrepresentative note for pre-R0 entries
+    - test: tests/Architecture/AuditDocGateFormatTest.php::it verifies that all official gate reports referenced in docs/AUDIT.md physically exist
+    - test: tests/Architecture/AuditDocGateFormatTest.php::it ensures all completed R phase gates are referenced in docs/AUDIT.md
+    - gate: docs/gates/fase-r5.md
+- [x] R5.5 **Higiene test** (K-27): baseline `TestHygieneTest` = 0; setiap modul yang punya rute memiliki test HTTP (role berhak & tak berhak); setiap fitur uang punya test (c) retry dan (d) invarian.
+  Bukti:
+    - jenis: tooling
+    - commit: 9a40940
+    - file: tests/Architecture/TestHygieneTest.php
+    - file: tests/Architecture/baselines/test-hygiene.json
+    - file: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php
+    - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
+    - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Guest is redirected to login when accessing asset index
+    - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Unauthorized role is forbidden from asset index
+    - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Asset manager can access asset index
+    - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Admin can access asset create
+    - gate: docs/gates/fase-r5.md
+- [x] R5.6 Quality gate Fase R5 + verifikasi silang.
+  Bukti:
+    - jenis: dokumen
+    - commit: a445d88
+    - file: docs/CODEBASE.md
+    - file: docs/gates/fase-r5.md
+    - gate: docs/gates/fase-r5.md
+
+#### Register Minus Fase R5
+| ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| - | - | Tidak ada minus terbuka (seluruh deliverable R5.1 s/d R5.6 serta minus warisan M-R0-4, M-R0-14, M-R0-15, M-R0-16 tuntas 100%) | - | - | - |
 
 ### FASE R6 — VERIFIKASI ULANG ITEM FASE 26–63
 > **Status audit:** ⬜ BELUM · Prasyarat: R1–R5.
