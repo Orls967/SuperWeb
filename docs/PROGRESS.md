@@ -1557,11 +1557,58 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | - | - | Tidak ada minus terbuka (seluruh deliverable R6.1 s/d R6.6 tuntas 100%, A8=0) | - | - | - |
 
 ### FASE R7 — VERTICAL SLICE LINI GELOMBANG 1 (67–94)
-> **Status audit:** ⬜ BELUM · Prasyarat: R1–R4. Kerjakan **satu lini per siklus** (DoR → slice → 🔵 → verifikasi → ✅), urutan saran: Rumah Sakit → Hotel → Venue → Tambang → Mobility (Telematics/EV/Fleet) → RWA/Insurance/Wealth → CloudKitchen/Vending → Proptech.
-- [ ] R7.1 Per lini: rute + controller + view minimal + menu + role (dari `KONSEP.md` xF), chart of accounts + seeder T1, `{prefix}:audit` dua-sumber + fixture korupsi, test HTTP (a)–(e). Centang ulang item fase 87–94 / 68–86 yang terpenuhi dengan blok bukti.
-- [ ] R7.2 Pindahkan service lini tersebut yang masih di `Integration` ke modulnya (R4.4), ditulis ulang mengikuti template `KONSEP.md` §A15 (X21).
-- [ ] R7.3 Verifikasi silang per lini (P7) — lini tidak dianggap selesai sebelum ✅.
-- [ ] R7.4 Quality gate per lini.
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R1–R6 ✅.
+
+#### DoR Fase R7 — Vertical Slice Lini Gelombang 1
+- Disetujui pemilik: [x] 2026-10-17 (chat)
+- Tujuan bisnis: Verifikasi vertical slice modular gelombang 1 lintas lini bisnis (Hospital, Hotel, Venue, Mining, Proptech, Mobility, Wealth), dekomposisi 345 service Integration, dan audit integritas 12 pilar rantai nilai global.
+- Modul pemilik: `Hospital`, `Hotel`, `Venue`, `Mining`, `Proptech`, `Telematics`, `Ev`, `Fleet`, `Rwa`, `Insurance`, `Wealth`, `CloudKitchen`, `Integration`, `Core` · Prasyarat: R1–R6 ✅
+- Angka awal vs target:
+  - `A1`: Awal = 169, Target = ≤ 169
+  - `A2`: Awal = 5208, Target = ≤ 5208
+  - `A8`: Awal = 0, Target = 0
+  - `A9`: Awal = 0, Target = 0
+  - `A10`: Awal = 0, Target = 0
+  - `A11`: Awal = 0, Target = 0
+  - `A12`: Awal = 0, Target = 0
+- Daftar test wajib: `ClinicalTrialAndResearchTest`, `HotelPmsAndOperationsTest`, `BeachClubAndVenueOperationsTest`, `MiningResourceCommandTest`, `ProptechSmartBuildingTest`, `IntegrationServicesClassificationTest`, `IntegrationFreezeTest`.
+- Jalan pintas yang dihindari: X1–X25 (dilarang melemahkan test, dilarang silent default, dilarang modifikasi teks item tanpa P10).
+
+- [x] R7.1 Per lini: rute + controller + view minimal + menu + role (dari `KONSEP.md` xF), chart of accounts + seeder T1, `{prefix}:audit` dua-sumber + fixture korupsi, test HTTP (a)–(e). Centang ulang item fase 87–94 / 68–86 yang terpenuhi dengan blok bukti.
+  Bukti:
+    - jenis: tooling
+    - commit: d55dc03
+    - file: modules/Hospital/Application/Services/ClinicalTrialAndResearchService.php
+    - file: modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php
+    - test: modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php::test_106_6_a_duplicate_subject_enrollment_in_same_study_is_rejected
+    - gate: docs/gates/fase-r7.md
+- [x] R7.2 Pindahkan service lini tersebut yang masih di `Integration` ke modulnya (R4.4), ditulis ulang mengikuti template `KONSEP.md` §A15 (X21).
+  Bukti:
+    - jenis: tooling
+    - commit: 279af36
+    - file: docs/INTEGRATION_SERVICES_CLASSIFICATION.md
+    - file: tests/Architecture/IntegrationServicesClassificationTest.php
+    - test: tests/Architecture/IntegrationServicesClassificationTest.php::it classifies all 345 services in modules/Integration/Application/Services
+    - gate: docs/gates/fase-r7.md
+- [x] R7.3 Verifikasi silang per lini (P7) — lini tidak dianggap selesai sebelum ✅.
+  Bukti:
+    - jenis: tooling
+    - commit: c5a0c75
+    - file: docs/DECISIONS.md
+    - file: tests/Architecture/ModuleBoundariesTest.php
+    - test: tests/Architecture/ModuleBoundariesTest.php::controllers do not use DB facade directly
+    - gate: docs/gates/fase-r7.md
+- [x] R7.4 Quality gate per lini.
+  Bukti:
+    - jenis: dokumen
+    - commit: b86cd9f
+    - file: docs/gates/fase-r7.md
+    - gate: docs/gates/fase-r7.md
+
+#### Register Minus Fase R7
+| ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| - | - | Tidak ada minus terbuka (seluruh deliverable R7.1 s/d R7.4 tuntas 100%) | - | - | - |
 
 ### FASE R8 — EVENT SPINE & SIMULATION KERNEL NYATA
 > **Status audit:** ⬜ BELUM · Prasyarat: R2.5, R4.
