@@ -3,6 +3,7 @@
 namespace Modules\Proptech\tests\Feature;
 
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Proptech\Application\Services\FlexSpaceService;
@@ -48,41 +49,7 @@ class FlexSpaceBookingTest extends TestCase
             'status' => 'AVAILABLE',
         ]);
 
-        LedgerAccount::create([
-            'code' => 'prp:flex_escrow:IDR',
-            'name' => 'Flex Space Escrow Deposit',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'prp:flex_revenue_unearned:IDR',
-            'name' => 'Flex Space Unearned Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'prp:flex_revenue:IDR',
-            'name' => 'Flex Space Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'revenue',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'prp:flex_penalty_rev:IDR',
-            'name' => 'Flex Space No-Show Penalty Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'revenue',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_78_2_booking_creation_deposit_hold_and_anti_overlap(): void

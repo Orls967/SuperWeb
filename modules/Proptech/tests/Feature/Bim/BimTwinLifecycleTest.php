@@ -2,6 +2,7 @@
 
 namespace Modules\Proptech\tests\Feature\Bim;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Proptech\Application\Services\BimTwinService;
@@ -19,23 +20,7 @@ class BimTwinLifecycleTest extends TestCase
         parent::setUp();
         $this->bimService = app(BimTwinService::class);
 
-        LedgerAccount::create([
-            'code' => 'ast:fixed_assets:IDR',
-            'name' => 'Fixed Assets Capitalized',
-            'asset_code' => 'IDR',
-            'kind' => 'asset',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'epc:cip_liability:IDR',
-            'name' => 'Construction in Progress CIP',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_77_1_and_77_5_bim_versioning_and_tamper_evident_hash_chain(): void

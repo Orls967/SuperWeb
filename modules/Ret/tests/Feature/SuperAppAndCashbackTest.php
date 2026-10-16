@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Ret\Application\Services\SuperAppAndCashbackService;
 use Modules\Ret\Domain\Models\RetBundleSubscription;
 use Modules\Ret\Domain\Models\RetCashbackTransaction;
@@ -11,30 +11,7 @@ use Modules\Ret\Domain\Models\RetCashbackTransaction;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $accounts = [
-        'ret:cashback_expense:IDR' => 'expense',
-        'ret:cashback_liability:IDR' => 'liability',
-        'ret:bill_payment_receivable:IDR' => 'asset',
-        'ret:bill_payment_fee_revenue:IDR' => 'revenue',
-        'ret:biller_payable:IDR' => 'liability',
-        'ret:bundle_receivable:IDR' => 'asset',
-        'ret:internal_settlement_HOTEL:IDR' => 'revenue',
-        'ret:internal_settlement_MEDIA:IDR' => 'revenue',
-        'ret:internal_settlement_TLX:IDR' => 'revenue',
-    ];
-
-    foreach ($accounts as $code => $kind) {
-        LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'kind' => $kind,
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'name' => "Retail {$code}",
-            ]
-        );
-    }
+    $this->seed(LedgerAccountsSeeder::class);
 });
 
 test('(a) cashback sum issued <= earned rules, non-negative, and ledger liability balanced', function () {

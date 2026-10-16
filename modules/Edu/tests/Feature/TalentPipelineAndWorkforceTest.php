@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Edu\Application\Services\TalentPipelineAndWorkforceService;
 use Modules\Edu\Domain\Models\EduContingentContract;
 use Modules\Edu\Domain\Models\EduHeadhunterContract;
@@ -12,23 +12,7 @@ use Modules\Edu\Domain\Models\EduHeadhunterContract;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $accounts = [
-        'edu:headhunter_expense:IDR' => 'expense',
-        'edu:headhunter_payable:IDR' => 'liability',
-    ];
-
-    foreach ($accounts as $code => $kind) {
-        LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'kind' => $kind,
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'name' => "Education {$code}",
-            ]
-        );
-    }
+    $this->seed(LedgerAccountsSeeder::class);
 });
 
 test('(a) matching deterministik: dua run identik menghasilkan skor & ranking persis sama', function () {

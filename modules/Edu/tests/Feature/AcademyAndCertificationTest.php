@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Edu\Application\Services\AcademyAndCertificationService;
 use Modules\Edu\Domain\Models\EduCertificate;
 use Modules\Edu\Domain\Models\EduEnrollment;
@@ -12,23 +12,7 @@ use Modules\Edu\Domain\Models\EduEnrollment;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $accounts = [
-        'edu:tuition_receivable:IDR' => 'asset',
-        'edu:tuition_revenue:IDR' => 'revenue',
-    ];
-
-    foreach ($accounts as $code => $kind) {
-        LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'kind' => $kind,
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'name' => "Education {$code}",
-            ]
-        );
-    }
+    $this->seed(LedgerAccountsSeeder::class);
 });
 
 test('(a) prerequisite tak terpenuhi -> enrollment ditolak dengan exception', function () {

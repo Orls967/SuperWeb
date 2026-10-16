@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Med\Application\Services\StudioAndContentProductionService;
 use Modules\Med\Domain\Models\MedStudio;
 use Modules\Med\Domain\Models\MedStudioBooking;
@@ -11,23 +11,7 @@ use Modules\Med\Domain\Models\MedStudioBooking;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $accounts = [
-        'med:talent_royalty_expense:IDR' => 'expense',
-        'med:talent_royalty_payable:IDR' => 'liability',
-    ];
-
-    foreach ($accounts as $code => $kind) {
-        LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'kind' => $kind,
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'name' => "Media {$code}",
-            ]
-        );
-    }
+    $this->seed(LedgerAccountsSeeder::class);
 });
 
 test('(a) backend % talent = audited revenue * rate and triggers ledger accrual', function () {

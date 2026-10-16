@@ -2,6 +2,7 @@
 
 namespace Modules\Trade\tests\Feature\Bidding;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Trade\Application\Services\Bidding\AiBiddingAgentService;
@@ -19,6 +20,7 @@ class AiContractBiddingAgentTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(LedgerAccountsSeeder::class);
         $this->service = app(AiBiddingAgentService::class);
 
         $this->agent = BiddingAgent::create([
@@ -30,24 +32,6 @@ class AiContractBiddingAgentTest extends TestCase
             'target_margin_pct' => 20.0,
             'max_risk_score' => 0.35,
             'status' => 'ACTIVE',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'trd:tender_contract_ar:IDR',
-            'name' => 'Tender Contract Receivable',
-            'asset_code' => 'IDR',
-            'kind' => 'asset',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'trd:tender_revenue_unearned:IDR',
-            'name' => 'Tender Unearned Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'revenue',
-            'allow_negative' => true,
-            'cached_balance' => '0',
         ]);
     }
 

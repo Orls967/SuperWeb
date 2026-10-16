@@ -2,36 +2,15 @@
 
 declare(strict_types=1);
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Tlx\Application\Services\DataCenterAndCloudOpsService;
 use Modules\Tlx\Domain\Models\TelecomDataCenter;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    // Setup standard ledger accounts for cloud chargeback
-    LedgerAccount::firstOrCreate(
-        ['code' => 'tlx:cloud_chargeback_receivable:IDR'],
-        [
-            'kind' => 'asset',
-            'asset_code' => 'IDR',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-            'name' => 'Telecom Cloud Chargeback Receivable',
-        ]
-    );
-
-    LedgerAccount::firstOrCreate(
-        ['code' => 'tlx:cloud_infrastructure_revenue:IDR'],
-        [
-            'kind' => 'revenue',
-            'asset_code' => 'IDR',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-            'name' => 'Telecom Cloud Infrastructure Revenue',
-        ]
-    );
+    $this->seed(LedgerAccountsSeeder::class);
 });
 
 test('(a) data center metrics accurately computes PUE = total facility power / it load power', function () {

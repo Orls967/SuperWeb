@@ -96,6 +96,27 @@ final class RetAccounts
                 'allow_negative' => true,
             ],
             [
+                'code' => 'ret:internal_settlement_HOTEL:IDR',
+                'name' => 'Ret Internal Settlement HOTEL',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ret:internal_settlement_MEDIA:IDR',
+                'name' => 'Ret Internal Settlement MEDIA',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ret:internal_settlement_TLX:IDR',
+                'name' => 'Ret Internal Settlement TLX',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
                 'code' => 'ret:seller_payable:IDR',
                 'name' => 'Omnichannel Merchant Settlement Payable',
                 'kind' => AccountKind::LIABILITY,

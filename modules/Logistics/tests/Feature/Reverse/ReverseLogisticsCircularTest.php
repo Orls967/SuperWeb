@@ -2,6 +2,7 @@
 
 namespace Modules\Logistics\tests\Feature\Reverse;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Logistics\Application\Services\Reverse\ReverseLogisticsService;
@@ -19,23 +20,7 @@ class ReverseLogisticsCircularTest extends TestCase
         parent::setUp();
         $this->service = app(ReverseLogisticsService::class);
 
-        LedgerAccount::create([
-            'code' => 'mfg:scrap_inbound:IDR',
-            'name' => 'Recycled Scrap Material Inventory',
-            'asset_code' => 'IDR',
-            'kind' => 'asset',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'lgx:circular_revenue:IDR',
-            'name' => 'Circular Logistics Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'revenue',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_79_2_reverse_order_triggered_idempotently_from_event(): void

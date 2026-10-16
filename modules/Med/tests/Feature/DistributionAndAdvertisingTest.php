@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Med\Application\Services\DistributionAndAdvertisingService;
 use Modules\Med\Domain\Models\MedAdCampaign;
 use Modules\Med\Domain\Models\MedSponsorshipPackage;
@@ -11,25 +11,7 @@ use Modules\Med\Domain\Models\MedSponsorshipPackage;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $accounts = [
-        'med:ad_receivable:IDR' => 'asset',
-        'med:ad_publisher_payable:IDR' => 'liability',
-        'med:ad_platform_revenue:IDR' => 'revenue',
-        'med:agency_commission_payable:IDR' => 'liability',
-    ];
-
-    foreach ($accounts as $code => $kind) {
-        LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'kind' => $kind,
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'name' => "Media {$code}",
-            ]
-        );
-    }
+    $this->seed(LedgerAccountsSeeder::class);
 });
 
 test('(a) yield management menolak harga di bawah floor CPM', function () {
