@@ -1078,6 +1078,7 @@ Sesuai Protokol Disiplin Arsitektur P2 dan PROGRESS R5.4, seluruh verifikasi gat
 | **Fase R1** | 2026-10-16 | ✅ TERVERIFIKASI | [docs/gates/fase-r1.md](docs/gates/fase-r1.md) | Rekonsiliasi ledger, seeder akun COA lengkap, audit uang & subledger |
 | **Fase R2** | 2026-10-16 | ✅ TERVERIFIKASI | [docs/gates/fase-r2.md](docs/gates/fase-r2.md) | Remediasi bug fungsional, eliminasi duplikasi route, view blade valid |
 | **Fase R3** | 2026-10-16 | ✅ TERVERIFIKASI | [docs/gates/fase-r3.md](docs/gates/fase-r3.md) | Otorisasi granular RBAC 598 rute, eliminasi role auditor pada mutasi tulis |
+| **Fase R4** | 2026-10-16 | 🔵 SIAP VERIFIKASI | [docs/gates/fase-r4.md](docs/gates/fase-r4.md) | Batas modul & kepemilikan data: strict_types A11=0, registry prefiks tabel, kernel A9=0, klasifikasi 345 service Integration, model fillable A10=0 |
 | **Fase R5** | 2026-10-16 | ✅ TERVERIFIKASI | [docs/gates/fase-r5.md](docs/gates/fase-r5.md) | Dokumentasi, audit & test jujur: docs:inventory sinkron, 33 fixture audit korupsi, super:health-check 12 pilar, test hygiene nol |
 
 
