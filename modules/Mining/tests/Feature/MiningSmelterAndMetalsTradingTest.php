@@ -111,7 +111,7 @@ class MiningSmelterAndMetalsTradingTest extends TestCase
         $this->assertEquals(0, $pos->unrealized_pnl_minor);
 
         // Mark to market jumps to $9,250/ton (+ $250/ton * 100t = +$25,000 = 2,500,000 cents)
-        $updatedPos = $this->service->markToMarketTradingPosition($pos->id, 9250.0);
+        $updatedPos = $this->service->markToMarketTradingPosition($pos->id, '9250.0');
 
         $this->assertEquals(2500000, $updatedPos->unrealized_pnl_minor);
         $this->assertEquals(9250.0, $updatedPos->current_mark_price_usd);
