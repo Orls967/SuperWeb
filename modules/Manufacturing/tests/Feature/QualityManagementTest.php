@@ -178,8 +178,8 @@ class QualityManagementTest extends TestCase
         try {
             $this->quality->releaseLot($lot->fresh(), $this->admin);
             $this->fail('Sertifikat kedaluwarsa harus memblokir rilis.');
-        } catch (InvalidArgumentException) {
-            $this->assertTrue(true);
+        } catch (InvalidArgumentException $e) {
+            $this->assertNotEmpty($e->getMessage());
         }
 
         // Sertifikat berlaku → rilis.

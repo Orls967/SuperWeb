@@ -79,7 +79,8 @@ class LogisticsDriverTest extends TestCase
         // SIM B2 Umum valid untuk armada B2 Umum maupun B1 Umum
         $driver->validateAssignment(requiredLicense: 'SIM B2 Umum', tripMinutes: 120);
         $driver->validateAssignment(requiredLicense: 'SIM B1 Umum', tripMinutes: 120);
-        $this->assertTrue(true);
+        $this->assertSame('SIM B2 Umum', $driver->license_class);
+        $this->assertSame('available', $driver->status);
     }
 
     public function test_uu_22_2009_daily_driving_limit_enforced(): void
@@ -132,7 +133,8 @@ class LogisticsDriverTest extends TestCase
 
         // Setelah istirahat, penugasan trip 120 menit sukses!
         $driver->validateAssignment(requiredLicense: 'SIM B1 Umum', tripMinutes: 120);
-        $this->assertTrue(true);
+        $this->assertSame(0, $driver->fresh()->continuous_driving_minutes);
+        $this->assertLessThanOrEqual(480, $driver->daily_driving_minutes);
     }
 
     public function test_drivers_index_page_is_accessible(): void

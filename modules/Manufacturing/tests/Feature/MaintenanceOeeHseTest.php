@@ -201,8 +201,8 @@ class MaintenanceOeeHseTest extends TestCase
         try {
             $this->maintenance->consumePart($wo, $part, 0);
             $this->fail('Qty 0 harus ditolak.');
-        } catch (InvalidArgumentException) {
-            $this->assertTrue(true);
+        } catch (InvalidArgumentException $e) {
+            $this->assertNotEmpty($e->getMessage());
         }
     }
 
@@ -280,8 +280,8 @@ class MaintenanceOeeHseTest extends TestCase
         try {
             $this->hse->assertPermitValid($active->fresh());
             $this->fail('Izin kadaluarsa harus ditolak.');
-        } catch (InvalidArgumentException) {
-            $this->assertTrue(true);
+        } catch (InvalidArgumentException $e) {
+            $this->assertNotEmpty($e->getMessage());
         }
 
         $this->assertSame(1, $this->hse->expirePermits());

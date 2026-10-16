@@ -140,10 +140,7 @@ class QueryBudgetTest extends TestCase
 
     public function test_logistics_tracking_lookup_query_budget(): void
     {
-        $shipment = Shipment::first();
-        if (! $shipment) {
-            $this->markTestSkipped('No shipment available.');
-        }
+        $shipment = Shipment::firstOrFail();
 
         $count = $this->countQueries(function () use ($shipment) {
             $startTime = microtime(true);

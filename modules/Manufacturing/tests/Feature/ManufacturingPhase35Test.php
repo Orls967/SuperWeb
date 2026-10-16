@@ -149,8 +149,8 @@ class ManufacturingPhase35Test extends TestCase
         try {
             $this->service->submitFormula($submitted, $this->admin);
             $this->fail('Submit dua kali harus ditolak.');
-        } catch (InvalidArgumentException) {
-            $this->assertTrue(true);
+        } catch (InvalidArgumentException $e) {
+            $this->assertNotEmpty($e->getMessage());
         }
 
         // Four-eyes: creator tidak boleh menyetujui sendiri.

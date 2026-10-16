@@ -118,7 +118,11 @@ class FleetTest extends TestCase
         ]);
 
         $service->recordSlaBreachCompensation($contract, 36, 1500000);
-        $this->assertTrue(true);
+        $this->assertDatabaseHas('bank_ledger_transactions', [
+            'reference_type' => 'fleet_contract',
+            'reference_id' => (string) $contract->id,
+            'type' => 'sla_compensation',
+        ]);
     }
 
     public function test_fleet_lease_amortization_idempotency_same_month_one_posting_next_month_two(): void
