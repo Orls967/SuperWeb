@@ -899,8 +899,19 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Esg/tests/Feature/EsgTest.php::test_can_purchase_and_retire_carbon_credits
     - test: modules/Esg/tests/Feature/EsgTest.php::test_esg_web_index_accessible
     - akses: route GET /esg [role: admin,esg_officer,auditor]
-- [ ] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
+- [x] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
   - Test wajib: adapter gagal → status gagal tercatat (bukan sukses).
+  Bukti:
+    - jenis: fitur
+    - commit: 9d1ec63
+    - file: modules/Integration/Application/Services/IntegrationService.php
+    - file: modules/Integration/Application/Services/EnterpriseDigitalTrustService.php
+    - file: modules/Integration/tests/Feature/FakeStatusEliminationTest.php
+    - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_webhook_dispatch_failure_records_failed_status_instead_of_fake_success
+    - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_malformed_edi_message_is_rejected_rather_than_faked_accepted
+    - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_claim_without_evidence_attachment_is_marked_simulated_unverified
+    - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_claim_with_persisted_evidence_document_is_published_verified
+    - akses: route GET /integration [role: admin]
 - [ ] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
 - [ ] R2.10 Quality gate Fase R2 + verifikasi silang.
 
