@@ -18,8 +18,8 @@ class MetalsTradingPosition extends Model
 
     protected $casts = [
         'tonnage' => 'float',
-        'entry_price_usd' => 'float',
-        'current_mark_price_usd' => 'float',
+        'entry_price_usd' => 'decimal:2',
+        'current_mark_price_usd' => 'decimal:2',
         'unrealized_pnl_minor' => 'integer',
     ];
 }

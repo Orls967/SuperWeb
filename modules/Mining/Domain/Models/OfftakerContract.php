@@ -18,7 +18,7 @@ class OfftakerContract extends Model
 
     protected $casts = [
         'contracted_tonnage' => 'float',
-        'base_lme_price_usd_per_ton' => 'float',
+        'base_lme_price_usd_per_ton' => 'decimal:2',
         'premium_discount_usd' => 'float',
         'invoiced_amount_minor' => 'integer',
     ];

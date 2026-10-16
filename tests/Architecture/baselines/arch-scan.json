@@ -3879,25 +3879,8 @@
             }
         },
         "A3": {
-            "total": 335,
+            "total": 319,
             "entries": {
-                "modules/Crypto/database/migrations/2026_09_29_040001_create_crypto_assets_and_ticks_table.php": {
-                    "column decimal('price_idr')": 1
-                },
-                "modules/Crypto/database/migrations/2026_09_29_040002_create_crypto_quotes_and_trades_table.php": {
-                    "column decimal('fee_idr')": 2,
-                    "column decimal('gross_idr')": 2,
-                    "column decimal('price_idr')": 2
-                },
-                "modules/Crypto/database/migrations/2026_09_29_040003_create_crypto_alerts_table.php": {
-                    "column decimal('target_price_idr')": 1
-                },
-                "modules/Distribution/database/migrations/2026_10_05_430100_create_dist_fulfilment_tables.php": {
-                    "column decimal('unit_price_idr')": 1
-                },
-                "modules/Esg/database/migrations/2026_10_06_600100_create_esg_tables.php": {
-                    "column decimal('cost_per_ton_idr')": 1
-                },
                 "modules/Integration/Application/Services/AcademicIndustryResearchService.php": {
                     "param float $amountUsd @ releaseFundingTranche()": 1,
                     "param float $totalPrizeUsd @ conductChallengeEvaluation()": 1
@@ -4544,20 +4527,6 @@
                 },
                 "modules/Integration/database/migrations/2026_10_09_482001_create_future_readiness_tables.php": {
                     "column decimal('option_investment_idr')": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_121100_create_min_smelter_and_metals_trading_tables.php": {
-                    "column double('base_lme_price_usd_per_ton')": 1,
-                    "column double('current_mark_price_usd')": 1,
-                    "column double('entry_price_usd')": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_125100_create_min_resource_command_tables.php": {
-                    "column double('live_commodity_price_usd')": 1
-                },
-                "modules/Pricing/database/migrations/2026_10_05_440100_create_prc_pricing_tables.php": {
-                    "column decimal('discount_leakage_idr')": 1
-                },
-                "modules/Wms/database/migrations/2026_10_05_410100_create_wms_tables.php": {
-                    "column decimal('annual_value_idr')": 1
                 }
             }
         },

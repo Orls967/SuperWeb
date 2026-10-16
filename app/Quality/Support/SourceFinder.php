@@ -48,7 +48,7 @@ final class SourceFinder
                 }
             }
 
-            $files[] = new SourceFile($relativePath, $file->getContents());
+            $files[] = new SourceFile($relativePath, $file->getContents(), $file->getPathname());
         }
 
         usort($files, static fn (SourceFile $a, SourceFile $b): int => strcmp($a->relativePath, $b->relativePath));
