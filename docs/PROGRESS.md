@@ -743,10 +743,63 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R1-1 | R1.8 | Sisa 319 temuan A3 di modul warisan `modules/Integration` dibekukan via `integration-freeze.json` (A3 turun dari 352 ke 335 di modul bisnis) | Penggunaan float di modul warisan Integration belum sepenuhnya dieliminasi | P2 | R4.4 (K2) |
 
 ### FASE R2 — BUG FUNGSIONAL TERVERIFIKASI
-> **Status audit:** ⬜ BELUM · Prasyarat: R1.
+> **Status audit:** 🔨 DIKERJAKAN · Prasyarat: R1.
 
 #### DoR Fase R2 — Bug fungsional terverifikasi
 - Disetujui pemilik: [x]   2026-10-14 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) — DoR mencakup perbaikan bug fungsional K-16, K-22, K-29, serta perluasan lingkup untuk bug HTTP 500 modul Contract (M-R0-10 & M-R0-11) sesuai adendum M-R0-25.
+- Tujuan bisnis: Memperbaiki 10 bug fungsional kritis terverifikasi di modul operasional utama (Resto, Procurement, Inventory, Core Outbox, Telematics, ESG, Integration, HCM, Contract) yang mengancam integritas stok fisik, kerahasiaan tender, reliabilitas event/webhook, dan akurasi data emisi/karyawan, mengeliminasi false success & silent default, serta menghapus seluruh error path HTTP 500 (A13=0) tanpa jalan pintas.
+- Modul pemilik & prefiks (KONSEP §A1) — bukan Integration:
+  - `Resto` (`resto_`): `CalculateHidangBillAction`, `RestoIngredientStockService`, `OrderItem`, `DisplayTray`.
+  - `Procurement` (`prc_`): `ProcurementService`, `TenderBid`.
+  - `Inventory` (`inv_`): `InventoryService`, `StockMovement`.
+  - `Core` (`core_`): `OutboxBusService`, `OutboxMessage`, `OutboxDispatch`, `DocumentNumberingService`.
+  - `Telematics` (`tlm_`): `TelematicsIngestService`, `TelematicsBaseline`, `TelematicsTick`.
+  - `Esg` (`esg_`): `EsgService`, `EsgEmissionRecord`.
+  - `Integration` (`intg_`): `IntegrationService`, `EnterpriseDigitalTrustService` (perbaikan bug & eliminasi status palsu).
+  - `Hcm` (`hcm_`): `HcmService`.
+  - `Contract` (`ctr_`): views Blade & casting enum.
+  - `Pricing`, `Agency`, `Distribution`: perbaikan jalur galat controller.
+- Prasyarat & statusnya (harus ✅): R0 ✅, R1 🔵 (verifikasi paralel di worktree terpisah; R2 terisolasi di `work-r2`).
+- Item yang dikerjakan sesi ini & yang ditunda (→ Register Minus):
+  - Dikerjakan: R2.1 (Hitung tagihan hidang idempoten), R2.2 (Blind tender), R2.3 (Jalur galat A13=0 & view Contract M-R0-10/M-R0-11), R2.4 (Inventory append-only & kontrak stok resto), R2.5 (Outbox andal, retry per-subscriber, klaim atomik, anti-SSRF), R2.6 (Telematics rolling baseline 7 hari, DTC kritis, dedup afterCommit), R2.7 (ESG validasi aktivitas emisi & penomoran dokumen urut), R2.8 (Eliminasi status sukses palsu EDI/webhook/trust), R2.9 (Hapus silent default HCM/Telematics/ESG), R2.10 (Quality gate penuh & penyiapan verifikasi).
+  - Ditunda: Tidak ada item R2 yang ditunda.
+- Entitas/tabel + state machine:
+  - `resto_order_items` (`consumed_state`: null → `consumed` | `returned`)
+  - `prc_tender_bids` (tambah kolom `offer_ciphertext` nullable; kolom `offer` tetap null sampai `openBids()`)
+  - `inv_stock_movements` (tambah kolom `reference_movement_id` bigint nullable FK; model immutable pada update/delete)
+  - `resto_ingredient_stocks` (unique composite index pada `outlet_id, ingredient_id`)
+  - `core_outbox_messages` & `core_outbox_dispatches` (klaim atomik, status per subscription: `pending` → `processing` → `success` | `failed`)
+- Posting ledger (kejadian → debit/kredit, akun di {M}Accounts):
+  - R2.1: HPP hidang diposting per item baru yang `consumed` (`key: resto:order:{order_id}:item:{item_id}:cogs`) menggunakan `Posting::lines()->debit(cogs)->credit(inventory)` (atau tanda sesuai `RestoAccounts` normal balance).
+- Event (produce/consume; katalog KONSEP §A4.2):
+  - `VehicleAnomalyDetected` dipancarkan di dalam `DB::afterCommit` dengan kunci dedup per jam `anomaly:{vehicleId}:{type}:{severity}:{hourBucket}`.
+- Rute/UI/menu + role & policy:
+  - Rute POS Resto: `POST /resto/pos/session/{session}/bill` (`[role: admin,cashier,outlet_manager]`).
+  - Rute Contract: `GET /contract/clauses/create` dan `GET /contract/reports` (`[role: admin,contract_manager]`).
+  - Rute Pricing, Agency, Distribution: perbaikan response redirect 302 + session error `withErrors()`.
+- Command/jadwal/tick handler:
+  - `TelematicsIngestService::ingestTick` menangani tick telematika dengan validasi 422, rolling baseline 7 hari, dan grounding hanya untuk DTC kritis.
+- Audit dua-sumber + fixture korupsi:
+  - `bank:reconcile`, `api:audit`, `chain:audit-all` tetap hijau.
+- Nama test (a)–(e) yang akan ditulis:
+  - `HidangBillIdempotencyTest` (R2.1)
+  - `BlindTenderSealTest` (R2.2)
+  - `ControllerErrorPathsAndContractViewsTest` (R2.3)
+  - `InventoryAppendOnlyAndContractTest` (R2.4)
+  - `OutboxReliabilityAndSsrfTest` (R2.5)
+  - `TelematicsTest` (R2.6)
+  - `EsgTest` (R2.7)
+  - `FakeStatusEliminationTest` (R2.8)
+  - `SilentDefaultEliminationTest` (R2.9)
+- Tingkat simulasi & tier skala: S1 (anti-SSRF, parsing EDI nyata, verifikasi dokumen riil), T0/T1.
+- Jalan pintas yang harus dihindari:
+  - Menghilangkan validasi atau mendiamkan exception (X25).
+  - Menyimpan plaintext tender sebelum `openBids()` (K-22).
+  - Memutasi baris `StockMovement` lama alih-alih append movement baru (K-24).
+  - Menandai sukses outbox/webhook/EDI tanpa eksekusi/respons nyata (K-31, X9).
+  - Mengubah teks item atau mengurangi cakupan tanpa penanda `⬇️` (X18, P10).
+  - Menaikkan baseline `arch-scan.json` (A13 wajib turun dari 15 ke 0, A2 turun).
+  - Menjalankan `git credential fill` atau `git push` (K-39).
 - [ ] R2.1 **Hitung tagihan hidang idempoten** (K-16): `CalculateHidangBillAction` hanya memproses item yang belum diputuskan; key HPP per item; pemanggilan ulang tanpa efek samping.
   - Test wajib: panggil 2× → HPP terposting sekali, porsi etalase berkurang sekali, item `RETURNED` tidak diresirkulasi ulang.
 - [ ] R2.2 **Tender benar-benar tersegel** (K-22): skema commit–reveal atau isi penawaran terenkripsi sampai `openBids()`; perbaiki `TenderBid::isSealIntact()` (formula hash sama dengan saat menyegel) dan panggil saat pembukaan; tolak bid yang segelnya tidak cocok.
