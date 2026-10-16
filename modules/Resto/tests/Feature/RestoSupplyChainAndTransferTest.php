@@ -238,10 +238,10 @@ class RestoSupplyChainAndTransferTest extends TestCase
 
         $this->assertEquals(TransferStatus::IN_TRANSIT, $transfer->status);
 
-        // In-transit ledger account should increase by exactly 20,000g * Rp 15 = Rp 300,000
+        // In-transit ledger account should increase by exactly 20,000g * Rp 15 = Rp 300,000 (debit <= 0)
         $transitBalMid = LedgerAccount::where('code', 'inventory:resto:transit:IDR')->firstOrFail()->cached_balance;
         $diffTransit = (float) $transitBalMid - (float) $transitBalBefore;
-        $this->assertEquals(300000.0, $diffTransit);
+        $this->assertEquals(-300000.0, $diffTransit);
 
         // 2. Receive fully at Outlet
         $receiveAction->handle(
@@ -257,9 +257,9 @@ class RestoSupplyChainAndTransferTest extends TestCase
         $transitBalAfter = LedgerAccount::where('code', 'inventory:resto:transit:IDR')->firstOrFail()->cached_balance;
         $this->assertEquals((float) $transitBalBefore, (float) $transitBalAfter);
 
-        // Outlet inventory account increased by Rp 300,000
+        // Outlet inventory account increased by Rp 300,000 (debit <= 0)
         $destBal = LedgerAccount::where('code', "inventory:resto:{$this->outlet->code}:IDR")->firstOrFail()->cached_balance;
-        $this->assertEquals(300000.0, (float) $destBal - (float) $destBalBefore);
+        $this->assertEquals(-300000.0, (float) $destBal - (float) $destBalBefore);
     }
 
     public function test_transfer_dengan_selisih_mencatat_discrepancy_ke_expense_waste(): void
@@ -303,7 +303,7 @@ class RestoSupplyChainAndTransferTest extends TestCase
         $this->assertEquals(TransferStatus::DISCREPANCY, $transfer->status);
 
         $wasteAfter = (float) LedgerAccount::where('code', 'expense:resto:waste:IDR')->firstOrFail()->cached_balance;
-        $this->assertEquals($wasteBefore + 10000.0, $wasteAfter);
+        $this->assertEquals($wasteBefore - 10000.0, $wasteAfter);
     }
 
     public function test_stock_opname_dengan_selisih_minus_menyesuaikan_stok_dan_beban_waste(): void
@@ -353,7 +353,7 @@ class RestoSupplyChainAndTransferTest extends TestCase
         $this->assertEquals($countedStock, $stockAfter);
 
         $wasteAfter = (float) LedgerAccount::where('code', 'expense:resto:waste:IDR')->firstOrFail()->cached_balance;
-        $this->assertGreaterThan($wasteBefore, $wasteAfter);
+        $this->assertLessThan($wasteBefore, $wasteAfter);
     }
 
     public function test_payable_aging_query_dan_pembayaran_supplier(): void

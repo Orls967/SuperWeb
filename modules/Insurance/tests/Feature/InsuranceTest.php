@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Insurance\tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Insurance\Application\Services\InsurTechClaimsService;
@@ -35,23 +36,12 @@ class InsuranceTest extends TestCase
             'is_embedded' => true,
         ]);
 
-        LedgerAccount::create([
-            'code' => "wallet:user:{$this->user->id}:IDR",
-            'name' => "User {$this->user->id} Wallet",
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '500000',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
+        $wallet = $this->user->walletAccount('IDR');
+        $wallet->forceFill(['cached_balance' => '500000'])->save();
 
-        LedgerAccount::create([
-            'code' => 'ins:premium_reserve:IDR',
-            'name' => 'Insurance Reserve Pool',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '10000000',
-        ]);
+        $reserve = LedgerAccount::where('code', 'ins:premium_reserve:IDR')->first();
+        $reserve->forceFill(['cached_balance' => '10000000'])->save();
     }
 
     public function test_issue_embedded_policy_and_deduct_premium(): void

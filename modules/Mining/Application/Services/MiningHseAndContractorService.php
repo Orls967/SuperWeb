@@ -7,8 +7,8 @@ namespace Modules\Mining\Application\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Mining\Domain\Models\ContractorSafetyEvaluation;
 use Modules\Mining\Domain\Models\FatigueLog;
 use Modules\Mining\Domain\Models\MiningWorkPermit;
@@ -145,10 +145,10 @@ class MiningHseAndContractorService
                 type: 'MINING_CONTRACTOR_PENALTY',
                 description: "Contractor safety violation penalty for {$contractorPartyId}",
                 idempotencyKey: 'CNTR-PEN-'.Str::random(10),
-                entries: [
-                    PostingEntryDTO::forCode('min:contractor_receivable:IDR', 'IDR', $penaltyAmountMinor),
-                    PostingEntryDTO::forCode('min:safety_penalty_revenue:IDR', 'IDR', -$penaltyAmountMinor),
-                ],
+                entries: Posting::lines()
+                    ->debit('min:contractor_receivable:IDR', $penaltyAmountMinor)
+                    ->credit('min:safety_penalty_revenue:IDR', $penaltyAmountMinor)
+                    ->toEntries('IDR'),
                 referenceType: 'CONTRACTOR_SAFETY_EVALUATION',
                 referenceId: $contractorPartyId,
             ));

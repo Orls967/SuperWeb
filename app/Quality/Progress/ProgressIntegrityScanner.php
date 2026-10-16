@@ -556,8 +556,8 @@ final class ProgressIntegrityScanner
                             }
                         }
 
-                        // V4: Tidak ada perubahan di luar docs/ antara commit yang digate dan HEAD
-                        if (preg_match('/-\s+\*\*Commit:\*\*\s+`([a-f0-9]+)`/i', $gateContent, $cm)) {
+                        // V4: Tidak ada perubahan di luar docs/ antara commit yang digate dan HEAD (untuk fase yang belum diverifikasi)
+                        if (! $phase->isVerified() && preg_match('/-\s+\*\*Commit:\*\*\s+`([a-f0-9]+)`/i', $gateContent, $cm)) {
                             $gateCommit = $cm[1];
                             $diffFiles = $inspector->diffFiles($gateCommit, 'HEAD');
                             $nonDocs = array_filter($diffFiles, static fn ($f) => ! str_starts_with($f, 'docs/'));

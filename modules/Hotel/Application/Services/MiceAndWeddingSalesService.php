@@ -7,8 +7,8 @@ namespace Modules\Hotel\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Hotel\Domain\Models\BanquetProductionSheet;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\MiceContract;
@@ -133,10 +133,10 @@ class MiceAndWeddingSalesService
                 type: 'MICE_BANQUET_PRODUCTION_COST',
                 description: "Actual banquet production cost for event {$contract->event_code}",
                 idempotencyKey: "MICE-BOM-{$sheet->id}",
-                entries: [
-                    PostingEntryDTO::forCode('htl:banquet_production_cost:IDR', 'IDR', $totalCostIdr),
-                    PostingEntryDTO::forCode('htl:banquet_vendor_payable:IDR', 'IDR', -$totalCostIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('htl:banquet_production_cost:IDR', $totalCostIdr)
+                    ->credit('htl:banquet_vendor_payable:IDR', $totalCostIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'BANQUET_PRODUCTION_SHEET',
                 referenceId: $sheet->id,
             ));
@@ -169,10 +169,10 @@ class MiceAndWeddingSalesService
                 type: 'WEDDING_MILESTONE_PAYMENT',
                 description: "Milestone {$expectedIndex} payment for wedding event {$contract->event_code}",
                 idempotencyKey: "WEDDING-MS-{$contract->event_code}-{$expectedIndex}",
-                entries: [
-                    PostingEntryDTO::forCode('htl:wedding_receivable:IDR', 'IDR', $milestoneAmountIdr),
-                    PostingEntryDTO::forCode('htl:wedding_revenue:IDR', 'IDR', -$milestoneAmountIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('htl:wedding_receivable:IDR', $milestoneAmountIdr)
+                    ->credit('htl:wedding_revenue:IDR', $milestoneAmountIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'MICE_CONTRACT',
                 referenceId: $contract->id,
             ));

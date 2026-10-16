@@ -2,6 +2,7 @@
 
 namespace Modules\Proptech\tests\Feature\Bim;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Proptech\Application\Services\BimTwinService;
@@ -19,23 +20,7 @@ class BimTwinLifecycleTest extends TestCase
         parent::setUp();
         $this->bimService = app(BimTwinService::class);
 
-        LedgerAccount::create([
-            'code' => 'ast:fixed_assets:IDR',
-            'name' => 'Fixed Assets Capitalized',
-            'asset_code' => 'IDR',
-            'kind' => 'asset',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'epc:cip_liability:IDR',
-            'name' => 'Construction in Progress CIP',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_77_1_and_77_5_bim_versioning_and_tamper_evident_hash_chain(): void
@@ -123,8 +108,8 @@ class BimTwinLifecycleTest extends TestCase
 
         $asset = LedgerAccount::where('code', 'ast:fixed_assets:IDR')->first();
         $cip = LedgerAccount::where('code', 'epc:cip_liability:IDR')->first();
-        $this->assertEquals('750000000', (string) $asset->cached_balance);
-        $this->assertEquals('-750000000', (string) $cip->cached_balance);
+        $this->assertEquals('-750000000', (string) $asset->cached_balance);
+        $this->assertEquals('750000000', (string) $cip->cached_balance);
     }
 
     public function test_77_3_and_77_4_work_order_tagging_and_twin_simulation_sandbox(): void

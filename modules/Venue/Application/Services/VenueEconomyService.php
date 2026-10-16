@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Venue\Application\Services;
 
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Support\Posting;
 use Modules\Venue\Domain\Models\ArtistContract;
 use Modules\Venue\Domain\Models\BundleOrder;
 use Modules\Venue\Domain\Models\FestivalBundle;
@@ -43,10 +43,10 @@ class VenueEconomyService
                 type: 'VENUE_ARTIST_SETTLEMENT',
                 description: "Artist settlement for {$contract->artist_name} ({$contract->contract_number})",
                 idempotencyKey: "ven_artist_settle:{$contract->id}",
-                entries: [
-                    PostingEntryDTO::forCode('expense:venue_artist_fee:IDR', 'IDR', -$netPayout),
-                    PostingEntryDTO::forCode("artist:payable:{$contract->id}:IDR", 'IDR', $netPayout),
-                ],
+                entries: Posting::lines()
+                    ->debit('expense:venue_artist_fee:IDR', $netPayout)
+                    ->credit("artist:payable:{$contract->id}:IDR", $netPayout)
+                    ->toEntries('IDR'),
                 referenceType: 'ven_artist_contracts',
                 referenceId: $contract->id,
             ));
@@ -109,21 +109,17 @@ class VenueEconomyService
         }
 
         if ($this->ledger) {
-            $entries = [];
-            // Debit escrow deposit for total paid
-            $entries[] = PostingEntryDTO::forCode('escrow:venue_bundle:IDR', 'IDR', -$order->total_paid);
-
-            // Credit individual vendor accounts
+            $lines = Posting::lines()->debit('escrow:venue_bundle:IDR', $order->total_paid);
             foreach ($allocations as $alloc) {
                 $vendorAccount = $alloc['account'] ?? "vendor:settlement:{$alloc['vendor_code']}:IDR";
-                $entries[] = PostingEntryDTO::forCode($vendorAccount, 'IDR', (int) $alloc['amount']);
+                $lines->credit($vendorAccount, (int) $alloc['amount']);
             }
 
             $this->ledger->post(new PostingDTO(
                 type: 'VENUE_BUNDLE_SETTLEMENT',
                 description: "Multi-vendor settlement for bundle order {$order->order_number}",
                 idempotencyKey: "ven_bundle_settle:{$order->id}",
-                entries: $entries,
+                entries: $lines->toEntries('IDR'),
                 referenceType: 'ven_bundle_orders',
                 referenceId: $order->id,
             ));

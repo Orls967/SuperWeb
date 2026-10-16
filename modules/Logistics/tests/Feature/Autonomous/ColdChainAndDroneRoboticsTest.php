@@ -2,6 +2,7 @@
 
 namespace Modules\Logistics\tests\Feature\Autonomous;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Logistics\Application\Services\Autonomous\AutonomousLogisticsService;
@@ -19,23 +20,7 @@ class ColdChainAndDroneRoboticsTest extends TestCase
         parent::setUp();
         $this->service = app(AutonomousLogisticsService::class);
 
-        LedgerAccount::create([
-            'code' => 'lgx:carrier_payable:IDR',
-            'name' => 'Logistics Carrier Payable',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'lgx:dispute_escrow:IDR',
-            'name' => 'Carrier Dispute Escrow Hold',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_80_1_temp_breach_holds_carrier_payment_only_when_exceeding_ten_minutes(): void
@@ -68,7 +53,7 @@ class ColdChainAndDroneRoboticsTest extends TestCase
 
         // Check ledger balances
         $escrow = LedgerAccount::where('code', 'lgx:dispute_escrow:IDR')->first();
-        $this->assertEquals('-7500000', (string) $escrow->cached_balance);
+        $this->assertEquals('7500000', (string) $escrow->cached_balance);
 
         // 3. Release hold after dispute resolution
         $released = $this->service->releaseBreachHold($breach);

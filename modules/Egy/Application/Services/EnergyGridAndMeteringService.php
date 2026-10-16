@@ -9,8 +9,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Egy\Domain\Models\GenerationAsset;
 use Modules\Egy\Domain\Models\MeterReading;
 use Modules\Egy\Domain\Models\PpaContract;
@@ -78,10 +78,10 @@ class EnergyGridAndMeteringService
                 type: 'ENERGY_METER_READING_BILL',
                 description: "Smart meter consumption bill for {$meter->consumer_property_type}:{$meter->consumer_property_id}",
                 idempotencyKey: 'EGY-MTR-'.$reading->id,
-                entries: [
-                    PostingEntryDTO::forCode('egy:utility_receivable:IDR', 'IDR', $totalCharge),
-                    PostingEntryDTO::forCode('egy:grid_electricity_revenue:IDR', 'IDR', -$totalCharge),
-                ],
+                entries: Posting::lines()
+                    ->debit('egy:utility_receivable:IDR', $totalCharge)
+                    ->credit('egy:grid_electricity_revenue:IDR', $totalCharge)
+                    ->toEntries('IDR'),
                 referenceType: 'METER_READING',
                 referenceId: $reading->id,
             ));
@@ -140,10 +140,10 @@ class EnergyGridAndMeteringService
                 type: 'ENERGY_PPA_NET_METERING_SETTLEMENT',
                 description: "Net metering feed-in tariff credit for solar producer {$params['producer_entity_id']}",
                 idempotencyKey: 'EGY-PPA-'.$contractNumber,
-                entries: [
-                    PostingEntryDTO::forCode('egy:power_purchase_expense:IDR', 'IDR', $settlementAmount),
-                    PostingEntryDTO::forCode('egy:producer_payable:IDR', 'IDR', -$settlementAmount),
-                ],
+                entries: Posting::lines()
+                    ->debit('egy:power_purchase_expense:IDR', $settlementAmount)
+                    ->credit('egy:producer_payable:IDR', $settlementAmount)
+                    ->toEntries('IDR'),
                 referenceType: 'PPA_CONTRACT',
                 referenceId: $contractNumber,
             ));

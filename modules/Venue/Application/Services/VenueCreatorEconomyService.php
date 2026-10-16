@@ -4,8 +4,8 @@ namespace Modules\Venue\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Venue\Domain\Models\ContentAsset;
 use Modules\Venue\Domain\Models\Creator;
 use Modules\Venue\Domain\Models\MerchSale;
@@ -75,11 +75,11 @@ class VenueCreatorEconomyService
                 type: 'CREATOR_STREAM_ROYALTY_ACCRUAL',
                 description: "Accrue creator streaming royalty for contract {$contract->contract_code}",
                 idempotencyKey: "VEN-RGT-{$contract->contract_code}-".time().'-'.rand(100, 999),
-                entries: [
-                    PostingEntryDTO::forCode('ven:streaming_receivable:IDR', 'IDR', $streamGrossRevenueIdr),
-                    PostingEntryDTO::forCode('ven:platform_streaming_revenue:IDR', 'IDR', -($streamGrossRevenueIdr - $royaltyAmountIdr)),
-                    PostingEntryDTO::forCode('ven:creator_held_royalty_escrow:IDR', 'IDR', -$royaltyAmountIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('ven:streaming_receivable:IDR', $streamGrossRevenueIdr)
+                    ->credit('ven:platform_streaming_revenue:IDR', $streamGrossRevenueIdr - $royaltyAmountIdr)
+                    ->credit('ven:creator_held_royalty_escrow:IDR', $royaltyAmountIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'RIGHTS_CONTRACT',
                 referenceId: (string) $contract->id,
             ));
@@ -121,10 +121,10 @@ class VenueCreatorEconomyService
                 type: 'CREATOR_ROYALTY_PAYOUT_RELEASE',
                 description: "Release held royalty payout to creator for contract {$contract->contract_code}",
                 idempotencyKey: "VEN-REL-{$contract->contract_code}-".time(),
-                entries: [
-                    PostingEntryDTO::forCode('ven:creator_held_royalty_escrow:IDR', 'IDR', $amountToPay),
-                    PostingEntryDTO::forCode('ven:creator_payable:IDR', 'IDR', -$amountToPay),
-                ],
+                entries: Posting::lines()
+                    ->debit('ven:creator_held_royalty_escrow:IDR', $amountToPay)
+                    ->credit('ven:creator_payable:IDR', $amountToPay)
+                    ->toEntries('IDR'),
                 referenceType: 'RIGHTS_CONTRACT',
                 referenceId: (string) $contract->id,
             ));
@@ -160,11 +160,11 @@ class VenueCreatorEconomyService
                 type: 'CREATOR_MERCH_SALE_SPLIT',
                 description: "Merchandise sale split for {$itemName} by {$creator->stage_name}",
                 idempotencyKey: "VEN-MRC-{$sale->sale_code}",
-                entries: [
-                    PostingEntryDTO::forCode('ven:merch_sales_receivable:IDR', 'IDR', $totalSalePriceIdr),
-                    PostingEntryDTO::forCode('ven:creator_payable:IDR', 'IDR', -$artistShareIdr),
-                    PostingEntryDTO::forCode('ven:platform_merch_revenue:IDR', 'IDR', -$platformShareIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('ven:merch_sales_receivable:IDR', $totalSalePriceIdr)
+                    ->credit('ven:creator_payable:IDR', $artistShareIdr)
+                    ->credit('ven:platform_merch_revenue:IDR', $platformShareIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'MERCH_SALE',
                 referenceId: (string) $sale->id,
             ));

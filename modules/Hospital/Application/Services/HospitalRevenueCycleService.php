@@ -4,8 +4,8 @@ namespace Modules\Hospital\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Hospital\Domain\Models\BillingEpisode;
 use Modules\Hospital\Domain\Models\Encounter;
 use Modules\Hospital\Domain\Models\FolioItem;
@@ -42,10 +42,10 @@ class HospitalRevenueCycleService
                     type: 'HOSP_SURGICAL_ESCROW_DEPOSIT',
                     description: "Surgical escrow deposit for patient encounter {$encounter->encounter_code}",
                     idempotencyKey: "HSP-DEP-{$episode->episode_code}",
-                    entries: [
-                        PostingEntryDTO::forCode('hsp:patient_deposit_escrow:IDR', 'IDR', $escrowDepositIdr),
-                        PostingEntryDTO::forCode('hsp:unearned_deposit:IDR', 'IDR', -$escrowDepositIdr),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('hsp:patient_deposit_escrow:IDR', $escrowDepositIdr)
+                        ->credit('hsp:unearned_deposit:IDR', $escrowDepositIdr)
+                        ->toEntries('IDR'),
                     referenceType: 'HOSP_BILLING_EPISODE',
                     referenceId: (string) $episode->id,
                 ));
@@ -114,21 +114,19 @@ class HospitalRevenueCycleService
             // Post mixed settlement to ledger:
             // Debit BPJS Receivable, Debit Insurance Receivable, Debit Deposit Escrow Captured, Debit Patient Self-Pay
             // Credit Hospital Operating Revenue
-            $entries = [
-                PostingEntryDTO::forCode('hsp:hospital_revenue:IDR', 'IDR', -$totalCharges),
-            ];
+            $lines = Posting::lines()->credit('hsp:hospital_revenue:IDR', $totalCharges);
 
             if ($bpjsCoverageIdr > 0) {
-                $entries[] = PostingEntryDTO::forCode('hsp:bpjs_receivable:IDR', 'IDR', $bpjsCoverageIdr);
+                $lines->debit('hsp:bpjs_receivable:IDR', $bpjsCoverageIdr);
             }
             if ($insuranceCopayIdr > 0) {
-                $entries[] = PostingEntryDTO::forCode('hsp:insurance_receivable:IDR', 'IDR', $insuranceCopayIdr);
+                $lines->debit('hsp:insurance_receivable:IDR', $insuranceCopayIdr);
             }
             if ($capturedDeposit > 0) {
-                $entries[] = PostingEntryDTO::forCode('hsp:patient_deposit_escrow:IDR', 'IDR', $capturedDeposit);
+                $lines->debit('hsp:patient_deposit_escrow:IDR', $capturedDeposit);
             }
             if ($remainingPatientDue > 0) {
-                $entries[] = PostingEntryDTO::forCode('hsp:patient_self_pay:IDR', 'IDR', $remainingPatientDue);
+                $lines->debit('hsp:patient_self_pay:IDR', $remainingPatientDue);
             }
 
             // Refund deposit remainder if patient owed less than deposited
@@ -137,10 +135,10 @@ class HospitalRevenueCycleService
                     type: 'HOSP_DEPOSIT_REFUND',
                     description: "Refund remainder surgical deposit for episode {$locked->episode_code}",
                     idempotencyKey: "HSP-REF-{$locked->episode_code}",
-                    entries: [
-                        PostingEntryDTO::forCode('hsp:unearned_deposit:IDR', 'IDR', $refundRemainder),
-                        PostingEntryDTO::forCode('hsp:patient_deposit_escrow:IDR', 'IDR', -$refundRemainder),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('hsp:unearned_deposit:IDR', $refundRemainder)
+                        ->credit('hsp:patient_deposit_escrow:IDR', $refundRemainder)
+                        ->toEntries('IDR'),
                     referenceType: 'HOSP_BILLING_EPISODE',
                     referenceId: (string) $locked->id,
                 ));
@@ -150,7 +148,7 @@ class HospitalRevenueCycleService
                 type: 'HOSP_EPISODE_SETTLEMENT',
                 description: "Mixed settlement for hospital episode {$locked->episode_code}",
                 idempotencyKey: "HSP-SET-{$locked->episode_code}",
-                entries: $entries,
+                entries: $lines->toEntries('IDR'),
                 referenceType: 'HOSP_BILLING_EPISODE',
                 referenceId: (string) $locked->id,
             ));
@@ -216,10 +214,10 @@ class HospitalRevenueCycleService
                 type: 'HOSP_MED_FRIDGE_BREACH_HOLD',
                 description: "Hold pharma supplier payable due to fridge temp breach lot {$lotNumber}",
                 idempotencyKey: "HSP-FBD-{$breachCode}",
-                entries: [
-                    PostingEntryDTO::forCode('hsp:pharma_supplier_payable:IDR', 'IDR', $supplierPayableIdr),
-                    PostingEntryDTO::forCode('hsp:vaccine_dispute_escrow:IDR', 'IDR', -$supplierPayableIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('hsp:pharma_supplier_payable:IDR', $supplierPayableIdr)
+                    ->credit('hsp:vaccine_dispute_escrow:IDR', $supplierPayableIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'MED_FRIDGE_BREACH',
                 referenceId: (string) $breach->id,
             ));

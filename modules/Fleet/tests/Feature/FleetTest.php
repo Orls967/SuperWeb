@@ -6,8 +6,8 @@ namespace Modules\Fleet\tests\Feature;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Fleet\Application\Services\FleetLeasingService;
 use Modules\Fleet\Domain\Models\FleetContract;
@@ -46,32 +46,7 @@ class FleetTest extends TestCase
             'vin' => 'MR022222222222222',
         ]);
 
-        LedgerAccount::create([
-            'code' => 'ar:fleet:party:501:IDR',
-            'name' => 'AR Fleet Leasing Party 501',
-            'asset_code' => 'IDR',
-            'kind' => 'asset',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'oto:fleet_lease_revenue:IDR',
-            'name' => 'Fleet Lease Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'revenue',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'expense:fleet:sla_penalties:IDR',
-            'name' => 'Fleet SLA Penalties Expense',
-            'asset_code' => 'IDR',
-            'kind' => 'expense',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_fleet_contract_creation_and_double_lease_prevention(): void

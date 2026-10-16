@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Edu\Domain\Models\EduCertificate;
 use Modules\Edu\Domain\Models\EduCohort;
 use Modules\Edu\Domain\Models\EduEnrollment;
@@ -103,10 +103,10 @@ class AcademyAndCertificationService
                     type: 'EDU_TUITION_PAYMENT',
                     description: "Tuition payment for enrollment {$enrollment->enrollment_code}",
                     idempotencyKey: 'EDU-PAY-'.$enrollment->enrollment_code,
-                    entries: [
-                        PostingEntryDTO::forCode('edu:tuition_receivable:IDR', 'IDR', $tuition),
-                        PostingEntryDTO::forCode('edu:tuition_revenue:IDR', 'IDR', -$tuition),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('edu:tuition_receivable:IDR', $tuition)
+                        ->credit('edu:tuition_revenue:IDR', $tuition)
+                        ->toEntries('IDR'),
                     referenceType: 'EDU_ENROLLMENT',
                     referenceId: $enrollment->enrollment_code,
                 ));
@@ -144,10 +144,10 @@ class AcademyAndCertificationService
                     type: 'EDU_TUITION_PRO_RATA_REFUND',
                     description: "Pro-rata refund for dropped enrollment {$enrollment->enrollment_code}",
                     idempotencyKey: 'EDU-REFUND-'.$enrollment->enrollment_code,
-                    entries: [
-                        PostingEntryDTO::forCode('edu:tuition_revenue:IDR', 'IDR', $refundMinor),
-                        PostingEntryDTO::forCode('edu:tuition_receivable:IDR', 'IDR', -$refundMinor),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('edu:tuition_revenue:IDR', $refundMinor)
+                        ->credit('edu:tuition_receivable:IDR', $refundMinor)
+                        ->toEntries('IDR'),
                     referenceType: 'EDU_ENROLLMENT',
                     referenceId: $enrollment->enrollment_code,
                 ));

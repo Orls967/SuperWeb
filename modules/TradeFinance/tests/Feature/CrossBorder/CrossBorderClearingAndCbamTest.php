@@ -2,6 +2,7 @@
 
 namespace Modules\TradeFinance\tests\Feature\CrossBorder;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\TradeFinance\Application\Services\CrossBorder\CrossBorderClearingService;
@@ -16,34 +17,8 @@ class CrossBorderClearingAndCbamTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(LedgerAccountsSeeder::class);
         $this->service = app(CrossBorderClearingService::class);
-
-        LedgerAccount::create([
-            'code' => 'tf:crossborder_escrow:IDR',
-            'name' => 'Cross-Border Escrow Holding',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'tf:importer_wallet:IDR',
-            'name' => 'Importer Wallet Account',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'tf:exporter_settlement:IDR',
-            'name' => 'Exporter Settlement Account',
-            'asset_code' => 'IDR',
-            'kind' => 'asset',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
     }
 
     public function test_83_1_and_83_2_stablecoin_escrow_deposit_anti_duplicate_bl_and_release(): void

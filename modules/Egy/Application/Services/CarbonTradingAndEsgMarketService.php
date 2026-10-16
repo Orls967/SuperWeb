@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Egy\Domain\Models\CarbonCreditOrder;
 use Modules\Egy\Domain\Models\CbamCertificate;
 use Modules\Egy\Domain\Models\GreenLeaseDiscount;
@@ -35,10 +35,10 @@ class CarbonTradingAndEsgMarketService
                 type: 'ENERGY_CARBON_MARKET_TRADE',
                 description: "Carbon credit order {$orderCode} from {$params['seller_entity_id']} to {$params['buyer_entity_id']}",
                 idempotencyKey: 'EGY-CRB-'.$orderCode,
-                entries: [
-                    PostingEntryDTO::forCode('egy:carbon_credit_inventory:IDR', 'IDR', $totalValue),
-                    PostingEntryDTO::forCode('egy:carbon_credit_sales:IDR', 'IDR', -$totalValue),
-                ],
+                entries: Posting::lines()
+                    ->debit('egy:carbon_credit_inventory:IDR', $totalValue)
+                    ->credit('egy:carbon_credit_sales:IDR', $totalValue)
+                    ->toEntries('IDR'),
                 referenceType: 'CARBON_ORDER',
                 referenceId: $orderCode,
             ));
@@ -100,10 +100,10 @@ class CarbonTradingAndEsgMarketService
                 type: 'ENERGY_CBAM_TARIFF_SETTLEMENT',
                 description: "Cross-border carbon adjustment fee for container {$params['container_id']}",
                 idempotencyKey: 'EGY-CBAM-'.$certNum,
-                entries: [
-                    PostingEntryDTO::forCode('egy:cbam_receivable:IDR', 'IDR', $totalFee),
-                    PostingEntryDTO::forCode('egy:cbam_revenue:IDR', 'IDR', -$totalFee),
-                ],
+                entries: Posting::lines()
+                    ->debit('egy:cbam_receivable:IDR', $totalFee)
+                    ->credit('egy:cbam_revenue:IDR', $totalFee)
+                    ->toEntries('IDR'),
                 referenceType: 'CBAM_CERTIFICATE',
                 referenceId: $certNum,
             ));
@@ -142,10 +142,10 @@ class CarbonTradingAndEsgMarketService
                     type: 'ENERGY_GREEN_LEASE_DISCOUNT_ACCRUAL',
                     description: "Green lease ESG discount for tenant {$tenantPropertyId}",
                     idempotencyKey: 'EGY-DSC-'.$discountCode,
-                    entries: [
-                        PostingEntryDTO::forCode('egy:green_incentive_contra_revenue:IDR', 'IDR', $discountAmount),
-                        PostingEntryDTO::forCode('egy:utility_receivable:IDR', 'IDR', -$discountAmount),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('egy:green_incentive_contra_revenue:IDR', $discountAmount)
+                        ->credit('egy:utility_receivable:IDR', $discountAmount)
+                        ->toEntries('IDR'),
                     referenceType: 'GREEN_LEASE_DISCOUNT',
                     referenceId: $discountCode,
                 ));

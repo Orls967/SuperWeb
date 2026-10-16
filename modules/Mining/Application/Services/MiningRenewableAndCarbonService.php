@@ -7,8 +7,8 @@ namespace Modules\Mining\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Mining\Domain\Models\CarbonCreditIssuance;
 use Modules\Mining\Domain\Models\GreenMineralSale;
 use Modules\Mining\Domain\Models\RenewableEnergyBilling;
@@ -36,10 +36,10 @@ class MiningRenewableAndCarbonService
                 type: 'MINING_INTERCOMPANY_RENEWABLE_POWER',
                 description: "Intercompany clean energy billing from {$params['producer_site_id']} to {$params['consumer_entity_id']}",
                 idempotencyKey: 'MIN-REN-'.$billingNumber,
-                entries: [
-                    PostingEntryDTO::forCode('min:intercompany_receivable:IDR', 'IDR', $totalAmount),
-                    PostingEntryDTO::forCode('min:renewable_power_revenue:IDR', 'IDR', -$totalAmount),
-                ],
+                entries: Posting::lines()
+                    ->debit('min:intercompany_receivable:IDR', $totalAmount)
+                    ->credit('min:renewable_power_revenue:IDR', $totalAmount)
+                    ->toEntries('IDR'),
                 referenceType: 'RENEWABLE_ENERGY_BILLING',
                 referenceId: $billingNumber,
             ));
@@ -103,11 +103,11 @@ class MiningRenewableAndCarbonService
                 type: 'MINING_GREEN_MINERAL_SETTLEMENT',
                 description: "Green mineral settlement with DPP traceability for {$contractNumber}",
                 idempotencyKey: 'MIN-GRN-'.$contractNumber,
-                entries: [
-                    PostingEntryDTO::forCode('min:trade_receivable:IDR', 'IDR', $totalSettled),
-                    PostingEntryDTO::forCode('min:base_metal_sales_revenue:IDR', 'IDR', -$basePrice),
-                    PostingEntryDTO::forCode('min:green_premium_revenue:IDR', 'IDR', -$premiumAdder),
-                ],
+                entries: Posting::lines()
+                    ->debit('min:trade_receivable:IDR', $totalSettled)
+                    ->credit('min:base_metal_sales_revenue:IDR', $basePrice)
+                    ->credit('min:green_premium_revenue:IDR', $premiumAdder)
+                    ->toEntries('IDR'),
                 referenceType: 'GREEN_MINERAL_SALE',
                 referenceId: $contractNumber,
             ));

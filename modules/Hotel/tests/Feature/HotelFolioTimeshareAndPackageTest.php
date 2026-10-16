@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hotel\Application\Services\HotelFolioAndPackageService;
 use Modules\Hotel\Domain\Models\DestinationPackage;
 use Modules\Hotel\Domain\Models\HotelFolio;
@@ -25,26 +25,7 @@ class HotelFolioTimeshareAndPackageTest extends TestCase
         parent::setUp();
         $this->service = app(HotelFolioAndPackageService::class);
 
-        $accounts = [
-            'expense:htl_timeshare_payout:IDR' => 'expense',
-            'escrow:destination_package:IDR' => 'escrow',
-            'vendor:hotel:IDR' => 'liability',
-            'vendor:festival:IDR' => 'liability',
-            'vendor:transport:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::firstOrCreate(
-                ['code' => $code],
-                [
-                    'name' => "Account {$code}",
-                    'kind' => $kind,
-                    'asset_code' => 'IDR',
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                ]
-            );
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_folio_addon_charge_roll_up(): void
@@ -81,21 +62,8 @@ class HotelFolioTimeshareAndPackageTest extends TestCase
             'daily_rental_rate_idr' => 10000000,
         ]);
 
-        $investor1 = (string) Str::uuid();
-        $investor2 = (string) Str::uuid();
-
-        foreach ([$investor1, $investor2] as $invId) {
-            LedgerAccount::firstOrCreate(
-                ['code' => "investor:dividend:{$invId}:IDR"],
-                [
-                    'name' => "Investor Dividend {$invId}",
-                    'kind' => 'liability',
-                    'asset_code' => 'IDR',
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                ]
-            );
-        }
+        $investor1 = '00000000-0000-0000-0000-000000000001';
+        $investor2 = '00000000-0000-0000-0000-000000000002';
 
         TimeshareInvestor::create([
             'id' => (string) Str::uuid(),

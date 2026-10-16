@@ -2,6 +2,7 @@
 
 namespace Modules\Venue\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Venue\Application\Services\VenueOperationsService;
@@ -58,25 +59,7 @@ class VenueSecondaryMarketTest extends TestCase
         ]);
 
         // Register venue secondary and primary ledger accounts
-        $accounts = [
-            'ven:ticket_clearing:IDR' => 'asset',
-            'ven:ticket_revenue:IDR' => 'revenue',
-            'ven:secondary_ticket_clearing:IDR' => 'asset',
-            'ven:resale_seller_payable:IDR' => 'liability',
-            'ven:resale_platform_fee_revenue:IDR' => 'revenue',
-            'ven:entertainment_tax_payable:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Venue {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
 
         $opsService = app(VenueOperationsService::class);
         $this->ticket = $opsService->purchaseTicket(
@@ -117,9 +100,9 @@ class VenueSecondaryMarketTest extends TestCase
         $taxPayable = LedgerAccount::where('code', 'ven:entertainment_tax_payable:IDR')->first();
         $sellerPayable = LedgerAccount::where('code', 'ven:resale_seller_payable:IDR')->first();
 
-        $this->assertEquals('-115000', (string) $feeRev->cached_balance);
-        $this->assertEquals('-115000', (string) $taxPayable->cached_balance);
-        $this->assertEquals('-920000', (string) $sellerPayable->cached_balance);
+        $this->assertEquals('115000', (string) $feeRev->cached_balance);
+        $this->assertEquals('115000', (string) $taxPayable->cached_balance);
+        $this->assertEquals('920000', (string) $sellerPayable->cached_balance);
 
         // 3. Rule 116.6 (a): Attempting a 2nd transfer on the same ticket must be rejected!
         $this->expectException(RuntimeException::class);

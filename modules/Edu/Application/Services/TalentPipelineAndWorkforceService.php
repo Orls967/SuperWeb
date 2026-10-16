@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Edu\Domain\Models\EduContingentContract;
 use Modules\Edu\Domain\Models\EduHeadhunterContract;
 use Modules\Edu\Domain\Models\EduInternalTransfer;
@@ -143,10 +143,10 @@ class TalentPipelineAndWorkforceService
                 type: 'EDU_HEADHUNTER_FEE_RELEASE',
                 description: "Released headhunter fee for placement {$contract->placement_code}",
                 idempotencyKey: 'EDU-HH-'.$contract->placement_code,
-                entries: [
-                    PostingEntryDTO::forCode('edu:headhunter_expense:IDR', 'IDR', $contract->fee_amount_minor),
-                    PostingEntryDTO::forCode('edu:headhunter_payable:IDR', 'IDR', -$contract->fee_amount_minor),
-                ],
+                entries: Posting::lines()
+                    ->debit('edu:headhunter_expense:IDR', $contract->fee_amount_minor)
+                    ->credit('edu:headhunter_payable:IDR', $contract->fee_amount_minor)
+                    ->toEntries('IDR'),
                 referenceType: 'HEADHUNTER_CONTRACT',
                 referenceId: $contract->placement_code,
             ));

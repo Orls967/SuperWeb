@@ -1310,6 +1310,64 @@
   - `vendor/bin/pest tests/Unit/Security/BlindIndexTest.php`
   - `vendor/bin/pest tests/Feature/Authorization/ApiClientRateLimitBlackBoxProofTest.php`
 
+## 2026-10-16: Persetujuan Definition of Ready (DoR) Fase R1 Ledger & Uang (D1–D8) (2026-10-16-dor-r1)
+<a id="2026-10-16-dor-r1"></a>
+<a id="2026-10-16-r1-d4-test-tanda-salah"></a>
+- **Context:**
+  - Definition of Ready (DoR) untuk Fase R1 (Ledger & Uang) memerlukan persetujuan pemilik terkait 8 keputusan desain utama (D1–D8) sebelum pelaksanaan teknis dimulai.
+  - Kesepakatan ini mengikat seluruh rangkaian pengerjaan Fase R1 (R1.1–R1.10).
+- **Decision:**
+  - **D1 (Penyimpanan aset non-IDR, R1.9):** Menggunakan integer minor unit per aset (satoshi/wei/dll.) dengan tabel desimal per aset di kode/konfigurasi, tanpa ketergantungan pada kekhususan driver database tertentu.
+  - **D2 (Registry tipe transaksi, R1.4.5):** Menggunakan registry per modul `{M}TransactionTypes` (enum string backed, ≤ 32 karakter) yang mengimplementasikan interface tunggal `TransactionTypeRegistry`, dikompilasi/digabung saat boot framework; satu tes arsitektur memastikan tidak ada nilai ganda lintas modul.
+  - **D3 (Database data nyata & migrasi, R1.8):** Dikonfirmasi oleh pemilik bahwa TIDAK ada database staging/produksi dengan data riil yang perlu dikonversi (B-05 ditutup). Migrasi skema baru diterapkan tanpa langkah migrasi data riil.
+  - **D4 (Pembaruan test lama dengan tanda salah, R1.2):** Disetujui sekali secara menyeluruh untuk seluruh rangkaian perbaikan R1.2. Setiap test lama yang mengassert tanda salah boleh diubah dengan mencantumkan `keputusan: docs/DECISIONS.md#2026-10-16-r1-d4-test-tanda-salah` di blok Bukti dan mendaftarkan test tersebut di bawah ini:
+    - *Daftar perbaikan test tanda salah R1.2 (diisi bertahap saat A2):*
+      - `ClinicalTrialAndResearchTest::test_106_6_d_and_e_sponsor_milestone_billing_and_ledger_balance`: asersi lama `ar: 500000000`, `rev: -500000000` → baru `ar: -500000000`, `rev: 500000000` (piutang adalah aset/debit −, pendapatan riset adalah revenue/kredit +).
+      - `HospitalLabAndImagingTest::test_105_3_and_105_6_b_critical_value_requires_pathologist_verification`: asersi lama `rev: -120000` → baru `rev: 120000` (pendapatan lab adalah revenue/kredit +).
+      - `HospitalLabAndImagingTest::test_105_5_imaging_study_completion_and_billing`: asersi lama `ar: 1850000`, `rev: -1850000` → baru `ar: -1850000`, `rev: 1850000` (piutang imaging adalah aset/debit −, pendapatan imaging adalah revenue/kredit +).
+      - `HospitalPublicHealthAndBpjsTest::test_107_1_and_107_6_a_gapless_claim_batch_and_denial_no_accrual`: asersi lama `ar: 12000000`, `rev: -12000000` → baru `ar: -12000000`, `rev: 12000000` (piutang BPJS adalah aset/debit −, pendapatan rumah sakit adalah revenue/kredit +).
+      - `HospitalRevenueCycleAndPharmacyTest::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund`: asersi lama `rev: -35000000`, `bpjs: 15000000`, `ins: 12000000` → baru `rev: 35000000`, `bpjs: -15000000`, `ins: -12000000` (pendapatan adalah revenue/kredit +, piutang BPJS/asuransi adalah aset/debit −).
+      - `HospitalRevenueCycleAndPharmacyTest::test_88_5_vaccine_fridge_breach_quarantines_lot_and_holds_supplier_payable`: asersi lama `escrow: -50000000` → baru `escrow: 50000000` (escrow sengketa vaksin adalah akun escrow/kredit +).
+      - `MedicalTourismAndMembershipTest::test_108_1_and_108_6_a_and_b_medical_tourism_milestones_and_multi_vendor_settlement`: asersi lama `dep: 50000000`, `hospRev: -30000000`, `htlPayable: -15000000`, `lgxPayable: -5000000` → baru `dep: -50000000`, `hospRev: 30000000`, `htlPayable: 15000000`, `lgxPayable: 5000000` (deposit escrow awal adalah penerimaan aset/debit −, pendapatan adalah revenue/kredit +, utang vendor adalah liabilitas/kredit +).
+      - `TelemedicineAndEPharmacyTest::test_104_6_c_and_e_valid_prescription_posts_balanced_ledger`: asersi lama `ar: 150000`, `rev: -150000` → baru `ar: -150000`, `rev: 150000` (piutang e-farmasi adalah aset/debit −, pendapatan adalah revenue/kredit +).
+      - `MiningGeotechAndBlastTest::test_119_5_and_119_6_e_barge_shipment_marine_logistics_settlement`: asersi lama `freightExp: 450000000`, `vendorPayable: -450000000` → baru `freightExp: -450000000`, `vendorPayable: 450000000` (beban freight adalah beban/debit −, utang vendor logistik laut adalah liabilitas/kredit +).
+      - `HospitalityRevenueCommandTest::test_118_3_and_118_5_c_syndication_token_rental_yield_distribution`: asersi lama `payable: -30000000` → baru `payable: 30000000` (utang yield sindikasi investor adalah liabilitas/kredit +).
+      - `HotelFranchiseAndBrandTest::test_111_2_and_111_6_a_and_b_franchise_fee_and_monthly_royalty`: asersi lama `feeRev: -500000000`, `royRev: -100000000` → baru `feeRev: 500000000`, `royRev: 100000000` (pendapatan fee franchise dan royalty adalah revenue/kredit +).
+      - `HotelFranchiseAndBrandTest::test_111_4_and_111_6_c_rate_parity_violation_and_penalty_accrual`: asersi lama `penaltyAr: 1000000`, `penaltyRev: -1000000` → baru `penaltyAr: -1000000`, `penaltyRev: 1000000` (piutang denda OTA adalah aset/debit −, pendapatan denda paritas adalah revenue/kredit +).
+      - `HotelTravelPassAndLoyaltyTest::test_112_2_and_112_6_a_and_b_earn_and_redeem_points_matches_liability`: asersi lama `liability: -500000` dan sisa `-300000` → baru `500000` dan `300000` (kewajiban poin reward adalah liabilitas/kredit +).
+      - `MiceAndWeddingSalesTest::test_114_3_and_114_6_b_banquet_production_sheet_and_margin`: asersi lama `cost: 200000000` → baru `cost: -200000000` (biaya produksi banquet adalah beban/debit −).
+      - `MiceAndWeddingSalesTest::test_114_4_and_114_6_d_wedding_sequential_payment_milestones`: asersi lama `rev: -1000000000` → baru `rev: 1000000000` (pendapatan pernikahan adalah revenue/kredit +).
+      - `TravelPlatformAndItineraryTest::test_113_1_and_113_6_a_bundle_settlement_sum_equals_total_payment`: asersi lama `dep: 15000000`, payables `flight: -4000000`, `hotel: -6000000`, `transport: -2000000`, `event: -3000000` → baru `dep: -15000000`, payables `4000000`, `6000000`, `2000000`, `3000000` (deposit kas escrow adalah aset/debit −, utang para vendor adalah liabilitas/kredit +).
+      - `BeachClubAndVenueOperationsTest::test_89_3_ticket_purchase_and_anti_replay_gate_scan`: asersi lama `rev: -500000` → baru `rev: 500000` (pendapatan tiket adalah revenue/kredit +).
+      - `BeachClubAndVenueOperationsTest::test_89_5_vip_table_escrow_deposit_and_no_show_forfeiture`: asersi lama `escrow: 5000000`, `penaltyRev: -5000000` → baru `escrow: -5000000`, `penaltyRev: 5000000` (deposit kas escrow adalah aset/debit −, pendapatan denda no-show adalah revenue/kredit +).
+      - `VenueCreatorEconomyTest::test_115_2_and_115_6_a_and_b_streaming_royalty_hold_and_payout`: asersi lama `escrow: -7000000`, `payable: -7000000` → baru `escrow: 7000000`, `payable: 7000000` (kewajiban escrow royalti dan utang kreator adalah liabilitas/kredit +).
+      - `VenueCreatorEconomyTest::test_115_5_and_115_6_d_merch_split_sum_equals_total_sale`: asersi lama `creatorPayable: -210000`, `platformRev: -140000` → baru `creatorPayable: 210000`, `platformRev: 140000` (utang kreator adalah liabilitas/kredit +, pendapatan platform adalah revenue/kredit +).
+      - `VenueSecondaryMarketTest::test_116_1_and_116_6_a_and_e_valid_resale_purchase_and_second_transfer_blocked`: asersi lama `feeRev: -115000`, `taxPayable: -115000`, `sellerPayable: -920000` → baru `feeRev: 115000`, `taxPayable: 115000`, `sellerPayable: 920000` (pendapatan fee tiket sekunder adalah revenue/kredit +, utang pajak dan utang penjual adalah liabilitas/kredit +).
+      - `BimTwinLifecycleTest::test_77_2_full_completion_capitalizes_cip_to_fixed_assets`: asersi lama `asset: 750000000`, `cip: -750000000` → baru `asset: -750000000`, `cip: 750000000` (aset tetap adalah aset/debit −, kewajiban CIP adalah liabilitas/kredit +).
+      - `FlexSpaceBookingTest::test_78_2_booking_creation_deposit_hold_and_anti_overlap`: asersi lama `escrow: 90000` → baru `escrow: -90000` (dana titipan deposit flex escrow adalah penerimaan dana/debit −).
+      - `FlexSpaceBookingTest::test_78_3_check_in_with_cryptographic_passport_and_session_utility_load`: asersi lama `rev: -300000` → baru `rev: 300000` (pendapatan sewa flex space adalah revenue/kredit +).
+      - `FlexSpaceBookingTest::test_78_2_no_show_forfeits_deposit_as_penalty_revenue`: asersi lama `penaltyRev: -90000` → baru `penaltyRev: 90000` (pendapatan denda no-show adalah revenue/kredit +).
+      - `ProptechSmartBuildingTest::test_76_3_and_76_4_zone_utility_billing_and_ghg_emissions_with_ledger`: asersi lama `ar: 360000`, `rev: -360000` → baru `ar: -360000`, `rev: 360000` (piutang utilitas adalah aset/debit −, pendapatan utilitas adalah revenue/kredit +).
+      - `ColdChainAndDroneRoboticsTest::test_80_1_temp_breach_holds_carrier_payment_only_when_exceeding_ten_minutes`: asersi lama `escrow: -7500000` → baru `escrow: 7500000` (escrow sengketa carrier adalah liabilitas/kredit +).
+      - `ReverseLogisticsCircularTest::test_79_3_circular_intake_posts_to_ledger_and_updates_status`: asersi lama `mfgScrap: 2500000`, `lgxRev: -2500000` → baru `mfgScrap: -2500000`, `lgxRev: 2500000` (persediaan scrap inbound adalah aset/debit −, pendapatan circular logistics adalah revenue/kredit +).
+      - `AiContractBiddingAgentTest::test_84_4_and_84_5_four_eyes_approval_mandatory_and_post_win_budget_commitment`: asersi lama `ar: 1020000000` → baru `ar: -1020000000` (piutang kontrak tender adalah aset/debit −).
+      - `AssetCoreTest::test_acquisition_posts_to_ledger_when_flagged`: asersi lama `fixed: 1050000000` → baru `fixed: -1050000000` (aset tetap adalah aset/debit −).
+      - `AssetPhase31Test::test_straight_line_depreciation_is_monthly_and_idempotent`: asersi lama `expense: 1250000` → baru `expense: -1250000` (beban penyusutan adalah beban/debit −).
+      - `AssetPhase31Test::test_work_order_expense_posts_to_expense_account`: asersi lama `expense: 7000000` → baru `expense: -7000000` (beban pemeliharaan aset adalah beban/debit −).
+      - `RestoKitchenAndDisplayTest::test_expire_display_memindahkan_etalase_kadaluwarsa_ke_status_discarded_dan_beban_waste`: asersi lama selisih positif `wasteAfter - wasteBefore` → baru selisih negatif `-($wasteAfter - $wasteBefore)` (beban waste adalah beban/debit −).
+      - `RestoSupplyChainAndTransferTest::test_penerimaan_transfer_dengan_selisih_kurang_mencatat_discrepancy_dan_waste_ledger`: asersi lama `wasteBefore + 10000.0` → baru `wasteBefore - 10000.0` (beban waste adalah beban/debit −).
+      - `RestoSupplyChainAndTransferTest::test_transfer_in_transit_tidak_menghilangkan_nilai_pada_neraca`: asersi lama pertambahan persediaan transit/outlet bernilai positif `300000.0` → baru bernilai negatif `-300000.0` (persediaan adalah aset/debit −).
+      - `RestoSupplyChainAndTransferTest::test_stock_opname_dengan_selisih_minus_menyesuaikan_stok_dan_beban_waste`: asersi lama `assertGreaterThan(wasteBefore, wasteAfter)` → baru `assertLessThan(wasteBefore, wasteAfter)` (beban waste adalah beban/debit −).
+  - **D5 (Pemecahan PR bertahap, P5):** Disetujui pemecahan eksekusi menjadi 3 PR terpisah: PR 1 (R1.1–R1.3: Ledger Foundation & Chart of Accounts), PR 2 (R1.4–R1.7: Ledger Guards, Idempotency & Refunds), dan PR 3 (R1.8–R1.9: Integer Money & Reconcile).
+  - **D6 (Chart of accounts modul Integration, R1.3):** Menambahkan direktori `Ledger/` ke dalam allowlist `IntegrationFreeze` lewat keputusan ini. Pemindahan modul domain tetap dijadwalkan pada Fase R4.4.
+  - **D7 (Pola eksekusi refund, R1.6):** Refund dieksekusi secara sinkron langsung oleh aksi pembatalan terkait; event `PaymentRefunded` dipancarkan setelah transaksi komit untuk konsumen asynchronous lain.
+  - **D8 (Jadwal rekonsiliasi inkremental, R1.9):** Perintah `bank:reconcile --incremental` dijalankan secara manual dan diverifikasi lewat quality gate; otomatisasi penjadwalan harian ditunda hingga infrastruktur background scheduler Fase R5.
+- **Reason:**
+  - Menegakkan prinsip konvensi tanda tunggal (single sign convention), integritas akuntansi double-entry, immutabilitas ledger, presisi matematis integer pada nilai moneter, dan kepatuhan batas modul.
+- **Verification:**
+  - DoR Fase R1 tercentang `[x]`, dokumen `docs/PROGRESS.md` dan `docs/DECISIONS.md` disinkronkan, dipantau oleh `ProgressIntegrityTest`.
+
+
 
 
 

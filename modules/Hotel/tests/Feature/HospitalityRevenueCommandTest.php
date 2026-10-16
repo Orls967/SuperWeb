@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -34,21 +35,7 @@ class HospitalityRevenueCommandTest extends TestCase
         ]);
 
         // Register syndication ledger accounts
-        $accounts = [
-            'htl:syndication_yield_clearing:IDR' => 'asset',
-            'htl:investor_token_payable:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Hotel {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_118_1_and_118_5_a_revpar_consistent_with_adr_and_occupancy(): void
@@ -83,6 +70,6 @@ class HospitalityRevenueCommandTest extends TestCase
         $this->assertEquals(30_000_000, $dist->distributed_yield_idr);
 
         $payable = LedgerAccount::where('code', 'htl:investor_token_payable:IDR')->first();
-        $this->assertEquals('-30000000', (string) $payable->cached_balance);
+        $this->assertEquals('30000000', (string) $payable->cached_balance);
     }
 }

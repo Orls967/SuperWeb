@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Resto\Application\Actions;
 
-use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Support\Posting;
 use Modules\Resto\Domain\Enums\BatchStatus;
 use Modules\Resto\Domain\Enums\TrayStatus;
 use Modules\Resto\Domain\Models\DisplayTray;
@@ -43,16 +42,14 @@ class DiscardTrayAction
                 $this->ensureLedgerAccountExists($invAccCode, "Persediaan Resto {$outlet?->name}", AccountKind::INVENTORY);
                 $this->ensureLedgerAccountExists($wasteAccCode, 'Beban Limbah/Waste Makanan Resto', AccountKind::EXPENSE);
 
-                $wasteBd = BigDecimal::of($wasteValue);
-
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::WASTE->value,
                     description: "Waste piring etalase #{$tray->id} ({$tray->menuItem?->name}): {$portionsToDiscard} porsi. Alasan: {$reason}",
                     idempotencyKey: "resto:tray:waste:{$tray->id}:".Str::uuid(),
-                    entries: [
-                        PostingEntryDTO::forCode($invAccCode, 'IDR', $wasteBd->negated()),
-                        PostingEntryDTO::forCode($wasteAccCode, 'IDR', $wasteBd),
-                    ],
+                    entries: Posting::lines()
+                        ->debit($wasteAccCode, $wasteValue)
+                        ->credit($invAccCode, $wasteValue)
+                        ->toEntries('IDR'),
                     referenceType: 'resto_tray',
                     referenceId: $tray->id,
                     createdBy: $userId

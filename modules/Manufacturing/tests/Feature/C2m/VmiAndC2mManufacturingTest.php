@@ -2,6 +2,7 @@
 
 namespace Modules\Manufacturing\tests\Feature\C2m;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Manufacturing\Application\Services\C2m\VmiAndC2mService;
@@ -19,23 +20,7 @@ class VmiAndC2mManufacturingTest extends TestCase
         parent::setUp();
         $this->service = app(VmiAndC2mService::class);
 
-        LedgerAccount::create([
-            'code' => 'mfg:vmi_commitment:IDR',
-            'name' => 'VMI Purchase Commitment',
-            'asset_code' => 'IDR',
-            'kind' => 'asset',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'mfg:vmi_budget_encumbrance:IDR',
-            'name' => 'VMI Budget Encumbrance',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_82_1_vmi_reorder_point_triggers_auto_po_and_commits_budget(): void

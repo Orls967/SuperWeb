@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Mining\Domain\Models\AmdalComplianceMilestone;
 use Modules\Mining\Domain\Models\ReclamationProvision;
 use Modules\Mining\Domain\Models\WaterMonitoringReading;
@@ -30,10 +30,10 @@ class MiningEnvironmentalComplianceService
                 type: 'MINING_RECLAMATION_PROVISION_ACCRUAL',
                 description: "Mine site reclamation provision accrual for {$planCode}",
                 idempotencyKey: 'MIN-REC-ACC-'.$planCode,
-                entries: [
-                    PostingEntryDTO::forCode('min:reclamation_expense:IDR', 'IDR', $estimatedCostIdr),
-                    PostingEntryDTO::forCode('min:reclamation_provision_liability:IDR', 'IDR', -$estimatedCostIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('min:reclamation_expense:IDR', $estimatedCostIdr)
+                    ->credit('min:reclamation_provision_liability:IDR', $estimatedCostIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'RECLAMATION_PLAN',
                 referenceId: $planCode,
             ));
@@ -70,10 +70,10 @@ class MiningEnvironmentalComplianceService
                 type: 'MINING_RECLAMATION_PROVISION_RELEASE',
                 description: "Reclamation provision release upon verified revegetation for {$provision->plan_code}",
                 idempotencyKey: 'MIN-REC-REL-'.$provision->plan_code,
-                entries: [
-                    PostingEntryDTO::forCode('min:reclamation_provision_liability:IDR', 'IDR', $releaseAmount),
-                    PostingEntryDTO::forCode('min:reclamation_expense:IDR', 'IDR', -$releaseAmount),
-                ],
+                entries: Posting::lines()
+                    ->debit('min:reclamation_provision_liability:IDR', $releaseAmount)
+                    ->credit('min:reclamation_expense:IDR', $releaseAmount)
+                    ->toEntries('IDR'),
                 referenceType: 'RECLAMATION_PLAN',
                 referenceId: $provision->plan_code,
             ));
@@ -104,21 +104,20 @@ class MiningEnvironmentalComplianceService
         $penaltyAmount = $thresholdExceeded ? (int) ($params['penalty_minor'] ?? 50000000) : 0;
 
         return DB::transaction(function () use ($params, $siteId, $m3, $ph, $tss, $waterFee, $thresholdExceeded, $penaltyAmount) {
-            $entries = [
-                PostingEntryDTO::forCode('min:water_treatment_expense:IDR', 'IDR', $waterFee),
-                PostingEntryDTO::forCode('min:water_fee_payable:IDR', 'IDR', -$waterFee),
-            ];
+            $lines = Posting::lines()
+                ->debit('min:water_treatment_expense:IDR', $waterFee)
+                ->credit('min:water_fee_payable:IDR', $waterFee);
 
             if ($thresholdExceeded && $penaltyAmount > 0) {
-                $entries[] = PostingEntryDTO::forCode('min:environmental_penalty_expense:IDR', 'IDR', $penaltyAmount);
-                $entries[] = PostingEntryDTO::forCode('min:environmental_penalty_payable:IDR', 'IDR', -$penaltyAmount);
+                $lines->debit('min:environmental_penalty_expense:IDR', $penaltyAmount)
+                    ->credit('min:environmental_penalty_payable:IDR', $penaltyAmount);
             }
 
             $tx = $this->ledgerService->post(new PostingDTO(
                 type: 'MINING_WATER_MONITORING_SETTLEMENT',
                 description: "Water usage fee and compliance audit for {$siteId}",
                 idempotencyKey: 'MIN-WTR-'.Str::random(10),
-                entries: $entries,
+                entries: $lines->toEntries('IDR'),
                 referenceType: 'WATER_READING',
                 referenceId: $params['sampling_point'],
             ));

@@ -3,6 +3,7 @@
 namespace Modules\Proptech\tests\Feature;
 
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Proptech\Application\Services\ProptechService;
@@ -34,23 +35,7 @@ class ProptechSmartBuildingTest extends TestCase
             'current_kwh_rate' => 1800.0, // IDR 1,800/kWh
         ]);
 
-        LedgerAccount::create([
-            'code' => 'prp:utility_ar:IDR',
-            'name' => 'Proptech Utility Receivable',
-            'asset_code' => 'IDR',
-            'kind' => 'asset',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'prp:utility_rev:IDR',
-            'name' => 'Proptech Utility Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'revenue',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_76_1_sensor_ingest_idempotency_and_occupancy_update(): void
@@ -135,10 +120,10 @@ class ProptechSmartBuildingTest extends TestCase
         $this->assertEquals(170.0, (float) $billing->carbon_emission_kg);
         $this->assertEquals('BILLED', $billing->status);
 
-        // Verify ledger posting balances: AR +360k, Revenue -360k
+        // Verify ledger posting balances: AR -360k, Revenue +360k
         $ar = LedgerAccount::where('code', 'prp:utility_ar:IDR')->first();
         $rev = LedgerAccount::where('code', 'prp:utility_rev:IDR')->first();
-        $this->assertEquals('360000', (string) $ar->cached_balance);
-        $this->assertEquals('-360000', (string) $rev->cached_balance);
+        $this->assertEquals('-360000', (string) $ar->cached_balance);
+        $this->assertEquals('360000', (string) $rev->cached_balance);
     }
 }

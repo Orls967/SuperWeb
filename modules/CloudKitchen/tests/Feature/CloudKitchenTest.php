@@ -6,8 +6,8 @@ namespace Modules\CloudKitchen\tests\Feature;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\CloudKitchen\Application\Services\CloudKitchenService;
 use Modules\CloudKitchen\Domain\Models\CloudKitchen;
 use Tests\TestCase;
@@ -36,23 +36,7 @@ class CloudKitchenTest extends TestCase
             'is_active' => true,
         ]);
 
-        LedgerAccount::create([
-            'code' => 'hcm:meals_deduction:IDR',
-            'name' => 'HCM Meals Deduction Liability',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'resto:catering_revenue:IDR',
-            'name' => 'Resto Catering Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'revenue',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_catering_subscription_creation_and_payroll_deduction(): void

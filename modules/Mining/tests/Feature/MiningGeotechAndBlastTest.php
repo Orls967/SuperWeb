@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Mining\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -44,21 +45,7 @@ class MiningGeotechAndBlastTest extends TestCase
         ]);
 
         // Register mining ledger accounts
-        $accounts = [
-            'min:marine_freight_expense:IDR' => 'expense',
-            'min:marine_vendor_payable:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Mining {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_119_2_and_119_6_a_blast_blocked_when_worker_inside_safety_exclusion_radius(): void
@@ -142,7 +129,7 @@ class MiningGeotechAndBlastTest extends TestCase
         $freightExp = LedgerAccount::where('code', 'min:marine_freight_expense:IDR')->first();
         $vendorPayable = LedgerAccount::where('code', 'min:marine_vendor_payable:IDR')->first();
 
-        $this->assertEquals('450000000', (string) $freightExp->cached_balance);
-        $this->assertEquals('-450000000', (string) $vendorPayable->cached_balance);
+        $this->assertEquals('-450000000', (string) $freightExp->cached_balance);
+        $this->assertEquals('450000000', (string) $vendorPayable->cached_balance);
     }
 }

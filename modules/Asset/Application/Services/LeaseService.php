@@ -15,11 +15,11 @@ use Modules\Asset\Domain\Models\Asset;
 use Modules\Asset\Domain\Models\AssetLease;
 use Modules\Asset\Domain\Models\AssetLeasePayment;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Support\Posting;
 
 /**
  * 31.6 Sewa (PSAK 73 simulasi): hak guna aset & liabilitas sewa dari
@@ -100,10 +100,10 @@ class LeaseService
                 type: TransactionType::ASSET_LEASE_AMORT->value,
                 description: "Pembukaan sewa aset {$asset->asset_number} (PSAK 73 simulasi)",
                 idempotencyKey: 'ast:lease:start:'.$lease->id,
-                entries: [
-                    PostingEntryDTO::forCode(self::ROU_ASSET, 'IDR', BigDecimal::of($lease->right_of_use_asset_idr)),
-                    PostingEntryDTO::forCode(self::LEASE_LIABILITY, 'IDR', BigDecimal::of($lease->lease_liability_idr)->negated()),
-                ],
+                entries: Posting::lines()
+                    ->debit(self::ROU_ASSET, $lease->right_of_use_asset_idr)
+                    ->credit(self::LEASE_LIABILITY, $lease->lease_liability_idr)
+                    ->toEntries('IDR'),
                 referenceType: AssetLease::class,
                 referenceId: $lease->id,
                 meta: ['asset_id' => $asset->id, 'periods' => $periods, 'rate' => $rate, 'simulated' => true],
@@ -166,11 +166,11 @@ class LeaseService
                 type: TransactionType::ASSET_LEASE_AMORT->value,
                 description: "Bayar sewa periode {$locked->period_no} lease #{$locked->lease_id}",
                 idempotencyKey: 'ast:lease:pay:'.$locked->id,
-                entries: [
-                    PostingEntryDTO::forCode(self::LEASE_INTEREST, 'IDR', BigDecimal::of($interest)),
-                    PostingEntryDTO::forCode(self::LEASE_LIABILITY, 'IDR', BigDecimal::of($principal)),
-                    PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', BigDecimal::of($locked->payment_idr)->negated()),
-                ],
+                entries: Posting::lines()
+                    ->debit(self::LEASE_INTEREST, $interest)
+                    ->debit(self::LEASE_LIABILITY, $principal)
+                    ->credit('clearing:external:IDR', $locked->payment_idr)
+                    ->toEntries('IDR'),
                 referenceType: AssetLeasePayment::class,
                 referenceId: $locked->id,
                 meta: ['lease_id' => $locked->lease_id, 'period_no' => $locked->period_no],
@@ -197,9 +197,9 @@ class LeaseService
     private function ensureAccounts(): array
     {
         $defs = [
-            self::ROU_ASSET => ['Hak Guna Aset Sewa (PSAK 73)', AccountKind::ASSET->value, false],
+            self::ROU_ASSET => ['Hak Guna Aset Sewa (PSAK 73)', AccountKind::ASSET->value, true],
             self::LEASE_LIABILITY => ['Liabilitas Sewa (PSAK 73)', AccountKind::LIABILITY->value, true],
-            self::LEASE_INTEREST => ['Bunga Sewa (PSAK 73)', AccountKind::EXPENSE->value, false],
+            self::LEASE_INTEREST => ['Bunga Sewa (PSAK 73)', AccountKind::EXPENSE->value, true],
         ];
 
         $accounts = [];

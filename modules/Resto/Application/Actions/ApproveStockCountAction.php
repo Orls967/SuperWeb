@@ -10,12 +10,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Banking\Support\Posting;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Resto\Domain\Enums\StockCountStatus;
@@ -104,16 +104,15 @@ class ApproveStockCountAction
                 $this->ensureLedgerAccountExists($invAccCode, "Persediaan Resto {$outlet->name}", AccountKind::INVENTORY);
                 $this->ensureLedgerAccountExists($wasteAccCode, 'Beban Limbah/Waste Makanan Resto', AccountKind::EXPENSE);
 
-                $netValBd = BigDecimal::of($netVarianceValue);
+                $entries = $netVarianceValue < 0
+                    ? Posting::lines()->debit($wasteAccCode, abs($netVarianceValue))->credit($invAccCode, abs($netVarianceValue))->toEntries('IDR')
+                    : Posting::lines()->debit($invAccCode, $netVarianceValue)->credit($wasteAccCode, $netVarianceValue)->toEntries('IDR');
 
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::WASTE->value,
                     description: "Penyesuaian nilai persediaan hasil Stock Opname #{$lockedCount->id} ({$outlet->name})",
                     idempotencyKey: $ledgerKey,
-                    entries: [
-                        PostingEntryDTO::forCode($invAccCode, 'IDR', $netValBd),
-                        PostingEntryDTO::forCode($wasteAccCode, 'IDR', $netValBd->negated()),
-                    ],
+                    entries: $entries,
                     referenceType: 'resto_stock_count',
                     referenceId: $lockedCount->id,
                     createdBy: $approver->id

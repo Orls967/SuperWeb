@@ -3,6 +3,7 @@
 namespace Modules\Hcm\tests\Feature\Gig;
 
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hcm\Application\Services\Gig\InternalGigEconomyService;
@@ -19,23 +20,7 @@ class InternalGigEconomyTest extends TestCase
         parent::setUp();
         $this->service = app(InternalGigEconomyService::class);
 
-        LedgerAccount::create([
-            'code' => 'hcm:gig_cost_expense:IDR',
-            'name' => 'Internal Gig Cost Center Expense',
-            'asset_code' => 'IDR',
-            'kind' => 'expense',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'hcm:bounty_payout:IDR',
-            'name' => 'HCM Bounty Payout Wallet',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_85_1_and_85_2_claim_matching_with_schedule_conflict_and_max_hours_guardrail(): void

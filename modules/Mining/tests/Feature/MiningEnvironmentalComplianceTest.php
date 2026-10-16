@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Mining\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mining\Application\Services\MiningEnvironmentalComplianceService;
 use Modules\Mining\Domain\Models\MiningSite;
@@ -34,25 +34,7 @@ class MiningEnvironmentalComplianceTest extends TestCase
             'location' => 'East Kalimantan',
         ]);
 
-        $accounts = [
-            'min:reclamation_expense:IDR' => 'expense',
-            'min:reclamation_provision_liability:IDR' => 'liability',
-            'min:water_treatment_expense:IDR' => 'expense',
-            'min:water_fee_payable:IDR' => 'liability',
-            'min:environmental_penalty_expense:IDR' => 'expense',
-            'min:environmental_penalty_payable:IDR' => 'liability',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Mining {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_124_1_and_124_6_a_reclamation_provision_lifecycle_and_ndvi_release(): void

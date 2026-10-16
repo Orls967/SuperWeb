@@ -14,11 +14,11 @@ use Modules\Asset\Domain\Enums\DepreciationMethod;
 use Modules\Asset\Domain\Models\Asset;
 use Modules\Asset\Domain\Models\Depreciation;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Support\Posting;
 
 /**
  * Penyusutan aset (31.1) + fiskal/komersial (31.2), PSAK 16 simulasi.
@@ -131,10 +131,10 @@ class DepreciationService
                 type: TransactionType::ASSET_DEPRECIATION->value,
                 description: "Penyusutan aset {$locked->asset_number} periode {$period} ({$book})",
                 idempotencyKey: $key,
-                entries: [
-                    PostingEntryDTO::forAccount($accounts['expense']->id, 'IDR', BigDecimal::of($amount)),
-                    PostingEntryDTO::forAccount($accounts['accumulated']->id, 'IDR', BigDecimal::of($amount)->negated()),
-                ],
+                entries: Posting::lines()
+                    ->debit($accounts['expense']->code, $amount)
+                    ->credit($accounts['accumulated']->code, $amount)
+                    ->toEntries('IDR'),
                 referenceType: Asset::class,
                 referenceId: $locked->id,
                 meta: [
@@ -207,7 +207,7 @@ class DepreciationService
             ['code' => $expCode, 'asset_code' => 'IDR'],
             [
                 'uuid' => (string) Str::uuid(), 'name' => 'Beban Penyusutan Aset',
-                'kind' => AccountKind::EXPENSE->value, 'allow_negative' => false,
+                'kind' => AccountKind::EXPENSE->value, 'allow_negative' => true,
                 'cached_balance' => '0', 'is_frozen' => false,
             ]
         );

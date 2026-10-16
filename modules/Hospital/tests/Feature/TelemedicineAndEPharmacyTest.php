@@ -2,6 +2,7 @@
 
 namespace Modules\Hospital\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hospital\Application\Services\TelemedicineAndEPharmacyService;
@@ -44,21 +45,7 @@ class TelemedicineAndEPharmacyTest extends TestCase
         ]);
 
         // Register hospital ledger accounts
-        $accounts = [
-            'hsp:epharmacy_receivable:IDR' => 'asset',
-            'hsp:epharmacy_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Hospital {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_104_1_book_tele_consultation(): void
@@ -128,8 +115,8 @@ class TelemedicineAndEPharmacyTest extends TestCase
         $ar = LedgerAccount::where('code', 'hsp:epharmacy_receivable:IDR')->first();
         $rev = LedgerAccount::where('code', 'hsp:epharmacy_revenue:IDR')->first();
 
-        $this->assertEquals('150000', (string) $ar->cached_balance);
-        $this->assertEquals('-150000', (string) $rev->cached_balance);
+        $this->assertEquals('-150000', (string) $ar->cached_balance);
+        $this->assertEquals('150000', (string) $rev->cached_balance);
     }
 
     public function test_104_6_d_narcotic_prescription_requires_second_doctor_and_signed_pod(): void

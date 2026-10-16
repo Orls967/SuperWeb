@@ -7,8 +7,8 @@ namespace Modules\Med\Application\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Med\Domain\Models\MedIpAsset;
 use Modules\Med\Domain\Models\MedIpLicense;
 use Modules\Med\Domain\Models\MedProject;
@@ -169,10 +169,10 @@ class StudioAndContentProductionService
                 type: 'MEDIA_TALENT_ROYALTY_ACCRUAL',
                 description: "Audited talent royalty accrual for project {$project->title}",
                 idempotencyKey: 'MED-ROYALTY-'.$project->project_code.'-'.$auditedRevenueMinor,
-                entries: [
-                    PostingEntryDTO::forCode('med:talent_royalty_expense:IDR', 'IDR', $totalRoyaltyMinor),
-                    PostingEntryDTO::forCode('med:talent_royalty_payable:IDR', 'IDR', -$totalRoyaltyMinor),
-                ],
+                entries: Posting::lines()
+                    ->debit('med:talent_royalty_expense:IDR', $totalRoyaltyMinor)
+                    ->credit('med:talent_royalty_payable:IDR', $totalRoyaltyMinor)
+                    ->toEntries('IDR'),
                 referenceType: 'MEDIA_PROJECT',
                 referenceId: $project->project_code,
             ));

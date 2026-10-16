@@ -3,8 +3,8 @@
 namespace Modules\Vending\tests\Feature;
 
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Vending\Application\Services\SmartVendingService;
 use Modules\Vending\Domain\Models\VendingRestockTask;
 use Modules\Vending\Domain\Models\VendingUnit;
@@ -19,25 +19,8 @@ class SmartVendingTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(LedgerAccountsSeeder::class);
         $this->vendingService = app(SmartVendingService::class);
-
-        LedgerAccount::create([
-            'code' => 'ven:clearing:IDR',
-            'name' => 'Vending Clearing',
-            'asset_code' => 'IDR',
-            'kind' => 'asset',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'ven:sales_revenue:IDR',
-            'name' => 'Vending Sales Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'revenue',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
     }
 
     public function test_75_1_and_75_3_holt_winters_forecast_and_waste_scaledown(): void

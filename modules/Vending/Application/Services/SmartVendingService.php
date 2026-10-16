@@ -5,8 +5,8 @@ namespace Modules\Vending\Application\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Vending\Domain\Models\VendingDemandForecast;
 use Modules\Vending\Domain\Models\VendingRestockTask;
 use Modules\Vending\Domain\Models\VendingTransaction;
@@ -171,15 +171,15 @@ class SmartVendingService
                 'status' => 'COMPLETED',
             ]);
 
-            // Ledger settlement: Debit Cash clearing (positive), Credit Vending revenue (negative)
+            // Ledger settlement: Debit Cash clearing (-), Credit Vending revenue (+)
             $this->ledgerService->post(new PostingDTO(
                 type: 'VENDING_SALE',
                 description: "Vending sale unit {$lockedUnit->unit_code} tx {$tx->tx_code}",
                 idempotencyKey: "VEN-SALE-{$tx->tx_code}",
-                entries: [
-                    PostingEntryDTO::forCode('ven:clearing:IDR', 'IDR', $totalPriceIdr),
-                    PostingEntryDTO::forCode('ven:sales_revenue:IDR', 'IDR', -$totalPriceIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('ven:clearing:IDR', $totalPriceIdr)
+                    ->credit('ven:sales_revenue:IDR', $totalPriceIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'VENDING_SALE',
                 referenceId: (string) $tx->id,
             ));

@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace Modules\Resto\database\seeders;
 
 use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Modules\Banking\Application\DTOs\PostingDTO;
+use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
+use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Support\Posting;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Resto\Application\Actions\AddOrderItemAction;
@@ -41,6 +46,10 @@ class RestoMenuSeeder extends Seeder
 {
     public function run(): void
     {
+        if (! LedgerAccount::where('code', 'clearing:external:IDR')->exists()) {
+            $this->call(LedgerAccountsSeeder::class);
+        }
+
         // 1. Outlets
         $dmOutlet = Outlet::updateOrCreate(
             ['code' => 'DM-01'],
@@ -519,6 +528,36 @@ class RestoMenuSeeder extends Seeder
                     'is_frozen' => false,
                 ]
             );
+        }
+
+        // Post initial stock valuation to ledger
+        $ledger = app(Ledger::class);
+        foreach ([$dmOutlet, $centralKitchen, $kayutangiOutlet] as $outlet) {
+            $totalOutletCost = 0;
+            foreach ($ingredients as $sku => $ingredient) {
+                $qty = match ($ingredient->base_unit) {
+                    'pcs' => 500,
+                    'ml' => 80000,
+                    default => 100000,
+                };
+                $costRecord = IngredientCost::where('ingredient_id', $ingredient->id)->where('outlet_id', $outlet->id)->first();
+                $unitCost = (float) ($costRecord?->moving_avg_cost_per_base_unit ?? 0);
+                $totalOutletCost += (int) round($qty * $unitCost);
+            }
+
+            if ($totalOutletCost > 0) {
+                $invAcc = "inventory:resto:{$outlet->code}:IDR";
+                $ledger->post(new PostingDTO(
+                    type: TransactionType::GENESIS->value,
+                    description: "Saldo awal persediaan bahan baku outlet {$outlet->name}",
+                    idempotencyKey: "resto:genesis:inventory:{$outlet->code}",
+                    entries: Posting::lines()
+                        ->debit($invAcc, $totalOutletCost)
+                        ->credit('clearing:external:IDR', $totalOutletCost)
+                        ->toEntries('IDR'),
+                    postedAt: now(),
+                ));
+            }
         }
 
         // 9. Seed initial demo batches and trays in DM-01

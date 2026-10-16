@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Quality\Ledger;
 
 use Brick\Math\BigDecimal;
+use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
 
 /**
@@ -53,14 +54,28 @@ final class LedgerNormalBalanceScanner
         $violations = [];
 
         foreach ($accounts as $account) {
-            $kind = is_object($account->kind) ? $account->kind->value : (string) $account->kind;
+            $kind = $account->kind instanceof AccountKind
+                ? $account->kind
+                : (is_string($account->kind) ? AccountKind::tryFrom($account->kind) : null);
+
             $balance = BigDecimal::of($account->cached_balance ?: '0');
 
-            if (in_array($kind, self::DEBIT_KINDS, true)) {
+            if ($kind !== null) {
+                $side = $kind->normalSide();
+                if ($side === 'debit') {
+                    if ($balance->isGreaterThan(0)) {
+                        $violations[] = "account:{$account->code}:debit_normal_has_credit_balance";
+                    }
+                } elseif ($side === 'credit') {
+                    if ($balance->isLessThan(0)) {
+                        $violations[] = "account:{$account->code}:credit_normal_has_debit_balance";
+                    }
+                }
+            } elseif (in_array((string) $account->kind, self::DEBIT_KINDS, true)) {
                 if ($balance->isGreaterThan(0)) {
                     $violations[] = "account:{$account->code}:debit_normal_has_credit_balance";
                 }
-            } elseif (in_array($kind, self::CREDIT_KINDS, true)) {
+            } elseif (in_array((string) $account->kind, self::CREDIT_KINDS, true)) {
                 if ($balance->isLessThan(0)) {
                     $violations[] = "account:{$account->code}:credit_normal_has_debit_balance";
                 }

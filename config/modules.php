@@ -116,7 +116,11 @@ return [
     | Namespaces every module may import even though they live in another module's Domain
     | (rule A1 exceptions). Empty until the ledger kernel moves to a shared namespace (R1/R4).
     */
-    'shared_kernel_namespaces' => [],
+    'shared_kernel_namespaces' => [
+        'Modules\\Shared\\Domain\\',
+        'Modules\\Banking\\Domain\\Enums\\',
+        'Modules\\Banking\\Support\\',
+    ],
 
     /*
     | `table.column` => reason, for `*_id` columns that intentionally reference another

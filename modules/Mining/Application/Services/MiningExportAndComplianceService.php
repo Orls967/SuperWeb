@@ -7,8 +7,8 @@ namespace Modules\Mining\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Mining\Domain\Models\CargoQualityDispute;
 use Modules\Mining\Domain\Models\CircularFlyAshSale;
 use Modules\Mining\Domain\Models\ExportTerminalStockpile;
@@ -99,10 +99,10 @@ class MiningExportAndComplianceService
                 type: 'MINING_VESSEL_DEMURRAGE_CLAIM',
                 description: "Vessel demurrage claim for voyage {$voyage->voyage_number}",
                 idempotencyKey: 'MIN-DEM-'.$voyage->voyage_number,
-                entries: [
-                    PostingEntryDTO::forCode('min:demurrage_receivable:IDR', 'IDR', $demurrageTotal),
-                    PostingEntryDTO::forCode('min:demurrage_revenue:IDR', 'IDR', -$demurrageTotal),
-                ],
+                entries: Posting::lines()
+                    ->debit('min:demurrage_receivable:IDR', $demurrageTotal)
+                    ->credit('min:demurrage_revenue:IDR', $demurrageTotal)
+                    ->toEntries('IDR'),
                 referenceType: 'VESSEL_VOYAGE',
                 referenceId: $voyage->voyage_number,
             ));
@@ -148,10 +148,10 @@ class MiningExportAndComplianceService
             type: 'MINING_CIRCULAR_FLY_ASH_SALES',
             description: "Circular fly ash byproduct sale to cement plant {$params['cement_buyer_party_id']}",
             idempotencyKey: 'MIN-ASH-'.$orderNumber,
-            entries: [
-                PostingEntryDTO::forCode('min:trade_receivable:IDR', 'IDR', $totalRevenue),
-                PostingEntryDTO::forCode('min:circular_economy_revenue:IDR', 'IDR', -$totalRevenue),
-            ],
+            entries: Posting::lines()
+                ->debit('min:trade_receivable:IDR', $totalRevenue)
+                ->credit('min:circular_economy_revenue:IDR', $totalRevenue)
+                ->toEntries('IDR'),
             referenceType: 'CIRCULAR_FLY_ASH_SALE',
             referenceId: $orderNumber,
         ));

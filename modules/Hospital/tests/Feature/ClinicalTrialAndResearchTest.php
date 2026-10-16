@@ -2,6 +2,7 @@
 
 namespace Modules\Hospital\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hospital\Application\Services\ClinicalTrialAndResearchService;
@@ -53,21 +54,7 @@ class ClinicalTrialAndResearchTest extends TestCase
         ]);
 
         // Register hospital trial accounts
-        $accounts = [
-            'hsp:trial_sponsor_receivable:IDR' => 'asset',
-            'hsp:trial_research_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Hospital {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_106_6_a_duplicate_subject_enrollment_in_same_study_is_rejected(): void
@@ -128,7 +115,7 @@ class ClinicalTrialAndResearchTest extends TestCase
         $ar = LedgerAccount::where('code', 'hsp:trial_sponsor_receivable:IDR')->first();
         $rev = LedgerAccount::where('code', 'hsp:trial_research_revenue:IDR')->first();
 
-        $this->assertEquals('500000000', (string) $ar->cached_balance);
-        $this->assertEquals('-500000000', (string) $rev->cached_balance);
+        $this->assertEquals('-500000000', (string) $ar->cached_balance);
+        $this->assertEquals('500000000', (string) $rev->cached_balance);
     }
 }

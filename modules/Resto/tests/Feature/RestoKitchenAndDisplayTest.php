@@ -181,7 +181,7 @@ class RestoKitchenAndDisplayTest extends TestCase
         $this->assertEquals(0, $tray->portions_remaining);
 
         $wasteAfter = (int) LedgerAccount::where('code', 'expense:resto:waste:IDR')->value('cached_balance');
-        $this->assertEquals($expectedWasteValue, $wasteAfter - $wasteBefore);
+        $this->assertEquals($expectedWasteValue, -($wasteAfter - $wasteBefore));
 
         $this->artisan('bank:reconcile')->assertSuccessful();
     }

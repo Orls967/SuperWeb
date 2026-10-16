@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Mining\tests\Feature;
 
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mining\Application\Services\MiningHseAndContractorService;
 use Modules\Mining\Domain\Models\MiningSite;
@@ -35,21 +35,7 @@ class MiningHseAndContractorTest extends TestCase
             'location' => 'Central Sulawesi',
         ]);
 
-        $accounts = [
-            'min:contractor_receivable:IDR' => 'asset',
-            'min:safety_penalty_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Mining {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_120_2_and_120_6_a_expired_permit_access_denied(): void

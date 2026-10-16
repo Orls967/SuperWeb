@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Mining\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mining\Application\Services\MiningRenewableAndCarbonService;
 use Modules\Mining\Domain\Models\MiningSite;
@@ -34,24 +34,7 @@ class MiningRenewableAndCarbonTest extends TestCase
             'location' => 'Southeast Sulawesi',
         ]);
 
-        $accounts = [
-            'min:intercompany_receivable:IDR' => 'asset',
-            'min:renewable_power_revenue:IDR' => 'revenue',
-            'min:trade_receivable:IDR' => 'asset',
-            'min:base_metal_sales_revenue:IDR' => 'revenue',
-            'min:green_premium_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Mining {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_123_1_and_123_6_a_intercompany_renewable_energy_billing(): void

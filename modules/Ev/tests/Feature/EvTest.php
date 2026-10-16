@@ -6,8 +6,8 @@ namespace Modules\Ev\tests\Feature;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Ev\Application\Services\EvChargingService;
@@ -57,23 +57,9 @@ class EvTest extends TestCase
         ]);
 
         // Seed wallet and revenue accounts
-        LedgerAccount::create([
-            'code' => "wallet:user:{$this->user->id}:IDR",
-            'name' => "User {$this->user->id} Wallet",
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '1000000',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'oto:ev_revenue:IDR',
-            'name' => 'EV Charging Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'revenue',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
+        $wallet = $this->user->walletAccount('IDR');
+        $wallet->forceFill(['cached_balance' => '1000000'])->save();
     }
 
     public function test_booking_conflict_is_rejected(): void

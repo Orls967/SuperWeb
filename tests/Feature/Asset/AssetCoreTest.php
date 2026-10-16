@@ -98,9 +98,9 @@ class AssetCoreTest extends TestCase
         $this->assertSame(AssetEventType::Acquisition, $event->event_type);
         $this->assertSame(AssetService::GENESIS_HASH, $event->prev_hash);
 
-        // Ledger: ast:fixed_assets bertambah 1.050.000.000.
+        // Ledger: ast:fixed_assets bertambah 1.050.000.000 (debit <= 0).
         $fixed = LedgerAccount::where('code', 'ast:fixed_assets')->firstOrFail();
-        $this->assertSame(1_050_000_000, (int) $fixed->money()->amount->toInt());
+        $this->assertSame(-1_050_000_000, (int) $fixed->money()->amount->toInt());
 
         // Idempotensi: key 'ast:acquire:{id}' mencegah posting ganda.
         $key = 'ast:acquire:'.$asset->id;

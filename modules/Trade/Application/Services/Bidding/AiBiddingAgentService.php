@@ -4,8 +4,8 @@ namespace Modules\Trade\Application\Services\Bidding;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Trade\Domain\Models\Bidding\BiddingAgent;
 use Modules\Trade\Domain\Models\Bidding\BidRun;
 use Modules\Trade\Domain\Models\Bidding\BidSubmission;
@@ -128,10 +128,10 @@ class AiBiddingAgentService
                 type: 'TENDER_CONTRACT_AWARD',
                 description: "Tender award budget commitment for contract {$contractCode}",
                 idempotencyKey: "TRD-TND-{$contractCode}",
-                entries: [
-                    PostingEntryDTO::forCode('trd:tender_contract_ar:IDR', 'IDR', $totalValue),
-                    PostingEntryDTO::forCode('trd:tender_revenue_unearned:IDR', 'IDR', -$totalValue),
-                ],
+                entries: Posting::lines()
+                    ->debit('trd:tender_contract_ar:IDR', $totalValue)
+                    ->credit('trd:tender_revenue_unearned:IDR', $totalValue)
+                    ->toEntries('IDR'),
                 referenceType: 'TENDER_CONTRACT',
                 referenceId: $contractCode,
             ));

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Tlx\Application\Services\IspAndMobileServices;
 use Modules\Tlx\Domain\Models\InterconnectSettlement;
 use Modules\Tlx\Domain\Models\SmartCityService;
@@ -11,23 +11,7 @@ use Modules\Tlx\Domain\Models\SmartCityService;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $accounts = [
-        'tlx:interconnect_clearing:IDR' => 'asset',
-        'tlx:interconnect_net_settlement:IDR' => 'liability',
-    ];
-
-    foreach ($accounts as $code => $kind) {
-        LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'kind' => $kind,
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'name' => "Telecom {$code}",
-            ]
-        );
-    }
+    $this->seed(LedgerAccountsSeeder::class);
 });
 
 test('(a) auto-renew gagal saldo wallet -> layanan pause, bukan gratis', function () {

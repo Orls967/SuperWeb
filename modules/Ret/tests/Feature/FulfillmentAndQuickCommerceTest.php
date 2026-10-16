@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Ret\Application\Services\FulfillmentAndQuickCommerceService;
 use Modules\Ret\Domain\Models\RetCrowdshippingTask;
 use Modules\Ret\Domain\Models\RetQuickCommerceOrder;
@@ -12,25 +12,7 @@ use Modules\Ret\Domain\Models\RetQuickCommerceOrder;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $accounts = [
-        'ret:sla_compensation_expense:IDR' => 'expense',
-        'ret:customer_credit_liability:IDR' => 'liability',
-        'ret:packaging_deposit_cash:IDR' => 'asset',
-        'ret:packaging_deposit_liability:IDR' => 'liability',
-    ];
-
-    foreach ($accounts as $code => $kind) {
-        LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'kind' => $kind,
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'name' => "Retail {$code}",
-            ]
-        );
-    }
+    $this->seed(LedgerAccountsSeeder::class);
 });
 
 test('(a), (d) promise breach -> kredit otomatis 1x, picking time tercatat', function () {

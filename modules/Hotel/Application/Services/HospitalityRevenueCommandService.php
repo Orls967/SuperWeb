@@ -7,8 +7,8 @@ namespace Modules\Hotel\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\RevenueCommandMetric;
 use Modules\Hotel\Domain\Models\SyndicationInvestor;
@@ -83,10 +83,10 @@ class HospitalityRevenueCommandService
                 type: 'HOTEL_SYNDICATION_YIELD_DISTRIBUTION',
                 description: "Syndication token rental yield for property {$property->property_code} to investor {$investorUserId}",
                 idempotencyKey: "HTL-SYN-{$syndication->id}",
-                entries: [
-                    PostingEntryDTO::forCode('htl:syndication_yield_clearing:IDR', 'IDR', $investorShareIdr),
-                    PostingEntryDTO::forCode('htl:investor_token_payable:IDR', 'IDR', -$investorShareIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('htl:syndication_yield_clearing:IDR', $investorShareIdr)
+                    ->credit('htl:investor_token_payable:IDR', $investorShareIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'SYNDICATION_INVESTOR',
                 referenceId: $syndication->id,
             ));

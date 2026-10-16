@@ -6,8 +6,8 @@ namespace Modules\Hotel\Application\Services;
 
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Support\Posting;
 use Modules\Hotel\Domain\Models\DestinationPackage;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelFolioItem;
@@ -76,10 +76,10 @@ class HotelFolioAndPackageService
                     type: 'HTL_TIMESHARE_DIVIDEND',
                     description: "Timeshare dividend for investor {$investor->investor_user_id} unit {$unit->unit_code}",
                     idempotencyKey: "htl_ts_div:{$unit->id}:{$investor->id}:".now()->toDateString(),
-                    entries: [
-                        PostingEntryDTO::forCode('expense:htl_timeshare_payout:IDR', 'IDR', -$dividend),
-                        PostingEntryDTO::forCode("investor:dividend:{$investor->investor_user_id}:IDR", 'IDR', $dividend),
-                    ],
+                    entries: Posting::lines()
+                        ->debit('expense:htl_timeshare_payout:IDR', $dividend)
+                        ->credit("investor:dividend:{$investor->investor_user_id}:IDR", $dividend)
+                        ->toEntries('IDR'),
                     referenceType: 'htl_timeshare_investors',
                     referenceId: $investor->id,
                 ));
@@ -108,20 +108,17 @@ class HotelFolioAndPackageService
         }
 
         if ($this->ledger) {
-            $entries = [
-                PostingEntryDTO::forCode('escrow:destination_package:IDR', 'IDR', -$package->total_price_idr),
-            ];
-
+            $lines = Posting::lines()->debit('escrow:destination_package:IDR', $package->total_price_idr);
             foreach ($vendorShares as $share) {
                 $account = $share['account'] ?? "vendor:settlement:{$share['vendor']}:IDR";
-                $entries[] = PostingEntryDTO::forCode($account, 'IDR', (int) $share['amount']);
+                $lines->credit($account, (int) $share['amount']);
             }
 
             $this->ledger->post(new PostingDTO(
                 type: 'HTL_DESTINATION_PKG_SETTLE',
                 description: "Destination package settlement for {$package->package_code}",
                 idempotencyKey: "htl_pkg_settle:{$package->id}:".(string) Str::uuid(),
-                entries: $entries,
+                entries: $lines->toEntries('IDR'),
                 referenceType: 'htl_destination_packages',
                 referenceId: $package->id,
             ));

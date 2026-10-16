@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hotel\Application\Services\HotelOperationsService;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelRoom;
@@ -45,23 +45,7 @@ class HotelPmsAndOperationsTest extends TestCase
             'status' => 'available',
         ]);
 
-        $accounts = [
-            'htl:settlement_clearing:IDR' => 'asset',
-            'htl:room_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::firstOrCreate(
-                ['code' => $code],
-                [
-                    'name' => "Account {$code}",
-                    'kind' => $kind,
-                    'asset_code' => 'IDR',
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                ]
-            );
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_reservation_creation_with_floor_rate_and_contract_rate(): void

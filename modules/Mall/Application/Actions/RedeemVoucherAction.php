@@ -71,7 +71,7 @@ class RedeemVoucherAction
                     'uuid' => (string) Str::uuid(),
                     'name' => 'Kewajiban Poin Loyalitas Duta Mall',
                     'asset_code' => 'PTS',
-                    'kind' => AccountKind::LIABILITY->value,
+                    'kind' => AccountKind::CLEARING->value,
                     'allow_negative' => true,
                     'cached_balance' => '0',
                     'is_frozen' => false,

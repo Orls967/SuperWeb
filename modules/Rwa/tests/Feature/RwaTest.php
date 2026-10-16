@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Rwa\tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Rwa\Application\Services\RwaTokenService;
@@ -27,41 +28,12 @@ class RwaTest extends TestCase
         $this->user1 = User::factory()->create();
         $this->user2 = User::factory()->create();
 
-        LedgerAccount::create([
-            'code' => "wallet:user:{$this->user1->id}:IDR",
-            'name' => "User {$this->user1->id} Wallet",
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
+        $this->user1->walletAccount('IDR');
+        $this->user2->walletAccount('IDR');
 
-        LedgerAccount::create([
-            'code' => "wallet:user:{$this->user2->id}:IDR",
-            'name' => "User {$this->user2->id} Wallet",
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'rwa:pool:RWA-MALL01:IDR',
-            'name' => 'RWA Revenue Pool Mall 01',
-            'asset_code' => 'IDR',
-            'kind' => 'asset',
-            'allow_negative' => true,
-            'cached_balance' => '100000000',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'rwa:rounding_reserve:IDR',
-            'name' => 'RWA Rounding Reserve',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $pool = LedgerAccount::where('code', 'rwa:pool:RWA-MALL01:IDR')->first();
+        $pool->forceFill(['cached_balance' => '100000000'])->save();
     }
 
     public function test_rwa_issuance_and_holdings_sum_equals_supply(): void

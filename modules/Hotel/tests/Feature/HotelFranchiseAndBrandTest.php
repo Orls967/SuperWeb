@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -34,24 +35,7 @@ class HotelFranchiseAndBrandTest extends TestCase
         ]);
 
         // Register hotel ledger accounts
-        $accounts = [
-            'htl:franchise_receivable:IDR' => 'asset',
-            'htl:franchise_fee_revenue:IDR' => 'revenue',
-            'htl:royalty_revenue:IDR' => 'revenue',
-            'htl:ota_penalty_receivable:IDR' => 'asset',
-            'htl:parity_penalty_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Hotel {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_111_1_and_111_6_d_brand_standard_audit_determines_listing_status(): void
@@ -75,14 +59,14 @@ class HotelFranchiseAndBrandTest extends TestCase
         $this->assertEquals('ACTIVE', $contract->status);
 
         $feeRev = LedgerAccount::where('code', 'htl:franchise_fee_revenue:IDR')->first();
-        $this->assertEquals('-500000000', (string) $feeRev->cached_balance);
+        $this->assertEquals('500000000', (string) $feeRev->cached_balance);
 
         // 2. Monthly Folio revenue 2,000,000,000 IDR -> 5% = 100,000,000 IDR royalty
         $royaltyIdr = $this->service->billMonthlyRoyalty($contract, 2_000_000_000);
         $this->assertEquals(100_000_000, $royaltyIdr);
 
         $royRev = LedgerAccount::where('code', 'htl:royalty_revenue:IDR')->first();
-        $this->assertEquals('-100000000', (string) $royRev->cached_balance);
+        $this->assertEquals('100000000', (string) $royRev->cached_balance);
     }
 
     public function test_111_4_and_111_6_c_rate_parity_violation_and_penalty_accrual(): void
@@ -102,7 +86,7 @@ class HotelFranchiseAndBrandTest extends TestCase
         $penaltyAr = LedgerAccount::where('code', 'htl:ota_penalty_receivable:IDR')->first();
         $penaltyRev = LedgerAccount::where('code', 'htl:parity_penalty_revenue:IDR')->first();
 
-        $this->assertEquals('1000000', (string) $penaltyAr->cached_balance);
-        $this->assertEquals('-1000000', (string) $penaltyRev->cached_balance);
+        $this->assertEquals('-1000000', (string) $penaltyAr->cached_balance);
+        $this->assertEquals('1000000', (string) $penaltyRev->cached_balance);
     }
 }

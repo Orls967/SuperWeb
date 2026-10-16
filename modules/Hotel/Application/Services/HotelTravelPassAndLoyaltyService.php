@@ -7,8 +7,8 @@ namespace Modules\Hotel\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Hotel\Domain\Models\AwardNightPricing;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\TravelPass;
@@ -73,10 +73,10 @@ class HotelTravelPassAndLoyaltyService
                 type: 'TRAVEL_PASS_PTS_EARNED',
                 description: "Cross-ecosystem PTS issuance from {$originatingLine} for pass {$pass->pass_number}",
                 idempotencyKey: "HTL-PTS-EARN-{$entry->id}",
-                entries: [
-                    PostingEntryDTO::forCode('htl:loyalty_program_expense:IDR', 'IDR', $liabilityIdr),
-                    PostingEntryDTO::forCode('htl:loyalty_points_liability:IDR', 'IDR', -$liabilityIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('htl:loyalty_program_expense:IDR', $liabilityIdr)
+                    ->credit('htl:loyalty_points_liability:IDR', $liabilityIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'TRAVEL_PASS_ENTRY',
                 referenceId: $entry->id,
             ));
@@ -118,10 +118,10 @@ class HotelTravelPassAndLoyaltyService
                 type: 'TRAVEL_PASS_PTS_REDEEMED',
                 description: "Cross-ecosystem PTS redemption at {$redeemingLine} for pass {$pass->pass_number}",
                 idempotencyKey: "HTL-PTS-RED-{$entry->id}",
-                entries: [
-                    PostingEntryDTO::forCode('htl:loyalty_points_liability:IDR', 'IDR', $liabilityIdr),
-                    PostingEntryDTO::forCode('htl:loyalty_redemption_settlement:IDR', 'IDR', -$liabilityIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('htl:loyalty_points_liability:IDR', $liabilityIdr)
+                    ->credit('htl:loyalty_redemption_settlement:IDR', $liabilityIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'TRAVEL_PASS_ENTRY',
                 referenceId: $entry->id,
             ));

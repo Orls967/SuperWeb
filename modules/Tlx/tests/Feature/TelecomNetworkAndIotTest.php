@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Tlx\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Tlx\Application\Services\TelecomNetworkAndIotService;
 use RuntimeException;
@@ -22,21 +22,7 @@ class TelecomNetworkAndIotTest extends TestCase
         parent::setUp();
         $this->service = app(TelecomNetworkAndIotService::class);
 
-        $accounts = [
-            'tlx:intercompany_receivable:IDR' => 'asset',
-            'tlx:iot_service_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Telecom {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_130_2_and_130_6_a_bandwidth_oversubscription_rejected(): void

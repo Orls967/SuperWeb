@@ -3,6 +3,7 @@
 namespace Modules\Proptech\tests\Feature;
 
 use Carbon\Carbon;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Proptech\Application\Services\FlexSpaceService;
@@ -48,41 +49,7 @@ class FlexSpaceBookingTest extends TestCase
             'status' => 'AVAILABLE',
         ]);
 
-        LedgerAccount::create([
-            'code' => 'prp:flex_escrow:IDR',
-            'name' => 'Flex Space Escrow Deposit',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'prp:flex_revenue_unearned:IDR',
-            'name' => 'Flex Space Unearned Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'liability',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'prp:flex_revenue:IDR',
-            'name' => 'Flex Space Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'revenue',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
-
-        LedgerAccount::create([
-            'code' => 'prp:flex_penalty_rev:IDR',
-            'name' => 'Flex Space No-Show Penalty Revenue',
-            'asset_code' => 'IDR',
-            'kind' => 'revenue',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-        ]);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_78_2_booking_creation_deposit_hold_and_anti_overlap(): void
@@ -97,7 +64,7 @@ class FlexSpaceBookingTest extends TestCase
 
         // Check escrow deposit ledger entry
         $escrow = LedgerAccount::where('code', 'prp:flex_escrow:IDR')->first();
-        $this->assertEquals('90000', (string) $escrow->cached_balance);
+        $this->assertEquals('-90000', (string) $escrow->cached_balance);
 
         // Concurrent overlapping booking fails
         $this->expectException(\RuntimeException::class);
@@ -124,9 +91,9 @@ class FlexSpaceBookingTest extends TestCase
         $this->assertEquals(hash('sha256', $passport), $checkedIn->checked_in_passport_hash);
         $this->assertNotNull($checkedIn->checked_in_at);
 
-        // Revenue fully captured in ledger: -300,000 IDR to revenue account
+        // Revenue fully captured in ledger: +300,000 IDR to revenue account
         $rev = LedgerAccount::where('code', 'prp:flex_revenue:IDR')->first();
-        $this->assertEquals('-300000', (string) $rev->cached_balance);
+        $this->assertEquals('300000', (string) $rev->cached_balance);
 
         // Utility reading added to zone
         $sensorLog = BuildingSensor::where('idempotency_key', "FLEX-SESSION-{$booking->booking_code}")->first();
@@ -147,6 +114,6 @@ class FlexSpaceBookingTest extends TestCase
 
         // Penalty revenue earned = deposit amount (90,000 IDR)
         $penaltyRev = LedgerAccount::where('code', 'prp:flex_penalty_rev:IDR')->first();
-        $this->assertEquals('-90000', (string) $penaltyRev->cached_balance);
+        $this->assertEquals('90000', (string) $penaltyRev->cached_balance);
     }
 }

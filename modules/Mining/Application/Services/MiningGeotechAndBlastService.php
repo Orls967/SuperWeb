@@ -7,8 +7,8 @@ namespace Modules\Mining\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Mining\Domain\Models\BargeShipment;
 use Modules\Mining\Domain\Models\BlastSchedule;
 use Modules\Mining\Domain\Models\MiningPit;
@@ -134,10 +134,10 @@ class MiningGeotechAndBlastService
                 type: 'MINING_BARGE_FREIGHT_COST',
                 description: "Marine barge freight shipment for {$vesselName} to {$destinationPort}",
                 idempotencyKey: "MIN-BRG-{$bargeCode}",
-                entries: [
-                    PostingEntryDTO::forCode('min:marine_freight_expense:IDR', 'IDR', $freightTariffIdr),
-                    PostingEntryDTO::forCode('min:marine_vendor_payable:IDR', 'IDR', -$freightTariffIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('min:marine_freight_expense:IDR', $freightTariffIdr)
+                    ->credit('min:marine_vendor_payable:IDR', $freightTariffIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'BARGE_SHIPMENT',
                 referenceId: $barge->id,
             ));

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Ret\Application\Services\OmnichannelRetailService;
 use Modules\Ret\Domain\Models\RetCouponRedemption;
 use Modules\Ret\Domain\Models\RetSellerSettlement;
@@ -11,24 +11,7 @@ use Modules\Ret\Domain\Models\RetSellerSettlement;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $accounts = [
-        'ret:escrow_receivable:IDR' => 'asset',
-        'ret:marketplace_commission_revenue:IDR' => 'revenue',
-        'ret:seller_payable:IDR' => 'liability',
-    ];
-
-    foreach ($accounts as $code => $kind) {
-        LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'kind' => $kind,
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'name' => "Retail {$code}",
-            ]
-        );
-    }
+    $this->seed(LedgerAccountsSeeder::class);
 });
 
 test('(a) stok channel ganda: 1 unit hanya terjual 1x (concurrency & locking)', function () {

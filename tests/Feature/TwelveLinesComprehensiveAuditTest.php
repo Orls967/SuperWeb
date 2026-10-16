@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Tests\TestCase;
 
 class TwelveLinesComprehensiveAuditTest extends TestCase
@@ -15,16 +15,7 @@ class TwelveLinesComprehensiveAuditTest extends TestCase
 
     public function test_ecosystem_audit_12_lines_returns_zero_discrepancies(): void
     {
-        LedgerAccount::firstOrCreate(
-            ['code' => 'asset:test_cash:IDR'],
-            [
-                'name' => 'Operational Cash IDR',
-                'kind' => 'asset',
-                'asset_code' => 'IDR',
-                'allow_negative' => false,
-                'cached_balance' => '50000000',
-            ]
-        );
+        $this->seed(LedgerAccountsSeeder::class);
 
         $exitCode = Artisan::call('ecosystem:audit-12-lines');
         $this->assertEquals(0, $exitCode);

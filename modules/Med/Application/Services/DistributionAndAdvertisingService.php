@@ -7,8 +7,8 @@ namespace Modules\Med\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Med\Domain\Models\MedAdCampaign;
 use Modules\Med\Domain\Models\MedDistributionChannel;
 use Modules\Med\Domain\Models\MedSponsorshipPackage;
@@ -98,21 +98,20 @@ class DistributionAndAdvertisingService
 
             // Balanced multi-party ledger settlement (Sum = 0)
             if ($totalSpend > 0) {
-                $entries = [
-                    PostingEntryDTO::forCode('med:ad_receivable:IDR', 'IDR', $totalSpend),
-                    PostingEntryDTO::forCode('med:ad_publisher_payable:IDR', 'IDR', -$pubShare),
-                    PostingEntryDTO::forCode('med:ad_platform_revenue:IDR', 'IDR', -$platformShare),
-                ];
+                $lines = Posting::lines()
+                    ->debit('med:ad_receivable:IDR', $totalSpend)
+                    ->credit('med:ad_publisher_payable:IDR', $pubShare)
+                    ->credit('med:ad_platform_revenue:IDR', $platformShare);
 
                 if ($agencyComm > 0) {
-                    $entries[] = PostingEntryDTO::forCode('med:agency_commission_payable:IDR', 'IDR', -$agencyComm);
+                    $lines->credit('med:agency_commission_payable:IDR', $agencyComm);
                 }
 
                 $this->ledgerService->post(new PostingDTO(
                     type: 'MEDIA_AD_CAMPAIGN_SETTLEMENT',
                     description: "Ad campaign settlement for {$campaign->campaign_code} ({$verifiedImpressions} impressions)",
                     idempotencyKey: 'MED-AD-'.$campaign->campaign_code,
-                    entries: $entries,
+                    entries: $lines->toEntries('IDR'),
                     referenceType: 'AD_CAMPAIGN',
                     referenceId: $campaign->campaign_code,
                 ));

@@ -7,8 +7,8 @@ namespace Modules\Hotel\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Hotel\Domain\Models\CorporateTravelRequest;
 use Modules\Hotel\Domain\Models\TravelBundle;
 use Modules\Hotel\Domain\Models\TravelItinerary;
@@ -62,10 +62,10 @@ class TravelPlatformAndItineraryService
                 type: 'TRAVEL_BUNDLE_ESCROW_DEPOSIT',
                 description: "Escrow payment for travel bundle {$bundle->bundle_code}",
                 idempotencyKey: "TRV-DEP-{$bundle->bundle_code}",
-                entries: [
-                    PostingEntryDTO::forCode('htl:travel_escrow_deposit:IDR', 'IDR', $totalPriceIdr),
-                    PostingEntryDTO::forCode('htl:travel_unearned_escrow:IDR', 'IDR', -$totalPriceIdr),
-                ],
+                entries: Posting::lines()
+                    ->debit('htl:travel_escrow_deposit:IDR', $totalPriceIdr)
+                    ->credit('htl:travel_unearned_escrow:IDR', $totalPriceIdr)
+                    ->toEntries('IDR'),
                 referenceType: 'TRAVEL_BUNDLE',
                 referenceId: $bundle->id,
             ));
@@ -86,13 +86,13 @@ class TravelPlatformAndItineraryService
                 type: 'TRAVEL_BUNDLE_FINAL_SETTLEMENT',
                 description: "Multi-vendor settlement for bundle {$bundle->bundle_code}",
                 idempotencyKey: "TRV-SETTLE-{$bundle->bundle_code}",
-                entries: [
-                    PostingEntryDTO::forCode('htl:travel_unearned_escrow:IDR', 'IDR', $bundle->total_price_idr),
-                    PostingEntryDTO::forCode('air:flight_partner_payable:IDR', 'IDR', -$bundle->flight_vendor_share_idr),
-                    PostingEntryDTO::forCode('htl:hotel_vendor_payable:IDR', 'IDR', -$bundle->hotel_vendor_share_idr),
-                    PostingEntryDTO::forCode('lgx:transport_vendor_payable:IDR', 'IDR', -$bundle->transport_vendor_share_idr),
-                    PostingEntryDTO::forCode('ven:event_vendor_payable:IDR', 'IDR', -$bundle->event_vendor_share_idr),
-                ],
+                entries: Posting::lines()
+                    ->debit('htl:travel_unearned_escrow:IDR', $bundle->total_price_idr)
+                    ->credit('air:flight_partner_payable:IDR', $bundle->flight_vendor_share_idr)
+                    ->credit('htl:hotel_vendor_payable:IDR', $bundle->hotel_vendor_share_idr)
+                    ->credit('lgx:transport_vendor_payable:IDR', $bundle->transport_vendor_share_idr)
+                    ->credit('ven:event_vendor_payable:IDR', $bundle->event_vendor_share_idr)
+                    ->toEntries('IDR'),
                 referenceType: 'TRAVEL_BUNDLE',
                 referenceId: $bundle->id,
             ));

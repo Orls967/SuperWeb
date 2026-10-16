@@ -7,8 +7,8 @@ namespace Modules\Egy\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Egy\Domain\Models\DistrictCoolingMeter;
 use Modules\Egy\Domain\Models\EscoPerformanceContract;
 use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
@@ -77,10 +77,10 @@ class DistrictUtilityAndEscoService
                 type: 'ENERGY_CONSOLIDATED_UTILITY_INVOICE',
                 description: "Consolidated utility invoice {$invoiceNumber} for property {$params['property_id']}",
                 idempotencyKey: 'EGY-INV-'.$invoiceNumber,
-                entries: [
-                    PostingEntryDTO::forCode('egy:utility_receivable:IDR', 'IDR', $total),
-                    PostingEntryDTO::forCode('egy:utility_consolidated_revenue:IDR', 'IDR', -$total),
-                ],
+                entries: Posting::lines()
+                    ->debit('egy:utility_receivable:IDR', $total)
+                    ->credit('egy:utility_consolidated_revenue:IDR', $total)
+                    ->toEntries('IDR'),
                 referenceType: 'CONSOLIDATED_INVOICE',
                 referenceId: $invoiceNumber,
             ));
@@ -118,10 +118,10 @@ class DistrictUtilityAndEscoService
                 type: 'ENERGY_ESCO_SAVINGS_SPLIT',
                 description: "ESCO performance split remuneration for {$contractNumber}",
                 idempotencyKey: 'EGY-ESCO-'.$contractNumber,
-                entries: [
-                    PostingEntryDTO::forCode('egy:esco_fee_receivable:IDR', 'IDR', $escoRemuneration),
-                    PostingEntryDTO::forCode('egy:esco_service_revenue:IDR', 'IDR', -$escoRemuneration),
-                ],
+                entries: Posting::lines()
+                    ->debit('egy:esco_fee_receivable:IDR', $escoRemuneration)
+                    ->credit('egy:esco_service_revenue:IDR', $escoRemuneration)
+                    ->toEntries('IDR'),
                 referenceType: 'ESCO_CONTRACT',
                 referenceId: $contractNumber,
             ));

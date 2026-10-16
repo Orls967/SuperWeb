@@ -113,6 +113,7 @@ class DatabaseSeeder extends Seeder
             AutoDexSeeder::class,
             BankingSeeder::class,
             CryptoSeeder::class,
+            LedgerAccountsSeeder::class,
         ]);
 
         // Inisialisasi Dompet & PIN untuk seeded users

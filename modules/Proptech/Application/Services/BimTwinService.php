@@ -4,8 +4,8 @@ namespace Modules\Proptech\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Proptech\Domain\Models\Bim\BimModel;
 use Modules\Proptech\Domain\Models\Bim\TwinComponent;
 use Modules\Proptech\Domain\Models\Bim\TwinIssue;
@@ -103,10 +103,10 @@ class BimTwinService
             type: 'BIM_CAPITALIZE_CIP',
             description: "Capitalize completed BIM milestone for WBS {$wbsNodeCode}",
             idempotencyKey: "BIM-CAP-{$wbsNodeCode}",
-            entries: [
-                PostingEntryDTO::forCode('ast:fixed_assets:IDR', 'IDR', $milestoneValueIdr),
-                PostingEntryDTO::forCode('epc:cip_liability:IDR', 'IDR', -$milestoneValueIdr),
-            ],
+            entries: Posting::lines()
+                ->debit('ast:fixed_assets:IDR', $milestoneValueIdr)
+                ->credit('epc:cip_liability:IDR', $milestoneValueIdr)
+                ->toEntries('IDR'),
             referenceType: 'BIM_WBS',
             referenceId: $wbsNodeCode,
         ));

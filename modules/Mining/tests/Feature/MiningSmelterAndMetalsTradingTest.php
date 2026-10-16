@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Mining\tests\Feature;
 
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mining\Application\Services\MiningSmelterAndMetalsTradingService;
 use Modules\Mining\Domain\Models\MiningSite;
@@ -34,23 +34,7 @@ class MiningSmelterAndMetalsTradingTest extends TestCase
             'location' => 'Central Sulawesi',
         ]);
 
-        $accounts = [
-            'min:trade_receivable:IDR' => 'asset',
-            'min:metal_sales_revenue:IDR' => 'revenue',
-            'min:byproduct_receivable:IDR' => 'asset',
-            'min:byproduct_sales_revenue:IDR' => 'revenue',
-        ];
-
-        foreach ($accounts as $code => $kind) {
-            LedgerAccount::create([
-                'code' => $code,
-                'name' => "Mining {$code}",
-                'asset_code' => 'IDR',
-                'kind' => $kind,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]);
-        }
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_121_1_and_121_6_a_mass_conservation_check(): void
