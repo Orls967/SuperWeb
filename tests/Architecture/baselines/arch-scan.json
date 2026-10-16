@@ -567,7 +567,7 @@
             }
         },
         "A2": {
-            "total": 5254,
+            "total": 5240,
             "entries": {
                 "modules/Agency/Console/Commands/AuditAgencyCommand.php": {
                     "DB::table('bank_ledger_accounts')": 1
@@ -3763,11 +3763,6 @@
                 "modules/Integration/database/migrations/2026_10_09_484001_create_digital_trust_tables.php": {
                     "Schema::create('int_enterprise_trust_scores')": 1,
                     "Schema::create('int_verifiable_enterprise_claims')": 1
-                },
-                "modules/Inventory/Application/Services/InventoryService.php": {
-                    "DB::table('resto_ingredient_movements')": 3,
-                    "DB::table('resto_ingredient_stocks')": 10,
-                    "DB::table('resto_ingredients')": 1
                 },
                 "modules/Logistics/database/seeders/LogisticsLargeSeeder.php": {
                     "DB::table('core_vehicles')": 1,

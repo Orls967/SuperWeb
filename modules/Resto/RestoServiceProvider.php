@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Modules\Resto\Application\Services\IngredientReferenceCostUpdater;
 use Modules\Resto\Application\Services\RecipeCostCalculator;
+use Modules\Resto\Application\Services\RestoIngredientStockService;
 use Modules\Resto\Application\Services\RestoTenantSalesProvider;
 use Modules\Resto\Console\Commands\CloseDayCommand;
 use Modules\Resto\Console\Commands\ExpireDisplayTraysCommand;
 use Modules\Resto\Console\Commands\MonitorStockLevelsCommand;
 use Modules\Resto\Console\Commands\PostFranchiseRoyaltyCommand;
+use Modules\Resto\Contracts\RestoIngredientStockPort;
 use Modules\Resto\Domain\Models\CateringOrder;
 use Modules\Resto\Domain\Models\Delivery;
 use Modules\Resto\Domain\Models\DisplayTray;
@@ -37,10 +39,14 @@ class RestoServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // 32.8 — kontrak harga pemasok → MAC referensi (tanpa import domain lintas modul).
         $this->app->bind(
             ReferenceCostUpdater::class,
             IngredientReferenceCostUpdater::class
+        );
+
+        $this->app->bind(
+            RestoIngredientStockPort::class,
+            RestoIngredientStockService::class
         );
 
         $this->app->singleton(RecipeCostCalculator::class, fn () => new RecipeCostCalculator);
