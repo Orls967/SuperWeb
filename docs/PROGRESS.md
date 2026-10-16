@@ -876,7 +876,17 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php::test_url_webhook_privat_localhost_dan_cloud_metadata_169_254_169_254_ditolak_oleh_guard_anti_ssrf
     - test: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php::test_target_subscriber_non_webhook_dieksekusi_lewat_handler_terdaftar_dan_gagal_jika_handler_tidak_ditemukan
     - akses: route GET /integration/webhooks [role: admin]
-- [ ] R2.6 **Telematics** (K-26, K-30): baseline rolling 7 hari dari tick nyata; hanya DTC dari daftar kritis yang `critical`/`grounded`; event domain dipancarkan `afterCommit` dan dedup per jam sama seperti publish spine.
+- [x] R2.6 **Telematics** (K-26, K-30): baseline rolling 7 hari dari tick nyata; hanya DTC dari daftar kritis yang `critical`/`grounded`; event domain dipancarkan `afterCommit` dan dedup per jam sama seperti publish spine.
+  Bukti:
+    - jenis: fitur
+    - commit: 39f9a2f
+    - file: modules/Telematics/Application/Services/TelematicsIngestService.php
+    - file: modules/Telematics/tests/Feature/TelematicsTest.php
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_critical_dtc_grounds_vehicle_device
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_non_critical_dtc_does_not_ground_device_and_does_not_trigger_critical_anomaly
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_seven_day_rolling_baseline_calculated_from_actual_historical_ticks
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_anomaly_event_dispatched_after_commit_and_deduplicated_hourly
+    - akses: route GET /logistics/fleet [role: admin,auditor,dispatcher,hub_operator,logistics_admin]
 - [ ] R2.7 **ESG faktor emisi**: `recordEmission()` menolak jenis aktivitas tak dikenal (sekarang diam-diam faktor 1.0); nomor dokumen lewat `DocumentNumberingInterface` (bukan `Str::random`).
 - [ ] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
   - Test wajib: adapter gagal → status gagal tercatat (bukan sukses).
