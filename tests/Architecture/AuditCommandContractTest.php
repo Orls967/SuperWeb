@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Quality\Audit\AuditCommandRegistry;
+use App\Quality\Audit\CorruptionFixture;
 use App\Quality\Audit\Fixtures\ApiAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\BankReconcileCorruptionFixture;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -47,4 +48,20 @@ it('keeps audit commands without corruption fixtures within the ratchet baseline
         $missing,
         'Daftar command audit/reconcile/verify tanpa fixture korupsi (PROGRESS R0.10, KONSEP §A14.4). Hanya boleh berkurang (R5.2).'
     );
+});
+
+it('verifies that each registered corruption fixture causes its audit command to fail', function (string $commandName, CorruptionFixture $fixture): void {
+    $keyword = $fixture->corrupt();
+
+    $this->artisan($commandName)
+        ->assertFailed()
+        ->expectsOutputToContain($keyword);
+})->with(function (): array {
+    $fixtures = AuditCommandRegistry::fixtures();
+    $dataset = [];
+    foreach ($fixtures as $cmd => $fixture) {
+        $dataset[$cmd] = [$cmd, $fixture];
+    }
+
+    return $dataset;
 });

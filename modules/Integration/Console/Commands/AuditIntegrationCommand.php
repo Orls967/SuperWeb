@@ -35,6 +35,9 @@ class AuditIntegrationCommand extends Command
 
         if ($integrationResult['discrepancy_count'] > 0) {
             $this->error('Integration audit FAILED: Signature or message discrepancy detected!');
+            foreach ($integrationResult['invalid_records'] ?? [] as $record) {
+                $this->error(" - Corrupted record: {$record}");
+            }
         } else {
             $this->info('API & EDI Integration audit PASSED with 0 discrepancy.');
         }
