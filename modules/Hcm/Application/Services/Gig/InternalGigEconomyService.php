@@ -118,7 +118,7 @@ class InternalGigEconomyService
 
             $bounty = $lockedClaim->bounty;
             $overtimeMultiplier = 1.5; // UU rate 1.5x for gig bounty shift
-            $payoutIdr = (int) round($actualHoursWorked * $bounty->hourly_rate_idr * $overtimeMultiplier);
+            $payoutIdr = intdiv((int) round($actualHoursWorked * 100) * $bounty->hourly_rate_idr * 15 + 500, 1000);
 
             $pof = GovBountyPof::create([
                 'pof_code' => 'POF-'.strtoupper(bin2hex(random_bytes(6))),

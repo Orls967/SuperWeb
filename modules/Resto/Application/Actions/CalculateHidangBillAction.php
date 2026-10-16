@@ -137,8 +137,8 @@ class CalculateHidangBillAction
             $actualDiscount = min($discount, $subtotal);
             $afterDiscount = max(0, $subtotal - $actualDiscount);
 
-            // PB1 is 10%
-            $taxPb1 = (int) round($afterDiscount * 0.10);
+            // PB1 is 10% (integer half-up arithmetic: intdiv($amount * 10 + 50, 100))
+            $taxPb1 = intdiv($afterDiscount * 10 + 50, 100);
             $serviceCharge = 0;
 
             $preRounding = $afterDiscount + $taxPb1 + $serviceCharge;

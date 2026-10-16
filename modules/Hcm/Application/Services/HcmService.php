@@ -41,10 +41,10 @@ class HcmService
         return DB::transaction(function () use ($employee, $period) {
             $gross = $employee->basic_salary_idr + $employee->allowances_idr;
 
-            // Simulasi BPJS & PPh21 TER
-            $bpjsTk = (int) round($gross * 0.03);
-            $bpjsKes = (int) round($gross * 0.01);
-            $pph21 = (int) round($gross * 0.05);
+            // Simulasi BPJS & PPh21 TER (Aritmetika integer half-up)
+            $bpjsTk = intdiv($gross * 3 + 50, 100);
+            $bpjsKes = intdiv($gross * 1 + 50, 100);
+            $pph21 = intdiv($gross * 5 + 50, 100);
 
             $deductions = $bpjsTk + $bpjsKes + $pph21;
             $net = $gross - $deductions;
@@ -70,7 +70,7 @@ class HcmService
     public function allocateLaborToProduction(Payroll $payroll, string $workOrderRef, float $hoursWorked, int $hourlyRateIdr): ProductionLaborAllocation
     {
         return DB::transaction(function () use ($payroll, $workOrderRef, $hoursWorked, $hourlyRateIdr) {
-            $cost = (int) round($hoursWorked * $hourlyRateIdr);
+            $cost = intdiv((int) round($hoursWorked * 100) * $hourlyRateIdr, 100);
 
             return ProductionLaborAllocation::create([
                 'id' => (string) Str::uuid(),

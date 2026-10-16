@@ -1367,6 +1367,19 @@
 - **Verification:**
   - DoR Fase R1 tercentang `[x]`, dokumen `docs/PROGRESS.md` dan `docs/DECISIONS.md` disinkronkan, dipantau oleh `ProgressIntegrityTest`.
 
+## 2026-10-16: Aritmetika Integer Moneter pada PB1 Resto & HCM Payroll (R1.8)
+- **Context:** Nilai moneter dalam sistem wajib menggunakan tipe integer murni rupiah tanpa floating-point drift. Perhitungan PB1 10% di modul Resto serta potongan BPJS/PPh21 dan alokasi tenaga kerja di modul HCM sebelumnya menggunakan perkalian float `round($amount * rate)`.
+- **Decision:**
+  - PB1 Resto: Menggunakan rumus pembulatan integer half-up: `intdiv($afterDiscount * 10 + 50, 100)` (ekuivalen `intdiv($afterDiscount + 5, 10)`). Contoh konkret: nilai subtotal Rp 15.555 menghasilkan PB1 tepat Rp 1.556.
+  - HCM Payroll: Menggunakan rumus pembulatan integer half-up murni:
+    - BPJS TK (3%): `intdiv($gross * 3 + 50, 100)`
+    - BPJS Kes (1%): `intdiv($gross * 1 + 50, 100)`
+    - PPh21 TER (5%): `intdiv($gross * 5 + 50, 100)`
+    - Alokasi biaya tenaga kerja: `intdiv((int) round($hoursWorked * 100) * $hourlyRateIdr, 100)`.
+    - Payout gig overtime: `intdiv((int) round($actualHoursWorked * 100) * $hourlyRateIdr * 15 + 500, 1000)`.
+- **Reason:** Mencegah floating-point drift dan menjamin keakuratan rekonsiliasi akuntansi double-entry bernilai 0 discrepancy di setiap transaksi.
+- **Verification:** Unit test konkret di `tests/Unit/Quality/Ledger/IntegerArithmeticTest.php` dan suite test modul Resto serta HCM.
+
 
 
 
