@@ -145,7 +145,7 @@ class AgencyController extends Controller
         try {
             $this->service->approvePayout($payout, $request->user());
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('payout', $e->getMessage());
+            return back()->withErrors(['payout' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', "Payout {$payout->number} disetujui.");

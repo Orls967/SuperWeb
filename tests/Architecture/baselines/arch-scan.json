@@ -6987,18 +6987,8 @@
             }
         },
         "A13": {
-            "total": 15,
-            "entries": {
-                "modules/Agency/Http/Controllers/AgencyController.php": {
-                    "back()->errors()": 1
-                },
-                "modules/Distribution/Http/Controllers/DistributionController.php": {
-                    "back()->errors()": 7
-                },
-                "modules/Pricing/Http/Controllers/PricingController.php": {
-                    "back()->errors()": 7
-                }
-            }
+            "total": 0,
+            "entries": {}
         }
     },
     "approved_additions": [

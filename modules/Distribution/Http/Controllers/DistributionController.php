@@ -75,7 +75,7 @@ class DistributionController extends Controller
                 $data['valid_until'] ?? null,
             );
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('coverage', $e->getMessage());
+            return back()->withErrors(['coverage' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Coverage wilayah disimpan.');
@@ -98,7 +98,7 @@ class DistributionController extends Controller
         try {
             $this->service->submitOnboarding($distributor, $request->user());
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('onboarding', $e->getMessage());
+            return back()->withErrors(['onboarding' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Onboarding diajukan (procurement → admin).');
@@ -110,7 +110,7 @@ class DistributionController extends Controller
         try {
             $this->service->approveOnboarding($distributor, $request->user(), (int) $data['credit_limit_idr']);
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('onboarding', $e->getMessage());
+            return back()->withErrors(['onboarding' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', "Distributor {$distributor->code} disetujui.");
@@ -122,7 +122,7 @@ class DistributionController extends Controller
         try {
             $this->service->transition($distributor, $data['to']);
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('status', $e->getMessage());
+            return back()->withErrors(['status' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', "Status {$distributor->code} → {$data['to']}.");
@@ -143,7 +143,7 @@ class DistributionController extends Controller
                 $request->user(), $data['source_type'], $data['source_ref'] ?? null,
             );
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('invoice', $e->getMessage());
+            return back()->withErrors(['invoice' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', "Tagihan {$invoice->number} terbit.");
@@ -164,7 +164,7 @@ class DistributionController extends Controller
                 $data['method'], $data['reference'] ?? null,
             );
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('payment', $e->getMessage());
+            return back()->withErrors(['payment' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Pembayaran dicatat.');
@@ -205,7 +205,7 @@ class DistributionController extends Controller
         try {
             $this->service->addOutlet($distributor, $data);
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('outlet', $e->getMessage());
+            return back()->withErrors(['outlet' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Outlet distributor ditambahkan.');
