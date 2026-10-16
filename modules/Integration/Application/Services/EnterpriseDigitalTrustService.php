@@ -42,13 +42,17 @@ class EnterpriseDigitalTrustService
             throw new InvalidArgumentException('Claim publication blocked: External enterprise claims strictly require cryptographic evidence verification (484.1, 484.5).');
         }
 
+        // Verify if evidence attachment exists in core_documents with matching SHA-256 checksum
+        $isVerified = DB::table('core_documents')->where('checksum_sha256', trim($evidenceHash))->exists();
+        $status = $isVerified ? 'published_verified' : 'simulated_unverified';
+
         $id = DB::table('int_verifiable_enterprise_claims')->insertGetId([
             'claim_code' => strtoupper($code),
             'claim_type' => $t,
             'claim_statement' => $statement,
             'evidence_hash' => $evidenceHash,
             'public_verifiable' => $publicVerifiable,
-            'status' => 'published_verified',
+            'status' => $status,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

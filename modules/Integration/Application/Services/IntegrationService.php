@@ -49,11 +49,11 @@ class IntegrationService
             ]);
         }
 
-        $httpStatus = 200;
-        $deliveryStatus = 'delivered';
+        $httpStatus = 500;
+        $deliveryStatus = 'failed';
 
         try {
-            $response = Http::timeout(1)
+            $response = Http::timeout(2)
                 ->withHeaders([
                     'Content-Type' => 'application/json',
                     'X-Event-ID' => $eventId,
@@ -65,13 +65,8 @@ class IntegrationService
             $httpStatus = $response->status();
             $deliveryStatus = $response->successful() ? 'delivered' : 'failed';
         } catch (\Throwable) {
-            if (app()->environment('testing')) {
-                $httpStatus = 200;
-                $deliveryStatus = 'delivered';
-            } else {
-                $httpStatus = 500;
-                $deliveryStatus = 'failed';
-            }
+            $httpStatus = 500;
+            $deliveryStatus = 'failed';
         }
 
         return WebhookDelivery::create([
@@ -103,15 +98,38 @@ class IntegrationService
         string $rawMessage
     ): EdiMessage {
         $controlNumber = 'EDI-'.strtoupper(Str::random(10));
+        $std = strtoupper(trim($standard));
+        $tx = trim($txSet);
+        $raw = trim($rawMessage);
+
+        $isValid = false;
+
+        if (! empty($raw)) {
+            if ($std === 'X12') {
+                // ANSI X12 requires transaction set header ST*{txSet} and trailer SE with delimiters
+                $hasSegmentDelimiter = str_contains($raw, '~') || str_contains($raw, "\n");
+                $hasElementDelimiter = str_contains($raw, '*');
+                $hasSt = preg_match('/ST\*'.preg_quote($tx, '/').'\*/', $raw) === 1;
+                $hasSe = str_contains($raw, 'SE*') || str_contains($raw, '~SE') || str_contains($raw, "\nSE");
+
+                $isValid = $hasSegmentDelimiter && $hasElementDelimiter && $hasSt && $hasSe;
+            } elseif ($std === 'EDIFACT') {
+                $hasUnh = str_contains($raw, 'UNH+') || str_contains($raw, 'UNH:');
+                $hasUnt = str_contains($raw, 'UNT+') || str_contains($raw, 'UNT:');
+                $isValid = $hasUnh && $hasUnt;
+            }
+        }
+
+        $status = $isValid ? 'accepted' : 'rejected';
 
         return EdiMessage::create([
             'control_number' => $controlNumber,
-            'edi_standard' => strtoupper($standard),
-            'transaction_set' => $txSet,
+            'edi_standard' => $std,
+            'transaction_set' => $tx,
             'sender_id' => $senderId,
             'receiver_id' => $receiverId,
             'raw_message' => $rawMessage,
-            'functional_status' => 'accepted',
+            'functional_status' => $status,
         ]);
     }
 
