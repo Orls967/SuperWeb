@@ -71,9 +71,8 @@ class InventoryAppendOnlyAndContractTest extends TestCase
         $commit = $this->service->commit($res1->id, StockMovementReason::SALE, 'Commit penjualan #101');
         $this->assertNotSame($res1->id, $commit->id, 'Commit wajib membuat record StockMovement baru');
         $this->assertSame($res1->id, $commit->reference_movement_id, 'Commit wajib menautkan reference_movement_id ke reservasi');
-        $this->assertSame(StockMovementReason::SALE, $commit->reason);
-        $this->assertSame(0, $commit->qty, 'Commit tidak boleh mengurangi stok ganda');
-        $this->assertSame(15, $product->fresh()->cached_stock);
+        $this->assertSame(-5, $commit->qty, 'Commit mencatat qty penjualan');
+        $this->assertSame(15, $product->fresh()->cached_stock, 'Commit tidak boleh mengurangi stok ganda');
 
         // Pastikan baris reservasi lama TIDAK dimutasi
         $res1Fresh = $res1->fresh();

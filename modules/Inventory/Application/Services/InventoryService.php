@@ -92,7 +92,7 @@ class InventoryService implements InventoryServiceContract
             // Buat baris StockMovement baru yang menautkan reservasi tanpa memutasi baris lama
             return StockMovement::create([
                 'product_id' => $reservation->product_id,
-                'qty' => 0,
+                'qty' => $reservation->qty,
                 'reason' => $reasonEnum,
                 'source_type' => $reservation->source_type,
                 'source_id' => $reservation->source_id,
