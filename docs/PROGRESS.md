@@ -721,6 +721,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - jenis: tooling
     - commit: 0c75647
     - commit: 4d89235
+    - commit: 37a2770
     - file: modules/Fleet/Application/Services/FleetLeasingService.php
     - file: modules/Fleet/tests/Feature/FleetTest.php
     - file: modules/Banking/Application/Actions/TopUpAction.php
