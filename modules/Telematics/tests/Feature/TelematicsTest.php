@@ -64,6 +64,7 @@ class TelematicsTest extends TestCase
             'rpm' => 2200,
             'oil_temp_c' => 91.0,
             'battery_voltage' => 12.6,
+            'fuel_level_pct' => 85.0,
         ];
 
         $tick1 = $service->ingestTick($tickData);
@@ -86,6 +87,7 @@ class TelematicsTest extends TestCase
             'rpm' => 3000,
             'oil_temp_c' => 115.0, // High overheat
             'battery_voltage' => 12.5,
+            'fuel_level_pct' => 80.0,
         ];
 
         $service->ingestTick($tickData);
@@ -104,6 +106,7 @@ class TelematicsTest extends TestCase
             'recorded_at' => '2026-10-07 10:10:00',
             'oil_temp_c' => 118.0,
             'battery_voltage' => 12.5,
+            'fuel_level_pct' => 80.0,
         ];
         $service->ingestTick($tickData2);
 
@@ -119,6 +122,9 @@ class TelematicsTest extends TestCase
             'device_id' => 'DEV-OBD-001',
             'sequence' => 104,
             'recorded_at' => '2026-10-07 10:15:00',
+            'oil_temp_c' => 90.0,
+            'battery_voltage' => 12.6,
+            'fuel_level_pct' => 80.0,
             'dtc_code' => 'P0300', // Random Misfire (Critical)
         ];
 
@@ -137,6 +143,9 @@ class TelematicsTest extends TestCase
             'device_id' => 'DEV-OBD-001',
             'sequence' => 105,
             'recorded_at' => '2026-10-07 10:20:00',
+            'oil_temp_c' => 90.0,
+            'battery_voltage' => 12.6,
+            'fuel_level_pct' => 80.0,
             'dtc_code' => 'P0420', // Catalyst System Efficiency Below Threshold (Advisory/Non-critical)
         ];
 
@@ -191,6 +200,7 @@ class TelematicsTest extends TestCase
             'recorded_at' => $baseTime->toDateTimeString(),
             'oil_temp_c' => 82.0,
             'battery_voltage' => 12.8,
+            'fuel_level_pct' => 80.0,
         ];
         $service->ingestTick($tickData);
 
@@ -216,6 +226,7 @@ class TelematicsTest extends TestCase
             'recorded_at' => '2026-10-07 14:05:00',
             'oil_temp_c' => 115.0,
             'battery_voltage' => 12.5,
+            'fuel_level_pct' => 80.0,
         ];
         $service->ingestTick($tick1);
 
@@ -226,6 +237,7 @@ class TelematicsTest extends TestCase
             'recorded_at' => '2026-10-07 14:25:00',
             'oil_temp_c' => 120.0,
             'battery_voltage' => 12.5,
+            'fuel_level_pct' => 80.0,
         ];
         $service->ingestTick($tick2);
 

@@ -7,6 +7,8 @@ namespace Modules\Telematics\Application\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Modules\Core\Contracts\EventSpineInterface;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Telematics\Domain\Events\VehicleAnomalyDetected;
@@ -109,6 +111,19 @@ class TelematicsIngestService
 
     public function ingestTick(array $data): TelematicsTick
     {
+        $validator = Validator::make($data, [
+            'device_id' => ['required', 'string'],
+            'sequence' => ['required', 'integer'],
+            'recorded_at' => ['required'],
+            'oil_temp_c' => ['required', 'numeric'],
+            'battery_voltage' => ['required', 'numeric'],
+            'fuel_level_pct' => ['required', 'numeric', 'min:0', 'max:100'],
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
         $idempotencyKey = $data['idempotency_key'] ?? hash('sha256', $data['device_id'].':'.$data['sequence'].':'.$data['recorded_at']);
 
         return DB::transaction(function () use ($data, $idempotencyKey) {
@@ -129,9 +144,9 @@ class TelematicsIngestService
                 'longitude' => $data['longitude'] ?? null,
                 'rpm' => $data['rpm'] ?? 0,
                 'speed_kmh' => $data['speed_kmh'] ?? 0,
-                'oil_temp_c' => $data['oil_temp_c'] ?? 90.0,
-                'battery_voltage' => $data['battery_voltage'] ?? 12.6,
-                'fuel_level_pct' => $data['fuel_level_pct'] ?? 100.0,
+                'oil_temp_c' => (float) $data['oil_temp_c'],
+                'battery_voltage' => (float) $data['battery_voltage'],
+                'fuel_level_pct' => (float) $data['fuel_level_pct'],
                 'dtc_code' => $data['dtc_code'] ?? null,
                 'idempotency_key' => $idempotencyKey,
             ]);

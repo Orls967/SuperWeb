@@ -66,6 +66,8 @@ class HcmTest extends TestCase
             'position' => 'Line Operator',
             'basic_salary_idr' => 6000000,
             'allowances_idr' => 1000000,
+            'bank_name' => 'Bank Mandiri',
+            'bank_account_number' => '1230009876544',
         ]);
 
         $payroll = $this->service->generatePayroll($employee, '2026-10');
@@ -85,6 +87,8 @@ class HcmTest extends TestCase
             'name' => 'Dewi Finance',
             'basic_salary_idr' => 8000000,
             'allowances_idr' => 2000000,
+            'bank_name' => 'Bank Mandiri',
+            'bank_account_number' => '1230009876545',
         ]);
 
         $this->service->generatePayroll($employee, '2026-10');
