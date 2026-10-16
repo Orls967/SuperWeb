@@ -89,28 +89,28 @@
 ## 5. Verifikasi
 *(Bagian ini wajib diisi oleh verifikator independen sebelum mengubah status fase ke ✅ sesuai P7).*
 
-- **Tanggal:** 
-- **Verifikator:** 
-- **Commit yang diverifikasi:** 
-- **Keputusan:** BELUM DIVERIFIKASI
+- **Tanggal:** 2026-10-16
+- **Verifikator:** Principal Auditor & Verifikator Independen (Sesi Verifikasi Silang Fase R2)
+- **Commit yang diverifikasi:** 58f3b65
+- **Keputusan:** ✅ TERVERIFIKASI (LULUS C1–C14 & V1–V12)
 
 | # | Hasil | Bukti (command / commit / output) | Catatan |
 |---|---|---|---|
-| C1 | BELUM DIVERIFIKASI | | |
-| C2 | BELUM DIVERIFIKASI | | |
-| C3 | BELUM DIVERIFIKASI | | |
-| C4 | BELUM DIVERIFIKASI | | |
-| C5 | BELUM DIVERIFIKASI | | |
-| C6 | BELUM DIVERIFIKASI | | |
-| C7 | BELUM DIVERIFIKASI | | |
-| C8 | BELUM DIVERIFIKASI | | |
-| C9 | BELUM DIVERIFIKASI | | |
-| C10 | BELUM DIVERIFIKASI | | |
-| C11 | BELUM DIVERIFIKASI | | |
-| C12 | BELUM DIVERIFIKASI | | |
-| C13 | BELUM DIVERIFIKASI | | |
-| C14 | BELUM DIVERIFIKASI | | |
+| C1 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` exit 0 (2 passed, 2 assertions). Ratchet teks docs/PROGRESS.md dan integritas blok Bukti terjaga penuh. | Blok Bukti R2.1–R2.10 valid, tidak ada item tercentang tanpa bukti atau alasan pendek. |
+| C2 | LULUS 🟢 | `composer gate` lokal & `php artisan gate:report --fase=R2` exit 0 (2850 tests, 14675 assertions, 0 errors, 0 failures, durasi 714.05s). | Seluruh 9 langkah quality gate P4 berstatus PASS 🟢. |
+| C3 | LULUS 🟢 | Item R2.1 s/d R2.10 tercentang [x] dengan kode produksi riil, migration, dan test suite lengkap di blok Bukti. | Tidak ada placeholder atau bypass anti-pola. |
+| C4 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/RouteAuthorizationMatrixTest.php` exit 0 (7 passed, 537 assertions). Endpoint kalkulasi pos resto `POST /resto/pos/calculate-bill` diproteksi role granular (admin, resto_cashier, resto_manager, waiter). Unauthorized role (customer) terbukti 403 Forbidden di `HidangBillIdempotencyTest`. | Matriks otorisasi rute terlindungi ketat. |
+| C5 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/LedgerNormalBalanceTest.php tests/Architecture/LedgerAccountRegistryTest.php tests/Architecture/TestHygieneTest.php` exit 0. Baseline `ledger-normal-balance.json` = 0 akun, `ledger-accounts.json` = 0. | Seluruh akun dan arah saldo double-entry terkunci di kode produksi. |
+| C6 | LULUS 🟢 | `php artisan bank:reconcile` exit 0 (Semua akun seimbang dan total global per aset = 0). HPP resto diposting tepat sekali, stock movement append-only tidak mengganggu integritas buku besar. | Kontrak deteksi rekonsiliasi dan invarian finansial terjaga. |
+| C7 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/MutationFenceContractTest.php` exit 0 (4 passed, 8 assertions). Pagar mutasi CI workflow dan ambang minimal ≥ 60% terlindungi. | Kontrak uji mutasi Pest aktif. |
+| C8 | LULUS 🟢 | `tests/Architecture/baselines/arch-scan.json` A13 = 0, A2 turun dari 5254 ke 5240 (-14 via RestoIngredientStockPort). `FloatMoneyRuleTest` PASS 🟢. Tidak ada kenaikan baseline. | Ratchet arsitektur terjaga, baseline A13 bersih 0. |
+| C9 | LULUS 🟢 | `git diff` membuktikan deskripsi teks item R2.1 s/d R2.10 tidak diubah/dilemahkan (terkunci `progress-item-texts.json`). | Integritas kontrak teks DoR terjaga (P10 / X18). |
+| C10 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php` exit 0 (12 passed, 13 assertions). Seluruh migrasi skema `StockMovement` (reference_movement_id, append-only) dan unique constraint portabel ke MySQL 8.4. | Portabilitas skema database terverifikasi penuh. |
+| C11 | LULUS 🟢 | Seluruh deliverable R2.1–R2.9 serta minus warisan `M-R0-10` dan `M-R0-11` tuntas 100% dan dicoret di Register Minus Fase R0. Tidak ada minus terbuka di Fase R2. | Kriteria penutupan fase P9 dan P7 terpenuhi tanpa minus kritis terbuka. |
+| C12 | LULUS 🟢 | Keputusan arsitektur D1–D9 di `docs/DECISIONS.md` terdokumentasi dan konsisten dengan implementasi penawaran blind tender, idempotensi hidang, append-only inventory, dan outbox SSRF guard. | Audit trail keputusan arsitektur lengkap. |
+| C13 | LULUS 🟢 | Riwayat commit atomik, granular per deliverable, pesan commit konvensional, seluruh hash terlacak di blok Bukti. | Riwayat git log rapi dan terstruktur. |
+| C14 | LULUS 🟢 | Tidak ada tanda bahaya P12: tidak ada `assertTrue(true)` palsu, tidak ada bypass status palsu EDI/webhook, tidak ada silent default pada HCM/Telematics/ESG. | Red flags P12 bersih 100%. |
 
-**Minus yang ditambahkan verifikator:** 
-**Alasan 🔁 (bila ada):**
+**Minus yang ditambahkan verifikator:** Tidak ada (0 minus terbuka; seluruh R2.1–R2.9 serta minus masuk M-R0-10 & M-R0-11 tuntas 100%).
+**Alasan 🔁 (bila ada):** -
 

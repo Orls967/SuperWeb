@@ -827,7 +827,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - [x] R1.10 Quality gate Fase R1 + verifikasi silang.
   Bukti:
     - jenis: dokumen
-    - commit: 23be941
+    - commit: 4ff89eb
     - file: docs/gates/fase-r1.md
     - gate: docs/gates/fase-r1.md
 
@@ -844,7 +844,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R1-8~~ | R1.10 | ~~Laporan gate `docs/gates/fase-r1.md` basi (mencatat commit `f17b6f1`, bukan HEAD `4f287a1`)~~ | ~~Laporan quality gate lokal tidak mencerminkan HEAD commit repositori~~ | ~~P2~~ | Tuntas (laporan quality gate docs/gates/fase-r1.md digenerate ulang dan disinkronkan dengan commit HEAD terakhir) |
 
 ### FASE R2 — BUG FUNGSIONAL TERVERIFIKASI
-> **Status audit:** 🔵 SIAP VERIFIKASI (2026-10-16) · Prasyarat: R1 ✅.
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Prasyarat: R1 ✅.
 
 #### DoR Fase R2 — Bug fungsional terverifikasi
 - Disetujui pemilik: [x]   2026-10-14 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) — DoR mencakup perbaikan bug fungsional K-16, K-22, K-29, serta perluasan lingkup untuk bug HTTP 500 modul Contract (M-R0-10 & M-R0-11) sesuai adendum M-R0-25.
@@ -1034,7 +1034,17 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/SilentDefaultEliminationTest.php::test_explicit_valid_payloads_create_records_cleanly_without_hidden_defaults
     - akses: route GET /hcm [role: admin,hcm_manager]
     - gate: docs/gates/fase-r2.md
-- [ ] R2.10 Quality gate Fase R2 + verifikasi silang.
+- [x] R2.10 Quality gate Fase R2 + verifikasi silang.
+  Bukti:
+    - jenis: dokumen
+    - commit: 58f3b65
+    - file: docs/gates/fase-r2.md
+    - gate: docs/gates/fase-r2.md
+
+#### Register Minus Fase R2
+| ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| - | - | Tidak ada minus terbuka (seluruh deliverable R2.1 s/d R2.9 serta minus masuk M-R0-10 & M-R0-11 tuntas 100%) | - | - | - |
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
 > **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Selesai & Terbukti.

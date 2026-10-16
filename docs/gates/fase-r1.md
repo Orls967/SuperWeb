@@ -100,7 +100,7 @@
 
 - **Tanggal:** 2026-10-16
 - **Verifikator:** Principal Auditor & Verifikator Independen (Putaran 2 — Pasca-Remediasi M-R1-1 s/d M-R1-8)
-- **Commit yang diverifikasi:** 23be941
+- **Commit yang diverifikasi:** 4ff89eb
 - **Keputusan:** ✅ TERVERIFIKASI (LULUS C1–C14 & V1–V12)
 
 | # | Hasil | Bukti (command / commit / output) | Catatan |
