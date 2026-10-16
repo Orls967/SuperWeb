@@ -532,7 +532,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R0-26~~ | R0.2 | ~~Laporan gate docs/gates/fase-r0.md di repository belum disinkronkan dengan artefak CI commit 8724437 (masih mencatat commit 48b5529 dan 2.588 test)~~ | ~~Laporan quality gate lokal tidak mencerminkan commit kode terakhir~~ | ~~P2~~ | Tuntas (laporan disinkronkan dari artefak CI PR #12 run #38698698291 pada commit d58263a, 2.595 test / 11.492 asersi lulus) |
 
 ### FASE R1 — LEDGER & UANG (P0)
-> **Status audit:** 🟡 DALAM PENGERJAAN (Bagian A: R1.1–R1.3 🔵 Selesai di branch `feature/fase-r1a-ledger`, R1.4–R1.10 belum dimulai) · Prasyarat: R0 ✅.
+> **Status audit:** 🔵 MENUNGGU VERIFIKASI (2026-10-16) · Prasyarat: R0 ✅.
 
 #### DoR Fase R1 — Ledger & uang
 - Disetujui pemilik: [x] 2026-10-16 (chat) — D1–D8 sesuai prompt 9
@@ -694,11 +694,53 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::charge dan capture menolak split revenue bernilai nol
     - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::charge dan capture menolak split revenue bernilai negatif
     - test: modules/Payment/tests/Feature/PaymentGatewayTest.php::charge dan capture berhasil bila total split pas sama dengan nominal
-- [ ] R1.8 **Hapus float dari uang** (K-14): `Money`/`PostingEntryDTO` tidak menerima `float`; kolom `decimal` bernilai IDR → `bigInteger`; HCM & PB1 Resto memakai aritmetika integer; parameter `float` uang di modul lain diganti `int`.
+- [x] R1.8 **Hapus float dari uang** (K-14): `Money`/`PostingEntryDTO` tidak menerima `float`; kolom `decimal` bernilai IDR → `bigInteger`; HCM & PB1 Resto memakai aritmetika integer; parameter `float` uang di modul lain diganti `int`.
   - Kriteria terima: baseline `arch:scan` A3 = 0.
-- [ ] R1.9 **Presisi & rekonsiliasi portabel** (K-14, K-18): tentukan penyimpanan aset non-IDR (integer minor unit per aset **atau** DB produksi MySQL/PostgreSQL dengan `DECIMAL(36,18)` eksak) dan catat di DECISIONS; `bank:reconcile` tanpa `group_concat` (SUM native di MySQL/PostgreSQL, `chunkById` + BigDecimal di SQLite) dan mendukung checkpoint inkremental.
+  Bukti:
+    - jenis: tooling
+    - commit: 905f81a
+    - commit: 5d1638c
+    - commit: 6089b2b
+    - commit: 41d6f98
+    - file: modules/AutoServe/Domain/Models/Booking.php
+    - file: modules/Shared/Domain/ValueObjects/Money.php
+    - file: modules/Banking/Application/DTOs/PostingEntryDTO.php
+    - file: modules/Resto/Domain/Models/UnitConversion.php
+    - file: modules/Crypto/database/migrations/2026_10_16_000001_alter_crypto_idr_columns_to_bigint.php
+    - file: modules/Distribution/database/migrations/2026_10_16_000001_alter_dist_unit_price_idr_to_bigint.php
+    - file: modules/Esg/database/migrations/2026_10_16_000001_alter_esg_cost_per_ton_idr_to_bigint.php
+    - file: modules/Pricing/database/migrations/2026_10_16_000001_alter_prc_discount_leakage_idr_to_bigint.php
+    - file: modules/Wms/database/migrations/2026_10_16_000001_alter_wms_annual_value_idr_to_bigint.php
+    - file: tests/Unit/Quality/Ledger/MoneyIntegerOnlyTest.php
+    - file: tests/Unit/Quality/Ledger/IntegerArithmeticTest.php
+    - file: tests/Architecture/baselines/arch-scan.json
+    - test: tests/Unit/Quality/Ledger/MoneyIntegerOnlyTest.php::Money rejects float values
+    - test: tests/Unit/Quality/Ledger/IntegerArithmeticTest.php::calculates Resto PB1 with exact integer half-up arithmetic
+    - test: tests/Unit/Quality/Ledger/IntegerArithmeticTest.php::calculates HCM payroll deductions and labor allocation using integer arithmetic
+    - test: tests/Architecture/ArchScanBaselineTest.php::it keeps module code within the arch:scan ratchet baseline
+    - keputusan: docs/DECISIONS.md#2026-10-16-r1-d3-alter-decimal-idr-to-bigint
+    - keputusan: docs/DECISIONS.md#2026-10-16-r1-d5-integer-arithmetic-half-up
+    - gate: docs/gates/fase-r1.md
+- [x] R1.9 **Presisi & rekonsiliasi portabel** (K-14, K-18): tentukan penyimpanan aset non-IDR (integer minor unit per aset **atau** DB produksi MySQL/PostgreSQL dengan `DECIMAL(36,18)` eksak) dan catat di DECISIONS; `bank:reconcile` tanpa `group_concat` (SUM native di MySQL/PostgreSQL, `chunkById` + BigDecimal di SQLite) dan mendukung checkpoint inkremental.
   - Test wajib: nilai 18 desimal bertahan utuh pulang-pergi DB (grup `db-portability`); reconcile mendeteksi selisih 1 unit terkecil.
+  Bukti:
+    - jenis: tooling
+    - commit: 62b4b74
+    - commit: 41d6f98
+    - file: modules/Banking/Console/Commands/ReconcileBankLedgerCommand.php
+    - file: modules/Banking/database/migrations/2026_10_16_000001_create_bank_reconcile_checkpoints_table.php
+    - file: tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php
+    - test: tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php::reconcile handles 10 pow 15 minor units without precision loss
+    - test: tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php::reconcile detects corrupted entry and reports account name
+    - test: tests/Feature/Banking/ReconcilePortableAndCorruptionTest.php::incremental reconciliation saves and resumes from checkpoints
+    - keputusan: docs/DECISIONS.md#2026-10-16-r1-d1-non-idr-minor-units
+    - gate: docs/gates/fase-r1.md
 - [ ] R1.10 Quality gate Fase R1 + verifikasi silang.
+
+#### Register Minus Fase R1
+| ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| M-R1-1 | R1.8 | Sisa 319 temuan A3 di modul warisan `modules/Integration` dibekukan via `integration-freeze.json` (A3 turun dari 352 ke 335 di modul bisnis) | Penggunaan float di modul warisan Integration belum sepenuhnya dieliminasi | P2 | R4.4 (K2) |
 
 ### FASE R2 — BUG FUNGSIONAL TERVERIFIKASI
 > **Status audit:** ⬜ BELUM · Prasyarat: R1.

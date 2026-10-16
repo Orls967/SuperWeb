@@ -1367,6 +1367,21 @@
 - **Verification:**
   - DoR Fase R1 tercentang `[x]`, dokumen `docs/PROGRESS.md` dan `docs/DECISIONS.md` disinkronkan, dipantau oleh `ProgressIntegrityTest`.
 
+<a id="2026-10-16-r1-d3-alter-decimal-idr-to-bigint"></a>
+## 2026-10-16: Migrasi Alter Kolom Decimal IDR ke BigInteger (R1.8)
+- **Context:** Kolom moneter rupiah di skema database warisan modul Crypto, Distribution, Esg, Pricing, dan Wms sebelumnya menggunakan tipe `decimal`. Nilai moneter IDR wajib berupa integer minor unit (`bigInteger`).
+- **Decision:**
+  - Menambahkan migrasi alter kolom baru tanpa menghapus data untuk modul-modul berikut:
+    - Crypto: `admin_fee_idr`, `total_idr` pada tabel transaksi crypto.
+    - Distribution: `unit_price_idr` pada order line distributor.
+    - Esg: `cost_per_ton_idr` pada perhitungan offset emisi.
+    - Pricing: `discount_leakage_idr` pada promosi dan voucher.
+    - Wms: `annual_value_idr` pada valuasi inventory tahunan.
+  - Model cast diperbarui menjadi `'integer'`.
+- **Reason:** Memastikan seluruh nilai moneter IDR tersimpan sebagai 64-bit integer (`bigInteger`) eksak tanpa kehilangan presisi desimal.
+- **Verification:** Migrasi berhasil dieksekusi di SQLite dan MySQL, baseline `arch:scan` A3 turun dari 352 ke 335.
+
+<a id="2026-10-16-r1-d5-integer-arithmetic-half-up"></a>
 ## 2026-10-16: Aritmetika Integer Moneter pada PB1 Resto & HCM Payroll (R1.8)
 - **Context:** Nilai moneter dalam sistem wajib menggunakan tipe integer murni rupiah tanpa floating-point drift. Perhitungan PB1 10% di modul Resto serta potongan BPJS/PPh21 dan alokasi tenaga kerja di modul HCM sebelumnya menggunakan perkalian float `round($amount * rate)`.
 - **Decision:**
@@ -1380,6 +1395,7 @@
 - **Reason:** Mencegah floating-point drift dan menjamin keakuratan rekonsiliasi akuntansi double-entry bernilai 0 discrepancy di setiap transaksi.
 - **Verification:** Unit test konkret di `tests/Unit/Quality/Ledger/IntegerArithmeticTest.php` dan suite test modul Resto serta HCM.
 
+<a id="2026-10-16-r1-d1-non-idr-minor-units"></a>
 ## 2026-10-16: Tabel Minor Unit Aset Non-IDR & Rekonsiliasi Ledger Portabel (R1.9)
 - **Context:** Ledger mendukung aset multi-currency termasuk fiat IDR, crypto, dan komoditas/kredit karbon. Penjumlahan decimal(36,18) di database harus bebas drift di SQLite maupun MySQL, dan rekonsiliasi berkala memerlukan mekanisme inkremental agar efisien pada volume transaksi tinggi.
 - **Decision:**
