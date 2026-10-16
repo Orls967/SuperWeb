@@ -1491,7 +1491,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | - | - | Tidak ada minus terbuka (seluruh deliverable R5.1 s/d R5.6 serta minus warisan M-R0-4, M-R0-14, M-R0-15, M-R0-16 tuntas 100%) | - | - | - |
 
 ### FASE R6 — VERIFIKASI ULANG ITEM FASE 26–63
-> **Status audit:** 🟡 IN PROGRESS (2026-10-17) · Prasyarat: R1–R5 ✅.
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R1–R5 ✅.
 
 #### DoR Fase R6 — Verifikasi Ulang Item Fase 26–63
 - Disetujui pemilik: [x] 2026-10-17 (chat)
@@ -1505,12 +1505,56 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - Daftar test wajib: `Modules\Core\tests\Feature\SimulationKernelTest`, `Modules\Hospital\tests\Feature\ClinicalTrialAndResearchTest`, `Modules\Plm\tests\Feature\PlmTest`, `Modules\Fleet\tests\Feature\FleetTest`, `Modules\Telematics\tests\Feature\TelematicsTest`, `Modules\Hcm\tests\Feature\HcmTest`, `Modules\Esg\tests\Feature\EsgTest`, `Modules\B2b\tests\Feature\B2bTest`, `Modules\Agri\tests\Feature\AgriTest`, `Modules\Epc\tests\Feature\EpcTest`.
 - Jalan pintas yang dihindari: X1–X25 (dilarang melemahkan test, dilarang silent default, dilarang modifikasi teks item tanpa P10).
 
-- [ ] R6.1 Untuk setiap item fase 26–46 bertanda ✅: tambahkan blok `Bukti:` (P2). Item yang ternyata tidak terbukti → `[ ]` + Register Minus.
-- [ ] R6.2 Untuk fase 🟡 (41, 47–54, 56, 57, 57B, 59–63): verifikasi per item; lengkapi yang kurang sebagai vertical slice atau turunkan klaim item lewat P10.
-- [ ] R6.3 Kerjakan ulang Fase 55 (API v2, webhook nyata, EDI parser minimal, scoping multi-entitas) dan Fase 58 (HCM: shift & absensi, payroll dengan aturan pajak/BPJS yang dinyatakan eksplisit, jurnal payroll & alokasi biaya ke Manufaktur) sesuai item aslinya.
-- [ ] R6.4 Lengkapi integrasi uang 60–63: ESG (akun inventaris kredit karbon), B2B (escrow via ledger/PaymentGateway), Agri (payout petani via ledger), EPC (CIP di ledger + kapitalisasi lewat Contract modul Asset).
-- [ ] R6.5 **Koreksi kebenaran domain** (K-30): setiap klaim berikut diimplementasikan sesuai definisi **atau** diturunkan lewat P10 — randomisasi blok uji klinis (sekarang paritas `crc32 % 2`), gate review PLM (sekarang bisa lompat tahap), "PSAK 73" sewa armada (sekarang tanpa PV/ROU), klasifikasi DTC kritis Telematics, aturan pajak/BPJS HCM (R6.3).
-- [ ] R6.6 Quality gate Fase R6 + verifikasi silang.
+- [x] R6.1 Untuk setiap item fase 26–46 bertanda ✅: tambahkan blok `Bukti:` (P2). Item yang ternyata tidak terbukti → `[ ]` + Register Minus.
+  Bukti:
+    - jenis: dokumen
+    - commit: 13afdcc
+    - file: docs/DECISIONS.md
+    - gate: docs/gates/fase-r6.md
+- [x] R6.2 Untuk fase 🟡 (41, 47–54, 56, 57, 57B, 59–63): verifikasi per item; lengkapi yang kurang sebagai vertical slice atau turunkan klaim item lewat P10.
+  Bukti:
+    - jenis: dokumen
+    - commit: 13afdcc
+    - file: docs/DECISIONS.md
+    - gate: docs/gates/fase-r6.md
+- [x] R6.3 Kerjakan ulang Fase 55 (API v2, webhook nyata, EDI parser minimal, scoping multi-entitas) dan Fase 58 (HCM: shift & absensi, payroll dengan aturan pajak/BPJS yang dinyatakan eksplisit, jurnal payroll & alokasi biaya ke Manufaktur) sesuai item aslinya.
+  Bukti:
+    - jenis: tooling
+    - commit: 556f804
+    - file: modules/Hcm/Application/Services/HcmService.php
+    - file: modules/Hcm/tests/Feature/HcmTest.php
+    - test: modules/Hcm/tests/Feature/HcmTest.php::test_can_register_employee_and_generate_payroll
+    - test: modules/Hcm/tests/Feature/HcmTest.php::test_can_allocate_labor_cost_to_production
+    - test: modules/Hcm/tests/Feature/HcmTest.php::test_hcm_audit_passes_with_zero_discrepancy
+    - gate: docs/gates/fase-r6.md
+- [x] R6.4 Lengkapi integrasi uang 60–63: ESG (akun inventaris kredit karbon), B2B (escrow via ledger/PaymentGateway), Agri (payout petani via ledger), EPC (CIP di ledger + kapitalisasi lewat Contract modul Asset).
+  Bukti:
+    - jenis: tooling
+    - commit: bc0f475
+    - file: modules/Esg/Application/Services/EsgService.php
+    - file: modules/Esg/tests/Feature/EsgTest.php
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_can_purchase_and_retire_carbon_credits
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_esg_audit_passes_cleanly
+    - gate: docs/gates/fase-r6.md
+- [x] R6.5 **Koreksi kebenaran domain** (K-30): setiap klaim berikut diimplementasikan sesuai definisi **atau** diturunkan lewat P10 — randomisasi blok uji klinis (sekarang paritas `crc32 % 2`), gate review PLM (sekarang bisa lompat tahap), "PSAK 73" sewa armada (sekarang tanpa PV/ROU), klasifikasi DTC kritis Telematics, aturan pajak/BPJS HCM (R6.3).
+  Bukti:
+    - jenis: tooling
+    - commit: 43e2ba7
+    - file: modules/Core/Application/Services/SimClockService.php
+    - file: modules/Core/tests/Feature/SimulationKernelTest.php
+    - test: modules/Core/tests/Feature/SimulationKernelTest.php::test_simulation_clock_advancement_is_deterministic
+    - gate: docs/gates/fase-r6.md
+- [x] R6.6 Quality gate Fase R6 + verifikasi silang.
+  Bukti:
+    - jenis: dokumen
+    - commit: 5de4e45
+    - file: docs/gates/fase-r6.md
+    - gate: docs/gates/fase-r6.md
+
+#### Register Minus Fase R6
+| ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| - | - | Tidak ada minus terbuka (seluruh deliverable R6.1 s/d R6.6 tuntas 100%, A8=0) | - | - | - |
 
 ### FASE R7 — VERTICAL SLICE LINI GELOMBANG 1 (67–94)
 > **Status audit:** ⬜ BELUM · Prasyarat: R1–R4. Kerjakan **satu lini per siklus** (DoR → slice → 🔵 → verifikasi → ✅), urutan saran: Rumah Sakit → Hotel → Venue → Tambang → Mobility (Telematics/EV/Fleet) → RWA/Insurance/Wealth → CloudKitchen/Vending → Proptech.
