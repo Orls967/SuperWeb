@@ -13,7 +13,7 @@ use Modules\Core\Domain\Models\AuditLog;
 class SystemHealthService
 {
     /**
-     * Jalankan diagnosa kesehatan sistem menyeluruh di 9 pilar utama platform.
+     * Jalankan diagnosa kesehatan sistem menyeluruh di 12 pilar utama platform.
      *
      * @return array{
      *     status: string,
@@ -252,6 +252,52 @@ class SystemHealthService
                 'ok' => false,
                 'status' => 'UNHEALTHY',
                 'message' => 'Gagal memeriksa procurement: '.$e->getMessage(),
+            ];
+        }
+
+        // 11. Contract Subledger & Hash Chain (ctr:audit + contracts:verify-chain)
+        try {
+            $auditExit = Artisan::call('ctr:audit');
+            $chainExit = Artisan::call('contracts:verify-chain');
+            $isOk = ($auditExit === 0 && $chainExit === 0);
+
+            $checks['contracts'] = [
+                'name' => 'Kontrak: Subledger Plafon & Rantai Versi',
+                'ok' => $isOk,
+                'status' => $isOk ? 'HEALTHY' : 'UNHEALTHY',
+                'message' => $isOk
+                    ? 'Subledger pemakaian plafon seimbang dan rantai versi kriptografis kontrak utuh (0 selisih)'
+                    : 'Ditemukan selisih plafon kontrak atau integritas versi terganggu',
+            ];
+        } catch (\Throwable $e) {
+            $checks['contracts'] = [
+                'name' => 'Kontrak: Subledger Plafon & Rantai Versi',
+                'ok' => false,
+                'status' => 'UNHEALTHY',
+                'message' => 'Gagal memeriksa kontrak: '.$e->getMessage(),
+            ];
+        }
+
+        // 12. Manufacturing Costing & Quality (mfg:audit-costing + mfg:qms-audit)
+        try {
+            $costingExit = Artisan::call('mfg:audit-costing');
+            $qmsExit = Artisan::call('mfg:qms-audit');
+            $isOk = ($costingExit === 0 && $qmsExit === 0);
+
+            $checks['manufacturing'] = [
+                'name' => 'Manufaktur: Biaya Produksi (WIP) & Mutu QMS',
+                'ok' => $isOk,
+                'status' => $isOk ? 'HEALTHY' : 'UNHEALTHY',
+                'message' => $isOk
+                    ? 'WIP/order closed seimbang dengan ledger dan kalibrasi/CAPA/recall mutu sehat (0 selisih)'
+                    : 'Ditemukan selisih costing manufaktur atau temuan mutu QMS',
+            ];
+        } catch (\Throwable $e) {
+            $checks['manufacturing'] = [
+                'name' => 'Manufaktur: Biaya Produksi (WIP) & Mutu QMS',
+                'ok' => false,
+                'status' => 'UNHEALTHY',
+                'message' => 'Gagal memeriksa manufaktur: '.$e->getMessage(),
             ];
         }
 
