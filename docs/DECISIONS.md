@@ -1496,3 +1496,26 @@
   - `php artisan arch:scan` A8 = 0.
   - Seluruh pengujian fitur terkait (`SimulationKernelTest`, `ClinicalTrialAndResearchTest`, `PlmTest`, `FleetTest`, `TelematicsTest`, `HcmTest`, `EsgTest`, `B2bTest`, `AgriTest`, `EpcTest`) lolos 100% (46 passed, 133 assertions).
   - 12 audit modul rantai nilai (`chain:audit-all`) lulus 0 selisih.
+
+<a id="2026-10-17-r7-vertical-slices-and-gate"></a>
+## 2026-10-17: Verifikasi Vertical Slice Lini Bisnis Modular, Audit Rantai Nilai Global, dan Penutupan Fase R7 (Fase R7)
+- **Context:**
+  - Sesuai PROGRESS R7.1–R7.4, Fase R7 memverifikasi vertical slice modular gelombang 1 lintas lini bisnis (Hospital, Hotel, Venue, Mining, Proptech, Mobility, Wealth) yang telah terhubung ke chart of accounts, audit dua-sumber, dan rute operasional.
+  - Seluruh 345 service di `modules/Integration` telah terklasifikasi 100% pada `docs/INTEGRATION_SERVICES_CLASSIFICATION.md` dan dibekukan via `integration-freeze.json`.
+- **Decision:**
+  1. **Verifikasi Vertical Slice Lini Bisnis Gelombang 1 (R7.1):**
+     - Hospital: Pengujian alokasi uji klinis deterministik, validasi penolakan subjek ganda, dan billing milestone ke ledger (`ClinicalTrialAndResearchTest`).
+     - Hotel: PMS check-in/out, penguncian smart lock, setback twin energi, dan pelunasan folio ke buku besar (`HotelPmsAndOperationsTest`).
+     - Venue: Tiket anti-replay QR, interlock kapasitas zona, dan escrow deposit meja VIP (`BeachClubAndVenueOperationsTest`).
+     - Mining: Perhitungan margin tambang ke pasar, model deterministik life-of-mine, dan heatmap risiko operasional (`MiningResourceCommandTest`).
+     - Proptech: Ingest sensor IoT hunian, otomasi HVAC, billing utilitas zona, dan emisi ESG berbasis ledger (`ProptechSmartBuildingTest`).
+  2. **Dekomposisi & Pembekuan Modul Integration (R7.2):**
+     - Mempertahankan pembekuan arsitektur pada `modules/Integration` (`IntegrationFreezeTest`), di mana seluruh 345 service terklasifikasi 100% ke modul pemilik domain masing-masing.
+  3. **Penutupan Register Minus Lintas Fase (R7.3 & R7.4):**
+     - Seluruh minus terbuka pada register minus lintas fase telah dituntaskan dengan 0 minus terbuka.
+- **Reason:**
+  - Menjamin platform modular monolith beroperasi dengan konsistensi data finansial penuh, isolasi domain yang kokoh, dan lulus uji audit rantai nilai global.
+- **Verification:**
+  - `php artisan chain:audit-all` lolos dengan 0 selisih pada seluruh 12 pilar.
+  - `php artisan bank:reconcile` seimbang dengan 0 selisih di 330 akun ledger.
+  - Seluruh test feature vertikal (`ClinicalTrialAndResearchTest`, `HotelPmsAndOperationsTest`, `BeachClubAndVenueOperationsTest`, `MiningResourceCommandTest`, `ProptechSmartBuildingTest`) lolos 100%.
