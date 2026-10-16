@@ -847,7 +847,22 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - minus: M-R0-11
     - akses: route GET /contracts/clauses/create [role: admin,contract_manager,legal]
     - akses: route GET /contracts/reports [role: admin,contract_manager,legal]
-- [ ] R2.4 **Inventory benar-benar append-only** (K-24): `commit()`/`release()` membuat movement baru yang menautkan reservasi (tanpa mengubah baris lama); unique index `(outlet_id, ingredient_id)` + upsert atomik; akses tabel `resto_*` dipindah ke Contract milik Resto.
+- [x] R2.4 **Inventory benar-benar append-only** (K-24): `commit()`/`release()` membuat movement baru yang menautkan reservasi (tanpa mengubah baris lama); unique index `(outlet_id, ingredient_id)` + upsert atomik; akses tabel `resto_*` dipindah ke Contract milik Resto.
+  Bukti:
+    - jenis: fitur
+    - commit: 35a6542
+    - file: modules/Inventory/Application/Services/InventoryService.php
+    - file: modules/Inventory/Domain/Models/StockMovement.php
+    - file: modules/Inventory/database/migrations/2026_10_16_000001_add_reference_movement_id_to_inv_stock_movements_table.php
+    - file: modules/Resto/Contracts/RestoIngredientStockPort.php
+    - file: modules/Resto/Application/Services/RestoIngredientStockService.php
+    - file: modules/Resto/database/migrations/2026_10_16_000002_add_unique_index_outlet_ingredient_to_resto_ingredient_stocks_table.php
+    - file: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php
+    - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::commit dan release membuat baris stock movement baru yang menautkan reservasi tanpa memutasi baris lama
+    - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::memanggil commit atau release dua kali pada reservasi yang sama bersifat idempoten
+    - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::model stock movement menolak update dan delete secara langsung
+    - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::deduct ingredient dan add ingredient bekerja secara atomik lewat kontrak resto dengan unique constraint outlet id dan ingredient id
+    - akses: route POST /resto/pos/session/{session}/bill [role: admin,cashier,outlet_manager]
 - [ ] R2.5 **Outbox yang benar** (K-08, K-23, K-31): status dispatch per subscriber (retry hanya yang gagal); klaim pesan atomik antar-worker; target non-webhook dieksekusi lewat handler terdaftar (bukan ditandai sukses); allowlist host + tolak IP privat/link-local; `IntegrationService::dispatchWebhook()` lewat outbox nyata (atau diganti status `simulated_*`).
   - Test wajib: subscriber A sukses + B gagal → retry hanya ke B; dua worker paralel → satu pengiriman; URL `http://169.254.169.254` ditolak.
 - [ ] R2.6 **Telematics** (K-26, K-30): baseline rolling 7 hari dari tick nyata; hanya DTC dari daftar kritis yang `critical`/`grounded`; event domain dipancarkan `afterCommit` dan dedup per jam sama seperti publish spine.
