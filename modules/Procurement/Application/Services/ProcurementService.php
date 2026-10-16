@@ -6,6 +6,7 @@ namespace Modules\Procurement\Application\Services;
 
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Core\Contracts\ApprovalEngineInterface;
@@ -24,6 +25,7 @@ use Modules\Procurement\Domain\Models\RfqInvitation;
 use Modules\Procurement\Domain\Models\Tender;
 use Modules\Procurement\Domain\Models\TenderBid;
 use Modules\Supplier\Domain\Models\Supplier;
+use RuntimeException;
 
 /**
  * Procurement (Fase 33): PR → RFQ/Tender → PO, dengan encumbrance
@@ -417,8 +419,10 @@ class ProcurementService
                 ->lockForUpdate()
                 ->first();
 
-            $sealedAt = now();
-            $hash = hash('sha256', json_encode($offer, JSON_UNESCAPED_SLASHES).'|'.$sealedAt->toIso8601String());
+            $sealedAt = now()->utc()->startOfSecond();
+            $hash = TenderBid::calculateSealHash($offer, $sealedAt);
+            $canonicalJson = TenderBid::canonicalJson($offer);
+            $ciphertext = Crypt::encryptString($canonicalJson);
 
             if ($existing !== null) {
                 // Segel hanya boleh diubah sebelum tender dibuka (addendum/replace).
@@ -426,7 +430,12 @@ class ProcurementService
                     throw new InvalidArgumentException('Segel sudah terkunci.');
                 }
 
-                $existing->update(['seal_hash' => $hash, 'sealed_at' => $sealedAt, 'offer' => $offer]);
+                $existing->update([
+                    'seal_hash' => $hash,
+                    'sealed_at' => $sealedAt,
+                    'offer_ciphertext' => $ciphertext,
+                    'offer' => null, // Wajib null sebelum dibuka!
+                ]);
 
                 return $existing;
             }
@@ -436,7 +445,8 @@ class ProcurementService
                 'supplier_id' => $supplier->id,
                 'seal_hash' => $hash,
                 'sealed_at' => $sealedAt,
-                'offer' => $offer,
+                'offer_ciphertext' => $ciphertext,
+                'offer' => null, // Wajib null sebelum dibuka!
             ]);
         });
     }
@@ -458,7 +468,25 @@ class ProcurementService
 
             $opened = 0;
             foreach (TenderBid::where('tender_id', $locked->id)->whereNull('opened_at')->get() as $bid) {
-                $bid->update(['opened_at' => now()]);
+                if (empty($bid->offer_ciphertext)) {
+                    throw new RuntimeException("Penawaran peserta #{$bid->supplier_id} tidak memiliki segel terenkripsi sah.");
+                }
+
+                try {
+                    $decryptedJson = Crypt::decryptString($bid->offer_ciphertext);
+                    $offer = json_decode($decryptedJson, true, 512, JSON_THROW_ON_ERROR);
+                } catch (\Throwable $e) {
+                    throw new RuntimeException("Segel penawaran peserta #{$bid->supplier_id} rusak atau telah dimanipulasi: ".$e->getMessage());
+                }
+
+                if (! $bid->isSealIntact($offer)) {
+                    throw new RuntimeException("Manipulasi terdeteksi: segel penawaran peserta #{$bid->supplier_id} tidak cocok dengan hash saat penyegelan.");
+                }
+
+                $bid->update([
+                    'offer' => $offer,
+                    'opened_at' => now(),
+                ]);
                 $opened++;
             }
 
