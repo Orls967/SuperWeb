@@ -887,7 +887,18 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_seven_day_rolling_baseline_calculated_from_actual_historical_ticks
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_anomaly_event_dispatched_after_commit_and_deduplicated_hourly
     - akses: route GET /logistics/fleet [role: admin,auditor,dispatcher,hub_operator,logistics_admin]
-- [ ] R2.7 **ESG faktor emisi**: `recordEmission()` menolak jenis aktivitas tak dikenal (sekarang diam-diam faktor 1.0); nomor dokumen lewat `DocumentNumberingInterface` (bukan `Str::random`).
+- [x] R2.7 **ESG faktor emisi**: `recordEmission()` menolak jenis aktivitas tak dikenal (sekarang diam-diam faktor 1.0); nomor dokumen lewat `DocumentNumberingInterface` (bukan `Str::random`).
+  Bukti:
+    - jenis: fitur
+    - commit: bc0f475
+    - file: modules/Esg/Application/Services/EsgService.php
+    - file: modules/Esg/tests/Feature/EsgTest.php
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_can_record_ghg_emissions
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_record_emission_rejects_unknown_activity_type_without_silent_default
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_document_numbering_uses_gapless_sequence_instead_of_random
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_can_purchase_and_retire_carbon_credits
+    - test: modules/Esg/tests/Feature/EsgTest.php::test_esg_web_index_accessible
+    - akses: route GET /esg [role: admin,esg_officer,auditor]
 - [ ] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
   - Test wajib: adapter gagal → status gagal tercatat (bukan sukses).
 - [ ] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
