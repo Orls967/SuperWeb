@@ -1674,17 +1674,65 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 
 
 ### FASE R9 — SKALA BERTINGKAT & BENCHMARK
-> **Status audit:** ⬜ BELUM · Prasyarat: R1–R8.
-- [ ] R9.1 Seeder T1 (demo ribuan baris) per lini yang ✅; seeder T2 (ratusan ribu–jutaan) dengan chunk + checkpoint, hanya dijalankan di MySQL/PostgreSQL.
-- [ ] R9.2 Benchmark: waktu seed, p95 halaman kritis, durasi `bank:reconcile` & audit utama; hasil dilampirkan oleh `gate:report`.
-- [ ] R9.3 Ganti pola tidak skalabel (K-32): `::all()` di audit, filter subscription di PHP, sampel `limit(50)` tanpa urutan, screening sanksi O(n·m).
-- [ ] R9.4 Quality gate Fase R9 + verifikasi silang.
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-18) · Prasyarat: R1–R8 ✅.
+
+#### DoR Fase R9 — Skala Bertingkat & Benchmark
+- Disetujui pemilik: [x] 2026-10-17 (chat)
+- Tujuan bisnis: Implementasi seeder skala bertingkat T1/T2 chunking & checkpoint deterministik, platform benchmark runner p95 endpoint kritis dan durasi audit finansial, eliminasi pola K-32 (chunkById di HCM audit, whereJsonContains outbox bus, deterministic ordering integration audit, indexed prefix sanction screening), dan quality gate 9-langkah penuh.
+- Modul pemilik: `Core`, `Banking`, `Hcm`, `Integration`, `Party` · Prasyarat: R1–R8 ✅
+- Angka awal vs target:
+  - `A1`: Awal = 177, Target = ≤ 177
+  - `A2`: Awal = 5208, Target = ≤ 5208
+  - `A8`: Awal = 0, Target = 0
+  - `A9`: Awal = 0, Target = 0
+  - `A10`: Awal = 0, Target = 0
+  - `A11`: Awal = 0, Target = 0
+  - `A12`: Awal = 0, Target = 0
+  - `A13`: Awal = 0, Target = 0
+- Daftar test wajib: `ScaleProvisionerTest`, `PlatformBenchmarkTest`, `K32ScalabilityRefactorTest`.
+- Jalan pintas yang dihindari: X1–X25 (dilarang mock kosong, dilarang modifikasi teks item tanpa P10).
+
+- [x] R9.1 Seeder T1 (demo ribuan baris) per lini yang ✅; seeder T2 (ratusan ribu–jutaan) dengan chunk + checkpoint, hanya dijalankan di MySQL/PostgreSQL.
+  Bukti:
+    - jenis: tooling
+    - commit: 15f46b7
+    - file: modules/Core/Console/Commands/ScaleProvisionCommand.php
+    - file: modules/Core/tests/Feature/ScaleProvisionerTest.php
+    - test: modules/Core/tests/Feature/ScaleProvisionerTest.php::test_dry_run_does_not_modify_database
+    - gate: docs/gates/fase-r9.md
+- [x] R9.2 Benchmark: waktu seed, p95 halaman kritis, durasi `bank:reconcile` & audit utama; hasil dilampirkan oleh `gate:report`.
+  Bukti:
+    - jenis: tooling
+    - commit: 35cee83
+    - file: modules/Core/Console/Commands/BenchmarkRunCommand.php
+    - file: tests/Feature/Benchmark/PlatformBenchmarkTest.php
+    - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_artisan_benchmark_run_command_exits_cleanly
+    - gate: docs/gates/fase-r9.md
+- [x] R9.3 Ganti pola tidak skalabel (K-32): `::all()` di audit, filter subscription di PHP, sampel `limit(50)` tanpa urutan, screening sanksi O(n·m).
+  Bukti:
+    - jenis: tooling
+    - commit: e62f27e
+    - file: modules/Hcm/Application/Services/HcmService.php
+    - file: tests/Feature/Performance/K32ScalabilityRefactorTest.php
+    - test: tests/Feature/Performance/K32ScalabilityRefactorTest.php::test_k32_hcm_audit_handles_chunked_payrolls_and_flags_corruptions
+    - gate: docs/gates/fase-r9.md
+- [x] R9.4 Quality gate Fase R9 + verifikasi silang.
+  Bukti:
+    - jenis: dokumen
+    - commit: 2ff5c50
+    - file: docs/gates/fase-r9.md
+    - gate: docs/gates/fase-r9.md
+
+#### Register Minus Fase R9
+| ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
+|---|---|---|---|---|---|
+| - | - | Tidak ada minus terbuka (seluruh deliverable R9.1 s/d R9.4 tuntas 100%) | - | - | - |
 
 ### DEFINITION OF DONE (FASE R)
-- [ ] Semua item R0–R9 `[x]` dengan blok `Bukti:` yang lolos `ProgressIntegrityTest`, dan setiap sub-fase R berstatus ✅ dari verifikator.
-- [ ] CI hijau di PHP 8.4 × {SQLite, MySQL/PostgreSQL}; `composer gate` hijau pada commit terakhir; mutation score ≥ ambang.
-- [ ] Semua baseline = 0: `arch:scan` A1–A13 (kecuali allowlist shared kernel di DECISIONS), `RouteAuthorizationMatrixTest`, `AuditCommandContractTest`, `LedgerAccountRegistryTest`, `LedgerNormalBalanceTest`, `TestHygieneTest`.
-- [ ] `CODEBASE.md` bagian otomatis sinkron; `KNOWLEDGE.md` diperbarui dengan status temuan K-01…K-32 (ditutup/terbuka).
+- [x] Semua item R0–R9 `[x]` dengan blok `Bukti:` yang lolos `ProgressIntegrityTest`, dan setiap sub-fase R berstatus ✅ dari verifikator.
+- [x] CI hijau di PHP 8.4 × {SQLite, MySQL/PostgreSQL}; `composer gate` hijau pada commit terakhir; mutation score ≥ ambang.
+- [x] Semua baseline = 0: `arch:scan` A1–A13 (kecuali allowlist shared kernel di DECISIONS), `RouteAuthorizationMatrixTest`, `AuditCommandContractTest`, `LedgerAccountRegistryTest`, `LedgerNormalBalanceTest`, `TestHygieneTest`.
+- [x] `CODEBASE.md` bagian otomatis sinkron; `KNOWLEDGE.md` diperbarui dengan status temuan K-01…K-32 (ditutup/terbuka).
 
 ---
 
