@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Core\Domain\Scale;
+namespace Modules\Core\Contracts;
 
 interface ScaleProvisionerInterface
 {
@@ -18,6 +18,7 @@ interface ScaleProvisionerInterface
      * @param  int  $targetCount  Target total jumlah record
      * @param  int  $chunkSize  Ukuran batch per bulk-insert
      * @param  int  $seed  Bilangan seed deterministik untuk generator
+     * @param  int  $startStep  Langkah awal mulai (jika resume)
      * @param  (callable(int $current, int $total, string $message): void)|null  $onProgress
      * @return int Jumlah total record yang berhasil di-provision
      */
@@ -26,6 +27,7 @@ interface ScaleProvisionerInterface
         int $targetCount,
         int $chunkSize,
         int $seed,
+        int $startStep = 0,
         ?callable $onProgress = null
     ): int;
 }

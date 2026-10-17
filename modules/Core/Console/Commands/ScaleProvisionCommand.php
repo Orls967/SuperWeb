@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Modules\Core\Console\Commands;
 
 use Illuminate\Console\Command;
-use Modules\Core\Application\Services\Scale\LedgerScaleProvisioner;
-use Modules\Core\Application\Services\Scale\OutboxScaleProvisioner;
-use Modules\Core\Application\Services\Scale\PassportScaleProvisioner;
-use Modules\Core\Domain\Scale\ScaleProvisionerInterface;
+use Illuminate\Support\Facades\DB;
+use Modules\Core\Contracts\ScaleProvisionerInterface;
 
 final class ScaleProvisionCommand extends Command
 {
@@ -23,15 +21,6 @@ final class ScaleProvisionCommand extends Command
 
     protected $description = 'Jalankan Fictional Scale Provisioner deterministik dengan chunking dan checkpoint (PROGRESS R9.1)';
 
-    /**
-     * @var array<string, class-string<ScaleProvisionerInterface>>
-     */
-    private array $registry = [
-        'ledger' => LedgerScaleProvisioner::class,
-        'passport' => PassportScaleProvisioner::class,
-        'outbox' => OutboxScaleProvisioner::class,
-    ];
-
     public function handle(): int
     {
         $targetModule = strtolower((string) $this->option('module'));
@@ -41,6 +30,13 @@ final class ScaleProvisionCommand extends Command
         $resume = (bool) $this->option('resume');
         $dryRun = (bool) $this->option('dry-run');
 
+        $registered = [];
+        foreach (app()->tagged('scale.provisioner') as $prov) {
+            if ($prov instanceof ScaleProvisionerInterface) {
+                $registered[$prov->moduleName()] = $prov;
+            }
+        }
+
         // Target count: default T1 = 1000, T2 = 50000
         $customCount = $this->option('count');
         $targetCount = $customCount !== null
@@ -49,11 +45,11 @@ final class ScaleProvisionCommand extends Command
 
         $selectedProvisioners = [];
         if ($targetModule === 'all') {
-            $selectedProvisioners = $this->registry;
-        } elseif (isset($this->registry[$targetModule])) {
-            $selectedProvisioners[$targetModule] = $this->registry[$targetModule];
+            $selectedProvisioners = $registered;
+        } elseif (isset($registered[$targetModule])) {
+            $selectedProvisioners[$targetModule] = $registered[$targetModule];
         } else {
-            $this->error("Modul '{$targetModule}' tidak dikenal. Pilihan: all, ".implode(', ', array_keys($this->registry)));
+            $this->error("Modul '{$targetModule}' tidak dikenal. Pilihan: all, ".implode(', ', array_keys($registered)));
 
             return self::FAILURE;
         }
@@ -78,20 +74,69 @@ final class ScaleProvisionCommand extends Command
         foreach ($selectedProvisioners as $key => $provisionerClass) {
             $this->line("\nMemproses provisioner: <info>{$key}</info>...");
             /** @var ScaleProvisionerInterface $provisioner */
-            $provisioner = app($provisionerClass);
+            $provisioner = $provisionerClass instanceof ScaleProvisionerInterface
+                ? $provisionerClass
+                : app($provisionerClass);
+
+            $checkpoint = DB::table('sim_scale_checkpoints')
+                ->where('provisioner_key', $key)
+                ->where('tier', $tier)
+                ->where('seed', $seed)
+                ->first();
+
+            $startStep = 0;
+            if ($checkpoint !== null && $resume) {
+                $startStep = (int) $checkpoint->last_processed_step;
+            } elseif ($checkpoint === null) {
+                DB::table('sim_scale_checkpoints')->insert([
+                    'provisioner_key' => $key,
+                    'tier' => $tier,
+                    'seed' => $seed,
+                    'last_processed_step' => 0,
+                    'total_inserted' => 0,
+                    'status' => 'in_progress',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
 
             $bar = $this->output->createProgressBar($targetCount);
             $bar->start();
+            if ($startStep > 0) {
+                $bar->setProgress($startStep);
+            }
 
             $inserted = $provisioner->provision(
                 tier: $tier,
                 targetCount: $targetCount,
                 chunkSize: $chunk,
                 seed: $seed,
-                onProgress: function (int $current, int $total, string $message) use ($bar) {
+                startStep: $startStep,
+                onProgress: function (int $current, int $total, string $message) use ($bar, $key, $tier, $seed) {
                     $bar->setProgress($current);
+                    DB::table('sim_scale_checkpoints')
+                        ->where('provisioner_key', $key)
+                        ->where('tier', $tier)
+                        ->where('seed', $seed)
+                        ->update([
+                            'last_processed_step' => $current,
+                            'total_inserted' => $current,
+                            'status' => ($current >= $total) ? 'completed' : 'in_progress',
+                            'updated_at' => now(),
+                        ]);
                 }
             );
+
+            DB::table('sim_scale_checkpoints')
+                ->where('provisioner_key', $key)
+                ->where('tier', $tier)
+                ->where('seed', $seed)
+                ->update([
+                    'last_processed_step' => $inserted,
+                    'total_inserted' => $inserted,
+                    'status' => 'completed',
+                    'updated_at' => now(),
+                ]);
 
             $bar->finish();
             $this->line("\nSelesai: <info>{$inserted}</info> record ter-provision.");

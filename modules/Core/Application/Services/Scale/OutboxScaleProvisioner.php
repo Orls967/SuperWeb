@@ -6,7 +6,7 @@ namespace Modules\Core\Application\Services\Scale;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Modules\Core\Domain\Scale\ScaleProvisionerInterface;
+use Modules\Core\Contracts\ScaleProvisionerInterface;
 
 final class OutboxScaleProvisioner implements ScaleProvisionerInterface
 {
@@ -20,6 +20,7 @@ final class OutboxScaleProvisioner implements ScaleProvisionerInterface
         int $targetCount,
         int $chunkSize,
         int $seed,
+        int $startStep = 0,
         ?callable $onProgress = null
     ): int {
         $checkpoint = DB::table('sim_scale_checkpoints')

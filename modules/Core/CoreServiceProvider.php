@@ -22,6 +22,8 @@ use Modules\Core\Application\Services\EventSpineService;
 use Modules\Core\Application\Services\NotificationService;
 use Modules\Core\Application\Services\OutboxBusService;
 use Modules\Core\Application\Services\RbacService;
+use Modules\Core\Application\Services\Scale\OutboxScaleProvisioner;
+use Modules\Core\Application\Services\Scale\PassportScaleProvisioner;
 use Modules\Core\Application\Services\SimClockService;
 use Modules\Core\Console\Commands\BenchmarkRunCommand;
 use Modules\Core\Console\Commands\ConsumeSpineCommand;
@@ -117,6 +119,11 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(SimClockService::class);
         $this->app->singleton(EventSpineService::class);
         $this->app->singleton(DigitalTwinService::class);
+
+        $this->app->tag([
+            PassportScaleProvisioner::class,
+            OutboxScaleProvisioner::class,
+        ], 'scale.provisioner');
     }
 
     public function boot(): void

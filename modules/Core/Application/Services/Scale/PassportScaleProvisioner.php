@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Services\Scale;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Contracts\ScaleProvisionerInterface;
 use Modules\Core\Domain\Enums\VehicleEventType;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Core\Domain\Models\VehicleEvent;
-use Modules\Core\Domain\Scale\ScaleProvisionerInterface;
 
 final class PassportScaleProvisioner implements ScaleProvisionerInterface
 {
@@ -23,6 +24,7 @@ final class PassportScaleProvisioner implements ScaleProvisionerInterface
         int $targetCount,
         int $chunkSize,
         int $seed,
+        int $startStep = 0,
         ?callable $onProgress = null
     ): int {
         $checkpoint = DB::table('sim_scale_checkpoints')
@@ -54,17 +56,16 @@ final class PassportScaleProvisioner implements ScaleProvisionerInterface
         }
 
         // Ensure a system user exists for vehicle ownership
-        $userId = DB::table('users')->value('id');
-        if ($userId === null) {
-            $userId = DB::table('users')->insertGetId([
+        $user = User::first();
+        if ($user === null) {
+            $user = User::create([
                 'name' => 'Scale System Operator',
                 'email' => 'scale-operator@example.com',
                 'password' => bcrypt('password'),
                 'role' => 'customer',
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
         }
+        $userId = $user->id;
 
         // Ensure a dedicated vehicle exists for this scale provisioner
         $vin = 'SCALE-VIN-'.$tier.'-'.$seed;

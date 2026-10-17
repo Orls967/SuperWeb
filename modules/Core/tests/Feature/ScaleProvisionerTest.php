@@ -7,7 +7,7 @@ namespace Modules\Core\tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Modules\Core\Application\Services\Scale\LedgerScaleProvisioner;
+use Modules\Banking\Application\Services\Scale\LedgerScaleProvisioner;
 use Modules\Core\Application\Services\Scale\OutboxScaleProvisioner;
 use Modules\Core\Application\Services\Scale\PassportScaleProvisioner;
 use Tests\TestCase;
@@ -28,17 +28,15 @@ class ScaleProvisionerTest extends TestCase
 
     public function test_ledger_scale_provisioner_creates_balanced_entries_with_checkpoints(): void
     {
-        /** @var LedgerScaleProvisioner $provisioner */
-        $provisioner = app(LedgerScaleProvisioner::class);
+        $exit = Artisan::call('scale:provision', [
+            '--module' => 'ledger',
+            '--tier' => 'T1',
+            '--count' => 60,
+            '--chunk' => 25,
+            '--seed' => 99,
+        ]);
 
-        $inserted = $provisioner->provision(
-            tier: 'T1',
-            targetCount: 60,
-            chunkSize: 25,
-            seed: 99
-        );
-
-        $this->assertSame(60, $inserted);
+        $this->assertSame(0, $exit);
 
         $checkpoint = DB::table('sim_scale_checkpoints')
             ->where('provisioner_key', 'ledger')
@@ -56,13 +54,15 @@ class ScaleProvisionerTest extends TestCase
         $this->assertEquals(0.0, (float) $sum);
 
         // Resume call should be idempotent
-        $resumedInserted = $provisioner->provision(
-            tier: 'T1',
-            targetCount: 60,
-            chunkSize: 25,
-            seed: 99
-        );
-        $this->assertSame(60, $resumedInserted);
+        $resumedExit = Artisan::call('scale:provision', [
+            '--module' => 'ledger',
+            '--tier' => 'T1',
+            '--count' => 60,
+            '--chunk' => 25,
+            '--seed' => 99,
+            '--resume' => true,
+        ]);
+        $this->assertSame(0, $resumedExit);
     }
 
     public function test_passport_and_outbox_provisioners_produce_valid_records(): void

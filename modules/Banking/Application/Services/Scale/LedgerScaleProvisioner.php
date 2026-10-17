@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Core\Application\Services\Scale;
+namespace Modules\Banking\Application\Services\Scale;
 
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
-use Modules\Core\Domain\Scale\ScaleProvisionerInterface;
+use Modules\Core\Contracts\ScaleProvisionerInterface;
 use Modules\Core\Ledger\CoreTransactionTypes;
 
 final class LedgerScaleProvisioner implements ScaleProvisionerInterface
@@ -25,34 +25,12 @@ final class LedgerScaleProvisioner implements ScaleProvisionerInterface
         int $targetCount,
         int $chunkSize,
         int $seed,
+        int $startStep = 0,
         ?callable $onProgress = null
     ): int {
-        $checkpoint = DB::table('sim_scale_checkpoints')
-            ->where('provisioner_key', $this->moduleName())
-            ->where('tier', $tier)
-            ->where('seed', $seed)
-            ->first();
-
-        $startStep = 0;
-        $totalInserted = 0;
-
-        if ($checkpoint !== null) {
-            $startStep = (int) $checkpoint->last_processed_step;
-            $totalInserted = (int) $checkpoint->total_inserted;
-            if ($totalInserted >= $targetCount) {
-                return $totalInserted;
-            }
-        } else {
-            DB::table('sim_scale_checkpoints')->insert([
-                'provisioner_key' => $this->moduleName(),
-                'tier' => $tier,
-                'seed' => $seed,
-                'last_processed_step' => 0,
-                'total_inserted' => 0,
-                'status' => 'in_progress',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        $totalInserted = $startStep;
+        if ($totalInserted >= $targetCount) {
+            return $totalInserted;
         }
 
         // Ensure source and destination clearing accounts exist
@@ -153,33 +131,12 @@ final class LedgerScaleProvisioner implements ScaleProvisionerInterface
                 $accountDest->update(['cached_balance' => (string) $newDestBal]);
 
                 $totalInserted += $batchSize;
-                $currentStep = $step + $batchSize;
-
-                DB::table('sim_scale_checkpoints')
-                    ->where('provisioner_key', $this->moduleName())
-                    ->where('tier', $tier)
-                    ->where('seed', $seed)
-                    ->update([
-                        'last_processed_step' => $currentStep,
-                        'total_inserted' => $totalInserted,
-                        'status' => ($totalInserted >= $currentStep) ? 'in_progress' : 'completed',
-                        'updated_at' => now(),
-                    ]);
             });
 
             if ($onProgress !== null) {
                 $onProgress($totalInserted, $targetCount, "Ledger provisioned {$totalInserted}/{$targetCount} records");
             }
         }
-
-        DB::table('sim_scale_checkpoints')
-            ->where('provisioner_key', $this->moduleName())
-            ->where('tier', $tier)
-            ->where('seed', $seed)
-            ->update([
-                'status' => 'completed',
-                'updated_at' => now(),
-            ]);
 
         return $totalInserted;
     }
