@@ -1574,4 +1574,34 @@
   - `php artisan test tests/Architecture/AuditCommandContractTest.php` lolos (50/50).
   - `php artisan test tests/Architecture/ArchScanBaselineTest.php` lolos (2/2).
 
+<a id="2026-10-18-r9-scale-benchmark-k32-refactor"></a>
+## 2026-10-18: Fictional Scale Provisioner, Benchmark Suite, dan Eliminasi Pola K-32 (Fase R9)
+- **Context:**
+  - Fase R9 merealisasikan pengujian skala bertingkat T1/T2, benchmark p95 endpoint kritis platform, durasi audit finansial, serta eliminasi 4 pola tidak skalabel (K-32) yang teridentifikasi pada audit awal arsitektur.
+- **Decision:**
+  1. **Fictional Scale Provisioner Bertingkat & Decoupling Bersih (R9.1):**
+     - Dibuat interface kontrak `Modules\Core\Contracts\ScaleProvisionerInterface` yang diekspos secara loose coupling.
+     - Modul `Banking` mengelola `LedgerScaleProvisioner` untuk injeksi buku besar seimbang (0 discrepancy) dalam chunk 500 dan seed deterministik, ditag via `'scale.provisioner'`.
+     - Modul `Core` mengelola `PassportScaleProvisioner` (paspor kendaraan digital twin append-only) dan `OutboxScaleProvisioner` (antrean event asinkron), ditag via `'scale.provisioner'`.
+     - Command `scale:provision --module={all|ledger|passport|outbox} --tier={T1|T2} --seed=S [--resume] [--dry-run]` mengorkestrasi eksekusi dengan pencatatan checkpoint deterministik di tabel `sim_scale_checkpoints`, menjaga kepatuhan batas modul A1, A2, dan A9.
+  2. **Platform Benchmark Suite & Observabilitas Latensi (R9.2):**
+     - Dibuat `Modules\Core\Application\Services\PlatformBenchmarkService` dan command `benchmark:run [--iterations=N] [--assert-p95=MS]` untuk mengukur latensi p95 pada 12 endpoint kritis platform dan durasi eksekusi audit finansial utama (`bank:reconcile`, `chain:audit-all`).
+     - Menyimpan artefak benchmarking resmi dalam format JSON di `storage/app/benchmarks/benchmark-latest.json`.
+  3. **Eliminasi 4 Pola Tidak Skalabel K-32 (R9.3):**
+     - *Titik 1 (HCM Audit):* `HcmService::auditHcm()` di-refactor menggunakan `chunkById(500)` menggantikan `Payroll::all()` untuk mencegah OOM pada volume data raksasa.
+     - *Titik 2 (Outbox Bus):* `OutboxBusService::processMessage()` di-refactor menggunakan database-level JSON filtering (`whereJsonContains('events', ...)`) menggantikan filter in-memory PHP.
+     - *Titik 3 (Integration Audit):* `IntegrationService::auditIntegration()` di-refactor menggunakan query berurutan deterministik `orderBy('id', 'desc')->limit(50)` menggantikan `limit(50)` tanpa urutan.
+     - *Titik 4 (Sanction Screening):* `SanctionScreeningService` di-refactor dari algoritma $O(n \cdot m)$ menjadi kombinasi hash set lookup terindeks, exact normalized name match, dan prefix candidate matching.
+  4. **Quality Gate Penuh 9-Langkah & Verifikasi Silang (R9.4):**
+     - Seluruh 9 langkah `composer gate` lulus exit code 0 tanpa flag `--dirty`.
+     - `php artisan gate:report --fase=r9` menghasilkan laporan resmi `docs/gates/fase-r9.md`.
+- **Reason:**
+  - Menjamin platform tahan terhadap beban volume data bertingkat, mengukur p95 rute kritis secara terukur dan konsisten, serta mengeliminasi bottleneck performa K-32 pada proses audit dan transmisi event.
+- **Verification:**
+  - `vendor/bin/pest modules/Core/tests/Feature/ScaleProvisionerTest.php` PASS (4 passed, 17 assertions).
+  - `vendor/bin/pest tests/Feature/Benchmark/PlatformBenchmarkTest.php` PASS (2 passed, 59 assertions).
+  - `vendor/bin/pest tests/Feature/Performance/K32ScalabilityRefactorTest.php` PASS (4 passed, 17 assertions).
+  - `php artisan bank:reconcile` seimbang 0 selisih.
+  - `php artisan arch:scan` A1–A13 = 0 pelanggaran baru.
+
 
