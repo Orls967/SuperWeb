@@ -488,7 +488,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 8 | **CloudKitchen** | `ckt_` | 1 |
 | 9 | **Contract** | `ctr_` | 3 |
 | 10 | **ControlTower** | `sct_` | 1 |
-| 11 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 15 |
+| 11 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 16 |
 | 12 | **Crypto** | `crypto_` | 4 |
 | 13 | **Distribution** | `dist_` | 5 |
 | 14 | **Edu** | `edu_` | 2 |
@@ -534,7 +534,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 54 | **Venue** | `ven_` | 5 |
 | 55 | **Wealth** | `wm_` | 1 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **544 Migrasi** |
+| | **Total: 56 Modul** | | **545 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -605,6 +605,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ast:verify-chain` | `manual` | Verifikasi rantai hash SHA-256 seluruh riwayat aset (append-only) |
 | `b2b:audit` | `manual` | Audit B2B marketplace catalogs, auctions, and multi-party escrow balances |
 | `bank:reconcile` | **`daily()`** | Rekonsiliasi ledger: verifikasi cached_balance tiap akun dengan SUM(entries) dan SUM global per aset = 0 |
+| `benchmark:run` | `manual` | Jalankan benchmark suite platform: latensi p95 endpoint kritis dan durasi audit finansial (PROGRESS R9.2) |
 | `chain:audit-all` | `manual` | Jalankan orkestrasi audit menyeluruh seluruh rantai nilai ekosistem (Double-Entry Ledger, Treasury, Trade, TF, Proc, Mfg, Dist, Agency, Group, SCT, EF, API) |
 | `ck:audit` | `manual` | Perform two-source verification of cloud kitchen capacities, catering subscriptions, and meal order billings |
 | `contracts:verify-chain` | **`dailyAt('03:00')`** | Verify the append-only cryptographic hash-chain across all contract versions |
@@ -688,6 +689,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `roster:scan` | `manual` | Detect packages, stacks, frameworks, agents, and approaches in use and output as JSON |
 | `rwa:audit` | `manual` | Perform two-source verification of RWA asset tokens, allocations, and dividend conservation |
 | `sanctum:prune-expired` | `manual` | Prune tokens expired for more than specified number of hours |
+| `scale:provision` | `manual` | Jalankan Fictional Scale Provisioner deterministik dengan chunking dan checkpoint (PROGRESS R9.1) |
 | `schema:dump` | `manual` | Dump the given database schema |
 | `security:audit` | `manual` | Wave 2: Security & Compliance audit — Zero Trust, Privacy Vault, Regulatory, SOC & Pentest |
 | `serve` | `manual` | Serve the application on the PHP development server |
@@ -710,7 +712,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ven:audit` | `manual` | Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 117 Command** | **37 Terjadwal** | |
+| **Total: 119 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
