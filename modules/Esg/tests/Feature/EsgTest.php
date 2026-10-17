@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Esg\tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Esg\Application\Services\EsgService;
 use Modules\Esg\Domain\Models\CarbonCredit;
@@ -14,6 +15,12 @@ use Tests\TestCase;
 class EsgTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(LedgerAccountsSeeder::class);
+    }
 
     public function test_can_record_ghg_emissions(): void
     {

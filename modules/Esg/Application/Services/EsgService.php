@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Modules\Esg\Application\Services;
 
 use Illuminate\Support\Facades\DB;
+use Modules\Banking\Application\DTOs\PostingDTO;
+use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Esg\Domain\Models\CarbonCredit;
 use Modules\Esg\Domain\Models\EsgEmission;
 use Modules\Esg\Domain\Models\OffsetRetirement;
 use Modules\Esg\Domain\Models\SupplierScore;
+use Modules\Esg\Ledger\EsgTransactionTypes;
 
 class EsgService
 {
@@ -29,10 +33,14 @@ class EsgService
 
     private readonly DocumentNumberingInterface $numbering;
 
+    private readonly LedgerService $ledgerService;
+
     public function __construct(
-        ?DocumentNumberingInterface $numbering = null
+        ?DocumentNumberingInterface $numbering = null,
+        ?LedgerService $ledgerService = null
     ) {
         $this->numbering = $numbering ?? app(DocumentNumberingInterface::class);
+        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
     }
 
     public function recordEmission(array $data): EsgEmission
@@ -83,7 +91,7 @@ class EsgService
 
             $certificateNumber = $data['certificate_number'] ?? $this->numbering->nextNumber('ESG', 'CC', false, 'CC/{ENT}/');
 
-            return CarbonCredit::create([
+            $credit = CarbonCredit::create([
                 'certificate_number' => $certificateNumber,
                 'registry' => $data['registry'] ?? 'IDX_CARBON',
                 'project_name' => $data['project_name'],
@@ -94,6 +102,22 @@ class EsgService
                 'total_cost_idr' => $totalCost,
                 'status' => 'active',
             ]);
+
+            if ($totalCost > 0) {
+                $this->ledgerService->post(new PostingDTO(
+                    type: EsgTransactionTypes::ESG_CARBON_PURCHASE->value,
+                    description: "Carbon credit registration {$credit->certificate_number} ({$tons} tons)",
+                    idempotencyKey: "ESG-CC-BUY-{$credit->certificate_number}",
+                    entries: Posting::lines()
+                        ->debit('inventory:esg:carbon_credit:IDR', $totalCost)
+                        ->credit('ap:esg:carbon_registry:IDR', $totalCost)
+                        ->toEntries('IDR'),
+                    referenceType: 'CARBON_CREDIT',
+                    referenceId: (string) $credit->id,
+                ));
+            }
+
+            return $credit;
         });
     }
 
@@ -122,6 +146,21 @@ class EsgService
 
             if (($alreadyRetired + $retiredQty) >= (float) $credit->quantity_co2e_tons) {
                 $credit->update(['status' => 'retired']);
+            }
+
+            $retiredCost = (int) round($retiredQty * (float) $credit->cost_per_ton_idr);
+            if ($retiredCost > 0) {
+                $this->ledgerService->post(new PostingDTO(
+                    type: EsgTransactionTypes::ESG_CARBON_RETIREMENT->value,
+                    description: "Carbon offset retirement {$retirementNumber} ({$retiredQty} tons)",
+                    idempotencyKey: "ESG-CC-RET-{$retirementNumber}",
+                    entries: Posting::lines()
+                        ->debit('expense:esg:carbon_offset:IDR', $retiredCost)
+                        ->credit('inventory:esg:carbon_credit:IDR', $retiredCost)
+                        ->toEntries('IDR'),
+                    referenceType: 'OFFSET_RETIREMENT',
+                    referenceId: (string) $retirement->id,
+                ));
             }
 
             return $retirement;

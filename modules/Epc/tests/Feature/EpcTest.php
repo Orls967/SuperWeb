@@ -3,6 +3,7 @@
 namespace Modules\Epc\tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Epc\Application\Services\EpcService;
 use Modules\Epc\Domain\Models\EpcCipCapitalization;
@@ -14,6 +15,12 @@ use Tests\TestCase;
 class EpcTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(LedgerAccountsSeeder::class);
+    }
 
     public function test_can_create_project_and_wbs_nodes(): void
     {

@@ -10,9 +10,20 @@ use Modules\Agri\Domain\Models\AgriColdChainLog;
 use Modules\Agri\Domain\Models\AgriCollectionBatch;
 use Modules\Agri\Domain\Models\AgriContract;
 use Modules\Agri\Domain\Models\AgriFarmer;
+use Modules\Agri\Ledger\AgriTransactionTypes;
+use Modules\Banking\Application\DTOs\PostingDTO;
+use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 
 class AgriService
 {
+    protected LedgerService $ledgerService;
+
+    public function __construct(?LedgerService $ledgerService = null)
+    {
+        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
+    }
+
     public function registerFarmer(array $data): AgriFarmer
     {
         return DB::transaction(function () use ($data) {
@@ -79,7 +90,7 @@ class AgriService
 
             $netPayout = $grossPayout - $advanceDeduction;
 
-            return AgriCollectionBatch::create([
+            $batch = AgriCollectionBatch::create([
                 'batch_number' => $data['batch_number'] ?? 'BATCH-AGR-'.strtoupper(Str::random(8)),
                 'collection_center_id' => $data['collection_center_id'],
                 'contract_id' => $contract->id,
@@ -94,6 +105,27 @@ class AgriService
                 'payment_status' => 'paid',
                 'destination_unit' => $data['destination_unit'] ?? 'RESTO_CK01',
             ]);
+
+            if ($grossPayout > 0) {
+                $lines = Posting::lines()->debit('inventory:agri:raw_commodities:IDR', $grossPayout);
+                if ($advanceDeduction > 0) {
+                    $lines->credit('agri:farmer_advance_receivable:IDR', $advanceDeduction);
+                }
+                if ($netPayout > 0) {
+                    $lines->credit('ap:agri:farmer_payable:IDR', $netPayout);
+                }
+
+                $this->ledgerService->post(new PostingDTO(
+                    type: AgriTransactionTypes::AGRI_HARVEST_PAYOUT->value,
+                    description: "Agri harvest reception batch {$batch->batch_number} from contract {$contract->contract_number}",
+                    idempotencyKey: "AGRI-HARVEST-{$batch->batch_number}",
+                    entries: $lines->toEntries('IDR'),
+                    referenceType: 'AGRI_COLLECTION_BATCH',
+                    referenceId: (string) $batch->id,
+                ));
+            }
+
+            return $batch;
         });
     }
 

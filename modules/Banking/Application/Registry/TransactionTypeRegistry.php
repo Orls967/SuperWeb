@@ -6,6 +6,7 @@ namespace Modules\Banking\Application\Registry;
 
 use BackedEnum;
 use Modules\Agri\Ledger\AgriTransactionTypes;
+use Modules\B2b\Ledger\B2bTransactionTypes;
 use Modules\Banking\Contracts\TransactionTypeRegistry as RegistryInterface;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\CloudKitchen\Ledger\CloudKitchenTransactionTypes;
@@ -13,6 +14,8 @@ use Modules\Core\Ledger\CoreTransactionTypes;
 use Modules\Edu\Ledger\EduTransactionTypes;
 use Modules\Egy\Ledger\EgyTransactionTypes;
 use Modules\EnterpriseFinance\Ledger\EnterpriseFinanceTransactionTypes;
+use Modules\Epc\Ledger\EpcTransactionTypes;
+use Modules\Esg\Ledger\EsgTransactionTypes;
 use Modules\Fleet\Ledger\FleetTransactionTypes;
 use Modules\Hcm\Ledger\HcmTransactionTypes;
 use Modules\Hospital\Ledger\HospitalTransactionTypes;
@@ -39,11 +42,14 @@ final class TransactionTypeRegistry
     private static array $registries = [
         TransactionType::class,
         AgriTransactionTypes::class,
+        B2bTransactionTypes::class,
         CloudKitchenTransactionTypes::class,
         CoreTransactionTypes::class,
         EduTransactionTypes::class,
         EgyTransactionTypes::class,
         EnterpriseFinanceTransactionTypes::class,
+        EpcTransactionTypes::class,
+        EsgTransactionTypes::class,
         FleetTransactionTypes::class,
         HcmTransactionTypes::class,
         HospitalTransactionTypes::class,

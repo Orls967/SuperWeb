@@ -10,9 +10,20 @@ use Modules\B2b\Domain\Models\B2bEscrowAccount;
 use Modules\B2b\Domain\Models\B2bRfq;
 use Modules\B2b\Domain\Models\SurplusAuction;
 use Modules\B2b\Domain\Models\WholesaleCatalog;
+use Modules\B2b\Ledger\B2bTransactionTypes;
+use Modules\Banking\Application\DTOs\PostingDTO;
+use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 
 class B2bService
 {
+    protected LedgerService $ledgerService;
+
+    public function __construct(?LedgerService $ledgerService = null)
+    {
+        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
+    }
+
     public function createWholesaleItem(array $data): WholesaleCatalog
     {
         return DB::transaction(function () use ($data) {
@@ -137,7 +148,7 @@ class B2bService
     public function lockEscrowDeposit(array $data): B2bEscrowAccount
     {
         return DB::transaction(function () use ($data) {
-            return B2bEscrowAccount::create([
+            $escrow = B2bEscrowAccount::create([
                 'escrow_number' => $data['escrow_number'] ?? 'ESC-'.strtoupper(Str::random(8)),
                 'reference_type' => $data['reference_type'],
                 'reference_id' => $data['reference_id'],
@@ -148,6 +159,23 @@ class B2bService
                 'refunded_amount_idr' => 0,
                 'status' => 'held',
             ]);
+
+            $deposit = (int) $data['deposit_amount_idr'];
+            if ($deposit > 0) {
+                $this->ledgerService->post(new PostingDTO(
+                    type: B2bTransactionTypes::B2B_ESCROW_HOLD->value,
+                    description: "B2B escrow lock {$escrow->escrow_number} for {$escrow->reference_type} {$escrow->reference_id}",
+                    idempotencyKey: "B2B-ESCROW-LOCK-{$escrow->escrow_number}",
+                    entries: Posting::lines()
+                        ->debit('clearing:b2b:deposit:IDR', $deposit)
+                        ->credit('escrow:b2b:orders:IDR', $deposit)
+                        ->toEntries('IDR'),
+                    referenceType: 'B2B_ESCROW',
+                    referenceId: (string) $escrow->id,
+                ));
+            }
+
+            return $escrow;
         });
     }
 
@@ -166,6 +194,21 @@ class B2bService
                 'bast_document_id' => $bastDocId,
                 'released_at' => now(),
             ]);
+
+            $releasedAmount = $escrow->deposit_amount_idr;
+            if ($releasedAmount > 0) {
+                $this->ledgerService->post(new PostingDTO(
+                    type: B2bTransactionTypes::B2B_ESCROW_RELEASE->value,
+                    description: "B2B escrow release {$escrow->escrow_number} with BAST {$bastDocId}",
+                    idempotencyKey: "B2B-ESCROW-REL-{$escrow->escrow_number}",
+                    entries: Posting::lines()
+                        ->debit('escrow:b2b:orders:IDR', $releasedAmount)
+                        ->credit('ap:b2b:seller_payable:IDR', $releasedAmount)
+                        ->toEntries('IDR'),
+                    referenceType: 'B2B_ESCROW',
+                    referenceId: (string) $escrow->id,
+                ));
+            }
 
             return $escrow;
         });
