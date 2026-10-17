@@ -32,6 +32,41 @@ final class HcmAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'expense:hcm:salaries:IDR',
+                'name' => 'HCM Employee Salaries and Allowances Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'tax:hcm:pph21_payable:IDR',
+                'name' => 'HCM PPh 21 Employee Tax Withholding Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ap:hcm:bpjs_payable:IDR',
+                'name' => 'HCM BPJS Ketenagakerjaan and Kesehatan Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ap:hcm:payroll_payable:IDR',
+                'name' => 'HCM Net Employee Payroll Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'mfg:labor_wip:IDR',
+                'name' => 'Manufacturing Direct Labor Work in Progress',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }
