@@ -1,7 +1,7 @@
 # Quality Gate Report: Fase r9
 
-- **Commit:** `9134960c16fe0d941048c4960c01575972ff7396` (9134960)
-- **Tanggal:** 2026-10-17T20:29:54+00:00
+- **Commit:** `7bbdce64f4c22d457d8ff6657ef0f060ca61b44a` (7bbdce6)
+- **Tanggal:** 2026-10-17T20:36:16+00:00
 - **PHP:** 8.4.26
 - **Database:** sqlite (v3.53.4)
 - **Status Keseluruhan:** PASS 🟢
@@ -9,28 +9,28 @@
 ## 1. Ringkasan Test Suite (Pest / JUnit)
 - **Total Test:** 3005
 - **Total Assertion:** 18080
-- **Durasi:** 644.69s
+- **Durasi:** 646.29s
 - **Gagal / Error:** 0 failures, 0 errors
 
 ## 2. Hasil Perintah Protokol P4
 | Perintah | Deskripsi | Exit Code | Status |
 |---|---|---|---|
-| `composer validate --strict` | Langkah gate: composer validate --strict (0.24s) | 0 | PASS 🟢 |
+| `composer validate --strict` | Langkah gate: composer validate --strict (0.22s) | 0 | PASS 🟢 |
 | `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest (75.02s) | 0 | PASS 🟢 |
-| `vendor/bin/pint --test` | Langkah gate: pint --test (0.37s) | 0 | PASS 🟢 |
-| `php artisan arch:scan --json` | Langkah gate: arch:scan --json (6.50s) | 0 | PASS 🟢 |
-| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed (26.11s) | 0 | PASS 🟢 |
+| `vendor/bin/pint --test` | Langkah gate: pint --test (0.36s) | 0 | PASS 🟢 |
+| `php artisan arch:scan --json` | Langkah gate: arch:scan --json (6.54s) | 0 | PASS 🟢 |
+| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed (26.04s) | 0 | PASS 🟢 |
 | `php artisan bank:reconcile` | Langkah gate: bank:reconcile (0.30s) | 0 | PASS 🟢 |
 | `php artisan chain:audit-all` | Langkah gate: chain:audit-all (0.21s) | 0 | PASS 🟢 |
 | `php artisan super:health-check` | Langkah gate: super:health-check (0.22s) | 0 | PASS 🟢 |
-| `npm run build` | Langkah gate: npm run build (1.07s) | 0 | PASS 🟢 |
+| `npm run build` | Langkah gate: npm run build (0.98s) | 0 | PASS 🟢 |
 
 ## 3. Status Test Blok Bukti Fase r9
 | Item | Nama Test | File | Status (JUnit) | Durasi |
 |---|---|---|---|---|
-| R9.1 | `test_dry_run_does_not_modify_database` | `modules/Core/tests/Feature/ScaleProvisionerTest.php` | PASS 🟢 | 1.450s |
-| R9.2 | `test_artisan_benchmark_run_command_exits_cleanly` | `tests/Feature/Benchmark/PlatformBenchmarkTest.php` | PASS 🟢 | 0.120s |
-| R9.3 | `test_k32_hcm_audit_handles_chunked_payrolls_and_flags_corruptions` | `tests/Feature/Performance/K32ScalabilityRefactorTest.php` | PASS 🟢 | 0.035s |
+| R9.1 | `test_dry_run_does_not_modify_database` | `modules/Core/tests/Feature/ScaleProvisionerTest.php` | PASS 🟢 | 0.022s |
+| R9.2 | `test_artisan_benchmark_run_command_exits_cleanly` | `tests/Feature/Benchmark/PlatformBenchmarkTest.php` | PASS 🟢 | 0.228s |
+| R9.3 | `test_k32_hcm_audit_handles_chunked_payrolls_and_flags_corruptions` | `tests/Feature/Performance/K32ScalabilityRefactorTest.php` | PASS 🟢 | 0.026s |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** Terpasang (5836 pelanggaran terbaseline).
@@ -56,7 +56,7 @@
 
 - **Tanggal:** 2026-10-18
 - **Verifikator:** Principal Auditor & Verifikator Independen (Sesi Verifikasi Silang Fase R9)
-- **Commit yang diverifikasi:** 9134960
+- **Commit yang diverifikasi:** 7bbdce6
 - **Keputusan:** VERIFIKASI LOLOS ✅
 
 | # | Hasil | Bukti (command / commit / output) | Catatan |
@@ -77,5 +77,5 @@
 | C14 | LULUS 🟢 | Tidak ada jalan pintas terlarang (P12): zero missing FKs, zero models unguarded, zero strict_types omissions, zero setTestNow di luar tests/. | Standar integritas kode tertinggi terpenuhi. |
 
 **Minus yang ditambahkan verifikator:** Tidak ada (0 minus terbuka).
-**Alasan 🔁 (bila ada):** - 
+**Alasan 🔁 (bila ada):** -
 
