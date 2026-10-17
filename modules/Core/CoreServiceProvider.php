@@ -23,6 +23,7 @@ use Modules\Core\Application\Services\NotificationService;
 use Modules\Core\Application\Services\OutboxBusService;
 use Modules\Core\Application\Services\RbacService;
 use Modules\Core\Application\Services\SimClockService;
+use Modules\Core\Console\Commands\BenchmarkRunCommand;
 use Modules\Core\Console\Commands\ConsumeSpineCommand;
 use Modules\Core\Console\Commands\ProcessOutboxCommand;
 use Modules\Core\Console\Commands\RunSimulationCommand;
@@ -198,6 +199,7 @@ class CoreServiceProvider extends ServiceProvider
                 RunSimulationCommand::class,
                 TwelveLinesComprehensiveAuditCommand::class,
                 ScaleProvisionCommand::class,
+                BenchmarkRunCommand::class,
             ]);
         }
 
