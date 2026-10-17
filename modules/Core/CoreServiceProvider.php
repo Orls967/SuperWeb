@@ -26,6 +26,7 @@ use Modules\Core\Application\Services\SimClockService;
 use Modules\Core\Console\Commands\ConsumeSpineCommand;
 use Modules\Core\Console\Commands\ProcessOutboxCommand;
 use Modules\Core\Console\Commands\RunSimulationCommand;
+use Modules\Core\Console\Commands\ScaleProvisionCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
 use Modules\Core\Console\Commands\TwelveLinesComprehensiveAuditCommand;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
@@ -196,6 +197,7 @@ class CoreServiceProvider extends ServiceProvider
                 ConsumeSpineCommand::class,
                 RunSimulationCommand::class,
                 TwelveLinesComprehensiveAuditCommand::class,
+                ScaleProvisionCommand::class,
             ]);
         }
 
