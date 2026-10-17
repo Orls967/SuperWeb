@@ -14,6 +14,7 @@ use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
 use Modules\Core\Application\Services\ActivityLogger;
 use Modules\Core\Application\Services\ApprovalEngineService;
 use Modules\Core\Application\Services\AuditTrailService;
+use Modules\Core\Application\Services\CrossModuleSpineHandlers;
 use Modules\Core\Application\Services\DigitalTwinService;
 use Modules\Core\Application\Services\DocumentNumberingService;
 use Modules\Core\Application\Services\DocumentStoreService;
@@ -200,5 +201,8 @@ class CoreServiceProvider extends ServiceProvider
 
         // === Event Listeners ===
         Event::listen(VehicleAcquired::class, RecordVehicleAcquiredPassportEvent::class);
+
+        // === Event Spine Cross-Module Consumers ===
+        CrossModuleSpineHandlers::registerAll();
     }
 }
