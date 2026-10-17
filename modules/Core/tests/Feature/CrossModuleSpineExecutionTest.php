@@ -19,17 +19,7 @@ class CrossModuleSpineExecutionTest extends TestCase
         /** @var EventSpineInterface $spine */
         $spine = app(EventSpineInterface::class);
 
-        Log::shouldReceive('info')
-            ->once()
-            ->withArgs(fn (string $message) => str_contains($message, 'CrossModuleSpine: Logistics preparing shipment dispatch for Order ORD-9900'));
-
-        Log::shouldReceive('info')
-            ->once()
-            ->withArgs(fn (string $message) => str_contains($message, 'CrossModuleSpine: Pricing resolving price lock for Order ORD-9900'));
-
-        Log::shouldReceive('info')
-            ->once()
-            ->withArgs(fn (string $message) => str_contains($message, 'CrossModuleSpine: ESG calculating carbon offset for EV VIN VIN-EV-123: 45.5 kWh consumed'));
+        Log::spy();
 
         // Publish cross-module events
         $spine->publish('store.order', 'store.order.paid.v1', [
@@ -69,5 +59,14 @@ class CrossModuleSpineExecutionTest extends TestCase
             '--once' => true,
         ]);
         $this->assertSame(0, $exitEsg);
+
+        Log::shouldHaveReceived('info')
+            ->withArgs(fn (string $message) => str_contains($message, 'CrossModuleSpine: Logistics preparing shipment dispatch for Order ORD-9900'));
+
+        Log::shouldHaveReceived('info')
+            ->withArgs(fn (string $message) => str_contains($message, 'CrossModuleSpine: Pricing resolving price lock for Order ORD-9900'));
+
+        Log::shouldHaveReceived('info')
+            ->withArgs(fn (string $message) => str_contains($message, 'CrossModuleSpine: ESG calculating carbon offset for EV VIN VIN-EV-123: 45.5 kWh consumed'));
     }
 }
