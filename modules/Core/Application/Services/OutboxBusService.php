@@ -223,12 +223,13 @@ class OutboxBusService implements OutboxBusInterface
     {
         $message->increment('attempts');
 
-        $subscriptions = OutboxSubscription::where('is_active', true)->get()
-            ->filter(function (OutboxSubscription $sub) use ($message) {
-                $events = $sub->events ?? [];
-
-                return in_array('*', $events, true) || in_array($message->event_type, $events, true);
-            });
+        $subscriptions = OutboxSubscription::query()
+            ->where('is_active', true)
+            ->where(function ($query) use ($message) {
+                $query->whereJsonContains('events', '*')
+                    ->orWhereJsonContains('events', $message->event_type);
+            })
+            ->get();
 
         if ($subscriptions->isEmpty()) {
             $message->update([

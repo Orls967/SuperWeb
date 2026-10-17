@@ -178,7 +178,10 @@ class IntegrationService
         // Invariant: webhook delivery signature must match payload and secret
         $invalidDeliveries = 0;
         $invalidRecords = [];
-        $sampleDeliveries = WebhookDelivery::with('subscription')->limit(50)->get();
+        $sampleDeliveries = WebhookDelivery::with('subscription')
+            ->orderBy('id', 'desc')
+            ->limit(50)
+            ->get();
         foreach ($sampleDeliveries as $del) {
             if ($del->subscription) {
                 $expected = hash_hmac('sha256', $del->payload, $del->subscription->secret_key);

@@ -217,23 +217,28 @@ class HcmService
 
     public function auditHcm(): array
     {
-        $payrolls = Payroll::all();
         $discrepancies = 0;
+        $payrollCount = 0;
 
-        foreach ($payrolls as $p) {
-            $computedNet = $p->gross_salary_idr - $p->deductions_idr;
-            if ($computedNet !== $p->net_salary_idr) {
-                $discrepancies++;
-            }
-            $expectedDeductions = $p->pph21_idr + $p->bpjs_tk_idr + $p->bpjs_kes_idr;
-            if ($expectedDeductions !== $p->deductions_idr) {
-                $discrepancies++;
-            }
-        }
+        Payroll::query()
+            ->select(['id', 'gross_salary_idr', 'deductions_idr', 'net_salary_idr', 'pph21_idr', 'bpjs_tk_idr', 'bpjs_kes_idr'])
+            ->chunkById(500, function ($batch) use (&$discrepancies, &$payrollCount) {
+                foreach ($batch as $p) {
+                    $payrollCount++;
+                    $computedNet = $p->gross_salary_idr - $p->deductions_idr;
+                    if ($computedNet !== $p->net_salary_idr) {
+                        $discrepancies++;
+                    }
+                    $expectedDeductions = $p->pph21_idr + $p->bpjs_tk_idr + $p->bpjs_kes_idr;
+                    if ($expectedDeductions !== $p->deductions_idr) {
+                        $discrepancies++;
+                    }
+                }
+            });
 
         return [
             'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
-            'payroll_count' => $payrolls->count(),
+            'payroll_count' => $payrollCount,
             'employee_count' => Employee::count(),
             'shift_count' => ShiftSchedule::count(),
             'attendance_count' => AttendanceLog::count(),
