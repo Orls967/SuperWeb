@@ -229,4 +229,34 @@ class TelematicsIngestService
             event(new VehicleAnomalyDetected($vehicleId, $type, $severity, $details));
         });
     }
+
+    /**
+     * Two-source telematics audit.
+     * Cross-checks grounded devices against critical OBD-II DTC diagnostic trouble code ticks.
+     */
+    public function auditTelematics(): array
+    {
+        $deviceCount = TelematicsDevice::count();
+        $tickCount = TelematicsTick::count();
+        $baselineCount = TelematicsBaseline::count();
+        $discrepancies = 0;
+
+        $groundedDevices = TelematicsDevice::where('status', 'grounded')->get();
+        foreach ($groundedDevices as $device) {
+            $hasCriticalDtc = TelematicsTick::where('device_id', $device->device_id)
+                ->whereIn('dtc_code', self::CRITICAL_DTC_CODES)
+                ->exists();
+            if (! $hasCriticalDtc) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'device_count' => $deviceCount,
+            'tick_count' => $tickCount,
+            'baseline_count' => $baselineCount,
+            'discrepancies' => $discrepancies,
+        ];
+    }
 }

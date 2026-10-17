@@ -2,7 +2,7 @@
     "about": "Baseline ratchet `php artisan arch:scan` (PROGRESS.md §P11, KONSEP.md §A14.1). Hanya boleh turun lewat `--update-baseline`; penambahan wajib `--allow-new=\"DECISIONS.md#…\"` dan tercatat di approved_additions.",
     "rules": {
         "A1": {
-            "total": 169,
+            "total": 177,
             "entries": {
                 "modules/Agency/Application/Services/AgencyService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
@@ -99,6 +99,10 @@
                 "modules/Ev/Domain/Models/EvSession.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
+                "modules/Ev/database/seeders/EvDemoSeeder.php": {
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
+                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
+                },
                 "modules/Finance/Application/Actions/AddCollateralAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
@@ -122,6 +126,13 @@
                 },
                 "modules/Fleet/Domain/Models/FleetContractUnit.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
+                },
+                "modules/Fleet/database/seeders/FleetDemoSeeder.php": {
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
+                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
+                },
+                "modules/Insurance/database/seeders/InsuranceDemoSeeder.php": {
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Logistics/Application/Actions/BookShipmentAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
@@ -375,6 +386,9 @@
                 "modules/Resto/database/seeders/RestoMenuSeeder.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
+                "modules/Rwa/database/seeders/RwaDemoSeeder.php": {
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
+                },
                 "modules/Store/Application/Actions/ListCarProductAction.php": {
                     "use Modules\\AutoDex\\Domain\\Models\\Car": 1,
                     "use Modules\\Inventory\\Domain\\Models\\StockMovement": 1
@@ -414,10 +428,16 @@
                 "modules/Telematics/Domain/Models/TelematicsDevice.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
+                "modules/Telematics/database/seeders/TelematicsDemoSeeder.php": {
+                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
+                },
                 "modules/Trade/Application/Services/TradeService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/TradeFinance/Application/Services/TradeFinanceService.php": {
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
+                },
+                "modules/Wealth/database/seeders/WealthDemoSeeder.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Wms/Application/Services/WmsService.php": {
@@ -4706,6 +4726,70 @@
             "path": "*",
             "signature": "baseline awal",
             "added": 7273
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Ev/database/seeders/EvDemoSeeder.php",
+            "signature": "use Modules\\Banking\\Domain\\Models\\LedgerAccount",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Ev/database/seeders/EvDemoSeeder.php",
+            "signature": "use Modules\\Core\\Domain\\Models\\Vehicle",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Fleet/database/seeders/FleetDemoSeeder.php",
+            "signature": "use Modules\\Banking\\Domain\\Models\\LedgerAccount",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Fleet/database/seeders/FleetDemoSeeder.php",
+            "signature": "use Modules\\Core\\Domain\\Models\\Vehicle",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Insurance/database/seeders/InsuranceDemoSeeder.php",
+            "signature": "use Modules\\Banking\\Domain\\Models\\LedgerAccount",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Rwa/database/seeders/RwaDemoSeeder.php",
+            "signature": "use Modules\\Banking\\Domain\\Models\\LedgerAccount",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Telematics/database/seeders/TelematicsDemoSeeder.php",
+            "signature": "use Modules\\Core\\Domain\\Models\\Vehicle",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Wealth/database/seeders/WealthDemoSeeder.php",
+            "signature": "use Modules\\Banking\\Domain\\Models\\LedgerAccount",
+            "added": 1
         }
     ]
 }

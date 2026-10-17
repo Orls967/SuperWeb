@@ -131,4 +131,38 @@ class InsurTechClaimsService
             return $claim;
         });
     }
+
+    /**
+     * Two-source insurance claims and policy audit.
+     * Cross-checks policy premiums against product definitions and claim payouts.
+     */
+    public function auditInsurance(): array
+    {
+        $productCount = InsuranceProduct::count();
+        $policyCount = InsurancePolicy::count();
+        $claimCount = InsuranceClaim::count();
+        $discrepancies = 0;
+
+        $policies = InsurancePolicy::with('product')->get();
+        foreach ($policies as $policy) {
+            if ($policy->product && $policy->premium_paid_idr !== $policy->product->premium_amount_idr) {
+                $discrepancies++;
+            }
+        }
+
+        $paidClaims = InsuranceClaim::with('policy')->where('status', 'paid')->get();
+        foreach ($paidClaims as $claim) {
+            if ($claim->policy && $claim->payout_amount_idr !== $claim->policy->coverage_limit_idr) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'product_count' => $productCount,
+            'policy_count' => $policyCount,
+            'claim_count' => $claimCount,
+            'discrepancies' => $discrepancies,
+        ];
+    }
 }

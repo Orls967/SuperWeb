@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Modules\Mining\Domain\Models\MiningDispatchRun;
 use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningPit;
+use Modules\Mining\Domain\Models\MiningSite;
 use RuntimeException;
 
 class MiningFleetDispatchService
@@ -87,5 +88,38 @@ class MiningFleetDispatchService
         $equipment->update(['status' => 'available']);
 
         return $run->fresh();
+    }
+
+    /**
+     * Two-source mining operations audit.
+     * Cross-checks equipment marked 'dispatched' vs dispatch runs marked 'in_progress'.
+     */
+    public function auditMining(): array
+    {
+        $siteCount = MiningSite::count();
+        $pitCount = MiningPit::count();
+        $equipmentCount = MiningEquipment::count();
+        $dispatchCount = MiningDispatchRun::count();
+        $discrepancies = 0;
+
+        // Two-source: equipment 'dispatched' must have an in_progress dispatch run
+        $dispatchedEquipment = MiningEquipment::where('status', 'dispatched')->get();
+        foreach ($dispatchedEquipment as $equip) {
+            $hasRun = MiningDispatchRun::where('equipment_id', $equip->id)
+                ->where('status', 'in_progress')
+                ->exists();
+            if (! $hasRun) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'site_count' => $siteCount,
+            'pit_count' => $pitCount,
+            'equipment_count' => $equipmentCount,
+            'dispatch_count' => $dispatchCount,
+            'discrepancies' => $discrepancies,
+        ];
     }
 }

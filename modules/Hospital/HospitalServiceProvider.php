@@ -6,6 +6,7 @@ namespace Modules\Hospital;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Hospital\Application\Services\HospitalEmrAndBedService;
+use Modules\Hospital\Console\Commands\AuditHospitalCommand;
 
 class HospitalServiceProvider extends ServiceProvider
 {
@@ -17,5 +18,13 @@ class HospitalServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'hospital');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                AuditHospitalCommand::class,
+            ]);
+        }
     }
 }

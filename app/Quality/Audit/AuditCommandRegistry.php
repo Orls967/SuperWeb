@@ -12,6 +12,7 @@ use App\Quality\Audit\Fixtures\AstVerifyChainCorruptionFixture;
 use App\Quality\Audit\Fixtures\B2bAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\BankReconcileCorruptionFixture;
 use App\Quality\Audit\Fixtures\ChainAuditAllCorruptionFixture;
+use App\Quality\Audit\Fixtures\CkAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ContractsVerifyChainCorruptionFixture;
 use App\Quality\Audit\Fixtures\CoreVerifyPassportsCorruptionFixture;
 use App\Quality\Audit\Fixtures\CtrAuditCorruptionFixture;
@@ -21,23 +22,34 @@ use App\Quality\Audit\Fixtures\EcosystemAudit12LinesCorruptionFixture;
 use App\Quality\Audit\Fixtures\EnterpriseAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EpcAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EsgAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\EvAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\FltAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\GroupAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\HcmAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\HspAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\HtlAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\InsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\IntlAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\LgxAuditBillingCorruptionFixture;
 use App\Quality\Audit\Fixtures\LgxVerifyCustodyCorruptionFixture;
 use App\Quality\Audit\Fixtures\MallAuditBillingCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgAuditCostingCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgQmsAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\MinAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PlmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PricingAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProcAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\PrpAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PtnAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SecurityAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TfAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\TlmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TowerAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TradeAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TreasuryAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\VenAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\WmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\WmsAuditCorruptionFixture;
 use Illuminate\Support\Facades\Artisan;
 
@@ -59,6 +71,7 @@ final class AuditCommandRegistry
             'b2b:audit' => new B2bAuditCorruptionFixture,
             'bank:reconcile' => new BankReconcileCorruptionFixture,
             'chain:audit-all' => new ChainAuditAllCorruptionFixture,
+            'ck:audit' => new CkAuditCorruptionFixture,
             'contracts:verify-chain' => new ContractsVerifyChainCorruptionFixture,
             'core:verify-passports' => new CoreVerifyPassportsCorruptionFixture,
             'ctr:audit' => new CtrAuditCorruptionFixture,
@@ -68,23 +81,34 @@ final class AuditCommandRegistry
             'enterprise:audit' => new EnterpriseAuditCorruptionFixture,
             'epc:audit' => new EpcAuditCorruptionFixture,
             'esg:audit' => new EsgAuditCorruptionFixture,
+            'ev:audit' => new EvAuditCorruptionFixture,
+            'flt:audit' => new FltAuditCorruptionFixture,
             'group:audit' => new GroupAuditCorruptionFixture,
             'hcm:audit' => new HcmAuditCorruptionFixture,
+            'hsp:audit' => new HspAuditCorruptionFixture,
+            'htl:audit' => new HtlAuditCorruptionFixture,
+            'ins:audit' => new InsAuditCorruptionFixture,
             'intl:audit' => new IntlAuditCorruptionFixture,
             'lgx:audit-billing' => new LgxAuditBillingCorruptionFixture,
             'lgx:verify-custody' => new LgxVerifyCustodyCorruptionFixture,
             'mall:audit-billing' => new MallAuditBillingCorruptionFixture,
             'mfg:audit-costing' => new MfgAuditCostingCorruptionFixture,
             'mfg:qms-audit' => new MfgQmsAuditCorruptionFixture,
+            'min:audit' => new MinAuditCorruptionFixture,
             'plm:audit' => new PlmAuditCorruptionFixture,
             'pricing:audit' => new PricingAuditCorruptionFixture,
             'proc:audit' => new ProcAuditCorruptionFixture,
+            'prp:audit' => new PrpAuditCorruptionFixture,
             'ptn:audit' => new PtnAuditCorruptionFixture,
+            'rwa:audit' => new RwaAuditCorruptionFixture,
             'security:audit' => new SecurityAuditCorruptionFixture,
             'tf:audit' => new TfAuditCorruptionFixture,
+            'tlm:audit' => new TlmAuditCorruptionFixture,
             'tower:audit' => new TowerAuditCorruptionFixture,
             'trade:audit' => new TradeAuditCorruptionFixture,
             'treasury:audit' => new TreasuryAuditCorruptionFixture,
+            'ven:audit' => new VenAuditCorruptionFixture,
+            'wm:audit' => new WmAuditCorruptionFixture,
             'wms:audit' => new WmsAuditCorruptionFixture,
         ];
     }

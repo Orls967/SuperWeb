@@ -499,7 +499,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 19 | **Ev** | — | 1 |
 | 20 | **Finance** | `fin_` | 1 |
 | 21 | **Fleet** | — | 1 |
-| 22 | **Hcm** | `hcm_` | 3 |
+| 22 | **Hcm** | `hcm_` | 4 |
 | 23 | **Hospital** | `hsp_` | 9 |
 | 24 | **Hotel** | `htl_` | 7 |
 | 25 | **Insurance** | `ins_` | 1 |
@@ -534,7 +534,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 54 | **Venue** | `ven_` | 5 |
 | 55 | **Wealth** | `wm_` | 1 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **543 Migrasi** |
+| | **Total: 56 Modul** | | **544 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -547,6 +547,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **AutoServe** | 24 | `bookings/create`, `bookings/{booking}`, `bookings/{booking}/invoice` ... | web, auth, verified |
 | **B2b** | 1 | `b2b` | web, auth, role:admin,b2b_buyer,procurement |
 | **Banking** | 13 | `wallet`, `wallet/transfer`, `wallet/mutasi` ... | web, auth, role:admin,customer,auditor |
+| **CloudKitchen** | 2 | `cloud-kitchen`, `cloud-kitchen/subscriptions/{subscription}/dispatch` | web, auth, role:admin,kitchen,outlet_manager,customer |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
 | **ControlTower** | 2 | `control-tower`, `control-tower/promises` | web, auth, role:admin,logistics_admin,planner,auditor |
 | **Core** | 18 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
@@ -555,28 +556,39 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **EnterpriseFinance** | 2 | `enterprise-finance`, `enterprise-finance/budgets` | web, auth, role:admin,auditor,treasury |
 | **Epc** | 1 | `epc` | web, auth, role:admin,epc_manager,asset_manager |
 | **Esg** | 1 | `esg` | web, auth, role:admin,esg_officer,auditor |
+| **Ev** | 2 | `ev`, `ev/chargers/{charger}/reserve` | web, auth, role:admin,ev_admin,station_operator,driver |
 | **Finance** | 8 | `pembiayaan`, `pembiayaan/simulasi/{product}`, `pembiayaan/{loan}` ... | web, auth, role:admin,customer,treasury,auditor |
+| **Fleet** | 2 | `fleet`, `fleet/contracts/{contract}/amortize` | web, auth, role:admin,fleet_admin,lease_manager |
 | **Hcm** | 1 | `hcm` | web, auth, role:admin,hcm_manager |
+| **Hospital** | 2 | `hospital`, `hospital/trials/{trial}/bill-milestone` | web, auth, role:admin,hospital_admin,doctor |
+| **Hotel** | 2 | `hotel`, `hotel/reservations/{reservation}/settle` | web, auth, role:admin,hotel_admin,front_desk |
+| **Insurance** | 2 | `insurance`, `insurance/products/{product}/issue` | web, auth, role:admin,insurance_admin,underwriter,customer |
 | **Integration** | 2 | `integration`, `integration/webhooks` | web, auth, role:admin |
 | **Intercompany** | 2 | `intercompany`, `intercompany/transactions` | web, auth, role:admin,auditor,legal,treasury |
 | **International** | 2 | `international`, `international/jvs` | web, auth, role:admin,auditor,legal,treasury |
 | **Logistics** | 70 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
 | **Mall** | 48 | `mall/directory`, `mall/site-plan`, `mall/leases/{lease}/activate` ... | web, auth, role:admin,auditor,mall_admin |
 | **Manufacturing** | 57 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
+| **Mining** | 2 | `mining`, `mining/pits/{pit}/dispatch` | web, auth, role:admin,mining_admin,site_manager |
 | **Partner** | 4 | `partners`, `partners/{partner}`, `partners/{partner}/transition` ... | web, auth, verified |
 | **Party** | 11 | `party/legal-entities`, `party`, `party/create` ... | web, auth, verified |
 | **Plm** | 1 | `plm` | web, auth, role:admin,rnd_specialist |
 | **Pricing** | 13 | `pricing`, `pricing/price-lists`, `pricing/price-lists/items` ... | web, auth, verified |
 | **Procurement** | 21 | `procurement`, `procurement/requisitions`, `procurement/requisitions/{requisition}` ... | web, auth, verified |
+| **Proptech** | 2 | `proptech`, `proptech/zones/{zone}/bill` | web, auth, role:admin,proptech_admin,facility_manager |
 | **Resto** | 89 | `resto/menu`, `resto/menu/{menu}`, `resto/menu/calculate-cost` ... | web, auth, role:admin,auditor,outlet_manager |
+| **Rwa** | 2 | `rwa`, `rwa/assets/{asset}/distribute` | web, auth, role:admin,rwa_admin,asset_manager,investor |
 | **Shared** | 1 | `api/global-search` | web, auth, verified |
 | **Store** | 33 | `store`, `store/products/{slug}`, `store/mobil-bekas` ... | web, auth, role:admin,customer,auditor |
 | **Supplier** | 15 | `suppliers/scan-risks`, `suppliers`, `suppliers/create` ... | web, auth, verified |
+| **Telematics** | 2 | `telematics`, `telematics/devices/{device}/ingest` | web, auth, role:admin,telematics_admin,fleet_manager |
 | **Trade** | 1 | `trade` | web, auth, role:admin,auditor,procurement,treasury |
 | **TradeFinance** | 2 | `trade-finance`, `trade-finance/lcs` | web, auth, role:admin,auditor,procurement,treasury |
 | **Treasury** | 1 | `treasury` | web, auth, role:admin,auditor,treasury |
+| **Venue** | 2 | `venue`, `venue/tickets/{ticket}/scan` | web, auth, role:admin,venue_manager,venue_staff |
+| **Wealth** | 2 | `wealth`, `wealth/profiles/{profile}/invest` | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **597 Rute** | | |
+| **Total** | **621 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -594,6 +606,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `b2b:audit` | `manual` | Audit B2B marketplace catalogs, auctions, and multi-party escrow balances |
 | `bank:reconcile` | **`daily()`** | Rekonsiliasi ledger: verifikasi cached_balance tiap akun dengan SUM(entries) dan SUM global per aset = 0 |
 | `chain:audit-all` | `manual` | Jalankan orkestrasi audit menyeluruh seluruh rantai nilai ekosistem (Double-Entry Ledger, Treasury, Trade, TF, Proc, Mfg, Dist, Agency, Group, SCT, EF, API) |
+| `ck:audit` | `manual` | Perform two-source verification of cloud kitchen capacities, catering subscriptions, and meal order billings |
 | `contracts:verify-chain` | **`dailyAt('03:00')`** | Verify the append-only cryptographic hash-chain across all contract versions |
 | `core:consume-spine` | `manual` | Worker to consume events from the event spine by consumer group with persistent offset and idempotent replay |
 | `core:process-outbox` | `manual` | Process pending transactional outbox events and dispatch to subscribers |
@@ -614,12 +627,17 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `env` | `manual` | Display the current framework environment |
 | `epc:audit` | `manual` | Audit EPC construction WBS progress, Monthly Certificates, CIP and asset capitalization |
 | `esg:audit` | `manual` | Audit ESG greenhouse gas emissions, carbon offsets, and sustainability scores |
+| `ev:audit` | `manual` | Perform two-source verification of EV charging stations, chargers, and completed session tariffs |
 | `finance:charge-installments` | **`dailyAt('01:00')`** | Debit cicilan pembiayaan yang jatuh tempo dari dompet peminjam |
+| `flt:audit` | `manual` | Perform two-source verification of B2B fleet leasing contracts, units, and amortization integrity |
 | `gate:report` | `manual` | Hasilkan laporan resmi quality gate docs/gates/fase-{N}.md dari output asli test suite |
 | `gate:run` | `manual` | Runs all 9 mandatory gate pipeline steps and records genuine results to gate manifest |
 | `group:audit` | `manual` | Audit intercompany transactions, elimination entries, loans, and transfer pricing margins |
 | `hcm:audit` | `manual` | Audit Human Capital Management payroll calculations, deductions, and labor allocations (0 discrepancies) |
 | `hcm:encrypt-legacy` | `manual` | Idempotently backfill encrypted NIK and blind index for legacy employee records |
+| `hsp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, dan integritas subjek |
+| `htl:audit` | `manual` | Audit operasional hotel: kamar, reservasi, folio, dan integritas occupancy vs reservation |
+| `ins:audit` | `manual` | Perform two-source verification of InsurTech products, policies, and autopilot claim payouts |
 | `inspire` | `manual` | Display an inspiring quote |
 | `install:api` | `manual` | Create an API routes file and install Laravel Sanctum or Laravel Passport |
 | `install:broadcasting` | `manual` | Create a broadcasting channel routes file |
@@ -652,6 +670,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `mfg:run-mrp` | **`dailyAt('04:45')`** | Jalankan MRP (ledakan BOM, netting, lot sizing) + CRP — idempoten per snapshot input |
 | `mfg:wip` | `manual` | Laporan work-in-process per order produksi |
 | `migrate` | `manual` | Run the database migrations |
+| `min:audit` | `manual` | Perform two-source verification of mining equipment statuses and dispatch runs |
 | `party:backfill-links` | `manual` | Backfill party_id links on existing module tables (idempotent) |
 | `party:remind-expiring-docs` | **`dailyAt('08:00')`** | Send reminders for KYC/KYB documents expiring soon |
 | `payment:release-expired-holds` | **`daily()`** | Otomatis melepaskan dana escrow untuk payment intent status held yang telah melewati masa berlaku |
@@ -659,6 +678,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `plm:encrypt-legacy` | `manual` | Idempotently re-encrypt legacy base64 encoded formula payloads in lab notebooks |
 | `pricing:audit` | `manual` | Audit pricing: lock harga, anggaran promo, override, overlap (0 selisih) |
 | `proc:audit` | `manual` | Audit subledger AP dan GR/IR terhadap ledger (harus 0 selisih) |
+| `prp:audit` | `manual` | Perform two-source verification of smart building zones, sensor readings, and utility billings |
 | `ptn:audit` | `manual` | Audit kemitraan: bagi hasil, due diligence, dan siklus hidup mitra (0 selisih) |
 | `reload` | `manual` | Reload running services |
 | `resto:check-stock` | **`dailyAt('07:30')`** | Pantau level stok minimum bahan baku, buat saran PO draft, dan kirim peringatan bahan kedaluwarsa |
@@ -666,6 +686,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `resto:expire-display` | **`everyFifteenMinutes()`** | Memeriksa dan membuang piring etalase yang kedaluwarsa (melewati batas waktu 6 jam) ke waste |
 | `resto:post-royalty` | **`dailyAt('02:00')`** | Kalkulasi dan posting royalti franchise serta marketing fee harian dari ringkasan penjualan ke pendapatan holding grup |
 | `roster:scan` | `manual` | Detect packages, stacks, frameworks, agents, and approaches in use and output as JSON |
+| `rwa:audit` | `manual` | Perform two-source verification of RWA asset tokens, allocations, and dividend conservation |
 | `sanctum:prune-expired` | `manual` | Prune tokens expired for more than specified number of hours |
 | `schema:dump` | `manual` | Dump the given database schema |
 | `security:audit` | `manual` | Wave 2: Security & Compliance audit — Zero Trust, Privacy Vault, Regulatory, SOC & Pentest |
@@ -681,25 +702,31 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `test:mutate` | `manual` | Jalankan mutation testing Pest (--mutate) dengan ambang skor minimum 60% |
 | `tf:audit` | `manual` | Audit trade finance instruments (L/C exposure, bank guarantees, trade loans, and collections) |
 | `tinker` | `manual` | Interact with your application |
+| `tlm:audit` | `manual` | Perform two-source verification of telematics devices, ticks, and DTC anomaly grounding |
 | `tower:audit` | `manual` | Audit supply chain control tower (multi-echelon stock, ATP/CTP invariant, and forecasts) |
 | `trade:audit` | `manual` | Audit cross-border trade operations, orders, duties, and hash-chain tracking |
 | `treasury:audit` | `manual` | Audit multi-currency, bank reconciliation, credit facilities, and treasury balances |
 | `up` | `manual` | Bring the application out of maintenance mode |
+| `ven:audit` | `manual` | Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety |
+| `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 105 Command** | **37 Terjadwal** | |
+| **Total: 117 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
 |---|---|---|---|
-| **Agri** | `AgriAccounts` | 2 | `agri:farmer_loan_ar:IDR`, `agri:escrow_disbursement:IDR` |
+| **Agri** | `AgriAccounts` | 5 | `agri:farmer_loan_ar:IDR`, `agri:escrow_disbursement:IDR` ... |
+| **B2b** | `B2bAccounts` | 3 | `escrow:b2b:orders:IDR`, `clearing:b2b:deposit:IDR` ... |
 | **CloudKitchen** | `CloudKitchenAccounts` | 2 | `hcm:meals_deduction:IDR`, `resto:catering_revenue:IDR` |
 | **Core** | `CoreAccounts` | 16 | `clearing:external:IDR`, `clearing:golden_scenario:IDR` ... |
 | **Edu** | `EduAccounts` | 4 | `edu:headhunter_expense:IDR`, `edu:headhunter_payable:IDR` ... |
 | **Egy** | `EgyAccounts` | 13 | `egy:bess_arbitrage_revenue:IDR`, `egy:carbon_credit_inventory:IDR` ... |
 | **EnterpriseFinance** | `EnterpriseFinanceAccounts` | 2 | `ef:holding_dividend_income:IDR`, `ef:holding_dividend_receivable:IDR` |
+| **Epc** | `EpcAccounts` | 4 | `asset:epc:construction_in_progress:IDR`, `ap:epc:contractor_retention:IDR` ... |
+| **Esg** | `EsgAccounts` | 3 | `inventory:esg:carbon_credit:IDR`, `expense:esg:carbon_offset:IDR` ... |
 | **Ev** | `EvAccounts` | 1 | `oto:ev_revenue:IDR` |
 | **Fleet** | `FleetAccounts` | 4 | `ar:fleet:party:default:IDR`, `ar:fleet:party:501:IDR` ... |
-| **Hcm** | `HcmAccounts` | 2 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` |
+| **Hcm** | `HcmAccounts` | 7 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` ... |
 | **Hospital** | `HospitalAccounts` | 20 | `hsp:bpjs_receivable:IDR`, `hsp:epharmacy_receivable:IDR` ... |
 | **Hotel** | `HotelAccounts` | 29 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
 | **Insurance** | `InsuranceAccounts` | 1 | `ins:premium_reserve:IDR` |
@@ -718,6 +745,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 2 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` |
 | **Venue** | `VenueAccounts` | 24 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 1 | `treasury:pool:IDR` |
-| **Total: 27 Registry** | | **206 Akun** | |
+| **Total: 30 Registry** | | **224 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

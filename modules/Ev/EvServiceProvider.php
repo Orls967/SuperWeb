@@ -9,6 +9,7 @@ use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Ev\Application\Services\EvChargingService;
+use Modules\Ev\Console\Commands\AuditEvCommand;
 
 class EvServiceProvider extends ServiceProvider
 {
@@ -26,5 +27,13 @@ class EvServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'ev');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                AuditEvCommand::class,
+            ]);
+        }
     }
 }

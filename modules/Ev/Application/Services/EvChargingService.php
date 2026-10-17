@@ -12,7 +12,9 @@ use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Ev\Domain\Models\EvCharger;
 use Modules\Ev\Domain\Models\EvSession;
+use Modules\Ev\Domain\Models\EvStation;
 
 class EvChargingService
 {
@@ -125,5 +127,33 @@ class EvChargingService
 
             return $session;
         });
+    }
+
+    /**
+     * Two-source EV operations audit.
+     * Cross-checks completed charging sessions against energy delivered and tariff billing.
+     */
+    public function auditEv(): array
+    {
+        $stationCount = EvStation::count();
+        $chargerCount = EvCharger::count();
+        $sessionCount = EvSession::count();
+        $discrepancies = 0;
+
+        $completedSessions = EvSession::where('status', 'completed')->get();
+        foreach ($completedSessions as $s) {
+            $expectedCost = (int) round(($s->energy_wh / 1000.0) * $s->tariff_per_kwh_idr);
+            if (abs($s->total_cost_idr - $expectedCost) > 1) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'station_count' => $stationCount,
+            'charger_count' => $chargerCount,
+            'session_count' => $sessionCount,
+            'discrepancies' => $discrepancies,
+        ];
     }
 }

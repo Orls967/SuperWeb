@@ -120,4 +120,34 @@ class FleetLeasingService
             ));
         });
     }
+
+    /**
+     * Two-source fleet operations audit.
+     * Cross-checks contract total values and unit assignments.
+     */
+    public function auditFleet(): array
+    {
+        $contractCount = FleetContract::count();
+        $unitCount = FleetContractUnit::count();
+        $discrepancies = 0;
+
+        $contracts = FleetContract::with('units')->get();
+        foreach ($contracts as $c) {
+            $expectedTotal = $c->monthly_rental_idr * $c->duration_months;
+            if ($c->total_lease_value_idr !== $expectedTotal) {
+                $discrepancies++;
+            }
+
+            if ($c->total_units !== $c->units->count()) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'contract_count' => $contractCount,
+            'unit_count' => $unitCount,
+            'discrepancies' => $discrepancies,
+        ];
+    }
 }

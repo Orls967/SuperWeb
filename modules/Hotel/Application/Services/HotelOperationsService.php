@@ -183,4 +183,37 @@ class HotelOperationsService
 
         return $folio->fresh();
     }
+
+    /**
+     * Two-source hotel operations audit.
+     * Cross-checks rooms marked 'occupied' vs reservations marked 'checked_in'.
+     */
+    public function auditHotel(): array
+    {
+        $propertyCount = HotelProperty::count();
+        $roomCount = HotelRoom::count();
+        $reservationCount = HotelReservation::count();
+        $folioCount = HotelFolio::count();
+        $discrepancies = 0;
+
+        // Two-source: rooms marked 'occupied' must have a checked_in reservation
+        $occupiedRooms = HotelRoom::where('status', 'occupied')->get();
+        foreach ($occupiedRooms as $room) {
+            $hasCheckedIn = HotelReservation::where('room_id', $room->id)
+                ->where('status', 'checked_in')
+                ->exists();
+            if (! $hasCheckedIn) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'property_count' => $propertyCount,
+            'room_count' => $roomCount,
+            'reservation_count' => $reservationCount,
+            'folio_count' => $folioCount,
+            'discrepancies' => $discrepancies,
+        ];
+    }
 }

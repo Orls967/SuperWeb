@@ -138,4 +138,39 @@ class RwaTokenService
             $asset->save();
         });
     }
+
+    /**
+     * Two-source RWA asset tokenization audit.
+     * Cross-checks token allocation against total supply and dividend conservation.
+     */
+    public function auditRwa(): array
+    {
+        $assetCount = RwaAsset::count();
+        $holdingCount = RwaHolding::count();
+        $dividendCount = RwaDividend::count();
+        $discrepancies = 0;
+
+        $assets = RwaAsset::with('holdings')->get();
+        foreach ($assets as $asset) {
+            $totalAllocated = $asset->holdings->sum('token_balance');
+            if ($totalAllocated > $asset->total_supply_tokens) {
+                $discrepancies++;
+            }
+        }
+
+        $dividends = RwaDividend::all();
+        foreach ($dividends as $div) {
+            if ($div->total_revenue_pool_idr !== ($div->distributed_idr + $div->rounding_reserve_idr)) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'asset_count' => $assetCount,
+            'holding_count' => $holdingCount,
+            'dividend_count' => $dividendCount,
+            'discrepancies' => $discrepancies,
+        ];
+    }
 }

@@ -106,4 +106,40 @@ class RoboAdvisorService
         $holding->value_idr += $amount;
         $holding->save();
     }
+
+    /**
+     * Two-source wealth management audit.
+     * Cross-checks portfolio allocation sum to 100% and emergency fund guardrails.
+     */
+    public function auditWealth(): array
+    {
+        $profileCount = WmProfile::count();
+        $planCount = WmPlan::count();
+        $holdingCount = WmHolding::count();
+        $discrepancies = 0;
+
+        $plans = WmPlan::all();
+        foreach ($plans as $plan) {
+            $totalPct = $plan->allocation_mutual_funds_pct + $plan->allocation_gold_pct + $plan->allocation_crypto_pct;
+            if ($totalPct !== 100) {
+                $discrepancies++;
+            }
+        }
+
+        $profiles = WmProfile::all();
+        foreach ($profiles as $profile) {
+            $expectedMinFloor = $profile->monthly_spend_baseline_idr * 2;
+            if ($profile->emergency_fund_target_idr < $expectedMinFloor) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'profile_count' => $profileCount,
+            'plan_count' => $planCount,
+            'holding_count' => $holdingCount,
+            'discrepancies' => $discrepancies,
+        ];
+    }
 }

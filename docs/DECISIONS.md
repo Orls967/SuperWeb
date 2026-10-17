@@ -1559,3 +1559,19 @@
   - `php artisan arch:scan` A8 = 0 bersih.
   - `php artisan docs:inventory --check` sinkron 100%.
 
+<a id="2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models"></a>
+## 2026-10-18: Seeder Vertical Slice Gelombang 1 Menggunakan Model Domain Cross-Module Eksplisit (Fase R7)
+- **Context:**
+  - Seeders untuk vertical slice 12 modul Gelombang 1 (Hospital, Venue, Hotel, Mining, Proptech, Telematics, Ev, Fleet, Rwa, Insurance, Wealth, CloudKitchen) membutuhkan prerequisite data operasional (antara lain akun ledger pengguna via `Modules\Banking\Domain\Models\LedgerAccount` dan entitas armada via `Modules\Core\Domain\Models\Vehicle`).
+  - Penggunaan direct table query (`DB::table`) menghasilkan pelanggaran A2 (tabel berprefiks asing tanpa registrasi skema), sedangkan penggunaan model domain menghasilkan pelanggaran A1 terkendali (8 impor domain lintas modul khusus pada file seeder).
+- **Decision:**
+  - Mengizinkan impor eksplisit `LedgerAccount` dan `Vehicle` pada file seeder demonstrasi (`EvDemoSeeder`, `FleetDemoSeeder`, `InsuranceDemoSeeder`, `RwaDemoSeeder`, `TelematicsDemoSeeder`, `WealthDemoSeeder`) dan memperbarui baseline arch:scan ratchet dengan referensi keputusan ini (`--allow-new="DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models"`).
+- **Reason:**
+  - Menghindari manipulasi tabel langsung (A2), menjamin integritas foreign key dan enum type-safety di environment test in-memory SQLite, serta memastikan seluruh 12 vertical slice HTTP test (V1–V12) dapat berjalan secara deterministik dan independen.
+- **Verification:**
+  - Seluruh 12 test vertical slice HTTP (60 test, 153 assertion) lolos 100%.
+  - `php artisan test tests/Architecture/RouteAuthorizationMatrixTest.php` lolos (7/7).
+  - `php artisan test tests/Architecture/AuditCommandContractTest.php` lolos (50/50).
+  - `php artisan test tests/Architecture/ArchScanBaselineTest.php` lolos (2/2).
+
+

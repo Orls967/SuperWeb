@@ -10,14 +10,24 @@ use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\CloudKitchen\Domain\Models\CateringSubscription;
+use Modules\CloudKitchen\Domain\Models\CloudKitchen;
 use Modules\Core\Domain\Models\AuditLog;
 use Modules\Core\Domain\Models\Role;
+use Modules\Core\Domain\Models\Vehicle;
 use Modules\Crypto\Domain\Enums\AlertCondition;
 use Modules\Crypto\Domain\Models\CryptoAlert;
 use Modules\Crypto\Domain\Models\CryptoAsset;
 use Modules\Crypto\Domain\Models\CryptoPriceTick;
 use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Ev\Domain\Models\EvCharger;
+use Modules\Ev\Domain\Models\EvStation;
 use Modules\Finance\Domain\Models\Loan;
+use Modules\Fleet\Domain\Models\FleetContract;
+use Modules\Hospital\Domain\Models\ClinicalTrial;
+use Modules\Hotel\database\seeders\HotelDemoSeeder;
+use Modules\Hotel\Domain\Models\HotelReservation;
+use Modules\Insurance\Domain\Models\InsuranceProduct;
 use Modules\Logistics\Domain\Enums\LocationType;
 use Modules\Logistics\Domain\Models\Carrier;
 use Modules\Logistics\Domain\Models\Claim;
@@ -40,7 +50,10 @@ use Modules\Mall\Domain\Models\Property;
 use Modules\Mall\Domain\Models\Tenant;
 use Modules\Mall\Domain\Models\VoucherTemplate;
 use Modules\Mall\Domain\Models\WorkOrder;
+use Modules\Mining\Domain\Models\MiningPit;
+use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Partner\Domain\Models\Partner;
+use Modules\Proptech\Domain\Models\BuildingZone;
 use Modules\Resto\database\seeders\RestoMenuSeeder;
 use Modules\Resto\Domain\Models\CateringOrder;
 use Modules\Resto\Domain\Models\Delivery;
@@ -54,9 +67,15 @@ use Modules\Resto\Domain\Models\RestoTable;
 use Modules\Resto\Domain\Models\StockCount;
 use Modules\Resto\Domain\Models\StockTransfer;
 use Modules\Resto\Domain\Models\TableSession;
+use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
+use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Venue\Domain\Models\EntertainmentEvent;
+use Modules\Venue\Domain\Models\EntertainmentTicket;
+use Modules\Venue\Domain\Models\EntertainmentVenue;
+use Modules\Wealth\Domain\Models\WmProfile;
 
 /**
  * Route authorization mapping (PROGRESS R0.9, KONSEP §A14.3).
@@ -550,6 +569,23 @@ return [
     'bookings.store' => ['roles' => ['admin', 'customer']],
     'bookings.updateStatus' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
     'boost.browser-logs' => 'public',
+    'cloud_kitchen.index' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.subscriptions.dispatch' => [
+        'roles' => ['admin', 'customer', 'kitchen', 'outlet_manager'],
+        'params' => function () {
+            $user = User::firstOrCreate(['id' => 1], ['name' => 'Arch User', 'email' => 'arch@test.test', 'password' => 'secret', 'role' => 'customer']);
+            $sub = CateringSubscription::firstOrCreate(
+                ['subscription_code' => 'SUB-ARCH-001'],
+                ['user_id' => $user->id, 'package_name' => 'Demo Lunch', 'daily_quota' => 5, 'used_quota_today' => 0, 'monthly_fee_idr' => 1000000, 'daily_meal_price_idr' => 50000, 'starts_at' => now(), 'expires_at' => now()->addMonth(), 'status' => 'active']
+            );
+            CloudKitchen::firstOrCreate(
+                ['kitchen_code' => 'CK-ARCH-01'],
+                ['name' => 'Arch Central Kitchen', 'type' => 'central', 'hourly_capacity' => 100, 'current_hourly_load' => 0, 'service_radius_km' => 10, 'is_active' => true]
+            );
+
+            return ['subscription' => $sub->id];
+        },
+    ],
     'contract.advance.pay' => ['roles' => ['admin', 'contract_manager', 'legal']],
     'contract.amend' => ['roles' => ['admin', 'contract_manager', 'legal']],
     'contract.append-version' => ['roles' => ['admin', 'contract_manager', 'legal']],
@@ -634,6 +670,16 @@ return [
     'enterprise_finance.index' => ['roles' => ['admin', 'auditor', 'treasury']],
     'epc.index' => ['roles' => ['admin', 'epc_manager', 'asset_manager']],
     'esg.index' => ['roles' => ['admin', 'esg_officer', 'auditor']],
+    'ev.index' => ['roles' => ['admin', 'driver', 'ev_admin', 'station_operator']],
+    'ev.chargers.reserve' => [
+        'roles' => ['admin', 'driver', 'ev_admin', 'station_operator'],
+        'params' => function () {
+            $station = EvStation::firstOrCreate(['station_code' => 'SPKLU-PLN-01'], ['name' => 'SPKLU Sudirman', 'location_type' => 'PUBLIC', 'address' => 'Sudirman', 'latitude' => -6.2, 'longitude' => 106.8, 'is_active' => true]);
+            $charger = EvCharger::firstOrCreate(['charger_code' => 'CHG-CCS2-01'], ['station_id' => $station->id, 'type' => 'DC_FAST', 'max_kw' => 150, 'status' => 'available']);
+
+            return ['charger' => $charger->id];
+        },
+    ],
     'estimates.approve' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id], 'setup' => $storeAutoServeCustomerSetup],
     'estimates.receiveBackorder' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id]],
     'estimates.reject' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id], 'setup' => $storeAutoServeCustomerSetup],
@@ -647,7 +693,50 @@ return [
     'finance.loans.simulate' => ['roles' => ['admin', 'auditor', 'customer', 'treasury'], 'params' => fn () => ['product' => $financeCryptoSeedHelper()['product']->slug]],
     'finance.loans.store' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['product' => $financeCryptoSeedHelper()['product']->slug]],
     'finance.loans.topUpCollateral' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['loan' => $financeCryptoSeedHelper()['loan']->uuid], 'setup' => $financeCryptoCustomerSetup],
+    'fleet.index' => ['roles' => ['admin', 'fleet_admin', 'lease_manager']],
+    'fleet.contracts.amortize' => [
+        'roles' => ['admin', 'fleet_admin', 'lease_manager'],
+        'params' => function () {
+            $contract = FleetContract::firstOrCreate(['contract_number' => 'FLT-DEMO-001'], ['party_id' => 501, 'duration_months' => 12, 'total_units' => 1, 'monthly_rental_idr' => 15000000, 'total_lease_value_idr' => 180000000, 'accumulated_amortized_idr' => 0, 'max_downtime_hours_per_month' => 24, 'start_date' => now(), 'end_date' => now()->addMonths(12), 'status' => 'active']);
+
+            return ['contract' => $contract->id];
+        },
+    ],
     'hcm.index' => ['roles' => ['admin', 'hcm_manager']],
+    'hospital.index' => ['roles' => ['admin', 'doctor', 'hospital_admin']],
+    'hospital.trials.bill' => [
+        'roles' => ['admin', 'doctor', 'hospital_admin'],
+        'params' => fn () => ['trial' => ClinicalTrial::firstOrCreate(['trial_code' => 'TRL-CARDIO-01'], ['title' => 'Trial Card', 'phase' => 'PHASE_3', 'sponsor_name' => 'Novartis', 'target_subjects' => 10, 'status' => 'RECRUITING'])->id],
+    ],
+    'hotel.index' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
+    'hotel.reservations.settle' => [
+        'roles' => ['admin', 'front_desk', 'hotel_admin'],
+        'params' => function () {
+            (new HotelDemoSeeder)->run();
+            $res = HotelReservation::firstOrFail();
+
+            return ['reservation' => $res->id];
+        },
+    ],
+    'mining.index' => ['roles' => ['admin', 'mining_admin', 'site_manager']],
+    'mining.dispatch' => [
+        'roles' => ['admin', 'mining_admin', 'site_manager'],
+        'params' => function () {
+            $site = MiningSite::firstOrCreate(['site_code' => 'SITE-KUTAI-01'], ['id' => (string) Str::uuid(), 'name' => 'Kutai Site', 'commodity' => 'COAL', 'location' => 'Kaltim']);
+            $pit = MiningPit::firstOrCreate(['site_id' => $site->id, 'pit_code' => 'PIT-NORTH-01'], ['id' => (string) Str::uuid(), 'name' => 'North Pit', 'target_daily_production_ton' => 5000, 'actual_production_ton' => 3000]);
+
+            return ['pit' => $pit->id];
+        },
+    ],
+    'insurance.index' => ['roles' => ['admin', 'customer', 'insurance_admin', 'underwriter']],
+    'insurance.products.issue' => [
+        'roles' => ['admin', 'customer', 'insurance_admin', 'underwriter'],
+        'params' => function () {
+            $prod = InsuranceProduct::firstOrCreate(['product_code' => 'INS-FLIGHT-DELAY'], ['name' => 'Flight Delay', 'premium_amount_idr' => 75000, 'max_payout_idr' => 500000, 'trigger_event_type' => 'FLIGHT_DELAY', 'is_active' => true]);
+
+            return ['product' => $prod->id];
+        },
+    ],
     'integration.index' => ['roles' => ['admin']],
     'integration.webhooks' => ['roles' => ['admin']],
     'intercompany.index' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
@@ -1209,7 +1298,25 @@ return [
     'profile.destroy' => 'auth',
     'profile.edit' => 'auth',
     'profile.update' => 'auth',
+    'proptech.index' => ['roles' => ['admin', 'facility_manager', 'proptech_admin']],
+    'proptech.zones.bill' => [
+        'roles' => ['admin', 'facility_manager', 'proptech_admin'],
+        'params' => function () {
+            $zone = BuildingZone::firstOrCreate(['zone_code' => 'ZN-TOWER-A-L10'], ['building_code' => 'BLD-SCBD-01', 'name' => 'SCBD Tower A Floor 10', 'floor_level' => '10', 'area_sqm' => 600.0, 'current_temp_c' => 23.5, 'current_occupancy' => 35, 'current_kwh_rate' => 2000.0]);
+
+            return ['zone' => $zone->id];
+        },
+    ],
     'register' => 'public',
+    'rwa.index' => ['roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin']],
+    'rwa.assets.distribute' => [
+        'roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin'],
+        'params' => function () {
+            $asset = RwaAsset::firstOrCreate(['token_symbol' => 'RWA-MALL01'], ['name' => 'Mall Tower', 'underlying_asset_type' => 'PROPERTY', 'underlying_asset_id' => 'BLD-01', 'appraisal_value_idr' => 1000000000, 'total_supply_tokens' => 1000, 'token_price_idr' => 1000000, 'status' => 'active']);
+
+            return ['asset' => $asset->id];
+        },
+    ],
     'resto.analytics.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
     'resto.catering.cancel' => [
         'roles' => ['admin', 'outlet_manager'],
@@ -1755,6 +1862,20 @@ return [
     'supplier.show' => ['roles' => ['admin', 'party_manager', 'procurement']],
     'supplier.store' => ['roles' => ['admin', 'party_manager', 'procurement']],
     'supplier.transition' => ['roles' => ['admin', 'party_manager', 'procurement']],
+    'telematics.index' => ['roles' => ['admin', 'fleet_manager', 'telematics_admin']],
+    'telematics.devices.ingest' => [
+        'roles' => ['admin', 'fleet_manager', 'telematics_admin'],
+        'params' => function () {
+            $user = User::firstOrCreate(['id' => 1], ['name' => 'Arch User', 'email' => 'arch@test.test', 'password' => 'secret', 'role' => 'customer']);
+            $vehicle = Vehicle::firstOrCreate(
+                ['plate_number' => 'B-1234-TLM'],
+                ['uuid' => (string) Str::uuid(), 'user_id' => $user->id, 'vin' => 'VIN-TLM-001', 'status' => 'active']
+            );
+            $device = TelematicsDevice::firstOrCreate(['device_id' => 'DEV-OBD2-001'], ['vehicle_id' => $vehicle->id, 'serial_number' => 'SN-TLM-889900', 'protocol' => 'MQTT_CANBUS', 'status' => 'online', 'last_heartbeat_at' => now()]);
+
+            return ['device' => $device->id];
+        },
+    ],
     'track.index' => 'public',
     'track.show' => 'public',
     'trade.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
@@ -1764,6 +1885,17 @@ return [
     'verification.notice' => 'auth',
     'verification.send' => 'auth',
     'verification.verify' => 'auth',
+    'venue.gate.scan' => [
+        'roles' => ['admin', 'venue_manager', 'venue_staff'],
+        'params' => function () {
+            $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
+            $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
+            $tck = EntertainmentTicket::firstOrCreate(['ticket_number' => 'TCK-DEMO-001'], ['event_id' => $event->id, 'buyer_user_id' => 1, 'price_paid_idr' => 750000, 'ticket_hash' => 'hash', 'status' => 'VALID']);
+
+            return ['ticket' => $tck->id];
+        },
+    ],
+    'venue.index' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'wallet.index' => ['roles' => ['admin', 'auditor', 'customer']],
     'wallet.mutasi' => ['roles' => ['admin', 'auditor', 'customer']],
     'wallet.mutasi.export' => ['roles' => ['admin', 'auditor', 'customer']],
@@ -1772,6 +1904,15 @@ return [
     'wallet.transfer' => ['roles' => ['admin', 'auditor', 'customer']],
     'wallet.transfer.lookup' => ['roles' => ['admin', 'customer']],
     'wallet.transfer.store' => ['roles' => ['admin', 'customer']],
+    'wealth.index' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
+    'wealth.profiles.invest' => [
+        'roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager'],
+        'params' => function () {
+            $prof = WmProfile::firstOrCreate(['user_id' => 1], ['risk_profile' => 'moderate', 'monthly_spend_baseline_idr' => 10000000, 'emergency_fund_target_idr' => 20000000, 'auto_invest_enabled' => true]);
+
+            return ['profile' => $prof->id];
+        },
+    ],
     'wms.cycle-counts.apply' => ['roles' => ['admin']],
     'wms.cycle-counts.store' => ['roles' => ['admin', 'hub_operator']],
     'wms.cycle-counts.submit' => ['roles' => ['admin', 'hub_operator']],

@@ -9,6 +9,7 @@ use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
 use Modules\Hospital\Domain\Models\ClinicalTrial;
 use Modules\Hospital\Domain\Models\DataVaultAccess;
+use Modules\Hospital\Domain\Models\HospitalBed;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\TrialSubject;
 use RuntimeException;
@@ -127,6 +128,33 @@ class ClinicalTrialAndResearchService
             'status' => 'SUCCESS',
             'trial_code' => $access->trial->trial_code,
             'records_accessible' => $access->trial->subjects()->count(),
+        ];
+    }
+
+    /**
+     * Two-source hospital and clinical trial audit.
+     */
+    public function auditHospital(): array
+    {
+        $trialCount = ClinicalTrial::count();
+        $subjectCount = TrialSubject::count();
+        $patientCount = Patient::count();
+        $bedCount = HospitalBed::count();
+        $discrepancies = 0;
+
+        // Two-source verification: an occupied bed must have an active encounter reference
+        $bedDiscrepancies = HospitalBed::where('status', 'OCCUPIED')
+            ->whereNull('current_encounter_id')
+            ->count();
+        $discrepancies += $bedDiscrepancies;
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'trial_count' => $trialCount,
+            'subject_count' => $subjectCount,
+            'patient_count' => $patientCount,
+            'bed_count' => $bedCount,
+            'discrepancies' => $discrepancies,
         ];
     }
 }

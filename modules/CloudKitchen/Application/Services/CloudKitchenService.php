@@ -132,4 +132,38 @@ class CloudKitchenService
             ));
         });
     }
+
+    /**
+     * Two-source Cloud Kitchen and Corporate Catering audit.
+     * Cross-checks order meal costs against subscription plan rates and verifies kitchen load capacity limits.
+     */
+    public function auditCloudKitchen(): array
+    {
+        $kitchenCount = CloudKitchen::count();
+        $subscriptionCount = CateringSubscription::count();
+        $orderCount = CateringOrder::count();
+        $discrepancies = 0;
+
+        $orders = CateringOrder::with('subscription')->get();
+        foreach ($orders as $order) {
+            if ($order->subscription && $order->meal_cost_idr !== $order->subscription->daily_meal_price_idr) {
+                $discrepancies++;
+            }
+        }
+
+        $kitchens = CloudKitchen::all();
+        foreach ($kitchens as $kitchen) {
+            if ($kitchen->current_hourly_load > $kitchen->hourly_capacity) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'kitchen_count' => $kitchenCount,
+            'subscription_count' => $subscriptionCount,
+            'order_count' => $orderCount,
+            'discrepancies' => $discrepancies,
+        ];
+    }
 }

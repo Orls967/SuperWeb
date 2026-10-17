@@ -143,4 +143,39 @@ class ProptechService
             return $billing;
         });
     }
+
+    /**
+     * Two-source proptech operations audit.
+     * Cross-checks zone utility billing calculations against zone rates and energy consumption.
+     */
+    public function auditProptech(): array
+    {
+        $zoneCount = BuildingZone::count();
+        $sensorCount = BuildingSensor::count();
+        $billingCount = ZoneUtilityBilling::count();
+        $hvacCommandCount = HvacCommand::count();
+        $discrepancies = 0;
+
+        $billings = ZoneUtilityBilling::with('zone')->get();
+        foreach ($billings as $b) {
+            if (! $b->zone) {
+                $discrepancies++;
+
+                continue;
+            }
+            $expected = (int) round($b->total_kwh * (float) $b->zone->current_kwh_rate);
+            if (abs($b->total_amount_idr - $expected) > 5) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'zone_count' => $zoneCount,
+            'sensor_count' => $sensorCount,
+            'billing_count' => $billingCount,
+            'hvac_command_count' => $hvacCommandCount,
+            'discrepancies' => $discrepancies,
+        ];
+    }
 }
