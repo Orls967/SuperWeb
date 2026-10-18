@@ -12,11 +12,14 @@ use Modules\Banking\Support\Posting;
 use Modules\Proptech\Domain\Models\BuildingSensor;
 use Modules\Proptech\Domain\Models\BuildingZone;
 use Modules\Proptech\Domain\Models\HvacCommand;
+use Modules\Proptech\Domain\Models\PrescriptiveOp;
 use Modules\Proptech\Domain\Models\ZoneUtilityBilling;
 
 class ProptechService
 {
     public const GRID_EMISSION_FACTOR = 0.85; // kg CO2e per kWh (PLN grid Java-Bali/Sumatera)
+
+    public const OVERTIME_AC_HOURLY_RATE = 75_000; // IDR per hour overtime AC
 
     public function __construct(
         protected ?LedgerService $ledgerService = null
@@ -39,6 +42,11 @@ class ProptechService
 
         $existing = BuildingSensor::where('idempotency_key', $key)->first();
         if ($existing) {
+            $existing->update([
+                'is_online' => true,
+                'last_heartbeat_at' => Carbon::now(),
+            ]);
+
             return $existing;
         }
 
@@ -48,6 +56,8 @@ class ProptechService
             'sensor_type' => $sensorType,
             'reading_value' => $readingValue,
             'idempotency_key' => $key,
+            'is_online' => true,
+            'last_heartbeat_at' => Carbon::now(),
             'recorded_at' => $recordedAt,
         ]);
 
@@ -95,14 +105,22 @@ class ProptechService
     }
 
     /**
-     * 76.3 & 76.4 Calculate Zone Utility Bill & Real-time GHG Carbon Emission
+     * 76.3 & 76.4 Calculate Zone Utility Bill & Real-time GHG Carbon Emission with Overtime AC
      */
     public function generateZoneUtilityBilling(
         BuildingZone $zone,
         ?int $tenantId,
-        Carbon $billingDate
+        Carbon $billingDate,
+        int $overtimeAcHours = 0
     ): ZoneUtilityBilling {
-        return DB::transaction(function () use ($zone, $tenantId, $billingDate) {
+        $idempotencyKey = "PRP-BLG-{$zone->id}-{$billingDate->toDateString()}";
+
+        $existing = ZoneUtilityBilling::where('idempotency_key', $idempotencyKey)->first();
+        if ($existing) {
+            return $existing;
+        }
+
+        return DB::transaction(function () use ($zone, $tenantId, $billingDate, $overtimeAcHours, $idempotencyKey) {
             // Sum all POWER_KWH readings for the zone on that date
             $totalKwh = (float) BuildingSensor::where('zone_id', $zone->id)
                 ->where('sensor_type', 'POWER_KWH')
@@ -110,28 +128,37 @@ class ProptechService
                 ->sum('reading_value');
 
             if ($totalKwh <= 0) {
-                $totalKwh = 100.0; // fallback test baseline
+                $totalKwh = (float) ($zone->baseline_kwh_per_hour * 10);
             }
 
-            $totalAmountIdr = (int) round($totalKwh * (float) $zone->current_kwh_rate);
+            $rate = (int) $zone->current_kwh_rate;
+            $baseAmountIdr = (int) round($totalKwh * $rate);
+            $overtimeAcAmountIdr = $overtimeAcHours * self::OVERTIME_AC_HOURLY_RATE;
+            $totalAmountIdr = $baseAmountIdr + $overtimeAcAmountIdr;
             $carbonEmissionKg = round($totalKwh * self::GRID_EMISSION_FACTOR, 2);
 
+            $billingCode = 'BLG-'.strtoupper(substr(hash('sha256', $idempotencyKey), 0, 10));
+
             $billing = ZoneUtilityBilling::create([
-                'billing_code' => 'BLG-'.strtoupper(bin2hex(random_bytes(6))),
+                'billing_code' => $billingCode,
                 'zone_id' => $zone->id,
                 'tenant_id' => $tenantId,
                 'billing_date' => $billingDate->toDateString(),
                 'total_kwh' => $totalKwh,
+                'overtime_ac_hours' => $overtimeAcHours,
+                'overtime_ac_amount_idr' => $overtimeAcAmountIdr,
+                'base_amount_idr' => $baseAmountIdr,
                 'total_amount_idr' => $totalAmountIdr,
                 'carbon_emission_kg' => $carbonEmissionKg,
                 'status' => 'BILLED',
+                'idempotency_key' => $idempotencyKey,
             ]);
 
-            // Ledger settlement: Debit Tenant Utility Receivable, Credit Mall/Building Utility Revenue
+            // Ledger settlement (A5 posting type <= 32 chars)
             $this->ledgerService->post(new PostingDTO(
                 type: 'PROPTECH_UTILITY_BILLING',
                 description: "Utility bill zone {$zone->zone_code} on {$billingDate->toDateString()}",
-                idempotencyKey: "PRP-BLG-{$billing->billing_code}",
+                idempotencyKey: "PRP-BLG-{$billingCode}",
                 entries: Posting::lines()
                     ->debit('prp:utility_ar:IDR', $totalAmountIdr)
                     ->credit('prp:utility_rev:IDR', $totalAmountIdr)
@@ -145,27 +172,80 @@ class ProptechService
     }
 
     /**
+     * 76.5 Prescriptive operations recommendation
+     */
+    public function createPrescriptiveRecommendation(
+        BuildingZone $zone,
+        string $actionCode,
+        string $recommendationText,
+        float $potentialKwhSaved,
+        int $paybackMonths = 1
+    ): PrescriptiveOp {
+        $potentialSavingIdr = (int) round($potentialKwhSaved * (float) $zone->current_kwh_rate * 30);
+
+        return PrescriptiveOp::firstOrCreate(
+            ['action_code' => $actionCode],
+            [
+                'zone_id' => $zone->id,
+                'recommendation_text' => $recommendationText,
+                'potential_kwh_saved' => $potentialKwhSaved,
+                'potential_saving_idr' => $potentialSavingIdr,
+                'payback_months' => $paybackMonths,
+                'status' => 'PROPOSED',
+            ]
+        );
+    }
+
+    public function approvePrescriptiveRecommendation(PrescriptiveOp $op): PrescriptiveOp
+    {
+        $op->update(['status' => 'APPROVED']);
+
+        return $op;
+    }
+
+    public function applyPrescriptiveRecommendation(PrescriptiveOp $op): PrescriptiveOp
+    {
+        $op->update(['status' => 'APPLIED']);
+
+        return $op;
+    }
+
+    /**
      * Two-source proptech operations audit.
      * Cross-checks zone utility billing calculations against zone rates and energy consumption.
      */
-    public function auditProptech(): array
+    public function auditSmartBuilding(): array
     {
         $zoneCount = BuildingZone::count();
         $sensorCount = BuildingSensor::count();
         $billingCount = ZoneUtilityBilling::count();
         $hvacCommandCount = HvacCommand::count();
         $discrepancies = 0;
+        $corruptedIds = [];
 
         $billings = ZoneUtilityBilling::with('zone')->get();
         foreach ($billings as $b) {
             if (! $b->zone) {
                 $discrepancies++;
+                $corruptedIds[] = (string) $b->id;
 
                 continue;
             }
-            $expected = (int) round($b->total_kwh * (float) $b->zone->current_kwh_rate);
-            if (abs($b->total_amount_idr - $expected) > 5) {
+
+            $rate = (int) $b->zone->current_kwh_rate;
+            $expectedBase = (int) round($b->total_kwh * $rate);
+            $expectedOvertime = (int) ($b->overtime_ac_hours * self::OVERTIME_AC_HOURLY_RATE);
+            $expectedTotal = $expectedBase + $expectedOvertime;
+
+            if (abs($b->total_amount_idr - $expectedTotal) > 5) {
                 $discrepancies++;
+                $corruptedIds[] = (string) $b->id;
+            }
+
+            $expectedCarbon = round($b->total_kwh * self::GRID_EMISSION_FACTOR, 2);
+            if (abs((float) $b->carbon_emission_kg - $expectedCarbon) > 0.05) {
+                $discrepancies++;
+                $corruptedIds[] = (string) $b->id;
             }
         }
 
@@ -176,6 +256,12 @@ class ProptechService
             'billing_count' => $billingCount,
             'hvac_command_count' => $hvacCommandCount,
             'discrepancies' => $discrepancies,
+            'corrupted_ids' => array_values(array_unique($corruptedIds)),
         ];
+    }
+
+    public function auditProptech(): array
+    {
+        return $this->auditSmartBuilding();
     }
 }

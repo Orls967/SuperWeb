@@ -17,12 +17,16 @@ class BuildingSensor extends Model
         'sensor_type',
         'reading_value',
         'idempotency_key',
+        'is_online',
+        'last_heartbeat_at',
         'recorded_at',
     ];
 
     protected $casts = [
         'recorded_at' => 'datetime',
+        'last_heartbeat_at' => 'datetime',
         'reading_value' => 'decimal:2',
+        'is_online' => 'boolean',
     ];
 
     public function zone(): BelongsTo

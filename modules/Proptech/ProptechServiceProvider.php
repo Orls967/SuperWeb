@@ -9,6 +9,7 @@ use Modules\Proptech\Application\Services\BimTwinService;
 use Modules\Proptech\Application\Services\FlexSpaceService;
 use Modules\Proptech\Application\Services\ProptechService;
 use Modules\Proptech\Console\Commands\AuditProptechCommand;
+use Modules\Proptech\Console\Commands\AuditSmartBuildingCommand;
 
 class ProptechServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,7 @@ class ProptechServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AuditProptechCommand::class,
+                AuditSmartBuildingCommand::class,
             ]);
         }
     }

@@ -41,6 +41,7 @@ use App\Quality\Audit\Fixtures\MobileAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PlmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PricingAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProcAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\ProptechSmartBuildingCorruptionFixture;
 use App\Quality\Audit\Fixtures\PrpAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PtnAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
@@ -104,6 +105,7 @@ final class AuditCommandRegistry
             'pricing:audit' => new PricingAuditCorruptionFixture,
             'proc:audit' => new ProcAuditCorruptionFixture,
             'prp:audit' => new PrpAuditCorruptionFixture,
+            'prp:audit-smartbuilding' => new ProptechSmartBuildingCorruptionFixture,
             'ptn:audit' => new PtnAuditCorruptionFixture,
             'rwa:audit' => new RwaAuditCorruptionFixture,
             'security:audit' => new SecurityAuditCorruptionFixture,

@@ -20,6 +20,15 @@ class BuildingZone extends Model
         'current_temp_c',
         'current_occupancy',
         'current_kwh_rate',
+        'baseline_kwh_per_hour',
+        'status',
+    ];
+
+    protected $casts = [
+        'current_kwh_rate' => 'integer',
+        'current_temp_c' => 'decimal:1',
+        'area_sqm' => 'decimal:2',
+        'baseline_kwh_per_hour' => 'decimal:2',
     ];
 
     public function sensors(): HasMany

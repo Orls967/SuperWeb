@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Proptech\tests\Feature;
 
 use App\Models\User;
+use App\Quality\Audit\Fixtures\ProptechSmartBuildingCorruptionFixture;
 use App\Quality\Audit\Fixtures\PrpAuditCorruptionFixture;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -22,7 +23,7 @@ class ProptechVerticalSliceHttpTest extends TestCase
         (new ProptechDemoSeeder)->run();
     }
 
-    public function test_a_authorized_user_can_access_proptech_index_and_generate_bill(): void
+    public function test_a_authorized_user_can_access_proptech_index_and_generate_bill_with_overtime(): void
     {
         $manager = User::factory()->create(['role' => 'facility_manager']);
         $zone = BuildingZone::firstOrFail();
@@ -30,13 +31,15 @@ class ProptechVerticalSliceHttpTest extends TestCase
         // 1. Access index
         $response = $this->actingAs($manager)->get(route('proptech.index'));
         $response->assertOk();
-        $response->assertSeeText('Proptech & Smart Building Operations');
+        $response->assertSeeText('Proptech Smart Building Operations');
         $response->assertSee($zone->zone_code);
+        $response->assertSeeText('Prescriptive Operations & Optimasi Energi');
 
-        // 2. Generate bill
+        // 2. Generate bill with overtime AC
         $billResponse = $this->actingAs($manager)->post(route('proptech.zones.bill', $zone), [
             'tenant_id' => 1,
             'billing_date' => now()->toDateString(),
+            'overtime_ac_hours' => 3,
         ]);
 
         $billResponse->assertRedirect(route('proptech.index'));
@@ -46,6 +49,8 @@ class ProptechVerticalSliceHttpTest extends TestCase
             'zone_id' => $zone->id,
             'tenant_id' => 1,
             'status' => 'BILLED',
+            'overtime_ac_hours' => 3,
+            'overtime_ac_amount_idr' => 225000,
         ]);
     }
 
@@ -67,6 +72,9 @@ class ProptechVerticalSliceHttpTest extends TestCase
     {
         $code = Artisan::call('prp:audit');
         $this->assertSame(0, $code);
+
+        $codeSmart = Artisan::call('prp:audit-smartbuilding');
+        $this->assertSame(0, $codeSmart);
     }
 
     public function test_e_prp_audit_fails_when_data_is_corrupted(): void
@@ -75,6 +83,15 @@ class ProptechVerticalSliceHttpTest extends TestCase
         $fixture->corrupt();
 
         $code = Artisan::call('prp:audit');
+        $this->assertSame(1, $code);
+    }
+
+    public function test_f_prp_audit_smartbuilding_fails_when_data_is_corrupted(): void
+    {
+        $fixture = new ProptechSmartBuildingCorruptionFixture;
+        $fixture->corrupt();
+
+        $code = Artisan::call('prp:audit-smartbuilding');
         $this->assertSame(1, $code);
     }
 }

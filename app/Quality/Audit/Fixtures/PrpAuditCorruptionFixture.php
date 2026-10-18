@@ -42,6 +42,7 @@ final class PrpAuditCorruptionFixture implements CorruptionFixture
             'total_amount_idr' => 999999999,
             'carbon_emission_kg' => 85.0,
             'status' => 'BILLED',
+            'idempotency_key' => 'PRP-CORRUPT-KEY-'.Str::random(8),
         ]);
 
         return 'Proptech audit FAILED';
