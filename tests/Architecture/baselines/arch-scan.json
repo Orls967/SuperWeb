@@ -446,7 +446,7 @@
             }
         },
         "A2": {
-            "total": 5208,
+            "total": 5204,
             "entries": {
                 "modules/Agency/Console/Commands/AuditAgencyCommand.php": {
                     "DB::table('bank_ledger_accounts')": 1
@@ -506,16 +506,6 @@
                 },
                 "modules/Distribution/Console/Commands/AuditDistributionCommand.php": {
                     "DB::table('bank_ledger_accounts')": 2
-                },
-                "modules/Ev/Domain/Models/EvSession.php": {
-                    "$table('oto_ev_sessions')": 1
-                },
-                "modules/Ev/Domain/Models/EvStation.php": {
-                    "$table('oto_ev_stations')": 1
-                },
-                "modules/Ev/database/migrations/2026_10_07_690100_create_oto_ev_tables.php": {
-                    "Schema::create('oto_ev_sessions')": 1,
-                    "Schema::create('oto_ev_stations')": 1
                 },
                 "modules/Integration/Application/Services/AcademicIndustryResearchService.php": {
                     "DB::table('academic_funding_tranches')": 3,

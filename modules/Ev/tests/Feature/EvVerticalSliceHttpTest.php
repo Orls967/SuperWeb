@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Artisan;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Ev\database\seeders\EvDemoSeeder;
 use Modules\Ev\Domain\Models\EvCharger;
+use Modules\Ev\Domain\Models\EvSession;
+use Modules\Ev\Domain\Models\EvStation;
 use Tests\TestCase;
 
 class EvVerticalSliceHttpTest extends TestCase
@@ -78,5 +80,71 @@ class EvVerticalSliceHttpTest extends TestCase
 
         $code = Artisan::call('ev:audit');
         $this->assertSame(1, $code);
+    }
+
+    public function test_f_check_in_and_complete_session_role_restrictions(): void
+    {
+        $driver = User::factory()->create(['role' => 'driver']);
+        $wallet = $driver->walletAccount('IDR');
+        $wallet->forceFill(['cached_balance' => '1000000'])->save();
+        $operator = User::factory()->create(['role' => 'station_operator']);
+        $charger = EvCharger::firstOrFail();
+        $vehicle = Vehicle::firstOrFail();
+
+        // Create reserved session
+        $session = EvSession::create([
+            'session_code' => 'EV-HTTP-TEST-01',
+            'charger_id' => $charger->id,
+            'vehicle_id' => $vehicle->id,
+            'user_id' => $driver->id,
+            'reserved_from' => now(),
+            'reserved_to' => now()->addMinutes(30),
+            'tariff_per_kwh_idr' => 2500,
+            'status' => 'reserved',
+        ]);
+
+        // Driver can check-in via QR
+        $checkInResponse = $this->actingAs($driver)->post(route('ev.chargers.checkin', $charger), [
+            'session_id' => $session->id,
+            'qr_code' => $charger->charger_code,
+        ]);
+        $checkInResponse->assertRedirect(route('ev.index'));
+        $checkInResponse->assertSessionHas('success');
+
+        $session->refresh();
+        $this->assertEquals('plugged_in', $session->status);
+
+        // Driver cannot complete session (restricted to admin/operator) -> 403
+        $driverCompleteResponse = $this->actingAs($driver)->post(route('ev.sessions.complete', $session), [
+            'energy_wh' => 25000,
+        ]);
+        $driverCompleteResponse->assertForbidden();
+
+        // Operator can complete session -> 302 redirect
+        $operatorCompleteResponse = $this->actingAs($operator)->post(route('ev.sessions.complete', $session), [
+            'energy_wh' => 25000,
+            'peak_cell_temp_c' => 36.5,
+        ]);
+        $operatorCompleteResponse->assertRedirect(route('ev.index'));
+        $operatorCompleteResponse->assertSessionHas('success');
+
+        $session->refresh();
+        $this->assertEquals('completed', $session->status);
+    }
+
+    public function test_g_grid_load_balance_endpoint_role_restrictions(): void
+    {
+        $driver = User::factory()->create(['role' => 'driver']);
+        $operator = User::factory()->create(['role' => 'station_operator']);
+        $station = EvStation::firstOrFail();
+
+        // Driver cannot trigger load balancing -> 403
+        $driverResponse = $this->actingAs($driver)->post(route('ev.stations.loadbalance', $station));
+        $driverResponse->assertForbidden();
+
+        // Operator can trigger load balancing -> 302
+        $operatorResponse = $this->actingAs($operator)->post(route('ev.stations.loadbalance', $station));
+        $operatorResponse->assertRedirect(route('ev.index'));
+        $operatorResponse->assertSessionHas('success');
     }
 }

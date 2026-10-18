@@ -23,6 +23,7 @@ use Modules\Crypto\Domain\Models\CryptoAsset;
 use Modules\Crypto\Domain\Models\CryptoPriceTick;
 use Modules\Distribution\Domain\Models\Distributor;
 use Modules\Ev\Domain\Models\EvCharger;
+use Modules\Ev\Domain\Models\EvSession;
 use Modules\Ev\Domain\Models\EvStation;
 use Modules\Finance\Domain\Models\Loan;
 use Modules\Fleet\Domain\Models\FleetContract;
@@ -717,6 +718,40 @@ return [
             $charger = EvCharger::firstOrCreate(['charger_code' => 'CHG-CCS2-01'], ['station_id' => $station->id, 'type' => 'DC_FAST', 'max_kw' => 150, 'status' => 'available']);
 
             return ['charger' => $charger->id];
+        },
+    ],
+    'ev.chargers.checkin' => [
+        'roles' => ['admin', 'driver', 'ev_admin', 'station_operator'],
+        'params' => function () {
+            $station = EvStation::firstOrCreate(['station_code' => 'SPKLU-PLN-01'], ['name' => 'SPKLU Sudirman', 'location_type' => 'PUBLIC', 'address' => 'Sudirman', 'latitude' => -6.2, 'longitude' => 106.8, 'is_active' => true]);
+            $charger = EvCharger::firstOrCreate(['charger_code' => 'CHG-CCS2-01'], ['station_id' => $station->id, 'type' => 'DC_FAST', 'max_kw' => 150, 'status' => 'available']);
+
+            return ['charger' => $charger->id];
+        },
+    ],
+    'ev.sessions.complete' => [
+        'roles' => ['admin', 'ev_admin', 'station_operator'],
+        'params' => function () {
+            $user = User::firstOrCreate(['email' => 'driver-route@example.com'], ['name' => 'Route Driver', 'password' => 'secret']);
+            $vehicle = Vehicle::firstOrCreate(['vin' => 'VIN-ROUTE-01'], ['user_id' => $user->id, 'plate_number' => 'B 1111 EV', 'color' => 'White', 'odometer_km' => 1000, 'status' => 'active']);
+            $station = EvStation::firstOrCreate(['station_code' => 'SPKLU-PLN-01'], ['name' => 'SPKLU Sudirman', 'location_type' => 'PUBLIC', 'address' => 'Sudirman', 'latitude' => -6.2, 'longitude' => 106.8, 'is_active' => true]);
+            $charger = EvCharger::firstOrCreate(['charger_code' => 'CHG-CCS2-01'], ['station_id' => $station->id, 'type' => 'DC_FAST', 'max_kw' => 150, 'status' => 'available']);
+            $session = EvSession::firstOrCreate(['session_code' => 'EV-SESS-ROUTE-01'], [
+                'charger_id' => $charger->id,
+                'vehicle_id' => $vehicle->id,
+                'user_id' => $user->id,
+                'status' => 'plugged_in',
+            ]);
+
+            return ['session' => $session->id];
+        },
+    ],
+    'ev.stations.loadbalance' => [
+        'roles' => ['admin', 'ev_admin', 'station_operator'],
+        'params' => function () {
+            $station = EvStation::firstOrCreate(['station_code' => 'SPKLU-PLN-01'], ['name' => 'SPKLU Sudirman', 'location_type' => 'PUBLIC', 'address' => 'Sudirman', 'latitude' => -6.2, 'longitude' => 106.8, 'is_active' => true]);
+
+            return ['station' => $station->id];
         },
     ],
     'estimates.approve' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id], 'setup' => $storeAutoServeCustomerSetup],

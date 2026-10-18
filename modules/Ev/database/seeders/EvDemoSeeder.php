@@ -10,6 +10,7 @@ use Illuminate\Database\Seeder;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Core\Domain\Models\Vehicle;
+use Modules\Ev\Domain\Models\EvBatteryPassport;
 use Modules\Ev\Domain\Models\EvCharger;
 use Modules\Ev\Domain\Models\EvSession;
 use Modules\Ev\Domain\Models\EvStation;
@@ -83,6 +84,36 @@ class EvDemoSeeder extends Seeder
                 'final_soh_pct' => 98.5,
                 'completed_at' => now(),
                 'status' => 'completed',
+            ]
+        );
+
+        $prevHash = hash('sha256', 'GENESIS:BATTERY:PASSPORT:'.$vehicle->id);
+        $recordedAt = now();
+        $payload = implode('|', [
+            $prevHash,
+            $vehicle->id,
+            'EV-DEMO-001',
+            1,
+            25000,
+            number_format(98.5, 2, '.', ''),
+            number_format(35.0, 2, '.', ''),
+            $recordedAt->toIso8601String(),
+        ]);
+        $blockHash = hash('sha256', $payload);
+
+        EvBatteryPassport::firstOrCreate(
+            ['session_code' => 'EV-DEMO-001'],
+            [
+                'vehicle_id' => $vehicle->id,
+                'cycle_number' => 1,
+                'initial_soh_pct' => 100.0,
+                'final_soh_pct' => 98.5,
+                'delta_soh' => 1.5,
+                'max_cell_temp_c' => 35.0,
+                'energy_wh' => 25000,
+                'prev_hash' => $prevHash,
+                'block_hash' => $blockHash,
+                'recorded_at' => $recordedAt,
             ]
         );
     }

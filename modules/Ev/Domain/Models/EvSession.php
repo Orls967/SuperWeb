@@ -24,9 +24,14 @@ class EvSession extends Model
         'energy_wh',
         'tariff_per_kwh_idr',
         'total_cost_idr',
+        'deposit_held_idr',
         'no_show_fee_idr',
         'initial_soh_pct',
         'final_soh_pct',
+        'peak_cell_temp_c',
+        'deferred_minutes',
+        'scope2_co2_kg',
+        'green_km_saved_co2_kg',
         'status',
     ];
 
@@ -38,9 +43,14 @@ class EvSession extends Model
         'energy_wh' => 'integer',
         'tariff_per_kwh_idr' => 'integer',
         'total_cost_idr' => 'integer',
+        'deposit_held_idr' => 'integer',
         'no_show_fee_idr' => 'integer',
         'initial_soh_pct' => 'float',
         'final_soh_pct' => 'float',
+        'peak_cell_temp_c' => 'float',
+        'deferred_minutes' => 'integer',
+        'scope2_co2_kg' => 'float',
+        'green_km_saved_co2_kg' => 'float',
     ];
 
     public function charger()

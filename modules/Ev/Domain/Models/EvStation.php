@@ -17,7 +17,13 @@ class EvStation extends Model
         'address',
         'latitude',
         'longitude',
+        'transformer_capacity_kw',
         'is_active',
+    ];
+
+    protected $casts = [
+        'transformer_capacity_kw' => 'integer',
+        'is_active' => 'boolean',
     ];
 
     public function chargers()

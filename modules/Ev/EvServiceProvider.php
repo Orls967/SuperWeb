@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Ev\Application\Services\BatteryPassportService;
 use Modules\Ev\Application\Services\EvChargingService;
 use Modules\Ev\Console\Commands\AuditEvCommand;
 
@@ -19,7 +20,8 @@ class EvServiceProvider extends ServiceProvider
             return new EvChargingService(
                 $app->make(SimClockInterface::class),
                 $app->make(DigitalTwinInterface::class),
-                $app->make(LedgerService::class)
+                $app->make(LedgerService::class),
+                $app->make(BatteryPassportService::class)
             );
         });
     }
