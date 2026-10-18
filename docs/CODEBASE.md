@@ -558,7 +558,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Esg** | 1 | `esg` | web, auth, role:admin,esg_officer,auditor |
 | **Ev** | 5 | `ev`, `ev/chargers/{charger}/reserve`, `ev/chargers/{charger}/check-in` ... | web, auth, role:admin,ev_admin,station_operator,driver |
 | **Finance** | 8 | `pembiayaan`, `pembiayaan/simulasi/{product}`, `pembiayaan/{loan}` ... | web, auth, role:admin,customer,treasury,auditor |
-| **Fleet** | 2 | `fleet`, `fleet/contracts/{contract}/amortize` | web, auth, role:admin,fleet_admin,lease_manager |
+| **Fleet** | 5 | `fleet`, `fleet/contracts`, `fleet/contracts/{contract}/amortize` ... | web, auth, role:admin,fleet_admin,lease_manager |
 | **Hcm** | 1 | `hcm` | web, auth, role:admin,hcm_manager |
 | **Hospital** | 2 | `hospital`, `hospital/trials/{trial}/bill-milestone` | web, auth, role:admin,hospital_admin,doctor |
 | **Hotel** | 2 | `hotel`, `hotel/reservations/{reservation}/settle` | web, auth, role:admin,hotel_admin,front_desk |
@@ -588,7 +588,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 2 | `venue`, `venue/tickets/{ticket}/scan` | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 2 | `wealth`, `wealth/profiles/{profile}/invest` | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **643 Rute** | | |
+| **Total** | **646 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |

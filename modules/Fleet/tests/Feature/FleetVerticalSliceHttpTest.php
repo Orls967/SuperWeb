@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Modules\Fleet\database\seeders\FleetDemoSeeder;
 use Modules\Fleet\Domain\Models\FleetContract;
+use Modules\Fleet\Domain\Models\FleetContractUnit;
 use Tests\TestCase;
 
 class FleetVerticalSliceHttpTest extends TestCase
@@ -30,7 +31,7 @@ class FleetVerticalSliceHttpTest extends TestCase
         // 1. Access index
         $response = $this->actingAs($manager)->get(route('fleet.index'));
         $response->assertOk();
-        $response->assertSeeText('B2B Fleet Leasing & SLA Management');
+        $response->assertSeeText('B2B Fleet');
         $response->assertSee($contract->contract_number);
 
         // 2. Amortize month 1
@@ -41,7 +42,7 @@ class FleetVerticalSliceHttpTest extends TestCase
         $amortizeResponse->assertRedirect(route('fleet.index'));
         $amortizeResponse->assertSessionHas('success');
 
-        $this->assertEquals(
+        $this->assertSame(
             $contract->monthly_rental_idr,
             $contract->fresh()->accumulated_amortized_idr
         );
@@ -49,10 +50,13 @@ class FleetVerticalSliceHttpTest extends TestCase
 
     public function test_b_unauthorized_role_is_forbidden_403(): void
     {
-        $guest = User::factory()->create(['role' => 'customer']);
+        $customer = User::factory()->create(['role' => 'customer']);
+        $driver = User::factory()->create(['role' => 'driver']);
+        $operator = User::factory()->create(['role' => 'station_operator']);
 
-        $response = $this->actingAs($guest)->get(route('fleet.index'));
-        $response->assertForbidden();
+        $this->actingAs($customer)->get(route('fleet.index'))->assertForbidden();
+        $this->actingAs($driver)->get(route('fleet.index'))->assertForbidden();
+        $this->actingAs($operator)->get(route('fleet.index'))->assertForbidden();
     }
 
     public function test_c_unauthenticated_user_is_redirected_to_login_302(): void
@@ -74,5 +78,55 @@ class FleetVerticalSliceHttpTest extends TestCase
 
         $code = Artisan::call('flt:audit');
         $this->assertSame(1, $code);
+    }
+
+    public function test_f_sla_claim_endpoint_role_restrictions(): void
+    {
+        $admin = User::factory()->create(['role' => 'fleet_admin']);
+        $customer = User::factory()->create(['role' => 'customer']);
+        $contract = FleetContract::firstOrFail();
+        $unit = FleetContractUnit::where('contract_id', $contract->id)->firstOrFail();
+
+        // Unauthorized
+        $this->actingAs($customer)->post(route('fleet.contracts.sla-claim', $contract), [
+            'vehicle_id' => $unit->vehicle_id,
+            'incident_month' => '2026-08',
+            'telematics_grounded_hours' => 30,
+            'workshop_service_hours' => 5,
+        ])->assertForbidden();
+
+        // Authorized
+        $response = $this->actingAs($admin)->post(route('fleet.contracts.sla-claim', $contract), [
+            'vehicle_id' => $unit->vehicle_id,
+            'incident_month' => '2026-08',
+            'telematics_grounded_hours' => 30,
+            'workshop_service_hours' => 5,
+        ]);
+
+        $response->assertRedirect(route('fleet.index'));
+        $response->assertSessionHas('success');
+    }
+
+    public function test_g_return_unit_endpoint_role_restrictions(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $driver = User::factory()->create(['role' => 'driver']);
+        $contract = FleetContract::firstOrFail();
+        $unit = FleetContractUnit::where('contract_id', $contract->id)->firstOrFail();
+
+        // Unauthorized
+        $this->actingAs($driver)->post(route('fleet.contracts.return-unit', $contract), [
+            'vehicle_id' => $unit->vehicle_id,
+            'condition_notes' => 'Siap dikembalikan ke AutoDex',
+        ])->assertForbidden();
+
+        // Authorized
+        $response = $this->actingAs($admin)->post(route('fleet.contracts.return-unit', $contract), [
+            'vehicle_id' => $unit->vehicle_id,
+            'condition_notes' => 'Siap dikembalikan ke AutoDex',
+        ]);
+
+        $response->assertRedirect(route('fleet.index'));
+        $response->assertSessionHas('success');
     }
 }

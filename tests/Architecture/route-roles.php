@@ -768,7 +768,24 @@ return [
     'finance.loans.store' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['product' => $financeCryptoSeedHelper()['product']->slug]],
     'finance.loans.topUpCollateral' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['loan' => $financeCryptoSeedHelper()['loan']->uuid], 'setup' => $financeCryptoCustomerSetup],
     'fleet.index' => ['roles' => ['admin', 'fleet_admin', 'lease_manager']],
+    'fleet.contracts.store' => ['roles' => ['admin', 'fleet_admin', 'lease_manager']],
     'fleet.contracts.amortize' => [
+        'roles' => ['admin', 'fleet_admin', 'lease_manager'],
+        'params' => function () {
+            $contract = FleetContract::firstOrCreate(['contract_number' => 'FLT-DEMO-001'], ['party_id' => 501, 'duration_months' => 12, 'total_units' => 1, 'monthly_rental_idr' => 15000000, 'total_lease_value_idr' => 180000000, 'accumulated_amortized_idr' => 0, 'max_downtime_hours_per_month' => 24, 'start_date' => now(), 'end_date' => now()->addMonths(12), 'status' => 'active']);
+
+            return ['contract' => $contract->id];
+        },
+    ],
+    'fleet.contracts.sla-claim' => [
+        'roles' => ['admin', 'fleet_admin', 'lease_manager'],
+        'params' => function () {
+            $contract = FleetContract::firstOrCreate(['contract_number' => 'FLT-DEMO-001'], ['party_id' => 501, 'duration_months' => 12, 'total_units' => 1, 'monthly_rental_idr' => 15000000, 'total_lease_value_idr' => 180000000, 'accumulated_amortized_idr' => 0, 'max_downtime_hours_per_month' => 24, 'start_date' => now(), 'end_date' => now()->addMonths(12), 'status' => 'active']);
+
+            return ['contract' => $contract->id];
+        },
+    ],
+    'fleet.contracts.return-unit' => [
         'roles' => ['admin', 'fleet_admin', 'lease_manager'],
         'params' => function () {
             $contract = FleetContract::firstOrCreate(['contract_number' => 'FLT-DEMO-001'], ['party_id' => 501, 'duration_months' => 12, 'total_units' => 1, 'monthly_rental_idr' => 15000000, 'total_lease_value_idr' => 180000000, 'accumulated_amortized_idr' => 0, 'max_downtime_hours_per_month' => 24, 'start_date' => now(), 'end_date' => now()->addMonths(12), 'status' => 'active']);
