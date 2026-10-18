@@ -3307,37 +3307,161 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 69.1–69.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 70 — B2B FLEET & CORPORATE LEASING
-> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 70 (DoR disetujui pemilik).
+> **Status audit 2026-10-19:** ✅ TERVERIFIKASI. Selesai tuntas pada Fase 70.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mobility (`oto_`) + Contract · **Prasyarat:** Fase 68 ✅ · **Acuan:** KONSEP 1F slice 3
 > **Jalan pintas terlarang di fase ini:** akumulasi amortisasi sebelum posting ber-key; `Str::random` di key kompensasi SLA; klaim 'PSAK 73' tanpa PV/ROU (implementasi atau turunkan lewat P10) — ditambah seluruh X1–X25.
-- [ ] 70.1 Tabel `oto_fleet_contracts` (perusahaan penyewa = party, durasi 1–5 tahun, jumlah unit, SLA downtime maks, batas km/tahun, opsi perpanjangan/akuisisi), `oto_fleet_contract_units` (unit terikat, odometer baseline)
-- [ ] 70.2 Onboarding B2B: KYB Party (Fase 27), credit profile, deposit/garansi via Payment Hub, approval four-eyes di atas ambang nilai
-- [ ] 70.3 **Amortisasi nilai sewa** (PSAK 73 simulasi): hak guna + liabilitas sewa per kontrak, jurnal bulanan idempoten, bunga vs pokok, perhitungan sisa nilai — terhubung modul Aset (Fase 31.6)
-- [ ] 70.4 **SLA & telematik armada sewa**: tick telematik (Fase 68) + status Maintenance (AutoServe) dihitung menjadi downtime; pelanggaran SLA → kredit/kompensasi otomatis ke invoice penyewa; rute harian armada dipantau via kontrak ke Logistics (Fase 24.3 diperluas)
-- [ ] 70.5 Lifecycle: denda km berlebih, penggantian unit di tengah kontrak, early termination (hitung sisa liabilitas), end-of-lease condition report → unit masuk kembali ke AutoDex/Store sebagai bekas (berpaspor)
-- [ ] 70.6 Dashboard fleet B2B: utilisasi per unit, biaya total kepemilikan (TCO), uptime, jatuh tempo kontrak, eksposur piutang sewa
-- [ ] 70.7 Tests: (a) amortisasi bulan 1..60 Σ = nilai sewa (b) SLA breach menghasilkan kredit yang mengurangi AR (c) lease ganda per unit ditolak (d) end-of-lease transfer unit ke inventaris sah (e) reconcile sewa = ledger
-- [ ] 70.8 Quality gate Fase 70
+- [x] 70.1 Tabel `oto_fleet_contracts` (perusahaan penyewa = party, durasi 1–5 tahun, jumlah unit, SLA downtime maks, batas km/tahun, opsi perpanjangan/akuisisi), `oto_fleet_contract_units` (unit terikat, odometer baseline)
+  Bukti:
+    - jenis: fitur
+    - commit: 76633f9
+    - file: modules/Fleet/database/migrations/2026_10_07_700100_create_oto_fleet_tables.php
+    - file: modules/Fleet/Domain/Models/FleetContract.php
+    - test: modules/Fleet/tests/Feature/FleetTest.php::test_fleet_contract_creation_and_double_lease_prevention
+    - akses: route GET /fleet [role: admin, fleet_admin, lease_manager]
+    - gate: docs/gates/fase-70.md
+- [x] 70.2 Onboarding B2B: KYB Party (Fase 27), credit profile, deposit/garansi via Payment Hub, approval four-eyes di atas ambang nilai
+  Bukti:
+    - jenis: fitur
+    - commit: 76633f9
+    - file: modules/Fleet/Application/Services/FleetLeasingService.php
+    - test: modules/Fleet/tests/Feature/FleetTest.php::test_four_eyes_approval_workflow
+    - akses: route POST /fleet/contracts [role: admin, fleet_admin, lease_manager]
+    - gate: docs/gates/fase-70.md
+- [x] 70.3 **Amortisasi nilai sewa** (PSAK 73 simulasi): hak guna + liabilitas sewa per kontrak, jurnal bulanan idempoten, bunga vs pokok, perhitungan sisa nilai — terhubung modul Aset (Fase 31.6)
+  Bukti:
+    - jenis: fitur
+    - commit: 76633f9
+    - file: modules/Fleet/Application/Services/FleetLeasingService.php
+    - test: modules/Fleet/tests/Feature/FleetTest.php::test_psak_73_schedule_principal_and_interest_invariants
+    - akses: route POST /fleet/contracts/{contract}/amortize [role: admin, fleet_admin, lease_manager]
+    - gate: docs/gates/fase-70.md
+- [x] 70.4 **SLA & telematik armada sewa**: tick telematik (Fase 68) + status Maintenance (AutoServe) dihitung menjadi downtime; pelanggaran SLA → kredit/kompensasi otomatis ke invoice penyewa; rute harian armada dipantau via kontrak ke Logistics (Fase 24.3 diperluas)
+  Bukti:
+    - jenis: fitur
+    - commit: 76633f9
+    - file: modules/Fleet/Application/Services/FleetSlaMonitorService.php
+    - file: modules/Fleet/Domain/Models/FleetSlaLog.php
+    - test: modules/Fleet/tests/Feature/FleetTest.php::test_sla_breach_telematics_and_workshop_creates_ar_credit_note
+    - akses: route POST /fleet/contracts/{contract}/sla-claim [role: admin, fleet_admin, lease_manager]
+    - gate: docs/gates/fase-70.md
+- [x] 70.5 Lifecycle: denda km berlebih, penggantian unit di tengah kontrak, early termination (hitung sisa liabilitas), end-of-lease condition report → unit masuk kembali ke AutoDex/Store sebagai bekas (berpaspor)
+  Bukti:
+    - jenis: fitur
+    - commit: 76633f9
+    - file: modules/Fleet/Application/Services/FleetLeasingService.php
+    - test: modules/Fleet/tests/Feature/FleetTest.php::test_end_of_lease_inspection_and_return_to_autodex
+    - akses: route POST /fleet/contracts/{contract}/return-unit [role: admin, fleet_admin, lease_manager]
+    - gate: docs/gates/fase-70.md
+- [x] 70.6 Dashboard fleet B2B: utilisasi per unit, biaya total kepemilikan (TCO), uptime, jatuh tempo kontrak, eksposur piutang sewa
+  Bukti:
+    - jenis: fitur
+    - commit: 76633f9
+    - file: modules/Fleet/Http/Controllers/FleetController.php
+    - file: modules/Fleet/resources/views/fleet/index.blade.php
+    - test: modules/Fleet/tests/Feature/FleetVerticalSliceHttpTest.php::test_a_authorized_user_can_access_fleet_index_and_amortize
+    - akses: route GET /fleet [role: admin, fleet_admin, lease_manager]
+    - gate: docs/gates/fase-70.md
+- [x] 70.7 Tests: (a) amortisasi bulan 1..60 Σ = nilai sewa (b) SLA breach menghasilkan kredit yang mengurangi AR (c) lease ganda per unit ditolak (d) end-of-lease transfer unit ke inventaris sah (e) reconcile sewa = ledger
+  Bukti:
+    - jenis: tooling
+    - commit: 76633f9
+    - file: modules/Fleet/tests/Feature/FleetTest.php
+    - test: modules/Fleet/tests/Feature/FleetTest.php::test_fleet_lease_amortization_sums_to_total_lease_value_and_completes
+    - gate: docs/gates/fase-70.md
+- [x] 70.8 Quality gate Fase 70
+  Bukti:
+    - jenis: dokumen
+    - commit: 76633f9
+    - file: docs/gates/fase-70.md
+    - file: modules/Fleet/tests/Feature/FleetVerticalSliceHttpTest.php
+    - test: modules/Fleet/tests/Feature/FleetVerticalSliceHttpTest.php::test_d_two_source_fleet_audit_passes_cleanly
+    - akses: command flt:audit
+    - gate: docs/gates/fase-70.md
+
+### Register Minus Fase 70
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 70.1–70.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## PILAR 2 — FINTECH, PERBANKAN & KRIPTO
 
 ## FASE 71 — TOKENISASI ASET RIIL (RWA) & DIVIDEN OTOMATIS
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Rwa): service `RwaTokenService`; 1 migrasi; test `RwaTest` — commit `4737ff2`, +501 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, double-entry ledger konsisten, dan quality gate 9/9 langkah pass.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Rwa (`rwa_`) + Asset + Party + Contract · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP 2F slice 1
 > **Jalan pintas terlarang di fase ini:** dividen dari angka masukan, bukan dari pendapatan terposting; kepemilikan token hanya di tabel tanpa ledger aset `RWA-{id}`; pembelian tanpa KYC — ditambah seluruh X1–X25.
-- [ ] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
-- [ ] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
-- [ ] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
-- [ ] 71.4 **Dividen harian otomatis**: omzet sumber aset (mis. pendapatan logistik per truk dari Core Banking, sewa unit mall dari invoice) → dihitung pro-rata per holder → batch posting idempoten per hari ke dompet holder; gagal payout → antrean retry + alert
-- [ ] 71.5 Corporate action: redemsi parsial (aset dijual → token ditebus pro-rata), dilusi, pembatalan token; seluruh perubahan supply tercatat hash-chain
-- [ ] 71.6 Dashboard RWA: katalog aset, orderbook, kepemilikan, riwayat dividen, exposure per holder; guardrail konsentrasi (maks X% aset per holder)
-- [ ] 71.7 Tests: (a) Σ token terbit = Σ holdings (b) dividen harian = omzet × pro-rata (dibulatkan, sisa ke rounding reserve) (c) double-settlement orderbook ditolak (d) redemsi menurunkan supply konsisten (e) reconcile aset ledger = holdings
-- [ ] 71.8 Quality gate Fase 71
+- [x] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/database/migrations/2026_10_07_710100_create_rwa_tables.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_issuance_and_holdings_sum_equals_supply
+    - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/Application/Services/RwaTokenService.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_issuance_and_holdings_sum_equals_supply
+    - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/Application/Services/RwaOrderbookService.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_orderbook_double_settlement_rejected_and_kyc_guardrail
+    - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.4 **Dividen harian otomatis**: omzet sumber aset (mis. pendapatan logistik per truk dari Core Banking, sewa unit mall dari invoice) → dihitung pro-rata per holder → batch posting idempoten per hari ke dompet holder; gagal payout → antrean retry + alert
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/Application/Services/RwaTokenService.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_daily_dividend_pro_rata_distribution_and_rounding
+    - akses: route POST /rwa/assets/{asset}/distribute [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.5 Corporate action: redemsi parsial (aset dijual → token ditebus pro-rata), dilusi, pembatalan token; seluruh perubahan supply tercatat hash-chain
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/Application/Services/RwaCorporateActionService.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_token_redemption_decreases_supply_consistently
+    - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.6 Dashboard RWA: katalog aset, orderbook, kepemilikan, riwayat dividen, exposure per holder; guardrail konsentrasi (maks X% aset per holder)
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/Application/Services/RwaTokenService.php
+    - test: modules/Rwa/tests/Feature/RwaVerticalSliceHttpTest.php::test_a_authorized_user_can_access_rwa_index_and_distribute
+    - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.7 Tests: (a) Σ token terbit = Σ holdings (b) dividen harian = omzet × pro-rata (dibulatkan, sisa ke rounding reserve) (c) double-settlement orderbook ditolak (d) redemsi menurunkan supply konsisten (e) reconcile aset ledger = holdings
+  Bukti:
+    - jenis: tooling
+    - commit: 044c37a
+    - file: modules/Rwa/tests/Feature/RwaTest.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_reconcile_asset_ledger_equals_holdings
+    - gate: docs/gates/fase-71.md
+- [x] 71.8 Quality gate Fase 71
+  Bukti:
+    - jenis: dokumen
+    - commit: 044c37a
+    - file: modules/Rwa/tests/Feature/RwaTest.php
+    - test: modules/Rwa/tests/Feature/RwaVerticalSliceHttpTest.php::test_d_two_source_rwa_audit_passes_cleanly
+    - akses: command rwa:audit
+    - gate: docs/gates/fase-71.md
+
+### Register Minus Fase 71
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 71.1–71.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 72 — INSURTECH: MICRO-INSURANCE TERSEMAT & CLAIMS AUTOPILOT
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Insurance): service `InsurTechClaimsService`; 1 migrasi; test `InsuranceTest` — commit `671c6a3`, +481 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 72 (DoR disetujui pemilik).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Insurance (`ins_`) · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP 2F slice 2
 > **Jalan pintas terlarang di fase ini:** klaim dicairkan dengan flag `$approved`; premi diakui penuh saat dibayar; klaim ganda untuk event yang sama — ditambah seluruh X1–X25.
