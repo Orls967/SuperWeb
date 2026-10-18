@@ -550,7 +550,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **CloudKitchen** | 2 | `cloud-kitchen`, `cloud-kitchen/subscriptions/{subscription}/dispatch` | web, auth, role:admin,kitchen,outlet_manager,customer |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
 | **ControlTower** | 2 | `control-tower`, `control-tower/promises` | web, auth, role:admin,logistics_admin,planner,auditor |
-| **Core** | 28 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
+| **Core** | 32 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **EnterpriseFinance** | 2 | `enterprise-finance`, `enterprise-finance/budgets` | web, auth, role:admin,auditor,treasury |
@@ -588,7 +588,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 2 | `venue`, `venue/tickets/{ticket}/scan` | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 2 | `wealth`, `wealth/profiles/{profile}/invest` | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **631 Rute** | | |
+| **Total** | **635 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -623,7 +623,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `docs` | `manual` | Access the Laravel documentation |
 | `docs:inventory` | `manual` | Generate bagian faktual docs/CODEBASE.md (modul, prefiks, migrasi, rute, command & jadwal, akun ledger) (K-03, PROGRESS R5.1) |
 | `down` | `manual` | Put the application into maintenance / demo mode |
-| `dr:audit` | `manual` | Wave 2: DR drill & data sovereignty audit — 0 discrepancy required |
+| `dr:audit` | `manual` | Wave 2 & Core: DR drill & data sovereignty audit — 0 discrepancy required |
 | `ecosystem:audit-12-lines` | `manual` | Run comprehensive audit across all 12 conglomerate business lines |
 | `enterprise:audit` | `manual` | Audit enterprise finance (budget encumbrances, tax summaries, and SoD compliance) |
 | `env` | `manual` | Display the current framework environment |

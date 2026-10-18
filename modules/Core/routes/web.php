@@ -11,6 +11,7 @@ use Modules\Core\Http\Controllers\MobileGovernanceController;
 use Modules\Core\Http\Controllers\NotificationController;
 use Modules\Core\Http\Controllers\PassportController;
 use Modules\Core\Http\Controllers\RbacController;
+use Modules\Core\Http\Controllers\ResilienceGovernanceController;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/passport/{uuid}', [PassportController::class, 'show'])->name('passport.show');
@@ -57,5 +58,11 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         Route::post('/mobile-governance/submit-epod', [MobileGovernanceController::class, 'submitEpod'])->name('admin.mobile.submit-epod');
         Route::post('/mobile-governance/record-action', [MobileGovernanceController::class, 'recordAction'])->name('admin.mobile.record-action');
         Route::post('/mobile-governance/devices/{device}/revoke', [MobileGovernanceController::class, 'revokeDevice'])->name('admin.mobile.revoke-device');
+
+        // Multi-Region Resilience, DR & Data Sovereignty (Fase 66)
+        Route::get('/resilience-governance', [ResilienceGovernanceController::class, 'index'])->name('admin.resilience.index');
+        Route::post('/resilience-governance/execute-drill', [ResilienceGovernanceController::class, 'executeDrill'])->name('admin.resilience.execute-drill');
+        Route::post('/resilience-governance/rotate-kms', [ResilienceGovernanceController::class, 'rotateKms'])->name('admin.resilience.rotate-kms');
+        Route::post('/resilience-governance/check-residency', [ResilienceGovernanceController::class, 'checkResidency'])->name('admin.resilience.check-residency');
     });
 });

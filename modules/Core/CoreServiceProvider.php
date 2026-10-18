@@ -25,6 +25,9 @@ use Modules\Core\Application\Services\EventSpineService;
 use Modules\Core\Application\Services\NotificationService;
 use Modules\Core\Application\Services\OutboxBusService;
 use Modules\Core\Application\Services\RbacService;
+use Modules\Core\Application\Services\Resilience\DataSovereigntyComplianceService;
+use Modules\Core\Application\Services\Resilience\DisasterRecoveryDrillService;
+use Modules\Core\Application\Services\Resilience\MultiRegionResilienceEngineService;
 use Modules\Core\Application\Services\Scale\OutboxScaleProvisioner;
 use Modules\Core\Application\Services\Scale\PassportScaleProvisioner;
 use Modules\Core\Application\Services\SimClockService;
@@ -52,6 +55,9 @@ use Modules\Core\Contracts\SimClockInterface;
 use Modules\Core\Contracts\StockPrescriptionEngineInterface;
 use Modules\Core\Contracts\TransactionAnomalyDetectorInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
+use Modules\Core\Domain\Contracts\DataSovereigntyComplianceInterface;
+use Modules\Core\Domain\Contracts\DisasterRecoveryDrillInterface;
+use Modules\Core\Domain\Contracts\MultiRegionResilienceInterface;
 use Modules\Core\Domain\Events\VehicleAcquired;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Shared\Application\MenuRegistry;
@@ -131,6 +137,22 @@ class CoreServiceProvider extends ServiceProvider
             StockPrescriptionEngineService::class
         );
 
+        // 66.1 - 66.2 Multi-Region Resilience, DR & Data Sovereignty
+        $this->app->bind(
+            DisasterRecoveryDrillInterface::class,
+            DisasterRecoveryDrillService::class
+        );
+
+        $this->app->bind(
+            MultiRegionResilienceInterface::class,
+            MultiRegionResilienceEngineService::class
+        );
+
+        $this->app->bind(
+            DataSovereigntyComplianceInterface::class,
+            DataSovereigntyComplianceService::class
+        );
+
         // Platform services — singletons so they can be injected anywhere
         $this->app->singleton(NotificationService::class);
         $this->app->singleton(ActivityLogger::class);
@@ -143,6 +165,9 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(SimClockService::class);
         $this->app->singleton(EventSpineService::class);
         $this->app->singleton(DigitalTwinService::class);
+        $this->app->singleton(DisasterRecoveryDrillService::class);
+        $this->app->singleton(MultiRegionResilienceEngineService::class);
+        $this->app->singleton(DataSovereigntyComplianceService::class);
 
         $this->app->tag([
             PassportScaleProvisioner::class,
@@ -239,6 +264,16 @@ class CoreServiceProvider extends ServiceProvider
             order: 95,
             group: 'Grup & Admin',
             activePattern: 'admin/mobile-governance*',
+        );
+
+        $registry->addItem(
+            label: 'Resiliensi & DR Multi-Region',
+            route: 'admin.resilience.index',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+            roles: ['admin'],
+            order: 94,
+            group: 'Grup & Admin',
+            activePattern: 'admin/resilience-governance*',
         );
 
         if ($this->app->runningInConsole()) {

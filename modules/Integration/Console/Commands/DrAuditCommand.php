@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Integration\Console\Commands;
 
 use Illuminate\Console\Command;
+use Modules\Core\Application\Services\Resilience\MultiRegionResilienceEngineService;
 use Modules\Integration\Application\Services\ResilienceWave2Service;
 
 /**
@@ -14,6 +15,7 @@ use Modules\Integration\Application\Services\ResilienceWave2Service;
  *  1. DR Drills: no FAILED drills, no drills with ledger discrepancy
  *  2. Edge: no stuck PENDING sync events
  *  3. Data Sovereignty: no residency violations
+ *  4. Core Multi-Region & KMS rotations (Fase 66)
  *
  * Exit 0 = ALL HEALTHY | Exit 1 = DISCREPANCY FOUND
  */
@@ -21,10 +23,12 @@ class DrAuditCommand extends Command
 {
     protected $signature = 'dr:audit';
 
-    protected $description = 'Wave 2: DR drill & data sovereignty audit — 0 discrepancy required';
+    protected $description = 'Wave 2 & Core: DR drill & data sovereignty audit — 0 discrepancy required';
 
-    public function handle(ResilienceWave2Service $service): int
-    {
+    public function handle(
+        ResilienceWave2Service $service,
+        MultiRegionResilienceEngineService $coreResilienceService
+    ): int {
         $this->info('╔══════════════════════════════════════════════════════════════╗');
         $this->info('║   dr:audit — Wave 2 Resilience & DR Audit                   ║');
         $this->info('╚══════════════════════════════════════════════════════════════╝');
@@ -41,6 +45,19 @@ class DrAuditCommand extends Command
 
         if ($result['discrepancy_count'] > 0) {
             $this->error("dr:audit FAILED — {$result['discrepancy_count']} discrepancy(ies) detected.");
+
+            return self::FAILURE;
+        }
+
+        // 2. Core DR Drills & KMS Key Rotations (Fase 66.1 - 66.3)
+        $coreAudit = $coreResilienceService->auditResilience();
+        $this->line("  Core DR Divergences        : {$coreAudit['core_divergent']}");
+        $this->line("  Core Failed DR Drills      : {$coreAudit['core_failed']}");
+        $this->line("  Core SLA Breaches          : {$coreAudit['core_sla_breaches']}");
+        $this->line("  Core Active KMS Keys       : {$coreAudit['active_kms_keys']} (tampered: {$coreAudit['kms_discrepancies']})");
+
+        if ($coreAudit['total_discrepancies'] > 0) {
+            $this->error('dr:audit FAILED — Core resilience discrepancy or SLA breach detected.');
 
             return self::FAILURE;
         }
