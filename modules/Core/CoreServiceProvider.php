@@ -33,6 +33,7 @@ use Modules\Core\Application\Services\Scale\PassportScaleProvisioner;
 use Modules\Core\Application\Services\SimClockService;
 use Modules\Core\Console\Commands\AuditAiCommand;
 use Modules\Core\Console\Commands\AuditMobileCommand;
+use Modules\Core\Console\Commands\AuditSimulationKernelCommand;
 use Modules\Core\Console\Commands\BenchmarkRunCommand;
 use Modules\Core\Console\Commands\ConsumeSpineCommand;
 use Modules\Core\Console\Commands\ProcessOutboxCommand;
@@ -276,6 +277,16 @@ class CoreServiceProvider extends ServiceProvider
             activePattern: 'admin/resilience-governance*',
         );
 
+        $registry->addItem(
+            label: 'Simulasi & Event Spine',
+            route: 'admin.simulation.index',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+            roles: ['admin'],
+            order: 93,
+            group: 'Grup & Admin',
+            activePattern: 'admin/simulation-governance*',
+        );
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 VerifyPassportsCommand::class,
@@ -288,6 +299,7 @@ class CoreServiceProvider extends ServiceProvider
                 BenchmarkRunCommand::class,
                 AuditAiCommand::class,
                 AuditMobileCommand::class,
+                AuditSimulationKernelCommand::class,
             ]);
         }
 

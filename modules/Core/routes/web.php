@@ -12,6 +12,7 @@ use Modules\Core\Http\Controllers\NotificationController;
 use Modules\Core\Http\Controllers\PassportController;
 use Modules\Core\Http\Controllers\RbacController;
 use Modules\Core\Http\Controllers\ResilienceGovernanceController;
+use Modules\Core\Http\Controllers\SimulationGovernanceController;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/passport/{uuid}', [PassportController::class, 'show'])->name('passport.show');
@@ -64,5 +65,12 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         Route::post('/resilience-governance/execute-drill', [ResilienceGovernanceController::class, 'executeDrill'])->name('admin.resilience.execute-drill');
         Route::post('/resilience-governance/rotate-kms', [ResilienceGovernanceController::class, 'rotateKms'])->name('admin.resilience.rotate-kms');
         Route::post('/resilience-governance/check-residency', [ResilienceGovernanceController::class, 'checkResidency'])->name('admin.resilience.check-residency');
+
+        // Simulation Kernel, Event Spine & Digital Twin Bus (Fase 67)
+        Route::get('/simulation-governance', [SimulationGovernanceController::class, 'index'])->name('admin.simulation.index');
+        Route::post('/simulation-governance/advance', [SimulationGovernanceController::class, 'advance'])->name('admin.simulation.advance');
+        Route::post('/simulation-governance/publish-spine', [SimulationGovernanceController::class, 'publishSpine'])->name('admin.simulation.publish-spine');
+        Route::post('/simulation-governance/record-twin', [SimulationGovernanceController::class, 'recordTwin'])->name('admin.simulation.record-twin');
+        Route::post('/simulation-governance/scale-provision', [SimulationGovernanceController::class, 'scaleProvision'])->name('admin.simulation.scale-provision');
     });
 });

@@ -45,6 +45,7 @@ use App\Quality\Audit\Fixtures\PrpAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PtnAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SecurityAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\SimAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TfAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TlmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TowerAuditCorruptionFixture;
@@ -106,6 +107,7 @@ final class AuditCommandRegistry
             'ptn:audit' => new PtnAuditCorruptionFixture,
             'rwa:audit' => new RwaAuditCorruptionFixture,
             'security:audit' => new SecurityAuditCorruptionFixture,
+            'sim:audit' => new SimAuditCorruptionFixture,
             'tf:audit' => new TfAuditCorruptionFixture,
             'tlm:audit' => new TlmAuditCorruptionFixture,
             'tower:audit' => new TowerAuditCorruptionFixture,
