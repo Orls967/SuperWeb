@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Modules\Core\Domain\Models\Vehicle;
+use Modules\Telematics\Domain\Models\TelematicsAggregate;
 use Modules\Telematics\Domain\Models\TelematicsBaseline;
 use Modules\Telematics\Domain\Models\TelematicsDevice;
 use Modules\Telematics\Domain\Models\TelematicsTick;
@@ -67,6 +68,26 @@ class TelematicsDemoSeeder extends Seeder
                 'battery_voltage' => 12.5,
                 'fuel_level_pct' => 80.0,
                 'idempotency_key' => hash('sha256', "{$device->device_id}:1:seed"),
+            ]
+        );
+
+        $now = Carbon::now();
+        $minuteBucket = (int) (floor($now->minute / 5) * 5);
+        $wStart = $now->copy()->minute($minuteBucket)->second(0);
+
+        TelematicsAggregate::firstOrCreate(
+            [
+                'device_id' => $device->device_id,
+                'window_start' => $wStart,
+            ],
+            [
+                'vehicle_id' => $vehicle->id,
+                'window_end' => (clone $wStart)->addMinutes(5),
+                'avg_speed_kmh' => 65.0,
+                'max_rpm' => 2200,
+                'avg_oil_temp_c' => 92.0,
+                'min_battery_voltage' => 12.5,
+                'tick_count' => 1,
             ]
         );
     }

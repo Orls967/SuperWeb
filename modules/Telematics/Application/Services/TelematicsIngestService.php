@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Telematics\Application\Services;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -12,6 +13,7 @@ use Illuminate\Validation\ValidationException;
 use Modules\Core\Contracts\EventSpineInterface;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Telematics\Domain\Events\VehicleAnomalyDetected;
+use Modules\Telematics\Domain\Models\TelematicsAggregate;
 use Modules\Telematics\Domain\Models\TelematicsBaseline;
 use Modules\Telematics\Domain\Models\TelematicsDevice;
 use Modules\Telematics\Domain\Models\TelematicsTick;
@@ -124,6 +126,15 @@ class TelematicsIngestService
             throw new ValidationException($validator);
         }
 
+        $now = Carbon::parse($this->simClock->now());
+        $recordedAt = Carbon::parse($data['recorded_at']);
+        if ($recordedAt->lt((clone $now)->subDays(30))) {
+            throw new \InvalidArgumentException('Tick rejected: outside acceptable replay window (older than 30 days).');
+        }
+        if ($recordedAt->gt((clone $now)->addHours(24))) {
+            throw new \InvalidArgumentException('Tick rejected: timestamp is too far in the future.');
+        }
+
         $idempotencyKey = $data['idempotency_key'] ?? hash('sha256', $data['device_id'].':'.$data['sequence'].':'.$data['recorded_at']);
 
         return DB::transaction(function () use ($data, $idempotencyKey) {
@@ -162,6 +173,8 @@ class TelematicsIngestService
             if ($vehicleId) {
                 $this->evaluateAnomalies($vehicleId, $tick);
             }
+
+            $this->aggregateFiveMinuteWindow($data['device_id'], $tick->recorded_at);
 
             return $tick;
         });
@@ -230,6 +243,56 @@ class TelematicsIngestService
         });
     }
 
+    public function aggregateFiveMinuteWindow(string $deviceId, CarbonInterface|string $time): TelematicsAggregate
+    {
+        $dt = Carbon::parse($time);
+        $minuteBucket = (int) (floor($dt->minute / 5) * 5);
+        $windowStart = $dt->copy()->minute($minuteBucket)->second(0);
+        $windowEnd = (clone $windowStart)->addMinutes(5);
+
+        $stats = TelematicsTick::where('device_id', $deviceId)
+            ->where('recorded_at', '>=', $windowStart)
+            ->where('recorded_at', '<', $windowEnd)
+            ->selectRaw('COUNT(*) as count, AVG(speed_kmh) as avg_speed, MAX(rpm) as max_rpm, AVG(oil_temp_c) as avg_oil, MIN(battery_voltage) as min_volt, MAX(vehicle_id) as vehicle_id')
+            ->first();
+
+        $device = TelematicsDevice::where('device_id', $deviceId)->first();
+        $vehicleId = $stats?->vehicle_id ?? $device?->vehicle_id;
+
+        return TelematicsAggregate::updateOrCreate(
+            [
+                'device_id' => $deviceId,
+                'window_start' => $windowStart,
+            ],
+            [
+                'vehicle_id' => $vehicleId,
+                'window_end' => $windowEnd,
+                'avg_speed_kmh' => round((float) ($stats?->avg_speed ?? 0), 2),
+                'max_rpm' => (int) ($stats?->max_rpm ?? 0),
+                'avg_oil_temp_c' => round((float) ($stats?->avg_oil ?? 90.0), 2),
+                'min_battery_voltage' => round((float) ($stats?->min_volt ?? 12.6), 2),
+                'tick_count' => (int) ($stats?->count ?? 0),
+            ]
+        );
+    }
+
+    public function canDispatch(object|int $vehicle): bool
+    {
+        $vehicleId = is_object($vehicle) ? $vehicle->id : (int) $vehicle;
+
+        return ! TelematicsDevice::where('vehicle_id', $vehicleId)
+            ->where('status', 'grounded')
+            ->exists();
+    }
+
+    public function assertCanDispatch(object|int $vehicle): void
+    {
+        $vehicleId = is_object($vehicle) ? $vehicle->id : (int) $vehicle;
+        if (! $this->canDispatch($vehicleId)) {
+            throw new \DomainException("Vehicle ID {$vehicleId} is GROUNDED due to critical telematics anomaly/DTC. Fleet dispatch rejected.");
+        }
+    }
+
     /**
      * Two-source telematics audit.
      * Cross-checks grounded devices against critical OBD-II DTC diagnostic trouble code ticks.
@@ -239,6 +302,7 @@ class TelematicsIngestService
         $deviceCount = TelematicsDevice::count();
         $tickCount = TelematicsTick::count();
         $baselineCount = TelematicsBaseline::count();
+        $aggregateCount = TelematicsAggregate::count();
         $discrepancies = 0;
 
         $groundedDevices = TelematicsDevice::where('status', 'grounded')->get();
@@ -256,6 +320,7 @@ class TelematicsIngestService
             'device_count' => $deviceCount,
             'tick_count' => $tickCount,
             'baseline_count' => $baselineCount,
+            'aggregate_count' => $aggregateCount,
             'discrepancies' => $discrepancies,
         ];
     }

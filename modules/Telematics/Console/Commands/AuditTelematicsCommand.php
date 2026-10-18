@@ -26,6 +26,7 @@ class AuditTelematicsCommand extends Command
                 ['Devices Checked', $result['device_count']],
                 ['Telemetry Ticks Checked', $result['tick_count']],
                 ['Baselines Checked', $result['baseline_count']],
+                ['5-Minute Aggregates Checked', $result['aggregate_count']],
                 ['Discrepancies', $result['discrepancies']],
             ]
         );

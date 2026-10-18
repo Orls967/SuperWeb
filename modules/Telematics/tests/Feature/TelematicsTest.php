@@ -13,6 +13,7 @@ use Modules\AutoServe\Domain\Models\Booking;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Telematics\Application\Services\TelematicsIngestService;
 use Modules\Telematics\Domain\Events\VehicleAnomalyDetected;
+use Modules\Telematics\Domain\Models\TelematicsAggregate;
 use Modules\Telematics\Domain\Models\TelematicsDevice;
 use Modules\Telematics\Domain\Models\TelematicsTick;
 use Tests\TestCase;
@@ -243,5 +244,119 @@ class TelematicsTest extends TestCase
 
         // Event should be dispatched exactly once due to hourly deduplication
         Event::assertDispatched(VehicleAnomalyDetected::class, 1);
+    }
+
+    public function test_five_minute_aggregate_computed_accurately_from_ticks(): void
+    {
+        /** @var TelematicsIngestService $service */
+        $service = app(TelematicsIngestService::class);
+
+        // Ingest 3 ticks within the same 5-minute window: 10:00:00 - 10:04:59
+        $t1 = [
+            'device_id' => 'DEV-OBD-001',
+            'sequence' => 401,
+            'recorded_at' => now()->copy()->minute(10)->second(10)->toDateTimeString(),
+            'speed_kmh' => 40.0,
+            'rpm' => 2000,
+            'oil_temp_c' => 90.0,
+            'battery_voltage' => 12.6,
+            'fuel_level_pct' => 80.0,
+        ];
+        $t2 = [
+            'device_id' => 'DEV-OBD-001',
+            'sequence' => 402,
+            'recorded_at' => now()->copy()->minute(10)->second(30)->toDateTimeString(),
+            'speed_kmh' => 60.0,
+            'rpm' => 2500,
+            'oil_temp_c' => 92.0,
+            'battery_voltage' => 12.4,
+            'fuel_level_pct' => 79.5,
+        ];
+        $t3 = [
+            'device_id' => 'DEV-OBD-001',
+            'sequence' => 403,
+            'recorded_at' => now()->copy()->minute(12)->second(15)->toDateTimeString(),
+            'speed_kmh' => 80.0,
+            'rpm' => 3000,
+            'oil_temp_c' => 94.0,
+            'battery_voltage' => 12.2,
+            'fuel_level_pct' => 79.0,
+        ];
+
+        $service->ingestTick($t1);
+        $service->ingestTick($t2);
+        $service->ingestTick($t3);
+
+        $minuteBucket = (int) (floor(10 / 5) * 5); // 10
+        $wStart = now()->copy()->minute($minuteBucket)->second(0);
+
+        $agg = TelematicsAggregate::where('device_id', 'DEV-OBD-001')
+            ->where('window_start', $wStart->toDateTimeString())
+            ->first();
+
+        $this->assertNotNull($agg);
+        $this->assertEquals(3, $agg->tick_count);
+        $this->assertEquals(60.0, $agg->avg_speed_kmh); // (40 + 60 + 80) / 3 = 60.0
+        $this->assertEquals(3000, $agg->max_rpm);
+        $this->assertEquals(92.0, $agg->avg_oil_temp_c); // (90 + 92 + 94) / 3 = 92.0
+        $this->assertEquals(12.2, $agg->min_battery_voltage); // min(12.6, 12.4, 12.2)
+    }
+
+    public function test_anti_replay_window_rejects_expired_ticks(): void
+    {
+        /** @var TelematicsIngestService $service */
+        $service = app(TelematicsIngestService::class);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('outside acceptable replay window');
+
+        // Tick recorded 35 days ago (outside 30-day window)
+        $expiredTick = [
+            'device_id' => 'DEV-OBD-001',
+            'sequence' => 501,
+            'recorded_at' => now()->copy()->subDays(35)->toDateTimeString(),
+            'speed_kmh' => 50.0,
+            'rpm' => 2000,
+            'oil_temp_c' => 90.0,
+            'battery_voltage' => 12.5,
+            'fuel_level_pct' => 75.0,
+        ];
+
+        $service->ingestTick($expiredTick);
+    }
+
+    public function test_grounded_vehicle_rejects_fleet_dispatch(): void
+    {
+        /** @var TelematicsIngestService $service */
+        $service = app(TelematicsIngestService::class);
+
+        // Initially active device allows dispatch
+        $this->assertTrue($service->canDispatch($this->vehicle));
+
+        // Ingest critical DTC P0217 (Engine Coolant Overtemperature)
+        $criticalTick = [
+            'device_id' => 'DEV-OBD-001',
+            'sequence' => 601,
+            'recorded_at' => now()->toDateTimeString(),
+            'speed_kmh' => 30.0,
+            'rpm' => 2800,
+            'oil_temp_c' => 125.0,
+            'battery_voltage' => 12.0,
+            'fuel_level_pct' => 60.0,
+            'dtc_code' => 'P0217',
+        ];
+        $service->ingestTick($criticalTick);
+
+        $this->device->refresh();
+        $this->assertEquals('grounded', $this->device->status);
+
+        // canDispatch returns false
+        $this->assertFalse($service->canDispatch($this->vehicle));
+
+        // assertCanDispatch throws DomainException
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('is GROUNDED due to critical telematics anomaly/DTC. Fleet dispatch rejected.');
+
+        $service->assertCanDispatch($this->vehicle);
     }
 }
