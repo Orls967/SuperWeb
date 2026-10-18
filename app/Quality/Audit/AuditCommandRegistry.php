@@ -42,6 +42,7 @@ use App\Quality\Audit\Fixtures\PlmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PricingAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProcAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProptechBimCorruptionFixture;
+use App\Quality\Audit\Fixtures\ProptechFlexCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProptechSmartBuildingCorruptionFixture;
 use App\Quality\Audit\Fixtures\PrpAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PtnAuditCorruptionFixture;
@@ -54,6 +55,7 @@ use App\Quality\Audit\Fixtures\TowerAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TradeAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TreasuryAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\VenAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\VndAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\WmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\WmsAuditCorruptionFixture;
 use Illuminate\Support\Facades\Artisan;
@@ -107,6 +109,7 @@ final class AuditCommandRegistry
             'proc:audit' => new ProcAuditCorruptionFixture,
             'prp:audit' => new PrpAuditCorruptionFixture,
             'prp:audit-bim' => new ProptechBimCorruptionFixture,
+            'prp:audit-flex' => new ProptechFlexCorruptionFixture,
             'prp:audit-smartbuilding' => new ProptechSmartBuildingCorruptionFixture,
             'ptn:audit' => new PtnAuditCorruptionFixture,
             'rwa:audit' => new RwaAuditCorruptionFixture,
@@ -118,6 +121,7 @@ final class AuditCommandRegistry
             'trade:audit' => new TradeAuditCorruptionFixture,
             'treasury:audit' => new TreasuryAuditCorruptionFixture,
             'ven:audit' => new VenAuditCorruptionFixture,
+            'vnd:audit' => new VndAuditCorruptionFixture,
             'wm:audit' => new WmAuditCorruptionFixture,
             'wms:audit' => new WmsAuditCorruptionFixture,
         ];

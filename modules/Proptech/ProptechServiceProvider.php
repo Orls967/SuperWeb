@@ -9,6 +9,7 @@ use Modules\Proptech\Application\Services\BimTwinService;
 use Modules\Proptech\Application\Services\FlexSpaceService;
 use Modules\Proptech\Application\Services\ProptechService;
 use Modules\Proptech\Console\Commands\AuditBimCommand;
+use Modules\Proptech\Console\Commands\AuditFlexCommand;
 use Modules\Proptech\Console\Commands\AuditProptechCommand;
 use Modules\Proptech\Console\Commands\AuditSmartBuildingCommand;
 
@@ -32,6 +33,7 @@ class ProptechServiceProvider extends ServiceProvider
                 AuditProptechCommand::class,
                 AuditSmartBuildingCommand::class,
                 AuditBimCommand::class,
+                AuditFlexCommand::class,
             ]);
         }
     }
