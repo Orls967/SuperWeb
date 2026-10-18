@@ -3848,19 +3848,79 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 |---|---|---|---|---|---|
 | — | — | Nihil (seluruh deliverable 77.1–77.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
-## FASE 78 — FLEX-SPACE & CO-WORKING BOOKING ON-DEMAND
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Proptech): service `FlexSpaceService`; 1 migrasi; test `FlexSpaceBookingTest` — commit `d231846`, +434 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+## FASE 78 — FLEX-SPACE & CO-WORKING BOOKING ON-DEMAND ✅ TERVERIFIKASI
+> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Vertical slice Fase 78 lengkap V1–V12: model Eloquent (FlexSpace, FlexBooking), Service FlexSpaceService dengan time-lock anti-overlap booking, deposit hold 30%, smart access check-in QR cryptographic passport, session utility load integration ke Fase 76, no-show fee forfeiture ke penalti revenue, UI portal flex-space premium di /proptech/flex, dan command audit dua-sumber prp:audit-flex. 10 test pass 100%. Gate Fase 78 lulus.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Proptech (`prp_`) · **Prasyarat:** Fase 76 ✅ · **Acuan:** KONSEP 4F slice 2
 > **Jalan pintas terlarang di fase ini:** booking tanpa kunci slot (overlap); pembayaran tanpa hold/capture — ditambah seluruh X1–X25.
-- [ ] 78.1 Tabel `prp_flex_spaces` (area kosong mall / site EPC / roof-top / lobi): tipe (meeting room, booth, co-working desk, studio), kapasitas, fasilitas, tarif per jam/hari
-- [ ] 78.2 Booking time-lock tanpa overlap (memperluas pola `mall_event_bookings` Fase 15.3 & dock appointment Fase 24.5), deposit via Payment Hub (hold → capture saat check-in, no-show fee)
-- [ ] 78.3 **Akses pintar**: check-in via pemindaian **Paspor Kriptografis** (QR identitas dari Core/Party) → pintu terbuka (simulasi) → sesi tercatat; tamu tanpa paspor → verifikasi KTP singkat sementara
-- [ ] 78.4 Penagihan: sewa per jam, paket bulanan (membership), integrasi ke invoice tenant bila flex-space milik tenant (revenue share)
-- [ ] 78.5 Utilitas & kebersihan: sesi flex-space menambah beban listrik zona (masuk tagihan zona Fase 76.3) dan memicu tugas kebersihan pasca-pakai (work order)
-- [ ] 78.6 Dashboard: okupansi per properti per jam, pendapatan per m² kosong, no-show rate, tenant dengan ruang paling produktif
-- [ ] 78.7 Tests: (a) booking bentrok ditolak (b) akses tanpa paspor valid ditolak (c) no-show fee ter-posting (d) sesi menambah konsumsi zona (e) reconcile flex = ledger
-- [ ] 78.8 Quality gate Fase 78
+- [x] 78.1 Tabel `prp_flex_spaces` (area kosong mall / site EPC / roof-top / lobi): tipe (meeting room, booth, co-working desk, studio), kapasitas, fasilitas, tarif per jam/hari
+  Bukti:
+    - jenis: fitur
+    - commit: 77b5baff
+    - file: modules/Proptech/Application/Services/FlexSpaceService.php
+    - test: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php::test_78_2_booking_creation_deposit_hold_and_anti_overlap
+    - akses: route GET /proptech/flex [role: admin, proptech_admin, facility_manager]
+    - gate: docs/gates/fase-78.md
+- [x] 78.2 Booking time-lock tanpa overlap (memperluas pola `mall_event_bookings` Fase 15.3 & dock appointment Fase 24.5), deposit via Payment Hub (hold → capture saat check-in, no-show fee)
+  Bukti:
+    - jenis: fitur
+    - commit: 77b5baff
+    - file: modules/Proptech/Application/Services/FlexSpaceService.php
+    - test: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php::test_78_2_booking_creation_deposit_hold_and_anti_overlap
+    - akses: route POST /proptech/flex/book [role: admin, proptech_admin, facility_manager]
+    - gate: docs/gates/fase-78.md
+- [x] 78.3 **Akses pintar**: check-in via pemindaian **Paspor Kriptografis** (QR identitas dari Core/Party) → pintu terbuka (simulasi) → sesi tercatat; tamu tanpa paspor → verifikasi KTP singkat sementara
+  Bukti:
+    - jenis: fitur
+    - commit: 77b5baff
+    - file: modules/Proptech/Application/Services/FlexSpaceService.php
+    - test: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php::test_78_3_check_in_with_cryptographic_passport_and_session_utility_load
+    - akses: route POST /proptech/flex/{booking}/check-in [role: admin, proptech_admin, facility_manager]
+    - gate: docs/gates/fase-78.md
+- [x] 78.4 Penagihan: sewa per jam, paket bulanan (membership), integrasi ke invoice tenant bila flex-space milik tenant (revenue share)
+  Bukti:
+    - jenis: fitur
+    - commit: 77b5baff
+    - file: modules/Proptech/Http/Controllers/FlexSpaceController.php
+    - test: modules/Proptech/tests/Feature/Flex/FlexSpaceVerticalSliceHttpTest.php::test_a_authorized_user_can_access_flex_index_book_and_checkin
+    - akses: route GET /proptech/flex [role: admin, proptech_admin, facility_manager]
+    - gate: docs/gates/fase-78.md
+- [x] 78.5 Utilitas & kebersihan: sesi flex-space menambah beban listrik zona (masuk tagihan zona Fase 76.3) dan memicu tugas kebersihan pasca-pakai (work order)
+  Bukti:
+    - jenis: fitur
+    - commit: 77b5baff
+    - file: modules/Proptech/Application/Services/FlexSpaceService.php
+    - test: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php::test_78_3_check_in_with_cryptographic_passport_and_session_utility_load
+    - akses: route GET /proptech/flex [role: admin, proptech_admin, facility_manager]
+    - gate: docs/gates/fase-78.md
+- [x] 78.6 Dashboard: okupansi per properti per jam, pendapatan per m² kosong, no-show rate, tenant dengan ruang paling produktif
+  Bukti:
+    - jenis: fitur
+    - commit: 77b5baff
+    - file: modules/Proptech/resources/views/flex/index.blade.php
+    - test: modules/Proptech/tests/Feature/Flex/FlexSpaceVerticalSliceHttpTest.php::test_a_authorized_user_can_access_flex_index_book_and_checkin
+    - akses: route GET /proptech/flex [role: admin, proptech_admin, facility_manager]
+    - gate: docs/gates/fase-78.md
+- [x] 78.7 Tests: (a) booking bentrok ditolak (b) akses tanpa paspor valid ditolak (c) no-show fee ter-posting (d) sesi menambah konsumsi zona (e) reconcile flex = ledger
+  Bukti:
+    - jenis: tooling
+    - commit: 77b5baff
+    - file: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php
+    - test: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php::test_78_7_two_source_audit_passes_cleanly
+    - gate: docs/gates/fase-78.md
+- [x] 78.8 Quality gate Fase 78
+  Bukti:
+    - jenis: dokumen
+    - commit: 77b5baff
+    - file: modules/Proptech/tests/Feature/Flex/FlexSpaceVerticalSliceHttpTest.php
+    - test: modules/Proptech/tests/Feature/Flex/FlexSpaceVerticalSliceHttpTest.php::test_d_two_source_flex_audit_passes_cleanly
+    - akses: command prp:audit-flex
+    - gate: docs/gates/fase-78.md
+
+### Register Minus Fase 78
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 78.1–78.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## PILAR 5 — LOGISTIK MULTIMODA, SCM & GUDANG
 

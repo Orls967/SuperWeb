@@ -575,7 +575,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Plm** | 1 | `plm` | web, auth, role:admin,rnd_specialist |
 | **Pricing** | 13 | `pricing`, `pricing/price-lists`, `pricing/price-lists/items` ... | web, auth, verified |
 | **Procurement** | 21 | `procurement`, `procurement/requisitions`, `procurement/requisitions/{requisition}` ... | web, auth, verified |
-| **Proptech** | 5 | `proptech`, `proptech/zones/{zone}/bill`, `proptech/bim` ... | web, auth, role:admin,proptech_admin,facility_manager |
+| **Proptech** | 9 | `proptech`, `proptech/zones/{zone}/bill`, `proptech/bim` ... | web, auth, role:admin,proptech_admin,facility_manager |
 | **Resto** | 89 | `resto/menu`, `resto/menu/{menu}`, `resto/menu/calculate-cost` ... | web, auth, role:admin,auditor,outlet_manager |
 | **Rwa** | 2 | `rwa`, `rwa/assets/{asset}/distribute` | web, auth, role:admin,rwa_admin,asset_manager,investor |
 | **Shared** | 1 | `api/global-search` | web, auth, verified |
@@ -585,10 +585,11 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Trade** | 1 | `trade` | web, auth, role:admin,auditor,procurement,treasury |
 | **TradeFinance** | 2 | `trade-finance`, `trade-finance/lcs` | web, auth, role:admin,auditor,procurement,treasury |
 | **Treasury** | 1 | `treasury` | web, auth, role:admin,auditor,treasury |
+| **Vending** | 2 | `vending`, `vending/units/{unit}/dispense` | web, auth, role:admin,vending_operator,store_manager |
 | **Venue** | 2 | `venue`, `venue/tickets/{ticket}/scan` | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 2 | `wealth`, `wealth/profiles/{profile}/invest` | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **649 Rute** | | |
+| **Total** | **655 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -683,6 +684,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `proc:audit` | `manual` | Audit subledger AP dan GR/IR terhadap ledger (harus 0 selisih) |
 | `prp:audit` | `manual` | Perform two-source verification of smart building zones, sensor readings, and utility billings |
 | `prp:audit-bim` | `manual` | Perform two-source verification of BIM model version hash chains and twin component completion |
+| `prp:audit-flex` | `manual` | Perform two-source verification of flex-space booking anti-overlap and ledger deposit balances |
 | `prp:audit-smartbuilding` | `manual` | Perform two-source verification of smart building zones, sensor readings, and utility billings |
 | `ptn:audit` | `manual` | Audit kemitraan: bagi hasil, due diligence, dan siklus hidup mitra (0 selisih) |
 | `reload` | `manual` | Reload running services |
@@ -715,9 +717,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `treasury:audit` | `manual` | Audit multi-currency, bank reconciliation, credit facilities, and treasury balances |
 | `up` | `manual` | Bring the application out of maintenance mode |
 | `ven:audit` | `manual` | Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety |
+| `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 124 Command** | **37 Terjadwal** | |
+| **Total: 126 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
