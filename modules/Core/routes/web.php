@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Core\Http\Controllers\ActivityFeedController;
+use Modules\Core\Http\Controllers\AiGovernanceController;
 use Modules\Core\Http\Controllers\AuditLogController;
 use Modules\Core\Http\Controllers\HealthCheckController;
 use Modules\Core\Http\Controllers\NotificationController;
@@ -41,5 +42,12 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         // Audit Trail Generik
         Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('admin.audit-logs.index');
         Route::get('/audit-logs/{auditLog}', [AuditLogController::class, 'show'])->name('admin.audit-logs.show');
+
+        // AI Governance & Predictive Analytics (Fase 64)
+        Route::get('/ai-governance', [AiGovernanceController::class, 'index'])->name('admin.ai.index');
+        Route::post('/ai-governance/calculate-pricing', [AiGovernanceController::class, 'calculatePricing'])->name('admin.ai.calculate-pricing');
+        Route::post('/ai-governance/screen-anomaly', [AiGovernanceController::class, 'screenAnomaly'])->name('admin.ai.screen-anomaly');
+        Route::post('/ai-governance/generate-stock-recommendation', [AiGovernanceController::class, 'generateStockRecommendation'])->name('admin.ai.generate-stock-recommendation');
+        Route::post('/ai-governance/quarantines/{quarantine}/release', [AiGovernanceController::class, 'releaseQuarantine'])->name('admin.ai.release-quarantine');
     });
 });

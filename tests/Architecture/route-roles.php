@@ -13,6 +13,7 @@ use Modules\AutoServe\Domain\Models\Sparepart;
 use Modules\CloudKitchen\Domain\Models\CateringSubscription;
 use Modules\CloudKitchen\Domain\Models\CloudKitchen;
 use Modules\Core\Domain\Models\AuditLog;
+use Modules\Core\Domain\Models\CoreAiAnomalyQuarantine;
 use Modules\Core\Domain\Models\Role;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Crypto\Domain\Enums\AlertCondition;
@@ -483,6 +484,22 @@ return [
         'roles' => ['admin'],
         'params' => fn () => ['auditLog' => AuditLog::firstOrCreate(['action' => 'test_action'], ['entity_type' => 'test', 'entity_id' => 1])->id],
     ],
+    'admin.ai.calculate-pricing' => ['roles' => ['admin']],
+    'admin.ai.generate-stock-recommendation' => ['roles' => ['admin']],
+    'admin.ai.index' => ['roles' => ['admin']],
+    'admin.ai.release-quarantine' => [
+        'roles' => ['admin'],
+        'params' => fn () => ['quarantine' => CoreAiAnomalyQuarantine::firstOrCreate(['quarantine_code' => 'QRN-TEST-SEED'], [
+            'transaction_ref' => 'TX-TEST-ROLES',
+            'customer_ref' => 'CUST-TEST',
+            'amount_idr' => 1000000,
+            'risk_score' => 0.85,
+            'anomaly_reasons' => ['test'],
+            'status' => 'QUARANTINED',
+            'quarantined_at' => now(),
+        ])->id],
+    ],
+    'admin.ai.screen-anomaly' => ['roles' => ['admin']],
     'admin.group-dashboard' => ['roles' => ['admin']],
     'admin.health.index' => ['roles' => ['admin']],
     'admin.health.run' => ['roles' => ['admin']],

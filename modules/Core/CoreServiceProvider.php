@@ -12,6 +12,9 @@ use Modules\Core\Application\Actions\AcquireVehicleAction;
 use Modules\Core\Application\Actions\TransferVehicleOwnershipAction;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
 use Modules\Core\Application\Services\ActivityLogger;
+use Modules\Core\Application\Services\Ai\DynamicPricingEngineService;
+use Modules\Core\Application\Services\Ai\StockPrescriptionEngineService;
+use Modules\Core\Application\Services\Ai\TransactionAnomalyDetectorService;
 use Modules\Core\Application\Services\ApprovalEngineService;
 use Modules\Core\Application\Services\AuditTrailService;
 use Modules\Core\Application\Services\CrossModuleSpineHandlers;
@@ -25,6 +28,7 @@ use Modules\Core\Application\Services\RbacService;
 use Modules\Core\Application\Services\Scale\OutboxScaleProvisioner;
 use Modules\Core\Application\Services\Scale\PassportScaleProvisioner;
 use Modules\Core\Application\Services\SimClockService;
+use Modules\Core\Console\Commands\AuditAiCommand;
 use Modules\Core\Console\Commands\BenchmarkRunCommand;
 use Modules\Core\Console\Commands\ConsumeSpineCommand;
 use Modules\Core\Console\Commands\ProcessOutboxCommand;
@@ -40,9 +44,12 @@ use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Core\Contracts\DocumentStoreInterface;
+use Modules\Core\Contracts\DynamicPricingEngineInterface;
 use Modules\Core\Contracts\EventSpineInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Core\Contracts\StockPrescriptionEngineInterface;
+use Modules\Core\Contracts\TransactionAnomalyDetectorInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Core\Domain\Events\VehicleAcquired;
 use Modules\Core\Domain\Models\Vehicle;
@@ -105,6 +112,22 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->bind(
             DigitalTwinInterface::class,
             DigitalTwinService::class
+        );
+
+        // 64.1 - 64.3 AI Predictive Analytics & Governance Engines
+        $this->app->bind(
+            DynamicPricingEngineInterface::class,
+            DynamicPricingEngineService::class
+        );
+
+        $this->app->bind(
+            TransactionAnomalyDetectorInterface::class,
+            TransactionAnomalyDetectorService::class
+        );
+
+        $this->app->bind(
+            StockPrescriptionEngineInterface::class,
+            StockPrescriptionEngineService::class
         );
 
         // Platform services — singletons so they can be injected anywhere
@@ -197,6 +220,16 @@ class CoreServiceProvider extends ServiceProvider
             activePattern: 'admin/audit-logs*',
         );
 
+        $registry->addItem(
+            label: 'AI & Analitik Governance',
+            route: 'admin.ai.index',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
+            roles: ['admin'],
+            order: 96,
+            group: 'Grup & Admin',
+            activePattern: 'admin/ai-governance*',
+        );
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 VerifyPassportsCommand::class,
@@ -207,6 +240,7 @@ class CoreServiceProvider extends ServiceProvider
                 TwelveLinesComprehensiveAuditCommand::class,
                 ScaleProvisionCommand::class,
                 BenchmarkRunCommand::class,
+                AuditAiCommand::class,
             ]);
         }
 

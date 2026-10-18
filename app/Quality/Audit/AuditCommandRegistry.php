@@ -6,6 +6,7 @@ namespace App\Quality\Audit;
 
 use App\Quality\Audit\Fixtures\AgriAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AgyAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\AiAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ApiAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AstAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AstVerifyChainCorruptionFixture;
@@ -65,6 +66,7 @@ final class AuditCommandRegistry
         return [
             'agri:audit' => new AgriAuditCorruptionFixture,
             'agy:audit' => new AgyAuditCorruptionFixture,
+            'ai:audit' => new AiAuditCorruptionFixture,
             'api:audit' => new ApiAuditCorruptionFixture,
             'ast:audit' => new AstAuditCorruptionFixture,
             'ast:verify-chain' => new AstVerifyChainCorruptionFixture,
