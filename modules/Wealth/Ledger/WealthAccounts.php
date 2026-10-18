@@ -25,6 +25,20 @@ final class WealthAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'wm:management_fee:IDR',
+                'name' => 'Wealth Management Fee Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'wm:pool:default:IDR',
+                'name' => 'Wealth Holdings Default Pool',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }
