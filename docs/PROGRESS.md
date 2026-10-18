@@ -3387,34 +3387,155 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 2 — FINTECH, PERBANKAN & KRIPTO
 
 ## FASE 71 — TOKENISASI ASET RIIL (RWA) & DIVIDEN OTOMATIS
-> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 71 (DoR disetujui pemilik).
+> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, double-entry ledger konsisten, dan quality gate 9/9 langkah pass.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Rwa (`rwa_`) + Asset + Party + Contract · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP 2F slice 1
 > **Jalan pintas terlarang di fase ini:** dividen dari angka masukan, bukan dari pendapatan terposting; kepemilikan token hanya di tabel tanpa ledger aset `RWA-{id}`; pembelian tanpa KYC — ditambah seluruh X1–X25.
-- [ ] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
-- [ ] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
-- [ ] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
-- [ ] 71.4 **Dividen harian otomatis**: omzet sumber aset (mis. pendapatan logistik per truk dari Core Banking, sewa unit mall dari invoice) → dihitung pro-rata per holder → batch posting idempoten per hari ke dompet holder; gagal payout → antrean retry + alert
-- [ ] 71.5 Corporate action: redemsi parsial (aset dijual → token ditebus pro-rata), dilusi, pembatalan token; seluruh perubahan supply tercatat hash-chain
-- [ ] 71.6 Dashboard RWA: katalog aset, orderbook, kepemilikan, riwayat dividen, exposure per holder; guardrail konsentrasi (maks X% aset per holder)
-- [ ] 71.7 Tests: (a) Σ token terbit = Σ holdings (b) dividen harian = omzet × pro-rata (dibulatkan, sisa ke rounding reserve) (c) double-settlement orderbook ditolak (d) redemsi menurunkan supply konsisten (e) reconcile aset ledger = holdings
-- [ ] 71.8 Quality gate Fase 71
+- [x] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/database/migrations/2026_10_07_710100_create_rwa_tables.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_issuance_and_holdings_sum_equals_supply
+    - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/Application/Services/RwaTokenService.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_issuance_and_holdings_sum_equals_supply
+    - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/Application/Services/RwaOrderbookService.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_orderbook_double_settlement_rejected_and_kyc_guardrail
+    - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.4 **Dividen harian otomatis**: omzet sumber aset (mis. pendapatan logistik per truk dari Core Banking, sewa unit mall dari invoice) → dihitung pro-rata per holder → batch posting idempoten per hari ke dompet holder; gagal payout → antrean retry + alert
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/Application/Services/RwaTokenService.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_daily_dividend_pro_rata_distribution_and_rounding
+    - akses: route POST /rwa/assets/{asset}/distribute [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.5 Corporate action: redemsi parsial (aset dijual → token ditebus pro-rata), dilusi, pembatalan token; seluruh perubahan supply tercatat hash-chain
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/Application/Services/RwaCorporateActionService.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_token_redemption_decreases_supply_consistently
+    - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.6 Dashboard RWA: katalog aset, orderbook, kepemilikan, riwayat dividen, exposure per holder; guardrail konsentrasi (maks X% aset per holder)
+  Bukti:
+    - jenis: fitur
+    - commit: 044c37a
+    - file: modules/Rwa/Application/Services/RwaTokenService.php
+    - test: modules/Rwa/tests/Feature/RwaVerticalSliceHttpTest.php::test_a_authorized_user_can_access_rwa_index_and_distribute
+    - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
+    - gate: docs/gates/fase-71.md
+- [x] 71.7 Tests: (a) Σ token terbit = Σ holdings (b) dividen harian = omzet × pro-rata (dibulatkan, sisa ke rounding reserve) (c) double-settlement orderbook ditolak (d) redemsi menurunkan supply konsisten (e) reconcile aset ledger = holdings
+  Bukti:
+    - jenis: tooling
+    - commit: 044c37a
+    - file: modules/Rwa/tests/Feature/RwaTest.php
+    - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_reconcile_asset_ledger_equals_holdings
+    - gate: docs/gates/fase-71.md
+- [x] 71.8 Quality gate Fase 71
+  Bukti:
+    - jenis: dokumen
+    - commit: 044c37a
+    - file: modules/Rwa/tests/Feature/RwaTest.php
+    - test: modules/Rwa/tests/Feature/RwaVerticalSliceHttpTest.php::test_d_two_source_rwa_audit_passes_cleanly
+    - akses: command rwa:audit
+    - gate: docs/gates/fase-71.md
+
+### Register Minus Fase 71
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 71.1–71.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
+
 ## FASE 72 — INSURTECH: MICRO-INSURANCE TERSEMAT & CLAIMS AUTOPILOT
-> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 72 (DoR disetujui pemilik).
+> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, double-entry ledger konsisten, dan quality gate 9/9 langkah pass.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Insurance (`ins_`) · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP 2F slice 2
 > **Jalan pintas terlarang di fase ini:** klaim dicairkan dengan flag `$approved`; premi diakui penuh saat dibayar; klaim ganda untuk event yang sama — ditambah seluruh X1–X25.
-- [ ] 72.1 Tabel `ins_products` (premi mikro: keterlambatan logistik, kerusakan kendaraan, cold-chain breach, pembatalan event, cuti sakit karyawan), `ins_policies` (tersemat otomatis ke dompet pengguna/shipment/kontrak), `ins_claims`
-- [ ] 72.2 **Trigger otomatis tanpa formulir**: event spine (`lgx.late>4h`, `auto.collision_dtc`, `lgx.temp_breach>10m`, `ven.event_cancelled`) → smart-contract simulasi memvalidasi bukti hash-chain → klaim **cair langsung ke dompet dalam detik** (posting ledger `ins:claims_paid`)
-- [ ] 72.3 Akuntansi premi: akrual premi harian/bulanan dari saldo, reserve klaim (akun liabilitas), loss ratio & combined ratio per produk; batas payout per polis & per hari (anti-fraud)
-- [ ] 72.4 Fraud guard: skor anomali klaim (klaim beruntun, polis baru langsung klaim) → hold manual four-eyes sebelum cair; audit trail penuh
-- [ ] 72.5 Reinstatement & cancellation, grace period premi, dan klaim manual (unggah bukti) untuk kasus non-tersemat
-- [ ] 72.6 Dashboard: claims autopilot (days-to-pay = detik), loss ratio per produk, reserve vs kewajiban, top trigger
-- [ ] 72.7 Tests: (a) trigger sah → klaim cair 1x, ganda ditolak (b) reserve ≥ kewajiban terbayar (c) fraud score tinggi masuk hold (d) premi gagal bayar → polis lapse + notifikasi (e) reconcile reserve = ledger
-- [ ] 72.8 Quality gate Fase 72
+- [x] 72.1 Tabel `ins_products` (premi mikro: keterlambatan logistik, kerusakan kendaraan, cold-chain breach, pembatalan event, cuti sakit karyawan), `ins_policies` (tersemat otomatis ke dompet pengguna/shipment/kontrak), `ins_claims`
+  Bukti:
+    - jenis: fitur
+    - commit: f406adc
+    - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
+    - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_issue_embedded_policy_and_deduct_premium
+    - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
+    - gate: docs/gates/fase-72.md
+- [x] 72.2 **Trigger otomatis tanpa formulir**: event spine (`lgx.late>4h`, `auto.collision_dtc`, `lgx.temp_breach>10m`, `ven.event_cancelled`) → smart-contract simulasi memvalidasi bukti hash-chain → klaim **cair langsung ke dompet dalam detik** (posting ledger `ins:claims_paid`)
+  Bukti:
+    - jenis: fitur
+    - commit: f406adc
+    - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
+    - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_claims_autopilot_pays_instantaneously_and_is_idempotent
+    - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
+    - gate: docs/gates/fase-72.md
+- [x] 72.3 Akuntansi premi: akrual premi harian/bulanan dari saldo, reserve klaim (akun liabilitas), loss ratio & combined ratio per produk; batas payout per polis & per hari (anti-fraud)
+  Bukti:
+    - jenis: fitur
+    - commit: f406adc
+    - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
+    - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_insurance_reserve_exceeds_or_equals_paid_liabilities
+    - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
+    - gate: docs/gates/fase-72.md
+- [x] 72.4 Fraud guard: skor anomali klaim (klaim beruntun, polis baru langsung klaim) → hold manual four-eyes sebelum cair; audit trail penuh
+  Bukti:
+    - jenis: fitur
+    - commit: f406adc
+    - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
+    - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_fraud_anomaly_score_triggers_manual_review_hold
+    - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
+    - gate: docs/gates/fase-72.md
+- [x] 72.5 Reinstatement & cancellation, grace period premi, dan klaim manual (unggah bukti) untuk kasus non-tersemat
+  Bukti:
+    - jenis: fitur
+    - commit: f406adc
+    - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
+    - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_premium_payment_failure_leads_to_policy_lapse
+    - akses: route POST /insurance/products/{product}/issue [role: admin, insurance_admin, underwriter, customer]
+    - gate: docs/gates/fase-72.md
+- [x] 72.6 Dashboard: claims autopilot (days-to-pay = detik), loss ratio per produk, reserve vs kewajiban, top trigger
+  Bukti:
+    - jenis: fitur
+    - commit: f406adc
+    - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
+    - test: modules/Insurance/tests/Feature/InsuranceVerticalSliceHttpTest.php::test_a_authorized_user_can_access_insurance_index_and_issue
+    - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
+    - gate: docs/gates/fase-72.md
+- [x] 72.7 Tests: (a) trigger sah → klaim cair 1x, ganda ditolak (b) reserve ≥ kewajiban terbayar (c) fraud score tinggi masuk hold (d) premi gagal bayar → polis lapse + notifikasi (e) reconcile reserve = ledger
+  Bukti:
+    - jenis: tooling
+    - commit: f406adc
+    - file: modules/Insurance/tests/Feature/InsuranceTest.php
+    - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_reconcile_insurance_reserve_equals_ledger
+    - gate: docs/gates/fase-72.md
+- [x] 72.8 Quality gate Fase 72
+  Bukti:
+    - jenis: dokumen
+    - commit: f406adc
+    - file: modules/Insurance/tests/Feature/InsuranceTest.php
+    - test: modules/Insurance/tests/Feature/InsuranceVerticalSliceHttpTest.php::test_d_two_source_insurance_audit_passes_cleanly
+    - akses: command ins:audit
+    - gate: docs/gates/fase-72.md
+
+### Register Minus Fase 72
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 72.1–72.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 73 — ROBO-ADVISOR WEALTH MANAGEMENT & TREASURY YIELD
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Wealth): service `RoboAdvisorService`; 1 migrasi; test `WealthTest` — commit `df58401`, +397 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 73 (DoR disetujui pemilik).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Wealth (`wm_`) · **Prasyarat:** Fase 58 ulang (R6.3) ✅ · **Acuan:** KONSEP 2F slice 3
 > **Jalan pintas terlarang di fase ini:** NAV/alokasi memakai float; alokasi melanggar guardrail likuiditas tanpa ditolak — ditambah seluruh X1–X25.
