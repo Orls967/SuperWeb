@@ -7,6 +7,7 @@ use Modules\Core\Http\Controllers\ActivityFeedController;
 use Modules\Core\Http\Controllers\AiGovernanceController;
 use Modules\Core\Http\Controllers\AuditLogController;
 use Modules\Core\Http\Controllers\HealthCheckController;
+use Modules\Core\Http\Controllers\MobileGovernanceController;
 use Modules\Core\Http\Controllers\NotificationController;
 use Modules\Core\Http\Controllers\PassportController;
 use Modules\Core\Http\Controllers\RbacController;
@@ -49,5 +50,12 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         Route::post('/ai-governance/screen-anomaly', [AiGovernanceController::class, 'screenAnomaly'])->name('admin.ai.screen-anomaly');
         Route::post('/ai-governance/generate-stock-recommendation', [AiGovernanceController::class, 'generateStockRecommendation'])->name('admin.ai.generate-stock-recommendation');
         Route::post('/ai-governance/quarantines/{quarantine}/release', [AiGovernanceController::class, 'releaseQuarantine'])->name('admin.ai.release-quarantine');
+
+        // Enterprise Mobile Suite & Offline-First (Fase 65)
+        Route::get('/mobile-governance', [MobileGovernanceController::class, 'index'])->name('admin.mobile.index');
+        Route::post('/mobile-governance/sync-batch', [MobileGovernanceController::class, 'syncBatch'])->name('admin.mobile.sync-batch');
+        Route::post('/mobile-governance/submit-epod', [MobileGovernanceController::class, 'submitEpod'])->name('admin.mobile.submit-epod');
+        Route::post('/mobile-governance/record-action', [MobileGovernanceController::class, 'recordAction'])->name('admin.mobile.record-action');
+        Route::post('/mobile-governance/devices/{device}/revoke', [MobileGovernanceController::class, 'revokeDevice'])->name('admin.mobile.revoke-device');
     });
 });

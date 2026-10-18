@@ -14,6 +14,7 @@ use Modules\CloudKitchen\Domain\Models\CateringSubscription;
 use Modules\CloudKitchen\Domain\Models\CloudKitchen;
 use Modules\Core\Domain\Models\AuditLog;
 use Modules\Core\Domain\Models\CoreAiAnomalyQuarantine;
+use Modules\Core\Domain\Models\CoreMobileDevice;
 use Modules\Core\Domain\Models\Role;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Crypto\Domain\Enums\AlertCondition;
@@ -507,6 +508,18 @@ return [
     'admin.ledger.freeze' => ['roles' => ['admin']],
     'admin.ledger.index' => ['roles' => ['admin']],
     'admin.ledger.show' => ['roles' => ['admin']],
+    'admin.mobile.index' => ['roles' => ['admin']],
+    'admin.mobile.record-action' => ['roles' => ['admin']],
+    'admin.mobile.revoke-device' => [
+        'roles' => ['admin'],
+        'params' => fn () => ['device' => CoreMobileDevice::firstOrCreate(['device_uuid' => 'DEV-TEST-ROUTE-ROLES'], [
+            'role_scope' => 'driver',
+            'app_version' => '1.0.0',
+            'platform' => 'ANDROID',
+        ])->id],
+    ],
+    'admin.mobile.submit-epod' => ['roles' => ['admin']],
+    'admin.mobile.sync-batch' => ['roles' => ['admin']],
     'admin.rbac.assign' => ['roles' => ['admin']],
     'admin.rbac.index' => ['roles' => ['admin']],
     'admin.rbac.revoke' => ['roles' => ['admin']],

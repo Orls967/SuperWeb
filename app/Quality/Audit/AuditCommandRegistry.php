@@ -37,6 +37,7 @@ use App\Quality\Audit\Fixtures\MallAuditBillingCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgAuditCostingCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgQmsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\MinAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\MobileAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PlmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PricingAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProcAuditCorruptionFixture;
@@ -97,6 +98,7 @@ final class AuditCommandRegistry
             'mfg:audit-costing' => new MfgAuditCostingCorruptionFixture,
             'mfg:qms-audit' => new MfgQmsAuditCorruptionFixture,
             'min:audit' => new MinAuditCorruptionFixture,
+            'mobile:audit' => new MobileAuditCorruptionFixture,
             'plm:audit' => new PlmAuditCorruptionFixture,
             'pricing:audit' => new PricingAuditCorruptionFixture,
             'proc:audit' => new ProcAuditCorruptionFixture,
