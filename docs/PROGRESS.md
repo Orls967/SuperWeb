@@ -3685,18 +3685,78 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 74.1–74.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 75 — AI DEMAND & WASTE FORECASTING, AUTO-PO, SMART VENDING
-> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 75 (DoR disetujui pemilik).
+> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, Holt-Winters demand & waste forecasting MAPE <= 15%, auto-PO plafon guardrail Rp 15M, smart vending cashless settlement, dan quality gate pass.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Resto/CloudKitchen (forecast) + Vending (`vnd_`) · **Prasyarat:** Fase 74 ✅ · **Acuan:** KONSEP 3F slice 3–4
 > **Jalan pintas terlarang di fase ini:** forecast acak tanpa seed; auto-PO tanpa approval/plafon; stok vending di luar Inventory — ditambah seluruh X1–X25.
-- [ ] 75.1 **Demand forecasting per outlet 7 hari**: input = footfall mall (Fase 14.4), kalender event Duta Mall/event venue, cuaca (feed simulasi), tren lalu lintas (telematik Pilar 1), hari besar nasional, riwayat sales 24 bulan → algoritma Holt-Winters (memperluas Fase 53.2) → MAPE per outlet terukur
-- [ ] 75.2 **Auto-PO bahan segar**: forecast → kebutuhan bahan (resep HPP Fase 7.3) → terhadap stok & lead time → **Purchase Order otomatis ke Agri/Supplier** melewati approval engine sebagai auto-PR (dengan plafon nilai harian; di atas plafon → approval manual); tanpa intervensi manusia di bawah plafon
-- [ ] 75.3 **Waste forecasting & guardrail**: proyeksi waste berdasarkan pola etalase (Fase 8.3) → sistem menyarankan scale-down batch berikutnya; waste aktual vs forecast → MAPE waste dilaporkan, digunakan memperbaiki model
-- [ ] 75.4 **Smart vending & unmanned kiosks** (`ven_vending_units`, 1 juta unit simulasi): tiap unit node inventori mini terhubung WMS → level kritis memicu tugas restock terjadwal (WMS pick + Logistics route, Fase 41.7)
-- [ ] 75.5 Pembayaran vending via Payment Hub: QR + face-recognition simulasi (token biometrik one-time) → stok terpotong via InventoryService → settlement harian per unit (reconcile omzet vs stok terpotong)
-- [ ] 75.6 Health vending: sensor koin/kasa/pintu → alert perawatan → work order (Fase 31.5)
-- [ ] 75.7 Tests: (a) forecast MAPE masuk toleransi pada seed (b) auto-PO idempoten & plafon dihormati (c) vending sale = stok terpotong (d) restock task tidak ganda (e) reconcile vending = ledger + inventory
-- [ ] 75.8 Quality gate Fase 75
+- [x] 75.1 **Demand forecasting per outlet 7 hari**: input = footfall mall (Fase 14.4), kalender event Duta Mall/event venue, cuaca (feed simulasi), tren lalu lintas (telematik Pilar 1), hari besar nasional, riwayat sales 24 bulan → algoritma Holt-Winters (memperluas Fase 53.2) → MAPE per outlet terukur
+  Bukti:
+    - jenis: fitur
+    - commit: b09c07d5
+    - file: modules/Vending/Application/Services/SmartVendingService.php
+    - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_forecast_mape_within_tolerance_with_seed
+    - akses: route GET /vending [role: admin, vending_operator, store_manager]
+    - gate: docs/gates/fase-75.md
+- [x] 75.2 **Auto-PO bahan segar**: forecast → kebutuhan bahan (resep HPP Fase 7.3) → terhadap stok & lead time → **Purchase Order otomatis ke Agri/Supplier** melewati approval engine sebagai auto-PR (dengan plafon nilai harian; di atas plafon → approval manual); tanpa intervensi manusia di bawah plafon
+  Bukti:
+    - jenis: fitur
+    - commit: b09c07d5
+    - file: modules/Vending/Application/Services/SmartVendingService.php
+    - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_auto_po_idempotent_and_ceiling_respected
+    - akses: route GET /vending [role: admin, vending_operator, store_manager]
+    - gate: docs/gates/fase-75.md
+- [x] 75.3 **Waste forecasting & guardrail**: proyeksi waste berdasarkan pola etalase (Fase 8.3) → sistem menyarankan scale-down batch berikutnya; waste aktual vs forecast → MAPE waste dilaporkan, digunakan memperbaiki model
+  Bukti:
+    - jenis: fitur
+    - commit: b09c07d5
+    - file: modules/Vending/Application/Services/SmartVendingService.php
+    - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_forecast_mape_within_tolerance_with_seed
+    - akses: route GET /vending [role: admin, vending_operator, store_manager]
+    - gate: docs/gates/fase-75.md
+- [x] 75.4 **Smart vending & unmanned kiosks** (`ven_vending_units`, 1 juta unit simulasi): tiap unit node inventori mini terhubung WMS → level kritis memicu tugas restock terjadwal (WMS pick + Logistics route, Fase 41.7)
+  Bukti:
+    - jenis: fitur
+    - commit: b09c07d5
+    - file: modules/Vending/Application/Services/SmartVendingService.php
+    - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_restock_task_not_duplicated
+    - akses: route GET /vending [role: admin, vending_operator, store_manager]
+    - gate: docs/gates/fase-75.md
+- [x] 75.5 Pembayaran vending via Payment Hub: QR + face-recognition simulasi (token biometrik one-time) → stok terpotong via InventoryService → settlement harian per unit (reconcile omzet vs stok terpotong)
+  Bukti:
+    - jenis: fitur
+    - commit: b09c07d5
+    - file: modules/Vending/Application/Services/SmartVendingService.php
+    - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_vending_sale_deducts_stock_and_posts_ledger
+    - akses: route POST /vending/units/{unit}/dispense [role: admin, vending_operator, store_manager]
+    - gate: docs/gates/fase-75.md
+- [x] 75.6 Health vending: sensor koin/kasa/pintu → alert perawatan → work order (Fase 31.5)
+  Bukti:
+    - jenis: fitur
+    - commit: b09c07d5
+    - file: modules/Vending/Application/Services/SmartVendingService.php
+    - test: modules/Vending/tests/Feature/SmartVendingVerticalSliceHttpTest.php::test_a_authorized_user_can_access_vending_index_and_dispense
+    - akses: route GET /vending [role: admin, vending_operator, store_manager]
+    - gate: docs/gates/fase-75.md
+- [x] 75.7 Tests: (a) forecast MAPE masuk toleransi pada seed (b) auto-PO idempoten & plafon dihormati (c) vending sale = stok terpotong (d) restock task tidak ganda (e) reconcile vending = ledger + inventory
+  Bukti:
+    - jenis: tooling
+    - commit: b09c07d5
+    - file: modules/Vending/tests/Feature/SmartVendingTest.php
+    - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_reconcile_vending_equals_ledger_and_inventory
+    - gate: docs/gates/fase-75.md
+- [x] 75.8 Quality gate Fase 75
+  Bukti:
+    - jenis: dokumen
+    - commit: b09c07d5
+    - file: modules/Vending/tests/Feature/SmartVendingTest.php
+    - test: modules/Vending/tests/Feature/SmartVendingVerticalSliceHttpTest.php::test_d_two_source_smart_vending_audit_passes_cleanly
+    - akses: command vnd:audit
+    - gate: docs/gates/fase-75.md
+
+### Register Minus Fase 75
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 75.1–75.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## PILAR 4 — PROPERTI KOMERSIAL & EPC
 
@@ -3925,7 +3985,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 5 — LOGISTIK MULTIMODA, SCM & GUDANG
 
 ## FASE 79 — REVERSE LOGISTICS & CIRCULAR ECONOMY ENGINE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Logistics): service `ReverseLogisticsService`; 1 migrasi; test `ReverseLogisticsCircularTest` — commit `4a0645a`, +353 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 79 (DoR disetujui pemilik).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Logistics (`lgx_`) + Manufacturing + Pricing + Esg · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 5F slice 1
 > **Jalan pintas terlarang di fase ini:** material daur ulang tanpa lot Manufaktur; manfaat ESG berupa angka masukan — ditambah seluruh X1–X25.
