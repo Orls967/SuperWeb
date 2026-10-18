@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use App\Quality\Audit\Fixtures\MobileAuditCorruptionFixture;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Core\Application\Dtos\EpodSubmissionDto;
-use Modules\Core\Application\Dtos\MobileSyncEventDto;
+use Modules\Core\Application\DTOs\EpodSubmissionDto;
+use Modules\Core\Application\DTOs\MobileSyncEventDto;
 use Modules\Core\Application\Services\Mobile\MobileOfflineSyncEngineService;
 use Modules\Core\Domain\Models\CoreMobileEpodRecord;
 

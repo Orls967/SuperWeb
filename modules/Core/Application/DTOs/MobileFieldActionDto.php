@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Core\Application\Dtos;
+namespace Modules\Core\Application\DTOs;
 
 final readonly class MobileFieldActionDto
 {

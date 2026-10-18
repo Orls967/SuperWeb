@@ -2958,19 +2958,46 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 64.1–64.4 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 65 — ENTERPRISE MOBILE SUITE (PWA/HYBRID OFFLINE-FIRST ARCHITECTURE)
-> **Status audit 2026-10-10:** ⬜ BELUM. Prasyarat bagi fase 99 (AI terpadu), 101/145 (DR) yang sebelumnya ditandai selesai. Kerjakan setelah Fase R.
+> **Status audit 2026-10-18:** 🔵 SIAP DIVERIFIKASI SILANG. Prasyarat bagi fase 99 (AI terpadu), 101/145 (DR) yang sebelumnya ditandai selesai. Selesai pasca-Fase R.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core + modul peran (Manufacturing, Wms, Logistics, Agency); PWA di `resources/` · **Prasyarat:** R3 ✅ · **Acuan:** KONSEP §A7
 > **Jalan pintas terlarang di fase ini:** klaim offline tanpa antrean lokal yang diuji; sinkronisasi tanpa `Idempotency-Key`; `mobile:audit` tautologis — ditambah seluruh X1–X25.
-- [ ] 65.1 **Aplikasi Mobile Lapangan Khusus 4 Peran Kunci**:
+- [x] 65.1 **Aplikasi Mobile Lapangan Khusus 4 Peran Kunci**:
   - *Operator Pabrik*: scan QR work order, input output produksi, catat downtime mesin.
   - *Petugas WMS*: scanner barcode rak/bin, konfirmasi putaway, picking wave panduan jalur terpendek.
   - *Driver Logistik*: navigasi rute optimal, bukti serah terima foto + tanda tangan digital (e-POD offline-capable).
   - *Sales Agen Lapangan*: katalog mobile offline, pembuatan pesanan di lokasi pelanggan, dan pengecekan komisi.
-- [ ] 65.2 **Sinkronisasi Data Dua Arah Berbasis Idempotensi (Offline-First Sync Engine)**:
+  Bukti:
+    - commit: d9d84cf
+    - file: modules/Core/Application/Services/Mobile/MobileOfflineSyncEngineService.php
+    - test: modules/Core/tests/Feature/Mobile/MobileFieldRoleActionTest.php::executes offline field actions across 4 operational roles deterministically
+    - akses: route POST /admin/mobile-governance/record-action [role: admin]
+    - gate: docs/gates/fase-65.md
+- [x] 65.2 **Sinkronisasi Data Dua Arah Berbasis Idempotensi (Offline-First Sync Engine)**:
   - Penyimpanan lokal perangkat (SQLite / IndexedDB): operasional tetap berjalan tanpa koneksi internet di area terpencil/gudang bawah tanah.
   - Mekanisme rekonsiliasi saat online: transmisi antrean mutasi dengan key idempotensi unik deterministik dan resolusi konflik berbasis *Last-Write-Wins with Timestamp Guard*.
-- [ ] 65.3 `mobile:audit` (Zero duplicate records akibat sync retry, integritas hash tanda tangan e-POD 100% valid).
+  Bukti:
+    - commit: d9d84cf
+    - file: modules/Core/Application/Services/Mobile/MobileOfflineSyncEngineService.php
+    - file: modules/Core/Application/Services/Mobile/EpodIntegrityVerifierService.php
+    - test: modules/Core/tests/Feature/Mobile/MobileOfflineSyncTest.php::resolves sync conflicts using last write wins with timestamp guard and skips duplicates
+    - test: modules/Core/tests/Feature/Mobile/EpodIntegrityTest.php::validates digital signature sha256 hash and flags tampered epod records
+    - akses: route POST /admin/mobile-governance/sync-batch [role: admin]
+    - gate: docs/gates/fase-65.md
+- [x] 65.3 `mobile:audit` (Zero duplicate records akibat sync retry, integritas hash tanda tangan e-POD 100% valid).
+  Bukti:
+    - commit: d9d84cf
+    - file: modules/Core/Console/Commands/AuditMobileCommand.php
+    - file: app/Quality/Audit/Fixtures/MobileAuditCorruptionFixture.php
+    - test: modules/Core/tests/Feature/Mobile/MobileAuditCommandTest.php::mobile:audit succeeds on clean state and catches tampered epod hashes
+    - akses: command mobile:audit
+    - audit: mobile:audit
+    - gate: docs/gates/fase-65.md
+
+### Register Minus Fase 65
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 65.1–65.3 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 66 — RESILIENSI GLOBAL, DISASTER RECOVERY MULTI-REGION & DATA SOVEREIGNTY
 > **Status audit 2026-10-10:** ⬜ BELUM. Prasyarat bagi fase 99 (AI terpadu), 101/145 (DR) yang sebelumnya ditandai selesai. Kerjakan setelah Fase R.

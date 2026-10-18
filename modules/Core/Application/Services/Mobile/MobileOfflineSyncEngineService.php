@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Services\Mobile;
 
 use Illuminate\Support\Facades\DB;
-use Modules\Core\Application\Dtos\EpodSubmissionDto;
-use Modules\Core\Application\Dtos\MobileFieldActionDto;
-use Modules\Core\Application\Dtos\MobileSyncEventDto;
+use Modules\Core\Application\DTOs\EpodSubmissionDto;
+use Modules\Core\Application\DTOs\MobileFieldActionDto;
+use Modules\Core\Application\DTOs\MobileSyncEventDto;
 use Modules\Core\Domain\Contracts\MobileOfflineSyncInterface;
 use Modules\Core\Domain\Models\CoreMobileDevice;
 use Modules\Core\Domain\Models\CoreMobileEpodRecord;

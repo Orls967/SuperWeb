@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Core\Application\Dtos\MobileFieldActionDto;
-use Modules\Core\Application\Dtos\MobileSyncEventDto;
+use Modules\Core\Application\DTOs\MobileFieldActionDto;
+use Modules\Core\Application\DTOs\MobileSyncEventDto;
 use Modules\Core\Application\Services\Mobile\MobileOfflineSyncEngineService;
 use Modules\Core\Domain\Models\CoreMobileDevice;
 use Modules\Core\Domain\Models\CoreMobileFieldAction;
