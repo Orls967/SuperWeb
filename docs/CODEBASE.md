@@ -525,7 +525,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 45 | **Shared** | — | 0 |
 | 46 | **Store** | `store_` | 5 |
 | 47 | **Supplier** | `sup_` | 3 |
-| 48 | **Telematics** | — | 1 |
+| 48 | **Telematics** | — | 2 |
 | 49 | **Tlx** | `tlx_` | 3 |
 | 50 | **Trade** | `trd_` | 2 |
 | 51 | **TradeFinance** | `tf_` | 2 |
@@ -534,7 +534,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 54 | **Venue** | `ven_` | 5 |
 | 55 | **Wealth** | `wm_` | 1 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **546 Migrasi** |
+| | **Total: 56 Modul** | | **547 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |

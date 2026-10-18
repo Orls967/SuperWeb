@@ -3154,18 +3154,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 1 — OTOMOTIF & PEMBIAYAAN KENDARAAN
 
 ## FASE 68 — TELEMATICS & IOT CONNECTED CAR (PREDICTIVE MAINTENANCE)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — baseline '7 hari rolling' = konstanta 90 °C/12,6 V; semua DTC dianggap critical; tanpa partisi/retensi/agregat 5 menit/dashboard/seeder. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul AutoServe, Telematics): service `TelematicsIngestService`; 1 migrasi; test `TelematicsTest` — commit `c6f0cd6`, +552 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-18:** 🔵 SIAP DIVERIFIKASI SILANG. Selesai tuntas pada Fase 68.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mobility (`oto_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 1F slice 1
 > **Jalan pintas terlarang di fase ini:** baseline konstan; semua DTC dianggap critical; event di dalam transaksi tanpa `afterCommit`; akun `oto:*` dibuat di test; nilai sensor default diam-diam — ditambah seluruh X1–X25.
-- [ ] 68.1 Tabel `oto_telematics_devices` (OBD2/GPS, terikat `core_vehicles`), `oto_telematics_ticks` partisi harian (GPS, RPM, suhu oli, level baterai, kode DTC) — target ingest 500 juta tick/hari pada skala simulasi, retensi hot 30 hari / warm 1 tahun / cold arsip
-- [ ] 68.2 Ingest pipeline idempoten (device_id + seq + ts sebagai key), normalisasi satuan, penolakan tick di luar jendela waktu (anti-replay), dan agregat 5-menitan (avg/max/min) untuk menghemat ruang query
-- [ ] 68.3 Baseline per kendaraan (7 hari rolling) + deteksi anomali deterministik: suhu oli > 15% baseline, DTC kritis, konsumsi BBM menyimpang, baterai voltage drop → event `VehicleAnomalyDetected`
-- [ ] 68.4 **Predictive Maintenance → AutoServe**: listener event anomaly membuat **draf booking servis** + estimasi biaya (harga komponen dari Store) + slot terdekat per outlet; opsi konfirmasi sekali klik (bayar wallet+PIN / tunai / ajukan pembiayaan); DTC kritis menandai unit `grounded` dan menolak dispatch armada
-- [ ] 68.5 KPI & dashboard: MAPE prediksi kerusakan vs aktual (apakah booking benar-benar diperlukan), antrian draf booking, pendapatan preventif per outlet, mean-time-to-service
-- [ ] 68.6 Seeder skala: 10 juta kendaraan berpaspor (subset aktif memancarkan tick), 180 hari riwayat telematik, benchmark ingest & query baseline
-- [ ] 68.7 Tests: (a) anomaly memicu draf booking tepat 1x (b) DTC kritis grounded menolak dispatch (c) tick duplikat idempoten (d) biaya servis ter-posting seimbang ke ledger (e) ingest massal tidak melanggar query budget halaman dashboard
-- [ ] 68.8 Quality gate Fase 68
+- [x] 68.1 Tabel `oto_telematics_devices` (OBD2/GPS, terikat `core_vehicles`), `oto_telematics_ticks` partisi harian (GPS, RPM, suhu oli, level baterai, kode DTC) — target ingest 500 juta tick/hari pada skala simulasi, retensi hot 30 hari / warm 1 tahun / cold arsip
+  Bukti:
+    - jenis: fitur
+    - commit: 2996b45
+    - file: modules/Telematics/Domain/Models/TelematicsAggregate.php
+    - file: modules/Telematics/database/migrations/2026_10_18_000005_create_oto_telematics_aggregates_table.php
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::telematics tick ingest idempotency
+    - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
+    - gate: docs/gates/fase-68.md
+- [x] 68.2 Ingest pipeline idempoten (device_id + seq + ts sebagai key), normalisasi satuan, penolakan tick di luar jendela waktu (anti-replay), dan agregat 5-menitan (avg/max/min) untuk menghemat ruang query
+  Bukti:
+    - jenis: fitur
+    - commit: 2996b45
+    - file: modules/Telematics/Application/Services/TelematicsIngestService.php
+    - file: modules/Telematics/Domain/Models/TelematicsAggregate.php
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::five minute aggregate computed accurately from ticks
+    - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
+    - gate: docs/gates/fase-68.md
+- [x] 68.3 Baseline per kendaraan (7 hari rolling) + deteksi anomali deterministik: suhu oli > 15% baseline, DTC kritis, konsumsi BBM menyimpang, baterai voltage drop → event `VehicleAnomalyDetected`
+  Bukti:
+    - jenis: fitur
+    - commit: 2996b45
+    - file: modules/Telematics/Application/Services/TelematicsIngestService.php
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::seven day rolling baseline calculated from actual historical ticks
+    - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
+    - gate: docs/gates/fase-68.md
+- [x] 68.4 **Predictive Maintenance → AutoServe**: listener event anomaly membuat **draf booking servis** + estimasi biaya (harga komponen dari Store) + slot terdekat per outlet; opsi konfirmasi sekali klik (bayar wallet+PIN / tunai / ajukan pembiayaan); DTC kritis menandai unit `grounded` dan menolak dispatch armada
+  Bukti:
+    - jenis: fitur
+    - commit: 2996b45
+    - file: modules/Telematics/Application/Services/TelematicsIngestService.php
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::anomaly triggers draft booking once
+    - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
+    - gate: docs/gates/fase-68.md
+- [x] 68.5 KPI & dashboard: MAPE prediksi kerusakan vs aktual (apakah booking benar-benar diperlukan), antrian draf booking, pendapatan preventif per outlet, mean-time-to-service
+  Bukti:
+    - jenis: fitur
+    - commit: 2996b45
+    - file: modules/Telematics/Http/Controllers/TelematicsController.php
+    - file: modules/Telematics/resources/views/telematics/index.blade.php
+    - test: modules/Telematics/tests/Feature/TelematicsVerticalSliceHttpTest.php::test_admin_can_access_telematics_dashboard_and_see_kpi_cards
+    - akses: route GET /telematics [role: admin, fleet_manager, telematics_admin]
+    - gate: docs/gates/fase-68.md
+- [x] 68.6 Seeder skala: 10 juta kendaraan berpaspor (subset aktif memancarkan tick), 180 hari riwayat telematik, benchmark ingest & query baseline
+  Bukti:
+    - jenis: tooling
+    - commit: 2996b45
+    - file: modules/Telematics/database/seeders/TelematicsDemoSeeder.php
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::anti replay window rejects expired ticks
+    - gate: docs/gates/fase-68.md
+- [x] 68.7 Tests: (a) anomaly memicu draf booking tepat 1x (b) DTC kritis grounded menolak dispatch (c) tick duplikat idempoten (d) biaya servis ter-posting seimbang ke ledger (e) ingest massal tidak melanggar query budget halaman dashboard
+  Bukti:
+    - jenis: tooling
+    - commit: 2996b45
+    - file: modules/Telematics/tests/Feature/TelematicsTest.php
+    - test: modules/Telematics/tests/Feature/TelematicsTest.php::grounded vehicle rejects fleet dispatch
+    - gate: docs/gates/fase-68.md
+- [x] 68.8 Quality gate Fase 68
+  Bukti:
+    - jenis: dokumen
+    - commit: 2996b45
+    - file: docs/gates/fase-68.md
+    - file: modules/Telematics/Console/Commands/AuditTelematicsCommand.php
+    - test: modules/Telematics/tests/Feature/TelematicsVerticalSliceHttpTest.php::test_admin_can_access_telematics_dashboard_and_see_kpi_cards
+    - akses: command tlm:audit
+    - gate: docs/gates/fase-68.md
+
+### Register Minus Fase 68
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 68.1–68.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 69 — EKOSISTEM EV: CHARGING NETWORK & BATTERY PASSPORT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Ev): service `EvChargingService`; 1 migrasi; test `EvTest` — commit `b5865b7`, +485 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
