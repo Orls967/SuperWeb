@@ -2920,7 +2920,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   Bukti:
     - commit: fcabdd5
     - file: modules/Core/Application/Services/Ai/DynamicPricingEngineService.php
-    - test: modules/Core/tests/Feature/Ai/DynamicPricingTest.php
+    - test: modules/Core/tests/Feature/Ai/DynamicPricingTest.php::calculates deterministic dynamic prices with identical hash for identical seed and inputs
     - akses: route POST /admin/ai-governance/calculate-pricing [role: admin]
     - gate: docs/gates/fase-64.md
 - [x] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
@@ -2930,7 +2930,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - commit: fcabdd5
     - file: modules/Core/Application/Services/Ai/TransactionAnomalyDetectorService.php
     - file: modules/Core/Domain/Models/CoreAiAnomalyQuarantine.php
-    - test: modules/Core/tests/Feature/Ai/TransactionAnomalyDetectorTest.php
+    - test: modules/Core/tests/Feature/Ai/TransactionAnomalyDetectorTest.php::evaluates normal transactions as low risk without triggering quarantine
     - akses: route POST /admin/ai-governance/screen-anomaly [role: admin]
     - gate: docs/gates/fase-64.md
 - [x] 64.3 **Rekomendasi Preskriptif Perencanaan Stok & Pengadaan Cerdas**:
@@ -2939,7 +2939,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - commit: fcabdd5
     - file: modules/Core/Application/Services/Ai/StockPrescriptionEngineService.php
     - file: modules/Core/Domain/Models/CoreAiStockRecommendation.php
-    - test: modules/Core/tests/Feature/Ai/StockPrescriptionTest.php
+    - test: modules/Core/tests/Feature/Ai/StockPrescriptionTest.php::calculates adaptive safety stock and ROP higher during peak holiday seasons
     - akses: route POST /admin/ai-governance/generate-stock-recommendation [role: admin]
     - gate: docs/gates/fase-64.md
 - [x] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
@@ -2947,8 +2947,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - commit: fcabdd5
     - file: modules/Core/Console/Commands/AuditAiCommand.php
     - file: app/Quality/Audit/Fixtures/AiAuditCorruptionFixture.php
-    - test: modules/Core/tests/Feature/Ai/AiAuditCommandTest.php
-    - test: tests/Architecture/AuditCommandContractTest.php
+    - test: modules/Core/tests/Feature/Ai/AiAuditCommandTest.php::ai:audit succeeds on clean state with valid deterministic snapshots
     - akses: command ai:audit
     - audit: ai:audit
     - gate: docs/gates/fase-64.md

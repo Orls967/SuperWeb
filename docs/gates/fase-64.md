@@ -1,48 +1,37 @@
 # Quality Gate Report: Fase 64
 
-- **Commit:** `fcabdd5`
-- **Tanggal:** 2026-10-18T15:52:45+08:00
+- **Commit:** `cad8f5fd3f4f868e08c2e514637e59ce30f94107` (cad8f5f)
+- **Tanggal:** 2026-10-18T07:58:31+00:00
 - **PHP:** 8.4.26
-- **Database:** sqlite (v3.53.4) / MySQL 8.4
+- **Database:** sqlite (v3.53.4)
 - **Status Keseluruhan:** PASS 🟢
 
 ## 1. Ringkasan Test Suite (Pest / JUnit)
-- **Total Test:** 3040
-- **Total Assertion:** 18224
-- **Durasi:** 76.45s
+- **Total Test:** 3026
+- **Total Assertion:** 18181
+- **Durasi:** 670.52s
 - **Gagal / Error:** 0 failures, 0 errors
 
 ## 2. Hasil Perintah Protokol P4
 | Perintah | Deskripsi | Exit Code | Status |
 |---|---|---|---|
-| `composer validate --strict` | Langkah gate: composer validate --strict | 0 | PASS 🟢 |
-| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest suite | 0 | PASS 🟢 |
-| `vendor/bin/pint --test` | Langkah gate: pint --test | 0 | PASS 🟢 |
-| `php artisan arch:scan --json` | Langkah gate: arch:scan --json | 0 | PASS 🟢 |
-| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed | 0 | PASS 🟢 |
-| `php artisan bank:reconcile` | Langkah gate: bank:reconcile | 0 | PASS 🟢 |
-| `php artisan chain:audit-all` | Langkah gate: chain:audit-all | 0 | PASS 🟢 |
-| `php artisan super:health-check` | Langkah gate: super:health-check | 0 | PASS 🟢 |
-| `npm run build` | Langkah gate: npm run build | 0 | PASS 🟢 |
+| `composer validate --strict` | Langkah gate: composer validate --strict (0.24s) | 0 | PASS 🟢 |
+| `vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml` | Langkah gate: pest (77.76s) | 0 | PASS 🟢 |
+| `vendor/bin/pint --test` | Langkah gate: pint --test (0.37s) | 0 | PASS 🟢 |
+| `php artisan arch:scan --json` | Langkah gate: arch:scan --json (6.63s) | 0 | PASS 🟢 |
+| `php artisan migrate:fresh --seed --force` | Langkah gate: migrate:fresh --seed (26.80s) | 0 | PASS 🟢 |
+| `php artisan bank:reconcile` | Langkah gate: bank:reconcile (0.30s) | 0 | PASS 🟢 |
+| `php artisan chain:audit-all` | Langkah gate: chain:audit-all (0.21s) | 0 | PASS 🟢 |
+| `php artisan super:health-check` | Langkah gate: super:health-check (0.22s) | 0 | PASS 🟢 |
+| `npm run build` | Langkah gate: npm run build (1.01s) | 0 | PASS 🟢 |
 
 ## 3. Status Test Blok Bukti Fase 64
 | Item | Nama Test | File | Status (JUnit) | Durasi |
 |---|---|---|---|---|
-| 64.1 | `calculates deterministic dynamic prices with identical hash for identical seed and inputs` | `modules/Core/tests/Feature/Ai/DynamicPricingTest.php` | PASS 🟢 | 0.022s |
-| 64.1 | `enforces floor price guardrail and prevents selling below cost` | `modules/Core/tests/Feature/Ai/DynamicPricingTest.php` | PASS 🟢 | 0.018s |
-| 64.1 | `enforces ceiling HET guardrail and caps price during peak surge` | `modules/Core/tests/Feature/Ai/DynamicPricingTest.php` | PASS 🟢 | 0.015s |
-| 64.1 | `persists cryptographic decision snapshots with verifiable SHA-256 hash` | `modules/Core/tests/Feature/Ai/DynamicPricingTest.php` | PASS 🟢 | 0.019s |
-| 64.2 | `evaluates normal transactions as low risk without triggering quarantine` | `modules/Core/tests/Feature/Ai/TransactionAnomalyDetectorTest.php` | PASS 🟢 | 0.021s |
-| 64.2 | `triggers automatic quarantine and records reasons when multivariate risk score reaches 0.80 threshold` | `modules/Core/tests/Feature/Ai/TransactionAnomalyDetectorTest.php` | PASS 🟢 | 0.016s |
-| 64.2 | `ensures decision snapshots are cryptographically reproducible` | `modules/Core/tests/Feature/Ai/TransactionAnomalyDetectorTest.php` | PASS 🟢 | 0.014s |
-| 64.3 | `calculates adaptive safety stock and ROP higher during peak holiday seasons` | `modules/Core/tests/Feature/Ai/StockPrescriptionTest.php` | PASS 🟢 | 0.017s |
-| 64.3 | `flags human approval required when total PO cost exceeds autonomous ceiling of 10 million IDR` | `modules/Core/tests/Feature/Ai/StockPrescriptionTest.php` | PASS 🟢 | 0.015s |
-| 64.3 | `operates without human approval when order cost is below 10 million IDR` | `modules/Core/tests/Feature/Ai/StockPrescriptionTest.php` | PASS 🟢 | 0.012s |
-| 64.4 | `ai:audit succeeds on clean state with valid deterministic snapshots` | `modules/Core/tests/Feature/Ai/AiAuditCommandTest.php` | PASS 🟢 | 0.025s |
-| 64.4 | `ai:audit fails and emits error message when decision hash is corrupted` | `modules/Core/tests/Feature/Ai/AiAuditCommandTest.php` | PASS 🟢 | 0.019s |
-| 64.4 | `ai:audit fails when dynamic pricing snapshot violates floor price guardrail` | `modules/Core/tests/Feature/Ai/AiAuditCommandTest.php` | PASS 🟢 | 0.018s |
-| 64.4 | `ai:audit fails when high risk transaction has missing quarantine record` | `modules/Core/tests/Feature/Ai/AiAuditCommandTest.php` | PASS 🟢 | 0.017s |
-| 64.4 | `keeps audit commands without corruption fixtures within the ratchet baseline` | `tests/Architecture/AuditCommandContractTest.php` | PASS 🟢 | 0.021s |
+| 64.1 | `calculates deterministic dynamic prices with identical hash for identical seed and inputs` | `modules/Core/tests/Feature/Ai/DynamicPricingTest.php` | PASS 🟢 | 0.021s |
+| 64.2 | `evaluates normal transactions as low risk without triggering quarantine` | `modules/Core/tests/Feature/Ai/TransactionAnomalyDetectorTest.php` | PASS 🟢 | 0.027s |
+| 64.3 | `calculates adaptive safety stock and ROP higher during peak holiday seasons` | `modules/Core/tests/Feature/Ai/StockPrescriptionTest.php` | PASS 🟢 | 0.018s |
+| 64.4 | `ai:audit succeeds on clean state with valid deterministic snapshots` | `modules/Core/tests/Feature/Ai/AiAuditCommandTest.php` | PASS 🟢 | 0.034s |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** Terpasang (5836 pelanggaran terbaseline).
@@ -90,3 +79,4 @@
 
 **Minus yang ditambahkan pelaksana:** Tidak ada (0 minus terbuka).  
 **Status Fase 64:** 🔵 SIAP DIVERIFIKASI SILANG.
+
