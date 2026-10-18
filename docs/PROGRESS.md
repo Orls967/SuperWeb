@@ -2910,19 +2910,53 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Command `epc:audit` (Realisasi termin tagihan = klaim MC tersertifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, batas progres maksimal 100%, 0 diskrepansi).
 
 ## FASE 64 — ANALITIK PREDIKTIF, AI-DRIVEN REVENUE MANAGEMENT & ANOMALY DETECTION
-> **Status audit 2026-10-10:** ⬜ BELUM. Prasyarat bagi fase 99 (AI terpadu), 101/145 (DR) yang sebelumnya ditandai selesai. Kerjakan setelah Fase R.
+> **Status audit 2026-10-18:** 🔵 SIAP DIVERIFIKASI SILANG. Prasyarat bagi fase 99 (AI terpadu), 101/145 (DR) yang sebelumnya ditandai selesai. Selesai pasca-Fase R.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul Analytics/AI (keputusan di DoR; boleh di Core `core_ai_*`) · **Prasyarat:** Fase R ✅ · **Acuan:** KONSEP §A3, §A10
 > **Jalan pintas terlarang di fase ini:** 'AI' berupa angka acak/rumus tanpa snapshot input & seed; eksekusi otomatis tanpa approval di atas ambang; `ai:audit` yang hanya menghitung baris — ditambah seluruh X1–X25.
-- [ ] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
+- [x] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
   - Algoritma penetapan harga dinamis deterministik: elastisitas harga permintaan, sisa umur simpan produk, dan tingkat keterisian ruang mall/katering.
   - Guardrail keamanan batas harga: proteksi harga batas bawah (*floor price*) dan kepatuhan regulasi HET pemerintah.
-- [ ] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
+  Bukti:
+    - commit: fcabdd5
+    - file: modules/Core/Application/Services/Ai/DynamicPricingEngineService.php
+    - test: modules/Core/tests/Feature/Ai/DynamicPricingTest.php
+    - akses: route POST /admin/ai-governance/calculate-pricing [role: admin]
+    - gate: docs/gates/fase-64.md
+- [x] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
   - Skor anomali transaksi real-time: pola belanja abnormal, split bill mencurigakan, order fiktif agen, atau deviasi konsumsi bahan bakar logistik.
   - Trigger otomatis karantina transaksi berisiko tinggi sebelum settlement bank dieksekusi.
-- [ ] 64.3 **Rekomendasi Preskriptif Perencanaan Stok & Pengadaan Cerdas**:
+  Bukti:
+    - commit: fcabdd5
+    - file: modules/Core/Application/Services/Ai/TransactionAnomalyDetectorService.php
+    - file: modules/Core/Domain/Models/CoreAiAnomalyQuarantine.php
+    - test: modules/Core/tests/Feature/Ai/TransactionAnomalyDetectorTest.php
+    - akses: route POST /admin/ai-governance/screen-anomaly [role: admin]
+    - gate: docs/gates/fase-64.md
+- [x] 64.3 **Rekomendasi Preskriptif Perencanaan Stok & Pengadaan Cerdas**:
   - Analisis tren musiman eksternal (hari libur nasional, musim hujan, tren pasar) menghasilkan usulan rekomendasi revisi safety stock dan rilis PO ke vendor secara otomatis.
-- [ ] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
+  Bukti:
+    - commit: fcabdd5
+    - file: modules/Core/Application/Services/Ai/StockPrescriptionEngineService.php
+    - file: modules/Core/Domain/Models/CoreAiStockRecommendation.php
+    - test: modules/Core/tests/Feature/Ai/StockPrescriptionTest.php
+    - akses: route POST /admin/ai-governance/generate-stock-recommendation [role: admin]
+    - gate: docs/gates/fase-64.md
+- [x] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
+  Bukti:
+    - commit: fcabdd5
+    - file: modules/Core/Console/Commands/AuditAiCommand.php
+    - file: app/Quality/Audit/Fixtures/AiAuditCorruptionFixture.php
+    - test: modules/Core/tests/Feature/Ai/AiAuditCommandTest.php
+    - test: tests/Architecture/AuditCommandContractTest.php
+    - akses: command ai:audit
+    - audit: ai:audit
+    - gate: docs/gates/fase-64.md
+
+### Register Minus Fase 64
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 64.1–64.4 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 65 — ENTERPRISE MOBILE SUITE (PWA/HYBRID OFFLINE-FIRST ARCHITECTURE)
 > **Status audit 2026-10-10:** ⬜ BELUM. Prasyarat bagi fase 99 (AI terpadu), 101/145 (DR) yang sebelumnya ditandai selesai. Kerjakan setelah Fase R.

@@ -488,7 +488,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 8 | **CloudKitchen** | `ckt_` | 1 |
 | 9 | **Contract** | `ctr_` | 3 |
 | 10 | **ControlTower** | `sct_` | 1 |
-| 11 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 16 |
+| 11 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 17 |
 | 12 | **Crypto** | `crypto_` | 4 |
 | 13 | **Distribution** | `dist_` | 5 |
 | 14 | **Edu** | `edu_` | 2 |
@@ -534,7 +534,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 54 | **Venue** | `ven_` | 5 |
 | 55 | **Wealth** | `wm_` | 1 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **545 Migrasi** |
+| | **Total: 56 Modul** | | **546 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -550,7 +550,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **CloudKitchen** | 2 | `cloud-kitchen`, `cloud-kitchen/subscriptions/{subscription}/dispatch` | web, auth, role:admin,kitchen,outlet_manager,customer |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
 | **ControlTower** | 2 | `control-tower`, `control-tower/promises` | web, auth, role:admin,logistics_admin,planner,auditor |
-| **Core** | 18 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
+| **Core** | 23 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **EnterpriseFinance** | 2 | `enterprise-finance`, `enterprise-finance/budgets` | web, auth, role:admin,auditor,treasury |
@@ -588,13 +588,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 2 | `venue`, `venue/tickets/{ticket}/scan` | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 2 | `wealth`, `wealth/profiles/{profile}/invest` | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **621 Rute** | | |
+| **Total** | **626 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
 |---|---|---|
 | `agri:audit` | `manual` | Audit contract farming collections, grading payouts, and advance deductions |
 | `agy:audit` | `manual` | Audit akrual komisi & payout agen terhadap ledger (0 selisih) |
+| `ai:audit` | `manual` | Audit deterministic AI decision snapshots, pricing guardrails, and anomaly quarantines (Fase 64.4) |
 | `api:audit` | `manual` | Audit API: tanda tangan HMAC webhook & EDI (Fase 55) + platform economy — billing API developer, embedded finance, isolasi white label (Fase 147) |
 | `app:rotate-blind-index` | `manual` | Rotasi pepper blind index HMAC untuk seluruh record PII terenkripsi secara idempoten |
 | `arch:scan` | `manual` | Pindai pola jalan pintas A1–A13 (KONSEP §A14.1) dan bandingkan dengan baseline ratchet |
@@ -712,7 +713,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ven:audit` | `manual` | Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 119 Command** | **37 Terjadwal** | |
+| **Total: 120 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
