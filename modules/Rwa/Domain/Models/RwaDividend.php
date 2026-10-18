@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Rwa\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RwaDividend extends Model
 {
@@ -16,6 +17,7 @@ class RwaDividend extends Model
         'distributed_idr',
         'rounding_reserve_idr',
         'distribution_date',
+        'status',
         'idempotency_key',
     ];
 
@@ -23,10 +25,10 @@ class RwaDividend extends Model
         'total_revenue_pool_idr' => 'integer',
         'distributed_idr' => 'integer',
         'rounding_reserve_idr' => 'integer',
-        'distribution_date' => 'datetime',
+        'distribution_date' => 'date',
     ];
 
-    public function asset()
+    public function asset(): BelongsTo
     {
         return $this->belongsTo(RwaAsset::class, 'rwa_asset_id');
     }

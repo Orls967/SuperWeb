@@ -742,7 +742,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Mining** | `MiningAccounts` | 23 | `expense:mining_royalty:IDR`, `min:base_metal_sales_revenue:IDR` ... |
 | **Proptech** | `ProptechAccounts` | 8 | `ast:fixed_assets:IDR`, `epc:cip_liability:IDR` ... |
 | **Ret** | `RetAccounts` | 16 | `ret:bill_payment_fee_revenue:IDR`, `ret:bill_payment_receivable:IDR` ... |
-| **Rwa** | `RwaAccounts` | 3 | `rwa:rounding_reserve:IDR`, `rwa:pool:default:IDR` ... |
+| **Rwa** | `RwaAccounts` | 8 | `rwa:rounding_reserve:IDR`, `rwa:platform_fees:IDR` ... |
 | **Tlx** | `TlxAccounts` | 6 | `tlx:cloud_chargeback_receivable:IDR`, `tlx:cloud_infrastructure_revenue:IDR` ... |
 | **Trade** | `TradeAccounts` | 2 | `trd:tender_contract_ar:IDR`, `trd:tender_revenue_unearned:IDR` |
 | **TradeFinance** | `TradeFinanceAccounts` | 3 | `tf:crossborder_escrow:IDR`, `tf:exporter_settlement:IDR` ... |
@@ -750,6 +750,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 2 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` |
 | **Venue** | `VenueAccounts` | 24 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 1 | `treasury:pool:IDR` |
-| **Total: 30 Registry** | | **224 Akun** | |
+| **Total: 30 Registry** | | **229 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
