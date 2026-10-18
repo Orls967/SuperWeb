@@ -682,6 +682,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `pricing:audit` | `manual` | Audit pricing: lock harga, anggaran promo, override, overlap (0 selisih) |
 | `proc:audit` | `manual` | Audit subledger AP dan GR/IR terhadap ledger (harus 0 selisih) |
 | `prp:audit` | `manual` | Perform two-source verification of smart building zones, sensor readings, and utility billings |
+| `prp:audit-smartbuilding` | `manual` | Perform two-source verification of smart building zones, sensor readings, and utility billings |
 | `ptn:audit` | `manual` | Audit kemitraan: bagi hasil, due diligence, dan siklus hidup mitra (0 selisih) |
 | `reload` | `manual` | Reload running services |
 | `resto:check-stock` | **`dailyAt('07:30')`** | Pantau level stok minimum bahan baku, buat saran PO draft, dan kirim peringatan bahan kedaluwarsa |
@@ -715,7 +716,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ven:audit` | `manual` | Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 122 Command** | **37 Terjadwal** | |
+| **Total: 123 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -749,7 +750,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Treasury** | `TreasuryAccounts` | 2 | `TRS_USD_SRC`, `TRS_USD_DEST` |
 | **Vending** | `VendingAccounts` | 2 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` |
 | **Venue** | `VenueAccounts` | 24 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
-| **Wealth** | `WealthAccounts` | 1 | `treasury:pool:IDR` |
-| **Total: 30 Registry** | | **229 Akun** | |
+| **Wealth** | `WealthAccounts` | 3 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
+| **Total: 30 Registry** | | **231 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
