@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Logistics\Application\Services\Reverse;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
@@ -42,8 +43,9 @@ class ReverseLogisticsService
                 return $existing; // Idempotent check
             }
 
-            $orderCode = 'REV-'.strtoupper(bin2hex(random_bytes(6)));
-            $manifestNo = 'MNF-'.date('Ymd').'-'.strtoupper(bin2hex(random_bytes(4)));
+            $seedKey = hash('sha256', "{$eventTriggerType}:{$sourceReferenceId}:{$pickupLocation}:{$destinationFacility}");
+            $orderCode = 'REV-'.strtoupper(substr($seedKey, 0, 10));
+            $manifestNo = 'MNF-'.strtoupper(substr(hash('sha256', "MNF:{$orderCode}:{$sourceReferenceId}"), 0, 12));
             $custodyHash = hash('sha256', "{$orderCode}:{$manifestNo}:{$sourceReferenceId}:".json_encode($itemsData));
 
             $order = ReverseOrder::create([
@@ -60,7 +62,7 @@ class ReverseLogisticsService
             ]);
 
             $totalValue = 0;
-            $totalKg = 0;
+            $totalKg = 0.0;
 
             foreach ($itemsData as $item) {
                 $qty = (float) $item['quantity'];
@@ -129,5 +131,69 @@ class ReverseLogisticsService
 
             return $locked;
         });
+    }
+
+    /**
+     * Two-source audit for Reverse Logistics & Circular Economy:
+     * Source 1: Verification of reverse orders, custody hash, and line-item totals.
+     * Source 2: Verification of circular revenue ledger balance consistency.
+     */
+    public function auditCircular(): array
+    {
+        $discrepancies = [];
+        $orders = ReverseOrder::with('items')->get();
+        $ordersChecked = $orders->count();
+        $itemsChecked = 0;
+
+        foreach ($orders as $order) {
+            $itemsChecked += $order->items->count();
+
+            // 1. Verify item subtotal sum vs total_appraised_value_idr
+            $calculatedTotal = (int) $order->items->sum('subtotal_idr');
+            if ($calculatedTotal !== (int) $order->total_appraised_value_idr) {
+                $discrepancies[] = "Order {$order->reverse_code} total mismatch: recorded {$order->total_appraised_value_idr}, calculated {$calculatedTotal}";
+            }
+
+            // 2. Verify avoided emissions calculation
+            $totalKg = 0.0;
+            foreach ($order->items as $item) {
+                if (in_array($item->unit_of_measure, ['KG', 'LITER'], true)) {
+                    $totalKg += (float) $item->quantity_kg_or_units;
+                }
+            }
+            $expectedAvoided = round($totalKg * self::AVOIDED_CO2_PER_KG, 2);
+            if (abs((float) $order->avoided_emissions_kg_co2 - $expectedAvoided) > 0.05) {
+                $discrepancies[] = "Order {$order->reverse_code} emission mismatch: recorded {$order->avoided_emissions_kg_co2}, expected {$expectedAvoided}";
+            }
+
+            // 3. Verify custody hash presence
+            if (empty($order->custody_hash) || strlen($order->custody_hash) !== 64) {
+                $discrepancies[] = "Order {$order->reverse_code} has invalid custody hash";
+            }
+        }
+
+        // Source 2: Ledger consistency for PROCESSED orders
+        if (Schema::hasTable('bk_ledger_accounts')) {
+            $processedOrders = ReverseOrder::where('status', 'PROCESSED')->get();
+            $expectedLedgerRevenue = (int) $processedOrders->sum('total_appraised_value_idr');
+
+            $revenueAccount = DB::table('bk_ledger_accounts')
+                ->where('code', 'lgx:circular_revenue:IDR')
+                ->first();
+
+            if ($revenueAccount) {
+                $actualLedgerRevenue = abs((int) $revenueAccount->cached_balance);
+                if ($expectedLedgerRevenue !== $actualLedgerRevenue) {
+                    $discrepancies[] = "Ledger revenue mismatch: expected {$expectedLedgerRevenue}, got {$actualLedgerRevenue} in lgx:circular_revenue:IDR";
+                }
+            }
+        }
+
+        return [
+            'orders_checked' => $ordersChecked,
+            'items_checked' => $itemsChecked,
+            'discrepancies' => $discrepancies,
+            'passed' => empty($discrepancies),
+        ];
     }
 }

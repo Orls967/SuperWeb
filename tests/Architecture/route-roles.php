@@ -41,6 +41,7 @@ use Modules\Logistics\Domain\Models\Driver;
 use Modules\Logistics\Domain\Models\HubOperator;
 use Modules\Logistics\Domain\Models\Lane;
 use Modules\Logistics\Domain\Models\Location;
+use Modules\Logistics\Domain\Models\Reverse\ReverseOrder;
 use Modules\Logistics\Domain\Models\Schedule;
 use Modules\Logistics\Domain\Models\Shipment;
 use Modules\Logistics\Domain\Models\ShipmentException;
@@ -56,7 +57,10 @@ use Modules\Mall\Domain\Models\WorkOrder;
 use Modules\Mining\Domain\Models\MiningPit;
 use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Partner\Domain\Models\Partner;
+use Modules\Proptech\Domain\Models\Bim\BimModel;
 use Modules\Proptech\Domain\Models\BuildingZone;
+use Modules\Proptech\Domain\Models\Flex\FlexBooking;
+use Modules\Proptech\Domain\Models\Flex\FlexSpace;
 use Modules\Resto\database\seeders\RestoMenuSeeder;
 use Modules\Resto\Domain\Models\CateringOrder;
 use Modules\Resto\Domain\Models\Delivery;
@@ -969,6 +973,29 @@ return [
 
         return ['batchId' => 'batch-test-01'];
     }],
+    'logistics.reverse.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.reverse.store' => ['roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.reverse.intake' => [
+        'roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin'],
+        'params' => function () {
+            $order = ReverseOrder::firstOrCreate(
+                ['reverse_code' => 'REV-SEED-ROUTER-01'],
+                [
+                    'event_trigger_type' => 'resto.waste_bulk',
+                    'source_reference_id' => 'REF-ROUTER-01',
+                    'pickup_location' => 'Banjarmasin',
+                    'destination_facility' => 'Cikarang',
+                    'status' => 'SCHEDULED',
+                    'manifest_number' => 'MNF-SEED-ROUTER-01',
+                    'custody_hash' => hash('sha256', 'seed'),
+                    'total_appraised_value_idr' => 100000,
+                    'avoided_emissions_kg_co2' => 21.0,
+                ]
+            );
+
+            return ['order' => $order->id];
+        },
+    ],
     'logistics.shipments.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'shipper']],
     'logistics.shipments.label' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
         $d = $logisticsSeedHelper();
@@ -1390,6 +1417,91 @@ return [
     'profile.edit' => 'auth',
     'profile.update' => 'auth',
     'proptech.index' => ['roles' => ['admin', 'facility_manager', 'proptech_admin']],
+    'proptech.bim.index' => ['roles' => ['admin', 'facility_manager', 'proptech_admin']],
+    'proptech.bim.simulate' => [
+        'roles' => ['admin', 'facility_manager', 'proptech_admin'],
+        'params' => function () {
+            $model = BimModel::firstOrCreate(
+                ['model_code' => 'BIM-ROUTER-TEST-01'],
+                [
+                    'building_code' => 'BLD-TEST-01',
+                    'version_tag' => 'v1.0',
+                    'current_hash' => hash('sha256', 'seed'),
+                    'physical_progress_pct' => 50.0,
+                    'cumulative_cip_idr' => 1000000,
+                    'status' => 'DRAFT',
+                ]
+            );
+
+            return ['model' => $model->id];
+        },
+    ],
+    'proptech.bim.capitalize' => [
+        'roles' => ['admin', 'facility_manager', 'proptech_admin'],
+        'params' => function () {
+            $model = BimModel::firstOrCreate(
+                ['model_code' => 'BIM-ROUTER-TEST-01'],
+                [
+                    'building_code' => 'BLD-TEST-01',
+                    'version_tag' => 'v1.0',
+                    'current_hash' => hash('sha256', 'seed'),
+                    'physical_progress_pct' => 100.0,
+                    'cumulative_cip_idr' => 1000000,
+                    'status' => 'DRAFT',
+                ]
+            );
+
+            return ['model' => $model->id];
+        },
+    ],
+    'proptech.flex.index' => ['roles' => ['admin', 'facility_manager', 'proptech_admin']],
+    'proptech.flex.store' => ['roles' => ['admin', 'facility_manager', 'proptech_admin']],
+    'proptech.flex.checkin' => [
+        'roles' => ['admin', 'facility_manager', 'proptech_admin'],
+        'params' => function () {
+            $space = FlexSpace::firstOrCreate(
+                ['space_code' => 'SP-ROUTER-01'],
+                ['name' => 'Pod 1', 'space_type' => 'HOT_DESK', 'hourly_rate_idr' => 50000, 'capacity' => 1, 'status' => 'AVAILABLE']
+            );
+            $booking = FlexBooking::firstOrCreate(
+                ['booking_code' => 'FBK-ROUTER-01'],
+                [
+                    'flex_space_id' => $space->id,
+                    'user_id' => 1,
+                    'start_time' => now()->subHour(),
+                    'end_time' => now()->addHour(),
+                    'total_price_idr' => 100000,
+                    'deposit_hold_idr' => 30000,
+                    'status' => 'CONFIRMED',
+                ]
+            );
+
+            return ['booking' => $booking->id];
+        },
+    ],
+    'proptech.flex.noshow' => [
+        'roles' => ['admin', 'facility_manager', 'proptech_admin'],
+        'params' => function () {
+            $space = FlexSpace::firstOrCreate(
+                ['space_code' => 'SP-ROUTER-01'],
+                ['name' => 'Pod 1', 'space_type' => 'HOT_DESK', 'hourly_rate_idr' => 50000, 'capacity' => 1, 'status' => 'AVAILABLE']
+            );
+            $booking = FlexBooking::firstOrCreate(
+                ['booking_code' => 'FBK-ROUTER-02'],
+                [
+                    'flex_space_id' => $space->id,
+                    'user_id' => 1,
+                    'start_time' => now()->subHours(2),
+                    'end_time' => now()->subHour(),
+                    'total_price_idr' => 100000,
+                    'deposit_hold_idr' => 30000,
+                    'status' => 'CONFIRMED',
+                ]
+            );
+
+            return ['booking' => $booking->id];
+        },
+    ],
     'proptech.zones.bill' => [
         'roles' => ['admin', 'facility_manager', 'proptech_admin'],
         'params' => function () {

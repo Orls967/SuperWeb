@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Logistics\tests\Feature\Reverse;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Logistics\Application\Services\Reverse\ReverseLogisticsService;
+use Modules\Logistics\Domain\Models\Reverse\ReverseItem;
 use Modules\Logistics\Domain\Models\Reverse\ReverseOrder;
 use Tests\TestCase;
 
@@ -103,5 +106,69 @@ class ReverseLogisticsCircularTest extends TestCase
         $lgxRev = LedgerAccount::where('code', 'lgx:circular_revenue:IDR')->first();
         $this->assertEquals('-2500000', (string) $mfgScrap->cached_balance);
         $this->assertEquals('2500000', (string) $lgxRev->cached_balance);
+    }
+
+    public function test_79_7_two_source_audit_passes_cleanly(): void
+    {
+        $items = [
+            [
+                'category' => 'COOKING_OIL_JELANTAH',
+                'description' => 'Used cooking oil for biodiesel processing',
+                'quantity' => 100.0,
+                'uom' => 'LITER',
+                'recycling_target' => 'BIODIESEL_REFINERY',
+                'appraised_unit_price_idr' => 8_500,
+            ],
+        ];
+
+        $order = $this->service->triggerReverseOrderFromEvent(
+            eventTriggerType: 'resto.waste_bulk',
+            sourceReferenceId: 'REF-CLEAN-AUDIT-01',
+            pickupLocation: 'Banjarmasin Central Kitchen',
+            destinationFacility: 'Biodiesel Plant Cikarang',
+            itemsData: $items
+        );
+
+        $this->service->processCircularIntake($order);
+
+        $audit = $this->service->auditCircular();
+
+        $this->assertTrue($audit['passed']);
+        $this->assertEmpty($audit['discrepancies']);
+        $this->assertEquals(1, $audit['orders_checked']);
+        $this->assertEquals(1, $audit['items_checked']);
+    }
+
+    public function test_79_7_audit_fails_when_data_is_corrupted(): void
+    {
+        $order = ReverseOrder::create([
+            'reverse_code' => 'REV-CORRUPT-TEST-01',
+            'event_trigger_type' => 'resto.waste_bulk',
+            'source_reference_id' => 'CORRUPT-REF-01',
+            'pickup_location' => 'Kitchen',
+            'destination_facility' => 'Plant',
+            'status' => 'SCHEDULED',
+            'manifest_number' => 'MNF-CORRUPT-01',
+            'custody_hash' => hash('sha256', 'corrupt'),
+            'total_appraised_value_idr' => 500_000, // Injected corrupt total
+            'avoided_emissions_kg_co2' => 210.0,
+        ]);
+
+        ReverseItem::create([
+            'reverse_order_id' => $order->id,
+            'item_category' => 'COOKING_OIL_JELANTAH',
+            'description' => 'Cooking oil',
+            'quantity_kg_or_units' => 100.0,
+            'unit_of_measure' => 'LITER',
+            'recycling_target' => 'BIODIESEL_REFINERY',
+            'appraised_unit_price_idr' => 1000,
+            'subtotal_idr' => 100_000, // Mismatch: 100,000 vs 500,000
+        ]);
+
+        $audit = $this->service->auditCircular();
+
+        $this->assertFalse($audit['passed']);
+        $this->assertNotEmpty($audit['discrepancies']);
+        $this->assertStringContainsString('REV-CORRUPT-TEST-01', $audit['discrepancies'][0]);
     }
 }
