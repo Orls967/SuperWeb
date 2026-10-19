@@ -22,9 +22,16 @@ class CrossBorderEscrow extends Model
         'pod_chain_hash',
         'status',
         'released_at',
+        'disputed_at',
+        'dispute_reason',
+        'hold_until',
     ];
 
     protected $casts = [
+        'amount_cents' => 'integer',
+        'locked_fx_rate_idr' => 'integer',
         'released_at' => 'datetime',
+        'disputed_at' => 'datetime',
+        'hold_until' => 'datetime',
     ];
 }

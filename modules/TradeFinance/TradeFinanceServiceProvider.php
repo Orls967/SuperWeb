@@ -6,7 +6,9 @@ namespace Modules\TradeFinance;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\TradeFinance\Application\Services\CrossBorder\CrossBorderClearingService;
 use Modules\TradeFinance\Application\Services\TradeFinanceService;
+use Modules\TradeFinance\Console\Commands\AuditClearingCommand;
 use Modules\TradeFinance\Console\Commands\AuditTradeFinanceCommand;
 
 class TradeFinanceServiceProvider extends ServiceProvider
@@ -14,6 +16,7 @@ class TradeFinanceServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(TradeFinanceService::class);
+        $this->app->singleton(CrossBorderClearingService::class);
     }
 
     public function boot(): void
@@ -29,7 +32,10 @@ class TradeFinanceServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            $this->commands([AuditTradeFinanceCommand::class]);
+            $this->commands([
+                AuditTradeFinanceCommand::class,
+                AuditClearingCommand::class,
+            ]);
         }
 
         $this->registerMenu();

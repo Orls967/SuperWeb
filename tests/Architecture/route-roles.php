@@ -84,6 +84,7 @@ use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
 use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\TradeFinance\Domain\Models\CrossBorder\CrossBorderEscrow;
 use Modules\Vending\Domain\Models\VendingUnit;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
@@ -2179,6 +2180,48 @@ return [
     'trade.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
     'trade_finance.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
     'trade_finance.lcs' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade_finance.crossborder.cbam' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade_finance.crossborder.deposit' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade_finance.crossborder.dispute' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => fn () => ['escrow' => CrossBorderEscrow::firstOrCreate(['escrow_code' => 'CBE-ROUTE-TEST'], [
+            'importer_id' => 1,
+            'exporter_id' => 2,
+            'stablecoin_asset' => 'USDC',
+            'amount_cents' => 100000,
+            'locked_fx_rate_idr' => 16000,
+            'bl_number' => 'BL-ROUTE-RELEASE',
+            'bl_document_hash' => 'HASH-ROUTE',
+            'status' => 'DEPOSITED',
+        ])->id],
+    ],
+    'trade_finance.crossborder.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade_finance.crossborder.release' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => fn () => ['escrow' => CrossBorderEscrow::firstOrCreate(['escrow_code' => 'CBE-ROUTE-TEST'], [
+            'importer_id' => 1,
+            'exporter_id' => 2,
+            'stablecoin_asset' => 'USDC',
+            'amount_cents' => 100000,
+            'locked_fx_rate_idr' => 16000,
+            'bl_number' => 'BL-ROUTE-RELEASE',
+            'bl_document_hash' => 'HASH-ROUTE',
+            'status' => 'DEPOSITED',
+        ])->id],
+    ],
+    'trade_finance.crossborder.resolve-dispute' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => fn () => ['escrow' => CrossBorderEscrow::firstOrCreate(['escrow_code' => 'CBE-ROUTE-DISP'], [
+            'importer_id' => 1,
+            'exporter_id' => 2,
+            'stablecoin_asset' => 'USDC',
+            'amount_cents' => 100000,
+            'locked_fx_rate_idr' => 16000,
+            'bl_number' => 'BL-ROUTE-DISP',
+            'bl_document_hash' => 'HASH-ROUTE-DISP',
+            'status' => 'DISPUTED',
+        ])->id],
+    ],
     'treasury.index' => ['roles' => ['admin', 'auditor', 'treasury']],
     'verification.notice' => 'auth',
     'verification.send' => 'auth',

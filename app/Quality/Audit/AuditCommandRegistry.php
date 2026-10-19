@@ -14,6 +14,7 @@ use App\Quality\Audit\Fixtures\B2bAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\BankReconcileCorruptionFixture;
 use App\Quality\Audit\Fixtures\ChainAuditAllCorruptionFixture;
 use App\Quality\Audit\Fixtures\CkAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\ClearingAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ContractsVerifyChainCorruptionFixture;
 use App\Quality\Audit\Fixtures\CoreVerifyPassportsCorruptionFixture;
 use App\Quality\Audit\Fixtures\CtrAuditCorruptionFixture;
@@ -83,6 +84,7 @@ final class AuditCommandRegistry
             'bank:reconcile' => new BankReconcileCorruptionFixture,
             'chain:audit-all' => new ChainAuditAllCorruptionFixture,
             'ck:audit' => new CkAuditCorruptionFixture,
+            'clearing:audit' => new ClearingAuditCorruptionFixture,
             'contracts:verify-chain' => new ContractsVerifyChainCorruptionFixture,
             'core:verify-passports' => new CoreVerifyPassportsCorruptionFixture,
             'ctr:audit' => new CtrAuditCorruptionFixture,
