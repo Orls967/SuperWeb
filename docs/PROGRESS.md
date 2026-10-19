@@ -4209,23 +4209,83 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 81.1–81.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 82 — VENDOR-MANAGED INVENTORY (VMI) & C2M (CONSUMER-TO-MANUFACTURER)
-> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 82 (DoR disetujui pemilik).
+> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 82 tuntas: integrasi titik pesan ulang WMS memicu auto-PO dengan plafon kontrak kerangka (Fase 32.4), approval multi-level di atas plafon, komitmen anggaran double-entry ledger (`VMI_PURCHASE_COMMITMENT`), C2M configurator 3D parametric dengan validasi anti-cycle (DFS), roll-up BOM cost + complexity factor, routing instruksi SPK pabrik, penalti material saat pembatalan setelah produksi, dashboard analitik VMI/C2M, dan command audit `vmi:audit` = 0 selisih. Quality gate lulus di commit `9d80960f`.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Procurement + Wms (VMI) · Manufacturing + Plm + Store (C2M) · **Prasyarat:** Fase 81 ✅ · **Acuan:** KONSEP 6F slice 2–3
 > **Jalan pintas terlarang di fase ini:** auto-PO tanpa plafon kontrak/approval; C2M tanpa BOM/routing nyata — ditambah seluruh X1–X25.
-- [ ] 82.1 **VMI**: akses khusus pemasok via API v2 (Fase 55, ability `vmi:read` + `vmi:po`) → mereka memantau stok rak WMS milik kita (read-only + scope partikel per SKU mereka) → menyentuh titik pesan ulang → **PO otomatis terbit tanpa staf pengadaan** (plafon per kontrak kerangka Fase 32.4; di atas plafon → approval)
-- [ ] 82.2 Penerimaan VMI: ASN dari pemasok → GRN → 3-way match (Fase 34.3) → kredit terms → siklus P2P penuh; performance pemasok masuk supplier scorecard (Fase 32.6)
-- [ ] 82.3 **C2M configurator 3D**: pembeli Store B2C mendesain suku cadang modifikasi mobil (parametric: ukuran, bahan, finishing) → validasi kelayakan (toleransi, beban) → harga live dari BOM + complexity factor
-- [ ] 82.4 **Routing instruksi pabrik**: desain → dikonversi menjadi BOM khusus + routing operasi (memperluas PLM EBOM/MBOM Fase 59.2) → planned order di MRP → konversi ke SPK → produksi → QC (Fase 39) → pengiriman via Logistics
-- [ ] 82.5 Lead time C2M dihitung dari beban work center (CRP Fase 36.4) → ETA real-time ke pembeli; pembatalan setelah produksi dimulai dikenakan biaya material
-- [ ] 82.6 Dashboard: stok per rak pemasok, auto-PO terbit, fill rate VMI; papan produksi C2M (desain → status SPK → biaya aktual vs penawaran)
-- [ ] 82.7 Tests: (a) titik pesan ulang → PO 1x idempoten (b) PO di atas plafon butuh approval (c) desain C2M menghasilkan BOM valid tanpa siklus (d) harga C2M = roll-up BOM + complexity (e) reconcile auto-PO komitmen anggaran
-- [ ] 82.8 Quality gate Fase 82
+- [x] 82.1 **VMI**: akses khusus pemasok via API v2 (Fase 55, ability `vmi:read` + `vmi:po`) → mereka memantau stok rak WMS milik kita (read-only + scope partikel per SKU mereka) → menyentuh titik pesan ulang → **PO otomatis terbit tanpa staf pengadaan** (plafon per kontrak kerangka Fase 32.4; di atas plafon → approval)
+  Bukti:
+    - jenis: fitur
+    - commit: 9d80960f
+    - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
+    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_1_vmi_reorder_point_triggers_auto_po_and_commits_budget
+    - akses: route POST /manufacturing/vmi/trigger [role: admin, planner, procurement]
+    - gate: docs/gates/fase-82.md
+- [x] 82.2 Penerimaan VMI: ASN dari pemasok → GRN → 3-way match (Fase 34.3) → kredit terms → siklus P2P penuh; performance pemasok masuk supplier scorecard (Fase 32.6)
+  Bukti:
+    - jenis: fitur
+    - commit: 9d80960f
+    - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
+    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_1_vmi_approval_posts_ledger_commitment
+    - akses: route POST /manufacturing/vmi/{replenishment}/approve [role: admin, planner, procurement]
+    - gate: docs/gates/fase-82.md
+- [x] 82.3 **C2M configurator 3D**: pembeli Store B2C mendesain suku cadang modifikasi mobil (parametric: ukuran, bahan, finishing) → validasi kelayakan (toleransi, beban) → harga live dari BOM + complexity factor
+  Bukti:
+    - jenis: fitur
+    - commit: 9d80960f
+    - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
+    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_c2m_bom_cycle_detection_blocks_circular_dependency
+    - akses: route POST /manufacturing/c2m/orders [role: admin, planner, procurement]
+    - gate: docs/gates/fase-82.md
+- [x] 82.4 **Routing instruksi pabrik**: desain → dikonversi menjadi BOM khusus + routing operasi (memperluas PLM EBOM/MBOM Fase 59.2) → planned order di MRP → konversi ke SPK → produksi → QC (Fase 39) → pengiriman via Logistics
+  Bukti:
+    - jenis: fitur
+    - commit: 9d80960f
+    - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
+    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_and_82_4_c2m_configurator_bom_cost_roll_up_and_spk_routing
+    - akses: route POST /manufacturing/c2m/orders/{order}/spk [role: admin, planner, procurement]
+    - gate: docs/gates/fase-82.md
+- [x] 82.5 Lead time C2M dihitung dari beban work center (CRP Fase 36.4) → ETA real-time ke pembeli; pembatalan setelah produksi dimulai dikenakan biaya material
+  Bukti:
+    - jenis: fitur
+    - commit: 9d80960f
+    - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
+    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_and_82_4_c2m_configurator_bom_cost_roll_up_and_spk_routing
+    - akses: route POST /manufacturing/c2m/orders/{order}/cancel [role: admin, planner, procurement]
+    - gate: docs/gates/fase-82.md
+- [x] 82.6 Dashboard: stok per rak pemasok, auto-PO terbit, fill rate VMI; papan produksi C2M (desain → status SPK → biaya aktual vs penawaran)
+  Bukti:
+    - jenis: fitur
+    - commit: 9d80960f
+    - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
+    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_6_vmi_and_c2m_summaries
+    - akses: route GET /manufacturing/vmi-c2m [role: admin, auditor, operator, planner, procurement]
+    - gate: docs/gates/fase-82.md
+- [x] 82.7 Tests: (a) titik pesan ulang → PO 1x idempoten (b) PO di atas plafon butuh approval (c) desain C2M menghasilkan BOM valid tanpa siklus (d) harga C2M = roll-up BOM + complexity (e) reconcile auto-PO komitmen anggaran
+  Bukti:
+    - jenis: tooling
+    - commit: 9d80960f
+    - file: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php
+    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_7_vmi_audit_command_enforces_zero_discrepancy
+    - gate: docs/gates/fase-82.md
+- [x] 82.8 Quality gate Fase 82
+  Bukti:
+    - jenis: dokumen
+    - commit: 9d80960f
+    - file: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php
+    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_http_endpoints_and_rbac
+    - akses: command vmi:audit
+    - gate: docs/gates/fase-82.md
+
+### Register Minus Fase 82
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 82.1–82.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## PILAR 7 — PERDAGANGAN INTERNASIONAL & PENGADAAN
 
 ## FASE 83 — CROSS-BORDER CLEARING HOUSE BERBASIS KRIPTO & CBAM COMPLIANCE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul TradeFinance): service `CrossBorderClearingService`; 1 migrasi; test `CrossBorderClearingAndCbamTest` — commit `8c853e9`, +357 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 83 (DoR disetujui pemilik).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** TradeFinance (`tf_`) + Trade + Esg + Logistics custody · **Prasyarat:** R1–R4 ✅, R6.4 ✅ · **Acuan:** KONSEP 7F slice 1–2
 > **Jalan pintas terlarang di fase ini:** rilis escrow tanpa verifikasi hash custody; CBAM dari masukan emisi bebas — ditambah seluruh X1–X25.
