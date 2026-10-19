@@ -566,7 +566,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Integration** | 2 | `integration`, `integration/webhooks` | web, auth, role:admin |
 | **Intercompany** | 2 | `intercompany`, `intercompany/transactions` | web, auth, role:admin,auditor,legal,treasury |
 | **International** | 2 | `international`, `international/jvs` | web, auth, role:admin,auditor,legal,treasury |
-| **Logistics** | 73 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
+| **Logistics** | 77 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
 | **Mall** | 48 | `mall/directory`, `mall/site-plan`, `mall/leases/{lease}/activate` ... | web, auth, role:admin,auditor,mall_admin |
 | **Manufacturing** | 57 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
 | **Mining** | 2 | `mining`, `mining/pits/{pit}/dispatch` | web, auth, role:admin,mining_admin,site_manager |
@@ -589,7 +589,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 2 | `venue`, `venue/tickets/{ticket}/scan` | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 2 | `wealth`, `wealth/profiles/{profile}/invest` | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **658 Rute** | | |
+| **Total** | **662 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -650,6 +650,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `lgx:accrue-dd` | **`dailyAt('00:10')`** | Akrual harian demurrage & detention seluruh kontainer berjalan (hari dihitung per zona waktu lokasi, idempoten) |
 | `lgx:audit-billing` | **`dailyAt('07:15')`** | Audit penagihan logistik: invoice freight, D&D, bea cukai, COD, carrier, klaim, BBM, dan pendapatan Delivered vs unearned terhadap buku besar |
 | `lgx:audit-circular` | `manual` | Perform two-source verification of reverse logistics orders, chain of custody, and circular economy revenue ledger |
+| `lgx:audit-coldchain` | `manual` | Perform two-source verification of cold-chain temperature breach holds, drone missions, and dispute escrow ledger |
 | `lgx:capacity-check` | **`hourly()`** | Audit dan verifikasi integritas pemakaian kapasitas seluruh jadwal operasi jaringan logistik |
 | `lgx:detect-late` | **`everyFifteenMinutes()->withoutOverlapping()`** | Deteksi resi yang melampaui SLA dan tandai exception "late" (idempoten) |
 | `lgx:invoice-shippers` | **`monthlyOn(1, '02:00')`** | Terbitkan tagihan bulanan pascabayar (postpaid) B2B secara idempoten per shipper |
@@ -721,7 +722,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 127 Command** | **37 Terjadwal** | |
+| **Total: 128 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
