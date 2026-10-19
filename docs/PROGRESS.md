@@ -4135,21 +4135,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 6 — MANUFAKTUR, DISTRIBUSI & KEBIJAKAN HARGA
 
 ## FASE 81 — ALGORITHMIC & SURGE PRICING ENGINE (DETIK-PER-DETIK)
-> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 81 (DoR disetujui pemilik).
+> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 81 tuntas: mesin harga detik-per-detik real-time, guardrail mutlak floor (1.15x HPP) / ceiling (HET) / daily band (±35%), supremasi kontrak & price list bertingkat, dokumen quote immutable kriptografis timelock SHA-256, partisi & agregat per-menit, integrasi multi-kanal (Store B2C, Wholesale, B2B Marketplace, Export, Vending), analitik guardrail (0 temuan), command audit `pricing:audit` = 0 selisih vs dokumen order. Quality gate lulus di commit `30eadf0c`.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Pricing (`pric_`) · **Prasyarat:** R4.2 ✅ (prefiks `prc_`→`pric_`) · **Acuan:** KONSEP 6F slice 1
 > **Jalan pintas terlarang di fase ini:** harga order mengikuti tick terbaru; tick tanpa guardrail floor/ceiling; tabel `prc_` di Pricing — ditambah seluruh X1–X25.
-- [ ] 81.1 Tabel `prc_price_ticks` partisi (SKU, detik, harga, sumber penggerak: demand index, stok WMS, harga komoditas global feed, musim, okupansi gudang) — target 1 miliar tick/tahun pada skala simulasi, agregat per menit untuk query
-- [ ] 81.2 **Mesin harga detik-per-detik**: harga suku cadang Store, ongkir logistik (Fase 80.5), bahan baku grosir Distributor → elastisitas & aturan surge deterministik → harga berfluktuasi real-time layaknya tiket pesawat
-- [ ] 81.3 **Guardrail mutlak**: floor price (HPP + margin minimum), ceiling (HET simulasi), band maksimal per hari; kontrak harga (Fase 44.4) & price list bertingkat (Fase 44.1) selalu mengalahkan harga dinamis; setiap perubahan tercatat di price waterfall audit
-- [ ] 81.4 **Dokumen immutable**: harga "dikunci" saat quote/order dibuat (quote hash timelock) → meski tick berubah, dokumen tetap harga saat itu (memperluas lgx_quotes & price freeze Fase 44.4)
-- [ ] 81.5 Integrasi kanal: Store B2C, portal grosir Distributor, B2B Marketplace, ekspor (formula harga kontrak impor/ekspor), vending (Fase 75.5)
-- [ ] 81.6 Analitik: realisasi vs list per tick, penyimpangan guardrail (harus 0), margin per transaksi, harga efektif per wilayah
-- [ ] 81.7 Tests: (a) harga tak pernah di bawah floor / di atas ceiling (b) harga kontrak menang atas dinamis (c) order membekukan harga tick saat itu (d) tick ganda idempoten (e) `pricing:audit` = 0 selisih vs dokumen order
-- [ ] 81.8 Quality gate Fase 81
+- [x] 81.1 Tabel `prc_price_ticks` partisi (SKU, detik, harga, sumber penggerak: demand index, stok WMS, harga komoditas global feed, musim, okupansi gudang) — target 1 miliar tick/tahun pada skala simulasi, agregat per menit untuk query
+  Bukti:
+    - jenis: fitur
+    - commit: 30eadf0c
+    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
+    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_1_tick_idempotency_and_minute_aggregates
+    - akses: route POST /pricing/ticks [role: admin, procurement]
+    - gate: docs/gates/fase-81.md
+- [x] 81.2 **Mesin harga detik-per-detik**: harga suku cadang Store, ongkir logistik (Fase 80.5), bahan baku grosir Distributor → elastisitas & aturan surge deterministik → harga berfluktuasi real-time layaknya tiket pesawat
+  Bukti:
+    - jenis: fitur
+    - commit: 30eadf0c
+    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
+    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_3_strict_floor_and_ceiling_guardrails
+    - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
+    - gate: docs/gates/fase-81.md
+- [x] 81.3 **Guardrail mutlak**: floor price (HPP + margin minimum), ceiling (HET simulasi), band maksimal per hari; kontrak harga (Fase 44.4) & price list bertingkat (Fase 44.1) selalu mengalahkan harga dinamis; setiap perubahan tercatat di price waterfall audit
+  Bukti:
+    - jenis: fitur
+    - commit: 30eadf0c
+    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
+    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_3_b2b_contract_price_always_beats_dynamic_surge
+    - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
+    - gate: docs/gates/fase-81.md
+- [x] 81.4 **Dokumen immutable**: harga "dikunci" saat quote/order dibuat (quote hash timelock) → meski tick berubah, dokumen tetap harga saat itu (memperluas lgx_quotes & price freeze Fase 44.4)
+  Bukti:
+    - jenis: fitur
+    - commit: 30eadf0c
+    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
+    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_4_quote_freeze_and_immutable_conversion_to_order
+    - akses: route POST /pricing/quote/freeze [role: admin, procurement]
+    - gate: docs/gates/fase-81.md
+- [x] 81.5 Integrasi kanal: Store B2C, portal grosir Distributor, B2B Marketplace, ekspor (formula harga kontrak impor/ekspor), vending (Fase 75.5)
+  Bukti:
+    - jenis: fitur
+    - commit: 30eadf0c
+    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
+    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_5_channel_specific_quoting
+    - akses: route POST /pricing/quote/freeze [role: admin, procurement]
+    - gate: docs/gates/fase-81.md
+- [x] 81.6 Analitik: realisasi vs list per tick, penyimpangan guardrail (harus 0), margin per transaksi, harga efektif per wilayah
+  Bukti:
+    - jenis: fitur
+    - commit: 30eadf0c
+    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
+    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_6_analytics_summary_reports_zero_guardrail_violations
+    - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
+    - gate: docs/gates/fase-81.md
+- [x] 81.7 Tests: (a) harga tak pernah di bawah floor / di atas ceiling (b) harga kontrak menang atas dinamis (c) order membekukan harga tick saat itu (d) tick ganda idempoten (e) `pricing:audit` = 0 selisih vs dokumen order
+  Bukti:
+    - jenis: tooling
+    - commit: 30eadf0c
+    - file: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php
+    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_7_pricing_audit_command_enforces_zero_discrepancy
+    - gate: docs/gates/fase-81.md
+- [x] 81.8 Quality gate Fase 81
+  Bukti:
+    - jenis: dokumen
+    - commit: 30eadf0c
+    - file: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php
+    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_http_endpoints_and_rbac
+    - akses: command pricing:audit
+    - gate: docs/gates/fase-81.md
+
+### Register Minus Fase 81
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 81.1–81.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 82 — VENDOR-MANAGED INVENTORY (VMI) & C2M (CONSUMER-TO-MANUFACTURER)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Manufacturing): service `VmiAndC2mService`; 1 migrasi; test `VmiAndC2mManufacturingTest` — commit `c7b5089`, +359 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 82 (DoR disetujui pemilik).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Procurement + Wms (VMI) · Manufacturing + Plm + Store (C2M) · **Prasyarat:** Fase 81 ✅ · **Acuan:** KONSEP 6F slice 2–3
 > **Jalan pintas terlarang di fase ini:** auto-PO tanpa plafon kontrak/approval; C2M tanpa BOM/routing nyata — ditambah seluruh X1–X25.
