@@ -82,6 +82,7 @@ use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
 use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Vending\Domain\Models\VendingUnit;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
@@ -1471,12 +1472,11 @@ return [
             $model = BimModel::firstOrCreate(
                 ['model_code' => 'BIM-ROUTER-TEST-01'],
                 [
-                    'building_code' => 'BLD-TEST-01',
-                    'version_tag' => 'v1.0',
+                    'project_code' => 'PRJ-TEST-01',
+                    'name' => 'BIM Model Router Test',
+                    'version' => 1,
                     'current_hash' => hash('sha256', 'seed'),
-                    'physical_progress_pct' => 50.0,
-                    'cumulative_cip_idr' => 1000000,
-                    'status' => 'DRAFT',
+                    'status' => 'APPROVED',
                 ]
             );
 
@@ -1489,12 +1489,11 @@ return [
             $model = BimModel::firstOrCreate(
                 ['model_code' => 'BIM-ROUTER-TEST-01'],
                 [
-                    'building_code' => 'BLD-TEST-01',
-                    'version_tag' => 'v1.0',
+                    'project_code' => 'PRJ-TEST-01',
+                    'name' => 'BIM Model Router Test',
+                    'version' => 1,
                     'current_hash' => hash('sha256', 'seed'),
-                    'physical_progress_pct' => 100.0,
-                    'cumulative_cip_idr' => 1000000,
-                    'status' => 'DRAFT',
+                    'status' => 'APPROVED',
                 ]
             );
 
@@ -1508,7 +1507,7 @@ return [
         'params' => function () {
             $space = FlexSpace::firstOrCreate(
                 ['space_code' => 'SP-ROUTER-01'],
-                ['name' => 'Pod 1', 'space_type' => 'HOT_DESK', 'hourly_rate_idr' => 50000, 'capacity' => 1, 'status' => 'AVAILABLE']
+                ['name' => 'Pod 1', 'space_type' => 'HOT_DESK', 'rate_per_hour_idr' => 50000, 'capacity_persons' => 1, 'status' => 'AVAILABLE']
             );
             $booking = FlexBooking::firstOrCreate(
                 ['booking_code' => 'FBK-ROUTER-01'],
@@ -1518,7 +1517,7 @@ return [
                     'start_time' => now()->subHour(),
                     'end_time' => now()->addHour(),
                     'total_price_idr' => 100000,
-                    'deposit_hold_idr' => 30000,
+                    'deposit_amount_idr' => 30000,
                     'status' => 'CONFIRMED',
                 ]
             );
@@ -1531,7 +1530,7 @@ return [
         'params' => function () {
             $space = FlexSpace::firstOrCreate(
                 ['space_code' => 'SP-ROUTER-01'],
-                ['name' => 'Pod 1', 'space_type' => 'HOT_DESK', 'hourly_rate_idr' => 50000, 'capacity' => 1, 'status' => 'AVAILABLE']
+                ['name' => 'Pod 1', 'space_type' => 'HOT_DESK', 'rate_per_hour_idr' => 50000, 'capacity_persons' => 1, 'status' => 'AVAILABLE']
             );
             $booking = FlexBooking::firstOrCreate(
                 ['booking_code' => 'FBK-ROUTER-02'],
@@ -1541,7 +1540,7 @@ return [
                     'start_time' => now()->subHours(2),
                     'end_time' => now()->subHour(),
                     'total_price_idr' => 100000,
-                    'deposit_hold_idr' => 30000,
+                    'deposit_amount_idr' => 30000,
                     'status' => 'CONFIRMED',
                 ]
             );
@@ -2135,6 +2134,27 @@ return [
     'verification.notice' => 'auth',
     'verification.send' => 'auth',
     'verification.verify' => 'auth',
+    'vending.index' => ['roles' => ['admin', 'vending_operator', 'store_manager']],
+    'vending.units.dispense' => [
+        'roles' => ['admin', 'vending_operator', 'store_manager'],
+        'params' => function () {
+            $unit = VendingUnit::firstOrCreate(
+                ['unit_code' => 'VEN-ROUTER-01'],
+                [
+                    'location_name' => 'Main Lobby',
+                    'status' => 'ACTIVE',
+                    'current_stock' => 50,
+                    'critical_threshold' => 10,
+                    'max_capacity' => 100,
+                    'total_sales_count' => 0,
+                    'total_sales_idr' => 0,
+                    'sensor_status' => ['temp' => 4.0],
+                ]
+            );
+
+            return ['unit' => $unit->id];
+        },
+    ],
     'venue.gate.scan' => [
         'roles' => ['admin', 'venue_manager', 'venue_staff'],
         'params' => function () {
