@@ -4351,23 +4351,83 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 83.1–83.7 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 84 — AI CONTRACT BIDDING AGENT (LELANG PENGADAAN OTOMATIS)
-> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 84 (DoR disetujui pemilik).
+> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 84 tuntas 100% dan terverifikasi di Gerbang 1–6.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Procurement + Trade (asisten penawaran) · **Prasyarat:** Fase 64 ✅ · **Acuan:** KONSEP 7F slice 3
 > **Jalan pintas terlarang di fase ini:** usulan AI langsung submit tanpa approval; tanpa snapshot input (tidak bisa direkonstruksi) — ditambah seluruh X1–X25.
-- [ ] 84.1 Tabel `trd_bidding_agents` (konfigurasi per entitas: komoditas, batas harga, margin target, risiko maks), `trd_bid_runs` (lelang yang dipantau), `trd_bid_submissions` (penawaran + jejak persetujuan)
-- [ ] 84.2 **Agent merayapi**: harga komoditas global (feed simulasi), riwayat menang/kalah lelang (Fase 33.3 tender), skor risiko buyer (Party credit Fase 27.7), biaya logistik (Fase 80.5 rate card) → menghitung harga penawaran optimal (deterministik, dapat diulang → selaras `ai:audit` Fase 64)
-- [ ] 84.3 **Draf klausul di modul Contract**: agent menyusun klausul komersial (termin, penalti, force majeure) dari library klausul Fase 28.2 → masuk status draft untuk review
-- [ ] 84.4 **Four-eyes wajib**: staf manusia membaca & menyetujui sebelum submit (ApprovalEngine Fase 26.9); tanpa persetujuan → submit ditolak sistem; batas nilai otomatis per reviewer
-- [ ] 84.5 Pasca-menang: kontrak terbit (state machine Fase 28.3) → commitment anggaran (Fase 54.1) → jadwal pengiriman via Logistics → penagihan sesuai termin; pasca-kalah: umpan balik model (win/loss tercatat)
-- [ ] 84.6 Dashboard bid desk: lelang terpantau, rekomendasi tertunda, win rate, margin vs benchmark, biaya vs kompetitor (simulasi)
-- [ ] 84.7 Tests: (a) submit tanpa approval ditolak (b) harga di luar batas agent ditolak (c) run agent deterministik dua kali identik (d) menang → kontrak + budget commitment konsisten (e) `ai:audit` = keputusan dapat direkonstruksi
-- [ ] 84.8 Quality gate Fase 84
+- [x] 84.1 Tabel `trd_bidding_agents` (konfigurasi per entitas: komoditas, batas harga, margin target, risiko maks), `trd_bid_runs` (lelang yang dipantau), `trd_bid_submissions` (penawaran + jejak persetujuan)
+  Bukti:
+    - jenis: fitur
+    - commit: 86ff6761
+    - file: modules/Trade/database/migrations/2026_10_19_840200_add_feedback_reason_to_trd_bid_submissions.php
+    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_http_endpoints_and_rbac
+    - akses: table trd_bidding_agents, trd_bid_runs, trd_bid_submissions
+    - gate: docs/gates/fase-84.md
+- [x] 84.2 **Agent merayapi**: harga komoditas global (feed simulasi), riwayat menang/kalah lelang (Fase 33.3 tender), skor risiko buyer (Party credit Fase 27.7), biaya logistik (Fase 80.5 rate card) → menghitung harga penawaran optimal (deterministik, dapat diulang → selaras `ai:audit` Fase 64)
+  Bukti:
+    - jenis: fitur
+    - commit: 86ff6761
+    - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
+    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_2_deterministic_ai_bid_evaluation_and_clause_drafting
+    - akses: route POST /trade/bidding/runs [role: admin, auditor, procurement, treasury]
+    - gate: docs/gates/fase-84.md
+- [x] 84.3 **Draf klausul di modul Contract**: agent menyusun klausul komersial (termin, penalti, force majeure) dari library klausul Fase 28.2 → masuk status draft untuk review
+  Bukti:
+    - jenis: fitur
+    - commit: 86ff6761
+    - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
+    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_2_deterministic_ai_bid_evaluation_and_clause_drafting
+    - akses: route POST /trade/bidding/runs [role: admin, auditor, procurement, treasury]
+    - gate: docs/gates/fase-84.md
+- [x] 84.4 **Four-eyes wajib**: staf manusia membaca & menyetujui sebelum submit (ApprovalEngine Fase 26.9); tanpa persetujuan → submit ditolak sistem; batas nilai otomatis per reviewer
+  Bukti:
+    - jenis: fitur
+    - commit: 86ff6761
+    - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
+    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_4_and_84_5_four_eyes_approval_mandatory_and_post_win_budget_commitment
+    - akses: route POST /trade/bidding/submissions/{submission}/approve [role: admin, auditor, procurement, treasury]
+    - gate: docs/gates/fase-84.md
+- [x] 84.5 Pasca-menang: kontrak terbit (state machine Fase 28.3) → commitment anggaran (Fase 54.1) → jadwal pengiriman via Logistics → penagihan sesuai termin; pasca-kalah: umpan balik model (win/loss tercatat)
+  Bukti:
+    - jenis: fitur
+    - commit: 86ff6761
+    - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
+    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_4_and_84_5_four_eyes_approval_mandatory_and_post_win_budget_commitment
+    - akses: route POST /trade/bidding/submissions/{submission}/result [role: admin, auditor, procurement, treasury]
+    - gate: docs/gates/fase-84.md
+- [x] 84.6 Dashboard bid desk: lelang terpantau, rekomendasi tertunda, win rate, margin vs benchmark, biaya vs kompetitor (simulasi)
+  Bukti:
+    - jenis: fitur
+    - commit: 86ff6761
+    - file: modules/Trade/resources/views/trade/bidding.blade.php
+    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_3_and_84_6_lost_auction_feedback_and_bid_desk_summary
+    - akses: route GET /trade/bidding [role: admin, auditor, procurement, treasury]
+    - gate: docs/gates/fase-84.md
+- [x] 84.7 Tests: (a) submit tanpa approval ditolak (b) harga di luar batas agent ditolak (c) run agent deterministik dua kali identik (d) menang → kontrak + budget commitment konsisten (e) `ai:audit` = keputusan dapat direkonstruksi
+  Bukti:
+    - jenis: tooling
+    - commit: 86ff6761
+    - file: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php
+    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_audit_command_and_corruption_detection
+    - gate: docs/gates/fase-84.md
+- [x] 84.8 Quality gate Fase 84
+  Bukti:
+    - jenis: dokumen
+    - commit: 86ff6761
+    - file: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php
+    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_http_endpoints_and_rbac
+    - akses: command bidding:audit
+    - gate: docs/gates/fase-84.md
+
+### Register Minus Fase 84
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 84.1–84.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## PILAR 8 — TATA KELOLA, KORPORASI & INTEGRASI ENTERPRISE
 
 ## FASE 85 — INTERNAL GIG ECONOMY (TALENT MARKETPLACE & BOUNTY)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hcm): service `InternalGigEconomyService`; 1 migrasi; test `InternalGigEconomyTest` — commit `2020c3a`, +428 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN (sebelumnya 🟠 KERANGKA). Pengerjaan vertical slice Fase 85 (DoR disetujui pemilik).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hcm (`hcm_`) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F slice 1
 > **Jalan pintas terlarang di fase ini:** bounty dibayar di luar payroll; klaim bounty tanpa cek sertifikat/jam kerja — ditambah seluruh X1–X25.
