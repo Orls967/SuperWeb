@@ -84,6 +84,9 @@ use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
 use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Trade\Domain\Models\Bidding\BiddingAgent;
+use Modules\Trade\Domain\Models\Bidding\BidRun;
+use Modules\Trade\Domain\Models\Bidding\BidSubmission;
 use Modules\TradeFinance\Domain\Models\CrossBorder\CrossBorderEscrow;
 use Modules\Vending\Domain\Models\VendingUnit;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
@@ -2178,6 +2181,123 @@ return [
     'track.index' => 'public',
     'track.show' => 'public',
     'trade.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade.bidding.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade.bidding.agents.store' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade.bidding.runs.evaluate' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade.bidding.runs.prepare' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => function () {
+            $agent = BiddingAgent::firstOrCreate(
+                ['agent_code' => 'AGT-ROUTE-TEST'],
+                [
+                    'entity_code' => 'ENT-001',
+                    'commodity_code' => 'COAL-GAR4200',
+                    'min_price_floor_idr' => 1000000,
+                    'max_price_ceiling_idr' => 1500000,
+                    'target_margin_pct' => 15.0,
+                    'max_risk_score' => 0.40,
+                    'status' => 'ACTIVE',
+                ]
+            );
+            $run = BidRun::firstOrCreate(
+                ['run_code' => 'RUN-ROUTE-TEST'],
+                [
+                    'bidding_agent_id' => $agent->id,
+                    'tender_reference_code' => 'TDR-ROUTE-001',
+                    'commodity_feed_price_idr' => 1100000,
+                    'estimated_logistics_cost_idr' => 50000,
+                    'buyer_risk_score' => 0.20,
+                    'optimal_bid_price_idr' => 1322500,
+                    'clause_drafts' => ['payment_terms' => 'LC_AT_SIGHT'],
+                    'evaluation_hash' => hash('sha256', 'RUN-ROUTE-TEST'),
+                ]
+            );
+
+            return ['run' => $run->id];
+        },
+    ],
+    'trade.bidding.submissions.approve' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => function () {
+            $agent = BiddingAgent::firstOrCreate(
+                ['agent_code' => 'AGT-ROUTE-TEST'],
+                [
+                    'entity_code' => 'ENT-001',
+                    'commodity_code' => 'COAL-GAR4200',
+                    'min_price_floor_idr' => 1000000,
+                    'max_price_ceiling_idr' => 1500000,
+                    'target_margin_pct' => 15.0,
+                    'max_risk_score' => 0.40,
+                    'status' => 'ACTIVE',
+                ]
+            );
+            $run = BidRun::firstOrCreate(
+                ['run_code' => 'RUN-ROUTE-TEST'],
+                [
+                    'bidding_agent_id' => $agent->id,
+                    'tender_reference_code' => 'TDR-ROUTE-001',
+                    'commodity_feed_price_idr' => 1100000,
+                    'estimated_logistics_cost_idr' => 50000,
+                    'buyer_risk_score' => 0.20,
+                    'optimal_bid_price_idr' => 1322500,
+                    'clause_drafts' => ['payment_terms' => 'LC_AT_SIGHT'],
+                    'evaluation_hash' => hash('sha256', 'RUN-ROUTE-TEST'),
+                ]
+            );
+            $submission = BidSubmission::firstOrCreate(
+                ['submission_code' => 'SUB-ROUTE-TEST'],
+                [
+                    'bid_run_id' => $run->id,
+                    'submitted_bid_price_idr' => 1322500,
+                    'requires_four_eyes' => true,
+                    'status' => 'PENDING_APPROVAL',
+                ]
+            );
+
+            return ['submission' => $submission->id];
+        },
+    ],
+    'trade.bidding.submissions.result' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => function () {
+            $agent = BiddingAgent::firstOrCreate(
+                ['agent_code' => 'AGT-ROUTE-TEST'],
+                [
+                    'entity_code' => 'ENT-001',
+                    'commodity_code' => 'COAL-GAR4200',
+                    'min_price_floor_idr' => 1000000,
+                    'max_price_ceiling_idr' => 1500000,
+                    'target_margin_pct' => 15.0,
+                    'max_risk_score' => 0.40,
+                    'status' => 'ACTIVE',
+                ]
+            );
+            $run = BidRun::firstOrCreate(
+                ['run_code' => 'RUN-ROUTE-TEST'],
+                [
+                    'bidding_agent_id' => $agent->id,
+                    'tender_reference_code' => 'TDR-ROUTE-001',
+                    'commodity_feed_price_idr' => 1100000,
+                    'estimated_logistics_cost_idr' => 50000,
+                    'buyer_risk_score' => 0.20,
+                    'optimal_bid_price_idr' => 1322500,
+                    'clause_drafts' => ['payment_terms' => 'LC_AT_SIGHT'],
+                    'evaluation_hash' => hash('sha256', 'RUN-ROUTE-TEST'),
+                ]
+            );
+            $submission = BidSubmission::firstOrCreate(
+                ['submission_code' => 'SUB-ROUTE-TEST-2'],
+                [
+                    'bid_run_id' => $run->id,
+                    'submitted_bid_price_idr' => 1322500,
+                    'requires_four_eyes' => false,
+                    'status' => 'SUBMITTED',
+                ]
+            );
+
+            return ['submission' => $submission->id];
+        },
+    ],
     'trade_finance.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
     'trade_finance.lcs' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
     'trade_finance.crossborder.cbam' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],

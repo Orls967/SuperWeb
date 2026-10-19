@@ -20,6 +20,7 @@ class BidSubmission extends Model
         'approved_at',
         'status',
         'created_contract_code',
+        'feedback_reason',
     ];
 
     protected $casts = [

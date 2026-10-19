@@ -12,6 +12,7 @@ use App\Quality\Audit\Fixtures\AstAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AstVerifyChainCorruptionFixture;
 use App\Quality\Audit\Fixtures\B2bAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\BankReconcileCorruptionFixture;
+use App\Quality\Audit\Fixtures\BiddingAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ChainAuditAllCorruptionFixture;
 use App\Quality\Audit\Fixtures\CkAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ClearingAuditCorruptionFixture;
@@ -82,6 +83,7 @@ final class AuditCommandRegistry
             'ast:verify-chain' => new AstVerifyChainCorruptionFixture,
             'b2b:audit' => new B2bAuditCorruptionFixture,
             'bank:reconcile' => new BankReconcileCorruptionFixture,
+            'bidding:audit' => new BiddingAuditCorruptionFixture,
             'chain:audit-all' => new ChainAuditAllCorruptionFixture,
             'ck:audit' => new CkAuditCorruptionFixture,
             'clearing:audit' => new ClearingAuditCorruptionFixture,
