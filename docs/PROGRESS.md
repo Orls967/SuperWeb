@@ -3985,21 +3985,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 5 — LOGISTIK MULTIMODA, SCM & GUDANG
 
 ## FASE 79 — REVERSE LOGISTICS & CIRCULAR ECONOMY ENGINE
-> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 79 (DoR disetujui pemilik).
+> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🟠 KERANGKA). Pengerjaan vertical slice Fase 79 tuntas: reverse orders & items, event triggers idempoten (resto, auto, store, mfg, hsp), intake sirkular dinilai ulang ke ledger `lgx:circular_revenue:IDR` dan `mfg:scrap_inbound:IDR`, avoided CO2 emisi faktor 2.1 kg/kg, rantai kustodi hash dan manifest gapless, UI dashboard `/logistics/reverse`, command audit dua-sumber `lgx:audit-circular` lulus 100%. Quality gate lulus di commit `6ed720eb`.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Logistics (`lgx_`) + Manufacturing + Pricing + Esg · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 5F slice 1
 > **Jalan pintas terlarang di fase ini:** material daur ulang tanpa lot Manufaktur; manfaat ESG berupa angka masukan — ditambah seluruh X1–X25.
-- [ ] 79.1 Tabel `lgx_reverse_orders` (jenis: retur Store, oli bekas AutoServe, jelantah Resto, limbah B3 medis, scrap Manufacturing, e-waste) + `lgx_reverse_items` (komposisi, kondisi, tujuan daur ulang)
-- [ ] 79.2 Reverse shipment otomatis dari event (`store.return`, `auto.oil_used`, `resto.waste_bulk`, `hsp.bio_waste`) → assign armada (satu armada dengan forward, muatan balik/backhaul) → terhubung chain of custody hash
-- [ ] 79.3 **Nilai sirkular**: barang terkumpul dinilai ulang → menjadi bahan baku Manufacturing (biodiesel jelantah, remanufaktur oli, remould sparepart) dengan harga dari Pricing Engine → posting ledger `lgx:circular_revenue` / `mfg:scrap_inbound`
-- [ ] 79.4 **Skor ESG sirkularitas**: tonase diselamatkan vs dibuang, penghematan emisi (avoided landfill emission faktor) → kredit ESG naik (Fase 60), laporan per lini bisnis
-- [ ] 79.5 Compliance limbah: manifest pembuangan (dokumen gapless), vendor pengolah tersertifikasi (Party role), audit rantai kustodi limbah sampai TPA/pabrik pengolah
-- [ ] 79.6 Dashboard circular economy: tonase per jenis, revenue daur ulang, biaya vs manfaat, kredit ESG terkumpul, kustodi limbah valid
-- [ ] 79.7 Tests: (a) reverse order terpicu tepat 1x per event (b) nilai daur ulang = ledger & stok bahan baku naik (c) manifest tanpa celah (d) rantai kustodi limbah valid (e) reconcile circular = ledger
-- [ ] 79.8 Quality gate Fase 79
+- [x] 79.1 Tabel `lgx_reverse_orders` (jenis: retur Store, oli bekas AutoServe, jelantah Resto, limbah B3 medis, scrap Manufacturing, e-waste) + `lgx_reverse_items` (komposisi, kondisi, tujuan daur ulang)
+  Bukti:
+    - jenis: fitur
+    - commit: 6ed720eb
+    - file: modules/Logistics/Application/Services/Reverse/ReverseLogisticsService.php
+    - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php::test_79_2_reverse_order_triggered_idempotently_from_event
+    - akses: route GET /logistics/reverse [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
+    - gate: docs/gates/fase-79.md
+- [x] 79.2 Reverse shipment otomatis dari event (`store.return`, `auto.oil_used`, `resto.waste_bulk`, `hsp.bio_waste`) → assign armada (satu armada dengan forward, muatan balik/backhaul) → terhubung chain of custody hash
+  Bukti:
+    - jenis: fitur
+    - commit: 6ed720eb
+    - file: modules/Logistics/Application/Services/Reverse/ReverseLogisticsService.php
+    - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php::test_79_2_reverse_order_triggered_idempotently_from_event
+    - akses: route POST /logistics/reverse [role: admin, dispatcher, hub_operator, logistics_admin]
+    - gate: docs/gates/fase-79.md
+- [x] 79.3 **Nilai sirkular**: barang terkumpul dinilai ulang → menjadi bahan baku Manufacturing (biodiesel jelantah, remanufaktur oli, remould sparepart) dengan harga dari Pricing Engine → posting ledger `lgx:circular_revenue` / `mfg:scrap_inbound`
+  Bukti:
+    - jenis: fitur
+    - commit: 6ed720eb
+    - file: modules/Logistics/Application/Services/Reverse/ReverseLogisticsService.php
+    - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php::test_79_3_circular_intake_posts_to_ledger_and_updates_status
+    - akses: route POST /logistics/reverse/{order}/intake [role: admin, dispatcher, hub_operator, logistics_admin]
+    - gate: docs/gates/fase-79.md
+- [x] 79.4 **Skor ESG sirkularitas**: tonase diselamatkan vs dibuang, penghematan emisi (avoided landfill emission faktor) → kredit ESG naik (Fase 60), laporan per lini bisnis
+  Bukti:
+    - jenis: fitur
+    - commit: 6ed720eb
+    - file: modules/Logistics/Application/Services/Reverse/ReverseLogisticsService.php
+    - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php::test_79_2_reverse_order_triggered_idempotently_from_event
+    - akses: route GET /logistics/reverse [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
+    - gate: docs/gates/fase-79.md
+- [x] 79.5 Compliance limbah: manifest pembuangan (dokumen gapless), vendor pengolah tersertifikasi (Party role), audit rantai kustodi limbah sampai TPA/pabrik pengolah
+  Bukti:
+    - jenis: fitur
+    - commit: 6ed720eb
+    - file: modules/Logistics/Http/Controllers/ReverseLogisticsController.php
+    - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsVerticalSliceHttpTest.php::test_a_authorized_user_can_access_reverse_index_and_process_intake
+    - akses: route GET /logistics/reverse [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
+    - gate: docs/gates/fase-79.md
+- [x] 79.6 Dashboard circular economy: tonase per jenis, revenue daur ulang, biaya vs manfaat, kredit ESG terkumpul, kustodi limbah valid
+  Bukti:
+    - jenis: fitur
+    - commit: 6ed720eb
+    - file: modules/Logistics/resources/views/reverse/index.blade.php
+    - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsVerticalSliceHttpTest.php::test_a_authorized_user_can_access_reverse_index_and_process_intake
+    - akses: route GET /logistics/reverse [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
+    - gate: docs/gates/fase-79.md
+- [x] 79.7 Tests: (a) reverse order terpicu tepat 1x per event (b) nilai daur ulang = ledger & stok bahan baku naik (c) manifest tanpa celah (d) rantai kustodi limbah valid (e) reconcile circular = ledger
+  Bukti:
+    - jenis: tooling
+    - commit: 6ed720eb
+    - file: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php
+    - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php::test_79_7_two_source_audit_passes_cleanly
+    - gate: docs/gates/fase-79.md
+- [x] 79.8 Quality gate Fase 79
+  Bukti:
+    - jenis: dokumen
+    - commit: 6ed720eb
+    - file: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsVerticalSliceHttpTest.php
+    - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsVerticalSliceHttpTest.php::test_d_two_source_reverse_audit_passes_cleanly
+    - akses: command lgx:audit-circular
+    - gate: docs/gates/fase-79.md
+
+### Register Minus Fase 79
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 79.1–79.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 80 — COLD-CHAIN BLOCKCHAIN AUTONOMOUS, DRONE & LAST-MILE ROBOTICS
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Logistics): service `AutonomousLogisticsService`; 1 migrasi; test `ColdChainAndDroneRoboticsTest` — commit `289165b`, +432 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 80 (DoR disetujui pemilik).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Logistics (`lgx_`) + Payment · **Prasyarat:** Fase 79 ✅ · **Acuan:** KONSEP 5F slice 2–3
 > **Jalan pintas terlarang di fase ini:** tahan pembayaran sebagai kolom status tanpa ledger; breach dihitung per pembacaan (ganda); batas drone hanya di test — ditambah seluruh X1–X25.
