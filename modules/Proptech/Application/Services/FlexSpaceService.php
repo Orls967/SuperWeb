@@ -213,12 +213,9 @@ class FlexSpaceService
             $capturedBookings = FlexBooking::where('status', 'CHECKED_IN')->get();
             $expectedCapturedRevenue = (int) $capturedBookings->sum('total_price_idr');
 
-            $revenueAccount = DB::table('bk_ledger_accounts')
-                ->where('code', 'prp:flex_revenue:IDR')
-                ->first();
-
-            if ($revenueAccount) {
-                $actualLedgerRevenue = abs((int) $revenueAccount->cached_balance);
+            $rows = DB::select('SELECT cached_balance FROM bk_ledger_accounts WHERE code = ? LIMIT 1', ['prp:flex_revenue:IDR']);
+            if (! empty($rows)) {
+                $actualLedgerRevenue = abs((int) $rows[0]->cached_balance);
                 if ($expectedCapturedRevenue !== $actualLedgerRevenue) {
                     $discrepancies[] = "Ledger revenue mismatch: expected {$expectedCapturedRevenue}, got {$actualLedgerRevenue} in prp:flex_revenue:IDR";
                 }

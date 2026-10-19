@@ -220,12 +220,9 @@ class AutonomousLogisticsService
             $activeHolds = TempBreachHold::where('status', 'HELD')->get();
             $expectedEscrowBalance = (int) $activeHolds->sum('hold_amount_idr');
 
-            $escrowAccount = DB::table('bk_ledger_accounts')
-                ->where('code', 'lgx:dispute_escrow:IDR')
-                ->first();
-
-            if ($escrowAccount) {
-                $actualEscrow = abs((int) $escrowAccount->cached_balance);
+            $rows = DB::select('SELECT cached_balance FROM bk_ledger_accounts WHERE code = ? LIMIT 1', ['lgx:dispute_escrow:IDR']);
+            if (! empty($rows)) {
+                $actualEscrow = abs((int) $rows[0]->cached_balance);
                 if ($expectedEscrowBalance !== $actualEscrow) {
                     $discrepancies[] = "Ledger escrow mismatch: expected {$expectedEscrowBalance}, got {$actualEscrow} in lgx:dispute_escrow:IDR";
                 }

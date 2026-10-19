@@ -177,12 +177,9 @@ class ReverseLogisticsService
             $processedOrders = ReverseOrder::where('status', 'PROCESSED')->get();
             $expectedLedgerRevenue = (int) $processedOrders->sum('total_appraised_value_idr');
 
-            $revenueAccount = DB::table('bk_ledger_accounts')
-                ->where('code', 'lgx:circular_revenue:IDR')
-                ->first();
-
-            if ($revenueAccount) {
-                $actualLedgerRevenue = abs((int) $revenueAccount->cached_balance);
+            $rows = DB::select('SELECT cached_balance FROM bk_ledger_accounts WHERE code = ? LIMIT 1', ['lgx:circular_revenue:IDR']);
+            if (! empty($rows)) {
+                $actualLedgerRevenue = abs((int) $rows[0]->cached_balance);
                 if ($expectedLedgerRevenue !== $actualLedgerRevenue) {
                     $discrepancies[] = "Ledger revenue mismatch: expected {$expectedLedgerRevenue}, got {$actualLedgerRevenue} in lgx:circular_revenue:IDR";
                 }
