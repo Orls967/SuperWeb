@@ -516,7 +516,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 36 | **Party** | `pty_` | 3 |
 | 37 | **Payment** | `pay_` | 3 |
 | 38 | **Plm** | `plm_` | 1 |
-| 39 | **Pricing** | `pric_` | 3 |
+| 39 | **Pricing** | `pric_` | 4 |
 | 40 | **Procurement** | `prc_` | 5 |
 | 41 | **Proptech** | `prp_` | 3 |
 | 42 | **Resto** | `resto_` | 10 |
@@ -534,7 +534,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 54 | **Venue** | `ven_` | 5 |
 | 55 | **Wealth** | `wm_` | 1 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **547 Migrasi** |
+| | **Total: 56 Modul** | | **548 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -573,7 +573,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Partner** | 4 | `partners`, `partners/{partner}`, `partners/{partner}/transition` ... | web, auth, verified |
 | **Party** | 11 | `party/legal-entities`, `party`, `party/create` ... | web, auth, verified |
 | **Plm** | 1 | `plm` | web, auth, role:admin,rnd_specialist |
-| **Pricing** | 13 | `pricing`, `pricing/price-lists`, `pricing/price-lists/items` ... | web, auth, verified |
+| **Pricing** | 17 | `pricing`, `pricing/ticks`, `pricing/price-lists` ... | web, auth, verified |
 | **Procurement** | 21 | `procurement`, `procurement/requisitions`, `procurement/requisitions/{requisition}` ... | web, auth, verified |
 | **Proptech** | 9 | `proptech`, `proptech/zones/{zone}/bill`, `proptech/bim` ... | web, auth, role:admin,proptech_admin,facility_manager |
 | **Resto** | 89 | `resto/menu`, `resto/menu/{menu}`, `resto/menu/calculate-cost` ... | web, auth, role:admin,auditor,outlet_manager |
@@ -589,7 +589,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 2 | `venue`, `venue/tickets/{ticket}/scan` | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 2 | `wealth`, `wealth/profiles/{profile}/invest` | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **662 Rute** | | |
+| **Total** | **666 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -682,7 +682,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `payment:release-expired-holds` | **`daily()`** | Otomatis melepaskan dana escrow untuk payment intent status held yang telah melewati masa berlaku |
 | `plm:audit` | `manual` | Audit Product Lifecycle Management (PLM) ECO hash-chain and EBOM-to-MBOM integrity (0 discrepancies) |
 | `plm:encrypt-legacy` | `manual` | Idempotently re-encrypt legacy base64 encoded formula payloads in lab notebooks |
-| `pricing:audit` | `manual` | Audit pricing: lock harga, anggaran promo, override, overlap (0 selisih) |
+| `pricing:audit` | `manual` | Audit pricing: lock harga, anggaran promo, override, overlap, dan guardrail quote (0 selisih) |
 | `proc:audit` | `manual` | Audit subledger AP dan GR/IR terhadap ledger (harus 0 selisih) |
 | `prp:audit` | `manual` | Perform two-source verification of smart building zones, sensor readings, and utility billings |
 | `prp:audit-bim` | `manual` | Perform two-source verification of BIM model version hash chains and twin component completion |

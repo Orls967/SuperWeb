@@ -17,11 +17,20 @@ class FrozenQuote extends Model
         'floor_price_idr',
         'ceiling_price_idr',
         'quote_hash',
+        'order_ref',
+        'channel',
         'locked_until',
+        'converted_at',
         'status',
+        'metadata',
     ];
 
     protected $casts = [
+        'frozen_price_idr' => 'integer',
+        'floor_price_idr' => 'integer',
+        'ceiling_price_idr' => 'integer',
         'locked_until' => 'datetime',
+        'converted_at' => 'datetime',
+        'metadata' => 'array',
     ];
 }

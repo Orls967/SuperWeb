@@ -21,6 +21,7 @@ class PriceTick extends Model
 
     protected $casts = [
         'tick_time' => 'datetime',
+        'price_idr' => 'integer',
         'demand_index' => 'decimal:2',
     ];
 }
