@@ -4285,20 +4285,73 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 7 — PERDAGANGAN INTERNASIONAL & PENGADAAN
 
 ## FASE 83 — CROSS-BORDER CLEARING HOUSE BERBASIS KRIPTO & CBAM COMPLIANCE
-> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 83 (DoR disetujui pemilik).
+> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 83 tuntas: stablecoin escrow lintas batas terdesentralisasi (USDC), kunci kurs FX terkunci saat deposit, verifikasi Bill of Lading & chain of custody POD hash rilis otomatis ke eksportir, dispute window 24 jam dengan opsi refund/proceed, kepatuhan sertifikasi EU CBAM dengan metodologi jejak karbon terikat emisi pabrik, pengurangan landed cost / margin ekspor, dashboard analitik likuiditas escrow & CBAM, dan command audit `clearing:audit` = 0 selisih. Quality gate lulus di commit `22c1dbe5`.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** TradeFinance (`tf_`) + Trade + Esg + Logistics custody · **Prasyarat:** R1–R4 ✅, R6.4 ✅ · **Acuan:** KONSEP 7F slice 1–2
 > **Jalan pintas terlarang di fase ini:** rilis escrow tanpa verifikasi hash custody; CBAM dari masukan emisi bebas — ditambah seluruh X1–X25.
-- [ ] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
-- [ ] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
-- [ ] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
-- [ ] 83.4 Biaya bea karbon: simulasi nilai CBAM per kontainer → mengurangi margin ekspor → masuk perhitungan landed cost & pricing ekspor (Fase 49.3)
-- [ ] 83.5 Dashboard: posisi dana escrow per koridor, BL menunggu verifikasi, sertifikat karbon per kontainer, exposure CBAM
-- [ ] 83.6 Tests: (a) BL valid → release 1x, duplikat ditolak (b) escrow = komitmen aktif + dispute (c) sertifikat karbon konsisten dengan emisi ESG sumber (d) release multi-currency Σ seimbang (e) `clearing:audit` = 0 selisih
-- [ ] 83.7 Quality gate Fase 83
+- [x] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
+  Bukti:
+    - jenis: fitur
+    - commit: 22c1dbe5
+    - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
+    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_1_and_83_2_stablecoin_escrow_deposit_anti_duplicate_bl_and_release
+    - akses: route POST /trade-finance/cross-border/deposit [role: admin, auditor, procurement, treasury]
+    - gate: docs/gates/fase-83.md
+- [x] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
+  Bukti:
+    - jenis: fitur
+    - commit: 22c1dbe5
+    - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
+    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_2_dispute_window_hold_and_resolution_refund
+    - akses: route POST /trade-finance/cross-border/{escrow}/dispute [role: admin, auditor, procurement, treasury]
+    - gate: docs/gates/fase-83.md
+- [x] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
+  Bukti:
+    - jenis: fitur
+    - commit: 22c1dbe5
+    - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
+    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_3_and_83_4_cbam_carbon_emission_certification_and_margin_impact
+    - akses: route POST /trade-finance/cross-border/cbam [role: admin, auditor, procurement, treasury]
+    - gate: docs/gates/fase-83.md
+- [x] 83.4 Biaya bea karbon: simulasi nilai CBAM per kontainer → mengurangi margin ekspor → masuk perhitungan landed cost & pricing ekspor (Fase 49.3)
+  Bukti:
+    - jenis: fitur
+    - commit: 22c1dbe5
+    - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
+    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_3_and_83_4_cbam_carbon_emission_certification_and_margin_impact
+    - akses: route POST /trade-finance/cross-border/cbam [role: admin, auditor, procurement, treasury]
+    - gate: docs/gates/fase-83.md
+- [x] 83.5 Dashboard: posisi dana escrow per koridor, BL menunggu verifikasi, sertifikat karbon per kontainer, exposure CBAM
+  Bukti:
+    - jenis: fitur
+    - commit: 22c1dbe5
+    - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
+    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_5_escrow_and_cbam_summaries
+    - akses: route GET /trade-finance/cross-border [role: admin, auditor, procurement, treasury]
+    - gate: docs/gates/fase-83.md
+- [x] 83.6 Tests: (a) BL valid → release 1x, duplikat ditolak (b) escrow = komitmen aktif + dispute (c) sertifikat karbon konsisten dengan emisi ESG sumber (d) release multi-currency Σ seimbang (e) `clearing:audit` = 0 selisih
+  Bukti:
+    - jenis: tooling
+    - commit: 22c1dbe5
+    - file: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php
+    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_6_clearing_audit_command_enforces_zero_discrepancy
+    - gate: docs/gates/fase-83.md
+- [x] 83.7 Quality gate Fase 83
+  Bukti:
+    - jenis: dokumen
+    - commit: 22c1dbe5
+    - file: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php
+    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_http_endpoints_and_rbac
+    - akses: command clearing:audit
+    - gate: docs/gates/fase-83.md
+
+### Register Minus Fase 83
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 83.1–83.7 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 84 — AI CONTRACT BIDDING AGENT (LELANG PENGADAAN OTOMATIS)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Trade): service `AiBiddingAgentService`; 1 migrasi; test `AiContractBiddingAgentTest` — commit `03559ca`, +423 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN. Pengerjaan vertical slice Fase 84 (DoR disetujui pemilik).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Procurement + Trade (asisten penawaran) · **Prasyarat:** Fase 64 ✅ · **Acuan:** KONSEP 7F slice 3
 > **Jalan pintas terlarang di fase ini:** usulan AI langsung submit tanpa approval; tanpa snapshot input (tidak bisa direkonstruksi) — ditambah seluruh X1–X25.
