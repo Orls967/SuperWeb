@@ -8,6 +8,7 @@ use Modules\Manufacturing\Http\Controllers\ManufacturingController;
 use Modules\Manufacturing\Http\Controllers\PlanningController;
 use Modules\Manufacturing\Http\Controllers\ProductionController;
 use Modules\Manufacturing\Http\Controllers\QualityController;
+use Modules\Manufacturing\Http\Controllers\VmiAndC2mController;
 
 Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,operator,qc_inspector'])
     ->prefix('manufacturing')
@@ -109,5 +110,19 @@ Route::middleware(['web', 'auth', 'verified'])
             Route::post('/maintenance/incidents/{incident}/close', [MaintenanceController::class, 'closeIncident'])->name('maintenance.incidents.close');
             Route::post('/maintenance/permits', [MaintenanceController::class, 'storePermit'])->name('maintenance.permits.store');
             Route::post('/maintenance/permits/{permit}/approve', [MaintenanceController::class, 'approvePermit'])->name('maintenance.permits.approve');
+        });
+    });
+
+Route::middleware(['web', 'auth', 'verified'])
+    ->prefix('manufacturing')
+    ->name('manufacturing.')
+    ->group(function () {
+        Route::get('/vmi-c2m', [VmiAndC2mController::class, 'index'])->middleware('role:admin,auditor,operator,planner,procurement')->name('vmi-c2m.index');
+        Route::middleware('role:admin,planner,procurement')->group(function () {
+            Route::post('/vmi/trigger', [VmiAndC2mController::class, 'triggerVmi'])->name('vmi.trigger');
+            Route::post('/vmi/{replenishment}/approve', [VmiAndC2mController::class, 'approveVmi'])->name('vmi.approve');
+            Route::post('/c2m/orders', [VmiAndC2mController::class, 'storeC2mOrder'])->name('c2m.orders.store');
+            Route::post('/c2m/orders/{order}/spk', [VmiAndC2mController::class, 'issueSpk'])->name('c2m.orders.spk');
+            Route::post('/c2m/orders/{order}/cancel', [VmiAndC2mController::class, 'cancelC2m'])->name('c2m.orders.cancel');
         });
     });

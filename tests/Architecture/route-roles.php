@@ -57,6 +57,8 @@ use Modules\Mall\Domain\Models\Property;
 use Modules\Mall\Domain\Models\Tenant;
 use Modules\Mall\Domain\Models\VoucherTemplate;
 use Modules\Mall\Domain\Models\WorkOrder;
+use Modules\Manufacturing\Domain\Models\C2m\C2mCustomOrder;
+use Modules\Manufacturing\Domain\Models\C2m\VmiReplenishment;
 use Modules\Mining\Domain\Models\MiningPit;
 use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Partner\Domain\Models\Partner;
@@ -1340,6 +1342,33 @@ return [
     'mall.tenants.store' => ['roles' => ['admin', 'mall_admin']],
     'mall.utilities.batch' => ['roles' => ['admin', 'mall_admin', 'technician']],
     'mall.utilities.index' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
+    'manufacturing.c2m.orders.cancel' => [
+        'roles' => ['admin', 'planner', 'procurement'],
+        'params' => fn () => ['order' => C2mCustomOrder::firstOrCreate(['c2m_code' => 'C2M-ROUTE-CANCEL'], [
+            'user_id' => 1,
+            'base_model' => 'ROUTE_TEST',
+            'parameters' => ['size' => 10],
+            'complexity_factor' => 1.0,
+            'rolled_up_bom_cost_idr' => 1000000,
+            'final_price_idr' => 1300000,
+            'status' => 'PENDING_APPROVAL',
+            'estimated_lead_days' => 5,
+        ])->id],
+    ],
+    'manufacturing.c2m.orders.spk' => [
+        'roles' => ['admin', 'planner', 'procurement'],
+        'params' => fn () => ['order' => C2mCustomOrder::firstOrCreate(['c2m_code' => 'C2M-ROUTE-SPK'], [
+            'user_id' => 1,
+            'base_model' => 'ROUTE_TEST',
+            'parameters' => ['size' => 10],
+            'complexity_factor' => 1.0,
+            'rolled_up_bom_cost_idr' => 1000000,
+            'final_price_idr' => 1300000,
+            'status' => 'DESIGN_VALIDATED',
+            'estimated_lead_days' => 5,
+        ])->id],
+    ],
+    'manufacturing.c2m.orders.store' => ['roles' => ['admin', 'planner', 'procurement']],
     'manufacturing.boms.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.costing.index' => ['roles' => ['admin', 'auditor', 'planner']],
     'manufacturing.costing.versions.approve' => ['roles' => ['admin', 'planner']],
@@ -1397,6 +1426,22 @@ return [
     'manufacturing.quality.recalls.notify' => ['roles' => ['admin', 'planner', 'qc_inspector']],
     'manufacturing.routings.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.workers.store' => ['roles' => ['admin', 'planner']],
+    'manufacturing.vmi-c2m.index' => ['roles' => ['admin', 'auditor', 'operator', 'planner', 'procurement']],
+    'manufacturing.vmi.approve' => [
+        'roles' => ['admin', 'planner', 'procurement'],
+        'params' => fn () => ['replenishment' => VmiReplenishment::firstOrCreate(['vmi_code' => 'VMI-ROUTE-APP'], [
+            'supplier_id' => 1,
+            'sku' => 'SKU-ROUTE-APP',
+            'current_shelf_stock' => 5,
+            'reorder_point' => 10,
+            'suggested_reorder_qty' => 20,
+            'total_estimated_idr' => 500000,
+            'contract_plafond_idr' => 10000000,
+            'status' => 'PROPOSED',
+            'idempotency_key' => 'ROUTE-APP-VMI-01',
+        ])->id],
+    ],
+    'manufacturing.vmi.trigger' => ['roles' => ['admin', 'planner', 'procurement']],
     'notifications.index' => 'auth',
     'notifications.markAllRead' => 'auth',
     'notifications.markAllReadJson' => 'auth',

@@ -57,6 +57,7 @@ use App\Quality\Audit\Fixtures\TowerAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TradeAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TreasuryAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\VenAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\VmiAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\VndAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\WmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\WmsAuditCorruptionFixture;
@@ -125,6 +126,7 @@ final class AuditCommandRegistry
             'trade:audit' => new TradeAuditCorruptionFixture,
             'treasury:audit' => new TreasuryAuditCorruptionFixture,
             'ven:audit' => new VenAuditCorruptionFixture,
+            'vmi:audit' => new VmiAuditCorruptionFixture,
             'vnd:audit' => new VndAuditCorruptionFixture,
             'wm:audit' => new WmAuditCorruptionFixture,
             'wms:audit' => new WmsAuditCorruptionFixture,

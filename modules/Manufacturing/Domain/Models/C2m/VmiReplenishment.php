@@ -22,4 +22,12 @@ class VmiReplenishment extends Model
         'status',
         'idempotency_key',
     ];
+
+    protected $casts = [
+        'current_shelf_stock' => 'integer',
+        'reorder_point' => 'integer',
+        'suggested_reorder_qty' => 'integer',
+        'total_estimated_idr' => 'integer',
+        'contract_plafond_idr' => 'integer',
+    ];
 }
