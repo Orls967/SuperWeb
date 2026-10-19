@@ -499,7 +499,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 19 | **Ev** | — | 1 |
 | 20 | **Finance** | `fin_` | 1 |
 | 21 | **Fleet** | — | 1 |
-| 22 | **Hcm** | `hcm_` | 4 |
+| 22 | **Hcm** | `hcm_` | 5 |
 | 23 | **Hospital** | `hsp_` | 9 |
 | 24 | **Hotel** | `htl_` | 7 |
 | 25 | **Insurance** | `ins_` | 1 |
@@ -509,7 +509,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 29 | **Inventory** | `inv_` | 2 |
 | 30 | **Logistics** | `lgx_` | 29 |
 | 31 | **Mall** | `mall_` | 7 |
-| 32 | **Manufacturing** | `mfg_` | 11 |
+| 32 | **Manufacturing** | `mfg_` | 12 |
 | 33 | **Med** | `med_` | 2 |
 | 34 | **Mining** | `min_` | 10 |
 | 35 | **Partner** | `ptn_` | 1 |
@@ -517,7 +517,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 37 | **Payment** | `pay_` | 3 |
 | 38 | **Plm** | `plm_` | 1 |
 | 39 | **Pricing** | `pric_` | 4 |
-| 40 | **Procurement** | `prc_` | 5 |
+| 40 | **Procurement** | `prc_` | 6 |
 | 41 | **Proptech** | `prp_` | 3 |
 | 42 | **Resto** | `resto_` | 10 |
 | 43 | **Ret** | `ret_` | 3 |
@@ -527,14 +527,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 47 | **Supplier** | `sup_` | 3 |
 | 48 | **Telematics** | — | 2 |
 | 49 | **Tlx** | `tlx_` | 3 |
-| 50 | **Trade** | `trd_` | 2 |
-| 51 | **TradeFinance** | `tf_` | 2 |
+| 50 | **Trade** | `trd_` | 3 |
+| 51 | **TradeFinance** | `tf_` | 3 |
 | 52 | **Treasury** | `trs_` | 1 |
 | 53 | **Vending** | `vnd_` | 1 |
 | 54 | **Venue** | `ven_` | 5 |
 | 55 | **Wealth** | `wm_` | 1 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **548 Migrasi** |
+| | **Total: 56 Modul** | | **553 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -559,7 +559,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Ev** | 5 | `ev`, `ev/chargers/{charger}/reserve`, `ev/chargers/{charger}/check-in` ... | web, auth, role:admin,ev_admin,station_operator,driver |
 | **Finance** | 8 | `pembiayaan`, `pembiayaan/simulasi/{product}`, `pembiayaan/{loan}` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Fleet** | 5 | `fleet`, `fleet/contracts`, `fleet/contracts/{contract}/amortize` ... | web, auth, role:admin,fleet_admin,lease_manager |
-| **Hcm** | 1 | `hcm` | web, auth, role:admin,hcm_manager |
+| **Hcm** | 5 | `hcm`, `hcm/bounties`, `hcm/bounties/{bounty}/claim` ... | web, auth, role:admin,hcm_manager |
 | **Hospital** | 2 | `hospital`, `hospital/trials/{trial}/bill-milestone` | web, auth, role:admin,hospital_admin,doctor |
 | **Hotel** | 2 | `hotel`, `hotel/reservations/{reservation}/settle` | web, auth, role:admin,hotel_admin,front_desk |
 | **Insurance** | 2 | `insurance`, `insurance/products/{product}/issue` | web, auth, role:admin,insurance_admin,underwriter,customer |
@@ -568,7 +568,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **International** | 2 | `international`, `international/jvs` | web, auth, role:admin,auditor,legal,treasury |
 | **Logistics** | 77 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
 | **Mall** | 48 | `mall/directory`, `mall/site-plan`, `mall/leases/{lease}/activate` ... | web, auth, role:admin,auditor,mall_admin |
-| **Manufacturing** | 57 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
+| **Manufacturing** | 63 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
 | **Mining** | 2 | `mining`, `mining/pits/{pit}/dispatch` | web, auth, role:admin,mining_admin,site_manager |
 | **Partner** | 4 | `partners`, `partners/{partner}`, `partners/{partner}/transition` ... | web, auth, verified |
 | **Party** | 11 | `party/legal-entities`, `party`, `party/create` ... | web, auth, verified |
@@ -582,14 +582,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Store** | 33 | `store`, `store/products/{slug}`, `store/mobil-bekas` ... | web, auth, role:admin,customer,auditor |
 | **Supplier** | 15 | `suppliers/scan-risks`, `suppliers`, `suppliers/create` ... | web, auth, verified |
 | **Telematics** | 2 | `telematics`, `telematics/devices/{device}/ingest` | web, auth, role:admin,telematics_admin,fleet_manager |
-| **Trade** | 1 | `trade` | web, auth, role:admin,auditor,procurement,treasury |
-| **TradeFinance** | 2 | `trade-finance`, `trade-finance/lcs` | web, auth, role:admin,auditor,procurement,treasury |
+| **Trade** | 7 | `trade`, `trade/bidding`, `trade/bidding/agents` ... | web, auth, role:admin,auditor,procurement,treasury |
+| **TradeFinance** | 8 | `trade-finance`, `trade-finance/lcs`, `trade-finance/cross-border` ... | web, auth, role:admin,auditor,procurement,treasury |
 | **Treasury** | 1 | `treasury` | web, auth, role:admin,auditor,treasury |
 | **Vending** | 2 | `vending`, `vending/units/{unit}/dispense` | web, auth, role:admin,vending_operator,store_manager |
 | **Venue** | 2 | `venue`, `venue/tickets/{ticket}/scan` | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 2 | `wealth`, `wealth/profiles/{profile}/invest` | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **666 Rute** | | |
+| **Total** | **688 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -608,8 +608,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `b2b:audit` | `manual` | Audit B2B marketplace catalogs, auctions, and multi-party escrow balances |
 | `bank:reconcile` | **`daily()`** | Rekonsiliasi ledger: verifikasi cached_balance tiap akun dengan SUM(entries) dan SUM global per aset = 0 |
 | `benchmark:run` | `manual` | Jalankan benchmark suite platform: latensi p95 endpoint kritis dan durasi audit finansial (PROGRESS R9.2) |
+| `bidding:audit` | `manual` | Audit AI Bidding Agent: verifikasi determinisme evaluasi lelang, four-eyes approval, dan komitmen kontrak (0 selisih) |
 | `chain:audit-all` | `manual` | Jalankan orkestrasi audit menyeluruh seluruh rantai nilai ekosistem (Double-Entry Ledger, Treasury, Trade, TF, Proc, Mfg, Dist, Agency, Group, SCT, EF, API) |
 | `ck:audit` | `manual` | Perform two-source verification of cloud kitchen capacities, catering subscriptions, and meal order billings |
+| `clearing:audit` | `manual` | Audit Cross-Border Clearing: rekonsiliasi saldo escrow kripto, pelepasan POD, dan sertifikasi CBAM (0 selisih) |
 | `contracts:verify-chain` | **`dailyAt('03:00')`** | Verify the append-only cryptographic hash-chain across all contract versions |
 | `core:consume-spine` | `manual` | Worker to consume events from the event spine by consumer group with persistent offset and idempotent replay |
 | `core:process-outbox` | `manual` | Process pending transactional outbox events and dispatch to subscribers |
@@ -719,10 +721,11 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `treasury:audit` | `manual` | Audit multi-currency, bank reconciliation, credit facilities, and treasury balances |
 | `up` | `manual` | Bring the application out of maintenance mode |
 | `ven:audit` | `manual` | Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety |
+| `vmi:audit` | `manual` | Audit VMI & C2M: rekonsiliasi auto-PO komitmen anggaran, plafon kontrak, dan BOM C2M (0 selisih) |
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 128 Command** | **37 Terjadwal** | |
+| **Total: 131 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
