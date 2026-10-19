@@ -27,6 +27,8 @@ use Modules\Ev\Domain\Models\EvSession;
 use Modules\Ev\Domain\Models\EvStation;
 use Modules\Finance\Domain\Models\Loan;
 use Modules\Fleet\Domain\Models\FleetContract;
+use Modules\Hcm\Domain\Models\Gig\GovBounty;
+use Modules\Hcm\Domain\Models\Gig\GovBountyClaim;
 use Modules\Hospital\Domain\Models\ClinicalTrial;
 use Modules\Hotel\database\seeders\HotelDemoSeeder;
 use Modules\Hotel\Domain\Models\HotelReservation;
@@ -808,6 +810,59 @@ return [
         },
     ],
     'hcm.index' => ['roles' => ['admin', 'hcm_manager']],
+    'hcm.bounties.index' => ['roles' => ['admin', 'hcm_manager']],
+    'hcm.bounties.store' => ['roles' => ['admin', 'hcm_manager']],
+    'hcm.bounties.claim' => [
+        'roles' => ['admin', 'hcm_manager'],
+        'params' => function () {
+            $bounty = GovBounty::firstOrCreate(
+                ['bounty_code' => 'BNT-ROUTE-TEST'],
+                [
+                    'business_unit_cost_center' => 'WMS_CIKARANG_01',
+                    'title' => 'Shift Unloading Route Test',
+                    'description' => 'Route test description',
+                    'shift_start' => now()->addHours(1),
+                    'shift_end' => now()->addHours(5),
+                    'duration_hours' => 4.0,
+                    'hourly_rate_idr' => 75000,
+                    'required_certification' => null,
+                    'status' => 'OPEN',
+                ]
+            );
+
+            return ['bounty' => $bounty->id];
+        },
+    ],
+    'hcm.bounties.payout' => [
+        'roles' => ['admin', 'hcm_manager'],
+        'params' => function () {
+            $bounty = GovBounty::firstOrCreate(
+                ['bounty_code' => 'BNT-ROUTE-TEST'],
+                [
+                    'business_unit_cost_center' => 'WMS_CIKARANG_01',
+                    'title' => 'Shift Unloading Route Test',
+                    'description' => 'Route test description',
+                    'shift_start' => now()->addHours(1),
+                    'shift_end' => now()->addHours(5),
+                    'duration_hours' => 4.0,
+                    'hourly_rate_idr' => 75000,
+                    'required_certification' => null,
+                    'status' => 'CLAIMED',
+                ]
+            );
+            $claim = GovBountyClaim::firstOrCreate(
+                ['claim_code' => 'CLM-ROUTE-TEST'],
+                [
+                    'bounty_id' => $bounty->id,
+                    'employee_id' => 101,
+                    'claimed_at' => now(),
+                    'status' => 'ASSIGNED',
+                ]
+            );
+
+            return ['claim' => $claim->id];
+        },
+    ],
     'hospital.index' => ['roles' => ['admin', 'doctor', 'hospital_admin']],
     'hospital.trials.bill' => [
         'roles' => ['admin', 'doctor', 'hospital_admin'],

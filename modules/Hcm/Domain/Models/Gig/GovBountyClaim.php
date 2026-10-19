@@ -16,12 +16,15 @@ class GovBountyClaim extends Model
         'claim_code',
         'bounty_id',
         'employee_id',
+        'work_permit_code',
+        'mobility_points_earned',
         'claimed_at',
         'status',
     ];
 
     protected $casts = [
         'claimed_at' => 'datetime',
+        'mobility_points_earned' => 'integer',
     ];
 
     public function bounty(): BelongsTo

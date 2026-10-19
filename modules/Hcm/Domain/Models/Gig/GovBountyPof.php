@@ -15,7 +15,9 @@ class GovBountyPof extends Model
         'pof_code',
         'bounty_claim_id',
         'actual_hours_worked',
+        'overtime_multiplier',
         'geo_location_hash',
+        'photo_evidence_ref',
         'supervisor_user_id',
         'calculated_overtime_pay_idr',
         'status',
@@ -23,6 +25,7 @@ class GovBountyPof extends Model
 
     protected $casts = [
         'actual_hours_worked' => 'decimal:2',
+        'overtime_multiplier' => 'decimal:2',
     ];
 
     public function claim(): BelongsTo

@@ -14,6 +14,7 @@ use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
 use Modules\Hcm\Domain\Models\AttendanceLog;
 use Modules\Hcm\Domain\Models\Employee;
+use Modules\Hcm\Domain\Models\Gig\GovBountyPof;
 use Modules\Hcm\Domain\Models\LeaveRequest;
 use Modules\Hcm\Domain\Models\Payroll;
 use Modules\Hcm\Domain\Models\ProductionLaborAllocation;
@@ -236,12 +237,32 @@ class HcmService
                 }
             });
 
+        // 85.7 Reconcile internal gig bounty POF payouts and ledger status
+        $bountyPofs = GovBountyPof::with('claim.bounty')->get();
+        foreach ($bountyPofs as $pof) {
+            if ($pof->calculated_overtime_pay_idr <= 0) {
+                $discrepancies++;
+            }
+            if (! $pof->claim || $pof->claim->status !== 'PAID') {
+                $discrepancies++;
+            }
+            if ($pof->claim && $pof->claim->bounty) {
+                $bounty = $pof->claim->bounty;
+                $expectedBase = intdiv((int) round((float) $pof->actual_hours_worked * 100) * $bounty->hourly_rate_idr * 15 + 500, 1000);
+                $expectedTotal = $expectedBase + (int) ($bounty->speed_bonus_idr ?? 0);
+                if ($expectedTotal !== $pof->calculated_overtime_pay_idr) {
+                    $discrepancies++;
+                }
+            }
+        }
+
         return [
             'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
             'payroll_count' => $payrollCount,
             'employee_count' => Employee::count(),
             'shift_count' => ShiftSchedule::count(),
             'attendance_count' => AttendanceLog::count(),
+            'bounty_pof_count' => $bountyPofs->count(),
             'discrepancies' => $discrepancies,
         ];
     }
