@@ -34,6 +34,7 @@ use App\Quality\Audit\Fixtures\IntlAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\LgxAuditBillingCorruptionFixture;
 use App\Quality\Audit\Fixtures\LgxVerifyCustodyCorruptionFixture;
 use App\Quality\Audit\Fixtures\LogisticsCircularCorruptionFixture;
+use App\Quality\Audit\Fixtures\LogisticsColdChainCorruptionFixture;
 use App\Quality\Audit\Fixtures\MallAuditBillingCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgAuditCostingCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgQmsAuditCorruptionFixture;
@@ -100,6 +101,7 @@ final class AuditCommandRegistry
             'intl:audit' => new IntlAuditCorruptionFixture,
             'lgx:audit-billing' => new LgxAuditBillingCorruptionFixture,
             'lgx:audit-circular' => new LogisticsCircularCorruptionFixture,
+            'lgx:audit-coldchain' => new LogisticsColdChainCorruptionFixture,
             'lgx:verify-custody' => new LgxVerifyCustodyCorruptionFixture,
             'mall:audit-billing' => new MallAuditBillingCorruptionFixture,
             'mfg:audit-costing' => new MfgAuditCostingCorruptionFixture,

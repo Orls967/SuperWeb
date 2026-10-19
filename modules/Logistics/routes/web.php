@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Logistics\Http\Controllers\AutonomousLogisticsController;
 use Modules\Logistics\Http\Controllers\CarrierController;
 use Modules\Logistics\Http\Controllers\ClaimController;
 use Modules\Logistics\Http\Controllers\CodController;
@@ -38,6 +39,7 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
             Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
             Route::get('/exceptions', [ExceptionController::class, 'index'])->name('exceptions.index');
             Route::get('/reverse', [ReverseLogisticsController::class, 'index'])->name('reverse.index');
+            Route::get('/autonomous', [AutonomousLogisticsController::class, 'index'])->name('autonomous.index');
         });
 
         // Control Tower
@@ -187,6 +189,12 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::middleware(['role:admin,dispatcher,hub_operator,logistics_admin'])->group(function () {
             Route::post('/reverse', [ReverseLogisticsController::class, 'store'])->name('reverse.store');
             Route::post('/reverse/{order}/intake', [ReverseLogisticsController::class, 'intake'])->name('reverse.intake');
+            Route::post('/autonomous/dispatch', [AutonomousLogisticsController::class, 'dispatch'])->name('autonomous.dispatch');
+            Route::post('/autonomous/missions/{mission}/deliver', [AutonomousLogisticsController::class, 'deliver'])->name('autonomous.deliver');
+        });
+
+        Route::middleware(['role:admin,dispatcher,logistics_admin,treasury'])->group(function () {
+            Route::post('/autonomous/breaches/{hold}/release', [AutonomousLogisticsController::class, 'release'])->name('autonomous.breaches.release');
         });
     });
 });

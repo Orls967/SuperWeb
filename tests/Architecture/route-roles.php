@@ -32,6 +32,9 @@ use Modules\Hotel\database\seeders\HotelDemoSeeder;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Insurance\Domain\Models\InsuranceProduct;
 use Modules\Logistics\Domain\Enums\LocationType;
+use Modules\Logistics\Domain\Models\Autonomous\DroneMission;
+use Modules\Logistics\Domain\Models\Autonomous\DroneUnit;
+use Modules\Logistics\Domain\Models\Autonomous\TempBreachHold;
 use Modules\Logistics\Domain\Models\Carrier;
 use Modules\Logistics\Domain\Models\Claim;
 use Modules\Logistics\Domain\Models\Container;
@@ -994,6 +997,50 @@ return [
             );
 
             return ['order' => $order->id];
+        },
+    ],
+    'logistics.autonomous.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.autonomous.dispatch' => ['roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.autonomous.deliver' => [
+        'roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin'],
+        'params' => function () {
+            $drone = DroneUnit::firstOrCreate(
+                ['drone_code' => 'DRN-SEED-ROUTER-01'],
+                ['model_name' => 'OctoCopter Route Test', 'battery_percent' => 100, 'max_payload_kg' => 5.0, 'max_range_km' => 15.0, 'status' => 'IDLE']
+            );
+            $mission = DroneMission::firstOrCreate(
+                ['mission_code' => 'DRN-MSN-ROUTER-01'],
+                [
+                    'drone_unit_id' => $drone->id,
+                    'shipment_code' => 'SHP-ROUTER-01',
+                    'package_weight_kg' => 2.0,
+                    'distance_km' => 5.0,
+                    'destination_geo_hash' => 'qqs-seed-01',
+                    'status' => 'DISPATCHED',
+                ]
+            );
+
+            return ['mission' => $mission->id];
+        },
+    ],
+    'logistics.autonomous.breaches.release' => [
+        'roles' => ['admin', 'dispatcher', 'logistics_admin', 'treasury'],
+        'params' => function () {
+            $hold = TempBreachHold::firstOrCreate(
+                ['breach_code' => 'BRC-SEED-ROUTER-01'],
+                [
+                    'shipment_code' => 'SHP-ROUTER-01',
+                    'carrier_id' => 1,
+                    'recorded_temp_c' => 12.0,
+                    'max_allowed_temp_c' => 4.0,
+                    'duration_minutes' => 20,
+                    'hold_amount_idr' => 1000000,
+                    'hash_proof' => hash('sha256', 'seed'),
+                    'status' => 'HELD',
+                ]
+            );
+
+            return ['hold' => $hold->id];
         },
     ],
     'logistics.shipments.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'shipper']],
