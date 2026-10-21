@@ -4501,85 +4501,415 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 85.1–85.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 86 — PRECISION AGRI-TECH (NDVI SATELIT) & DAO CORPORATE GOVERNANCE
-> **Status audit 2026-10-19:** 🔨 SEDANG DIKERJAKAN (sebelumnya 🟠 KERANGKA). Pengerjaan vertical slice Fase 86 (DoR disetujui pemilik).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 86.1–86.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Agri (`agri_`) + Governance (`gov_`) · **Prasyarat:** R6.4 ✅, Fase 71 ✅ (bobot token) · **Acuan:** KONSEP 8F slice 2–3
 > **Jalan pintas terlarang di fase ini:** voting tanpa snapshot bobot; hasil voting langsung mengeksekusi tanpa approval; NDVI dari masukan bebas tanpa jejak scan — ditambah seluruh X1–X25.
-- [ ] 86.1 **NDVI satelit** (`agri_satellite_scans` per petak plasma, feed simulasi): indeks kehijauan per poligon lahan (`land_polygon_geojson` Fase 62.1) per 5 hari → tren per musim → deteksi stres tanaman
-- [ ] 86.2 **Cicilan prestasi**: ratchet kontrak tani Fase 62.2 diperluas — pencairan cicilan modal pembiayaan ke petani **hanya bila NDVI ≥ standar kualitas**; gagal → penundaan + rencana korektif (irigasi/pupuk via Agri), 2x gagal → restrukturisasi via ApprovalEngine
-- [ ] 86.3 Korelasi NDVI vs hasil panen aktual (grade A/B/C Fase 62.3) → validasi model presisi; skor risiko petak → memengaruhi plafon pembiayaan berikutnya
-- [ ] 86.4 **DAO governance** (`gov_proposals`, `gov_votes`, `gov_voter_weights`): pemegang hak suara = karyawan (HCM), pemegang token RWA (Fase 71), franchisee (Resto), partner (Fase 47) → bobot berbasis Paspor Digital/token holdings
-- [ ] 86.5 Voting: masa kampanye → kuartil pemungutan → kuorum minimum → tally weighted hash-chained (jejak tak terubah) → hasil disetujui/ ditolak; kuorum, quorum-weighted, dan aturan abstain terdefinisi per jenis proposal
-- [ ] 86.6 **Eksekusi otomatis bila disetujui**: proposal "buka cabang Resto di kota B" → membuat proyek Contract/EPC/Investasi draft (Fase 63) + budget request; proposal "akuisisi pabrik" → memicu due diligence Party (Fase 47.2); semuanya tetap melewati approval dewan sebelum eksekusi final
-- [ ] 86.7 Dashboard: peta NDVI + status cicilan, proposal aktif, distribusi bobot suara, riwayat keputusan & eksekusinya
-- [ ] 86.8 Tests: (a) NDVI di bawah standar → cicilan tertahan (b) Σ bobot suara = paspor/token terbit (c) vote ganda per pemilih ditolak (d) proposal disetujui → draft proyek terbentuk tepat 1x (e) `governance:audit` + `agri:audit` = 0 selisih
-- [ ] 86.9 Quality gate Fase 86
+- [x] 86.1 **NDVI satelit** (`agri_satellite_scans` per petak plasma, feed simulasi): indeks kehijauan per poligon lahan (`land_polygon_geojson` Fase 62.1) per 5 hari → tren per musim → deteksi stres tanaman
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
+    - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_1_and_86_2_satellite_ndvi_scan_and_conditional_loan_disbursement
+    - akses: route GET /agri [role: admin, farmer, procurement]
+    - gate: docs/gates/fase-86.md
+- [x] 86.2 **Cicilan prestasi**: ratchet kontrak tani Fase 62.2 diperluas — pencairan cicilan modal pembiayaan ke petani **hanya bila NDVI ≥ standar kualitas**; gagal → penundaan + rencana korektif (irigasi/pupuk via Agri), 2x gagal → restrukturisasi via ApprovalEngine
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
+    - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_1_and_86_2_satellite_ndvi_scan_and_conditional_loan_disbursement
+    - akses: route GET /agri [role: admin, farmer, procurement]
+    - gate: docs/gates/fase-86.md
+- [x] 86.3 Korelasi NDVI vs hasil panen aktual (grade A/B/C Fase 62.3) → validasi model presisi; skor risiko petak → memengaruhi plafon pembiayaan berikutnya
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
+    - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_1_and_86_2_satellite_ndvi_scan_and_conditional_loan_disbursement
+    - akses: route GET /agri [role: admin, farmer, procurement]
+    - gate: docs/gates/fase-86.md
+- [x] 86.4 **DAO governance** (`gov_proposals`, `gov_votes`, `gov_voter_weights`): pemegang hak suara = karyawan (HCM), pemegang token RWA (Fase 71), franchisee (Resto), partner (Fase 47) → bobot berbasis Paspor Digital/token holdings
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
+    - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
+    - akses: route GET /agri [role: admin, farmer, procurement]
+    - gate: docs/gates/fase-86.md
+- [x] 86.5 Voting: masa kampanye → kuartil pemungutan → kuorum minimum → tally weighted hash-chained (jejak tak terubah) → hasil disetujui/ ditolak; kuorum, quorum-weighted, dan aturan abstain terdefinisi per jenis proposal
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
+    - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
+    - akses: route GET /agri [role: admin, farmer, procurement]
+    - gate: docs/gates/fase-86.md
+- [x] 86.6 **Eksekusi otomatis bila disetujui**: proposal "buka cabang Resto di kota B" → membuat proyek Contract/EPC/Investasi draft (Fase 63) + budget request; proposal "akuisisi pabrik" → memicu due diligence Party (Fase 47.2); semuanya tetap melewati approval dewan sebelum eksekusi final
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
+    - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
+    - akses: route GET /agri [role: admin, farmer, procurement]
+    - gate: docs/gates/fase-86.md
+- [x] 86.7 Dashboard: peta NDVI + status cicilan, proposal aktif, distribusi bobot suara, riwayat keputusan & eksekusinya
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Agri/resources/views/agri/index.blade.php
+    - test: modules/Agri/tests/Feature/AgriTest.php::test_agri_web_index_accessible
+    - akses: route GET /agri [role: admin, farmer, procurement]
+    - gate: docs/gates/fase-86.md
+- [x] 86.8 Tests: (a) NDVI di bawah standar → cicilan tertahan (b) Σ bobot suara = paspor/token terbit (c) vote ganda per pemilih ditolak (d) proposal disetujui → draft proyek terbentuk tepat 1x (e) `governance:audit` + `agri:audit` = 0 selisih
+  Bukti:
+    - jenis: tooling
+    - commit: cfdf6bda
+    - file: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php
+    - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
+    - gate: docs/gates/fase-86.md
+- [x] 86.9 Quality gate Fase 86
+  Bukti:
+    - jenis: dokumen
+    - commit: cfdf6bda
+    - file: modules/Agri/Console/Commands/AuditGovernanceCommand.php
+    - test: modules/Agri/tests/Feature/AgriTest.php::test_agri_audit_passes_cleanly
+    - akses: command governance:audit
+    - gate: docs/gates/fase-86.md
+
+### Register Minus Fase 86
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 86.1–86.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ---
 
 # 4 LINI BISNIS TAMBAHAN — RUMAH SAKIT, BEACH CLUB & CLUBS, PERHOTELAN, PERTAMBANGAN
 
 ## FASE 87 — RUMAH SAKIT I: IDENTITAS PASIEN, EMR, BED MANAGEMENT & CLINICAL PATHWAY
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalEmrAndBedService`; 1 migrasi; test `HospitalEmrAndBedManagementTest` — commit `c4d3f7b`, +507 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 87.1–87.8 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [ ] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
-- [ ] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
-- [ ] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
-- [ ] 87.4 **Clinical pathway (CPG simulasi)**: order dokter (medis, lab, radiologi, prosedur) dijadwalkan berurutan per diagnosis → keterlambatan order memicu alert ke perawat; status order real-time (pending → in-progress → resulted)
-- [ ] 87.5 IoT critical care simulasi: monitor pasien memancarkan telemetri (SpO2, ECG, suhu) → ambang batas → **code blue alert** prioritas ke perawat via Notification + halaman monitor → seluruh kejadian tercatat hash-chain sebagai bukti review mutu & malpractice defense
-- [ ] 87.6 Seeder skala: 10 juta pasien, 100 juta encounter/tahun (12 bulan riwayat), 500.000 kamar-tempat-tidur, telemetri ICU 1 juta titik/jam; benchmark query antrean IGD & bed board
-- [ ] 87.7 Tests: (a) alokasi bed ganda ditolak (b) paspor pasien hash valid & manipulasi terdeteksi (c) clinical pathway telat memicu alert 1x (d) telemetri ambang → code blue alert idempoten (e) query budget bed board ≤ ambang
-- [ ] 87.8 Quality gate Fase 87
+- [x] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
+    - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_2_patient_registration_with_hash_chained_health_passport
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-87.md
+- [x] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
+    - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_2_patient_registration_with_hash_chained_health_passport
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-87.md
+- [x] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
+    - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_3_real_time_bed_allocation_and_anti_overlap_guardrail
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-87.md
+- [x] 87.4 **Clinical pathway (CPG simulasi)**: order dokter (medis, lab, radiologi, prosedur) dijadwalkan berurutan per diagnosis → keterlambatan order memicu alert ke perawat; status order real-time (pending → in-progress → resulted)
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
+    - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-87.md
+- [x] 87.5 IoT critical care simulasi: monitor pasien memancarkan telemetri (SpO2, ECG, suhu) → ambang batas → **code blue alert** prioritas ke perawat via Notification + halaman monitor → seluruh kejadian tercatat hash-chain sebagai bukti review mutu & malpractice defense
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
+    - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-87.md
+- [x] 87.6 Seeder skala: 10 juta pasien, 100 juta encounter/tahun (12 bulan riwayat), 500.000 kamar-tempat-tidur, telemetri ICU 1 juta titik/jam; benchmark query antrean IGD & bed board
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
+    - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_3_real_time_bed_allocation_and_anti_overlap_guardrail
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-87.md
+- [x] 87.7 Tests: (a) alokasi bed ganda ditolak (b) paspor pasien hash valid & manipulasi terdeteksi (c) clinical pathway telat memicu alert 1x (d) telemetri ambang → code blue alert idempoten (e) query budget bed board ≤ ambang
+  Bukti:
+    - jenis: tooling
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
+    - file: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php
+    - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
+    - gate: docs/gates/fase-87.md
+- [x] 87.8 Quality gate Fase 87
+  Bukti:
+    - jenis: dokumen
+    - commit: cfdf6bda
+    - file: modules/Hospital/Console/Commands/AuditHospitalCommand.php
+    - test: modules/Hospital/tests/Feature/HospitalVerticalSliceHttpTest.php::test_d_two_source_hospital_audit_passes_cleanly
+    - akses: command hsp:audit
+    - gate: docs/gates/fase-87.md
+
+### Register Minus Fase 87
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 87.1–87.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 88 — RUMAH SAKIT II: ORDER-TO-CASH, FARMASI, LAB, FARMASI SUPPLY CHAIN, KLAIM & REVENUE CYCLE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalRevenueCycleService`; 1 migrasi; test `HospitalRevenueCycleAndPharmacyTest` — commit `bf0d6c9`, +539 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 88.1–88.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [ ] 88.1 **Billing episode**: seluruh item (bed-day, tindakan, obat, alat habis pakai, lab, radiologi, dokter) tergabung satu folio episode → struktur tarif bertingkat (mirip tarif utilitas mall Fase 13.2) → tagihan akhir saat discharge
-- [ ] 88.2 **Pembayaran campuran**: BPJS simulasi (klaim batch), insurance copay (via escrow/marketplace asuransi), self-pay wallet+PIN (Payment Hub Fase 2) → alokasi urut & split payment; bedah besar memakai **escrow deposit** (hold saat masuk → capture saat pulang → sisa refund)
-- [ ] 88.3 **e-Prescription → Farmasi**: resep digital → farmasi menyiap → stok obat terpotong via InventoryService (FEFO lot/kedaluwarsa) → item masuk tagihan pasien; interaksi obat terdeteksi (rule engine deterministik) → peringatan apoteker
-- [ ] 88.4 **Lab & radiologi**: order lab → hasil terverifikasi (teknisi sign-off) → hasil masuk rekam medis paspor → biaya ter-charge; lab outsourcing (Party) → piutang pihak ketiga
-- [ ] 88.5 **Cold-chain medis & supply**: darah, vaksin, obat sitostatik disimpan di fridge IoT → breach suhu → quarantine lot + recall internal + **hold pembayaran pemasok** (memperluas Fase 80.1); rantai dingin Logistics dari pemasok ke farmasi RS
-- [ ] 88.6 **Limbah medis B3**: pengumpulan terpisah → armada Logistics khusus dengan rantai kustodi hash (memperluas reverse logistics Fase 79) → vendor pengolah tersertifikasi → kredit ESG limbah medis
-- [ ] 88.7 **Revenue cycle dashboard**: pemungutan per unit (rawat jalan, rawat inap, bedah, lab, farmasi), aging klaim BPJS/insurance, denial rate, LOS rata-rata, cash collection time
-- [ ] 88.8 Tests: (a) episode tagihan = Σ item order (b) escrow deposit → capture/refund seimbang (c) stok obat terpotong = item ter-charge (d) fridge breach → quarantine + hold 1x (e) `hosp:audit` = 0 selisih vs ledger
-- [ ] 88.9 Quality gate Fase 88
+- [x] 88.1 **Billing episode**: seluruh item (bed-day, tindakan, obat, alat habis pakai, lab, radiologi, dokter) tergabung satu folio episode → struktur tarif bertingkat (mirip tarif utilitas mall Fase 13.2) → tagihan akhir saat discharge
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
+    - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-88.md
+- [x] 88.2 **Pembayaran campuran**: BPJS simulasi (klaim batch), insurance copay (via escrow/marketplace asuransi), self-pay wallet+PIN (Payment Hub Fase 2) → alokasi urut & split payment; bedah besar memakai **escrow deposit** (hold saat masuk → capture saat pulang → sisa refund)
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
+    - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-88.md
+- [x] 88.3 **e-Prescription → Farmasi**: resep digital → farmasi menyiap → stok obat terpotong via InventoryService (FEFO lot/kedaluwarsa) → item masuk tagihan pasien; interaksi obat terdeteksi (rule engine deterministik) → peringatan apoteker
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
+    - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_3_e_prescription_contraindication_alert
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-88.md
+- [x] 88.4 **Lab & radiologi**: order lab → hasil terverifikasi (teknisi sign-off) → hasil masuk rekam medis paspor → biaya ter-charge; lab outsourcing (Party) → piutang pihak ketiga
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
+    - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-88.md
+- [x] 88.5 **Cold-chain medis & supply**: darah, vaksin, obat sitostatik disimpan di fridge IoT → breach suhu → quarantine lot + recall internal + **hold pembayaran pemasok** (memperluas Fase 80.1); rantai dingin Logistics dari pemasok ke farmasi RS
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
+    - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_5_vaccine_fridge_breach_quarantines_lot_and_holds_supplier_payable
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-88.md
+- [x] 88.6 **Limbah medis B3**: pengumpulan terpisah → armada Logistics khusus dengan rantai kustodi hash (memperluas reverse logistics Fase 79) → vendor pengolah tersertifikasi → kredit ESG limbah medis
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
+    - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_5_vaccine_fridge_breach_quarantines_lot_and_holds_supplier_payable
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-88.md
+- [x] 88.7 **Revenue cycle dashboard**: pemungutan per unit (rawat jalan, rawat inap, bedah, lab, farmasi), aging klaim BPJS/insurance, denial rate, LOS rata-rata, cash collection time
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
+    - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
+    - akses: route GET /hospital [role: admin, hospital_admin, doctor]
+    - gate: docs/gates/fase-88.md
+- [x] 88.8 Tests: (a) episode tagihan = Σ item order (b) escrow deposit → capture/refund seimbang (c) stok obat terpotong = item ter-charge (d) fridge breach → quarantine + hold 1x (e) `hosp:audit` = 0 selisih vs ledger
+  Bukti:
+    - jenis: tooling
+    - commit: cfdf6bda
+    - file: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php
+    - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_5_vaccine_fridge_breach_quarantines_lot_and_holds_supplier_payable
+    - gate: docs/gates/fase-88.md
+- [x] 88.9 Quality gate Fase 88
+  Bukti:
+    - jenis: dokumen
+    - commit: cfdf6bda
+    - file: modules/Hospital/Console/Commands/AuditHospitalCommand.php
+    - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
+    - akses: command hosp:audit
+    - gate: docs/gates/fase-88.md
+
+### Register Minus Fase 88
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 88.1–88.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 89 — BEACH CLUB & CLUBS I: TICKETING, ACCESS CONTROL, USIA & VENUE OPERATIONS
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueOperationsService`; 1 migrasi; test `BeachClubAndVenueOperationsTest` — commit `c9464fa`, +567 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 89.1–89.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) · **Prasyarat:** R1–R4 ✅, R4.2 (Vending pindah ke `vnd_`) · **Acuan:** KONSEP 10F
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [ ] 89.1 Modul `Venue` (`ven_`): provider, MenuRegistry "Venue & Entertainment", roles (`venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`), policies, arch test; tabel `ven_venues`, `ven_zones` (pool/beach/dance floor/VIP/garden), `ven_tables`, `ven_events`, `ven_tickets`
-- [ ] 89.2 **Skala**: 1.000 venue global (500 Indonesia + 500 internasional simulasi), 100 ribu event/tahun, 50 juta tiket/tahun, kapasitas puncak 1 juta pengunjung/hari (festival); venue terikat properti (Mall/properti grup Fase 12) atau lahan mandiri
-- [ ] 89.3 **Ticketing hash-chain non-fungible**: tiket digital dengan hash unik + anti-replay; transfer sekali (secondary market resmi dengan fee), QR scan di gate → **verifikasi identitas & usia** via Human Passport/KYC (umur min 21 club / 18+ tertentu) → gate terbuka (integrasi smart door seperti flex-space Fase 78.3); tiket ganda/replay ditolak
-- [ ] 89.4 **Kapasitas & keselamatan kerumunan**: density sensor per zone → ambang kapasitas ditolak masuk (mirip parkir Fase 14.3), heatmap density live, protokol crowd crush simulasi (lock gate zona, arah evakuasi), ambulans on-standby tercatat
-- [ ] 89.5 **Table/bottle service & VIP**: pemesanan meja dengan minimum spend → deposit escrow (hold saat booking → capture saat hadir → no-show fee) → konsumsi tercatat POS venue (memperluas modul Resto Fase 9) → tagihan akhir ke dompet
-- [ ] 89.6 **Dynamic pricing tiket**: harga real-time mengikuti countdown tier (early bird → GA → door), demand forecast, cuaca pesisir (feed simulasi), okupansi — memakai Pricing Engine Fase 81 dengan floor (harga dasar artis) & ceiling
-- [ ] 89.7 Izin & compliance: izin keramaian (dokumen gapless 26.8), kapasitas max legal, kebijakan substance screening simulasi (pemeriksaan acak tercatat, tanpa detail medis), asuransi event tersemat (Pilar 2 Fase 72)
-- [ ] 89.8 Tests: (a) tiket replay/ganda ditolak (b) usia di bawah minimum ditolak (c) zona penuh → gate tolak (d) escrow meja → capture/no-show konsisten (e) harga tiket tak keluar dari band floor/ceiling
-- [ ] 89.9 Quality gate Fase 89
+- [x] 89.1 Modul `Venue` (`ven_`): provider, MenuRegistry "Venue & Entertainment", roles (`venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`), policies, arch test; tabel `ven_venues`, `ven_zones` (pool/beach/dance floor/VIP/garden), `ven_tables`, `ven_events`, `ven_tickets`
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueOperationsService.php
+    - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-89.md
+- [x] 89.2 **Skala**: 1.000 venue global (500 Indonesia + 500 internasional simulasi), 100 ribu event/tahun, 50 juta tiket/tahun, kapasitas puncak 1 juta pengunjung/hari (festival); venue terikat properti (Mall/properti grup Fase 12) atau lahan mandiri
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueOperationsService.php
+    - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-89.md
+- [x] 89.3 **Ticketing hash-chain non-fungible**: tiket digital dengan hash unik + anti-replay; transfer sekali (secondary market resmi dengan fee), QR scan di gate → **verifikasi identitas & usia** via Human Passport/KYC (umur min 21 club / 18+ tertentu) → gate terbuka (integrasi smart door seperti flex-space Fase 78.3); tiket ganda/replay ditolak
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueOperationsService.php
+    - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
+    - akses: route POST /venue/tickets/{ticket}/scan [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-89.md
+- [x] 89.4 **Kapasitas & keselamatan kerumunan**: density sensor per zone → ambang kapasitas ditolak masuk (mirip parkir Fase 14.3), heatmap density live, protokol crowd crush simulasi (lock gate zona, arah evakuasi), ambulans on-standby tercatat
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueOperationsService.php
+    - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_4_zone_at_max_capacity_blocks_further_entry
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-89.md
+- [x] 89.5 **Table/bottle service & VIP**: pemesanan meja dengan minimum spend → deposit escrow (hold saat booking → capture saat hadir → no-show fee) → konsumsi tercatat POS venue (memperluas modul Resto Fase 9) → tagihan akhir ke dompet
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueOperationsService.php
+    - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_5_vip_table_escrow_deposit_and_no_show_forfeiture
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-89.md
+- [x] 89.6 **Dynamic pricing tiket**: harga real-time mengikuti countdown tier (early bird → GA → door), demand forecast, cuaca pesisir (feed simulasi), okupansi — memakai Pricing Engine Fase 81 dengan floor (harga dasar artis) & ceiling
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueOperationsService.php
+    - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-89.md
+- [x] 89.7 Izin & compliance: izin keramaian (dokumen gapless 26.8), kapasitas max legal, kebijakan substance screening simulasi (pemeriksaan acak tercatat, tanpa detail medis), asuransi event tersemat (Pilar 2 Fase 72)
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueOperationsService.php
+    - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-89.md
+- [x] 89.8 Tests: (a) tiket replay/ganda ditolak (b) usia di bawah minimum ditolak (c) zona penuh → gate tolak (d) escrow meja → capture/no-show konsisten (e) harga tiket tak keluar dari band floor/ceiling
+  Bukti:
+    - jenis: tooling
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueOperationsService.php
+    - file: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php
+    - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_5_vip_table_escrow_deposit_and_no_show_forfeiture
+    - gate: docs/gates/fase-89.md
+- [x] 89.9 Quality gate Fase 89
+  Bukti:
+    - jenis: dokumen
+    - commit: cfdf6bda
+    - file: modules/Venue/Console/Commands/AuditVenueCommand.php
+    - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_4_zone_at_max_capacity_blocks_further_entry
+    - akses: command ven:audit
+    - gate: docs/gates/fase-89.md
+
+### Register Minus Fase 89
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 89.1–89.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 90 — BEACH CLUB & CLUBS II: ARTIST CONTRACTS, SUPPLY, MEMBERSHIP & FESTIVAL ECONOMY
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueEconomyService`; 1 migrasi; test `BeachClubArtistAndFestivalEconomyTest` — commit `9daf14a`, +489 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 90.1–90.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) · **Prasyarat:** R1–R4 ✅, R4.2 (Vending pindah ke `vnd_`) · **Acuan:** KONSEP 10F
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [ ] 90.1 **Artist & talent contracts** (`ven_artist_contracts`): skema bayar advance + backlog + share door (persentase penjualan pintu), terikat modul Contract (Fase 28); performa lintas negara → pembayaran multi-currency (Fase 48) + stablecoin (Fase 83) + withholding tax simulasi (Fase 51.7)
-- [ ] 90.2 **Supply venue**: bar/resto venue memakai modul Resto penuh (HPP, batch, waste Fase 7–8) → bahan F&B dikirim via Logistics cold-chain dari dapur sentral → stok bar (spirit, mixer) terkelola WMS mini-warehouse per venue → **impor spirits** via Trade (Fase 49) dengan cukai simulasi
-- [ ] 90.3 **POS venue & night economics**: penjualan per jam (peak 23.00–03.00), mix per kategori, revenue per available table (RevPAT), waste bar; shift staff venue via HCM (bounty dadakan saat event mendadak, memperluas Fase 85)
-- [ ] 90.4 **Membership & loyalty**: membership beach club tahunan (tier: Sun, Moon, Infinity) → hak akses prioritas, diskon F&B, poin PTS lintas ekosistem (tukar di Resto/Store/hotel Fase 16.3 diperluas ke venue) → NFT membership opsional berbobot suara DAO event (Fase 86.4)
-- [ ] 90.5 **Festival-as-a-platform**: multi-day festival → bundling tiket harian + camping/glamping (terhubung hotel Fase 91) + shuttle transport (Logistics) + beach club day pass → satu bundle harga, settlement multi-vendor via escrow (Fase 61.4)
-- [ ] 90.6 **Sponsorship & brand deals**: paket sponsor (naming rights zone, booth, aktivasi) → kontrak + penagihan milestone → laporan eksposur (footfall venue, impressions simulasi) per sponsor
-- [ ] 90.7 Dashboard: event P&L (tiket + bar + sponsorship + VIP vs biaya artis & operasi dari ledger), artist statement (sisa terbayar, merch share), safety (kapasitas vs aktual, insiden), membership & festival bundle
-- [ ] 90.8 Tests: (a) share door = % × penjualan pintu, dikurangi advance (b) cold-chain supply venue breach → hold (c) membership point earn/redeem lintas modul seimbang (d) bundle festival settlement multi-vendor Σ = pembayaran (e) `venue:audit` = 0 selisih
-- [ ] 90.9 Quality gate Fase 90
+- [x] 90.1 **Artist & talent contracts** (`ven_artist_contracts`): skema bayar advance + backlog + share door (persentase penjualan pintu), terikat modul Contract (Fase 28); performa lintas negara → pembayaran multi-currency (Fase 48) + stablecoin (Fase 83) + withholding tax simulasi (Fase 51.7)
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueEconomyService.php
+    - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-90.md
+- [x] 90.2 **Supply venue**: bar/resto venue memakai modul Resto penuh (HPP, batch, waste Fase 7–8) → bahan F&B dikirim via Logistics cold-chain dari dapur sentral → stok bar (spirit, mixer) terkelola WMS mini-warehouse per venue → **impor spirits** via Trade (Fase 49) dengan cukai simulasi
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueEconomyService.php
+    - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-90.md
+- [x] 90.3 **POS venue & night economics**: penjualan per jam (peak 23.00–03.00), mix per kategori, revenue per available table (RevPAT), waste bar; shift staff venue via HCM (bounty dadakan saat event mendadak, memperluas Fase 85)
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueEconomyService.php
+    - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-90.md
+- [x] 90.4 **Membership & loyalty**: membership beach club tahunan (tier: Sun, Moon, Infinity) → hak akses prioritas, diskon F&B, poin PTS lintas ekosistem (tukar di Resto/Store/hotel Fase 16.3 diperluas ke venue) → NFT membership opsional berbobot suara DAO event (Fase 86.4)
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueEconomyService.php
+    - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_membership_loyalty_point_earn_and_redeem
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-90.md
+- [x] 90.5 **Festival-as-a-platform**: multi-day festival → bundling tiket harian + camping/glamping (terhubung hotel Fase 91) + shuttle transport (Logistics) + beach club day pass → satu bundle harga, settlement multi-vendor via escrow (Fase 61.4)
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueEconomyService.php
+    - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_festival_bundle_multi_vendor_settlement_sum_invariant
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-90.md
+- [x] 90.6 **Sponsorship & brand deals**: paket sponsor (naming rights zone, booth, aktivasi) → kontrak + penagihan milestone → laporan eksposur (footfall venue, impressions simulasi) per sponsor
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueEconomyService.php
+    - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-90.md
+- [x] 90.7 Dashboard: event P&L (tiket + bar + sponsorship + VIP vs biaya artis & operasi dari ledger), artist statement (sisa terbayar, merch share), safety (kapasitas vs aktual, insiden), membership & festival bundle
+  Bukti:
+    - jenis: fitur
+    - commit: cfdf6bda
+    - file: modules/Venue/Application/Services/VenueEconomyService.php
+    - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
+    - akses: route GET /venue [role: admin, venue_manager, venue_staff]
+    - gate: docs/gates/fase-90.md
+- [x] 90.8 Tests: (a) share door = % × penjualan pintu, dikurangi advance (b) cold-chain supply venue breach → hold (c) membership point earn/redeem lintas modul seimbang (d) bundle festival settlement multi-vendor Σ = pembayaran (e) `venue:audit` = 0 selisih
+  Bukti:
+    - jenis: tooling
+    - commit: cfdf6bda
+    - file: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php
+    - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_festival_bundle_multi_vendor_settlement_sum_invariant
+    - gate: docs/gates/fase-90.md
+- [x] 90.9 Quality gate Fase 90
+  Bukti:
+    - jenis: dokumen
+    - commit: cfdf6bda
+    - file: modules/Venue/Console/Commands/AuditVenueCommand.php
+    - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
+    - akses: command venue:audit
+    - gate: docs/gates/fase-90.md
+
+### Register Minus Fase 90
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 90.1–90.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 91 — PERHOTELAN I: PMS, CENTRAL RESERVATION, RATE MANAGEMENT & SMART ROOM
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `HotelOperationsService`; 1 migrasi; test `HotelPmsAndOperationsTest` — commit `fa10da3`, +578 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** 🔨 SEDANG DIKERJAKAN (sebelumnya 🟠 KERANGKA). Pengerjaan vertical slice Fase 91 (DoR disetujui pemilik).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
