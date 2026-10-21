@@ -4986,6 +4986,11 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
     - gate: docs/gates/fase-91.md
 
+### Register Minus Fase 91
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 91.1–91.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
+
 ## FASE 92 — PERHOTELAN II: FOLIO, F&B/BANQUET, LOYALTY NIGHTS, TIMESHARE & DESTINATION PACKAGE
 > **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 92.1–92.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
@@ -5064,6 +5069,11 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
     - gate: docs/gates/fase-92.md
 
+### Register Minus Fase 92
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 92.1–92.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
+
 ## FASE 93 — PERTAMBANGAN I: MINE PLANNING, FLEET DISPATCH & FUEL MANAGEMENT
 > **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 93.1–93.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
@@ -5141,6 +5151,11 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_e_query_budget_dispatch_board_within_threshold
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-93.md
+
+### Register Minus Fase 93
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 93.1–93.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 94 — PERTAMBANGAN II: WEIGHBRIDGE, GRADE RECONCILIATION, ROYALTY, HSE & OFFTAKE
 > **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 94.1–94.10 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
@@ -5228,6 +5243,11 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-94.md
 
+### Register Minus Fase 94
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 94.1–94.10 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
+
 ---
 
 # INTEGRASI 12 LINI, SKALA ULTRA, AI, KEAMANAN & PENUTUPAN — FASE 95–103
@@ -5302,6 +5322,11 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_end_to_end_cross_line_ecosystem_audit_zero_discrepancy
     - akses: command ecosystem:audit-12-lines
     - gate: docs/gates/fase-95.md
+
+### Register Minus Fase 95
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| — | — | Nihil (seluruh deliverable 95.1–95.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 96 — INTEGRASI LINTAS 12 LINI (B): FINTECH, RWA, INSURTECH & PEMBIAYAAN UNTUK SEMUA LINI
 > **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 96.1–96.7 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit fafca066).
