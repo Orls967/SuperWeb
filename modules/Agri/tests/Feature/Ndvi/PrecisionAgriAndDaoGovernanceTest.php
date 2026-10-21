@@ -107,9 +107,17 @@ class PrecisionAgriAndDaoGovernanceTest extends TestCase
         $vote2 = $this->service->castVote($proposal, $voter2, 'YES');
         $this->assertEquals($vote1->vote_receipt_hash, $vote2->previous_vote_hash);
 
+        // (b) Verify total voter weights = issued passports/tokens
+        $totalIssuedWeight = GovVoterWeight::sum('voting_weight');
+        $this->assertEquals(60_000, $totalIssuedWeight);
+
         // Finalize proposal: total YES = 60,000 >= quorum 50,000 -> APPROVED & Auto-executed
         $finalized = $this->service->finalizeAndExecuteProposal($proposal);
         $this->assertEquals('APPROVED', $finalized->status);
         $this->assertNotNull($finalized->execution_reference_code);
+
+        // (e) governance:audit + agri:audit = 0 discrepancy
+        $this->artisan('governance:audit')->assertSuccessful();
+        $this->artisan('agri:audit')->assertSuccessful();
     }
 }

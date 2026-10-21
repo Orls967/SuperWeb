@@ -27,6 +27,7 @@ use App\Quality\Audit\Fixtures\EpcAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EsgAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EvAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\FltAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\GovernanceAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\GroupAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\HcmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\HspAuditCorruptionFixture;
@@ -98,9 +99,11 @@ final class AuditCommandRegistry
             'esg:audit' => new EsgAuditCorruptionFixture,
             'ev:audit' => new EvAuditCorruptionFixture,
             'flt:audit' => new FltAuditCorruptionFixture,
+            'governance:audit' => new GovernanceAuditCorruptionFixture,
             'group:audit' => new GroupAuditCorruptionFixture,
             'hcm:audit' => new HcmAuditCorruptionFixture,
             'hsp:audit' => new HspAuditCorruptionFixture,
+            'hosp:audit' => new HspAuditCorruptionFixture,
             'htl:audit' => new HtlAuditCorruptionFixture,
             'ins:audit' => new InsAuditCorruptionFixture,
             'intl:audit' => new IntlAuditCorruptionFixture,
@@ -130,6 +133,7 @@ final class AuditCommandRegistry
             'trade:audit' => new TradeAuditCorruptionFixture,
             'treasury:audit' => new TreasuryAuditCorruptionFixture,
             'ven:audit' => new VenAuditCorruptionFixture,
+            'venue:audit' => new VenAuditCorruptionFixture,
             'vmi:audit' => new VmiAuditCorruptionFixture,
             'vnd:audit' => new VndAuditCorruptionFixture,
             'wm:audit' => new WmAuditCorruptionFixture,

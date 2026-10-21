@@ -11,6 +11,8 @@ class AuditHospitalCommand extends Command
 {
     protected $signature = 'hsp:audit';
 
+    protected $aliases = ['hosp:audit'];
+
     protected $description = 'Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, dan integritas subjek';
 
     public function handle(ClinicalTrialAndResearchService $service): int

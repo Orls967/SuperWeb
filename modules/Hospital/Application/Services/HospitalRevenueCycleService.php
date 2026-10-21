@@ -14,6 +14,9 @@ use Modules\Hospital\Domain\Models\FolioItem;
 use Modules\Hospital\Domain\Models\MedFridgeBreach;
 use Modules\Hospital\Domain\Models\Prescription;
 
+/**
+ * Fase 88: Single Episode Billing, Mixed Settlement, e-Prescription & Cold-Chain
+ */
 class HospitalRevenueCycleService
 {
     public function __construct(

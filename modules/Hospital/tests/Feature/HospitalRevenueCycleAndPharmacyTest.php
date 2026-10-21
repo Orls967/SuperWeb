@@ -118,5 +118,8 @@ class HospitalRevenueCycleAndPharmacyTest extends TestCase
         // Verify ledger hold: Pharma payable +50m, Dispute escrow -50m
         $escrow = LedgerAccount::where('code', 'hsp:vaccine_dispute_escrow:IDR')->first();
         $this->assertEquals('50000000', (string) $escrow->cached_balance);
+
+        // 88.8 (e) hosp:audit = 0 discrepancy vs ledger
+        $this->artisan('hosp:audit')->assertSuccessful();
     }
 }

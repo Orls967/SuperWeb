@@ -12,6 +12,9 @@ use Modules\Hospital\Domain\Models\HospitalOrder;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\VitalsTelemetry;
 
+/**
+ * Fase 87: Human Health Passport, Real-time Bed Management & Clinical Pathway
+ */
 class HospitalEmrAndBedService
 {
     /**

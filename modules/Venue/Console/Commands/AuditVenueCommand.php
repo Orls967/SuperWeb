@@ -11,6 +11,8 @@ class AuditVenueCommand extends Command
 {
     protected $signature = 'ven:audit';
 
+    protected $aliases = ['venue:audit'];
+
     protected $description = 'Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety';
 
     public function handle(VenueOperationsService $service): int

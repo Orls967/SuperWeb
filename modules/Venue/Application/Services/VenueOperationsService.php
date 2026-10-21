@@ -13,6 +13,9 @@ use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentZone;
 
+/**
+ * Fase 89: Venue Operations, Ticketing, Age Verification & Crowd Safety
+ */
 class VenueOperationsService
 {
     public function __construct(
