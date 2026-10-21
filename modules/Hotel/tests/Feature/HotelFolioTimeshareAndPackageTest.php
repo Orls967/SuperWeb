@@ -6,6 +6,7 @@ namespace Modules\Hotel\tests\Feature;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Modules\Hotel\Application\Services\HotelFolioAndPackageService;
 use Modules\Hotel\Domain\Models\DestinationPackage;
@@ -134,8 +135,8 @@ class HotelFolioTimeshareAndPackageTest extends TestCase
 
     public function test_hotel_audit_zero_discrepancy(): void
     {
-        $exitHotelAudit = \Illuminate\Support\Facades\Artisan::call('hotel:audit');
+        $exitHotelAudit = Artisan::call('hotel:audit');
         $this->assertSame(0, $exitHotelAudit);
-        $this->assertStringContainsString('Hotel audit PASSED with 0 discrepancy', \Illuminate\Support\Facades\Artisan::output());
+        $this->assertStringContainsString('Hotel audit PASSED with 0 discrepancy', Artisan::output());
     }
 }

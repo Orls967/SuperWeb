@@ -6,6 +6,7 @@ namespace Modules\Hotel\tests\Feature;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Modules\Hotel\Application\Services\HotelOperationsService;
 use Modules\Hotel\Domain\Models\HotelProperty;
@@ -295,12 +296,12 @@ class HotelPmsAndOperationsTest extends TestCase
 
     public function test_e_hotel_audit_reconciles_room_night_revenue_with_ledger(): void
     {
-        $exitHotelAudit = \Illuminate\Support\Facades\Artisan::call('hotel:audit');
+        $exitHotelAudit = Artisan::call('hotel:audit');
         $this->assertSame(0, $exitHotelAudit);
-        $this->assertStringContainsString('Hotel audit PASSED with 0 discrepancy', \Illuminate\Support\Facades\Artisan::output());
+        $this->assertStringContainsString('Hotel audit PASSED with 0 discrepancy', Artisan::output());
 
-        $exitHtlAudit = \Illuminate\Support\Facades\Artisan::call('htl:audit');
+        $exitHtlAudit = Artisan::call('htl:audit');
         $this->assertSame(0, $exitHtlAudit);
-        $this->assertStringContainsString('Hotel audit PASSED with 0 discrepancy', \Illuminate\Support\Facades\Artisan::output());
+        $this->assertStringContainsString('Hotel audit PASSED with 0 discrepancy', Artisan::output());
     }
 }

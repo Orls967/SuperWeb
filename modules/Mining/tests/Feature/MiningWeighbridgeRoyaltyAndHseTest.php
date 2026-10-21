@@ -6,6 +6,7 @@ namespace Modules\Mining\tests\Feature;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Modules\Mining\Application\Services\MiningComplianceAndRoyaltyService;
 use Modules\Mining\Domain\Models\MiningSite;
@@ -147,12 +148,12 @@ class MiningWeighbridgeRoyaltyAndHseTest extends TestCase
 
     public function test_e_mining_audit_zero_discrepancy(): void
     {
-        $exitMiningAudit = \Illuminate\Support\Facades\Artisan::call('mining:audit');
+        $exitMiningAudit = Artisan::call('mining:audit');
         $this->assertSame(0, $exitMiningAudit);
-        $this->assertStringContainsString('Mining audit PASSED cleanly', \Illuminate\Support\Facades\Artisan::output());
+        $this->assertStringContainsString('Mining audit PASSED cleanly', Artisan::output());
 
-        $exitMinAudit = \Illuminate\Support\Facades\Artisan::call('min:audit');
+        $exitMinAudit = Artisan::call('min:audit');
         $this->assertSame(0, $exitMinAudit);
-        $this->assertStringContainsString('Mining audit PASSED cleanly', \Illuminate\Support\Facades\Artisan::output());
+        $this->assertStringContainsString('Mining audit PASSED cleanly', Artisan::output());
     }
 }

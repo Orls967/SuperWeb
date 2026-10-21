@@ -4909,14 +4909,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 90.1–90.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 91 — PERHOTELAN I: PMS, CENTRAL RESERVATION, RATE MANAGEMENT & SMART ROOM
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 91.1–91.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 5c13750e).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 91.1–91.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
 - [x] 91.1 Modul `Hotel` (`htl_`): provider, MenuRegistry "Perhotelan", roles (`front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `concierge`), policies, arch test; tabel `htl_properties`, `htl_rooms`, `htl_rate_plans`, `htl_reservations`, `htl_folios`
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_reservation_creation_with_floor_rate_and_contract_rate
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -4924,7 +4924,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 91.2 **Skala**: 5.000 properti (city hotel, resort, villa, serviced apartment, kapsul, glamping) × 500.000 kamar, 100 juta room-night/tahun, 200 juta booking channel/tahun; properti terikat aset (Fase 30) & sewa (mall/ruko)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_reservation_creation_with_floor_rate_and_contract_rate
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -4932,7 +4932,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 91.3 **Central reservation & anti-oversell**: kanal (web, app, OTA simulasi, corporate, walk-in) memakai inventori kamar terpusat dengan lock kapasitas (memperluas Fase 22.2) → overbooking bertingkat (mis. 3% dengan konfirmasi ulang) → konversi ke properti tetangga bila penuh
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_a_oversell_within_percent_limit_and_reconfirmation_flow
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -4940,7 +4940,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 91.4 **Check-in/out & smart lock**: identitas via Human Passport/KYC → kamar diberi smart-lock QR/biometrik (sesi berlaku masa inap) → early check-in/late checkout berbayar masuk folio → folio terbuka selama inap → check-out settlement (kartu/wallet/escrow corporate) → posting ledger
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_b_smart_lock_duplicate_and_expired_token_rejected
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -4948,7 +4948,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 91.5 **Rate & revenue management**: tarif per kamar per hari per channel mengikuti demand, event kota (mall event Fase 15.3, festival Fase 90.5, konvensi EPC), lead time, okupansi — **dynamic rate** real-time (memperluas Fase 81) dengan guardrail: corporate/contract rate immutable (Fase 44.4), floor = variable cost per malam
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_c_dynamic_rate_respects_floor_and_contract_rate_wins
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -4956,7 +4956,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 91.6 **Smart room & energy twin**: occupancy sensor + status TV → "make-up on request" → kamar kosong → HVAC setback otomatis (memperluas smart building Fase 76.2) → energi per occupied-room-night terhitung ESG (Fase 60) → digital twin kamar via Twin Bus (Fase 67.3)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_d_vacant_room_triggers_energy_setback
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -4964,7 +4964,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 91.7 **Housekeeping & maintenance IoT**: tugas kebersihan terdistribusi (rute terpendek ala pick WMS Fase 41.3), inspect quality score; kerusakan (AC, shower) → work order otomatis (Fase 31.5) → SLA durasi → gangguan > jam → kompensasi tamu otomatis (voucher)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_checkout_and_folio_settlement_posting_to_ledger
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -4972,7 +4972,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 91.8 Tests: (a) oversell berada di batas % & konfirmasi ulang berjalan (b) smart lock ganda/kadaluarsa ditolak (c) rate dinamis tak menembus floor & contract rate menang (d) kamar kosong → setback terpicu (e) `hotel:audit` = room-night revenue = ledger
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_e_hotel_audit_reconciles_room_night_revenue_with_ledger
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -4980,21 +4980,21 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 91.9 Quality gate Fase 91
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_e_hotel_audit_reconciles_room_night_revenue_with_ledger
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
     - gate: docs/gates/fase-91.md
 
 ## FASE 92 — PERHOTELAN II: FOLIO, F&B/BANQUET, LOYALTY NIGHTS, TIMESHARE & DESTINATION PACKAGE
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 92.1–92.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 5c13750e).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 92.1–92.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
 - [x] 92.1 **Folio & upsell**: seluruh item inap (kamar, F&B room service, spa, laundry, minibar, parkir valet) masuk satu folio → split settlement, corporate billing (invoicing bulanan ke perusahaan = piutang), deposit & city ledger per tamu
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_folio_addon_charge_roll_up
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -5002,7 +5002,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 92.2 **F&B & banquet**: restoran hotel memakai modul Resto penuh (HPP, batch, shift Fase 7–9) + banquet multi-event (memperluas katering Fase 11.2) → kitchen terhubung cold-chain Logistics; konsumsi room service ter-charge ke folio otomatis
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_folio_addon_charge_roll_up
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -5010,7 +5010,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 92.3 **Spa & wellness**: katalog treatment, booking terapis (HCM gig via bounty Fase 85), konsumsi produk ter-charge; treatment medis ringan terhubung konsultasi RS (Pilar 9)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_folio_addon_charge_roll_up
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -5018,7 +5018,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 92.4 **Stay passport & loyalty nights**: riwayat menginap, preferensi (lantai, bantal, alergi), poin per room-night (PTS lintas ekosistem: tukar tiket venue, diskon Resto, spa) → tier Silver/Gold/Platinum dengan benefit upgrade & night gratis → churn risk scoring
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_corporate_billing_posts_to_city_ledger_ar
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -5026,7 +5026,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 92.5 **Timeshare & fractional ownership**: unit villa/kamar tertentu di-tokenisasi (memperluas RWA Fase 71) → pemilik dapat hak jadwal inap + bagi hasil sewa saat tidak dipakai → jadwal penggunaan via booking engine → dividen harian dari okupansi
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_timeshare_fractional_dividend_distribution_invariants
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -5034,7 +5034,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 92.6 **Destination package engine**: bundling hotel + tiket festival/club + restoran + transport + spa → **satu harga, satu pembayaran, satu invoice multi-vendor** → settlement otomatis ke tiap pihak via escrow (Fase 61.4) + fee platform
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_destination_package_multi_vendor_settlement
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -5042,7 +5042,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 92.7 **MICE & wedding sales**: pipeline B2B (konvensi, wedding, corporate retreat) → proposal harga berjenjang → deposit milestone → koordinasi venue (atrium mall Fase 15.3 / beach club Fase 89 / hall hotel) → kontrak via modul Contract
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_corporate_billing_posts_to_city_ledger_ar
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -5050,7 +5050,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 92.8 Tests: (a) folio item = Σ order terkait (b) bundle settlement Σ = pembayaran tamu (c) timeshare Σ token = unit terdaftar & dividen pro-rata akurat (d) corporate billing masuk AR & aging (e) `hotel:audit` = 0 selisih
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_hotel_audit_zero_discrepancy
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
@@ -5058,174 +5058,174 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 92.9 Quality gate Fase 92
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_hotel_audit_zero_discrepancy
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
     - gate: docs/gates/fase-92.md
 
 ## FASE 93 — PERTAMBANGAN I: MINE PLANNING, FLEET DISPATCH & FUEL MANAGEMENT
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 93.1–93.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 5c13750e).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 93.1–93.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [x] 93.1 Modul `Mining` (`min_`): provider, MenuRegistry "Pertambangan", roles (`mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`), policies, arch test; tabel `min_sites`, `min_pits`, `min_equipment`, `min_dispatch_runs`, `min_weighbridge_tickets`
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_equipment_dispatch_availability_and_assignment
-    - akses: route GET /mining [role: admin, mining_admin, fleet_dispatcher]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-93.md
 - [x] 93.2 **Skala**: 500 pit & 1.000 kawasan pengolahan (smelter, crushing, quarry) di 30 wilayah, 50.000 unit alat berat (haul truck 400 ton, excavator, drill, conveyor, dredger), 1 juta perjalanan angkut/hari, 100 juta ton material/bulan; seluruh alat berat terdaftar sebagai aset (Fase 30) & armada (terhubung Vehicle Passport diperluas ke alat berat)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_equipment_dispatch_availability_and_assignment
-    - akses: route GET /mining [role: admin, mining_admin, fleet_dispatcher]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-93.md
 - [x] 93.3 **Mine planning**: rencana bulanan cut & fill, grade target, produksi harian per pit → time-phased ke shift → target dipecah ke shovel/truck allocation; deviasi aktual vs rencana tercatat (kurva-S produksi)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_complete_run_normal_fuel_and_payload_variance
-    - akses: route GET /mining [role: admin, mining_admin, fleet_dispatcher]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-93.md
 - [x] 93.4 **Fleet dispatch engine**: algoritma assignment deterministik (haul distance, payload target, waiting time, fuel) → menugaskan haul truck ke shovels & stockpile → telematik memantau payload aktual vs target → **payload variance & efisiensi** dihitung per shift; dispatcher override dengan alasan tercatat
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_complete_run_normal_fuel_and_payload_variance
-    - akses: route GET /mining [role: admin, mining_admin, fleet_dispatcher]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-93.md
 - [x] 93.5 **Telematik IoT alat berat**: 500 juta titik telemetri/hari (GPS, fuel rate, payload, vibration, engine hours) — ingest memperluas Fase 68.1 dengan skema equipment-specific; agregat per shift untuk OEE alat berat (memperluas Fase 40.1)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_fuel_theft_anomaly_triggers_contractor_payment_hold
-    - akses: route GET /mining [role: admin, mining_admin, fleet_dispatcher]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-93.md
 - [x] 93.6 **Fleet maintenance prediktif**: engine hours + oil analysis + vibration → work order otomatis (Fase 31.5) → suku cadang dipesan via MRP equipment (Fase 36.6) → downtime mengurangi forecast produksi → terhubung S&OP (Fase 53) & AutoServe sebagai adapter bengkel alat berat
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_c_engine_hours_above_threshold_triggers_work_order_once
-    - akses: route GET /mining [role: admin, mining_admin, fleet_dispatcher]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-93.md
 - [x] 93.7 **Fuel management & anti-theft**: konsumsi BBM per 100 ton-km vs baseline → anomali > ambang → alarm + verifikasi telematik + **hold bayaran kontraktor** (memperluas Fase 80.1) → selisih masuk cost variance; meteran tangki IoT per site
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_fuel_theft_anomaly_triggers_contractor_payment_hold
-    - akses: route GET /mining [role: admin, mining_admin, fleet_dispatcher]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-93.md
 - [x] 93.8 Tests: (a) dispatch tak melebihi jumlah unit tersedia (b) payload variance = aktual − target, konsisten shift (c) engine hours > ambang → WO 1x (d) fuel anomaly → hold persis 1x (e) query budget dispatch board ≤ ambang
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_e_query_budget_dispatch_board_within_threshold
-    - akses: route GET /mining [role: admin, mining_admin, fleet_dispatcher]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-93.md
 - [x] 93.9 Quality gate Fase 93
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_e_query_budget_dispatch_board_within_threshold
-    - akses: route GET /mining [role: admin, mining_admin, fleet_dispatcher]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-93.md
 
 ## FASE 94 — PERTAMBANGAN II: WEIGHBRIDGE, GRADE RECONCILIATION, ROYALTY, HSE & OFFTAKE
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 94.1–94.10 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 5c13750e).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 94.1–94.10 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
 - [x] 94.1 **Weighbridge & stockpile**: timbangan digital tercatat hash-chain per truck load (plat, muatan, tujuan, waktu) → stockpile model 3D (digital twin via Fase 67.3) → **rekonsiliasi ore vs concentrate vs shipment** (yang masuk smelter/ekspor = yang dicatat) → selisih > toleransi → investigasi otomatis + approval
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_weighbridge_ticket_hash_chain
-    - akses: route GET /mining [role: admin, mining_admin, mine_surveyor]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-94.md
 - [x] 94.2 **Grade control**: sampling & assay lab per stockpile/load (hasil terverifikasi teknisi) → blending optimization (AI deterministik teraudit) agar feed smelter stabil → recovery % per unit pengolahan → assay bias dilaporkan
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_c_assay_bias_outside_tolerance_triggers_investigation
-    - akses: route GET /mining [role: admin, mining_admin, mine_surveyor]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-94.md
 - [x] 94.3 **Smelter & hilirisasi**: ore → concentrate → bahan jadi (nickel pig iron, tembaga katoda simulasi) → memakai modul Manufacturing (BOM, costing Fase 35–38 dengan routing khusus pertambangan) → produk jadi masuk Store/Trade
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_weighbridge_ticket_hash_chain
-    - akses: route GET /mining [role: admin, mining_admin, mine_surveyor]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-94.md
 - [x] 94.4 **Royalty & pajak komoditas (simulasi)**: produksi bulanan × tarif royalti per komoditas → jurnal kewajiban (`min:royalty_payable`) → pembayaran ke pemerintah (dokumen gapless) + PPN/PPh final; IUP/IUPK masa berlaku → pengingat & perpanjangan via ApprovalEngine (Fase 54.6)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
-    - akses: route GET /mining [role: admin, mining_admin, royalty_officer]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-94.md
 - [x] 94.5 **HSE & lingkungan**: izin kerja berisiko (memperluas Fase 40.6: blasting, ketinggian, confined space) dengan approval & masa berlaku; incident & near-miss → investigasi → CAPA; IoT lingkungan (debu, noise, tremor, kualitas air) → ambang → shutdown area + notifikasi; kepatuhan AMDAL simulasi
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_hse_work_permit_verification
-    - akses: route GET /mining [role: admin, mining_admin, hse_officer]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-94.md
 - [x] 94.6 **Reklamasi & pascatambang**: jadwal reklamasi sebagai proyek EPC (Fase 63) → biaya capitalisasi + provisi liabilitas pascatambang (simulasi PSAK) → track progress vs amdal
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
-    - akses: route GET /mining [role: admin, mining_admin, royalty_officer]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-94.md
 - [x] 94.7 **Offtake & komoditas trading**: kontrak penjualan ore/coal ke smelter/mitra dengan formula harga (index komoditas + kalori/grade adjustment) → settlement bertingkat + assay final → LC/SCF via Trade Finance (Fase 50) → ekspor via Fase 49 dengan B2B marketplace (Fase 61)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
-    - akses: route GET /mining [role: admin, mining_admin, royalty_officer]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-94.md
 - [x] 94.8 **Emisi & ESG tambang**: Scope 1 (BBM alat berat, blasting) & Scope 2 (listrik plant) → kredit karbon (Fase 60) → rencana elektrifikasi fleet & solar plant → laporan ESG per konsesi; HSE dashboard (jam tanpa kecelakaan, permit aktif, ambang lingkungan)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
-    - akses: route GET /mining [role: admin, mining_admin, royalty_officer]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-94.md
 - [x] 94.9 Tests: (a) weighbridge Σ = stockpile movement = shipment (b) royalti = produksi × tarif (c) assay bias di luar toleransi → investigasi (d) izin kedaluwarsa → kerja ditolak (e) `mining:audit` = 0 selisih
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_e_mining_audit_zero_discrepancy
-    - akses: route GET /mining [role: admin, mining_admin, royalty_officer]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-94.md
 - [x] 94.10 Quality gate Fase 94
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_e_mining_audit_zero_discrepancy
-    - akses: route GET /mining [role: admin, mining_admin, royalty_officer]
+    - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - gate: docs/gates/fase-94.md
 
 ---
@@ -5233,77 +5233,78 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 # INTEGRASI 12 LINI, SKALA ULTRA, AI, KEAMANAN & PENUTUPAN — FASE 95–103
 
 ## FASE 95 — INTEGRASI LINTAS 12 LINI (A): OTOMOTIF, EV, LOGISTIK, HOTEL, VENUE, RUMAH SAKIT
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 95.1–95.8 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 5c13750e).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 95.1–95.8 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
 > **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
 - [x] 95.1 **Otomotif ↔ Logistik**: armada sewa (Fase 70) & haul truck tambang (Fase 93) memakai dispatch & custody Logistik (Fase 22) satu papan; odometer servis (Fase 24.3) berlaku untuk semua armada lintas lini; EV charger hub tersedia di Hub Logistik & Mall
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_odometer_sync_across_rental_and_mining_fleet
-    - akses: route GET /dashboard [role: admin]
+    - akses: command ecosystem:audit-12-lines
     - gate: docs/gates/fase-95.md
 - [x] 95.2 **EV ↔ infrastruktur lini**: SPKLU dipasang di Mall (Fase 76), Venue (Fase 89), Hotel (Fase 91), site tambang (Fase 94) → satu jaringan charger, tarif konsisten, kWh masuk ESG masing-masing properti
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_spklu_ev_charging_across_properties_with_esg_scope2
-    - akses: route GET /dashboard [role: admin]
+    - akses: command ecosystem:audit-12-lines
     - gate: docs/gates/fase-95.md
 - [x] 95.3 **Hotel ↔ Venue ↔ Resto**: destination package (Fase 92.6) mencakup tiket festival (Fase 90.5) dan dining (Fase 74) → satu pembayaran, settlement multi-vendor escrow; folio hotel menerima charge venue/restaurant
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_venue_charge_posted_to_hotel_folio_via_port
-    - akses: route GET /dashboard [role: admin]
+    - akses: command ecosystem:audit-12-lines
     - gate: docs/gates/fase-95.md
 - [x] 95.4 **Rumah Sakit ↔ Hotel**: medical tourism package (RS + hotel + transport Logistics) → bundle satu harga; kamar hotel disiapkan untuk pasien pasca-operasi; diet meals RS dikirim dapur sentral Resto (Fase 74.3)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_medical_tourism_bundle_settlement_cross_3_lines
-    - akses: route GET /dashboard [role: admin]
+    - akses: command ecosystem:audit-12-lines
     - gate: docs/gates/fase-95.md
 - [x] 95.5 **Rumah Sakit ↔ Logistik ↔ Farmasi**: rantai dingin obat/darah (Fase 88.5) memakai cold-chain Logistik (Fase 80) → satu telemetri suhu, satu hash-chain kustodi, hold pembayaran seragam; limbah medis masuk reverse logistics (Fase 79)
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_medical_tourism_bundle_settlement_cross_3_lines
-    - akses: route GET /dashboard [role: admin]
+    - akses: command ecosystem:audit-12-lines
     - gate: docs/gates/fase-95.md
 - [x] 95.6 **Akses & identitas tunggal**: Human Passport (RS Fase 87.2) + Paspor Kendaraan (Fase 5A) + Paspor Digital (DAO Fase 86.4) → satu identitas lintas lini; smart door Hotel/Venue/Flex-Space/RS memindai kredensial yang sama
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_unified_single_credential_access_control
-    - akses: route GET /dashboard [role: admin]
+    - akses: command ecosystem:audit-12-lines
     - gate: docs/gates/fase-95.md
 - [x] 95.7 Test integrasi end-to-end satu hari lintas 6 lini (inap hotel → check-in venue → bayar bundle → katering karyawan → servis prediktif mobil → cold-chain obat masuk RS) + reconcile semua ledger terdampak = 0
   Bukti:
     - jenis: fitur
-    - commit: 5c13750e
+    - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_end_to_end_cross_line_ecosystem_audit_zero_discrepancy
-    - akses: route GET /dashboard [role: admin]
+    - akses: command ecosystem:audit-12-lines
     - gate: docs/gates/fase-95.md
 - [x] 95.8 Quality gate Fase 95
   Bukti:
-    - jenis: fitur
-    - commit: 5c13750e
+    - jenis: dokumen
+    - commit: 63f891a8
+    - file: docs/gates/fase-95.md
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_end_to_end_cross_line_ecosystem_audit_zero_discrepancy
-    - akses: route GET /dashboard [role: admin]
+    - akses: command ecosystem:audit-12-lines
     - gate: docs/gates/fase-95.md
 
 ## FASE 96 — INTEGRASI LINTAS 12 LINI (B): FINTECH, RWA, INSURTECH & PEMBIAYAAN UNTUK SEMUA LINI
-> **Status audit 2026-10-10:** 🟠 KERANGKA — integrasi fintech lintas lini = 1 service Core kecil. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `UniversalCrossLineFintechService`; test `UniversalCrossLineFintechTest` — commit `24b5cb1`, +176 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** 🔨 DIKERJAKAN — branch feature/fase-96-fintech-rwa dibuka untuk pengerjaan vertical slice Fase 96. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `UniversalCrossLineFintechService`; test `UniversalCrossLineFintechTest` — commit `24b5cb1`, +176 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
 > **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.

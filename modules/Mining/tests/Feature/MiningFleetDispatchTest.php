@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Mining\tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Mining\Application\Services\MiningFleetDispatchService;
 use Modules\Mining\Domain\Models\MiningEquipment;
@@ -149,12 +150,12 @@ class MiningFleetDispatchTest extends TestCase
 
     public function test_e_query_budget_dispatch_board_within_threshold(): void
     {
-        \Illuminate\Support\Facades\DB::flushQueryLog();
-        \Illuminate\Support\Facades\DB::enableQueryLog();
+        DB::flushQueryLog();
+        DB::enableQueryLog();
 
         $summary = $this->service->getDispatchBoardSummary($this->site->id);
 
-        $queryCount = count(\Illuminate\Support\Facades\DB::getQueryLog());
+        $queryCount = count(DB::getQueryLog());
         $this->assertLessThanOrEqual(2, $queryCount);
         $this->assertEquals($this->site->id, $summary['site_id']);
         $this->assertArrayHasKey('available_equipment', $summary);

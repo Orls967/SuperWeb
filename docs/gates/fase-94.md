@@ -1,6 +1,6 @@
 # Quality Gate Report: Fase 94
 
-- **Commit:** `5c13750e`
+- **Commit:** `63f891a8`
 - **Tanggal:** 2026-10-22T07:00:00+08:00
 - **PHP:** 8.4.26
 - **Database:** sqlite (v3.53.4)
@@ -60,7 +60,7 @@
 
 - **Tanggal:** 2026-10-22
 - **Verifikator:** Verifikator Independen Protokol P7/P13
-- **Commit yang diverifikasi:** `5c13750e`
+- **Commit yang diverifikasi:** `63f891a8`
 - **Keputusan:** TERVERIFIKASI ✅
 
 | # | Hasil | Bukti (command / commit / output) | Catatan |
@@ -77,7 +77,7 @@
 | C10 | LULUS 🟢 | Migrasi tabel kompatibel dengan MySQL 8.4 dan SQLite. | Portabilitas skema database terverifikasi. |
 | C11 | LULUS 🟢 | Seluruh deliverable 94.1–94.10 tuntas. Sub-bagian Register Minus Fase 94 bersih (0 minus terbuka). | Kriteria penutupan fase P9 dan P7 terpenuhi. |
 | C12 | LULUS 🟢 | RBAC terpasang penuh (`admin`, `mining_admin`, `mine_surveyor`, `royalty_officer`, `hse_officer`). | Proteksi rute web `/mining` tervalidasi. |
-| C13 | LULUS 🟢 | Riwayat git log atomik (`5c13750e`), pesan commit konvensional, hash terverifikasi di git log. | Jejak audit git rapi dan terlacak. |
+| C13 | LULUS 🟢 | Riwayat git log atomik (`63f891a8`), pesan commit konvensional, hash terverifikasi di git log. | Jejak audit git rapi dan terlacak. |
 | C14 | LULUS 🟢 | Tidak ada jalan pintas terlarang (X1–X25). | Standar integritas kode tertinggi terpenuhi. |
 
 **Minus yang ditambahkan pelaksana:** Tidak ada (0 minus terbuka).  

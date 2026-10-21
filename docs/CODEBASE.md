@@ -642,6 +642,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `hcm:audit` | `manual` | Audit Human Capital Management payroll calculations, deductions, and labor allocations (0 discrepancies) |
 | `hcm:encrypt-legacy` | `manual` | Idempotently backfill encrypted NIK and blind index for legacy employee records |
 | `hosp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, dan integritas subjek |
+| `hotel:audit` | `manual` | Audit operasional hotel: kamar, reservasi, folio, dan integritas occupancy vs reservation |
 | `hsp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, dan integritas subjek |
 | `htl:audit` | `manual` | Audit operasional hotel: kamar, reservasi, folio, dan integritas occupancy vs reservation |
 | `ins:audit` | `manual` | Perform two-source verification of InsurTech products, policies, and autopilot claim payouts |
@@ -680,6 +681,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `mfg:wip` | `manual` | Laporan work-in-process per order produksi |
 | `migrate` | `manual` | Run the database migrations |
 | `min:audit` | `manual` | Perform two-source verification of mining equipment statuses and dispatch runs |
+| `mining:audit` | `manual` | Perform two-source verification of mining equipment statuses and dispatch runs |
 | `mobile:audit` | `manual` | Audit offline-first mobile synchronization idempotency and e-POD cryptographic signature integrity (Fase 65.3) |
 | `party:backfill-links` | `manual` | Backfill party_id links on existing module tables (idempotent) |
 | `party:remind-expiring-docs` | **`dailyAt('08:00')`** | Send reminders for KYC/KYB documents expiring soon |
@@ -728,7 +730,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 134 Command** | **37 Terjadwal** | |
+| **Total: 136 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
