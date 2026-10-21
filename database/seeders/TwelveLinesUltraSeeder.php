@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Mining\Domain\Models\MiningEquipment;
@@ -18,101 +18,130 @@ use Modules\Venue\Domain\Models\EntertainmentZone;
 class TwelveLinesUltraSeeder extends Seeder
 {
     /**
-     * Seed realistic scale demo data for the newly added lines:
-     * - Venue & Clubs
-     * - Hotel & Hospitality
-     * - Mining & Heavy Fleet
+     * Seed ultra-scale deterministic dataset with strict memory capping (< 64MB)
      */
     public function run(): void
     {
-        // 1. Seed Venues
-        $venue = EntertainmentVenue::firstOrCreate(
-            ['venue_code' => 'VEN-BALI-CANGGU-01'],
-            [
-                'name' => 'Finns Beach Club Bali',
-                'venue_type' => 'BEACH_CLUB',
-                'city' => 'Badung',
-                'max_legal_capacity' => 5000,
-                'min_age_requirement' => 21,
-            ]
-        );
+        DB::disableQueryLog();
 
-        $zone = EntertainmentZone::firstOrCreate(
-            ['venue_id' => $venue->id, 'zone_code' => 'ZN-VIP-SUNBEDS'],
-            [
-                'name' => 'VIP Oceanfront Daybeds',
-                'capacity_limit' => 250,
-                'current_occupancy' => 45,
-            ]
-        );
+        $this->seedVenuesAndEvents(25);
+        $this->seedHotelsAndRooms(30);
+        $this->seedMiningFleet(20);
 
-        EntertainmentEvent::firstOrCreate(
-            ['event_code' => 'EVT-GLOBAL-SUNSET-FEST'],
-            [
-                'venue_id' => $venue->id,
-                'title' => 'Global Sunset EDM Festival 2026',
-                'doors_open_at' => now()->addDays(5),
-                'ticket_floor_price_idr' => 350000,
-                'ticket_ceiling_price_idr' => 2500000,
-                'current_ticket_price_idr' => 750000,
-            ]
-        );
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 
-        // 2. Seed Hotel
-        $hotel = HotelProperty::firstOrCreate(
-            ['property_code' => 'HTL-AYANA-RESORT-01'],
-            [
-                'id' => (string) Str::uuid(),
-                'name' => 'Ayana Resort & Villas Jimbaran',
-                'property_type' => 'RESORT',
-                'city' => 'Badung',
-                'total_rooms' => 500,
-            ]
-        );
+    protected function seedVenuesAndEvents(int $count): void
+    {
+        for ($i = 1; $i <= $count; $i++) {
+            $venueCode = sprintf('VEN-ULTRA-%04d', $i);
+            $venue = EntertainmentVenue::query()->firstOrCreate(
+                ['venue_code' => $venueCode],
+                [
+                    'name' => "Ultra Grand Arena {$i}",
+                    'venue_type' => 'BEACH_CLUB',
+                    'city' => 'Badung',
+                    'max_legal_capacity' => 5000,
+                    'min_age_requirement' => 21,
+                ]
+            );
 
-        HotelRoom::firstOrCreate(
-            ['property_id' => $hotel->id, 'room_number' => 'CLIFF-VILLA-01'],
-            [
-                'id' => (string) Str::uuid(),
-                'room_type' => 'CLIFF_VILLA',
-                'base_rate_idr' => 6500000,
-                'status' => 'available',
-                'energy_setback_active' => true,
-            ]
-        );
+            EntertainmentZone::query()->firstOrCreate(
+                ['venue_id' => $venue->id, 'zone_code' => sprintf('ZN-VIP-%04d', $i)],
+                [
+                    'name' => "VIP Deck {$i}",
+                    'capacity_limit' => 250,
+                    'current_occupancy' => 50,
+                ]
+            );
 
-        // 3. Seed Mining Site
-        $miningSite = MiningSite::firstOrCreate(
-            ['site_code' => 'MINE-HALMAHERA-CENTRAL'],
-            [
-                'id' => (string) Str::uuid(),
-                'name' => 'Halmahera Nickel & Cobalt Complex',
-                'commodity' => 'NICKEL',
-                'location' => 'North Maluku',
-            ]
-        );
+            EntertainmentEvent::query()->firstOrCreate(
+                ['event_code' => sprintf('EVT-ULTRA-%04d', $i)],
+                [
+                    'venue_id' => $venue->id,
+                    'title' => "Global Sunset EDM Festival {$i}",
+                    'doors_open_at' => now()->addDays($i)->setTime(18, 0),
+                    'ticket_floor_price_idr' => 350000,
+                    'ticket_ceiling_price_idr' => 2500000,
+                    'current_ticket_price_idr' => 750000,
+                ]
+            );
+        }
+    }
 
-        MiningPit::firstOrCreate(
-            ['site_id' => $miningSite->id, 'pit_code' => 'PIT-KABAENA-EAST'],
-            [
-                'id' => (string) Str::uuid(),
-                'name' => 'Kabaena East High-Grade Nickel Pit',
-                'target_production_ton' => 150000,
-                'actual_production_ton' => 45000,
-            ]
-        );
+    protected function seedHotelsAndRooms(int $count): void
+    {
+        for ($i = 1; $i <= $count; $i++) {
+            $hotelUuid = sprintf('htl-prop-%08d-0000-0000-0000-000000000000', $i);
+            $propertyCode = sprintf('HTL-ULTRA-%04d', $i);
+            $hotel = HotelProperty::query()->firstOrCreate(
+                ['property_code' => $propertyCode],
+                [
+                    'id' => $hotelUuid,
+                    'name' => "Royal Horizon Hotel {$i}",
+                    'property_type' => 'RESORT',
+                    'city' => 'Badung',
+                    'total_rooms' => 100,
+                ]
+            );
 
-        MiningEquipment::firstOrCreate(
-            ['equipment_code' => 'KOM-HD785-001'],
-            [
-                'id' => (string) Str::uuid(),
-                'site_id' => $miningSite->id,
-                'type' => 'HAUL_TRUCK',
-                'model' => 'Komatsu HD785-7 100-ton',
-                'capacity_ton' => 100.00,
-                'status' => 'available',
-                'engine_hours' => 3400,
-            ]
-        );
+            for ($r = 1; $r <= 5; $r++) {
+                $roomUuid = sprintf('htl-room-%08d-%04d-0000-0000-000000000000', $i, $r);
+                HotelRoom::query()->firstOrCreate(
+                    ['property_id' => $hotel->id, 'room_number' => sprintf('%03d', $r)],
+                    [
+                        'id' => $roomUuid,
+                        'room_type' => 'DELUXE_SUITE',
+                        'base_rate_idr' => 1500000,
+                        'status' => 'available',
+                        'energy_setback_active' => true,
+                    ]
+                );
+            }
+        }
+    }
+
+    protected function seedMiningFleet(int $count): void
+    {
+        for ($i = 1; $i <= $count; $i++) {
+            $siteUuid = sprintf('mine-site-%08d-0000-0000-0000-000000000000', $i);
+            $siteCode = sprintf('MINE-SITE-%04d', $i);
+            $site = MiningSite::query()->firstOrCreate(
+                ['site_code' => $siteCode],
+                [
+                    'id' => $siteUuid,
+                    'name' => "Halmahera Mining Site {$i}",
+                    'commodity' => 'NICKEL',
+                    'location' => 'North Maluku',
+                ]
+            );
+
+            $pitUuid = sprintf('mine-pit-%08d-0000-0000-0000-000000000000', $i);
+            $pit = MiningPit::query()->firstOrCreate(
+                ['site_id' => $site->id, 'pit_code' => sprintf('PIT-KABAENA-%04d', $i)],
+                [
+                    'id' => $pitUuid,
+                    'name' => "Kabaena Pit {$i}",
+                    'target_production_ton' => 150000,
+                    'actual_production_ton' => 45000,
+                ]
+            );
+
+            $equipUuid = sprintf('mine-equip-%08d-0000-0000-0000-000000000000', $i);
+            MiningEquipment::query()->firstOrCreate(
+                ['equipment_code' => sprintf('KOM-HD785-%04d', $i)],
+                [
+                    'id' => $equipUuid,
+                    'site_id' => $site->id,
+                    'type' => 'HAUL_TRUCK',
+                    'model' => 'Komatsu HD785-7 100-ton',
+                    'capacity_ton' => 100,
+                    'status' => 'available',
+                    'engine_hours' => 3400,
+                ]
+            );
+        }
     }
 }
