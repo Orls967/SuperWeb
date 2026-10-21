@@ -26,6 +26,20 @@ final class RwaAccounts
                 'allow_negative' => true,
             ],
             [
+                'code' => 'rwa:dividend_source:default:IDR',
+                'name' => 'RWA Dividend Source Default',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'rwa:dividend_dust_reserve:default:IDR',
+                'name' => 'RWA Dividend Dust Reserve Default',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
                 'code' => 'rwa:platform_fees:IDR',
                 'name' => 'RWA Platform Fees',
                 'kind' => AccountKind::REVENUE,

@@ -32,6 +32,20 @@ final class TreasuryAccounts
                 'asset_code' => 'USD',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'treasury:yield_pool:IDR',
+                'name' => 'Central Treasury Yield Pool IDR',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'treasury:intercompany_sweep:default:IDR',
+                'name' => 'Treasury Intercompany Sweep Default',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }

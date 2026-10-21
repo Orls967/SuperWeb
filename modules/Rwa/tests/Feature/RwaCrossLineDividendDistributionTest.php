@@ -76,6 +76,9 @@ class RwaCrossLineDividendDistributionTest extends TestCase
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
         $user3 = User::factory()->create();
+        $user1->walletAccount('IDR');
+        $user2->walletAccount('IDR');
+        $user3->walletAccount('IDR');
 
         RwaHolding::create([
             'rwa_asset_id' => $asset->id,
@@ -128,7 +131,7 @@ class RwaCrossLineDividendDistributionTest extends TestCase
         // Zero-sum balance check across all entries
         $sum = 0;
         foreach ($entries as $e) {
-            $sum += (int) $e->amount->toInt();
+            $sum += (int) (string) $e->amount;
         }
         $this->assertSame(0, $sum, 'Double-entry transaction entries must sum to exactly zero');
     }
