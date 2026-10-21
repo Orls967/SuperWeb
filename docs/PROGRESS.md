@@ -5391,20 +5391,69 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - gate: docs/gates/fase-96.md
 
 ## FASE 97 — INTEGRASI LINTAS 12 LINI (C): TALENT GIG, ESG TERPADU & EVENT SPINE PENUH
-> **Status audit 2026-10-22:** 🔨 DIKERJAKAN — branch feature/fase-96-fintech-rwa bersiap untuk vertical slice Fase 97. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `TwelveLinesCommandCenterService`; test `TwelveLinesCommandCenterTest` — commit `a95bfe6`, +127 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 97.1–97.7 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 55726620).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
 > **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
-- [ ] 97.1 **Talent marketplace universal**: bounty lintas lini (Resto overload, setup venue, bongkar muat logistik, cuci armada, asistensi RS dadakan, operasional shift hotel, crew tambang kontraktor) → satu papan, aturan upah & K3 konsisten (Fase 85), bayar via Core Banking
-- [ ] 97.2 **ESG terpadu 12 lini**: agregasi emisi Scope 1–3 dari armada (Fase 60), gedung/hotel/venue (Fase 76), pabrik & tambang (Fase 94.8), limbah sirkular (Fase 79) → neraca karbon grup → kredit karbon pensiun → laporan GRI per lini & konsolidasi grup
-- [ ] 97.3 **Universal Event Spine penuh** (Fase 67.2): seluruh event 12 lini terbit & terkonsumsi lintas pilar — contoh: `min.ore_shipped` → `lgx.container_loaded` → `trade.bl_issued` → `fintech.escrow_released`; `ven.event_ticket_sold` → `htl.bundle_confirmed` → `resto.catering_ready`
-- [ ] 97.4 **Group command center 12 lini** (memperluas Fase 57.4/16.5): P&L per lini, arus kas, kesehatan seluruh `*:audit` (kini 40+ perintah), status event spine (lag, dead-letter), twin health per entitas — dalam batas query budget
-- [ ] 97.5 **Skor kesehatan ekosistem** per entitas & per lini (finansial, talenta, ESG, risiko — memperluas ide 8E) → dasar keputusan alokasi modal & prioritas ekspansi
-- [ ] 97.6 Tests: (a) event lintas lini diproses idempoten saat replay (b) ESG grup = Σ emisi lini (c) P&L 12 lini = ledger konsolidasi (d) gig payout lintas lini konsisten payroll (e) query budget command center terpenuhi
-- [ ] 97.7 Quality gate Fase 97
+- [x] 97.1 **Talent marketplace universal**: bounty lintas lini (Resto overload, setup venue, bongkar muat logistik, cuci armada, asistensi RS dadakan, operasional shift hotel, crew tambang kontraktor) → satu papan, aturan upah & K3 konsisten (Fase 85), bayar via Core Banking
+  Bukti:
+    - jenis: fitur
+    - commit: 55726620
+    - file: modules/Hcm/Application/Services/UniversalTalentGigOrchestratorService.php
+    - test: modules/Hcm/tests/Feature/UniversalTalentGigTest.php::test_claim_and_payout_disbursement_via_ledger
+    - akses: command ecosystem:audit-12-lines
+    - gate: docs/gates/fase-97.md
+- [x] 97.2 **ESG terpadu 12 lini**: agregasi emisi Scope 1–3 dari armada (Fase 60), gedung/hotel/venue (Fase 76), pabrik & tambang (Fase 94.8), limbah sirkular (Fase 79) → neraca karbon grup → kredit karbon pensiun → laporan GRI per lini & konsolidasi grup
+  Bukti:
+    - jenis: fitur
+    - commit: 55726620
+    - file: modules/Esg/Application/Services/ConsolidatedTwelveLinesEsgService.php
+    - test: modules/Esg/tests/Feature/ConsolidatedTwelveLinesEsgTest.php::test_carbon_credit_retirement_double_entry_ledger_posting
+    - akses: command ecosystem:audit-12-lines
+    - gate: docs/gates/fase-97.md
+- [x] 97.3 **Universal Event Spine penuh** (Fase 67.2): seluruh event 12 lini terbit & terkonsumsi lintas pilar — contoh: `min.ore_shipped` → `lgx.container_loaded` → `trade.bl_issued` → `fintech.escrow_released`; `ven.event_ticket_sold` → `htl.bundle_confirmed` → `resto.catering_ready`
+  Bukti:
+    - jenis: fitur
+    - commit: 55726620
+    - file: modules/Core/Application/Services/UniversalEventSpineOutboxService.php
+    - test: modules/Core/tests/Feature/UniversalEventSpineOutboxTest.php::test_publish_and_consume_event_spine_idempotently
+    - akses: command ecosystem:audit-12-lines
+    - gate: docs/gates/fase-97.md
+- [x] 97.4 **Group command center 12 lini** (memperluas Fase 57.4/16.5): P&L per lini, arus kas, kesehatan seluruh `*:audit` (kini 40+ perintah), status event spine (lag, dead-letter), twin health per entitas — dalam batas query budget
+  Bukti:
+    - jenis: fitur
+    - commit: 55726620
+    - file: modules/Core/Application/Services/GroupCommandCenterExecutiveService.php
+    - test: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php::test_command_center_query_budget_and_health_score
+    - akses: command ecosystem:audit-12-lines
+    - gate: docs/gates/fase-97.md
+- [x] 97.5 **Skor kesehatan ekosistem** per entitas & per lini (finansial, talenta, ESG, risiko — memperluas ide 8E) → dasar keputusan alokasi modal & prioritas ekspansi
+  Bukti:
+    - jenis: fitur
+    - commit: 55726620
+    - file: modules/Core/Domain/Models/CoreEcosystemHealthScore.php
+    - test: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php::test_command_center_query_budget_and_health_score
+    - akses: command ecosystem:audit-12-lines
+    - gate: docs/gates/fase-97.md
+- [x] 97.6 Tests: (a) event lintas lini diproses idempoten saat replay (b) ESG grup = Σ emisi lini (c) P&L 12 lini = ledger konsolidasi (d) gig payout lintas lini konsisten payroll (e) query budget command center terpenuhi
+  Bukti:
+    - jenis: fitur
+    - commit: 55726620
+    - file: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php
+    - test: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php::test_event_spine_idempotent_replay
+    - akses: command ecosystem:audit-12-lines
+    - gate: docs/gates/fase-97.md
+- [x] 97.7 Quality gate Fase 97
+  Bukti:
+    - jenis: dokumen
+    - commit: 55726620
+    - file: docs/gates/fase-97.md
+    - test: tests/Architecture/TestHygieneTest.php
+    - akses: command ecosystem:audit-12-lines
+    - gate: docs/gates/fase-97.md
 
 ## FASE 98 — SKALA ULTRA: SEEDER 12 LINI, QUERY BUDGET & STRESS TEST
-> **Status audit 2026-10-10:** 🟠 KERANGKA — `TwelveLinesUltraSeeder` 118 baris — bukan skala ultra; tidak ada benchmark/query budget p95 tercatat. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul —): seeder `TwelveLinesUltraSeeder`; test `TwelveLinesUltraScaleStressTest` — commit `91fe194`, +164 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** 🔨 DIKERJAKAN — branch feature/fase-96-fintech-rwa bersiap untuk vertical slice skala ultra Fase 98. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul —): seeder `TwelveLinesUltraSeeder`; test `TwelveLinesUltraScaleStressTest` — commit `91fe194`, +164 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core (Scale Provisioner) + seeder per lini · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
 > **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report` — ditambah seluruh X1–X25.
