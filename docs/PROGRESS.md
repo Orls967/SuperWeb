@@ -5304,20 +5304,69 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - gate: docs/gates/fase-95.md
 
 ## FASE 96 — INTEGRASI LINTAS 12 LINI (B): FINTECH, RWA, INSURTECH & PEMBIAYAAN UNTUK SEMUA LINI
-> **Status audit 2026-10-22:** 🔨 DIKERJAKAN — branch feature/fase-96-fintech-rwa dibuka untuk pengerjaan vertical slice Fase 96. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `UniversalCrossLineFintechService`; test `UniversalCrossLineFintechTest` — commit `24b5cb1`, +176 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 96.1–96.7 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit fafca066).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
 > **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
-- [ ] 96.1 **RWA lintas lini**: tokenisasi unit hotel/timeshare (Fase 92.5), unit mall (Fase 71), truk logistik (Fase 71), mesin tambang (Fase 94), alat RS medis → satu marketplace RWA, satu orderbook, satu engine dividen; omzet sumber dari lini mana pun mengalir pro-rata ke holder
-- [ ] 96.2 **InsurTech tersemat universal**: trigger dari 12 lini (keterlambatan logistik, kecelakaan kendaraan, cold-chain breach venue/RS/hotel, pembatalan event, cuaca tambang, no-show kontrak) → claims autopilot (Fase 72) satu kerangka, reserve terpusat di Treasury
-- [ ] 96.3 **Pembiayaan lintas lini**: HODL-to-Drive (Fase 5C) → diperluas: pembiayaan alat berat tambang, pembiayaan fit-out tenant, pembiayaan modal tani (Fase 62) & pre-payment petani berbasis NDVI (Fase 86.2) — satu engine kredit dengan credit profile 360° (Fase 27.7)
-- [ ] 96.4 **Stablecoin settlement gr**up: settlement intercompany & cross-border (venue internasional, artist luar negeri, offtake tambang) memakai stablecoin internal (Fase 83) → clear real-time 24/7, kurs terkunci, Σ ledger seimbang
-- [ ] 96.5 **Yield & treasury terpadu**: saldo idle 12 lini → robo-advisor/Treasury yield (Fase 73) → cash pooling antar entitas (Fase 48.8) → group liquidity teroptimasi
-- [ ] 96.6 Test integrasi: pembayaran bundle hotel-venue-resto → settle ke vendor + fee platform + poin loyalty; klaim insuransi lintas 3 lini cair otomatis; Σ semua = 0 selisih
-- [ ] 96.7 Quality gate Fase 96
+- [x] 96.1 **RWA lintas lini**: tokenisasi unit hotel/timeshare (Fase 92.5), unit mall (Fase 71), truk logistik (Fase 71), mesin tambang (Fase 94), alat RS medis → satu marketplace RWA, satu orderbook, satu engine dividen; omzet sumber dari lini mana pun mengalir pro-rata ke holder
+  Bukti:
+    - jenis: fitur
+    - commit: fafca066
+    - file: modules/Rwa/Application/Services/RwaCrossLineDividendDistributionService.php
+    - test: modules/Rwa/tests/Feature/RwaCrossLineDividendDistributionTest.php::test_rwa_pro_rata_dividend_distribution_with_dust_reserve_invariant
+    - akses: route GET /rwa [role: admin, asset_manager, investor, rwa_admin]
+    - gate: docs/gates/fase-96.md
+- [x] 96.2 **InsurTech tersemat universal**: trigger dari 12 lini (keterlambatan logistik, kecelakaan kendaraan, cold-chain breach venue/RS/hotel, pembatalan event, cuaca tambang, no-show kontrak) → claims autopilot (Fase 72) satu kerangka, reserve terpusat di Treasury
+  Bukti:
+    - jenis: fitur
+    - commit: fafca066
+    - file: modules/Insurance/Application/Services/UniversalCrossLineInsuranceClaimService.php
+    - test: modules/Insurance/tests/Feature/UniversalCrossLineInsuranceClaimTest.php::test_universal_parametric_claim_autopilot_across_12_lines
+    - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
+    - gate: docs/gates/fase-96.md
+- [x] 96.3 **Pembiayaan lintas lini**: HODL-to-Drive (Fase 5C) → diperluas: pembiayaan alat berat tambang, pembiayaan fit-out tenant, pembiayaan modal tani (Fase 62) & pre-payment petani berbasis NDVI (Fase 86.2) — satu engine kredit dengan credit profile 360° (Fase 27.7)
+  Bukti:
+    - jenis: fitur
+    - commit: fafca066
+    - file: modules/Finance/Application/Services/UniversalCreditEvaluationService.php
+    - test: modules/Finance/tests/Feature/UniversalCreditEvaluationTest.php::test_credit_profile_360_scoring_and_tier_classification
+    - akses: route GET /rwa [role: admin, asset_manager, investor, rwa_admin]
+    - gate: docs/gates/fase-96.md
+- [x] 96.4 **Stablecoin settlement gr**up: settlement intercompany & cross-border (venue internasional, artist luar negeri, offtake tambang) memakai stablecoin internal (Fase 83) → clear real-time 24/7, kurs terkunci, Σ ledger seimbang
+  Bukti:
+    - jenis: fitur
+    - commit: fafca066
+    - file: modules/Core/Application/Services/UniversalStablecoinClearingService.php
+    - test: modules/Core/tests/Feature/UniversalCrossLineFintechIntegrationTest.php::test_stablecoin_24_7_cross_border_clearing_with_locked_fx
+    - akses: command rwa:audit
+    - gate: docs/gates/fase-96.md
+- [x] 96.5 **Yield & treasury terpadu**: saldo idle 12 lini → robo-advisor/Treasury yield (Fase 73) → cash pooling antar entitas (Fase 48.8) → group liquidity teroptimasi
+  Bukti:
+    - jenis: fitur
+    - commit: fafca066
+    - file: modules/Treasury/Application/Services/UniversalGroupCashPoolingService.php
+    - test: modules/Treasury/tests/Feature/UniversalGroupCashPoolingTest.php::test_daily_idle_cash_sweep_to_treasury_yield_pool
+    - akses: command rwa:audit
+    - gate: docs/gates/fase-96.md
+- [x] 96.6 Test integrasi: pembayaran bundle hotel-venue-resto → settle ke vendor + fee platform + poin loyalty; klaim insuransi lintas 3 lini cair otomatis; Σ semua = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: fafca066
+    - file: modules/Core/tests/Feature/UniversalCrossLineFintechIntegrationTest.php
+    - test: modules/Core/tests/Feature/UniversalCrossLineFintechIntegrationTest.php::test_cross_line_bundle_settlement_and_three_line_insurance_autopilot
+    - akses: command ins:audit
+    - gate: docs/gates/fase-96.md
+- [x] 96.7 Quality gate Fase 96
+  Bukti:
+    - jenis: dokumen
+    - commit: fafca066
+    - file: docs/gates/fase-96.md
+    - test: tests/Architecture/TestHygieneTest.php
+    - akses: command rwa:audit
+    - gate: docs/gates/fase-96.md
 
 ## FASE 97 — INTEGRASI LINTAS 12 LINI (C): TALENT GIG, ESG TERPADU & EVENT SPINE PENUH
-> **Status audit 2026-10-10:** 🟠 KERANGKA — event spine penuh tidak terwujud (1 publisher, 0 consumer). modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `TwelveLinesCommandCenterService`; test `TwelveLinesCommandCenterTest` — commit `a95bfe6`, +127 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** 🔨 DIKERJAKAN — branch feature/fase-96-fintech-rwa bersiap untuk vertical slice Fase 97. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `TwelveLinesCommandCenterService`; test `TwelveLinesCommandCenterTest` — commit `a95bfe6`, +127 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
 > **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.

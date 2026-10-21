@@ -35,7 +35,7 @@ class UniversalGroupCashPoolingService
         $date = $dateYmd !== '' ? $dateYmd : date('Y-m-d');
 
         if ($sweepAmount > 0) {
-            $idempotencyKey = 'cash_sweep:' . hash('sha256', "{$entityId}:{$date}:{$sweepAmount}");
+            $idempotencyKey = 'cash_sweep:'.hash('sha256', "{$entityId}:{$date}:{$sweepAmount}");
 
             // Double-entry: Debit central yield pool, Credit intercompany sweep liability
             $this->ledger->post(new PostingDTO(
@@ -62,7 +62,7 @@ class UniversalGroupCashPoolingService
     /**
      * Compute and distribute daily overnight money market yield across pooled entities
      *
-     * @param array<string, int> $entityContributionMap entityId => balanceIdr
+     * @param  array<string, int>  $entityContributionMap  entityId => balanceIdr
      * @return array{total_pool_idr: int, total_yield_idr: int, distributions: array<string, int>}
      */
     public function calculateOvernightYieldDistribution(

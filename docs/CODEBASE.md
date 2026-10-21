@@ -521,7 +521,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 41 | **Proptech** | `prp_` | 3 |
 | 42 | **Resto** | `resto_` | 10 |
 | 43 | **Ret** | `ret_` | 3 |
-| 44 | **Rwa** | `rwa_` | 1 |
+| 44 | **Rwa** | `rwa_` | 2 |
 | 45 | **Shared** | — | 0 |
 | 46 | **Store** | `store_` | 5 |
 | 47 | **Supplier** | `sup_` | 3 |
@@ -534,7 +534,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 54 | **Venue** | `ven_` | 5 |
 | 55 | **Wealth** | `wm_` | 1 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **553 Migrasi** |
+| | **Total: 56 Modul** | | **554 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -738,7 +738,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Agri** | `AgriAccounts` | 5 | `agri:farmer_loan_ar:IDR`, `agri:escrow_disbursement:IDR` ... |
 | **B2b** | `B2bAccounts` | 3 | `escrow:b2b:orders:IDR`, `clearing:b2b:deposit:IDR` ... |
 | **CloudKitchen** | `CloudKitchenAccounts` | 2 | `hcm:meals_deduction:IDR`, `resto:catering_revenue:IDR` |
-| **Core** | `CoreAccounts` | 16 | `clearing:external:IDR`, `clearing:golden_scenario:IDR` ... |
+| **Core** | `CoreAccounts` | 22 | `clearing:external:IDR`, `clearing:golden_scenario:IDR` ... |
 | **Edu** | `EduAccounts` | 4 | `edu:headhunter_expense:IDR`, `edu:headhunter_payable:IDR` ... |
 | **Egy** | `EgyAccounts` | 13 | `egy:bess_arbitrage_revenue:IDR`, `egy:carbon_credit_inventory:IDR` ... |
 | **EnterpriseFinance** | `EnterpriseFinanceAccounts` | 2 | `ef:holding_dividend_income:IDR`, `ef:holding_dividend_receivable:IDR` |
@@ -749,7 +749,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Hcm** | `HcmAccounts` | 7 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` ... |
 | **Hospital** | `HospitalAccounts` | 20 | `hsp:bpjs_receivable:IDR`, `hsp:epharmacy_receivable:IDR` ... |
 | **Hotel** | `HotelAccounts` | 29 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
-| **Insurance** | `InsuranceAccounts` | 1 | `ins:premium_reserve:IDR` |
+| **Insurance** | `InsuranceAccounts` | 3 | `ins:premium_reserve:IDR`, `ins:reserve_pool:IDR` ... |
 | **Logistics** | `LogisticsAccounts` | 5 | `lgx:carrier_payable:IDR`, `lgx:circular_revenue:IDR` ... |
 | **Mall** | `MallAccounts` | 7 | `revenue:mall:parking:IDR`, `cash:mall:parking:IDR` ... |
 | **Manufacturing** | `ManufacturingAccounts` | 2 | `mfg:vmi_budget_encumbrance:IDR`, `mfg:vmi_commitment:IDR` |
@@ -757,14 +757,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Mining** | `MiningAccounts` | 23 | `expense:mining_royalty:IDR`, `min:base_metal_sales_revenue:IDR` ... |
 | **Proptech** | `ProptechAccounts` | 8 | `ast:fixed_assets:IDR`, `epc:cip_liability:IDR` ... |
 | **Ret** | `RetAccounts` | 16 | `ret:bill_payment_fee_revenue:IDR`, `ret:bill_payment_receivable:IDR` ... |
-| **Rwa** | `RwaAccounts` | 8 | `rwa:rounding_reserve:IDR`, `rwa:platform_fees:IDR` ... |
+| **Rwa** | `RwaAccounts` | 10 | `rwa:rounding_reserve:IDR`, `rwa:dividend_source:default:IDR` ... |
 | **Tlx** | `TlxAccounts` | 6 | `tlx:cloud_chargeback_receivable:IDR`, `tlx:cloud_infrastructure_revenue:IDR` ... |
 | **Trade** | `TradeAccounts` | 2 | `trd:tender_contract_ar:IDR`, `trd:tender_revenue_unearned:IDR` |
 | **TradeFinance** | `TradeFinanceAccounts` | 3 | `tf:crossborder_escrow:IDR`, `tf:exporter_settlement:IDR` ... |
-| **Treasury** | `TreasuryAccounts` | 2 | `TRS_USD_SRC`, `TRS_USD_DEST` |
+| **Treasury** | `TreasuryAccounts` | 4 | `TRS_USD_SRC`, `TRS_USD_DEST` ... |
 | **Vending** | `VendingAccounts` | 2 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` |
 | **Venue** | `VenueAccounts` | 24 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 3 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 30 Registry** | | **231 Akun** | |
+| **Total: 30 Registry** | | **243 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

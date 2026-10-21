@@ -90,7 +90,7 @@ class UniversalCreditEvaluationService
             throw new RuntimeException('Loan principal amount must be positive.');
         }
 
-        $idempotencyKey = 'loan_disb:' . hash('sha256', $loanId . ':' . $borrowerId . ':' . $purposeCode);
+        $idempotencyKey = 'loan_disb:'.hash('sha256', $loanId.':'.$borrowerId.':'.$purposeCode);
 
         // Double-entry: Debit Loan Receivable, Credit Borrower Escrow
         $this->ledger->post(new PostingDTO(

@@ -19,7 +19,9 @@ class UniversalCrossLineFintechIntegrationTest extends TestCase
     use RefreshDatabase;
 
     protected UniversalStablecoinClearingService $stablecoinService;
+
     protected UniversalCrossLineFintechService $fintechService;
+
     protected Ledger $ledger;
 
     protected function setUp(): void

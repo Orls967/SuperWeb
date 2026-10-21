@@ -46,7 +46,7 @@ class UniversalCrossLineInsuranceClaimService
             throw new RuntimeException('Calculated insurance payout must be greater than zero.');
         }
 
-        $idempotencyKey = 'ins_claim:' . $policyNumber . ':' . hash('sha256', $triggerTypeCode . $telemetryProofHash);
+        $idempotencyKey = 'ins_claim:'.$policyNumber.':'.hash('sha256', $triggerTypeCode.$telemetryProofHash);
 
         // Double-entry: Debit Central Treasury Reserve Pool, Credit Claimant Payable
         $claimantAccount = 'claimant:payable:default:IDR';
@@ -66,7 +66,7 @@ class UniversalCrossLineInsuranceClaimService
         InsuranceClaim::query()->updateOrCreate(
             ['idempotency_key' => $idempotencyKey],
             [
-                'claim_number' => 'CLM-' . strtoupper(substr(hash('sha256', $idempotencyKey), 0, 10)),
+                'claim_number' => 'CLM-'.strtoupper(substr(hash('sha256', $idempotencyKey), 0, 10)),
                 'policy_id' => $policy->id,
                 'trigger_event_id' => $triggerTypeCode,
                 'payout_amount_idr' => $payoutAmountIdr,

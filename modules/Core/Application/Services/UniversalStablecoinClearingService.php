@@ -39,7 +39,7 @@ class UniversalStablecoinClearingService
         }
 
         $idrEquivalent = (int) floor(($usdcAmountCents * $lockedRateIdrPerUsd) / 100);
-        $deterministicKey = 'stable_clear:' . hash('sha256', $sourceEntityId . ':' . $beneficiaryEntityId . ':' . $contractRef);
+        $deterministicKey = 'stable_clear:'.hash('sha256', $sourceEntityId.':'.$beneficiaryEntityId.':'.$contractRef);
 
         $srcStableAccount = "clearing:stablecoin:{$sourceEntityId}:USDC";
         $tgtStableAccount = "clearing:stablecoin:{$beneficiaryEntityId}:USDC";

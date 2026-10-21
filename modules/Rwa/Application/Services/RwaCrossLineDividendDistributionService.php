@@ -87,7 +87,7 @@ class RwaCrossLineDividendDistributionService
             );
         }
 
-        $deterministicKey = 'rwa_div:' . $symbol . ':' . hash('sha256', $sourceBatchRef);
+        $deterministicKey = 'rwa_div:'.$symbol.':'.hash('sha256', $sourceBatchRef);
 
         $this->ledger->post(new PostingDTO(
             type: RwaTransactionTypes::RWA_DIVIDEND->value,
