@@ -117,4 +117,52 @@ class MiningComplianceAndRoyaltyService
 
         return true;
     }
+
+    /**
+     * Reconcile weighbridge receipts with stockpile movement and barge shipments (3-point reconciliation).
+     */
+    public function reconcileWeighbridgeStockpileAndShipment(
+        float $weighbridgeTotalTon,
+        float $stockpileTons,
+        float $shipmentTons,
+        float $tolerancePercent = 2.0
+    ): array {
+        $varianceTon = abs($weighbridgeTotalTon - $shipmentTons);
+        $variancePercent = $weighbridgeTotalTon > 0 ? ($varianceTon / $weighbridgeTotalTon) * 100 : 0.0;
+
+        $isReconciled = $variancePercent <= $tolerancePercent;
+
+        return [
+            'weighbridge_total_ton' => $weighbridgeTotalTon,
+            'stockpile_tons' => $stockpileTons,
+            'shipment_tons' => $shipmentTons,
+            'variance_ton' => round($varianceTon, 2),
+            'variance_percent' => round($variancePercent, 2),
+            'tolerance_percent' => $tolerancePercent,
+            'status' => $isReconciled ? 'reconciled_ok' : 'investigation_required',
+        ];
+    }
+
+    /**
+     * Assay grade control and bias checking.
+     */
+    public function verifyAssayGradeBias(
+        string $sampleCode,
+        float $fieldAssayGrade,
+        float $labAssayGrade,
+        float $biasTolerance = 0.15
+    ): array {
+        $bias = abs($fieldAssayGrade - $labAssayGrade);
+        $exceedsTolerance = $bias > $biasTolerance;
+
+        return [
+            'sample_code' => $sampleCode,
+            'field_grade' => $fieldAssayGrade,
+            'lab_grade' => $labAssayGrade,
+            'bias' => round($bias, 3),
+            'bias_tolerance' => $biasTolerance,
+            'exceeds_tolerance' => $exceedsTolerance,
+            'status' => $exceedsTolerance ? 'investigation_required' : 'verified_compliant',
+        ];
+    }
 }

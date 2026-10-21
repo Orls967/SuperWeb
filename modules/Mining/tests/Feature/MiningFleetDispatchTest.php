@@ -129,4 +129,36 @@ class MiningFleetDispatchTest extends TestCase
         $this->assertTrue($completed->fuel_anomaly_detected);
         $this->assertTrue($completed->contractor_payment_held);
     }
+
+    public function test_c_engine_hours_above_threshold_triggers_work_order_once(): void
+    {
+        $this->truck->update(['engine_hours' => 1400, 'status' => 'available']);
+
+        // 1. Adding 150 hours pushes to 1550 (>= 1500 threshold) -> triggers maintenance once
+        $res1 = $this->service->recordEngineHoursAndCheckMaintenance($this->truck->id, 150, 1500);
+        $this->assertTrue($res1['maintenance_triggered']);
+        $this->assertEquals(1550, $res1['engine_hours']);
+        $this->assertEquals('maintenance', $res1['status']);
+
+        // 2. Adding more hours does not trigger duplicate maintenance (idempotent 1x)
+        $res2 = $this->service->recordEngineHoursAndCheckMaintenance($this->truck->id, 50, 1500);
+        $this->assertFalse($res2['maintenance_triggered']);
+        $this->assertEquals(1600, $res2['engine_hours']);
+        $this->assertEquals('maintenance', $res2['status']);
+    }
+
+    public function test_e_query_budget_dispatch_board_within_threshold(): void
+    {
+        \Illuminate\Support\Facades\DB::flushQueryLog();
+        \Illuminate\Support\Facades\DB::enableQueryLog();
+
+        $summary = $this->service->getDispatchBoardSummary($this->site->id);
+
+        $queryCount = count(\Illuminate\Support\Facades\DB::getQueryLog());
+        $this->assertLessThanOrEqual(2, $queryCount);
+        $this->assertEquals($this->site->id, $summary['site_id']);
+        $this->assertArrayHasKey('available_equipment', $summary);
+        $this->assertArrayHasKey('dispatched_equipment', $summary);
+        $this->assertArrayHasKey('active_runs', $summary);
+    }
 }

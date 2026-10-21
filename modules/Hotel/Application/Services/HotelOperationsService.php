@@ -41,8 +41,27 @@ class HotelOperationsService
             ->where('status', 'available')
             ->first();
 
+        $status = 'confirmed';
+
         if (! $room) {
-            throw new RuntimeException("No available {$roomType} rooms in property {$property->name}");
+            $totalRoomsOfType = HotelRoom::where('property_id', $propertyId)
+                ->where('room_type', $roomType)
+                ->count();
+            $activeReservations = HotelReservation::where('property_id', $propertyId)
+                ->where('status', '!=', 'cancelled')
+                ->where('status', '!=', 'checked_out')
+                ->count();
+
+            $maxAllowed = (int) floor($totalRoomsOfType * 1.03);
+
+            if ($totalRoomsOfType > 0 && $activeReservations < $maxAllowed) {
+                $room = HotelRoom::where('property_id', $propertyId)
+                    ->where('room_type', $roomType)
+                    ->first();
+                $status = 'confirmed_overbooked';
+            } else {
+                throw new RuntimeException("No available {$roomType} rooms in property {$property->name}");
+            }
         }
 
         // Rate guardrail: contract rate always wins; floor is room base_rate_idr
@@ -68,7 +87,7 @@ class HotelOperationsService
             'check_out_date' => $checkOutDate,
             'daily_rate_idr' => $effectiveRate,
             'total_room_charge_idr' => $totalRoomCharge,
-            'status' => 'confirmed',
+            'status' => $status,
         ]);
 
         // Create initial folio
@@ -83,10 +102,25 @@ class HotelOperationsService
             'status' => 'open',
         ]);
 
-        // Mark room as reserved/occupied
-        $room->update(['status' => 'reserved']);
+        // Mark room as reserved/occupied if newly assigned
+        if ($room->status === 'available') {
+            $room->update(['status' => 'reserved']);
+        }
 
         return $reservation;
+    }
+
+    /**
+     * Reconfirm an overbooked reservation (H-3 reconfirmation flow)
+     */
+    public function reconfirmReservation(string $reservationId): HotelReservation
+    {
+        $reservation = HotelReservation::findOrFail($reservationId);
+        if ($reservation->status === 'confirmed_overbooked') {
+            $reservation->update(['status' => 'confirmed_reconfirmed']);
+        }
+
+        return $reservation->fresh();
     }
 
     /**

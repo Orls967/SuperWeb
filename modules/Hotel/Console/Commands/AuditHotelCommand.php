@@ -11,6 +11,8 @@ class AuditHotelCommand extends Command
 {
     protected $signature = 'htl:audit';
 
+    protected $aliases = ['hotel:audit'];
+
     protected $description = 'Audit operasional hotel: kamar, reservasi, folio, dan integritas occupancy vs reservation';
 
     public function handle(HotelOperationsService $service): int

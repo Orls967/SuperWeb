@@ -11,6 +11,8 @@ class AuditMiningCommand extends Command
 {
     protected $signature = 'min:audit';
 
+    protected $aliases = ['mining:audit'];
+
     protected $description = 'Perform two-source verification of mining equipment statuses and dispatch runs';
 
     public function handle(MiningFleetDispatchService $service): int

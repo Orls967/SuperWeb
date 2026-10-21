@@ -130,4 +130,36 @@ class HotelFolioAndPackageService
             'settled_vendors' => count($vendorShares),
         ];
     }
+
+    /**
+     * Corporate billing settlement (invoicing monthly to company as Accounts Receivable / City Ledger)
+     */
+    public function settleCorporateBilling(string $folioId, string $corporateId, int $amountIdr): HotelFolio
+    {
+        $folio = HotelFolio::findOrFail($folioId);
+
+        $folio->increment('total_paid', $amountIdr);
+        $newBalance = max(0, ($folio->total_room_charges + $folio->total_addon_charges) - $folio->total_paid);
+
+        $folio->update([
+            'outstanding_balance' => $newBalance,
+            'status' => $newBalance === 0 ? 'settled' : 'open',
+        ]);
+
+        if ($this->ledger && $amountIdr > 0) {
+            $this->ledger->post(new PostingDTO(
+                type: 'HOTEL_FOLIO_SETTLEMENT',
+                description: "Corporate billing AR for company {$corporateId} folio {$folio->id}",
+                idempotencyKey: "hotel:corp_billing:{$folio->id}:{$corporateId}:{$amountIdr}",
+                entries: Posting::lines()
+                    ->debit('htl:city_ledger_receivable:IDR', $amountIdr)
+                    ->credit('htl:room_revenue:IDR', $amountIdr)
+                    ->toEntries('IDR'),
+                referenceType: 'htl_folios',
+                referenceId: $folio->id,
+            ));
+        }
+
+        return $folio->fresh();
+    }
 }
