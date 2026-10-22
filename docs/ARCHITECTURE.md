@@ -764,3 +764,306 @@ graph TD
   - Kliring resiprokal kewajiban antar-cabang faskes (`hsp_inter_branch_clearings`) dengan penyelesaian saldo buku besar double-entry 0-diskrepansi.
 
 
+
+
+---
+
+## 10. Diagram Sekuensial Lintas Lini Bisnis Konglomerasi
+
+Bagian ini memodelkan interaksi mikro-layanan dan alur data end-to-end melintasi batas domain modular untuk 12 skenario bisnis utama konglomerasi.
+
+### 10.1 Skenario 1: E2E Consumer Journey — Multi-Tenant Super-App Checkout to Instant Settlement
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Customer as "Konsumen (Super-App)"
+    participant Store as "Modul Store / Resto"
+    participant PayHub as "Payment Hub Sentral"
+    participant Ledger as "Banking Ledger"
+    participant WMS as "Logistics & WMS"
+    participant Mall as "Mall Property"
+    Customer->>Store: Checkout multi-merchant cart
+    Store->>PayHub: Request unified charge (kontrak Payable)
+    PayHub->>Ledger: Atomic hold saldo dompet IDR / QRIS
+    Ledger-->>PayHub: Hold confirmed (journal locked)
+    PayHub->>Store: Capture payment confirmation
+    Store->>WMS: Generate automated packing list & dispatch task
+    Store->>Mall: Record tenant turnover sales for revenue share
+    Store-->>Customer: Order confirmation & digital receipt
+```
+
+### 10.2 Skenario 2: Multi-Tier Procurement — 3-Way Match dengan Automated AP Ledger Posting
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Buyer as "Procurement Buyer"
+    participant PRC as "Procurement Core"
+    participant SUP as "Portal Supplier"
+    participant WMS as "Warehouse Receiving"
+    participant FIN as "Accounts Payable (AP)"
+    participant GL as "General Ledger"
+    Buyer->>PRC: Create Purchase Order (PO)
+    PRC->>SUP: Transmit approved PO via B2B EDI
+    SUP->>WMS: Delivery with electronic Surat Jalan (DO)
+    WMS->>PRC: Record Good Receipt Note (GRN)
+    SUP->>FIN: Submit electronic Commercial Invoice
+    FIN->>PRC: Execute automated 3-Way Match (PO, GRN, Inv)
+    PRC-->>FIN: Match 100% within tolerance
+    FIN->>GL: Post automated journal: Debit Inventory / Credit AP
+```
+
+### 10.3 Skenario 3: Cold-Chain Bio-Pharma Logistics — IoT Telemetry ke Blockchain Escrow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Reefer as "Reefer IoT Sensor (2-8C)"
+    participant Telemetry as "Telematics Ingestion"
+    participant ColdChain as "Cold Chain Supervisor"
+    participant Escrow as "Smart Contract Escrow"
+    participant Hospital as "Hospital Pharmacy"
+    Reefer->>Telemetry: Ping encrypted GPS & temperature payload
+    Telemetry->>ColdChain: Validate thermal compliance threshold
+    alt Suhu Aman (2C - 8C)
+        ColdChain->>Escrow: Append telemetry cryptographic seal
+        Reefer->>Hospital: Physical handoff with ePoD scan
+        Hospital->>Escrow: Confirm custody acceptance
+        Escrow->>Escrow: Release carrier delivery fee payment
+    else Ekskursi Suhu (> 8C)
+        ColdChain->>Hospital: Alert thermal breach: AUTO-QUARANTINE LOT
+        ColdChain->>Escrow: Freeze payout & trigger insurer claim
+    end
+```
+
+### 10.4 Skenario 4: Employee Meal & Perk Deduction — Multi-Company HCM ke Central Kitchen POS
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Emp as "Karyawan Holding"
+    participant POS as "Cloud Kitchen / Kantin POS"
+    participant HCM as "HCM Benefits & Meal Plan"
+    participant Payroll as "Payroll PPh 21 Engine"
+    participant GL as "Intercompany Ledger"
+    Emp->>POS: Tap RFID employee badge for lunch package
+    POS->>HCM: Verify employee meal allowance quota
+    HCM-->>POS: Quota valid (subsidi Rp 35.000 approved)
+    POS->>GL: Debit Entitas Pegawai / Credit Resto Unit
+    opt Nilai Belanja Melebihi Kuota
+        HCM->>Payroll: Queue payroll deduction for excess amount
+        Payroll->>Payroll: Deduct at next monthly pay slip
+    end
+```
+
+### 10.5 Skenario 5: Hospital Emergency Admission ke BPJS INA-CBG Automated Claim Reconciliation
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Patient as "Pasien Gawat Darurat (IGD)"
+    participant Triage as "Perawat IGD & Triase"
+    participant EMR as "Electronic Medical Record (AES-256)"
+    participant Pharmacy as "Apotek IGD (FEFO)"
+    participant BPJS as "BPJS INA-CBG Grouper Gateway"
+    participant Billing as "Hospital Billing Engine"
+    Patient->>Triage: Triage assessment & NIK identification
+    Triage->>EMR: Emergency admission record
+    Triage->>Pharmacy: Emergency resus drugs order (bypass payment)
+    Pharmacy-->>Triage: Instant dispensing & lot batch recording
+    EMR->>BPJS: Transmit ICD-10 & ICD-9-CM surgical codes
+    BPJS-->>Billing: Return INA-CBG package tariff approval
+    Billing->>Billing: Generate split bill (BPJS covered vs excess)
+```
+
+### 10.6 Skenario 6: Beach Club VIP Cabana — Min-Spend RFID Wristband ke Ledger Split
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor VIP as "Tamu VIP Cabana"
+    participant Turnstile as "Turnstile Gate Scanner"
+    participant Venue as "Venue Booking & Cabana Host"
+    participant POS as "Bar & Lounge POS"
+    participant Ledger as "Escrow & Revenue Split Ledger"
+    VIP->>Turnstile: Tap pre-paid VIP QR ticket
+    Turnstile->>Venue: Issue active RFID wristband linked to folio
+    Venue->>Ledger: Lock minimum spend escrow (e.g. Rp 15.000.000)
+    VIP->>POS: Order premium champagne & platters via wristband
+    POS->>Venue: Deduct order from minimum spend balance
+    Venue->>Ledger: Split revenue: Venue Rental 40% / F&B 50% / Service 10%
+    Venue-->>VIP: Real-time balance notification on Super-App
+```
+
+### 10.7 Skenario 7: Hotel Night Audit — Automated Folio Split, City Ledger & Housekeeping Turnover
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor NightAuditor as "Night Auditor (Cron / Staf FO)"
+    participant PMS as "Property Management System (PMS)"
+    participant RoomEngine as "Smart Room IoT & Minibar"
+    participant Housekeeping as "Housekeeping Task Engine"
+    participant CityLedger as "Corporate City Ledger (AR)"
+    participant GL as "General Ledger"
+    NightAuditor->>PMS: Initiate Automated Night Audit Run (02:00 AM)
+    PMS->>RoomEngine: Ingest automated minibar weight sensors
+    PMS->>PMS: Post Room Charge & Hotel Tax (PB1) to in-house folios
+    PMS->>CityLedger: Transfer corporate accounts to City Ledger AR
+    PMS->>Housekeeping: Generate morning room turnover schedule
+    PMS->>GL: Post automated daily revenue journal batch
+    PMS-->>NightAuditor: Trial balance locked & Day Closed
+```
+
+### 10.8 Skenario 8: Mining Fleet Dispatch — High-Precision Weighbridge ke Perhitungan Royalti
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Truck as "Haul Truck Driver"
+    participant Pit as "Excavator GPS & Dig Dispatch"
+    participant WB as "Digital Weighbridge Scale"
+    participant Lab as "Assay Coal Quality Lab"
+    participant Royalty as "ESDM Royalty & PNBP Engine"
+    Truck->>Pit: Loaded with thermal coal at Pit 3 North
+    Pit->>Truck: Transmit digital manifest to truck tablet
+    Truck->>WB: Drive onto weighbridge (RFID scan)
+    WB->>WB: Record Gross Tare Net weight (certified calibration)
+    Lab->>Royalty: Transmit Calorific Value (CV) & Moisture assay
+    WB->>Royalty: Link weight ticket with assay record
+    Royalty->>Royalty: Compute progressive statutory royalty (HBA rate)
+    Royalty-->>Truck: Certified hauling ticket issued with SHA-256 seal
+```
+
+### 10.9 Skenario 9: Real-World Asset (RWA) — Fractional Tokenization & Automated Dividend Distribution
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Investor as "Retail & Institutional Investor"
+    participant RWA as "RWA Tokenization Engine"
+    participant Asset as "Physical Asset Registry (PSAK 16)"
+    participant Prop as "Property / SPKLU Revenue"
+    participant DivEngine as "Dividend Pro-Rata Calculator"
+    participant Wallet as "User Multi-Asset Wallets"
+    Asset->>RWA: Tokenize physical commercial asset into 1.000.000 units
+    Investor->>RWA: Purchase fractional tokens using IDR / Stablecoin
+    Prop->>DivEngine: Deposit quarterly net operational rental revenue
+    DivEngine->>DivEngine: Run exact integer minor unit pro-rata allocation
+    DivEngine->>DivEngine: Route fractional rounding residue to reserve account
+    DivEngine->>Wallet: Instant credit dividend to token holders' wallets
+```
+
+### 10.10 Skenario 10: Insurtech Parametric Flight Delay — Automated Weather Oracle ke Escrow Payout
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Traveler as "Wisatawan Super-App"
+    participant Insure as "Insurtech Micro-Policy Engine"
+    participant Oracle as "Aviation / Weather Data Oracle"
+    participant Escrow as "Insurance Reserve Escrow"
+    participant Bank as "Instant Payout Gateway"
+    Traveler->>Insure: Bind parametric policy during hotel / flight booking
+    Insure->>Escrow: Lock indemnity reserve balance
+    Oracle->>Insure: Ingest certified flight delay event (> 120 minutes)
+    Insure->>Insure: Autopilot claim trigger (zero claim paperwork required)
+    Insure->>Escrow: Release claim funds authorization
+    Escrow->>Bank: Instant bank transfer / wallet credit to traveler
+    Bank-->>Traveler: Push notification: Indemnity credited Rp 1.000.000
+```
+
+### 10.11 Skenario 11: Robo-Advisor Wealth Engine — Target-Allocation Drift ke Treasury Rebalance
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as "Nasabah Wealth Management"
+    participant Robo as "Robo-Advisor Portfolio Engine"
+    participant Risk as "Risk Profile & Emergency Guardrail"
+    participant Market as "Market Price Stream"
+    participant Treasury as "Treasury Multi-Asset Order Router"
+    Client->>Robo: Define Moderate Growth goal (60% Stock, 30% Bond, 10% Gold)
+    Market->>Robo: Asset price fluctuations detect portfolio drift > 5%
+    Robo->>Risk: Validate proposed rebalancing against liquidity guardrails
+    Risk-->>Robo: Rebalancing plan approved
+    Robo->>Treasury: Execute atomic sell overweighted asset / buy underweighted
+    Treasury-->>Client: Rebalancing executed with zero slippage penalty
+```
+
+### 10.12 Skenario 12: Multi-Region Disaster Recovery — PostgreSQL Cross-DC Failover dengan Zero Ledger Loss
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant PrimaryDC as "Primary Data Center (DC-Jakarta)"
+    participant Witness as "Raft Witness Node (DC-Surabaya)"
+    participant StandbyDC as "Standby Data Center (DC-Bali)"
+    participant AppCluster as "App Cluster & Route53 / BGP DNS"
+    PrimaryDC->>StandbyDC: Synchronous streaming replication (WAL logs)
+    Note over PrimaryDC: Primary DC network partition / physical disaster
+    Witness->>PrimaryDC: Heartbeat ping failed (timeout > 3.000 ms)
+    Witness->>StandbyDC: Request quorum voting for failover election
+    StandbyDC->>Witness: Quorum 2/3 validated (Zero WAL lag confirmed)
+    StandbyDC->>StandbyDC: Promote standby node to Read-Write Master
+    StandbyDC->>AppCluster: Update connection pool DNS routing
+    AppCluster-->>AppCluster: Resume transactions with RPO=0 and RTO < 30s
+```
+
+---
+
+## 11. Diagram C4 Arsitektur Sistem Konglomerasi
+
+### 11.1 C4 Context Diagram: Interaksi Platform dengan Pengguna & Sistem Eksternal
+
+```mermaid
+flowchart TB
+    subgraph External_Users["Pengguna Sistem Eksternal"]
+        UserCons["Konsumen / Pembeli Super-App"]
+        UserB2B["Mitra B2B / Supplier / Tenant Mall"]
+        UserCorp["Manajemen Korporat & Auditor Holding"]
+    end
+    subgraph Core_Platform["Superwebsite Konglomerasi Enterprise"]
+        Gateway["API Gateway & Reverse Proxy Nginx"]
+        Monolith["Modular Monolith (Laravel 12 / PHP ^8.4)"]
+        EventSpine["Universal Event Spine (Redis Outbox & Kafka)"]
+        Database[("PostgreSQL Primary & Standby Replica")]
+    end
+    subgraph External_Systems["Layanan & Regulator Eksternal"]
+        PaymentGateways["Payment Gateways & BI-FAST"]
+        GovRegulators["Regulator (OJK, BPOM, DJP Pajak, ESDM)"]
+        CloudStorage["S3 Object Storage (DICOM & Dokumen)"]
+    end
+    UserCons -->|HTTPS / Mobile REST API| Gateway
+    UserB2B -->|EDIFACT / REST API v2-v3| Gateway
+    UserCorp -->|Web Portal & SSO RBAC| Gateway
+    Gateway --> Monolith
+    Monolith --> Database
+    Monolith --> EventSpine
+    Monolith -->|Settlement| PaymentGateways
+    Monolith -->|Kepatuhan & Laporan| GovRegulators
+    Monolith -->|Arsip Terenkripsi| CloudStorage
+```
+
+## 12. Matriks Protokol & Jaringan (Port & Network Matrix)
+
+| Layanan / Komponen | Port | Protokol | Keamanan / Enkripsi | Batasan Akses (Firewall / Subnet) |
+|---|---|---|---|---|
+| HTTP / HTTPS Public | 80, 443 | TCP / TLS 1.3 | HSTS, Let's Encrypt / Wildcard | Publik (Cloudflare WAF) |
+| API v1 / v2 / v3 | 443 | HTTPS REST | HMAC SHA-256 / Bearer Sanctum | Publik berkuota rate limit |
+| PostgreSQL Primary | 5432 | TCP | TLS (Mutual TLS cert) | Hanya VPC Internal Aplikasi |
+| Redis Cluster & Outbox | 6379, 16379 | TCP | AUTH + TLS | Hanya Subnet VPC Private |
+| OCPP 2.0.1 EV Station | 8443 | WSS (WebSocket) | TLS 1.3, Client Certificate | IP Whitelist SPKLU Hub |
+| DICOM PACS Image Server | 11112 | TCP / DICOM | TLS DICOM-TLS profile | Subnet Intranet Rumah Sakit |
+| IoT Telematics & Fleet | 8883 | MQTTS | TLS 1.3, X.509 Device Cert | Publik Gateway Broker IoT |
+| Raft Consensus DR | 7000 | TCP | Raft mTLS encryption | Subnet Inter-DC Dedicated Leased Line |
+
+## 13. Universal Event Spine & Pola Transactional Outbox
+
+Seluruh integrasi asinkron antar-modul diwajibkan menggunakan pola **Transactional Outbox** untuk menjamin *at-least-once delivery* dan konsistensi data transaksional:
+
+1. **Pencatatan Atomik**: Domain event disimpan ke dalam tabel outbox dalam transaksi database yang sama dengan mutasi data bisnis.
+2. **Dispatcher Mandiri**: Pekerja latar belakang (`php artisan outbox:dispatch`) membaca event pending dan memancarkannya ke bus pesan.
+3. **Idempotensi Penerima**: Modul konsumen mencatat ID event yang telah diproses untuk mencegah pemrosesan duplikat (*idempotent consumer*).
+4. **Dead-Letter Queue (DLQ)**: Kegagalan berulang setelah 8 kali percobaan secara otomatis dipindahkan ke tabel DLQ untuk inspeksi tim operasional.
