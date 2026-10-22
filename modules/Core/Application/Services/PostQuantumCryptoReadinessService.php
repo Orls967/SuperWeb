@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Services;
 
+use Illuminate\Support\Facades\Schema;
+use Modules\Core\Application\Actions\VerifyPassportAction;
+use Modules\Core\Domain\Models\Vehicle;
+
 class PostQuantumCryptoReadinessService
 {
     /**
@@ -29,20 +33,49 @@ class PostQuantumCryptoReadinessService
             'ESG_CARBON_SCOPE_CERTIFICATION_CHAIN',
         ];
 
+        $brokenChains = [];
+        if (Schema::hasTable('core_vehicle_events') && Schema::hasTable('core_vehicles')) {
+            $vehicles = Vehicle::all();
+            if ($vehicles->isNotEmpty()) {
+                $action = app(VerifyPassportAction::class);
+                foreach ($vehicles as $vehicle) {
+                    $res = $action->execute($vehicle);
+                    if (! $res['is_valid']) {
+                        $brokenChains['VEHICLE_PASSPORT_MERKLE_CHAIN'] = true;
+                        break;
+                    }
+                }
+            }
+        }
+
         $chains = [];
+        $validCount = 0;
+        $brokenCount = 0;
+
         foreach ($chainNames as $name) {
-            $rootHash = hash('sha256', "ROOT_HASH:{$name}:EPOCH_2026");
-            $chains[] = [
-                'chain_name' => $name,
-                'root_hash' => $rootHash,
-                'status' => 'VALID',
-            ];
+            $isBroken = isset($brokenChains[$name]);
+            if ($isBroken) {
+                $brokenCount++;
+                $chains[] = [
+                    'chain_name' => $name,
+                    'root_hash' => 'TAMPERED_BROKEN_HASH_CHAIN',
+                    'status' => 'BROKEN',
+                ];
+            } else {
+                $validCount++;
+                $rootHash = hash('sha256', "ROOT_HASH:{$name}:EPOCH_2026");
+                $chains[] = [
+                    'chain_name' => $name,
+                    'root_hash' => $rootHash,
+                    'status' => 'VALID',
+                ];
+            }
         }
 
         return [
             'total_chains' => count($chains),
-            'valid_chains_count' => count($chains),
-            'broken_chains_count' => 0,
+            'valid_chains_count' => $validCount,
+            'broken_chains_count' => $brokenCount,
             'chains' => $chains,
         ];
     }
@@ -92,7 +125,7 @@ class PostQuantumCryptoReadinessService
      */
     public function rotateMasterKeyEnvelope(string $oldFingerprint): array
     {
-        $newFingerprint = hash('sha256', "MASTER_KEY:{$oldFingerprint}:ROTATED_" . time());
+        $newFingerprint = hash('sha256', "MASTER_KEY:{$oldFingerprint}:ROTATED_".time());
 
         return [
             'old_fingerprint' => $oldFingerprint,

@@ -6,30 +6,30 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Modules\Core\Domain\Models\CrisisAffectedItem;
+use Modules\Core\Domain\Models\CrisisIncident;
 use Modules\Core\Domain\Models\DrClusterNode;
 use Modules\Core\Domain\Models\DrFailoverDrill;
 use Modules\Core\Domain\Models\GoldenScenarioRun;
 use Modules\Core\Domain\Models\GoldenScenarioStep;
-use Modules\Core\Domain\Models\CrisisIncident;
-use Modules\Core\Domain\Models\CrisisAffectedItem;
 use Modules\Core\Domain\Models\PartnerWebhook;
 use Modules\Core\Domain\Models\SyncConflictLedger;
-use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\AllergyMatrix;
+use Modules\Hospital\Domain\Models\EPharmacyOrder;
+use Modules\Hospital\Domain\Models\EPharmacyOrderItem;
+use Modules\Hospital\Domain\Models\ImagingSeries;
+use Modules\Hospital\Domain\Models\ImagingStudy;
+use Modules\Hospital\Domain\Models\InterBranchClearing;
+use Modules\Hospital\Domain\Models\LabCatalog;
+use Modules\Hospital\Domain\Models\LabCriticalRange;
+use Modules\Hospital\Domain\Models\LabCustodyTransfer;
+use Modules\Hospital\Domain\Models\LabPartnerContract;
+use Modules\Hospital\Domain\Models\LabSpecimen;
+use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\PharmacyBranch;
 use Modules\Hospital\Domain\Models\PharmacyBranchLot;
 use Modules\Hospital\Domain\Models\TeleConsult;
 use Modules\Hospital\Domain\Models\TeleConsultNote;
-use Modules\Hospital\Domain\Models\EPharmacyOrder;
-use Modules\Hospital\Domain\Models\EPharmacyOrderItem;
-use Modules\Hospital\Domain\Models\LabCatalog;
-use Modules\Hospital\Domain\Models\LabCriticalRange;
-use Modules\Hospital\Domain\Models\LabPartnerContract;
-use Modules\Hospital\Domain\Models\LabSpecimen;
-use Modules\Hospital\Domain\Models\LabCustodyTransfer;
-use Modules\Hospital\Domain\Models\ImagingStudy;
-use Modules\Hospital\Domain\Models\ImagingSeries;
 
 /**
  * Phase101To105MassiveUltraSeeder
@@ -1231,7 +1231,7 @@ class Phase101To105MassiveUltraSeeder extends Seeder
         ];
 
         foreach ($clearingBatches as $cl) {
-            \Modules\Hospital\Domain\Models\InterBranchClearing::updateOrCreate(
+            InterBranchClearing::updateOrCreate(
                 ['clearing_code' => $cl['ref']],
                 [
                     'from_branch_id' => $hubJktBranch->id,

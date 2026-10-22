@@ -14,6 +14,18 @@
             "entries": [
                 "cmd:agri:audit"
             ]
+        },
+        {
+            "date": "2026-10-22",
+            "decision": "DECISIONS.md#2026-10-22-fase-101-golden-scenario-dr-and-post-quantum",
+            "entries": [
+                "cmd:pq:audit-chains"
+            ]
+        },
+        {
+            "date": "2026-10-22",
+            "decision": "DECISIONS.md#2026-10-22-fase-101-golden-scenario-dr-and-post-quantum",
+            "entries": "baseline awal: 1 entri"
         }
     ]
 }

@@ -9,7 +9,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Hospital\Application\Services\DicomPacsImagingService;
 use Modules\Hospital\Application\Services\HospitalLabAndImagingService;
 use Modules\Hospital\Domain\Models\ImagingSeries;
-use Modules\Hospital\Domain\Models\ImagingStudy;
 use Modules\Hospital\Domain\Models\Patient;
 use Tests\TestCase;
 

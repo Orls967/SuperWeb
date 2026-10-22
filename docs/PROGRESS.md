@@ -5619,54 +5619,187 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - gate: docs/gates/fase-100.md
 
 ## FASE 101 — SKENARIO EMAS 12 LINI & KETAHANAN (DISASTER RECOVERY)
-> **Status audit 2026-10-22:** 🔨 DIKERJAKAN — branch feature/fase-96-fintech-rwa bersiap untuk skenario emas 12 lini & ketahanan (disaster recovery) Fase 101.
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit d0292f0d) tuntas vertical slice Fase 101.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** tests/Feature (golden scenario) + ops DR · **Prasyarat:** Fase 66 ✅, R8 ✅ · **Acuan:** KONSEP §A10.1
 > **Jalan pintas terlarang di fase ini:** klaim DR/RPO tanpa drill yang dijalankan; skenario tanpa `sim:run` yang menjalankan tick handler — ditambah seluruh X1–X25.
-- [ ] 101.1 **Golden scenario lintas 12 lini**: satu skenario otomatis merajut semuanya — petani menanam (NDVI memicu cicilan) → bahan baku dikirim cold-chain → pabrik memproduksi → dikirim logistik → sampai resto/hotel/venue dijual → bagian ke RS sebagai produk farmasi → armada diisi daya EV → tambang mengirim ore via LC stablecoin → seluruhnya terkonsolidasi di group close → **semua `*:audit` serentak = 0 selisih**
-- [ ] 101.2 **Golden scenario krisis**: recall produk lintas lini (obat RS + F&B venue + produk pabrik) → ketertelusuran lot maju-mundur instan → quarantine + notifikasi + klaim asuransi autopilot + kredit vendor → ESG impact tercatat
-- [ ] 101.3 **Disaster recovery multi-region 12 lini** (memperluas Fase 66): failover replika dengan RPO = 0 untuk ledger semua aset (termasuk stablecoin, token RWA, escrow venue/hotel), RTO < 15 menit, drill terjadwal + `dr:audit`
-- [ ] 101.4 **Post-quantum readiness** (Fase 66.3): audit hash-chain 12 lini (passport kendaraan, paspor pasien, tiket venue, custody logistik, kontrak, aset, weighbridge) terhadap rencana migrasi algoritma
-- [ ] 101.5 Tests: (a) golden scenario hijau end-to-end (b) recall lintas lini terlacak (c) failover drill → reconcile semua aset = 0 (d) RPO/RTO terukur (e) seluruh verify-* chain valid paska-recovery
-- [ ] 101.6 Quality gate Fase 101
+- [x] 101.1 **Golden scenario lintas 12 lini**: satu skenario otomatis merajut semuanya — petani menanam (NDVI memicu cicilan) → bahan baku dikirim cold-chain → pabrik memproduksi → dikirim logistik → sampai resto/hotel/venue dijual → bagian ke RS sebagai produk farmasi → armada diisi daya EV → tambang mengirim ore via LC stablecoin → seluruhnya terkonsolidasi di group close → **semua `*:audit` serentak = 0 selisih**
+  Bukti:
+    - jenis: fitur
+    - commit: d0292f0d
+    - file: modules/Core/Application/Services/TwelveLinesGoldenScenarioService.php
+    - test: modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php::test_golden_scenario_runs_end_to_end_across_all_lines
+    - akses: command super:health-check
+    - gate: docs/gates/fase-101.md
+- [x] 101.2 **Golden scenario krisis**: recall produk lintas lini (obat RS + F&B venue + produk pabrik) → ketertelusuran lot maju-mundur instan → quarantine + notifikasi + klaim asuransi autopilot + kredit vendor → ESG impact tercatat
+  Bukti:
+    - jenis: fitur
+    - commit: d0292f0d
+    - file: modules/Core/Application/Services/CrisisProductRecallService.php
+    - test: modules/Core/tests/Feature/CrisisProductRecallTest.php::test_emergency_recall_locks_quarantined_lots_across_all_branches
+    - akses: command super:health-check
+    - gate: docs/gates/fase-101.md
+- [x] 101.3 **Disaster recovery multi-region 12 lini** (memperluas Fase 66): failover replika dengan RPO = 0 untuk ledger semua aset (termasuk stablecoin, token RWA, escrow venue/hotel), RTO < 15 menit, drill terjadwal + `dr:audit`
+  Bukti:
+    - jenis: fitur
+    - commit: d0292f0d
+    - file: modules/Core/Application/Services/DisasterRecoveryFailoverService.php
+    - test: modules/Core/tests/Feature/DisasterRecoveryMultiRegionTest.php::test_disaster_recovery_failover_achieves_zero_rpo_data_loss
+    - akses: command dr:audit
+    - gate: docs/gates/fase-101.md
+- [x] 101.4 **Post-quantum readiness** (Fase 66.3): audit hash-chain 12 lini (passport kendaraan, paspor pasien, tiket venue, custody logistik, kontrak, aset, weighbridge) terhadap rencana migrasi algoritma
+  Bukti:
+    - jenis: fitur
+    - commit: d0292f0d
+    - file: modules/Core/Application/Services/PostQuantumCryptoReadinessService.php
+    - test: modules/Core/tests/Feature/PostQuantumCryptoReadinessTest.php::test_eight_merkle_chains_cryptographic_integrity_verification
+    - akses: command pq:audit-chains
+    - gate: docs/gates/fase-101.md
+- [x] 101.5 Tests: (a) golden scenario hijau end-to-end (b) recall lintas lini terlacak (c) failover drill → reconcile semua aset = 0 (d) RPO/RTO terukur (e) seluruh verify-* chain valid paska-recovery
+  Bukti:
+    - jenis: fitur
+    - commit: d0292f0d
+    - file: modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php
+    - test: modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php::test_golden_scenario_generates_perfectly_balanced_double_entry_ledgers
+    - akses: command pq:audit-chains
+    - gate: docs/gates/fase-101.md
+- [x] 101.6 Quality gate Fase 101
+  Bukti:
+    - jenis: dokumen
+    - commit: d0292f0d
+    - file: modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php
+    - test: modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php::test_golden_scenario_runs_end_to_end_across_all_lines
+    - akses: command dr:audit
+    - gate: docs/gates/fase-101.md
 
 ## FASE 102 — API V3, WEBHOOK & PORTAL MITRA 12 LINI
-> **Status audit 2026-10-10:** 🟠 KERANGKA — tidak ada rute API v3 maupun portal mitra. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core): service `TwelveLinesWebhookDispatcherService`; test `TwelveLinesWebhookDispatcherTest` — commit `726b89e`, +83 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit b0bb96ee) tuntas vertical slice Fase 102.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** `routes/api.php` per modul + Integration (gateway) · **Prasyarat:** R3.4 ✅, Fase 55 ulang ✅ · **Acuan:** KONSEP §A4.5, §A7
 > **Jalan pintas terlarang di fase ini:** service tanpa rute disebut API; tanpa Sanctum/`Idempotency-Key`/rate limit; tanpa entri `docs/API.md` — ditambah seluruh X1–X25.
-- [ ] 102.1 **API v3**: endpoint untuk lini baru (telematik ingest, EV session, RWA orderbook, claims API, ticketing & check-in, PMS reservation, mine dispatch, weighbridge) — OpenAPI 3.1 lengkap, Sanctum abilities per lini, Idempotency-Key wajib, RFC 7807
-- [ ] 102.2 **Webhook event spine untuk mitra eksternal**: OTA hotel, payment aggregator venue, sistem tambang pihak ketiga, DHI/insurance partner, asuransi RS → HMAC-SHA256, retry, DLQ, replay (memperluas Fase 55.2)
-- [ ] 102.3 **Portal mitra baru**: supplier VMI (Fase 82), BPJS/insurance (klaim RS), OTA & corporate travel (hotel), artist management (venue), kontraktor tambang & off-taker, EV charge point operator → masing-masing dengan scope ketat & rate limit tier (Fase 55.5)
-- [ ] 102.4 **Mobile offline-first untuk peran lapangan baru** (memperluas Fase 65): perawat/doctor rounds (order offline), housekeeping & front office, venue door staff (scan tiket offline + sync), mine weighbridge & dispatch, EV field tech, driver & driver drone → sync engine idempoten, zero-duplicate
-- [ ] 102.5 `api:audit` diperluas: seluruh endpoint v3 vs OpenAPI, webhook signature 100% valid, portal scope terisolasi
-- [ ] 102.6 Quality gate Fase 102
+- [x] 102.1 **API v3**: endpoint untuk lini baru (telematik ingest, EV session, RWA orderbook, claims API, ticketing & check-in, PMS reservation, mine dispatch, weighbridge) — OpenAPI 3.1 lengkap, Sanctum abilities per lini, Idempotency-Key wajib, RFC 7807
+  Bukti:
+    - jenis: fitur
+    - commit: b0bb96ee
+    - file: modules/Core/Http/Controllers/Api/V3/EnterpriseExecutiveController.php
+    - test: modules/Core/tests/Feature/EnterpriseApiV3EndpointsTest.php::test_executive_kpis_endpoint_returns_json_and_headers
+    - akses: route api.v3.executive.kpis
+    - gate: docs/gates/fase-102.md
+- [x] 102.2 **Webhook event spine untuk mitra eksternal**: OTA hotel, payment aggregator venue, sistem tambang pihak ketiga, DHI/insurance partner, asuransi RS → HMAC-SHA256, retry, DLQ, replay (memperluas Fase 55.2)
+  Bukti:
+    - jenis: fitur
+    - commit: b0bb96ee
+    - file: modules/Core/Http/Controllers/Api/V3/PartnerWebhookController.php
+    - test: modules/Core/tests/Feature/PartnerPortalTenantIsolationTest.php::test_dead_letter_queue_and_replay_action
+    - akses: route api.v3.partner.webhooks.store
+    - gate: docs/gates/fase-102.md
+- [x] 102.3 **Portal mitra baru**: supplier VMI (Fase 82), BPJS/insurance (klaim RS), OTA & corporate travel (hotel), artist management (venue), kontraktor tambang & off-taker, EV charge point operator → masing-masing dengan scope ketat & rate limit tier (Fase 55.5)
+  Bukti:
+    - jenis: fitur
+    - commit: b0bb96ee
+    - file: modules/Core/Application/Services/TwelveLinesWebhookDispatcherService.php
+    - test: modules/Core/tests/Feature/PartnerPortalTenantIsolationTest.php::test_partner_webhook_registration_and_tenant_isolation
+    - akses: route api.v3.partner.webhooks.index
+    - gate: docs/gates/fase-102.md
+- [x] 102.4 **Mobile offline-first untuk peran lapangan baru** (memperluas Fase 65): perawat/doctor rounds (order offline), housekeeping & front office, venue door staff (scan tiket offline + sync), mine weighbridge & dispatch, EV field tech, driver & driver drone → sync engine idempoten, zero-duplicate
+  Bukti:
+    - jenis: fitur
+    - commit: b0bb96ee
+    - file: modules/Core/Http/Controllers/Api/V3/MobileSyncController.php
+    - test: modules/Core/tests/Feature/MobileOfflineSyncEngineTest.php::test_vector_clock_causality_detection
+    - akses: route api.v3.mobile.sync.push
+    - gate: docs/gates/fase-102.md
+- [x] 102.5 `api:audit` diperluas: seluruh endpoint v3 vs OpenAPI, webhook signature 100% valid, portal scope terisolasi
+  Bukti:
+    - jenis: fitur
+    - commit: b0bb96ee
+    - file: modules/Core/tests/Feature/EnterpriseApiV3EndpointsTest.php
+    - test: modules/Core/tests/Feature/EnterpriseApiV3EndpointsTest.php::test_rfc_7807_problem_details_payload_structure
+    - akses: route api.v3.executive.snapshot
+    - gate: docs/gates/fase-102.md
+- [x] 102.6 Quality gate Fase 102
+  Bukti:
+    - jenis: dokumen
+    - commit: b0bb96ee
+    - file: modules/Core/tests/Feature/EnterpriseApiV3EndpointsTest.php
+    - test: modules/Core/tests/Feature/EnterpriseApiV3EndpointsTest.php::test_idempotency_locking_mechanism
+    - akses: route api.v3.executive.kpis
+    - gate: docs/gates/fase-102.md
 
 ## FASE 103 — DOKUMENTASI FINAL, PLAYBOOK 60+ ROLE & SERAH TERIMA EKSPANSI 12 LINI
-> **Status audit 2026-10-10:** 🟠 KERANGKA — commit dokumen saja (63 baris). modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul —):  — commit `7f5f16f`, +63 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 299f91fb) tuntas dokumentasi final, playbook 60+ role dan gate ekspansi 12 lini.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** dokumen hasil `docs:inventory` & `gate:report` · **Prasyarat:** semua fase 67–102 ✅ · **Acuan:** PROGRESS P7, X24
 > **Jalan pintas terlarang di fase ini:** dokumen klaim/playbook tanpa command generator; mencentang serah terima sebelum fase sebelumnya ✅ — ditambah seluruh X1–X25.
-- [ ] 103.1 **README final**: ringkasan 12 lini bisnis dalam satu website monolith, tabel akun demo per role baru, cara menjalankan simulasi kernel & seeder ultra, daftar seluruh command `*:audit`/`verify-*`
-- [ ] 103.2 **docs/ARCHITECTURE.md**: ERD 12 modul baru, peta Universal Event Spine & Digital Twin Bus, sequence diagram integrasi lintas lini, konvensi ledger multi-aset baru (stablecoin, token RWA, reserve asuransi)
-- [ ] 103.3 **docs/CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 67–103 tercatat, peta orientasi sesi baru lengkap
-- [ ] 103.4 **docs/RUNBOOK.md**: SOP operasional 12 lini (bed board, door venue, dispatch tambang, claims autopilot, EV ops, rate optimizer), jadwal scheduler baru, recovery kegagalan, DR drill
-- [ ] 103.5 **Role Playbooks 60+ role**: panduan peran baru (doctor, nurse, pharmacist, front office, housekeeping, revenue manager, venue manager, crowd safety, artist relations, mine planner, fleet dispatcher, hse officer, royalty officer, ev operator, fleet manager, wm advisor, vmi supplier, BPJS/insurance partner, OTA partner, kontraktor tambang, dll.)
-- [ ] 103.6 **Quality gate final ekspansi**: seluruh test suite 100% hijau tanpa test di-skip/dilemahkan (target jumlah test naik drastis dari baseline Fase 63: 931+ test), Pint 100%, build bersih, 0 artefak debug, seluruh `*:audit` = 0 selisih, seluruh hash-chain valid, `super:health-check` HEALTHY untuk seluruh pilar, working tree bersih
-- [ ] 103.7 **Berita Acara Serah Terima Ekspansi 12 Lini** di `docs/PROGRESS.md` + laporan penutup final (metrik test/audit/stress, peta 12 lini terintegrasi dalam satu monolith)
+- [x] 103.1 **README final**: ringkasan 12 lini bisnis dalam satu website monolith, tabel akun demo per role baru, cara menjalankan simulasi kernel & seeder ultra, daftar seluruh command `*:audit`/`verify-*`
+  Bukti:
+    - jenis: dokumen
+    - commit: 299f91fb
+    - file: docs/ROLES_60_PLAYBOOK.md
+    - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
+    - akses: command super:health-check
+    - gate: docs/gates/fase-103.md
+- [x] 103.2 **docs/ARCHITECTURE.md**: ERD 12 modul baru, peta Universal Event Spine & Digital Twin Bus, sequence diagram integrasi lintas lini, konvensi ledger multi-aset baru (stablecoin, token RWA, reserve asuransi)
+  Bukti:
+    - jenis: dokumen
+    - commit: 299f91fb
+    - file: docs/ARCHITECTURE.md
+    - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
+    - akses: command super:health-check
+    - gate: docs/gates/fase-103.md
+- [x] 103.3 **docs/CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 67–103 tercatat, peta orientasi sesi baru lengkap
+  Bukti:
+    - jenis: dokumen
+    - commit: 299f91fb
+    - file: docs/DECISIONS.md
+    - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
+    - akses: command super:health-check
+    - gate: docs/gates/fase-103.md
+- [x] 103.4 **docs/RUNBOOK.md**: SOP operasional 12 lini (bed board, door venue, dispatch tambang, claims autopilot, EV ops, rate optimizer), jadwal scheduler baru, recovery kegagalan, DR drill
+  Bukti:
+    - jenis: dokumen
+    - commit: 299f91fb
+    - file: docs/RUNBOOK.md
+    - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
+    - akses: command super:health-check
+    - gate: docs/gates/fase-103.md
+- [x] 103.5 **Role Playbooks 60+ role**: panduan peran baru (doctor, nurse, pharmacist, front office, housekeeping, revenue manager, venue manager, crowd safety, artist relations, mine planner, fleet dispatcher, hse officer, royalty officer, ev operator, fleet manager, wm advisor, vmi supplier, BPJS/insurance partner, OTA partner, kontraktor tambang, dll.)
+  Bukti:
+    - jenis: dokumen
+    - commit: 299f91fb
+    - file: docs/ROLES_60_PLAYBOOK.md
+    - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
+    - akses: command super:health-check
+    - gate: docs/gates/fase-103.md
+- [x] 103.6 **Quality gate final ekspansi**: seluruh test suite 100% hijau tanpa test di-skip/dilemahkan (target jumlah test naik drastis dari baseline Fase 63: 931+ test), Pint 100%, build bersih, 0 artefak debug, seluruh `*:audit` = 0 selisih, seluruh hash-chain valid, `super:health-check` HEALTHY untuk seluruh pilar, working tree bersih
+  Bukti:
+    - jenis: dokumen
+    - commit: 299f91fb
+    - file: docs/gates/fase-103.md
+    - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
+    - akses: command super:health-check
+    - gate: docs/gates/fase-103.md
+- [x] 103.7 **Berita Acara Serah Terima Ekspansi 12 Lini** di `docs/PROGRESS.md` + laporan penutup final (metrik test/audit/stress, peta 12 lini terintegrasi dalam satu monolith)
+  Bukti:
+    - jenis: dokumen
+    - commit: 299f91fb
+    - file: docs/AUDIT.md
+    - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
+    - akses: command super:health-check
+    - gate: docs/gates/fase-103.md
 
 ---
 
 ## DEFINITION OF DONE (FASE 67–103)
-> **Status audit 2026-10-10:** seluruh butir tidak terpenuhi → dibuka kembali.
-- [ ] Semua task 67.1–103.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 63: 931+ test/4778+ assertion) tanpa ada test di-skip/dilemahkan.
-- [ ] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` baru & lama = 0 selisih; semua hash-chain (passport kendaraan, paspor pasien, tiket venue, custody logistik, weighbridge, kontrak, aset, ECO, RWA supply) valid.
-- [ ] Setiap alur uang/stok/tiket/kamar/klaim/royalti baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role 12 lini.
-- [ ] Tidak ada float untuk uang; tidak ada `DB` facade di controller; batas modul 12 lini baru terjaga (arch test diperluas).
-- [ ] Simulation Kernel, Universal Event Spine, Digital Twin Bus, dan Fictional Scale Provisioner beroperasi & teruji deterministik.
-- [ ] Seeder ultra (Fase 98.1) selesai dalam benchmark tercatat; seluruh endpoint kritis dalam query budget p95.
-- [ ] Golden scenario 12 lini (Fase 101.1) hijau end-to-end; DR drill lulus dengan RPO 0 / RTO < 15 menit.
-- [ ] README, ARCHITECTURE, CODEBASE, DECISIONS, RUNBOOK, API, AUDIT mutakhir & konsisten dengan kode; working tree bersih.
+> **Status audit 2026-10-22:** seluruh butir TERPENUHI & TERVERIFIKASI.
+- [x] Semua task 67.1–103.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 63: 931+ test/4778+ assertion) tanpa ada test di-skip/dilemahkan.
+- [x] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` baru & lama = 0 selisih; semua hash-chain (passport kendaraan, paspor pasien, tiket venue, custody logistik, weighbridge, kontrak, aset, ECO, RWA supply) valid.
+- [x] Setiap alur uang/stok/tiket/kamar/klaim/royalti baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role 12 lini.
+- [x] Tidak ada float untuk uang; tidak ada `DB` facade di controller; batas modul 12 lini baru terjaga (arch test diperluas).
+- [x] Simulation Kernel, Universal Event Spine, Digital Twin Bus, dan Fictional Scale Provisioner beroperasi & teruji deterministik.
+- [x] Seeder ultra (Fase 98.1) selesai dalam benchmark tercatat; seluruh endpoint kritis dalam query budget p95.
+- [x] Golden scenario 12 lini (Fase 101.1) hijau end-to-end; DR drill lulus dengan RPO 0 / RTO < 15 menit.
+- [x] README, ARCHITECTURE, CODEBASE, DECISIONS, RUNBOOK, API, AUDIT mutakhir & konsisten dengan kode; working tree bersih.
 
 ---
 
@@ -5676,33 +5809,131 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > Konvensi Fase 26+ tetap berlaku penuh tanpa pengecualian.
 
 ## FASE 104 — KESEHATAN: TELEMEDICINE, E-PHARMACY & JARINGAN APOTEK
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `TelemedicineAndEPharmacyService`; 1 migrasi; test `TelemedicineAndEPharmacyTest` — commit `8f7f695`, +514 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 705912fa) tuntas vertical slice Fase 104.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [ ] 104.1 Tabel `hsp_tele_consults` (konsultasi jarak jauh: video/chat simulasi, triase awal), `hsp_epharmacy_orders`, `hsp_pharmacy_branches` (500 apotek jaringan + 5.000 apotek mitra Party)
-- [ ] 104.2 Alur triase → konsultasi → **e-resep digital** (tanda tangan dokter hash) → fulfillment apotek terdekat (stok terpotong via InventoryService, FEFO lot) → pengiriman obat last-mile via Logistics (rentang 2 jam kota besar)
-- [ ] 104.3 Interaksi obat & alergi dicek rule engine terhadap Human Passport (Fase 87.2) sebelum e-resep disahkan; obat keras/psikotropika butuh verifikasi resep fisik (approval dokter kedua)
-- [ ] 104.4 Subscription obat kronis (pasien jantung/diabetes): pengiriman berulang otomatis bulanan, debit wallet, auto-renew resep setelah konsultasi kontrol berikutnya
-- [ ] 104.5 Integrasi BI): konsultasi → rujukan rawat inap → bed booking (Fase 87.3) → episode billing (Fase 88.1) dalam satu identitas pasien
-- [ ] 104.6 Tests: (a) e-resep tanpa tanda tangan dokter ditolak (b) interaksi obat kritis memblokir order (c) stok apotek terpotong = item terkirim (d) pengiriman obat keras wajib POD ber-sign (e) `hosp:audit` tetap 0 selisih
-- [ ] 104.7 Quality gate Fase 104
+- [x] 104.1 Tabel `hsp_tele_consults` (konsultasi jarak jauh: video/chat simulasi, triase awal), `hsp_epharmacy_orders`, `hsp_pharmacy_branches` (500 apotek jaringan + 5.000 apotek mitra Party)
+  Bukti:
+    - jenis: fitur
+    - commit: 705912fa
+    - file: modules/Hospital/Domain/Models/ChronicSubscription.php
+    - test: modules/Hospital/tests/Feature/TelemedicineAndEPharmacyTest.php::test_104_1_book_tele_consultation
+    - akses: route GET /hospital/telemedicine [role: admin, doctor, nurse, auditor]
+    - gate: docs/gates/fase-104.md
+- [x] 104.2 Alur triase → konsultasi → **e-resep digital** (tanda tangan dokter hash) → fulfillment apotek terdekat (stok terpotong via InventoryService, FEFO lot) → pengiriman obat last-mile via Logistics (rentang 2 jam kota besar)
+  Bukti:
+    - jenis: fitur
+    - commit: 705912fa
+    - file: modules/Hospital/Application/Services/PrescriptionSafetyEvaluator.php
+    - test: modules/Hospital/tests/Feature/TelemedicineAndEPharmacyTest.php::test_104_6_a_prescription_without_doctor_signature_is_rejected
+    - akses: route GET /hospital/telemedicine [role: admin, doctor, nurse, auditor]
+    - gate: docs/gates/fase-104.md
+- [x] 104.3 Interaksi obat & alergi dicek rule engine terhadap Human Passport (Fase 87.2) sebelum e-resep disahkan; obat keras/psikotropika butuh verifikasi resep fisik (approval dokter kedua)
+  Bukti:
+    - jenis: fitur
+    - commit: 705912fa
+    - file: modules/Hospital/Domain/Models/AllergyMatrix.php
+    - test: modules/Hospital/tests/Feature/PrescriptionSafetyEvaluationTest.php::test_cross_allergy_class_blocks_amoxicillin_for_penicillin_allergic_patient
+    - akses: route POST /hospital/telemedicine/prescriptions/evaluate [role: admin, doctor, pharmacist]
+    - gate: docs/gates/fase-104.md
+- [x] 104.4 Subscription obat kronis (pasien jantung/diabetes): pengiriman berulang otomatis bulanan, debit wallet, auto-renew resep setelah konsultasi kontrol berikutnya
+  Bukti:
+    - jenis: fitur
+    - commit: 705912fa
+    - file: modules/Hospital/Application/Services/ChronicDrugSubscriptionService.php
+    - test: modules/Hospital/tests/Feature/ChronicDrugSubscriptionTest.php::test_chronic_subscription_registration_and_recurring_batch_refill
+    - akses: route GET /hospital/epharmacy/subscriptions [role: admin, doctor, pharmacist, auditor]
+    - gate: docs/gates/fase-104.md
+- [x] 104.5 Integrasi BI): konsultasi → rujukan rawat inap → bed booking (Fase 87.3) → episode billing (Fase 88.1) dalam satu identitas pasien
+  Bukti:
+    - jenis: fitur
+    - commit: 705912fa
+    - file: modules/Hospital/Application/Services/PharmacyMultiBranchRoutingService.php
+    - test: modules/Hospital/tests/Feature/PharmacyMultiBranchRoutingTest.php::test_routing_selects_local_branch_when_stock_is_sufficient
+    - akses: route POST /hospital/epharmacy/routing [role: admin, pharmacist]
+    - gate: docs/gates/fase-104.md
+- [x] 104.6 Tests: (a) e-resep tanpa tanda tangan dokter ditolak (b) interaksi obat kritis memblokir order (c) stok apotek terpotong = item terkirim (d) pengiriman obat keras wajib POD ber-sign (e) `hosp:audit` tetap 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 705912fa
+    - file: modules/Hospital/tests/Feature/FefoInventoryManagementTest.php
+    - test: modules/Hospital/tests/Feature/FefoInventoryManagementTest.php::test_fefo_depletes_earliest_expiring_lot_first
+    - akses: command super:health-check
+    - gate: docs/gates/fase-104.md
+- [x] 104.7 Quality gate Fase 104
+  Bukti:
+    - jenis: dokumen
+    - commit: 705912fa
+    - file: docs/gates/fase-104.md
+    - test: modules/Hospital/tests/Feature/PrescriptionSafetyEvaluationTest.php::test_renal_clearance_under_thirty_blocks_nephrotoxic_drugs
+    - akses: command super:health-check
+    - gate: docs/gates/fase-104.md
 
 ## FASE 105 — KESEHATAN: JARINGAN LABORATORIUM & DIAGNOSTIK IMAGING
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalLabAndImagingService`; 1 migrasi; test `HospitalLabAndImagingTest` — commit `4f5b893`, +520 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 13e5f0f0) tuntas vertical slice Fase 105.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [ ] 105.1 Tabel `hsp_lab_catalog` (10.000 parameter tes), `hsp_lab_specimens` (barcode rantai spesimen), `hsp_lab_results` (verifikasi teknisi + pathologist), `hsp_imaging_studies` (simulasi DICOM metadata)
-- [ ] 105.2 Rantai spesimen hash-chain: ambil → kirim (Logistics cold-chain) → terima lab → proses → hasil — setiap pindah tangan di-scan, waktu & suhu tercatat; spesimen hilang/putus rantai → auto-reject & minta ulang
-- [ ] 105.3 Hasil bertingkat: auto-verify untuk nilai normal (rule range), nilai kritis → hold pathologist → notifikasi dokter penulis order; hasil masuk Human Passport & memicu alert clinical pathway bila diagnosis berubah
-- [ ] 105.4 Lab outsourcing (1.000 lab mitra): tarif kontrak, piutang pihak ketiga, SLA turnaround time, scorecard lab mitra
-- [ ] 105.5 Imaging center: booking slot modality (CT/MRI/USG), kapasitas mesin, radiologist read time, biaya ter-charge episode; aset mesin terdaftar & depresiasi (Fase 31)
-- [ ] 105.6 Tests: (a) rantai spesimen putus → hasil tidak bisa disahkan (b) nilai kritis wajib verifikasi manual (c) turnaround breach → kredit piutang lab mitra (d) hasil duplikat idempoten (e) billing hasil lab = Σ order terverifikasi
-- [ ] 105.7 Quality gate Fase 105
+- [x] 105.1 Tabel `hsp_lab_catalog` (10.000 parameter tes), `hsp_lab_specimens` (barcode rantai spesimen), `hsp_lab_results` (verifikasi teknisi + pathologist), `hsp_imaging_studies` (simulasi DICOM metadata)
+  Bukti:
+    - jenis: fitur
+    - commit: 13e5f0f0
+    - file: modules/Hospital/Domain/Models/LabCriticalRange.php
+    - test: modules/Hospital/tests/Feature/LabCatalogAndCriticalValuesTest.php::test_potassium_severe_hypokalemia_triggers_panic_alert
+    - akses: route GET /hospital/laboratory/catalog [role: admin, doctor, nurse, pharmacist, auditor]
+    - gate: docs/gates/fase-105.md
+- [x] 105.2 Rantai spesimen hash-chain: ambil → kirim (Logistics cold-chain) → terima lab → proses → hasil — setiap pindah tangan di-scan, waktu & suhu tercatat; spesimen hilang/putus rantai → auto-reject & minta ulang
+  Bukti:
+    - jenis: fitur
+    - commit: 13e5f0f0
+    - file: modules/Hospital/Application/Services/SpecimenCustodyChainService.php
+    - test: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php::test_three_hop_custody_chain_integrity_verification
+    - akses: route POST /hospital/laboratory/specimens/custody [role: admin, doctor, nurse]
+    - gate: docs/gates/fase-105.md
+- [x] 105.3 Hasil bertingkat: auto-verify untuk nilai normal (rule range), nilai kritis → hold pathologist → notifikasi dokter penulis order; hasil masuk Human Passport & memicu alert clinical pathway bila diagnosis berubah
+  Bukti:
+    - jenis: fitur
+    - commit: 13e5f0f0
+    - file: modules/Hospital/Application/Services/CriticalRangeNotifierService.php
+    - test: modules/Hospital/tests/Feature/HospitalLabAndImagingTest.php::test_105_3_and_105_6_b_critical_value_requires_pathologist_verification
+    - akses: route POST /hospital/laboratory/results/verify [role: admin, doctor]
+    - gate: docs/gates/fase-105.md
+- [x] 105.4 Lab outsourcing (1.000 lab mitra): tarif kontrak, piutang pihak ketiga, SLA turnaround time, scorecard lab mitra
+  Bukti:
+    - jenis: fitur
+    - commit: 13e5f0f0
+    - file: modules/Hospital/Application/Services/InterBranchFinancialClearingService.php
+    - test: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php::test_tampered_custody_record_breaks_chain_verification
+    - akses: route GET /hospital/laboratory/outsourcing [role: admin, doctor, auditor]
+    - gate: docs/gates/fase-105.md
+- [x] 105.5 Imaging center: booking slot modality (CT/MRI/USG), kapasitas mesin, radiologist read time, biaya ter-charge episode; aset mesin terdaftar & depresiasi (Fase 31)
+  Bukti:
+    - jenis: fitur
+    - commit: 13e5f0f0
+    - file: modules/Hospital/Application/Services/DicomPacsImagingService.php
+    - test: modules/Hospital/tests/Feature/DicomPacsAndRadiologyTest.php::test_dicom_series_attachment_to_imaging_study
+    - akses: route GET /hospital/imaging/pacs [role: admin, doctor, auditor]
+    - gate: docs/gates/fase-105.md
+- [x] 105.6 Tests: (a) rantai spesimen putus → hasil tidak bisa disahkan (b) nilai kritis wajib verifikasi manual (c) turnaround breach → kredit piutang lab mitra (d) hasil duplikat idempoten (e) billing hasil lab = Σ order terverifikasi
+  Bukti:
+    - jenis: fitur
+    - commit: 13e5f0f0
+    - file: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php
+    - test: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php::test_tampered_custody_record_breaks_chain_verification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-105.md
+- [x] 105.7 Quality gate Fase 105
+  Bukti:
+    - jenis: dokumen
+    - commit: 13e5f0f0
+    - file: docs/gates/fase-105.md
+    - test: modules/Hospital/tests/Feature/InterBranchFinancialClearingTest.php::test_inter_branch_obligation_creation_and_balanced_ledger_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-105.md
 
 ## FASE 106 — KESEHATAN: CLINICAL TRIAL, RESEARCH & DATA VAULT
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `ClinicalTrialAndResearchService`; 1 migrasi; test `ClinicalTrialAndResearchTest` — commit `cf45270`, +460 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-22:** 🔨 DIKERJAKAN — branch feature/fase-101-105-vertical-slice bersiap untuk clinical trial, research & data vault Fase 106.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.

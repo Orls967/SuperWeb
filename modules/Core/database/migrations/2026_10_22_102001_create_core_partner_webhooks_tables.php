@@ -17,7 +17,7 @@ return new class extends Migration
                 $table->string('partner_name', 128);
                 $table->string('endpoint_url', 255);
                 $table->string('hmac_secret', 128);
-                $table->text('event_subscriptions')->default('*');
+                $table->string('event_subscriptions', 255)->default('*');
                 $table->integer('retry_limit')->default(5);
                 $table->integer('timeout_seconds')->default(10);
                 $table->boolean('is_active')->default(true);

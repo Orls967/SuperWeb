@@ -15,8 +15,10 @@ use Modules\CloudKitchen\Domain\Models\CloudKitchen;
 use Modules\Core\Domain\Models\AuditLog;
 use Modules\Core\Domain\Models\CoreAiAnomalyQuarantine;
 use Modules\Core\Domain\Models\CoreMobileDevice;
+use Modules\Core\Domain\Models\PartnerWebhook;
 use Modules\Core\Domain\Models\Role;
 use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Domain\Models\WebhookDelivery;
 use Modules\Crypto\Domain\Enums\AlertCondition;
 use Modules\Crypto\Domain\Models\CryptoAlert;
 use Modules\Crypto\Domain\Models\CryptoAsset;
@@ -583,6 +585,42 @@ return [
     'api.v1.logistics.shipments.show' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper'], 'params' => fn () => ['tracking_number' => $logisticsSeedHelper()['shipment']->tracking_number]],
     'api.v1.logistics.shipments.store' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
     'api.v1.logistics.tracking.show' => 'public',
+    'api.v3.executive.kpis' => 'public',
+    'api.v3.executive.snapshot' => 'public',
+    'api.v3.mobile.sync.conflicts' => 'public',
+    'api.v3.mobile.sync.pull' => 'public',
+    'api.v3.mobile.sync.push' => 'public',
+    'api.v3.partner.webhooks.index' => 'public',
+    'api.v3.partner.webhooks.replay' => [
+        'roles' => ['admin'],
+        'params' => function () {
+            $webhook = PartnerWebhook::firstOrCreate(
+                ['partner_name' => 'Route Roles DLQ Replay Partner'],
+                [
+                    'tenant_id' => 'tenant-default',
+                    'endpoint_url' => 'https://partner.example.com/webhook',
+                    'hmac_secret' => 'test-secret-key-32-chars-long!!',
+                    'is_active' => true,
+                ]
+            );
+
+            $delivery = WebhookDelivery::firstOrCreate(
+                [
+                    'webhook_id' => $webhook->id,
+                    'event_name' => 'test.event.replay',
+                ],
+                [
+                    'payload' => json_encode(['foo' => 'bar']),
+                    'attempt' => 1,
+                    'status' => 'DEAD_LETTER_QUEUE',
+                    'http_status' => 500,
+                ]
+            );
+
+            return ['id' => $delivery->id];
+        },
+    ],
+    'api.v3.partner.webhooks.store' => 'public',
     'asset.audit' => ['roles' => ['admin', 'asset_manager']],
     'asset.checkin' => ['roles' => ['admin', 'asset_manager']],
     'asset.checkout' => ['roles' => ['admin', 'asset_manager']],
@@ -863,7 +901,16 @@ return [
             return ['claim' => $claim->id];
         },
     ],
+    'hospital.epharmacy.routing.dispatch' => ['roles' => ['admin', 'pharmacist']],
+    'hospital.epharmacy.subscriptions.index' => ['roles' => ['admin', 'auditor', 'doctor', 'pharmacist']],
+    'hospital.imaging.pacs.index' => ['roles' => ['admin', 'auditor', 'doctor']],
     'hospital.index' => ['roles' => ['admin', 'doctor', 'hospital_admin']],
+    'hospital.laboratory.catalog.index' => ['roles' => ['admin', 'auditor', 'doctor', 'nurse', 'pharmacist']],
+    'hospital.laboratory.outsourcing.index' => ['roles' => ['admin', 'auditor', 'doctor']],
+    'hospital.laboratory.results.verify' => ['roles' => ['admin', 'doctor']],
+    'hospital.laboratory.specimens.custody' => ['roles' => ['admin', 'doctor', 'nurse']],
+    'hospital.telemedicine.index' => ['roles' => ['admin', 'auditor', 'doctor', 'nurse']],
+    'hospital.telemedicine.prescriptions.evaluate' => ['roles' => ['admin', 'doctor', 'pharmacist']],
     'hospital.trials.bill' => [
         'roles' => ['admin', 'doctor', 'hospital_admin'],
         'params' => fn () => ['trial' => ClinicalTrial::firstOrCreate(['trial_code' => 'TRL-CARDIO-01'], ['title' => 'Trial Card', 'phase' => 'PHASE_3', 'sponsor_name' => 'Novartis', 'target_subjects' => 10, 'status' => 'RECRUITING'])->id],

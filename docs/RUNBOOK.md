@@ -274,6 +274,76 @@ Halaman ini menyajikan metrik latensi, status komponen visual, tombol pemindaian
 
 ---
 
+### Playbook O: Penanganan Pelanggaran Rantai Dingin Spesimen Laboratorium (Cold-Chain Breach) (Fase 105)
+- **Gejala**: Log serah terima spesimen laboratorium melaporkan suhu penanganan $> 8.0^\circ\text{C}$ (`COLD_CHAIN_EXCEEDED`), status spesimen berubah menjadi `REJECTED_COLD_CHAIN_BREACH`.
+- **Dampak Kritis**: Degradasi sampel darah/biologis (e.g., hemolisis sampel elektrolit darah atau denaturasi enzim), pembatalan hasil tes demi kepatuhan ISO 15189 dan standar keselamatan pasien.
+- **Langkah Operasional**:
+  1. Periksa riwayat transfer kustodi spesimen:
+     ```sql
+     SELECT id, specimen_barcode, handler_id, temperature_c, status, notes, created_at
+     FROM hsp_lab_custody_logs
+     WHERE temperature_c > 8.0 OR status = 'REJECTED_COLD_CHAIN_BREACH'
+     ORDER BY created_at DESC;
+     ```
+  2. Segera kirimkan notifikasi penolakan ke unit pengambil sampel (rawat inap/rawat jalan) untuk pengambilan ulang spesimen (*re-draw*).
+  3. Periksa kondisi unit pendingin transport (*cool box* / data logger suhu) petugas kurir pembawa sampel.
+  4. Pastikan sistem tidak menagihkan biaya pengujian lab (`hsp:lab_revenue:IDR`) untuk spesimen yang ditolak akibat pelanggaran rantai dingin internal.
+
+---
+
+### Playbook P: Penanganan Peringatan Nilai Panik Kritis Laboratorium (Panic Value Alert) (Fase 105)
+- **Gejala**: Pengujian lab mendeteksi parameter melewati batas kritis ekstrem (e.g., Kalium $< 2.5\text{ mEq/L}$ atau $> 6.5\text{ mEq/L}$, Troponin I $> 0.04\text{ ng/mL}$ STAT, Gula Darah Sewaktu $< 45\text{ mg/dL}$ atau $> 500\text{ mg/dL}$).
+- **Dampak Kritis**: Kondisi klinis mengancam jiwa pasien (*life-threatening*) yang membutuhkan tindakan medis darurat oleh dokter penanggung jawab pelayanan (DPJP) dalam hitungan menit.
+- **Langkah Operasional**:
+  1. Sistem menandai hasil lab dengan flag `is_panic_critical = true` dan status `HELD_FOR_PATHOLOGIST_REVIEW`.
+  2. Sistem secara otomatis memicu broadcast notifikasi darurat prioritas tinggi (STAT alert) ke terminal perawat dan perangkat DPJP:
+     ```sql
+     SELECT id, test_code, measured_value, unit, is_panic_critical, verification_status
+     FROM hsp_lab_results
+     WHERE is_panic_critical = 1 AND verification_status = 'HELD_FOR_PATHOLOGIST_REVIEW';
+     ```
+  3. Dokter Patologi Klinik memverifikasi hasil pemeriksaan instrumen (auto-rerun) dan mengonfirmasi keabsahan nilai kritis.
+  4. Petugas laboratorium melakukan pembacaan kembali secara lisan (*read-back confirmation*) via telepon ke perawat ruangan sesuai standar Patient Safety Goal 2.
+
+---
+
+### Playbook Q: Kontraindikasi Alergi Silang E-Resep & Proteksi Pasien Klirens Ginjal Rendah (Fase 104)
+- **Gejala**: Dokter meresepkan obat yang memiliki kontraindikasi alergi silang dengan riwayat alergi pasien atau dosis obat melampaui kapasitas klirens ginjal ($eGFR < 30\text{ mL/min}$).
+- **Dampak**: Risiko reaksi anafilaksis fatal atau toksisitas ginjal akut pada pasien.
+- **Langkah Operasional**:
+  1. Engine e-prescribing memblokir penerbitan resep secara otomatis dengan kode galat `ERR_CLINICAL_CONTRAINDICATION`.
+  2. Periksa kalkulasi klirens ginjal dan riwayat alergi pada profil klinis pasien:
+     ```sql
+     SELECT mrn, serum_creatinine, egfr, allergy_flags
+     FROM hsp_patient_clinical_profiles
+     WHERE mrn = '[PATIENT_MRN]';
+     ```
+  3. Bila dokter memerlukan override klinis atas pertimbangan darurat (*break-glass clinician override*), wajib menyertakan justifikasi medis formal, PIN otorisasi spesialis, dan persetujuan farmasis klinis.
+  4. Seluruh aktivitas override dicatat permanen dalam audit trail `core_audit_logs` untuk audit keselamatan pasien oleh Komite Farmasi & Terapi (KFT).
+
+---
+
+### Playbook R: Kliring Finansial Antar-Cabang Apotek & Rekonsiliasi Saldo Resiprokal (Fase 105)
+- **Gejala**: Terjadi diskrepansi saldo akun perantara kliring antar-cabang (`hsp:inter_branch_clearing:IDR`) pasca mutasi stok obat antar-apotek cabang holding.
+- **Dampak**: Ketidakseimbangan laporan keuangan konsolidasi unit bisnis rumah sakit dan apotek jejaring.
+- **Langkah Operasional**:
+  1. Jalankan audit rekonsiliasi transfer antar cabang:
+     ```sql
+     SELECT id, source_branch_id, destination_branch_id, item_code, quantity, total_amount, clearing_status
+     FROM hsp_inter_branch_clearings
+     WHERE clearing_status != 'BALANCED_RECIPROCAL'
+     ORDER BY created_at DESC;
+     ```
+  2. Pastikan setiap pengiriman stok dari Cabang A ke Cabang B menghasilkan dua pasang jurnal seimbang:
+     - Cabang Pengirim: Debit `hsp:inter_branch_clearing:IDR`, Kredit `hsp:pharmacy_inventory:IDR`
+     - Cabang Penerima: Debit `hsp:pharmacy_inventory:IDR`, Kredit `hsp:inter_branch_clearing:IDR`
+  3. Verifikasi saldo netto akun perantara bernilai nol:
+     ```bash
+     php artisan bank:reconcile -v
+     ```
+
+---
+
 ## 3. Jadwal Scheduler Otomatis (Production Crontab)
 
 Pastikan satu baris crontab berikut aktif di server produksi:

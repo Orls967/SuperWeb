@@ -1733,4 +1733,137 @@
   - `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` PASS (2 passed).
   - Laporan gate resmi: `docs/gates/fase-100.md`.
 
+<a id="2026-10-22-fase-101-golden-scenario-dr-and-post-quantum"></a>
+## 2026-10-22: Skenario Emas 12 Lini, Penarikan Produk Krisis, Multi-Region Active-Active DR & Kesiapan Pasca-Kuantum (Fase 101)
+- **Context:**
+  - Fase 101 menguji integrasi horizontal dan vertikal seluruh 12 lini bisnis konglomerasi dalam skenario emas otomatis end-to-end, simulasi krisis penarikan produk lintas lini, arsitektur failover bencana multi-wilayah dengan kuorum Raft, dan audit keutuhan kriptografi 8 rantai Merkle pasca-kuantum.
+- **Decision:**
+  1. **Skenario Emas Otomatis 12 Lini Bisnis:**
+     - `TwelveLinesGoldenScenarioTest` mengeksekusi siklus hulu-ke-hilir penuh: budidaya petani plasma `agri` dipantau sensor NDVI $\to$ hasil panen dikirim armada cold-chain `lgx` $\to$ diproses pabrik `mfg` $\to$ didistribusikan ke resto `resto`, hotel `htl`, dan venue `ven` $\to$ pasokan farmasi ke rumah sakit `hsp` $\to$ pengisian daya armada `ev` $\to$ pengiriman bijih tambang `min` via letter of credit $\to$ penyusunan laporan keuangan konsolidasi holding grup.
+     - Seluruh mutasi moneter menghasilkan buku besar berpasangan seimbang sempurna ($\sum = 0$).
+  2. **Penarikan Produk Krisis & Karantina Lintas Lini:**
+     - Mekanisme penarikan darurat `CrisisProductRecallService` memicu isolasi otomatis lot obat/makanan bermasalah di seluruh cabang faskes dan gudang, penelusuran maju-mundur pasien/konsumen terdampak, penguncian transaksi penjualan, dan penerbitan klaim asuransi otomatis.
+  3. **Multi-Region Active-Active Disaster Recovery & Raft Quorum:**
+     - Arsitektur replikasi multi-wilayah (ID-CGK-1, ID-SUB-2, SG-SIN-1) menerapkan saksi kuorum Raft ($2/3$ konsensus) untuk mencegah kondisi *split-brain dual-master*.
+     - Pengujian failover membuktikan pemulihan tanpa kehilangan data moneter (RPO = 0) dan waktu pemulihan layanan kritis di bawah target (RTO < 15 menit).
+  4. **Audit Kriptografi Pasca-Kuantum (PQC) & Rotasi Envelop Kunci:**
+     - Memverifikasi integritas matematis 8 rantai hash Merkle (Paspor Kendaraan, Paspor Pasien, Tiket Acara, Kustodi Logistik, Jembatan Timbang Tambang, Kontrak Korporat, Aset Tetap, dan ECO Manufaktur) melalui perintah `php artisan pq:audit-chains` (0 diskrepansi).
+     - Rotasi envelop kunci enkripsi master KMS terbukti menjaga integritas dekripsi rekaman historis tanpa data corruption.
+- **Reason:**
+  - Membuktikan kesiapan operasional konglomerasi dalam situasi darurat bencana dan kontaminasi produk, serta melindungi aset informasi jangka panjang terhadap ancaman komputasi kuantum.
+- **Verification:**
+  - `modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php` PASS.
+  - `modules/Core/tests/Feature/CrisisProductRecallTest.php` PASS.
+  - `modules/Core/tests/Feature/DisasterRecoveryMultiRegionTest.php` PASS.
+  - `modules/Core/tests/Feature/PostQuantumCryptoReadinessTest.php` PASS.
+  - `php artisan dr:audit` exit code 0.
+  - `php artisan pq:audit-chains` exit code 0 (8 Merkle chains valid).
+  - Laporan gate resmi: `docs/gates/fase-101.md`.
+
+<a id="2026-10-22-fase-102-enterprise-api-v3-and-mobile-sync"></a>
+## 2026-10-22: Enterprise REST API v3, RFC 7807, Sinkronisasi Mobile Offline & Webhook DLQ Mitra (Fase 102)
+- **Context:**
+  - Fase 102 mengimplementasikan antarmuka terprogram Enterprise REST API v3 untuk agregasi KPI eksekutif, standardisasi respons galat RFC 7807 Problem Details, engine sinkronisasi data lapangan offline-first berbasis jam vektor, dan portal webhook mitra terisolasi dengan antrean dead-letter (DLQ).
+- **Decision:**
+  1. **Enterprise REST API v3 & Standar RFC 7807:**
+     - Endpoint `/api/v3/executive/kpis` dan `/api/v3/executive/snapshot` menyajikan metrik keuangan, status kuorum multi-region DR, dan integritas kriptografi secara terpadu.
+     - Galat API distandarisasi mematuhi format RFC 7807 (`type`, `title`, `status`, `detail`, `instance`, `invalid_params`).
+     - Proteksi idempotensi ditegakkan melalui header `Idempotency-Key` dengan mekanisme distributed cache locking untuk mencegah eksekusi ganda.
+  2. **Mobile Offline-First Delta Sync Engine & Vector Clocks:**
+     - Endpoint `/api/v3/mobile/sync/pull` dan `/api/v3/mobile/sync/push` melayani pertukaran delta data operasional lapangan (dokter keliling, perawat ruang rawat, kurir logistik, petugas jembatan timbang tambang).
+     - Pelacakan kausalitas menggunakan jam vektor (*vector clocks*) untuk mendeteksi konflik konkuren secara matematis.
+     - Konflik diselesaikan secara deterministik: konflik data klinis diprioritaskan ke otoritas server faskes (`SERVER_HEALTHCARE_AUTHORITY_PRIORITY`), sedangkan konflik inventori diselesaikan dengan pembukuan jurnal penyesuaian kompensasi (`core_sync_conflict_ledgers`).
+  3. **Ingesti Webhook Mitra, Isolasi Multi-Tenant & Replay DLQ:**
+     - Endpoint `/api/v3/partner/webhooks` dan `/api/v3/partner/webhooks/{id}/replay` melayani integrasi event eksternal (asuransi BPJS, vendor VMI, agregator tiket).
+     - Penegakan isolasi tenant ketat berbasis header `X-Tenant-ID` untuk menangkal serangan IDOR lintas mitra bisnis.
+     - Pesan outbox yang gagal terkirim setelah 5 kali retry ber-exponential backoff dialihkan ke status `DEAD_LETTER_QUEUE` dan dapat dipicu ulang (*replay*) setelah server mitra normal.
+- **Reason:**
+  - Menyediakan konektivitas enterprise berkinerja tinggi, menjamin kesinambungan operasional staf lapangan dalam kondisi jaringan nir-koneksi, dan mencegah kegagalan transmisi data pihak ketiga.
+- **Verification:**
+  - `modules/Core/tests/Feature/EnterpriseApiV3EndpointsTest.php` PASS.
+  - `modules/Core/tests/Feature/MobileOfflineSyncEngineTest.php` PASS.
+  - `modules/Core/tests/Feature/PartnerPortalTenantIsolationTest.php` PASS.
+  - `php artisan route:list --path=api/v3` aktif 8 rute.
+  - Laporan gate resmi: `docs/gates/fase-102.md`.
+
+<a id="2026-10-22-fase-103-roles-60-playbook-and-governance"></a>
+## 2026-10-22: Playbook Tata Kelola 60+ Role Konglomerasi & Standard Operating Procedures Lintas Lini (Fase 103)
+- **Context:**
+  - Fase 103 merumuskan dokumentasi tata kelola operasional enterprise, panduan peran (playbook) untuk seluruh 60 peran konglomerasi lintas 12 lini bisnis, matriks otorisasi approval finansial bertingkat, dan prosedur penanganan insiden darurat.
+- **Decision:**
+  1. **Penerbitan Playbook 60+ Peran Konglomerasi (`docs/ROLES_60_PLAYBOOK.md`):**
+     - Mengelompokkan 60 peran ke dalam 12 divisi bisnis (Holding & Tata Kelola, Medis & Rumah Sakit, Hospitality & Hotel, Hiburan & Venue, Pertambangan & Energi, dsb.).
+     - Menetapkan matriks persetujuan finansial berjenjang (Staf operasional $\le$ Rp 10 Juta, Manajer Divisi $\le$ Rp 100 Juta, Direktur Unit $\le$ Rp 1 Miliar, Holding C-Level $>$ Rp 1 Miliar).
+  2. **Standard Operating Procedures (SOP) Terpadu:**
+     - SOP-01: Prosedur Penarikan Produk Krisis Lintas Lini (Holding Crisis Protocol).
+     - SOP-02: Penanganan Pasien Gawat Darurat & Triage Lintas Cabang Faskes.
+     - SOP-03: Audit Konsolidasi Finansial Akhir Bulan & Rekonsiliasi Intercompany.
+  3. **Pengayaan Runbook Operasional (`docs/RUNBOOK.md`):**
+     - Menambahkan Playbook L (Failover DR Multi-Wilayah & Konsensus Raft), Playbook M (Audit Kriptografi Pasca-Kuantum & Rotasi Kunci), dan Playbook N (Penanganan DLQ Webhook & Resolusi Konflik Vektor Jam).
+- **Reason:**
+  - Memastikan seluruh pemangku kepentingan memahami batas kewenangan otorisasi finansial dan memiliki petunjuk teknis yang jelas saat mengoperasikan platform konglomerasi skala penuh.
+- **Verification:**
+  - `tests/Architecture/TestHygieneTest.php` PASS.
+  - `tests/Architecture/ProgressIntegrityTest.php` PASS.
+  - `php artisan arch:scan` A1–A13 = 0 pelanggaran.
+  - Laporan gate resmi: `docs/gates/fase-103.md`.
+
+<a id="2026-10-22-fase-104-telemedicine-e-pharmacy-and-fefo"></a>
+## 2026-10-22: Layanan Kesehatan Digital, Telemedis, E-Resep & Manajemen Farmasi FEFO (Fase 104)
+- **Context:**
+  - Fase 104 membangun modul vertikal layanan kesehatan digital terintegrasi: konsultasi telemedis jarak jauh, penerbitan e-resep berkeabsahan hukum dengan tanda tangan digital dokter, pencegahan alergi silang dan toksisitas ginjal berbasis data Human Passport, routing pemenuhan apotek multi-cabang, alokasi stok FEFO, dan langganan obat kronis.
+- **Decision:**
+  1. **Konsultasi Telemedis & E-Resep Digital Berkeabsahan Hukum:**
+     - Pasien memesan sesi konsultasi telemedis terenkripsi (`hsp_tele_consults`) dengan triase gejala awal.
+     - Resep obat elektronik (`hsp_epharmacy_orders`) wajib menyertakan tanda tangan digital kriptografis dokter (`doctor_signature_hash`). Resep tanpa tanda tangan sah otomatis ditolak oleh sistem.
+  2. **Human Passport Safety Engine (Alergi Silang & Klirens Ginjal):**
+     - Evaluasi keamanan obat memeriksa riwayat alergi pasien: alergi langsung maupun alergi silang kelas obat (contoh: riwayat alergi penisilin secara otomatis memblokir peresepan amoksisilin dengan tingkat bahaya `CRITICAL_CONTRAINDICATION`).
+     - Pemeriksaan estimasi klirens kreatinin ginjal: pasien dengan nilai $\text{CrCl} < 30\text{ mL/min}$ otomatis dicegah dari peresepan obat nefrotoksik (misal gentamisin / NSAID dosis tinggi).
+  3. **Manajemen Stok Farmasi FEFO & Karantina Lot:**
+     - Pengambilan stok obat di apotek wajib memprioritaskan tanggal kedaluwarsa terdekat (*First-Expired-First-Out*).
+     - Lot obat yang berstatus `QUARANTINED` otomatis dikecualikan dari alokasi pemenuhan resep.
+  4. **Multi-Branch Pharmacy Routing & Langganan Obat Kronis:**
+     - Sistem merutekan pemenuhan resep ke cabang apotek lokal terdekat. Apabila stok lokal menipis, pesanan dialihkan secara mulus ke apotek hub regional.
+     - Program langganan obat kronis (diabetes/hipertensi) mengeksekusi pengiriman berkala bulanan otomatis dengan pendebitan dompet dan pembukuan buku besar seimbang.
+- **Reason:**
+  - Menjaga keselamatan jiwa pasien (*patient safety*) melalui pencegahan kesalahan medis berbasis algoritma cerdas dan meningkatkan kemudahan akses obat-obatan esensial.
+- **Verification:**
+  - `modules/Hospital/tests/Feature/TelemedicineAndEPharmacyTest.php` PASS.
+  - `modules/Hospital/tests/Feature/PrescriptionSafetyEvaluationTest.php` PASS.
+  - `modules/Hospital/tests/Feature/FefoInventoryManagementTest.php` PASS.
+  - `modules/Hospital/tests/Feature/PharmacyMultiBranchRoutingTest.php` PASS.
+  - `modules/Hospital/tests/Feature/ChronicDrugSubscriptionTest.php` PASS.
+  - `php artisan arch:scan` A1–A13 = 0 pelanggaran.
+  - Laporan gate resmi: `docs/gates/fase-104.md`.
+
+<a id="2026-10-22-fase-105-lab-loinc-specimen-custody-and-pacs"></a>
+## 2026-10-22: Jaringan Laboratorium LOINC, Kustodi Spesimen 3-Hop & Pencitraan Diagnostik DICOM PACS (Fase 105)
+- **Context:**
+  - Fase 105 memperluas ekosistem kesehatan dengan jaringan laboratorium terstandarisasi LOINC, deteksi otomatis nilai panik kritis, pelacakan rantai kustodi spesimen 3-hop ber-cold chain IoT, integrasi arsip citra radiologi DICOM PACS, dan kliring finansial antar-cabang faskes.
+- **Decision:**
+  1. **Katalog Laboratorium LOINC & Deteksi Nilai Panik Kritis:**
+     - Katalog tes laboratorium terstandarisasi LOINC memuat batas rentang rujukan fisiologis dan rentang nilai panik kritis (`hsp_lab_critical_ranges`).
+     - Hasil tes dengan anomali ekstrem (misal Kalium $< 2.5\text{ mEq/L}$ atau Troponin $> 0.04\text{ ng/mL}$) otomatis memicu status `PANIC_ALERT` dan wajib diverifikasi manual oleh dokter spesialis patologi sebelum dirilis ke pasien.
+  2. **Rantai Kustodi Spesimen 3-Hop Anti-Pelanggaran Rantai Dingin:**
+     - Pelacakan spesimen darah/jaringan mencakup 3 titik perpindahan (*hops*): Faskes Pengambil $\to$ Kurir Cold-Chain Logistik $\to$ Laboratorium Analisis Rujukan.
+     - Setiap serah terima disegel dengan hash kriptografis Merkle berantai (`hsp_lab_custody_transfers`).
+     - Sensor suhu telemetri yang mendeteksi kenaikan suhu $> 8^\circ\text{C}$ (pelanggaran rantai dingin) seketika membatalkan spesimen (`AUTO_REJECTED`) dan mewajibkan pengambilan ulang sampel.
+  3. **Pencitraan Radiologi DICOM PACS & SLA STAT:**
+     - Registrasi hasil pemeriksaan radiologi (CT, MRI, X-Ray) menyertakan metadata irisan seri DICOM PACS (`hsp_imaging_series`).
+     - Evaluasi otomatis batas waktu penyelesaian (*Turnaround Time SLA*): pemeriksaan gawat darurat STAT wajib selesai $\le 60$ menit, sedangkan pemeriksaan rutin memiliki batas 24 jam.
+  4. **Kliring Finansial Antar-Cabang Apotek & Faskes:**
+     - Transaksi pemenuhan resep dan pemeriksaan lintas cabang faskes holding dicatat dalam tabel kliring resiprokal (`hsp_inter_branch_clearings`).
+     - Eksekusi penyelesaian kliring antar-entitas membukukan entri buku besar berpasangan secara tepat dan seimbang tanpa meninggalkan diskrepansi moneter.
+- **Reason:**
+  - Menstandarisasi interoperabilitas diagnostik medis internasional, mencegah kesalahan analisis akibat kerusakan spesimen hayati, dan memastikan tata kelola keuangan antar-entitas faskes terkelola transparan.
+- **Verification:**
+  - `modules/Hospital/tests/Feature/HospitalLabAndImagingTest.php` PASS.
+  - `modules/Hospital/tests/Feature/LabCatalogAndCriticalValuesTest.php` PASS.
+  - `modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php` PASS.
+  - `modules/Hospital/tests/Feature/DicomPacsAndRadiologyTest.php` PASS.
+  - `modules/Hospital/tests/Feature/InterBranchFinancialClearingTest.php` PASS.
+  - `php artisan arch:scan` A1–A13 = 0 pelanggaran.
+  - Laporan gate resmi: `docs/gates/fase-105.md`.
+
+
 

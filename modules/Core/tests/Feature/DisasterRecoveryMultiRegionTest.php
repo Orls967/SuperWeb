@@ -6,8 +6,6 @@ namespace Modules\Core\tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Application\Services\DisasterRecoveryFailoverService;
-use Modules\Core\Domain\Models\DrClusterNode;
-use Modules\Core\Domain\Models\DrFailoverDrill;
 use Tests\TestCase;
 
 class DisasterRecoveryMultiRegionTest extends TestCase
