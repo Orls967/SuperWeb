@@ -560,17 +560,17 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Finance** | 8 | `pembiayaan`, `pembiayaan/simulasi/{product}`, `pembiayaan/{loan}` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Fleet** | 5 | `fleet`, `fleet/contracts`, `fleet/contracts/{contract}/amortize` ... | web, auth, role:admin,fleet_admin,lease_manager |
 | **Hcm** | 5 | `hcm`, `hcm/bounties`, `hcm/bounties/{bounty}/claim` ... | web, auth, role:admin,hcm_manager |
-| **Hospital** | 2 | `hospital`, `hospital/trials/{trial}/bill-milestone` | web, auth, role:admin,hospital_admin,doctor |
+| **Hospital** | 11 | `hospital`, `hospital/trials/{trial}/bill-milestone`, `hospital/telemedicine` ... | web, auth, role:admin,hospital_admin,doctor |
 | **Hotel** | 2 | `hotel`, `hotel/reservations/{reservation}/settle` | web, auth, role:admin,hotel_admin,front_desk |
 | **Insurance** | 2 | `insurance`, `insurance/products/{product}/issue` | web, auth, role:admin,insurance_admin,underwriter,customer |
 | **Integration** | 2 | `integration`, `integration/webhooks` | web, auth, role:admin |
 | **Intercompany** | 2 | `intercompany`, `intercompany/transactions` | web, auth, role:admin,auditor,legal,treasury |
-| **International** | 6 | `international`, `international/jvs`, `international/tax-royalty` ... | web, auth, role:admin,auditor,legal,treasury |
+| **International** | 2 | `international`, `international/jvs` | web, auth, role:admin,auditor,legal,treasury |
 | **Logistics** | 77 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
 | **Mall** | 48 | `mall/directory`, `mall/site-plan`, `mall/leases/{lease}/activate` ... | web, auth, role:admin,auditor,mall_admin |
 | **Manufacturing** | 63 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
 | **Mining** | 2 | `mining`, `mining/pits/{pit}/dispatch` | web, auth, role:admin,mining_admin,site_manager |
-| **Partner** | 7 | `partners`, `partners/{partner}`, `partners/{partner}/transition` ... | web, auth, verified |
+| **Partner** | 4 | `partners`, `partners/{partner}`, `partners/{partner}/transition` ... | web, auth, verified |
 | **Party** | 11 | `party/legal-entities`, `party`, `party/create` ... | web, auth, verified |
 | **Plm** | 1 | `plm` | web, auth, role:admin,rnd_specialist |
 | **Pricing** | 17 | `pricing`, `pricing/ticks`, `pricing/price-lists` ... | web, auth, verified |
@@ -582,14 +582,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Store** | 33 | `store`, `store/products/{slug}`, `store/mobil-bekas` ... | web, auth, role:admin,customer,auditor |
 | **Supplier** | 15 | `suppliers/scan-risks`, `suppliers`, `suppliers/create` ... | web, auth, verified |
 | **Telematics** | 2 | `telematics`, `telematics/devices/{device}/ingest` | web, auth, role:admin,telematics_admin,fleet_manager |
-| **Trade** | 11 | `trade`, `trade/bidding`, `trade/bidding/agents` ... | web, auth, role:admin,auditor,procurement,treasury |
-| **TradeFinance** | 12 | `trade-finance`, `trade-finance/lcs`, `trade-finance/operations` ... | web, auth, role:admin,auditor,procurement,treasury |
-| **Treasury** | 4 | `treasury`, `treasury/fx-revalue`, `treasury/cash-pools/{cashPool}/sweep` ... | web, auth, role:admin,auditor,treasury |
+| **Trade** | 7 | `trade`, `trade/bidding`, `trade/bidding/agents` ... | web, auth, role:admin,auditor,procurement,treasury |
+| **TradeFinance** | 8 | `trade-finance`, `trade-finance/lcs`, `trade-finance/cross-border` ... | web, auth, role:admin,auditor,procurement,treasury |
+| **Treasury** | 1 | `treasury` | web, auth, role:admin,auditor,treasury |
 | **Vending** | 2 | `vending`, `vending/units/{unit}/dispense` | web, auth, role:admin,vending_operator,store_manager |
 | **Venue** | 2 | `venue`, `venue/tickets/{ticket}/scan` | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 2 | `wealth`, `wealth/profiles/{profile}/invest` | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **714 Rute** | | |
+| **Total** | **705 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |

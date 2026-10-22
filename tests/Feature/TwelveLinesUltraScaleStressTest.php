@@ -22,9 +22,9 @@ class TwelveLinesUltraScaleStressTest extends TestCase
         // Run first time
         $seeder->run();
 
-        $this->assertDatabaseHas('ven_entertainment_venues', ['venue_code' => 'VEN-BALI-CANGGU-01']);
-        $this->assertDatabaseHas('htl_properties', ['property_code' => 'HTL-AYANA-RESORT-01']);
-        $this->assertDatabaseHas('min_sites', ['site_code' => 'MINE-HALMAHERA-CENTRAL']);
+        $this->assertDatabaseHas('ven_entertainment_venues', ['venue_code' => 'VEN-ULTRA-0001']);
+        $this->assertDatabaseHas('htl_properties', ['property_code' => 'HTL-ULTRA-0001']);
+        $this->assertDatabaseHas('min_sites', ['site_code' => 'MINE-SITE-0001']);
 
         $venueCount = EntertainmentVenue::count();
         $hotelCount = HotelProperty::count();

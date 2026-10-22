@@ -12,6 +12,12 @@ class AntiAbuseRateLimiterTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        \Illuminate\Support\Facades\Cache::flush();
+    }
+
     public function test_venue_age_verification_with_biometric_and_rate_limiting(): void
     {
         $service = app(AntiAbuseRateLimiterService::class);
