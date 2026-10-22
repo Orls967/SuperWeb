@@ -31,7 +31,7 @@
 | 100.3 | `test_compliance_calendar_flags_expiring_permits` | `tests/Feature/TwelveLinesComplianceCalendarTest.php` | PASS 🟢 | 0.020s |
 | 100.4 | `test_super_health_check_passes_cleanly` | `tests/Feature/SuperHealthCheckSuiteTest.php` | PASS 🟢 | 0.080s |
 | 100.5 | `test_venue_age_verification_with_biometric_and_rate_limiting` | `tests/Feature/AntiAbuseRateLimiterTest.php` | PASS 🟢 | 0.020s |
-| 100.6 | `TestHygieneTest` | `tests/Architecture/TestHygieneTest.php` | PASS 🟢 | 1.050s |
+| 100.6 | `it keeps tests within the hygiene ratchet baseline` | `tests/Architecture/TestHygieneTest.php` | PASS 🟢 | 1.050s |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** Terpasang (5204 tabel terbaseline, 0 pelanggaran baru).
