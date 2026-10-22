@@ -6,8 +6,6 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Core\Application\Services\UniversalEventSpineOutboxService;
 use Modules\Core\Domain\Models\SimEventSpine;
 use Tests\TestCase;
@@ -18,32 +16,24 @@ class TwelveLinesChaosResiliencyTest extends TestCase
 
     public function test_mid_transaction_crash_rolls_back_cleanly(): void
     {
-        LedgerAccount::query()->firstOrCreate(
-            ['code' => 'chaos:vault:IDR'],
-            [
-                'uuid' => (string) Str::uuid(),
-                'name' => 'Chaos Vault',
-                'asset_code' => 'IDR',
-                'kind' => 'ASSET',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'is_frozen' => false,
-            ]
-        );
+        DB::table('core_command_center_metrics')->insert([
+            'metric_key' => 'chaos:baseline',
+            'domain_code' => 'CORE',
+            'metric_value_minor' => 100,
+            'unit' => 'COUNT',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-        $initialCount = DB::table('bank_ledger_accounts')->count();
+        $initialCount = DB::table('core_command_center_metrics')->count();
 
         try {
             DB::transaction(function (): void {
-                DB::table('bank_ledger_accounts')->insert([
-                    'uuid' => (string) Str::uuid(),
-                    'code' => 'chaos:transient:IDR',
-                    'name' => 'Transient Account',
-                    'asset_code' => 'IDR',
-                    'kind' => 'ASSET',
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
+                DB::table('core_command_center_metrics')->insert([
+                    'metric_key' => 'chaos:transient',
+                    'domain_code' => 'CORE',
+                    'metric_value_minor' => 999,
+                    'unit' => 'COUNT',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -54,8 +44,8 @@ class TwelveLinesChaosResiliencyTest extends TestCase
             // caught crash
         }
 
-        $this->assertSame($initialCount, DB::table('bank_ledger_accounts')->count());
-        $this->assertNull(DB::table('bank_ledger_accounts')->where('code', 'chaos:transient:IDR')->first());
+        $this->assertSame($initialCount, DB::table('core_command_center_metrics')->count());
+        $this->assertNull(DB::table('core_command_center_metrics')->where('metric_key', 'chaos:transient')->first());
     }
 
     public function test_dlq_event_spine_resiliency_after_worker_failure(): void
