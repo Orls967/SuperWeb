@@ -1604,4 +1604,133 @@
   - `php artisan bank:reconcile` seimbang 0 selisih.
   - `php artisan arch:scan` A1–A13 = 0 pelanggaran baru.
 
+<a id="2026-10-21-fase-96-fintech-rwa-and-insurance-integration"></a>
+## 2026-10-21: Integrasi FinTech Konglomerasi 12 Lini, Token RWA Pro-Rata & Parametrik Asuransi (Fase 96)
+- **Context:**
+  - Fase 96 membangun fondasi finansial terpadu lintas 12 lini bisnis konglomerasi, meliputi distribusi dividen token RWA, klaim asuransi parametrik multi-sektor, evaluasi kredit komprehensif 360°, kliring valas stabil USDC 24/7, dan cash sweep treasury otomatis.
+- **Decision:**
+  1. **Distribusi Dividen RWA Pro-Rata dengan Invarian Dust:**
+     - Alokasi dividen dihitung proporsional berbasis kepemilikan unit token: $\text{share} = \lfloor \frac{\text{units} \times \text{pool}}{\text{total\_units}} \rfloor$.
+     - Residu pembulatan (*dust*) dialokasikan ke akun cadangan holding (`rwa:dust_reserve:IDR`) sehingga invarian konservasi nilai $\sum \text{payouts} + \text{dust} = \text{total\_pool}$ selalu terjaga 100% tanpa selisih sen pun.
+  2. **Asuransi Parametrik 12 Sektor Lintas Lini:**
+     - Mendefinisikan 12 pemicu parametrik otomatis (cuaca/hujan ekstrem, keterlambatan penerbangan, suhu rantai dingin, kekeringan pertanian, dsb.) yang memicu pembayaran klaim instan tanpa proses birokrasi manual saat ambang telemetri terlewati.
+  3. **Evaluasi Skor Kredit 360° Multi-Vektor:**
+     - Penilaian kelayakan kredit mitra/pelanggan menggabungkan data transaksi dari 12 lini (riwayat sewa mall, kepatuhan pembayaran invoice logistik, omzet resto, histori bengkel) dengan batas plafon risiko terukur.
+  4. **Kliring USDC Terkunci & Dynamic Cash Pool Sweep:**
+     - Konversi FX terkunci dengan settlement kripto stabil USDC dan penarikan likuiditas antar-anak usaha tanpa pernah menghasilkan saldo negatif pada akun kas mana pun.
+- **Reason:**
+  - Meniadakan kebocoran dana akibat pembulatan minor unit, mempercepat penyelesaian klaim asuransi secara objektif berbasis telemetri terverifikasi, dan mengoptimalkan efisiensi modal kerja kas grup konglomerasi.
+- **Verification:**
+  - `modules/Rwa/tests/Feature/RwaCrossLineDividendDistributionTest.php` PASS.
+  - `modules/Insurance/tests/Feature/UniversalCrossLineInsuranceClaimTest.php` PASS.
+  - `modules/Finance/tests/Feature/UniversalCreditEvaluationTest.php` PASS.
+  - `modules/Treasury/tests/Feature/UniversalGroupCashPoolingTest.php` PASS.
+  - `modules/Core/tests/Feature/UniversalCrossLineFintechIntegrationTest.php` PASS.
+  - `php artisan rwa:audit` dan `php artisan ins:audit` exit code 0 (0 selisih).
+  - Laporan gate resmi: `docs/gates/fase-96.md`.
+
+<a id="2026-10-21-fase-97-talent-gig-esg-and-event-spine"></a>
+## 2026-10-21: Universal Talent Gig Board, Scope 1–3 ESG, dan Event Spine Outbox (Fase 97)
+- **Context:**
+  - Fase 97 merealisasikan interoperabilitas modal manusia, pengukuran jejak karbon terpadu, tulang punggung event asinkron outbox, dan pusat komando eksekutif grup 12 lini.
+- **Decision:**
+  1. **Universal Talent Gig Board & Guardrail UU Ketenagakerjaan:**
+     - Penugasan talenta internal/eksternal lintas modul (hotel, venue, rumah sakit, tambang, logistik) dipagari batas UU Ketenagakerjaan No. 13/2003: maksimal 8 jam/hari dan maksimal 14 jam lembur/minggu.
+     - Upah tugas gig diamankan dalam akun escrow dompet dan dicairkan otomatis via double-entry ledger setelah bukti kerja (POF) disetujui supervisor non-pekerja (anti-self-approval).
+  2. **Konsolidasi Jejak Karbon Scope 1, 2, dan 3:**
+     - Agregasi emisi GRK dari armada logistik/tambang (Scope 1 BBM), konsumsi listrik gedung/mall/hotel (Scope 2 kWh), dan rantai pasok supplier (Scope 3) ke dalam model `EsgCarbonLog` untuk pelaporan net-zero holding.
+  3. **Universal Event Spine Outbox & Dead-Letter Queue (DLQ):**
+     - Penerbitan event lintas modul menggunakan pola transactional outbox terdesentralisasi dengan penanganan kegagalan konsumsi otomatis hingga 3 kali percobaan sebelum isolasi ke DLQ.
+  4. **Group Executive Command Center:**
+     - Penyusunan metrik konsolidasi P&L 12 lini bisnis dan kalkulasi skor kesehatan ekosistem 4 pilar (`CoreCommandCenterMetric` & `CoreEcosystemHealthScore`).
+- **Reason:**
+  - Menghindari pelanggaran hukum ketenagakerjaan pada penugasan lintas unit, menjamin kepatuhan audit emisi keberlanjutan global, dan memberikan visibilitas real-time kinerja grup kepada manajemen puncak.
+- **Verification:**
+  - `modules/Hcm/tests/Feature/UniversalTalentGigTest.php` PASS.
+  - `modules/Esg/tests/Feature/ConsolidatedTwelveLinesEsgTest.php` PASS.
+  - `modules/Core/tests/Feature/UniversalEventSpineOutboxTest.php` PASS.
+  - `modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php` PASS.
+  - `php artisan ecosystem:audit-12-lines` exit code 0.
+  - Laporan gate resmi: `docs/gates/fase-97.md`.
+
+<a id="2026-10-21-fase-98-extreme-scale-and-chaos-resilience"></a>
+## 2026-10-21: Skalabilitas Ekstrem Ultra Seeder, Indeks Komposit & Resiliensi Chaos (Fase 98)
+- **Context:**
+  - Fase 98 menuntaskan kebutuhan skala data besar volume konglomerasi, optimasi indeks kueri bertekanan tinggi, serta pembuktian integritas data di bawah stres konkurensi ekstrem dan kegagalan sistem tiba-tiba (*chaos resiliency*).
+- **Decision:**
+  1. **Ultra Seeder Generator Chunked Berbatas Memori:**
+     - `TwelveLinesUltraSeeder` mengimplementasikan pembuatan data massal dalam batch 500 baris dengan batasan konsumsi memori PHP ketat di bawah 64 MB.
+  2. **Pemberlakuan Indeks Komposit Skala:**
+     - Migrasi `2026_10_22_000006_add_composite_indexes_for_scale.php` menambahkan indeks komposit multi-kolom pada tabel transaksional terpadat (hotel bookings, medical records, weighbridge tickets, talent tasks, outbox spine).
+  3. **Anggaran Kueri Ketat (Query Budget CI Test):**
+     - Memastikan endpoint command center dan agregasi eksekutif tidak mengalami N+1 query regression (anggaran kueri $\le 4$ per endpoint, latensi p95 $< 50$ ms).
+  4. **Pessimistic Locking Concurrency 1.000 Permintaan:**
+     - Menguji integritas stok kamar hotel dan tiket venue di bawah 1.000 permintaan pemesanan paralel dengan `lockForUpdate()`, membuktikan nol oversell dan nol saldo negatif.
+  5. **Rollback Bersih Crash Mid-Transaksi & Resiliensi DLQ:**
+     - Simulasi interupsi fatal di tengah eksekusi transaksi terbukti membatalkan seluruh mutasi secara bersih tanpa meninggalkan baris *orphan*.
+- **Reason:**
+  - Menjamin performa basis data tetap responsif pada volume data ratusan ribu transaksi, mencegah kerugian ganda akibat benturan race condition, dan menjamin konsistensi ACID penuh.
+- **Verification:**
+  - `tests/Feature/TwelveLinesQueryBudgetTest.php` PASS.
+  - `tests/Feature/TwelveLinesExtremeConcurrencyTest.php` PASS.
+  - `tests/Feature/TwelveLinesChaosResiliencyTest.php` PASS.
+  - `php artisan arch:scan` A1–A13 = 0 pelanggaran baru.
+  - Laporan gate resmi: `docs/gates/fase-98.md`.
+
+<a id="2026-10-22-fase-99-unified-dynamic-pricing-and-ai-quarantine"></a>
+## 2026-10-22: Unified Dynamic Pricing Engine, Multi-Vector Demand Forecasting & AI Anomaly Quarantine (Fase 99)
+- **Context:**
+  - Fase 99 menghadirkan mesin penetapan harga dinamis lintas lini, peramalan permintaan berbasis varians multivariat, karantina transaksi mencurigakan bertenaga AI, dan rekomendasi operasional preskriptif ber-guardrail.
+- **Decision:**
+  1. **Aturan Mutlak `CONTRACT_PRIORITY` pada Dynamic Pricing:**
+     - Apabila pelanggan/mitra memiliki kontrak komersial aktif dengan harga khusus (`contract_price_idr`), harga kontrak menang mutlak secara tanpa syarat (`CONTRACT_PRIORITY`), mengabaikan pengali lonjakan permintaan dinamis (*surge multiplier*).
+     - Untuk transaksi non-kontrak, harga dinamis dikalkulasi proporsional dan dibatasi ketat oleh batas lantai (*floor price*) dan plafon (*ceiling price*).
+  2. **Multi-Vector Demand Forecasting Berstandar MAPE:**
+     - Model peramalan permintaan memadukan data historis footfall mall, reservasi hotel, dan jadwal event, dengan target akurasi Mean Absolute Percentage Error (MAPE) $\le 12.5\%$.
+  3. **Karantina Otomatis Anomali Anti-Fraud 5-Vektor:**
+     - Evaluasi risiko transaksi menggabungkan 5 vektor (lonjakan kecepatan transaksi, deviasi magnitudo ekstrem, geo-hopping mencurigakan, pelanggaran batas kontrak, dan ketidakcocokan sidik jari perangkat).
+     - Transaksi dengan skor risiko gabungan $\ge 60$ otomatis diisolasi ke tabel `core_ai_anomaly_quarantines` berstatus `PENDING_REVIEW` dan diblokir dari settlement buku besar.
+  4. **Prescriptive Operations Ber-Guardrail:**
+     - Rekomendasi operasional (auto-replenishment, penyesuaian shift, setback energi) dieksekusi otonom jika estimasi dampak finansial $\le \text{Rp } 10.000.000$, dan wajib approval manajerial berjenjang jika melebihi ambang batas.
+- **Reason:**
+  - Menjaga kepastian hukum kontrak komersial B2B, memitigasi kerugian finansial akibat penipuan transaksi seketika, dan meningkatkan efisiensi operasional harian melalui otomasi terkendali.
+- **Verification:**
+  - `tests/Feature/UnifiedDynamicPricingTest.php` PASS (4 passed, 16 assertions).
+  - `php artisan ai:audit` exit code 0 (deterministik, 0 diskrepansi).
+  - Laporan gate resmi: `docs/gates/fase-99.md`.
+
+<a id="2026-10-22-fase-100-security-rbac-60-medical-encryption-and-observability"></a>
+## 2026-10-22: Keamanan, RBAC 60+ Role Konglomerasi, Enkripsi Medis AES-256, Kalender Kepatuhan & Master Observabilitas (Fase 100)
+- **Context:**
+  - Fase 100 melengkapi fondasi tata kelola enterprise dengan pendaftaran dan penegakan 60+ peran RBAC, enkripsi field-level data rekam medis pasien berstandar AES-256, sistem kalender kepatuhan perizinan 12 lini, mitigasi anti-abuse khusus, serta master observabilitas sistem.
+- **Decision:**
+  1. **Registrasi 60+ Role RBAC Konglomerasi:**
+     - `RbacConglomerateSeeder` mendaftarkan peran operasional spesifik per lini (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`, `hotel_gm`, `front_office`, `housekeeping`, `revenue_mgr`, `mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`, `ev_operator`, `wm_advisor`, dsb.).
+  2. **Enkripsi Field-Level AES-256-GCM pada Rekam Medis (PII & Pasien):**
+     - Model `Modules\Hospital\Domain\Models\PatientMedicalRecord` (`hsp_patient_records`) mengenkripsi kolom NIK (`national_id_nik`), diagnosis ICD-10 (`icd10_diagnosis_code`), dan rincian resep obat (`prescription_details`) menggunakan cast Eloquent `encrypted`.
+     - Data tersimpan dalam format ciphertext terenkripsi di database, namun terdekripsi transparan saat diakses oleh model dengan otorisasi peran berwenang.
+  3. **Mesin Kalender Kepatuhan Perizinan 12 Lini:**
+     - Model `CoreComplianceObligation` dan service `TwelveLinesComplianceCalendarService` memantau masa berlaku izin operasional (izin RS, izin keramaian venue, izin pariwisata hotel, IUP/AMDAL tambang, sertifikasi halal F&B).
+     - Menghasilkan alert otomatis tingkat `WARNING_EXPIRING_SOON` saat memasuki jendela lead time dan transisi ke `CRITICAL_EXPIRED` saat melewati tanggal kedaluwarsa.
+  4. **Proteksi Anti-Abuse & Rate Limiting Khusus:**
+     - `AntiAbuseRateLimiterService` menerapkan:
+       - Verifikasi usia venue dengan biometrik simulasi & lockout bruteforce (maksimal 5 percobaan per 10 menit).
+       - Akses IGD terisolasi dengan penguncian terminal IP otomatis selama 15 menit setelah 3 kegagalan autentikasi berturut-turut.
+       - Pembatasan kuota tiket/kamar massal (anti-scalping) per jendela waktu 5 menit.
+       - Rotasi token perangkat telematika IoT berkala dengan *grace period* 60 detik untuk transisi tanpa *packet drop*.
+  5. **Master Multi-Pillar Observability (`super:health-check`):**
+     - Mengorkestrasikan diagnosa kesehatan platform menyeluruh di 12 pilar utama arsitektur (Database, Cache, Storage, Double-Entry Ledger, Vehicle Passport, Mall Billing, Resto Shifts, Logistics Custody, Asset Subledger, Procurement AP, Contract Plafon, dan Manufacturing WIP/QMS).
+- **Reason:**
+  - Menjamin kerahasiaan data medis sensitif sesuai regulasi privasi data (UU PDP / HIPAA), mencegah penyalahgunaan antarmuka publik, dan memastikan kesiapan operasional seluruh pilar platform 12 lini secara real-time.
+- **Verification:**
+  - `tests/Feature/PatientMedicalRecordEncryptionTest.php` PASS.
+  - `tests/Feature/TwelveLinesComplianceCalendarTest.php` PASS.
+  - `tests/Feature/AntiAbuseRateLimiterTest.php` PASS.
+  - `tests/Feature/SuperHealthCheckSuiteTest.php` PASS.
+  - `php artisan super:health-check` exit code 0 (12/12 pilar HEALTHY).
+  - `php artisan arch:scan` A1–A13 = 0 baru.
+  - `vendor/bin/pest tests/Architecture/TestHygieneTest.php` PASS (T1–T4 = 0).
+  - `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` PASS (2 passed).
+  - Laporan gate resmi: `docs/gates/fase-100.md`.
+
 

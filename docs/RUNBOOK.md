@@ -6,13 +6,13 @@ Dokumen ini adalah panduan standar operasional prosedur (SOP) bagi tim Engineeri
 
 ## 1. Pemantauan Rutin & Pemeriksaan Kesehatan Harian
 
-### 1.1 Diagnosa Menyeluruh 8 Pilar Platform
+### 1.1 Diagnosa Menyeluruh 12 Pilar Platform
 Jalankan diagnosa otomatis satu pintu setiap pagi atau pasca deployment:
 ```bash
 php artisan super:health-check
 ```
 **Parameter Keberhasilan**:
-- Seluruh 8 sub-sistem berstatus `<fg=green>✓ HEALTHY</>`:
+- Seluruh 12 sub-sistem berstatus `<fg=green>✓ HEALTHY</>`:
   1. Koneksi Database Primary (latensi $< 50$ ms)
   2. Cache & In-Memory Store
   3. Izin Akses Direktori Storage (writable)
@@ -21,6 +21,10 @@ php artisan super:health-check
   6. Audit Tagihan & Revenue Mall (`mall:audit-billing` 0 selisih)
   7. Operasional & Shift Kasir Resto (`resto:close-day --check` lolos)
   8. Logistik: Billing & Rantai Kustodi (`lgx:audit-billing` & `lgx:verify-custody` bersih)
+  9. Aset: Subledger & Rantai Hash (`ast:audit` 0 selisih)
+  10. Pembelian: Subledger AP & GR/IR (`proc:audit` 0 selisih)
+  11. Kontrak: Subledger Plafon & Rantai Versi (`ctr:audit` & `contracts:verify-chain` valid)
+  12. Manufaktur: Biaya Produksi WIP & Mutu QMS (`mfg:audit-costing` & `mfg:qms-audit` seimbang)
 - Terbit entri log audit di tabel `core_audit_logs` dengan aksi `system.health_check`.
 
 ### 1.2 Dashboard Observabilitas GUI
@@ -141,6 +145,132 @@ Halaman ini menyajikan metrik latensi, status komponen visual, tombol pemindaian
      php artisan lgx:retry-webhooks
      ```
   3. Jika endpoint klien mengembalikan error 4xx/5xx persisten, hubungi pihak IT mitra untuk memeriksa konfigurasi URL atau shared secret HMAC-SHA256.
+
+---
+
+### Playbook H: Rekonsiliasi Dividen Token RWA & Penanganan Residu Dust (Fase 96)
+- **Gejala**: Perhitungan dividen investor token RWA menyisakan fraksi desimal minor unit.
+- **Dampak Kritis**: Selisih pembulatan moneter yang berpotensi melanggar invarian konservasi nilai buku besar.
+- **Langkah Mitigasi**:
+  1. Pastikan eksekusi distribusi pro-rata menggunakan `RwaCrossLineDividendDistributionService`:
+     $$\sum \text{payouts} + \text{dust} = \text{total\_pool}$$
+  2. Periksa akun penampung `rwa:dust_reserve:IDR` di buku besar untuk memastikan residu pembulatan tertampung rapi:
+     ```bash
+     php artisan rwa:audit
+     ```
+  3. Verifikasi status keseimbangan multi-aset:
+     ```bash
+     php artisan bank:reconcile
+     ```
+
+---
+
+### Playbook I: Penanganan Transaksi Karantina Anomali AI Anti-Fraud (Fase 99)
+- **Gejala**: Transaksi pembayaran atau klaim diblokir dan berstatus `PENDING_REVIEW` pada `core_ai_anomaly_quarantines`.
+- **Dampak**: Settlement dana tertahan sementara menunggu peninjauan kepatuhan (*four-eyes review*).
+- **Langkah Operasional**:
+  1. Buka tabel karantina anomali AI:
+     ```sql
+     SELECT id, transaction_reference, domain_code, anomaly_type, risk_score, resolution_status, created_at
+     FROM core_ai_anomaly_quarantines
+     WHERE resolution_status = 'PENDING_REVIEW'
+     ORDER BY risk_score DESC;
+     ```
+  2. Evaluasi 5 indikator risiko yang memicu karantina (kecepatan, deviasi magnitudo, lonjakan geo, pelanggaran kontrak, ketidakcocokan perangkat).
+  3. Jalankan audit determinisme AI:
+     ```bash
+     php artisan ai:audit
+     ```
+  4. Bila transaksi terbukti sah (*false-positive*), petugas risk officer memperbarui status menjadi `CLEARED` untuk membuka blokir settlement. Bila terbukti penipuan, tandai `FRAUD_CONFIRMED`.
+
+---
+
+### Playbook J: Mitigasi Insiden Bruteforce Terminal IGD & Rotasi Token Telematika (Fase 100)
+- **Gejala**: Terminal IGD RS melaporkan `TERMINAL_IGD_LOCKED_OUT` atau perangkat armada gagal ingest data telematika (`INVALID_OLD_TOKEN_REJECTED`).
+- **Dampak**: Staf medis tidak dapat input triage darurat dari terminal tertentu atau pelacakan armada terputus.
+- **Langkah Penanganan**:
+  1. **Lockout IGD**: Kunci lockout terminal berlaku otomatis 15 menit pasca 3 kegagalan kredensial berturut-turut.
+     - Bila situasi darurat klinis (*break-glass*), admin RS dapat mereset kunci terminal:
+       ```php
+       Cache::forget("igd:lockout:{$terminalIp}");
+       Cache::forget("igd:fail_count:{$terminalIp}:{$staffId}");
+       ```
+  2. **Rotasi Token IoT Telematika**:
+     - Sistem menyediakan *grace period* 60 detik selama pergantian token aktif.
+     - Periksa apakah perangkat lama mencoba ingest menggunakan token yang telah melewati masa tenggang grace period:
+       ```bash
+       php artisan super:health-check
+       ```
+
+---
+
+### Playbook K: Eskalasi Izin Operasional Kedaluwarsa Kalender Kepatuhan (Fase 100)
+- **Gejala**: Kalender kepatuhan mencatat izin berstatus `EXPIRING_SOON` atau `EXPIRED`.
+- **Dampak**: Risiko sanksi regulasi atau penghentian paksa operasional unit bisnis.
+- **Langkah Operasional**:
+  1. Jalankan audit izin terjadwal harian melalui service `TwelveLinesComplianceCalendarService`.
+  2. Periksa daftar kewajiban perizinan bermasalah di tabel `core_compliance_obligations`:
+     ```sql
+     SELECT permit_code, domain_code, permit_name, issuing_authority, expiration_date, status 
+     FROM core_compliance_obligations 
+     WHERE status IN ('EXPIRING_SOON', 'EXPIRED')
+     ORDER BY expiration_date ASC;
+     ```
+---
+
+### Playbook L: Penanganan Failover Bencana Multi-Wilayah & Kuorum Raft Split-Brain (Fase 101)
+- **Gejala**: Cluster database region primer (ID-CGK-1) tidak responsif, alarm latensi replikasi $> 1.000$ ms.
+- **Dampak Kritis**: Potensi split-brain dan dual-master write jika failover dipicu tanpa konsensus kuorum.
+- **Langkah Operasional**:
+  1. Periksa status kuorum node cluster menggunakan artisan:
+     ```bash
+     php artisan dr:audit
+     ```
+  2. Verifikasi voting kuorum Raft:
+     - Jika kuorum $\ge 2/3$ node sepakat, promosi master sekunder (ID-SUB-2) berlangsung otomatis dengan RPO=0.
+     - Jika kuorum terpecah ($< 2/3$), pastikan kluster terdegradasi secara aman ke mode `READ_ONLY` guna mencegah korupsi data.
+  3. Lakukan failover manual terkontrol jika diperlukan:
+     ```bash
+     php artisan dr:failover --target=ID-SUB-2 --force
+     ```
+
+---
+
+### Playbook M: Audit Kriptografi Pasca-Kuantum (PQC) & Rotasi Envelop Kunci Induk (Fase 101)
+- **Gejala**: Peringatan kadaluwarsa envelop kunci enkripsi (KMS) atau kegagalan verifikasi tanda tangan kuantum.
+- **Langkah Operasional**:
+  1. Jalankan audit kriptografis 8 rantai Merkle pasca-kuantum:
+     ```bash
+     php artisan pq:audit-chains
+     ```
+  2. Pastikan hasil pemeriksaan melaporkan `0 discrepancies`.
+  3. Lakukan rotasi envelop kunci enkripsi master secara idempotens tanpa merusak ciphertext lama:
+     ```bash
+     php artisan kms:rotate --domain=all
+     ```
+
+---
+
+### Playbook N: Penanganan Antrean Dead-Letter Webhook (DLQ) & Resolusi Konflik Vektor Jam Mobile (Fase 102)
+- **Gejala**: Webhook integrasi mitra gagal setelah 5 kali percobaan (exponential backoff) dan terparkir di `core_webhook_deliveries` status `DEAD_LETTER_QUEUE`, atau konflik versi pada sinkronisasi offline perangkat mobile.
+- **Langkah Operasional**:
+  1. Periksa daftar antrean DLQ melalui API v3:
+     ```bash
+     curl -s https://api.autoserve.internal/v3/partner/webhooks \
+       -H "X-Tenant-ID: holding-corp"
+     ```
+  2. Setelah server tujuan mitra normal kembali, picu pengiriman ulang (*replay*) pesan DLQ:
+     ```bash
+     curl -X POST https://api.autoserve.internal/v3/partner/webhooks/{id}/replay \
+       -H "X-Tenant-ID: holding-corp"
+     ```
+  3. Periksa audit ledger konflik versi mobile di tabel `core_sync_conflict_ledgers`:
+     ```sql
+     SELECT id, device_uuid, entity_type, entity_id, resolution_strategy, created_at
+     FROM core_sync_conflict_ledgers
+     ORDER BY id DESC LIMIT 20;
+     ```
+  4. Pastikan konflik klinis diselesaikan melalui `SERVER_HEALTHCARE_AUTHORITY_PRIORITY` dan konflik stok diselesaikan melalui penyesuaian buku besar kompensasi.
 
 ---
 
