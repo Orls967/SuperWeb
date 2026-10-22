@@ -40,6 +40,7 @@ use Modules\Core\Console\Commands\ProcessOutboxCommand;
 use Modules\Core\Console\Commands\RunSimulationCommand;
 use Modules\Core\Console\Commands\ScaleProvisionCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
+use Modules\Core\Console\Commands\PqAuditChainsCommand;
 use Modules\Core\Console\Commands\TwelveLinesComprehensiveAuditCommand;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
@@ -300,6 +301,7 @@ class CoreServiceProvider extends ServiceProvider
                 AuditAiCommand::class,
                 AuditMobileCommand::class,
                 AuditSimulationKernelCommand::class,
+                PqAuditChainsCommand::class,
             ]);
         }
 
