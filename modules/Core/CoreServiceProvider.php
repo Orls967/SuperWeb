@@ -190,6 +190,10 @@ class CoreServiceProvider extends ServiceProvider
             $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         }
 
+        if (file_exists(__DIR__.'/routes/api.php')) {
+            $this->loadRoutesFrom(__DIR__.'/routes/api.php');
+        }
+
         // === Gate: RBAC permission-based authorization ===
         // Admin bypasses all gates; otherwise check RBAC permissions
         Gate::before(function ($user, $ability) {

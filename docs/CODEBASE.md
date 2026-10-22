@@ -488,19 +488,19 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 8 | **CloudKitchen** | `ckt_` | 1 |
 | 9 | **Contract** | `ctr_` | 3 |
 | 10 | **ControlTower** | `sct_` | 1 |
-| 11 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 17 |
+| 11 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 25 |
 | 12 | **Crypto** | `crypto_` | 4 |
 | 13 | **Distribution** | `dist_` | 5 |
 | 14 | **Edu** | `edu_` | 2 |
 | 15 | **Egy** | `egy_` | 4 |
 | 16 | **EnterpriseFinance** | `ef_` | 2 |
 | 17 | **Epc** | `epc_` | 1 |
-| 18 | **Esg** | `esg_` | 2 |
+| 18 | **Esg** | `esg_` | 3 |
 | 19 | **Ev** | — | 1 |
 | 20 | **Finance** | `fin_` | 1 |
 | 21 | **Fleet** | — | 1 |
-| 22 | **Hcm** | `hcm_` | 5 |
-| 23 | **Hospital** | `hsp_` | 9 |
+| 22 | **Hcm** | `hcm_` | 6 |
+| 23 | **Hospital** | `hsp_` | 10 |
 | 24 | **Hotel** | `htl_` | 7 |
 | 25 | **Insurance** | `ins_` | 1 |
 | 26 | **Integration** | `intg_` | 340 |
@@ -534,7 +534,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 54 | **Venue** | `ven_` | 5 |
 | 55 | **Wealth** | `wm_` | 1 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **554 Migrasi** |
+| | **Total: 56 Modul** | | **565 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -688,6 +688,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `payment:release-expired-holds` | **`daily()`** | Otomatis melepaskan dana escrow untuk payment intent status held yang telah melewati masa berlaku |
 | `plm:audit` | `manual` | Audit Product Lifecycle Management (PLM) ECO hash-chain and EBOM-to-MBOM integrity (0 discrepancies) |
 | `plm:encrypt-legacy` | `manual` | Idempotently re-encrypt legacy base64 encoded formula payloads in lab notebooks |
+| `pq:audit-chains` | `manual` | Audit 8 Merkle hash chains for Post-Quantum readiness — 0 discrepancy required |
 | `pricing:audit` | `manual` | Audit pricing: lock harga, anggaran promo, override, overlap, dan guardrail quote (0 selisih) |
 | `proc:audit` | `manual` | Audit subledger AP dan GR/IR terhadap ledger (harus 0 selisih) |
 | `prp:audit` | `manual` | Perform two-source verification of smart building zones, sensor readings, and utility billings |
@@ -730,7 +731,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 136 Command** | **37 Terjadwal** | |
+| **Total: 137 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
