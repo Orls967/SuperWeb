@@ -12,7 +12,7 @@ class DisasterRecoveryFailoverService
     /**
      * Execute comprehensive multi-region DR failover drill
      *
-     * @param array<int, array{node_code: string, region: string, role: string, ip: string, lag_ms: int, status: string}> $nodes
+     * @param  array<int, array{node_code: string, region: string, role: string, ip: string, lag_ms: int, status: string}>  $nodes
      */
     public function executeFailoverDrill(
         string $drillCode,

@@ -23,7 +23,7 @@ return new class extends Migration
                 $table->string('audit_hash', 64);
                 $table->timestamps();
 
-                $table->index(['device_uuid', 'entity_type', 'entity_id']);
+                $table->index(['device_uuid', 'entity_type', 'entity_id'], 'core_sync_conflict_dev_entity_idx');
             });
         }
     }

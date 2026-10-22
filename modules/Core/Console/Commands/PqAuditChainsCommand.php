@@ -23,7 +23,7 @@ class PqAuditChainsCommand extends Command
         $result = $service->auditEightMerkleChains();
 
         foreach ($result['chains'] as $chain) {
-            $this->line(sprintf("  %-40s : %s [%s]", $chain['chain_name'], $chain['status'], substr($chain['root_hash'], 0, 16) . '...'));
+            $this->line(sprintf('  %-40s : %s [%s]', $chain['chain_name'], $chain['status'], substr($chain['root_hash'], 0, 16).'...'));
         }
 
         $this->newLine();

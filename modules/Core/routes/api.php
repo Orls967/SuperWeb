@@ -15,7 +15,9 @@ Route::prefix('api/v3')->group(function () {
     // Partner webhook ingestion & DLQ replay
     Route::get('/partner/webhooks', [PartnerWebhookController::class, 'index'])->name('api.v3.partner.webhooks.index');
     Route::post('/partner/webhooks', [PartnerWebhookController::class, 'store'])->name('api.v3.partner.webhooks.store');
-    Route::post('/partner/webhooks/{id}/replay', [PartnerWebhookController::class, 'replay'])->name('api.v3.partner.webhooks.replay');
+    Route::post('/partner/webhooks/{id}/replay', [PartnerWebhookController::class, 'replay'])
+        ->middleware('role:admin')
+        ->name('api.v3.partner.webhooks.replay');
 
     // Mobile offline-first delta synchronization
     Route::post('/mobile/sync/pull', [MobileSyncController::class, 'pull'])->name('api.v3.mobile.sync.pull');

@@ -6,7 +6,7 @@ namespace Modules\Hospital\tests\Feature;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Domain\Models\LedgerEntry;
+use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hospital\Application\Services\ChronicDrugSubscriptionService;
 use Modules\Hospital\Domain\Models\ChronicSubscription;
 use Modules\Hospital\Domain\Models\Patient;
@@ -89,8 +89,8 @@ class ChronicDrugSubscriptionTest extends TestCase
         $this->assertSame(90, $remainingStock);
 
         // 5. Verify double-entry ledger balanced posting
-        $ar = \Modules\Banking\Domain\Models\LedgerAccount::where('code', 'hsp:epharmacy_receivable:IDR')->first();
-        $rev = \Modules\Banking\Domain\Models\LedgerAccount::where('code', 'hsp:epharmacy_revenue:IDR')->first();
+        $ar = LedgerAccount::where('code', 'hsp:epharmacy_receivable:IDR')->first();
+        $rev = LedgerAccount::where('code', 'hsp:epharmacy_revenue:IDR')->first();
         $this->assertNotNull($ar);
         $this->assertNotNull($rev);
         $this->assertEquals('-90000', (string) $ar->cached_balance);

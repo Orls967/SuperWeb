@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Services;
 
-use Illuminate\Support\Facades\Schema;
 use Modules\Core\Domain\Models\CrisisAffectedItem;
 use Modules\Core\Domain\Models\CrisisIncident;
 
@@ -13,7 +12,7 @@ class CrisisProductRecallService
     /**
      * Initiate emergency crisis product recall
      *
-     * @param array<int, array{sku: string, lot_number: string, quantity: int, location: string}> $batches
+     * @param  array<int, array{sku: string, lot_number: string, quantity: int, location: string}>  $batches
      */
     public function initiateRecall(
         string $incidentCode,

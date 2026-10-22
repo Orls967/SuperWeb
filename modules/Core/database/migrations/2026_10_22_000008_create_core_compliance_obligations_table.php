@@ -22,7 +22,7 @@ return new class extends Migration
                 $table->string('status', 24)->default('VALID');
                 $table->timestamps();
 
-                $table->index(['domain_code', 'expiration_date', 'status']);
+                $table->index(['domain_code', 'expiration_date', 'status'], 'core_compliance_domain_exp_stat_idx');
             });
         }
     }

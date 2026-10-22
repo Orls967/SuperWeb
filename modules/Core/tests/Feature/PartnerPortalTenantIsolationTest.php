@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Core\tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Application\Services\TwelveLinesWebhookDispatcherService;
 use Modules\Core\Domain\Models\PartnerWebhook;
@@ -94,7 +95,8 @@ class PartnerPortalTenantIsolationTest extends TestCase
         $this->assertSame('DEAD_LETTER_QUEUE', $delivery->fresh()->status);
 
         // Administrator replays the DLQ delivery via API
-        $replayResponse = $this->postJson("/api/v3/partner/webhooks/{$delivery->id}/replay");
+        $admin = User::factory()->create(['role' => 'admin']);
+        $replayResponse = $this->actingAs($admin)->postJson("/api/v3/partner/webhooks/{$delivery->id}/replay");
 
         $replayResponse->assertStatus(200);
         $replayResponse->assertJson([

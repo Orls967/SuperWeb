@@ -6,8 +6,6 @@ namespace Modules\Core\tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Application\Services\CrisisProductRecallService;
-use Modules\Core\Domain\Models\CrisisAffectedItem;
-use Modules\Core\Domain\Models\CrisisIncident;
 use Tests\TestCase;
 
 class CrisisProductRecallTest extends TestCase

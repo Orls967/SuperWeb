@@ -7,7 +7,6 @@ namespace Modules\Hospital\tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Hospital\Application\Services\HospitalLabAndImagingService;
 use Modules\Hospital\Application\Services\SpecimenCustodyChainService;
-use Modules\Hospital\Domain\Models\LabSpecimen;
 use Modules\Hospital\Domain\Models\Patient;
 use Tests\TestCase;
 

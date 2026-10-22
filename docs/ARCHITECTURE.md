@@ -124,6 +124,15 @@ File baseline, `route-roles.php`, workflow CI, `PROGRESS.md`, `DECISIONS.md`, `d
 | **Media** | `med_` | Stage-gate produksi film/musik, DRM watermark tamper-evident, distribusi SVOD/broadcast, royalti kreator, sponsorship escrow. |
 | **Education** | `edu_` | Student cohort class, grading engine, sertifikasi kompetensi digital hash-chain, akreditasi kurikulum, tuition split & scholarship fee. |
 | **Retail** | `ret_` | Omnichannel OMS, inventory allocation, dark store picking wave, q-commerce ultra-fast dispatch, dynamic loyalty sync. |
+| **CloudKitchen** | `ck_` | Dapur satelit terdistribusi, katering industri, meal plan HCM, pembagian pesanan multi-brand dan integrasi POS. |
+| **Ev** | `ev_` | Ekosistem kendaraan listrik, stasiun pengisian SPKLU, monitoring sesi daya kWh, dynamic pricing tarif beban puncak. |
+| **Fleet** | `flt_` | Manajemen armada korporat, pemeliharaan preventif berbasis kilometer, monitoring utilisasi aset kendaraan grup. |
+| **Insurance** | `ins_` | InsurTech terpadu, polis parametrik otomatis, underwriting risiko multi-vektor, penyelesaian klaim autopilot tanpa berkas manual. |
+| **Proptech** | `prp_` | Manajemen gedung pintar IoT, model BIM digital twin, kapitalisasi konstruksi dan pemesanan flex-space anti-overlap. |
+| **Rwa** | `rwa_` | Tokenisasi Real World Asset, alokasi dividen pro-rata integer minor unit, pengamanan deviasi rounding reserve. |
+| **Telematics** | `tlm_` | Ingestion data sensor IoT kendaraan, CAN-bus OBD-II telemetri real-time, deteksi kode diagnostik kerusakan (DTC) dan skor pengemudi. |
+| **Vending** | `vnd_` | Jaringan mesin penjual pintar otomatis, pembayaran dompet QRIS instan, pemantauan stok rak nirkabel dan auto-replenishment. |
+| **Wealth** | `wm_` | Wealth management terpadu, profil risiko investor, portofolio robo-advisor otomatis, guardrail dana darurat. |
 
 ---
 
@@ -690,4 +699,68 @@ graph TD
   10. Pembelian: Subledger AP & GR/IR (`proc:audit` 0 selisih)
   11. Kontrak: Subledger Plafon & Rantai Versi (`ctr:audit` & `contracts:verify-chain` valid)
   12. Manufaktur: Biaya Produksi WIP & Mutu QMS (`mfg:audit-costing` & `mfg:qms-audit` seimbang)
+
+### 8.6 Skenario Emas 12 Lini, Krisis Recall Produk & DR Kuantum (Fase 101)
+- **Skenario Emas Otomatis 12 Lini Bisnis**:
+  Alur data terpadu mengaitkan rantai nilai hulu-ke-hilir: panen petani plasma `agri` $\to$ distribusi cold-chain `lgx` $\to$ pengolahan pabrik `mfg` $\to$ penjualan resto/hotel/venue $\to$ perbekalan medis rumah sakit `hsp` $\to$ operasional armada listrik `ev` $\to$ perdagangan komoditas `min` $\to$ konsolidasi buku besar holding grup dengan keseimbangan akuntansi absolut ($\sum = 0$).
+- **Bidirectional Product Recall Traceability**:
+  Saat kontaminasi terdeteksi, `CrisisProductRecallService` melakukan penelusuran maju (forward: dari bahan baku ke pasien penerima obat / konsumen restoran) dan mundur (backward: dari laporan insiden ke nomor lot vendor pemasok) dalam waktu $< 1$ detik, mengunci seluruh lot yang terdampak ke status `QUARANTINED`.
+- **Multi-Region Active-Active DR & Konsensus Raft**:
+  Arsitektur 3 node terdistribusi (Jakarta primary, Surabaya secondary, Singapore witness) dengan protokol konsensus Raft:
+  - RPO = 0: Zero ledger entry loss pada saat failover.
+  - RTO < 15 menit: Promosi sekunder otonom bila kuorum $2/3$ node tercapai.
+  - Split-brain defense: Bila jaringan terputus parsial, cluster secara otomatis membatasi diri ke mode `READ_ONLY` guna mencegah dual-master write.
+- **Kesiapan Kriptografi Pasca-Kuantum (PQC)**:
+  Verifikasi berkala 8 rantai hash Merkle append-only (Paspor Kendaraan, Paspor Pasien, Tiket Acara, Kustodi Logistik, Timbangan Tambang, Kontrak Korporat, Aset Tetap, ECO Manufaktur) melalui `php artisan pq:audit-chains` dan skema rotasi kunci master envelop KMS tanpa merusak pembacaan data historis.
+
+### 8.7 Enterprise REST API v3, Webhook Outbox & Mobile Offline Sync (Fase 102)
+- **Enterprise REST API v3**:
+  - Endpoint `/api/v3/executive/kpis` dan `/api/v3/executive/snapshot` menyediakan ringkasan operasional dan kesehatan cluster secara near-real-time.
+  - Kepatuhan standar RFC 7807 Problem Details (`application/problem+json`) untuk seluruh jalur galat HTTP.
+  - Proteksi idempotensi terdistribusi melalui header `Idempotency-Key` dengan kunci sewa cache atomik.
+- **Mobile Offline-First Delta Synchronization**:
+  - Endpoint `/api/v3/mobile/sync/pull` dan `/api/v3/mobile/sync/push` melayani pertukaran delta entitas staf lapangan (dokter, perawat, kurir, surveyor tambang).
+  - Jam Vektor (*Vector Clocks*) melacak kausalitas mutasi konkuren lintas node perangkat dan server.
+  - Strategi resolusi konflik deterministik:
+    - Konflik catatan medis diselesaikan dengan `SERVER_HEALTHCARE_AUTHORITY_PRIORITY`.
+    - Konflik stok fisik diselesaikan dengan pembuatan jurnal pembukuan penyesuaian kompensasi otomatis pada `core_sync_conflict_ledgers`.
+- **Mitra Webhook Outbox & Dead-Letter Queue (DLQ)**:
+  - Registrasi webhook mitra terisolasi multi-tenant (`X-Tenant-ID`) dengan penandatanganan payload HMAC-SHA256.
+  - Mekanisme pengiriman ulang otomatis exponential backoff hingga 5 kali. Pesan yang gagal permanen dialihkan ke antrean DLQ dan dapat dipicu ulang melalui `POST /api/v3/partner/webhooks/{id}/replay`.
+
+### 8.8 Playbook 60+ Peran Konglomerasi & Standard Operating Procedures (Fase 103)
+- **Struktur Otorisasi 60 Peran Konglomerasi**:
+  Matriks peran RBAC mencakup seluruh lini bisnis holding dengan batasan kewenangan pengeluaran anggaran dan approval berjenjang (Operational Staf $\le$ Rp 10 Jt, Manajer $\le$ Rp 100 Jt, Direktur Unit $\le$ Rp 1 M, Holding Board $>$ Rp 1 M).
+- **Prosedur Standar Operasional (SOP) Lintas Lini**:
+  - SOP-01: Prosedur Penarikan Produk Krisis Lintas Lini (Holding Crisis Protocol).
+  - SOP-02: Triage Gawat Darurat & Evakuasi Medis Lintas Cabang Faskes.
+  - SOP-03: Rekonsiliasi & Eliminasi Finansial Intercompany Tutup Buku Bulanan.
+
+### 8.9 Layanan Kesehatan Digital, Telemedis & Farmasi FEFO (Fase 104)
+- **Telemedis & E-Resep Terotentikasi**:
+  - Triase digital konsultasi video/chat (`hsp_tele_consults`) terintegrasi EMR Paspor Pasien.
+  - E-resep digital (`hsp_epharmacy_orders`) wajib memuat tanda tangan kriptografis dokter berlisensi (`doctor_signature_hash`); resep tanpa tanda tangan otomatis ditolak oleh sistem.
+- **Safety Engine Alergi Silang & Toksisitas Ginjal**:
+  - Penegakan kontraindikasi langsung dan alergi silang kelas obat (contoh: riwayat alergi kelas penisilin memblokir peresepan amoksisilin dengan status `CRITICAL_CONTRAINDICATION`).
+  - Proteksi klirens kreatinin ginjal: pasien dengan estimasi $\text{CrCl} < 30\text{ mL/min}$ otomatis diblokir dari obat-obatan nefrotoksik.
+- **Manajemen Inventori Farmasi FEFO**:
+  - Alokasi stok apotek memprioritaskan tanggal kedaluwarsa terdekat (*First-Expired-First-Out*).
+  - Lot obat berstatus `QUARANTINED` otomatis dikeluarkan dari alokasi pemenuhan resep.
+- **Multi-Branch Pharmacy Routing & Langganan Obat Kronis**:
+  - Routing pemenuhan otomatis mengarahkan pesanan ke apotek cabang terdekat dengan failover ke hub regional bila stok setempat habis.
+  - Langganan obat kronis mengeksekusi pengiriman berulang berkala dengan auto-debit dompet dan buku besar berpasangan seimbang.
+
+### 8.10 Jaringan Laboratorium LOINC, Kustodi Spesimen 3-Hop & PACS Imaging (Fase 105)
+- **Katalog LOINC & Deteksi Nilai Panik Kritis**:
+  - Standardisasi 10.000 parameter tes laboratorium LOINC dengan batas rentang nilai panik fisiologis (`hsp_lab_critical_ranges`).
+  - Hasil tes dengan anomali kritis (Kalium $< 2.5\text{ mEq/L}$, Troponin $> 0.04\text{ ng/mL}$) otomatis memicu `PANIC_ALERT` dan penahanan rilis hingga diverifikasi langsung oleh dokter spesialis patologi.
+- **Rantai Kustodi Spesimen 3-Hop Anti-Pelanggaran Rantai Dingin**:
+  - Pelacakan berantai faskes $\to$ kurir cold-chain $\to$ lab rujukan berintegritas hash Merkle (`hsp_lab_custody_transfers`).
+  - Sensor suhu IoT yang mendeteksi suhu $> 8^\circ\text{C}$ (pelanggaran rantai dingin) seketika memicu auto-rejection spesimen dan penerbitan instruksi penarikan sampel ulang.
+- **Pencitraan DICOM PACS & SLA STAT**:
+  - Penyimpanan metadata irisan seri radiologi DICOM PACS (`hsp_imaging_series`).
+  - Penegakan SLA pembacaan citra radiologi: pemeriksaan gawat darurat STAT wajib selesai $\le 60$ menit, dan pemeriksaan rutin $\le 24$ jam.
+- **Kliring Finansial Antar-Cabang Apotek & Faskes**:
+  - Kliring resiprokal kewajiban antar-cabang faskes (`hsp_inter_branch_clearings`) dengan penyelesaian saldo buku besar double-entry 0-diskrepansi.
+
 

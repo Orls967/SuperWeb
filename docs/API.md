@@ -232,7 +232,7 @@ Bila server penerima merespons di luar rentang `2xx` atau koneksi timeout (10 de
 API v3 dirancang untuk portal eksekutif multi-tenant holding, integrasi webhook mitra berkecepatan tinggi, serta sinkronisasi perangkat seluler offline-first.
 
 ### 7.1 Standar Format Galat RFC 7807 (Problem Details)
-Semua galat level API v3 mengembalikan response header `Content-Type: application/problem+json` dengan struktur baku:
+Semua galat level API v3 mengembalikan response header `Content-Type: application/problem+json` dengan struktur baku RFC 7807:
 ```json
 {
   "type": "https://api.autoserve.internal/v3/errors/ERR_RATE_LIMIT_EXCEEDED",
@@ -245,20 +245,234 @@ Semua galat level API v3 mengembalikan response header `Content-Type: applicatio
 }
 ```
 
+Daftar Kode Galat Standar:
+| HTTP Status | Error Code | Deskripsi & Tindakan |
+|---|---|---|
+| `400 Bad Request` | `ERR_VALIDATION_FAILED` | Parameter payload tidak valid atau field wajib hilang |
+| `401 Unauthorized` | `ERR_UNAUTHORIZED` | Bearer token tidak disertakan atau telah kedaluwarsa |
+| `403 Forbidden` | `ERR_FORBIDDEN` | Tenant ID atau role tidak memiliki izin untuk resource terkait |
+| `404 Not Found` | `ERR_NOT_FOUND` | Identifikasi data / entitas tidak ditemukan |
+| `409 Conflict` | `ERR_SYNC_CONFLICT` | Terjadi konflik versi jam vektor saat sinkronisasi seluler |
+| `429 Too Many Requests` | `ERR_RATE_LIMIT_EXCEEDED` | Batas kecepatan (rate limit) tenant terlampaui |
+| `500 Internal Error` | `ERR_INTERNAL_SERVER` | Kesalahan sistem tak terduga |
+
+---
+
 ### 7.2 Endpoint Eksekutif Multi-Tenant
-- `GET /api/v3/executive/kpis`: Mengembalikan metrik ringkasan eksekutif (omzet harian, modul aktif, status operasional, kepatuhan RFC 7807).
-  - Header: `X-Tenant-ID: <tenant_uuid>`
-- `GET /api/v3/executive/snapshot`: Mengembalikan status DR quorum multi-wilayah, RPO/RTO real-time, dan status kesiapan post-quantum.
+
+#### 7.2.1 Ringkasan KPI Eksekutif Multi-Tenant
+Mengembalikan ringkasan operasional lintas modul, metrik performa, dan kepatuhan sistem.
+
+- **Metode & URL**: `GET /api/v3/executive/kpis`
+- **Header**:
+  - `X-Tenant-ID`: Identifikasi unik tenant (e.g., `holding-corp`, opsional, default: `tenant-default`)
+  - `Authorization`: `Bearer <token>`
+- **Rate Limit**: 120 permintaan per 60 detik per tenant.
+- **Response (200 OK)**:
+```json
+{
+  "status": "success",
+  "data": {
+    "tenant_id": "holding-corp",
+    "total_modules_active": 56,
+    "daily_revenue_gross_idr": 2850400000,
+    "daily_transactions_count": 18450,
+    "system_health": {
+      "status": "HEALTHY",
+      "uptime_pct": 99.995,
+      "p99_latency_ms": 42
+    },
+    "dr_cluster_state": "SYNCHRONIZED"
+  },
+  "meta": {
+    "api_version": "v3.0.0",
+    "timestamp": "2026-10-22T08:15:00+08:00"
+  }
+}
+```
+
+#### 7.2.2 Snapshot Operasional Kepadatan Tinggi (High-Density Snapshot)
+Menyajikan status kuorum kluster disaster recovery (DR) multi-wilayah dan kesiapan kriptografi pasca-kuantum (PQC).
+
+- **Metode & URL**: `GET /api/v3/executive/snapshot`
+- **Header**: `X-Tenant-ID: <tenant_id>`
+- **Response (200 OK)**:
+```json
+{
+  "status": "success",
+  "snapshot": {
+    "tenant_id": "holding-corp",
+    "cluster_state": "HEALTHY",
+    "rpo_seconds": 0,
+    "rto_seconds": 0,
+    "dr_quorum": "3_OF_3_SYNCHRONIZED",
+    "post_quantum_status": "READY"
+  }
+}
+```
+
+---
 
 ### 7.3 Manajemen Webhook Mitra & Replay Dead-Letter Queue (DLQ)
-- `GET /api/v3/partner/webhooks`: Daftar webhook terdaftar per tenant.
-- `POST /api/v3/partner/webhooks`: Mendaftarkan endpoint webhook baru dengan secret signing key HMAC-SHA256.
-- `POST /api/v3/partner/webhooks/{id}/replay`: Memutar ulang pesan yang terparkir di antrean DLQ setelah mitra memulihkan server tujuan.
+
+#### 7.3.1 Daftar Webhook Terdaftar
+- **Metode & URL**: `GET /api/v3/partner/webhooks`
+- **Header / Query**: `X-Tenant-ID: <tenant_id>` atau `?tenant_id=<tenant_id>`
+- **Response (200 OK)**:
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 1,
+      "tenant_id": "holding-corp",
+      "partner_name": "Asuransi BPJS Kesehatan Ingestion",
+      "endpoint_url": "https://bpjs-gateway.partner.org/api/v2/events",
+      "retry_limit": 5,
+      "timeout_seconds": 15,
+      "is_active": true,
+      "created_at": "2026-10-22T00:00:00Z"
+    }
+  ]
+}
+```
+
+#### 7.3.2 Registrasi Endpoint Webhook Baru
+Mendaftarkan penerima webhook mitra baru lengkap dengan signing key HMAC-SHA256 acak atau kustom.
+
+- **Metode & URL**: `POST /api/v3/partner/webhooks`
+- **Header**: `X-Tenant-ID: <tenant_id>`
+- **Request Body**:
+```json
+{
+  "partner_name": "Agregator Tiket & Travel API",
+  "endpoint_url": "https://travel-partner.internal/webhook",
+  "hmac_secret": "kunci-rahasia-hmac-32-karakter-min",
+  "retry_limit": 5,
+  "timeout_seconds": 20
+}
+```
+- **Response (201 Created)**: Mengembalikan rekaman model webhook lengkap termasuk `hmac_secret`.
+
+#### 7.3.3 Pemutaran Ulang Pesan Dead-Letter Queue (DLQ Replay)
+Mengirimkan kembali event webhook yang gagal terkirim setelah mencapai batas maksimal retry.
+
+- **Metode & URL**: `POST /api/v3/partner/webhooks/{id}/replay`
+- **Response (200 OK)**:
+```json
+{
+  "status": "success",
+  "data": {
+    "id": 412,
+    "webhook_id": 1,
+    "event_name": "hospital.patient_admitted",
+    "attempt": 6,
+    "http_status": 200,
+    "status": "DELIVERED",
+    "delivered_at": "2026-10-22T08:30:00Z"
+  }
+}
+```
+
+---
 
 ### 7.4 Sinkronisasi Seluler Offline-First (Mobile Delta Sync)
-- `POST /api/v3/mobile/sync/pull`: Menarik perubahan data delta sejak sinkronisasi terakhir menggunakan perbandingan jam vektor (*vector clocks*).
-- `POST /api/v3/mobile/sync/push`: Mengunggah mutasi batch luring dari tablet/smartphone petugas lapangan.
-- `GET /api/v3/mobile/sync/conflicts`: Riwayat audit ledger resolusi konflik versi (otoritas klinis & rekonsiliasi stok).
+
+Mendukung sinkronisasi bidirectional tanpa konflik data dengan jam vektor (*vector clocks*).
+
+#### 7.4.1 Tarik Perubahan Data Delta (Pull Delta)
+- **Metode & URL**: `POST /api/v3/mobile/sync/pull`
+- **Header**:
+  - `X-Device-UUID`: UUID perangkat seluler / tablet petugas (e.g., `device-tab-med-004`)
+- **Request Body**:
+```json
+{
+  "last_sync_timestamp": "2026-10-22T06:00:00Z"
+}
+```
+- **Response (200 OK)**:
+```json
+{
+  "status": "success",
+  "device_uuid": "device-tab-med-004",
+  "server_timestamp": "2026-10-22T08:35:00Z",
+  "deltas": {
+    "clinical_records": [],
+    "inventory_items": [],
+    "work_orders": []
+  },
+  "server_clock": {
+    "server_node_1": 10,
+    "server_node_2": 5
+  }
+}
+```
+
+#### 7.4.2 Unggah Mutasi Batch Offline (Push Batch)
+Mengunggah antrean mutasi yang dilakukan saat perangkat berada di area tanpa sinyal (luring).
+
+- **Metode & URL**: `POST /api/v3/mobile/sync/push`
+- **Header**: `X-Device-UUID: <device_uuid>`
+- **Request Body**:
+```json
+{
+  "device_uuid": "device-tab-med-004",
+  "mutations": [
+    {
+      "mutation_uuid": "e81d7f44-6720-410a-810e-c2889e47262f",
+      "entity_type": "clinical_consultation",
+      "entity_id": "CONS-20261022-009",
+      "client_version": 2,
+      "action": "UPDATE",
+      "data": {
+        "triage_category": "URGENT",
+        "chief_complaint": "Acute retrosternal chest pain",
+        "systolic_bp": 165,
+        "diastolic_bp": 100
+      }
+    }
+  ]
+}
+```
+- **Response (200 OK)**:
+```json
+{
+  "status": "success",
+  "data": {
+    "processed": 1,
+    "applied": 1,
+    "conflicts": 0,
+    "vector_clock": {
+      "device-tab-med-004": 2,
+      "server": 11
+    }
+  }
+}
+```
+
+#### 7.4.3 Riwayat Audit Ledger Resolusi Konflik (Conflict History)
+Menelusuri keputusan resolusi saat terdeteksi divergensi data offline.
+
+- **Metode & URL**: `GET /api/v3/mobile/sync/conflicts?device_uuid=device-tab-med-004`
+- **Response (200 OK)**:
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 14,
+      "device_uuid": "device-tab-med-004",
+      "entity_type": "clinical_consultation",
+      "entity_id": "CONS-20261022-009",
+      "server_version": 3,
+      "client_version": 2,
+      "resolution_strategy": "SERVER_HEALTHCARE_AUTHORITY_PRIORITY",
+      "reconciled_payload": { ... },
+      "created_at": "2026-10-22T08:35:12Z"
+    }
+  ]
+}
+```
 
 ---
 
@@ -366,3 +580,199 @@ Melindungi seluruh antarmuka telematika IoT dan terminal IGD rumah sakit dari se
   10. Anti-Abuse Rate Limiter & Quarantine Table.
   11. Corporate Action Event Outbox Dispatcher.
   12. Regulatory Compliance Calendar Schedulers.
+
+---
+
+## 9. Digital Health, Clinical Diagnostic & Pharmacy APIs (Fase 104–105)
+
+Ekosistem kesehatan digital menyediakan endpoint aman berstandar HIPAA/Permenkes No. 24/2022 dengan enkripsi AES-256-GCM pada data rekam medis pasien (EMR), validasi farmakologi berbasis ginjal, pemantauan rantai dingin spesimen laboratorium LOINC, dan kliring persediaan farmasi antar-cabang.
+
+### 9.1 Telemedisin & Triase Klinis Adaptif (Fase 104)
+Melayani konsultasi dokter jarak jauh dengan triase klinis cerdas, pencatatan SOAP terenkripsi, dan penjadwalan spesialis.
+
+- **Pendaftaran Konsultasi Telemedisin**: `POST /api/v1/hospital/telemedicine/consultations`
+- **Request Body**:
+```json
+{
+  "patient_mrn": "MRN-JKT-88201",
+  "doctor_id": 42,
+  "consultation_type": "VIDEO_CALL",
+  "chief_complaint": "Demam tinggi 3 hari disertai batuk kering dan sesak napas ringan",
+  "vital_signs": {
+    "systolic_bp": 120,
+    "diastolic_bp": 80,
+    "heart_rate_bpm": 92,
+    "respiratory_rate_bpm": 22,
+    "temperature_c": 38.7,
+    "oxygen_saturation_pct": 96
+  }
+}
+```
+- **Response (201 Created)**:
+```json
+{
+  "status": "success",
+  "data": {
+    "consultation_id": "CONS-20261022-771",
+    "patient_mrn": "MRN-JKT-88201",
+    "triage_category": "URGENT",
+    "recommended_action": "PRIORITY_DOCTOR_QUEUE",
+    "soap_record_id": "soap-enc-91823a",
+    "room_token": "rtc-tok-sec-883192a"
+  }
+}
+```
+
+---
+
+### 9.2 E-Resep & Pengecekan Kontraindikasi Farmakologi (Fase 104)
+Memverifikasi resep digital terhadap riwayat alergi silang pasien (e.g. Penisilin vs Sefalosporin) serta menghitung penyesuaian dosis otomatis berdasarkan laju filtrasi glomerulus (*eGFR*).
+
+- **Validasi & Penerbitan E-Resep**: `POST /api/v1/hospital/prescriptions/validate`
+- **Request Body**:
+```json
+{
+  "patient_mrn": "MRN-JKT-88201",
+  "prescriber_doctor_id": 42,
+  "patient_weight_kg": 65,
+  "serum_creatinine_mg_dl": 2.4,
+  "allergies": ["PENICILLIN"],
+  "medications": [
+    {
+      "drug_code": "AMOX-500",
+      "drug_name": "Amoxicillin 500mg",
+      "dosage": "500mg TID",
+      "days_supply": 5
+    }
+  ]
+}
+```
+- **Response (422 Unprocessable Entity - Kontraindikasi Terdeteksi)**:
+```json
+{
+  "type": "https://api.autoserve.internal/v3/errors/ERR_CLINICAL_CONTRAINDICATION",
+  "title": "Clinical Contraindication Block",
+  "status": 422,
+  "detail": "Severe cross-allergy detected: Patient is allergic to PENICILLIN. Prescription of AMOX-500 is blocked.",
+  "renal_clearance_analysis": {
+    "egfr_ml_min": 31.4,
+    "renal_status": "MODERATE_IMPAIRMENT",
+    "dosage_adjustment_required": true,
+    "max_safe_frequency": "Q12H"
+  }
+}
+```
+
+---
+
+### 9.3 Rantai Kustodi Spesimen Lab LOINC & Peringatan Nilai Kritis (Fase 105)
+Mencatat spesimen laboratorium berstandar LOINC, memantau integritas suhu rantai dingin secara berkelanjutan ($2^\circ\text{C} - 8^\circ\text{C}$), serta membunyikan alarm STAT bila hasil uji laboratorium menyentuh rentang nilai panik.
+
+- **Pencatatan Hasil Uji Lab**: `POST /api/v1/hospital/lab/results`
+- **Request Body**:
+```json
+{
+  "specimen_barcode": "SPEC-20261022-9901",
+  "test_code": "POTASSIUM",
+  "loinc_code": "2823-3",
+  "measured_value": 6.8,
+  "unit": "mEq/L",
+  "handler_id": "TECH-LAB-07",
+  "current_cold_chain_temp_c": 4.5
+}
+```
+- **Response (200 OK - Peringatan Kritis Dibunyikan)**:
+```json
+{
+  "status": "success",
+  "data": {
+    "result_id": 883,
+    "specimen_barcode": "SPEC-20261022-9901",
+    "test_name": "Serum Potassium",
+    "measured_value": 6.8,
+    "reference_range": "3.5 - 5.0 mEq/L",
+    "is_panic_critical": true,
+    "verification_status": "HELD_FOR_PATHOLOGIST_REVIEW",
+    "alert_dispatched": {
+      "channel": "HOSPITAL_STAT_BROADCAST",
+      "target_role": "attending_physician",
+      "severity": "CRITICAL_LIFE_THREATENING"
+    }
+  }
+}
+```
+*Catatan:* Bila `current_cold_chain_temp_c > 8.0` saat serah terima kustodi, status spesimen otomatis berubah menjadi `REJECTED_COLD_CHAIN_BREACH` dan pengetesan dibatalkan demi keamanan diagnostik pasien.
+
+---
+
+### 9.4 Metadata Radiologi DICOM PACS & Replikasi Arsip Citra (Fase 105)
+Menyimpan dan mengindeks metadata citra medis digital (DICOM) untuk modalitas CT Scan, MRI, Ultrasound, dan X-Ray dengan tautan penyimpanan terdistribusi multi-wilayah.
+
+- **Registrasi Studi DICOM Baru**: `POST /api/v1/hospital/pacs/studies`
+- **Request Body**:
+```json
+{
+  "study_instance_uid": "1.2.840.113619.2.55.3.604681319.821",
+  "patient_mrn": "MRN-JKT-88201",
+  "modality": "CT",
+  "body_part": "CHEST",
+  "series_count": 4,
+  "instances_count": 320,
+  "storage_uri": "s3://autoserve-pacs-primary/studies/2026/10/22/study-8821.tar",
+  "study_datetime": "2026-10-22T07:45:00Z"
+}
+```
+- **Response (201 Created)**:
+```json
+{
+  "status": "success",
+  "data": {
+    "id": 512,
+    "study_instance_uid": "1.2.840.113619.2.55.3.604681319.821",
+    "modality": "CT",
+    "radiologist_assigned": null,
+    "pacs_status": "ARCHIVED_REPLICATED",
+    "backup_sync_status": "IN_SYNC_ID_SUB_2",
+    "viewer_launch_url": "https://pacs.autoserve.internal/viewer?study=1.2.840.113619.2.55.3.604681319.821"
+  }
+}
+```
+
+---
+
+### 9.5 Kliring Finansial Antar-Cabang Apotek & Rekonsiliasi Saldo Resiprokal (Fase 105)
+Mengelola pergerakan stok farmasi lintas cabang dengan algoritma First-Expired First-Out (FEFO) dan penyelesaian kliring buku besar otomatis antar badan hukum apotek.
+
+- **Eksekusi Transfer Stok & Kliring**: `POST /api/v1/hospital/pharmacy/transfers`
+- **Request Body**:
+```json
+{
+  "source_branch_id": 1,
+  "destination_branch_id": 2,
+  "item_code": "DRUG-INSULIN-GLARGINE",
+  "batch_number": "BATCH-2026-A1",
+  "quantity": 50,
+  "cost_per_unit_idr": 185000,
+  "cold_chain_verified": true
+}
+```
+- **Response (200 OK)**:
+```json
+{
+  "status": "success",
+  "data": {
+    "transfer_id": "TRF-HSP-20261022-004",
+    "item_code": "DRUG-INSULIN-GLARGINE",
+    "quantity": 50,
+    "total_clearing_amount_idr": 9250000,
+    "financial_clearing": {
+      "clearing_ref": "clr-hsp-105-004",
+      "ledger_transaction_id": 48102,
+      "source_account": "hsp:inter_branch_clearing:IDR",
+      "destination_account": "hsp:pharmacy_inventory:IDR",
+      "clearing_status": "BALANCED_RECIPROCAL"
+    }
+  }
+}
+```
+

@@ -63,7 +63,7 @@ return new class extends Migration
                 $table->string('settlement_status', 32)->default('PENDING');
                 $table->timestamps();
 
-                $table->index(['from_branch_id', 'to_branch_id', 'settlement_status']);
+                $table->index(['from_branch_id', 'to_branch_id', 'settlement_status'], 'hsp_branch_clearing_settle_idx');
             });
         }
     }
