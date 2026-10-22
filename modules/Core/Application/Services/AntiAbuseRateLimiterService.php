@@ -75,7 +75,7 @@ class AntiAbuseRateLimiterService
         }
 
         if ($accessResult !== 'SUCCESS') {
-            $failures = (int) Cache::increment($failKey);
+            $failures = (int) Cache::get($failKey, 0) + 1;
             Cache::put($failKey, $failures, now()->addMinutes(15));
 
             if ($failures >= 3) {
