@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Modules\Core\Application\Services\AntiAbuseRateLimiterService;
 use Tests\TestCase;
 
@@ -15,7 +16,7 @@ class AntiAbuseRateLimiterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        \Illuminate\Support\Facades\Cache::flush();
+        Cache::flush();
     }
 
     public function test_venue_age_verification_with_biometric_and_rate_limiting(): void
