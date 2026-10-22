@@ -610,3 +610,397 @@ Rotasi pepper dilakukan ketika terjadi pergantian kunci berkala atau dugaan komp
 4. **Verifikasi Pencarian**:
    Uji pencarian exact-match NIK/NPWP untuk memastikan data dapat ditemukan menggunakan pepper baru.
 5. **Pembersihan**: Hapus variabel `BLIND_INDEX_PEPPER_OLD` setelah re-indexing selesai 100%.
+
+
+---
+
+## 9. Katalog Lengkap 35+ Perintah Audit & Remediasi Artisan
+
+Platform Superwebsite dilengkapi dengan perintah audit mandiri berbasis Artisan untuk memvalidasi invarian data, rantai kriptografi, dan kepatuhan akuntansi di seluruh modul bisnis:
+
+### 9.1 `php artisan agri:audit` — Audit Subledger & Kontrak Agribisnis
+- **Tujuan & Invarian**: Memverifikasi integrasi panen, bagi hasil inti-plasma, dan akrual pupuk.
+- **Opsi & Parameter Utama**: `--fix (re-anchor saldo), --strict`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika saldo subledger agribisnis = saldo GL akun agri; Exit 1 jika terjadi ketidakseimbangan.
+- **SOP Remediasi Kegagalan**: Jalankan dengan `--fix` untuk menyelaraskan akrual panen yang belum terposting; periksa audit log transaksi petani.
+
+### 9.2 `php artisan agy:audit` — Audit Komisi & Klaim Agensi Penjualan
+- **Tujuan & Invarian**: Memverifikasi komisi multi-tier agen, withholding pajak PPh 21/23, dan clawback retur.
+- **Opsi & Parameter Utama**: `--dry-run, --settle-pending`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika komisi dibayarkan sesuai tiering; Exit 1 jika over-komisi atau salah kalkulasi.
+- **SOP Remediasi Kegagalan**: Periksa formula tiering pada `agy_commission_tiers`; rekalkulasi saldo komisi pending via `--settle-pending`.
+
+### 9.3 `php artisan ai:audit` — Audit Tata Kelola & Model Drift AI
+- **Tujuan & Invarian**: Memeriksa model drift analitik prediktif, kuota inferensi, dan status karantina AI.
+- **Opsi & Parameter Utama**: `--quarantine-check, --threshold=0.05`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika drift < ambang batas 5%; Exit 1 jika terjadi anomali model melebihi deviasi.
+- **SOP Remediasi Kegagalan**: Isolasi model prediktif yang melenceng; kembalikan bobot inferensi ke model checkpoint sebelumnya.
+
+### 9.4 `php artisan api:audit` — Audit Kepatuhan & Kuota API Gateway
+- **Tujuan & Invarian**: Memvalidasi kuota rate-limit per tier, rekonsiliasi HMAC key, dan sanitasi log PII.
+- **Opsi & Parameter Utama**: `--check-keys, --clean-logs`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika seluruh signature key valid dan log bersih dari PII; Exit 1 jika ditemukan kebocoran.
+- **SOP Remediasi Kegagalan**: Lakukan rotasi key HMAC terdampak; bersihkan payload sensitif di cache gateway.
+
+### 9.5 `php artisan ast:audit` — Audit Subledger Aset Tetap (PSAK 16/73)
+- **Tujuan & Invarian**: Memverifikasi nilai buku aset, depresiasi komersial/fiskal, dan kapitalisasi CIP.
+- **Opsi & Parameter Utama**: `--recalculate, --period=YYYY-MM`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika saldo aset = akun kontrol GL 1500; Exit 1 jika terjadi selisih depresiasi.
+- **SOP Remediasi Kegagalan**: Jalankan `--recalculate` untuk memposting ulang jurnal depresiasi bulan berjalan yang tertinggal.
+
+### 9.6 `php artisan ast:verify-chain` — Verifikasi Integritas Hash-Chain Aset
+- **Tujuan & Invarian**: Memeriksa keutuhan rantai hash SHA-256 riwayat mutasi dan pemeliharaan aset.
+- **Opsi & Parameter Utama**: `--asset-id=[UUID], --deep`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika seluruh rantai hash utuh; Exit 1 jika terjadi tamper data historis.
+- **SOP Remediasi Kegagalan**: Telusuri event sequence yang rusak; pulihkan rekaman dari replikasi standby ber-timestamp valid.
+
+### 9.7 `php artisan b2b:audit` — Audit Rekonsiliasi Escrow B2B Marketplace
+- **Tujuan & Invarian**: Memverifikasi saldo rekening penampung escrow lelang surplus dan transaksi grosir.
+- **Opsi & Parameter Utama**: `--release-stale, --dispute-check`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika saldo escrow sama persis dengan total pesanan aktif; Exit 1 jika ada selisih kas.
+- **SOP Remediasi Kegagalan**: Telusuri pesanan lelang kadaluarsa; lepaskan dana escrow yang tertahan setelah masa sanggah.
+
+### 9.8 `php artisan bank:reconcile` — Rekonsiliasi Double-Entry Ledger Sentral
+- **Tujuan & Invarian**: Memvalidasi invarian fundamental: SUM(amount) == 0 per aset dan cached_balance == SUM(entries).
+- **Opsi & Parameter Utama**: `--fix-cache, -v (verbose)`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika zero mismatch; Exit 1 jika ditemukan diskrepansi saldo atau debet!=kredit.
+- **SOP Remediasi Kegagalan**: Gunakan `--fix-cache` jika selisih hanya pada cached_balance; selidiki transaksi tak seimbang manual via `ManualAdjustmentAction`.
+
+### 9.9 `php artisan bidding:audit` — Audit Integritas Tender & Bidding Otomatis
+- **Tujuan & Invarian**: Memverifikasi lelang tertutup, enkripsi penawaran vendor, dan hash anti-sniping.
+- **Opsi & Parameter Utama**: `--verify-hashes`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika seluruh penawaran tersegel aman; Exit 1 jika terdeteksi manipulasi waktu tender.
+- **SOP Remediasi Kegagalan**: Batalkan putaran lelang yang tidak sah; jadwalkan ulang tender pengadaan.
+
+### 9.10 `php artisan chain:audit-all` — Pemeriksaan Menyeluruh Seluruh Rantai Kriptografis
+- **Tujuan & Invarian**: Memvalidasi paspor kendaraan, kontrak, dokumen hukum, dan sertifikat mutu secara paralel.
+- **Opsi & Parameter Utama**: `--parallel=4, --stop-on-failure`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika semua rantai kripto 100% valid; Exit 1 jika ada satu rantai rusak.
+- **SOP Remediasi Kegagalan**: Identifikasi modul yang mengalami kerusakan hash; rujuk ke playbook pemulihan modul terkait.
+
+### 9.11 `php artisan ck:audit` — Audit Dapur Satelit Cloud Kitchen & HPP
+- **Tujuan & Invarian**: Memverifikasi sinkronisasi pesanan multi-brand dan konsumsi bahan resep dapur.
+- **Opsi & Parameter Utama**: `--sync-kds, --outlet=[CODE]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika HPP bahan baku sesuai porsi standar; Exit 1 jika terjadi deviasi limbah berlebih.
+- **SOP Remediasi Kegagalan**: Lakukan penyesuaian stok bahan baku basi; audit porsi hidangan di KDS.
+
+### 9.12 `php artisan clearing:audit` — Audit Kliring Antar-Bank & BI-FAST
+- **Tujuan & Invarian**: Memvalidasi settlement transaksi transfer dana eksternal dan status VA.
+- **Opsi & Parameter Utama**: `--reconcile-va, --date=YYYY-MM-DD`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika seluruh batch transfer Kliring selesai; Exit 1 jika ada transaksi pending > 2 jam.
+- **SOP Remediasi Kegagalan**: Kirim permintaan status inquiry ke switching bank mitra; lakukan manual settlement jika ACK sukses.
+
+### 9.13 `php artisan contracts:verify-chain` — Verifikasi Rantai Hash Kontrak Korporat
+- **Tujuan & Invarian**: Memeriksa integritas digital seal klausul kontrak dan riwayat adendum.
+- **Opsi & Parameter Utama**: `--contract-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika segel kriptografi valid; Exit 1 jika draf kontrak dimodifikasi di luar alur resmi.
+- **SOP Remediasi Kegagalan**: Tolak adendum yang tidak sah; lakukan rollback ke versi hash terakhir yang terverifikasi tim legal.
+
+### 9.14 `php artisan core:verify-passports` — Verifikasi Paspor Digital Kendaraan
+- **Tujuan & Invarian**: Memeriksa rantai riwayat kepemilikan, servis, dan kecelakaan pada kendaraan.
+- **Opsi & Parameter Utama**: `--repair-cache`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika paspor digital utuh; Exit 1 jika rantai sequence terputus.
+- **SOP Remediasi Kegagalan**: Cari UUID mobil terdampak; periksa `core_vehicle_events`; pulihkan sequence yang terputus dari audit log.
+
+### 9.15 `php artisan ctr:audit` — Audit Subledger & Termin Kontrak
+- **Tujuan & Invarian**: Memverifikasi jadwal penagihan termin dan pagu pembiayaan kontrak.
+- **Opsi & Parameter Utama**: `--reconcile-milestones`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika termin teragendakan tepat waktu; Exit 1 jika terjadi tagihan ganda termin.
+- **SOP Remediasi Kegagalan**: Batalkan invoice termin duplikat; selaraskan jadwal pencairan dengan Berita Acara Serah Terima.
+
+### 9.16 `php artisan dist:audit` — Audit Jaringan Distribusi & Limit Kredit AR
+- **Tujuan & Invarian**: Memverifikasi plafon kredit distributor, faktur pajak konsinyasi, dan kalkulasi rebate.
+- **Opsi & Parameter Utama**: `--recalc-limits`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika saldo AR berada dalam batas plafon; Exit 1 jika distributor melampaui limit kredit.
+- **SOP Remediasi Kegagalan**: Bekukan pemesanan baru bagi distributor yang macet; jalankan penagihan piutang intensif.
+
+### 9.17 `php artisan dr:audit` — Audit Kesiapan Failover Multi-Region DR
+- **Tujuan & Invarian**: Memeriksa latensi replikasi data DC sekunder, kuorum node Raft, dan checksum ledger.
+- **Opsi & Parameter Utama**: `--check-quorum, --heartbeat-all`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika RPO=0 terpenuhi dan kuorum 2/3 aktif; Exit 1 jika node standby tertinggal WAL > 10MB.
+- **SOP Remediasi Kegagalan**: Sinkronisasi ulang WAL log yang tertinggal; periksa konektivitas jaringan leased line antar-DC.
+
+### 9.18 `php artisan ecosystem:audit-12-lines` — Audit Integrasi Menyeluruh 12 Lini Bisnis
+- **Tujuan & Invarian**: Pemeriksaan transaksi end-to-end melintasi batas 12 lini bisnis konglomerasi.
+- **Opsi & Parameter Utama**: `--full-matrix`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika tidak ada transaksi yang menggantung antar-modul; Exit 1 jika ada kebuntuan alur.
+- **SOP Remediasi Kegagalan**: Telusuri event outbox yang tidak terkirim di modul sumber; re-dispatch event via bus.
+
+### 9.19 `php artisan enterprise:audit` — Audit Tata Kelola Keuangan Holding
+- **Tujuan & Invarian**: Memverifikasi kepatuhan pagu anggaran anggaran unit bisnis dan alokasi biaya manajemen.
+- **Opsi & Parameter Utama**: `--fiscal-year=YYYY`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika realisasi beban tidak melebihi pagu; Exit 1 jika terjadi pelanggaran hard-stop.
+- **SOP Remediasi Kegagalan**: Penerbitan surat peringatan over-budget; eskalasi ke CFO untuk persetujuan anggaran suplemen.
+
+### 9.20 `php artisan epc:audit` — Audit Proyek Konstruksi & Monthly Certificate
+- **Tujuan & Invarian**: Memvalidasi kurva-S, progres fisik lapangan, pemotongan retensi 5%, dan CIP.
+- **Opsi & Parameter Utama**: `--project-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika sertifikat MC sesuai progres fisik; Exit 1 jika over-claim pembayaran kontraktor.
+- **SOP Remediasi Kegagalan**: Tahan persetujuan MC bermasalah; lakukan inspeksi fisik lapangan bersama konsultan pengawas.
+
+### 9.21 `php artisan esg:audit` — Audit Pengukuran Emisi & Sertifikat Karbon
+- **Tujuan & Invarian**: Memverifikasi kalkulasi gas rumah kaca Scope 1, 2, 3 dan penarikan kredit karbon.
+- **Opsi & Parameter Utama**: `--verify-registry`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika emisi terukur sesuai standar GHG Protocol; Exit 1 jika data energi anomali.
+- **SOP Remediasi Kegagalan**: Koreksi data konsumsi bahan bakar solar dan listrik pabrik; audit kalibrasi meteran emisi.
+
+### 9.22 `php artisan ev:audit` — Audit Stasiun Pengisian EV & Baterai
+- **Tujuan & Invarian**: Memverifikasi sesi pengisian daya listrik OCPP, kWh terpakai, dan State of Health.
+- **Opsi & Parameter Utama**: `--check-sessions`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika tarif kWh tertagih tepat; Exit 1 jika terjadi selisih pengukuran daya meter.
+- **SOP Remediasi Kegagalan**: Reset sesi charger yang macet; kalibrasi smart meter SPKLU bersama teknisi.
+
+### 9.23 `php artisan flt:audit` — Audit Utilisasi & Pemeliharaan Armada Fleet
+- **Tujuan & Invarian**: Memeriksa jadwal servis preventif berbasis odometer dan biaya sewa operasional.
+- **Opsi & Parameter Utama**: `--check-maintenance`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika armada terawat sesuai jadwal; Exit 1 jika ada kendaraan terlambat servis > 1.000km.
+- **SOP Remediasi Kegagalan**: Tandai kendaraan untuk masuk bengkel servis segera; alokasikan unit cadangan.
+
+### 9.24 `php artisan governance:audit` — Audit Pemisahan Tugas (SoD) & Akses Pengguna
+- **Tujuan & Invarian**: Memverifikasi larangan perangkapan peran terlarang dan masa aktif token.
+- **Opsi & Parameter Utama**: `--scan-conflicts`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika zero conflict SoD; Exit 1 jika ditemukan pengguna dengan peran bertentangan.
+- **SOP Remediasi Kegagalan**: Cabut salah satu peran yang berkonflik segera; laporkan temuan ke Head of Compliance.
+
+### 9.25 `php artisan group:audit` — Audit Konsolidasi & Eliminasi Saldo Resiprokal
+- **Tujuan & Invarian**: Memvalidasi eliminasi piutang/utang antar-perusahaan anak dan transfer pricing.
+- **Opsi & Parameter Utama**: `--period=YYYY-MM`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika seluruh saldo resiprokal tereliminasi sempurna; Exit 1 jika ada selisih intercompany.
+- **SOP Remediasi Kegagalan**: Lakukan rekonsiliasi SO-PO cermin; posting jurnal penyesuaian selisih kurs antar-entitas.
+
+### 9.26 `php artisan hcm:audit` — Audit Penggajian Karyawan & Pajak PPh 21
+- **Tujuan & Invarian**: Memvalidasi potongan BPJS Ketenagakerjaan/Kesehatan, tarif TER PPh 21, dan lembur.
+- **Opsi & Parameter Utama**: `--month=YYYY-MM`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika slip gaji seimbang dengan kas keluar payroll; Exit 1 jika ada salah hitung pajak.
+- **SOP Remediasi Kegagalan**: Koreksi perhitungan PPh 21 pada masa pajak berikutnya; selaraskan data NIK pegawai terdaftar.
+
+### 9.27 `php artisan hsp:audit` — Audit Pasien, Billing & E-Apotek Rumah Sakit
+- **Tujuan & Invarian**: Memeriksa integritas EMR, klaim BPJS INA-CBG, dan pengeluaran obat sistem FEFO.
+- **Opsi & Parameter Utama**: `--verify-bpjs`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika rekam medis dan billing selaras; Exit 1 jika ada obat keluar tanpa resep sah.
+- **SOP Remediasi Kegagalan**: Investigasi selisih stok farmasi; ajukan banding koreksi klaim BPJS yang ditolak.
+
+### 9.28 `php artisan htl:audit` — Audit Penutupan Hari (Night Audit) Hotel
+- **Tujuan & Invarian**: Memverifikasi pemisahan tagihan folio kamar, city ledger, dan sinkronisasi OTA.
+- **Opsi & Parameter Utama**: `--hotel-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika trial balance seimbang dan tanggal sistem ditutup; Exit 1 jika saldo folio gantung.
+- **SOP Remediasi Kegagalan**: Selesaikan transaksi tamu yang belum settled; pindahkan saldo piutang perusahaan ke City Ledger.
+
+### 9.29 `php artisan ins:audit` — Audit Polis Parametrik & Cadangan Klaim
+- **Tujuan & Invarian**: Memeriksa rasio solvabilitas premi, dana cadangan klaim, dan pembayaran otomatis.
+- **Opsi & Parameter Utama**: `--solvency-check`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika dana cadangan memenuhi ambang batas 120% RBC; Exit 1 jika solvabilitas menurun.
+- **SOP Remediasi Kegagalan**: Suntik dana cadangan likuiditas dari rekening penjaminan induk; batasi penerbitan polis baru.
+
+### 9.30 `php artisan intl:audit` — Audit Kepatuhan Pajak Internasional & P3B
+- **Tujuan & Invarian**: Memverifikasi pemotongan Withholding Tax cross-border dan tarif tax treaty.
+- **Opsi & Parameter Utama**: `--country=[CODE]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika tarif P3B sesuai SKD resmi; Exit 1 jika terjadi salah potongan pajak luar negeri.
+- **SOP Remediasi Kegagalan**: Ajukan permohonan restitusi pajak lebih bayar; perbarui sertifikat domisili fiskal vendor asing.
+
+### 9.31 `php artisan lgx:audit-billing` — Audit Tagihan & Ongkos Kirim Logistik
+- **Tujuan & Invarian**: Memverifikasi tarif berat volumetrik, diskon shipper, dan pengembalian dana COD.
+- **Opsi & Parameter Utama**: `--reconcile-cod`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika kas COD tertagih cocok dengan setoran kurir; Exit 1 jika ada selisih kas COD.
+- **SOP Remediasi Kegagalan**: Panggil kurir bersangkutan untuk menyetorkan kekurangan uang tunai hasil COD.
+
+### 9.32 `php artisan lgx:audit-circular` — Audit Reverse Logistics & Daur Ulang
+- **Tujuan & Invarian**: Memvalidasi pengembalian kemasan ramah lingkungan dan insentif pengembalian barang.
+- **Opsi & Parameter Utama**: `--check-returns`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika inventaris daur ulang tercatat rapi; Exit 1 jika terjadi kebocoran kupon daur ulang.
+- **SOP Remediasi Kegagalan**: Bekukan kupon insentif yang anomali; audit stok fisik wadah daur ulang di gudang.
+
+### 9.33 `php artisan lgx:audit-coldchain` — Audit Rantai Dingin & Kepatuhan Farmasi
+- **Tujuan & Invarian**: Memeriksa log suhu reefer container 2-8°C dan riwayat peringatan ekskursi.
+- **Opsi & Parameter Utama**: `--verify-excursions`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika seluruh pengiriman biofarma memenuhi standar GDP; Exit 1 jika suhu jebol.
+- **SOP Remediasi Kegagalan**: Karantina produk obat terdampak; terbitkan formulir investigasi penyimpangan mutu.
+
+### 9.34 `php artisan lgx:verify-custody` — Verifikasi Rantai Kustodi Paket Kiriman
+- **Tujuan & Invarian**: Memeriksa bukti serah terima digital ePoD, GPS tracking, dan tanda tangan penerima.
+- **Opsi & Parameter Utama**: `--shipment-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika rantai serah terima tidak terputus; Exit 1 jika paket hilang tanpa jejak scan.
+- **SOP Remediasi Kegagalan**: Tuntut ganti rugi ke pihak hub transit terakhir; cairkan asuransi kehilangan barang.
+
+### 9.35 `php artisan mall:audit-billing` — Audit Tagihan Sewa & Utilitas Tenant Mall
+- **Tujuan & Invarian**: Memverifikasi tagihan sewa minimum, bagi hasil omzet (Turnover Rent), dan meteran PLN/Air.
+- **Opsi & Parameter Utama**: `--mall-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika seluruh invoice tenant terbit sesuai rumus sewa; Exit 1 jika ada tenant belum tertagih.
+- **SOP Remediasi Kegagalan**: Jalankan penerbitan invoice perbaikan; hubungi tenant untuk auto-debit ulang.
+
+### 9.36 `php artisan mfg:audit-costing` — Audit Biaya Produksi (WIP vs Standar)
+- **Tujuan & Invarian**: Memeriksa varians bahan baku (PPV), varians efisiensi tenaga kerja, dan HPP produk.
+- **Opsi & Parameter Utama**: `--plant-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika varians biaya berada dalam batas toleransi 3%; Exit 1 jika terjadi pemborosan bahan.
+- **SOP Remediasi Kegagalan**: Lakukan kalibrasi standar BOM; audit pemakaian material di lantai produksi (shop floor).
+
+### 9.37 `php artisan mfg:qms-audit` — Audit Mutu & Karantina Produk Pabrik
+- **Tujuan & Invarian**: Memverifikasi sertifikat analisa (CoA), status lot karantina, dan tindakan korektif CAPA.
+- **Opsi & Parameter Utama**: `--status=quarantine`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika tidak ada produk cacat yang lolos ke gudang jadi; Exit 1 jika lot bermasalah bocor.
+- **SOP Remediasi Kegagalan**: Tarik produk dari gudang distribusi segera; buka formulir penyelidikan CAPA.
+
+### 9.38 `php artisan min:audit` — Audit Pengangkutan Tambang & Timbangan
+- **Tujuan & Invarian**: Memeriksa kesesuaian tiket timbangan jembatan (weighbridge) dengan hasil assay kadar bijih.
+- **Opsi & Parameter Utama**: `--mine-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika tonase angkut konsisten antara pit dan pelabuhan; Exit 1 jika ada selisih > 0.5%.
+- **SOP Remediasi Kegagalan**: Kalibrasi ulang sensor jembatan timbang; periksa potensi tumpahan batubara di jalan hauling.
+
+### 9.39 `php artisan mobile:audit` — Audit Sinkronisasi Aplikasi Mobile Lapangan
+- **Tujuan & Invarian**: Memeriksa antrean sinkronisasi offline-first dan integritas database SQLite lokal perangkat.
+- **Opsi & Parameter Utama**: `--device-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika seluruh transaksi offline telah terunggah sempurna; Exit 1 jika terjadi konflik data.
+- **SOP Remediasi Kegagalan**: Jalankan protokol resolusi konflik Last-Write-Wins; perbarui cache master data pada aplikasi mobile.
+
+### 9.40 `php artisan plm:audit` — Audit Siklus Hidup Produk & Riwayat ECO
+- **Tujuan & Invarian**: Memverifikasi alur Engineering Change Order (ECO) dan konsistensi EBOM ke MBOM pabrik.
+- **Opsi & Parameter Utama**: `--eco-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika seluruh perubahan formula resep disetujui tim R&D; Exit 1 jika ada perubahan sepihak.
+- **SOP Remediasi Kegagalan**: Batalkan ECO yang tidak sah; kembalikan formula produksi ke revisi resmi yang disetujui.
+
+### 9.41 `php artisan pq:audit-chains` — Audit Kriptografi Pasca-Kuantum Rantai Hash
+- **Tujuan & Invarian**: Memeriksa algoritma enkripsi dan signature berantai untuk ketahanan komputasi kuantum.
+- **Opsi & Parameter Utama**: `--algorithm=all`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika seluruh signature memenuhi standar post-quantum; Exit 1 jika ditemukan cipher lemah.
+- **SOP Remediasi Kegagalan**: Lakukan re-hashing data lama menggunakan kunci kriptografi quantum-safe.
+
+### 9.42 `php artisan pricing:audit` — Audit Engine Harga & Waterfall Diskon
+- **Tujuan & Invarian**: Memeriksa kepatuhan harga minimum (margin floor) dan konsistensi price lock.
+- **Opsi & Parameter Utama**: `--item-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika tidak ada penjualan di bawah harga pokok tanpa izin; Exit 1 jika margin bocor.
+- **SOP Remediasi Kegagalan**: Koreksi aturan diskon bertingkat; batalkan promo yang mengakibatkan kerugian margin.
+
+### 9.43 `php artisan proc:audit` — Audit Pengadaan Barang & 3-Way Match
+- **Tujuan & Invarian**: Memverifikasi kecocokan antara PO, Surat Jalan Penerimaan (GRN), dan Faktur Tagihan (Invoice).
+- **Opsi & Parameter Utama**: `--match-all`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika 3-way match seimbang 100%; Exit 1 jika terjadi diskrepansi jumlah/harga.
+- **SOP Remediasi Kegagalan**: Tahan pembayaran tagihan faktur hingga vendor memberikan klarifikasi atau nota kredit.
+
+### 9.44 `php artisan prp:audit` — Audit Operasional Properti & Kontrak Sewa
+- **Tujuan & Invarian**: Memverifikasi okupansi ruang gedung dan kepatuhan pembayaran uang muka sewa.
+- **Opsi & Parameter Utama**: `--property-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika unit tersewa selaras dengan jadwal kas masuk; Exit 1 jika ada sewa tanpa kontrak sah.
+- **SOP Remediasi Kegagalan**: Terbitkan surat pengosongan unit atau lakukan perpanjangan kontrak sewa resmi.
+
+### 9.45 `php artisan prp:audit-bim` — Audit Model Digital Twin & BIM Bangunan
+- **Tujuan & Invarian**: Memverifikasi keselarasan sensor IoT gedung dengan model representasi digital twin.
+- **Opsi & Parameter Utama**: `--building-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika telemetri suhu dan daya sinkron dengan model BIM; Exit 1 jika data sensor terputus.
+- **SOP Remediasi Kegagalan**: Periksa konektivitas gateway LoRaWAN di lantai gedung; restart modul sensor yang offline.
+
+### 9.46 `php artisan prp:audit-flex` — Audit Reservasi Ruang Flex-Space & Coworking
+- **Tujuan & Invarian**: Memeriksa pencegahan pemesanan ganda (double-booking) dan tagihan per jam.
+- **Opsi & Parameter Utama**: `--check-conflicts`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika pemesanan anti-overlap 100% terjaga; Exit 1 jika terjadi tumpang tindih jadwal.
+- **SOP Remediasi Kegagalan**: Relokasi pengguna terdampak ke ruang pertemuan yang setara; perbaiki lock reservation atomik.
+
+### 9.47 `php artisan prp:audit-smartbuilding` — Audit Sistem Otomasi Gedung Pintar (BMS)
+- **Tujuan & Invarian**: Memverifikasi efisiensi pendingin HVAC, pencahayaan otomatis, dan akses pintu turnstile.
+- **Opsi & Parameter Utama**: `--energy-mode`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika konsumsi energi gedung optimal; Exit 1 jika sistem HVAC menyala di ruang kosong.
+- **SOP Remediasi Kegagalan**: Terapkan profil suhu hemat energi setback otomatis; periksa sensor kehadiran PIR.
+
+### 9.48 `php artisan ptn:audit` — Audit Kemitraan Strategis & Revenue Share
+- **Tujuan & Invarian**: Memverifikasi perhitungan bagi hasil mitra co-selling dan pencapaian Joint Business Plan.
+- **Opsi & Parameter Utama**: `--partner-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika bagi hasil terhitung akurat sesuai kontrak; Exit 1 jika ada perselisihan saldo mitra.
+- **SOP Remediasi Kegagalan**: Lakukan rekonsiliasi data penjualan bersama perwakilan mitra; terbitkan settlement statement.
+
+### 9.49 `php artisan rwa:audit` — Audit Tokenisasi Aset Riil & Cadangan Dividen
+- **Tujuan & Invarian**: Memeriksa keseimbangan antara jumlah token beredar dengan nilai valuasi aset fisik.
+- **Opsi & Parameter Utama**: `--token-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika total token = valuasi aset terbitan dan dividen seimbang; Exit 1 jika ada deviasi minor unit.
+- **SOP Remediasi Kegagalan**: Koreksi alokasi dividen integer minor unit; salurkan sisa pembulatan ke akun cadangan reserve.
+
+### 9.50 `php artisan security:audit` — Audit Keamanan Siber & Deteksi Intrusi
+- **Tujuan & Invarian**: Memeriksa log upaya login gagal, brute force, kebocoran token, dan integritas firewall.
+- **Opsi & Parameter Utama**: `--scan-ips`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika sistem aman dari upaya penetrasi aktif; Exit 1 jika terdeteksi ancaman serangan.
+- **SOP Remediasi Kegagalan**: Blokir alamat IP penyerang di firewall Cloudflare; paksa reset kata sandi akun terdampak.
+
+### 9.51 `php artisan sim:audit` — Audit Simulasi Kernel & Skenario Stress-Test
+- **Tujuan & Invarian**: Memverifikasi determinisme simulasi beban transaksi ultra tinggi dan pemutaran event.
+- **Opsi & Parameter Utama**: `--scenario=[NAME]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika hasil simulasi konsisten dan terisolasi dari data produksi; Exit 1 jika ada data bocor.
+- **SOP Remediasi Kegagalan**: Bersihkan database sandbox pengujian simulasi; periksa isolasi tenancy pengujian.
+
+### 9.52 `php artisan tf:audit` — Audit Trade Finance & Letter of Credit (L/C)
+- **Tujuan & Invarian**: Memeriksa diskrepansi dokumen ekspor-impor terhadap aturan UCP 600 dan jatuh tempo SCF.
+- **Opsi & Parameter Utama**: `--lc-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika dokumen ekspor-impor clean tanpa diskrepansi; Exit 1 jika ada dokumen ditolak bank.
+- **SOP Remediasi Kegagalan**: Perbaiki dokumen faktur komersial dan bill of lading sebelum batas waktu presentasi berakhir.
+
+### 9.53 `php artisan tlm:audit` — Audit Telemetri IoT & Skor Pengemudi
+- **Tujuan & Invarian**: Memverifikasi ingestion data sensor CAN-bus kendaraan, pengereman mendadak, dan BBM.
+- **Opsi & Parameter Utama**: `--device-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika data telemetri mengalir lancar; Exit 1 jika ada paket data telemetri yang korup.
+- **SOP Remediasi Kegagalan**: Perbarui firmware modul IoT OBD-II kendaraan; periksa kabel antena GPS.
+
+### 9.54 `php artisan tower:audit` — Audit Menara Kendali Rantai Pasok (Control Tower)
+- **Tujuan & Invarian**: Memverifikasi radar peringatan dini hambatan pasokan, buffer stock, dan alokasi CTP.
+- **Opsi & Parameter Utama**: `--region=[CODE]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika peringatan rantai pasok terpetakan dengan mitigasi; Exit 1 jika buffer stock jebol.
+- **SOP Remediasi Kegagalan**: Kirim pesanan darurat antar-hub pergudangan; aktifkan rute ekspedisi alternatif.
+
+### 9.55 `php artisan trade:audit` — Audit Operasi Kepabeanan & Ekspor-Impor
+- **Tujuan & Invarian**: Memvalidasi dokumen PIB/PEB, pembayaran bea masuk, dan kepatuhan Incoterms 2020.
+- **Opsi & Parameter Utama**: `--customs-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika dokumen bea cukai telah mendapat status Surat Pemberitahuan Jalur Hijau; Exit 1 jika tertahan.
+- **SOP Remediasi Kegagalan**: Lengkapi dokumen sertifikat asal (COO) dan hasil uji mutu lab bea cukai.
+
+### 9.56 `php artisan treasury:audit` — Audit Treasury Multi-Valas & Posisi Hedging
+- **Tujuan & Invarian**: Memverifikasi posisi kas valuta asing, kurs buku besar scaled 1e6, dan kontrak lindung nilai.
+- **Opsi & Parameter Utama**: `--revalue-fx`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika nilai buku valas selaras dengan kurs tengah BI; Exit 1 jika eksposur valas terbuka.
+- **SOP Remediasi Kegagalan**: Jalankan perintah `--revalue-fx` untuk membukukan laba/rugi selisih kurs yang belum terealisasi.
+
+### 9.57 `php artisan ven:audit` — Audit Akses Gate Venue & Penjualan Konser
+- **Tujuan & Invarian**: Memverifikasi tiket turnstile RFID, rekonsiliasi minimum spend VIP, dan kapasitas area.
+- **Opsi & Parameter Utama**: `--event-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika jumlah tiket terjual sama dengan pembacaan sensor turnstile; Exit 1 jika over-capacity.
+- **SOP Remediasi Kegagalan**: Kunci pintu masuk gate; arahkan penonton ke zona cadangan dengan pemantauan petugas K3.
+
+### 9.58 `php artisan vmi:audit` — Audit Vendor-Managed Inventory & C2M
+- **Tujuan & Invarian**: Memeriksa stok konsinyasi milik vendor di gudang hub dan pesanan replenishment otomatis.
+- **Opsi & Parameter Utama**: `--vendor-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika stok konsinyasi terhitung akurat; Exit 1 jika terjadi kehilangan barang titipan.
+- **SOP Remediasi Kegagalan**: Terbitkan laporan pertanggungjawaban fisik konsinyasi; lakukan pembayaran atas barang terpakai.
+
+### 9.59 `php artisan vnd:audit` — Audit Jaringan Mesin Vending Pintar
+- **Tujuan & Invarian**: Memverifikasi pembayaran QRIS, ketersediaan stok produk di dispenser, dan temperatur pendingin.
+- **Opsi & Parameter Utama**: `--machine-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika mesin berfungsi prima dan uang terkumpul cocok; Exit 1 jika dispenser macet.
+- **SOP Remediasi Kegagalan**: Kirim teknisi lapangan untuk mengeluarkan produk yang tersangkut dan isi ulang stok produk.
+
+### 9.60 `php artisan wm:audit` — Audit Portofolio Robo-Advisor & Profil Risiko
+- **Tujuan & Invarian**: Memeriksa kepatuhan portofolio nasabah terhadap profil risiko dan toleransi drawdown.
+- **Opsi & Parameter Utama**: `--rebalance-all`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika seluruh portofolio nasabah berada dalam koridor risiko yang disetujui; Exit 1 jika drift > 5%.
+- **SOP Remediasi Kegagalan**: Jalankan `--rebalance-all` untuk mereposisi alokasi reksa dana dan obligasi nasabah.
+
+### 9.61 `php artisan wms:audit` — Audit Tata Kelola Pergudangan & Stock Opname
+- **Tujuan & Invarian**: Memverifikasi alokasi bin rak gudang, status putaway, dan akurasi cycle count empat mata.
+- **Opsi & Parameter Utama**: `--warehouse-id=[ID]`.
+- **Konvensi Kode Keluar (Exit Code)**: Exit 0 jika akurasi inventaris gudang mencapai minimal 99.8%; Exit 1 jika ada selisih bin stok.
+- **SOP Remediasi Kegagalan**: Lakukan stock opname fisik ulang pada lorong rak terdampak; sesuaikan catatan inventory.
+
+---
+
+## 10. SOP Pemeliharaan Partisi Database PostgreSQL & Query Budget Enforcer
+
+Tabel dengan volume data tinggi (`bank_ledger_entries`, `core_audit_logs`, `core_webhook_outbox`, `lgx_telematics_pings`) menggunakan partisi berbasis waktu bulanan:
+
+1. **Pembuatan Partisi Otomatis**: Command terjadwal `php artisan db:partition-maintenance` berjalan setiap tanggal 25 untuk menyiapkan tabel partisi bulan berikutnya.
+2. **Penegakan Query Budget**: Setiap controller dibatasi maksimal mengeksekusi 15 query database per HTTP request. Jika melebihi batas, `QueryBudgetEnforcer` memicu peringatan ke log dan Sentry.
+3. **Pembersihan Data Historis**: Data log lebih dari 12 bulan diarsipkan secara otomatis ke cold storage S3 Glacier sebelum partisi lama dihapus (`DROP TABLE`).
+
+## 11. SOP Pengujian Bencana & Latihan DR Multi-Region (Disaster Recovery Drill)
+
+Simulasi failover multi-region dijalankan setiap semester untuk menjamin kesiapan tim dan keandalan sistem:
+
+1. **Pemberitahuan Stakeholder**: Kirim pengumuman jendela pemeliharaan minimal T-7 hari ke seluruh unit bisnis.
+2. **Verifikasi Sinkronisasi WAL**: Pastikan selisih replikasi antara DC Jakarta dan DC Bali adalah 0 byte.
+3. **Simulasi Pemutusan Jaringan**: Matikan interface jaringan data center primer secara terkontrol.
+4. **Validasi Promosi Otomatis**: Periksa apakah node Raft saksi mempromosikan standby replica menjadi master dalam waktu $< 30$ detik.
+5. **Verifikasi Transaksi Buku Besar**: Jalankan `php artisan bank:reconcile` di DC sekunder untuk memastikan zero balance loss.
+6. **Failback**: Setelah latihan selesai, pulihkan peran master kembali ke DC primer menggunakan streaming reverse replication.

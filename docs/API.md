@@ -776,3 +776,153 @@ Mengelola pergerakan stok farmasi lintas cabang dengan algoritma First-Expired F
 }
 ```
 
+
+
+---
+
+## 9. Arsitektur API Enterprise Terpadu: Versi v1, v2, dan v3
+
+Platform Superwebsite menyediakan 3 generasi API publik dan privat untuk melayani integrasi ekosistem mitra B2B, perbankan, dan aplikasi mobile:
+
+| Generasi API | Base URL | Protokol | Format & Standar | Target Pengguna & Cakupan Layanan |
+|---|---|---|---|---|
+| **API v1** | `/api/v1/logistics` | RESTful HTTPS | JSON, Bearer Sanctum Token | Logistik express, pelacakan kiriman, tarif kurir |
+| **API v2** | `/api/v2/enterprise` | REST + EDIFACT / X12 | JSON / EDI, HMAC-SHA256 Sign | Pengadaan korporat, B2B marketplace, tenant mall, intercompany |
+| **API v3** | `/api/v3/conglomerate`| REST + GraphQL + Webhook | JSON, OAuth2 + mTLS + HMAC | Seluruh 12 lini bisnis, telemedicine, PACS DICOM, perbankan, mining |
+
+## 10. Spesifikasi Penandatanganan Kriptografi HMAC SHA-256
+
+Setiap permintaan mutasi data (`POST`, `PUT`, `DELETE`, `PATCH`) pada API v2 dan API v3 wajib menyertakan signature kriptografis di header HTTP untuk mencegah manipulasi data di perjalanan (*man-in-the-middle attack*) dan penyerangan replay (*replay attack*):
+
+```http
+X-Client-Id: client_b2b_98723498
+X-Timestamp: 1774300800
+X-Nonce: 7e2b34a1-09cd-48e2-b883-fa8819234912
+X-Signature: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+```
+
+### Formula Perhitungan Signature:
+
+```text
+StringToSign = HTTP_METHOD + "\n" + PATH + "\n" + X-Timestamp + "\n" + X-Nonce + "\n" + SHA256(REQUEST_BODY)
+Signature = HexEncode(HMAC_SHA256(StringToSign, ClientSecret))
+```
+
+- **Toleransi Waktu**: Server menolak permintaan dengan timestamp yang berselisih $> 300$ detik dari jam server.
+- **Pencegahan Replay**: Nilai `X-Nonce` disimpan di cache Redis dengan TTL 10 menit; jika nonce yang sama muncul kembali, server mengembalikan status `401 Unauthorized`.
+
+## 11. Manajemen Kuota & Rate Limiting Lintas Tier
+
+Sistem menerapkan pembatasan bertingkat berdasarkan profil langganan mitra API:
+
+| Tier Layanan | Batas Permintaan (Rate Limit) | Kuota Bulanan | Kebijakan Pelampauan Batas (*Burst Policy*) |
+|---|---|---|---|
+| **Basic** | 60 req / menit | 100.000 req | HTTP 429 Too Many Requests |
+| **Pro** | 300 req / menit | 1.000.000 req | Burst hingga 500 req selama 10 detik |
+| **Enterprise** | 1.200 req / menit | Tidak Terbatas | Dedicated token bucket + prioritas antrean |
+| **Internal System** | 6.000 req / menit | Tidak Terbatas | Jalur tol internal VPC tanpa kuota |
+
+## 12. Standar Respons Kesalahan RFC 7807 (Problem Details)
+
+Seluruh kesalahan HTTP (4xx dan 5xx) diformat seragam menggunakan standar RFC 7807 `application/problem+json`:
+
+```json
+{
+  "type": "https://api.autoserve.test/errors/insufficient-balance",
+  "title": "Saldo Tidak Mencukupi",
+  "status": 422,
+  "detail": "Saldo akun dompet IDR pengguna tidak mencukupi untuk menyelesaikan pembayaran invoice #INV-9821.",
+  "instance": "/api/v2/enterprise/payments/charge",
+  "code": "PAY_ERR_INSUFFICIENT_FUNDS",
+  "invalid_params": [
+    {
+      "name": "amount",
+      "reason": "Nilai transaksi Rp 1.500.000 melebihi saldo tersedia Rp 450.000."
+    }
+  ],
+  "timestamp": "2026-10-23T04:00:00Z",
+  "tracking_id": "req-trace-7c981240-bcde-4321"
+}
+```
+
+## 13. Siklus Hidup Webhook Delivery & Dead-Letter Queue (DLQ)
+
+Ketika terjadi event penting (misal `payment.settled`, `shipment.delivered`, `lab.critical_result`), event dikirim ke endpoint webhook URL mitra secara asinkron:
+
+1. **Strategi Retry**: Exponential backoff dengan jitter: 10s, 30s, 2m, 10m, 30m, 2h, 6h, 24h (total 8 kali percobaan).
+2. **Transisi ke DLQ**: Jika setelah 8 kali percobaan endpoint mitra tetap gagal (HTTP non-2xx atau timeout), pesan dipindahkan ke tabel `core_webhook_dead_letters`.
+3. **Replay Manual & Otomatis**: Administrator atau mitra dapat memicu replay pengiriman via dashboard atau Artisan command `php artisan webhook:replay-dlq --id=[ID]`.
+
+## 14. Diagram Sekuensial API & Webhook
+
+### 14.1 Alur Autentikasi Sanctum Token & Otorisasi RBAC
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as "API Client / Mobile App"
+    participant Gateway as "API Gateway & Middleware"
+    participant Sanctum as "Laravel Sanctum Authenticator"
+    participant RBAC as "RBAC Gate & Policy Engine"
+    participant Handler as "Domain Controller & Service"
+    Client->>Gateway: HTTP Request with Bearer Token + HMAC headers
+    Gateway->>Sanctum: Validate token signature & expiry in cache
+    Sanctum-->>Gateway: Token valid (User ID & Abilities loaded)
+    Gateway->>RBAC: Evaluate route ability & role permissions
+    alt Otorisasi Lolos
+        RBAC-->>Gateway: Access Granted
+        Gateway->>Handler: Forward request with User context
+        Handler-->>Client: HTTP 200/201 JSON Response
+    else Izin Tidak Cukup
+        RBAC-->>Client: HTTP 403 Forbidden (RFC 7807 Problem Detail)
+    end
+```
+
+### 14.2 Alur Pengiriman Webhook Outbox dengan Exponential Backoff & DLQ
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Domain as "Domain Event (e.g. PaymentSettled)"
+    participant Outbox as "Transactional Outbox Table"
+    participant Worker as "Webhook Outbox Worker"
+    participant Partner as "Partner Webhook Server"
+    participant DLQ as "Dead-Letter Queue (DLQ)"
+    Domain->>Outbox: Atomically persist webhook payload
+    Worker->>Outbox: Poll pending webhook jobs
+    Worker->>Partner: POST webhook with HMAC-SHA256 signature
+    alt Berhasil (HTTP 2xx)
+        Partner-->>Worker: HTTP 200 OK
+        Worker->>Outbox: Mark job as DELIVERED
+    else Gagal Sementara (HTTP 5xx / Timeout)
+        Partner-->>Worker: HTTP 503 Service Unavailable
+        Worker->>Outbox: Increment attempt & schedule retry with exponential backoff
+    else Gagal Permanen (Maksimal 8 Kali Percobaan Terlampaui)
+        Worker->>DLQ: Evict job to Dead-Letter Queue & alert operations
+    end
+```
+
+### 14.3 Alur Sinkronisasi Offline-First Mobile Suite & Resolusi Konflik
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor FieldWorker as "Petugas Lapangan (Driver / Perawat / WMS)"
+    participant SQLite as "Local Mobile SQLite Database"
+    participant SyncEngine as "Mobile Sync Engine"
+    participant Server as "Central Conglomerate Server"
+    participant Conflict as "Conflict Resolution Engine (LWW / Vector Clock)"
+    FieldWorker->>SQLite: Record data in offline mode (e.g. ePoD / triage vitals)
+    SQLite->>SQLite: Store pending change with local timestamp & vector clock
+    Note over SyncEngine: Internet connection re-established (online)
+    SyncEngine->>Server: POST /api/v3/sync/push (batch of pending records)
+    Server->>Conflict: Inspect conflict with concurrent server mutations
+    alt Zero Conflict
+        Conflict->>Server: Commit mutations to master ledger / database
+        Server-->>SyncEngine: ACK synced record IDs
+    else Terjadi Konflik Versi Data
+        Conflict->>Conflict: Apply deterministic resolution (Last-Write-Wins / Rule Engine)
+        Server-->>SyncEngine: Return resolved state & sync markers
+    end
+    SyncEngine->>SQLite: Update local state & clear outbox
+```
