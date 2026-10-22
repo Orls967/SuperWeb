@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CircularBusinessModelsRevenueService (Fase 334)
@@ -26,7 +27,7 @@ class CircularBusinessModelsRevenueService
         string $contractCode,
         string $sku,
         string $businessModel,
-        float $monthlyFeeUsd,
+        int $monthlyFeeUsd,
         float $depositUsd,
         bool $isProfitable = true
     ): object {
@@ -83,7 +84,7 @@ class CircularBusinessModelsRevenueService
         string $evidenceCode,
         string $contractCode,
         float $recoveredKg,
-        bool $verified = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $verified = true
     ): object {
         $eCode = strtoupper($evidenceCode);
         $cCode = strtoupper($contractCode);

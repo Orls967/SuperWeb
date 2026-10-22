@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EnterpriseQualityGovernanceService (Fase 462)
@@ -55,7 +56,7 @@ class EnterpriseQualityGovernanceService
         string $code,
         string $rca,
         string $systemFix,
-        bool $verified
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $verified
     ): object {
         $inc = DB::table('int_enterprise_quality_incidents')->where('incident_code', strtoupper($code))->first();
         if (! $inc) {

@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * SupplyChainTradeMaterialFlowsService (Fase 381)
@@ -25,7 +26,7 @@ class SupplyChainTradeMaterialFlowsService
     public function inspectTransitShipment(
         string $shipmentCode,
         string $lotIdentifier,
-        bool $qualityPassed
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $qualityPassed
     ): object {
         $sCode = strtoupper($shipmentCode);
         $lId = strtoupper($lotIdentifier);
@@ -67,7 +68,7 @@ class SupplyChainTradeMaterialFlowsService
     public function authorizeReverseFlowPickup(
         string $reverseManifestCode,
         string $lotIdentifier,
-        bool $hasVerifiedContract,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasVerifiedContract,
         bool $hasPickupManifest
     ): object {
         $rCode = strtoupper($reverseManifestCode);

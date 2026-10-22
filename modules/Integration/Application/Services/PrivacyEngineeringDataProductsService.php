@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * PrivacyEngineeringDataProductsService (Fase 341)
@@ -25,7 +26,7 @@ class PrivacyEngineeringDataProductsService
         string $jobCode,
         string $subjectId,
         string $purpose,
-        bool $hasConsentProof
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasConsentProof
     ): object {
         $jCode = strtoupper($jobCode);
 

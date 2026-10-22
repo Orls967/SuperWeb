@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * NetworkResilienceChaosService (Fase 308)
@@ -26,8 +27,8 @@ class NetworkResilienceChaosService
         string $dependencyCode,
         string $component,
         bool $hasNMinusOneFailover,
-        float $redundancyCostUsd,
-        bool $tradeOffApproved = true
+        int $redundancyCostUsd,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $tradeOffApproved = true
     ): object {
         $dCode = strtoupper($dependencyCode);
 

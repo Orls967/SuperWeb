@@ -27,7 +27,7 @@ class SubscriptionCommerceReplenishmentService
         string $subscriberId,
         string $sku,
         int $frequencyDays,
-        float $basePriceUsd,
+        int $basePriceUsd,
         float $discountLadderPct = 15.00
     ): object {
         $pCode = strtoupper($planCode);

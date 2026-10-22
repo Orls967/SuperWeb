@@ -24,7 +24,7 @@ class CrossLineServiceBundlesService
      */
     public function bookBundle(
         string $bundleBookingCode,
-        float $totalPriceUsd,
+        int $totalPriceUsd,
         float $hotelShareUsd,
         float $fleetShareUsd
     ): object {

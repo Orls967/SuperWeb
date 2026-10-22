@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * SupplierFinanceCollaborativePlanningService (Fase 261)
@@ -31,7 +32,7 @@ class SupplierFinanceCollaborativePlanningService
         string $supplierName,
         string $partnershipTier = 'PREFERRED',
         string $contractExpiryDate = '2027-12-31',
-        bool $isForecastSharingConsented = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $isForecastSharingConsented = true
     ): object {
         $code = strtoupper($supplierCode);
 

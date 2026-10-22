@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('complaint_code')->unique();
             $table->string('channel'); // WEB, MOBILE, CALL_CENTER
             $table->string('affected_service_or_product');
-            $table->decimal('compensation_amount_idr', 18, 2)->default(0.00);
+            $table->bigInteger('compensation_amount_idr')->default(0);
             $table->string('ledger_credit_reference')->nullable();
             $table->string('resolution_status')->default('RESOLVED');
             $table->timestamps();

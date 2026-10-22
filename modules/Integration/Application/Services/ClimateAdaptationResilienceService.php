@@ -61,7 +61,7 @@ class ClimateAdaptationResilienceService
         string $measureCode,
         string $siteCode,
         string $measureName,
-        float $capexCostUsd,
+        int $capexCostUsd,
         float $avoidedLossUsd,
         bool $isCompleted = false
     ): object {

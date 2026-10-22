@@ -30,9 +30,9 @@ return new class extends Migration
             $table->string('close_batch_code')->unique();
             $table->date('close_date');
             $table->string('line_code');
-            $table->decimal('total_revenue_idr', 18, 2);
-            $table->decimal('posted_ledger_idr', 18, 2);
-            $table->decimal('eod_variance_idr', 18, 2)->default(0.00); // Invariant Σ variance == 0
+            $table->bigInteger('total_revenue_idr');
+            $table->bigInteger('posted_ledger_idr');
+            $table->bigInteger('eod_variance_idr')->default(0); // Invariant Σ variance == 0
             $table->timestamps();
         });
     }

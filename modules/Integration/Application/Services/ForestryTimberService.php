@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * ForestryTimberService (Fase 172 — Lini 23)
@@ -75,7 +76,7 @@ class ForestryTimberService
     /**
      * Record restoration polygon and verify survival rate evidence.
      */
-    public function recordRestoration(string $polygonCode, float $hectares, float $survivalRatePct, bool $evidenceVerified): object
+    public function recordRestoration(string $polygonCode, float $hectares, float $survivalRatePct, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $evidenceVerified): object
     {
         // Survival rate must be >= 75% and field evidence must be verified to be eligible for claims
         $isEligible = ($survivalRatePct >= 75.0 && $evidenceVerified);

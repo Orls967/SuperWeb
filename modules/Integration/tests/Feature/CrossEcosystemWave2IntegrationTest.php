@@ -7,8 +7,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Modules\Integration\Application\Services\CrossEcosystemWave2OrchestrationService;
 use Modules\Integration\Domain\Events\CrossEcosystemWave2Event;
+use Tests\TestCase;
 
-uses(RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(LedgerAccountsSeeder::class);

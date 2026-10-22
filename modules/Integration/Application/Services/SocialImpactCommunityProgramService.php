@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * SocialImpactCommunityProgramService (Fase 444)
@@ -24,7 +25,7 @@ class SocialImpactCommunityProgramService
     public function registerProgram(
         string $programCode,
         string $communityName,
-        float $totalBudget,
+        int $totalBudget,
         bool $needAssessmentCompleted = true
     ): object {
         $id = DB::table('esg_community_programs')->insertGetId([
@@ -44,8 +45,8 @@ class SocialImpactCommunityProgramService
     public function scheduleBenefitPayout(
         string $payoutCode,
         string $programCode,
-        float $calculatedAmount,
-        bool $communityConsent = true
+        int $calculatedAmount,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $communityConsent = true
     ): object {
         $prog = DB::table('esg_community_programs')->where('program_code', strtoupper($programCode))->first();
         if (! $prog) {
@@ -74,7 +75,7 @@ class SocialImpactCommunityProgramService
     /**
      * 444.4 & 444.5 Execute payout with milestone verification and outcome evaluation gate
      */
-    public function releaseBenefitPayout(string $payoutCode, bool $milestoneVerified): object
+    public function releaseBenefitPayout(string $payoutCode, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $milestoneVerified): object
     {
         $payout = DB::table('esg_benefit_sharing_payouts')->where('payout_code', strtoupper($payoutCode))->first();
         if (! $payout) {

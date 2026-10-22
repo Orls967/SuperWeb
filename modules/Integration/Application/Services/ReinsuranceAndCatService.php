@@ -91,7 +91,7 @@ class ReinsuranceAndCatService
     /**
      * Process CAT event loss allocation across excess-of-loss layer.
      */
-    public function allocateCatLoss(string $peril, float $totalGrossLoss, float $attachmentPoint, float $layerLimit): array
+    public function allocateCatLoss(string $peril, int $totalGrossLoss, float $attachmentPoint, float $layerLimit): array
     {
         // Loss below attachment is retained by primary insurer
         $retainedLoss = min($totalGrossLoss, $attachmentPoint);

@@ -68,7 +68,7 @@ class IslamicTradeFinanceService
     /**
      * Execute Tawarruq Commodity Murabahah for FX conversion without interest.
      */
-    public function executeTawarruqFx(string $fromCurr, string $toCurr, float $fromAmount, float $rate, float $brokerFee): object
+    public function executeTawarruqFx(string $fromCurr, string $toCurr, int $fromAmount, float $rate, int $brokerFee): object
     {
         $toAmount = round($fromAmount * $rate, 2);
         $txCode = 'TWR-'.strtoupper(Str::random(8));

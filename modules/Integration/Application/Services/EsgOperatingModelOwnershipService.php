@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EsgOperatingModelOwnershipService (Fase 441)
@@ -81,7 +82,7 @@ class EsgOperatingModelOwnershipService
         string $metricCode,
         float $target,
         float $actual,
-        bool $verifiedByAssurance = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $verifiedByAssurance = false
     ): object {
         $id = DB::table('esg_leadership_incentive_scorecards')->insertGetId([
             'scorecard_code' => strtoupper($scorecardCode),
@@ -102,7 +103,7 @@ class EsgOperatingModelOwnershipService
     /**
      * 441.3, 441.4, 441.5 Payout incentive bonus under verified assurance and anti-gaming guardrail
      */
-    public function payoutEsgIncentive(string $scorecardCode, float $bonusAmount, bool $antiGamingCleared = true): object
+    public function payoutEsgIncentive(string $scorecardCode, int $bonusAmount, bool $antiGamingCleared = true): object
     {
         $card = DB::table('esg_leadership_incentive_scorecards')->where('scorecard_code', strtoupper($scorecardCode))->first();
         if (! $card) {

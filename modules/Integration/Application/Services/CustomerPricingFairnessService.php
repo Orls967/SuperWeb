@@ -44,7 +44,7 @@ class CustomerPricingFairnessService
         string $offerCode,
         string $customerId,
         string $basis,
-        float $basePrice,
+        int $basePrice,
         float $discountPercent,
         array $priceComponents
     ): object {

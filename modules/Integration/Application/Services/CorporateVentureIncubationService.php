@@ -28,7 +28,7 @@ class CorporateVentureIncubationService
         string $ventureName,
         string $optionType,
         float $initialValuation,
-        float $totalApprovedFunding
+        int $totalApprovedFunding
     ): object {
         $id = DB::table('ppm_corporate_ventures')->insertGetId([
             'venture_code' => strtoupper($ventureCode),
@@ -54,7 +54,7 @@ class CorporateVentureIncubationService
     public function createFundingTranche(
         string $ventureCode,
         string $trancheStage,
-        float $approvedAmount,
+        int $approvedAmount,
         string $milestoneDescription
     ): object {
         $venture = DB::table('ppm_corporate_ventures')->where('venture_code', strtoupper($ventureCode))->first();

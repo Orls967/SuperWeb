@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EnterpriseIdentityZeroTrustService (Fase 457)
@@ -100,7 +101,7 @@ class EnterpriseIdentityZeroTrustService
     /**
      * 457.3 Zero-Trust Verification: Rejects untrusted context/device
      */
-    public function verifyZeroTrustAccess(string $userId, bool $mfaVerified, bool $managedDevice, bool $lowRiskContext): bool
+    public function verifyZeroTrustAccess(string $userId, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $mfaVerified, bool $managedDevice, bool $lowRiskContext): bool
     {
         if (! $mfaVerified || ! $managedDevice || ! $lowRiskContext) {
             throw new InvalidArgumentException("Zero-Trust policy violation: Request from user '{$userId}' rejected by Policy Decision Point (context check failed) (457.3, 457.4).");

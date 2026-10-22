@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * TalentValueOrganizationalOutcomesService (Fase 325)
@@ -52,10 +53,10 @@ class TalentValueOrganizationalOutcomesService
     public function registerInvestmentDecision(
         string $decisionCode,
         string $type,
-        float $costUsd,
+        int $costUsd,
         float $projectedBenefitUsd,
         float $uncertaintyPct = 15.00,
-        bool $hasEmpiricalEvidence = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasEmpiricalEvidence = false
     ): object {
         $dCode = strtoupper($decisionCode);
         $t = strtoupper($type);

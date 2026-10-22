@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * MarketplaceDisputeBuyerProtectionService (Fase 373)
@@ -27,7 +28,7 @@ class MarketplaceDisputeBuyerProtectionService
         string $buyerId,
         string $sellerId,
         string $assignedReviewerId,
-        bool $hasEvidence,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasEvidence,
         bool $isConflicted = false,
         ?string $alternateReviewerId = null
     ): object {
@@ -69,7 +70,7 @@ class MarketplaceDisputeBuyerProtectionService
     public function releaseProtectionHold(
         string $holdCode,
         string $disputeCode,
-        float $holdAmountUsd,
+        int $holdAmountUsd,
         bool $outcomeAdjudicated
     ): object {
         $hCode = strtoupper($holdCode);

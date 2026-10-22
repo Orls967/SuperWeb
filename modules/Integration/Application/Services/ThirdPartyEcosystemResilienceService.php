@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * ThirdPartyEcosystemResilienceService (Fase 403)
@@ -59,7 +60,7 @@ class ThirdPartyEcosystemResilienceService
         int $recoveryTimeMinutes,
         bool $dataExported = true,
         bool $credentialsRotated = true,
-        bool $passed = true,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $passed = true,
         ?string $notes = null
     ): object {
         $id = DB::table('gov_vendor_continuity_rehearsals')->insertGetId([

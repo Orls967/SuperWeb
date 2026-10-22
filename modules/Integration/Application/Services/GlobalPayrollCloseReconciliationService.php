@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * GlobalPayrollCloseReconciliationService (Fase 322)
@@ -29,7 +30,7 @@ class GlobalPayrollCloseReconciliationService
         int $processedHeadcount,
         float $grossPayrollUsd,
         float $priorGrossPayrollUsd,
-        bool $varianceApproved = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $varianceApproved = true
     ): object {
         $bCode = strtoupper($batchCode);
 
@@ -78,7 +79,7 @@ class GlobalPayrollCloseReconciliationService
         string $exceptionCode,
         string $batchCode,
         string $employeeId,
-        float $failedAmountUsd,
+        int $failedAmountUsd,
         string $reason,
         bool $slaEscalated = false
     ): object {

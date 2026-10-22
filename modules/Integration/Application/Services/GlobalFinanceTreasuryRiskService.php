@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * GlobalFinanceTreasuryRiskService (Fase 376)
@@ -28,7 +29,7 @@ class GlobalFinanceTreasuryRiskService
         float $grossExposureUsd,
         float $eligibleCollateralUsd,
         float $exposureLimitUsd,
-        bool $boardApprovalGranted = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $boardApprovalGranted = false
     ): object {
         $eCode = strtoupper($exposureCode);
         $netExposure = max(0.00, $grossExposureUsd - $eligibleCollateralUsd);
@@ -75,7 +76,7 @@ class GlobalFinanceTreasuryRiskService
      */
     public function executeFundingWaterfall(
         string $waterfallCode,
-        float $requestedAmountUsd,
+        int $requestedAmountUsd,
         float $cashPoolAvailableUsd,
         float $committedFacilitiesAvailableUsd
     ): object {

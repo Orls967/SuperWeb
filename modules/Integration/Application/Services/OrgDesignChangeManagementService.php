@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * OrgDesignChangeManagementService (Fase 425)
@@ -25,7 +26,7 @@ class OrgDesignChangeManagementService
         string $scenarioCode,
         string $title,
         int $spanOfControlRatio,
-        float $totalProjectedCost,
+        int $totalProjectedCost,
         float $readinessScore,
         bool $continuityCoverage = true
     ): object {
@@ -50,7 +51,7 @@ class OrgDesignChangeManagementService
         string $positionCode,
         string $employeeId,
         string $actionType,
-        float $severanceAmount = 0.00,
+        int $severanceAmount = 0,
         bool $encumbranceCleared = true
     ): object {
         $sc = DB::table('hcm_org_design_scenarios')->where('scenario_code', strtoupper($scenarioCode))->first();
@@ -77,7 +78,7 @@ class OrgDesignChangeManagementService
         return (object) DB::table('hcm_restructuring_positions')->where('id', $id)->first();
     }
 
-    public function executeRestructuring(string $scenarioCode, bool $consultationPassed): object
+    public function executeRestructuring(string $scenarioCode, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $consultationPassed): object
     {
         $sc = DB::table('hcm_org_design_scenarios')->where('scenario_code', strtoupper($scenarioCode))->first();
         if (! $sc) {

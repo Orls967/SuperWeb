@@ -73,7 +73,7 @@ class CapitalAllocationPortfolioService
     /**
      * 437.2 & 437.4 Release funding tranche with strict constraints & post-investment review gate
      */
-    public function releaseFundingTranche(string $proposalCode, float $trancheAmount, float $totalBudgetCap): object
+    public function releaseFundingTranche(string $proposalCode, int $trancheAmount, int $totalBudgetCap): object
     {
         $prop = DB::table('fin_capital_investment_proposals')->where('proposal_code', strtoupper($proposalCode))->first();
         if (! $prop) {

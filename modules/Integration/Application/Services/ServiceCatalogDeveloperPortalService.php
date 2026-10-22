@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * ServiceCatalogDeveloperPortalService (Fase 361)
@@ -59,7 +60,7 @@ class ServiceCatalogDeveloperPortalService
         string $capabilityCode,
         string $requesterTeam,
         bool $scopeIsolated,
-        bool $approvalGranted
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $approvalGranted
     ): object {
         $sCode = strtoupper($sandboxCode);
         $cCode = strtoupper($capabilityCode);

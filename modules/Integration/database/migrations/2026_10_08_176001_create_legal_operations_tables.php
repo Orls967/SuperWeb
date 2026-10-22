@@ -25,7 +25,7 @@ return new class extends Migration
             $table->id();
             $table->string('settlement_code')->unique();
             $table->string('matter_code');
-            $table->decimal('settlement_amount_idr', 18, 2);
+            $table->bigInteger('settlement_amount_idr');
             $table->boolean('is_posted_to_ledger')->default(false);
             $table->string('status')->default('SETTLED');
             $table->timestamps();

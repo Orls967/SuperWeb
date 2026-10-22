@@ -7,6 +7,7 @@ namespace Modules\Integration\Application\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * AviationService (Fase 177 — Lini 26)
@@ -42,7 +43,7 @@ class AviationService
      * Book passenger flight.
      * Enforces airworthiness certificate validity and aircraft seating capacity.
      */
-    public function bookFlight(string $tailNumber, string $flightNum, int $seats, float $fareIdr): object
+    public function bookFlight(string $tailNumber, string $flightNum, int $seats, int $fareIdr): object
     {
         $aircraft = DB::table('avi_aircrafts')->where('tail_number', $tailNumber)->first();
         if (! $aircraft) {
@@ -110,7 +111,7 @@ class AviationService
     /**
      * Manifest air cargo shipment with dangerous goods validation and custody hash.
      */
-    public function manifestCargo(string $tailNumber, float $weightKg, bool $isDangerousGoods, bool $dgCertified = true): object
+    public function manifestCargo(string $tailNumber, float $weightKg, bool $isDangerousGoods, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $dgCertified = true): object
     {
         if ($isDangerousGoods && ! $dgCertified) {
             throw new \RuntimeException('Air cargo dispatch rejected: Dangerous goods cargo must carry valid IATA DG certification.');

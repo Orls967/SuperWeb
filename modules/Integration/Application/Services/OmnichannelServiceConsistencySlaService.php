@@ -79,10 +79,10 @@ class OmnichannelServiceConsistencySlaService
      */
     public function evaluateChannelParity(
         string $itemCode,
-        float $webPrice,
-        float $appPrice,
-        float $storePrice,
-        float $callCenterPrice
+        int $webPrice,
+        int $appPrice,
+        int $storePrice,
+        int $callCenterPrice
     ): object {
         $code = strtoupper($itemCode);
 

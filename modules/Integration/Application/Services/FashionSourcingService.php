@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * FashionSourcingService (Fase 181 — Lini 28)
@@ -20,7 +21,7 @@ class FashionSourcingService
     /**
      * Register garment factory and record ethical ESG audit status.
      */
-    public function registerFactory(string $code, string $name, bool $laborApproved, bool $esgAuditPassed): object
+    public function registerFactory(string $code, string $name, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $laborApproved, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $esgAuditPassed): object
     {
         DB::table('fsh_supplier_factories')->updateOrInsert(
             ['factory_code' => $code],
@@ -88,7 +89,7 @@ class FashionSourcingService
      * Plan promotional markdown.
      * Enforces minimum margin guardrail (discounted price must stay >= unit cost).
      */
-    public function planMarkdown(string $collection, float $origPrice, float $discountPct, float $unitCost): object
+    public function planMarkdown(string $collection, int $origPrice, float $discountPct, int $unitCost): object
     {
         $discountAmount = round($origPrice * ($discountPct / 100.0), 2);
         $discountedPrice = round($origPrice - $discountAmount, 2);

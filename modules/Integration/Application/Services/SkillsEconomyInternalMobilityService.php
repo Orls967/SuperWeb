@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * SkillsEconomyInternalMobilityService (Fase 317)
@@ -60,7 +61,7 @@ class SkillsEconomyInternalMobilityService
         string $employeeId,
         int $allocatedHoursPerWeek,
         int $existingWorkloadHoursPerWeek,
-        bool $managerApprovalGranted,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $managerApprovalGranted,
         bool $continuityHandoverFiled = true
     ): object {
         $aCode = strtoupper($assignmentCode);
@@ -101,7 +102,7 @@ class SkillsEconomyInternalMobilityService
     /**
      * Convert exceptional gig performer to permanent placement (317.2 & 317.4).
      */
-    public function convertGigToPermanent(string $assignmentCode, bool $headcountApproved): object
+    public function convertGigToPermanent(string $assignmentCode, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $headcountApproved): object
     {
         $aCode = strtoupper($assignmentCode);
         $assignment = DB::table('internal_talent_assignments')->where('assignment_code', $aCode)->first();

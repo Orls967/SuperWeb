@@ -29,9 +29,9 @@ return new class extends Migration
             $table->string('tail_number');
             $table->string('flight_number');
             $table->integer('passenger_seats_booked');
-            $table->decimal('fare_paid_idr', 18, 2);
+            $table->bigInteger('fare_paid_idr');
             $table->boolean('is_refunded')->default(false);
-            $table->decimal('refund_amount_idr', 18, 2)->default(0.00);
+            $table->bigInteger('refund_amount_idr')->default(0);
             $table->string('status')->default('CONFIRMED'); // CONFIRMED, REFUNDED
             $table->timestamps();
         });

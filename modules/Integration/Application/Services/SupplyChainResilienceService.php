@@ -102,7 +102,7 @@ class SupplyChainResilienceService
     /**
      * Calculate and record strategic buffer stock.
      */
-    public function calculateStrategicBuffer(string $itemCode, int $baseSafetyStock, float $riskMultiplier, float $unitCarryingCost): object
+    public function calculateStrategicBuffer(string $itemCode, int $baseSafetyStock, float $riskMultiplier, int $unitCarryingCost): object
     {
         $riskAdjusted = (int) round($baseSafetyStock * $riskMultiplier);
         $totalCost = $riskAdjusted * $unitCarryingCost;
@@ -124,7 +124,7 @@ class SupplyChainResilienceService
     /**
      * Near-shoring simulator: read-only evaluation of relocation costs.
      */
-    public function simulateNearShoring(float $offshoreUnitCost, float $domesticUnitCost, float $freightSavings, int $annualVolume): array
+    public function simulateNearShoring(int $offshoreUnitCost, int $domesticUnitCost, float $freightSavings, int $annualVolume): array
     {
         $currentTotal = $offshoreUnitCost * $annualVolume;
         $nearshoreTotal = ($domesticUnitCost - $freightSavings) * $annualVolume;

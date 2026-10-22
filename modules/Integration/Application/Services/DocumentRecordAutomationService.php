@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * DocumentRecordAutomationService (Fase 368)
@@ -27,7 +28,7 @@ class DocumentRecordAutomationService
         string $documentType,
         float $confidence,
         float $minThreshold = 0.9500,
-        bool $humanVerified = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $humanVerified = false
     ): object {
         $dCode = strtoupper($documentCode);
         $type = strtoupper($documentType);

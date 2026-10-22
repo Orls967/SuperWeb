@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * PerformanceRewardsTalentDecisionsService (Fase 423)
@@ -45,7 +46,7 @@ class PerformanceRewardsTalentDecisionsService
     /**
      * 423.5 Edge case: Modifying goal mid-period requires explicit manager/committee approval
      */
-    public function adjustGoalMidPeriod(string $goalCode, float $newTarget, bool $isApproved): object
+    public function adjustGoalMidPeriod(string $goalCode, float $newTarget, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $isApproved): object
     {
         $goal = DB::table('hcm_performance_goals')->where('goal_code', strtoupper($goalCode))->first();
         if (! $goal) {
@@ -105,7 +106,7 @@ class PerformanceRewardsTalentDecisionsService
     /**
      * 423.4 Gate: Bonus payout strictly requires locked rating
      */
-    public function payoutReward(string $ratingCode, float $bonusAmount): object
+    public function payoutReward(string $ratingCode, int $bonusAmount): object
     {
         $rating = DB::table('hcm_talent_ratings')->where('rating_code', strtoupper($ratingCode))->first();
         if (! $rating) {

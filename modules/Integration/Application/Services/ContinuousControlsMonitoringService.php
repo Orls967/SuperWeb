@@ -25,7 +25,7 @@ class ContinuousControlsMonitoringService
      */
     public function monitorTransaction(
         string $txCode,
-        float $amountUsd,
+        int $amountUsd,
         string $counterparty,
         bool $isSuspiciousSplit,
         bool $stepUpMfaCompleted = false

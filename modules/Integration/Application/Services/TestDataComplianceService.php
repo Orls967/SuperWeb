@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * TestDataComplianceService (Fase 474)
@@ -24,7 +25,7 @@ class TestDataComplianceService
     public function registerTestEnvironment(
         string $envCode,
         string $tier = 'synthetic',
-        bool $productionCopyApproved = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $productionCopyApproved = false
     ): object {
         $t = strtolower($tier);
 

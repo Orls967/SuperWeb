@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('sim_code')->unique();
             $table->string('chain_name'); // e.g. AGRO_FOOD_HOSPITALITY_CHAIN
             $table->integer('compression_days')->default(90);
-            $table->decimal('total_debits_idr', 18, 2);
-            $table->decimal('total_credits_idr', 18, 2);
-            $table->decimal('net_imbalance_idr', 18, 2)->default(0.00); // Must stay Σ=0
+            $table->bigInteger('total_debits_idr');
+            $table->bigInteger('total_credits_idr');
+            $table->bigInteger('net_imbalance_idr')->default(0); // Must stay Σ=0
             $table->string('status')->default('COMPLETED');
             $table->timestamps();
         });
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('contract_type'); // OFFTAKE, PPA, FRANCHISE, LEASE
             $table->string('upstream_line'); // e.g. AGRI, MINING, ENERGY
             $table->string('downstream_line'); // e.g. FOOD, LOGISTICS, RETAIL
-            $table->decimal('committed_value_idr', 18, 2);
+            $table->bigInteger('committed_value_idr');
             $table->boolean('has_duplicate_state')->default(false);
             $table->timestamps();
         });

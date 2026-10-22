@@ -7,6 +7,7 @@ namespace Modules\Integration\Application\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * AcademicIndustryResearchService (Fase 265)
@@ -86,7 +87,7 @@ class AcademicIndustryResearchService
     public function releaseFundingTranche(
         int $projectId,
         int $trancheNumber,
-        float $amountUsd,
+        int $amountUsd,
         string $milestoneDeliverable
     ): object {
         $proj = DB::table('academic_research_projects')->find($projectId);
@@ -120,7 +121,7 @@ class AcademicIndustryResearchService
         string $evaluator1Id,
         string $evaluator2Id,
         string $winnerSubmissionCode,
-        float $totalPrizeUsd
+        int $totalPrizeUsd
     ): object {
         $ev1 = strtoupper($evaluator1Id);
         $ev2 = strtoupper($evaluator2Id);
@@ -153,6 +154,7 @@ class AcademicIndustryResearchService
      */
     public function releaseChallengePrize(
         string $challengeCode,
+        #[NotAControl('Verification of winner follow-through milestone')]
         bool $implementationFollowThroughVerified
     ): object {
         $code = strtoupper($challengeCode);

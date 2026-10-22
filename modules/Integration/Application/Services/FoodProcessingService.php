@@ -20,7 +20,7 @@ class FoodProcessingService
     /**
      * Intake raw agricultural commodity with grade score and pricing settlement.
      */
-    public function intakeLot(string $farmerGroupId, string $commodity, float $intakeKg, float $gradeScore, float $pricePerKg): object
+    public function intakeLot(string $farmerGroupId, string $commodity, float $intakeKg, float $gradeScore, int $pricePerKg): object
     {
         $lotCode = 'LOT-'.strtoupper(Str::random(8));
         $totalSettlement = round($intakeKg * $pricePerKg, 2);

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('review_code')->unique();
             $table->string('agent_code');
             $table->string('action_name'); // DISBURSE_MONEY, APPROVE_CLAIM, SIGN_CONTRACT
-            $table->decimal('risk_amount_idr', 18, 2)->default(0.00);
+            $table->bigInteger('risk_amount_idr')->default(0);
             $table->string('required_reviewer_role');
             $table->string('status')->default('PENDING'); // PENDING, APPROVED, REJECTED
             $table->text('reviewer_reason')->nullable();

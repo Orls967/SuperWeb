@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * ServiceLifecycleSunsetService (Fase 366)
@@ -50,7 +51,7 @@ class ServiceLifecycleSunsetService
     public function executeSunset(
         string $apiServiceCode,
         bool $hasDatedWaiver,
-        bool $archivedEvidenceRetained
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $archivedEvidenceRetained
     ): object {
         $code = strtoupper($apiServiceCode);
         $service = DB::table('platform_api_service_sunsets')->where('api_service_code', $code)->first();

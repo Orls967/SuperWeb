@@ -27,9 +27,9 @@ class CompensationBenefitsService
         string $gradeBand,
         string $countryCode,
         string $currency,
-        float $minSalary,
-        float $midSalary,
-        float $maxSalary
+        int $minSalary,
+        int $midSalary,
+        int $maxSalary
     ): object {
         DB::table('hcm_pay_structures')->updateOrInsert(
             [
@@ -61,7 +61,7 @@ class CompensationBenefitsService
         string $gradeBand,
         string $countryCode,
         string $currency,
-        float $baseSalary,
+        int $baseSalary,
         string $effectiveFrom
     ): object {
         $structure = DB::table('hcm_pay_structures')
@@ -109,7 +109,7 @@ class CompensationBenefitsService
     /**
      * Initialize variable pay bonus pool.
      */
-    public function createVariablePayPool(string $poolCode, float $totalPoolAmount): object
+    public function createVariablePayPool(string $poolCode, int $totalPoolAmount): object
     {
         $id = DB::table('hcm_variable_pay_pools')->insertGetId([
             'pool_code' => strtoupper($poolCode),
@@ -126,7 +126,7 @@ class CompensationBenefitsService
     /**
      * Distribute variable pay payout ensuring bonus sum does not exceed pool (224.2 & 224.5).
      */
-    public function distributePayout(string $poolCode, string $employeeId, float $payoutAmount): object
+    public function distributePayout(string $poolCode, string $employeeId, int $payoutAmount): object
     {
         $pool = DB::table('hcm_variable_pay_pools')->where('pool_code', strtoupper($poolCode))->first();
         if (! $pool) {
@@ -218,7 +218,7 @@ class CompensationBenefitsService
     public function requestRetroactiveAdjustment(
         string $employeeId,
         string $targetPeriod,
-        float $amount,
+        int $amount,
         string $reason
     ): object {
         $adjCode = 'ADJ-'.strtoupper(Str::random(8));

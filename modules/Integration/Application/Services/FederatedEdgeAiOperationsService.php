@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * FederatedEdgeAiOperationsService (Fase 354)
@@ -27,7 +28,7 @@ class FederatedEdgeAiOperationsService
         string $deviceGroup,
         string $modelVersion,
         string $priorVersion,
-        bool $privacyPassed
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $privacyPassed
     ): object {
         $rCode = strtoupper($rolloutCode);
         $group = strtoupper($deviceGroup);

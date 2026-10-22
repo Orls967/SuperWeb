@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CriticalLeadershipCoverageService (Fase 324)
@@ -53,8 +54,8 @@ class CriticalLeadershipCoverageService
         string $roleCode,
         string $candidateId,
         float $readinessScore,
-        bool $certified,
-        bool $consentGranted,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $certified,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $consentGranted,
         int $durationDays = 90
     ): object {
         $aCode = strtoupper($appointmentCode);

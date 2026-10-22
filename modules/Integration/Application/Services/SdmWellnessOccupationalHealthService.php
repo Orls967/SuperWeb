@@ -105,7 +105,7 @@ class SdmWellnessOccupationalHealthService
         string $siteCode,
         int $preInterventionIncidents,
         int $postInterventionIncidents,
-        float $costPerIncidentUsd = 5000.0
+        int $costPerIncidentUsd = 5000.0
     ): object {
         $code = strtoupper($programCode);
 
