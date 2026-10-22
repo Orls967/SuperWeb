@@ -500,7 +500,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 20 | **Finance** | `fin_` | 1 |
 | 21 | **Fleet** | — | 1 |
 | 22 | **Hcm** | `hcm_` | 6 |
-| 23 | **Hospital** | `hsp_` | 10 |
+| 23 | **Hospital** | `hsp_` | 11 |
 | 24 | **Hotel** | `htl_` | 7 |
 | 25 | **Insurance** | `ins_` | 1 |
 | 26 | **Integration** | `intg_` | 340 |
@@ -534,7 +534,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 54 | **Venue** | `ven_` | 5 |
 | 55 | **Wealth** | `wm_` | 1 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **565 Migrasi** |
+| | **Total: 56 Modul** | | **566 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -550,7 +550,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **CloudKitchen** | 2 | `cloud-kitchen`, `cloud-kitchen/subscriptions/{subscription}/dispatch` | web, auth, role:admin,kitchen,outlet_manager,customer |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
 | **ControlTower** | 2 | `control-tower`, `control-tower/promises` | web, auth, role:admin,logistics_admin,planner,auditor |
-| **Core** | 37 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
+| **Core** | 45 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **EnterpriseFinance** | 2 | `enterprise-finance`, `enterprise-finance/budgets` | web, auth, role:admin,auditor,treasury |
@@ -589,7 +589,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 2 | `venue`, `venue/tickets/{ticket}/scan` | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 2 | `wealth`, `wealth/profiles/{profile}/invest` | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **688 Rute** | | |
+| **Total** | **696 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
