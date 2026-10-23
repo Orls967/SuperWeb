@@ -4,6 +4,8 @@
 @section('subtitle', 'Daftar aset grup (PSAK 16 simulasi)')
 
 @section('content')
+    <x-enterprise.module-dashboard module="Asset" />
+
 <div class="max-w-7xl mx-auto px-4 py-8">
     <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
         <div>

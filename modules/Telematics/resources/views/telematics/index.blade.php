@@ -4,6 +4,8 @@
 @section('subtitle', 'Ingest Pipeline Telemetri Skala Tinggi, Agregasi 5-Menitan & Prediktif Maintenance AutoServe (Fase 68)')
 
 @section('content')
+    <x-enterprise.module-dashboard module="Telematics" />
+
 <div class="space-y-8" x-data="{ activeTab: 'devices' }">
 
     {{-- Alert Messages --}}

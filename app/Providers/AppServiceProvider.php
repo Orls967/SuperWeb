@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Quality\Adapters\TwelveLinesAuditAdapter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Contracts\TwelveLinesAuditPort;
@@ -28,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Blade::anonymousComponentPath(resource_path('views/components/enterprise'), 'enterprise');
+
         // D2: Aplikasi wajib gagal boot di production bila BLIND_INDEX_PEPPER kosong
         if ($this->app->environment('production') && empty(config('app.blind_index_pepper'))) {
             throw new \RuntimeException('BLIND_INDEX_PEPPER environment variable is required in production environment.');

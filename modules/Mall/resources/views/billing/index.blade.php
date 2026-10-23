@@ -30,6 +30,8 @@
             </div>
         </div>
     </x-slot>
+    <x-enterprise.module-dashboard module="Mall" />
+
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

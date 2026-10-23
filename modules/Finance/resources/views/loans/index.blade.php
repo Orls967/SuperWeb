@@ -4,6 +4,8 @@
 @section('subtitle', 'Cicilan mobil dengan jaminan aset kripto')
 
 @section('content')
+    <x-enterprise.module-dashboard module="Finance" />
+
 <div class="space-y-6">
     @if(session('success'))
     <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm">{{ session('success') }}</div>

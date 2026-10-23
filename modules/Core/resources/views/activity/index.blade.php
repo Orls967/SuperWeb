@@ -4,6 +4,8 @@
 @section('subtitle', 'Riwayat aktivitas terbaru')
 
 @section('content')
+    <x-enterprise.module-dashboard module="Core" />
+
 <div class="space-y-6">
     <div>
         <h2 class="text-xl font-bold text-white">Activity Feed</h2>

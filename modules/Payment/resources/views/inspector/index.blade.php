@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+    <x-enterprise.module-dashboard module="Payment" />
+
 <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
         <div>

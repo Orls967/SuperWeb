@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+    <x-enterprise.module-dashboard module="Ev" />
+
 <div class="py-8 bg-slate-950 min-h-screen text-slate-100 font-sans">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
