@@ -153,7 +153,7 @@
                         <h2 class="text-sm font-bold text-white tracking-tight truncate" x-text="activeRoleLabel">
                             {{ $currentRoleLabel }}
                         </h2>
-                        <span class="text-xs text-slate-400 hidden sm:inline-block">({{ $currentUser?->name ?? 'Enterprise Operator' }})</span>
+                        <span class="text-xs text-slate-400 hidden sm:inline-block">({{ $currentUser?->name ?? ($userName ?? 'Enterprise Operator') }})</span>
                     </div>
                 </div>
             </div>

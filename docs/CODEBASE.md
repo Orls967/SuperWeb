@@ -693,9 +693,13 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `min:audit` | `manual` | Perform two-source verification of mining equipment statuses and dispatch runs |
 | `mining:audit` | `manual` | Perform two-source verification of mining equipment statuses and dispatch runs |
 | `mobile:audit` | `manual` | Audit offline-first mobile synchronization idempotency and e-POD cryptographic signature integrity (Fase 65.3) |
+| `openapi:generate` | `manual` | Generate dokumen spesifikasi OpenAPI 3.1.0 (JSON, YAML, Interactive Explorer) lintas seluruh 46 modul |
+| `openapi:validate` | `manual` | Validasi spesifikasi OpenAPI 3.1.0 dengan rute aktual, cakupan 46 modul, dan aturan arsitektur |
 | `party:backfill-links` | `manual` | Backfill party_id links on existing module tables (idempotent) |
 | `party:remind-expiring-docs` | **`dailyAt('08:00')`** | Send reminders for KYC/KYB documents expiring soon |
 | `payment:release-expired-holds` | **`daily()`** | Otomatis melepaskan dana escrow untuk payment intent status held yang telah melewati masa berlaku |
+| `platform:chaos-verify` | `manual` | Simulasi platform-wide chaos & cryptographic tamper verifier membuktikan 100% deteksi sabotase dan pemulihan audit |
+| `platform:stress-concurrency` | `manual` | Stress harness konkurensi deterministik & beban tinggi multi-modul pada 6 titik kritis |
 | `plm:audit` | `manual` | Audit Product Lifecycle Management (PLM) ECO hash-chain and EBOM-to-MBOM integrity (0 discrepancies) |
 | `plm:encrypt-legacy` | `manual` | Idempotently re-encrypt legacy base64 encoded formula payloads in lab notebooks |
 | `pq:audit-chains` | `manual` | Audit 8 Merkle hash chains for Post-Quantum readiness — 0 discrepancy required |
@@ -743,7 +747,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 142 Command** | **37 Terjadwal** | |
+| **Total: 146 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
