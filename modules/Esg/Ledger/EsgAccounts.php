@@ -39,6 +39,20 @@ final class EsgAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'esg:carbon_credit_inventory:IDR',
+                'name' => 'ESG Carbon Credit Inventory Asset',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'esg:carbon_offset_expense:IDR',
+                'name' => 'ESG Carbon Offset Neutralization Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }

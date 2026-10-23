@@ -761,10 +761,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Egy** | `EgyAccounts` | 13 | `egy:bess_arbitrage_revenue:IDR`, `egy:carbon_credit_inventory:IDR` ... |
 | **EnterpriseFinance** | `EnterpriseFinanceAccounts` | 2 | `ef:holding_dividend_income:IDR`, `ef:holding_dividend_receivable:IDR` |
 | **Epc** | `EpcAccounts` | 4 | `asset:epc:construction_in_progress:IDR`, `ap:epc:contractor_retention:IDR` ... |
-| **Esg** | `EsgAccounts` | 3 | `inventory:esg:carbon_credit:IDR`, `expense:esg:carbon_offset:IDR` ... |
+| **Esg** | `EsgAccounts` | 5 | `inventory:esg:carbon_credit:IDR`, `expense:esg:carbon_offset:IDR` ... |
 | **Ev** | `EvAccounts` | 1 | `oto:ev_revenue:IDR` |
 | **Fleet** | `FleetAccounts` | 4 | `ar:fleet:party:default:IDR`, `ar:fleet:party:501:IDR` ... |
-| **Hcm** | `HcmAccounts` | 8 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` ... |
+| **Hcm** | `HcmAccounts` | 15 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` ... |
 | **Hospital** | `HospitalAccounts` | 21 | `hsp:bpjs_receivable:IDR`, `hsp:epharmacy_receivable:IDR` ... |
 | **Hotel** | `HotelAccounts` | 29 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
 | **Insurance** | `InsuranceAccounts` | 3 | `ins:premium_reserve:IDR`, `ins:reserve_pool:IDR` ... |
@@ -783,6 +783,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 2 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` |
 | **Venue** | `VenueAccounts` | 24 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 3 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 30 Registry** | | **259 Akun** | |
+| **Total: 30 Registry** | | **268 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
