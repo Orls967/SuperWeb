@@ -23,8 +23,9 @@
 ## 3. Status Test Blok Bukti Fase 117
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 117.1 | `test_fase_117_biometric_access_and_zone_crush_capacity_interlock` | Verifikasi akses biometrik cepat SHA-256 dan pemantauan kapasitas zona kerumunan | PASS 🟢 |
-| 117.2 | `test_fase_117_access_rejected_when_zone_is_locked_down_due_to_crush_risk` | Penolakan akses gerbang masuk saat zona mencapai ambang batas bahaya desak-desakan (>95%) | PASS 🟢 |
+| 117.1 | `test_117_biometric_face_id_template_registration_and_verification` | Registrasi template biometrik Face ID dan verifikasi | PASS 🟢 |
+| 117.2 | `test_117_automatic_gate_lockout_when_crowd_crush_capacity_exceeded` | Lockout gerbang otomatis saat kapasitas desakan massa terlampaui | PASS 🟢 |
+| 117.3 | `test_117_personalized_promotion_deduplication` | Deduplikasi promosi personalisasi penonton | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 131
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 131.1 |  | Pengukuran PUE DC, SLA pendingin dan suspensi port sewa menunggak | PASS 🟢 |
-| 131.2 |  | Chargeback cloud internal dan verifikasi drill replikasi DR RPO 0 | PASS 🟢 |
+| 131.1 | `test_fase_131_datacenter_pue_cooling_sla_and_colocation_overdue_suspension` | SLA pendinginan PUE data center dan suspensi tunggakan kolokasi | PASS 🟢 |
+| 131.2 | `test_fase_131_internal_cloud_chargeback_and_dr_restore_zero_rpo_verification` | Chargeback komputasi awan internal dan verifikasi DR zero-RPO | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

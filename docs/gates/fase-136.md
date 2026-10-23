@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 136
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 136.1 |  | Pencocokan talenta 360 derajat deterministik lintas 17 lini | PASS 🟢 |
-| 136.2 |  | Penahanan escrow komisi bergaransi dan validasi jam kerja kontrak | PASS 🟢 |
+| 136.1 | `test_fase_136_deterministic_talent_matching_across_conglomerate_lines` | Pencocokan talenta deterministik lintas lini konglomerasi | PASS 🟢 |
+| 136.2 | `test_fase_136_headhunter_escrow_hold_and_contingent_hours_validation` | Escrow komisi headhunter dan validasi jam kerja jaminan | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

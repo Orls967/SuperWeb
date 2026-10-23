@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 141
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 141.1 |  | Alokasi modal capex holding berdasar hurdle rate WACC dan ROIC | PASS 🟢 |
-| 141.2 |  | Perhitungan dividen anak usaha dan sifat idempoten integrasi M&A | PASS 🟢 |
+| 141.1 | `test_fase_141_conglomerate_group_capital_allocation_and_wacc_roic_scoring` | Alokasi permodalan grup konglomerasi dan skor WACC vs ROIC | PASS 🟢 |
+| 141.2 | `test_fase_141_subholding_dividend_payout_and_ma_integration_idempotency` | Payout dividen subholding dan idempotensi integrasi M&A | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

@@ -23,8 +23,9 @@
 ## 3. Status Test Blok Bukti Fase 122
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 122.1 | `test_fase_122_barge_transshipment_and_demurrage_calculation` | Penjadwalan alur tongkang ke kapal induk ekspor dan evaluasi laytime/demurrage | PASS 🟢 |
-| 122.2 | `test_fase_122_rejects_transshipment_failing_maritime_sanctions_check` | Penolakan pemuatan kapal induk yang terkena sanksi maritim internasional | PASS 🟢 |
+| 122.1 | `test_122_export_vessel_sanctions_screening_blocks_embargoed_destination` | Skrining sanksi kapal ekspor memblokir tujuan embargo | PASS 🟢 |
+| 122.2 | `test_122_export_laytime_exceeded_levies_statutory_demurrage` | Laytime ekspor terlampaui membebankan denda demurrage statuter | PASS 🟢 |
+| 122.3 | `test_122_assay_grade_variance_exceeding_tolerance_holds_payment` | Variansi kadar uji laboratorium melebihi toleransi menahan pembayaran | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

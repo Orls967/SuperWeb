@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 143
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 143.1 |  | Rekonstruksi keputusan model AI deterministik dari seed dan snapshot | PASS 🟢 |
-| 143.2 |  | Penghentian sakelar pemutus darurat kill-switch di bawah 1 detik | PASS 🟢 |
+| 143.1 | `test_fase_143_deterministic_cross_line_decision_engine_and_audit_reconstruction` | Engine keputusan otonom lintas lini deterministik dan rekonstruksi audit | PASS 🟢 |
+| 143.2 | `test_fase_143_autonomous_kill_switch_emergency_stop_within_threshold` | Kill-switch darurat sistem otonom dalam batas ambang | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

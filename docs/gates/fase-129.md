@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 129
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 129.1 |  | Pelepasan beban terprioritas mode pulau dengan RS prioritas 1 | PASS 🟢 |
-| 129.2 |  | Arbitrase penyimpanan baterai BESS dan uji kepatuhan genset | PASS 🟢 |
+| 129.1 | `test_fase_129_execute_islanded_microgrid_shedding_with_critical_hospital_priority` | Eksekusi pelepasan beban mikrogrid terisolasi prioritas rumah sakit | PASS 🟢 |
+| 129.2 | `test_fase_129_battery_storage_arbitrage_and_backup_generator_compliance_audit` | Arbitrase baterai BESS dan audit kepatuhan genset cadangan | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

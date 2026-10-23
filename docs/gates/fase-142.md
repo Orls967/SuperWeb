@@ -23,7 +23,7 @@
 ## 3. Status Test Blok Bukti Fase 142
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 142.1 |  | Kepatuhan query budget latensi p95 dispatch grid dan alokasi OMS | PASS 🟢 |
+| 142.1 | `test_fase_142_scale_provisioner_query_budget_and_anti_race_conditions` | Scale provisioner query budget dan ketahanan anti-race condition | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

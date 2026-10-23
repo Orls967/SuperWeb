@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 123
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 123.1 | `test_fase_123_solar_hybrid_dispatch_and_carbon_offset_tracking` | Pengoptimalan dispatch daya mikrogrid hybrid surya-diesel dan sertifikasi penurunan Scope 1 | PASS 🟢 |
-| 123.2 | `test_fase_123_rejects_dispatch_when_grid_stability_reserve_is_insufficient` | Penolakan dispatch surya ekstrem jika cadangan stabilitas frekuensi (spinning reserve) kurang | PASS 🟢 |
+| 123.1 | `test_123_mining_solar_hybrid_dispatch_and_intercompany_clean_power_billing` | Dispatch PLTS hibrida tambang dan tagihan daya bersih antarperusahaan | PASS 🟢 |
+| 123.2 | `test_123_verified_carbon_credit_issuance_and_green_nickel_premium` | Penerbitan kredit karbon terverifikasi dan premi nikel hijau | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

@@ -23,8 +23,10 @@
 ## 3. Status Test Blok Bukti Fase 112
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 112.1 | `test_fase_112_global_loyalty_travel_pass_redemption_and_liability_clearing` | Penukaran travel pass global, penjaminan floor award 115% dan kliring kewajiban antar-properti | PASS 🟢 |
-| 112.2 | `test_fase_112_points_redemption_rejected_if_balance_insufficient` | Penolakan penukaran poin jika saldo anggota tidak mencukupi | PASS 🟢 |
+| 112.1 | `test_112_travel_pass_points_issuance_and_pts_liability` | Penerbitan poin travel pass dan liabilitas PTS | PASS 🟢 |
+| 112.2 | `test_112_travel_pass_points_redemption_and_balance_deduction` | Redemption poin travel pass dan deduksi saldo | PASS 🟢 |
+| 112.3 | `test_112_insufficient_points_redemption_throws_exception` | Redemption poin tidak cukup memicu exception | PASS 🟢 |
+| 112.4 | `test_112_dynamic_award_pricing_respects_115_percent_floor` | Penetapan harga award dinamis menjaga batas bawah 115% | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

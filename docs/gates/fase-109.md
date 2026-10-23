@@ -23,8 +23,9 @@
 ## 3. Status Test Blok Bukti Fase 109
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 109.1 | `test_fase_109_b3_waste_manifest_and_blood_bank_crossmatch_validation` | Manifest rantai kustodi limbah B3 SHA-256 dan kecocokan crossmatch darah ABO/Rh | PASS 🟢 |
-| 109.2 | `test_fase_109_rejects_expired_blood_unit_or_uncalibrated_equipment` | Penolakan transfusi unit darah kedaluwarsa dan verifikasi kalibrasi alat insinerator | PASS 🟢 |
+| 109.1 | `test_109_expired_blood_bag_reservation_is_rejected` | Penolakan reservasi kantong darah kedaluwarsa | PASS 🟢 |
+| 109.2 | `test_109_expired_medical_equipment_calibration_blocks_procedure` | Kalibrasi alat medis kedaluwarsa memblokir prosedur | PASS 🟢 |
+| 109.3 | `test_109_b3_medical_waste_manifest_generates_gapless_custody_hash` | Manifest limbah medis B3 rantai hash tanpa celah | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

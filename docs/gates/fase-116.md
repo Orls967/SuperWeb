@@ -23,9 +23,10 @@
 ## 3. Status Test Blok Bukti Fase 116
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 116.1 | `test_fase_116_capped_secondary_ticket_resale_with_anti_scalping` | Penjualan tiket sekunder resmi di bawah plafon 120% dengan penerbitan QR dinamis baru | PASS 🟢 |
-| 116.2 | `test_fase_116_rejects_resale_price_exceeding_cap` | Penolakan harga jual kembali tiket yang melampaui batas plafon anti-scalping 120% | PASS 🟢 |
-| 116.3 | `test_fase_116_rejects_ticket_exceeding_max_transfer_count` | Penolakan transfer tiket yang telah melampaui batas 1 kali transfer | PASS 🟢 |
+| 116.1 | `test_116_secondary_ticket_listing_respects_120_percent_price_cap` | Listing tiket sekunder mematuhi batas harga 120% | PASS 🟢 |
+| 116.2 | `test_116_secondary_ticket_exceeding_120_percent_cap_is_rejected` | Tiket sekunder melebihi batas 120% ditolak | PASS 🟢 |
+| 116.3 | `test_116_second_secondary_transfer_attempt_is_rejected` | Upaya transfer tiket sekunder kedua ditolak | PASS 🟢 |
+| 116.4 | `test_116_secondary_ticket_purchase_splits_platform_fee_and_tax` | Pembelian tiket sekunder bagi fee platform dan pajak | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

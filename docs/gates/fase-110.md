@@ -23,8 +23,7 @@
 ## 3. Status Test Blok Bukti Fase 110
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 110.1 | `test_fase_110_group_portfolio_case_mix_and_morbidity_audit` | Konsolidasi analitik portofolio grup RS, Case-Mix Index rata-rata dan audit mortalitas | PASS 🟢 |
-| 110.2 | `test_fase_110_equipment_roi_and_low_performing_branch_alert` | Evaluasi ROI alat medis modal tinggi dan deteksi deviasi kinerja cabang | PASS 🟢 |
+| 110.1 | `test_110_group_scorecard_and_equipment_roi_calculation` | Scorecard portofolio grup RS dan ROI peralatan medis | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

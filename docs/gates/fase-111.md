@@ -23,8 +23,9 @@
 ## 3. Status Test Blok Bukti Fase 111
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 111.1 | `test_fase_111_hotel_franchise_royalty_and_brand_audit_evaluation` | Perhitungan royalti waralaba (manajemen & pemasaran) dan penilaian bintang audit brand | PASS 🟢 |
-| 111.2 | `test_fase_111_rate_parity_violation_triggers_penalty` | Penerapan penalti 2x selisih tarif atas pelanggaran paritas harga kamar | PASS 🟢 |
+| 111.1 | `test_111_brand_standard_audit_calculates_5_star_grade_and_active_listing` | Audit standar brand hotel 5 bintang dan listing aktif | PASS 🟢 |
+| 111.2 | `test_111_brand_standard_audit_below_60_suspends_listing` | Skor audit brand di bawah 60 menangguhkan listing | PASS 🟢 |
+| 111.3 | `test_111_franchise_royalty_and_rate_parity_penalty_levy` | Royalti waralaba hotel dan penalti paritas tarif | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

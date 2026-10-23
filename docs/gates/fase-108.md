@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 108
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 108.1 | `test_fase_108_medical_tourism_escrow_milestone_and_wellness_points_accrual` | Paket wisata medis dengan milestone escrow multi-valuta dan reward poin IoT wearable | PASS 🟢 |
-| 108.2 | `test_fase_108_rejects_escrow_transition_when_deposit_is_insufficient` | Penolakan aktivasi paket saat deposit escrow kurang dari batas minimum | PASS 🟢 |
+| 108.1 | `test_108_medical_tourism_package_escrows_multi_vendor_shares` | Paket medical tourism escrow bagi hasil multi-vendor | PASS 🟢 |
+| 108.2 | `test_108_medical_tourism_milestone_transition_and_final_settlement` | Transisi milestone medical tourism dan settlement akhir | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

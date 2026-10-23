@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 144
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 144.1 |  | Tokenisasi blind index HMAC data PII dan hak penghapusan DSAR | PASS 🟢 |
-| 144.2 |  | Pemblokiran otomatis operasi divisi saat izin operasional kedaluwarsa | PASS 🟢 |
+| 144.1 | `test_fase_144_zero_trust_privacy_vault_tokenization_and_dsar_erasure` | Tokenisasi data sensitif zero-trust privacy vault dan penghapusan DSAR | PASS 🟢 |
+| 144.2 | `test_fase_144_regulatory_compliance_matrix_blocks_operations_on_expired_permit` | Matriks kepatuhan regulasi memblokir operasi saat izin kedaluwarsa | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

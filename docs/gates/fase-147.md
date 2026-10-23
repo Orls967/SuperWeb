@@ -23,7 +23,7 @@
 ## 3. Status Test Blok Bukti Fase 147
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 147.1 |  | Pembatasan rate limit API gateway dan monetisasi pemakaian pengembang | PASS 🟢 |
+| 147.1 | `test_fase_147_open_platform_api_rate_limiting_and_developer_monetization` | Rate limiting API open platform dan monetisasi pengembang pihak ketiga | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

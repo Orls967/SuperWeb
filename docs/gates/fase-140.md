@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 140
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 140.1 |  | Alur bus event universal 7-langkah berantai melintasi 17 lini bisnis | PASS 🟢 |
-| 140.2 |  | Integrasi satu hari penuh siklus operasional monolitik lintas divisi | PASS 🟢 |
+| 140.1 | `test_fase_140_cross_17_lines_monolith_event_spine_flow` | Alur event spine monolith terpadu 17 lini bisnis | PASS 🟢 |
+| 140.2 | `test_fase_140_one_day_full_cycle_cross_ecosystem_integration` | Siklus harian penuh integrasi lintas ekosistem konglomerasi | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

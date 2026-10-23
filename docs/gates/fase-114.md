@@ -23,8 +23,7 @@
 ## 3. Status Test Blok Bukti Fase 114
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 114.1 | `test_fase_114_mice_wedding_contract_escrow_and_room_block_release` | Pendaftaran kontrak MICE dengan penahanan retensi vendor 10% dan rilis blok kamar H-30 | PASS 🟢 |
-| 114.2 | `test_fase_114_rejects_contract_when_banquet_margin_below_threshold` | Penolakan kontrak perjamuan dengan perkiraan margin kotor di bawah 30% | PASS 🟢 |
+| 114.1 | `test_114_mice_contract_h30_room_block_release_and_beo_margin` | Pelepasan room block MICE H-30 dan margin BEO banquet | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

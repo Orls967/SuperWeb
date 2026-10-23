@@ -23,9 +23,11 @@
 ## 3. Status Test Blok Bukti Fase 120
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 120.1 | `test_fase_120_hse_fatigue_and_contractor_permit_evaluation` | Evaluasi kebugaran tidur operator prima dan otorisasi izin kerja kontraktor | PASS 🟢 |
-| 120.2 | `test_fase_120_locks_out_fatigued_operator_from_critical_equipment` | Penguncian wajib shift bagi operator yang kurang tidur dari batas keselamatan | PASS 🟢 |
-| 120.3 | `test_fase_120_rejects_expired_or_out_of_bounds_contractor_permit` | Penolakan izin kerja kontraktor yang telah kedaluwarsa atau di luar batas geofence | PASS 🟢 |
+| 120.1 | `test_120_work_permit_validates_active_status_and_geofence_boundary` | Izin kerja memvalidasi status aktif dan batas geofence | PASS 🟢 |
+| 120.2 | `test_120_expired_work_permit_throws_revocation_exception` | Izin kerja kedaluwarsa memicu exception pencabutan | PASS 🟢 |
+| 120.3 | `test_120_worker_outside_geofence_throws_boundary_exception` | Pekerja di luar geofence memicu exception batas | PASS 🟢 |
+| 120.4 | `test_120_critical_operator_fatigue_prohibits_heavy_equipment_operation` | Kelelahan kritis operator melarang pengoperasian alat berat | PASS 🟢 |
+| 120.5 | `test_120_contractor_safety_evaluation_scores_tender_eligibility` | Evaluasi keselamatan kontraktor menilai kelayakan tender | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

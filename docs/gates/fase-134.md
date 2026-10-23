@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 134
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 134.1 |  | Penegakan batas harga dasar lelang inventaris iklan | PASS 🟢 |
-| 134.2 |  | Rekonsiliasi impresi terverifikasi dan bagi hasil multi-pihak | PASS 🟢 |
+| 134.1 | `test_fase_134_ad_inventory_booking_enforces_yield_floor_pricing` | Booking inventaris iklan menegakkan batas harga dasar yield | PASS 🟢 |
+| 134.2 | `test_fase_134_reconciles_verified_impressions_and_multi_party_agency_split` | Rekonsiliasi impresi terverifikasi dan bagi hasil agensi | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

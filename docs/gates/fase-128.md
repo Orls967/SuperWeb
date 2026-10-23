@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 128
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 128.1 |  | Kliring spot karbon dan pensiun REC tanpa klaim ganda | PASS 🟢 |
-| 128.2 |  | Kalkulasi tarif emisi ekspor CBAM dan diskon sewa hijau | PASS 🟢 |
+| 128.1 | `test_fase_128_clear_carbon_spot_trade_and_rec_retirement_without_double_counting` | Kliring perdagangan spot karbon dan pensiun REC tanpa double counting | PASS 🟢 |
+| 128.2 | `test_fase_128_cbam_border_tariff_calculation_and_green_lease_discount` | Perhitungan tarif perbatasan CBAM dan diskon sewa hijau | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

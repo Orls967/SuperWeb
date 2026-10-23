@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 113
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 113.1 | `test_fase_113_multi_modal_travel_bundle_and_proportional_refund_on_breach` | Penyusunan bundel multi-moda dengan escrow vendor dan pengembalian dana proporsional | PASS 🟢 |
-| 113.2 | `test_fase_113_rejects_booking_exceeding_corporate_policy_limit` | Penolakan pemesanan bundel yang melebihi pagu anggaran kebijakan korporat | PASS 🟢 |
+| 113.1 | `test_113_travel_bundle_escrow_deposit_and_final_settlement` | Deposit escrow bundle perjalanan dan settlement akhir | PASS 🟢 |
+| 113.2 | `test_113_corporate_travel_policy_budget_breach_rejection` | Penolakan pelanggaran anggaran kebijakan perjalanan korporat | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

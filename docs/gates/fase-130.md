@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 130
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 130.1 |  | Penolakan alokasi kapasitas transmisi melebihi batas link | PASS 🟢 |
-| 130.2 |  | Mitigasi anomali BGP/DDoS dan penagihan konektivitas IoT 17 lini | PASS 🟢 |
+| 130.1 | `test_fase_130_backbone_capacity_oversubscription_rejection` | Penolakan alokasi kapasitas backbone melebihi kuota | PASS 🟢 |
+| 130.2 | `test_fase_130_bgp_ddos_mitigation_and_iot_connectivity_billing` | Mitigasi DDoS BGP Flowspec dan penagihan konektivitas IoT | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

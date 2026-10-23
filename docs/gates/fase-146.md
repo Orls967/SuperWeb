@@ -23,7 +23,7 @@
 ## 3. Status Test Blok Bukti Fase 146
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 146.1 |  | Ingesti CDC lakehouse dan sinkronisasi catatan emas entitas tunggal | PASS 🟢 |
+| 146.1 | `test_fase_146_data_lakehouse_cdc_ingestion_and_mdm_golden_record_sync` | Ingesti CDC data lakehouse dan sinkronisasi golden record MDM | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

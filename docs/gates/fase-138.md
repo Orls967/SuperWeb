@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 138
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 138.1 |  | Perolehan cashback lintas lini dan keseimbangan neraca liabilitas | PASS 🟢 |
-| 138.2 |  | Penyelesaian paket langganan gabungan super app multi-lini | PASS 🟢 |
+| 138.1 | `test_fase_138_cross_line_cashback_earning_and_liability_ledger_balance` | Perolehan cashback lintas lini dan perimbangan liabilitas ledger | PASS 🟢 |
+| 138.2 | `test_fase_138_super_app_subscription_bundle_settlement_across_lines` | Settlement paket langganan super app lintas lini bisnis | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

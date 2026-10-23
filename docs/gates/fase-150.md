@@ -23,7 +23,7 @@
 ## 3. Status Test Blok Bukti Fase 150
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 150.1 |  | Rekonsiliasi akhir seluruh 17 lini bisnis dengan 0 diskrepansi saldo | PASS 🟢 |
+| 150.1 | `test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification` | Rekonsiliasi saldo nol penuh 17 lini dan sertifikasi audit final | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

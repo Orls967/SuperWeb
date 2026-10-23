@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 126
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 126.1 |  | Merit order dispatch dan settlement smart meter TOU 15-menit | PASS 🟢 |
-| 126.2 |  | Penolakan komitmen daya melebihi kapasitas aset | PASS 🟢 |
+| 126.1 | `test_fase_126_balance_genco_dispatch_merit_order_and_15min_meter_settlement` | Merit order dispatch dan settlement smart meter TOU 15-menit | PASS 🟢 |
+| 126.2 | `test_fase_126_rejects_dispatch_exceeding_installed_asset_capacity` | Penolakan komitmen daya melebihi kapasitas aset | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

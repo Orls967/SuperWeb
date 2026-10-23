@@ -23,8 +23,9 @@
 ## 3. Status Test Blok Bukti Fase 119
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 119.1 | `test_fase_119_underground_digital_twin_and_blast_interlock` | Simulasi digital twin ventilasi bawah tanah dan pembersihan interlock peledakan aman | PASS 🟢 |
-| 119.2 | `test_fase_119_blast_interlock_rejects_when_exclusion_radius_breached` | Penguncian interlock peledakan saat radius zona eksklusi ditembus personel | PASS 🟢 |
+| 119.1 | `test_119_blast_safety_interlock_blocks_detonation_when_personnel_in_radius` | Interlock keselamatan peledakan memblokir bila ada personel di radius | PASS 🟢 |
+| 119.2 | `test_119_blast_detonates_successfully_when_safety_radius_clear` | Peledakan berhasil bila radius aman steril | PASS 🟢 |
+| 119.3 | `test_119_geotech_slope_stability_triggers_evacuation_alarm_on_high_velocity` | Stabilitas lereng geoteknik memicu alarm evakuasi saat deformasi tinggi | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

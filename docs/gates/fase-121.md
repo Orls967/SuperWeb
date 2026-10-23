@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 121
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 121.1 | `test_fase_121_smelter_assay_settlement_and_trading_hedge_mtm` | Verifikasi neraca massa smelter, perhitungan MTM hedge LME dan penerbitan warehouse receipt | PASS 🟢 |
-| 121.2 | `test_fase_121_rejects_settlement_when_mass_balance_conservation_fails` | Penolakan penyelesaian saat deviasi neraca massa input-output melebihi toleransi | PASS 🟢 |
+| 121.1 | `test_121_smelter_metallurgical_mass_balance_and_byproduct_slag_recovery` | Neraca massa metalurgi smelter dan perolehan slag produk samping | PASS 🟢 |
+| 121.2 | `test_121_metals_trading_mark_to_market_and_digital_warehouse_receipt` | Mark-to-market trading logam dan resi gudang digital | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

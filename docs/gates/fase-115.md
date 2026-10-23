@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 115
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 115.1 | `test_fase_115_creator_media_rights_syndication_and_waterfall_royalty` | Sindikasi hak siar media streaming dan kalkulasi distribusi royalti waterfall | PASS 🟢 |
-| 115.2 | `test_fase_115_waterfall_rejects_invalid_total_distribution_percentage` | Penolakan pembagian waterfall jika total persentase komponen tidak sama dengan 100% | PASS 🟢 |
+| 115.1 | `test_115_creator_rights_syndication_and_held_waterfall_escrow` | Sindikasi hak cipta kreator dan waterfall escrow | PASS 🟢 |
+| 115.2 | `test_115_merchandise_sales_revenue_split_between_artist_and_platform` | Bagi hasil penjualan merchandise artis dan platform | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

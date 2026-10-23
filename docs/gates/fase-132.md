@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 132
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 132.1 |  | Pembatasan FUP pelanggan FTTX dan jeda layanan saldo defisit | PASS 🟢 |
-| 132.2 |  | Orkestrasi slice 5G smart city dan kliring interkoneksi roaming | PASS 🟢 |
+| 132.1 | `test_fase_132_isp_usage_cap_throttling_and_unpaid_renewal_pause` | Throttling FUP ISP dan penahanan perpanjangan langganan | PASS 🟢 |
+| 132.2 | `test_fase_132_smart_city_5g_slice_and_interconnect_roaming_settlement` | Network slice 5G smart city dan settlement roaming interkoneksi | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

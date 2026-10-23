@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 133
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 133.1 |  | Distribusi royalti waterfall talenta dengan penyerapan pembulatan | PASS 🟢 |
-| 133.2 |  | Penolakan tumpang tindih lisensi teritori IP | PASS 🟢 |
+| 133.1 | `test_fase_133_waterfall_talent_royalty_distribution_with_last_penny_rounding` | Distribusi royalti waterfall talenta media dengan rounding presisi | PASS 🟢 |
+| 133.2 | `test_fase_133_rejects_territorial_ip_licensing_overlap` | Penolakan lisensi hak siar IP tumpang tindih wilayah | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

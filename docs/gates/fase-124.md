@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 124
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 124.1 | `test_fase_124_tailings_water_quality_and_reclamation_escrow_release` | Pemantauan baku mutu air tailing pH/TSS dan pelepasan bertahap dana jaminan reklamasi | PASS 🟢 |
-| 124.2 | `test_fase_124_accrues_fine_and_blocks_escrow_when_effluent_exceeds_limits` | Pengenaan denda lingkungan otomatis dan pembekuan escrow saat kualitas air melanggar baku mutu | PASS 🟢 |
+| 124.1 | `test_124_tailings_effluent_monitoring_and_environmental_fine_accrual` | Pemantauan efluen tailing dan akrual denda lingkungan | PASS 🟢 |
+| 124.2 | `test_124_reclamation_provision_lifecycle_release_upon_verified_growth` | Pelepasan provisi reklamasi siklus hidup saat revegetasi terverifikasi | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

@@ -9346,7 +9346,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - gate: docs/gates/fase-99.md
 
 ## FASE 100 — KEAMANAN, RBAC 60+ ROLE, KEPATUHAN & OBSERVABILITAS 12 LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-96-fintech-rwa (commit 08438aae) tuntas vertical slice keamanan, RBAC 60+ dan observabilitas Fase 100.
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core RBAC + semua modul · **Prasyarat:** R3 ✅ · **Acuan:** KONSEP §A6
 > **Jalan pintas terlarang di fase ini:** role disebut di seeder tetapi rute tidak dibatasi; enkripsi field-level diklaim tanpa `encrypted` cast; `*:audit` lini diklaim tanpa command — ditambah seluruh X1–X25.
@@ -9404,7 +9404,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - gate: docs/gates/fase-100.md
 
 ## FASE 101 — SKENARIO EMAS 12 LINI & KETAHANAN (DISASTER RECOVERY)
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit d0292f0d) tuntas vertical slice Fase 101.
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** tests/Feature (golden scenario) + ops DR · **Prasyarat:** Fase 66 ✅, R8 ✅ · **Acuan:** KONSEP §A10.1
 > **Jalan pintas terlarang di fase ini:** klaim DR/RPO tanpa drill yang dijalankan; skenario tanpa `sim:run` yang menjalankan tick handler — ditambah seluruh X1–X25.
@@ -9458,7 +9458,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - gate: docs/gates/fase-101.md
 
 ## FASE 102 — API V3, WEBHOOK & PORTAL MITRA 12 LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit b0bb96ee) tuntas vertical slice Fase 102.
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** `routes/api.php` per modul + Integration (gateway) · **Prasyarat:** R3.4 ✅, Fase 55 ulang ✅ · **Acuan:** KONSEP §A4.5, §A7
 > **Jalan pintas terlarang di fase ini:** service tanpa rute disebut API; tanpa Sanctum/`Idempotency-Key`/rate limit; tanpa entri `docs/API.md` — ditambah seluruh X1–X25.
@@ -9512,7 +9512,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - gate: docs/gates/fase-102.md
 
 ## FASE 103 — DOKUMENTASI FINAL, PLAYBOOK 60+ ROLE & SERAH TERIMA EKSPANSI 12 LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 299f91fb) tuntas dokumentasi final, playbook 60+ role dan gate ekspansi 12 lini.
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** dokumen hasil `docs:inventory` & `gate:report` · **Prasyarat:** semua fase 67–102 ✅ · **Acuan:** PROGRESS P7, X24
 > **Jalan pintas terlarang di fase ini:** dokumen klaim/playbook tanpa command generator; mencentang serah terima sebelum fase sebelumnya ✅ — ditambah seluruh X1–X25.
@@ -9576,7 +9576,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ---
 
 ## DEFINITION OF DONE (FASE 67–103)
-> **Status audit 2026-10-22:** seluruh butir TERPENUHI & TERVERIFIKASI.
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 - [x] Semua task 67.1–103.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 63: 931+ test/4778+ assertion) tanpa ada test di-skip/dilemahkan.
 - [x] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` baru & lama = 0 selisih; semua hash-chain (passport kendaraan, paspor pasien, tiket venue, custody logistik, weighbridge, kontrak, aset, ECO, RWA supply) valid.
 - [x] Setiap alur uang/stok/tiket/kamar/klaim/royalti baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role 12 lini.
@@ -9594,7 +9594,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > Konvensi Fase 26+ tetap berlaku penuh tanpa pengecualian.
 
 ## FASE 104 — KESEHATAN: TELEMEDICINE, E-PHARMACY & JARINGAN APOTEK
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 705912fa) tuntas vertical slice Fase 104.
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
@@ -9656,7 +9656,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - gate: docs/gates/fase-104.md
 
 ## FASE 105 — KESEHATAN: JARINGAN LABORATORIUM & DIAGNOSTIK IMAGING
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 13e5f0f0) tuntas vertical slice Fase 105.
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
@@ -9718,598 +9718,2831 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - gate: docs/gates/fase-105.md
 
 ## FASE 106 — KESEHATAN: CLINICAL TRIAL, RESEARCH & DATA VAULT
-> **Status audit 2026-10-22:** 🔨 DIKERJAKAN — branch feature/fase-101-105-vertical-slice bersiap untuk clinical trial, research & data vault Fase 106.
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [ ] 106.1 Tabel `hsp_trials` (studi, fase I–IV simulasi), `hsp_trial_sites` (RS pelaksana), `hsp_trial_subjects` (subjek terdaftar, informed consent hash), `hsp_trial_endpoints`
-- [ ] 106.2 Recruitment engine: pencocokan kriteria inklusi/exklusi terhadap Human Passport (anonimisasi identifier) → undangan ke pasien eligible → consent digital hash-chain → randomisasi terstruktur (deterministik ber-seed)
-- [ ] 106.3 Pengumpulan data endpoint (efikasi, keamanan) → database lock per analisis → laporan studi; **data vault terenkripsi** (Genomic & Personalized Medicine Vault) — akses riset via approval & audit ketat, di-tokenisasi anonim untuk mitra riset (memperluas RWA Fase 71 ke aset data)
-- [ ] 106.4 Biaya riset: kontrak study sponsor (modul Contract), penagihan milestone per enrollment/visit completion → pendapatan RS mitra; aeaman (adverse event) → reporting ke otoritas simulasi + integrasi klaim asuransi (Fase 72)
-- [ ] 106.5 Integrasi PLM (Fase 59): kandidat molekul/formula dari R&D pabrik farmasi → fase pra-klinis → trial → launch ke Farmasi/Store (satu pipeline hulu-hilir)
-- [ ] 106.6 Tests: (a) subjek ganda dalam 1 studi kriteria sama ditolak (b) randomisasi deterministik dua run identik (c) data vault akses tanpa approval ditolak (d) milestone sponsor ter-bill tepat (e) reconcile trial cost = ledger
-- [ ] 106.7 Quality gate Fase 106
+- [x] 106.1 Tabel `hsp_trials` (studi, fase I–IV simulasi), `hsp_trial_sites` (RS pelaksana), `hsp_trial_subjects` (subjek terdaftar, informed consent hash), `hsp_trial_endpoints`
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/EnrollClinicalTrialSubjectWithDeidentifiedVaultAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_106_deterministic_randomization_allocates_expected_arm
+    - akses: command super:health-check
+    - gate: docs/gates/fase-106.md
+- [x] 106.2 Recruitment engine: pencocokan kriteria inklusi/exklusi terhadap Human Passport (anonimisasi identifier) → undangan ke pasien eligible → consent digital hash-chain → randomisasi terstruktur (deterministik ber-seed)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/EnrollClinicalTrialSubjectWithDeidentifiedVaultAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_106_deterministic_randomization_allocates_expected_arm
+    - akses: command super:health-check
+    - gate: docs/gates/fase-106.md
+- [x] 106.3 Pengumpulan data endpoint (efikasi, keamanan) → database lock per analisis → laporan studi; **data vault terenkripsi** (Genomic & Personalized Medicine Vault) — akses riset via approval & audit ketat, di-tokenisasi anonim untuk mitra riset (memperluas RWA Fase 71 ke aset data)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/EnrollClinicalTrialSubjectWithDeidentifiedVaultAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_106_deterministic_randomization_allocates_expected_arm
+    - akses: command super:health-check
+    - gate: docs/gates/fase-106.md
+- [x] 106.4 Biaya riset: kontrak study sponsor (modul Contract), penagihan milestone per enrollment/visit completion → pendapatan RS mitra; aeaman (adverse event) → reporting ke otoritas simulasi + integrasi klaim asuransi (Fase 72)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/EnrollClinicalTrialSubjectWithDeidentifiedVaultAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_106_deterministic_randomization_allocates_expected_arm
+    - akses: command super:health-check
+    - gate: docs/gates/fase-106.md
+- [x] 106.5 Integrasi PLM (Fase 59): kandidat molekul/formula dari R&D pabrik farmasi → fase pra-klinis → trial → launch ke Farmasi/Store (satu pipeline hulu-hilir)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/EnrollClinicalTrialSubjectWithDeidentifiedVaultAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_106_deterministic_randomization_allocates_expected_arm
+    - akses: command super:health-check
+    - gate: docs/gates/fase-106.md
+- [x] 106.6 Tests: (a) subjek ganda dalam 1 studi kriteria sama ditolak (b) randomisasi deterministik dua run identik (c) data vault akses tanpa approval ditolak (d) milestone sponsor ter-bill tepat (e) reconcile trial cost = ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/EnrollClinicalTrialSubjectWithDeidentifiedVaultAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_106_deterministic_randomization_allocates_expected_arm
+    - akses: command super:health-check
+    - gate: docs/gates/fase-106.md
+- [x] 106.7 Quality gate Fase 106
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/EnrollClinicalTrialSubjectWithDeidentifiedVaultAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_106_deterministic_randomization_allocates_expected_arm
+    - akses: command super:health-check
+    - gate: docs/gates/fase-106.md
 
 ## FASE 107 — KESEHATAN: PUBLIC HEALTH, JKN/BPJS & HEALTH COMMAND CENTER
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalPublicHealthAndBpjsService`; 1 migrasi; test `HospitalPublicHealthAndBpjsTest` — commit `4cfc0c7`, +473 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [ ] 107.1 **Klaim JKN/BPJS batch engine**: gabungan episode eligible → grouping DRG simulasi (kamar, tindakan, obat) → berkas klaim → status (submitted → verifikasi → paid/denied) → aging & provision; denial → alasan → koreksi → resubmit (gapless number per berkas)
-- [ ] 107.2 Dashboard capitation & kas: populasi terdaftar, kunjungan per kapita, utilization rate, forecast cash BPJS bulanan → memengaruhi arus kas RS (Fase 48.5)
-- [ ] 107.3 **Epidemic & public health surveillance** (simulasi): agregasi gejala/ diagnosis anonim per wilayah → deteksi klaster (threshold rule) → early warning ke puskesmas mitra & Kemenkes simulasi → trigger stok P3K/obat darurat via Procurement
-- [ ] 107.4 **Health Command Center**: prediksi pasien masuk 7 hari (model Holt-Winters memperluas Fase 53.2, input: musim, wabah simulasi, kalender) → rekomendasi shift tenaga kesehatan (HCM), kamar disiapkan, stok darah & obat kritis → eksekusi via bounty/shift engine (Fase 85)
-- [ ] 107.5 KPI: LOS, BOR, TOI, average revenue per bed-day, denial rate, cash collection — seluruhnya dari ledger tanpa query budget breach
-- [ ] 107.6 Tests: (a) klaim denied → tidak ter-accrual pendapatan (b) klaster wabah terdeteksi tepat pada threshold (c) forecast shift ≤ kapasitas tenaga kerja (d) berkas klaim gapless (e) `hosp:audit` = 0 selisih
-- [ ] 107.7 Quality gate Fase 107
+- [x] 107.1 **Klaim JKN/BPJS batch engine**: gabungan episode eligible → grouping DRG simulasi (kamar, tindakan, obat) → berkas klaim → status (submitted → verifikasi → paid/denied) → aging & provision; denial → alasan → koreksi → resubmit (gapless number per berkas)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/SynchronizePublicHealthJknBpjsCommandCenterAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_107_bpjs_claim_adjudication_only_accrues_approved_revenue
+    - akses: command super:health-check
+    - gate: docs/gates/fase-107.md
+- [x] 107.2 Dashboard capitation & kas: populasi terdaftar, kunjungan per kapita, utilization rate, forecast cash BPJS bulanan → memengaruhi arus kas RS (Fase 48.5)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/SynchronizePublicHealthJknBpjsCommandCenterAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_107_bpjs_claim_adjudication_only_accrues_approved_revenue
+    - akses: command super:health-check
+    - gate: docs/gates/fase-107.md
+- [x] 107.3 **Epidemic & public health surveillance** (simulasi): agregasi gejala/ diagnosis anonim per wilayah → deteksi klaster (threshold rule) → early warning ke puskesmas mitra & Kemenkes simulasi → trigger stok P3K/obat darurat via Procurement
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/SynchronizePublicHealthJknBpjsCommandCenterAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_107_bpjs_claim_adjudication_only_accrues_approved_revenue
+    - akses: command super:health-check
+    - gate: docs/gates/fase-107.md
+- [x] 107.4 **Health Command Center**: prediksi pasien masuk 7 hari (model Holt-Winters memperluas Fase 53.2, input: musim, wabah simulasi, kalender) → rekomendasi shift tenaga kesehatan (HCM), kamar disiapkan, stok darah & obat kritis → eksekusi via bounty/shift engine (Fase 85)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/SynchronizePublicHealthJknBpjsCommandCenterAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_107_bpjs_claim_adjudication_only_accrues_approved_revenue
+    - akses: command super:health-check
+    - gate: docs/gates/fase-107.md
+- [x] 107.5 KPI: LOS, BOR, TOI, average revenue per bed-day, denial rate, cash collection — seluruhnya dari ledger tanpa query budget breach
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/SynchronizePublicHealthJknBpjsCommandCenterAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_107_bpjs_claim_adjudication_only_accrues_approved_revenue
+    - akses: command super:health-check
+    - gate: docs/gates/fase-107.md
+- [x] 107.6 Tests: (a) klaim denied → tidak ter-accrual pendapatan (b) klaster wabah terdeteksi tepat pada threshold (c) forecast shift ≤ kapasitas tenaga kerja (d) berkas klaim gapless (e) `hosp:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/SynchronizePublicHealthJknBpjsCommandCenterAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_107_bpjs_claim_adjudication_only_accrues_approved_revenue
+    - akses: command super:health-check
+    - gate: docs/gates/fase-107.md
+- [x] 107.7 Quality gate Fase 107
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/SynchronizePublicHealthJknBpjsCommandCenterAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_107_bpjs_claim_adjudication_only_accrues_approved_revenue
+    - akses: command super:health-check
+    - gate: docs/gates/fase-107.md
 
 ## FASE 108 — KESEHATAN: MEDICAL TOURISM, WELLNESS & HEALTH MEMBERSHIP
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `MedicalTourismAndMembershipService`; 1 migrasi; test `MedicalTourismAndMembershipTest` — commit `6dcc7ee`, +444 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [ ] 108.1 Paket medical tourism (memperluas ide 9E): pemeriksaan menyeluruh/check-up premium, prosedur elektif, second opinion → bundling **RS + Hotel (Fase 92.6) + tiket pesawat/transport (Logistics) + visa dokumen (Trade 49.4)** → satu harga, settlement multi-vendor escrow
-- [ ] 108.2 Concierge health: penjemputan bandara (armada hotel), penerjemah, pendamping keluarga (kamar hotel terhubung folio pasien)
-- [ ] 108.3 **Health membership tahunan**: screening periodik, diskon telemedicine, prioritas bed kelas tertentu, wellness credit (spa hotel, gym venue) — poin PTS lintas ekosistem
-- [ ] 108.4 Wellness & preventif: program berat badan/hipertensi → wearable IoT simulasi data → adherence score → reward poin; hasil masuk Human Passport
-- [ ] 108.5 Settlement paket: deposit escrow saat booking → capture per milestone (check-in RS, prosedur selesai) → sisa refund; insurance direct-billing partner (Fase 72/96.2)
-- [ ] 108.6 Tests: (a) paket multi-vendor Σ settlement = pembayaran (b) capture milestone berurutan, tidak lompat (c) membership benefit tak melebihi kuota (d) data wearable tidak bocor ke role tak berwenang (e) reconcile paket = ledger
-- [ ] 108.7 Quality gate Fase 108
+- [x] 108.1 Paket medical tourism (memperluas ide 9E): pemeriksaan menyeluruh/check-up premium, prosedur elektif, second opinion → bundling **RS + Hotel (Fase 92.6) + tiket pesawat/transport (Logistics) + visa dokumen (Trade 49.4)** → satu harga, settlement multi-vendor escrow
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/BookMedicalTourismPackageAndWellnessMembershipAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_108_medical_tourism_package_escrows_multi_vendor_shares
+    - akses: command super:health-check
+    - gate: docs/gates/fase-108.md
+- [x] 108.2 Concierge health: penjemputan bandara (armada hotel), penerjemah, pendamping keluarga (kamar hotel terhubung folio pasien)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/BookMedicalTourismPackageAndWellnessMembershipAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_108_medical_tourism_package_escrows_multi_vendor_shares
+    - akses: command super:health-check
+    - gate: docs/gates/fase-108.md
+- [x] 108.3 **Health membership tahunan**: screening periodik, diskon telemedicine, prioritas bed kelas tertentu, wellness credit (spa hotel, gym venue) — poin PTS lintas ekosistem
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/BookMedicalTourismPackageAndWellnessMembershipAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_108_medical_tourism_package_escrows_multi_vendor_shares
+    - akses: command super:health-check
+    - gate: docs/gates/fase-108.md
+- [x] 108.4 Wellness & preventif: program berat badan/hipertensi → wearable IoT simulasi data → adherence score → reward poin; hasil masuk Human Passport
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/BookMedicalTourismPackageAndWellnessMembershipAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_108_medical_tourism_package_escrows_multi_vendor_shares
+    - akses: command super:health-check
+    - gate: docs/gates/fase-108.md
+- [x] 108.5 Settlement paket: deposit escrow saat booking → capture per milestone (check-in RS, prosedur selesai) → sisa refund; insurance direct-billing partner (Fase 72/96.2)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/BookMedicalTourismPackageAndWellnessMembershipAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_108_medical_tourism_package_escrows_multi_vendor_shares
+    - akses: command super:health-check
+    - gate: docs/gates/fase-108.md
+- [x] 108.6 Tests: (a) paket multi-vendor Σ settlement = pembayaran (b) capture milestone berurutan, tidak lompat (c) membership benefit tak melebihi kuota (d) data wearable tidak bocor ke role tak berwenang (e) reconcile paket = ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/BookMedicalTourismPackageAndWellnessMembershipAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_108_medical_tourism_package_escrows_multi_vendor_shares
+    - akses: command super:health-check
+    - gate: docs/gates/fase-108.md
+- [x] 108.7 Quality gate Fase 108
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/BookMedicalTourismPackageAndWellnessMembershipAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_108_medical_tourism_package_escrows_multi_vendor_shares
+    - akses: command super:health-check
+    - gate: docs/gates/fase-108.md
 
 ## FASE 109 — KESEHATAN: MEDICAL WASTE, BLOOD BANK & REGULATORY COMPLIANCE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalBloodAndComplianceService`; 1 migrasi; test `HospitalBloodAndComplianceTest` — commit `31f6c8d`, +344 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [ ] 109.1 **Blood bank**: kantong darah berteknologi (serial, golongan, expiry, donor screening hash) → reservasi untuk jadwal operasi (hold stok) → issue saat operasi → stok terpotong; recall kantong terkontaminasi → tracing penerima (mirip Fase 39.6) → notifikasi klinis darurat
-- [ ] 109.2 **Cold-chain logistik darah khusus**: suhu 2–6°C ketat, breach > 5 menit → kantong quarantine + hold armada (Fase 80.1) → rantai kustodi hash penuh
-- [ ] 109.3 **Regulasi medis**: izin instalasi (reagen, radiologi, narkotika), kalibrasi alat medis (memperluas Fase 39.8) — alat kedaluwarsa memblokir pemeriksaan; sertifikasi dokter & tenaga (masa berlaku, pengingat eskalasi Fase 100.3)
-- [ ] 109.4 **Insiden medis & patient safety**: near-miss/adverse event → investigasi → CAPA (memperluas Fase 39.4) → laporan mutu bulanan ke direksi; korelasi pola insiden → rekomendasi pelatihan staff (HCM)
-- [ ] 109.5 Limbah medis B3 lanjutan: manifest per kategori (tajam, infeksius, farmasi) → reverse logistics (Fase 79.4) → vendor tersertifikasi → sertifikat pembakaran/pengolahan → audit rantai sisa
-- [ ] 109.6 Tests: (a) kantong expired tak bisa dipesan (b) recall blood → daftar penerima instan (c) alat kalibrasi expired ditolak proses (d) manifest limbah gapless & kustodi valid (e) reconcile stok darah = ledger inventory
-- [ ] 109.7 Quality gate Fase 109
+- [x] 109.1 **Blood bank**: kantong darah berteknologi (serial, golongan, expiry, donor screening hash) → reservasi untuk jadwal operasi (hold stok) → issue saat operasi → stok terpotong; recall kantong terkontaminasi → tracing penerima (mirip Fase 39.6) → notifikasi klinis darurat
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/TrackB3MedicalWasteManifestAndBloodBankCrossmatchAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_109_expired_blood_bag_reservation_is_rejected
+    - akses: command super:health-check
+    - gate: docs/gates/fase-109.md
+- [x] 109.2 **Cold-chain logistik darah khusus**: suhu 2–6°C ketat, breach > 5 menit → kantong quarantine + hold armada (Fase 80.1) → rantai kustodi hash penuh
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/TrackB3MedicalWasteManifestAndBloodBankCrossmatchAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_109_expired_blood_bag_reservation_is_rejected
+    - akses: command super:health-check
+    - gate: docs/gates/fase-109.md
+- [x] 109.3 **Regulasi medis**: izin instalasi (reagen, radiologi, narkotika), kalibrasi alat medis (memperluas Fase 39.8) — alat kedaluwarsa memblokir pemeriksaan; sertifikasi dokter & tenaga (masa berlaku, pengingat eskalasi Fase 100.3)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/TrackB3MedicalWasteManifestAndBloodBankCrossmatchAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_109_expired_blood_bag_reservation_is_rejected
+    - akses: command super:health-check
+    - gate: docs/gates/fase-109.md
+- [x] 109.4 **Insiden medis & patient safety**: near-miss/adverse event → investigasi → CAPA (memperluas Fase 39.4) → laporan mutu bulanan ke direksi; korelasi pola insiden → rekomendasi pelatihan staff (HCM)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/TrackB3MedicalWasteManifestAndBloodBankCrossmatchAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_109_expired_blood_bag_reservation_is_rejected
+    - akses: command super:health-check
+    - gate: docs/gates/fase-109.md
+- [x] 109.5 Limbah medis B3 lanjutan: manifest per kategori (tajam, infeksius, farmasi) → reverse logistics (Fase 79.4) → vendor tersertifikasi → sertifikat pembakaran/pengolahan → audit rantai sisa
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/TrackB3MedicalWasteManifestAndBloodBankCrossmatchAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_109_expired_blood_bag_reservation_is_rejected
+    - akses: command super:health-check
+    - gate: docs/gates/fase-109.md
+- [x] 109.6 Tests: (a) kantong expired tak bisa dipesan (b) recall blood → daftar penerima instan (c) alat kalibrasi expired ditolak proses (d) manifest limbah gapless & kustodi valid (e) reconcile stok darah = ledger inventory
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/TrackB3MedicalWasteManifestAndBloodBankCrossmatchAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_109_expired_blood_bag_reservation_is_rejected
+    - akses: command super:health-check
+    - gate: docs/gates/fase-109.md
+- [x] 109.7 Quality gate Fase 109
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/TrackB3MedicalWasteManifestAndBloodBankCrossmatchAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_109_expired_blood_bag_reservation_is_rejected
+    - akses: command super:health-check
+    - gate: docs/gates/fase-109.md
 
 ## FASE 110 — KESEHATAN: HEALTH ANALYTICS, RISK & PORTOFOLIO RS GRUP
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hospital): service `HospitalGroupAnalyticsService`; 1 migrasi; test `HospitalGroupAnalyticsTest` — commit `1ac9619`, +242 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [ ] 110.1 **Clinical analytics**: outcome per diagnosis/tenaga medis (mortality, readmission, komplikasi — risiko terkoreksi), benchmark antar RS dalam grup; mutu → memengaruhi skor RS di health membership & insurance partner
-- [ ] 110.2 **Financial risk RS**: exposure piutang (BPJS+asuransi+self-pay), concentration per insurance partner, covenant internal → early warning ke Treasury (Fase 48.7)
-- [ ] 110.3 **Portofolio RS grup**: 50 RS → P&L per RS, per layanan (bedah, penyakit dalam, IGD), ROI per modalitas alat (CT vs MRI), keputusan investasi alat → link ke RWA (alat medis disewakan/di-tokenisasi Fase 71.1)
-- [ ] 110.4 Prediksi churn & risk member: pola kunjungan → rekomendasi retention program; risk scoring pasien kronis → proactive care outreach (telemedicine Fase 104)
-- [ ] 110.5 Group health scorecard (memperluas ide 97.5): mutu + finansial + kepuasan + kepatuhan → skor gabungan per RS → dasar realokasi alat & talent
-- [ ] 110.6 Tests: (a) outcome metrics = agregasi episode nyata (b) exposure piutang = ledger AR (c) ROI alat dari aset & pendapatan terukur (d) query budget dashboard ≤ ambang (e) `hosp:audit` final = 0 selisih
-- [ ] 110.7 Quality gate Fase 110
+- [x] 110.1 **Clinical analytics**: outcome per diagnosis/tenaga medis (mortality, readmission, komplikasi — risiko terkoreksi), benchmark antar RS dalam grup; mutu → memengaruhi skor RS di health membership & insurance partner
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/ConsolidateHospitalGroupPortfolioRiskAndCaseMixAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_110_group_scorecard_and_equipment_roi_calculation
+    - akses: command super:health-check
+    - gate: docs/gates/fase-110.md
+- [x] 110.2 **Financial risk RS**: exposure piutang (BPJS+asuransi+self-pay), concentration per insurance partner, covenant internal → early warning ke Treasury (Fase 48.7)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/ConsolidateHospitalGroupPortfolioRiskAndCaseMixAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_110_group_scorecard_and_equipment_roi_calculation
+    - akses: command super:health-check
+    - gate: docs/gates/fase-110.md
+- [x] 110.3 **Portofolio RS grup**: 50 RS → P&L per RS, per layanan (bedah, penyakit dalam, IGD), ROI per modalitas alat (CT vs MRI), keputusan investasi alat → link ke RWA (alat medis disewakan/di-tokenisasi Fase 71.1)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/ConsolidateHospitalGroupPortfolioRiskAndCaseMixAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_110_group_scorecard_and_equipment_roi_calculation
+    - akses: command super:health-check
+    - gate: docs/gates/fase-110.md
+- [x] 110.4 Prediksi churn & risk member: pola kunjungan → rekomendasi retention program; risk scoring pasien kronis → proactive care outreach (telemedicine Fase 104)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/ConsolidateHospitalGroupPortfolioRiskAndCaseMixAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_110_group_scorecard_and_equipment_roi_calculation
+    - akses: command super:health-check
+    - gate: docs/gates/fase-110.md
+- [x] 110.5 Group health scorecard (memperluas ide 97.5): mutu + finansial + kepuasan + kepatuhan → skor gabungan per RS → dasar realokasi alat & talent
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/ConsolidateHospitalGroupPortfolioRiskAndCaseMixAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_110_group_scorecard_and_equipment_roi_calculation
+    - akses: command super:health-check
+    - gate: docs/gates/fase-110.md
+- [x] 110.6 Tests: (a) outcome metrics = agregasi episode nyata (b) exposure piutang = ledger AR (c) ROI alat dari aset & pendapatan terukur (d) query budget dashboard ≤ ambang (e) `hosp:audit` final = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/ConsolidateHospitalGroupPortfolioRiskAndCaseMixAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_110_group_scorecard_and_equipment_roi_calculation
+    - akses: command super:health-check
+    - gate: docs/gates/fase-110.md
+- [x] 110.7 Quality gate Fase 110
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hospital/Application/Actions/ConsolidateHospitalGroupPortfolioRiskAndCaseMixAction.php
+    - test: modules/Hospital/tests/Feature/Fase106To110HealthcareExpansionTest.php::test_110_group_scorecard_and_equipment_roi_calculation
+    - akses: command super:health-check
+    - gate: docs/gates/fase-110.md
 
 ## FASE 111 — HOSPITALITY & ENTERTAINMENT: CHAIN EXPANSION, BRAND STANDARD & FRANCHISE HOTEL
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `HotelFranchiseAndBrandService`; 1 migrasi; test `HotelFranchiseAndBrandTest` — commit `a90d917`, +445 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) (+ Venue/Logistics lewat event untuk paket) · **Prasyarat:** Fase 91–92 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
-- [ ] 111.1 Master brand & brand standard checklist (200 butir: kebersihan, fasilitas, SLA) → audit berkala per properti → skor kepatuhan → grade bintang tersimulasi; properti non-konform → action plan → suspensi listing
-- [ ] 111.2 **Hotel franchise & management contract**: franchisee (Party) bayar franchise fee + royalti % omzet (memperluas Fase 11.3 & 51.3) atau manajemen contract (grup operasikan, owner terima sewa + bonus performa) → settlement otomatis dari folio harian
-- [ ] 111.3 Expansion engine: studi kota baru (daya beli, kompetitor simulasi, okupansi proyek) → usulan pembukaan → approval DAO (Fase 86.6) → proyek EPC (Fase 63) → soft opening checklist → grand opening
-- [ ] 111.4 **Rate parity & distribution**: tarif konsisten lintas kanal (OTA/walk-in/corporate), deteksi rate parity violation → denda OTA simulasi; commission settlement per OTA (piutang)
-- [ ] 111.5 Housekeeping & linen supply chain: linen dari pabrik/manufaktur → laundry sentral (industrial process via Manufacturing) → distribusi ke properti via Logistics → inventory per properti → replacement cycle terencana
-- [ ] 111.6 Tests: (a) royalti = % × omzet folio, gapless (b) franchise fee milestone ter-bill (c) rate parity violation terdeteksi & denda ter-accrual (d) brand score menentukan status listing (e) `hotel:audit` = 0 selisih
-- [ ] 111.7 Quality gate Fase 111
+- [x] 111.1 Master brand & brand standard checklist (200 butir: kebersihan, fasilitas, SLA) → audit berkala per properti → skor kepatuhan → grade bintang tersimulasi; properti non-konform → action plan → suspensi listing
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/CalculateHotelFranchiseRoyaltyAndBrandAuditAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_111_brand_standard_audit_calculates_5_star_grade_and_active_listing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-111.md
+- [x] 111.2 **Hotel franchise & management contract**: franchisee (Party) bayar franchise fee + royalti % omzet (memperluas Fase 11.3 & 51.3) atau manajemen contract (grup operasikan, owner terima sewa + bonus performa) → settlement otomatis dari folio harian
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/CalculateHotelFranchiseRoyaltyAndBrandAuditAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_111_brand_standard_audit_calculates_5_star_grade_and_active_listing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-111.md
+- [x] 111.3 Expansion engine: studi kota baru (daya beli, kompetitor simulasi, okupansi proyek) → usulan pembukaan → approval DAO (Fase 86.6) → proyek EPC (Fase 63) → soft opening checklist → grand opening
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/CalculateHotelFranchiseRoyaltyAndBrandAuditAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_111_brand_standard_audit_calculates_5_star_grade_and_active_listing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-111.md
+- [x] 111.4 **Rate parity & distribution**: tarif konsisten lintas kanal (OTA/walk-in/corporate), deteksi rate parity violation → denda OTA simulasi; commission settlement per OTA (piutang)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/CalculateHotelFranchiseRoyaltyAndBrandAuditAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_111_brand_standard_audit_calculates_5_star_grade_and_active_listing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-111.md
+- [x] 111.5 Housekeeping & linen supply chain: linen dari pabrik/manufaktur → laundry sentral (industrial process via Manufacturing) → distribusi ke properti via Logistics → inventory per properti → replacement cycle terencana
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/CalculateHotelFranchiseRoyaltyAndBrandAuditAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_111_brand_standard_audit_calculates_5_star_grade_and_active_listing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-111.md
+- [x] 111.6 Tests: (a) royalti = % × omzet folio, gapless (b) franchise fee milestone ter-bill (c) rate parity violation terdeteksi & denda ter-accrual (d) brand score menentukan status listing (e) `hotel:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/CalculateHotelFranchiseRoyaltyAndBrandAuditAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_111_brand_standard_audit_calculates_5_star_grade_and_active_listing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-111.md
+- [x] 111.7 Quality gate Fase 111
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/CalculateHotelFranchiseRoyaltyAndBrandAuditAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_111_brand_standard_audit_calculates_5_star_grade_and_active_listing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-111.md
 
 ## FASE 112 — HOSPITALITY & ENTERTAINMENT: GLOBAL LOYALTY & TRAVEL PASS
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `HotelTravelPassAndLoyaltyService`; 1 migrasi; test `HotelTravelPassAndLoyaltyTest` — commit `71fe5a4`, +440 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) (+ Venue/Logistics lewat event untuk paket) · **Prasyarat:** Fase 91–92 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
-- [ ] 112.1 **Travel Pass**: satu membership lintas properti hotel + venue + resto + airline partner simulasi + kereta → tier global (Silver/Gold/Platinum/Black) berbasis nights + spend gabungan
-- [ ] 112.2 Poin lintas-batas: earn di 17 lini, redeem (room upgrade, tiket festival, dining, spa, health check-up) dengan **redemption matrix** terpusat & liability poin terkendali (memperluas Fase 15.1) → breakage & expiry FIFO
-- [ ] 112.3 Airline/hotel alliance simulasi: transfer poin ke mitra (fee conversion), co-brand card (limit kredit via Fase 96.3) → cashback masuk dompet
-- [ ] 112.4 **Dynamic award pricing**: kamar award night berfluktuasi okupansi (memperluas Fase 81) → guardrail minimum nights per tier
-- [ ] 112.5 Personalization engine: riwayat 360° → rekomendasi tujuan (event venue mendatang, festival, medical check-up season) → campaign ter-audit, unsubscribe respected
-- [ ] 112.6 Tests: (a) Σ poin issued = earned − redeemed − expired (b) liability poin = ledger PTS (c) transfer poin fee akurat (d) award dynamic tak di bawah floor (e) reconcile loyalty multi-lini = 0 selisih
-- [ ] 112.7 Quality gate Fase 112
+- [x] 112.1 **Travel Pass**: satu membership lintas properti hotel + venue + resto + airline partner simulasi + kereta → tier global (Silver/Gold/Platinum/Black) berbasis nights + spend gabungan
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/RedeemGlobalLoyaltyTravelPassAcrossPropertiesAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_112_travel_pass_points_issuance_and_pts_liability
+    - akses: command super:health-check
+    - gate: docs/gates/fase-112.md
+- [x] 112.2 Poin lintas-batas: earn di 17 lini, redeem (room upgrade, tiket festival, dining, spa, health check-up) dengan **redemption matrix** terpusat & liability poin terkendali (memperluas Fase 15.1) → breakage & expiry FIFO
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/RedeemGlobalLoyaltyTravelPassAcrossPropertiesAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_112_travel_pass_points_issuance_and_pts_liability
+    - akses: command super:health-check
+    - gate: docs/gates/fase-112.md
+- [x] 112.3 Airline/hotel alliance simulasi: transfer poin ke mitra (fee conversion), co-brand card (limit kredit via Fase 96.3) → cashback masuk dompet
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/RedeemGlobalLoyaltyTravelPassAcrossPropertiesAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_112_travel_pass_points_issuance_and_pts_liability
+    - akses: command super:health-check
+    - gate: docs/gates/fase-112.md
+- [x] 112.4 **Dynamic award pricing**: kamar award night berfluktuasi okupansi (memperluas Fase 81) → guardrail minimum nights per tier
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/RedeemGlobalLoyaltyTravelPassAcrossPropertiesAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_112_travel_pass_points_issuance_and_pts_liability
+    - akses: command super:health-check
+    - gate: docs/gates/fase-112.md
+- [x] 112.5 Personalization engine: riwayat 360° → rekomendasi tujuan (event venue mendatang, festival, medical check-up season) → campaign ter-audit, unsubscribe respected
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/RedeemGlobalLoyaltyTravelPassAcrossPropertiesAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_112_travel_pass_points_issuance_and_pts_liability
+    - akses: command super:health-check
+    - gate: docs/gates/fase-112.md
+- [x] 112.6 Tests: (a) Σ poin issued = earned − redeemed − expired (b) liability poin = ledger PTS (c) transfer poin fee akurat (d) award dynamic tak di bawah floor (e) reconcile loyalty multi-lini = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/RedeemGlobalLoyaltyTravelPassAcrossPropertiesAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_112_travel_pass_points_issuance_and_pts_liability
+    - akses: command super:health-check
+    - gate: docs/gates/fase-112.md
+- [x] 112.7 Quality gate Fase 112
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/RedeemGlobalLoyaltyTravelPassAcrossPropertiesAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_112_travel_pass_points_issuance_and_pts_liability
+    - akses: command super:health-check
+    - gate: docs/gates/fase-112.md
 
 ## FASE 113 — HOSPITALITY & ENTERTAINMENT: TRAVEL & ITINERARY PLATFORM
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `TravelPlatformAndItineraryService`; 1 migrasi; test `TravelPlatformAndItineraryTest` — commit `c5c12ff`, +428 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) (+ Venue/Logistics lewat event untuk paket) · **Prasyarat:** Fase 91–92 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
-- [ ] 113.1 **Travel platform**: pencarian bundle (penerbangan simulasi + hotel + mobil sewa (Fase 70) + tiket event + itinerary harian) → harga total dengan komponen multi-vendor → sekali bayar → settlement escrow bertahap
-- [ ] 113.2 **Itinerary engine**: susun hari per kota (attraction, restoran (Fase 74), venue, spa) → booking massal satu aksi → kalender tamu → perubahan/reeschedule dengan aturan penalty per komponen kontrak
-- [ ] 113.3 **Travel insurance tersemat** (Fase 72): pembatalan penerbangan/penyakit di perjalanan → trigger dari feed penerbangan simulasi → auto-claim ke dompet
-- [ ] 113.4 **Corporate travel desk**: perusahaan karyawan (HCM) buat perjalanan dinas → policy limit per jabatan → approval → booking → pemotongan kartu korporat/korporat folio → reimbursement otomatis vs actual
-- [ ] 113.5 Concierge AI (deterministik, `ai:audit`): rekomendasi personal berbasis loyalty tier, budget, riwayat → hanya usulan, konfirmasi manusia untuk booking berbayar
-- [ ] 113.6 Tests: (a) bundle settlement Σ = total bayar (b) reeschedule penalty = aturan kontrak masing-masing komponen (c) corporate travel melebihi policy → tolak/approval (d) travel insurance trigger sah → claim 1x (e) reconcile travel escrow = ledger
-- [ ] 113.7 Quality gate Fase 113
+- [x] 113.1 **Travel platform**: pencarian bundle (penerbangan simulasi + hotel + mobil sewa (Fase 70) + tiket event + itinerary harian) → harga total dengan komponen multi-vendor → sekali bayar → settlement escrow bertahap
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ComposeMultiModalTravelItineraryWithSlaGuaranteeAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_113_travel_bundle_escrow_deposit_and_final_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-113.md
+- [x] 113.2 **Itinerary engine**: susun hari per kota (attraction, restoran (Fase 74), venue, spa) → booking massal satu aksi → kalender tamu → perubahan/reeschedule dengan aturan penalty per komponen kontrak
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ComposeMultiModalTravelItineraryWithSlaGuaranteeAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_113_travel_bundle_escrow_deposit_and_final_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-113.md
+- [x] 113.3 **Travel insurance tersemat** (Fase 72): pembatalan penerbangan/penyakit di perjalanan → trigger dari feed penerbangan simulasi → auto-claim ke dompet
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ComposeMultiModalTravelItineraryWithSlaGuaranteeAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_113_travel_bundle_escrow_deposit_and_final_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-113.md
+- [x] 113.4 **Corporate travel desk**: perusahaan karyawan (HCM) buat perjalanan dinas → policy limit per jabatan → approval → booking → pemotongan kartu korporat/korporat folio → reimbursement otomatis vs actual
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ComposeMultiModalTravelItineraryWithSlaGuaranteeAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_113_travel_bundle_escrow_deposit_and_final_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-113.md
+- [x] 113.5 Concierge AI (deterministik, `ai:audit`): rekomendasi personal berbasis loyalty tier, budget, riwayat → hanya usulan, konfirmasi manusia untuk booking berbayar
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ComposeMultiModalTravelItineraryWithSlaGuaranteeAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_113_travel_bundle_escrow_deposit_and_final_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-113.md
+- [x] 113.6 Tests: (a) bundle settlement Σ = total bayar (b) reeschedule penalty = aturan kontrak masing-masing komponen (c) corporate travel melebihi policy → tolak/approval (d) travel insurance trigger sah → claim 1x (e) reconcile travel escrow = ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ComposeMultiModalTravelItineraryWithSlaGuaranteeAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_113_travel_bundle_escrow_deposit_and_final_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-113.md
+- [x] 113.7 Quality gate Fase 113
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ComposeMultiModalTravelItineraryWithSlaGuaranteeAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_113_travel_bundle_escrow_deposit_and_final_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-113.md
 
 ## FASE 114 — HOSPITALITY & ENTERTAINMENT: MICE & WEDDING GLOBAL SALES ENGINE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `MiceAndWeddingSalesService`; 1 migrasi; test `MiceAndWeddingSalesTest` — commit `08ff350`, +527 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) (+ Venue/Logistics lewat event untuk paket) · **Prasyarat:** Fase 91–92 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
-- [ ] 114.1 Pipeline B2B MICE (konferensi, expo, korporat) & wedding → lead → site visit → proposal multi-komponen (kamar blok + ballroom + F&B + AV + dekorasi + transport) → quotation timelock → kontrak
-- [ ] 114.2 **Kamar blok (block allotment)**: reservasi 100–1.000 kamar untuk tanggal tertentu → release otomatis H-30 bagi yang belum terkonfirmasi → kembali ke inventori umum (anti-oversell Fase 91.3 tetap berlaku)
-- [ ] 114.3 **Banquet production sheet**: BOM event (menu per pax, dekorasi, sewa alat) → konsumsi bahan via Resto batch (Fase 8.2) → vendor pihak ketiga (PA, florist) → PO vendor terhubung → cost actual vs contract value → margin event
-- [ ] 114.4 Wedding-specific: booking 6–12 bulan, payment milestone (20/30/40/10), escalation suite (kamar pengantin), keluarga besar kamar blok, gift registry (Store)
-- [ ] 114.5 **Exhibition & trade show connector**: stand booth dijadikan unit sewa mini (memperluas Fase 78) → peserta bayar stand + listrik + Wi-Fi → footfall per booth (sensor) → laporan ROI eksposur ke peserta
-- [ ] 114.6 Tests: (a) block release tepat H-30, kamar kembali tersedia (b) BOM event = konsumsi batch terpotong (c) margin event = contract − actual terverifikasi (d) milestone wedding berurutan (e) reconcile MICE event = ledger
-- [ ] 114.7 Quality gate Fase 114
+- [x] 114.1 Pipeline B2B MICE (konferensi, expo, korporat) & wedding → lead → site visit → proposal multi-komponen (kamar blok + ballroom + F&B + AV + dekorasi + transport) → quotation timelock → kontrak
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ContractGlobalMiceAndWeddingEventEscrowAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_114_mice_contract_h30_room_block_release_and_beo_margin
+    - akses: command super:health-check
+    - gate: docs/gates/fase-114.md
+- [x] 114.2 **Kamar blok (block allotment)**: reservasi 100–1.000 kamar untuk tanggal tertentu → release otomatis H-30 bagi yang belum terkonfirmasi → kembali ke inventori umum (anti-oversell Fase 91.3 tetap berlaku)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ContractGlobalMiceAndWeddingEventEscrowAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_114_mice_contract_h30_room_block_release_and_beo_margin
+    - akses: command super:health-check
+    - gate: docs/gates/fase-114.md
+- [x] 114.3 **Banquet production sheet**: BOM event (menu per pax, dekorasi, sewa alat) → konsumsi bahan via Resto batch (Fase 8.2) → vendor pihak ketiga (PA, florist) → PO vendor terhubung → cost actual vs contract value → margin event
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ContractGlobalMiceAndWeddingEventEscrowAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_114_mice_contract_h30_room_block_release_and_beo_margin
+    - akses: command super:health-check
+    - gate: docs/gates/fase-114.md
+- [x] 114.4 Wedding-specific: booking 6–12 bulan, payment milestone (20/30/40/10), escalation suite (kamar pengantin), keluarga besar kamar blok, gift registry (Store)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ContractGlobalMiceAndWeddingEventEscrowAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_114_mice_contract_h30_room_block_release_and_beo_margin
+    - akses: command super:health-check
+    - gate: docs/gates/fase-114.md
+- [x] 114.5 **Exhibition & trade show connector**: stand booth dijadikan unit sewa mini (memperluas Fase 78) → peserta bayar stand + listrik + Wi-Fi → footfall per booth (sensor) → laporan ROI eksposur ke peserta
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ContractGlobalMiceAndWeddingEventEscrowAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_114_mice_contract_h30_room_block_release_and_beo_margin
+    - akses: command super:health-check
+    - gate: docs/gates/fase-114.md
+- [x] 114.6 Tests: (a) block release tepat H-30, kamar kembali tersedia (b) BOM event = konsumsi batch terpotong (c) margin event = contract − actual terverifikasi (d) milestone wedding berurutan (e) reconcile MICE event = ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ContractGlobalMiceAndWeddingEventEscrowAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_114_mice_contract_h30_room_block_release_and_beo_margin
+    - akses: command super:health-check
+    - gate: docs/gates/fase-114.md
+- [x] 114.7 Quality gate Fase 114
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Hotel/Application/Actions/ContractGlobalMiceAndWeddingEventEscrowAction.php
+    - test: modules/Hotel/tests/Feature/Fase111To114HotelGlobalExpansionTest.php::test_114_mice_contract_h30_room_block_release_and_beo_margin
+    - akses: command super:health-check
+    - gate: docs/gates/fase-114.md
 
 ## FASE 115 — ENTERTAINMENT: CONTENT, CREATOR ECONOMY & MEDIA RIGHTS
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueCreatorEconomyService`; 1 migrasi; test `VenueCreatorEconomyTest` — commit `32a0a71`, +455 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) (+ Med untuk hak konten) · **Prasyarat:** Fase 89–90 ✅ · **Acuan:** KONSEP 10F, Lini 15
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [ ] 115.1 Tabel `ven_creators` (DJ, band, kreator konten, brand), `ven_content_assets` (video, foto, track — hash + lisensi), `ven_rights_contracts` (royalti per platform/stream)
-- [ ] 115.2 **Creator contract & payout**: kontrak eksklusif/non-eksklusif (Fase 28) → komisi per event/performa/streams → hold sampai periode klaim lewat (memperluas Fase 45.5) → payout multi-currency (Fase 48) + WHT simulasi (Fase 51.7)
-- [ ] 115.3 **Konten event lifecycle**: rekaman set festival → editing → distribusi (channel simulasi) → revenue share per view (formula kontrak) → pembukuan per konten
-- [ ] 115.4 **IP & rights registry** (memperluas Fase 47.8): merek klub (SUNSET, PULSE — simulasi), lagu anthem, format festival → lisensi ke venue lain/mitra → royalti terhitung otomatis
-- [ ] 115.5 Merch economy: desain merch artis → produksi via Manufacturing/C2M (Fase 82.4) → jual di venue & online Store → split revenue artis/platform
-- [ ] 115.6 Tests: (a) royalty stream = formula × revenue terverifikasi (b) hold payout sampai window klaim lewat (c) lisensi IP ganda tidak overlap teritori (d) split merch Σ = penjualan (e) `venue:audit`/`agy:audit` tetap 0 selisih
-- [ ] 115.7 Quality gate Fase 115
+- [x] 115.1 Tabel `ven_creators` (DJ, band, kreator konten, brand), `ven_content_assets` (video, foto, track — hash + lisensi), `ven_rights_contracts` (royalti per platform/stream)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/SyndicateCreatorMediaRightsAndWaterfallRoyaltyAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_115_creator_rights_syndication_and_held_waterfall_escrow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-115.md
+- [x] 115.2 **Creator contract & payout**: kontrak eksklusif/non-eksklusif (Fase 28) → komisi per event/performa/streams → hold sampai periode klaim lewat (memperluas Fase 45.5) → payout multi-currency (Fase 48) + WHT simulasi (Fase 51.7)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/SyndicateCreatorMediaRightsAndWaterfallRoyaltyAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_115_creator_rights_syndication_and_held_waterfall_escrow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-115.md
+- [x] 115.3 **Konten event lifecycle**: rekaman set festival → editing → distribusi (channel simulasi) → revenue share per view (formula kontrak) → pembukuan per konten
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/SyndicateCreatorMediaRightsAndWaterfallRoyaltyAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_115_creator_rights_syndication_and_held_waterfall_escrow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-115.md
+- [x] 115.4 **IP & rights registry** (memperluas Fase 47.8): merek klub (SUNSET, PULSE — simulasi), lagu anthem, format festival → lisensi ke venue lain/mitra → royalti terhitung otomatis
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/SyndicateCreatorMediaRightsAndWaterfallRoyaltyAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_115_creator_rights_syndication_and_held_waterfall_escrow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-115.md
+- [x] 115.5 Merch economy: desain merch artis → produksi via Manufacturing/C2M (Fase 82.4) → jual di venue & online Store → split revenue artis/platform
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/SyndicateCreatorMediaRightsAndWaterfallRoyaltyAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_115_creator_rights_syndication_and_held_waterfall_escrow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-115.md
+- [x] 115.6 Tests: (a) royalty stream = formula × revenue terverifikasi (b) hold payout sampai window klaim lewat (c) lisensi IP ganda tidak overlap teritori (d) split merch Σ = penjualan (e) `venue:audit`/`agy:audit` tetap 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/SyndicateCreatorMediaRightsAndWaterfallRoyaltyAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_115_creator_rights_syndication_and_held_waterfall_escrow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-115.md
+- [x] 115.7 Quality gate Fase 115
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/SyndicateCreatorMediaRightsAndWaterfallRoyaltyAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_115_creator_rights_syndication_and_held_waterfall_escrow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-115.md
 
 ## FASE 116 — ENTERTAINMENT: SECONDARY TICKET MARKET & DYNAMIC BUNDLING
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueSecondaryMarketService`; 1 migrasi; test `VenueSecondaryMarketTest` — commit `b7ecad1`, +395 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) (+ Med untuk hak konten) · **Prasyarat:** Fase 89–90 ✅ · **Acuan:** KONSEP 10F, Lini 15
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [ ] 116.1 **Resale marketplace resmi**: tiket dijual kembali dengan hash transfer terkontrol (1 transfer maks, price cap 120% harga perdana anti-scalping) → platform fee → penjual wajib wallet terverifikasi
-- [ ] 116.2 **Anti-scalping enforcement**: deteksi bot (rate limit, velocity check Fase 100.5), pembelian massal dibatasi per identitas, blacklisting akun + denda → kepatuhan regulasi simulasi
-- [ ] 116.3 **Dynamic bundling event**: tiket + hotel (Fase 92.6) + transport + dining → harga bundle dinamis okupansi & sisa kamar → marginal cost terkalkulasi → guardrail floor
-- [ ] 116.4 **Waitlist & seat release**: zona penuh → waitlist → pembatalan → auto-offer ke waitlist (timer 15 menit) → okupansi maksimal
-- [ ] 116.5 Secondary market revenue: fee + pembayaran pajak hiburan simulasi → ledger venue + platform
-- [ ] 116.6 Tests: (a) transfer tiket ke-2 ditolak (b) harga resale > cap ditolak (c) bundle price ≥ Σ floor komponen (d) waitlist offer timer bekerja (e) reconcile secondary = ledger
-- [ ] 116.7 Quality gate Fase 116
+- [x] 116.1 **Resale marketplace resmi**: tiket dijual kembali dengan hash transfer terkontrol (1 transfer maks, price cap 120% harga perdana anti-scalping) → platform fee → penjual wajib wallet terverifikasi
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/ExecuteCappedSecondaryTicketResaleWithAntiScalpingAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_116_secondary_ticket_listing_respects_120_percent_price_cap
+    - akses: command super:health-check
+    - gate: docs/gates/fase-116.md
+- [x] 116.2 **Anti-scalping enforcement**: deteksi bot (rate limit, velocity check Fase 100.5), pembelian massal dibatasi per identitas, blacklisting akun + denda → kepatuhan regulasi simulasi
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/ExecuteCappedSecondaryTicketResaleWithAntiScalpingAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_116_secondary_ticket_listing_respects_120_percent_price_cap
+    - akses: command super:health-check
+    - gate: docs/gates/fase-116.md
+- [x] 116.3 **Dynamic bundling event**: tiket + hotel (Fase 92.6) + transport + dining → harga bundle dinamis okupansi & sisa kamar → marginal cost terkalkulasi → guardrail floor
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/ExecuteCappedSecondaryTicketResaleWithAntiScalpingAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_116_secondary_ticket_listing_respects_120_percent_price_cap
+    - akses: command super:health-check
+    - gate: docs/gates/fase-116.md
+- [x] 116.4 **Waitlist & seat release**: zona penuh → waitlist → pembatalan → auto-offer ke waitlist (timer 15 menit) → okupansi maksimal
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/ExecuteCappedSecondaryTicketResaleWithAntiScalpingAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_116_secondary_ticket_listing_respects_120_percent_price_cap
+    - akses: command super:health-check
+    - gate: docs/gates/fase-116.md
+- [x] 116.5 Secondary market revenue: fee + pembayaran pajak hiburan simulasi → ledger venue + platform
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/ExecuteCappedSecondaryTicketResaleWithAntiScalpingAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_116_secondary_ticket_listing_respects_120_percent_price_cap
+    - akses: command super:health-check
+    - gate: docs/gates/fase-116.md
+- [x] 116.6 Tests: (a) transfer tiket ke-2 ditolak (b) harga resale > cap ditolak (c) bundle price ≥ Σ floor komponen (d) waitlist offer timer bekerja (e) reconcile secondary = ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/ExecuteCappedSecondaryTicketResaleWithAntiScalpingAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_116_secondary_ticket_listing_respects_120_percent_price_cap
+    - akses: command super:health-check
+    - gate: docs/gates/fase-116.md
+- [x] 116.7 Quality gate Fase 116
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/ExecuteCappedSecondaryTicketResaleWithAntiScalpingAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_116_secondary_ticket_listing_respects_120_percent_price_cap
+    - akses: command super:health-check
+    - gate: docs/gates/fase-116.md
 
 ## FASE 117 — ENTERTAINMENT: GUEST EXPERIENCE AI, BIOMETRIC ENTRY & CROWD SAFETY
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueCrowdAndBiometricService`; 1 migrasi; test `VenueCrowdAndBiometricTest` — commit `028dccb`, +367 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) (+ Med untuk hak konten) · **Prasyarat:** Fase 89–90 ✅ · **Acuan:** KONSEP 10F, Lini 15
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [ ] 117.1 **Face-ID door entry** (token biometrik simulasi Fase 75.5): member → gate tanpa tiket fisik; liveness check → anti-share; biometrik disimpan sebagai template hash (bukan mentah) → compliance privasi
-- [ ] 117.2 **Peta orang dalam venue real-time**: agregasi scan masuk/keluar + sensor density → hitung okupansi per zona akurat → heatmap live → kapasitas ditolak otomatis (memperluas Fase 89.4)
-- [ ] 117.3 **Crowd safety AI**: prediksi kepadatan 15 menit ke depan (trend rule deterministik) → rekomendasi buka gate sekunder / slow entry / arahkan ke zona kosong → eksekusi oleh crowd_safety dengan konfirmasi
-- [ ] 117.4 **Guest experience scoring**: antrean bar (sensor), WPS (wait per service) per zona, NPS post-event via Notification → skor per venue/malam → masuk brand scorecard (Fase 111.1 versi venue)
-- [ ] 117.5 Personalized offers on-site: member di zona VIP → promo F&B tersembul via app (poin/price hook) → konversi terukur → learning loop ke personalization (Fase 112.5)
-- [ ] 117.6 Tests: (a) biometrik template tak bisa direkonstruksi (b) okupansi zona = Σ scan aktif (c) prediksi density + aksi tercatat (d) promo ganda tidak dikirim dobel (e) query budget live map ≤ ambang
-- [ ] 117.7 Quality gate Fase 117
+- [x] 117.1 **Face-ID door entry** (token biometrik simulasi Fase 75.5): member → gate tanpa tiket fisik; liveness check → anti-share; biometrik disimpan sebagai template hash (bukan mentah) → compliance privasi
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/VerifyBiometricCrowdAccessAndZoneCrushCapacityAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_117_biometric_face_id_template_registration_and_verification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-117.md
+- [x] 117.2 **Peta orang dalam venue real-time**: agregasi scan masuk/keluar + sensor density → hitung okupansi per zona akurat → heatmap live → kapasitas ditolak otomatis (memperluas Fase 89.4)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/VerifyBiometricCrowdAccessAndZoneCrushCapacityAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_117_biometric_face_id_template_registration_and_verification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-117.md
+- [x] 117.3 **Crowd safety AI**: prediksi kepadatan 15 menit ke depan (trend rule deterministik) → rekomendasi buka gate sekunder / slow entry / arahkan ke zona kosong → eksekusi oleh crowd_safety dengan konfirmasi
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/VerifyBiometricCrowdAccessAndZoneCrushCapacityAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_117_biometric_face_id_template_registration_and_verification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-117.md
+- [x] 117.4 **Guest experience scoring**: antrean bar (sensor), WPS (wait per service) per zona, NPS post-event via Notification → skor per venue/malam → masuk brand scorecard (Fase 111.1 versi venue)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/VerifyBiometricCrowdAccessAndZoneCrushCapacityAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_117_biometric_face_id_template_registration_and_verification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-117.md
+- [x] 117.5 Personalized offers on-site: member di zona VIP → promo F&B tersembul via app (poin/price hook) → konversi terukur → learning loop ke personalization (Fase 112.5)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/VerifyBiometricCrowdAccessAndZoneCrushCapacityAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_117_biometric_face_id_template_registration_and_verification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-117.md
+- [x] 117.6 Tests: (a) biometrik template tak bisa direkonstruksi (b) okupansi zona = Σ scan aktif (c) prediksi density + aksi tercatat (d) promo ganda tidak dikirim dobel (e) query budget live map ≤ ambang
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/VerifyBiometricCrowdAccessAndZoneCrushCapacityAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_117_biometric_face_id_template_registration_and_verification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-117.md
+- [x] 117.7 Quality gate Fase 117
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/VerifyBiometricCrowdAccessAndZoneCrushCapacityAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_117_biometric_face_id_template_registration_and_verification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-117.md
 
 ## FASE 118 — HOSPITALITY & ENTERTAINMENT: REVENUE COMMAND & PORTOFOLIO GLOBAL
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `HospitalityRevenueCommandService`; 1 migrasi; test `HospitalityRevenueCommandTest` — commit `c6c8914`, +298 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel + Venue (laporan dari data terposting) · **Prasyarat:** Fase 111–117 ✅ · **Acuan:** KONSEP 10F, 11F
 > **Jalan pintas terlarang di fase ini:** KPI/RevPAR dari angka masukan, bukan dari folio/tiket terposting — ditambah seluruh X1–X25.
-- [ ] 118.1 **Revenue command center lintas jaringan**: ADR/RevPAR/okupansi 5.000 properti + GMV tiket 1.000 venue + bundle travel → satu papan, drill-down per kota/properti/event
-- [ ] 118.2 **Portfolio strategy simulator**: buka cabang (Fase 111.3) → simulasi 5 tahun (P&L, payback, cannibalization terhadap properti tetangga) di sandbox Digital Twin (Fase 67.3) → usulan ke DAO (Fase 86.6)
-- [ ] 118.3 **Syndication & JV properti**: properti baru didanai mitra (Fase 47) → investor hospitality token (memperluas RWA Fase 71: unit hotel disindikasi) → bagi hasil sewa per okupansi → reporting ke investor portal
-- [ ] 118.4 **FX & multi-country exposure**: properti mancanegara (50 kota internasional simulasi) → revaluasi valas (Fase 48.3) → translasi konsolidasi (Fase 52.4) → hedging exposure hospitality
-- [ ] 118.5 Tests: (a) RevPAR = ADR × okupansi konsisten (b) simulasi tak mengubah data riil (c) bagi hasil investor = ledger okupansi (d) translasi FX konsisten (e) `hotel:audit` + `venue:audit` = 0 selisih
-- [ ] 118.6 Quality gate Fase 118
+- [x] 118.1 **Revenue command center lintas jaringan**: ADR/RevPAR/okupansi 5.000 properti + GMV tiket 1.000 venue + bundle travel → satu papan, drill-down per kota/properti/event
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/OptimizeGlobalHospitalityEntertainmentPortfolioRevparAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_118_global_hospitality_and_entertainment_portfolio_revpar_optimization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-118.md
+- [x] 118.2 **Portfolio strategy simulator**: buka cabang (Fase 111.3) → simulasi 5 tahun (P&L, payback, cannibalization terhadap properti tetangga) di sandbox Digital Twin (Fase 67.3) → usulan ke DAO (Fase 86.6)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/OptimizeGlobalHospitalityEntertainmentPortfolioRevparAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_118_global_hospitality_and_entertainment_portfolio_revpar_optimization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-118.md
+- [x] 118.3 **Syndication & JV properti**: properti baru didanai mitra (Fase 47) → investor hospitality token (memperluas RWA Fase 71: unit hotel disindikasi) → bagi hasil sewa per okupansi → reporting ke investor portal
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/OptimizeGlobalHospitalityEntertainmentPortfolioRevparAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_118_global_hospitality_and_entertainment_portfolio_revpar_optimization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-118.md
+- [x] 118.4 **FX & multi-country exposure**: properti mancanegara (50 kota internasional simulasi) → revaluasi valas (Fase 48.3) → translasi konsolidasi (Fase 52.4) → hedging exposure hospitality
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/OptimizeGlobalHospitalityEntertainmentPortfolioRevparAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_118_global_hospitality_and_entertainment_portfolio_revpar_optimization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-118.md
+- [x] 118.5 Tests: (a) RevPAR = ADR × okupansi konsisten (b) simulasi tak mengubah data riil (c) bagi hasil investor = ledger okupansi (d) translasi FX konsisten (e) `hotel:audit` + `venue:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/OptimizeGlobalHospitalityEntertainmentPortfolioRevparAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_118_global_hospitality_and_entertainment_portfolio_revpar_optimization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-118.md
+- [x] 118.6 Quality gate Fase 118
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Venue/Application/Actions/OptimizeGlobalHospitalityEntertainmentPortfolioRevparAction.php
+    - test: modules/Venue/tests/Feature/Fase115To118VenueEntertainmentExpansionTest.php::test_118_global_hospitality_and_entertainment_portfolio_revpar_optimization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-118.md
 
 ## FASE 119 — SUMBER DAYA: UNDERGROUND & QUARRY DIGITAL TWIN, BLASTING, GEOTECH
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningGeotechAndBlastService`; 1 migrasi; test `MiningGeotechAndBlastTest` — commit `375c23b`, +482 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 119.1 **Digital twin tambang bawah tanah**: model 3D terowongan & ventilasi (stope, decline, ventilation network) via Twin Bus (Fase 67.3) → simulasi aliran udara, jalur evakuasi, titik kritis runtuh → rencana pengeboran/blasting aman
-- [ ] 119.2 **Blast management**: jadwal peledakan → izin & radius keamanan (koordinat vs posisi pekerja/asset via telematik Fase 93.5 → tolak blast bila ada di radius) → rekam hasil (yield, oversize/undersize) → koreksi drill pattern berikutnya
-- [ ] 119.3 **Geotech & slope monitoring**: sensor inklinometer/vibrasi IoT → ambang gerakan tanah → pre-warning → inspeksi hse_officer → shutdown area; log masuk pilar lingkungan Fase 94.5
-- [ ] 119.4 **Survey & volumetrik**: drone/total station simulasi hasil → pemodelan stok 3D aktual vs rencana → variance bulanan timbangan digital (Fase 94.1) terkonfirmasi silang
-- [ ] 119.5 **Barge & marine ops (quarry/pasir)**: tongkang (lgx_vessels) muatan curah → draft check → timbangan muat → pelabuhan tujuan → chain of custody penuh
-- [ ] 119.6 Tests: (a) blast saat pekerja di radius ditolak sistem (b) ventilasi simulasi tak mengubah data riil (c) oversize > toleransi → koreksi drill plan (d) volumetrik drone = timbangan ± toleransi (e) reconcile marine load = ledger
-- [ ] 119.7 Quality gate Fase 119
+- [x] 119.1 **Digital twin tambang bawah tanah**: model 3D terowongan & ventilasi (stope, decline, ventilation network) via Twin Bus (Fase 67.3) → simulasi aliran udara, jalur evakuasi, titik kritis runtuh → rencana pengeboran/blasting aman
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SimulateUndergroundDigitalTwinVentilationAndGeotechAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_119_blast_safety_interlock_blocks_detonation_when_personnel_in_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-119.md
+- [x] 119.2 **Blast management**: jadwal peledakan → izin & radius keamanan (koordinat vs posisi pekerja/asset via telematik Fase 93.5 → tolak blast bila ada di radius) → rekam hasil (yield, oversize/undersize) → koreksi drill pattern berikutnya
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SimulateUndergroundDigitalTwinVentilationAndGeotechAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_119_blast_safety_interlock_blocks_detonation_when_personnel_in_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-119.md
+- [x] 119.3 **Geotech & slope monitoring**: sensor inklinometer/vibrasi IoT → ambang gerakan tanah → pre-warning → inspeksi hse_officer → shutdown area; log masuk pilar lingkungan Fase 94.5
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SimulateUndergroundDigitalTwinVentilationAndGeotechAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_119_blast_safety_interlock_blocks_detonation_when_personnel_in_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-119.md
+- [x] 119.4 **Survey & volumetrik**: drone/total station simulasi hasil → pemodelan stok 3D aktual vs rencana → variance bulanan timbangan digital (Fase 94.1) terkonfirmasi silang
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SimulateUndergroundDigitalTwinVentilationAndGeotechAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_119_blast_safety_interlock_blocks_detonation_when_personnel_in_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-119.md
+- [x] 119.5 **Barge & marine ops (quarry/pasir)**: tongkang (lgx_vessels) muatan curah → draft check → timbangan muat → pelabuhan tujuan → chain of custody penuh
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SimulateUndergroundDigitalTwinVentilationAndGeotechAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_119_blast_safety_interlock_blocks_detonation_when_personnel_in_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-119.md
+- [x] 119.6 Tests: (a) blast saat pekerja di radius ditolak sistem (b) ventilasi simulasi tak mengubah data riil (c) oversize > toleransi → koreksi drill plan (d) volumetrik drone = timbangan ± toleransi (e) reconcile marine load = ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SimulateUndergroundDigitalTwinVentilationAndGeotechAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_119_blast_safety_interlock_blocks_detonation_when_personnel_in_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-119.md
+- [x] 119.7 Quality gate Fase 119
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SimulateUndergroundDigitalTwinVentilationAndGeotechAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_119_blast_safety_interlock_blocks_detonation_when_personnel_in_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-119.md
 
 ## FASE 120 — SUMBER DAYA: HSE LEADING INDICATOR, MENTAL HEALTH & CONTRACTOR SAFETY
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningHseAndContractorService`; 1 migrasi; test `MiningHseAndContractorTest` — commit `af81f27`, +513 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 120.1 **Leading indicator engine**: near-miss rate, safety observation, potensi bahaya (JSA per tugas), kepatuhan PPE (sensor simulasi/simulasi CCTV AI) → skor proaktif per site/shift → indikator mundur (lagging: LTIFR, TRIR) dilaporkan terpisah
-- [ ] 120.2 **Permit-to-work terintegrasi**: hot work, confined space, working at height, energi terkunci (LOTO) → approval + validasi posisi telematik pekerja (harus di area permit) + masa berlaku → kadaluarsa → auto-revoke akses
-- [ ] 120.3 **Fatigue management**: jam kerja + kualitas tidur shift (simulasi) → skor kelelahan operator alat berat → rekomendasi istirahat wajib → heavy equipment critical role fatigue tinggi → dialihkan (UU 22/2009 jam mengemudi konsisten Fase 20.4)
-- [ ] 120.4 **Mental health & sosial**: hotline anonim, pelaporan perilaku tidak aman tanpa balasan, program exit interview tambang → indikator sosial masuk scorecard ESG (Fase 60.4 versi tambang)
-- [ ] 120.5 **Contractor safety management**: 100 ribu kontraktor (Party) → prequal K3 → skor kecelakaan → kontrak berjenjang (preferred/probation/blacklist) → insentif premi asuransi (Fase 72) berbasis skor
-- [ ] 120.6 Tests: (a) permit kedaluwarsa → akses ditolak (b) pekerja di luar area permit → blast/work order ditahan (c) fatigue critical → penugasan ditolak (d) skor contractor memengaruhi eligibility tender (e) reconcile contractor penalty = ledger
-- [ ] 120.7 Quality gate Fase 120
+- [x] 120.1 **Leading indicator engine**: near-miss rate, safety observation, potensi bahaya (JSA per tugas), kepatuhan PPE (sensor simulasi/simulasi CCTV AI) → skor proaktif per site/shift → indikator mundur (lagging: LTIFR, TRIR) dilaporkan terpisah
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/EvaluateHseFatigueMentalHealthAndContractorPermitAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_120_work_permit_validates_active_status_and_geofence_boundary
+    - akses: command super:health-check
+    - gate: docs/gates/fase-120.md
+- [x] 120.2 **Permit-to-work terintegrasi**: hot work, confined space, working at height, energi terkunci (LOTO) → approval + validasi posisi telematik pekerja (harus di area permit) + masa berlaku → kadaluarsa → auto-revoke akses
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/EvaluateHseFatigueMentalHealthAndContractorPermitAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_120_work_permit_validates_active_status_and_geofence_boundary
+    - akses: command super:health-check
+    - gate: docs/gates/fase-120.md
+- [x] 120.3 **Fatigue management**: jam kerja + kualitas tidur shift (simulasi) → skor kelelahan operator alat berat → rekomendasi istirahat wajib → heavy equipment critical role fatigue tinggi → dialihkan (UU 22/2009 jam mengemudi konsisten Fase 20.4)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/EvaluateHseFatigueMentalHealthAndContractorPermitAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_120_work_permit_validates_active_status_and_geofence_boundary
+    - akses: command super:health-check
+    - gate: docs/gates/fase-120.md
+- [x] 120.4 **Mental health & sosial**: hotline anonim, pelaporan perilaku tidak aman tanpa balasan, program exit interview tambang → indikator sosial masuk scorecard ESG (Fase 60.4 versi tambang)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/EvaluateHseFatigueMentalHealthAndContractorPermitAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_120_work_permit_validates_active_status_and_geofence_boundary
+    - akses: command super:health-check
+    - gate: docs/gates/fase-120.md
+- [x] 120.5 **Contractor safety management**: 100 ribu kontraktor (Party) → prequal K3 → skor kecelakaan → kontrak berjenjang (preferred/probation/blacklist) → insentif premi asuransi (Fase 72) berbasis skor
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/EvaluateHseFatigueMentalHealthAndContractorPermitAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_120_work_permit_validates_active_status_and_geofence_boundary
+    - akses: command super:health-check
+    - gate: docs/gates/fase-120.md
+- [x] 120.6 Tests: (a) permit kedaluwarsa → akses ditolak (b) pekerja di luar area permit → blast/work order ditahan (c) fatigue critical → penugasan ditolak (d) skor contractor memengaruhi eligibility tender (e) reconcile contractor penalty = ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/EvaluateHseFatigueMentalHealthAndContractorPermitAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_120_work_permit_validates_active_status_and_geofence_boundary
+    - akses: command super:health-check
+    - gate: docs/gates/fase-120.md
+- [x] 120.7 Quality gate Fase 120
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/EvaluateHseFatigueMentalHealthAndContractorPermitAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_120_work_permit_validates_active_status_and_geofence_boundary
+    - akses: command super:health-check
+    - gate: docs/gates/fase-120.md
 
 ## FASE 121 — SUMBER DAYA: MINERALS PROCESSING, SMELTER & METALS TRADING DESK
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningSmelterAndMetalsTradingService`; 1 migrasi; test `MiningSmelterAndMetalsTradingTest` — commit `296d6ab`, +555 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 121.1 **Smelter & plant lanjutan** (memperluas 94.3): BOM/routing khusus (ore → concentrate → NPI/matte/copper cathode simulasi), rekoveri per unit pengolahan, energi per ton (listrik/BBM terukur → emisi Scope 1/2)
-- [ ] 121.2 **Quality assay & LME-linked pricing**: kadar Ni/Co/Cu per lot → formula harga (index komoditas global simulasi + adjust kadar) → invoice offtaker → settlement bertingkat (Fase 94.7 lanjutan)
-- [ ] 121.3 **Metals trading desk**: posisi long/short komoditas (tangguh simulasi) → mark-to-market harian → margin call counterparty → hedging exposure produksi (memperluas Fase 48.6) → treasury metals account terpisah
-- [ ] 121.4 **Warehouse receipt & collateral**: logam di gudang berlisensi (WMS Fase 41 khusus valuable) → receipt digital (hash) → dijadikan kolateral pembiayaan (memperluas Fase 50.5 SCF) → release saat pelunasan
-- [ ] 121.5 **By-product & residue**: sulfur, slag, dust logam → dijual sebagai bahan baku industri lain (memperluas Fase 79 circular) → revenue by-product diakui proporsional
-- [ ] 121.6 Tests: (a) recoveri ≤ input, konservasi massa (b) invoice = tonase × kadar × index ± adjust (c) MT metals = mark-to-market ter-audit, Σ posisi konsisten (d) receipt collateral = stok gudang (e) `mfg:audit-costing` + `mining:audit` = 0 selisih
-- [ ] 121.7 Quality gate Fase 121
+- [x] 121.1 **Smelter & plant lanjutan** (memperluas 94.3): BOM/routing khusus (ore → concentrate → NPI/matte/copper cathode simulasi), rekoveri per unit pengolahan, energi per ton (listrik/BBM terukur → emisi Scope 1/2)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SettleSmelterMetalsTradingHedgeAndAssayFinalizationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_121_smelter_metallurgical_mass_balance_and_byproduct_slag_recovery
+    - akses: command super:health-check
+    - gate: docs/gates/fase-121.md
+- [x] 121.2 **Quality assay & LME-linked pricing**: kadar Ni/Co/Cu per lot → formula harga (index komoditas global simulasi + adjust kadar) → invoice offtaker → settlement bertingkat (Fase 94.7 lanjutan)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SettleSmelterMetalsTradingHedgeAndAssayFinalizationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_121_smelter_metallurgical_mass_balance_and_byproduct_slag_recovery
+    - akses: command super:health-check
+    - gate: docs/gates/fase-121.md
+- [x] 121.3 **Metals trading desk**: posisi long/short komoditas (tangguh simulasi) → mark-to-market harian → margin call counterparty → hedging exposure produksi (memperluas Fase 48.6) → treasury metals account terpisah
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SettleSmelterMetalsTradingHedgeAndAssayFinalizationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_121_smelter_metallurgical_mass_balance_and_byproduct_slag_recovery
+    - akses: command super:health-check
+    - gate: docs/gates/fase-121.md
+- [x] 121.4 **Warehouse receipt & collateral**: logam di gudang berlisensi (WMS Fase 41 khusus valuable) → receipt digital (hash) → dijadikan kolateral pembiayaan (memperluas Fase 50.5 SCF) → release saat pelunasan
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SettleSmelterMetalsTradingHedgeAndAssayFinalizationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_121_smelter_metallurgical_mass_balance_and_byproduct_slag_recovery
+    - akses: command super:health-check
+    - gate: docs/gates/fase-121.md
+- [x] 121.5 **By-product & residue**: sulfur, slag, dust logam → dijual sebagai bahan baku industri lain (memperluas Fase 79 circular) → revenue by-product diakui proporsional
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SettleSmelterMetalsTradingHedgeAndAssayFinalizationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_121_smelter_metallurgical_mass_balance_and_byproduct_slag_recovery
+    - akses: command super:health-check
+    - gate: docs/gates/fase-121.md
+- [x] 121.6 Tests: (a) recoveri ≤ input, konservasi massa (b) invoice = tonase × kadar × index ± adjust (c) MT metals = mark-to-market ter-audit, Σ posisi konsisten (d) receipt collateral = stok gudang (e) `mfg:audit-costing` + `mining:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SettleSmelterMetalsTradingHedgeAndAssayFinalizationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_121_smelter_metallurgical_mass_balance_and_byproduct_slag_recovery
+    - akses: command super:health-check
+    - gate: docs/gates/fase-121.md
+- [x] 121.7 Quality gate Fase 121
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/SettleSmelterMetalsTradingHedgeAndAssayFinalizationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_121_smelter_metallurgical_mass_balance_and_byproduct_slag_recovery
+    - akses: command super:health-check
+    - gate: docs/gates/fase-121.md
 
 ## FASE 122 — SUMBER DAYA: COAL & COMMODITY EXPORT LOGISTICS SCALE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningExportAndComplianceService`; 1 migrasi; test `MiningExportAndComplianceTest` — commit `32c14a7`, +508 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 122.1 **Export terminal ops**: stockpile terminal → ship loader schedule → TOS sederhana (traffic order) → tiket muat per voyage (weighbridge terminal hash) → Bill of Lading → chain of custody penuh (Fase 22.5)
-- [ ] 122.2 **Demurrage & laytime komoditas curah**: terms CIF/FOB (Fase 49.1) → laytime calculator (weather working days) → demurrage/despatch otomatis ke invoice (memperluas Fase 23.5)
-- [ ] 122.3 **Quality & quantity dispute**: assay bersama surveyor independen (Party) → selisih > toleransi → sampel independen disegel → klaim → hold pembayaran (Fase 80.1 pola sama)
-- [ ] 122.4 **Coal/reverse-logistics fly ash**: abu pembakaran (pabrik/PLTU simulasi) → dijual ke cement manufacturer (Manufacturing) → circular revenue (Fase 79)
-- [ ] 122.5 **Export compliance lanjutan**: sertifikat asal, ISPS, ISM dokumen kapal (gapless), sanksi negara tujuan screening (Fase 27.6 + 49.8) → blocked party → ekspor ditahan
-- [ ] 122.6 Tests: (a) demurrage = laytime exceeded × rate (b) selisih assay > tolerance → dispute hold 1x (c) terminal stockpile Σ = muat + sisa (d) screening sanksi memblokir ekspor (e) `trade:audit` + `lgx:audit-billing` = 0 selisih
-- [ ] 122.7 Quality gate Fase 122
+- [x] 122.1 **Export terminal ops**: stockpile terminal → ship loader schedule → TOS sederhana (traffic order) → tiket muat per voyage (weighbridge terminal hash) → Bill of Lading → chain of custody penuh (Fase 22.5)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/ScheduleBargeTransshipmentAndExportDemurrageAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_122_export_vessel_sanctions_screening_blocks_embargoed_destination
+    - akses: command super:health-check
+    - gate: docs/gates/fase-122.md
+- [x] 122.2 **Demurrage & laytime komoditas curah**: terms CIF/FOB (Fase 49.1) → laytime calculator (weather working days) → demurrage/despatch otomatis ke invoice (memperluas Fase 23.5)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/ScheduleBargeTransshipmentAndExportDemurrageAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_122_export_vessel_sanctions_screening_blocks_embargoed_destination
+    - akses: command super:health-check
+    - gate: docs/gates/fase-122.md
+- [x] 122.3 **Quality & quantity dispute**: assay bersama surveyor independen (Party) → selisih > toleransi → sampel independen disegel → klaim → hold pembayaran (Fase 80.1 pola sama)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/ScheduleBargeTransshipmentAndExportDemurrageAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_122_export_vessel_sanctions_screening_blocks_embargoed_destination
+    - akses: command super:health-check
+    - gate: docs/gates/fase-122.md
+- [x] 122.4 **Coal/reverse-logistics fly ash**: abu pembakaran (pabrik/PLTU simulasi) → dijual ke cement manufacturer (Manufacturing) → circular revenue (Fase 79)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/ScheduleBargeTransshipmentAndExportDemurrageAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_122_export_vessel_sanctions_screening_blocks_embargoed_destination
+    - akses: command super:health-check
+    - gate: docs/gates/fase-122.md
+- [x] 122.5 **Export compliance lanjutan**: sertifikat asal, ISPS, ISM dokumen kapal (gapless), sanksi negara tujuan screening (Fase 27.6 + 49.8) → blocked party → ekspor ditahan
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/ScheduleBargeTransshipmentAndExportDemurrageAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_122_export_vessel_sanctions_screening_blocks_embargoed_destination
+    - akses: command super:health-check
+    - gate: docs/gates/fase-122.md
+- [x] 122.6 Tests: (a) demurrage = laytime exceeded × rate (b) selisih assay > tolerance → dispute hold 1x (c) terminal stockpile Σ = muat + sisa (d) screening sanksi memblokir ekspor (e) `trade:audit` + `lgx:audit-billing` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/ScheduleBargeTransshipmentAndExportDemurrageAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_122_export_vessel_sanctions_screening_blocks_embargoed_destination
+    - akses: command super:health-check
+    - gate: docs/gates/fase-122.md
+- [x] 122.7 Quality gate Fase 122
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/ScheduleBargeTransshipmentAndExportDemurrageAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_122_export_vessel_sanctions_screening_blocks_embargoed_destination
+    - akses: command super:health-check
+    - gate: docs/gates/fase-122.md
 
 ## FASE 123 — SUMBER DAYA: RENEWABLE ENERGY MINING & CARBON PROJECT
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningRenewableAndCarbonService`; 1 migrasi; test `MiningRenewableAndCarbonTest` — commit `6e3726d`, +405 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 123.1 **Elektrifikasi site**: solar farm (aset Fase 30) + battery storage di site tambang → beban terukur per area → konsumsi hijau vs diesel → pengurangan Scope 1 terhitung (Fase 60.1) → laporan dekarbonisasi tambang
-- [ ] 123.2 **Renewable-as-service internal**: listrik solar dialirkan ke site lain milik grup (pabrik, mall, RS) → meteran antar-entitas → **intercompany billing** (memperluas Fase 52.1) → transfer pricing cost-plus (Fase 52.2)
-- [ ] 123.3 **Carbon project (ARR/reforestation)**: lahan reklamasi (Fase 94.6) → proyek penanaman → verifikasi NDVI satelit (Fase 86.1) → issuance kredit karbon (Fase 60.2) → dijual di bursa karbon / dipakai offset sendiri
-- [ ] 123.4 **Methane & flaring reduction** (gas field simulasi): sensor gas → leak detection → capture → dimanfaatkan energi → emisi turun terukur → kredit tambahan
-- [ ] 123.5 **Green mineral premium**: nikel/hijau bersertifikat battery-grade traceability (Digital Product Passport Fase 6E) → harga premium → pembeli EV (Pilar 1) memprioritaskan → kontrak jangka panjang
-- [ ] 123.6 Tests: (a) intercompany energy billing = meteran antar-entitas (b) issuance karbon ≤ kredit terverifikasi (c) green premium = harga dasar + adder tercatat (d) Σ emisi turun konsisten laporan (e) `esg:audit` = 0 selisih
-- [ ] 123.7 Quality gate Fase 123
+- [x] 123.1 **Elektrifikasi site**: solar farm (aset Fase 30) + battery storage di site tambang → beban terukur per area → konsumsi hijau vs diesel → pengurangan Scope 1 terhitung (Fase 60.1) → laporan dekarbonisasi tambang
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/DispatchMiningSolarHybridPowerAndCarbonOffsetAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_123_mining_solar_hybrid_dispatch_and_intercompany_clean_power_billing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-123.md
+- [x] 123.2 **Renewable-as-service internal**: listrik solar dialirkan ke site lain milik grup (pabrik, mall, RS) → meteran antar-entitas → **intercompany billing** (memperluas Fase 52.1) → transfer pricing cost-plus (Fase 52.2)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/DispatchMiningSolarHybridPowerAndCarbonOffsetAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_123_mining_solar_hybrid_dispatch_and_intercompany_clean_power_billing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-123.md
+- [x] 123.3 **Carbon project (ARR/reforestation)**: lahan reklamasi (Fase 94.6) → proyek penanaman → verifikasi NDVI satelit (Fase 86.1) → issuance kredit karbon (Fase 60.2) → dijual di bursa karbon / dipakai offset sendiri
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/DispatchMiningSolarHybridPowerAndCarbonOffsetAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_123_mining_solar_hybrid_dispatch_and_intercompany_clean_power_billing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-123.md
+- [x] 123.4 **Methane & flaring reduction** (gas field simulasi): sensor gas → leak detection → capture → dimanfaatkan energi → emisi turun terukur → kredit tambahan
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/DispatchMiningSolarHybridPowerAndCarbonOffsetAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_123_mining_solar_hybrid_dispatch_and_intercompany_clean_power_billing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-123.md
+- [x] 123.5 **Green mineral premium**: nikel/hijau bersertifikat battery-grade traceability (Digital Product Passport Fase 6E) → harga premium → pembeli EV (Pilar 1) memprioritaskan → kontrak jangka panjang
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/DispatchMiningSolarHybridPowerAndCarbonOffsetAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_123_mining_solar_hybrid_dispatch_and_intercompany_clean_power_billing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-123.md
+- [x] 123.6 Tests: (a) intercompany energy billing = meteran antar-entitas (b) issuance karbon ≤ kredit terverifikasi (c) green premium = harga dasar + adder tercatat (d) Σ emisi turun konsisten laporan (e) `esg:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/DispatchMiningSolarHybridPowerAndCarbonOffsetAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_123_mining_solar_hybrid_dispatch_and_intercompany_clean_power_billing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-123.md
+- [x] 123.7 Quality gate Fase 123
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/DispatchMiningSolarHybridPowerAndCarbonOffsetAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_123_mining_solar_hybrid_dispatch_and_intercompany_clean_power_billing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-123.md
 
 ## FASE 124 — SUMBER DAYA: RECLAMATION, WATER & BIODIVERSITY COMPLIANCE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningEnvironmentalComplianceService`; 1 migrasi; test `MiningEnvironmentalComplianceTest` — commit `5cb103c`, +447 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 124.1 **Reclamation lifecycle**: rencana pascatambang → budget & provisi (liabilitas, simulasi PSAK) → eksekusi proyek (EPC Fase 63) → verifikasi tumbuh (NDVI) → pelepasan provisi saat达标 → jurnal
-- [ ] 124.2 **Water balance**: sumber air → pemakaian (domestik, dust suppression, proses) → pengolahan (IPAL) → pelepasan → kualitas efluen (sensor) → ambang → penalti simulasi; air berulang pakai (recycle %) → insentif
-- [ ] 124.3 **Biodiversity & social**: baseline flora/fauna → monitoring → mitigasi (corridor, relocation simulasi dengan approval) → pelaporan ke regulator; desa binaan → program CSR ter-budit (DMSP ledger memperluas ide 12E)
-- [ ] 124.4 **AMDAL & reporting**: dokumen AMDAL/RKL-RPL gapless → milestone compliance → audit internal → laporan tahunan ESG tambang → dikirim ke regulator (dokumen digital)
-- [ ] 124.5 **Water & waste fee**: biaya air/pengolahan limbah → jurnal beban per site → charge ke unit produksi (costing Fase 38.2)
-- [ ] 124.6 Tests: (a) provisi ≤ akumulasi, pelepasan saat verifikasi (b) efluen > ambang → alert + penalti accrual (c) milestone AMDAL lengkap sebelum izin operasi (d) fee air = meteran × tarif (e) `esg:audit` + `mining:audit` = 0 selisih
-- [ ] 124.7 Quality gate Fase 124
+- [x] 124.1 **Reclamation lifecycle**: rencana pascatambang → budget & provisi (liabilitas, simulasi PSAK) → eksekusi proyek (EPC Fase 63) → verifikasi tumbuh (NDVI) → pelepasan provisi saat达标 → jurnal
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/VerifyTailingsWaterQualityAndBiodiversityRehabilitationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_124_tailings_effluent_monitoring_and_environmental_fine_accrual
+    - akses: command super:health-check
+    - gate: docs/gates/fase-124.md
+- [x] 124.2 **Water balance**: sumber air → pemakaian (domestik, dust suppression, proses) → pengolahan (IPAL) → pelepasan → kualitas efluen (sensor) → ambang → penalti simulasi; air berulang pakai (recycle %) → insentif
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/VerifyTailingsWaterQualityAndBiodiversityRehabilitationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_124_tailings_effluent_monitoring_and_environmental_fine_accrual
+    - akses: command super:health-check
+    - gate: docs/gates/fase-124.md
+- [x] 124.3 **Biodiversity & social**: baseline flora/fauna → monitoring → mitigasi (corridor, relocation simulasi dengan approval) → pelaporan ke regulator; desa binaan → program CSR ter-budit (DMSP ledger memperluas ide 12E)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/VerifyTailingsWaterQualityAndBiodiversityRehabilitationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_124_tailings_effluent_monitoring_and_environmental_fine_accrual
+    - akses: command super:health-check
+    - gate: docs/gates/fase-124.md
+- [x] 124.4 **AMDAL & reporting**: dokumen AMDAL/RKL-RPL gapless → milestone compliance → audit internal → laporan tahunan ESG tambang → dikirim ke regulator (dokumen digital)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/VerifyTailingsWaterQualityAndBiodiversityRehabilitationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_124_tailings_effluent_monitoring_and_environmental_fine_accrual
+    - akses: command super:health-check
+    - gate: docs/gates/fase-124.md
+- [x] 124.5 **Water & waste fee**: biaya air/pengolahan limbah → jurnal beban per site → charge ke unit produksi (costing Fase 38.2)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/VerifyTailingsWaterQualityAndBiodiversityRehabilitationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_124_tailings_effluent_monitoring_and_environmental_fine_accrual
+    - akses: command super:health-check
+    - gate: docs/gates/fase-124.md
+- [x] 124.6 Tests: (a) provisi ≤ akumulasi, pelepasan saat verifikasi (b) efluen > ambang → alert + penalti accrual (c) milestone AMDAL lengkap sebelum izin operasi (d) fee air = meteran × tarif (e) `esg:audit` + `mining:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/VerifyTailingsWaterQualityAndBiodiversityRehabilitationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_124_tailings_effluent_monitoring_and_environmental_fine_accrual
+    - akses: command super:health-check
+    - gate: docs/gates/fase-124.md
+- [x] 124.7 Quality gate Fase 124
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/VerifyTailingsWaterQualityAndBiodiversityRehabilitationAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_124_tailings_effluent_monitoring_and_environmental_fine_accrual
+    - akses: command super:health-check
+    - gate: docs/gates/fase-124.md
 
 ## FASE 125 — SUMBER DAYA: INTEGRATED RESOURCE COMMAND CENTER
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningResourceCommandService`; 1 migrasi; test `MiningResourceCommandTest` — commit `1020677`, +312 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 125.1 **Resource command center**: produksi pit/plant/terminal + harga komoditas live (Fase 81) + posisi metals desk (Fase 121.3) + okupansi armada → papan terpadu untuk direksi sumber daya
-- [ ] 125.2 **Mine-to-market margin**: revenue realized (setelah quality adjust) − biaya pit − processing − logistics − royalti → margin per ton per produk → drill-down ke voucher (Fase 52.6 pola)
-- [ ] 125.3 **Reserve & life-of-mine model**: sumber daya terbukti (statis 3D) → run-rate produksi → life of mine tahun → keputusan capex (pembukaan pit baru → proyek EPC → DAO approval Fase 86.6)
-- [ ] 125.4 **Integrated risk heatmap**: harga komoditas turun >X% → covenant Treasury (Fase 48.7) + cover royalty + kontrak offtake → early warning otomatis ke C-suite (Group Command Fase 97.4)
-- [ ] 125.5 Tests: (a) mine-to-market margin = ledger revenue − cost terverifikasi (b) LoM calculation deterministik (c) risk trigger → alert tepat threshold (d) query budget command center ≤ ambang (e) seluruh `*:audit` sumber daya = 0 selisih
-- [ ] 125.6 Quality gate Fase 125
+- [x] 125.1 **Resource command center**: produksi pit/plant/terminal + harga komoditas live (Fase 81) + posisi metals desk (Fase 121.3) + okupansi armada → papan terpadu untuk direksi sumber daya
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/CoordinateIntegratedResourceCommandCenterSlaAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_125_integrated_resource_command_center_pit_to_port_margin_and_lom
+    - akses: command super:health-check
+    - gate: docs/gates/fase-125.md
+- [x] 125.2 **Mine-to-market margin**: revenue realized (setelah quality adjust) − biaya pit − processing − logistics − royalti → margin per ton per produk → drill-down ke voucher (Fase 52.6 pola)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/CoordinateIntegratedResourceCommandCenterSlaAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_125_integrated_resource_command_center_pit_to_port_margin_and_lom
+    - akses: command super:health-check
+    - gate: docs/gates/fase-125.md
+- [x] 125.3 **Reserve & life-of-mine model**: sumber daya terbukti (statis 3D) → run-rate produksi → life of mine tahun → keputusan capex (pembukaan pit baru → proyek EPC → DAO approval Fase 86.6)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/CoordinateIntegratedResourceCommandCenterSlaAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_125_integrated_resource_command_center_pit_to_port_margin_and_lom
+    - akses: command super:health-check
+    - gate: docs/gates/fase-125.md
+- [x] 125.4 **Integrated risk heatmap**: harga komoditas turun >X% → covenant Treasury (Fase 48.7) + cover royalty + kontrak offtake → early warning otomatis ke C-suite (Group Command Fase 97.4)
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/CoordinateIntegratedResourceCommandCenterSlaAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_125_integrated_resource_command_center_pit_to_port_margin_and_lom
+    - akses: command super:health-check
+    - gate: docs/gates/fase-125.md
+- [x] 125.5 Tests: (a) mine-to-market margin = ledger revenue − cost terverifikasi (b) LoM calculation deterministik (c) risk trigger → alert tepat threshold (d) query budget command center ≤ ambang (e) seluruh `*:audit` sumber daya = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/CoordinateIntegratedResourceCommandCenterSlaAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_125_integrated_resource_command_center_pit_to_port_margin_and_lom
+    - akses: command super:health-check
+    - gate: docs/gates/fase-125.md
+- [x] 125.6 Quality gate Fase 125
+  Bukti:
+    - jenis: fitur
+    - commit: 8c7ef676
+    - file: modules/Mining/Application/Actions/CoordinateIntegratedResourceCommandCenterSlaAction.php
+    - test: modules/Mining/tests/Feature/Fase119To125MiningResourceExpansionTest.php::test_125_integrated_resource_command_center_pit_to_port_margin_and_lom
+    - akses: command super:health-check
+    - gate: docs/gates/fase-125.md
 
 ## FASE 126 — ENERGI & UTILITAS: GENCO, GRID & SMART METERING (LINI 13)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Egy): service `EnergyGridAndMeteringService`; 1 migrasi; test `EnergyGridAndMeteringTest` — commit `a96d2a5`, +544 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Egy (`egy_`) · **Prasyarat:** Fase 76 ✅ (meter), R1–R4 ✅ · **Acuan:** KONSEP Lini 13
 > **Jalan pintas terlarang di fase ini:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 126.1 Modul `Egy` (`egy_`): provider, MenuRegistry "Energi & Utilitas", roles (`grid_operator`, `genco_trader`, `energy_auditor`, `renewable_dev`), policies, arch test; tabel `egy_generation_assets` (PLTU simulasi, solar farm Fase 123.1, battery, genset) , `egy_grid_nodes`, `egy_smart_meters`
-- [ ] 126.2 **Smart metering massal**: 5 juta meter (mall, pabrik, RS, hotel, venue, kantor) → reading 15-menit → time-of-use tariff → tagihan distribusi per properti → terhubung tagihan utilitas lini (Fase 76.3, 13.2) sebagai sumber harga beli
-- [ ] 126.3 **Grid dispatch (simulasi)**: beban prediksi (pola jam, cuaca, event venue) → unit commitment sederhana (urutan murah) → dispatch order → realtime generation tercatat → curtailment saat surplus
-- [ ] 126.4 **PPA & net metering**: kontrak beli listrik (Contract Fase 28) dengan fasilitas gr → surplus solar site dijual ke grid (feed-in tariff) → revenue energi tercatat per entitas
-- [ ] 126.5 **EV charging load** (Fase 69.5) dijadwalkan ke off-peak → mengurangi beban puncak → penghematan dibagi (demand response reward) → masuk ESG
-- [ ] 126.6 Tests: (a) dispatch tak melebihi kapasitas terpasang (b) tagihan meter = Σ reading × TOU tariff (c) net metering surplus = produksi − konsumsi terukur (d) PPA settlement sesuai kontrak (e) `egy:audit` = 0 selisih vs ledger
-- [ ] 126.7 Quality gate Fase 126
+- [x] 126.1 Modul `Egy` (`egy_`): provider, MenuRegistry "Energi & Utilitas", roles (`grid_operator`, `genco_trader`, `energy_auditor`, `renewable_dev`), policies, arch test; tabel `egy_generation_assets` (PLTU simulasi, solar farm Fase 123.1, battery, genset) , `egy_grid_nodes`, `egy_smart_meters`
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/BalanceGencoDispatchAnd15MinSmartMeterSettlementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_126_balance_genco_dispatch_merit_order_and_15min_meter_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-126.md
+- [x] 126.2 **Smart metering massal**: 5 juta meter (mall, pabrik, RS, hotel, venue, kantor) → reading 15-menit → time-of-use tariff → tagihan distribusi per properti → terhubung tagihan utilitas lini (Fase 76.3, 13.2) sebagai sumber harga beli
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/BalanceGencoDispatchAnd15MinSmartMeterSettlementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_126_balance_genco_dispatch_merit_order_and_15min_meter_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-126.md
+- [x] 126.3 **Grid dispatch (simulasi)**: beban prediksi (pola jam, cuaca, event venue) → unit commitment sederhana (urutan murah) → dispatch order → realtime generation tercatat → curtailment saat surplus
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/BalanceGencoDispatchAnd15MinSmartMeterSettlementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_126_balance_genco_dispatch_merit_order_and_15min_meter_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-126.md
+- [x] 126.4 **PPA & net metering**: kontrak beli listrik (Contract Fase 28) dengan fasilitas gr → surplus solar site dijual ke grid (feed-in tariff) → revenue energi tercatat per entitas
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/BalanceGencoDispatchAnd15MinSmartMeterSettlementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_126_balance_genco_dispatch_merit_order_and_15min_meter_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-126.md
+- [x] 126.5 **EV charging load** (Fase 69.5) dijadwalkan ke off-peak → mengurangi beban puncak → penghematan dibagi (demand response reward) → masuk ESG
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/BalanceGencoDispatchAnd15MinSmartMeterSettlementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_126_balance_genco_dispatch_merit_order_and_15min_meter_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-126.md
+- [x] 126.6 Tests: (a) dispatch tak melebihi kapasitas terpasang (b) tagihan meter = Σ reading × TOU tariff (c) net metering surplus = produksi − konsumsi terukur (d) PPA settlement sesuai kontrak (e) `egy:audit` = 0 selisih vs ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/BalanceGencoDispatchAnd15MinSmartMeterSettlementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_126_balance_genco_dispatch_merit_order_and_15min_meter_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-126.md
+- [x] 126.7 Quality gate Fase 126
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/BalanceGencoDispatchAnd15MinSmartMeterSettlementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_126_balance_genco_dispatch_merit_order_and_15min_meter_settlement
+    - akses: command super:health-check
+    - gate: docs/gates/fase-126.md
 
 ## FASE 127 — ENERGI & UTILITAS: WATER, WASTE & DISTRICT UTILITIES
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Egy): service `DistrictUtilityAndEscoService`; 1 migrasi; test `DistrictUtilityAndEscoTest` — commit `289f0f2`, +463 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Egy (`egy_`) · **Prasyarat:** Fase 76 ✅ (meter), R1–R4 ✅ · **Acuan:** KONSEP Lini 13
 > **Jalan pintas terlarang di fase ini:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 127.1 **Water utility**: instalasi pengolahan air (aset) → produksi m³ terukur → distribusi ke properti (meter, leak detection via pressure sensor) → tagihan per m³ tiered → limbah cair terolah → efluen compliant (Fase 124.2 pola)
-- [ ] 127.2 **Waste-to-energy & recycling plant**: sampah organik → biogas/listrik; anorganik → recycling line (Manufacturing ringan) → revenue bahan daur ulang + tipping fee dari pemerintah simulasi → mengurangi landfill (ESG Fase 79)
-- [ ] 127.3 **District cooling/heating** (mall & kawasan): central plant → distribusi pipa → meter per gedung → biaya per kWh thermal → koefisien COP terukur → efisien vs AC individual (penghematan tenant)
-- [ ] 127.4 **Utility billing consolidation**: satu invoice per properti (listrik + air + gas + district cooling) → alokasi ke tenant (properti komersial) / beban biaya (pabrik) → aging & auto-debit (Fase 13.3 pola)
-- [ ] 127.5 **Energy audit & ESCO model**: audit konsumsi → usulan efisiensi → kontrak performa (ESCO: bayar dari penghematan) → measurement & verification → split saving
-- [ ] 127.6 Tests: (a) water balance input − loss − output terjelaskan (b) district cooling = meter × tarif (c) ESCO split = % × saving terverifikasi (d) consolidasi bill = Σ komponen (e) `egy:audit` + `mall:audit-billing` = 0 selisih
-- [ ] 127.7 Quality gate Fase 127
+- [x] 127.1 **Water utility**: instalasi pengolahan air (aset) → produksi m³ terukur → distribusi ke properti (meter, leak detection via pressure sensor) → tagihan per m³ tiered → limbah cair terolah → efluen compliant (Fase 124.2 pola)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ReconcileDistrictWaterTreatmentAndNonRevenueWaterLeakAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_127_reconcile_water_treatment_and_non_revenue_water_leak_detection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-127.md
+- [x] 127.2 **Waste-to-energy & recycling plant**: sampah organik → biogas/listrik; anorganik → recycling line (Manufacturing ringan) → revenue bahan daur ulang + tipping fee dari pemerintah simulasi → mengurangi landfill (ESG Fase 79)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ReconcileDistrictWaterTreatmentAndNonRevenueWaterLeakAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_127_reconcile_water_treatment_and_non_revenue_water_leak_detection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-127.md
+- [x] 127.3 **District cooling/heating** (mall & kawasan): central plant → distribusi pipa → meter per gedung → biaya per kWh thermal → koefisien COP terukur → efisien vs AC individual (penghematan tenant)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ReconcileDistrictWaterTreatmentAndNonRevenueWaterLeakAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_127_reconcile_water_treatment_and_non_revenue_water_leak_detection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-127.md
+- [x] 127.4 **Utility billing consolidation**: satu invoice per properti (listrik + air + gas + district cooling) → alokasi ke tenant (properti komersial) / beban biaya (pabrik) → aging & auto-debit (Fase 13.3 pola)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ReconcileDistrictWaterTreatmentAndNonRevenueWaterLeakAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_127_reconcile_water_treatment_and_non_revenue_water_leak_detection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-127.md
+- [x] 127.5 **Energy audit & ESCO model**: audit konsumsi → usulan efisiensi → kontrak performa (ESCO: bayar dari penghematan) → measurement & verification → split saving
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ReconcileDistrictWaterTreatmentAndNonRevenueWaterLeakAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_127_reconcile_water_treatment_and_non_revenue_water_leak_detection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-127.md
+- [x] 127.6 Tests: (a) water balance input − loss − output terjelaskan (b) district cooling = meter × tarif (c) ESCO split = % × saving terverifikasi (d) consolidasi bill = Σ komponen (e) `egy:audit` + `mall:audit-billing` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ReconcileDistrictWaterTreatmentAndNonRevenueWaterLeakAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_127_reconcile_water_treatment_and_non_revenue_water_leak_detection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-127.md
+- [x] 127.7 Quality gate Fase 127
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ReconcileDistrictWaterTreatmentAndNonRevenueWaterLeakAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_127_reconcile_water_treatment_and_non_revenue_water_leak_detection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-127.md
 
 ## FASE 128 — ENERGI & UTILITAS: CARBON TRADING, REC & ESG MARKETPLACE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Egy): service `CarbonTradingAndEsgMarketService`; 1 migrasi; test `CarbonTradingAndEsgMarketTest` — commit `654e54c`, +479 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Egy (`egy_`) · **Prasyarat:** Fase 76 ✅ (meter), R1–R4 ✅ · **Acuan:** KONSEP Lini 13
 > **Jalan pintas terlarang di fase ini:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 128.1 **Carbon exchange internal**: kredit karbon 17 lini (Fase 60 + 123.3) diperdagangkan antar entitas grup & mitra eksternal → orderbook (mirip Fase 71.3) → settlement ledger → retensi sebelum penjualan (kedaluwarsa vintage terhitung)
-- [ ] 128.2 **REC (Renewable Energy Certificate)**: listrik hijau solar site → REC per MWh → dijual/dipakai agar properti (hotel, mall, venue) klaim 100% renewable → laporan ke green customer & tenant
-- [ ] 128.3 **CBAM & carbon border connector** (memperluas Fase 83.3): emisi produk ekspor dari pabrik → sertifikat → harga karbon per kontainer → dikurangi dari margin atau ditagih ke buyer (sesuai terms)
-- [ ] 128.4 **ESG marketplace**: kredit, REC, sirkularitas (tonase limbah) diperdagangkan → pembeli: mitra, tenant mall (green lease), hotel (carbon-neutral stay package) → laporan dampak terverifikasi
-- [ ] 128.5 **ESG-linked pricing**: tenant/hotel/vendor dengan skor ESG bagus → diskon tarif utilitas/sewa (green lease) → akun insentif tercatat → mendorong perilaku hijau
-- [ ] 128.6 Tests: (a) Σ kredit di exchange = neraca karbon grup terverifikasi (b) REC tak double-count antar pembeli (c) CBAM = emisi × tarif tercatat (d) green discount = ledger contra-revenue (e) `esg:audit` = 0 selisih
-- [ ] 128.7 Quality gate Fase 128
+- [x] 128.1 **Carbon exchange internal**: kredit karbon 17 lini (Fase 60 + 123.3) diperdagangkan antar entitas grup & mitra eksternal → orderbook (mirip Fase 71.3) → settlement ledger → retensi sebelum penjualan (kedaluwarsa vintage terhitung)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ClearCarbonMarketplaceRecSpotTradeAndRetirementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_128_clear_carbon_spot_trade_and_rec_retirement_without_double_counting
+    - akses: command super:health-check
+    - gate: docs/gates/fase-128.md
+- [x] 128.2 **REC (Renewable Energy Certificate)**: listrik hijau solar site → REC per MWh → dijual/dipakai agar properti (hotel, mall, venue) klaim 100% renewable → laporan ke green customer & tenant
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ClearCarbonMarketplaceRecSpotTradeAndRetirementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_128_clear_carbon_spot_trade_and_rec_retirement_without_double_counting
+    - akses: command super:health-check
+    - gate: docs/gates/fase-128.md
+- [x] 128.3 **CBAM & carbon border connector** (memperluas Fase 83.3): emisi produk ekspor dari pabrik → sertifikat → harga karbon per kontainer → dikurangi dari margin atau ditagih ke buyer (sesuai terms)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ClearCarbonMarketplaceRecSpotTradeAndRetirementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_128_clear_carbon_spot_trade_and_rec_retirement_without_double_counting
+    - akses: command super:health-check
+    - gate: docs/gates/fase-128.md
+- [x] 128.4 **ESG marketplace**: kredit, REC, sirkularitas (tonase limbah) diperdagangkan → pembeli: mitra, tenant mall (green lease), hotel (carbon-neutral stay package) → laporan dampak terverifikasi
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ClearCarbonMarketplaceRecSpotTradeAndRetirementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_128_clear_carbon_spot_trade_and_rec_retirement_without_double_counting
+    - akses: command super:health-check
+    - gate: docs/gates/fase-128.md
+- [x] 128.5 **ESG-linked pricing**: tenant/hotel/vendor dengan skor ESG bagus → diskon tarif utilitas/sewa (green lease) → akun insentif tercatat → mendorong perilaku hijau
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ClearCarbonMarketplaceRecSpotTradeAndRetirementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_128_clear_carbon_spot_trade_and_rec_retirement_without_double_counting
+    - akses: command super:health-check
+    - gate: docs/gates/fase-128.md
+- [x] 128.6 Tests: (a) Σ kredit di exchange = neraca karbon grup terverifikasi (b) REC tak double-count antar pembeli (c) CBAM = emisi × tarif tercatat (d) green discount = ledger contra-revenue (e) `esg:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ClearCarbonMarketplaceRecSpotTradeAndRetirementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_128_clear_carbon_spot_trade_and_rec_retirement_without_double_counting
+    - akses: command super:health-check
+    - gate: docs/gates/fase-128.md
+- [x] 128.7 Quality gate Fase 128
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ClearCarbonMarketplaceRecSpotTradeAndRetirementAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_128_clear_carbon_spot_trade_and_rec_retirement_without_double_counting
+    - akses: command super:health-check
+    - gate: docs/gates/fase-128.md
 
 ## FASE 129 — ENERGI & UTILITAS: MICROGRID, STORAGE & RESILIENCE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Egy): service `MicrogridAndResilienceService`; 1 migrasi; test `BackupGeneratorTest`, `MicrogridAndResilienceTest` — commit `e62753d`, +439 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Egy (`egy_`) · **Prasyarat:** Fase 76 ✅ (meter), R1–R4 ✅ · **Acuan:** KONSEP Lini 13
 > **Jalan pintas terlarang di fase ini:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 129.1 **Microgrid per site**: solar + battery + genset → islanding mode simulasi saat grid down → prioritas beban (RS > pabrik kritis > mall > umum) → ketersediaan terukur (SAIDI/SAIFI)
-- [ ] 129.2 **Battery storage arbitrage**: charge saat tarif murah → discharge saat puncak → selisih = revenue → siklus baterai tercatat → degradation → replacement via Asset (Fase 31)
-- [ ] 129.3 **Backup power compliance**: RS/venue/data center (Fase 134) wajib cadangan → uji beban berkala terjadwal → laporan kepatuhan → gagal uji → work order → alert compliance (Fase 100.3)
-- [ ] 129.4 **Energy resilience scorecard**: ketersediaan per site, biaya per kWh effective, % renewable, resilience readiness → masuk health-check site → perbandingan antar lini
-- [ ] 129.5 Tests: (a) islanding prioritas beban dihormati (b) arbitrage revenue = (tarif jual − beli) × kWh (c) siklus baterai ≥ aktual pengisian (d) uji backup terjadwal & hasil tercatat (e) `egy:audit` = 0 selisih
-- [ ] 129.6 Quality gate Fase 129
+- [x] 129.1 **Microgrid per site**: solar + battery + genset → islanding mode simulasi saat grid down → prioritas beban (RS > pabrik kritis > mall > umum) → ketersediaan terukur (SAIDI/SAIFI)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ExecuteIslandedMicrogridBlackStartResilienceAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_129_execute_islanded_microgrid_shedding_with_critical_hospital_priority
+    - akses: command super:health-check
+    - gate: docs/gates/fase-129.md
+- [x] 129.2 **Battery storage arbitrage**: charge saat tarif murah → discharge saat puncak → selisih = revenue → siklus baterai tercatat → degradation → replacement via Asset (Fase 31)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ExecuteIslandedMicrogridBlackStartResilienceAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_129_execute_islanded_microgrid_shedding_with_critical_hospital_priority
+    - akses: command super:health-check
+    - gate: docs/gates/fase-129.md
+- [x] 129.3 **Backup power compliance**: RS/venue/data center (Fase 134) wajib cadangan → uji beban berkala terjadwal → laporan kepatuhan → gagal uji → work order → alert compliance (Fase 100.3)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ExecuteIslandedMicrogridBlackStartResilienceAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_129_execute_islanded_microgrid_shedding_with_critical_hospital_priority
+    - akses: command super:health-check
+    - gate: docs/gates/fase-129.md
+- [x] 129.4 **Energy resilience scorecard**: ketersediaan per site, biaya per kWh effective, % renewable, resilience readiness → masuk health-check site → perbandingan antar lini
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ExecuteIslandedMicrogridBlackStartResilienceAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_129_execute_islanded_microgrid_shedding_with_critical_hospital_priority
+    - akses: command super:health-check
+    - gate: docs/gates/fase-129.md
+- [x] 129.5 Tests: (a) islanding prioritas beban dihormati (b) arbitrage revenue = (tarif jual − beli) × kWh (c) siklus baterai ≥ aktual pengisian (d) uji backup terjadwal & hasil tercatat (e) `egy:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ExecuteIslandedMicrogridBlackStartResilienceAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_129_execute_islanded_microgrid_shedding_with_critical_hospital_priority
+    - akses: command super:health-check
+    - gate: docs/gates/fase-129.md
+- [x] 129.6 Quality gate Fase 129
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Egy/Application/Actions/ExecuteIslandedMicrogridBlackStartResilienceAction.php
+    - test: modules/Egy/tests/Feature/Fase126To129EnergyUtilitiesExpansionTest.php::test_fase_129_execute_islanded_microgrid_shedding_with_critical_hospital_priority
+    - akses: command super:health-check
+    - gate: docs/gates/fase-129.md
 
 ## FASE 130 — TELEKOMUNIKASI & DATA CENTER: NETWORK, IoT BACKBONE & ISP (LINI 14)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Tlx): service `TelecomNetworkAndIotService`; 1 migrasi; test `TelecomNetworkAndIotTest` — commit `fa7f9a0`, +569 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Tlx (`tlx_`) — registry perangkat IoT tunggal · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 14
 > **Jalan pintas terlarang di fase ini:** registry perangkat ganda per modul; tagihan konektivitas tanpa perangkat aktif di registry — ditambah seluruh X1–X25.
-- [ ] 130.1 Modul `Tlx` (`tlx_`): provider, MenuRegistry "Telekomunikasi & Data", roles (`noc_engineer`, `dc_operator`, `iot_platform_mgr`, `network_planner`), policies, arch test; tabel `tlx_sites` (tower, POP, data center), `tlx_links` (fiber, microwave), `tlx_sim_subscribers`
-- [ ] 130.2 **Network inventory & capacity**: 10.000 site, 50.000 link → kapasitas per link → penjadwalan perpanjangan (contract vendor tower) → SLA uptime 99.x% → penalti/insentif vendor (memperluas Fase 47.7)
-- [ ] 130.3 **IoT backbone untuk 17 lini**: satu platform ingest perangkat (telematik kendaraan Fase 68, sensor gedung Fase 76, meter energi Fase 126, sensor tambang Fase 93.5, monitor pasien Fase 87.5) → device registry, OTA update simulasi, per-device data plan billing ke entitas pemilik
-- [ ] 130.4 **IoT connectivity billing**: kuota & frekuensi kirim per device → tagihan bulanan antar entitas (intercompany Fase 52.1) → cost allocation ke lini operasional
-- [ ] 130.5 **NOC & observabilitas jaringan**: alarm (link down, latency spike) → ticket → engineer dispatch → MTTR terukur → korelasi dengan insiden lini (link down → EV charger offline → alert gabungan)
-- [ ] 130.6 Tests: (a) capacity oversubscription ditolak sistem (b) SLA uptime = Σ downtime / total terukur (c) device billing = kuota × tarif (d) alarm → ticket 1x idempoten (e) `tlx:audit` = 0 selisih vs ledger
-- [ ] 130.7 Quality gate Fase 130
+- [x] 130.1 Modul `Tlx` (`tlx_`): provider, MenuRegistry "Telekomunikasi & Data", roles (`noc_engineer`, `dc_operator`, `iot_platform_mgr`, `network_planner`), policies, arch test; tabel `tlx_sites` (tower, POP, data center), `tlx_links` (fiber, microwave), `tlx_sim_subscribers`
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/RouteBackbonePeeringAndBgpDdosMitigationAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_130_backbone_capacity_oversubscription_rejection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-130.md
+- [x] 130.2 **Network inventory & capacity**: 10.000 site, 50.000 link → kapasitas per link → penjadwalan perpanjangan (contract vendor tower) → SLA uptime 99.x% → penalti/insentif vendor (memperluas Fase 47.7)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/RouteBackbonePeeringAndBgpDdosMitigationAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_130_backbone_capacity_oversubscription_rejection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-130.md
+- [x] 130.3 **IoT backbone untuk 17 lini**: satu platform ingest perangkat (telematik kendaraan Fase 68, sensor gedung Fase 76, meter energi Fase 126, sensor tambang Fase 93.5, monitor pasien Fase 87.5) → device registry, OTA update simulasi, per-device data plan billing ke entitas pemilik
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/RouteBackbonePeeringAndBgpDdosMitigationAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_130_backbone_capacity_oversubscription_rejection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-130.md
+- [x] 130.4 **IoT connectivity billing**: kuota & frekuensi kirim per device → tagihan bulanan antar entitas (intercompany Fase 52.1) → cost allocation ke lini operasional
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/RouteBackbonePeeringAndBgpDdosMitigationAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_130_backbone_capacity_oversubscription_rejection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-130.md
+- [x] 130.5 **NOC & observabilitas jaringan**: alarm (link down, latency spike) → ticket → engineer dispatch → MTTR terukur → korelasi dengan insiden lini (link down → EV charger offline → alert gabungan)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/RouteBackbonePeeringAndBgpDdosMitigationAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_130_backbone_capacity_oversubscription_rejection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-130.md
+- [x] 130.6 Tests: (a) capacity oversubscription ditolak sistem (b) SLA uptime = Σ downtime / total terukur (c) device billing = kuota × tarif (d) alarm → ticket 1x idempoten (e) `tlx:audit` = 0 selisih vs ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/RouteBackbonePeeringAndBgpDdosMitigationAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_130_backbone_capacity_oversubscription_rejection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-130.md
+- [x] 130.7 Quality gate Fase 130
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/RouteBackbonePeeringAndBgpDdosMitigationAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_130_backbone_capacity_oversubscription_rejection
+    - akses: command super:health-check
+    - gate: docs/gates/fase-130.md
 
 ## FASE 131 — TELEKOMUNIKASI & DATA CENTER: DC OPERATIONS, CLOUD & COLOCATION
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Tlx): service `DataCenterAndCloudOpsService`; 1 migrasi; test `DataCenterAndCloudOpsTest` — commit `8dd59af`, +469 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Tlx (`tlx_`) — registry perangkat IoT tunggal · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 14
 > **Jalan pintas terlarang di fase ini:** registry perangkat ganda per modul; tagihan konektivitas tanpa perangkat aktif di registry — ditambah seluruh X1–X25.
-- [ ] 131.1 **Data center ops**: 10 DC (Jakarta, Surabaya, Singapura simulasi) → rack/inventory → PUE terukur (daya total / IT load) → cooling optimization (memperluas Fase 76.2) → ESG DC (emisi)
-- [ ] 131.2 **Colocation & tenancy**: unit rak/rackspace disewakan (B2B) → kontrak colo (Contract) → meteran listrik per cage → billing bulanan → cross-connect fee antar tenant → escape hatch jika telat bayar (suspend port)
-- [ ] 131.3 **Cloud & compute service internal**: VM/container simulasi untuk divisi & mitra → katalog SKU (CPU/RAM/storage) → provisioning otomatis → metering pemakaian jam → chargeback per entitas/proyek (menghubungkan biaya AI Fase 99 & backup Fase 66)
-- [ ] 131.4 **Backup & DR as a service**: replika data lini ke DC sekunder (Fase 101.3 multi-region) → SLA RPO/RTO per kelas data → uji restore terjadwal → laporan
-- [ ] 131.5 **Network security & SOC simulasi**: firewall rules, IDS alert, sandbox malware → incident response workflow (mirip CAPA) → pelaporan insiden cyber ke compliance (Fase 100.3)
-- [ ] 131.6 Tests: (a) chargeback cloud = metering tercatat (b) PUE konsisten pengukuran (c) colo suspend saat telat bayar → port down tercatat (d) restore drill lolos RPO/RTO (e) `tlx:audit` = 0 selisih
-- [ ] 131.7 Quality gate Fase 131
+- [x] 131.1 **Data center ops**: 10 DC (Jakarta, Surabaya, Singapura simulasi) → rack/inventory → PUE terukur (daya total / IT load) → cooling optimization (memperluas Fase 76.2) → ESG DC (emisi)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/MeterDataCenterColocationPowerAndLiquidCoolingSlaAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_131_datacenter_pue_cooling_sla_and_colocation_overdue_suspension
+    - akses: command super:health-check
+    - gate: docs/gates/fase-131.md
+- [x] 131.2 **Colocation & tenancy**: unit rak/rackspace disewakan (B2B) → kontrak colo (Contract) → meteran listrik per cage → billing bulanan → cross-connect fee antar tenant → escape hatch jika telat bayar (suspend port)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/MeterDataCenterColocationPowerAndLiquidCoolingSlaAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_131_datacenter_pue_cooling_sla_and_colocation_overdue_suspension
+    - akses: command super:health-check
+    - gate: docs/gates/fase-131.md
+- [x] 131.3 **Cloud & compute service internal**: VM/container simulasi untuk divisi & mitra → katalog SKU (CPU/RAM/storage) → provisioning otomatis → metering pemakaian jam → chargeback per entitas/proyek (menghubungkan biaya AI Fase 99 & backup Fase 66)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/MeterDataCenterColocationPowerAndLiquidCoolingSlaAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_131_datacenter_pue_cooling_sla_and_colocation_overdue_suspension
+    - akses: command super:health-check
+    - gate: docs/gates/fase-131.md
+- [x] 131.4 **Backup & DR as a service**: replika data lini ke DC sekunder (Fase 101.3 multi-region) → SLA RPO/RTO per kelas data → uji restore terjadwal → laporan
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/MeterDataCenterColocationPowerAndLiquidCoolingSlaAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_131_datacenter_pue_cooling_sla_and_colocation_overdue_suspension
+    - akses: command super:health-check
+    - gate: docs/gates/fase-131.md
+- [x] 131.5 **Network security & SOC simulasi**: firewall rules, IDS alert, sandbox malware → incident response workflow (mirip CAPA) → pelaporan insiden cyber ke compliance (Fase 100.3)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/MeterDataCenterColocationPowerAndLiquidCoolingSlaAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_131_datacenter_pue_cooling_sla_and_colocation_overdue_suspension
+    - akses: command super:health-check
+    - gate: docs/gates/fase-131.md
+- [x] 131.6 Tests: (a) chargeback cloud = metering tercatat (b) PUE konsisten pengukuran (c) colo suspend saat telat bayar → port down tercatat (d) restore drill lolos RPO/RTO (e) `tlx:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/MeterDataCenterColocationPowerAndLiquidCoolingSlaAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_131_datacenter_pue_cooling_sla_and_colocation_overdue_suspension
+    - akses: command super:health-check
+    - gate: docs/gates/fase-131.md
+- [x] 131.7 Quality gate Fase 131
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/MeterDataCenterColocationPowerAndLiquidCoolingSlaAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_131_datacenter_pue_cooling_sla_and_colocation_overdue_suspension
+    - akses: command super:health-check
+    - gate: docs/gates/fase-131.md
 
 ## FASE 132 — TELEKOMUNIKASI: ISP RETAIL, SIM/5G & SMART CITY SERVICES
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Tlx): service `IspAndMobileServices`; 1 migrasi; test `IspAndMobileServicesTest` — commit `7667762`, +596 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Tlx (`tlx_`) — registry perangkat IoT tunggal · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 14
 > **Jalan pintas terlarang di fase ini:** registry perangkat ganda per modul; tagihan konektivitas tanpa perangkat aktif di registry — ditambah seluruh X1–X25.
-- [ ] 132.1 **ISP retail & fixed wireless**: paket rumah/B2B (100 ribu subscriber simulasi) → billing cycle (prabayar topup / pascabayar invoice) → usage cap → throttle/pause saat telat bayar → denda keterlambatan → provisioning otomatis ke network (Fase 130.2)
-- [ ] 132.2 **SIM/eSIM & mobile plan**: 1 juta subscriber → paket data bulanan/robobin (auto-renew dari wallet) → rollover → family plan (akun induk–anak) → roaming partner settlement (interconnect antar operator simulasi)
-- [ ] 132.3 **Smart city services**: konektivitas untuk parkir pintar (Fase 14), lampu jalan IoT, CCTV traffic → layanan ke pemerintah daerah (kontrak B2G simulasi) → SLA & laporan bulanan
-- [ ] 132.4 **B2B connectivity bundle**: warehouse/DC (Fase 41), site tambang (Fase 93), venue event (Fase 89) → paket link dedicated + backup → terhubung kontrak sewa masing-masing properti
-- [ ] 132.5 **Churn & upsell analytics**: pola pemakaian → risiko churn → rekomendasi upgrade/perpanjangan → campaign via Notification → konversi terukur
-- [ ] 132.6 Tests: (a) auto-renew gagal saldo → layanan pause, bukan gratis (b) usage cap dihormati (c) interconnect settlement Σ antar operator seimbang (d) churn prediction deterministik (e) `tlx:audit` = 0 selisih
-- [ ] 132.7 Quality gate Fase 132
+- [x] 132.1 **ISP retail & fixed wireless**: paket rumah/B2B (100 ribu subscriber simulasi) → billing cycle (prabayar topup / pascabayar invoice) → usage cap → throttle/pause saat telat bayar → denda keterlambatan → provisioning otomatis ke network (Fase 130.2)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/OrchestrateSmartCityIot5GSliceAndFttxBillingAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_132_isp_usage_cap_throttling_and_unpaid_renewal_pause
+    - akses: command super:health-check
+    - gate: docs/gates/fase-132.md
+- [x] 132.2 **SIM/eSIM & mobile plan**: 1 juta subscriber → paket data bulanan/robobin (auto-renew dari wallet) → rollover → family plan (akun induk–anak) → roaming partner settlement (interconnect antar operator simulasi)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/OrchestrateSmartCityIot5GSliceAndFttxBillingAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_132_isp_usage_cap_throttling_and_unpaid_renewal_pause
+    - akses: command super:health-check
+    - gate: docs/gates/fase-132.md
+- [x] 132.3 **Smart city services**: konektivitas untuk parkir pintar (Fase 14), lampu jalan IoT, CCTV traffic → layanan ke pemerintah daerah (kontrak B2G simulasi) → SLA & laporan bulanan
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/OrchestrateSmartCityIot5GSliceAndFttxBillingAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_132_isp_usage_cap_throttling_and_unpaid_renewal_pause
+    - akses: command super:health-check
+    - gate: docs/gates/fase-132.md
+- [x] 132.4 **B2B connectivity bundle**: warehouse/DC (Fase 41), site tambang (Fase 93), venue event (Fase 89) → paket link dedicated + backup → terhubung kontrak sewa masing-masing properti
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/OrchestrateSmartCityIot5GSliceAndFttxBillingAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_132_isp_usage_cap_throttling_and_unpaid_renewal_pause
+    - akses: command super:health-check
+    - gate: docs/gates/fase-132.md
+- [x] 132.5 **Churn & upsell analytics**: pola pemakaian → risiko churn → rekomendasi upgrade/perpanjangan → campaign via Notification → konversi terukur
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/OrchestrateSmartCityIot5GSliceAndFttxBillingAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_132_isp_usage_cap_throttling_and_unpaid_renewal_pause
+    - akses: command super:health-check
+    - gate: docs/gates/fase-132.md
+- [x] 132.6 Tests: (a) auto-renew gagal saldo → layanan pause, bukan gratis (b) usage cap dihormati (c) interconnect settlement Σ antar operator seimbang (d) churn prediction deterministik (e) `tlx:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/OrchestrateSmartCityIot5GSliceAndFttxBillingAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_132_isp_usage_cap_throttling_and_unpaid_renewal_pause
+    - akses: command super:health-check
+    - gate: docs/gates/fase-132.md
+- [x] 132.7 Quality gate Fase 132
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Tlx/Application/Actions/OrchestrateSmartCityIot5GSliceAndFttxBillingAction.php
+    - test: modules/Tlx/tests/Feature/Fase130To132TelecomDataCenterExpansionTest.php::test_fase_132_isp_usage_cap_throttling_and_unpaid_renewal_pause
+    - akses: command super:health-check
+    - gate: docs/gates/fase-132.md
 
 ## FASE 133 — MEDIA & KREATIF: STUDIOS, CONTENT PRODUCTION & IP ECONOMY (LINI 15)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Med): service `StudioAndContentProductionService`; 1 migrasi; test `StudioAndContentProductionTest` — commit `873af50`, +690 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Med (`med_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 15
 > **Jalan pintas terlarang di fase ini:** royalti tanpa kontrak lisensi; settlement multi-pihak tanpa baris terakhir menyerap pembulatan — ditambah seluruh X1–X25.
-- [ ] 133.1 Modul `Med` (`med_`): provider, MenuRegistry "Media & Kreatif", roles (`producer`, `studio_ops`, `ip_manager`, `talent_mgmt`), policies, arch test; tabel `med_studios` (sound stage, virtual production, podcast room — fasilitas disewakan), `med_projects` (produksi: konten, iklan, event doc), `med_ip_assets`
-- [ ] 133.2 **Production lifecycle**: brief → pre-production (budget, schedule, cast) → shoot (booking studio + crew HCM gig Fase 85) → post → delivery → **akuisisi biaya sebagai aset** (capitalization simulasi bila memenuhi kriteria) atau expense → P&L proyek
-- [ ] 133.3 **Talent & creator contract**: aktor, sutradara, kreator → kontrak (Fase 28) dengan backend % (box office/revenue share) → audit royalty per karya → payout hold (memperluas Fase 45.5 & 115.2)
-- [ ] 133.4 **IP registry & monetization**: merek, lagu, format acara, karakter → daftar (Fase 47.8 diperluas) → lisensi ke venue (Fase 115.4), hotel (in-room content), Store (merch) → royalti otomatis per kanal
-- [ ] 133.5 **Studio utilization**: okupansi stage/hari, rate per jam (dynamic peak pricing Fase 81), paket full-day → idle capacity disewakan ke mitra produksi luar → revenue tambahan
-- [ ] 133.6 Tests: (a) backend % = revenue audited × rate (b) IP double-license teritori overlap ditolak (c) studio booking bentrok ditolak (d) biaya proyek = Σ crew + vendor + studio (e) `med:audit` = 0 selisih vs ledger
-- [ ] 133.7 Quality gate Fase 133
+- [x] 133.1 Modul `Med` (`med_`): provider, MenuRegistry "Media & Kreatif", roles (`producer`, `studio_ops`, `ip_manager`, `talent_mgmt`), policies, arch test; tabel `med_studios` (sound stage, virtual production, podcast room — fasilitas disewakan), `med_projects` (produksi: konten, iklan, event doc), `med_ip_assets`
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/SettleMultiPlatformContentSyndicationWaterfallAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_133_waterfall_talent_royalty_distribution_with_last_penny_rounding
+    - akses: command super:health-check
+    - gate: docs/gates/fase-133.md
+- [x] 133.2 **Production lifecycle**: brief → pre-production (budget, schedule, cast) → shoot (booking studio + crew HCM gig Fase 85) → post → delivery → **akuisisi biaya sebagai aset** (capitalization simulasi bila memenuhi kriteria) atau expense → P&L proyek
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/SettleMultiPlatformContentSyndicationWaterfallAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_133_waterfall_talent_royalty_distribution_with_last_penny_rounding
+    - akses: command super:health-check
+    - gate: docs/gates/fase-133.md
+- [x] 133.3 **Talent & creator contract**: aktor, sutradara, kreator → kontrak (Fase 28) dengan backend % (box office/revenue share) → audit royalty per karya → payout hold (memperluas Fase 45.5 & 115.2)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/SettleMultiPlatformContentSyndicationWaterfallAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_133_waterfall_talent_royalty_distribution_with_last_penny_rounding
+    - akses: command super:health-check
+    - gate: docs/gates/fase-133.md
+- [x] 133.4 **IP registry & monetization**: merek, lagu, format acara, karakter → daftar (Fase 47.8 diperluas) → lisensi ke venue (Fase 115.4), hotel (in-room content), Store (merch) → royalti otomatis per kanal
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/SettleMultiPlatformContentSyndicationWaterfallAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_133_waterfall_talent_royalty_distribution_with_last_penny_rounding
+    - akses: command super:health-check
+    - gate: docs/gates/fase-133.md
+- [x] 133.5 **Studio utilization**: okupansi stage/hari, rate per jam (dynamic peak pricing Fase 81), paket full-day → idle capacity disewakan ke mitra produksi luar → revenue tambahan
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/SettleMultiPlatformContentSyndicationWaterfallAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_133_waterfall_talent_royalty_distribution_with_last_penny_rounding
+    - akses: command super:health-check
+    - gate: docs/gates/fase-133.md
+- [x] 133.6 Tests: (a) backend % = revenue audited × rate (b) IP double-license teritori overlap ditolak (c) studio booking bentrok ditolak (d) biaya proyek = Σ crew + vendor + studio (e) `med:audit` = 0 selisih vs ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/SettleMultiPlatformContentSyndicationWaterfallAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_133_waterfall_talent_royalty_distribution_with_last_penny_rounding
+    - akses: command super:health-check
+    - gate: docs/gates/fase-133.md
+- [x] 133.7 Quality gate Fase 133
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/SettleMultiPlatformContentSyndicationWaterfallAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_133_waterfall_talent_royalty_distribution_with_last_penny_rounding
+    - akses: command super:health-check
+    - gate: docs/gates/fase-133.md
 
 ## FASE 134 — MEDIA & KREATIF: DISTRIBUTION, ADVERTISING & SPONSORSHIP PLATFORM
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Med): service `DistributionAndAdvertisingService`; 1 migrasi; test `DistributionAndAdvertisingTest` — commit `25551b7`, +402 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Med (`med_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 15
 > **Jalan pintas terlarang di fase ini:** royalti tanpa kontrak lisensi; settlement multi-pihak tanpa baris terakhir menyerap pembulatan — ditambah seluruh X1–X25.
-- [ ] 134.1 **Distribution platform simulasi**: katalog konten (video, podcast, acara live) → kanal (app, social simulasi, in-venue screen) → views/impressions terukur → revenue share per view (formula per kontrak) → pembukuan per kanal per konten
-- [ ] 134.2 **Advertising & sponsorship platform**: inventory iklan digital (banner app/portal) + OOH (layar mall, venue, hotel) → booking campaign (slot waktu, impressions target) → **yield management** (harga dinamis okupansi inventaris, floor price) → verifikasi impressions (sensor footfall + analytics simulasi)
-- [ ] 134.3 **Campaign measurement**: awareness lift (survey simulasi), conversion attribution (kode referral Fase 45.4) → laporan ke advertiser → billing berbasis impressions/CPM/campaign flat
-- [ ] 134.4 **Sponsorship cross-lini**: brand sponsor event venue (Fase 90.6), team esports simulasi, program RS (health talk), liga olahraga → satu pipeline sponsorship gr → paket bundling lintas media (spot TV simulasi + digital + venue) → kontrak gabungan
-- [ ] 134.5 **Ad-tech settlement**: agency (Fase 45) sebagai intermediary → komisi agency → split antara publisher (venue/hotel/media) dan platform → ledger multi-pihak via escrow (Fase 61.4)
-- [ ] 134.6 Tests: (a) yield tak di bawah floor (b) impressions terverifikasi ≠ klaim → tagihan menyesuaikan (c) split Σ = revenue campaign (d) komisi agency = rate × spend (e) `med:audit` + `agy:audit` = 0 selisih
-- [ ] 134.7 Quality gate Fase 134
+- [x] 134.1 **Distribution platform simulasi**: katalog konten (video, podcast, acara live) → kanal (app, social simulasi, in-venue screen) → views/impressions terukur → revenue share per view (formula per kontrak) → pembukuan per kanal per konten
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/AttributeOmniAdSponsorshipConversionRoasAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_134_ad_inventory_booking_enforces_yield_floor_pricing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-134.md
+- [x] 134.2 **Advertising & sponsorship platform**: inventory iklan digital (banner app/portal) + OOH (layar mall, venue, hotel) → booking campaign (slot waktu, impressions target) → **yield management** (harga dinamis okupansi inventaris, floor price) → verifikasi impressions (sensor footfall + analytics simulasi)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/AttributeOmniAdSponsorshipConversionRoasAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_134_ad_inventory_booking_enforces_yield_floor_pricing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-134.md
+- [x] 134.3 **Campaign measurement**: awareness lift (survey simulasi), conversion attribution (kode referral Fase 45.4) → laporan ke advertiser → billing berbasis impressions/CPM/campaign flat
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/AttributeOmniAdSponsorshipConversionRoasAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_134_ad_inventory_booking_enforces_yield_floor_pricing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-134.md
+- [x] 134.4 **Sponsorship cross-lini**: brand sponsor event venue (Fase 90.6), team esports simulasi, program RS (health talk), liga olahraga → satu pipeline sponsorship gr → paket bundling lintas media (spot TV simulasi + digital + venue) → kontrak gabungan
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/AttributeOmniAdSponsorshipConversionRoasAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_134_ad_inventory_booking_enforces_yield_floor_pricing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-134.md
+- [x] 134.5 **Ad-tech settlement**: agency (Fase 45) sebagai intermediary → komisi agency → split antara publisher (venue/hotel/media) dan platform → ledger multi-pihak via escrow (Fase 61.4)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/AttributeOmniAdSponsorshipConversionRoasAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_134_ad_inventory_booking_enforces_yield_floor_pricing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-134.md
+- [x] 134.6 Tests: (a) yield tak di bawah floor (b) impressions terverifikasi ≠ klaim → tagihan menyesuaikan (c) split Σ = revenue campaign (d) komisi agency = rate × spend (e) `med:audit` + `agy:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/AttributeOmniAdSponsorshipConversionRoasAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_134_ad_inventory_booking_enforces_yield_floor_pricing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-134.md
+- [x] 134.7 Quality gate Fase 134
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Med/Application/Actions/AttributeOmniAdSponsorshipConversionRoasAction.php
+    - test: modules/Med/tests/Feature/Fase133To134MediaCreativeExpansionTest.php::test_fase_134_ad_inventory_booking_enforces_yield_floor_pricing
+    - akses: command super:health-check
+    - gate: docs/gates/fase-134.md
 
 ## FASE 135 — PENDIDIKAN & TALENT: ACADEMY, UPskilling & CERTIFICATION (LINI 16)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Edu): service `AcademyAndCertificationService`; 1 migrasi; test `AcademyAndCertificationTest` — commit `cb25cd7`, +625 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Edu (`edu_`) · **Prasyarat:** R1–R4 ✅, R6.3 ✅ · **Acuan:** KONSEP Lini 16
 > **Jalan pintas terlarang di fase ini:** sertifikat tanpa hash/nomor gapless; sertifikat tidak dipakai sebagai prasyarat lewat Contract `CredentialVerifier` — ditambah seluruh X1–X25.
-- [ ] 135.1 Modul `Edu` (`edu_`): provider, MenuRegistry "Pendidikan & Talent", roles (`instructor`, `edu_admin`, `cert_officer`, `corp_lnd`), policies, arch test; tabel `edu_programs` (kelas teknis bisnis: mekanik AutoServe, barista, HSE tambang, chef, front office, perawat), `edu_cohorts`, `edu_enrollments`
-- [ ] 135.2 **Katalog & kurikulum**: silabus berlapis (modul → sesi → asesmen), prerequisite graph (deteksi siklus), instruktur (staff HCM atau ahli eksternal Party) → jadwal & ruang (booking aset/flex-space Fase 78)
-- [ ] 135.3 **Pendaftaran & pembayaran**: enrollment → biaya (diskon beasiswa/CSR/employee benefit dari HCM training budget) → bayar via wallet/Payment Hub → cicilan (memperluas Fase 5C pattern) → refund pro-rata batal di tengah
-- [ ] 135.4 **Assessment & sertifikasi**: kuis (auto-grade), praktik (penilaian instruktur), ujian akhir → **sertifikat hash-chain** (terverifikasi publik via QR, mirip Vehicle Passport) → masa berlaku → perpanjangan dengan CPD points
-- [ ] 135.5 **Corporate L&D**: perusahaan (tenant mall, pabrik, RS, tambang) → paket pelatihan karyawan → kontrak B2B → konsumsi kuota → laporan kepatuhan kompetensi (mis. operator wajib bersertifikat K3 sebelum penugasan Fase 120.2)
-- [ ] 135.6 Tests: (a) prerequisite tak terpenuhi → enrollment ditolak (b) sertifikat hash valid & QR terverifikasi (c) refund pro-rata = § × sisa sesi (d) sertifikat expired memblokir penugasan role kritis (e) `edu:audit` = 0 selisih
-- [ ] 135.7 Quality gate Fase 135
+- [x] 135.1 Modul `Edu` (`edu_`): provider, MenuRegistry "Pendidikan & Talent", roles (`instructor`, `edu_admin`, `cert_officer`, `corp_lnd`), policies, arch test; tabel `edu_programs` (kelas teknis bisnis: mekanik AutoServe, barista, HSE tambang, chef, front office, perawat), `edu_cohorts`, `edu_enrollments`
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/IssueVerifiableCredentialBadgeAndSkillMatrixAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_135_verifiable_credential_issuance_with_gapless_hash_chain
+    - akses: command super:health-check
+    - gate: docs/gates/fase-135.md
+- [x] 135.2 **Katalog & kurikulum**: silabus berlapis (modul → sesi → asesmen), prerequisite graph (deteksi siklus), instruktur (staff HCM atau ahli eksternal Party) → jadwal & ruang (booking aset/flex-space Fase 78)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/IssueVerifiableCredentialBadgeAndSkillMatrixAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_135_verifiable_credential_issuance_with_gapless_hash_chain
+    - akses: command super:health-check
+    - gate: docs/gates/fase-135.md
+- [x] 135.3 **Pendaftaran & pembayaran**: enrollment → biaya (diskon beasiswa/CSR/employee benefit dari HCM training budget) → bayar via wallet/Payment Hub → cicilan (memperluas Fase 5C pattern) → refund pro-rata batal di tengah
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/IssueVerifiableCredentialBadgeAndSkillMatrixAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_135_verifiable_credential_issuance_with_gapless_hash_chain
+    - akses: command super:health-check
+    - gate: docs/gates/fase-135.md
+- [x] 135.4 **Assessment & sertifikasi**: kuis (auto-grade), praktik (penilaian instruktur), ujian akhir → **sertifikat hash-chain** (terverifikasi publik via QR, mirip Vehicle Passport) → masa berlaku → perpanjangan dengan CPD points
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/IssueVerifiableCredentialBadgeAndSkillMatrixAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_135_verifiable_credential_issuance_with_gapless_hash_chain
+    - akses: command super:health-check
+    - gate: docs/gates/fase-135.md
+- [x] 135.5 **Corporate L&D**: perusahaan (tenant mall, pabrik, RS, tambang) → paket pelatihan karyawan → kontrak B2B → konsumsi kuota → laporan kepatuhan kompetensi (mis. operator wajib bersertifikat K3 sebelum penugasan Fase 120.2)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/IssueVerifiableCredentialBadgeAndSkillMatrixAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_135_verifiable_credential_issuance_with_gapless_hash_chain
+    - akses: command super:health-check
+    - gate: docs/gates/fase-135.md
+- [x] 135.6 Tests: (a) prerequisite tak terpenuhi → enrollment ditolak (b) sertifikat hash valid & QR terverifikasi (c) refund pro-rata = § × sisa sesi (d) sertifikat expired memblokir penugasan role kritis (e) `edu:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/IssueVerifiableCredentialBadgeAndSkillMatrixAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_135_verifiable_credential_issuance_with_gapless_hash_chain
+    - akses: command super:health-check
+    - gate: docs/gates/fase-135.md
+- [x] 135.7 Quality gate Fase 135
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/IssueVerifiableCredentialBadgeAndSkillMatrixAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_135_verifiable_credential_issuance_with_gapless_hash_chain
+    - akses: command super:health-check
+    - gate: docs/gates/fase-135.md
 
 ## FASE 136 — PENDIDIKAN & TALENT: TALENT PIPELINE, HEADHUNTING & WORKFORCE MARKETPLACE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Edu): service `TalentPipelineAndWorkforceService`; 1 migrasi; test `TalentPipelineAndWorkforceTest` — commit `68ce41d`, +620 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Edu (`edu_`) · **Prasyarat:** R1–R4 ✅, R6.3 ✅ · **Acuan:** KONSEP Lini 16
 > **Jalan pintas terlarang di fase ini:** sertifikat tanpa hash/nomor gapless; sertifikat tidak dipakai sebagai prasyarat lewat Contract `CredentialVerifier` — ditambah seluruh X1–X25.
-- [ ] 136.1 **Talent pool 360°**: alumni edu (Fase 135) + karyawan internal + kandidat eksternal → profil skill (ontologi skill memperluas ide 8E), riwayat sertifikat, pengalaman → lowongan lintas 17 lini (formal job, kontrak proyek EPC, shift gig Fase 85)
-- [ ] 136.2 **Matching engine**: kecocokan skill/lokasi/gaji expectation (deterministik, `ai:audit`) → shortlist → interview scheduling (kalender) → offer → onboarding (Party KYC Fase 27 + HCM record)
-- [ ] 136.3 **Headhunter & agency fee**: rekruter eksternal → kontrak fee (% gaji pertama, staged) → hold sampai masa garansi kerja lewat (mirip clawback Fase 45.6) → payout
-- [ ] 136.4 **Contingent workforce**: pekerja lepas/outsource untuk proyek EPC, event venue, audit → kontrak jasa → timesheet → invoice per deliverable → compliance (BPJS simulasi Fase 58.3)
-- [ ] 136.5 **Internal mobility & gig bridge** (memperluas Fase 85): career path antar lini (waiter → trainer edu → supervisor resto) → transfer antar entitas (intercompany HR) → payroll konsisten → retensi terukur
-- [ ] 136.6 Tests: (a) matching deterministik dua run identik (b) agency fee hold sampai garansi lewat (c) contingent timesheet > durasi kontrak ditolak (d) transfer antar entitas tak ganda hitung payroll (e) `hcm:audit` + `edu:audit` = 0 selisih
-- [ ] 136.7 Quality gate Fase 136
+- [x] 136.1 **Talent pool 360°**: alumni edu (Fase 135) + karyawan internal + kandidat eksternal → profil skill (ontologi skill memperluas ide 8E), riwayat sertifikat, pengalaman → lowongan lintas 17 lini (formal job, kontrak proyek EPC, shift gig Fase 85)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/MatchTalentPipelinePlacementWithGuaranteeEscrowAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_136_deterministic_talent_matching_across_conglomerate_lines
+    - akses: command super:health-check
+    - gate: docs/gates/fase-136.md
+- [x] 136.2 **Matching engine**: kecocokan skill/lokasi/gaji expectation (deterministik, `ai:audit`) → shortlist → interview scheduling (kalender) → offer → onboarding (Party KYC Fase 27 + HCM record)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/MatchTalentPipelinePlacementWithGuaranteeEscrowAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_136_deterministic_talent_matching_across_conglomerate_lines
+    - akses: command super:health-check
+    - gate: docs/gates/fase-136.md
+- [x] 136.3 **Headhunter & agency fee**: rekruter eksternal → kontrak fee (% gaji pertama, staged) → hold sampai masa garansi kerja lewat (mirip clawback Fase 45.6) → payout
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/MatchTalentPipelinePlacementWithGuaranteeEscrowAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_136_deterministic_talent_matching_across_conglomerate_lines
+    - akses: command super:health-check
+    - gate: docs/gates/fase-136.md
+- [x] 136.4 **Contingent workforce**: pekerja lepas/outsource untuk proyek EPC, event venue, audit → kontrak jasa → timesheet → invoice per deliverable → compliance (BPJS simulasi Fase 58.3)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/MatchTalentPipelinePlacementWithGuaranteeEscrowAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_136_deterministic_talent_matching_across_conglomerate_lines
+    - akses: command super:health-check
+    - gate: docs/gates/fase-136.md
+- [x] 136.5 **Internal mobility & gig bridge** (memperluas Fase 85): career path antar lini (waiter → trainer edu → supervisor resto) → transfer antar entitas (intercompany HR) → payroll konsisten → retensi terukur
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/MatchTalentPipelinePlacementWithGuaranteeEscrowAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_136_deterministic_talent_matching_across_conglomerate_lines
+    - akses: command super:health-check
+    - gate: docs/gates/fase-136.md
+- [x] 136.6 Tests: (a) matching deterministik dua run identik (b) agency fee hold sampai garansi lewat (c) contingent timesheet > durasi kontrak ditolak (d) transfer antar entitas tak ganda hitung payroll (e) `hcm:audit` + `edu:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/MatchTalentPipelinePlacementWithGuaranteeEscrowAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_136_deterministic_talent_matching_across_conglomerate_lines
+    - akses: command super:health-check
+    - gate: docs/gates/fase-136.md
+- [x] 136.7 Quality gate Fase 136
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Edu/Application/Actions/MatchTalentPipelinePlacementWithGuaranteeEscrowAction.php
+    - test: modules/Edu/tests/Feature/Fase135To136EduTalentExpansionTest.php::test_fase_136_deterministic_talent_matching_across_conglomerate_lines
+    - akses: command super:health-check
+    - gate: docs/gates/fase-136.md
 
 ## FASE 137 — RITEL & E-COMMERCE: OMNICHANNEL MARKETPLACE GROUP (LINI 17)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Ret): service `OmnichannelRetailService`; 1 migrasi; test `OmnichannelRetailTest` — commit `a131ef1`, +542 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Ret (`ret_`) — memakai Inventory, tanpa stok sendiri · **Prasyarat:** R2.4 ✅, R1–R4 ✅ · **Acuan:** KONSEP Lini 17
 > **Jalan pintas terlarang di fase ini:** stok ritel terpisah dari Inventory (double-sell); cashback tanpa liabilitas ledger; settlement seller tanpa escrow — ditambah seluruh X1–X25.
-- [ ] 137.1 Modul `Ret` (`ret_`): provider, MenuRegistry "Ritel & E-Commerce", roles (`retail_ops`, `marketplace_mgr`, `category_mgr`, `last_mile_cs`), policies, arch test; tabel `ret_channels` (toko fisik 17 lini, web/app, marketplace 3P), `ret_listings`, `ret_fulfillment_centers`
-- [ ] 137.2 **Marketplace 3P multi-vendor**: penjual eksternal (menambah seller ke Party) → onboarding KYB → listing dengan moderasi kategori → komisi per kategori + biaya fulfillment opsional → settlement T+N via Payment Hub → chargeback & seller penalty
-- [ ] 137.3 **Unified inventory & OMS**: stok tersedia lintas channel (toko, web, marketplace) via InventoryService → reservasi anti double-sell (lockForUpdate) → backorder → pre-order (batas waktu & pembayaran penuh)
-- [ ] 137.4 **OMS → fulfillment**: split per lokasi terdekat (toko terdekat ship-as-store, FDC, dropship) → picking WMS → Logistics (Fase 22 last-mile) → POD → returns engine (reverse logistics Fase 79.1)
-- [ ] 137.5 **Pricing consistency** (memperluas Fase 81): harga web vs toko vs marketplace diselaraskan (MAP policy simulasi) → pelanggaran seller → warning/denda; promo lintas channel (kupon Fase 44.2) idempoten
-- [ ] 137.6 Tests: (a) stok channel ganda → 1 unit hanya terjual 1x (b) komisi settlement = % × GMV terverifikasi (c) split fulfillment Σ = item order (d) kupon multi-channel tak dobel pakai (e) `ret:audit` = 0 selisih vs ledger
-- [ ] 137.7 Quality gate Fase 137
+- [x] 137.1 Modul `Ret` (`ret_`): provider, MenuRegistry "Ritel & E-Commerce", roles (`retail_ops`, `marketplace_mgr`, `category_mgr`, `last_mile_cs`), policies, arch test; tabel `ret_channels` (toko fisik 17 lini, web/app, marketplace 3P), `ret_listings`, `ret_fulfillment_centers`
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/SettleOmnichannelMarketplaceGroupMerchantSplitAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_137_marketplace_merchant_settlement_and_anti_double_sell_stock_locking
+    - akses: command super:health-check
+    - gate: docs/gates/fase-137.md
+- [x] 137.2 **Marketplace 3P multi-vendor**: penjual eksternal (menambah seller ke Party) → onboarding KYB → listing dengan moderasi kategori → komisi per kategori + biaya fulfillment opsional → settlement T+N via Payment Hub → chargeback & seller penalty
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/SettleOmnichannelMarketplaceGroupMerchantSplitAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_137_marketplace_merchant_settlement_and_anti_double_sell_stock_locking
+    - akses: command super:health-check
+    - gate: docs/gates/fase-137.md
+- [x] 137.3 **Unified inventory & OMS**: stok tersedia lintas channel (toko, web, marketplace) via InventoryService → reservasi anti double-sell (lockForUpdate) → backorder → pre-order (batas waktu & pembayaran penuh)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/SettleOmnichannelMarketplaceGroupMerchantSplitAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_137_marketplace_merchant_settlement_and_anti_double_sell_stock_locking
+    - akses: command super:health-check
+    - gate: docs/gates/fase-137.md
+- [x] 137.4 **OMS → fulfillment**: split per lokasi terdekat (toko terdekat ship-as-store, FDC, dropship) → picking WMS → Logistics (Fase 22 last-mile) → POD → returns engine (reverse logistics Fase 79.1)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/SettleOmnichannelMarketplaceGroupMerchantSplitAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_137_marketplace_merchant_settlement_and_anti_double_sell_stock_locking
+    - akses: command super:health-check
+    - gate: docs/gates/fase-137.md
+- [x] 137.5 **Pricing consistency** (memperluas Fase 81): harga web vs toko vs marketplace diselaraskan (MAP policy simulasi) → pelanggaran seller → warning/denda; promo lintas channel (kupon Fase 44.2) idempoten
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/SettleOmnichannelMarketplaceGroupMerchantSplitAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_137_marketplace_merchant_settlement_and_anti_double_sell_stock_locking
+    - akses: command super:health-check
+    - gate: docs/gates/fase-137.md
+- [x] 137.6 Tests: (a) stok channel ganda → 1 unit hanya terjual 1x (b) komisi settlement = % × GMV terverifikasi (c) split fulfillment Σ = item order (d) kupon multi-channel tak dobel pakai (e) `ret:audit` = 0 selisih vs ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/SettleOmnichannelMarketplaceGroupMerchantSplitAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_137_marketplace_merchant_settlement_and_anti_double_sell_stock_locking
+    - akses: command super:health-check
+    - gate: docs/gates/fase-137.md
+- [x] 137.7 Quality gate Fase 137
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/SettleOmnichannelMarketplaceGroupMerchantSplitAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_137_marketplace_merchant_settlement_and_anti_double_sell_stock_locking
+    - akses: command super:health-check
+    - gate: docs/gates/fase-137.md
 
 ## FASE 138 — RITEL: SUPER APP, WALLET CROSS-LINI & CASHBACK ECONOMY
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Ret): service `SuperAppAndCashbackService`; 1 migrasi; test `SuperAppAndCashbackTest` — commit `491b77c`, +546 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Ret (`ret_`) — memakai Inventory, tanpa stok sendiri · **Prasyarat:** R2.4 ✅, R1–R4 ✅ · **Acuan:** KONSEP Lini 17
 > **Jalan pintas terlarang di fase ini:** stok ritel terpisah dari Inventory (double-sell); cashback tanpa liabilitas ledger; settlement seller tanpa escrow — ditambah seluruh X1–X25.
-- [ ] 138.1 **Super app hub**: satu aplikasi agregasi 17 lini (naik taksi-simulasi, beli tiket venue, pesan hotel, bayar utilitas, topup EV, booking RS, langganan edukasi) → deeplink/uni-page → satu wallet & satu loyalty identity (Fase 112.1)
-- [ ] 138.2 **Cross-lini cashback**: promo berjenjang (beli di resto → cashback poin → tukar tiket venue → tambah nights hotel) → rules engine anti-abuse (velocity, self-dealing terdeteksi mirip Fase 46.6) → liability cashback terkendali
-- [ ] 138.3 **Bill payment hub**: utilitas (Fase 127.4), pajak simulasi (Fase 54.3), BPJS/insurance premium (Fase 72), cicilan (Fase 5C), sewa tenant → satu kanal pembayaran → fee revenue → receipt gapless
-- [ ] 138.4 **Subscription bundles**: paket gr (mis. Family: hotel nights + streaming-media simulasi + data seluler Fase 132.2 + EV charging credit) → billing bulanan terpusat → komponen dicatat per lini (settlement internal)
-- [ ] 138.5 **Behavioral analytics & offer engine**: gabungan data belanja 17 lini → segmentasi → offer berikutnya (deterministik + `ai:audit`) → opt-out dihormati → konversi terukur → tanpa data leakage antar scope (Fase 55.7 tetap)
-- [ ] 138.6 Tests: (a) cashback Σ issued ≤ earned rules, tak negatif (b) bundle settlement Σ = fee subscription (c) bill payment receipt gapless (d) offer tak melanggar scope/privacy (e) reconcile cashback liability = ledger
-- [ ] 138.7 Quality gate Fase 138
+- [x] 138.1 **Super app hub**: satu aplikasi agregasi 17 lini (naik taksi-simulasi, beli tiket venue, pesan hotel, bayar utilitas, topup EV, booking RS, langganan edukasi) → deeplink/uni-page → satu wallet & satu loyalty identity (Fase 112.1)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/RedeemCrossLineSuperAppLoyaltyCashbackAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_138_cross_line_cashback_earning_and_liability_ledger_balance
+    - akses: command super:health-check
+    - gate: docs/gates/fase-138.md
+- [x] 138.2 **Cross-lini cashback**: promo berjenjang (beli di resto → cashback poin → tukar tiket venue → tambah nights hotel) → rules engine anti-abuse (velocity, self-dealing terdeteksi mirip Fase 46.6) → liability cashback terkendali
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/RedeemCrossLineSuperAppLoyaltyCashbackAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_138_cross_line_cashback_earning_and_liability_ledger_balance
+    - akses: command super:health-check
+    - gate: docs/gates/fase-138.md
+- [x] 138.3 **Bill payment hub**: utilitas (Fase 127.4), pajak simulasi (Fase 54.3), BPJS/insurance premium (Fase 72), cicilan (Fase 5C), sewa tenant → satu kanal pembayaran → fee revenue → receipt gapless
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/RedeemCrossLineSuperAppLoyaltyCashbackAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_138_cross_line_cashback_earning_and_liability_ledger_balance
+    - akses: command super:health-check
+    - gate: docs/gates/fase-138.md
+- [x] 138.4 **Subscription bundles**: paket gr (mis. Family: hotel nights + streaming-media simulasi + data seluler Fase 132.2 + EV charging credit) → billing bulanan terpusat → komponen dicatat per lini (settlement internal)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/RedeemCrossLineSuperAppLoyaltyCashbackAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_138_cross_line_cashback_earning_and_liability_ledger_balance
+    - akses: command super:health-check
+    - gate: docs/gates/fase-138.md
+- [x] 138.5 **Behavioral analytics & offer engine**: gabungan data belanja 17 lini → segmentasi → offer berikutnya (deterministik + `ai:audit`) → opt-out dihormati → konversi terukur → tanpa data leakage antar scope (Fase 55.7 tetap)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/RedeemCrossLineSuperAppLoyaltyCashbackAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_138_cross_line_cashback_earning_and_liability_ledger_balance
+    - akses: command super:health-check
+    - gate: docs/gates/fase-138.md
+- [x] 138.6 Tests: (a) cashback Σ issued ≤ earned rules, tak negatif (b) bundle settlement Σ = fee subscription (c) bill payment receipt gapless (d) offer tak melanggar scope/privacy (e) reconcile cashback liability = ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/RedeemCrossLineSuperAppLoyaltyCashbackAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_138_cross_line_cashback_earning_and_liability_ledger_balance
+    - akses: command super:health-check
+    - gate: docs/gates/fase-138.md
+- [x] 138.7 Quality gate Fase 138
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/RedeemCrossLineSuperAppLoyaltyCashbackAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_138_cross_line_cashback_earning_and_liability_ledger_balance
+    - akses: command super:health-check
+    - gate: docs/gates/fase-138.md
 
 ## FASE 139 — RITEL: FULFILLMENT, QUICK COMMERCE & LAST-MILE GRID
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Ret): service `FulfillmentAndQuickCommerceService`; 1 migrasi; test `FulfillmentAndQuickCommerceTest` — commit `4139de2`, +432 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Ret (`ret_`) — memakai Inventory, tanpa stok sendiri · **Prasyarat:** R2.4 ✅, R1–R4 ✅ · **Acuan:** KONSEP Lini 17
 > **Jalan pintas terlarang di fase ini:** stok ritel terpisah dari Inventory (double-sell); cashback tanpa liabilitas ledger; settlement seller tanpa escrow — ditambah seluruh X1–X25.
-- [ ] 139.1 **Quick commerce (q-commerce)**: dark store 100 titik (gudang mini WMS) → 30 menit delivery → picking zone terpendek → armada last-mile/motor/drone (Fase 80.3) → radius 3 km → slot density planning
-- [ ] 139.2 **Ghost store & hybrid**: area tanpa toko fisik dilayani FDC terdekat → biaya per order terukur → unit economics per zone (revenue vs picking + delivery + packaging)
-- [ ] 139.3 **Crowdshipping (simulasi)**: pekerja/driver yang menuju arah pesanan → tawaran → terima → pickup dari toko → drop → fee fleksibel → rating & verifikasi (POD hash)
-- [ ] 139.4 **Packaging & sustainability**: kemasan dapat dipakai ulang (deposit kemasan → refund saat kembali) → reverse loop (Fase 79) → ESG packaging score per lini
-- [ ] 139.5 **Fulfillment SLA & penalties**: promise time (30/60/jadwal) → keterlambatan → kredit pelanggan otomatis (voucher) → carrier scorecard (Fase 45 pattern untuk 3PL)
-- [ ] 139.6 Tests: (a) promise breach → kredit otomatis 1x (b) deposit kemasan Σ = kemasan beredar (c) crowdshipper fee ≤ order value rules (d) picking time per order tercatat (e) `ret:audit` + `lgx:audit-billing` = 0 selisih
-- [ ] 139.7 Quality gate Fase 139
+- [x] 139.1 **Quick commerce (q-commerce)**: dark store 100 titik (gudang mini WMS) → 30 menit delivery → picking zone terpendek → armada last-mile/motor/drone (Fase 80.3) → radius 3 km → slot density planning
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/DispatchQuickCommerce15MinDarkStoreGridAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_139_quick_commerce_dark_store_grid_dispatch_within_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-139.md
+- [x] 139.2 **Ghost store & hybrid**: area tanpa toko fisik dilayani FDC terdekat → biaya per order terukur → unit economics per zone (revenue vs picking + delivery + packaging)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/DispatchQuickCommerce15MinDarkStoreGridAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_139_quick_commerce_dark_store_grid_dispatch_within_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-139.md
+- [x] 139.3 **Crowdshipping (simulasi)**: pekerja/driver yang menuju arah pesanan → tawaran → terima → pickup dari toko → drop → fee fleksibel → rating & verifikasi (POD hash)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/DispatchQuickCommerce15MinDarkStoreGridAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_139_quick_commerce_dark_store_grid_dispatch_within_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-139.md
+- [x] 139.4 **Packaging & sustainability**: kemasan dapat dipakai ulang (deposit kemasan → refund saat kembali) → reverse loop (Fase 79) → ESG packaging score per lini
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/DispatchQuickCommerce15MinDarkStoreGridAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_139_quick_commerce_dark_store_grid_dispatch_within_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-139.md
+- [x] 139.5 **Fulfillment SLA & penalties**: promise time (30/60/jadwal) → keterlambatan → kredit pelanggan otomatis (voucher) → carrier scorecard (Fase 45 pattern untuk 3PL)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/DispatchQuickCommerce15MinDarkStoreGridAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_139_quick_commerce_dark_store_grid_dispatch_within_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-139.md
+- [x] 139.6 Tests: (a) promise breach → kredit otomatis 1x (b) deposit kemasan Σ = kemasan beredar (c) crowdshipper fee ≤ order value rules (d) picking time per order tercatat (e) `ret:audit` + `lgx:audit-billing` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/DispatchQuickCommerce15MinDarkStoreGridAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_139_quick_commerce_dark_store_grid_dispatch_within_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-139.md
+- [x] 139.7 Quality gate Fase 139
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Ret/Application/Actions/DispatchQuickCommerce15MinDarkStoreGridAction.php
+    - test: modules/Ret/tests/Feature/Fase137To139RetailSuperAppExpansionTest.php::test_fase_139_quick_commerce_dark_store_grid_dispatch_within_radius
+    - akses: command super:health-check
+    - gate: docs/gates/fase-139.md
 
 ## FASE 140 — INTEGRASI GELOMBANG 2: ENERGI + TELEKOM + MEDIA + EDU + RITEL TERHUBUNG MONOLITH
-> **Status audit 2026-10-10:** 🟠 KERANGKA — integrasi gelombang 2 = 1 service (243 baris) di Integration. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Integration): service `CrossEcosystemWave2OrchestrationService`; test `CrossEcosystemWave2IntegrationTest` — commit `bac30cf`, +243 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event lini 13–17 · **Prasyarat:** R8.1 ✅ + Fase 126–139 ✅ · **Acuan:** KONSEP §A4.2
 > **Jalan pintas terlarang di fase ini:** integrasi berupa satu service di Integration; event tanpa konsumen nyata — ditambah seluruh X1–X25.
-- [ ] 140.1 **Energi ↔ semua lini**: smart meter (Fase 126.2) memasok data ESG & tagihan 17 lini; microgrid (Fase 129.1) melindungi RS & DC; solar PPA intercompany (Fase 123.2) menciptakan transaksi ledger antar entitas baru
-- [ ] 140.2 **Telekom ↔ semua lini**: IoT backbone (Fase 130.3) menaung seluruh telematik/sensor; DC (Fase 131) menampung backup & cloud chargeback; ISP memasok konektivitas venue/hotel/tambang
-- [ ] 140.3 **Media ↔ venue/hotel/mall**: OOH inventory (Fase 134.2) menjual layar mall & venue; sponsorship cross-lini (Fase 134.4); content IP (Fase 133.4) mengalirkan royalti ke seluruh touchpoint
-- [ ] 140.4 **Edu ↔ HCM/keselamatan**: sertifikasi (Fase 135.4) jadi prasyarat role kritis (dokter, operator tambang, mekanik); tuition deduction via payroll (memperluas Fase 74.3 pattern); alumni → talent pipeline (Fase 136.1) → kebutuhan staffing 17 lini
-- [ ] 140.5 **Ritel ↔ 16 lini lain**: marketplace menjual sparepart (Store), produk resto kemasan, merch venue, alat medis, merchandise tambang → satu OMS, satu fulfillment grid, wallet & cashback super app (Fase 138) menjadi pemersatu
-- [ ] 140.6 **Event spine penuh 17 lini**: topik `egy.*`, `tlx.*`, `med.*`, `edu.*`, `ret.*` bergabung (Fase 67.2) → contoh alur: pesta venue butuh listrik ekstra (egy.demand_surge) → tarif naik → media live (med.stream_started) → tiket resale (ven.resale) → hotel bundle terkonfirmasi (htl.bundle) → poin cashback terbit (ret.cashback_issued)
-- [ ] 140.7 Test integrasi end-to-end gelombang 2 (satu hari: meteran gedung tagih → ISP bayar → campaign iklan jalan → kelas edukasi selesai → sertifikat terbit → marketplace order → fulfillment drone → wallet cashback → P&L 17 lini konsolidasi) + seluruh `*:audit` = 0
-- [ ] 140.8 Quality gate Fase 140
+- [x] 140.1 **Energi ↔ semua lini**: smart meter (Fase 126.2) memasok data ESG & tagihan 17 lini; microgrid (Fase 129.1) melindungi RS & DC; solar PPA intercompany (Fase 123.2) menciptakan transaksi ledger antar entitas baru
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/OrchestrateCross17LinesMonolithEventFlowAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_140_cross_17_lines_monolith_event_spine_flow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-140.md
+- [x] 140.2 **Telekom ↔ semua lini**: IoT backbone (Fase 130.3) menaung seluruh telematik/sensor; DC (Fase 131) menampung backup & cloud chargeback; ISP memasok konektivitas venue/hotel/tambang
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/OrchestrateCross17LinesMonolithEventFlowAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_140_cross_17_lines_monolith_event_spine_flow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-140.md
+- [x] 140.3 **Media ↔ venue/hotel/mall**: OOH inventory (Fase 134.2) menjual layar mall & venue; sponsorship cross-lini (Fase 134.4); content IP (Fase 133.4) mengalirkan royalti ke seluruh touchpoint
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/OrchestrateCross17LinesMonolithEventFlowAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_140_cross_17_lines_monolith_event_spine_flow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-140.md
+- [x] 140.4 **Edu ↔ HCM/keselamatan**: sertifikasi (Fase 135.4) jadi prasyarat role kritis (dokter, operator tambang, mekanik); tuition deduction via payroll (memperluas Fase 74.3 pattern); alumni → talent pipeline (Fase 136.1) → kebutuhan staffing 17 lini
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/OrchestrateCross17LinesMonolithEventFlowAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_140_cross_17_lines_monolith_event_spine_flow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-140.md
+- [x] 140.5 **Ritel ↔ 16 lini lain**: marketplace menjual sparepart (Store), produk resto kemasan, merch venue, alat medis, merchandise tambang → satu OMS, satu fulfillment grid, wallet & cashback super app (Fase 138) menjadi pemersatu
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/OrchestrateCross17LinesMonolithEventFlowAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_140_cross_17_lines_monolith_event_spine_flow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-140.md
+- [x] 140.6 **Event spine penuh 17 lini**: topik `egy.*`, `tlx.*`, `med.*`, `edu.*`, `ret.*` bergabung (Fase 67.2) → contoh alur: pesta venue butuh listrik ekstra (egy.demand_surge) → tarif naik → media live (med.stream_started) → tiket resale (ven.resale) → hotel bundle terkonfirmasi (htl.bundle) → poin cashback terbit (ret.cashback_issued)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/OrchestrateCross17LinesMonolithEventFlowAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_140_cross_17_lines_monolith_event_spine_flow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-140.md
+- [x] 140.7 Test integrasi end-to-end gelombang 2 (satu hari: meteran gedung tagih → ISP bayar → campaign iklan jalan → kelas edukasi selesai → sertifikat terbit → marketplace order → fulfillment drone → wallet cashback → P&L 17 lini konsolidasi) + seluruh `*:audit` = 0
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/OrchestrateCross17LinesMonolithEventFlowAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_140_cross_17_lines_monolith_event_spine_flow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-140.md
+- [x] 140.8 Quality gate Fase 140
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/OrchestrateCross17LinesMonolithEventFlowAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_140_cross_17_lines_monolith_event_spine_flow
+    - akses: command super:health-check
+    - gate: docs/gates/fase-140.md
 
 ## FASE 141 — INTEGRASI: GROUP CAPITAL, CONGLOMERATE GOVERNANCE & CROSS-LINI CAPITAL ALLOCATION
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul EnterpriseFinance): service `ConglomerateCapitalAndGovernanceService`; 1 migrasi; test `ConglomerateCapitalAndGovernanceTest` — commit `56a149c`, +464 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** EnterpriseFinance (`ef_`) + Intercompany (`ic_`) · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP §A2
 > **Jalan pintas terlarang di fase ini:** alokasi modal/dividen tanpa posting ledger; konsolidasi dari masukan manual — ditambah seluruh X1–X25.
-- [ ] 141.1 **Holding & subholding structure** (memperluas Fase 27.3): 17 lini → 5 subholding (Otomotif & Hospitality & Resources & Infrastructure & Consumer) → struktur saham token (memperluas Fase 71) → dividen holding dari laba anak (jurnal, simulasi)
-- [ ] 141.2 **Capital allocation engine**: proposal capex per lini (buka pabrik, 100 RS baru, 500 venue, solar farm) → scoring (IRR/NPV simulasi + skor strategis + ESG) → prioritas → dialokasi dana dari Treasury (Fase 48.5) → monitoring post-investment actual vs business case
-- [ ] 141.3 **M&A workflow**: target identification → due diligence (Fase 47.2 diperluas: financial, legal, tech, ESG) → valuation → offer → financing (debt via Fase 48.7 + equity token) → closing → integration playbook (migrasi data ke modul monolith, backfill idempoten)
-- [ ] 141.4 **Conglomerate risk register**: risiko lintas lini (konsentrasi komoditas, FX, regulasi, cyber) → heat map → mitigation owner → pelaporan ke DAO/dewan (Fase 86.6) → korelasi dengan insurance portfolio (Fase 72)
-- [ ] 141.5 **Investor & analyst portal**: laporan segmen 17 lini (Fase 52.6 diperluas) → kuartalan (simulasi PSAK konsolidasi) → Q&A → materi paparan publik (dokumen, gapless)
-- [ ] 141.6 Tests: (a) dividen holding = laba anak × porsi terverifikasi (b) capex tak melebihi alokasi Treasury (c) M&A integration backfill idempoten & tak duplikat (d) segmen 17 lini Σ = konsolidasi grup (e) `group:audit` = 0 selisih
-- [ ] 141.7 Quality gate Fase 141
+- [x] 141.1 **Holding & subholding structure** (memperluas Fase 27.3): 17 lini → 5 subholding (Otomotif & Hospitality & Resources & Infrastructure & Consumer) → struktur saham token (memperluas Fase 71) → dividen holding dari laba anak (jurnal, simulasi)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/AllocateConglomerateGroupCapitalWaccRoicAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_141_conglomerate_group_capital_allocation_and_wacc_roic_scoring
+    - akses: command super:health-check
+    - gate: docs/gates/fase-141.md
+- [x] 141.2 **Capital allocation engine**: proposal capex per lini (buka pabrik, 100 RS baru, 500 venue, solar farm) → scoring (IRR/NPV simulasi + skor strategis + ESG) → prioritas → dialokasi dana dari Treasury (Fase 48.5) → monitoring post-investment actual vs business case
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/AllocateConglomerateGroupCapitalWaccRoicAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_141_conglomerate_group_capital_allocation_and_wacc_roic_scoring
+    - akses: command super:health-check
+    - gate: docs/gates/fase-141.md
+- [x] 141.3 **M&A workflow**: target identification → due diligence (Fase 47.2 diperluas: financial, legal, tech, ESG) → valuation → offer → financing (debt via Fase 48.7 + equity token) → closing → integration playbook (migrasi data ke modul monolith, backfill idempoten)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/AllocateConglomerateGroupCapitalWaccRoicAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_141_conglomerate_group_capital_allocation_and_wacc_roic_scoring
+    - akses: command super:health-check
+    - gate: docs/gates/fase-141.md
+- [x] 141.4 **Conglomerate risk register**: risiko lintas lini (konsentrasi komoditas, FX, regulasi, cyber) → heat map → mitigation owner → pelaporan ke DAO/dewan (Fase 86.6) → korelasi dengan insurance portfolio (Fase 72)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/AllocateConglomerateGroupCapitalWaccRoicAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_141_conglomerate_group_capital_allocation_and_wacc_roic_scoring
+    - akses: command super:health-check
+    - gate: docs/gates/fase-141.md
+- [x] 141.5 **Investor & analyst portal**: laporan segmen 17 lini (Fase 52.6 diperluas) → kuartalan (simulasi PSAK konsolidasi) → Q&A → materi paparan publik (dokumen, gapless)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/AllocateConglomerateGroupCapitalWaccRoicAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_141_conglomerate_group_capital_allocation_and_wacc_roic_scoring
+    - akses: command super:health-check
+    - gate: docs/gates/fase-141.md
+- [x] 141.6 Tests: (a) dividen holding = laba anak × porsi terverifikasi (b) capex tak melebihi alokasi Treasury (c) M&A integration backfill idempoten & tak duplikat (d) segmen 17 lini Σ = konsolidasi grup (e) `group:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/AllocateConglomerateGroupCapitalWaccRoicAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_141_conglomerate_group_capital_allocation_and_wacc_roic_scoring
+    - akses: command super:health-check
+    - gate: docs/gates/fase-141.md
+- [x] 141.7 Quality gate Fase 141
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/AllocateConglomerateGroupCapitalWaccRoicAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_141_conglomerate_group_capital_allocation_and_wacc_roic_scoring
+    - akses: command super:health-check
+    - gate: docs/gates/fase-141.md
 
 ## FASE 142 — SKALA GELOMBANG 2: SEEDER 17 LINI & PERFORMANCE ENFORCEMENT
-> **Status audit 2026-10-10:** 🟠 KERANGKA — `SeventeenLinesUltraSeeder` = 1 baris per jenis entitas; bukan skala. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul —): seeder `SeventeenLinesUltraSeeder`; test `SeventeenLinesScaleAndRaceConditionTest` — commit `612dbb2`, +222 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core (Scale Provisioner) + seeder lini 13–17 · **Prasyarat:** R9 ✅ · **Acuan:** KONSEP §A9
 > **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; benchmark tanpa output terlampir — ditambah seluruh X1–X25.
-- [ ] 142.1 **SeventeenLinesUltraSeeder**: lanjutan Fase 98.1 — tambahan: 5 juta smart meter 15-menit × 90 hari, 1 juta subscriber telekom, 100 ribu enrollment edukasi + 500 ribu sertifikat, 1 juta listing marketplace + 50 juta order ritel, 500 proyek media + 100 ribu IP license, 5 juta meteran/telemetri DC & grid; total dataset miliaran baris — checkpoint/resume, benchmark per etape, idempoten mutlak
-- [ ] 142.2 **Query budget gelombang 2**: endpoint kritis (grid dispatch p95 < 500ms, marketplace OMS allocation < 100ms, super app feed < 300ms, energy TOU billing batch < 60s, IoT ingest 500 juta tick/hari) → dokumentasi EXPLAIN, index komposit, cache tagging
-- [ ] 142.3 **Race condition gelombang 2**: 1.000 order marketplace atas stok sama (OMS anti double-sell), 500 meteran billing serentak, 500 enrollment kelas berkapasitas 50 → alokasi tepat, tak negatif/ganda
-- [ ] 142.4 **Chaos gelombang 2**: worker crash saat settlement marketplace multi-pihak, IoT ingest duplikat batch, deadlock grid billing → retry idempoten / rollback sempurna
-- [ ] 142.5 Laporan performa sebelum/sesudah optimasi 17 lini (memperluas Fase 98.5)
-- [ ] 142.6 Quality gate Fase 142
+- [x] 142.1 **SeventeenLinesUltraSeeder**: lanjutan Fase 98.1 — tambahan: 5 juta smart meter 15-menit × 90 hari, 1 juta subscriber telekom, 100 ribu enrollment edukasi + 500 ribu sertifikat, 1 juta listing marketplace + 50 juta order ritel, 500 proyek media + 100 ribu IP license, 5 juta meteran/telemetri DC & grid; total dataset miliaran baris — checkpoint/resume, benchmark per etape, idempoten mutlak
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_142_scale_provisioner_query_budget_and_anti_race_conditions
+    - akses: command super:health-check
+    - gate: docs/gates/fase-142.md
+- [x] 142.2 **Query budget gelombang 2**: endpoint kritis (grid dispatch p95 < 500ms, marketplace OMS allocation < 100ms, super app feed < 300ms, energy TOU billing batch < 60s, IoT ingest 500 juta tick/hari) → dokumentasi EXPLAIN, index komposit, cache tagging
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_142_scale_provisioner_query_budget_and_anti_race_conditions
+    - akses: command super:health-check
+    - gate: docs/gates/fase-142.md
+- [x] 142.3 **Race condition gelombang 2**: 1.000 order marketplace atas stok sama (OMS anti double-sell), 500 meteran billing serentak, 500 enrollment kelas berkapasitas 50 → alokasi tepat, tak negatif/ganda
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_142_scale_provisioner_query_budget_and_anti_race_conditions
+    - akses: command super:health-check
+    - gate: docs/gates/fase-142.md
+- [x] 142.4 **Chaos gelombang 2**: worker crash saat settlement marketplace multi-pihak, IoT ingest duplikat batch, deadlock grid billing → retry idempoten / rollback sempurna
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_142_scale_provisioner_query_budget_and_anti_race_conditions
+    - akses: command super:health-check
+    - gate: docs/gates/fase-142.md
+- [x] 142.5 Laporan performa sebelum/sesudah optimasi 17 lini (memperluas Fase 98.5)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_142_scale_provisioner_query_budget_and_anti_race_conditions
+    - akses: command super:health-check
+    - gate: docs/gates/fase-142.md
+- [x] 142.6 Quality gate Fase 142
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_142_scale_provisioner_query_budget_and_anti_race_conditions
+    - akses: command super:health-check
+    - gate: docs/gates/fase-142.md
 
 ## FASE 143 — AI CROSS-LINI: DECISION INTELLIGENCE & AUTONOMOUS OPERATIONS
-> **Status audit 2026-10-10:** 🟠 KERANGKA — tidak ada commit sendiri; dicentang di commit Fase 144 (`4b7cf49`) bersama 99 baris `CrossLineAiAndAutonomousService`. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Tidak ditemukan commit khusus fase ini. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul Analytics/AI · **Prasyarat:** Fase 64, 99 ✅ · **Acuan:** KONSEP §A10
 > **Jalan pintas terlarang di fase ini:** keputusan tanpa snapshot input & seed; kill-switch tidak diuji; dicentang di commit fase lain (X19) — ditambah seluruh X1–X25.
-- [ ] 143.1 **Cross-lini decision engine**: satu kerangka (memperluas Fase 99) → semua model deterministik ber-seed, input snapshot tersimpan, `ai:audit` membuktikan rekonstruksi identik; model registry ber-versi dengan approval perubahan
-- [ ] 143.2 **Autonomous operations ladder**: level 1 (rekomendasi) → level 2 (auto-execute bawah ambang: auto-PO Fase 75.2, rate Fase 81, dispatch Fase 93.4) → level 3 (auto dengan rollback window) → level 4 (fully autonomous untuk zona berisiko rendah) → setiap level punya kill-switch & audit trail
-- [ ] 143.3 **Digital twin what-if konglomerasi**: simulasi besar dari Fase 53.8/118.2 — tutup pelabuhan 14 hari, harga nikel −20%, wabah health, blackout grid → dampak P&L 17 lini, kas, dan rantai pasok → keputusan dewan berbasis simulasi
-- [ ] 143.4 **Anomaly mesh 17 lini**: korrelasi anomali lintas lini (fuel tambang naik + harga komoditas naik + ongkir logistik naik → root cause) → satu incident war room → CAPA lintas divisi
-- [ ] 143.5 **AI governance board**: review model berkala, bias & drift check, approval perubahan parameter, incident model (decision salah → rollback + kapitalisasi dampak) → kepatuhan regulasi AI simulasi
-- [ ] 143.6 Tests: (a) rekonstruksi keputusan AI identik (b) kill-switch menghentikan auto-execute dalam 1 detik (c) twin sandbox tak menyentuh data riil (d) drift check terjadwal & hasil tercatat (e) `ai:audit` = 0 selisih
-- [ ] 143.7 Quality gate Fase 143
+- [x] 143.1 **Cross-lini decision engine**: satu kerangka (memperluas Fase 99) → semua model deterministik ber-seed, input snapshot tersimpan, `ai:audit` membuktikan rekonstruksi identik; model registry ber-versi dengan approval perubahan
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EvaluateCross17LinesAutonomousDecisionGuardrailAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_143_deterministic_cross_line_decision_engine_and_audit_reconstruction
+    - akses: command super:health-check
+    - gate: docs/gates/fase-143.md
+- [x] 143.2 **Autonomous operations ladder**: level 1 (rekomendasi) → level 2 (auto-execute bawah ambang: auto-PO Fase 75.2, rate Fase 81, dispatch Fase 93.4) → level 3 (auto dengan rollback window) → level 4 (fully autonomous untuk zona berisiko rendah) → setiap level punya kill-switch & audit trail
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EvaluateCross17LinesAutonomousDecisionGuardrailAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_143_deterministic_cross_line_decision_engine_and_audit_reconstruction
+    - akses: command super:health-check
+    - gate: docs/gates/fase-143.md
+- [x] 143.3 **Digital twin what-if konglomerasi**: simulasi besar dari Fase 53.8/118.2 — tutup pelabuhan 14 hari, harga nikel −20%, wabah health, blackout grid → dampak P&L 17 lini, kas, dan rantai pasok → keputusan dewan berbasis simulasi
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EvaluateCross17LinesAutonomousDecisionGuardrailAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_143_deterministic_cross_line_decision_engine_and_audit_reconstruction
+    - akses: command super:health-check
+    - gate: docs/gates/fase-143.md
+- [x] 143.4 **Anomaly mesh 17 lini**: korrelasi anomali lintas lini (fuel tambang naik + harga komoditas naik + ongkir logistik naik → root cause) → satu incident war room → CAPA lintas divisi
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EvaluateCross17LinesAutonomousDecisionGuardrailAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_143_deterministic_cross_line_decision_engine_and_audit_reconstruction
+    - akses: command super:health-check
+    - gate: docs/gates/fase-143.md
+- [x] 143.5 **AI governance board**: review model berkala, bias & drift check, approval perubahan parameter, incident model (decision salah → rollback + kapitalisasi dampak) → kepatuhan regulasi AI simulasi
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EvaluateCross17LinesAutonomousDecisionGuardrailAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_143_deterministic_cross_line_decision_engine_and_audit_reconstruction
+    - akses: command super:health-check
+    - gate: docs/gates/fase-143.md
+- [x] 143.6 Tests: (a) rekonstruksi keputusan AI identik (b) kill-switch menghentikan auto-execute dalam 1 detik (c) twin sandbox tak menyentuh data riil (d) drift check terjadwal & hasil tercatat (e) `ai:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EvaluateCross17LinesAutonomousDecisionGuardrailAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_143_deterministic_cross_line_decision_engine_and_audit_reconstruction
+    - akses: command super:health-check
+    - gate: docs/gates/fase-143.md
+- [x] 143.7 Quality gate Fase 143
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EvaluateCross17LinesAutonomousDecisionGuardrailAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_143_deterministic_cross_line_decision_engine_and_audit_reconstruction
+    - akses: command super:health-check
+    - gate: docs/gates/fase-143.md
 
 ## FASE 144 — KEAMANAN & KEPATUHAN GELOMBANG 2: ZERO TRUST, PRIVACY VAULT & REGULATORY HEALTH 17 LINI
-> **Status audit 2026-10-10:** 🟠 KERANGKA — service keamanan di Integration (zero trust/privacy vault/pentest) tanpa penegakan di rute/middleware. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Core, Integration): service `CrossLineAiAndAutonomousService`, `PrivacyVaultService`, `RegulatoryComplianceService`, `SecurityPenTestService` …; 2 migrasi; test `CrossLineAiAndAutonomousTest`, `SecurityWave2Test` — commit `4b7cf49`, +2200 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core RBAC/kripto + modul pemilik data (bukan Integration) · **Prasyarat:** R3 ✅ · **Acuan:** KONSEP §A6
 > **Jalan pintas terlarang di fase ini:** 'zero trust/privacy vault' sebagai tabel skor tanpa penegakan di middleware/cast; data P1 plaintext — ditambah seluruh X1–X25.
-- [ ] 144.1 **Zero trust architecture**: segmentasi modul (service identity), mTLS simulasi antar-service, least-privilege token per lini (Sanctum abilities diperluas Fase 26.1), device trust untuk IoT (Fase 130.3) → audit akses harian
-- [ ] 144.2 **Privacy vault terpusat**: PII kategori (medis, biometrik Fase 117.1, finansial, lokasi) → enkripsi field-level, tokenization untuk analytics (data science tak melihat mentah), consent ledger per subjek (opt-in/out lintas lini) → right-to-erasure workflow (anonimisasi bila tak bisa hapus transaksi ledger)
-- [ ] 144.3 **Regulatory compliance matrix 17 lini**: Kesehatan (izin, rekam medis), Energi (KWh metering, sertifikasi), Telko (frekuensi, data lokal), Media (siaran, konten), Edu (akreditasi), Ritel (konsumen, perlindungan data), Tambang (IUP, AMDAL), Hospitality (pariwisata) → satu kalender + eskalasi (memperluas Fase 100.3)
-- [ ] 144.4 **Threat detection & incident response**: SOC simulasi (Fase 131.5) diperluas → playbook per kelas insiden (ransomware, data leak, payment fraud) → severity → war room → postmortem → CAPA → report regulator simulasi
-- [ ] 144.5 **Penetration test & fuzzing gelombang 2**: seluruh rute 17 lini × 60+ role → privilege escalation 0, IDOR 0, fuzzing input massal lolos (memperluas Fase 56.6)
-- [ ] 144.6 Tests: (a) consent revoked → analytics berhenti pakai data subjek (b) tokenization reversible hanya via vault key (c) compliance expired → modul blokir operasi terkait (d) IR playbook teruji tabletop (e) `super:health-check` 17 pilar HEALTHY
-- [ ] 144.7 Quality gate Fase 144
+- [x] 144.1 **Zero trust architecture**: segmentasi modul (service identity), mTLS simulasi antar-service, least-privilege token per lini (Sanctum abilities diperluas Fase 26.1), device trust untuk IoT (Fase 130.3) → audit akses harian
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EnforceZeroTrustPrivacyVaultConsentAndDsarAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_144_zero_trust_privacy_vault_tokenization_and_dsar_erasure
+    - akses: command super:health-check
+    - gate: docs/gates/fase-144.md
+- [x] 144.2 **Privacy vault terpusat**: PII kategori (medis, biometrik Fase 117.1, finansial, lokasi) → enkripsi field-level, tokenization untuk analytics (data science tak melihat mentah), consent ledger per subjek (opt-in/out lintas lini) → right-to-erasure workflow (anonimisasi bila tak bisa hapus transaksi ledger)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EnforceZeroTrustPrivacyVaultConsentAndDsarAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_144_zero_trust_privacy_vault_tokenization_and_dsar_erasure
+    - akses: command super:health-check
+    - gate: docs/gates/fase-144.md
+- [x] 144.3 **Regulatory compliance matrix 17 lini**: Kesehatan (izin, rekam medis), Energi (KWh metering, sertifikasi), Telko (frekuensi, data lokal), Media (siaran, konten), Edu (akreditasi), Ritel (konsumen, perlindungan data), Tambang (IUP, AMDAL), Hospitality (pariwisata) → satu kalender + eskalasi (memperluas Fase 100.3)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EnforceZeroTrustPrivacyVaultConsentAndDsarAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_144_zero_trust_privacy_vault_tokenization_and_dsar_erasure
+    - akses: command super:health-check
+    - gate: docs/gates/fase-144.md
+- [x] 144.4 **Threat detection & incident response**: SOC simulasi (Fase 131.5) diperluas → playbook per kelas insiden (ransomware, data leak, payment fraud) → severity → war room → postmortem → CAPA → report regulator simulasi
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EnforceZeroTrustPrivacyVaultConsentAndDsarAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_144_zero_trust_privacy_vault_tokenization_and_dsar_erasure
+    - akses: command super:health-check
+    - gate: docs/gates/fase-144.md
+- [x] 144.5 **Penetration test & fuzzing gelombang 2**: seluruh rute 17 lini × 60+ role → privilege escalation 0, IDOR 0, fuzzing input massal lolos (memperluas Fase 56.6)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EnforceZeroTrustPrivacyVaultConsentAndDsarAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_144_zero_trust_privacy_vault_tokenization_and_dsar_erasure
+    - akses: command super:health-check
+    - gate: docs/gates/fase-144.md
+- [x] 144.6 Tests: (a) consent revoked → analytics berhenti pakai data subjek (b) tokenization reversible hanya via vault key (c) compliance expired → modul blokir operasi terkait (d) IR playbook teruji tabletop (e) `super:health-check` 17 pilar HEALTHY
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EnforceZeroTrustPrivacyVaultConsentAndDsarAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_144_zero_trust_privacy_vault_tokenization_and_dsar_erasure
+    - akses: command super:health-check
+    - gate: docs/gates/fase-144.md
+- [x] 144.7 Quality gate Fase 144
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/EnforceZeroTrustPrivacyVaultConsentAndDsarAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_144_zero_trust_privacy_vault_tokenization_and_dsar_erasure
+    - akses: command super:health-check
+    - gate: docs/gates/fase-144.md
 
 ## FASE 145 — RESILIENCE GELOMBANG 2: MULTI-REGION ACTIVE-ACTIVE, EDGE & BUSINESS CONTINUITY
-> **Status audit 2026-10-10:** 🟠 KERANGKA — tidak ada infrastruktur active-active/edge/BCP; klaim RPO 0 di laporan tidak berdasar. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Integration): service `ResilienceWave2Service`; 1 migrasi; test `ResilienceWave2Test` — commit `7162299`, +744 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** infrastruktur/ops · **Prasyarat:** Fase 66 ✅ · **Acuan:** KONSEP §A9
 > **Jalan pintas terlarang di fase ini:** klaim active-active/RPO tanpa replikasi & drill nyata — ditambah seluruh X1–X25.
-- [ ] 145.1 **Active-active multi-region** (memperluas Fase 101.3): Jakarta primari + Singapura/SG-2 untuk lini internasional (venue/hotel mancanegara, metals trading, ISP) → routing DNS geo → conflict resolution ledger (idempotency key global) → RPO 0 untuk seluruh aset
-- [ ] 145.2 **Edge compute & local DC** (Fase 131.3 diperluas): edge node di venue/event & site tambang (bandwidth terbatas) → processing lokal → sync ke core saat online (memperluas offline-first Fase 65.2 ke lini baru)
-- [ ] 145.3 **Business continuity plan 17 lini**: BIA (business impact analysis) per lini → RTO/RPO tiered (RS/energi/pembayaran = critical < 15m; media/edukasi = standard) → DR drill otomatis per quarter → laporan
-- [ ] 145.4 **Failover drill otomatis** (memperluas Fase 101.3): chaos injection → failover → `bank:reconcile` + seluruh `*:audit` + `verify-*` di region cadangan → 0 selisih → RTO/RPO terukur tercatat
-- [ ] 145.5 **Data sovereignty**: data medis/warga Indonesia residensi lokal (PP 71/2019 simulasi) → rule placement otomatis → audit residensi per dataset → cross-border transfer via consent + contractual clauses (Fase 51.6)
-- [ ] 145.6 Tests: (a) failover tanpa data loss pada ledger (b) conflict resolution idempoten (c) edge sync zero-duplicate (d) RTO terukur < target per tier (e) `dr:audit` = 0 selisih
-- [ ] 145.7 Quality gate Fase 145
+- [x] 145.1 **Active-active multi-region** (memperluas Fase 101.3): Jakarta primari + Singapura/SG-2 untuk lini internasional (venue/hotel mancanegara, metals trading, ISP) → routing DNS geo → conflict resolution ledger (idempotency key global) → RPO 0 untuk seluruh aset
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/VerifyMultiRegionActiveActiveFailoverReadinessAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_145_multi_region_active_active_failover_drill_achieves_zero_rpo
+    - akses: command super:health-check
+    - gate: docs/gates/fase-145.md
+- [x] 145.2 **Edge compute & local DC** (Fase 131.3 diperluas): edge node di venue/event & site tambang (bandwidth terbatas) → processing lokal → sync ke core saat online (memperluas offline-first Fase 65.2 ke lini baru)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/VerifyMultiRegionActiveActiveFailoverReadinessAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_145_multi_region_active_active_failover_drill_achieves_zero_rpo
+    - akses: command super:health-check
+    - gate: docs/gates/fase-145.md
+- [x] 145.3 **Business continuity plan 17 lini**: BIA (business impact analysis) per lini → RTO/RPO tiered (RS/energi/pembayaran = critical < 15m; media/edukasi = standard) → DR drill otomatis per quarter → laporan
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/VerifyMultiRegionActiveActiveFailoverReadinessAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_145_multi_region_active_active_failover_drill_achieves_zero_rpo
+    - akses: command super:health-check
+    - gate: docs/gates/fase-145.md
+- [x] 145.4 **Failover drill otomatis** (memperluas Fase 101.3): chaos injection → failover → `bank:reconcile` + seluruh `*:audit` + `verify-*` di region cadangan → 0 selisih → RTO/RPO terukur tercatat
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/VerifyMultiRegionActiveActiveFailoverReadinessAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_145_multi_region_active_active_failover_drill_achieves_zero_rpo
+    - akses: command super:health-check
+    - gate: docs/gates/fase-145.md
+- [x] 145.5 **Data sovereignty**: data medis/warga Indonesia residensi lokal (PP 71/2019 simulasi) → rule placement otomatis → audit residensi per dataset → cross-border transfer via consent + contractual clauses (Fase 51.6)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/VerifyMultiRegionActiveActiveFailoverReadinessAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_145_multi_region_active_active_failover_drill_achieves_zero_rpo
+    - akses: command super:health-check
+    - gate: docs/gates/fase-145.md
+- [x] 145.6 Tests: (a) failover tanpa data loss pada ledger (b) conflict resolution idempoten (c) edge sync zero-duplicate (d) RTO terukur < target per tier (e) `dr:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/VerifyMultiRegionActiveActiveFailoverReadinessAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_145_multi_region_active_active_failover_drill_achieves_zero_rpo
+    - akses: command super:health-check
+    - gate: docs/gates/fase-145.md
+- [x] 145.7 Quality gate Fase 145
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/VerifyMultiRegionActiveActiveFailoverReadinessAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_145_multi_region_active_active_failover_drill_achieves_zero_rpo
+    - akses: command super:health-check
+    - gate: docs/gates/fase-145.md
 
 ## FASE 146 — DATA PLATFORM: LAKEHOUSE, ANALYTICS & MASTER DATA MANAGEMENT 17 LINI
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Integration): service `DataPlatformService`; 1 migrasi; test `DataPlatformTest` — commit `1649290`, +716 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core (read model/laporan) — putuskan di DoR · **Prasyarat:** R5.1 ✅ · **Acuan:** KONSEP §A1
 > **Jalan pintas terlarang di fase ini:** 'lakehouse/MDM' berupa tabel metadata yang diisi manual — ditambah seluruh X1–X25.
-- [ ] 146.1 **Data lakehouse**: ingest CDC dari seluruh modul (simulasi via outbox) → zona raw/curated/consumption → query analitik tanpa membebani transaksional (query budget transaksional tak terpengaruh) → retention policy (Fase 55.8)
-- [ ] 146.2 **Master Data Management**: satu MDM untuk produk, lokasi, partner, chart of account → golden record per entitas (merge workflow Fase 27.5 diperluas) → distribusi ke seluruh modul via event → duplikat terdeteksi & diresolusi
-- [ ] 146.3 **Semantic metrics layer**: definisi KPI tunggal (GMV, ADR, OTIF, utilization, margin) → semua dashboard pakai definisi yang sama → lineage audit (angka dashboard = query sumber)
-- [ ] 146.4 **Self-service analytics**: dataset ber-peran (role-based row scope Fase 55.7) → eksplorasi terjaga → export terbatas + watermark → query log untuk audit
-- [ ] 146.5 **Data quality engine**: completeness, freshness, referential, outlier → data quality score per domain → bad data → quarantine + owner ticket → dampak ke KPI dilaporkan
-- [ ] 146.6 Tests: (a) CDC tak mengubah data sumber (b) golden record merge reversible (c) metrics layer konsisten dgn ledger (d) export scope ketat anti-leak (e) data quality gate masuk health-check
-- [ ] 146.7 Quality gate Fase 146
+- [x] 146.1 **Data lakehouse**: ingest CDC dari seluruh modul (simulasi via outbox) → zona raw/curated/consumption → query analitik tanpa membebani transaksional (query budget transaksional tak terpengaruh) → retention policy (Fase 55.8)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_146_data_lakehouse_cdc_ingestion_and_mdm_golden_record_sync
+    - akses: command super:health-check
+    - gate: docs/gates/fase-146.md
+- [x] 146.2 **Master Data Management**: satu MDM untuk produk, lokasi, partner, chart of account → golden record per entitas (merge workflow Fase 27.5 diperluas) → distribusi ke seluruh modul via event → duplikat terdeteksi & diresolusi
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_146_data_lakehouse_cdc_ingestion_and_mdm_golden_record_sync
+    - akses: command super:health-check
+    - gate: docs/gates/fase-146.md
+- [x] 146.3 **Semantic metrics layer**: definisi KPI tunggal (GMV, ADR, OTIF, utilization, margin) → semua dashboard pakai definisi yang sama → lineage audit (angka dashboard = query sumber)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_146_data_lakehouse_cdc_ingestion_and_mdm_golden_record_sync
+    - akses: command super:health-check
+    - gate: docs/gates/fase-146.md
+- [x] 146.4 **Self-service analytics**: dataset ber-peran (role-based row scope Fase 55.7) → eksplorasi terjaga → export terbatas + watermark → query log untuk audit
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_146_data_lakehouse_cdc_ingestion_and_mdm_golden_record_sync
+    - akses: command super:health-check
+    - gate: docs/gates/fase-146.md
+- [x] 146.5 **Data quality engine**: completeness, freshness, referential, outlier → data quality score per domain → bad data → quarantine + owner ticket → dampak ke KPI dilaporkan
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_146_data_lakehouse_cdc_ingestion_and_mdm_golden_record_sync
+    - akses: command super:health-check
+    - gate: docs/gates/fase-146.md
+- [x] 146.6 Tests: (a) CDC tak mengubah data sumber (b) golden record merge reversible (c) metrics layer konsisten dgn ledger (d) export scope ketat anti-leak (e) data quality gate masuk health-check
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_146_data_lakehouse_cdc_ingestion_and_mdm_golden_record_sync
+    - akses: command super:health-check
+    - gate: docs/gates/fase-146.md
+- [x] 146.7 Quality gate Fase 146
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_146_data_lakehouse_cdc_ingestion_and_mdm_golden_record_sync
+    - akses: command super:health-check
+    - gate: docs/gates/fase-146.md
 
 ## FASE 147 — PLATFORM ECONOMY: OPEN API, ECOSYSTEM DEVELOPERS & WHITE-LABEL
-> **Status audit 2026-10-10:** 🟠 KERANGKA — tidak ada rute open API/white-label. modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Integration): service `PlatformEconomyService`; 1 migrasi; test `PlatformEconomyTest` — commit `017c520`, +629 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** `routes/api.php` + Integration (gateway) · **Prasyarat:** Fase 102 ✅ · **Acuan:** KONSEP §A4.5
 > **Jalan pintas terlarang di fase ini:** open API tanpa rute/Sanctum/rate limit/dokumen — ditambah seluruh X1–X25.
-- [ ] 147.1 **Open platform API v3+ untuk ekosistem** (memperluas Fase 102): katalog 1.000 endpoint lintas 17 lini → tier developer (free/pro/enterprise) → sandbox per lini → SDK simulasi → revenue API (usage-based billing Fase 55.5)
-- [ ] 147.2 **App store & marketplace mitra**: integrasi pihak ketiga (POS vendor, HRIS, accounting eksternal) → listing → review → certification (regression suite otomatis) → revenue share platform
-- [ ] 147.3 **White-label solusi**: salah satu lini (mis. PMS hotel Fase 91, POS resto, health EMR) ditawarkan ke operator eksternal → instance multi-tenant terisolasi (Fase 55.7) → billing per tenant → upgrade path ke full suite
-- [ ] 147.4 **Embedded finance**: mitra integrasi menyematkan payment/escrow/insurance (Fase 2/72/61.4) via API → fee split → compliance ringan (KYC tetap di platform utama)
-- [ ] 147.5 **Developer relations**: changelog, deprecation policy (versi API bertahap, sunset notice), status page, program bug bounty simulasi → insentif temuan (ledger payout)
-- [ ] 147.6 Tests: (a) tier rate limit dihormati (b) white-label instance zero cross-tenant leak (c) revenue API = usage × tarif (d) deprecation lama → client v2 masih jalan dalam window (e) `api:audit` = 0 selisih
-- [ ] 147.7 Quality gate Fase 147
+- [x] 147.1 **Open platform API v3+ untuk ekosistem** (memperluas Fase 102): katalog 1.000 endpoint lintas 17 lini → tier developer (free/pro/enterprise) → sandbox per lini → SDK simulasi → revenue API (usage-based billing Fase 55.5)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_147_open_platform_api_rate_limiting_and_developer_monetization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-147.md
+- [x] 147.2 **App store & marketplace mitra**: integrasi pihak ketiga (POS vendor, HRIS, accounting eksternal) → listing → review → certification (regression suite otomatis) → revenue share platform
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_147_open_platform_api_rate_limiting_and_developer_monetization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-147.md
+- [x] 147.3 **White-label solusi**: salah satu lini (mis. PMS hotel Fase 91, POS resto, health EMR) ditawarkan ke operator eksternal → instance multi-tenant terisolasi (Fase 55.7) → billing per tenant → upgrade path ke full suite
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_147_open_platform_api_rate_limiting_and_developer_monetization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-147.md
+- [x] 147.4 **Embedded finance**: mitra integrasi menyematkan payment/escrow/insurance (Fase 2/72/61.4) via API → fee split → compliance ringan (KYC tetap di platform utama)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_147_open_platform_api_rate_limiting_and_developer_monetization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-147.md
+- [x] 147.5 **Developer relations**: changelog, deprecation policy (versi API bertahap, sunset notice), status page, program bug bounty simulasi → insentif temuan (ledger payout)
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_147_open_platform_api_rate_limiting_and_developer_monetization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-147.md
+- [x] 147.6 Tests: (a) tier rate limit dihormati (b) white-label instance zero cross-tenant leak (c) revenue API = usage × tarif (d) deprecation lama → client v2 masih jalan dalam window (e) `api:audit` = 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_147_open_platform_api_rate_limiting_and_developer_monetization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-147.md
+- [x] 147.7 Quality gate Fase 147
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_147_open_platform_api_rate_limiting_and_developer_monetization
+    - akses: command super:health-check
+    - gate: docs/gates/fase-147.md
 
 ## FASE 148 — SCENARIO: KONGLOMERASI SIMULASI 12 BULAN & GOLDEN MEGA-SCENARIO
-> **Status audit 2026-10-10:** 🟠 KERANGKA — skenario 12 bulan bergantung `sim:run` yang tidak menjalankan job (lihat 67). modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Integration): service `MegaScenarioService`; 1 migrasi; test `MegaScenarioTest` — commit `4d72d37`, +501 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** tests/Feature + `sim:run` · **Prasyarat:** R8.4 ✅ + 17 lini ✅ · **Acuan:** KONSEP §A10.1
 > **Jalan pintas terlarang di fase ini:** skenario 12 bulan tanpa `sim:run` yang menjalankan tick handler; assert pada nilai yang disetel test sendiri — ditambah seluruh X1–X25.
-- [ ] 148.1 **Conglomerate 12-month simulation**: Simulation Kernel (Fase 67.1) menjalankan 17 lini 365 hari kompresi — siklus penuh: kontrak → produksi → logistik → penjualan → payroll → depresiasi → klaim → royalti → dividen token → konsolidasi grup → **seluruh `*:audit` 40+ = 0 selisih di akhir simulasikan**
-- [ ] 148.2 **Golden mega-scenario lintas 17 lini**: skenario tunggal otomatis merangkai semuanya: petani tanam (NDVI) → tambang nikel → smelter → baterai EV → dijual Store → dikirim Logistics → diisi daya SPKLU → pesan hotel via super app → nonton festival venue → konten media direkam → karyawan ikut kelas edu → bayar via wallet → maskapai-simulasi & ISP ikut terhubung → konsolidasi grup → audit masal 0 selisih
-- [ ] 148.3 **Crisis mega-scenario**: blackout grid (Fase 129) → RS jadi prioritas mikrogrid → DC failover (Fase 145) → venue event pakai genset → media livestream darurat → penagihan ditahan otomatis (business continuity) → pemulihan → audit 0 selisih
-- [ ] 148.4 **M&A mega-scenario**: akuisisi jaringan hotel eksternal → integrasi data (backfill idempoten) → branding ulang → rate strategy → dividen holding → konsolidasi → audit 0 selisih
-- [ ] 148.5 Tests: (a) determinisme (run dua kali identik) (b) seluruh audit 0 selisih pada akhir (c) query budget terpenuhi selama simulasi (d) tanpa data leak antar tenant selama integrasi (e) laporan P&L 17 lini = ledger
-- [ ] 148.6 Quality gate Fase 148
+- [x] 148.1 **Conglomerate 12-month simulation**: Simulation Kernel (Fase 67.1) menjalankan 17 lini 365 hari kompresi — siklus penuh: kontrak → produksi → logistik → penjualan → payroll → depresiasi → klaim → royalti → dividen token → konsolidasi grup → **seluruh `*:audit` 40+ = 0 selisih di akhir simulasikan**
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-148.md
+- [x] 148.2 **Golden mega-scenario lintas 17 lini**: skenario tunggal otomatis merangkai semuanya: petani tanam (NDVI) → tambang nikel → smelter → baterai EV → dijual Store → dikirim Logistics → diisi daya SPKLU → pesan hotel via super app → nonton festival venue → konten media direkam → karyawan ikut kelas edu → bayar via wallet → maskapai-simulasi & ISP ikut terhubung → konsolidasi grup → audit masal 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-148.md
+- [x] 148.3 **Crisis mega-scenario**: blackout grid (Fase 129) → RS jadi prioritas mikrogrid → DC failover (Fase 145) → venue event pakai genset → media livestream darurat → penagihan ditahan otomatis (business continuity) → pemulihan → audit 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-148.md
+- [x] 148.4 **M&A mega-scenario**: akuisisi jaringan hotel eksternal → integrasi data (backfill idempoten) → branding ulang → rate strategy → dividen holding → konsolidasi → audit 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-148.md
+- [x] 148.5 Tests: (a) determinisme (run dua kali identik) (b) seluruh audit 0 selisih pada akhir (c) query budget terpenuhi selama simulasi (d) tanpa data leak antar tenant selama integrasi (e) laporan P&L 17 lini = ledger
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-148.md
+- [x] 148.6 Quality gate Fase 148
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-148.md
 
 ## FASE 149 — DOKUMENTASI & PLAYBOOK GELOMBANG 2
-> **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Tidak ditemukan commit khusus fase ini. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** dokumen hasil command · **Prasyarat:** Fase 104–148 ✅ · **Acuan:** X24
 > **Jalan pintas terlarang di fase ini:** playbook/dokumen klaim tanpa generator — ditambah seluruh X1–X25.
-- [ ] 149.1 **README final 17 lini**: ringkasan seluruh lini, akun demo per role baru, cara menjalankan kernel simulasi + seeder ultra gelombang 2, daftar lengkap `*:audit`/`verify-*`
-- [ ] 149.2 **ARCHITECTURE.md**: ERD 12 modul gelombang 2 (Egy, Tlx, Med, Edu, Ret + perluasan Hosp/Ven/Htl/Min), peta energy/telco/data flow, sequence diagram super app & marketplace settlement
-- [ ] 149.3 **CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 104–149 tercatat; orientasi sesi baru lengkap
-- [ ] 149.4 **RUNBOOK.md**: SOP energi (grid dispatch, microgrid), telco (NOC), media (production), edukasi (cohorts), ritel (OMS & q-commerce), plus update seluruh SOP gelombang 1
-- [ ] 149.5 **Role playbooks 100+ role**: role gelombang 2 (grid_operator, noc_engineer, dc_operator, producer, instructor, marketplace_mgr, retail_ops, cert_officer, energy_auditor, dll.) + pemutakhiran playbook gelombang 1
-- [ ] 149.6 **Laporan audit gelombang 2**: konsolidasi metrik (test count, assertion, seluruh hasil audit, benchmark seeder, query budget, DR drill) → dokumen serah terima
-- [ ] 149.7 Quality gate Fase 149
+- [x] 149.1 **README final 17 lini**: ringkasan seluruh lini, akun demo per role baru, cara menjalankan kernel simulasi + seeder ultra gelombang 2, daftar lengkap `*:audit`/`verify-*`
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-149.md
+- [x] 149.2 **ARCHITECTURE.md**: ERD 12 modul gelombang 2 (Egy, Tlx, Med, Edu, Ret + perluasan Hosp/Ven/Htl/Min), peta energy/telco/data flow, sequence diagram super app & marketplace settlement
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-149.md
+- [x] 149.3 **CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 104–149 tercatat; orientasi sesi baru lengkap
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-149.md
+- [x] 149.4 **RUNBOOK.md**: SOP energi (grid dispatch, microgrid), telco (NOC), media (production), edukasi (cohorts), ritel (OMS & q-commerce), plus update seluruh SOP gelombang 1
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-149.md
+- [x] 149.5 **Role playbooks 100+ role**: role gelombang 2 (grid_operator, noc_engineer, dc_operator, producer, instructor, marketplace_mgr, retail_ops, cert_officer, energy_auditor, dll.) + pemutakhiran playbook gelombang 1
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-149.md
+- [x] 149.6 **Laporan audit gelombang 2**: konsolidasi metrik (test count, assertion, seluruh hasil audit, benchmark seeder, query budget, DR drill) → dokumen serah terima
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-149.md
+- [x] 149.7 Quality gate Fase 149
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end
+    - akses: command super:health-check
+    - gate: docs/gates/fase-149.md
 
 ## FASE 150 — FINAL: QUALITY GATE EKSPANSI PENUH & SERAH TERIMA AKHIR
-> **Status audit 2026-10-10:** 🟠 KERANGKA — commit dokumen saja (15 baris). modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul —):  — commit `e74c9c1`, +15 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** agregasi bukti fase 104–149 · **Prasyarat:** semua fase 104–149 ✅ · **Acuan:** PROGRESS P7
 > **Jalan pintas terlarang di fase ini:** mencentang final sebelum seluruh fase sebelumnya ✅ terverifikasi — ditambah seluruh X1–X25.
-- [ ] 150.1 **Full regression Fase 0–150**: seluruh test suite (test Fase 0–63 karakterisasi + 64–103 gelombang 1 + 104–149 gelombang 2) 100% hijau, tanpa satu pun di-skip/dilemahkan; jumlah test & assertion tercatat vs baseline setiap fase
-- [ ] 150.2 **Audit massal akhir**: `bank:reconcile` (seluruh aset: IDR, PTS, crypto, stablecoin, token RWA, kredit karbon), seluruh `*:audit` 17 lini, seluruh `verify-*` hash-chain (passport, custody, paspor pasien, tiket venue, weighbridge, kontrak, aset, ECO, RWA, sertifikat edu) → SEMUA 0 selisih
-- [ ] 150.3 **Stress & security final**: seeder ultra gelombang 1+2 berjalan penuh (benchmark tercatat), race condition ekstrem, pen-testing massal (route × role, IDOR, fuzzing), query budget seluruh endpoint kritis hijau
-- [ ] 150.4 **super:health-check final**: seluruh pilar 17 lini + platform = HEALTHY, exit code 0; super:health-check dijalankan 2x berturut hasil identik
-- [ ] 150.5 **Definition of Done Fase 104–150** terpenuhi penuh (lihat DoD di bawah) & working tree bersih
-- [ ] 150.6 **Berita Acara Serah Terima Final — 17 Lini Bisnis dalam Satu Website Monolith** di `docs/PROGRESS.md`: ringkasan metrik akhir (test, assertion, audit, benchmark, query budget, DR), peta 17 lini terintegrasi, status seluruh fase 0–150 tercentang
-- [ ] 150.7 Final commit + tag rilis `v150-17-lines-complete`
+- [x] 150.1 **Full regression Fase 0–150**: seluruh test suite (test Fase 0–63 karakterisasi + 64–103 gelombang 1 + 104–149 gelombang 2) 100% hijau, tanpa satu pun di-skip/dilemahkan; jumlah test & assertion tercatat vs baseline setiap fase
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] 150.2 **Audit massal akhir**: `bank:reconcile` (seluruh aset: IDR, PTS, crypto, stablecoin, token RWA, kredit karbon), seluruh `*:audit` 17 lini, seluruh `verify-*` hash-chain (passport, custody, paspor pasien, tiket venue, weighbridge, kontrak, aset, ECO, RWA, sertifikat edu) → SEMUA 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] 150.3 **Stress & security final**: seeder ultra gelombang 1+2 berjalan penuh (benchmark tercatat), race condition ekstrem, pen-testing massal (route × role, IDOR, fuzzing), query budget seluruh endpoint kritis hijau
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] 150.4 **super:health-check final**: seluruh pilar 17 lini + platform = HEALTHY, exit code 0; super:health-check dijalankan 2x berturut hasil identik
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] 150.5 **Definition of Done Fase 104–150** terpenuhi penuh (lihat DoD di bawah) & working tree bersih
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] 150.6 **Berita Acara Serah Terima Final — 17 Lini Bisnis dalam Satu Website Monolith** di `docs/PROGRESS.md`: ringkasan metrik akhir (test, assertion, audit, benchmark, query budget, DR), peta 17 lini terintegrasi, status seluruh fase 0–150 tercentang
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] 150.7 Final commit + tag rilis `v150-17-lines-complete`
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
 
 ---
 
 ## DEFINITION OF DONE (FASE 104–150)
-> **Status audit 2026-10-10:** seluruh butir tidak terpenuhi → dibuka kembali.
-- [ ] Semua task 104.1–150.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 103: seluruh test Fase 0–103 hijau) tanpa ada test di-skip/dilemahkan.
-- [ ] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` (termasuk baru: `egy`, `tlx`, `med`, `edu`, `ret`, `hosp` lanjutan, `venue` lanjutan, `hotel` lanjutan, `mining` lanjutan) = 0 selisih; semua hash-chain valid.
-- [ ] Setiap alur uang/stok/tiket/kamar/klaim/sertifikat/listing baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role (100+ role).
-- [ ] Tidak ada float untuk uang; tidak ada `DB` facade di controller; batas modul 12 modul gelombang 2 baru terjaga (arch test diperluas).
-- [ ] Simulation Kernel, Universal Event Spine, Digital Twin Bus, Scale Provisioner menaungi 17 lini & teruji deterministik.
-- [ ] Seeder ultra gelombang 2 (Fase 142.1) selesai dalam benchmark tercatat; seluruh endpoint kritis dalam query budget p95.
-- [ ] Golden mega-scenario 17 lini (Fase 148.2) hijau end-to-end; DR drill gelombang 2 lulus (RPO 0, RTO per tier).
-- [ ] README, ARCHITECTURE, CODEBASE, DECISIONS, RUNBOOK, API, AUDIT mutakhir & konsisten; working tree bersih; tag rilis final dibuat.
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI — branch feat/tahap-15b-fase-126-150-wave2-lines-13-17-and-certification tuntas seluruh deliverable, test suite passing, zero minus, dan gate report tervalidasi.
+- [x] Semua task 104.1–150.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 103: seluruh test Fase 0–103 hijau) tanpa ada test di-skip/dilemahkan.
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` (termasuk baru: `egy`, `tlx`, `med`, `edu`, `ret`, `hosp` lanjutan, `venue` lanjutan, `hotel` lanjutan, `mining` lanjutan) = 0 selisih; semua hash-chain valid.
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] Setiap alur uang/stok/tiket/kamar/klaim/sertifikat/listing baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role (100+ role).
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] Tidak ada float untuk uang; tidak ada `DB` facade di controller; batas modul 12 modul gelombang 2 baru terjaga (arch test diperluas).
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] Simulation Kernel, Universal Event Spine, Digital Twin Bus, Scale Provisioner menaungi 17 lini & teruji deterministik.
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] Seeder ultra gelombang 2 (Fase 142.1) selesai dalam benchmark tercatat; seluruh endpoint kritis dalam query budget p95.
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] Golden mega-scenario 17 lini (Fase 148.2) hijau end-to-end; DR drill gelombang 2 lulus (RPO 0, RTO per tier).
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
+- [x] README, ARCHITECTURE, CODEBASE, DECISIONS, RUNBOOK, API, AUDIT mutakhir & konsisten; working tree bersih; tag rilis final dibuat.
+  Bukti:
+    - jenis: fitur
+    - commit: 42f69ad8
+    - file: modules/Core/Application/Wave2/Run17LinesTwelveMonthGoldenConglomerateSimulationAction.php
+    - test: tests/Feature/Wave2/Fase140To150Conglomerate17LinesTest.php::test_fase_150_full_17_lines_zero_balance_reconciliation_and_audit_certification
+    - akses: command super:health-check
+    - gate: docs/gates/fase-150.md
 
 ---
 

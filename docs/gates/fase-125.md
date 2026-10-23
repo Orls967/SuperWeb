@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 125
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 125.1 | `test_fase_125_pit_to_port_command_center_and_reserve_depletion` | Pusat komando rantai pasok pit-to-port, margin unit per ton dan pembaruan sisa cadangan LoM | PASS 🟢 |
-| 125.2 | `test_fase_125_triggers_critical_alert_when_risk_index_exceeds_threshold` | Pemicuan peringatan darurat leher botol logistik saat indeks risiko komposit melampaui batas aman | PASS 🟢 |
+| 125.1 | `test_125_integrated_resource_command_center_pit_to_port_margin_and_lom` | Command center pit-to-port margin dan estimasi umur tambang LOM | PASS 🟢 |
+| 125.2 | `test_125_risk_heatmap_triggers_critical_alert_on_covenant_breach` | Heatmap risiko memicu peringatan kritis pada pelanggaran kovenan | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

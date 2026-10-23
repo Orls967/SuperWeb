@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 107
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 107.1 | `test_fase_107_public_health_bpjs_command_center_and_epidemic_forecast` | Sinkronisasi bed nasional dan proyeksi epidemiologi 7-hari Holt-Winters | PASS 🟢 |
-| 107.2 | `test_fase_107_bpjs_denied_claim_is_not_accrued_in_net_revenue` | Eksklusi klaim BPJS ditolak dari akrual pendapatan bersih | PASS 🟢 |
+| 107.1 | `test_107_bpjs_claim_adjudication_only_accrues_approved_revenue` | Adjudikasi klaim BPJS hanya akrual pendapatan disetujui | PASS 🟢 |
+| 107.2 | `test_107_epidemic_surveillance_triggers_alarm_on_threshold_breach` | Surveilans epidemi memicu alarm batas ambang | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

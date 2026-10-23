@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 135
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 135.1 |  | Penerbitan lencana sertifikat kompetensi berantai hash gapless | PASS 🟢 |
-| 135.2 |  | Penolakan pendaftaran kursus saat prasyarat belum terpenuhi | PASS 🟢 |
+| 135.1 | `test_fase_135_verifiable_credential_issuance_with_gapless_hash_chain` | Penerbitan kredensial terverifikasi W3C dengan rantai hash | PASS 🟢 |
+| 135.2 | `test_fase_135_rejects_enrollment_when_prerequisites_unfulfilled` | Penolakan pendaftaran kursus saat prasyarat belum terpenuhi | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

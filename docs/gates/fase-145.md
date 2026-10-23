@@ -23,7 +23,7 @@
 ## 3. Status Test Blok Bukti Fase 145
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 145.1 |  | Drill failover aktif-aktif mencapai RPO = 0 pada transaksi buku besar | PASS 🟢 |
+| 145.1 | `test_fase_145_multi_region_active_active_failover_drill_achieves_zero_rpo` | Drill failover multi-region active-active mencapai zero-RPO | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

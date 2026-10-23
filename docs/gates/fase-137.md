@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 137
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 137.1 |  | Kliring pesanan penjual marketplace dan penguncian stok anti-double-sell | PASS 🟢 |
-| 137.2 |  | Validasi keunikan kupon dan pemenuhan pesanan multi-lokasi | PASS 🟢 |
+| 137.1 | `test_fase_137_marketplace_merchant_settlement_and_anti_double_sell_stock_locking` | Settlement merchant marketplace dan penguncian stok anti-double sell | PASS 🟢 |
+| 137.2 | `test_fase_137_coupon_single_use_idempotency_and_order_split_fulfillment` | Idempotensi kupon sekali pakai dan pemenuhan pesanan split | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

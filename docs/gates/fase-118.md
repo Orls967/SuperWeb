@@ -23,8 +23,7 @@
 ## 3. Status Test Blok Bukti Fase 118
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 118.1 | `test_fase_118_portfolio_revpar_optimization_and_fx_exposure` | Kalkulasi metrik RevPAR (ADR x Okupansi), potensi cross-selling dan ringkasan eksposur valas | PASS 🟢 |
-| 118.2 | `test_fase_118_rejects_invalid_occupancy_ratio` | Penolakan parameter rasio okupansi di luar rentang valid 0–100% | PASS 🟢 |
+| 118.1 | `test_118_global_hospitality_and_entertainment_portfolio_revpar_optimization` | Optimasi RevPAR portofolio hospitaliti dan entertainment global | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

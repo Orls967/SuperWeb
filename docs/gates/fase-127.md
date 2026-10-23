@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 127
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 127.1 |  | Rekonsiliasi air masuk vs tertagih dan deteksi kebocoran NRW | PASS 🟢 |
-| 127.2 |  | Bagi hasil penghematan ESCO dan penagihan distrik terpadu | PASS 🟢 |
+| 127.1 | `test_fase_127_reconcile_water_treatment_and_non_revenue_water_leak_detection` | Rekonsiliasi pengolahan air distrik dan deteksi kebocoran NRW | PASS 🟢 |
+| 127.2 | `test_fase_127_esco_performance_savings_split_and_consolidated_utility_billing` | Bagi hasil penghematan ESCO dan penagihan utilitas terkonsolidasi | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

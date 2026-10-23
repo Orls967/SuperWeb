@@ -23,8 +23,8 @@
 ## 3. Status Test Blok Bukti Fase 139
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 139.1 |  | Pemberangkatan pesanan q-commerce dark store dalam radius 3 km | PASS 🟢 |
-| 139.2 |  | Kredit voucher otomatis atas keterlambatan SLA dan siklus wadah pakai ulang | PASS 🟢 |
+| 139.1 | `test_fase_139_quick_commerce_dark_store_grid_dispatch_within_radius` | Dispatch kurir quick commerce dark store grid dalam radius 15 menit | PASS 🟢 |
+| 139.2 | `test_fase_139_fulfillment_sla_breach_auto_credit_and_reusable_packaging_loop` | Kredit otomatis pelanggaran SLA pengantaran dan siklus kemasan reusable | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

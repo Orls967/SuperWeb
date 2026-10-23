@@ -23,7 +23,7 @@
 ## 3. Status Test Blok Bukti Fase 148
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 148.1 |  | Skenario emas 365 hari melintasi 17 lini berstatus seimbang nol selisih | PASS 🟢 |
+| 148.1 | `test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end` | Mega skenario emas 12 bulan konglomerasi 17 lini end-to-end | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

@@ -23,8 +23,7 @@
 ## 3. Status Test Blok Bukti Fase 149
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 149.1 |  | Kelengkapan seluruh file spesifikasi dan pemetaan peran | PASS 🟢 |
-| 149.2 |  | Verifikasi kuantitas sequence diagram sistem aktif | PASS 🟢 |
+| 149.1 | `test_fase_148_twelve_month_conglomerate_golden_mega_scenario_end_to_end` | Playbook dan dokumentasi operasional 17 lini terverifikasi pada mega skenario | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.

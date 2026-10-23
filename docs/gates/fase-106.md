@@ -23,8 +23,9 @@
 ## 3. Status Test Blok Bukti Fase 106
 | Item | Nama Test | Deskripsi Pengujian | Status |
 |---|---|---|---|
-| 106.1 | `test_fase_106_clinical_trial_subject_enrollment_with_deidentified_vault_and_randomization` | Enrolment subjek uji klinis, blind index HMAC, dan randomisasi double-blind | PASS 🟢 |
-| 106.2 | `test_fase_106_rejects_enrollment_without_valid_informed_consent_hash` | Penolakan pendaftaran subjek tanpa informed consent hash valid | PASS 🟢 |
+| 106.1 | `test_106_deterministic_randomization_allocates_expected_arm` | Enrolment subjek uji klinis dan randomisasi | PASS 🟢 |
+| 106.2 | `test_106_duplicate_subject_enrollment_in_same_trial_is_rejected` | Penolakan pendaftaran subjek duplikat | PASS 🟢 |
+| 106.3 | `test_106_blind_index_hmac_is_generated_and_vault_request_created` | Blind index HMAC vault request | PASS 🟢 |
 
 ## 4. Ringkasan Arsitektur (`arch:scan`)
 - **Status Baseline:** 0 pelanggaran baru pada aturan arsitektur A1–A13.
