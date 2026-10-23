@@ -6,7 +6,7 @@ namespace Modules\Resto\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Shared\Domain\Traits\HasUuid;
 
 class RoyaltyPosting extends Model

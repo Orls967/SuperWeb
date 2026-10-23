@@ -11,15 +11,15 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Modules\Crypto\Contracts\CryptoAsset;
 use Modules\Crypto\Contracts\PriceFeed;
-use Modules\Crypto\Domain\Models\CryptoAsset;
 use Modules\Finance\Application\Actions\AddCollateralAction;
 use Modules\Finance\Application\Actions\OpenLoanAction;
 use Modules\Finance\Application\Actions\PayInstallmentAction;
 use Modules\Finance\Application\Services\LoanSimulator;
 use Modules\Finance\Domain\Models\Loan;
 use Modules\Finance\Http\Requests\OpenLoanRequest;
-use Modules\Store\Domain\Models\Product;
+use Modules\Store\Contracts\Product;
 
 class LoanController extends Controller
 {

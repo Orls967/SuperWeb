@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Modules\Store\Domain\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Store\Contracts\OrderItem as BaseOrderItem;
 
-class OrderItem extends Model
+class OrderItem extends BaseOrderItem
 {
     use HasFactory;
 

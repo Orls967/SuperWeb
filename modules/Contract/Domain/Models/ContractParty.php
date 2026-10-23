@@ -7,7 +7,7 @@ namespace Modules\Contract\Domain\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Contract\Domain\Enums\ContractPartyRole;
-use Modules\Party\Domain\Models\Party;
+use Modules\Party\Contracts\Party;
 
 class ContractParty extends Model
 {

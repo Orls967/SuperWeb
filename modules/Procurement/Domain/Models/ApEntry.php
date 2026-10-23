@@ -6,7 +6,7 @@ namespace Modules\Procurement\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Supplier\Domain\Models\Supplier;
+use Modules\Supplier\Contracts\Supplier;
 
 /**
  * Entri subledger AP (34.4): GR/IR, AP, PPN masukan, PPh 23, PPV, uang muka, kredit memo.

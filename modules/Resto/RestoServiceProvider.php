@@ -11,11 +11,13 @@ use Modules\Resto\Application\Services\RecipeCostCalculator;
 use Modules\Resto\Application\Services\RestoIngredientStockService;
 use Modules\Resto\Application\Services\RestoSearchProvider;
 use Modules\Resto\Application\Services\RestoTenantSalesProvider;
+use Modules\Resto\Application\Services\RestoUsageReaderService;
 use Modules\Resto\Console\Commands\CloseDayCommand;
 use Modules\Resto\Console\Commands\ExpireDisplayTraysCommand;
 use Modules\Resto\Console\Commands\MonitorStockLevelsCommand;
 use Modules\Resto\Console\Commands\PostFranchiseRoyaltyCommand;
 use Modules\Resto\Contracts\RestoIngredientStockPort;
+use Modules\Resto\Contracts\RestoUsageReaderInterface;
 use Modules\Resto\Domain\Models\CateringOrder;
 use Modules\Resto\Domain\Models\Delivery;
 use Modules\Resto\Domain\Models\DisplayTray;
@@ -54,6 +56,11 @@ class RestoServiceProvider extends ServiceProvider
         $this->app->singleton(RecipeCostCalculator::class, fn () => new RecipeCostCalculator);
         $this->app->singleton(RestoTenantSalesProvider::class);
         $this->app->tag(RestoTenantSalesProvider::class, 'mall.tenant_sales_provider');
+
+        $this->app->bind(
+            RestoUsageReaderInterface::class,
+            RestoUsageReaderService::class
+        );
     }
 
     public function boot(): void

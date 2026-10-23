@@ -9,6 +9,7 @@ use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Modules\Logistics\Contracts\Shipment as BaseShipment;
 use Modules\Logistics\Domain\Enums\Incoterm;
 use Modules\Logistics\Domain\Enums\PaymentTerms;
 use Modules\Logistics\Domain\Enums\ServiceLevel;
@@ -16,10 +17,10 @@ use Modules\Logistics\Domain\Enums\ShipmentStatus;
 use Modules\Logistics\Domain\Enums\TransportMode;
 use Modules\Logistics\Domain\Exceptions\InvalidShipmentTransitionException;
 use Modules\Payment\Contracts\Payable;
-use Modules\Payment\Domain\Models\PaymentIntent;
+use Modules\Payment\Contracts\PaymentIntent;
 use Modules\Shared\Domain\ValueObjects\Money;
 
-class Shipment extends LogisticsEntity implements Payable
+class Shipment extends BaseShipment implements Payable
 {
     protected $table = 'lgx_shipments';
 

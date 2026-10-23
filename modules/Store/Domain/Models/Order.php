@@ -18,7 +18,7 @@ use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Logistics\Contracts\ShipmentBooking;
 use Modules\Payment\Contracts\Payable;
-use Modules\Payment\Domain\Models\PaymentIntent;
+use Modules\Payment\Contracts\PaymentIntent;
 use Modules\Shared\Domain\ValueObjects\Money;
 use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Events\OrderPaid;

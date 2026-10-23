@@ -7,10 +7,10 @@ namespace Modules\Procurement\Application\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Logistics\Contracts\Shipment;
 use Modules\Logistics\Contracts\ShipmentBooking;
-use Modules\Logistics\Domain\Models\Shipment;
 use Modules\Procurement\Domain\Models\PurchaseOrder;
-use Modules\Supplier\Domain\Models\Supplier;
+use Modules\Supplier\Contracts\Supplier;
 
 /**
  * 33.7 Integrasi Logistics: PO inbound membuat shipment masuk + jadwal

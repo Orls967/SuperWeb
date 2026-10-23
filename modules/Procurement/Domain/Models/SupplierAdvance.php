@@ -7,7 +7,7 @@ namespace Modules\Procurement\Domain\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Supplier\Domain\Models\Supplier;
+use Modules\Supplier\Contracts\Supplier;
 
 class SupplierAdvance extends Model
 {

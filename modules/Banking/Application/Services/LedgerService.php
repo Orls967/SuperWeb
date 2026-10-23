@@ -319,4 +319,19 @@ class LedgerService implements Ledger
 
         return $result;
     }
+
+    public function getCachedBalance(string $code): ?string
+    {
+        return LedgerAccount::where('code', $code)->value('cached_balance');
+    }
+
+    public function findAccountByCode(string $code): ?\Modules\Banking\Contracts\LedgerAccount
+    {
+        $account = LedgerAccount::where('code', $code)->first();
+        if ($account === null) {
+            return null;
+        }
+
+        return \Modules\Banking\Contracts\LedgerAccount::find($account->id);
+    }
 }

@@ -12,7 +12,7 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\TradeFinance\Domain\Models\BankGuarantee;
 use Modules\TradeFinance\Domain\Models\DocumentaryCollection;
 use Modules\TradeFinance\Domain\Models\LcDocument;

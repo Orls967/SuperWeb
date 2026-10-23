@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use Modules\Payment\Contracts\Payable;
-use Modules\Payment\Domain\Models\PaymentIntent;
+use Modules\Payment\Contracts\PaymentIntent;
 use Modules\Resto\Domain\Enums\ConsumedState;
 use Modules\Resto\Domain\Enums\OrderChannel;
 use Modules\Resto\Domain\Enums\OrderStatus;

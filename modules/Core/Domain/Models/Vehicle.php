@@ -6,16 +6,15 @@ namespace Modules\Core\Domain\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
+use Modules\Core\Contracts\Vehicle as BaseVehicle;
 use Modules\Shared\Domain\Traits\HasUuid;
 
-class Vehicle extends Model
+class Vehicle extends BaseVehicle
 {
     use HasFactory, HasUuid, SoftDeletes;
 

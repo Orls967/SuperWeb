@@ -8,10 +8,10 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Core\Contracts\DocumentStoreInterface;
+use Modules\Resto\Contracts\RestoUsageReaderInterface;
 use Modules\Supplier\Domain\Models\Supplier;
 use Modules\Supplier\Domain\Models\SupplierAsn;
 use Modules\Supplier\Domain\Models\SupplierDocument;
@@ -57,11 +57,9 @@ class SupplierPortalController extends Controller
         return view('supplier::portal', [
             'supplier' => $supplier,
             'asns' => $supplier->asns()->get(),
-            'purchaseOrders' => DB::table('resto_purchase_orders')
-                ->where('supplier_id', DB::table('resto_suppliers')->where('party_id', $supplier->party_id)->value('id'))
-                ->orderByDesc('id')
-                ->limit(20)
-                ->get(['id', 'number', 'status', 'grand_total', 'expected_at']),
+            'purchaseOrders' => $supplier->party_id !== null
+                ? app(RestoUsageReaderInterface::class)->getPurchaseOrdersForSupplierParty($supplier->party_id)
+                : collect(),
         ]);
     }
 

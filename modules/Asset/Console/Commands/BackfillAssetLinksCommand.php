@@ -32,9 +32,10 @@ class BackfillAssetLinksCommand extends Command
         $total = 0;
 
         // 1. Mall\Asset → kategori equipment
-        if (DB::getSchemaBuilder()->hasTable('mall_assets')) {
+        $mallTable = 'mall_assets';
+        if (DB::getSchemaBuilder()->hasTable($mallTable)) {
             $category = AssetCategory::where('code', 'equipment')->firstOrFail();
-            $rows = DB::table('mall_assets')->whereNull('asset_id')->get(['id', 'name', 'asset_tag', 'status']);
+            $rows = DB::table($mallTable)->whereNull('asset_id')->get(['id', 'name', 'asset_tag', 'status']);
 
             foreach ($rows as $row) {
                 $total++;

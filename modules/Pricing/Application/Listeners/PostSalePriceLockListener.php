@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Pricing\Application\Listeners;
 
-use Illuminate\Support\Facades\DB;
 use Modules\Pricing\Application\Services\PricingService;
+use Modules\Store\Contracts\StoreOrderReaderInterface;
 use Modules\Store\Domain\Events\OrderPaid;
 
 /**
@@ -18,10 +18,7 @@ class PostSalePriceLockListener
 
     public function handle(OrderPaid $event): void
     {
-        $lines = DB::table('store_order_items as oi')
-            ->join('store_products as p', 'p.id', '=', 'oi.product_id')
-            ->where('oi.order_id', $event->orderId)
-            ->get(['p.sku', 'oi.qty', 'oi.price_snapshot']);
+        $lines = app(StoreOrderReaderInterface::class)->getOrderItemsWithProduct($event->orderId);
 
         foreach ($lines as $line) {
             if ($line->sku === null || $line->sku === '') {

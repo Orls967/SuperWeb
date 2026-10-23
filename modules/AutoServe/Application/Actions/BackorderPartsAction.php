@@ -16,9 +16,9 @@ use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Shared\Application\BaseAction;
+use Modules\Store\Contracts\Order;
+use Modules\Store\Contracts\OrderItem;
 use Modules\Store\Domain\Enums\OrderStatus;
-use Modules\Store\Domain\Models\Order;
-use Modules\Store\Domain\Models\OrderItem;
 
 /**
  * Buat pesanan pembelian internal (backorder) ketika sparepart pada estimasi

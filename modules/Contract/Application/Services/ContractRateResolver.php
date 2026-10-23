@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Contract\Application\Services;
 
 use Illuminate\Support\Facades\DB;
+use Modules\Logistics\Contracts\LogisticsUsageReaderInterface;
 use Modules\Logistics\Contracts\RateCardOverrideResolver;
 
 /**
@@ -24,17 +25,13 @@ class ContractRateResolver implements RateCardOverrideResolver
         string $serviceLevel,
         string $mode
     ): ?int {
-        $partyIds = DB::table('lgx_shipper_accounts')
-            ->where('shipper_id', $shipperId)
-            ->where('is_active', true)
-            ->whereNotNull('party_id')
-            ->pluck('party_id');
+        $partyIds = app(LogisticsUsageReaderInterface::class)->getPartyIdsForShipper($shipperId);
 
-        if ($partyIds->isEmpty()) {
+        if (empty($partyIds)) {
             return null;
         }
 
-        return $this->resolveForParties($partyIds->all());
+        return $this->resolveForParties($partyIds);
     }
 
     /**

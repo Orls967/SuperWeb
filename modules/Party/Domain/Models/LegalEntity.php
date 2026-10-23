@@ -6,11 +6,11 @@ namespace Modules\Party\Domain\Models;
 
 use App\Security\BlindIndex;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Party\Contracts\LegalEntity as BaseLegalEntity;
 
-class LegalEntity extends Model
+class LegalEntity extends BaseLegalEntity
 {
     use HasUuids;
 

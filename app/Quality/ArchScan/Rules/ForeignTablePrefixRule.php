@@ -64,15 +64,17 @@ final class ForeignTablePrefixRule implements Rule
                 continue;
             }
 
-            $owner = $registry->ownerOfTable($table);
+            $cleanTable = preg_split('/\s+(?:as\s+)?/i', trim($table))[0];
 
-            if ($owner === $module) {
+            if ($registry->isTableAllowedForModule($cleanTable, $module)) {
                 continue;
             }
 
+            $owner = $registry->ownerOfTable($cleanTable);
+
             $reason = $owner === null
-                ? "prefiks tabel '{$table}' tidak terdaftar di config/modules.php"
-                : "tabel '{$table}' milik modul {$owner}";
+                ? "prefiks tabel '{$cleanTable}' tidak terdaftar di config/modules.php"
+                : "tabel '{$cleanTable}' milik modul {$owner}";
 
             $violations[] = new Violation(
                 $this->id(),

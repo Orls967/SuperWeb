@@ -6,7 +6,7 @@ namespace Modules\Resto\Application\Services;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Resto\Domain\Enums\OrderStatus;
 use Modules\Resto\Domain\Models\DailySummary;

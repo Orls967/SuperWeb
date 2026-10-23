@@ -24,7 +24,7 @@ use Modules\Procurement\Domain\Models\Rfq;
 use Modules\Procurement\Domain\Models\RfqInvitation;
 use Modules\Procurement\Domain\Models\Tender;
 use Modules\Procurement\Domain\Models\TenderBid;
-use Modules\Supplier\Domain\Models\Supplier;
+use Modules\Supplier\Contracts\Supplier;
 use RuntimeException;
 
 /**

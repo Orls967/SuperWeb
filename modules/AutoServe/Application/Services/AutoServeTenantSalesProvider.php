@@ -6,8 +6,8 @@ namespace Modules\AutoServe\Application\Services;
 
 use Modules\AutoServe\Domain\Enums\BookingStatus;
 use Modules\AutoServe\Domain\Models\Booking;
+use Modules\Mall\Contracts\Lease;
 use Modules\Mall\Contracts\TenantSalesProvider;
-use Modules\Mall\Domain\Models\Lease;
 
 class AutoServeTenantSalesProvider implements TenantSalesProvider
 {

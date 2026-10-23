@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Asset\Application\Services\WorkOrderService as AssetWorkOrderService;
-use Modules\Asset\Domain\Models\Asset;
+use Modules\Asset\Contracts\Asset;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Manufacturing\Domain\Models\DowntimeLog;
 use Modules\Manufacturing\Domain\Models\EquipmentPart;

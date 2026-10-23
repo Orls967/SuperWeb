@@ -11,15 +11,15 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Logistics\Domain\Enums\PaymentTerms;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
 use Modules\Logistics\Domain\Exceptions\CannotCancelPickedUpShipmentException;
 use Modules\Logistics\Domain\Models\Shipment;
+use Modules\Payment\Contracts\PaymentIntent;
 use Modules\Payment\Domain\Enums\PaymentIntentStatus;
-use Modules\Payment\Domain\Models\PaymentIntent;
 
 class CancelShipmentAction
 {

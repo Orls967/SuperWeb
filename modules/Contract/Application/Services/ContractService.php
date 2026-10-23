@@ -21,8 +21,8 @@ use Modules\Contract\Exceptions\MissingTransitionReasonException;
 use Modules\Contract\Exceptions\UnapprovedSignAttemptException;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
-use Modules\Party\Domain\Models\LegalEntity;
-use Modules\Party\Domain\Models\Party;
+use Modules\Party\Contracts\LegalEntity;
+use Modules\Party\Contracts\Party;
 
 class ContractService
 {

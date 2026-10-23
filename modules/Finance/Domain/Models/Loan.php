@@ -11,12 +11,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Crypto\Domain\Models\CryptoAsset;
+use Modules\Crypto\Contracts\CryptoAsset;
 use Modules\Finance\Domain\Enums\InstallmentStatus;
 use Modules\Finance\Domain\Enums\LoanStatus;
 use Modules\Shared\Domain\Exceptions\InvalidStateTransition;
 use Modules\Shared\Domain\Traits\HasUuid;
-use Modules\Store\Domain\Models\Order;
+use Modules\Store\Contracts\Order;
 
 class Loan extends Model
 {

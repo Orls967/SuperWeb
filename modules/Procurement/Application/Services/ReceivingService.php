@@ -13,9 +13,9 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Inventory\Contracts\InventoryService;
@@ -34,7 +34,7 @@ use Modules\Procurement\Domain\Models\SupplierAdvance;
 use Modules\Procurement\Domain\Models\SupplierInvoice;
 use Modules\Procurement\Domain\Models\SupplierReturn;
 use Modules\Procurement\Domain\Models\ThreeWayMatch;
-use Modules\Supplier\Domain\Models\Supplier;
+use Modules\Supplier\Contracts\Supplier;
 
 /**
  * Penerimaan barang, hutang usaha, dan pembayaran pemasok (Fase 34).

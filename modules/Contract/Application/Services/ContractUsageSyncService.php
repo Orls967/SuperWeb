@@ -6,6 +6,9 @@ namespace Modules\Contract\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Contract\Domain\Models\Contract;
+use Modules\Logistics\Contracts\LogisticsUsageReaderInterface;
+use Modules\Mall\Contracts\MallUsageReaderInterface;
+use Modules\Resto\Contracts\RestoUsageReaderInterface;
 
 /**
  * Sinkronisasi pemakaian plafon kontrak dari transaksi riil (29.5 & 29.6).
@@ -57,29 +60,26 @@ class ContractUsageSyncService
 
         // 1. Sewa Mall → invoice lease (29.6: kontrak sewa menautkan lease).
         if ($contract->linked_lease_id !== null) {
-            $invoices = DB::table('mall_invoices')
-                ->where('lease_id', $contract->linked_lease_id)
-                ->where('status', '!=', 'cancelled')
-                ->get(['id', 'total_amount', 'invoice_number']);
+            $invoices = app(MallUsageReaderInterface::class)
+                ->getInvoicesForLease((int) $contract->linked_lease_id);
 
-            $sources['lease_billing'] = $invoices->map(fn ($inv) => [
-                (int) $inv->id,
-                (int) $inv->total_amount,
-                'Invoice sewa '.$inv->invoice_number,
-            ])->all();
+            $sources['lease_billing'] = array_map(fn ($inv) => [
+                (int) $inv['id'],
+                (int) $inv['total_amount'],
+                'Invoice sewa '.$inv['invoice_number'],
+            ], $invoices);
         }
 
         // 2. Waralaba Resto → royalty posting (29.6: kontrak waralaba).
         if ($contract->linked_royalty_ref !== null) {
-            $postings = DB::table('resto_royalty_postings')
-                ->where('contract_id', $contract->linked_royalty_ref)
-                ->get(['id', 'royalty_amount', 'date']);
+            $postings = app(RestoUsageReaderInterface::class)
+                ->getRoyaltyPostingsForContract((string) $contract->linked_royalty_ref);
 
-            $sources['royalty'] = $postings->map(fn ($p) => [
-                (int) $p->id,
-                (int) $p->royalty_amount,
-                'Royalti '.(string) $p->date,
-            ])->all();
+            $sources['royalty'] = array_map(fn ($p) => [
+                (int) $p['id'],
+                (int) $p['royalty_amount'],
+                'Royalti '.(string) $p['date'],
+            ], $postings);
         }
 
         // 3. Kontrak jasa pengiriman B2B → biaya leg pada carrier yang menjadi
@@ -88,19 +88,17 @@ class ContractUsageSyncService
             $partyIds = DB::table('ctr_contract_parties')
                 ->where('contract_id', $contract->id)
                 ->where('role', 'second_party')
-                ->pluck('party_id');
+                ->pluck('party_id')
+                ->all();
 
-            $carrierIds = DB::table('lgx_carriers')->whereIn('party_id', $partyIds)->pluck('id');
-            $legs = DB::table('lgx_shipment_legs')
-                ->whereNotNull('cost_accrued_at')
-                ->whereIn('carrier_id', $carrierIds)
-                ->get(['id', 'carrier_cost_idr']);
+            $legs = app(LogisticsUsageReaderInterface::class)
+                ->getCarrierLegsForParties($partyIds);
 
-            $sources['shipment'] = $legs->map(fn ($leg) => [
-                (int) $leg->id,
-                (int) $leg->carrier_cost_idr,
-                'Biaya leg pengiriman #'.$leg->id,
-            ])->all();
+            $sources['shipment'] = array_map(fn ($leg) => [
+                (int) $leg['id'],
+                (int) $leg['cost_idr'],
+                (string) $leg['label'],
+            ], $legs);
         }
 
         // 4. Kontrak penjualan jasa pengiriman kepada shipper → resi pascabayar
@@ -109,23 +107,17 @@ class ContractUsageSyncService
             $partyIds = DB::table('ctr_contract_parties')
                 ->where('contract_id', $contract->id)
                 ->where('role', 'second_party')
-                ->pluck('party_id');
+                ->pluck('party_id')
+                ->all();
 
-            $shipperIds = DB::table('lgx_shipper_accounts')
-                ->whereIn('party_id', $partyIds)
-                ->pluck('shipper_id');
+            $postpaidShipments = app(LogisticsUsageReaderInterface::class)
+                ->getPostpaidShipmentsForParties($partyIds);
 
-            $postpaidShipments = DB::table('lgx_shipments')
-                ->whereIn('shipper_id', $shipperIds)
-                ->where('payment_terms', 'postpaid')
-                ->whereNotIn('status', ['draft', 'cancelled'])
-                ->get(['id', 'total_amount_idr', 'tracking_number']);
-
-            $sources['sale'] = $postpaidShipments->map(fn ($sh) => [
-                (int) $sh->id,
-                (int) $sh->total_amount_idr,
-                'Resi pascabayar '.$sh->tracking_number,
-            ])->all();
+            $sources['sale'] = array_map(fn ($sh) => [
+                (int) $sh['id'],
+                (int) $sh['amount'],
+                (string) $sh['label'],
+            ], $postpaidShipments);
         }
 
         // 5. Kontrak pembelian → PO supplier dengan party yang sama (29.5).
@@ -133,22 +125,17 @@ class ContractUsageSyncService
             $partyIds = DB::table('ctr_contract_parties')
                 ->where('contract_id', $contract->id)
                 ->where('role', 'second_party')
-                ->pluck('party_id');
+                ->pluck('party_id')
+                ->all();
 
-            $supplierIds = DB::table('resto_suppliers')
-                ->whereIn('party_id', $partyIds)
-                ->pluck('id');
+            $purchaseOrders = app(RestoUsageReaderInterface::class)
+                ->getPurchaseOrdersForSupplierParties($partyIds);
 
-            $purchaseOrders = DB::table('resto_purchase_orders')
-                ->whereIn('supplier_id', $supplierIds)
-                ->where('status', '!=', 'cancelled')
-                ->get(['id', 'grand_total', 'number']);
-
-            $sources['po'] = $purchaseOrders->map(fn ($po) => [
-                (int) $po->id,
-                (int) $po->grand_total,
-                'PO '.$po->number,
-            ])->all();
+            $sources['po'] = array_map(fn ($po) => [
+                (int) $po['id'],
+                (int) $po['amount'],
+                (string) $po['label'],
+            ], $purchaseOrders);
         }
 
         return $sources;

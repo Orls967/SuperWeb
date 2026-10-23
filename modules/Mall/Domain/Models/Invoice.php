@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Mall\Domain\Enums\InvoiceStatus;
 use Modules\Payment\Contracts\Payable;
-use Modules\Payment\Domain\Models\PaymentIntent;
+use Modules\Payment\Contracts\PaymentIntent;
 use Modules\Shared\Domain\Traits\HasUuid;
 use Modules\Shared\Domain\ValueObjects\Money;
 

@@ -27,6 +27,7 @@ use Modules\Manufacturing\Domain\Models\Ncr;
 use Modules\Manufacturing\Domain\Models\Recall;
 use Modules\Manufacturing\Domain\Models\RecallRecipient;
 use Modules\Manufacturing\Domain\Models\SpcSample;
+use Modules\Supplier\Contracts\SupplierRiskInterface;
 
 /**
  * Mutu & ketertelusuran (Fase 39): rencana inspeksi (AQL simulasi),
@@ -337,16 +338,13 @@ class QualityService
 
         // Tautan SCAR pemasok (Fase 32) bila sumber masalah adalah pemasok.
         if ($ncr->supplier_id !== null && $ncr->source === 'supplier') {
-            $scar = DB::table('sup_risk_flags')->insertGetId([
-                'supplier_id' => $ncr->supplier_id,
-                'type' => 'scar',
-                'severity' => $ncr->severity === 'critical' ? 'critical' : 'major',
-                'message' => "NCR {$ncr->number}: {$ncr->title}",
-                'meta' => json_encode(['ncr_id' => $ncr->id, 'number' => $ncr->number]),
-                'is_open' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            $scar = app(SupplierRiskInterface::class)->createRiskFlag(
+                supplierId: $ncr->supplier_id,
+                type: 'scar',
+                severity: $ncr->severity === 'critical' ? 'critical' : 'major',
+                message: "NCR {$ncr->number}: {$ncr->title}",
+                meta: ['ncr_id' => $ncr->id, 'number' => $ncr->number]
+            );
             $ncr->update(['scar_ref' => 'SCAR-'.$scar]);
             $ncr->status = 'investigating';
             $ncr->save();

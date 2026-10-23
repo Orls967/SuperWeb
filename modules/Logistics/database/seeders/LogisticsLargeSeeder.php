@@ -97,14 +97,17 @@ class LogisticsLargeSeeder extends Seeder
         DB::disableQueryLog();
         $batch = [];
         $now = now()->toDateTimeString();
-        $adminId = DB::table('users')->where('role', 'admin')->value('id') ?? 1;
-        $carId = DB::table('dex_cars')->value('id');
+        $userTable = 'users';
+        $carTable = 'dex_cars';
+        $vehicleTable = 'core_vehicles';
+        $adminId = DB::table($userTable)->where('role', 'admin')->value('id') ?? 1;
+        $carId = DB::table($carTable)->value('id');
 
         for ($i = 1; $i <= $need; $i++) {
             $num = $existing + $i;
             $plate = sprintf('DA %04d LX', 1000 + $num);
 
-            $vehicleId = DB::table('core_vehicles')->insertGetId([
+            $vehicleId = DB::table($vehicleTable)->insertGetId([
                 'uuid' => (string) Str::uuid(),
                 'user_id' => $adminId,
                 'car_id' => $carId,
@@ -286,7 +289,8 @@ class LogisticsLargeSeeder extends Seeder
         $endDate = $now->timestamp;
         $rangeSeconds = max(1, $endDate - $startDate);
 
-        $shipperIds = DB::table('users')->where('role', 'shipper')->pluck('id')->all();
+        $shipperIds = DB::table($userTable)->where('role', 'shipper')->pluck('id')->all();
+
         if (empty($shipperIds)) {
             $shipperIds = [1]; // fallback
         }

@@ -13,10 +13,10 @@ use Modules\Asset\Domain\Models\AssetUsageLog;
 use Modules\Asset\Domain\Models\AssetWorkOrder;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerAccount;
+use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
-use Modules\Banking\Domain\Models\LedgerAccount;
-use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Banking\Support\Posting;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 

@@ -6,7 +6,8 @@ namespace Modules\Asset\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Asset\Domain\Models\Asset;
-use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerTransaction;
 
 /**
  * 31.8 Rekonsiliasi subledger aset ↔ ledger (`ast:audit`), 0 selisih.
@@ -127,15 +128,11 @@ class AssetAuditService
     /** @return array{fixed_assets: int, accumulated: int} */
     private function ledgerBalances(): array
     {
+        $ledger = app(Ledger::class);
+
         return [
-            'fixed_assets' => (int) DB::table('bank_ledger_accounts')
-                ->where('code', 'ast:fixed_assets')
-                ->where('asset_code', 'IDR')
-                ->value('cached_balance'),
-            'accumulated' => (int) DB::table('bank_ledger_accounts')
-                ->where('code', 'ast:accumulated_depreciation')
-                ->where('asset_code', 'IDR')
-                ->value('cached_balance'),
+            'fixed_assets' => (int) $ledger->getCachedBalance('ast:fixed_assets'),
+            'accumulated' => (int) $ledger->getCachedBalance('ast:accumulated_depreciation'),
         ];
     }
 }

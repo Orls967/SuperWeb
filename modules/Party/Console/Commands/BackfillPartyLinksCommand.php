@@ -24,7 +24,8 @@ class BackfillPartyLinksCommand extends Command
         $total = 0;
 
         // 1. Carriers: match on name
-        $carriers = DB::table('lgx_carriers')->whereNull('party_id')->get();
+        $carriersTable = 'lgx_carriers';
+        $carriers = DB::table($carriersTable)->whereNull('party_id')->get();
         foreach ($carriers as $carrier) {
             $norm = strtolower(trim($carrier->name));
             $party = DB::table('pty_parties')->where('name_normalized', $norm)->where('is_active', true)->first();
@@ -32,13 +33,14 @@ class BackfillPartyLinksCommand extends Command
                 $total++;
                 $this->line("  [lgx_carriers] {$carrier->id} ({$carrier->name}) → party {$party->id}");
                 if (! $dryRun) {
-                    DB::table('lgx_carriers')->where('id', $carrier->id)->update(['party_id' => $party->id]);
+                    DB::table($carriersTable)->where('id', $carrier->id)->update(['party_id' => $party->id]);
                 }
             }
         }
 
         // 2. Mall Tenants: match on company_name or brand_name
-        $tenants = DB::table('mall_tenants')->whereNull('party_id')->get();
+        $tenantsTable = 'mall_tenants';
+        $tenants = DB::table($tenantsTable)->whereNull('party_id')->get();
         foreach ($tenants as $tenant) {
             $normCompany = strtolower(trim($tenant->company_name));
             $normBrand = strtolower(trim($tenant->brand_name));
@@ -53,13 +55,14 @@ class BackfillPartyLinksCommand extends Command
                 $total++;
                 $this->line("  [mall_tenants] {$tenant->id} ({$tenant->brand_name}) → party {$party->id}");
                 if (! $dryRun) {
-                    DB::table('mall_tenants')->where('id', $tenant->id)->update(['party_id' => $party->id]);
+                    DB::table($tenantsTable)->where('id', $tenant->id)->update(['party_id' => $party->id]);
                 }
             }
         }
 
         // 3. Resto Suppliers: match on name
-        $suppliers = DB::table('resto_suppliers')->whereNull('party_id')->get();
+        $restoSuppliersTable = 'resto_suppliers';
+        $suppliers = DB::table($restoSuppliersTable)->whereNull('party_id')->get();
         foreach ($suppliers as $supplier) {
             $norm = strtolower(trim($supplier->name));
             $party = DB::table('pty_parties')->where('name_normalized', $norm)->where('is_active', true)->first();
@@ -67,7 +70,7 @@ class BackfillPartyLinksCommand extends Command
                 $total++;
                 $this->line("  [resto_suppliers] {$supplier->id} ({$supplier->name}) → party {$party->id}");
                 if (! $dryRun) {
-                    DB::table('resto_suppliers')->where('id', $supplier->id)->update(['party_id' => $party->id]);
+                    DB::table($restoSuppliersTable)->where('id', $supplier->id)->update(['party_id' => $party->id]);
                 }
             }
         }

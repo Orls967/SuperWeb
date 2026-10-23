@@ -9,7 +9,7 @@ use Illuminate\Database\Seeder;
 use Modules\Procurement\Application\Services\ProcurementService;
 use Modules\Procurement\Domain\Models\BudgetCenter;
 use Modules\Procurement\Domain\Models\Requisition;
-use Modules\Supplier\Domain\Models\Supplier;
+use Modules\Supplier\Contracts\Supplier;
 
 class ProcurementSeeder extends Seeder
 {

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Modules\AutoDex\Domain\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Modules\AutoDex\Contracts\Brand as BaseBrand;
 use Modules\Shared\Domain\Traits\HasUuid;
 
-class Brand extends Model
+class Brand extends BaseBrand
 {
     use HasFactory, HasUuid;
 
