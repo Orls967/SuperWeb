@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Modules\Core\Domain\Models;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Modules\Core\Contracts\DocumentAttachment as BaseDocumentAttachment;
 use Modules\Shared\Domain\Traits\HasUuid;
 
-class DocumentAttachment extends Model
+class DocumentAttachment extends BaseDocumentAttachment
 {
     use HasUuid;
 

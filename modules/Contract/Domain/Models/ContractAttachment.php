@@ -6,8 +6,8 @@ namespace Modules\Contract\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Core\Domain\Models\DocumentAttachment;
-use Modules\Party\Domain\Models\LegalEntity;
+use Modules\Core\Contracts\DocumentAttachment;
+use Modules\Party\Contracts\LegalEntity;
 
 /**
  * Tautan lampiran kontrak ke dokumen tersimpan (Core DocumentStore).

@@ -6,8 +6,8 @@ namespace Modules\Logistics\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Inventory\Contracts\InventoryService;
+use Modules\Inventory\Contracts\StockMovement;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
-use Modules\Inventory\Domain\Models\StockMovement;
 use Modules\Logistics\Domain\Models\Shipment;
 
 /**

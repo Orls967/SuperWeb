@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Party\Application\Services;
 
 use Illuminate\Support\Facades\DB;
+use Modules\Logistics\Contracts\LogisticsUsageReaderInterface;
+use Modules\Mall\Contracts\MallUsageReaderInterface;
 use Modules\Party\Domain\Enums\RiskTier;
 use Modules\Party\Domain\Models\CreditProfile;
 use Modules\Party\Domain\Models\Party;
@@ -95,19 +97,13 @@ class CreditScoringService
         $breakdown = [];
 
         // Logistics shipper account outstanding
-        $lgxExposure = DB::table('lgx_shipper_accounts')
-            ->where('party_id', $party->id)
-            ->sum('current_balance_idr');
+        $lgxExposure = app(LogisticsUsageReaderInterface::class)->getShipperOutstandingExposure($party->id);
         if ($lgxExposure > 0) {
             $breakdown['logistics'] = (int) $lgxExposure;
         }
 
         // Mall tenant outstanding invoices
-        $mallExposure = DB::table('mall_invoices')
-            ->join('mall_tenants', 'mall_invoices.tenant_id', '=', 'mall_tenants.id')
-            ->where('mall_tenants.party_id', $party->id)
-            ->whereIn('mall_invoices.status', ['issued', 'partially_paid', 'overdue'])
-            ->sum('mall_invoices.total_amount');
+        $mallExposure = app(MallUsageReaderInterface::class)->getTenantOutstandingExposure($party->id);
         if ($mallExposure > 0) {
             $breakdown['mall'] = (int) $mallExposure;
         }

@@ -6,6 +6,7 @@ namespace Modules\Manufacturing\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Modules\Banking\Contracts\Ledger;
 use Modules\Manufacturing\Application\Services\CostingService;
 use Modules\Manufacturing\Domain\Models\OrderCost;
 use Modules\Manufacturing\Domain\Models\ProductionOrder;
@@ -23,8 +24,9 @@ class AuditCostingCommand extends Command
     {
         $costing->ensureAccounts();
 
-        $wipIdr = (int) (DB::table('bank_ledger_accounts')->where('code', CostingService::ACCT_WIP)->value('cached_balance') ?? 0);
-        $fgIdr = (int) (DB::table('bank_ledger_accounts')->where('code', CostingService::ACCT_FG)->value('cached_balance') ?? 0);
+        $ledger = app(Ledger::class);
+        $wipIdr = (int) ($ledger->getCachedBalance(CostingService::ACCT_WIP) ?? 0);
+        $fgIdr = (int) ($ledger->getCachedBalance(CostingService::ACCT_FG) ?? 0);
 
         $orderWip = 0;
         $closedWithWip = [];

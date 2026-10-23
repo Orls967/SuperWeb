@@ -6,11 +6,11 @@ namespace Modules\Core\Domain\Models;
 
 use App\Models\User;
 use Carbon\CarbonInterface;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Core\Contracts\VehicleEvent as BaseVehicleEvent;
 use Modules\Core\Domain\Enums\VehicleEventType;
 
-class VehicleEvent extends Model
+class VehicleEvent extends BaseVehicleEvent
 {
     protected $table = 'core_vehicle_events';
 

@@ -6,15 +6,21 @@ namespace Modules\Supplier;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Supplier\Application\Services\SupplierRiskService;
 use Modules\Supplier\Application\Services\SupplierService;
 use Modules\Supplier\Console\Commands\RemindSupplierCertificationsCommand;
 use Modules\Supplier\Console\Commands\ScanSupplierRisksCommand;
+use Modules\Supplier\Contracts\SupplierRiskInterface;
 
 class SupplierServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->app->singleton(SupplierService::class);
+        $this->app->bind(
+            SupplierRiskInterface::class,
+            SupplierRiskService::class
+        );
     }
 
     public function boot(): void

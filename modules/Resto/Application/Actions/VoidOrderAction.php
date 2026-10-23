@@ -12,7 +12,7 @@ use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Payment\Contracts\PaymentGateway;
-use Modules\Payment\Domain\Models\PaymentIntent;
+use Modules\Payment\Contracts\PaymentIntent;
 use Modules\Resto\Domain\Enums\OrderStatus;
 use Modules\Resto\Domain\Enums\SessionStatus;
 use Modules\Resto\Domain\Enums\TableStatus;

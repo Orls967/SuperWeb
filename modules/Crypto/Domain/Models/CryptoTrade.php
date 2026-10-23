@@ -7,7 +7,7 @@ namespace Modules\Crypto\Domain\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Crypto\Domain\Enums\TradeSide;
 use Modules\Crypto\Domain\Enums\TradeStatus;
 

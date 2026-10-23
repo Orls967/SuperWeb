@@ -8,7 +8,7 @@ use Exception;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\Shared\Application\BaseAction;
-use Modules\Store\Domain\Models\Order;
+use Modules\Store\Contracts\Order;
 
 /**
  * Sparepart backorder tiba di bengkel: stok masuk dan booking kembali dikerjakan.

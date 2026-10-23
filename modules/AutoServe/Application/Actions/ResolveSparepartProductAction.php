@@ -8,9 +8,9 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\Inventory\Contracts\StockMovement;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
-use Modules\Inventory\Domain\Models\StockMovement;
-use Modules\Store\Domain\Models\Product;
+use Modules\Store\Contracts\Product;
 
 /**
  * Pastikan setiap sparepart bengkel punya produk inventori padanannya,

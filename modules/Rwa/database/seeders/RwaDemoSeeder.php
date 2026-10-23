@@ -7,8 +7,8 @@ namespace Modules\Rwa\database\seeders;
 use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Database\Seeder;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Rwa\Domain\Models\RwaHolding;
 

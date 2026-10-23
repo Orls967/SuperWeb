@@ -12,10 +12,10 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerAccount;
+use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
-use Modules\Banking\Domain\Models\LedgerAccount;
-use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Resto\Domain\Models\PurchaseOrder;
 use Modules\Resto\Domain\Models\Supplier;
 

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Manufacturing\Application\Listeners;
 
-use Illuminate\Support\Facades\DB;
 use Modules\Manufacturing\Application\Services\CostingService;
 use Modules\Manufacturing\Domain\Models\LotSale;
 use Modules\Manufacturing\Domain\Models\Material;
 use Modules\Manufacturing\Domain\Models\MaterialLot;
+use Modules\Store\Contracts\StoreOrderReaderInterface;
 use Modules\Store\Domain\Events\OrderPaid;
 
 /**
@@ -33,10 +33,7 @@ class PostSaleCogsListener
     /** Alokasi FIFO per SKU → mfg_lot_sales; idempoten per item order. */
     private function recordLotSales(int $orderId, int $userId): void
     {
-        $items = DB::table('store_order_items as oi')
-            ->join('store_products as p', 'p.id', '=', 'oi.product_id')
-            ->where('oi.order_id', $orderId)
-            ->get(['oi.id as item_id', 'p.sku', 'oi.qty']);
+        $items = app(StoreOrderReaderInterface::class)->getOrderItemsWithProduct($orderId);
 
         foreach ($items as $item) {
             if ($item->sku === null || $item->sku === '') {

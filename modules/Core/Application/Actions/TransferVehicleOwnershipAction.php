@@ -51,7 +51,8 @@ class TransferVehicleOwnershipAction extends BaseAction implements TransfersVehi
             ]);
 
             // Mobil yang sudah dimiliki tidak perlu lagi ada di wishlist pemilik baru
-            DB::table('dex_wishlists')
+            $wishlistTable = 'dex_wishlists';
+            DB::table($wishlistTable)
                 ->where('user_id', $toUserId)
                 ->where('car_id', $locked->car_id)
                 ->delete();

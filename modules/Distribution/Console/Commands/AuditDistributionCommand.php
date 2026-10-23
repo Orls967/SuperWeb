@@ -6,6 +6,7 @@ namespace Modules\Distribution\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Modules\Banking\Contracts\Ledger;
 
 /**
  * 42.4/42.9 + 43.9 Audit: subledger AR = ledger `dist:ar:*`, rebate,
@@ -46,7 +47,7 @@ class AuditDistributionCommand extends Command
         //    selisih antara saldo akun dan exposure harus 0 atau akun belum dibuat).
         foreach ($openByDistributor as $distributorId => $openAmt) {
             $code = 'dist:ar:'.$distributorId.':IDR';
-            $account = DB::table('bank_ledger_accounts')->where('code', $code)->first();
+            $account = app(Ledger::class)->findAccountByCode($code);
             if ($account === null) {
                 continue; // akun dibuat saat posting (42.4)
             }
@@ -81,9 +82,8 @@ class AuditDistributionCommand extends Command
         // 5. (43.9) Rebate payable ledger == Σ akrual rebate.
         $accruedTotal = (int) DB::table('dist_rebate_accruals')
             ->where('status', '!=', 'expired')->sum('rebate_amount_idr');
-        $payable = DB::table('bank_ledger_accounts')
-            ->where('code', 'dist:rebate_payable:IDR')
-            ->value('cached_balance');
+        $payable = app(Ledger::class)->getCachedBalance('dist:rebate_payable:IDR');
+
         if ($payable !== null && abs((int) $payable) !== $accruedTotal) {
             $hasDiscrepancy = true;
             $rows[] = [

@@ -6,13 +6,13 @@ namespace Modules\AutoDex\Domain\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
+use Modules\AutoDex\Contracts\Car as BaseCar;
 use Modules\Shared\Domain\Traits\HasUuid;
 
-class Car extends Model
+class Car extends BaseCar
 {
     use HasFactory, HasUuid;
 

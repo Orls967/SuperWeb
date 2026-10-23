@@ -6,12 +6,20 @@ namespace Modules\AutoDex;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\AutoDex\Application\Services\AutoDexSearchProvider;
+use Modules\AutoDex\Application\Services\AutoDexWishlistService;
+use Modules\AutoDex\Contracts\AutoDexWishlistInterface;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Shared\Application\SearchRegistry;
 
 class AutoDexServiceProvider extends ServiceProvider
 {
-    public function register(): void {}
+    public function register(): void
+    {
+        $this->app->bind(
+            AutoDexWishlistInterface::class,
+            AutoDexWishlistService::class
+        );
+    }
 
     public function boot(): void
     {

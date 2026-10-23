@@ -6,9 +6,9 @@ namespace Modules\Logistics\Application\Actions;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Enums\AccountKind;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Logistics\Domain\Enums\PaymentTerms;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
 use Modules\Logistics\Domain\Exceptions\InvalidQuoteException;

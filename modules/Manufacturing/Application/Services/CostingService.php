@@ -12,10 +12,10 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerAccount;
+use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
-use Modules\Banking\Domain\Models\LedgerAccount;
-use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Manufacturing\Domain\Models\Bom;
 use Modules\Manufacturing\Domain\Models\BomLine;
@@ -33,6 +33,7 @@ use Modules\Manufacturing\Domain\Models\StandardCost;
 use Modules\Manufacturing\Domain\Models\SubcontractReceipt;
 use Modules\Manufacturing\Domain\Models\Variance;
 use Modules\Manufacturing\Domain\Models\WorkCenter;
+use Modules\Store\Contracts\StoreOrderReaderInterface;
 
 /**
  * Biaya produksi (Fase 38): standard cost ber-versi, actual per order,
@@ -774,10 +775,7 @@ class CostingService
      */
     public function postOrderCogs(int $storeOrderId): int
     {
-        $items = DB::table('store_order_items as oi')
-            ->join('store_products as p', 'p.id', '=', 'oi.product_id')
-            ->where('oi.order_id', $storeOrderId)
-            ->get(['oi.id as item_id', 'p.sku', 'oi.qty']);
+        $items = app(StoreOrderReaderInterface::class)->getOrderItemsWithProduct($storeOrderId);
 
         $total = 0;
         foreach ($items as $item) {
@@ -813,14 +811,9 @@ class CostingService
             $producedCost = (int) $fgReceipts->sum('unit_cost_idr');
             $unit = $produced > 0 ? (int) floor($producedCost / $produced) : $this->standardUnitCost($material->id);
 
-            $price = (int) DB::table('store_products')
-                ->where('sku', $material->code)->value('price') ?? 0;
-
-            $orders = DB::table('store_order_items')
-                ->join('store_products', 'store_products.id', '=', 'store_order_items.product_id')
-                ->where('store_products.sku', $material->code)
-                ->selectRaw('COALESCE(SUM(qty),0) as sold, COALESCE(SUM(line_total),0) as revenue')
-                ->first();
+            $reader = app(StoreOrderReaderInterface::class);
+            $price = $reader->getProductPriceBySku($material->code) ?? 0;
+            $orders = $reader->getSalesAggregateBySku($material->code);
 
             $soldQty = (int) ($orders->sold ?? 0);
             $revenue = (int) ($orders->revenue ?? 0);

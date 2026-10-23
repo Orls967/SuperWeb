@@ -7,8 +7,10 @@ namespace Modules\Supplier\Application\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Contract\Contracts\ContractLookupInterface;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
+use Modules\Party\Contracts\PartySanctionsInterface;
 use Modules\Supplier\Contracts\ReferenceCostUpdater;
 use Modules\Supplier\Domain\Enums\SupplierStatus;
 use Modules\Supplier\Domain\Models\Supplier;
@@ -268,10 +270,10 @@ class SupplierService
             return null;
         }
 
-        // Nomor kontrak hanya untuk identifikasi sumber (tabel, tanpa import Domain).
-        $contractNumber = DB::table('ctr_contracts')
-            ->where('id', $contractId)
-            ->value('contract_number');
+        // Nomor kontrak hanya untuk identifikasi sumber (contract, tanpa import Domain).
+        $contractNumber = $contractId !== null
+            ? app(ContractLookupInterface::class)->getContractNumber((int) $contractId)
+            : null;
 
         return [
             'unit_price' => (string) $tier->unit_price,
@@ -465,12 +467,10 @@ class SupplierService
             $opened[] = ['supplier' => $supplier->name, 'type' => $flag->type, 'severity' => $flag->severity, 'message' => $flag->message];
         }
 
-        // Sanksi / blacklist dari screening Party (Fase 27.6) — lewat tabel.
-        $sanctionedPartyIds = DB::table('pty_sanctions_checks')
-            ->whereIn('status', ['hit', 'review'])
-            ->pluck('party_id');
+        // Sanksi / blacklist dari screening Party (Fase 27.6) — lewat contract.
+        $sanctionedPartyIds = app(PartySanctionsInterface::class)->getSanctionedPartyIds();
 
-        if ($sanctionedPartyIds->isNotEmpty()) {
+        if (! empty($sanctionedPartyIds)) {
             foreach (Supplier::whereIn('party_id', $sanctionedPartyIds)->get() as $supplier) {
                 $flag = $this->flag(
                     $supplier,

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Modules\AutoServe\Domain\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Modules\AutoServe\Contracts\Sparepart as BaseSparepart;
 use Modules\Shared\Domain\Traits\HasUuid;
 
-class Sparepart extends Model
+class Sparepart extends BaseSparepart
 {
     use HasFactory, HasUuid;
 

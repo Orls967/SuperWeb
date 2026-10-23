@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Modules\Store\Application\Actions;
 
 use Illuminate\Support\Str;
-use Modules\AutoDex\Domain\Models\Car;
+use Modules\AutoDex\Contracts\Car;
 use Modules\Inventory\Contracts\InventoryService;
+use Modules\Inventory\Contracts\StockMovement;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
-use Modules\Inventory\Domain\Models\StockMovement;
 use Modules\Shared\Application\BaseAction;
 use Modules\Store\Domain\Models\Product;
 
@@ -18,8 +18,11 @@ class ListCarProductAction extends BaseAction
         private readonly InventoryService $inventoryService
     ) {}
 
+    /**
+     * @param  Car|object  $car
+     */
     public function execute(
-        Car $car,
+        object $car,
         ?int $price = null,
         int $stock = 1,
         ?int $categoryId = null,

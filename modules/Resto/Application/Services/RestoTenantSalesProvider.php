@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Resto\Application\Services;
 
+use Modules\Mall\Contracts\Lease;
 use Modules\Mall\Contracts\TenantSalesProvider;
-use Modules\Mall\Domain\Models\Lease;
 use Modules\Resto\Domain\Enums\OrderStatus;
 use Modules\Resto\Domain\Models\DailySummary;
 use Modules\Resto\Domain\Models\Order;

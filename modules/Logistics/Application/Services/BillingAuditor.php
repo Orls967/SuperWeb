@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Logistics\Application\Services;
 
 use Illuminate\Support\Facades\DB;
-use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Logistics\Domain\Enums\PaymentTerms;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
 use Modules\Logistics\Domain\Models\Carrier;

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Manufacturing\database\seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Modules\Manufacturing\Application\Services\ManufacturingService;
 use Modules\Manufacturing\Domain\Models\Plant;
+use Modules\Resto\Contracts\RestoUsageReaderInterface;
 
 class ManufacturingSeeder extends Seeder
 {
@@ -30,10 +30,8 @@ class ManufacturingSeeder extends Seeder
         }
 
         // 35.7 Tautkan outlet Resto CK-01 (seeder Resto berjalan lebih dulu).
-        // Query mentah: arsitektur melarang import Domain lintas modul.
-        $outletId = DB::table('resto_outlets')
-            ->where('code', 'CK-01')
-            ->value('id');
+        // Melalui contract RestoUsageReaderInterface.
+        $outletId = app(RestoUsageReaderInterface::class)->getOutletIdByCode('CK-01');
 
         $ck = Plant::where('code', 'CK-01')->firstOrFail();
         $service->attachRestoAdapter($ck, $outletId !== null ? (int) $outletId : null);

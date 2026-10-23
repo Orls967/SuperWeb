@@ -50,7 +50,8 @@ class AcquireVehicleAction extends BaseAction implements AcquiresVehicle
             ]);
 
             // Auto-remove from wishlist if present
-            DB::table('dex_wishlists')
+            $wishlistTable = 'dex_wishlists';
+            DB::table($wishlistTable)
                 ->where('user_id', $userId)
                 ->where('car_id', $carId)
                 ->delete();

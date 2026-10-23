@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Trade\Domain\Models\Country;
 use Modules\Trade\Domain\Models\ExportOrder;
 use Modules\Trade\Domain\Models\HsCode;

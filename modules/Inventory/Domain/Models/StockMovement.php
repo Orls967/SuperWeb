@@ -6,11 +6,11 @@ namespace Modules\Inventory\Domain\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Inventory\Contracts\StockMovement as BaseStockMovement;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 
-class StockMovement extends Model
+class StockMovement extends BaseStockMovement
 {
     use HasFactory;
 

@@ -8,8 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Modules\Logistics\Contracts\ShipmentBooking;
 use Modules\Logistics\Domain\Models\Shipment;
+use Modules\Store\Contracts\Order;
 use Modules\Store\Domain\Events\OrderPaid;
-use Modules\Store\Domain\Models\Order;
 
 /**
  * Listens to OrderPaid from the Store module and creates a shipment

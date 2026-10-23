@@ -6,11 +6,11 @@ namespace Modules\Crypto\Domain\Models;
 
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Modules\Crypto\Contracts\CryptoAsset as BaseCryptoAsset;
 
-class CryptoAsset extends Model
+class CryptoAsset extends BaseCryptoAsset
 {
     protected $table = 'crypto_assets';
 

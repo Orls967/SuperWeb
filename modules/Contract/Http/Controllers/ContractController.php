@@ -22,8 +22,8 @@ use Modules\Contract\Domain\Models\ContractMilestone;
 use Modules\Contract\Domain\Models\ContractParty;
 use Modules\Contract\Domain\Models\ContractTemplate;
 use Modules\Core\Contracts\DocumentStoreInterface;
-use Modules\Party\Domain\Models\LegalEntity;
-use Modules\Party\Domain\Models\Party;
+use Modules\Party\Contracts\LegalEntity;
+use Modules\Party\Contracts\Party;
 
 class ContractController extends Controller
 {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Payment\Contracts;
 
-use Modules\Payment\Domain\Models\PaymentIntent;
 use Modules\Shared\Domain\ValueObjects\Money;
 
 interface Payable

@@ -10,8 +10,8 @@ use Exception;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Banking\Domain\Enums\TransactionType;
-use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Finance\Domain\Models\Loan;
 use Modules\Shared\Application\BaseAction;
 

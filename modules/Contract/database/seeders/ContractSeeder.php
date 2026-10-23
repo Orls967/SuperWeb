@@ -12,8 +12,8 @@ use Modules\Contract\Domain\Models\ClauseTemplate;
 use Modules\Contract\Domain\Models\Contract;
 use Modules\Contract\Domain\Models\ContractMilestone;
 use Modules\Contract\Domain\Models\ContractTemplate;
-use Modules\Party\Domain\Models\LegalEntity;
-use Modules\Party\Domain\Models\Party;
+use Modules\Party\Contracts\LegalEntity;
+use Modules\Party\Contracts\Party;
 
 class ContractSeeder extends Seeder
 {

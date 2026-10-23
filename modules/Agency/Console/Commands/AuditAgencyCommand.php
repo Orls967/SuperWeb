@@ -6,6 +6,7 @@ namespace Modules\Agency\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Modules\Banking\Contracts\Ledger;
 
 /**
  * 45.9 Audit: akrual komisi = ledger `agy:commission_payable` (0 selisih),
@@ -26,9 +27,8 @@ class AuditAgencyCommand extends Command
         $accrued = (int) DB::table('agy_commission_accruals')
             ->whereIn('status', ['hold', 'payable'])
             ->sum('amount_idr');
-        $ledger = DB::table('bank_ledger_accounts')
-            ->where('code', 'agy:commission_payable:IDR')
-            ->value('cached_balance');
+        $ledger = app(Ledger::class)->getCachedBalance('agy:commission_payable:IDR');
+
         if ($ledger !== null && abs((int) $ledger) !== abs($accrued)) {
             $issues++;
             $rows[] = ['accrual.payable', number_format($accrued), number_format((int) $ledger), number_format(abs($accrued) - abs((int) $ledger)), 'SELISIH'];

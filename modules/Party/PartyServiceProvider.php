@@ -6,10 +6,12 @@ namespace Modules\Party;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Party\Application\Services\CreditScoringService;
+use Modules\Party\Application\Services\PartySanctionsService;
 use Modules\Party\Application\Services\PartyService;
 use Modules\Party\Application\Services\SanctionScreeningService;
 use Modules\Party\Console\Commands\BackfillPartyLinksCommand;
 use Modules\Party\Console\Commands\RemindExpiringDocumentsCommand;
+use Modules\Party\Contracts\PartySanctionsInterface;
 use Modules\Shared\Application\MenuRegistry;
 
 class PartyServiceProvider extends ServiceProvider
@@ -19,6 +21,10 @@ class PartyServiceProvider extends ServiceProvider
         $this->app->singleton(PartyService::class);
         $this->app->singleton(SanctionScreeningService::class);
         $this->app->singleton(CreditScoringService::class);
+        $this->app->bind(
+            PartySanctionsInterface::class,
+            PartySanctionsService::class
+        );
     }
 
     public function boot(): void

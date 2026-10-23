@@ -15,9 +15,9 @@ use Modules\Asset\Domain\Models\Asset;
 use Modules\Asset\Domain\Models\Depreciation;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Support\Posting;
 
 /**

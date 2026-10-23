@@ -6,6 +6,7 @@ namespace Modules\Wms\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Modules\Store\Contracts\StoreProductStockPort;
 
 /**
  * 41.8 Audit: Σ stok bin = saldo `inv_` terkait, tidak ada stok bin negatif.
@@ -36,7 +37,8 @@ class AuditWmsCommand extends Command
             ->pluck('total', 'product_id');
 
         foreach ($binByProduct as $productId => $total) {
-            $cached = (int) DB::table('store_products')->where('id', $productId)->value('cached_stock');
+            $cached = app(StoreProductStockPort::class)->getCachedStock((int) $productId);
+
             if ((float) $total < 0) {
                 $hasDiscrepancy = true;
                 $rows[] = ['product:'.$productId.' bin', number_format((float) $total), (string) $cached, 'negatif', 'SELISIH'];

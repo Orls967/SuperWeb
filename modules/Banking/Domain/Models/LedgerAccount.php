@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Modules\Banking\Domain\Models;
 
 use Brick\Math\BigDecimal;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Modules\Banking\Contracts\LedgerAccount as BaseLedgerAccount;
 use Modules\Shared\Domain\Traits\HasUuid;
 use Modules\Shared\Domain\ValueObjects\Money;
 
-class LedgerAccount extends Model
+class LedgerAccount extends BaseLedgerAccount
 {
     use HasUuid;
 

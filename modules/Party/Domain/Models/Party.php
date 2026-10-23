@@ -6,15 +6,15 @@ namespace Modules\Party\Domain\Models;
 
 use App\Security\BlindIndex;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Modules\Party\Contracts\Party as BaseParty;
 use Modules\Party\Domain\Enums\KybStatus;
 use Modules\Party\Domain\Enums\PartyStatus;
 use Modules\Party\Domain\Enums\PartyType;
 
-class Party extends Model
+class Party extends BaseParty
 {
     use HasUuids;
 

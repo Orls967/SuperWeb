@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Supplier\database\seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\Party\Domain\Models\Party;
+use Modules\Party\Contracts\Party;
 use Modules\Supplier\Application\Services\SupplierService;
 use Modules\Supplier\Domain\Models\Supplier;
 use Modules\Supplier\Domain\Models\SupplierCertification;
