@@ -11,7 +11,7 @@ class MobileOfflineSyncEngineService
     /**
      * Process batch offline mutations from field mobile devices
      *
-     * @param array<int, array{mutation_uuid: string, entity_type: string, entity_id: string, client_version: int, action: string, data: array<string, mixed>}> $mutations
+     * @param  array<int, array{mutation_uuid: string, entity_type: string, entity_id: string, client_version: int, action: string, data: array<string, mixed>}>  $mutations
      * @return array{
      *     device_uuid: string,
      *     processed_count: int,
@@ -41,8 +41,8 @@ class MobileOfflineSyncEngineService
     /**
      * Compare two vector clocks to detect concurrent conflicting mutations
      *
-     * @param array<string, int> $clientClock
-     * @param array<string, int> $serverClock
+     * @param  array<string, int>  $clientClock
+     * @param  array<string, int>  $serverClock
      * @return string 'EQUAL'|'GREATER'|'LESS'|'CONFLICT'
      */
     public function compareVectorClocks(array $clientClock, array $serverClock): string

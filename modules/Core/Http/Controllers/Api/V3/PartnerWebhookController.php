@@ -7,6 +7,7 @@ namespace Modules\Core\Http\Controllers\Api\V3;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
 use Modules\Core\Application\Services\TwelveLinesWebhookDispatcherService;
 use Modules\Core\Domain\Models\PartnerWebhook;
 use Modules\Core\Domain\Models\WebhookDelivery;
@@ -40,7 +41,7 @@ class PartnerWebhookController extends Controller
         $tenantId = (string) ($request->header('X-Tenant-ID') ?: $request->input('tenant_id', 'tenant-default'));
         $partnerName = (string) $request->input('partner_name', 'Partner Integration');
         $endpointUrl = (string) $request->input('endpoint_url', 'https://partner.example.com/webhook');
-        $signingKey = (string) ($request->input('hmac_secret') ?: \Illuminate\Support\Str::random(32));
+        $signingKey = (string) ($request->input('hmac_secret') ?: Str::random(32));
 
         $webhook = PartnerWebhook::create([
             'tenant_id' => $tenantId,

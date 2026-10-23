@@ -98,7 +98,7 @@ class TwelveLinesGoldenScenarioService
                     'step_number' => $idx + 1,
                     'business_line_code' => $s['line'],
                     'step_name' => $s['name'],
-                    'actor_email' => strtolower($s['line']) . '.lead@autoserve.internal',
+                    'actor_email' => strtolower($s['line']).'.lead@autoserve.internal',
                     'amount_idr' => $s['cost_idr'],
                     'execution_status' => 'SUCCESS',
                     'trace_hash' => hash('sha256', "STEP-{$idx}-{$s['line']}-TRACE"),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Ret;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Ret\Console\Commands\RetAuditCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class RetServiceProvider extends ServiceProvider
@@ -17,6 +18,14 @@ class RetServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'ret');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                RetAuditCommand::class,
+            ]);
+        }
 
         if ($this->app->bound(MenuRegistry::class)) {
             $this->app->make(MenuRegistry::class)->addItem(

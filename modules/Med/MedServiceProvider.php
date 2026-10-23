@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Med;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Med\Console\Commands\MedAuditCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class MedServiceProvider extends ServiceProvider
@@ -17,6 +18,14 @@ class MedServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'med');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                MedAuditCommand::class,
+            ]);
+        }
 
         if ($this->app->bound(MenuRegistry::class)) {
             $this->app->make(MenuRegistry::class)->addItem(

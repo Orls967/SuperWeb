@@ -8,7 +8,6 @@ use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Application\Services\TwelveLinesGoldenScenarioService;
 use Modules\Core\Domain\Models\GoldenScenarioRun;
-use Modules\Core\Domain\Models\GoldenScenarioStep;
 use Tests\TestCase;
 
 class TwelveLinesGoldenScenarioTest extends TestCase

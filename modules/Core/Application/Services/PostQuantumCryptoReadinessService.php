@@ -92,7 +92,7 @@ class PostQuantumCryptoReadinessService
      */
     public function rotateMasterKeyEnvelope(string $oldFingerprint): array
     {
-        $newFingerprint = hash('sha256', "MASTER_KEY:{$oldFingerprint}:ROTATED_" . time());
+        $newFingerprint = hash('sha256', "MASTER_KEY:{$oldFingerprint}:ROTATED_".time());
 
         return [
             'old_fingerprint' => $oldFingerprint,
