@@ -67,8 +67,9 @@
 
         <!-- Car Grid -->
         <div x-show="!loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="car-grid" x-html="carHtml">
-            <!-- Isi dirender via AJAX dari partials/car-list -->
+            @include('dex::partials.car-list', ['cars' => $cars])
         </div>
+
         
         <!-- Pagination Container -->
         <div x-show="!loading" class="mt-8 flex justify-center" x-html="paginationHtml"></div>

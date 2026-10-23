@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Tlx\Application\Services\IspAndMobileServices;
 use Modules\Tlx\Domain\Models\InterconnectSettlement;
 use Modules\Tlx\Domain\Models\SmartCityService;
-
 uses(RefreshDatabase::class);
 
 beforeEach(function () {

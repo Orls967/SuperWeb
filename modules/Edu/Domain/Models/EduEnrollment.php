@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Edu\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EduEnrollment extends Model
 {
@@ -33,4 +34,9 @@ class EduEnrollment extends Model
         'total_sessions' => 'integer',
         'refund_amount_minor' => 'integer',
     ];
+
+    public function cohort(): BelongsTo
+    {
+        return $this->belongsTo(EduCohort::class, 'cohort_id', 'id');
+    }
 }

@@ -130,6 +130,27 @@ final class RetAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'ret:inventory_shrinkage_expense:IDR',
+                'name' => 'Inventory Shrinkage Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ret:omnichannel_sales_revenue:IDR',
+                'name' => 'Omnichannel Sales Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'ret:inventory_asset:IDR',
+                'name' => 'Retail Inventory Stock Asset',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }
