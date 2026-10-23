@@ -6,7 +6,6 @@ use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Tlx\Application\Services\DataCenterAndCloudOpsService;
 use Modules\Tlx\Domain\Models\TelecomDataCenter;
-
 uses(RefreshDatabase::class);
 
 beforeEach(function () {

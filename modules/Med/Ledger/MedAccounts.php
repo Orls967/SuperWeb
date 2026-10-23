@@ -60,6 +60,27 @@ final class MedAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'med:production_budget_expense:IDR',
+                'name' => 'Studio Production Budget Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'med:ip_licensing_revenue:IDR',
+                'name' => 'IP Licensing Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'med:licensing_receivable:IDR',
+                'name' => 'IP Licensing Receivable',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }

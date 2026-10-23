@@ -60,6 +60,41 @@ final class TlxAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => false,
             ],
+            [
+                'code' => 'tlx:network_slice_revenue:IDR',
+                'name' => 'Enterprise 5G Network Slice Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'tlx:telecom_receivable:IDR',
+                'name' => 'Telecom Enterprise Receivable',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'tlx:colocation_revenue:IDR',
+                'name' => 'Data Center Colocation Rack Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'tlx:sla_penalty_expense:IDR',
+                'name' => 'Data Center PUE SLA Penalty Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'tlx:sla_penalty_payable:IDR',
+                'name' => 'Data Center SLA Penalty Credit Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }

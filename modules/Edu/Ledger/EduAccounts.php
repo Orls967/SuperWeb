@@ -46,6 +46,27 @@ final class EduAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => false,
             ],
+            [
+                'code' => 'edu:research_grant_expense:IDR',
+                'name' => 'Edu Research Grant Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'edu:corporate_revenue:IDR',
+                'name' => 'Edu Corporate Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'edu:escrow_liability:IDR',
+                'name' => 'Edu Escrow Liability',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }
