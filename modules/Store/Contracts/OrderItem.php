@@ -12,4 +12,14 @@ use Illuminate\Database\Eloquent\Model;
 class OrderItem extends Model
 {
     protected $table = 'store_order_items';
+
+    protected $fillable = [
+        'order_id',
+        'product_id',
+        'name_snapshot',
+        'price_snapshot',
+        'qty',
+        'line_total',
+        'reservation_id',
+    ];
 }

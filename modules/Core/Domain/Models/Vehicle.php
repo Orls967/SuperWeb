@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Modules\Core\Contracts\Vehicle as BaseVehicle;
 use Modules\Shared\Domain\Traits\HasUuid;
 

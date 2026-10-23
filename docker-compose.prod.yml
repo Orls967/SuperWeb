@@ -1,0 +1,202 @@
+version: '3.8'
+
+services:
+  # ==============================================================================
+  # SuperWeb Core Application Server (PHP 8.4 Production Runtime)
+  # ==============================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: superweb-enterprise:latest
+    container_name: superweb_app
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: "AutoServe Enterprise Platform"
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: "http://127.0.0.1:8000"
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: autoserve_prod
+      DB_USERNAME: autoserve
+      DB_PASSWORD: superweb_db_secret
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      SESSION_DRIVER: redis
+      REDIS_HOST: redis
+      REDIS_PASSWORD: superweb_redis_secret
+      REDIS_PORT: 6379
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - superweb-network
+
+  # ==============================================================================
+  # Asynchronous Background Queue Worker
+  # ==============================================================================
+  worker:
+    image: superweb-enterprise:latest
+    container_name: superweb_worker
+    restart: always
+    command: ["php", "artisan", "queue:work", "--tries=3", "--timeout=90"]
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: autoserve_prod
+      DB_USERNAME: autoserve
+      DB_PASSWORD: superweb_db_secret
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      REDIS_HOST: redis
+      REDIS_PASSWORD: superweb_redis_secret
+      REDIS_PORT: 6379
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - superweb-network
+
+  # ==============================================================================
+  # Automated Task Scheduler
+  # ==============================================================================
+  scheduler:
+    image: superweb-enterprise:latest
+    container_name: superweb_scheduler
+    restart: always
+    command: ["php", "artisan", "schedule:work"]
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: autoserve_prod
+      DB_USERNAME: autoserve
+      DB_PASSWORD: superweb_db_secret
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      REDIS_HOST: redis
+      REDIS_PASSWORD: superweb_redis_secret
+      REDIS_PORT: 6379
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - superweb-network
+
+  # ==============================================================================
+  # Primary Relational Store: MySQL 8.4 LTS
+  # ==============================================================================
+  mysql:
+    image: mysql:8.4
+    container_name: superweb_mysql
+    restart: always
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --innodb-lock-wait-timeout=50
+      --transaction-isolation=READ-COMMITTED
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: superweb_root_secret
+      MYSQL_DATABASE: autoserve_prod
+      MYSQL_USER: autoserve
+      MYSQL_PASSWORD: superweb_db_secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_prod_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-psuperweb_root_secret"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - superweb-network
+
+  # ==============================================================================
+  # In-Memory Cache, Rate-Limiter & Queue Broker: Redis 7 Alpine
+  # ==============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: superweb_redis
+    restart: always
+    command: ["redis-server", "--requirepass", "superweb_redis_secret", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_prod_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "superweb_redis_secret", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - superweb-network
+
+  # ==============================================================================
+  # Observability Engine: Prometheus Metrics Scraper
+  # ==============================================================================
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: superweb_prometheus
+    restart: always
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./ops/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_prod_data:/prometheus
+    depends_on:
+      - app
+    networks:
+      - superweb-network
+
+  # ==============================================================================
+  # Observability Visualizer: Grafana Dashboard
+  # ==============================================================================
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: superweb_grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=superweb_grafana_secret
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./ops/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_prod_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - superweb-network
+
+networks:
+  superweb-network:
+    driver: bridge
+
+volumes:
+  mysql_prod_data:
+  redis_prod_data:
+  prometheus_prod_data:
+  grafana_prod_data:

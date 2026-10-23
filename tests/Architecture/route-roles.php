@@ -1553,6 +1553,7 @@ return [
     'notifications.markAllReadJson' => 'auth',
     'notifications.read' => 'auth',
     'notifications.recent' => 'auth',
+    'ops.metrics' => 'public',
     'partners.index' => ['roles' => ['admin', 'auditor', 'procurement']],
     'partners.show' => ['roles' => ['admin', 'auditor', 'procurement'], 'params' => $partnerParamHelper],
     'partners.store' => ['roles' => ['admin', 'procurement']],

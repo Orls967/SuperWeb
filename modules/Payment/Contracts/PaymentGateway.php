@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Payment\Contracts;
 
 use DateTimeInterface;
-use Modules\Payment\Domain\Models\PaymentIntent;
 use Modules\Shared\Domain\ValueObjects\Money;
 
 interface PaymentGateway

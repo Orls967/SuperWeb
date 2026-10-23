@@ -3,17 +3,20 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\ApiTokenController;
+use App\Http\Controllers\OpsMetricsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Modules\Core\Http\Controllers\DashboardController;
 use Modules\Shared\Http\Controllers\GlobalSearchController;
 
 // ============================================================
-// PUBLIC
+// PUBLIC & OBSERVABILITY
 // ============================================================
 Route::get('/', function () {
     return auth()->check() ? redirect()->route('dashboard') : view('welcome');
 });
+
+Route::get('/ops/metrics', OpsMetricsController::class)->name('ops.metrics');
 
 // ============================================================
 // AUTHENTICATED CORE ROUTES

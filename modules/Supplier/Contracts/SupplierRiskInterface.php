@@ -10,7 +10,7 @@ interface SupplierRiskInterface
      * @param  array<string, mixed>  $meta
      */
     public function createRiskFlag(
-        int $supplierId,
+        int|string $supplierId,
         string $type,
         string $severity,
         string $message,

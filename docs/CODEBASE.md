@@ -541,7 +541,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 |---|---|---|---|
 | **Agency** | 17 | `agency`, `agency/{agent}`, `agency/agents` ... | web, auth, verified |
 | **Agri** | 8 | `agri`, `agri/dashboard`, `agri/contracts` ... | web, auth, role:admin,farmer,procurement |
-| **App** | 25 | `api/v1/integration/ping`, `up`, `/` ... | throttle:api-client, web, auth |
+| **App** | 26 | `api/v1/integration/ping`, `up`, `/` ... | throttle:api-client, web, auth |
 | **Asset** | 24 | `assets/audit`, `assets/depreciation`, `assets/depreciation/run` ... | web, auth, verified |
 | **AutoDex** | 5 | `autodex`, `autodex/car/{car}`, `autodex/garage` ... | web, auth, verified |
 | **AutoServe** | 24 | `bookings/create`, `bookings/{booking}`, `bookings/{booking}/invoice` ... | web, auth, verified |
@@ -596,7 +596,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 10 | `wealth`, `wealth/profiles/{profile}/invest`, `wealth/treasury/risk-profiles` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **958 Rute** | | |
+| **Total** | **959 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -685,6 +685,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `mcp:inspector` | `manual` | Open the MCP Inspector tool to debug and test MCP Servers |
 | `mcp:start` | `manual` | Start the MCP Server for a given handle |
 | `med:audit` | `manual` | Audit industri kreatif & media: integritas anggaran proyek studio, lisensi HAKI, dan kliring royalti talent |
+| `metrics:prometheus` | `manual` | Export real-time platform observability metrics across 46 modules in standard Prometheus Exposition Format |
 | `mfg:audit-costing` | `manual` | Audit WIP + FG manufaktur terhadap ledger (0 selisih) |
 | `mfg:qms-audit` | **`dailyAt('05:00')`** | Audit mutu: alat kalibrasi, CAPA/NCR, recall (exit 1 bila ada temuan) |
 | `mfg:run-mrp` | **`dailyAt('04:45')`** | Jalankan MRP (ledakan BOM, netting, lot sizing) + CRP — idempoten per snapshot input |
@@ -747,7 +748,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 146 Command** | **37 Terjadwal** | |
+| **Total: 147 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
