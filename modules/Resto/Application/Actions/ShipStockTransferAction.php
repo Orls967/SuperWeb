@@ -131,7 +131,7 @@ class ShipStockTransferAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::PRODUCTION->value,
                     description: "Pengiriman transfer #{$transfer->number} dari {$fromOutlet->name} ke {$toOutlet->name}",
-                    idempotencyKey: "resto:trf:ship:{$transfer->id}:".Str::uuid(),
+                    idempotencyKey: "resto:trf:ship:{$transfer->id}",
                     entries: Posting::lines()
                         ->credit($fromInvCode, $totalTransferCost)
                         ->debit($transitCode, $totalTransferCost)

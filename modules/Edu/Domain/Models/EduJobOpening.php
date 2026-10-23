@@ -14,7 +14,17 @@ class EduJobOpening extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'job_code',
+        'title',
+        'hiring_entity_id',
+        'location_city',
+        'required_skills',
+        'salary_budget_minor',
+        'job_type',
+        'status',
+    ];
 
     protected $casts = [
         'required_skills' => 'array',

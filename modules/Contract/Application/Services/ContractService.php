@@ -357,7 +357,7 @@ class ContractService
                 title: "Persetujuan Kontrak {$contract->contract_number}: {$contract->title}",
                 creator: $creator,
                 approvable: $contract,
-                amount: (float) $contract->total_value_idr,
+                amount: (int) $contract->total_value_idr,
                 steps: $steps,
                 slaHours: 72,
                 metadata: [

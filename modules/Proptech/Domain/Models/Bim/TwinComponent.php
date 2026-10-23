@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Proptech\Domain\Models\Bim;
 
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +12,18 @@ class TwinComponent extends Model
 {
     protected $table = 'prp_twin_components';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'bim_model_id',
+        'component_code',
+        'wbs_node_code',
+        'category',
+        'name',
+        'location_spec',
+        'status',
+        'completion_pct',
+        'linked_asset_id',
+        'linked_sensor_id',
+    ];
 
     protected $casts = [
         'completion_pct' => 'integer',

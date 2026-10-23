@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Wealth\Application\Services\RoboAdvisorService;
+use Modules\Wealth\Console\Commands\AuditWealthCommand;
 
 class WealthServiceProvider extends ServiceProvider
 {
@@ -24,5 +25,13 @@ class WealthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'wealth');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                AuditWealthCommand::class,
+            ]);
+        }
     }
 }

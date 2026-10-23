@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Core\Http\Controllers\ActivityFeedController;
+use Modules\Core\Http\Controllers\AiGovernanceController;
 use Modules\Core\Http\Controllers\AuditLogController;
 use Modules\Core\Http\Controllers\HealthCheckController;
+use Modules\Core\Http\Controllers\MobileGovernanceController;
 use Modules\Core\Http\Controllers\NotificationController;
 use Modules\Core\Http\Controllers\PassportController;
 use Modules\Core\Http\Controllers\RbacController;
+use Modules\Core\Http\Controllers\ResilienceGovernanceController;
+use Modules\Core\Http\Controllers\SimulationGovernanceController;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/passport/{uuid}', [PassportController::class, 'show'])->name('passport.show');
@@ -41,5 +45,32 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         // Audit Trail Generik
         Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('admin.audit-logs.index');
         Route::get('/audit-logs/{auditLog}', [AuditLogController::class, 'show'])->name('admin.audit-logs.show');
+
+        // AI Governance & Predictive Analytics (Fase 64)
+        Route::get('/ai-governance', [AiGovernanceController::class, 'index'])->name('admin.ai.index');
+        Route::post('/ai-governance/calculate-pricing', [AiGovernanceController::class, 'calculatePricing'])->name('admin.ai.calculate-pricing');
+        Route::post('/ai-governance/screen-anomaly', [AiGovernanceController::class, 'screenAnomaly'])->name('admin.ai.screen-anomaly');
+        Route::post('/ai-governance/generate-stock-recommendation', [AiGovernanceController::class, 'generateStockRecommendation'])->name('admin.ai.generate-stock-recommendation');
+        Route::post('/ai-governance/quarantines/{quarantine}/release', [AiGovernanceController::class, 'releaseQuarantine'])->name('admin.ai.release-quarantine');
+
+        // Enterprise Mobile Suite & Offline-First (Fase 65)
+        Route::get('/mobile-governance', [MobileGovernanceController::class, 'index'])->name('admin.mobile.index');
+        Route::post('/mobile-governance/sync-batch', [MobileGovernanceController::class, 'syncBatch'])->name('admin.mobile.sync-batch');
+        Route::post('/mobile-governance/submit-epod', [MobileGovernanceController::class, 'submitEpod'])->name('admin.mobile.submit-epod');
+        Route::post('/mobile-governance/record-action', [MobileGovernanceController::class, 'recordAction'])->name('admin.mobile.record-action');
+        Route::post('/mobile-governance/devices/{device}/revoke', [MobileGovernanceController::class, 'revokeDevice'])->name('admin.mobile.revoke-device');
+
+        // Multi-Region Resilience, DR & Data Sovereignty (Fase 66)
+        Route::get('/resilience-governance', [ResilienceGovernanceController::class, 'index'])->name('admin.resilience.index');
+        Route::post('/resilience-governance/execute-drill', [ResilienceGovernanceController::class, 'executeDrill'])->name('admin.resilience.execute-drill');
+        Route::post('/resilience-governance/rotate-kms', [ResilienceGovernanceController::class, 'rotateKms'])->name('admin.resilience.rotate-kms');
+        Route::post('/resilience-governance/check-residency', [ResilienceGovernanceController::class, 'checkResidency'])->name('admin.resilience.check-residency');
+
+        // Simulation Kernel, Event Spine & Digital Twin Bus (Fase 67)
+        Route::get('/simulation-governance', [SimulationGovernanceController::class, 'index'])->name('admin.simulation.index');
+        Route::post('/simulation-governance/advance', [SimulationGovernanceController::class, 'advance'])->name('admin.simulation.advance');
+        Route::post('/simulation-governance/publish-spine', [SimulationGovernanceController::class, 'publishSpine'])->name('admin.simulation.publish-spine');
+        Route::post('/simulation-governance/record-twin', [SimulationGovernanceController::class, 'recordTwin'])->name('admin.simulation.record-twin');
+        Route::post('/simulation-governance/scale-provision', [SimulationGovernanceController::class, 'scaleProvision'])->name('admin.simulation.scale-provision');
     });
 });

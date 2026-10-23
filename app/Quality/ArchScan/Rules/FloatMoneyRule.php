@@ -10,6 +10,7 @@ use App\Quality\Modules\ModuleRegistry;
 use App\Quality\Support\Declarations;
 use App\Quality\Support\SourceFile;
 use App\Quality\Support\Tokens;
+use PhpToken;
 
 /**
  * A3 — money typed as float (parameters, properties, float/double columns) and
@@ -120,8 +121,31 @@ final class FloatMoneyRule implements Rule
     {
         $tokens = $file->tokens();
         $violations = [];
+        $remediated = $this->remediatedColumnsInModule($file);
+
+        $downRanges = [];
+        $count = count($tokens);
+        for ($i = 0; $i < $count; $i++) {
+            if ($tokens[$i]->is(T_FUNCTION) && isset($tokens[$i + 1]) && strtolower($tokens[$i + 1]->text) === 'down') {
+                for ($j = $i + 2; $j < $count; $j++) {
+                    if ($tokens[$j]->text === '{') {
+                        $close = Tokens::matchingClose($tokens, $j);
+                        if ($close !== null) {
+                            $downRanges[] = [$j, $close];
+                        }
+                        break;
+                    }
+                }
+            }
+        }
 
         foreach ($tokens as $index => $token) {
+            foreach ($downRanges as [$start, $end]) {
+                if ($index >= $start && $index <= $end) {
+                    continue 2;
+                }
+            }
+
             if (! $token->is(T_OBJECT_OPERATOR) || ! isset($tokens[$index + 3])) {
                 continue;
             }
@@ -134,7 +158,7 @@ final class FloatMoneyRule implements Rule
 
             $column = Tokens::stringLiteral($tokens[$index + 3]);
 
-            if ($column === null) {
+            if ($column === null || in_array($column, $remediated, true)) {
                 continue;
             }
 
@@ -153,5 +177,75 @@ final class FloatMoneyRule implements Rule
         }
 
         return $violations;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function remediatedColumnsInModule(SourceFile $file): array
+    {
+        $absPath = $file->absolutePath;
+        if ($absPath === null || ! is_file($absPath)) {
+            return [];
+        }
+
+        $dir = dirname($absPath);
+        if (! is_dir($dir)) {
+            return [];
+        }
+
+        $currentBaseName = basename($absPath);
+        $files = glob($dir.'/*.php') ?: [];
+        $remediated = [];
+
+        $remediationMethods = ['biginteger', 'unsignedbiginteger', 'decimal', 'unsigneddecimal'];
+
+        foreach ($files as $otherPath) {
+            if (strcmp(basename($otherPath), $currentBaseName) <= 0) {
+                continue;
+            }
+
+            $content = @file_get_contents($otherPath);
+            if ($content === false) {
+                continue;
+            }
+
+            $tokens = array_values(array_filter(
+                PhpToken::tokenize($content),
+                static fn (PhpToken $t): bool => ! $t->isIgnorable(),
+            ));
+
+            $count = count($tokens);
+            for ($i = 0; $i < $count; $i++) {
+                if (! $tokens[$i]->is(T_OBJECT_OPERATOR) || ! isset($tokens[$i + 3])) {
+                    continue;
+                }
+
+                $method = strtolower($tokens[$i + 1]->text);
+                if (! in_array($method, $remediationMethods, true) || $tokens[$i + 2]->text !== '(') {
+                    continue;
+                }
+
+                $column = Tokens::stringLiteral($tokens[$i + 3]);
+                if ($column === null) {
+                    continue;
+                }
+
+                for ($j = $i + 4; $j < $count; $j++) {
+                    if ($tokens[$j]->text === ';') {
+                        break;
+                    }
+
+                    if ($tokens[$j]->is(T_OBJECT_OPERATOR) && isset($tokens[$j + 2])) {
+                        if (strtolower($tokens[$j + 1]->text) === 'change' && $tokens[$j + 2]->text === '(') {
+                            $remediated[$column] = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return array_keys($remediated);
     }
 }

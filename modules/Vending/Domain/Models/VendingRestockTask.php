@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Vending\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +11,12 @@ class VendingRestockTask extends Model
 {
     protected $table = 'ven_restock_tasks';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'task_code',
+        'vending_unit_id',
+        'suggested_qty',
+        'status',
+    ];
 
     public function unit(): BelongsTo
     {

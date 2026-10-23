@@ -10,15 +10,35 @@ use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\CloudKitchen\Domain\Models\CateringSubscription;
+use Modules\CloudKitchen\Domain\Models\CloudKitchen;
 use Modules\Core\Domain\Models\AuditLog;
+use Modules\Core\Domain\Models\CoreAiAnomalyQuarantine;
+use Modules\Core\Domain\Models\CoreMobileDevice;
+use Modules\Core\Domain\Models\PartnerWebhook;
 use Modules\Core\Domain\Models\Role;
+use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Domain\Models\WebhookDelivery;
 use Modules\Crypto\Domain\Enums\AlertCondition;
 use Modules\Crypto\Domain\Models\CryptoAlert;
 use Modules\Crypto\Domain\Models\CryptoAsset;
 use Modules\Crypto\Domain\Models\CryptoPriceTick;
 use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Ev\Domain\Models\EvCharger;
+use Modules\Ev\Domain\Models\EvSession;
+use Modules\Ev\Domain\Models\EvStation;
 use Modules\Finance\Domain\Models\Loan;
+use Modules\Fleet\Domain\Models\FleetContract;
+use Modules\Hcm\Domain\Models\Gig\GovBounty;
+use Modules\Hcm\Domain\Models\Gig\GovBountyClaim;
+use Modules\Hospital\Domain\Models\ClinicalTrial;
+use Modules\Hotel\database\seeders\HotelDemoSeeder;
+use Modules\Hotel\Domain\Models\HotelReservation;
+use Modules\Insurance\Domain\Models\InsuranceProduct;
 use Modules\Logistics\Domain\Enums\LocationType;
+use Modules\Logistics\Domain\Models\Autonomous\DroneMission;
+use Modules\Logistics\Domain\Models\Autonomous\DroneUnit;
+use Modules\Logistics\Domain\Models\Autonomous\TempBreachHold;
 use Modules\Logistics\Domain\Models\Carrier;
 use Modules\Logistics\Domain\Models\Claim;
 use Modules\Logistics\Domain\Models\Container;
@@ -28,6 +48,7 @@ use Modules\Logistics\Domain\Models\Driver;
 use Modules\Logistics\Domain\Models\HubOperator;
 use Modules\Logistics\Domain\Models\Lane;
 use Modules\Logistics\Domain\Models\Location;
+use Modules\Logistics\Domain\Models\Reverse\ReverseOrder;
 use Modules\Logistics\Domain\Models\Schedule;
 use Modules\Logistics\Domain\Models\Shipment;
 use Modules\Logistics\Domain\Models\ShipmentException;
@@ -40,7 +61,15 @@ use Modules\Mall\Domain\Models\Property;
 use Modules\Mall\Domain\Models\Tenant;
 use Modules\Mall\Domain\Models\VoucherTemplate;
 use Modules\Mall\Domain\Models\WorkOrder;
+use Modules\Manufacturing\Domain\Models\C2m\C2mCustomOrder;
+use Modules\Manufacturing\Domain\Models\C2m\VmiReplenishment;
+use Modules\Mining\Domain\Models\MiningPit;
+use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Partner\Domain\Models\Partner;
+use Modules\Proptech\Domain\Models\Bim\BimModel;
+use Modules\Proptech\Domain\Models\BuildingZone;
+use Modules\Proptech\Domain\Models\Flex\FlexBooking;
+use Modules\Proptech\Domain\Models\Flex\FlexSpace;
 use Modules\Resto\database\seeders\RestoMenuSeeder;
 use Modules\Resto\Domain\Models\CateringOrder;
 use Modules\Resto\Domain\Models\Delivery;
@@ -54,9 +83,20 @@ use Modules\Resto\Domain\Models\RestoTable;
 use Modules\Resto\Domain\Models\StockCount;
 use Modules\Resto\Domain\Models\StockTransfer;
 use Modules\Resto\Domain\Models\TableSession;
+use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
+use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Trade\Domain\Models\Bidding\BiddingAgent;
+use Modules\Trade\Domain\Models\Bidding\BidRun;
+use Modules\Trade\Domain\Models\Bidding\BidSubmission;
+use Modules\TradeFinance\Domain\Models\CrossBorder\CrossBorderEscrow;
+use Modules\Vending\Domain\Models\VendingUnit;
+use Modules\Venue\Domain\Models\EntertainmentEvent;
+use Modules\Venue\Domain\Models\EntertainmentTicket;
+use Modules\Venue\Domain\Models\EntertainmentVenue;
+use Modules\Wealth\Domain\Models\WmProfile;
 
 /**
  * Route authorization mapping (PROGRESS R0.9, KONSEP §A14.3).
@@ -464,6 +504,22 @@ return [
         'roles' => ['admin'],
         'params' => fn () => ['auditLog' => AuditLog::firstOrCreate(['action' => 'test_action'], ['entity_type' => 'test', 'entity_id' => 1])->id],
     ],
+    'admin.ai.calculate-pricing' => ['roles' => ['admin']],
+    'admin.ai.generate-stock-recommendation' => ['roles' => ['admin']],
+    'admin.ai.index' => ['roles' => ['admin']],
+    'admin.ai.release-quarantine' => [
+        'roles' => ['admin'],
+        'params' => fn () => ['quarantine' => CoreAiAnomalyQuarantine::firstOrCreate(['quarantine_code' => 'QRN-TEST-SEED'], [
+            'transaction_ref' => 'TX-TEST-ROLES',
+            'customer_ref' => 'CUST-TEST',
+            'amount_idr' => 1000000,
+            'risk_score' => 0.85,
+            'anomaly_reasons' => ['test'],
+            'status' => 'QUARANTINED',
+            'quarantined_at' => now(),
+        ])->id],
+    ],
+    'admin.ai.screen-anomaly' => ['roles' => ['admin']],
     'admin.group-dashboard' => ['roles' => ['admin']],
     'admin.health.index' => ['roles' => ['admin']],
     'admin.health.run' => ['roles' => ['admin']],
@@ -471,6 +527,18 @@ return [
     'admin.ledger.freeze' => ['roles' => ['admin']],
     'admin.ledger.index' => ['roles' => ['admin']],
     'admin.ledger.show' => ['roles' => ['admin']],
+    'admin.mobile.index' => ['roles' => ['admin']],
+    'admin.mobile.record-action' => ['roles' => ['admin']],
+    'admin.mobile.revoke-device' => [
+        'roles' => ['admin'],
+        'params' => fn () => ['device' => CoreMobileDevice::firstOrCreate(['device_uuid' => 'DEV-TEST-ROUTE-ROLES'], [
+            'role_scope' => 'driver',
+            'app_version' => '1.0.0',
+            'platform' => 'ANDROID',
+        ])->id],
+    ],
+    'admin.mobile.submit-epod' => ['roles' => ['admin']],
+    'admin.mobile.sync-batch' => ['roles' => ['admin']],
     'admin.rbac.assign' => ['roles' => ['admin']],
     'admin.rbac.index' => ['roles' => ['admin']],
     'admin.rbac.revoke' => ['roles' => ['admin']],
@@ -483,6 +551,15 @@ return [
         'roles' => ['admin'],
         'params' => fn () => ['user' => User::firstOrCreate(['email' => 'admin_test@test.test'], ['name' => 'Admin Test', 'password' => 'secret', 'role' => 'admin'])->id],
     ],
+    'admin.resilience.check-residency' => ['roles' => ['admin']],
+    'admin.resilience.execute-drill' => ['roles' => ['admin']],
+    'admin.resilience.index' => ['roles' => ['admin']],
+    'admin.resilience.rotate-kms' => ['roles' => ['admin']],
+    'admin.simulation.advance' => ['roles' => ['admin']],
+    'admin.simulation.index' => ['roles' => ['admin']],
+    'admin.simulation.publish-spine' => ['roles' => ['admin']],
+    'admin.simulation.record-twin' => ['roles' => ['admin']],
+    'admin.simulation.scale-provision' => ['roles' => ['admin']],
     'agency.accruals.clawback' => ['roles' => ['admin', 'procurement']],
     'agency.accruals.release' => ['roles' => ['admin', 'procurement']],
     'agency.accruals.store' => ['roles' => ['admin', 'procurement']],
@@ -508,6 +585,42 @@ return [
     'api.v1.logistics.shipments.show' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper'], 'params' => fn () => ['tracking_number' => $logisticsSeedHelper()['shipment']->tracking_number]],
     'api.v1.logistics.shipments.store' => ['roles' => ['admin', 'dispatcher', 'logistics_admin', 'shipper']],
     'api.v1.logistics.tracking.show' => 'public',
+    'api.v3.executive.kpis' => 'public',
+    'api.v3.executive.snapshot' => 'public',
+    'api.v3.mobile.sync.conflicts' => 'public',
+    'api.v3.mobile.sync.pull' => 'public',
+    'api.v3.mobile.sync.push' => 'public',
+    'api.v3.partner.webhooks.index' => 'public',
+    'api.v3.partner.webhooks.replay' => [
+        'roles' => ['admin'],
+        'params' => function () {
+            $webhook = PartnerWebhook::firstOrCreate(
+                ['partner_name' => 'Route Roles DLQ Replay Partner'],
+                [
+                    'tenant_id' => 'tenant-default',
+                    'endpoint_url' => 'https://partner.example.com/webhook',
+                    'hmac_secret' => 'test-secret-key-32-chars-long!!',
+                    'is_active' => true,
+                ]
+            );
+
+            $delivery = WebhookDelivery::firstOrCreate(
+                [
+                    'webhook_id' => $webhook->id,
+                    'event_name' => 'test.event.replay',
+                ],
+                [
+                    'payload' => json_encode(['foo' => 'bar']),
+                    'attempt' => 1,
+                    'status' => 'DEAD_LETTER_QUEUE',
+                    'http_status' => 500,
+                ]
+            );
+
+            return ['id' => $delivery->id];
+        },
+    ],
+    'api.v3.partner.webhooks.store' => 'public',
     'asset.audit' => ['roles' => ['admin', 'asset_manager']],
     'asset.checkin' => ['roles' => ['admin', 'asset_manager']],
     'asset.checkout' => ['roles' => ['admin', 'asset_manager']],
@@ -550,6 +663,23 @@ return [
     'bookings.store' => ['roles' => ['admin', 'customer']],
     'bookings.updateStatus' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
     'boost.browser-logs' => 'public',
+    'cloud_kitchen.index' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.subscriptions.dispatch' => [
+        'roles' => ['admin', 'customer', 'kitchen', 'outlet_manager'],
+        'params' => function () {
+            $user = User::firstOrCreate(['id' => 1], ['name' => 'Arch User', 'email' => 'arch@test.test', 'password' => 'secret', 'role' => 'customer']);
+            $sub = CateringSubscription::firstOrCreate(
+                ['subscription_code' => 'SUB-ARCH-001'],
+                ['user_id' => $user->id, 'package_name' => 'Demo Lunch', 'daily_quota' => 5, 'used_quota_today' => 0, 'monthly_fee_idr' => 1000000, 'daily_meal_price_idr' => 50000, 'starts_at' => now(), 'expires_at' => now()->addMonth(), 'status' => 'active']
+            );
+            CloudKitchen::firstOrCreate(
+                ['kitchen_code' => 'CK-ARCH-01'],
+                ['name' => 'Arch Central Kitchen', 'type' => 'central', 'hourly_capacity' => 100, 'current_hourly_load' => 0, 'service_radius_km' => 10, 'is_active' => true]
+            );
+
+            return ['subscription' => $sub->id];
+        },
+    ],
     'contract.advance.pay' => ['roles' => ['admin', 'contract_manager', 'legal']],
     'contract.amend' => ['roles' => ['admin', 'contract_manager', 'legal']],
     'contract.append-version' => ['roles' => ['admin', 'contract_manager', 'legal']],
@@ -634,6 +764,50 @@ return [
     'enterprise_finance.index' => ['roles' => ['admin', 'auditor', 'treasury']],
     'epc.index' => ['roles' => ['admin', 'epc_manager', 'asset_manager']],
     'esg.index' => ['roles' => ['admin', 'esg_officer', 'auditor']],
+    'ev.index' => ['roles' => ['admin', 'driver', 'ev_admin', 'station_operator']],
+    'ev.chargers.reserve' => [
+        'roles' => ['admin', 'driver', 'ev_admin', 'station_operator'],
+        'params' => function () {
+            $station = EvStation::firstOrCreate(['station_code' => 'SPKLU-PLN-01'], ['name' => 'SPKLU Sudirman', 'location_type' => 'PUBLIC', 'address' => 'Sudirman', 'latitude' => -6.2, 'longitude' => 106.8, 'is_active' => true]);
+            $charger = EvCharger::firstOrCreate(['charger_code' => 'CHG-CCS2-01'], ['station_id' => $station->id, 'type' => 'DC_FAST', 'max_kw' => 150, 'status' => 'available']);
+
+            return ['charger' => $charger->id];
+        },
+    ],
+    'ev.chargers.checkin' => [
+        'roles' => ['admin', 'driver', 'ev_admin', 'station_operator'],
+        'params' => function () {
+            $station = EvStation::firstOrCreate(['station_code' => 'SPKLU-PLN-01'], ['name' => 'SPKLU Sudirman', 'location_type' => 'PUBLIC', 'address' => 'Sudirman', 'latitude' => -6.2, 'longitude' => 106.8, 'is_active' => true]);
+            $charger = EvCharger::firstOrCreate(['charger_code' => 'CHG-CCS2-01'], ['station_id' => $station->id, 'type' => 'DC_FAST', 'max_kw' => 150, 'status' => 'available']);
+
+            return ['charger' => $charger->id];
+        },
+    ],
+    'ev.sessions.complete' => [
+        'roles' => ['admin', 'ev_admin', 'station_operator'],
+        'params' => function () {
+            $user = User::firstOrCreate(['email' => 'driver-route@example.com'], ['name' => 'Route Driver', 'password' => 'secret']);
+            $vehicle = Vehicle::firstOrCreate(['vin' => 'VIN-ROUTE-01'], ['user_id' => $user->id, 'plate_number' => 'B 1111 EV', 'color' => 'White', 'odometer_km' => 1000, 'status' => 'active']);
+            $station = EvStation::firstOrCreate(['station_code' => 'SPKLU-PLN-01'], ['name' => 'SPKLU Sudirman', 'location_type' => 'PUBLIC', 'address' => 'Sudirman', 'latitude' => -6.2, 'longitude' => 106.8, 'is_active' => true]);
+            $charger = EvCharger::firstOrCreate(['charger_code' => 'CHG-CCS2-01'], ['station_id' => $station->id, 'type' => 'DC_FAST', 'max_kw' => 150, 'status' => 'available']);
+            $session = EvSession::firstOrCreate(['session_code' => 'EV-SESS-ROUTE-01'], [
+                'charger_id' => $charger->id,
+                'vehicle_id' => $vehicle->id,
+                'user_id' => $user->id,
+                'status' => 'plugged_in',
+            ]);
+
+            return ['session' => $session->id];
+        },
+    ],
+    'ev.stations.loadbalance' => [
+        'roles' => ['admin', 'ev_admin', 'station_operator'],
+        'params' => function () {
+            $station = EvStation::firstOrCreate(['station_code' => 'SPKLU-PLN-01'], ['name' => 'SPKLU Sudirman', 'location_type' => 'PUBLIC', 'address' => 'Sudirman', 'latitude' => -6.2, 'longitude' => 106.8, 'is_active' => true]);
+
+            return ['station' => $station->id];
+        },
+    ],
     'estimates.approve' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id], 'setup' => $storeAutoServeCustomerSetup],
     'estimates.receiveBackorder' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id]],
     'estimates.reject' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['estimate' => $storeAutoServeSeedHelper()['estimate']->id], 'setup' => $storeAutoServeCustomerSetup],
@@ -647,7 +821,129 @@ return [
     'finance.loans.simulate' => ['roles' => ['admin', 'auditor', 'customer', 'treasury'], 'params' => fn () => ['product' => $financeCryptoSeedHelper()['product']->slug]],
     'finance.loans.store' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['product' => $financeCryptoSeedHelper()['product']->slug]],
     'finance.loans.topUpCollateral' => ['roles' => ['admin', 'customer', 'treasury'], 'params' => fn () => ['loan' => $financeCryptoSeedHelper()['loan']->uuid], 'setup' => $financeCryptoCustomerSetup],
+    'fleet.index' => ['roles' => ['admin', 'fleet_admin', 'lease_manager']],
+    'fleet.contracts.store' => ['roles' => ['admin', 'fleet_admin', 'lease_manager']],
+    'fleet.contracts.amortize' => [
+        'roles' => ['admin', 'fleet_admin', 'lease_manager'],
+        'params' => function () {
+            $contract = FleetContract::firstOrCreate(['contract_number' => 'FLT-DEMO-001'], ['party_id' => 501, 'duration_months' => 12, 'total_units' => 1, 'monthly_rental_idr' => 15000000, 'total_lease_value_idr' => 180000000, 'accumulated_amortized_idr' => 0, 'max_downtime_hours_per_month' => 24, 'start_date' => now(), 'end_date' => now()->addMonths(12), 'status' => 'active']);
+
+            return ['contract' => $contract->id];
+        },
+    ],
+    'fleet.contracts.sla-claim' => [
+        'roles' => ['admin', 'fleet_admin', 'lease_manager'],
+        'params' => function () {
+            $contract = FleetContract::firstOrCreate(['contract_number' => 'FLT-DEMO-001'], ['party_id' => 501, 'duration_months' => 12, 'total_units' => 1, 'monthly_rental_idr' => 15000000, 'total_lease_value_idr' => 180000000, 'accumulated_amortized_idr' => 0, 'max_downtime_hours_per_month' => 24, 'start_date' => now(), 'end_date' => now()->addMonths(12), 'status' => 'active']);
+
+            return ['contract' => $contract->id];
+        },
+    ],
+    'fleet.contracts.return-unit' => [
+        'roles' => ['admin', 'fleet_admin', 'lease_manager'],
+        'params' => function () {
+            $contract = FleetContract::firstOrCreate(['contract_number' => 'FLT-DEMO-001'], ['party_id' => 501, 'duration_months' => 12, 'total_units' => 1, 'monthly_rental_idr' => 15000000, 'total_lease_value_idr' => 180000000, 'accumulated_amortized_idr' => 0, 'max_downtime_hours_per_month' => 24, 'start_date' => now(), 'end_date' => now()->addMonths(12), 'status' => 'active']);
+
+            return ['contract' => $contract->id];
+        },
+    ],
     'hcm.index' => ['roles' => ['admin', 'hcm_manager']],
+    'hcm.bounties.index' => ['roles' => ['admin', 'hcm_manager']],
+    'hcm.bounties.store' => ['roles' => ['admin', 'hcm_manager']],
+    'hcm.bounties.claim' => [
+        'roles' => ['admin', 'hcm_manager'],
+        'params' => function () {
+            $bounty = GovBounty::firstOrCreate(
+                ['bounty_code' => 'BNT-ROUTE-TEST'],
+                [
+                    'business_unit_cost_center' => 'WMS_CIKARANG_01',
+                    'title' => 'Shift Unloading Route Test',
+                    'description' => 'Route test description',
+                    'shift_start' => now()->addHours(1),
+                    'shift_end' => now()->addHours(5),
+                    'duration_hours' => 4.0,
+                    'hourly_rate_idr' => 75000,
+                    'required_certification' => null,
+                    'status' => 'OPEN',
+                ]
+            );
+
+            return ['bounty' => $bounty->id];
+        },
+    ],
+    'hcm.bounties.payout' => [
+        'roles' => ['admin', 'hcm_manager'],
+        'params' => function () {
+            $bounty = GovBounty::firstOrCreate(
+                ['bounty_code' => 'BNT-ROUTE-TEST'],
+                [
+                    'business_unit_cost_center' => 'WMS_CIKARANG_01',
+                    'title' => 'Shift Unloading Route Test',
+                    'description' => 'Route test description',
+                    'shift_start' => now()->addHours(1),
+                    'shift_end' => now()->addHours(5),
+                    'duration_hours' => 4.0,
+                    'hourly_rate_idr' => 75000,
+                    'required_certification' => null,
+                    'status' => 'CLAIMED',
+                ]
+            );
+            $claim = GovBountyClaim::firstOrCreate(
+                ['claim_code' => 'CLM-ROUTE-TEST'],
+                [
+                    'bounty_id' => $bounty->id,
+                    'employee_id' => 101,
+                    'claimed_at' => now(),
+                    'status' => 'ASSIGNED',
+                ]
+            );
+
+            return ['claim' => $claim->id];
+        },
+    ],
+    'hospital.epharmacy.routing.dispatch' => ['roles' => ['admin', 'pharmacist']],
+    'hospital.epharmacy.subscriptions.index' => ['roles' => ['admin', 'auditor', 'doctor', 'pharmacist']],
+    'hospital.imaging.pacs.index' => ['roles' => ['admin', 'auditor', 'doctor']],
+    'hospital.index' => ['roles' => ['admin', 'doctor', 'hospital_admin']],
+    'hospital.laboratory.catalog.index' => ['roles' => ['admin', 'auditor', 'doctor', 'nurse', 'pharmacist']],
+    'hospital.laboratory.outsourcing.index' => ['roles' => ['admin', 'auditor', 'doctor']],
+    'hospital.laboratory.results.verify' => ['roles' => ['admin', 'doctor']],
+    'hospital.laboratory.specimens.custody' => ['roles' => ['admin', 'doctor', 'nurse']],
+    'hospital.telemedicine.index' => ['roles' => ['admin', 'auditor', 'doctor', 'nurse']],
+    'hospital.telemedicine.prescriptions.evaluate' => ['roles' => ['admin', 'doctor', 'pharmacist']],
+    'hospital.trials.bill' => [
+        'roles' => ['admin', 'doctor', 'hospital_admin'],
+        'params' => fn () => ['trial' => ClinicalTrial::firstOrCreate(['trial_code' => 'TRL-CARDIO-01'], ['title' => 'Trial Card', 'phase' => 'PHASE_3', 'sponsor_name' => 'Novartis', 'target_subjects' => 10, 'status' => 'RECRUITING'])->id],
+    ],
+    'hotel.index' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
+    'hotel.reservations.settle' => [
+        'roles' => ['admin', 'front_desk', 'hotel_admin'],
+        'params' => function () {
+            (new HotelDemoSeeder)->run();
+            $res = HotelReservation::firstOrFail();
+
+            return ['reservation' => $res->id];
+        },
+    ],
+    'mining.index' => ['roles' => ['admin', 'mining_admin', 'site_manager']],
+    'mining.dispatch' => [
+        'roles' => ['admin', 'mining_admin', 'site_manager'],
+        'params' => function () {
+            $site = MiningSite::firstOrCreate(['site_code' => 'SITE-KUTAI-01'], ['id' => (string) Str::uuid(), 'name' => 'Kutai Site', 'commodity' => 'COAL', 'location' => 'Kaltim']);
+            $pit = MiningPit::firstOrCreate(['site_id' => $site->id, 'pit_code' => 'PIT-NORTH-01'], ['id' => (string) Str::uuid(), 'name' => 'North Pit', 'target_daily_production_ton' => 5000, 'actual_production_ton' => 3000]);
+
+            return ['pit' => $pit->id];
+        },
+    ],
+    'insurance.index' => ['roles' => ['admin', 'customer', 'insurance_admin', 'underwriter']],
+    'insurance.products.issue' => [
+        'roles' => ['admin', 'customer', 'insurance_admin', 'underwriter'],
+        'params' => function () {
+            $prod = InsuranceProduct::firstOrCreate(['product_code' => 'INS-FLIGHT-DELAY'], ['name' => 'Flight Delay', 'premium_amount_idr' => 75000, 'max_payout_idr' => 500000, 'trigger_event_type' => 'FLIGHT_DELAY', 'is_active' => true]);
+
+            return ['product' => $prod->id];
+        },
+    ],
     'integration.index' => ['roles' => ['admin']],
     'integration.webhooks' => ['roles' => ['admin']],
     'intercompany.index' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
@@ -789,6 +1085,73 @@ return [
 
         return ['batchId' => 'batch-test-01'];
     }],
+    'logistics.reverse.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.reverse.store' => ['roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.reverse.intake' => [
+        'roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin'],
+        'params' => function () {
+            $order = ReverseOrder::firstOrCreate(
+                ['reverse_code' => 'REV-SEED-ROUTER-01'],
+                [
+                    'event_trigger_type' => 'resto.waste_bulk',
+                    'source_reference_id' => 'REF-ROUTER-01',
+                    'pickup_location' => 'Banjarmasin',
+                    'destination_facility' => 'Cikarang',
+                    'status' => 'SCHEDULED',
+                    'manifest_number' => 'MNF-SEED-ROUTER-01',
+                    'custody_hash' => hash('sha256', 'seed'),
+                    'total_appraised_value_idr' => 100000,
+                    'avoided_emissions_kg_co2' => 21.0,
+                ]
+            );
+
+            return ['order' => $order->id];
+        },
+    ],
+    'logistics.autonomous.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.autonomous.dispatch' => ['roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.autonomous.deliver' => [
+        'roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin'],
+        'params' => function () {
+            $drone = DroneUnit::firstOrCreate(
+                ['drone_code' => 'DRN-SEED-ROUTER-01'],
+                ['model_name' => 'OctoCopter Route Test', 'battery_percent' => 100, 'max_payload_kg' => 5.0, 'max_range_km' => 15.0, 'status' => 'IDLE']
+            );
+            $mission = DroneMission::firstOrCreate(
+                ['mission_code' => 'DRN-MSN-ROUTER-01'],
+                [
+                    'drone_unit_id' => $drone->id,
+                    'shipment_code' => 'SHP-ROUTER-01',
+                    'package_weight_kg' => 2.0,
+                    'distance_km' => 5.0,
+                    'destination_geo_hash' => 'qqs-seed-01',
+                    'status' => 'DISPATCHED',
+                ]
+            );
+
+            return ['mission' => $mission->id];
+        },
+    ],
+    'logistics.autonomous.breaches.release' => [
+        'roles' => ['admin', 'dispatcher', 'logistics_admin', 'treasury'],
+        'params' => function () {
+            $hold = TempBreachHold::firstOrCreate(
+                ['breach_code' => 'BRC-SEED-ROUTER-01'],
+                [
+                    'shipment_code' => 'SHP-ROUTER-01',
+                    'carrier_id' => 1,
+                    'recorded_temp_c' => 12.0,
+                    'max_allowed_temp_c' => 4.0,
+                    'duration_minutes' => 20,
+                    'hold_amount_idr' => 1000000,
+                    'hash_proof' => hash('sha256', 'seed'),
+                    'status' => 'HELD',
+                ]
+            );
+
+            return ['hold' => $hold->id];
+        },
+    ],
     'logistics.shipments.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'logistics_admin', 'shipper']],
     'logistics.shipments.label' => ['roles' => ['admin', 'auditor', 'dispatcher', 'driver', 'hub_operator', 'logistics_admin', 'shipper'], 'params' => function () use ($logisticsSeedHelper) {
         $d = $logisticsSeedHelper();
@@ -1085,6 +1448,33 @@ return [
     'mall.tenants.store' => ['roles' => ['admin', 'mall_admin']],
     'mall.utilities.batch' => ['roles' => ['admin', 'mall_admin', 'technician']],
     'mall.utilities.index' => ['roles' => ['admin', 'auditor', 'mall_admin', 'technician']],
+    'manufacturing.c2m.orders.cancel' => [
+        'roles' => ['admin', 'planner', 'procurement'],
+        'params' => fn () => ['order' => C2mCustomOrder::firstOrCreate(['c2m_code' => 'C2M-ROUTE-CANCEL'], [
+            'user_id' => 1,
+            'base_model' => 'ROUTE_TEST',
+            'parameters' => ['size' => 10],
+            'complexity_factor' => 1.0,
+            'rolled_up_bom_cost_idr' => 1000000,
+            'final_price_idr' => 1300000,
+            'status' => 'PENDING_APPROVAL',
+            'estimated_lead_days' => 5,
+        ])->id],
+    ],
+    'manufacturing.c2m.orders.spk' => [
+        'roles' => ['admin', 'planner', 'procurement'],
+        'params' => fn () => ['order' => C2mCustomOrder::firstOrCreate(['c2m_code' => 'C2M-ROUTE-SPK'], [
+            'user_id' => 1,
+            'base_model' => 'ROUTE_TEST',
+            'parameters' => ['size' => 10],
+            'complexity_factor' => 1.0,
+            'rolled_up_bom_cost_idr' => 1000000,
+            'final_price_idr' => 1300000,
+            'status' => 'DESIGN_VALIDATED',
+            'estimated_lead_days' => 5,
+        ])->id],
+    ],
+    'manufacturing.c2m.orders.store' => ['roles' => ['admin', 'planner', 'procurement']],
     'manufacturing.boms.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.costing.index' => ['roles' => ['admin', 'auditor', 'planner']],
     'manufacturing.costing.versions.approve' => ['roles' => ['admin', 'planner']],
@@ -1142,6 +1532,22 @@ return [
     'manufacturing.quality.recalls.notify' => ['roles' => ['admin', 'planner', 'qc_inspector']],
     'manufacturing.routings.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.workers.store' => ['roles' => ['admin', 'planner']],
+    'manufacturing.vmi-c2m.index' => ['roles' => ['admin', 'auditor', 'operator', 'planner', 'procurement']],
+    'manufacturing.vmi.approve' => [
+        'roles' => ['admin', 'planner', 'procurement'],
+        'params' => fn () => ['replenishment' => VmiReplenishment::firstOrCreate(['vmi_code' => 'VMI-ROUTE-APP'], [
+            'supplier_id' => 1,
+            'sku' => 'SKU-ROUTE-APP',
+            'current_shelf_stock' => 5,
+            'reorder_point' => 10,
+            'suggested_reorder_qty' => 20,
+            'total_estimated_idr' => 500000,
+            'contract_plafond_idr' => 10000000,
+            'status' => 'PROPOSED',
+            'idempotency_key' => 'ROUTE-APP-VMI-01',
+        ])->id],
+    ],
+    'manufacturing.vmi.trigger' => ['roles' => ['admin', 'planner', 'procurement']],
     'notifications.index' => 'auth',
     'notifications.markAllRead' => 'auth',
     'notifications.markAllReadJson' => 'auth',
@@ -1183,6 +1589,10 @@ return [
     'pricing.price-lists.store' => ['roles' => ['admin', 'procurement']],
     'pricing.promotions.claims.store' => ['roles' => ['admin', 'procurement']],
     'pricing.promotions.store' => ['roles' => ['admin', 'procurement']],
+    'pricing.quote.convert' => ['roles' => ['admin', 'procurement']],
+    'pricing.quote.freeze' => ['roles' => ['admin', 'procurement']],
+    'pricing.ticks' => ['roles' => ['admin', 'auditor', 'procurement']],
+    'pricing.ticks.store' => ['roles' => ['admin', 'procurement']],
     'procurement.dashboard' => ['roles' => ['admin', 'procurement']],
     'procurement.pos.cancel' => ['roles' => ['admin', 'procurement']],
     'procurement.pos.close' => ['roles' => ['admin', 'procurement']],
@@ -1209,7 +1619,108 @@ return [
     'profile.destroy' => 'auth',
     'profile.edit' => 'auth',
     'profile.update' => 'auth',
+    'proptech.index' => ['roles' => ['admin', 'facility_manager', 'proptech_admin']],
+    'proptech.bim.index' => ['roles' => ['admin', 'facility_manager', 'proptech_admin']],
+    'proptech.bim.simulate' => [
+        'roles' => ['admin', 'facility_manager', 'proptech_admin'],
+        'params' => function () {
+            $model = BimModel::firstOrCreate(
+                ['model_code' => 'BIM-ROUTER-TEST-01'],
+                [
+                    'project_code' => 'PRJ-TEST-01',
+                    'name' => 'BIM Model Router Test',
+                    'version' => 1,
+                    'current_hash' => hash('sha256', 'seed'),
+                    'status' => 'APPROVED',
+                ]
+            );
+
+            return ['model' => $model->id];
+        },
+    ],
+    'proptech.bim.capitalize' => [
+        'roles' => ['admin', 'facility_manager', 'proptech_admin'],
+        'params' => function () {
+            $model = BimModel::firstOrCreate(
+                ['model_code' => 'BIM-ROUTER-TEST-01'],
+                [
+                    'project_code' => 'PRJ-TEST-01',
+                    'name' => 'BIM Model Router Test',
+                    'version' => 1,
+                    'current_hash' => hash('sha256', 'seed'),
+                    'status' => 'APPROVED',
+                ]
+            );
+
+            return ['model' => $model->id];
+        },
+    ],
+    'proptech.flex.index' => ['roles' => ['admin', 'facility_manager', 'proptech_admin']],
+    'proptech.flex.store' => ['roles' => ['admin', 'facility_manager', 'proptech_admin']],
+    'proptech.flex.checkin' => [
+        'roles' => ['admin', 'facility_manager', 'proptech_admin'],
+        'params' => function () {
+            $space = FlexSpace::firstOrCreate(
+                ['space_code' => 'SP-ROUTER-01'],
+                ['name' => 'Pod 1', 'space_type' => 'HOT_DESK', 'rate_per_hour_idr' => 50000, 'capacity_persons' => 1, 'status' => 'AVAILABLE']
+            );
+            $booking = FlexBooking::firstOrCreate(
+                ['booking_code' => 'FBK-ROUTER-01'],
+                [
+                    'flex_space_id' => $space->id,
+                    'user_id' => 1,
+                    'start_time' => now()->subHour(),
+                    'end_time' => now()->addHour(),
+                    'total_price_idr' => 100000,
+                    'deposit_amount_idr' => 30000,
+                    'status' => 'CONFIRMED',
+                ]
+            );
+
+            return ['booking' => $booking->id];
+        },
+    ],
+    'proptech.flex.noshow' => [
+        'roles' => ['admin', 'facility_manager', 'proptech_admin'],
+        'params' => function () {
+            $space = FlexSpace::firstOrCreate(
+                ['space_code' => 'SP-ROUTER-01'],
+                ['name' => 'Pod 1', 'space_type' => 'HOT_DESK', 'rate_per_hour_idr' => 50000, 'capacity_persons' => 1, 'status' => 'AVAILABLE']
+            );
+            $booking = FlexBooking::firstOrCreate(
+                ['booking_code' => 'FBK-ROUTER-02'],
+                [
+                    'flex_space_id' => $space->id,
+                    'user_id' => 1,
+                    'start_time' => now()->subHours(2),
+                    'end_time' => now()->subHour(),
+                    'total_price_idr' => 100000,
+                    'deposit_amount_idr' => 30000,
+                    'status' => 'CONFIRMED',
+                ]
+            );
+
+            return ['booking' => $booking->id];
+        },
+    ],
+    'proptech.zones.bill' => [
+        'roles' => ['admin', 'facility_manager', 'proptech_admin'],
+        'params' => function () {
+            $zone = BuildingZone::firstOrCreate(['zone_code' => 'ZN-TOWER-A-L10'], ['building_code' => 'BLD-SCBD-01', 'name' => 'SCBD Tower A Floor 10', 'floor_level' => '10', 'area_sqm' => 600.0, 'current_temp_c' => 23.5, 'current_occupancy' => 35, 'current_kwh_rate' => 2000.0]);
+
+            return ['zone' => $zone->id];
+        },
+    ],
     'register' => 'public',
+    'rwa.index' => ['roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin']],
+    'rwa.assets.distribute' => [
+        'roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin'],
+        'params' => function () {
+            $asset = RwaAsset::firstOrCreate(['token_symbol' => 'RWA-MALL01'], ['name' => 'Mall Tower', 'underlying_asset_type' => 'PROPERTY', 'underlying_asset_id' => 'BLD-01', 'appraisal_value_idr' => 1000000000, 'total_supply_tokens' => 1000, 'token_price_idr' => 1000000, 'status' => 'active']);
+
+            return ['asset' => $asset->id];
+        },
+    ],
     'resto.analytics.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
     'resto.catering.cancel' => [
         'roles' => ['admin', 'outlet_manager'],
@@ -1755,15 +2266,220 @@ return [
     'supplier.show' => ['roles' => ['admin', 'party_manager', 'procurement']],
     'supplier.store' => ['roles' => ['admin', 'party_manager', 'procurement']],
     'supplier.transition' => ['roles' => ['admin', 'party_manager', 'procurement']],
+    'telematics.index' => ['roles' => ['admin', 'fleet_manager', 'telematics_admin']],
+    'telematics.devices.ingest' => [
+        'roles' => ['admin', 'fleet_manager', 'telematics_admin'],
+        'params' => function () {
+            $user = User::firstOrCreate(['id' => 1], ['name' => 'Arch User', 'email' => 'arch@test.test', 'password' => 'secret', 'role' => 'customer']);
+            $vehicle = Vehicle::firstOrCreate(
+                ['plate_number' => 'B-1234-TLM'],
+                ['uuid' => (string) Str::uuid(), 'user_id' => $user->id, 'vin' => 'VIN-TLM-001', 'status' => 'active']
+            );
+            $device = TelematicsDevice::firstOrCreate(['device_id' => 'DEV-OBD2-001'], ['vehicle_id' => $vehicle->id, 'serial_number' => 'SN-TLM-889900', 'protocol' => 'MQTT_CANBUS', 'status' => 'online', 'last_heartbeat_at' => now()]);
+
+            return ['device' => $device->id];
+        },
+    ],
     'track.index' => 'public',
     'track.show' => 'public',
     'trade.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade.bidding.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade.bidding.agents.store' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade.bidding.runs.evaluate' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade.bidding.runs.prepare' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => function () {
+            $agent = BiddingAgent::firstOrCreate(
+                ['agent_code' => 'AGT-ROUTE-TEST'],
+                [
+                    'entity_code' => 'ENT-001',
+                    'commodity_code' => 'COAL-GAR4200',
+                    'min_price_floor_idr' => 1000000,
+                    'max_price_ceiling_idr' => 1500000,
+                    'target_margin_pct' => 15.0,
+                    'max_risk_score' => 0.40,
+                    'status' => 'ACTIVE',
+                ]
+            );
+            $run = BidRun::firstOrCreate(
+                ['run_code' => 'RUN-ROUTE-TEST'],
+                [
+                    'bidding_agent_id' => $agent->id,
+                    'tender_reference_code' => 'TDR-ROUTE-001',
+                    'commodity_feed_price_idr' => 1100000,
+                    'estimated_logistics_cost_idr' => 50000,
+                    'buyer_risk_score' => 0.20,
+                    'optimal_bid_price_idr' => 1322500,
+                    'clause_drafts' => ['payment_terms' => 'LC_AT_SIGHT'],
+                    'evaluation_hash' => hash('sha256', 'RUN-ROUTE-TEST'),
+                ]
+            );
+
+            return ['run' => $run->id];
+        },
+    ],
+    'trade.bidding.submissions.approve' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => function () {
+            $agent = BiddingAgent::firstOrCreate(
+                ['agent_code' => 'AGT-ROUTE-TEST'],
+                [
+                    'entity_code' => 'ENT-001',
+                    'commodity_code' => 'COAL-GAR4200',
+                    'min_price_floor_idr' => 1000000,
+                    'max_price_ceiling_idr' => 1500000,
+                    'target_margin_pct' => 15.0,
+                    'max_risk_score' => 0.40,
+                    'status' => 'ACTIVE',
+                ]
+            );
+            $run = BidRun::firstOrCreate(
+                ['run_code' => 'RUN-ROUTE-TEST'],
+                [
+                    'bidding_agent_id' => $agent->id,
+                    'tender_reference_code' => 'TDR-ROUTE-001',
+                    'commodity_feed_price_idr' => 1100000,
+                    'estimated_logistics_cost_idr' => 50000,
+                    'buyer_risk_score' => 0.20,
+                    'optimal_bid_price_idr' => 1322500,
+                    'clause_drafts' => ['payment_terms' => 'LC_AT_SIGHT'],
+                    'evaluation_hash' => hash('sha256', 'RUN-ROUTE-TEST'),
+                ]
+            );
+            $submission = BidSubmission::firstOrCreate(
+                ['submission_code' => 'SUB-ROUTE-TEST'],
+                [
+                    'bid_run_id' => $run->id,
+                    'submitted_bid_price_idr' => 1322500,
+                    'requires_four_eyes' => true,
+                    'status' => 'PENDING_APPROVAL',
+                ]
+            );
+
+            return ['submission' => $submission->id];
+        },
+    ],
+    'trade.bidding.submissions.result' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => function () {
+            $agent = BiddingAgent::firstOrCreate(
+                ['agent_code' => 'AGT-ROUTE-TEST'],
+                [
+                    'entity_code' => 'ENT-001',
+                    'commodity_code' => 'COAL-GAR4200',
+                    'min_price_floor_idr' => 1000000,
+                    'max_price_ceiling_idr' => 1500000,
+                    'target_margin_pct' => 15.0,
+                    'max_risk_score' => 0.40,
+                    'status' => 'ACTIVE',
+                ]
+            );
+            $run = BidRun::firstOrCreate(
+                ['run_code' => 'RUN-ROUTE-TEST'],
+                [
+                    'bidding_agent_id' => $agent->id,
+                    'tender_reference_code' => 'TDR-ROUTE-001',
+                    'commodity_feed_price_idr' => 1100000,
+                    'estimated_logistics_cost_idr' => 50000,
+                    'buyer_risk_score' => 0.20,
+                    'optimal_bid_price_idr' => 1322500,
+                    'clause_drafts' => ['payment_terms' => 'LC_AT_SIGHT'],
+                    'evaluation_hash' => hash('sha256', 'RUN-ROUTE-TEST'),
+                ]
+            );
+            $submission = BidSubmission::firstOrCreate(
+                ['submission_code' => 'SUB-ROUTE-TEST-2'],
+                [
+                    'bid_run_id' => $run->id,
+                    'submitted_bid_price_idr' => 1322500,
+                    'requires_four_eyes' => false,
+                    'status' => 'SUBMITTED',
+                ]
+            );
+
+            return ['submission' => $submission->id];
+        },
+    ],
     'trade_finance.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
     'trade_finance.lcs' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade_finance.crossborder.cbam' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade_finance.crossborder.deposit' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade_finance.crossborder.dispute' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => fn () => ['escrow' => CrossBorderEscrow::firstOrCreate(['escrow_code' => 'CBE-ROUTE-TEST'], [
+            'importer_id' => 1,
+            'exporter_id' => 2,
+            'stablecoin_asset' => 'USDC',
+            'amount_cents' => 100000,
+            'locked_fx_rate_idr' => 16000,
+            'bl_number' => 'BL-ROUTE-RELEASE',
+            'bl_document_hash' => 'HASH-ROUTE',
+            'status' => 'DEPOSITED',
+        ])->id],
+    ],
+    'trade_finance.crossborder.index' => ['roles' => ['admin', 'auditor', 'procurement', 'treasury']],
+    'trade_finance.crossborder.release' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => fn () => ['escrow' => CrossBorderEscrow::firstOrCreate(['escrow_code' => 'CBE-ROUTE-TEST'], [
+            'importer_id' => 1,
+            'exporter_id' => 2,
+            'stablecoin_asset' => 'USDC',
+            'amount_cents' => 100000,
+            'locked_fx_rate_idr' => 16000,
+            'bl_number' => 'BL-ROUTE-RELEASE',
+            'bl_document_hash' => 'HASH-ROUTE',
+            'status' => 'DEPOSITED',
+        ])->id],
+    ],
+    'trade_finance.crossborder.resolve-dispute' => [
+        'roles' => ['admin', 'auditor', 'procurement', 'treasury'],
+        'params' => fn () => ['escrow' => CrossBorderEscrow::firstOrCreate(['escrow_code' => 'CBE-ROUTE-DISP'], [
+            'importer_id' => 1,
+            'exporter_id' => 2,
+            'stablecoin_asset' => 'USDC',
+            'amount_cents' => 100000,
+            'locked_fx_rate_idr' => 16000,
+            'bl_number' => 'BL-ROUTE-DISP',
+            'bl_document_hash' => 'HASH-ROUTE-DISP',
+            'status' => 'DISPUTED',
+        ])->id],
+    ],
     'treasury.index' => ['roles' => ['admin', 'auditor', 'treasury']],
     'verification.notice' => 'auth',
     'verification.send' => 'auth',
     'verification.verify' => 'auth',
+    'vending.index' => ['roles' => ['admin', 'vending_operator', 'store_manager']],
+    'vending.units.dispense' => [
+        'roles' => ['admin', 'vending_operator', 'store_manager'],
+        'params' => function () {
+            $unit = VendingUnit::firstOrCreate(
+                ['unit_code' => 'VEN-ROUTER-01'],
+                [
+                    'location_name' => 'Main Lobby',
+                    'status' => 'ACTIVE',
+                    'current_stock' => 50,
+                    'critical_threshold' => 10,
+                    'max_capacity' => 100,
+                    'total_sales_count' => 0,
+                    'total_sales_idr' => 0,
+                    'sensor_status' => ['temp' => 4.0],
+                ]
+            );
+
+            return ['unit' => $unit->id];
+        },
+    ],
+    'venue.gate.scan' => [
+        'roles' => ['admin', 'venue_manager', 'venue_staff'],
+        'params' => function () {
+            $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
+            $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
+            $tck = EntertainmentTicket::firstOrCreate(['ticket_number' => 'TCK-DEMO-001'], ['event_id' => $event->id, 'buyer_user_id' => 1, 'price_paid_idr' => 750000, 'ticket_hash' => 'hash', 'status' => 'VALID']);
+
+            return ['ticket' => $tck->id];
+        },
+    ],
+    'venue.index' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'wallet.index' => ['roles' => ['admin', 'auditor', 'customer']],
     'wallet.mutasi' => ['roles' => ['admin', 'auditor', 'customer']],
     'wallet.mutasi.export' => ['roles' => ['admin', 'auditor', 'customer']],
@@ -1772,6 +2488,15 @@ return [
     'wallet.transfer' => ['roles' => ['admin', 'auditor', 'customer']],
     'wallet.transfer.lookup' => ['roles' => ['admin', 'customer']],
     'wallet.transfer.store' => ['roles' => ['admin', 'customer']],
+    'wealth.index' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
+    'wealth.profiles.invest' => [
+        'roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager'],
+        'params' => function () {
+            $prof = WmProfile::firstOrCreate(['user_id' => 1], ['risk_profile' => 'moderate', 'monthly_spend_baseline_idr' => 10000000, 'emergency_fund_target_idr' => 20000000, 'auto_invest_enabled' => true]);
+
+            return ['profile' => $prof->id];
+        },
+    ],
     'wms.cycle-counts.apply' => ['roles' => ['admin']],
     'wms.cycle-counts.store' => ['roles' => ['admin', 'hub_operator']],
     'wms.cycle-counts.submit' => ['roles' => ['admin', 'hub_operator']],

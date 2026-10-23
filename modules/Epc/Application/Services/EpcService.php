@@ -1,16 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Epc\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Banking\Application\DTOs\PostingDTO;
+use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
 use Modules\Epc\Domain\Models\EpcCipCapitalization;
 use Modules\Epc\Domain\Models\EpcProgressCertificate;
 use Modules\Epc\Domain\Models\EpcProject;
 use Modules\Epc\Domain\Models\EpcWbsNode;
+use Modules\Epc\Ledger\EpcTransactionTypes;
 
 class EpcService
 {
+    protected LedgerService $ledgerService;
+
+    public function __construct(?LedgerService $ledgerService = null)
+    {
+        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
+    }
+
     public function createProject(array $data): EpcProject
     {
         return DB::transaction(function () use ($data) {
@@ -90,6 +103,25 @@ class EpcService
                 'accumulated_cip_cost_idr' => $project->accumulated_cip_cost_idr + $grossClaim,
             ]);
 
+            if ($grossClaim > 0) {
+                $lines = Posting::lines()->debit('asset:epc:construction_in_progress:IDR', $grossClaim);
+                if ($retentionDeduction > 0) {
+                    $lines->credit('ap:epc:contractor_retention:IDR', $retentionDeduction);
+                }
+                if ($netPayable > 0) {
+                    $lines->credit('ap:epc:contractor_payable:IDR', $netPayable);
+                }
+
+                $this->ledgerService->post(new PostingDTO(
+                    type: EpcTransactionTypes::EPC_PROGRESS_CERTIFICATE->value,
+                    description: "EPC Monthly Certificate {$certificate->certificate_number} for Project {$project->project_code}",
+                    idempotencyKey: "EPC-MC-{$certificate->certificate_number}",
+                    entries: $lines->toEntries('IDR'),
+                    referenceType: 'EPC_CERTIFICATE',
+                    referenceId: (string) $certificate->id,
+                ));
+            }
+
             return $certificate;
         });
     }
@@ -120,6 +152,18 @@ class EpcService
                 'capitalized_asset_value_idr' => $project->capitalized_asset_value_idr + $cipCost,
                 'status' => 'capitalized',
             ]);
+
+            $this->ledgerService->post(new PostingDTO(
+                type: EpcTransactionTypes::EPC_CIP_CAPITALIZATION->value,
+                description: "EPC CIP Capitalization BAST {$capitalization->bast_number} for Project {$project->project_code}",
+                idempotencyKey: "EPC-CAP-{$capitalization->bast_number}",
+                entries: Posting::lines()
+                    ->debit('asset:fixed:capitalized_buildings:IDR', $cipCost)
+                    ->credit('asset:epc:construction_in_progress:IDR', $cipCost)
+                    ->toEntries('IDR'),
+                referenceType: 'EPC_CAPITALIZATION',
+                referenceId: (string) $capitalization->id,
+            ));
 
             return $capitalization;
         });

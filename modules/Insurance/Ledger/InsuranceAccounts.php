@@ -25,6 +25,20 @@ final class InsuranceAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'ins:reserve_pool:IDR',
+                'name' => 'Central Treasury Insurance Reserve Pool',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'claimant:payable:default:IDR',
+                'name' => 'Claimant Payable Default',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }

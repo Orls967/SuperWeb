@@ -14,7 +14,14 @@ class MedDistributionChannel extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'channel_code',
+        'name',
+        'channel_type',
+        'revenue_share_pct',
+        'status',
+    ];
 
     protected $casts = [
         'revenue_share_pct' => 'float',

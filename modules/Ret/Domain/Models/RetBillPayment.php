@@ -14,7 +14,18 @@ class RetBillPayment extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'receipt_number',
+        'receipt_sequence',
+        'customer_id',
+        'bill_type',
+        'biller_code',
+        'bill_amount_minor',
+        'admin_fee_minor',
+        'total_paid_minor',
+        'status',
+    ];
 
     protected $casts = [
         'receipt_sequence' => 'integer',

@@ -33,7 +33,7 @@ class MiningRenewableAndCarbonService
 
         return DB::transaction(function () use ($params, $kwh, $ratePerKwh, $totalAmount, $avoidedScope1Tons, $billingNumber) {
             $tx = $this->ledgerService->post(new PostingDTO(
-                type: 'MINING_INTERCOMPANY_RENEWABLE_POWER',
+                type: 'MINING_INTERCO_RENEWABLE_POWER',
                 description: "Intercompany clean energy billing from {$params['producer_site_id']} to {$params['consumer_entity_id']}",
                 idempotencyKey: 'MIN-REN-'.$billingNumber,
                 entries: Posting::lines()

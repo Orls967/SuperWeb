@@ -2,53 +2,20 @@
     "about": "Baseline ratchet higiene test T1–T4 (PROGRESS R0.11, KONSEP §A14.7). Hanya boleh turun; target 0 di R5.5 (T2 di R1.3).",
     "rules": {
         "T1": {
-            "total": 9,
-            "entries": {
-                "modules/Fleet/tests/Feature/FleetTest.php": {
-                    "assertTrue(true)": 1
-                },
-                "modules/Logistics/tests/Feature/LogisticsDriverTest.php": {
-                    "assertTrue(true)": 2
-                },
-                "modules/Manufacturing/tests/Feature/MaintenanceOeeHseTest.php": {
-                    "assertTrue(true)": 2
-                },
-                "modules/Manufacturing/tests/Feature/ManufacturingPhase35Test.php": {
-                    "assertTrue(true)": 1
-                },
-                "modules/Manufacturing/tests/Feature/QualityManagementTest.php": {
-                    "assertTrue(true)": 1
-                },
-                "modules/Manufacturing/tests/Feature/ShopFloorTest.php": {
-                    "assertTrue(true)": 1
-                },
-                "tests/Unit/ExampleTest.php": {
-                    "assertTrue(true)": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "T2": {
             "total": 0,
             "entries": {}
         },
         "T3": {
-            "total": 1,
-            "entries": {
-                "tests/Performance/QueryBudgetTest.php": {
-                    "markTestSkipped()": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "T4": {
-            "total": 2,
-            "entries": {
-                "modules/Asset/routes/web.php": {
-                    "modul Asset tanpa test HTTP": 1
-                },
-                "modules/Payment/routes/web.php": {
-                    "modul Payment tanpa test HTTP": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         }
     },
     "approved_additions": [

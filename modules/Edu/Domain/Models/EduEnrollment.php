@@ -14,7 +14,18 @@ class EduEnrollment extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'enrollment_code',
+        'student_party_id',
+        'cohort_id',
+        'corporate_client_id',
+        'amount_paid_minor',
+        'sessions_attended',
+        'total_sessions',
+        'refund_amount_minor',
+        'status',
+    ];
 
     protected $casts = [
         'amount_paid_minor' => 'integer',

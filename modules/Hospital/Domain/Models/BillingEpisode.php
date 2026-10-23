@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Hospital\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +12,16 @@ class BillingEpisode extends Model
 {
     protected $table = 'hsp_billing_episodes';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'episode_code',
+        'encounter_id',
+        'escrow_deposit_idr',
+        'total_charges_idr',
+        'bpjs_coverage_idr',
+        'insurance_copay_idr',
+        'patient_share_idr',
+        'status',
+    ];
 
     public function encounter(): BelongsTo
     {

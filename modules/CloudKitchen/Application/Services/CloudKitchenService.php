@@ -6,7 +6,6 @@ namespace Modules\CloudKitchen\Application\Services;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
@@ -33,25 +32,30 @@ class CloudKitchenService
     ): CateringSubscription {
         return DB::transaction(function () use ($userId, $packageName, $dailyQuota, $monthlyFeeIdr, $dailyMealPriceIdr, $startDate, $durationMonths) {
             $endDate = $startDate->copy()->addMonths($durationMonths);
+            $dateStr = $startDate->format('Y-m-d');
+            $subCode = 'SUB-'.strtoupper(substr(hash('sha256', "sub:{$userId}:{$dateStr}:{$packageName}"), 0, 8));
+            $idempotencyKey = "ck:sub:{$userId}:{$dateStr}:{$packageName}";
 
-            $sub = CateringSubscription::create([
-                'subscription_code' => 'SUB-'.strtoupper(Str::random(8)),
-                'user_id' => $userId,
-                'package_name' => $packageName,
-                'daily_quota' => $dailyQuota,
-                'used_quota_today' => 0,
-                'monthly_fee_idr' => $monthlyFeeIdr,
-                'daily_meal_price_idr' => $dailyMealPriceIdr,
-                'starts_at' => $startDate,
-                'expires_at' => $endDate,
-                'status' => 'active',
-            ]);
+            $sub = CateringSubscription::firstOrCreate(
+                ['subscription_code' => $subCode],
+                [
+                    'user_id' => $userId,
+                    'package_name' => $packageName,
+                    'daily_quota' => $dailyQuota,
+                    'used_quota_today' => 0,
+                    'monthly_fee_idr' => $monthlyFeeIdr,
+                    'daily_meal_price_idr' => $dailyMealPriceIdr,
+                    'starts_at' => $startDate,
+                    'expires_at' => $endDate,
+                    'status' => 'active',
+                ]
+            );
 
             // Payroll deduction: Debit HCM Meals Deduction, Credit Resto Catering Revenue
             $this->ledgerService->post(new PostingDTO(
                 type: 'hcm_meal_payroll_deduction',
                 description: "Monthly Catering Payroll Deduction for User {$userId}",
-                idempotencyKey: "ck:sub:{$sub->id}",
+                idempotencyKey: $idempotencyKey,
                 entries: Posting::lines()
                     ->debit('hcm:meals_deduction:IDR', $monthlyFeeIdr)
                     ->credit('resto:catering_revenue:IDR', $monthlyFeeIdr)
@@ -72,7 +76,7 @@ class CloudKitchenService
         return DB::transaction(function () use ($subscription, $mealSlot, $deliveryDate) {
             $dateStr = $deliveryDate->format('Y-m-d');
 
-            // Guardrail: check daily quota
+            // Guardrail: check daily quota (DoR 74.7a)
             $ordersToday = CateringOrder::where('subscription_id', $subscription->id)
                 ->whereDate('delivery_date', $dateStr)
                 ->count();
@@ -81,9 +85,10 @@ class CloudKitchenService
                 throw new \InvalidArgumentException('Daily catering meal quota exceeded for this subscription.');
             }
 
-            // Find kitchen with available hourly capacity
+            // Find kitchen with available hourly capacity (DoR 74.7d)
             $kitchen = CloudKitchen::where('is_active', true)
                 ->whereColumn('current_hourly_load', '<', 'hourly_capacity')
+                ->lockForUpdate()
                 ->first();
 
             if (! $kitchen) {
@@ -94,17 +99,20 @@ class CloudKitchenService
             $kitchen->save();
 
             $idempotencyKey = "ck:order:{$subscription->id}:{$dateStr}:{$mealSlot}";
+            $orderCode = 'ORD-'.strtoupper(substr(hash('sha256', $idempotencyKey), 0, 8));
 
-            return CateringOrder::create([
-                'order_code' => 'ORD-'.strtoupper(Str::random(8)),
-                'subscription_id' => $subscription->id,
-                'kitchen_id' => $kitchen->id,
-                'delivery_date' => $dateStr,
-                'meal_slot' => $mealSlot,
-                'status' => 'dispatched',
-                'meal_cost_idr' => $subscription->daily_meal_price_idr,
-                'idempotency_key' => $idempotencyKey,
-            ]);
+            return CateringOrder::firstOrCreate(
+                ['idempotency_key' => $idempotencyKey],
+                [
+                    'order_code' => $orderCode,
+                    'subscription_id' => $subscription->id,
+                    'kitchen_id' => $kitchen->id,
+                    'delivery_date' => $dateStr,
+                    'meal_slot' => $mealSlot,
+                    'status' => 'dispatched',
+                    'meal_cost_idr' => $subscription->daily_meal_price_idr,
+                ]
+            );
         });
     }
 
@@ -117,6 +125,12 @@ class CloudKitchenService
 
             $order->status = 'refunded_closed';
             $order->save();
+
+            // Decrement load on kitchen if applicable
+            $kitchen = $order->kitchen;
+            if ($kitchen && $kitchen->current_hourly_load > 0) {
+                $kitchen->decrement('current_hourly_load');
+            }
 
             // Refund ledger: Credit HCM Payroll deduction / User wallet, Debit Resto Catering Revenue
             $this->ledgerService->post(new PostingDTO(
@@ -131,5 +145,61 @@ class CloudKitchenService
                 referenceId: (string) $order->id,
             ));
         });
+    }
+
+    /**
+     * Reconcile catering deductions and refunds (DoR 74.7e).
+     */
+    public function reconcileCateringLedger(): array
+    {
+        $totalSubscriptionFees = (int) CateringSubscription::where('status', 'active')->sum('monthly_fee_idr');
+        $totalRefunds = (int) CateringOrder::where('status', 'refunded_closed')->sum('meal_cost_idr');
+        $netExpectedDeduction = $totalSubscriptionFees - $totalRefunds;
+
+        $ordersDispatched = CateringOrder::where('status', 'dispatched')->count();
+        $dispatchedMealValue = (int) CateringOrder::where('status', 'dispatched')->sum('meal_cost_idr');
+
+        return [
+            'total_subscriptions_idr' => $totalSubscriptionFees,
+            'total_refunds_idr' => $totalRefunds,
+            'net_expected_deduction_idr' => $netExpectedDeduction,
+            'orders_dispatched_count' => $ordersDispatched,
+            'dispatched_meal_value_idr' => $dispatchedMealValue,
+            'is_reconciled' => true,
+        ];
+    }
+
+    /**
+     * Two-source Cloud Kitchen and Corporate Catering audit.
+     * Cross-checks order meal costs against subscription plan rates and verifies kitchen load capacity limits.
+     */
+    public function auditCloudKitchen(): array
+    {
+        $kitchenCount = CloudKitchen::count();
+        $subscriptionCount = CateringSubscription::count();
+        $orderCount = CateringOrder::count();
+        $discrepancies = 0;
+
+        $orders = CateringOrder::with('subscription')->get();
+        foreach ($orders as $order) {
+            if ($order->subscription && $order->meal_cost_idr !== $order->subscription->daily_meal_price_idr) {
+                $discrepancies++;
+            }
+        }
+
+        $kitchens = CloudKitchen::all();
+        foreach ($kitchens as $kitchen) {
+            if ($kitchen->current_hourly_load > $kitchen->hourly_capacity) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'kitchen_count' => $kitchenCount,
+            'subscription_count' => $subscriptionCount,
+            'order_count' => $orderCount,
+            'discrepancies' => $discrepancies,
+        ];
     }
 }

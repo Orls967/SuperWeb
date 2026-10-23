@@ -11,7 +11,18 @@ class JointVenture extends Model
 {
     protected $table = 'intl_joint_ventures';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'jv_code',
+        'name',
+        'foreign_entity_id',
+        'jv_type',
+        'local_share_percent',
+        'foreign_share_percent',
+        'total_committed_capital_idr',
+        'paid_in_capital_idr',
+        'minority_veto_rights',
+        'status',
+    ];
 
     protected $casts = [
         'local_share_percent' => 'float',

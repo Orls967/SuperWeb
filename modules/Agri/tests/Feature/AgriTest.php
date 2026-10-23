@@ -3,6 +3,7 @@
 namespace Modules\Agri\tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Agri\Application\Services\AgriService;
 use Modules\Agri\Domain\Models\AgriColdChainLog;
@@ -14,6 +15,12 @@ use Tests\TestCase;
 class AgriTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(LedgerAccountsSeeder::class);
+    }
 
     public function test_can_register_farmer_and_create_contract(): void
     {

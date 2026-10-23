@@ -13,6 +13,8 @@ use Modules\Logistics\Application\Listeners\HandleFleetServiceDue;
 use Modules\Logistics\Application\Listeners\RecognizeFreightRevenueOnDelivery;
 use Modules\Logistics\Console\Commands\AccrueDemurrageCommand;
 use Modules\Logistics\Console\Commands\AuditBillingCommand;
+use Modules\Logistics\Console\Commands\AuditCircularLogisticsCommand;
+use Modules\Logistics\Console\Commands\AuditColdChainCommand;
 use Modules\Logistics\Console\Commands\CheckCapacityCommand;
 use Modules\Logistics\Console\Commands\DetectLateShipmentsCommand;
 use Modules\Logistics\Console\Commands\PayCarriersCommand;
@@ -53,6 +55,8 @@ class LogisticsServiceProvider extends ServiceProvider
                 PayCarriersCommand::class,
                 AccrueDemurrageCommand::class,
                 AuditBillingCommand::class,
+                AuditCircularLogisticsCommand::class,
+                AuditColdChainCommand::class,
                 RetryWebhooksCommand::class,
             ]);
         }

@@ -12,8 +12,8 @@ return new class extends Migration
     {
         Schema::create('bank_ledger_entries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaction_id')->constrained('bank_ledger_transactions')->cascadeOnDelete();
-            $table->foreignId('account_id')->constrained('bank_ledger_accounts')->cascadeOnDelete();
+            $table->foreignId('transaction_id')->constrained('bank_ledger_transactions')->restrictOnDelete();
+            $table->foreignId('account_id')->constrained('bank_ledger_accounts')->restrictOnDelete();
             $table->string('asset_code', 16);
             $table->decimal('amount', 36, 18);
             $table->decimal('balance_after', 36, 18);

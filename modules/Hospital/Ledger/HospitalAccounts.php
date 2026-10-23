@@ -138,6 +138,13 @@ final class HospitalAccounts
                 'allow_negative' => true,
             ],
             [
+                'code' => 'hsp:inter_branch_clearing:IDR',
+                'name' => 'Hospital Pharmacy Inter-Branch Clearing Account',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
                 'code' => 'hsp:vaccine_dispute_escrow:IDR',
                 'name' => 'Vaccine Cold-Chain Dispute Escrow',
                 'kind' => AccountKind::ESCROW,

@@ -14,7 +14,18 @@ class FatigueLog extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'site_id',
+        'operator_party_id',
+        'equipment_id',
+        'work_hours_continuous',
+        'sleep_hours_prior',
+        'fatigue_score',
+        'is_critical',
+        'recommended_action',
+        'logged_at',
+    ];
 
     protected $casts = [
         'work_hours_continuous' => 'float',

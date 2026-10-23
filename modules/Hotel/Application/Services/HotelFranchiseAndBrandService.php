@@ -101,15 +101,17 @@ class HotelFranchiseAndBrandService
      */
     public function billMonthlyRoyalty(
         FranchiseContract $contract,
-        int $monthlyFolioRevenueIdr
+        int $monthlyFolioRevenueIdr,
+        ?string $billingPeriod = null
     ): int {
         $royaltyAmountIdr = (int) round(($monthlyFolioRevenueIdr * $contract->royalty_percentage) / 100);
 
         if ($royaltyAmountIdr > 0) {
+            $period = $billingPeriod ?? 'current';
             $this->ledgerService->post(new PostingDTO(
                 type: 'HOTEL_FRANCHISE_ROYALTY_BILLING',
                 description: "Monthly franchise royalty for contract {$contract->contract_code}",
-                idempotencyKey: "HTL-ROY-{$contract->contract_code}-".now()->format('Ym'),
+                idempotencyKey: "hotel:royalty:{$contract->contract_code}:{$period}",
                 entries: Posting::lines()
                     ->debit('htl:franchise_receivable:IDR', $royaltyAmountIdr)
                     ->credit('htl:royalty_revenue:IDR', $royaltyAmountIdr)
@@ -151,7 +153,7 @@ class HotelFranchiseAndBrandService
             ]);
 
             $this->ledgerService->post(new PostingDTO(
-                type: 'HOTEL_RATE_PARITY_PENALTY_ACCRUAL',
+                type: 'HOTEL_RATE_PARITY_PENALTY',
                 description: "Rate parity undercut penalty levy on {$otaChannel} for property {$property->property_code}",
                 idempotencyKey: "HTL-RPV-{$violation->violation_code}",
                 entries: Posting::lines()

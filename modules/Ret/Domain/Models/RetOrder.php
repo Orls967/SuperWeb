@@ -14,7 +14,15 @@ class RetOrder extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'order_number',
+        'customer_id',
+        'channel_id',
+        'total_amount_minor',
+        'coupon_code',
+        'status',
+    ];
 
     protected $casts = [
         'total_amount_minor' => 'integer',

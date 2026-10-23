@@ -51,7 +51,7 @@
                 <thead class="bg-slate-900/50 text-xs text-slate-400 uppercase"><tr><th class="px-4 py-3 text-left">Jenis</th><th class="px-4 py-3 text-right">Jumlah</th><th class="px-4 py-3 text-right">Nilai (IDR)</th><th class="px-4 py-3 text-right">Terpakai</th></tr></thead>
                 <tbody class="divide-y divide-slate-700/60">
                     @forelse($exposure['by_type'] as $row)
-                        <tr><td class="px-4 py-3 text-slate-200">{{ str_replace('_', ' ', $row->contract_type) }}</td><td class="px-4 py-3 text-right text-slate-400">{{ number_format($row->contract_count) }}</td><td class="px-4 py-3 text-right text-white">{{ number_format($row->total_value_idr) }}</td><td class="px-4 py-3 text-right text-indigo-300">{{ number_format($row->used_value_idr) }}</td></tr>
+                        <tr><td class="px-4 py-3 text-slate-200">{{ str_replace('_', ' ', $row->contract_type instanceof \BackedEnum ? $row->contract_type->value : (string) $row->contract_type) }}</td><td class="px-4 py-3 text-right text-slate-400">{{ number_format($row->contract_count) }}</td><td class="px-4 py-3 text-right text-white">{{ number_format($row->total_value_idr) }}</td><td class="px-4 py-3 text-right text-indigo-300">{{ number_format($row->used_value_idr) }}</td></tr>
                     @empty
                         <tr><td colspan="4" class="px-4 py-8 text-center text-slate-500">Belum ada eksposur.</td></tr>
                     @endforelse

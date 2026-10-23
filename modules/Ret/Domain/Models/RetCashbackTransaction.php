@@ -14,7 +14,16 @@ class RetCashbackTransaction extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'cashback_code',
+        'customer_id',
+        'source_line',
+        'transaction_amount_minor',
+        'cashback_pct',
+        'cashback_earned_minor',
+        'status',
+    ];
 
     protected $casts = [
         'transaction_amount_minor' => 'integer',

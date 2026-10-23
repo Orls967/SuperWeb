@@ -13,14 +13,15 @@ use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Modules\Core\Application\Services\ActivityLogger;
 use Modules\Core\Application\Services\NotificationService;
+use Modules\Core\Contracts\StoreDashboardPort;
 use Modules\Core\Domain\Models\Vehicle;
-use Modules\Store\Domain\Models\Order;
 
 class DashboardController extends Controller
 {
     public function __construct(
         private NotificationService $notifications,
         private ActivityLogger $activity,
+        private ?StoreDashboardPort $storeDashboard = null,
     ) {}
 
     public function index(Request $request): View
@@ -43,6 +44,9 @@ class DashboardController extends Controller
      */
     private function adminDashboard(User $user): View
     {
+        $port = $this->storeDashboard ?? (app()->bound(StoreDashboardPort::class) ? app(StoreDashboardPort::class) : null);
+        $orderStats = $port ? $port->getOrderStats() : ['total_orders' => 0, 'pending_orders' => 0];
+
         $stats = [
             'total_bookings' => Booking::count(),
             'pending_bookings' => Booking::where('status', 'pending')->count(),
@@ -54,8 +58,8 @@ class DashboardController extends Controller
             'total_users' => User::count(),
             'total_customers' => User::where('role', 'customer')->count(),
             'total_vehicles' => Vehicle::where('status', 'active')->count(),
-            'total_orders' => Order::count(),
-            'pending_orders' => Order::where('status', 'pending')->count(),
+            'total_orders' => $orderStats['total_orders'],
+            'pending_orders' => $orderStats['pending_orders'],
         ];
 
         $bookings = Booking::with(['customer', 'mechanic', 'service'])
@@ -130,6 +134,8 @@ class DashboardController extends Controller
      */
     private function customerDashboard(User $user): View
     {
+        $port = $this->storeDashboard ?? (app()->bound(StoreDashboardPort::class) ? app(StoreDashboardPort::class) : null);
+
         $stats = [
             'total_bookings' => $user->customerBookings()->count(),
             'pending_bookings' => $user->customerBookings()->where('status', 'pending')->count(),
@@ -137,7 +143,7 @@ class DashboardController extends Controller
             'completed' => $user->customerBookings()->whereIn('status', ['completed', 'invoiced'])->count(),
             'vehicles_count' => $user->vehicles()->where('status', 'active')->count(),
             'wishlist_count' => $user->wishlistCars()->count(),
-            'orders_count' => Order::where('user_id', $user->id)->count(),
+            'orders_count' => $port?->getUserOrdersCount($user->id) ?? 0,
         ];
 
         $bookings = $user->customerBookings()
@@ -153,10 +159,7 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        $recentOrders = Order::where('user_id', $user->id)
-            ->latest()
-            ->limit(5)
-            ->get();
+        $recentOrders = $port?->getUserRecentOrders($user->id, 5) ?? collect();
 
         $recentActivities = $this->activity->recentForUser($user->id, 10);
         $unreadNotifications = $this->notifications->recent($user->id, 5);

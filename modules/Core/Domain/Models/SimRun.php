@@ -22,6 +22,8 @@ class SimRun extends Model
         'speed_multiplier',
         'status',
         'seed',
+        'last_completed_day',
+        'last_state_hash',
         'metrics',
     ];
 
@@ -31,6 +33,7 @@ class SimRun extends Model
         'sim_end_at' => 'datetime',
         'speed_multiplier' => 'integer',
         'seed' => 'integer',
+        'last_completed_day' => 'integer',
         'metrics' => 'array',
     ];
 }

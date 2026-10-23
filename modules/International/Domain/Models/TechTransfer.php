@@ -11,7 +11,17 @@ class TechTransfer extends Model
 {
     protected $table = 'intl_tech_transfers';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'transfer_code',
+        'package_title',
+        'foreign_entity_id',
+        'current_milestone',
+        'total_value_idr',
+        'accepted_value_idr',
+        'derivative_ip_co_owned',
+        'signoff_completed',
+        'status',
+    ];
 
     protected $casts = [
         'total_value_idr' => 'integer',

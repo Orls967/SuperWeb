@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Esg\Domain\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -26,7 +28,7 @@ class CarbonCredit extends Model
 
     protected $casts = [
         'quantity_co2e_tons' => 'decimal:4',
-        'cost_per_ton_idr' => 'decimal:2',
+        'cost_per_ton_idr' => 'integer',
         'total_cost_idr' => 'integer',
         'vintage_year' => 'integer',
     ];

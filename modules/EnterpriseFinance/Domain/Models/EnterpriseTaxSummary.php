@@ -10,7 +10,16 @@ class EnterpriseTaxSummary extends Model
 {
     protected $table = 'ef_tax_summaries';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'period',
+        'tax_type',
+        'tax_base_idr',
+        'input_tax_idr',
+        'output_tax_idr',
+        'withheld_tax_idr',
+        'payable_or_refundable_idr',
+        'status',
+    ];
 
     protected $casts = [
         'tax_base_idr' => 'integer',

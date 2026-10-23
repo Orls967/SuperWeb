@@ -501,7 +501,7 @@ class ContractFinanceService
             title: "Pembebasan Denda Termin {$schedule->id}",
             creator: $creator,
             approvable: $schedule,
-            amount: (float) $this->computeLatePenalty($schedule)['penalty_idr'],
+            amount: (int) $this->computeLatePenalty($schedule)['penalty_idr'],
             steps: [['role' => 'legal'], ['role' => 'admin']],
             slaHours: 72,
             metadata: [

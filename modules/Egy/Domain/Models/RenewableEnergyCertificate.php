@@ -14,7 +14,16 @@ class RenewableEnergyCertificate extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'certificate_serial',
+        'generation_asset_id',
+        'owner_entity_id',
+        'energy_mwh',
+        'is_retired',
+        'retired_by_property_id',
+        'retired_at',
+    ];
 
     protected $casts = [
         'energy_mwh' => 'float',

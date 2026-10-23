@@ -32,6 +32,27 @@ final class AgriAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'inventory:agri:raw_commodities:IDR',
+                'name' => 'Agri Harvest Commodities Inventory Asset',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'agri:farmer_advance_receivable:IDR',
+                'name' => 'Agri Farmer Input Advance Receivable',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ap:agri:farmer_payable:IDR',
+                'name' => 'Agri Farmer Harvest Net Payout Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }

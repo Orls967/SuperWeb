@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Agri\Domain\Models\Ndvi;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +11,14 @@ class GovVote extends Model
 {
     protected $table = 'gov_votes';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'proposal_id',
+        'voter_user_id',
+        'vote_choice',
+        'weight_cast',
+        'previous_vote_hash',
+        'vote_receipt_hash',
+    ];
 
     public function proposal(): BelongsTo
     {

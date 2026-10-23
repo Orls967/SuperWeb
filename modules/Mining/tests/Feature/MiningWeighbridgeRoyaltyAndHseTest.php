@@ -6,6 +6,7 @@ namespace Modules\Mining\tests\Feature;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Modules\Mining\Application\Services\MiningComplianceAndRoyaltyService;
 use Modules\Mining\Domain\Models\MiningSite;
@@ -105,5 +106,54 @@ class MiningWeighbridgeRoyaltyAndHseTest extends TestCase
 
         $this->assertFalse($this->service->verifyWorkPermit($expiredPermit->id));
         $this->assertEquals('expired', $expiredPermit->fresh()->status);
+    }
+
+    public function test_a_weighbridge_ore_reconciled_with_stockpile_and_shipment(): void
+    {
+        // Case 1: 50,000 ton weighbridge vs 49,500 ton shipment (1.0% variance <= 2.0% tolerance) -> reconciled
+        $res1 = $this->service->reconcileWeighbridgeStockpileAndShipment(
+            weighbridgeTotalTon: 50000.00,
+            stockpileTons: 50000.00,
+            shipmentTons: 49500.00,
+            tolerancePercent: 2.0
+        );
+        $this->assertEquals('reconciled_ok', $res1['status']);
+        $this->assertEquals(500.00, $res1['variance_ton']);
+        $this->assertEquals(1.0, $res1['variance_percent']);
+
+        // Case 2: 50,000 ton weighbridge vs 48,000 ton shipment (4.0% variance > 2.0% tolerance) -> investigation
+        $res2 = $this->service->reconcileWeighbridgeStockpileAndShipment(
+            weighbridgeTotalTon: 50000.00,
+            stockpileTons: 50000.00,
+            shipmentTons: 48000.00,
+            tolerancePercent: 2.0
+        );
+        $this->assertEquals('investigation_required', $res2['status']);
+        $this->assertEquals(2000.00, $res2['variance_ton']);
+        $this->assertEquals(4.0, $res2['variance_percent']);
+    }
+
+    public function test_c_assay_bias_outside_tolerance_triggers_investigation(): void
+    {
+        // Normal bias: field 1.85% vs lab 1.90% (bias 0.05% <= 0.15%)
+        $res1 = $this->service->verifyAssayGradeBias('SAMPLE-001', 1.85, 1.90, 0.15);
+        $this->assertEquals('verified_compliant', $res1['status']);
+        $this->assertFalse($res1['exceeds_tolerance']);
+
+        // Excessive bias: field 1.85% vs lab 2.10% (bias 0.25% > 0.15%) -> triggers investigation
+        $res2 = $this->service->verifyAssayGradeBias('SAMPLE-002', 1.85, 2.10, 0.15);
+        $this->assertEquals('investigation_required', $res2['status']);
+        $this->assertTrue($res2['exceeds_tolerance']);
+    }
+
+    public function test_e_mining_audit_zero_discrepancy(): void
+    {
+        $exitMiningAudit = Artisan::call('mining:audit');
+        $this->assertSame(0, $exitMiningAudit);
+        $this->assertStringContainsString('Mining audit PASSED cleanly', Artisan::output());
+
+        $exitMinAudit = Artisan::call('min:audit');
+        $this->assertSame(0, $exitMinAudit);
+        $this->assertStringContainsString('Mining audit PASSED cleanly', Artisan::output());
     }
 }

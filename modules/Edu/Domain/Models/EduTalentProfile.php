@@ -14,7 +14,16 @@ class EduTalentProfile extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'candidate_id',
+        'full_name',
+        'city',
+        'skills',
+        'salary_expectation_minor',
+        'years_experience',
+        'status',
+    ];
 
     protected $casts = [
         'skills' => 'array',

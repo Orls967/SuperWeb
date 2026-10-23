@@ -15,6 +15,7 @@ use Modules\Manufacturing\Application\Services\PlanningService;
 use Modules\Manufacturing\Application\Services\ProductionService;
 use Modules\Manufacturing\Application\Services\QualityService;
 use Modules\Manufacturing\Console\Commands\AuditCostingCommand;
+use Modules\Manufacturing\Console\Commands\AuditVmiCommand;
 use Modules\Manufacturing\Console\Commands\QmsAuditCommand;
 use Modules\Manufacturing\Console\Commands\RunMrpCommand;
 use Modules\Manufacturing\Console\Commands\WipReportCommand;
@@ -49,7 +50,7 @@ class ManufacturingServiceProvider extends ServiceProvider
         Event::listen(OrderPaid::class, PostSaleCogsListener::class);
 
         if ($this->app->runningInConsole()) {
-            $this->commands([RunMrpCommand::class, WipReportCommand::class, AuditCostingCommand::class, QmsAuditCommand::class]);
+            $this->commands([RunMrpCommand::class, WipReportCommand::class, AuditCostingCommand::class, QmsAuditCommand::class, AuditVmiCommand::class]);
         }
 
         $this->registerMenu();

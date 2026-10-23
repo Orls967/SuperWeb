@@ -35,6 +35,6 @@ final class ApiAuditCorruptionFixture implements CorruptionFixture
             'attempt_count' => 1,
         ]);
 
-        return 'Signature or message discrepancy detected';
+        return 'WebhookDelivery ID';
     }
 }

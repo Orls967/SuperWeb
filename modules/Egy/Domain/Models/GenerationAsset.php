@@ -14,7 +14,16 @@ class GenerationAsset extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'asset_code',
+        'name',
+        'asset_type',
+        'installed_capacity_mw',
+        'current_output_mw',
+        'marginal_cost_per_mwh_minor',
+        'status',
+    ];
 
     protected $casts = [
         'installed_capacity_mw' => 'float',

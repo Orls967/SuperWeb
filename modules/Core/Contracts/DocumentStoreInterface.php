@@ -36,4 +36,9 @@ interface DocumentStoreInterface
      * Verify the integrity of a stored document via SHA-256 checksum.
      */
     public function verifyChecksum(int|object $document): bool;
+
+    /**
+     * Check if a document with the given SHA-256 checksum exists.
+     */
+    public function hasChecksum(string $checksum): bool;
 }

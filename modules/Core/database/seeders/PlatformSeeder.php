@@ -6,7 +6,6 @@ namespace Modules\Core\database\seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Modules\AutoDex\Domain\Models\Car;
 use Modules\Core\Application\Actions\AcquireVehicleAction;
 use Modules\Core\Application\Services\ActivityLogger;
 use Modules\Core\Application\Services\NotificationService;
@@ -145,32 +144,20 @@ class PlatformSeeder extends Seeder
             return;
         }
 
-        $cars = Car::query()->orderBy('id')->limit(2)->get();
-
-        if ($cars->isEmpty()) {
-            return;
-        }
-
         $acquire = app(AcquireVehicleAction::class);
 
         $fixtures = [
-            ['plate' => 'DA 1234 XY', 'color' => 'Putih Mutiara', 'odometer' => 42_500],
-            ['plate' => 'DA 5678 ZA', 'color' => 'Hitam Metalik', 'odometer' => 18_900],
+            ['car_id' => 1, 'plate' => 'DA 1234 XY', 'color' => 'Putih Mutiara', 'odometer' => 42_500],
+            ['car_id' => 2, 'plate' => 'DA 5678 ZA', 'color' => 'Hitam Metalik', 'odometer' => 18_900],
         ];
 
-        foreach ($cars as $index => $car) {
-            $fixture = $fixtures[$index] ?? null;
-
-            if ($fixture === null) {
-                continue;
-            }
-
+        foreach ($fixtures as $fixture) {
             $acquire->handle(
                 user: $customer,
-                car: $car,
+                car: $fixture['car_id'],
                 plateNumber: $fixture['plate'],
                 color: $fixture['color'],
-                vin: 'DEMOVIN'.str_pad((string) $car->id, 10, '0', STR_PAD_LEFT),
+                vin: 'DEMOVIN'.str_pad((string) $fixture['car_id'], 10, '0', STR_PAD_LEFT),
                 odometerKm: $fixture['odometer'],
                 acquiredViaType: 'manual',
             );

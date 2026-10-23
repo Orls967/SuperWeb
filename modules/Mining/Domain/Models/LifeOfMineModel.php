@@ -14,7 +14,16 @@ class LifeOfMineModel extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'site_id',
+        'model_code',
+        'proven_reserves_tonnage',
+        'annual_run_rate_tonnage',
+        'life_of_mine_years',
+        'projected_expansion_capex_minor',
+        'capex_dao_approved',
+    ];
 
     protected $casts = [
         'proven_reserves_tonnage' => 'float',

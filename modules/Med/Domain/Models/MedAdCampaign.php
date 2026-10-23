@@ -14,7 +14,23 @@ class MedAdCampaign extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'campaign_code',
+        'advertiser_entity_id',
+        'agency_entity_id',
+        'agency_commission_pct',
+        'channel_id',
+        'target_impressions',
+        'verified_impressions',
+        'floor_cpm_minor',
+        'actual_cpm_minor',
+        'total_spend_minor',
+        'agency_commission_minor',
+        'publisher_share_minor',
+        'platform_share_minor',
+        'status',
+    ];
 
     protected $casts = [
         'agency_commission_pct' => 'float',

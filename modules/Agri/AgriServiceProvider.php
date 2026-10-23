@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Agri;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Modules\Agri\Console\Commands\AuditAgriCommand;
+use Modules\Agri\Console\Commands\AuditGovernanceCommand;
 
 class AgriServiceProvider extends ServiceProvider
 {
@@ -12,6 +15,7 @@ class AgriServiceProvider extends ServiceProvider
     {
         $this->commands([
             AuditAgriCommand::class,
+            AuditGovernanceCommand::class,
         ]);
     }
 

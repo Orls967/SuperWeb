@@ -2,7 +2,7 @@
     "about": "Baseline ratchet `php artisan arch:scan` (PROGRESS.md §P11, KONSEP.md §A14.1). Hanya boleh turun lewat `--update-baseline`; penambahan wajib `--allow-new=\"DECISIONS.md#…\"` dan tercatat di approved_additions.",
     "rules": {
         "A1": {
-            "total": 246,
+            "total": 177,
             "entries": {
                 "modules/Agency/Application/Services/AgencyService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
@@ -27,44 +27,28 @@
                 "modules/Asset/Domain/Models/Asset.php": {
                     "use Modules\\Core\\Domain\\Models\\DocumentAttachment": 1
                 },
-                "modules/AutoServe/Application/Actions/ApproveExtraChargeAction.php": {
-                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1
-                },
                 "modules/AutoServe/Application/Actions/BackorderPartsAction.php": {
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
-                    "use Modules\\Store\\Domain\\Enums\\OrderStatus": 1,
                     "use Modules\\Store\\Domain\\Models\\Order": 1,
                     "use Modules\\Store\\Domain\\Models\\OrderItem": 1
                 },
-                "modules/AutoServe/Application/Actions/CancelBookingAction.php": {
-                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1
-                },
                 "modules/AutoServe/Application/Actions/CompleteBookingAction.php": {
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
-                    "use Modules\\Inventory\\Domain\\Exceptions\\InsufficientStockException": 1,
-                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1,
                     "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/AutoServe/Application/Actions/ReceiveBackorderAction.php": {
                     "use Modules\\Store\\Domain\\Models\\Order": 1
                 },
                 "modules/AutoServe/Application/Actions/ResolveSparepartProductAction.php": {
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Inventory\\Domain\\Models\\StockMovement": 1,
                     "use Modules\\Store\\Domain\\Models\\Product": 1
                 },
                 "modules/AutoServe/Application/Listeners/CreatePredictiveMaintenanceBooking.php": {
-                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1,
-                    "use Modules\\Telematics\\Domain\\Events\\VehicleAnomalyDetected": 1
+                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
                 "modules/AutoServe/Application/Services/AutoServeFleetMaintenanceBooking.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
                 "modules/AutoServe/Application/Services/AutoServeTenantSalesProvider.php": {
                     "use Modules\\Mall\\Domain\\Models\\Lease": 1
-                },
-                "modules/AutoServe/AutoServeServiceProvider.php": {
-                    "use Modules\\Telematics\\Domain\\Events\\VehicleAnomalyDetected": 1
                 },
                 "modules/AutoServe/Domain/Models/Booking.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1,
@@ -75,11 +59,6 @@
                 },
                 "modules/AutoServe/Http/Controllers/BookingController.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
-                },
-                "modules/AutoServe/Http/Controllers/InvoicePaymentController.php": {
-                    "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1,
-                    "use Modules\\Banking\\Domain\\Exceptions\\InvalidPinException": 1,
-                    "use Modules\\Banking\\Domain\\Exceptions\\PinLockedException": 1
                 },
                 "modules/Contract/Application/Services/ContractFinanceService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
@@ -106,50 +85,11 @@
                     "use Modules\\Party\\Domain\\Models\\LegalEntity": 1,
                     "use Modules\\Party\\Domain\\Models\\Party": 1
                 },
-                "modules/Core/Application/Listeners/NotifyBookingCompleted.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1
-                },
-                "modules/Core/Application/Listeners/NotifyPaymentCaptured.php": {
-                    "use Modules\\Payment\\Domain\\Events\\PaymentCaptured": 1
-                },
-                "modules/Core/Application/Listeners/NotifyPaymentRefunded.php": {
-                    "use Modules\\Payment\\Domain\\Events\\PaymentRefunded": 1
-                },
-                "modules/Core/Application/Listeners/RecordBookingCompletedPassportEvent.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1
-                },
-                "modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php": {
-                    "use Modules\\Hotel\\Domain\\Models\\HotelFolio": 1
-                },
-                "modules/Core/Console/Commands/TwelveLinesComprehensiveAuditCommand.php": {
-                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Hotel\\Domain\\Models\\HotelProperty": 1,
-                    "use Modules\\Mining\\Domain\\Models\\MiningSite": 1,
-                    "use Modules\\Venue\\Domain\\Models\\EntertainmentVenue": 1
-                },
-                "modules/Core/CoreServiceProvider.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1,
-                    "use Modules\\Payment\\Domain\\Events\\PaymentCaptured": 1,
-                    "use Modules\\Payment\\Domain\\Events\\PaymentRefunded": 1
-                },
-                "modules/Core/Domain/Models/Vehicle.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1
-                },
-                "modules/Core/Http/Controllers/DashboardController.php": {
-                    "use Modules\\Store\\Domain\\Models\\Order": 1
-                },
-                "modules/Core/database/seeders/PlatformSeeder.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1
-                },
-                "modules/Crypto/Application/Services/TradeExecutionService.php": {
-                    "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1
-                },
                 "modules/Crypto/Domain/Models/CryptoTrade.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Distribution/Application/Services/DistributionFulfilmentService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Inventory\\Domain\\Models\\StockMovement": 1,
                     "use Modules\\Store\\Domain\\Models\\Product": 1
                 },
@@ -159,19 +99,19 @@
                 "modules/Ev/Domain/Models/EvSession.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
+                "modules/Ev/database/seeders/EvDemoSeeder.php": {
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
+                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
+                },
                 "modules/Finance/Application/Actions/AddCollateralAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Finance/Application/Actions/OpenLoanAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
                     "use Modules\\Crypto\\Domain\\Models\\CryptoAsset": 1,
-                    "use Modules\\Store\\Domain\\Enums\\OrderStatus": 1,
                     "use Modules\\Store\\Domain\\Models\\Order": 1,
                     "use Modules\\Store\\Domain\\Models\\OrderItem": 1,
                     "use Modules\\Store\\Domain\\Models\\Product": 1
-                },
-                "modules/Finance/Application/Actions/PayInstallmentAction.php": {
-                    "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1
                 },
                 "modules/Finance/Domain/Models/Installment.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
@@ -180,35 +120,28 @@
                     "use Modules\\Crypto\\Domain\\Models\\CryptoAsset": 1,
                     "use Modules\\Store\\Domain\\Models\\Order": 1
                 },
-                "modules/Finance/FinanceServiceProvider.php": {
-                    "use Modules\\Crypto\\Domain\\Events\\PricesTicked": 1
-                },
                 "modules/Finance/Http/Controllers/LoanController.php": {
                     "use Modules\\Crypto\\Domain\\Models\\CryptoAsset": 1,
                     "use Modules\\Store\\Domain\\Models\\Product": 1
                 },
-                "modules/Finance/Listeners/MonitorLoanRisk.php": {
-                    "use Modules\\Crypto\\Domain\\Events\\PricesTicked": 1
-                },
                 "modules/Fleet/Domain/Models/FleetContractUnit.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
-                "modules/Inventory/Application/Services/InventoryService.php": {
-                    "use Modules\\Store\\Domain\\Models\\Product": 1
+                "modules/Fleet/database/seeders/FleetDemoSeeder.php": {
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
+                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
-                "modules/Inventory/Domain/Models/StockMovement.php": {
-                    "use Modules\\Store\\Domain\\Models\\Product": 1
+                "modules/Insurance/database/seeders/InsuranceDemoSeeder.php": {
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Logistics/Application/Actions/BookShipmentAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Logistics/Application/Actions/CancelShipmentAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1,
                     "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Logistics/Application/Actions/DeliverVehicleByCarrierAction.php": {
-                    "use Modules\\Core\\Domain\\Enums\\VehicleEventType": 1,
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1,
                     "use Modules\\Core\\Domain\\Models\\VehicleEvent": 1
                 },
@@ -216,11 +149,9 @@
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Logistics/Application/Actions/ReceiveReeferReplenishmentAction.php": {
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Inventory\\Domain\\Models\\StockMovement": 1
                 },
                 "modules/Logistics/Application/Listeners/CreateShipmentOnOrderPaid.php": {
-                    "use Modules\\Store\\Domain\\Events\\OrderPaid": 1,
                     "use Modules\\Store\\Domain\\Models\\Order": 1
                 },
                 "modules/Logistics/Application/Services/BillingAuditor.php": {
@@ -239,16 +170,12 @@
                 "modules/Logistics/Domain/Models/Truck.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
-                "modules/Logistics/LogisticsServiceProvider.php": {
-                    "use Modules\\Store\\Domain\\Events\\OrderPaid": 1
-                },
                 "modules/Logistics/database/seeders/LogisticsSeeder.php": {
                     "use Modules\\AutoDex\\Domain\\Models\\Brand": 1,
                     "use Modules\\AutoDex\\Domain\\Models\\Car": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Mall/Application/Actions/ActivateLeaseAction.php": {
-                    "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Mall/Application/Actions/AllocatePaymentAction.php": {
@@ -310,18 +237,9 @@
                 "modules/Mall/Http/Controllers/ParkingController.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
-                "modules/Mall/Listeners/CancelParkingMembershipOnVehicleTransfer.php": {
-                    "use Modules\\Core\\Domain\\Events\\VehicleOwnershipTransferred": 1
-                },
-                "modules/Mall/MallServiceProvider.php": {
-                    "use Modules\\Core\\Domain\\Events\\VehicleOwnershipTransferred": 1
-                },
                 "modules/Mall/database/seeders/MallSeeder.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
-                },
-                "modules/Manufacturing/Application/Listeners/PostSaleCogsListener.php": {
-                    "use Modules\\Store\\Domain\\Events\\OrderPaid": 1
                 },
                 "modules/Manufacturing/Application/Services/CostingService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
@@ -333,9 +251,6 @@
                 "modules/Manufacturing/Application/Services/ProductionService.php": {
                     "use Modules\\Logistics\\Domain\\Models\\Shipment": 1
                 },
-                "modules/Manufacturing/ManufacturingServiceProvider.php": {
-                    "use Modules\\Store\\Domain\\Events\\OrderPaid": 1
-                },
                 "modules/Partner/Application/Services/PartnerService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
@@ -344,12 +259,6 @@
                 },
                 "modules/Payment/Domain/Models/PaymentIntent.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
-                },
-                "modules/Pricing/Application/Listeners/PostSalePriceLockListener.php": {
-                    "use Modules\\Store\\Domain\\Events\\OrderPaid": 1
-                },
-                "modules/Pricing/PricingServiceProvider.php": {
-                    "use Modules\\Store\\Domain\\Events\\OrderPaid": 1
                 },
                 "modules/Procurement/Application/Services/InboundShipmentService.php": {
                     "use Modules\\Logistics\\Domain\\Models\\Shipment": 1,
@@ -360,7 +269,6 @@
                 },
                 "modules/Procurement/Application/Services/ReceivingService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Supplier\\Domain\\Models\\Supplier": 1
                 },
                 "modules/Procurement/Domain/Models/ApEntry.php": {
@@ -395,8 +303,7 @@
                 },
                 "modules/Resto/Application/Actions/ApproveStockCountAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Resto/Application/Actions/CalculateHidangBillAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
@@ -412,16 +319,12 @@
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/CookBatchAction.php": {
-                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/CreateDeliveryOrderAction.php": {
-                    "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1,
-                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/DeliverAndCompleteCateringAction.php": {
-                    "use Modules\\Banking\\Domain\\Exceptions\\InsufficientFundsException": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/DiscardTrayAction.php": {
@@ -442,21 +345,18 @@
                 },
                 "modules/Resto/Application/Actions/ReceiveGoodsAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Resto/Application/Actions/ReceiveStockTransferAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Resto/Application/Actions/SettleCashAction.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Resto/Application/Actions/ShipStockTransferAction.php": {
-                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Resto/Application/Actions/VoidOrderAction.php": {
                     "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
@@ -484,59 +384,33 @@
                     "use Modules\\Banking\\Domain\\Models\\LedgerTransaction": 1
                 },
                 "modules/Resto/database/seeders/RestoMenuSeeder.php": {
-                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
-                "modules/Shared/Application/Queries/GlobalSearchQuery.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1,
-                    "use Modules\\AutoServe\\Domain\\Models\\Booking": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Lease": 1,
-                    "use Modules\\Mall\\Domain\\Models\\ParkingSession": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Tenant": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Unit": 1,
-                    "use Modules\\Resto\\Domain\\Models\\MenuItem": 1,
-                    "use Modules\\Resto\\Domain\\Models\\Order": 1,
-                    "use Modules\\Store\\Domain\\Models\\StoreItem": 1
-                },
-                "modules/Store/Application/Actions/CancelC2cOrderAction.php": {
-                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1
-                },
-                "modules/Store/Application/Actions/CancelOrderAction.php": {
-                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1
-                },
-                "modules/Store/Application/Actions/ConfirmC2cReceiptAction.php": {
-                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1
+                "modules/Rwa/database/seeders/RwaDemoSeeder.php": {
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/Store/Application/Actions/ListCarProductAction.php": {
                     "use Modules\\AutoDex\\Domain\\Models\\Car": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Inventory\\Domain\\Models\\StockMovement": 1
                 },
                 "modules/Store/Application/Actions/ListVehicleForSaleAction.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Inventory\\Domain\\Models\\StockMovement": 1
                 },
                 "modules/Store/Application/Actions/PurchaseC2cVehicleAction.php": {
-                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1,
-                    "use Modules\\Payment\\Domain\\Enums\\PaymentIntentStatus": 1
+                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
                 "modules/Store/Application/Actions/UpdateOrderStatusAction.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
-                "modules/Store/Application/Services/CartService.php": {
-                    "use Modules\\Inventory\\Domain\\Exceptions\\InsufficientStockException": 1
-                },
                 "modules/Store/Domain/Models/Order.php": {
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Payment\\Domain\\Models\\PaymentIntent": 1
                 },
                 "modules/Store/Domain/Models/Product.php": {
                     "use Modules\\Inventory\\Domain\\Models\\StockMovement": 1
                 },
                 "modules/Store/Http/Controllers/Admin/AdminProductController.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1,
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1
+                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1
                 },
                 "modules/Store/Http/Controllers/C2cController.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
@@ -554,20 +428,25 @@
                 "modules/Telematics/Domain/Models/TelematicsDevice.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
+                "modules/Telematics/database/seeders/TelematicsDemoSeeder.php": {
+                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
+                },
                 "modules/Trade/Application/Services/TradeService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
                 "modules/TradeFinance/Application/Services/TradeFinanceService.php": {
                     "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
                 },
+                "modules/Wealth/database/seeders/WealthDemoSeeder.php": {
+                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1
+                },
                 "modules/Wms/Application/Services/WmsService.php": {
-                    "use Modules\\Inventory\\Domain\\Enums\\StockMovementReason": 1,
                     "use Modules\\Logistics\\Domain\\Models\\Shipment": 1
                 }
             }
         },
         "A2": {
-            "total": 5254,
+            "total": 5204,
             "entries": {
                 "modules/Agency/Console/Commands/AuditAgencyCommand.php": {
                     "DB::table('bank_ledger_accounts')": 1
@@ -627,44 +506,6 @@
                 },
                 "modules/Distribution/Console/Commands/AuditDistributionCommand.php": {
                     "DB::table('bank_ledger_accounts')": 2
-                },
-                "modules/Ev/Domain/Models/EvCharger.php": {
-                    "$table('oto_ev_chargers')": 1
-                },
-                "modules/Ev/Domain/Models/EvSession.php": {
-                    "$table('oto_ev_sessions')": 1
-                },
-                "modules/Ev/Domain/Models/EvStation.php": {
-                    "$table('oto_ev_stations')": 1
-                },
-                "modules/Ev/database/migrations/2026_10_07_690100_create_oto_ev_tables.php": {
-                    "Schema::create('oto_ev_chargers')": 1,
-                    "Schema::create('oto_ev_sessions')": 1,
-                    "Schema::create('oto_ev_stations')": 1
-                },
-                "modules/Fleet/Domain/Models/FleetContract.php": {
-                    "$table('oto_fleet_contracts')": 1
-                },
-                "modules/Fleet/Domain/Models/FleetContractUnit.php": {
-                    "$table('oto_fleet_contract_units')": 1
-                },
-                "modules/Fleet/database/migrations/2026_10_07_700100_create_oto_fleet_tables.php": {
-                    "Schema::create('oto_fleet_contract_units')": 1,
-                    "Schema::create('oto_fleet_contracts')": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBounty.php": {
-                    "$table('gov_bounties')": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBountyClaim.php": {
-                    "$table('gov_bounty_claims')": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBountyPof.php": {
-                    "$table('gov_bounty_pofs')": 1
-                },
-                "modules/Hcm/database/migrations/2026_10_07_850100_create_bounty_gig_tables.php": {
-                    "Schema::create('gov_bounties')": 1,
-                    "Schema::create('gov_bounty_claims')": 1,
-                    "Schema::create('gov_bounty_pofs')": 1
                 },
                 "modules/Integration/Application/Services/AcademicIndustryResearchService.php": {
                     "DB::table('academic_funding_tranches')": 3,
@@ -3764,11 +3605,6 @@
                     "Schema::create('int_enterprise_trust_scores')": 1,
                     "Schema::create('int_verifiable_enterprise_claims')": 1
                 },
-                "modules/Inventory/Application/Services/InventoryService.php": {
-                    "DB::table('resto_ingredient_movements')": 3,
-                    "DB::table('resto_ingredient_stocks')": 10,
-                    "DB::table('resto_ingredients')": 1
-                },
                 "modules/Logistics/database/seeders/LogisticsLargeSeeder.php": {
                     "DB::table('core_vehicles')": 1,
                     "DB::table('dex_cars')": 1,
@@ -3815,16 +3651,6 @@
                 "modules/Pricing/Application/Listeners/PostSalePriceLockListener.php": {
                     "DB::table('store_order_items as oi')": 1
                 },
-                "modules/Pricing/Domain/Models/FrozenQuote.php": {
-                    "$table('prc_frozen_quotes')": 1
-                },
-                "modules/Pricing/Domain/Models/PriceTick.php": {
-                    "$table('prc_price_ticks')": 1
-                },
-                "modules/Pricing/database/migrations/2026_10_07_810100_create_algorithmic_pricing_tables.php": {
-                    "Schema::create('prc_frozen_quotes')": 1,
-                    "Schema::create('prc_price_ticks')": 1
-                },
                 "modules/Store/database/migrations/2026_09_29_030005_migrate_spareparts_to_store_products.php": {
                     "DB::table('inv_stock_movements')": 2,
                     "DB::table('spareparts')": 1
@@ -3837,90 +3663,14 @@
                     "DB::table('resto_purchase_orders')": 1,
                     "DB::table('resto_suppliers')": 1
                 },
-                "modules/Telematics/Domain/Models/TelematicsBaseline.php": {
-                    "$table('oto_telematics_baselines')": 1
-                },
-                "modules/Telematics/Domain/Models/TelematicsDevice.php": {
-                    "$table('oto_telematics_devices')": 1
-                },
-                "modules/Telematics/Domain/Models/TelematicsTick.php": {
-                    "$table('oto_telematics_ticks')": 1
-                },
-                "modules/Telematics/database/migrations/2026_10_07_680100_create_oto_telematics_tables.php": {
-                    "Schema::create('oto_telematics_baselines')": 1,
-                    "Schema::create('oto_telematics_devices')": 1,
-                    "Schema::create('oto_telematics_ticks')": 1
-                },
-                "modules/Vending/Application/Services/SmartVendingService.php": {
-                    "DB::table('ven_auto_pos')": 1
-                },
-                "modules/Vending/Domain/Models/VendingDemandForecast.php": {
-                    "$table('ven_demand_forecasts')": 1
-                },
-                "modules/Vending/Domain/Models/VendingRestockTask.php": {
-                    "$table('ven_restock_tasks')": 1
-                },
-                "modules/Vending/Domain/Models/VendingTransaction.php": {
-                    "$table('ven_vending_transactions')": 1
-                },
-                "modules/Vending/Domain/Models/VendingUnit.php": {
-                    "$table('ven_vending_units')": 1
-                },
-                "modules/Vending/database/migrations/2026_10_07_750100_create_ven_tables.php": {
-                    "Schema::create('ven_auto_pos')": 1,
-                    "Schema::create('ven_demand_forecasts')": 1,
-                    "Schema::create('ven_restock_tasks')": 1,
-                    "Schema::create('ven_vending_transactions')": 1,
-                    "Schema::create('ven_vending_units')": 1
-                },
                 "modules/Wms/Console/Commands/AuditWmsCommand.php": {
                     "DB::table('store_products')": 1
                 }
             }
         },
         "A3": {
-            "total": 352,
+            "total": 319,
             "entries": {
-                "modules/Banking/Application/Actions/ManualAdjustmentAction.php": {
-                    "param float $amount @ execute()": 1
-                },
-                "modules/Banking/Application/Actions/TopUpAction.php": {
-                    "param float $amount @ execute()": 1
-                },
-                "modules/Banking/Application/Actions/TransferAction.php": {
-                    "param float $amount @ execute()": 1
-                },
-                "modules/Banking/Application/DTOs/PostingEntryDTO.php": {
-                    "param float $amount @ __construct()": 1,
-                    "param float $amount @ forAccount()": 1,
-                    "param float $amount @ forCode()": 1
-                },
-                "modules/Banking/Domain/Models/LedgerAccount.php": {
-                    "param float $amount @ canCover()": 1
-                },
-                "modules/Core/Application/Services/ApprovalEngineService.php": {
-                    "param float $amount @ submit()": 1
-                },
-                "modules/Core/Contracts/ApprovalEngineInterface.php": {
-                    "param float $amount @ submit()": 1
-                },
-                "modules/Crypto/database/migrations/2026_09_29_040001_create_crypto_assets_and_ticks_table.php": {
-                    "column decimal('price_idr')": 1
-                },
-                "modules/Crypto/database/migrations/2026_09_29_040002_create_crypto_quotes_and_trades_table.php": {
-                    "column decimal('fee_idr')": 2,
-                    "column decimal('gross_idr')": 2,
-                    "column decimal('price_idr')": 2
-                },
-                "modules/Crypto/database/migrations/2026_09_29_040003_create_crypto_alerts_table.php": {
-                    "column decimal('target_price_idr')": 1
-                },
-                "modules/Distribution/database/migrations/2026_10_05_430100_create_dist_fulfilment_tables.php": {
-                    "column decimal('unit_price_idr')": 1
-                },
-                "modules/Esg/database/migrations/2026_10_06_600100_create_esg_tables.php": {
-                    "column decimal('cost_per_ton_idr')": 1
-                },
                 "modules/Integration/Application/Services/AcademicIndustryResearchService.php": {
                     "param float $amountUsd @ releaseFundingTranche()": 1,
                     "param float $totalPrizeUsd @ conductChallengeEvaluation()": 1
@@ -4567,388 +4317,16 @@
                 },
                 "modules/Integration/database/migrations/2026_10_09_482001_create_future_readiness_tables.php": {
                     "column decimal('option_investment_idr')": 1
-                },
-                "modules/Mining/Application/Services/MiningSmelterAndMetalsTradingService.php": {
-                    "param float $newMarkPriceUsd @ markToMarketTradingPosition()": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_121100_create_min_smelter_and_metals_trading_tables.php": {
-                    "column double('base_lme_price_usd_per_ton')": 1,
-                    "column double('current_mark_price_usd')": 1,
-                    "column double('entry_price_usd')": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_125100_create_min_resource_command_tables.php": {
-                    "column double('live_commodity_price_usd')": 1
-                },
-                "modules/Pricing/database/migrations/2026_10_05_440100_create_prc_pricing_tables.php": {
-                    "column decimal('discount_leakage_idr')": 1
-                },
-                "modules/Resto/Domain/Models/UnitConversion.php": {
-                    "param float $amount @ toBase()": 1,
-                    "param float $baseAmount @ fromBase()": 1
-                },
-                "modules/Shared/Domain/ValueObjects/Money.php": {
-                    "param float $amount @ IDR()": 1,
-                    "param float $amount @ fromIdr()": 1,
-                    "param float $amount @ of()": 1
-                },
-                "modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php": {
-                    "param float $cbamPriceEurPerTon @ issueCbamCertificate()": 1
-                },
-                "modules/Wms/Domain/Models/Slotting.php": {
-                    "param float $grandTotal @ classify()": 1
-                },
-                "modules/Wms/database/migrations/2026_10_05_410100_create_wms_tables.php": {
-                    "column decimal('annual_value_idr')": 1
                 }
             }
         },
         "A4": {
-            "total": 44,
-            "entries": {
-                "modules/Banking/Application/Actions/ManualAdjustmentAction.php": {
-                    "idempotency key = $key": 1
-                },
-                "modules/Banking/Application/Actions/TopUpAction.php": {
-                    "idempotency key = $key": 1
-                },
-                "modules/Banking/Application/Actions/TransferAction.php": {
-                    "idempotency key = $key": 1
-                },
-                "modules/Core/Application/Services/OutboxBusService.php": {
-                    "idempotency key = $key": 1
-                },
-                "modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php": {
-                    "idempotency key = \"cross_charge:{$folio->id}:\".(string)Str::uuid()": 1
-                },
-                "modules/Core/Application/Services/UniversalCrossLineFintechService.php": {
-                    "idempotency key = \"stable_clear:{$sourceEntity}:{$targetEntity}:\".(string)Str::uuid()": 1
-                },
-                "modules/Finance/Application/Actions/AddCollateralAction.php": {
-                    "idempotency key = $key": 1
-                },
-                "modules/Finance/Http/Requests/OpenLoanRequest.php": {
-                    "idempotency key = (string)Str::uuid()": 1
-                },
-                "modules/Fleet/Application/Services/FleetLeasingService.php": {
-                    "idempotency key = \"fleet:sla_comp:{$contract->id}:\".Str::random(6)": 1
-                },
-                "modules/Hotel/Application/Services/HotelFolioAndPackageService.php": {
-                    "idempotency key = \"htl_pkg_settle:{$package->id}:\".(string)Str::uuid()": 1,
-                    "idempotency key = \"htl_ts_div:{$unit->id}:{$investor->id}:\".now()->toDateString()": 1
-                },
-                "modules/Hotel/Application/Services/HotelFranchiseAndBrandService.php": {
-                    "idempotency key = \"HTL-ROY-{$contract->contract_code}-\".now()->format('Ym')": 1
-                },
-                "modules/Integration/Application/Services/ResilienceWave2Service.php": {
-                    "idempotency key = $key": 2
-                },
-                "modules/Logistics/Application/Actions/DispatchWebhookAction.php": {
-                    "idempotency key = $idempotencyKey": 1,
-                    "idempotency key = Str::uuid()->toString()": 1
-                },
-                "modules/Logistics/Application/Actions/ReserveCapacityAction.php": {
-                    "idempotency key = $idempotencyKey?:(string)Str::uuid()": 1
-                },
-                "modules/Mall/Application/Actions/ActivateLeaseAction.php": {
-                    "idempotency key = \"mall:lease:activate:{$locked->id}:\".Str::uuid()": 1
-                },
-                "modules/Mall/Application/Actions/TerminateLeaseAction.php": {
-                    "idempotency key = \"mall:lease:term:{$locked->id}:\".Str::uuid()": 1
-                },
-                "modules/Mall/Application/Services/MallLoyaltyLedgerService.php": {
-                    "idempotency key = 'idr_pts_disc_'.Str::uuid()": 1,
-                    "idempotency key = 'pts_redeem_disc_'.Str::uuid()": 1
-                },
-                "modules/Mining/Application/Services/MiningEnvironmentalComplianceService.php": {
-                    "idempotency key = 'MIN-WTR-'.Str::random(10)": 1
-                },
-                "modules/Mining/Application/Services/MiningHseAndContractorService.php": {
-                    "idempotency key = 'CNTR-PEN-'.Str::random(10)": 1
-                },
-                "modules/Resto/Application/Actions/CalculateHidangBillAction.php": {
-                    "idempotency key = \"resto:order:cogs:{$order->id}:\".Str::uuid()": 1
-                },
-                "modules/Resto/Application/Actions/CancelCateringAction.php": {
-                    "idempotency key = \"resto:catering:forfeit:{$locked->id}:\".Str::uuid()": 1,
-                    "idempotency key = \"resto:catering:release:{$locked->id}:\".Str::uuid()": 1
-                },
-                "modules/Resto/Application/Actions/CloseShiftAction.php": {
-                    "idempotency key = \"resto:shift:variance:{$lockedShift->id}:\".Str::uuid()": 1
-                },
-                "modules/Resto/Application/Actions/CreateDeliveryOrderAction.php": {
-                    "idempotency key = \"resto:dlv:pay:{$order->id}:\".Str::uuid()": 1
-                },
-                "modules/Resto/Application/Actions/DeliverAndCompleteCateringAction.php": {
-                    "idempotency key = \"resto:catering:capture:{$locked->id}:\".Str::uuid()": 1,
-                    "idempotency key = \"resto:catering:settle:{$locked->id}:\".Str::uuid()": 1
-                },
-                "modules/Resto/Application/Actions/DiscardTrayAction.php": {
-                    "idempotency key = \"resto:tray:waste:{$tray->id}:\".Str::uuid()": 1
-                },
-                "modules/Resto/Application/Actions/FailDeliveryAction.php": {
-                    "idempotency key = \"resto:dlv:fail_refund:{$lockedDelivery->id}:\".Str::uuid()": 1
-                },
-                "modules/Resto/Application/Actions/HoldCateringDepositAction.php": {
-                    "idempotency key = \"resto:catering:hold:{$locked->id}:\".Str::uuid()": 1,
-                    "idempotency key = $idempotencyKey": 1
-                },
-                "modules/Resto/Application/Actions/OpenTableSessionAction.php": {
-                    "idempotency key = \"pos_order_{$session->id}_\".Str::uuid()": 1
-                },
-                "modules/Resto/Application/Actions/PaySupplierAction.php": {
-                    "idempotency key = $ledgerKey": 1
-                },
-                "modules/Resto/Application/Actions/SettleCashAction.php": {
-                    "idempotency key = $ledgerKey": 1
-                },
-                "modules/Resto/Application/Actions/ShipStockTransferAction.php": {
-                    "idempotency key = \"resto:trf:ship:{$transfer->id}:\".Str::uuid()": 1
-                },
-                "modules/Resto/Application/Actions/VoidOrderAction.php": {
-                    "idempotency key = \"resto:order:refund:{$lockedOrder->id}:\".Str::uuid()": 1,
-                    "idempotency key = \"resto:order:void:cash:{$lockedOrder->id}:\".Str::uuid()": 1
-                },
-                "modules/Resto/Console/Commands/PostFranchiseRoyaltyCommand.php": {
-                    "idempotency key = \"resto:royalty:{$contract->id}:{$targetDate}:\".Str::uuid()": 1
-                },
-                "modules/Store/Application/Services/CheckoutService.php": {
-                    "idempotency key = $idempotencyKey??(string)Str::uuid()": 1
-                },
-                "modules/Venue/Application/Services/VenueCreatorEconomyService.php": {
-                    "idempotency key = \"VEN-REL-{$contract->contract_code}-\".time()": 1,
-                    "idempotency key = \"VEN-RGT-{$contract->contract_code}-\".time().'-'.rand(100,999)": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "A5": {
-            "total": 101,
-            "entries": {
-                "modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php": {
-                    "PostingDTO type: 'AGRI_LOAN_DISBURSEMENT'": 1
-                },
-                "modules/CloudKitchen/Application/Services/CloudKitchenService.php": {
-                    "PostingDTO type: 'catering_refund'": 1,
-                    "PostingDTO type: 'hcm_meal_payroll_deduction'": 1
-                },
-                "modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php": {
-                    "PostingDTO type: 'CROSS_VENUE_FOLIO_CHARGE'": 1,
-                    "PostingDTO type: 'MEDICAL_TOURISM_SETTLEMENT'": 1
-                },
-                "modules/Core/Application/Services/TwelveLinesGoldenScenarioService.php": {
-                    "PostingDTO type: 'GOLDEN_SCENARIO_CONSOLIDATION'": 1
-                },
-                "modules/Core/Application/Services/UniversalCrossLineFintechService.php": {
-                    "PostingDTO type: 'CROSS_LINE_STABLECOIN_SETTLE'": 1,
-                    "PostingDTO type: 'UNIVERSAL_INSURANCE_CLAIM'": 1
-                },
-                "modules/Edu/Application/Services/AcademyAndCertificationService.php": {
-                    "PostingDTO type: 'EDU_TUITION_PAYMENT'": 1,
-                    "PostingDTO type: 'EDU_TUITION_PRO_RATA_REFUND'": 1
-                },
-                "modules/Edu/Application/Services/TalentPipelineAndWorkforceService.php": {
-                    "PostingDTO type: 'EDU_HEADHUNTER_FEE_RELEASE'": 1
-                },
-                "modules/Egy/Application/Services/CarbonTradingAndEsgMarketService.php": {
-                    "PostingDTO type: 'ENERGY_CARBON_MARKET_TRADE'": 1,
-                    "PostingDTO type: 'ENERGY_CBAM_TARIFF_SETTLEMENT'": 1,
-                    "PostingDTO type: 'ENERGY_GREEN_LEASE_DISCOUNT_ACCRUAL'": 1
-                },
-                "modules/Egy/Application/Services/DistrictUtilityAndEscoService.php": {
-                    "PostingDTO type: 'ENERGY_CONSOLIDATED_UTILITY_INVOICE'": 1,
-                    "PostingDTO type: 'ENERGY_ESCO_SAVINGS_SPLIT'": 1
-                },
-                "modules/Egy/Application/Services/EnergyGridAndMeteringService.php": {
-                    "PostingDTO type: 'ENERGY_METER_READING_BILL'": 1,
-                    "PostingDTO type: 'ENERGY_PPA_NET_METERING_SETTLEMENT'": 1
-                },
-                "modules/Egy/Application/Services/MicrogridAndResilienceService.php": {
-                    "PostingDTO type: 'ENERGY_BESS_ARBITRAGE_PROFIT'": 1
-                },
-                "modules/EnterpriseFinance/Application/Services/ConglomerateCapitalAndGovernanceService.php": {
-                    "PostingDTO type: 'HOLDING_DIVIDEND_DECLARATION'": 1
-                },
-                "modules/Fleet/Application/Services/FleetLeasingService.php": {
-                    "PostingDTO type: 'lease_amortization'": 1,
-                    "PostingDTO type: 'sla_compensation'": 1
-                },
-                "modules/Hcm/Application/Services/Gig/InternalGigEconomyService.php": {
-                    "PostingDTO type: 'HCM_GIG_BOUNTY_PAYOUT'": 1
-                },
-                "modules/Hospital/Application/Services/ClinicalTrialAndResearchService.php": {
-                    "PostingDTO type: 'CLINICAL_TRIAL_MILESTONE'": 1
-                },
-                "modules/Hospital/Application/Services/HospitalLabAndImagingService.php": {
-                    "PostingDTO type: 'IMAGING_STUDY_BILLING'": 1,
-                    "PostingDTO type: 'LAB_TEST_BILLING'": 1
-                },
-                "modules/Hospital/Application/Services/HospitalPublicHealthAndBpjsService.php": {
-                    "PostingDTO type: 'BPJS_BATCH_CLAIM_SETTLED'": 1
-                },
-                "modules/Hospital/Application/Services/HospitalRevenueCycleService.php": {
-                    "PostingDTO type: 'HOSP_DEPOSIT_REFUND'": 1,
-                    "PostingDTO type: 'HOSP_EPISODE_SETTLEMENT'": 1,
-                    "PostingDTO type: 'HOSP_MED_FRIDGE_BREACH_HOLD'": 1,
-                    "PostingDTO type: 'HOSP_SURGICAL_ESCROW_DEPOSIT'": 1
-                },
-                "modules/Hospital/Application/Services/MedicalTourismAndMembershipService.php": {
-                    "PostingDTO type: 'MEDICAL_TOURISM_ESCROW_DEPOSIT'": 1,
-                    "PostingDTO type: 'MEDICAL_TOURISM_FINAL_SETTLEMENT'": 1
-                },
-                "modules/Hospital/Application/Services/TelemedicineAndEPharmacyService.php": {
-                    "PostingDTO type: 'EPHARMACY_SALE'": 1
-                },
-                "modules/Hotel/Application/Services/HospitalityRevenueCommandService.php": {
-                    "PostingDTO type: 'HOTEL_SYNDICATION_YIELD_DISTRIBUTION'": 1
-                },
-                "modules/Hotel/Application/Services/HotelFolioAndPackageService.php": {
-                    "PostingDTO type: 'HTL_DESTINATION_PKG_SETTLE'": 1,
-                    "PostingDTO type: 'HTL_TIMESHARE_DIVIDEND'": 1
-                },
-                "modules/Hotel/Application/Services/HotelFranchiseAndBrandService.php": {
-                    "PostingDTO type: 'HOTEL_FRANCHISE_FEE_BILLING'": 1,
-                    "PostingDTO type: 'HOTEL_FRANCHISE_ROYALTY_BILLING'": 1,
-                    "PostingDTO type: 'HOTEL_RATE_PARITY_PENALTY_ACCRUAL'": 1
-                },
-                "modules/Hotel/Application/Services/HotelOperationsService.php": {
-                    "PostingDTO type: 'HOTEL_FOLIO_SETTLEMENT'": 1
-                },
-                "modules/Hotel/Application/Services/HotelTravelPassAndLoyaltyService.php": {
-                    "PostingDTO type: 'TRAVEL_PASS_PTS_EARNED'": 1,
-                    "PostingDTO type: 'TRAVEL_PASS_PTS_REDEEMED'": 1
-                },
-                "modules/Hotel/Application/Services/MiceAndWeddingSalesService.php": {
-                    "PostingDTO type: 'MICE_BANQUET_PRODUCTION_COST'": 1,
-                    "PostingDTO type: 'WEDDING_MILESTONE_PAYMENT'": 1
-                },
-                "modules/Hotel/Application/Services/TravelPlatformAndItineraryService.php": {
-                    "PostingDTO type: 'TRAVEL_BUNDLE_ESCROW_DEPOSIT'": 1,
-                    "PostingDTO type: 'TRAVEL_BUNDLE_FINAL_SETTLEMENT'": 1
-                },
-                "modules/Insurance/Application/Services/InsurTechClaimsService.php": {
-                    "PostingDTO type: 'insurance_claim_payout'": 1,
-                    "PostingDTO type: 'insurance_premium'": 1
-                },
-                "modules/Logistics/Application/Services/Autonomous/AutonomousLogisticsService.php": {
-                    "PostingDTO type: 'COLD_CHAIN_HOLD_RELEASED'": 1,
-                    "PostingDTO type: 'COLD_CHAIN_TEMP_BREACH_HOLD'": 1
-                },
-                "modules/Logistics/Application/Services/LogisticsLedger.php": {
-                    "PostingDTO type: $type->value": 1
-                },
-                "modules/Logistics/Application/Services/Reverse/ReverseLogisticsService.php": {
-                    "PostingDTO type: 'CIRCULAR_ECONOMY_INTAKE'": 1
-                },
-                "modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php": {
-                    "PostingDTO type: 'VMI_PURCHASE_COMMITMENT'": 1
-                },
-                "modules/Med/Application/Services/DistributionAndAdvertisingService.php": {
-                    "PostingDTO type: 'MEDIA_AD_CAMPAIGN_SETTLEMENT'": 1
-                },
-                "modules/Med/Application/Services/StudioAndContentProductionService.php": {
-                    "PostingDTO type: 'MEDIA_TALENT_ROYALTY_ACCRUAL'": 1
-                },
-                "modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php": {
-                    "PostingDTO type: 'MINING_ROYALTY_ACCRUAL'": 1
-                },
-                "modules/Mining/Application/Services/MiningEnvironmentalComplianceService.php": {
-                    "PostingDTO type: 'MINING_RECLAMATION_PROVISION_ACCRUAL'": 1,
-                    "PostingDTO type: 'MINING_RECLAMATION_PROVISION_RELEASE'": 1,
-                    "PostingDTO type: 'MINING_WATER_MONITORING_SETTLEMENT'": 1
-                },
-                "modules/Mining/Application/Services/MiningExportAndComplianceService.php": {
-                    "PostingDTO type: 'MINING_CIRCULAR_FLY_ASH_SALES'": 1,
-                    "PostingDTO type: 'MINING_VESSEL_DEMURRAGE_CLAIM'": 1
-                },
-                "modules/Mining/Application/Services/MiningGeotechAndBlastService.php": {
-                    "PostingDTO type: 'MINING_BARGE_FREIGHT_COST'": 1
-                },
-                "modules/Mining/Application/Services/MiningHseAndContractorService.php": {
-                    "PostingDTO type: 'MINING_CONTRACTOR_PENALTY'": 1
-                },
-                "modules/Mining/Application/Services/MiningRenewableAndCarbonService.php": {
-                    "PostingDTO type: 'MINING_GREEN_MINERAL_SETTLEMENT'": 1,
-                    "PostingDTO type: 'MINING_INTERCOMPANY_RENEWABLE_POWER'": 1
-                },
-                "modules/Mining/Application/Services/MiningSmelterAndMetalsTradingService.php": {
-                    "PostingDTO type: 'MINING_BYPRODUCT_SALES'": 1,
-                    "PostingDTO type: 'MINING_OFFTAKER_INVOICE'": 1
-                },
-                "modules/Proptech/Application/Services/BimTwinService.php": {
-                    "PostingDTO type: 'BIM_CAPITALIZE_CIP'": 1
-                },
-                "modules/Proptech/Application/Services/FlexSpaceService.php": {
-                    "PostingDTO type: 'FLEX_CAPTURE_REVENUE'": 1,
-                    "PostingDTO type: 'FLEX_DEPOSIT_HOLD'": 1,
-                    "PostingDTO type: 'FLEX_NO_SHOW_FEE'": 1
-                },
-                "modules/Proptech/Application/Services/ProptechService.php": {
-                    "PostingDTO type: 'PROPTECH_UTILITY_BILLING'": 1
-                },
-                "modules/Ret/Application/Services/FulfillmentAndQuickCommerceService.php": {
-                    "PostingDTO type: 'RETAIL_PACKAGING_DEPOSIT_RECEIPT'": 1,
-                    "PostingDTO type: 'RETAIL_PACKAGING_DEPOSIT_REFUND'": 1,
-                    "PostingDTO type: 'RETAIL_SLA_BREACH_COMPENSATION'": 1
-                },
-                "modules/Ret/Application/Services/OmnichannelRetailService.php": {
-                    "PostingDTO type: 'RETAIL_MARKETPLACE_SELLER_SETTLEMENT'": 1
-                },
-                "modules/Ret/Application/Services/SuperAppAndCashbackService.php": {
-                    "PostingDTO type: 'RETAIL_BILL_PAYMENT_COLLECTION'": 1,
-                    "PostingDTO type: 'RETAIL_BUNDLE_SUBSCRIPTION_BILLING'": 1,
-                    "PostingDTO type: 'RETAIL_CASHBACK_ISSUANCE'": 1
-                },
-                "modules/Rwa/Application/Services/RwaTokenService.php": {
-                    "PostingDTO type: 'rwa_dividend'": 1
-                },
-                "modules/Tlx/Application/Services/DataCenterAndCloudOpsService.php": {
-                    "PostingDTO type: 'TELECOM_CLOUD_COMPUTE_CHARGEBACK'": 1
-                },
-                "modules/Tlx/Application/Services/IspAndMobileServices.php": {
-                    "PostingDTO type: 'TELECOM_INTERCONNECT_SETTLEMENT'": 1
-                },
-                "modules/Tlx/Application/Services/TelecomNetworkAndIotService.php": {
-                    "PostingDTO type: 'TELECOM_IOT_CONNECTIVITY_BILLING'": 1
-                },
-                "modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php": {
-                    "PostingDTO type: 'TENDER_CONTRACT_AWARD'": 1
-                },
-                "modules/Trade/Application/Services/TradeService.php": {
-                    "PostingDTO type: 'TRADE_EXPORT_REVENUE'": 1
-                },
-                "modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php": {
-                    "PostingDTO type: 'CROSSBORDER_ESCROW_DEPOSIT'": 1,
-                    "PostingDTO type: 'CROSSBORDER_ESCROW_RELEASE'": 1
-                },
-                "modules/TradeFinance/Application/Services/TradeFinanceService.php": {
-                    "PostingDTO type: 'TF_LC_ISSUED'": 1
-                },
-                "modules/Treasury/Application/Services/TreasuryService.php": {
-                    "PostingDTO type: 'TREASURY_FX_TRANSFER'": 1
-                },
-                "modules/Vending/Application/Services/SmartVendingService.php": {
-                    "PostingDTO type: 'VENDING_SALE'": 1
-                },
-                "modules/Venue/Application/Services/VenueCreatorEconomyService.php": {
-                    "PostingDTO type: 'CREATOR_MERCH_SALE_SPLIT'": 1,
-                    "PostingDTO type: 'CREATOR_ROYALTY_PAYOUT_RELEASE'": 1,
-                    "PostingDTO type: 'CREATOR_STREAM_ROYALTY_ACCRUAL'": 1
-                },
-                "modules/Venue/Application/Services/VenueEconomyService.php": {
-                    "PostingDTO type: 'VENUE_ARTIST_SETTLEMENT'": 1,
-                    "PostingDTO type: 'VENUE_BUNDLE_SETTLEMENT'": 1
-                },
-                "modules/Venue/Application/Services/VenueOperationsService.php": {
-                    "PostingDTO type: 'VENUE_TABLE_NO_SHOW_FEE'": 1,
-                    "PostingDTO type: 'VENUE_TICKET_SALE'": 1,
-                    "PostingDTO type: 'VENUE_VIP_TABLE_ESCROW'": 1
-                },
-                "modules/Venue/Application/Services/VenueSecondaryMarketService.php": {
-                    "PostingDTO type: 'TICKET_SECONDARY_RESALE_SETTLEMENT'": 1
-                },
-                "modules/Wealth/Application/Services/RoboAdvisorService.php": {
-                    "PostingDTO type: 'wm_auto_invest'": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "A6": {
             "total": 132,
@@ -5306,2080 +4684,28 @@
             "entries": {}
         },
         "A8": {
-            "total": 3,
-            "entries": {
-                "modules/Core/Application/Services/SimClockService.php": {
-                    "Carbon::setTestNow": 3
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "A9": {
-            "total": 34,
-            "entries": {
-                "modules/Core/Application/Listeners/NotifyBookingCompleted.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1
-                },
-                "modules/Core/Application/Listeners/NotifyPaymentCaptured.php": {
-                    "use Modules\\Payment\\Domain\\Events\\PaymentCaptured": 1
-                },
-                "modules/Core/Application/Listeners/NotifyPaymentRefunded.php": {
-                    "use Modules\\Payment\\Domain\\Events\\PaymentRefunded": 1
-                },
-                "modules/Core/Application/Listeners/RecordBookingCompletedPassportEvent.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1
-                },
-                "modules/Core/Application/Services/TwelveLinesCommandCenterService.php": {
-                    "use Modules\\Banking\\Contracts\\Ledger": 1
-                },
-                "modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php": {
-                    "use Modules\\Banking\\Application\\DTOs\\PostingDTO": 1,
-                    "use Modules\\Banking\\Application\\DTOs\\PostingEntryDTO": 1,
-                    "use Modules\\Banking\\Contracts\\Ledger": 1,
-                    "use Modules\\Hotel\\Domain\\Models\\HotelFolio": 1
-                },
-                "modules/Core/Application/Services/TwelveLinesGoldenScenarioService.php": {
-                    "use Modules\\Banking\\Application\\DTOs\\PostingDTO": 1,
-                    "use Modules\\Banking\\Application\\DTOs\\PostingEntryDTO": 1,
-                    "use Modules\\Banking\\Contracts\\Ledger": 1
-                },
-                "modules/Core/Application/Services/UniversalCrossLineFintechService.php": {
-                    "use Modules\\Banking\\Application\\DTOs\\PostingDTO": 1,
-                    "use Modules\\Banking\\Application\\DTOs\\PostingEntryDTO": 1,
-                    "use Modules\\Banking\\Contracts\\Ledger": 1
-                },
-                "modules/Core/Console/Commands/TwelveLinesComprehensiveAuditCommand.php": {
-                    "use Modules\\Banking\\Domain\\Models\\LedgerAccount": 1,
-                    "use Modules\\Hotel\\Domain\\Models\\HotelProperty": 1,
-                    "use Modules\\Mining\\Domain\\Models\\MiningSite": 1,
-                    "use Modules\\Venue\\Domain\\Models\\EntertainmentVenue": 1
-                },
-                "modules/Core/CoreServiceProvider.php": {
-                    "use Modules\\AutoServe\\Domain\\Events\\BookingCompleted": 1,
-                    "use Modules\\Payment\\Domain\\Events\\PaymentCaptured": 1,
-                    "use Modules\\Payment\\Domain\\Events\\PaymentRefunded": 1
-                },
-                "modules/Core/Domain/Models/Vehicle.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1
-                },
-                "modules/Core/Http/Controllers/DashboardController.php": {
-                    "use Modules\\Store\\Domain\\Models\\Order": 1
-                },
-                "modules/Core/database/seeders/PlatformSeeder.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1
-                },
-                "modules/Shared/Application/Queries/GlobalSearchQuery.php": {
-                    "use Modules\\AutoDex\\Domain\\Models\\Car": 1,
-                    "use Modules\\AutoServe\\Domain\\Models\\Booking": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Lease": 1,
-                    "use Modules\\Mall\\Domain\\Models\\ParkingSession": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Tenant": 1,
-                    "use Modules\\Mall\\Domain\\Models\\Unit": 1,
-                    "use Modules\\Resto\\Domain\\Models\\MenuItem": 1,
-                    "use Modules\\Resto\\Domain\\Models\\Order": 1,
-                    "use Modules\\Store\\Domain\\Models\\StoreItem": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "A10": {
-            "total": 162,
-            "entries": {
-                "modules/Agri/Domain/Models/Ndvi/AgriFinancingInstallment.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/AgriSatelliteScan.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/GovProposal.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/GovVote.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/GovVoterWeight.php": {
-                    "$guarded = []": 1
-                },
-                "modules/ControlTower/Domain/Models/DemandForecast.php": {
-                    "$guarded = []": 1
-                },
-                "modules/ControlTower/Domain/Models/DisruptionAlert.php": {
-                    "$guarded = []": 1
-                },
-                "modules/ControlTower/Domain/Models/EchelonStock.php": {
-                    "$guarded = []": 1
-                },
-                "modules/ControlTower/Domain/Models/OrderPromise.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Core/Domain/Models/CoreAiDecisionSnapshot.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Core/Domain/Models/CoreAiGovernanceDriftLog.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Core/Domain/Models/CoreAutonomousOperation.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Edu/Domain/Models/EduCertificate.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Edu/Domain/Models/EduCohort.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Edu/Domain/Models/EduContingentContract.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Edu/Domain/Models/EduEnrollment.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Edu/Domain/Models/EduHeadhunterContract.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Edu/Domain/Models/EduInternalTransfer.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Edu/Domain/Models/EduJobOpening.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Edu/Domain/Models/EduProgram.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Edu/Domain/Models/EduTalentProfile.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/BackupGeneratorTest.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/BessArbitrageRun.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/CarbonCreditOrder.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/CbamCertificate.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/DistrictCoolingMeter.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/EscoPerformanceContract.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/GenerationAsset.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/GreenLeaseDiscount.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/GridNode.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/MeterReading.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/MicrogridController.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/MicrogridLoadPriority.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/PpaContract.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/RenewableEnergyCertificate.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/SmartMeter.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/UtilityConsolidatedInvoice.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Egy/Domain/Models/WaterDistribution.php": {
-                    "$guarded = []": 1
-                },
-                "modules/EnterpriseFinance/Domain/Models/ComplianceDeadline.php": {
-                    "$guarded = []": 1
-                },
-                "modules/EnterpriseFinance/Domain/Models/EfCapexProposal.php": {
-                    "$guarded = []": 1
-                },
-                "modules/EnterpriseFinance/Domain/Models/EfMaAcquisition.php": {
-                    "$guarded = []": 1
-                },
-                "modules/EnterpriseFinance/Domain/Models/EfSegmentFinancialReport.php": {
-                    "$guarded = []": 1
-                },
-                "modules/EnterpriseFinance/Domain/Models/EfSubholdingDividend.php": {
-                    "$guarded = []": 1
-                },
-                "modules/EnterpriseFinance/Domain/Models/EnterpriseBudget.php": {
-                    "$guarded = []": 1
-                },
-                "modules/EnterpriseFinance/Domain/Models/EnterpriseTaxSummary.php": {
-                    "$guarded = []": 1
-                },
-                "modules/EnterpriseFinance/Domain/Models/SodRule.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBounty.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBountyClaim.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBountyPof.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hospital/Domain/Models/BillingEpisode.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hospital/Domain/Models/Encounter.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hospital/Domain/Models/FolioItem.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hospital/Domain/Models/HospitalBed.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hospital/Domain/Models/HospitalOrder.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hospital/Domain/Models/MedFridgeBreach.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hospital/Domain/Models/Patient.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hospital/Domain/Models/Prescription.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Hospital/Domain/Models/VitalsTelemetry.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Integration/Domain/Models/ApiClient.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Integration/Domain/Models/EdiMessage.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Integration/Domain/Models/WebhookDelivery.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Integration/Domain/Models/WebhookSubscription.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Intercompany/Domain/Models/EliminationEntry.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Intercompany/Domain/Models/IntercompanyLoan.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Intercompany/Domain/Models/IntercompanyTransaction.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Intercompany/Domain/Models/SubsidiaryNci.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Intercompany/Domain/Models/TransferPricingRule.php": {
-                    "$guarded = []": 1
-                },
-                "modules/International/Domain/Models/ForeignEntity.php": {
-                    "$guarded = []": 1
-                },
-                "modules/International/Domain/Models/JointVenture.php": {
-                    "$guarded = []": 1
-                },
-                "modules/International/Domain/Models/OemContract.php": {
-                    "$guarded = []": 1
-                },
-                "modules/International/Domain/Models/TaxTreaty.php": {
-                    "$guarded = []": 1
-                },
-                "modules/International/Domain/Models/TechTransfer.php": {
-                    "$guarded = []": 1
-                },
-                "modules/International/Domain/Models/TechnologyLicense.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Logistics/Domain/Models/Autonomous/DroneMission.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Logistics/Domain/Models/Autonomous/DroneUnit.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Logistics/Domain/Models/Autonomous/TempBreachHold.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Logistics/Domain/Models/Reverse/ReverseItem.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Logistics/Domain/Models/Reverse/ReverseOrder.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Manufacturing/Domain/Models/C2m/C2mCustomOrder.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Manufacturing/Domain/Models/C2m/VmiReplenishment.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Med/Domain/Models/MedAdCampaign.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Med/Domain/Models/MedDistributionChannel.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Med/Domain/Models/MedIpAsset.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Med/Domain/Models/MedIpLicense.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Med/Domain/Models/MedProject.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Med/Domain/Models/MedSponsorshipPackage.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Med/Domain/Models/MedStudio.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Med/Domain/Models/MedStudioBooking.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Med/Domain/Models/MedTalentContract.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/AmdalComplianceMilestone.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/CarbonCreditIssuance.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/CargoQualityDispute.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/CircularFlyAshSale.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/ContractorSafetyEvaluation.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/ExportTerminalStockpile.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/FatigueLog.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/GreenMineralSale.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/LifeOfMineModel.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/MetalWarehouseReceipt.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/MetalsTradingPosition.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/OfftakerContract.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/ReclamationProvision.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/RenewableEnergyBilling.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/ResourceCommandSnapshot.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/RiskHeatmapAlert.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/SafetyIncident.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/SmelterRun.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/VesselVoyage.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Mining/Domain/Models/WaterMonitoringReading.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Pricing/Domain/Models/FrozenQuote.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Pricing/Domain/Models/PriceTick.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Proptech/Domain/Models/Bim/BimModel.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Proptech/Domain/Models/Bim/TwinComponent.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Proptech/Domain/Models/Bim/TwinIssue.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Proptech/Domain/Models/BuildingSensor.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Proptech/Domain/Models/BuildingZone.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Proptech/Domain/Models/Flex/FlexBooking.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Proptech/Domain/Models/Flex/FlexSpace.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Proptech/Domain/Models/HvacCommand.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Proptech/Domain/Models/ZoneUtilityBilling.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetBillPayment.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetBundleSubscription.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetCashbackTransaction.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetChannel.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetCouponRedemption.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetCrowdshippingTask.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetCustomerPrivacyProfile.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetFulfillmentSplit.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetInventoryItem.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetOrder.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetPackagingDeposit.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetQuickCommerceOrder.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetSellerSettlement.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Ret/Domain/Models/RetSubscriptionBundle.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/ChurnPrediction.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/CloudComputeInstance.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/ColocationContract.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/DrRestoreDrill.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/InterconnectSettlement.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/IotConnectivityInvoice.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/IotDevice.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/IspSubscription.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/NocNetworkTicket.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/SimSubscription.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/SmartCityService.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/TelecomDataCenter.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/TelecomLink.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Tlx/Domain/Models/TelecomSite.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Trade/Domain/Models/Bidding/BidRun.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Trade/Domain/Models/Bidding/BidSubmission.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Trade/Domain/Models/Bidding/BiddingAgent.php": {
-                    "$guarded = []": 1
-                },
-                "modules/TradeFinance/Domain/Models/CrossBorder/CbamCertificate.php": {
-                    "$guarded = []": 1
-                },
-                "modules/TradeFinance/Domain/Models/CrossBorder/CrossBorderEscrow.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Vending/Domain/Models/VendingDemandForecast.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Vending/Domain/Models/VendingRestockTask.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Vending/Domain/Models/VendingTransaction.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Vending/Domain/Models/VendingUnit.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Venue/Domain/Models/EntertainmentEvent.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Venue/Domain/Models/EntertainmentTableBooking.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Venue/Domain/Models/EntertainmentTicket.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Venue/Domain/Models/EntertainmentVenue.php": {
-                    "$guarded = []": 1
-                },
-                "modules/Venue/Domain/Models/EntertainmentZone.php": {
-                    "$guarded = []": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "A11": {
-            "total": 146,
-            "entries": {
-                "modules/Agri/AgriServiceProvider.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Application/Services/AgriService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Console/Commands/AuditAgriCommand.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Domain/Models/AgriColdChainLog.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Domain/Models/AgriCollectionBatch.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Domain/Models/AgriContract.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Domain/Models/AgriFarmer.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/AgriFinancingInstallment.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/AgriSatelliteScan.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/GovProposal.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/GovVote.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/GovVoterWeight.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/Http/Controllers/AgriController.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Agri/routes/web.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/B2b/Application/Services/B2bService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/B2b/B2bServiceProvider.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/B2b/Console/Commands/AuditB2bCommand.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/B2b/Domain/Models/B2bEscrowAccount.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/B2b/Domain/Models/B2bRfq.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/B2b/Domain/Models/SurplusAuction.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/B2b/Domain/Models/WholesaleCatalog.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/B2b/Http/Controllers/B2bController.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/B2b/routes/web.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Epc/Application/Services/EpcService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Epc/Console/Commands/AuditEpcCommand.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Epc/Domain/Models/EpcCipCapitalization.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Epc/Domain/Models/EpcProgressCertificate.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Epc/Domain/Models/EpcProject.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Epc/Domain/Models/EpcWbsNode.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Epc/EpcServiceProvider.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Epc/Http/Controllers/EpcController.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Epc/routes/web.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Esg/Application/Services/EsgService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Esg/Console/Commands/AuditEsgCommand.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Esg/Domain/Models/CarbonCredit.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Esg/Domain/Models/EsgEmission.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Esg/Domain/Models/OffsetRetirement.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Esg/Domain/Models/SupplierScore.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Esg/EsgServiceProvider.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Esg/Http/Controllers/EsgController.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Esg/routes/web.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hcm/Application/Services/Gig/InternalGigEconomyService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBounty.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBountyClaim.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBountyPof.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Application/Services/ClinicalTrialAndResearchService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Application/Services/HospitalBloodAndComplianceService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Application/Services/HospitalEmrAndBedService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Application/Services/HospitalGroupAnalyticsService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Application/Services/HospitalLabAndImagingService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Application/Services/HospitalPublicHealthAndBpjsService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Application/Services/HospitalRevenueCycleService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Application/Services/MedicalTourismAndMembershipService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Application/Services/TelemedicineAndEPharmacyService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/BillingEpisode.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/BloodBag.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/BpjsClaimBatch.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/BpjsClaimItem.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/ClinicalTrial.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/DataVaultAccess.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/EPharmacyOrder.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/Encounter.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/EpidemicSurveillance.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/EquipmentRoi.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/FolioItem.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/HealthCommandCenterForecast.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/HealthMembership.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/HospitalBed.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/HospitalGroupScorecard.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/HospitalOrder.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/ImagingStudy.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/LabCatalog.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/LabResult.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/LabSpecimen.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/MedFridgeBreach.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/MedicalEquipment.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/MedicalWasteManifest.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/Patient.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/PharmacyBranch.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/Prescription.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/TeleConsult.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/TourismPackage.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/TrialSite.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/TrialSubject.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/VitalsTelemetry.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/Domain/Models/WearableAdherence.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Hospital/HospitalServiceProvider.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Logistics/Application/Services/Autonomous/AutonomousLogisticsService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Logistics/Application/Services/Reverse/ReverseLogisticsService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Logistics/Domain/Models/Autonomous/DroneMission.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Logistics/Domain/Models/Autonomous/DroneUnit.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Logistics/Domain/Models/Autonomous/TempBreachHold.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Logistics/Domain/Models/Reverse/ReverseItem.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Logistics/Domain/Models/Reverse/ReverseOrder.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Manufacturing/Domain/Models/C2m/C2mCustomOrder.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Manufacturing/Domain/Models/C2m/VmiReplenishment.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Pricing/Domain/Models/FrozenQuote.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Pricing/Domain/Models/PriceTick.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Application/Services/BimTwinService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Application/Services/FlexSpaceService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Application/Services/ProptechService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Domain/Models/Bim/BimModel.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Domain/Models/Bim/TwinComponent.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Domain/Models/Bim/TwinIssue.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Domain/Models/BuildingSensor.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Domain/Models/BuildingZone.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Domain/Models/Flex/FlexBooking.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Domain/Models/Flex/FlexSpace.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Domain/Models/HvacCommand.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/Domain/Models/ZoneUtilityBilling.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Proptech/ProptechServiceProvider.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Trade/Domain/Models/Bidding/BidRun.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Trade/Domain/Models/Bidding/BidSubmission.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Trade/Domain/Models/Bidding/BiddingAgent.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/TradeFinance/Domain/Models/CrossBorder/CbamCertificate.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/TradeFinance/Domain/Models/CrossBorder/CrossBorderEscrow.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Vending/Application/Services/SmartVendingService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Vending/Domain/Models/VendingDemandForecast.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Vending/Domain/Models/VendingRestockTask.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Vending/Domain/Models/VendingTransaction.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Vending/Domain/Models/VendingUnit.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Vending/VendingServiceProvider.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Application/Services/VenueCreatorEconomyService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Application/Services/VenueCrowdAndBiometricService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Application/Services/VenueOperationsService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Application/Services/VenueSecondaryMarketService.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/BiometricCredential.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/ContentAsset.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/Creator.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/CrowdSafetyTelemetry.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/EntertainmentEvent.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/EntertainmentTableBooking.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/EntertainmentTicket.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/EntertainmentVenue.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/EntertainmentZone.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/MerchSale.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/PersonalizedPromo.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/RightsContract.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/TicketResale.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/Domain/Models/TicketWaitlist.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                },
-                "modules/Venue/VenueServiceProvider.php": {
-                    "declare(strict_types=1) tidak ada": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "A12": {
-            "total": 588,
-            "entries": {
-                "modules/Agency/database/migrations/2026_10_05_450100_create_agy_tables.php": {
-                    "agy_agents.owner_user_id": 1,
-                    "agy_agents.party_id": 1,
-                    "agy_attributions.reference_id": 1,
-                    "agy_commission_accruals.reference_id": 1,
-                    "agy_payouts.approval_id": 1,
-                    "agy_payouts.ledger_transaction_id": 1
-                },
-                "modules/Agency/database/migrations/2026_10_06_460100_create_agy_ecosystem_tables.php": {
-                    "agy_leads.converted_order_id": 1
-                },
-                "modules/Agri/database/migrations/2026_10_06_620100_create_agri_tables.php": {
-                    "agri_cold_chain_logs.reefer_truck_id": 1,
-                    "agri_collection_batches.collection_center_id": 1
-                },
-                "modules/Agri/database/migrations/2026_10_07_860100_create_ndvi_and_dao_tables.php": {
-                    "gov_voter_weights.voter_user_id": 1,
-                    "gov_votes.voter_user_id": 1
-                },
-                "modules/Asset/database/migrations/2026_10_04_300100_create_asset_core_tables.php": {
-                    "ast_assets.legal_entity_id": 1,
-                    "ast_locations.legal_entity_id": 1,
-                    "ast_stocktakes.approval_id": 1,
-                    "ast_stocktakes.cycle_id": 1
-                },
-                "modules/Asset/database/migrations/2026_10_04_310100_create_asset_phase31_tables.php": {
-                    "ast_depreciations.ledger_transaction_id": 1,
-                    "ast_leases.contract_id": 1,
-                    "ast_work_orders.ledger_transaction_id": 1
-                },
-                "modules/B2b/database/migrations/2026_10_06_610100_create_b2b_tables.php": {
-                    "b2b_auctions.asset_reference_id": 1,
-                    "b2b_auctions.seller_id": 1,
-                    "b2b_auctions.winning_bidder_id": 1,
-                    "b2b_escrow_accounts.bast_document_id": 1,
-                    "b2b_escrow_accounts.buyer_id": 1,
-                    "b2b_escrow_accounts.seller_id": 1,
-                    "b2b_rfqs.buyer_id": 1,
-                    "b2b_rfqs.vendor_id": 1,
-                    "b2b_wholesale_catalogs.vendor_id": 1
-                },
-                "modules/Contract/database/migrations/2026_10_04_280100_create_contract_core_tables.php": {
-                    "ctr_contracts.renewed_to_id": 1
-                },
-                "modules/Contract/database/migrations/2026_10_04_280200_create_contract_attachments_table.php": {
-                    "ctr_contract_attachments.document_id": 1
-                },
-                "modules/Contract/database/migrations/2026_10_04_290100_create_contract_finance_tables.php": {
-                    "ctr_contracts.linked_lease_id": 1,
-                    "ctr_contracts.linked_rate_card_id": 1
-                },
-                "modules/Core/database/migrations/2026_10_04_260601_add_correlation_and_impact_to_audit_logs.php": {
-                    "core_audit_logs.correlation_id": 1
-                },
-                "modules/Core/database/migrations/2026_10_07_670200_create_sim_event_spine_tables.php": {
-                    "sim_event_spine.event_id": 1
-                },
-                "modules/Core/database/migrations/2026_10_07_670400_create_sim_seeder_checkpoints_table.php": {
-                    "sim_seeder_checkpoints.last_processed_id": 1
-                },
-                "modules/Distribution/database/migrations/2026_10_05_420100_create_dist_tables.php": {
-                    "dist_distributors.owner_user_id": 1,
-                    "dist_distributors.party_id": 1
-                },
-                "modules/Distribution/database/migrations/2026_10_05_420101_add_approval_to_distributors.php": {
-                    "dist_distributors.approval_id": 1
-                },
-                "modules/Distribution/database/migrations/2026_10_05_430100_create_dist_fulfilment_tables.php": {
-                    "dist_consignment_sales.invoice_id": 1,
-                    "dist_consignment_stocks.product_id": 1,
-                    "dist_order_lines.product_id": 1,
-                    "dist_rebate_accruals.approval_id": 1,
-                    "dist_rebate_accruals.order_id": 1,
-                    "dist_returns.credit_note_invoice_id": 1,
-                    "dist_returns.order_id": 1,
-                    "dist_sellout_lines.product_id": 1,
-                    "dist_stock_levels.product_id": 1
-                },
-                "modules/Edu/database/migrations/2026_10_08_135100_create_edu_programs_and_certificates_tables.php": {
-                    "edu_certificates.enrollment_id": 1,
-                    "edu_certificates.program_id": 1,
-                    "edu_certificates.student_party_id": 1,
-                    "edu_cohorts.instructor_party_id": 1,
-                    "edu_cohorts.program_id": 1,
-                    "edu_enrollments.cohort_id": 1,
-                    "edu_enrollments.corporate_client_id": 1,
-                    "edu_enrollments.student_party_id": 1,
-                    "edu_programs.prerequisite_program_id": 1
-                },
-                "modules/Edu/database/migrations/2026_10_08_136100_create_edu_talent_pipeline_tables.php": {
-                    "edu_contingent_contracts.client_entity_id": 1,
-                    "edu_contingent_contracts.worker_id": 1,
-                    "edu_headhunter_contracts.candidate_id": 1,
-                    "edu_headhunter_contracts.headhunter_agency_id": 1,
-                    "edu_headhunter_contracts.hiring_entity_id": 1,
-                    "edu_internal_transfers.employee_id": 1,
-                    "edu_internal_transfers.from_entity_id": 1,
-                    "edu_internal_transfers.to_entity_id": 1,
-                    "edu_job_openings.hiring_entity_id": 1,
-                    "edu_talent_profiles.candidate_id": 1
-                },
-                "modules/Egy/database/migrations/2026_10_08_126100_create_egy_grid_and_metering_tables.php": {
-                    "egy_meter_readings.meter_id": 1,
-                    "egy_ppa_contracts.grid_offtaker_id": 1,
-                    "egy_ppa_contracts.ledger_transaction_id": 1,
-                    "egy_ppa_contracts.producer_entity_id": 1,
-                    "egy_smart_meters.grid_node_id": 1
-                },
-                "modules/Egy/database/migrations/2026_10_08_127100_create_egy_water_cooling_and_esco_tables.php": {
-                    "egy_district_cooling_meters.building_property_id": 1,
-                    "egy_esco_performance_contracts.client_property_id": 1,
-                    "egy_esco_performance_contracts.ledger_transaction_id": 1,
-                    "egy_utility_consolidated_invoices.ledger_transaction_id": 1,
-                    "egy_utility_consolidated_invoices.property_id": 1,
-                    "egy_water_distributions.consumer_property_id": 1
-                },
-                "modules/Egy/database/migrations/2026_10_08_128100_create_egy_carbon_rec_and_esg_tables.php": {
-                    "egy_carbon_credit_orders.buyer_entity_id": 1,
-                    "egy_carbon_credit_orders.ledger_transaction_id": 1,
-                    "egy_carbon_credit_orders.seller_entity_id": 1,
-                    "egy_cbam_certificates.billed_to_party_id": 1,
-                    "egy_cbam_certificates.container_id": 1,
-                    "egy_cbam_certificates.exporter_entity_id": 1,
-                    "egy_cbam_certificates.ledger_transaction_id": 1,
-                    "egy_green_lease_discounts.ledger_transaction_id": 1,
-                    "egy_green_lease_discounts.tenant_property_id": 1,
-                    "egy_renewable_energy_certificates.generation_asset_id": 1,
-                    "egy_renewable_energy_certificates.owner_entity_id": 1,
-                    "egy_renewable_energy_certificates.retired_by_property_id": 1
-                },
-                "modules/Egy/database/migrations/2026_10_08_129100_create_egy_microgrid_and_resilience_tables.php": {
-                    "egy_backup_generator_tests.generator_asset_id": 1,
-                    "egy_backup_generator_tests.property_id": 1,
-                    "egy_bess_arbitrage_runs.bess_asset_id": 1,
-                    "egy_bess_arbitrage_runs.ledger_transaction_id": 1,
-                    "egy_microgrid_load_priorities.microgrid_id": 1
-                },
-                "modules/EnterpriseFinance/database/migrations/2026_10_08_141100_create_ef_conglomerate_governance_tables.php": {
-                    "ef_subholding_dividends.subsidiary_entity_id": 1
-                },
-                "modules/Epc/database/migrations/2026_10_06_630100_create_epc_tables.php": {
-                    "epc_cip_capitalizations.created_asset_id": 1,
-                    "epc_projects.client_entity_id": 1
-                },
-                "modules/Esg/database/migrations/2026_10_06_600100_create_esg_tables.php": {
-                    "esg_emissions.entity_id": 1,
-                    "esg_offset_retirements.entity_id": 1,
-                    "esg_supplier_scores.supplier_id": 1
-                },
-                "modules/Fleet/database/migrations/2026_10_07_700100_create_oto_fleet_tables.php": {
-                    "oto_fleet_contracts.party_id": 1
-                },
-                "modules/Hcm/database/migrations/2026_10_06_580100_create_hcm_tables.php": {
-                    "hcm_departments.parent_id": 1,
-                    "hcm_employees.department_id": 1,
-                    "hcm_payrolls.employee_id": 1,
-                    "hcm_production_labor_allocations.payroll_id": 1
-                },
-                "modules/Hcm/database/migrations/2026_10_07_850100_create_bounty_gig_tables.php": {
-                    "gov_bounty_claims.employee_id": 1,
-                    "gov_bounty_pofs.supervisor_user_id": 1
-                },
-                "modules/Hospital/database/migrations/2026_10_07_870100_create_hsp_tables.php": {
-                    "hsp_beds.current_encounter_id": 1
-                },
-                "modules/Hospital/database/migrations/2026_10_07_880100_create_hsp_phase_88_tables.php": {
-                    "hsp_med_fridge_breaches.supplier_id": 1
-                },
-                "modules/Hospital/database/migrations/2026_10_08_104100_create_hsp_telemedicine_and_pharmacy_tables.php": {
-                    "hsp_epharmacy_orders.tele_consult_id": 1,
-                    "hsp_tele_consults.doctor_id": 1
-                },
-                "modules/Hospital/database/migrations/2026_10_08_105100_create_hsp_lab_and_imaging_tables.php": {
-                    "hsp_lab_specimens.encounter_id": 1
-                },
-                "modules/Hospital/database/migrations/2026_10_08_106100_create_hsp_trial_and_vault_tables.php": {
-                    "hsp_data_vault_accesses.researcher_id": 1
-                },
-                "modules/Hospital/database/migrations/2026_10_08_109100_create_hsp_blood_and_waste_tables.php": {
-                    "hsp_blood_bags.issued_to_encounter_id": 1,
-                    "hsp_blood_bags.reserved_for_encounter_id": 1,
-                    "hsp_medical_waste_manifests.certified_vendor_party_id": 1
-                },
-                "modules/Hotel/database/migrations/2026_10_07_910100_create_htl_hotel_tables.php": {
-                    "htl_folios.guest_user_id": 1,
-                    "htl_folios.reservation_id": 1,
-                    "htl_reservations.guest_user_id": 1,
-                    "htl_reservations.property_id": 1,
-                    "htl_reservations.room_id": 1,
-                    "htl_rooms.property_id": 1
-                },
-                "modules/Hotel/database/migrations/2026_10_07_920100_create_htl_folio_and_package_tables.php": {
-                    "htl_folio_items.folio_id": 1,
-                    "htl_timeshare_investors.investor_user_id": 1,
-                    "htl_timeshare_investors.timeshare_unit_id": 1,
-                    "htl_timeshare_units.property_id": 1
-                },
-                "modules/Hotel/database/migrations/2026_10_08_112100_create_htl_travel_pass_tables.php": {
-                    "htl_travel_passes.user_id": 1
-                },
-                "modules/Hotel/database/migrations/2026_10_08_113100_create_htl_travel_and_itinerary_tables.php": {
-                    "htl_corporate_travel_requests.corporate_party_id": 1,
-                    "htl_corporate_travel_requests.employee_id": 1,
-                    "htl_travel_bundles.user_id": 1
-                },
-                "modules/Hotel/database/migrations/2026_10_08_118100_create_htl_revenue_command_tables.php": {
-                    "htl_syndication_investors.investor_user_id": 1
-                },
-                "modules/Insurance/database/migrations/2026_10_07_720100_create_ins_tables.php": {
-                    "ins_claims.trigger_event_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_06_550100_create_intg_tables.php": {
-                    "intg_api_clients.client_id": 1,
-                    "intg_edi_messages.receiver_id": 1,
-                    "intg_edi_messages.sender_id": 1,
-                    "intg_webhook_deliveries.event_id": 1,
-                    "intg_webhook_subscriptions.partner_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_144001_create_security_wave2_tables.php": {
-                    "sec_consent_ledger.subject_id": 1,
-                    "sec_erasure_requests.subject_id": 1,
-                    "sec_pii_vault_records.subject_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_152001_create_cross_border_payroll_tables.php": {
-                    "gbl_expatriate_assignments.user_id": 1,
-                    "gbl_work_permits.user_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_156001_create_insurance_full_tables.php": {
-                    "ins_policies_penuh.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_159001_create_life_health_wellness_tables.php": {
-                    "ins_life_policies.insured_id": 1,
-                    "ins_wellness_activities.user_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_160001_create_takaful_agri_tables.php": {
-                    "tak_agri_contracts.farmer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_161001_create_syariah_banking_tables.php": {
-                    "syb_accounts.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_162001_create_sukuk_zakat_tables.php": {
-                    "syb_ijarah_contracts.customer_id": 1,
-                    "syb_zakat_calculations.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_163001_create_bmt_microfinance_tables.php": {
-                    "bmt_farmer_milestones.farmer_id": 1,
-                    "bmt_gig_microcredits.worker_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_164001_create_islamic_trade_finance_tables.php": {
-                    "syb_salam_contracts.farmer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_166001_create_campus_tables.php": {
-                    "camp_timetables.room_id": 1,
-                    "camp_timetables.teacher_id": 1,
-                    "camp_transcripts.student_id": 1,
-                    "camp_tuition_invoices.student_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_167001_create_learning_platform_tables.php": {
-                    "camp_credentials.learner_id": 1,
-                    "camp_offline_syncs.learner_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_168001_create_food_processing_tables.php": {
-                    "food_intake_lots.farmer_group_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_169001_create_food_brand_nutrition_tables.php": {
-                    "food_dietary_meal_orders.beneficiary_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_171001_create_aquaculture_export_tables.php": {
-                    "mar_blue_esg_credits.mangrove_restoration_polygon_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_175001_create_pro_services_tables.php": {
-                    "psv_consultant_access_grants.consultant_user_id": 1,
-                    "psv_proposals.consulting_firm_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_178001_create_airline_network_tables.php": {
-                    "avi_loyalty_miles_ledgers.member_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_179001_create_port_operations_tables.php": {
-                    "prt_yard_allocations.yard_block_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_182001_create_fashion_retail_tables.php": {
-                    "fsh_custom_tailorings.customer_id": 1,
-                    "fsh_textile_takebacks.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_188001_create_identity_tenancy_tables.php": {
-                    "idp_customer_identity_links.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_200001_create_ai_fraud_aml_tables.php": {
-                    "ai_fraud_mesh_cases.entity_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_203001_create_internal_control_sod_tables.php": {
-                    "erm_breakglass_logs.admin_user_id": 1,
-                    "erm_sod_conflict_checks.user_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_207001_create_regulatory_policy_tables.php": {
-                    "erm_policy_acknowledgments.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_219001_create_customer_crm_360_tables.php": {
-                    "crm_customer_consents.golden_id": 1,
-                    "crm_customer_golden_records.golden_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_220001_create_case_loyalty_tables.php": {
-                    "crm_cross_line_cases.customer_golden_id": 1,
-                    "crm_loyalty_point_ledgers.customer_golden_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_221001_create_subscription_billing_tables.php": {
-                    "crm_retention_playbooks.customer_golden_id": 1,
-                    "crm_subscription_invoices.customer_golden_id": 1,
-                    "crm_subscriptions.customer_golden_id": 1,
-                    "crm_winback_campaigns.customer_golden_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_222001_create_marketing_automation_tables.php": {
-                    "crm_campaign_dispatches.customer_golden_id": 1,
-                    "crm_conversion_attributions.customer_golden_id": 1,
-                    "crm_customer_communication_profiles.customer_golden_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_223001_create_org_design_workforce_tables.php": {
-                    "hcm_succession_plans.successor_golden_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_224001_create_compensation_benefits_tables.php": {
-                    "hcm_benefit_enrollments.employee_id": 1,
-                    "hcm_employee_compensations.employee_id": 1,
-                    "hcm_retroactive_adjustments.employee_id": 1,
-                    "hcm_variable_payouts.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_225001_create_talent_lifecycle_tables.php": {
-                    "hcm_employee_access_provisioning.employee_id": 1,
-                    "hcm_offboarding_checklists.employee_id": 1,
-                    "hcm_onboarding_tasks.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_226001_create_performance_engagement_tables.php": {
-                    "hcm_manager_effectiveness_scores.manager_id": 1,
-                    "hcm_people_analytics_metrics.employee_id": 1,
-                    "hcm_performance_reviews.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_227001_create_learning_skill_intelligence_tables.php": {
-                    "edu_course_enrollments.employee_id": 1,
-                    "edu_employee_certifications.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_229001_create_climate_decarbonization_tables.php": {
-                    "esg_climate_asset_risks.linked_insurance_policy_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_231001_create_board_governance_doa_tables.php": {
-                    "gov_conflict_of_interest_declarations.alternate_member_id": 1,
-                    "gov_conflict_of_interest_declarations.board_member_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_232001_create_whistleblowing_ethics_tables.php": {
-                    "gov_anti_retaliation_alerts.reporter_token_or_id": 1,
-                    "gov_ethics_sanctions.subject_person_id": 1,
-                    "gov_whistleblower_reports.fraud_mesh_case_id": 1,
-                    "gov_whistleblower_reports.primary_investigator_id": 1,
-                    "gov_whistleblower_reports.secondary_investigator_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_233001_create_ecosystem_dao_governance_tables.php": {
-                    "gov_dao_vote_delegations.delegate_golden_id": 1,
-                    "gov_dao_vote_delegations.delegator_golden_id": 1,
-                    "gov_dao_votes_ledger.voter_golden_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_236001_create_digital_product_experimentation_tables.php": {
-                    "ppm_experiment_variants.user_golden_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_237001_create_developer_experience_quality_tables.php": {
-                    "platform_dev_sandboxes.developer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_238001_create_release_train_deployment_safety_tables.php": {
-                    "platform_canary_rollouts.release_train_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_241001_create_data_governance_lineage_tables.php": {
-                    "data_governance_domains.steward_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_242001_create_realtime_stream_processing_tables.php": {
-                    "data_stream_consumer_checkpoints.consumer_id": 1,
-                    "data_stream_messages.event_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_244001_create_data_products_monetization_tables.php": {
-                    "data_clean_room_runs.party_a_id": 1,
-                    "data_clean_room_runs.party_b_id": 1,
-                    "data_sharing_agreements.contract_id": 1,
-                    "data_sharing_agreements.partner_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_245001_create_pricing_science_revenue_optimization_tables.php": {
-                    "pricing_change_proposals.policy_rule_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_246001_create_sales_force_excellence_pipeline_tables.php": {
-                    "sales_pipeline_deals.territory_id": 1,
-                    "sales_quotas_territories.assigned_rep_id": 1,
-                    "sales_territory_disputes.deal_id": 1,
-                    "sales_win_loss_analyses.deal_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_247001_create_kam_partnership_revenue_tables.php": {
-                    "kam_bundle_line_components.bundle_id": 1,
-                    "kam_multi_line_bundles.account_id": 1,
-                    "kam_partnership_referral_shares.partner_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_248001_create_tender_bid_management_tables.php": {
-                    "tender_bid_costs.tender_id": 1,
-                    "tender_post_award_mobilizations.tender_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_249001_create_cpq_order_to_cash_tables.php": {
-                    "cpq_invoices_and_cash.order_id": 1,
-                    "cpq_orders.client_id": 1,
-                    "cpq_orders.quote_id": 1,
-                    "cpq_quotes.client_id": 1,
-                    "cpq_revenue_schedules.order_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_250001_create_cx_metrics_voc_orchestration_tables.php": {
-                    "cx_personalization_interactions.customer_id": 1,
-                    "cx_voc_feedback.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_252001_create_end_to_end_finance_tables.php": {
-                    "finance_close_tasks.cycle_id": 1,
-                    "finance_close_tasks.dependency_task_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_253001_create_end_to_end_risk_tables.php": {
-                    "risk_assurance_coverage_maps.assurance_tester_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_254001_create_end_to_end_talent_tables.php": {
-                    "talent_unified_employee_journeys.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_255001_create_golden_scenario_mega_audit_tables.php": {
-                    "mega_crisis_recovery_records.sim_run_id": 1,
-                    "mega_simulation_domain_milestones.sim_run_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_256001_create_observability_slo_economy_tables.php": {
-                    "observability_partner_sla_reports.partner_id": 1,
-                    "observability_traces_correlated.trace_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_257001_create_eda_cqrs_saga_tables.php": {
-                    "eda_cqrs_projections.aggregate_id": 1,
-                    "eda_event_journal.aggregate_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_259001_create_enterprise_search_knowledge_graph_tables.php": {
-                    "kg_semantic_entities.entity_canonical_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_260001_create_partner_api_cosell_affiliate_tables.php": {
-                    "partner_affiliate_referrals.affiliate_id": 1,
-                    "partner_affiliate_referrals.buyer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_264001_create_fintech_insurtech_partner_tables.php": {
-                    "fintech_open_finance_consents.user_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_265001_create_academic_research_network_tables.php": {
-                    "academic_funding_tranches.project_id": 1,
-                    "academic_innovation_challenges.evaluator_1_id": 1,
-                    "academic_innovation_challenges.evaluator_2_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_266001_create_decision_intelligence_tables.php": {
-                    "decision_quality_scores.decision_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_270001_create_hitl_collaboration_workflows_tables.php": {
-                    "hitl_copilot_suggestions.reviewer_user_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_271001_create_digital_securities_capital_markets_tables.php": {
-                    "digital_securities_investors.investor_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_273001_create_financial_crime_sanctions_tables.php": {
-                    "fincrime_structuring_alerts.party_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_274001_create_corporate_tax_engine_tables.php": {
-                    "corporate_tax_provisions.approved_by_director_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_276001_create_operations_excellence_tables.php": {
-                    "operations_dmaic_projects.finance_auditor_id": 1,
-                    "operations_dmaic_projects.owner_lead_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_277001_create_planning_scheduling_unification_tables.php": {
-                    "operations_finite_schedules.resource_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_279001_create_warehouse_robotics_automation_tables.php": {
-                    "warehouse_picking_waves.assigned_robot_id": 1,
-                    "warehouse_zone_reservations.active_robot_id": 1,
-                    "warehouse_zone_reservations.zone_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_280001_create_hospitality_operations_playbook_tables.php": {
-                    "hospitality_shift_playbooks.assigned_worker_id": 1,
-                    "hospitality_worker_attestations.worker_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_281001_create_omnichannel_service_sla_tables.php": {
-                    "customer_support_cases.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_282001_create_community_ugc_social_commerce_tables.php": {
-                    "ugc_community_reviews.author_user_id": 1,
-                    "ugc_community_reviews.verified_order_id": 1,
-                    "ugc_social_live_orders.live_session_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_283001_create_coalition_loyalty_breakage_tables.php": {
-                    "loyalty_liability_ledgers.account_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_284001_create_sdm_org_health_culture_tables.php": {
-                    "sdm_culture_assessments.employee_id": 1,
-                    "sdm_culture_assessments.human_reviewer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_285001_create_sdm_wellness_occupational_health_tables.php": {
-                    "sdm_occupational_health_surveillances.worker_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_286001_create_esg_impact_audit_tables.php": {
-                    "esg_impact_verifications.verifier_agency_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_290001_create_enterprise_policy_engine_tables.php": {
-                    "gov_policy_breakglass_overrides.initiator_id": 1,
-                    "gov_policy_breakglass_overrides.secondary_approver_id": 1,
-                    "gov_policy_decisions.decision_trace_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_291001_create_governance_data_retention_tables.php": {
-                    "gov_ediscovery_exports.authorized_recipient_id": 1,
-                    "gov_legal_holds.legal_approver_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_292001_create_gov_trust_services_tables.php": {
-                    "gov_digital_signatures.signature_id": 1,
-                    "gov_digital_signatures.signer_identity_id": 1,
-                    "gov_verifiable_credentials.subject_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_293001_create_gov_internal_audit_tables.php": {
-                    "gov_external_auditor_access_logs.auditor_identity_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_294001_create_gov_ethics_ai_biometrics_tables.php": {
-                    "gov_biometric_identities.subject_identity_id": 1,
-                    "gov_child_safeguards.student_user_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_296001_create_platform_config_feature_flags_tables.php": {
-                    "platform_feature_flags.owner_lead_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_297001_create_platform_ops_runbooks_finops_tables.php": {
-                    "platform_automated_runbooks.approver_lead_id": 1,
-                    "platform_scheduled_jobs.owner_lead_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_300001_create_platform_release300_handover_tables.php": {
-                    "platform_release300_handover_signoffs.executive_architect_signoff_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_302001_create_supplier_collaborative_sourcing_tables.php": {
-                    "strategic_sourcing_reverse_auctions.awarded_supplier_id": 1,
-                    "supplier_co_development_programs.supplier_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_303001_create_cold_chain_high_value_logistics_tables.php": {
-                    "logistics_high_value_transits.primary_custody_agent_id": 1,
-                    "logistics_high_value_transits.secondary_custody_agent_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_305001_create_commercial_planning_rgm_tables.php": {
-                    "commercial_forecast_overrides.planner_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_306001_create_autonomous_field_fleet_tables.php": {
-                    "autonomous_fleet_interventions.remote_operator_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_310001_create_working_capital_scf_tables.php": {
-                    "working_capital_dynamic_discounts.supplier_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_313001_create_dynamic_marketplace_c2c_tables.php": {
-                    "c2c_marketplace_escrows.buyer_id": 1,
-                    "c2c_marketplace_escrows.seller_id": 1,
-                    "c2c_marketplace_listings.seller_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_314001_create_subscription_commerce_tables.php": {
-                    "subscription_replenishment_plans.subscriber_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_315001_create_super_app_mini_app_tables.php": {
-                    "super_app_mini_app_registry.partner_id": 1,
-                    "super_app_session_handoffs.user_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_317001_create_skills_economy_internal_mobility_tables.php": {
-                    "internal_talent_assignments.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_318001_create_leadership_pipeline_tables.php": {
-                    "leadership_succession_candidates.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_320001_create_total_wellbeing_sustainability_tables.php": {
-                    "workforce_burnout_risk_profiles.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_322001_create_global_payroll_close_tables.php": {
-                    "global_payroll_payment_exceptions.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_323001_create_safety_certified_access_tables.php": {
-                    "safety_certified_access_permits.worker_id": 1,
-                    "safety_stop_work_incidents.reporter_worker_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_324001_create_critical_leadership_coverage_tables.php": {
-                    "critical_acting_appointments.acting_candidate_id": 1,
-                    "critical_leadership_role_coverages.current_holder_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_327001_create_supply_chain_traceability_tables.php": {
-                    "responsible_sourcing_suppliers.supplier_id": 1,
-                    "traceable_supply_chain_origins.supplier_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_332001_create_green_procurement_lease_tables.php": {
-                    "green_lease_performance_incentives.tenant_id": 1,
-                    "green_procurement_rfq_evaluations.supplier_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_335001_create_community_value_procurement_tables.php": {
-                    "community_grievance_remediations.community_id": 1,
-                    "local_supplier_development_programs.local_supplier_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_337001_create_ethics_compliance_maturity_tables.php": {
-                    "third_party_vendor_ethics_cases.vendor_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_340001_create_business_ethics_anti_corruption_tables.php": {
-                    "commercial_intermediary_payments.agent_id": 1,
-                    "corporate_gifts_hospitality_registries.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_341001_create_privacy_engineering_tables.php": {
-                    "privacy_consent_revocation_events.subject_id": 1,
-                    "privacy_data_processing_proofs.subject_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_342001_create_data_value_cost_tables.php": {
-                    "data_product_query_cost_trackers.consumer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_344001_create_data_access_self_service_tables.php": {
-                    "domain_data_access_grants.user_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_347001_create_knowledge_grounding_citation_tables.php": {
-                    "knowledge_retrieval_citation_verifications.cited_document_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_350001_create_ai_human_accountability_tables.php": {
-                    "ai_decision_appeals.assigned_human_reviewer_id": 1,
-                    "ai_material_outcome_decisions.user_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_353001_create_customer_service_agentic_commerce_tables.php": {
-                    "agentic_commerce_refund_requests.customer_id": 1,
-                    "customer_service_agent_sessions.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_354001_create_federated_edge_ai_tables.php": {
-                    "edge_ai_inference_events.device_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_362001_create_enterprise_service_management_cmdb_tables.php": {
-                    "platform_cmdb_incident_correlations.correlation_id": 1,
-                    "platform_cmdb_incident_correlations.customer_issue_id": 1,
-                    "platform_cmdb_incident_correlations.technical_incident_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_363001_create_service_oncall_slo_governance_tables.php": {
-                    "platform_service_oncall_registries.oncall_rotation_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_372001_create_partner_api_economics_billing_tables.php": {
-                    "partner_api_billing_meterings.request_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_373001_create_marketplace_dispute_buyer_protection_tables.php": {
-                    "marketplace_dispute_cases.assigned_reviewer_id": 1,
-                    "marketplace_dispute_cases.buyer_id": 1,
-                    "marketplace_dispute_cases.neutral_alternate_reviewer_id": 1,
-                    "marketplace_dispute_cases.seller_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_374001_create_trust_safety_moderation_tables.php": {
-                    "trust_safety_moderation_actions.target_content_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_378001_create_customer_loyalty_subscription_tables.php": {
-                    "global_customer_cross_line_entitlements.customer_id": 1,
-                    "global_customer_cross_line_entitlements.primary_policy_rule_id": 1,
-                    "global_customer_intercompany_redemptions.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_379001_create_workforce_skills_operating_capacity_tables.php": {
-                    "global_operating_capacity_promises.facility_or_site_id": 1,
-                    "global_workforce_cross_line_deployments.worker_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_380001_create_sustainability_finance_data_tables.php": {
-                    "global_sustainability_evidence_claims.unique_evidence_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_382001_create_health_insurance_wellbeing_tables.php": {
-                    "global_health_insurance_referral_contracts.patient_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_384001_create_education_credential_authorization_tables.php": {
-                    "global_operational_task_assignments.handoff_to_worker_id": 1,
-                    "global_operational_task_assignments.worker_id": 1,
-                    "global_personnel_credential_authorizations.worker_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_385001_create_media_content_rights_tables.php": {
-                    "global_media_content_rights_licenses.media_asset_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_386001_create_mining_port_commodity_flow_tables.php": {
-                    "global_commodity_shipment_chains.commodity_lot_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_409001_create_service_orchestration_tables.php": {
-                    "ops_orchestration_bundles.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_411001_create_field_remote_operations_tables.php": {
-                    "ops_field_tasks.operator_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_412001_create_quality_assurance_inspection_tables.php": {
-                    "ops_quality_inspections.inspector_id": 1,
-                    "ops_quality_inspections.lot_or_unit_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_415001_create_workforce_labor_compliance_tables.php": {
-                    "ops_workforce_schedules.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_418001_create_service_recovery_remedies_tables.php": {
-                    "crm_service_recovery_remedies.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_419001_create_pricing_fairness_review_tables.php": {
-                    "crm_personalized_offers.customer_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_422001_create_compensation_governance_tables.php": {
-                    "hcm_merit_pay_reviews.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_423001_create_performance_rewards_tables.php": {
-                    "hcm_performance_goals.employee_id": 1,
-                    "hcm_talent_ratings.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_424001_create_learning_operations_tables.php": {
-                    "hcm_compliance_assignments.employee_id": 1,
-                    "hcm_learning_courses.instructor_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_425001_create_org_design_change_tables.php": {
-                    "hcm_restructuring_positions.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_431001_create_observability_slo_tables.php": {
-                    "plt_observability_alerts.ticket_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_441001_create_esg_operating_model_tables.php": {
-                    "esg_leadership_incentive_scorecards.executive_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_445001_create_biodiversity_land_use_tables.php": {
-                    "esg_biodiversity_land_plots.remediation_task_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_456001_create_enterprise_master_data_tables.php": {
-                    "int_master_data_propagations.golden_id": 1,
-                    "int_master_golden_records.golden_id": 1,
-                    "int_master_golden_records.merged_into_golden_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_09_457001_create_identity_access_zero_trust_tables.php": {
-                    "int_access_entitlements.user_id": 1,
-                    "int_privileged_access_sessions.user_id": 1
-                },
-                "modules/Logistics/database/migrations/2026_09_30_210001_create_lgx_shipments_and_packages_tables.php": {
-                    "lgx_shipments.invoice_id": 1,
-                    "lgx_shipments.quote_id": 1
-                },
-                "modules/Logistics/database/migrations/2026_10_02_240101_phase_24_cross_line_integration.php": {
-                    "lgx_dock_appointments.property_id": 1,
-                    "lgx_dock_appointments.shipment_id": 1,
-                    "lgx_dock_appointments.tenant_id": 1
-                },
-                "modules/Logistics/database/migrations/2026_10_07_790100_create_reverse_logistics_tables.php": {
-                    "lgx_reverse_orders.source_reference_id": 1
-                },
-                "modules/Logistics/database/migrations/2026_10_07_800100_create_autonomous_logistics_tables.php": {
-                    "lgx_temp_breach_holds.carrier_id": 1
-                },
-                "modules/Mall/database/migrations/2026_09_30_130001_create_mall_billing_tables.php": {
-                    "mall_overtime_requests.invoice_id": 1
-                },
-                "modules/Mall/database/migrations/2026_09_30_150001_create_mall_loyalty_voucher_event_facility_tables.php": {
-                    "mall_vouchers.settlement_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_350100_create_mfg_plants_and_materials.php": {
-                    "mfg_plants.legal_entity_id": 1,
-                    "mfg_work_centers.asset_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_350101_create_mfg_bom_routing_formula_tables.php": {
-                    "mfg_formulas.approval_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_350102_create_mfg_roster_and_resto_adapter_tables.php": {
-                    "mfg_resto_adapters.outlet_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_360100_create_mfg_planning_tables.php": {
-                    "mfg_planned_orders.production_order_id": 1,
-                    "mfg_planned_orders.superseded_by_run_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_370100_create_mfg_shopfloor_tables.php": {
-                    "mfg_downtime_logs.production_order_id": 1,
-                    "mfg_material_issues.lot_id": 1,
-                    "mfg_operation_reports.routing_operation_id": 1,
-                    "mfg_operation_reports.worker_id": 1,
-                    "mfg_production_orders.routing_id": 1,
-                    "mfg_rework_records.material_id": 1,
-                    "mfg_subcontract_receipts.supplier_id": 1,
-                    "mfg_wip_transfers.from_operation_id": 1,
-                    "mfg_wip_transfers.to_operation_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_380100_create_mfg_costing_tables.php": {
-                    "mfg_cost_versions.approval_id": 1,
-                    "mfg_variances.ledger_transaction_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_390100_create_mfg_qms_tables.php": {
-                    "mfg_inspections.gauge_id": 1,
-                    "mfg_inspections.lot_id": 1,
-                    "mfg_lot_sales.store_order_id": 1,
-                    "mfg_lot_sales.store_order_item_id": 1,
-                    "mfg_lot_sales.user_id": 1,
-                    "mfg_ncrs.inspection_id": 1,
-                    "mfg_ncrs.lot_id": 1,
-                    "mfg_ncrs.production_order_id": 1,
-                    "mfg_ncrs.supplier_id": 1,
-                    "mfg_recall_recipients.lot_sale_id": 1,
-                    "mfg_recall_recipients.store_order_id": 1,
-                    "mfg_recall_recipients.user_id": 1,
-                    "mfg_recalls.ncr_id": 1,
-                    "mfg_spc_samples.inspection_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_390101_add_approval_to_inspections.php": {
-                    "mfg_inspections.approval_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_400100_create_mfg_oee_maintenance_hse_tables.php": {
-                    "mfg_hse_incidents.worker_id": 1,
-                    "mfg_maintenance_orders.asset_id": 1,
-                    "mfg_sensor_readings.maintenance_order_id": 1,
-                    "mfg_work_permits.approval_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_07_820100_create_vmi_and_c2m_tables.php": {
-                    "mfg_c2m_custom_orders.user_id": 1,
-                    "mfg_vmi_replenishments.supplier_id": 1
-                },
-                "modules/Med/database/migrations/2026_10_08_133100_create_med_studios_and_ip_tables.php": {
-                    "med_ip_assets.owner_entity_id": 1,
-                    "med_ip_licenses.ip_id": 1,
-                    "med_ip_licenses.licensee_entity_id": 1,
-                    "med_studio_bookings.client_entity_id": 1,
-                    "med_studio_bookings.project_id": 1,
-                    "med_studio_bookings.studio_id": 1,
-                    "med_talent_contracts.project_id": 1,
-                    "med_talent_contracts.talent_party_id": 1
-                },
-                "modules/Med/database/migrations/2026_10_08_134100_create_med_distribution_and_ads_tables.php": {
-                    "med_ad_campaigns.advertiser_entity_id": 1,
-                    "med_ad_campaigns.agency_entity_id": 1,
-                    "med_ad_campaigns.channel_id": 1,
-                    "med_sponsorship_packages.sponsor_brand_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_07_930100_create_min_mining_tables.php": {
-                    "min_dispatch_runs.equipment_id": 1,
-                    "min_dispatch_runs.pit_id": 1,
-                    "min_dispatch_runs.site_id": 1,
-                    "min_equipment.site_id": 1,
-                    "min_pits.site_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_07_940100_create_min_weighbridge_and_royalty_tables.php": {
-                    "min_royalty_calculations.site_id": 1,
-                    "min_weighbridge_tickets.site_id": 1,
-                    "min_work_permits.site_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_120100_create_min_safety_and_contractor_tables.php": {
-                    "min_contractor_safety_evaluations.contractor_party_id": 1,
-                    "min_contractor_safety_evaluations.penalty_ledger_tx_id": 1,
-                    "min_fatigue_logs.equipment_id": 1,
-                    "min_fatigue_logs.operator_party_id": 1,
-                    "min_fatigue_logs.site_id": 1,
-                    "min_safety_incidents.reporter_party_id": 1,
-                    "min_safety_incidents.site_id": 1,
-                    "min_work_permits.allowed_pit_id": 1,
-                    "min_work_permits.worker_party_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_121100_create_min_smelter_and_metals_trading_tables.php": {
-                    "min_metal_warehouse_receipts.collateral_facility_id": 1,
-                    "min_metal_warehouse_receipts.warehouse_id": 1,
-                    "min_offtaker_contracts.buyer_party_id": 1,
-                    "min_offtaker_contracts.ledger_transaction_id": 1,
-                    "min_smelter_runs.site_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_122100_create_min_export_terminal_and_dispute_tables.php": {
-                    "min_cargo_quality_disputes.surveyor_party_id": 1,
-                    "min_cargo_quality_disputes.voyage_id": 1,
-                    "min_circular_fly_ash_sales.cement_buyer_party_id": 1,
-                    "min_circular_fly_ash_sales.ledger_transaction_id": 1,
-                    "min_vessel_voyages.buyer_party_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_123100_create_min_renewable_and_carbon_tables.php": {
-                    "min_carbon_credit_issuances.site_id": 1,
-                    "min_green_mineral_sales.buyer_party_id": 1,
-                    "min_green_mineral_sales.ledger_transaction_id": 1,
-                    "min_renewable_energy_billings.consumer_entity_id": 1,
-                    "min_renewable_energy_billings.ledger_transaction_id": 1,
-                    "min_renewable_energy_billings.producer_site_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_124100_create_min_reclamation_and_water_tables.php": {
-                    "min_amdal_compliance_milestones.site_id": 1,
-                    "min_reclamation_provisions.accrual_ledger_tx_id": 1,
-                    "min_reclamation_provisions.release_ledger_tx_id": 1,
-                    "min_reclamation_provisions.site_id": 1,
-                    "min_water_monitoring_readings.ledger_transaction_id": 1,
-                    "min_water_monitoring_readings.site_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_125100_create_min_resource_command_tables.php": {
-                    "min_life_of_mine_models.site_id": 1,
-                    "min_resource_command_snapshots.site_id": 1,
-                    "min_risk_heatmap_alerts.site_id": 1
-                },
-                "modules/Partner/database/migrations/2026_10_06_470100_create_ptn_tables.php": {
-                    "ptn_due_diligences.approval_id": 1,
-                    "ptn_partners.owner_user_id": 1,
-                    "ptn_partners.party_id": 1,
-                    "ptn_revenue_shares.ledger_transaction_id": 1
-                },
-                "modules/Party/database/migrations/2026_10_04_270100_create_party_core_tables.php": {
-                    "pty_parties.merged_into_id": 1
-                },
-                "modules/Party/database/migrations/2026_10_04_270200_create_party_kyc_sanctions_credit_tables.php": {
-                    "lgx_carriers.party_id": 1,
-                    "lgx_shipper_accounts.party_id": 1,
-                    "mall_tenants.party_id": 1,
-                    "pty_kyc_documents.approval_id": 1,
-                    "pty_merge_logs.source_party_id": 1,
-                    "pty_merge_logs.target_party_id": 1,
-                    "resto_suppliers.party_id": 1
-                },
-                "modules/Plm/database/migrations/2026_10_06_590100_create_plm_tables.php": {
-                    "plm_change_orders.ebom_id": 1,
-                    "plm_engineering_boms.project_id": 1,
-                    "plm_lab_notebooks.project_id": 1
-                },
-                "modules/Pricing/database/migrations/2026_10_05_440100_create_prc_pricing_tables.php": {
-                    "pric_price_locks.source_rule_id": 1,
-                    "pric_price_overrides.approval_id": 1,
-                    "pric_promotion_claims.approval_id": 1,
-                    "pric_promotion_claims.distributor_id": 1
-                },
-                "modules/Procurement/database/migrations/2026_10_05_330100_create_procurement_tables.php": {
-                    "prc_purchase_orders.blanket_po_id": 1,
-                    "prc_purchase_orders.contract_id": 1,
-                    "prc_purchase_orders.encumbrance_id": 1,
-                    "prc_purchase_orders.requisition_id": 1,
-                    "prc_purchase_orders.rfq_id": 1,
-                    "prc_purchase_orders.supplier_id": 1,
-                    "prc_purchase_orders.tender_id": 1,
-                    "prc_quotes.supplier_id": 1,
-                    "prc_requisition_lines.supplier_item_id": 1,
-                    "prc_requisitions.legal_entity_id": 1,
-                    "prc_rfq_invitations.supplier_id": 1,
-                    "prc_tender_bids.supplier_id": 1
-                },
-                "modules/Procurement/database/migrations/2026_10_05_340100_create_receiving_payables_tables.php": {
-                    "prc_ap_entries.invoice_id": 1,
-                    "prc_ap_entries.ledger_transaction_id": 1,
-                    "prc_credit_memos.invoice_id": 1,
-                    "prc_credit_memos.ledger_transaction_id": 1,
-                    "prc_inspections.receiving_line_id": 1,
-                    "prc_payment_items.invoice_id": 1,
-                    "prc_payment_items.ledger_transaction_id": 1,
-                    "prc_receiving_lines.po_line_id": 1,
-                    "prc_receiving_lines.product_id": 1,
-                    "prc_supplier_returns.ledger_transaction_id": 1,
-                    "prc_three_way_matches.grn_id": 1,
-                    "prc_three_way_matches.po_id": 1
-                },
-                "modules/Proptech/database/migrations/2026_10_07_760100_create_prp_tables.php": {
-                    "prp_zone_utility_billings.tenant_id": 1
-                },
-                "modules/Proptech/database/migrations/2026_10_07_770100_create_bim_tables.php": {
-                    "prp_twin_components.linked_asset_id": 1,
-                    "prp_twin_components.linked_sensor_id": 1,
-                    "prp_twin_issues.facility_work_order_id": 1
-                },
-                "modules/Proptech/database/migrations/2026_10_07_780100_create_flex_space_tables.php": {
-                    "prp_flex_bookings.user_id": 1
-                },
-                "modules/Ret/database/migrations/2026_10_08_137100_create_ret_omnichannel_tables.php": {
-                    "ret_coupon_redemptions.customer_id": 1,
-                    "ret_coupon_redemptions.order_id": 1,
-                    "ret_fulfillment_splits.facility_id": 1,
-                    "ret_fulfillment_splits.order_id": 1,
-                    "ret_orders.channel_id": 1,
-                    "ret_orders.customer_id": 1,
-                    "ret_seller_settlements.seller_party_id": 1
-                },
-                "modules/Ret/database/migrations/2026_10_08_138100_create_ret_superapp_and_cashback_tables.php": {
-                    "ret_bill_payments.customer_id": 1,
-                    "ret_bundle_subscriptions.bundle_id": 1,
-                    "ret_bundle_subscriptions.customer_id": 1,
-                    "ret_cashback_transactions.customer_id": 1,
-                    "ret_customer_privacy_profiles.customer_id": 1
-                },
-                "modules/Ret/database/migrations/2026_10_08_139100_create_ret_qcommerce_and_fulfillment_tables.php": {
-                    "ret_crowdshipping_tasks.crowd_driver_id": 1,
-                    "ret_packaging_deposits.customer_id": 1,
-                    "ret_quick_commerce_orders.customer_id": 1,
-                    "ret_quick_commerce_orders.dark_store_id": 1
-                },
-                "modules/Store/database/migrations/2026_09_29_030004_create_store_carts_and_orders_table.php": {
-                    "store_order_items.reservation_id": 1
-                },
-                "modules/Supplier/database/migrations/2026_10_04_320100_create_supplier_tables.php": {
-                    "sup_asns.purchase_order_id": 1,
-                    "sup_documents.document_id": 1,
-                    "sup_items.internal_product_id": 1
-                },
-                "modules/Supplier/database/migrations/2026_10_05_320101_add_contract_link_to_price_tiers.php": {
-                    "sup_price_tiers.contract_id": 1
-                },
-                "modules/Telematics/database/migrations/2026_10_07_680100_create_oto_telematics_tables.php": {
-                    "oto_telematics_baselines.vehicle_id": 1,
-                    "oto_telematics_devices.device_id": 1,
-                    "oto_telematics_ticks.device_id": 1,
-                    "oto_telematics_ticks.vehicle_id": 1
-                },
-                "modules/Tlx/database/migrations/2026_10_08_130100_create_tlx_network_and_iot_tables.php": {
-                    "tlx_iot_connectivity_invoices.ledger_transaction_id": 1,
-                    "tlx_iot_connectivity_invoices.owner_entity_id": 1,
-                    "tlx_iot_devices.owner_entity_id": 1,
-                    "tlx_links.dest_site_id": 1,
-                    "tlx_links.origin_site_id": 1,
-                    "tlx_noc_network_tickets.correlated_line_incident_id": 1,
-                    "tlx_noc_network_tickets.link_id": 1,
-                    "tlx_noc_network_tickets.site_id": 1
-                },
-                "modules/Tlx/database/migrations/2026_10_08_131100_create_tlx_dc_and_cloud_tables.php": {
-                    "tlx_cloud_compute_instances.consumer_entity_id": 1,
-                    "tlx_colocation_contracts.dc_id": 1,
-                    "tlx_colocation_contracts.tenant_party_id": 1
-                },
-                "modules/Tlx/database/migrations/2026_10_08_132100_create_tlx_isp_sim_and_smart_city_tables.php": {
-                    "tlx_isp_subscriptions.customer_id": 1,
-                    "tlx_sim_subscriptions.wallet_id": 1
-                },
-                "modules/Trade/database/migrations/2026_10_07_840100_create_bidding_agent_tables.php": {
-                    "trd_bid_submissions.approved_by_user_id": 1
-                },
-                "modules/TradeFinance/database/migrations/2026_10_07_830100_create_crossborder_escrow_tables.php": {
-                    "tf_crossborder_escrows.exporter_id": 1,
-                    "tf_crossborder_escrows.importer_id": 1
-                },
-                "modules/Treasury/database/migrations/2026_10_06_480100_create_trs_tables.php": {
-                    "trs_bank_statements.matched_ledger_tx_id": 1,
-                    "trs_revaluations.ledger_transaction_id": 1
-                },
-                "modules/Vending/database/migrations/2026_10_07_750100_create_ven_tables.php": {
-                    "ven_auto_pos.supplier_id": 1
-                },
-                "modules/Venue/database/migrations/2026_10_07_890100_create_ven_entertainment_tables.php": {
-                    "ven_entertainment_table_bookings.user_id": 1,
-                    "ven_entertainment_tickets.buyer_user_id": 1
-                },
-                "modules/Venue/database/migrations/2026_10_07_900100_create_ven_artist_and_festival_tables.php": {
-                    "ven_artist_contracts.event_id": 1,
-                    "ven_artist_contracts.venue_id": 1,
-                    "ven_bundle_orders.customer_user_id": 1,
-                    "ven_bundle_orders.festival_bundle_id": 1,
-                    "ven_memberships.user_id": 1
-                },
-                "modules/Venue/database/migrations/2026_10_08_115100_create_ven_creator_and_rights_tables.php": {
-                    "ven_creators.party_id": 1
-                },
-                "modules/Venue/database/migrations/2026_10_08_116100_create_ven_secondary_resale_tables.php": {
-                    "ven_ticket_resales.buyer_user_id": 1,
-                    "ven_ticket_resales.seller_user_id": 1,
-                    "ven_ticket_waitlists.user_id": 1
-                },
-                "modules/Venue/database/migrations/2026_10_08_117100_create_ven_biometric_and_crowd_tables.php": {
-                    "ven_biometric_credentials.user_id": 1,
-                    "ven_personalized_promos.user_id": 1,
-                    "ven_personalized_promos.zone_id": 1
-                },
-                "modules/Wms/database/migrations/2026_10_05_410100_create_wms_tables.php": {
-                    "wms_bin_stocks.product_id": 1,
-                    "wms_cycle_count_lines.product_id": 1,
-                    "wms_cycle_counts.approval_id": 1,
-                    "wms_packing_lists.appointment_id": 1,
-                    "wms_replenishments.product_id": 1,
-                    "wms_slottings.product_id": 1,
-                    "wms_slottings.suggested_zone_id": 1,
-                    "wms_tasks.product_id": 1,
-                    "wms_tasks.wave_id": 1,
-                    "wms_transfer_lines.product_id": 1,
-                    "wms_transfers.appointment_id": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "A13": {
-            "total": 15,
-            "entries": {
-                "modules/Agency/Http/Controllers/AgencyController.php": {
-                    "back()->errors()": 1
-                },
-                "modules/Distribution/Http/Controllers/DistributionController.php": {
-                    "back()->errors()": 7
-                },
-                "modules/Pricing/Http/Controllers/PricingController.php": {
-                    "back()->errors()": 7
-                }
-            }
+            "total": 0,
+            "entries": {}
         }
     },
     "approved_additions": [
@@ -7390,6 +4716,70 @@
             "path": "*",
             "signature": "baseline awal",
             "added": 7273
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Ev/database/seeders/EvDemoSeeder.php",
+            "signature": "use Modules\\Banking\\Domain\\Models\\LedgerAccount",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Ev/database/seeders/EvDemoSeeder.php",
+            "signature": "use Modules\\Core\\Domain\\Models\\Vehicle",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Fleet/database/seeders/FleetDemoSeeder.php",
+            "signature": "use Modules\\Banking\\Domain\\Models\\LedgerAccount",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Fleet/database/seeders/FleetDemoSeeder.php",
+            "signature": "use Modules\\Core\\Domain\\Models\\Vehicle",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Insurance/database/seeders/InsuranceDemoSeeder.php",
+            "signature": "use Modules\\Banking\\Domain\\Models\\LedgerAccount",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Rwa/database/seeders/RwaDemoSeeder.php",
+            "signature": "use Modules\\Banking\\Domain\\Models\\LedgerAccount",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Telematics/database/seeders/TelematicsDemoSeeder.php",
+            "signature": "use Modules\\Core\\Domain\\Models\\Vehicle",
+            "added": 1
+        },
+        {
+            "date": "2026-10-17",
+            "decision": "DECISIONS.md#2026-10-18-r7-vertical-slice-demo-seeders-cross-module-models",
+            "rule": "A1",
+            "path": "modules/Wealth/database/seeders/WealthDemoSeeder.php",
+            "signature": "use Modules\\Banking\\Domain\\Models\\LedgerAccount",
+            "added": 1
         }
     ]
 }

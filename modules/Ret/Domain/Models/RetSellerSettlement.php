@@ -14,7 +14,16 @@ class RetSellerSettlement extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'settlement_code',
+        'seller_party_id',
+        'verified_gmv_minor',
+        'commission_rate_pct',
+        'commission_fee_minor',
+        'net_payout_minor',
+        'status',
+    ];
 
     protected $casts = [
         'verified_gmv_minor' => 'integer',

@@ -86,16 +86,16 @@ class ActionConcurrencyRegressionTest extends TestCase
         $start = $payer->fresh()->walletBalance('IDR')->amount->toInt();
 
         // Partial refund harus seimbang (sebelumnya membalik seluruh split → UnbalancedTransactionException).
-        $gateway->refund($intent, Money::IDR(300000), 'sebagian', 'race_refund_1');
+        $gateway->refund($intent, 'race_refund_1', Money::IDR(300000), 'sebagian');
         $this->assertSame($start + 300000, $payer->fresh()->walletBalance('IDR')->amount->toInt());
 
         // Retry dengan key sama tidak menambah pengembalian.
-        $gateway->refund($intent->fresh(), Money::IDR(300000), 'sebagian', 'race_refund_1');
+        $gateway->refund($intent->fresh(), 'race_refund_1', Money::IDR(300000), 'sebagian');
         $this->assertSame($start + 300000, $payer->fresh()->walletBalance('IDR')->amount->toInt());
 
         // Mengembalikan melebihi sisa tangkapanan ditolak.
         $this->expectException(\InvalidArgumentException::class);
-        $gateway->refund($intent->fresh(), Money::IDR(800000), 'lebih', 'race_refund_over');
+        $gateway->refund($intent->fresh(), 'race_refund_over', Money::IDR(800000), 'lebih');
     }
 
     // ---------------------------------------------------------------

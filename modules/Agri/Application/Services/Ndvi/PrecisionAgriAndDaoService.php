@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Agri\Application\Services\Ndvi;
 
 use Carbon\Carbon;
@@ -42,7 +44,7 @@ class PrecisionAgriAndDaoService
         return AgriSatelliteScan::firstOrCreate(
             ['idempotency_key' => $key],
             [
-                'scan_code' => 'SCN-'.strtoupper(bin2hex(random_bytes(6))),
+                'scan_code' => 'SCN-'.strtoupper(substr(hash('sha256', "{$plotCode}:{$scanDate->toDateString()}"), 0, 12)),
                 'plot_code' => $plotCode,
                 'scan_date' => $scanDate->toDateString(),
                 'ndvi_score' => $ndviScore,
@@ -166,7 +168,7 @@ class PrecisionAgriAndDaoService
             }
 
             if ($locked->total_yes_weight > $locked->total_no_weight) {
-                $execRef = 'PRJ-AUTO-'.strtoupper(bin2hex(random_bytes(6)));
+                $execRef = 'PRJ-AUTO-'.strtoupper(substr(hash('sha256', "{$locked->proposal_code}:auto"), 0, 12));
                 $locked->update([
                     'status' => 'APPROVED',
                     'execution_reference_code' => $execRef,

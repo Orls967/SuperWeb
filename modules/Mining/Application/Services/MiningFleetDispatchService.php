@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Modules\Mining\Domain\Models\MiningDispatchRun;
 use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningPit;
+use Modules\Mining\Domain\Models\MiningSite;
 use RuntimeException;
 
 class MiningFleetDispatchService
@@ -87,5 +88,87 @@ class MiningFleetDispatchService
         $equipment->update(['status' => 'available']);
 
         return $run->fresh();
+    }
+
+    /**
+     * Two-source mining operations audit.
+     * Cross-checks equipment marked 'dispatched' vs dispatch runs marked 'in_progress'.
+     */
+    public function auditMining(): array
+    {
+        $siteCount = MiningSite::count();
+        $pitCount = MiningPit::count();
+        $equipmentCount = MiningEquipment::count();
+        $dispatchCount = MiningDispatchRun::count();
+        $discrepancies = 0;
+
+        // Two-source: equipment 'dispatched' must have an in_progress dispatch run
+        $dispatchedEquipment = MiningEquipment::where('status', 'dispatched')->get();
+        foreach ($dispatchedEquipment as $equip) {
+            $hasRun = MiningDispatchRun::where('equipment_id', $equip->id)
+                ->where('status', 'in_progress')
+                ->exists();
+            if (! $hasRun) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'site_count' => $siteCount,
+            'pit_count' => $pitCount,
+            'equipment_count' => $equipmentCount,
+            'dispatch_count' => $dispatchCount,
+            'discrepancies' => $discrepancies,
+        ];
+    }
+
+    /**
+     * Predictive maintenance trigger based on engine hours threshold.
+     * If engine hours exceed threshold and equipment is not already in maintenance, trigger work order once.
+     */
+    public function recordEngineHoursAndCheckMaintenance(string $equipmentId, int $additionalHours, int $thresholdHours = 1500): array
+    {
+        $equipment = MiningEquipment::findOrFail($equipmentId);
+        $equipment->increment('engine_hours', $additionalHours);
+        $currentHours = (int) $equipment->fresh()->engine_hours;
+
+        $triggered = false;
+        if ($currentHours >= $thresholdHours && $equipment->status !== 'maintenance') {
+            $equipment->update(['status' => 'maintenance']);
+            $triggered = true;
+        }
+
+        return [
+            'equipment_id' => $equipment->id,
+            'equipment_code' => $equipment->equipment_code,
+            'engine_hours' => $currentHours,
+            'maintenance_triggered' => $triggered,
+            'status' => $equipment->fresh()->status,
+        ];
+    }
+
+    /**
+     * Dispatch board summary within strict query budget (<= 2 queries).
+     */
+    public function getDispatchBoardSummary(string $siteId): array
+    {
+        $equipmentCounts = MiningEquipment::where('site_id', $siteId)
+            ->selectRaw('status, count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
+
+        $activeRunsCount = MiningDispatchRun::where('site_id', $siteId)
+            ->where('status', 'in_progress')
+            ->count();
+
+        return [
+            'site_id' => $siteId,
+            'available_equipment' => $equipmentCounts['available'] ?? 0,
+            'dispatched_equipment' => $equipmentCounts['dispatched'] ?? 0,
+            'maintenance_equipment' => $equipmentCounts['maintenance'] ?? 0,
+            'active_runs' => $activeRunsCount,
+        ];
     }
 }

@@ -18,5 +18,5 @@ interface PaymentGateway
 
     public function release(PaymentIntent $intent, ?string $idempotencyKey = null): PaymentIntent;
 
-    public function refund(PaymentIntent $intent, ?Money $refundAmount = null, string $reason = '', ?string $idempotencyKey = null): PaymentIntent;
+    public function refund(PaymentIntent $intent, string $refundId, ?Money $refundAmount = null, string $reason = '', ?string $idempotencyKey = null): PaymentIntent;
 }

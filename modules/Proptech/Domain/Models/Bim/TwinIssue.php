@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Proptech\Domain\Models\Bim;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +11,15 @@ class TwinIssue extends Model
 {
     protected $table = 'prp_twin_issues';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'issue_code',
+        'component_id',
+        'issue_type',
+        'severity',
+        'description',
+        'facility_work_order_id',
+        'status',
+    ];
 
     public function component(): BelongsTo
     {

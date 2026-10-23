@@ -54,7 +54,7 @@ class RevaluationService
                 title: ucfirst($kind)." Aset {$asset->asset_number} (".number_format($oldValue).' → '.number_format($newValueIdr).')',
                 creator: $creator,
                 approvable: $asset,
-                amount: (float) abs($newValueIdr - $oldValue),
+                amount: (int) abs($newValueIdr - $oldValue),
                 steps: [['role' => 'asset_manager'], ['role' => 'admin']],
                 slaHours: 72,
                 metadata: ['asset_number' => $asset->asset_number, 'old_value' => $oldValue, 'new_value' => $newValueIdr],
@@ -139,7 +139,7 @@ class RevaluationService
                 title: "Disposal Aset {$asset->asset_number} ({$method->label()}) — laba/rugi ".number_format($gainLoss),
                 creator: $creator,
                 approvable: $asset,
-                amount: (float) $proceedsIdr,
+                amount: (int) $proceedsIdr,
                 steps: [['role' => 'asset_manager'], ['role' => 'admin']],
                 slaHours: 72,
                 metadata: [

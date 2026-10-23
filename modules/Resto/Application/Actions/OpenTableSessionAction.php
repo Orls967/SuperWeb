@@ -61,7 +61,7 @@ class OpenTableSessionAction
                 'grand_total' => 0,
                 'payment_method' => null,
                 'status' => OrderStatus::OPEN,
-                'idempotency_key' => "pos_order_{$session->id}_".Str::uuid(),
+                'idempotency_key' => "resto:order:session:{$session->id}",
                 'client_created_at' => now(),
             ]);
 

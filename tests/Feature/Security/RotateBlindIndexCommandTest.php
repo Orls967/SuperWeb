@@ -30,6 +30,10 @@ class RotateBlindIndexCommandTest extends TestCase
             'employee_number' => 'EMP-ROT-001',
             'name' => 'John Doe',
             'nik' => $nik,
+            'basic_salary_idr' => 7000000,
+            'allowances_idr' => 1500000,
+            'bank_name' => 'Bank Mandiri',
+            'bank_account_number' => '1230009876542',
         ]);
 
         // Manually set old pepper index
@@ -61,6 +65,10 @@ class RotateBlindIndexCommandTest extends TestCase
             'employee_number' => 'EMP-ROT-002',
             'name' => 'Jane Doe',
             'nik' => $nik,
+            'basic_salary_idr' => 7000000,
+            'allowances_idr' => 1500000,
+            'bank_name' => 'Bank Mandiri',
+            'bank_account_number' => '1230009876543',
         ]);
 
         // Manually set old pepper index

@@ -82,7 +82,7 @@ class OmnichannelRetailService
 
             // Balanced multi-party posting (Sum = 0)
             $this->ledgerService->post(new PostingDTO(
-                type: 'RETAIL_MARKETPLACE_SELLER_SETTLEMENT',
+                type: 'RETAIL_MKTPLACE_SELLER_SETTLE',
                 description: "Marketplace settlement for seller {$sellerPartyId} batch {$batchCode}",
                 idempotencyKey: 'RET-'.$batchCode,
                 entries: Posting::lines()

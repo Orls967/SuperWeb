@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Proptech\Domain\Models\Flex;
 
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +13,16 @@ class FlexSpace extends Model
 {
     protected $table = 'prp_flex_spaces';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'space_code',
+        'name',
+        'space_type',
+        'zone_id',
+        'capacity_persons',
+        'rate_per_hour_idr',
+        'area_sqm',
+        'status',
+    ];
 
     public function zone(): BelongsTo
     {

@@ -15,8 +15,12 @@ final readonly class PostingEntryDTO
         public ?int $accountId,
         public ?string $accountCode,
         public string $assetCode,
-        BigDecimal|string|int|float|Money $amount,
+        BigDecimal|string|int|Money $amount,
     ) {
+        if (is_float($amount)) {
+            throw new \InvalidArgumentException('Nominal posting entry tidak boleh bertipe float; gunakan int, string, BigDecimal, atau Money.');
+        }
+
         if ($amount instanceof Money) {
             $this->amount = $amount->amount;
         } elseif ($amount instanceof BigDecimal) {
@@ -26,7 +30,7 @@ final readonly class PostingEntryDTO
         }
     }
 
-    public static function forAccount(int $accountId, string $assetCode, BigDecimal|string|int|float|Money $amount): self
+    public static function forAccount(int $accountId, string $assetCode, BigDecimal|string|int|Money $amount): self
     {
         return new self(
             accountId: $accountId,
@@ -36,7 +40,7 @@ final readonly class PostingEntryDTO
         );
     }
 
-    public static function forCode(string $accountCode, string $assetCode, BigDecimal|string|int|float|Money $amount): self
+    public static function forCode(string $accountCode, string $assetCode, BigDecimal|string|int|Money $amount): self
     {
         return new self(
             accountId: null,

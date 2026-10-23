@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Vending\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +11,17 @@ class VendingUnit extends Model
 {
     protected $table = 'ven_vending_units';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'unit_code',
+        'location_name',
+        'status',
+        'current_stock',
+        'critical_threshold',
+        'max_capacity',
+        'total_sales_count',
+        'total_sales_idr',
+        'sensor_status',
+    ];
 
     protected $casts = [
         'sensor_status' => 'array',

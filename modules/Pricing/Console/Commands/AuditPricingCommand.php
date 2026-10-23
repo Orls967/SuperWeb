@@ -8,15 +8,14 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 /**
- * 44.8 Audit pricing: price lock immutable (tanpa edit), klaim promo
- * ≤ anggaran, override tidak bocor ke harga aktif tanpa persetujuan,
- * price list tanpa overlap aktif.
+ * 44.8 & 81.7 Audit pricing: price lock immutable, klaim promo ≤ anggaran,
+ * override persetujuan, price list overlap, dokumen order quote freeze & guardrail (0 selisih).
  */
 class AuditPricingCommand extends Command
 {
     protected $signature = 'pricing:audit';
 
-    protected $description = 'Audit pricing: lock harga, anggaran promo, override, overlap (0 selisih)';
+    protected $description = 'Audit pricing: lock harga, anggaran promo, override, overlap, dan guardrail quote (0 selisih)';
 
     public function handle(): int
     {
@@ -81,6 +80,30 @@ class AuditPricingCommand extends Command
             $issues++;
         }
 
+        // 6. Converted quote tanpa referensi dokumen order (Fase 81.4 / 81.7).
+        $unlinkedConvertedQuotes = DB::table('prc_frozen_quotes')
+            ->where('status', 'CONVERTED')
+            ->where(function ($query) {
+                $query->whereNull('order_ref')->orWhere('order_ref', '');
+            })
+            ->count();
+        if ($unlinkedConvertedQuotes > 0) {
+            $rows[] = ['quote.converted_no_order_ref', '0', (string) $unlinkedConvertedQuotes, (string) $unlinkedConvertedQuotes, 'SELISIH'];
+            $issues++;
+        }
+
+        // 7. Frozen quote melanggar batas guardrail floor/ceiling (Fase 81.3 / 81.7).
+        $guardrailBreaches = DB::table('prc_frozen_quotes')
+            ->where(function ($query) {
+                $query->whereColumn('frozen_price_idr', '<', 'floor_price_idr')
+                    ->orWhereColumn('frozen_price_idr', '>', 'ceiling_price_idr');
+            })
+            ->count();
+        if ($guardrailBreaches > 0) {
+            $rows[] = ['quote.guardrail_breach', '0', (string) $guardrailBreaches, (string) $guardrailBreaches, 'SELISIH'];
+            $issues++;
+        }
+
         $this->table(
             ['Sumber', 'Seharusnya', 'Aktual', 'Selisih', 'Status'],
             $rows === [] ? [['—', '0', '0', '0', 'OK']] : $rows
@@ -92,7 +115,7 @@ class AuditPricingCommand extends Command
             return self::FAILURE;
         }
 
-        $this->info('✓ pricing:audit selesai: lock harga, anggaran promo, override, overlap konsisten.');
+        $this->info('✓ pricing:audit selesai: lock harga, anggaran promo, override, overlap, dan guardrail quote konsisten.');
 
         return self::SUCCESS;
     }

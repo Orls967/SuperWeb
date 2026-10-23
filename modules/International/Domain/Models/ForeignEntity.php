@@ -11,7 +11,18 @@ class ForeignEntity extends Model
 {
     protected $table = 'intl_foreign_entities';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'entity_code',
+        'legal_name',
+        'jurisdiction_country',
+        'registration_number',
+        'functional_currency',
+        'arbitration_jurisdiction',
+        'has_apostille',
+        'aml_screened',
+        'tax_residence_country',
+        'status',
+    ];
 
     protected $casts = [
         'has_apostille' => 'boolean',

@@ -14,7 +14,15 @@ class GridNode extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'node_code',
+        'name',
+        'substation_region',
+        'nominal_voltage_kv',
+        'current_load_mw',
+        'peak_capacity_mw',
+    ];
 
     protected $casts = [
         'nominal_voltage_kv' => 'float',

@@ -10,7 +10,14 @@ class ComplianceDeadline extends Model
 {
     protected $table = 'ef_compliance_deadlines';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'item_code',
+        'title',
+        'regulatory_body',
+        'due_date',
+        'assigned_role',
+        'status',
+    ];
 
     protected $casts = [
         'due_date' => 'date',

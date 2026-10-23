@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Modules\Payment;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Modules\Payment\Application\Listeners\NotifyPaymentCaptured;
+use Modules\Payment\Application\Listeners\NotifyPaymentRefunded;
 use Modules\Payment\Application\Services\PaymentGatewayService;
 use Modules\Payment\Console\Commands\ReleaseExpiredHoldsCommand;
 use Modules\Payment\Contracts\PaymentGateway;
+use Modules\Payment\Domain\Events\PaymentCaptured;
+use Modules\Payment\Domain\Events\PaymentRefunded;
 
 class PaymentServiceProvider extends ServiceProvider
 {
@@ -27,5 +32,8 @@ class PaymentServiceProvider extends ServiceProvider
                 ReleaseExpiredHoldsCommand::class,
             ]);
         }
+
+        Event::listen(PaymentCaptured::class, NotifyPaymentCaptured::class);
+        Event::listen(PaymentRefunded::class, NotifyPaymentRefunded::class);
     }
 }

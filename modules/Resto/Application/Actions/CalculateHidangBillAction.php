@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Resto\Application\Actions;
 
-use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
@@ -24,6 +22,7 @@ use Modules\Resto\Domain\Models\DisplayTray;
 use Modules\Resto\Domain\Models\Order;
 use Modules\Resto\Domain\Models\OrderItem;
 use Modules\Resto\Domain\Models\TableSession;
+use Modules\Shared\Support\Posting;
 
 class CalculateHidangBillAction
 {
@@ -53,10 +52,19 @@ class CalculateHidangBillAction
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            $totalCogs = 0;
+            $outlet = $order->outlet;
+            $outletCode = $outlet?->code ?: "OUT-{$order->outlet_id}";
+            $invAccCode = "inventory:resto:{$outletCode}:IDR";
+            $cogsAccCode = 'expense:resto:cogs:IDR';
+
             $items = OrderItem::where('order_id', $order->id)->lockForUpdate()->get();
 
             foreach ($items as $item) {
+                // If item has already been decided (consumed or returned), skip reprocessing to guarantee idempotency
+                if ($item->consumed_state === ConsumedState::CONSUMED || $item->consumed_state === ConsumedState::RETURNED) {
+                    continue;
+                }
+
                 if ($item->source === ItemSource::HIDANG) {
                     $val = $consumedStatuses[$item->id] ?? null;
                     $isConsumed = ($val === true || $val === 'consumed' || $val === '1' || $val === 1);
@@ -76,7 +84,25 @@ class CalculateHidangBillAction
                                 $tray->save();
 
                                 $itemCogs = ($item->cogs_snapshot ?: $tray->cost_per_portion) * $item->qty;
-                                $totalCogs += $itemCogs;
+                                if ($itemCogs > 0) {
+                                    $this->ensureLedgerAccountExists($invAccCode, "Persediaan Resto {$outlet?->name}", AccountKind::INVENTORY);
+                                    $this->ensureLedgerAccountExists($cogsAccCode, 'Beban Pokok Penjualan (HPP) Resto', AccountKind::EXPENSE);
+
+                                    $entries = Posting::lines()
+                                        ->debit($cogsAccCode, $itemCogs)
+                                        ->credit($invAccCode, $itemCogs)
+                                        ->toEntries('IDR');
+
+                                    $this->ledger->post(new PostingDTO(
+                                        type: TransactionType::PRODUCTION->value,
+                                        description: "HPP porsi terjual hidang pesanan {$order->number} item #{$item->id}",
+                                        idempotencyKey: "resto:order:{$order->id}:item:{$item->id}:cogs",
+                                        entries: $entries,
+                                        referenceType: 'resto_order_item',
+                                        referenceId: $item->id,
+                                        createdBy: $userId
+                                    ));
+                                }
                             }
                         }
                     } else {
@@ -103,32 +129,6 @@ class CalculateHidangBillAction
                 }
             }
 
-            // Post total COGS to ledger
-            if ($totalCogs > 0) {
-                $outlet = $order->outlet;
-                $outletCode = $outlet?->code ?: "OUT-{$order->outlet_id}";
-                $invAccCode = "inventory:resto:{$outletCode}:IDR";
-                $cogsAccCode = 'expense:resto:cogs:IDR';
-
-                $this->ensureLedgerAccountExists($invAccCode, "Persediaan Resto {$outlet?->name}", AccountKind::INVENTORY);
-                $this->ensureLedgerAccountExists($cogsAccCode, 'Beban Pokok Penjualan (HPP) Resto', AccountKind::EXPENSE);
-
-                $cogsBd = BigDecimal::of($totalCogs);
-
-                $this->ledger->post(new PostingDTO(
-                    type: TransactionType::PRODUCTION->value,
-                    description: "HPP porsi terjual hidang pesanan {$order->number}",
-                    idempotencyKey: "resto:order:cogs:{$order->id}:".Str::uuid(),
-                    entries: [
-                        PostingEntryDTO::forCode($invAccCode, 'IDR', $cogsBd->negated()),
-                        PostingEntryDTO::forCode($cogsAccCode, 'IDR', $cogsBd),
-                    ],
-                    referenceType: 'resto_order',
-                    referenceId: $order->id,
-                    createdBy: $userId
-                ));
-            }
-
             // Calculate Subtotal from consumed items
             $subtotal = (int) OrderItem::where('order_id', $order->id)
                 ->where('consumed_state', ConsumedState::CONSUMED)
@@ -137,13 +137,13 @@ class CalculateHidangBillAction
             $actualDiscount = min($discount, $subtotal);
             $afterDiscount = max(0, $subtotal - $actualDiscount);
 
-            // PB1 is 10%
-            $taxPb1 = (int) round($afterDiscount * 0.10);
+            // PB1 is 10% (integer half-up arithmetic: intdiv($amount * 10 + 50, 100))
+            $taxPb1 = intdiv($afterDiscount * 10 + 50, 100);
             $serviceCharge = 0;
 
             $preRounding = $afterDiscount + $taxPb1 + $serviceCharge;
-            // Round to nearest Rp100
-            $grandTotal = (int) (round($preRounding / 100) * 100);
+            // Round to nearest Rp100 via pure integer arithmetic
+            $grandTotal = intdiv($preRounding + 50, 100) * 100;
             $rounding = $grandTotal - $preRounding;
 
             $order->subtotal = $subtotal;

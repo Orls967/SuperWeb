@@ -6,6 +6,7 @@ namespace Modules\Integration\tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Modules\Integration\Application\Services\IntegrationService;
 use Tests\TestCase;
 
@@ -23,6 +24,10 @@ class IntegrationTest extends TestCase
 
     public function test_55_2_webhook_subscription_and_hmac_dispatch(): void
     {
+        Http::fake([
+            'https://api.bosch.test/*' => Http::response(['status' => 'ok'], 200),
+        ]);
+
         $sub = $this->integrationService->registerWebhook(
             partnerId: 'PTN-BOSCH-01',
             eventType: 'shipment.delivered',

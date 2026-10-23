@@ -11,6 +11,7 @@ use App\Quality\Support\NameReferences;
 use App\Quality\Support\SourceFile;
 use App\Quality\Support\Tokens;
 use BackedEnum;
+use Modules\Banking\Application\Registry\TransactionTypeRegistry;
 use Modules\Banking\Domain\Enums\TransactionType;
 use PhpToken;
 
@@ -31,9 +32,10 @@ final class LedgerTransactionTypeRule implements Rule
      */
     public function __construct(?array $registeredTypes = null)
     {
-        $this->registeredTypes = $registeredTypes ?? array_map(
-            static fn (TransactionType $type): string => $type->value,
-            TransactionType::cases(),
+        $this->registeredTypes = $registeredTypes ?? (
+            class_exists(TransactionTypeRegistry::class)
+                ? TransactionTypeRegistry::all()
+                : array_map(static fn (TransactionType $type): string => $type->value, TransactionType::cases())
         );
     }
 
@@ -133,12 +135,24 @@ final class LedgerTransactionTypeRule implements Rule
 
         $isEnumValue = $end - $start === 5
             && Tokens::isNameToken($tokens[$start])
-            && str_ends_with(Tokens::shortName($tokens[$start]), 'TransactionType')
+            && (str_ends_with(Tokens::shortName($tokens[$start]), 'TransactionType') || str_ends_with(Tokens::shortName($tokens[$start]), 'TransactionTypes'))
             && $tokens[$start + 1]->is(T_DOUBLE_COLON)
             && $tokens[$start + 3]->is(T_OBJECT_OPERATOR)
             && $tokens[$start + 4]->text === 'value';
 
-        if (! $isEnumValue) {
+        $isVariableValue = $end - $start === 3
+            && $tokens[$start]->is(T_VARIABLE)
+            && $tokens[$start + 1]->is(T_OBJECT_OPERATOR)
+            && $tokens[$start + 2]->text === 'value';
+
+        if ($isVariableValue) {
+            $paramType = $this->resolveVariableType($tokens, $start, $tokens[$start]->text);
+            if ($paramType !== null && (str_ends_with($paramType, 'TransactionType') || str_ends_with($paramType, 'TransactionTypes'))) {
+                return null;
+            }
+        }
+
+        if (! $isEnumValue && ! $isVariableValue) {
             return 'Tipe posting dinamis/tidak berasal dari enum tipe transaksi; tidak bisa diverifikasi.';
         }
 
@@ -150,6 +164,41 @@ final class LedgerTransactionTypeRule implements Rule
 
             if ($value instanceof BackedEnum && strlen((string) $value->value) > self::MAX_LENGTH) {
                 return "Nilai {$tokens[$start + 2]->text} = '{$value->value}' ".strlen((string) $value->value).' karakter (> '.self::MAX_LENGTH.').';
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  list<PhpToken>  $tokens
+     */
+    private function resolveVariableType(array $tokens, int $start, string $varName): ?string
+    {
+        for ($i = $start; $i >= 0; $i--) {
+            if ($tokens[$i]->is(T_FUNCTION)) {
+                $open = null;
+                for ($j = $i + 1; $j < $start; $j++) {
+                    if ($tokens[$j]->text === '(') {
+                        $open = $j;
+                        break;
+                    }
+                }
+                if ($open === null) {
+                    return null;
+                }
+                $close = Tokens::matchingClose($tokens, $open);
+                $searchLimit = $close ?? $start;
+                for ($k = $open + 1; $k < $searchLimit; $k++) {
+                    if ($tokens[$k]->is(T_VARIABLE) && $tokens[$k]->text === $varName) {
+                        for ($m = $k - 1; $m > $open; $m--) {
+                            if (Tokens::isNameToken($tokens[$m])) {
+                                return Tokens::shortName($tokens[$m]);
+                            }
+                        }
+                    }
+                }
+                break;
             }
         }
 

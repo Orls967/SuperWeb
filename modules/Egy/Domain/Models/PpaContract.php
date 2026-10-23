@@ -14,7 +14,17 @@ class PpaContract extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'contract_number',
+        'producer_entity_id',
+        'grid_offtaker_id',
+        'feed_in_tariff_per_kwh_minor',
+        'surplus_kwh_exported',
+        'total_settlement_minor',
+        'status',
+        'ledger_transaction_id',
+    ];
 
     protected $casts = [
         'feed_in_tariff_per_kwh_minor' => 'float',

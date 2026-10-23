@@ -14,7 +14,20 @@ class EduHeadhunterContract extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'placement_code',
+        'headhunter_agency_id',
+        'candidate_id',
+        'hiring_entity_id',
+        'candidate_first_month_salary_minor',
+        'fee_percentage',
+        'fee_amount_minor',
+        'warranty_days',
+        'hired_date',
+        'warranty_ends_date',
+        'payout_status',
+    ];
 
     protected $casts = [
         'candidate_first_month_salary_minor' => 'integer',

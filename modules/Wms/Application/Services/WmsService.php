@@ -602,7 +602,7 @@ class WmsService
         $grand = array_sum($annualValueByProductId);
         $results = [];
         foreach ($annualValueByProductId as $productId => $value) {
-            $abc = Slotting::classify((float) $value, (float) $grand);
+            $abc = Slotting::classify((int) round((float) $value), (int) round((float) $grand));
             $results[] = Slotting::updateOrCreate(
                 ['product_id' => $productId],
                 [

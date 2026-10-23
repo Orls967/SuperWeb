@@ -26,9 +26,9 @@ it('lists missing fixtures for commands that do not have one yet', function (): 
     $missing = AuditCommandRegistry::commandsWithoutFixtures([
         'bank:reconcile',
         'api:audit',
-        'hcm:audit',
+        'unregistered:audit',
         'route:list',
     ]);
 
-    expect($missing)->toBe(['cmd:hcm:audit']);
+    expect($missing)->toBe(['cmd:unregistered:audit']);
 });

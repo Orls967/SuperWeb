@@ -238,7 +238,7 @@ class DistributionService
                 title: "Onboarding {$locked->code} — {$locked->name}",
                 creator: $creator,
                 approvable: $locked,
-                amount: (float) (int) $locked->credit_limit_idr,
+                amount: (int) $locked->credit_limit_idr,
                 steps: [['role' => 'procurement'], ['role' => 'admin']],
                 slaHours: 72,
                 metadata: array_merge([

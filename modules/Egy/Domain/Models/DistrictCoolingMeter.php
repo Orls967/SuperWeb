@@ -14,7 +14,15 @@ class DistrictCoolingMeter extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'meter_code',
+        'building_property_id',
+        'thermal_kwh_consumed',
+        'cop_efficiency_factor',
+        'rate_per_thermal_kwh_minor',
+        'total_charge_minor',
+    ];
 
     protected $casts = [
         'thermal_kwh_consumed' => 'float',

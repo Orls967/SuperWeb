@@ -27,7 +27,7 @@ class MiningEnvironmentalComplianceService
 
         return DB::transaction(function () use ($siteId, $hectares, $estimatedCostIdr, $planCode) {
             $tx = $this->ledgerService->post(new PostingDTO(
-                type: 'MINING_RECLAMATION_PROVISION_ACCRUAL',
+                type: 'MINING_RECLAMATION_ACCRUAL',
                 description: "Mine site reclamation provision accrual for {$planCode}",
                 idempotencyKey: 'MIN-REC-ACC-'.$planCode,
                 entries: Posting::lines()
@@ -67,7 +67,7 @@ class MiningEnvironmentalComplianceService
 
         return DB::transaction(function () use ($provision, $verifiedNdvi, $releaseAmount) {
             $tx = $this->ledgerService->post(new PostingDTO(
-                type: 'MINING_RECLAMATION_PROVISION_RELEASE',
+                type: 'MINING_RECLAMATION_RELEASE',
                 description: "Reclamation provision release upon verified revegetation for {$provision->plan_code}",
                 idempotencyKey: 'MIN-REC-REL-'.$provision->plan_code,
                 entries: Posting::lines()
@@ -114,9 +114,9 @@ class MiningEnvironmentalComplianceService
             }
 
             $tx = $this->ledgerService->post(new PostingDTO(
-                type: 'MINING_WATER_MONITORING_SETTLEMENT',
+                type: 'MINING_WATER_MONITOR_SETTLE',
                 description: "Water usage fee and compliance audit for {$siteId}",
-                idempotencyKey: 'MIN-WTR-'.Str::random(10),
+                idempotencyKey: "mining:water_monitor:{$siteId}:{$params['sampling_point']}",
                 entries: $lines->toEntries('IDR'),
                 referenceType: 'WATER_READING',
                 referenceId: $params['sampling_point'],

@@ -6,7 +6,9 @@ namespace Modules\Trade;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Trade\Application\Services\Bidding\AiBiddingAgentService;
 use Modules\Trade\Application\Services\TradeService;
+use Modules\Trade\Console\Commands\AuditBiddingCommand;
 use Modules\Trade\Console\Commands\AuditTradeCommand;
 
 class TradeServiceProvider extends ServiceProvider
@@ -14,6 +16,7 @@ class TradeServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(TradeService::class);
+        $this->app->singleton(AiBiddingAgentService::class);
     }
 
     public function boot(): void
@@ -29,7 +32,10 @@ class TradeServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            $this->commands([AuditTradeCommand::class]);
+            $this->commands([
+                AuditTradeCommand::class,
+                AuditBiddingCommand::class,
+            ]);
         }
 
         $this->registerMenu();

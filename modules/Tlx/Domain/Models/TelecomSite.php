@@ -14,7 +14,16 @@ class TelecomSite extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'site_code',
+        'site_name',
+        'site_type',
+        'region',
+        'latitude',
+        'longitude',
+        'status',
+    ];
 
     protected $casts = [
         'latitude' => 'float',

@@ -19,7 +19,7 @@ interface ApprovalEngineInterface
         string $title,
         User $creator,
         ?Model $approvable = null,
-        ?float $amount = null,
+        int|string|null $amount = null,
         array $steps = [],
         ?int $slaHours = 48,
         array $metadata = []

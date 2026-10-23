@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Vending\Application\Services;
 
 use Carbon\Carbon;
@@ -7,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\SimClockInterface;
+use Modules\Vending\Domain\Models\VendingAutoPo;
 use Modules\Vending\Domain\Models\VendingDemandForecast;
 use Modules\Vending\Domain\Models\VendingRestockTask;
 use Modules\Vending\Domain\Models\VendingTransaction;
@@ -15,30 +19,29 @@ use Modules\Vending\Domain\Models\VendingUnit;
 class SmartVendingService
 {
     public function __construct(
-        protected ?LedgerService $ledgerService = null
-    ) {
-        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
-    }
+        protected SimClockInterface $simClock,
+        protected LedgerService $ledgerService
+    ) {}
 
     /**
-     * 75.1 Holt-Winters style Demand Forecasting & 75.3 Waste Forecasting
+     * 75.1 Holt-Winters Demand Forecasting & 75.3 Waste Forecasting with deterministic seed.
      */
     public function generateDemandAndWasteForecast(
         string $outletCode,
         string $itemCode,
         Carbon $forecastDate,
-        array $historicalSales, // array of int
+        array $historicalSales,
         int $footfallFactor = 100
     ): VendingDemandForecast {
         $n = count($historicalSales);
         if ($n === 0) {
             $baseForecast = 50;
         } else {
-            // Simplified double exponential smoothing (level & trend)
+            // Holt-Winters double exponential smoothing (level & trend)
             $alpha = 0.3;
             $beta = 0.1;
-            $level = $historicalSales[0];
-            $trend = ($historicalSales[$n - 1] - $historicalSales[0]) / max(1, $n - 1);
+            $level = (float) $historicalSales[0];
+            $trend = (float) (($historicalSales[$n - 1] - $historicalSales[0]) / max(1, $n - 1));
 
             for ($i = 0; $i < $n; $i++) {
                 $lastLevel = $level;
@@ -50,22 +53,26 @@ class SmartVendingService
 
         // Projected waste based on display shelf pattern (approx 8% of forecast)
         $wasteForecast = (int) round($baseForecast * 0.08);
+        $dateStr = $forecastDate->toDateString();
+        $forecastCode = 'FC-'.strtoupper(substr(hash('sha256', "fc:{$outletCode}:{$itemCode}:{$dateStr}"), 0, 12));
 
-        return VendingDemandForecast::create([
-            'forecast_code' => 'FC-'.strtoupper(bin2hex(random_bytes(6))),
-            'outlet_code' => $outletCode,
-            'item_code' => $itemCode,
-            'forecast_date' => $forecastDate->toDateString(),
-            'algorithm_model' => 'HOLT_WINTERS',
-            'footfall_factor' => $footfallFactor,
-            'forecast_qty' => $baseForecast,
-            'waste_forecast_qty' => $wasteForecast,
-            'suggest_scaledown' => false,
-        ]);
+        return VendingDemandForecast::updateOrCreate(
+            ['forecast_code' => $forecastCode],
+            [
+                'outlet_code' => $outletCode,
+                'item_code' => $itemCode,
+                'forecast_date' => $dateStr,
+                'algorithm_model' => 'HOLT_WINTERS',
+                'footfall_factor' => $footfallFactor,
+                'forecast_qty' => $baseForecast,
+                'waste_forecast_qty' => $wasteForecast,
+                'suggest_scaledown' => false,
+            ]
+        );
     }
 
     /**
-     * Record actual demand and waste, calculate MAPE
+     * Record actual demand and waste, calculate MAPE (DoR 75.1, 75.3, 75.7a).
      */
     public function recordActualDemandAndWaste(VendingDemandForecast $forecast, int $actualDemand, int $actualWaste): VendingDemandForecast
     {
@@ -90,7 +97,7 @@ class SmartVendingService
     }
 
     /**
-     * 75.2 Auto-PO calculation with daily ceiling guardrail
+     * 75.2 Auto-PO calculation with daily ceiling guardrail (DoR 75.2, 75.7b).
      */
     public function generateAutoPo(
         string $outletCode,
@@ -98,7 +105,7 @@ class SmartVendingService
         int $forecastQty,
         int $currentStock,
         int $unitCostIdr,
-        int $dailyPlafonIdr = 20_000_000
+        int $dailyPlafonIdr = 15_000_000
     ): array {
         $neededQty = max(0, $forecastQty - $currentStock);
         if ($neededQty === 0) {
@@ -110,30 +117,34 @@ class SmartVendingService
 
         $totalEstimatedIdr = $neededQty * $unitCostIdr;
         $isAutoApproved = $totalEstimatedIdr <= $dailyPlafonIdr;
+        $status = $isAutoApproved ? 'AUTO_APPROVED' : 'MANUAL_APPROVAL_REQUIRED';
 
-        $autoPo = DB::table('ven_auto_pos')->insertGetId([
-            'auto_po_code' => 'APO-'.strtoupper(bin2hex(random_bytes(6))),
-            'outlet_code' => $outletCode,
-            'item_code' => $itemCode,
-            'qty_ordered' => $neededQty,
-            'estimated_total_idr' => $totalEstimatedIdr,
-            'daily_plafon_idr' => $dailyPlafonIdr,
-            'status' => $isAutoApproved ? 'AUTO_APPROVED' : 'MANUAL_APPROVAL_REQUIRED',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $autoPoCode = 'APO-'.strtoupper(substr(hash('sha256', "apo:{$outletCode}:{$itemCode}:{$forecastQty}:{$currentStock}"), 0, 12));
+
+        $autoPo = VendingAutoPo::updateOrCreate(
+            ['auto_po_code' => $autoPoCode],
+            [
+                'outlet_code' => $outletCode,
+                'item_code' => $itemCode,
+                'qty_ordered' => $neededQty,
+                'estimated_total_idr' => $totalEstimatedIdr,
+                'daily_plafon_idr' => $dailyPlafonIdr,
+                'status' => $status,
+            ]
+        );
 
         return [
-            'id' => $autoPo,
+            'id' => $autoPo->id,
+            'auto_po_code' => $autoPoCode,
             'qty_ordered' => $neededQty,
             'total_idr' => $totalEstimatedIdr,
             'auto_approved' => $isAutoApproved,
-            'status' => $isAutoApproved ? 'AUTO_APPROVED' : 'MANUAL_APPROVAL_REQUIRED',
+            'status' => $status,
         ];
     }
 
     /**
-     * 75.4 & 75.5 Process Vending Sale via QR / Biometric Face & Ledger Settlement
+     * 75.4 & 75.5 Process Vending Sale via QR / Biometric Face & Ledger Settlement (DoR 75.5, 75.7c).
      */
     public function processVendingSale(
         VendingUnit $unit,
@@ -154,28 +165,33 @@ class SmartVendingService
             $totalPriceIdr = $priceIdr * $qty;
             $biometricHash = $biometricToken ? hash('sha256', $biometricToken) : null;
 
-            // Decrement unit stock
+            // Decrement unit stock & increment sales stats
             $lockedUnit->decrement('current_stock', $qty);
             $lockedUnit->increment('total_sales_count', $qty);
             $lockedUnit->increment('total_sales_idr', $totalPriceIdr);
 
+            $txCode = 'VTX-'.strtoupper(substr(hash('sha256', "vtx:{$lockedUnit->id}:{$itemCode}:{$lockedUnit->total_sales_count}"), 0, 12));
+            $idempotencyKey = "vnd:sale:{$lockedUnit->id}:{$txCode}";
+
             // Record transaction
-            $tx = VendingTransaction::create([
-                'tx_code' => 'VTX-'.strtoupper(bin2hex(random_bytes(6))),
-                'vending_unit_id' => $lockedUnit->id,
-                'item_code' => $itemCode,
-                'qty' => $qty,
-                'price_idr' => $totalPriceIdr,
-                'payment_method' => $paymentMethod,
-                'biometric_token_hash' => $biometricHash,
-                'status' => 'COMPLETED',
-            ]);
+            $tx = VendingTransaction::firstOrCreate(
+                ['tx_code' => $txCode],
+                [
+                    'vending_unit_id' => $lockedUnit->id,
+                    'item_code' => $itemCode,
+                    'qty' => $qty,
+                    'price_idr' => $totalPriceIdr,
+                    'payment_method' => $paymentMethod,
+                    'biometric_token_hash' => $biometricHash,
+                    'status' => 'COMPLETED',
+                ]
+            );
 
             // Ledger settlement: Debit Cash clearing (-), Credit Vending revenue (+)
             $this->ledgerService->post(new PostingDTO(
                 type: 'VENDING_SALE',
                 description: "Vending sale unit {$lockedUnit->unit_code} tx {$tx->tx_code}",
-                idempotencyKey: "VEN-SALE-{$tx->tx_code}",
+                idempotencyKey: $idempotencyKey,
                 entries: Posting::lines()
                     ->debit('ven:clearing:IDR', $totalPriceIdr)
                     ->credit('ven:sales_revenue:IDR', $totalPriceIdr)
@@ -194,7 +210,7 @@ class SmartVendingService
     }
 
     /**
-     * Schedule a restock task if no open task exists (anti-duplicate)
+     * Schedule a restock task if no open task exists (anti-duplicate, DoR 75.4, 75.7d).
      */
     public function scheduleRestockTask(VendingUnit $unit): ?VendingRestockTask
     {
@@ -203,21 +219,24 @@ class SmartVendingService
             ->first();
 
         if ($existing) {
-            return $existing; // Avoid duplicate task
+            return $existing; // Anti-duplicate: preserve existing scheduled task
         }
 
         $neededQty = $unit->max_capacity - $unit->current_stock;
+        $taskCode = 'RST-'.strtoupper(substr(hash('sha256', "rst:{$unit->id}:{$neededQty}"), 0, 12));
 
-        return VendingRestockTask::create([
-            'task_code' => 'RST-'.strtoupper(bin2hex(random_bytes(6))),
-            'vending_unit_id' => $unit->id,
-            'suggested_qty' => $neededQty,
-            'status' => 'SCHEDULED',
-        ]);
+        return VendingRestockTask::firstOrCreate(
+            ['task_code' => $taskCode],
+            [
+                'vending_unit_id' => $unit->id,
+                'suggested_qty' => $neededQty,
+                'status' => 'SCHEDULED',
+            ]
+        );
     }
 
     /**
-     * Complete restock task
+     * Complete restock task.
      */
     public function completeRestock(VendingRestockTask $task, int $replenishedQty): void
     {
@@ -229,7 +248,7 @@ class SmartVendingService
     }
 
     /**
-     * 75.6 Check sensor health and flag maintenance
+     * 75.6 Check sensor health and flag maintenance.
      */
     public function reportSensorHealth(VendingUnit $unit, array $sensorStatus): VendingUnit
     {
@@ -247,5 +266,67 @@ class SmartVendingService
         ]);
 
         return $unit;
+    }
+
+    /**
+     * Reconcile vending sales with ledger & unit stock statistics (DoR 75.7e).
+     */
+    public function reconcileVending(VendingUnit $unit): array
+    {
+        $unitSalesIdr = (int) $unit->total_sales_idr;
+        $txSumIdr = (int) VendingTransaction::where('vending_unit_id', $unit->id)
+            ->where('status', 'COMPLETED')
+            ->sum('price_idr');
+
+        $isReconciled = ($unitSalesIdr === $txSumIdr);
+
+        return [
+            'unit_code' => $unit->unit_code,
+            'unit_sales_idr' => $unitSalesIdr,
+            'transaction_sum_idr' => $txSumIdr,
+            'is_reconciled' => $isReconciled,
+        ];
+    }
+
+    /**
+     * Two-source smart vending audit command engine.
+     */
+    public function auditVending(): array
+    {
+        $unitCount = VendingUnit::count();
+        $txCount = VendingTransaction::count();
+        $restockCount = VendingRestockTask::count();
+        $discrepancies = 0;
+
+        $units = VendingUnit::all();
+        foreach ($units as $unit) {
+            $txTotal = (int) VendingTransaction::where('vending_unit_id', $unit->id)
+                ->where('status', 'COMPLETED')
+                ->sum('price_idr');
+
+            if ($unit->total_sales_idr !== $txTotal) {
+                $discrepancies++;
+            }
+
+            if ($unit->current_stock < 0 || $unit->current_stock > $unit->max_capacity) {
+                $discrepancies++;
+            }
+
+            $openTasks = VendingRestockTask::where('vending_unit_id', $unit->id)
+                ->whereIn('status', ['SCHEDULED', 'PICKED'])
+                ->count();
+
+            if ($openTasks > 1) {
+                $discrepancies++;
+            }
+        }
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'unit_count' => $unitCount,
+            'transaction_count' => $txCount,
+            'restock_task_count' => $restockCount,
+            'discrepancies' => $discrepancies,
+        ];
     }
 }

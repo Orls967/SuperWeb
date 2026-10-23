@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Actions\VerifyPinAction;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Application\Services\Scale\LedgerScaleProvisioner;
 use Modules\Banking\Console\Commands\ReconcileBankLedgerCommand;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Contracts\VerifiesWalletPin;
@@ -24,6 +25,11 @@ class BankingServiceProvider extends ServiceProvider
         $this->app->bind(
             VerifiesWalletPin::class,
             VerifyPinAction::class
+        );
+
+        $this->app->tag(
+            LedgerScaleProvisioner::class,
+            'scale.provisioner'
         );
 
         if (! class_exists('Posting')) {

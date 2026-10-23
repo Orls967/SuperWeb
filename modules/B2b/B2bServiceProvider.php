@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\B2b;
 
 use Illuminate\Support\Facades\Route;

@@ -14,7 +14,17 @@ class SafetyIncident extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'site_id',
+        'incident_type',
+        'severity',
+        'leading_indicator_points',
+        'reporter_party_id',
+        'is_anonymous',
+        'description',
+        'reported_at',
+    ];
 
     protected $casts = [
         'leading_indicator_points' => 'integer',

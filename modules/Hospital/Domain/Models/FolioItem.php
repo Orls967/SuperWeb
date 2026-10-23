@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Hospital\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +11,14 @@ class FolioItem extends Model
 {
     protected $table = 'hsp_folio_items';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'billing_episode_id',
+        'item_category',
+        'description',
+        'quantity',
+        'unit_price_idr',
+        'subtotal_idr',
+    ];
 
     public function episode(): BelongsTo
     {

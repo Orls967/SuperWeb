@@ -463,10 +463,16 @@ $entries = Posting::lines()
 **Bukti:** `IntegrationService::dispatchWebhook()` (`:33-47`) menyimpan `http_status = 200`, `delivery_status = delivered` tanpa HTTP request; `processEdiMessage()` → `functional_status = accepted` tanpa parsing; outbox target non-webhook → `success` (K-08); Fase 484 → `published_verified` tanpa verifikasi (K-21).
 **Seharusnya:** status hanya diisi dari hasil aksi nyata; adapter simulasi diberi nama & status yang jujur (`simulated_delivered`) dan dipisah dari jalur nyata.
 
-#### K-32 — Pola performa yang tidak akan bertahan pada skala yang diklaim (P2 · R9)
+#### K-32 — Pola performa yang tidak akan bertahan pada skala yang diklaim (P2 · R9) — ✅ DITUTUP (Fase R9.3)
 
 **Bukti:** `HcmService::auditHcm()` memuat `Payroll::all()`; `OutboxBusService::processMessage()` memuat semua subscription aktif lalu filter di PHP; `IntegrationService::auditIntegration()` sampel `limit(50)` tanpa urutan; screening sanksi Party memakai `similar_text` terhadap seluruh daftar (O(n·m)); audit-audit Integration menghitung seluruh tabel tanpa indeks khusus.
 **Seharusnya:** `chunkById`/`lazyById`, agregasi SQL, indeks untuk kolom status/tanggal, dan untuk pencocokan nama gunakan normalisasi + blocking key (mis. soundex/trigram) sebelum skor kemiripan.
+**Status Resolusi (R9.3):** ✅ DITUTUP melalui refactoring 4 titik kritis:
+1. `HcmService::auditHcm()` menggunakan `Payroll::query()->chunkById(500, ...)` dengan penghitungan inkremental.
+2. `OutboxBusService::processMessage()` menggunakan filter database JSON `whereJsonContains('events', $event)` sebelum pemuatan data ke memori.
+3. `IntegrationService::auditIntegration()` menggunakan `orderBy('id', 'desc')->limit(50)` deterministik.
+4. `SanctionScreeningService` menggunakan indexed identifier matching, exact normalized name lookup, dan prefix candidate screening sebelum kemiripan.
+Diuji oleh `tests/Feature/Performance/K32ScalabilityRefactorTest.php` (exit 0).
 
 ### H. Temuan saat memasang pagar Fase R0 (10–11 Okt 2026)
 

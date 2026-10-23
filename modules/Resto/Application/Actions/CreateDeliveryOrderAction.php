@@ -123,8 +123,8 @@ class CreateDeliveryOrderAction
                 );
             }
 
-            // 4. Pajak Restoran PB1 10% atas makanan
-            $pb1 = (int) round($subtotalFood * 0.10);
+            // 4. Pajak Restoran PB1 10% atas makanan (integer half-up arithmetic: intdiv($amount * 10 + 50, 100))
+            $pb1 = intdiv($subtotalFood * 10 + 50, 100);
 
             // 5. Total mentah & Pembulatan Rp100 terdekat
             $rawTotal = $subtotalFood + $pb1 + $deliveryFee + $packagingFee;
@@ -209,7 +209,7 @@ class CreateDeliveryOrderAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::PAYMENT->value,
                     description: "Pembayaran order delivery #{$order->number}",
-                    idempotencyKey: "resto:dlv:pay:{$order->id}:".Str::uuid(),
+                    idempotencyKey: "resto:dlv:pay:{$order->id}",
                     entries: [
                         PostingEntryDTO::forCode($walletAccCode, 'IDR', BigDecimal::of($grandTotal)->negated()),
                         PostingEntryDTO::forCode($foodRevAcc, 'IDR', BigDecimal::of($foodShare)),

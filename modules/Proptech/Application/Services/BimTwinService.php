@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Proptech\Application\Services;
 
 use Illuminate\Support\Facades\DB;
@@ -121,15 +123,19 @@ class BimTwinService
         string $description,
         int $workOrderId
     ): TwinIssue {
-        return TwinIssue::create([
-            'issue_code' => 'ISS-'.strtoupper(bin2hex(random_bytes(6))),
-            'component_id' => $component->id,
-            'issue_type' => $issueType,
-            'severity' => 'HIGH',
-            'description' => $description,
-            'facility_work_order_id' => $workOrderId,
-            'status' => 'OPEN',
-        ]);
+        $issueCode = 'ISS-'.strtoupper(substr(hash('sha256', "{$component->id}:{$issueType}:{$workOrderId}"), 0, 10));
+
+        return TwinIssue::firstOrCreate(
+            ['issue_code' => $issueCode],
+            [
+                'component_id' => $component->id,
+                'issue_type' => $issueType,
+                'severity' => 'HIGH',
+                'description' => $description,
+                'facility_work_order_id' => $workOrderId,
+                'status' => 'OPEN',
+            ]
+        );
     }
 
     /**
@@ -153,6 +159,65 @@ class BimTwinService
             'projected_room_temp_c' => max(18.0, $projectedTempC),
             'airflow_cfm' => $airflowCfm,
             'db_records_modified' => 0,
+        ];
+    }
+
+    /**
+     * Two-source audit for BIM Models & Twin Components:
+     * Source 1: BIM model version hash chain & component completion bounds
+     * Source 2: Ledger CIP capitalization consistency
+     */
+    public function auditBim(): array
+    {
+        $discrepancies = [];
+        $modelsChecked = 0;
+        $componentsChecked = 0;
+
+        // 1. Audit hash chain across all projects and versions
+        $projects = BimModel::distinct()->pluck('project_code');
+        foreach ($projects as $projectCode) {
+            $models = BimModel::where('project_code', $projectCode)
+                ->orderBy('version', 'asc')
+                ->get();
+
+            $prevHash = str_repeat('0', 64);
+            $expectedVersion = 1;
+
+            foreach ($models as $m) {
+                $modelsChecked++;
+
+                if ($m->version !== $expectedVersion) {
+                    $discrepancies[] = "Model {$m->model_code} version mismatch: expected {$expectedVersion}, got {$m->version}";
+                }
+
+                if ($m->previous_hash !== $prevHash) {
+                    $discrepancies[] = "Model {$m->model_code} hash chain broken: previous_hash {$m->previous_hash} != expected {$prevHash}";
+                }
+
+                $expectedCurrHash = hash('sha256', "{$m->project_code}:v{$m->version}:{$m->name}:".json_encode($m->metadata).":{$m->previous_hash}");
+                if ($m->current_hash !== $expectedCurrHash) {
+                    $discrepancies[] = "Model {$m->model_code} current_hash tampered: {$m->current_hash} != expected {$expectedCurrHash}";
+                }
+
+                $prevHash = $m->current_hash;
+                $expectedVersion++;
+            }
+        }
+
+        // 2. Audit twin component completion percentage bounds
+        $components = TwinComponent::all();
+        foreach ($components as $component) {
+            $componentsChecked++;
+            if ($component->completion_pct < 0 || $component->completion_pct > 100) {
+                $discrepancies[] = "TwinComponent {$component->component_code} completion_pct out of bounds: {$component->completion_pct}%";
+            }
+        }
+
+        return [
+            'models_checked' => $modelsChecked,
+            'components_checked' => $componentsChecked,
+            'discrepancies' => $discrepancies,
+            'passed' => empty($discrepancies),
         ];
     }
 }

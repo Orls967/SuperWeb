@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Finance\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Modules\Finance\Application\Services\LoanSimulator;
 
@@ -26,7 +25,14 @@ class OpenLoanRequest extends FormRequest
             return;
         }
 
-        $this->merge(['idempotency_key' => (string) Str::uuid()]);
+        $userId = $this->user()?->getAuthIdentifier() ?? 'guest';
+        $key = sprintf(
+            'fin:loan_open:%s:%s',
+            $userId,
+            sha1((string) $this->input('product_id').':'.(string) $this->input('down_payment').':'.(string) $this->input('tenor_months'))
+        );
+
+        $this->merge(['idempotency_key' => $key]);
     }
 
     /**

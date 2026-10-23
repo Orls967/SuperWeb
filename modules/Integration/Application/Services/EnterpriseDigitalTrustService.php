@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Core\Contracts\DocumentStoreInterface;
 
 /**
  * EnterpriseDigitalTrustService (Fase 484)
@@ -21,6 +22,14 @@ use InvalidArgumentException;
  */
 class EnterpriseDigitalTrustService
 {
+    private readonly DocumentStoreInterface $documentStore;
+
+    public function __construct(
+        ?DocumentStoreInterface $documentStore = null
+    ) {
+        $this->documentStore = $documentStore ?? app(DocumentStoreInterface::class);
+    }
+
     /**
      * 484.1, 484.4, 484.5 Register and publish external claim requiring evidence hash
      */
@@ -42,13 +51,17 @@ class EnterpriseDigitalTrustService
             throw new InvalidArgumentException('Claim publication blocked: External enterprise claims strictly require cryptographic evidence verification (484.1, 484.5).');
         }
 
+        // Verify if evidence attachment exists via DocumentStore contract with matching SHA-256 checksum
+        $isVerified = $this->documentStore->hasChecksum($evidenceHash);
+        $status = $isVerified ? 'published_verified' : 'simulated_unverified';
+
         $id = DB::table('int_verifiable_enterprise_claims')->insertGetId([
             'claim_code' => strtoupper($code),
             'claim_type' => $t,
             'claim_statement' => $statement,
             'evidence_hash' => $evidenceHash,
             'public_verifiable' => $publicVerifiable,
-            'status' => 'published_verified',
+            'status' => $status,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

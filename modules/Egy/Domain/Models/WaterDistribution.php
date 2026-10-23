@@ -14,7 +14,16 @@ class WaterDistribution extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'distribution_code',
+        'consumer_property_id',
+        'input_volume_m3',
+        'leakage_loss_m3',
+        'delivered_volume_m3',
+        'water_tariff_minor',
+        'water_charge_minor',
+    ];
 
     protected $casts = [
         'input_volume_m3' => 'float',

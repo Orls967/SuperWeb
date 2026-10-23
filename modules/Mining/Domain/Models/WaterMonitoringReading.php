@@ -14,7 +14,19 @@ class WaterMonitoringReading extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'site_id',
+        'sampling_point',
+        'water_volume_m3',
+        'effluent_ph',
+        'effluent_tss_mg_l',
+        'threshold_exceeded',
+        'environmental_penalty_minor',
+        'water_fee_minor',
+        'ledger_transaction_id',
+        'sampled_at',
+    ];
 
     protected $casts = [
         'water_volume_m3' => 'float',

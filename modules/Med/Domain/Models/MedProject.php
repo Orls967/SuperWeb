@@ -14,7 +14,20 @@ class MedProject extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'project_code',
+        'title',
+        'genre',
+        'phase',
+        'budget_limit_minor',
+        'crew_cost_minor',
+        'vendor_cost_minor',
+        'studio_cost_minor',
+        'total_production_cost_minor',
+        'box_office_revenue_minor',
+        'is_capitalized_as_asset',
+    ];
 
     protected $casts = [
         'budget_limit_minor' => 'integer',

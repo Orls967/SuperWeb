@@ -14,7 +14,16 @@ class IotConnectivityInvoice extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'invoice_number',
+        'owner_entity_id',
+        'billing_period',
+        'active_device_count',
+        'total_consumed_mb',
+        'total_charge_minor',
+        'ledger_transaction_id',
+    ];
 
     protected $casts = [
         'active_device_count' => 'integer',

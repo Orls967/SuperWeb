@@ -10,7 +10,16 @@ class OrderPromise extends Model
 {
     protected $table = 'sct_order_promises';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'promise_code',
+        'order_reference',
+        'item_code',
+        'requested_qty',
+        'atp_confirmed_qty',
+        'ctp_manufacturing_qty',
+        'promised_delivery_date',
+        'promise_status',
+    ];
 
     protected $casts = [
         'requested_qty' => 'integer',

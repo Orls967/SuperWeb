@@ -14,7 +14,17 @@ class GreenLeaseDiscount extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'discount_code',
+        'tenant_property_id',
+        'esg_score',
+        'discount_rate_pct',
+        'gross_utility_charge_minor',
+        'green_discount_amount_minor',
+        'net_utility_charge_minor',
+        'ledger_transaction_id',
+    ];
 
     protected $casts = [
         'esg_score' => 'integer',

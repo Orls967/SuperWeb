@@ -17,7 +17,7 @@ class AnalyticsSnapshot extends Model
     ];
 
     protected $casts = [
-        'realized_vs_list_percent' => 'decimal:4', 'discount_leakage_idr' => 'decimal:2',
+        'realized_vs_list_percent' => 'decimal:4', 'discount_leakage_idr' => 'integer',
         'promo_effectiveness_percent' => 'decimal:4', 'avg_discount_percent' => 'decimal:4',
         'volume_idr' => 'integer', 'breakdown' => 'array',
     ];

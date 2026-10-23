@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Hospital\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +11,15 @@ class VitalsTelemetry extends Model
 {
     protected $table = 'hsp_vitals_telemetries';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'encounter_id',
+        'spo2_percent',
+        'heart_rate_bpm',
+        'temp_c',
+        'code_blue_triggered',
+        'proof_hash',
+        'recorded_at',
+    ];
 
     protected $casts = [
         'spo2_percent' => 'decimal:2',

@@ -100,5 +100,8 @@ class BeachClubArtistAndFestivalEconomyTest extends TestCase
 
         $this->assertEquals('settled', $settledOrder->status);
         $this->assertNotNull($settledOrder->settled_at);
+
+        // 90.8 (e) venue:audit = 0 discrepancy vs ledger
+        $this->artisan('venue:audit')->assertSuccessful();
     }
 }

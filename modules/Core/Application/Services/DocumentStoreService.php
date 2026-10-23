@@ -133,4 +133,9 @@ class DocumentStoreService implements DocumentStoreInterface
 
         return hash_equals($doc->checksum_sha256, $currentChecksum);
     }
+
+    public function hasChecksum(string $checksum): bool
+    {
+        return DocumentAttachment::where('checksum_sha256', trim($checksum))->exists();
+    }
 }

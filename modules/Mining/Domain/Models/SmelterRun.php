@@ -14,7 +14,20 @@ class SmelterRun extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'site_id',
+        'run_code',
+        'output_commodity',
+        'input_ore_tonnage',
+        'input_grade_pct',
+        'output_metal_tonnage',
+        'recovery_rate_pct',
+        'byproduct_slag_tonnage',
+        'byproduct_revenue_idr',
+        'energy_kwh_per_ton',
+        'status',
+    ];
 
     protected $casts = [
         'input_ore_tonnage' => 'float',

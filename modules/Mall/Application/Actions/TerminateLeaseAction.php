@@ -75,7 +75,7 @@ class TerminateLeaseAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::RELEASE->value,
                     description: "Pelepasan deposit sewa unit {$locked->unit->unit_number} (Tunggakan: Rp ".number_format($deductAmount, 0, ',', '.').', Refund: Rp '.number_format($refundAmount, 0, ',', '.').')',
-                    idempotencyKey: "mall:lease:term:{$locked->id}:".Str::uuid(),
+                    idempotencyKey: "mall:lease:term:{$locked->id}",
                     entries: $entries,
                     referenceType: 'mall_lease',
                     referenceId: $locked->id,

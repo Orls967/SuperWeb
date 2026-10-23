@@ -106,7 +106,7 @@ class PostFranchiseRoyaltyCommand extends Command
                 $tx = $ledger->post(new PostingDTO(
                     type: TransactionType::ROYALTY->value,
                     description: "Bagi hasil royalti ({$royaltyPct}%) & marketing fee ({$marketingPct}%) outlet {$outlet->name} tgl {$targetDate}",
-                    idempotencyKey: "resto:royalty:{$contract->id}:{$targetDate}:".Str::uuid(),
+                    idempotencyKey: "resto:royalty:{$contract->id}:{$targetDate}",
                     entries: [
                         PostingEntryDTO::forCode($expAccCode, 'IDR', $totalBd->negated()),
                         PostingEntryDTO::forCode($royaltyRevCode, 'IDR', $royaltyBd),

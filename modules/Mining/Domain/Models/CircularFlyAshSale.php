@@ -14,7 +14,15 @@ class CircularFlyAshSale extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'order_number',
+        'cement_buyer_party_id',
+        'fly_ash_tonnage',
+        'price_per_ton_minor',
+        'total_revenue_minor',
+        'ledger_transaction_id',
+    ];
 
     protected $casts = [
         'fly_ash_tonnage' => 'float',

@@ -8,6 +8,7 @@ use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Rwa\Application\Services\RwaOrderbookService;
 use Modules\Rwa\Application\Services\RwaTokenService;
 use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Rwa\Domain\Models\RwaHolding;
@@ -123,5 +124,108 @@ class RwaTest extends TestCase
 
         $this->assertEquals(1500, $holding->token_balance);
         $this->assertEquals(9500, $asset->total_supply_tokens);
+    }
+
+    public function test_rwa_orderbook_double_settlement_rejected_and_kyc_guardrail(): void
+    {
+        /** @var RwaOrderbookService $orderbookService */
+        $orderbookService = app(RwaOrderbookService::class);
+
+        $asset = RwaAsset::create([
+            'token_symbol' => 'RWA-OB01',
+            'name' => 'Logistics Cold Fleet 01',
+            'underlying_asset_type' => 'fleet_unit',
+            'underlying_asset_id' => 'FLT-01',
+            'appraisal_value_idr' => 500000000,
+            'total_supply_tokens' => 5000,
+            'token_price_idr' => 100000,
+            'status' => 'active',
+            'max_holder_concentration_pct' => 25.0,
+        ]);
+
+        $holdingUser1 = RwaHolding::create([
+            'rwa_asset_id' => $asset->id,
+            'user_id' => $this->user1->id,
+            'token_balance' => 1000,
+            'is_kyc_verified' => true,
+        ]);
+
+        $holdingUser2 = RwaHolding::create([
+            'rwa_asset_id' => $asset->id,
+            'user_id' => $this->user2->id,
+            'token_balance' => 0,
+            'is_kyc_verified' => true,
+        ]);
+
+        $user2Wallet = $this->user2->walletAccount('IDR');
+        $user2Wallet->forceFill(['cached_balance' => '50000000'])->save();
+
+        // 1. User1 places sell order of 200 tokens @ Rp 100,000
+        $sellOrder = $orderbookService->placeOrder($asset, $this->user1->id, 'sell', 200, 100000);
+        $this->assertSame('open', $sellOrder->status);
+
+        // 2. User2 places buy order of 200 tokens @ Rp 100,000 -> Should match immediately
+        $buyOrder = $orderbookService->placeOrder($asset, $this->user2->id, 'buy', 200, 100000);
+
+        $sellOrder->refresh();
+        $buyOrder->refresh();
+        $holdingUser1->refresh();
+        $holdingUser2->refresh();
+
+        $this->assertSame('filled', $sellOrder->status);
+        $this->assertSame('filled', $buyOrder->status);
+        $this->assertEquals(800, $holdingUser1->token_balance);
+        $this->assertEquals(200, $holdingUser2->token_balance);
+
+        // Double matching cannot happen because both orders are filled
+        $orderbookService->matchOrders($asset);
+        $holdingUser1->refresh();
+        $holdingUser2->refresh();
+        $this->assertEquals(800, $holdingUser1->token_balance);
+        $this->assertEquals(200, $holdingUser2->token_balance);
+
+        // Non-KYC user is rejected
+        $unverifiedUser = User::factory()->create();
+        RwaHolding::create([
+            'rwa_asset_id' => $asset->id,
+            'user_id' => $unverifiedUser->id,
+            'token_balance' => 100,
+            'is_kyc_verified' => false,
+        ]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $orderbookService->placeOrder($asset, $unverifiedUser->id, 'buy', 50, 100000);
+    }
+
+    public function test_rwa_reconcile_asset_ledger_equals_holdings(): void
+    {
+        /** @var RwaTokenService $service */
+        $service = app(RwaTokenService::class);
+
+        $asset = RwaAsset::create([
+            'token_symbol' => 'RWA-AUDIT01',
+            'name' => 'Manufacturing Unit C',
+            'underlying_asset_type' => 'mfg_unit',
+            'underlying_asset_id' => 'MFG-01',
+            'appraisal_value_idr' => 2000000000,
+            'total_supply_tokens' => 20000,
+            'token_price_idr' => 100000,
+            'status' => 'active',
+        ]);
+
+        RwaHolding::create([
+            'rwa_asset_id' => $asset->id,
+            'user_id' => $this->user1->id,
+            'token_balance' => 12000,
+        ]);
+        RwaHolding::create([
+            'rwa_asset_id' => $asset->id,
+            'user_id' => $this->user2->id,
+            'token_balance' => 8000,
+        ]);
+
+        $audit = $service->auditRwa();
+        $this->assertSame('HEALTHY', $audit['status']);
+        $this->assertSame(0, $audit['discrepancies']);
     }
 }

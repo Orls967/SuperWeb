@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Proptech\Domain\Models\Bim;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +11,16 @@ class BimModel extends Model
 {
     protected $table = 'prp_bim_models';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'model_code',
+        'project_code',
+        'version',
+        'name',
+        'previous_hash',
+        'current_hash',
+        'metadata',
+        'status',
+    ];
 
     protected $casts = [
         'metadata' => 'array',

@@ -6,7 +6,6 @@ namespace Modules\Banking\Application\Actions;
 
 use App\Models\User;
 use Brick\Math\BigDecimal;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
@@ -22,7 +21,7 @@ class TopUpAction
         protected Ledger $ledger,
     ) {}
 
-    public function execute(User $user, BigDecimal|string|int|float $amount, ?string $idempotencyKey = null): LedgerTransaction
+    public function execute(User $user, BigDecimal|string|int $amount, ?string $idempotencyKey = null): LedgerTransaction
     {
         $amountBd = $amount instanceof BigDecimal ? $amount : BigDecimal::of((string) $amount);
 
@@ -35,7 +34,9 @@ class TopUpAction
         }
 
         $userWallet = $user->walletAccount('IDR');
-        $key = $idempotencyKey ?? ('topup_'.$user->id.'_'.Str::random(16));
+        $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
+            ? trim($idempotencyKey)
+            : sprintf('banking:topup:%s:%s', $user->id, $amountBd->__toString());
 
         $dto = new PostingDTO(
             type: TransactionType::TOPUP->value,

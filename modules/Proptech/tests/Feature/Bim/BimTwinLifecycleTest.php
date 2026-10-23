@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Proptech\tests\Feature\Bim;
 
+use App\Quality\Audit\Fixtures\ProptechBimCorruptionFixture;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Proptech\Application\Services\BimTwinService;
 use Modules\Proptech\Domain\Models\Bim\TwinComponent;
@@ -167,5 +171,28 @@ class BimTwinLifecycleTest extends TestCase
         $this->assertTrue($sim['simulated']);
         $this->assertEquals(0, $sim['db_records_modified']);
         $this->assertLessThan(33.0, $sim['projected_room_temp_c']);
+    }
+
+    public function test_77_7_two_source_audit_passes_cleanly(): void
+    {
+        $code = Artisan::call('prp:audit-bim');
+        $this->assertSame(0, $code);
+
+        $result = $this->bimService->auditBim();
+        $this->assertTrue($result['passed']);
+        $this->assertEmpty($result['discrepancies']);
+    }
+
+    public function test_77_7_audit_fails_on_corrupted_component_completion_pct(): void
+    {
+        $fixture = new ProptechBimCorruptionFixture;
+        $fixture->corrupt();
+
+        $code = Artisan::call('prp:audit-bim');
+        $this->assertSame(1, $code);
+
+        $result = $this->bimService->auditBim();
+        $this->assertFalse($result['passed']);
+        $this->assertNotEmpty($result['discrepancies']);
     }
 }

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Integration\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Integration\Application\Services\EnterpriseDigitalTrustService;
 use Tests\TestCase;
@@ -25,6 +27,21 @@ class EnterpriseDigitalTrustTest extends TestCase
     {
         $rawEvidence = 'ISO-9001-CERTIFIED-BATCH-SERIAL-998234-VALID-2026';
         $evidenceHash = hash('sha256', $rawEvidence);
+
+        DB::table('core_documents')->insert([
+            'uuid' => (string) Str::uuid(),
+            'documentable_type' => 'claim',
+            'documentable_id' => 1,
+            'document_type' => 'iso_certificate',
+            'original_filename' => 'iso9001.pdf',
+            'stored_path' => 'evidence/iso9001.pdf',
+            'disk' => 'local',
+            'mime_type' => 'application/pdf',
+            'file_size_bytes' => 1024,
+            'checksum_sha256' => $evidenceHash,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         // 484.1 Publish verifiable claim with cryptographic evidence hash
         $claim = $this->service->publishClaim(

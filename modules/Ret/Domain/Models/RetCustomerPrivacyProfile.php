@@ -14,7 +14,12 @@ class RetCustomerPrivacyProfile extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'customer_id',
+        'marketing_analytics_opt_out',
+        'assigned_segment',
+    ];
 
     protected $casts = [
         'marketing_analytics_opt_out' => 'boolean',

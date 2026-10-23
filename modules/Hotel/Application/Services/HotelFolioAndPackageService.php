@@ -75,7 +75,7 @@ class HotelFolioAndPackageService
                 $this->ledger->post(new PostingDTO(
                     type: 'HTL_TIMESHARE_DIVIDEND',
                     description: "Timeshare dividend for investor {$investor->investor_user_id} unit {$unit->unit_code}",
-                    idempotencyKey: "htl_ts_div:{$unit->id}:{$investor->id}:".now()->toDateString(),
+                    idempotencyKey: "hotel:timeshare_dividend:{$unit->id}:{$investor->id}:daily",
                     entries: Posting::lines()
                         ->debit('expense:htl_timeshare_payout:IDR', $dividend)
                         ->credit("investor:dividend:{$investor->investor_user_id}:IDR", $dividend)
@@ -117,7 +117,7 @@ class HotelFolioAndPackageService
             $this->ledger->post(new PostingDTO(
                 type: 'HTL_DESTINATION_PKG_SETTLE',
                 description: "Destination package settlement for {$package->package_code}",
-                idempotencyKey: "htl_pkg_settle:{$package->id}:".(string) Str::uuid(),
+                idempotencyKey: "hotel:package_settle:{$package->id}",
                 entries: $lines->toEntries('IDR'),
                 referenceType: 'htl_destination_packages',
                 referenceId: $package->id,
@@ -129,5 +129,37 @@ class HotelFolioAndPackageService
             'total_paid' => $package->total_price_idr,
             'settled_vendors' => count($vendorShares),
         ];
+    }
+
+    /**
+     * Corporate billing settlement (invoicing monthly to company as Accounts Receivable / City Ledger)
+     */
+    public function settleCorporateBilling(string $folioId, string $corporateId, int $amountIdr): HotelFolio
+    {
+        $folio = HotelFolio::findOrFail($folioId);
+
+        $folio->increment('total_paid', $amountIdr);
+        $newBalance = max(0, ($folio->total_room_charges + $folio->total_addon_charges) - $folio->total_paid);
+
+        $folio->update([
+            'outstanding_balance' => $newBalance,
+            'status' => $newBalance === 0 ? 'settled' : 'open',
+        ]);
+
+        if ($this->ledger && $amountIdr > 0) {
+            $this->ledger->post(new PostingDTO(
+                type: 'HOTEL_FOLIO_SETTLEMENT',
+                description: "Corporate billing AR for company {$corporateId} folio {$folio->id}",
+                idempotencyKey: "hotel:corp_billing:{$folio->id}:{$corporateId}:{$amountIdr}",
+                entries: Posting::lines()
+                    ->debit('htl:city_ledger_receivable:IDR', $amountIdr)
+                    ->credit('htl:room_revenue:IDR', $amountIdr)
+                    ->toEntries('IDR'),
+                referenceType: 'htl_folios',
+                referenceId: $folio->id,
+            ));
+        }
+
+        return $folio->fresh();
     }
 }

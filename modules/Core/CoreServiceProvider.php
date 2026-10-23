@@ -8,17 +8,16 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Modules\AutoServe\Domain\Events\BookingCompleted;
 use Modules\Core\Application\Actions\AcquireVehicleAction;
 use Modules\Core\Application\Actions\TransferVehicleOwnershipAction;
-use Modules\Core\Application\Listeners\NotifyBookingCompleted;
-use Modules\Core\Application\Listeners\NotifyPaymentCaptured;
-use Modules\Core\Application\Listeners\NotifyPaymentRefunded;
-use Modules\Core\Application\Listeners\RecordBookingCompletedPassportEvent;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
 use Modules\Core\Application\Services\ActivityLogger;
+use Modules\Core\Application\Services\Ai\DynamicPricingEngineService;
+use Modules\Core\Application\Services\Ai\StockPrescriptionEngineService;
+use Modules\Core\Application\Services\Ai\TransactionAnomalyDetectorService;
 use Modules\Core\Application\Services\ApprovalEngineService;
 use Modules\Core\Application\Services\AuditTrailService;
+use Modules\Core\Application\Services\CrossModuleSpineHandlers;
 use Modules\Core\Application\Services\DigitalTwinService;
 use Modules\Core\Application\Services\DocumentNumberingService;
 use Modules\Core\Application\Services\DocumentStoreService;
@@ -26,26 +25,43 @@ use Modules\Core\Application\Services\EventSpineService;
 use Modules\Core\Application\Services\NotificationService;
 use Modules\Core\Application\Services\OutboxBusService;
 use Modules\Core\Application\Services\RbacService;
+use Modules\Core\Application\Services\Resilience\DataSovereigntyComplianceService;
+use Modules\Core\Application\Services\Resilience\DisasterRecoveryDrillService;
+use Modules\Core\Application\Services\Resilience\MultiRegionResilienceEngineService;
+use Modules\Core\Application\Services\Scale\OutboxScaleProvisioner;
+use Modules\Core\Application\Services\Scale\PassportScaleProvisioner;
 use Modules\Core\Application\Services\SimClockService;
+use Modules\Core\Console\Commands\AuditAiCommand;
+use Modules\Core\Console\Commands\AuditMobileCommand;
+use Modules\Core\Console\Commands\AuditSimulationKernelCommand;
+use Modules\Core\Console\Commands\BenchmarkRunCommand;
+use Modules\Core\Console\Commands\ConsumeSpineCommand;
+use Modules\Core\Console\Commands\PqAuditChainsCommand;
 use Modules\Core\Console\Commands\ProcessOutboxCommand;
 use Modules\Core\Console\Commands\RunSimulationCommand;
+use Modules\Core\Console\Commands\ScaleProvisionCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
 use Modules\Core\Console\Commands\TwelveLinesComprehensiveAuditCommand;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\AuditTrailInterface;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Core\Contracts\DocumentStoreInterface;
+use Modules\Core\Contracts\DynamicPricingEngineInterface;
 use Modules\Core\Contracts\EventSpineInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Core\Contracts\StockPrescriptionEngineInterface;
+use Modules\Core\Contracts\TransactionAnomalyDetectorInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
+use Modules\Core\Domain\Contracts\DataSovereigntyComplianceInterface;
+use Modules\Core\Domain\Contracts\DisasterRecoveryDrillInterface;
+use Modules\Core\Domain\Contracts\MultiRegionResilienceInterface;
 use Modules\Core\Domain\Events\VehicleAcquired;
 use Modules\Core\Domain\Models\Vehicle;
-use Modules\Payment\Domain\Events\PaymentCaptured;
-use Modules\Payment\Domain\Events\PaymentRefunded;
 use Modules\Shared\Application\MenuRegistry;
 
 class CoreServiceProvider extends ServiceProvider
@@ -88,6 +104,11 @@ class CoreServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
+            ClockInterface::class,
+            SimClockService::class
+        );
+
+        $this->app->bind(
             SimClockInterface::class,
             SimClockService::class
         );
@@ -102,6 +123,38 @@ class CoreServiceProvider extends ServiceProvider
             DigitalTwinService::class
         );
 
+        // 64.1 - 64.3 AI Predictive Analytics & Governance Engines
+        $this->app->bind(
+            DynamicPricingEngineInterface::class,
+            DynamicPricingEngineService::class
+        );
+
+        $this->app->bind(
+            TransactionAnomalyDetectorInterface::class,
+            TransactionAnomalyDetectorService::class
+        );
+
+        $this->app->bind(
+            StockPrescriptionEngineInterface::class,
+            StockPrescriptionEngineService::class
+        );
+
+        // 66.1 - 66.2 Multi-Region Resilience, DR & Data Sovereignty
+        $this->app->bind(
+            DisasterRecoveryDrillInterface::class,
+            DisasterRecoveryDrillService::class
+        );
+
+        $this->app->bind(
+            MultiRegionResilienceInterface::class,
+            MultiRegionResilienceEngineService::class
+        );
+
+        $this->app->bind(
+            DataSovereigntyComplianceInterface::class,
+            DataSovereigntyComplianceService::class
+        );
+
         // Platform services — singletons so they can be injected anywhere
         $this->app->singleton(NotificationService::class);
         $this->app->singleton(ActivityLogger::class);
@@ -114,6 +167,14 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(SimClockService::class);
         $this->app->singleton(EventSpineService::class);
         $this->app->singleton(DigitalTwinService::class);
+        $this->app->singleton(DisasterRecoveryDrillService::class);
+        $this->app->singleton(MultiRegionResilienceEngineService::class);
+        $this->app->singleton(DataSovereigntyComplianceService::class);
+
+        $this->app->tag([
+            PassportScaleProvisioner::class,
+            OutboxScaleProvisioner::class,
+        ], 'scale.provisioner');
     }
 
     public function boot(): void
@@ -127,6 +188,10 @@ class CoreServiceProvider extends ServiceProvider
 
         if (file_exists(__DIR__.'/routes/web.php')) {
             $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        }
+
+        if (file_exists(__DIR__.'/routes/api.php')) {
+            $this->loadRoutesFrom(__DIR__.'/routes/api.php');
         }
 
         // === Gate: RBAC permission-based authorization ===
@@ -187,25 +252,67 @@ class CoreServiceProvider extends ServiceProvider
             activePattern: 'admin/audit-logs*',
         );
 
+        $registry->addItem(
+            label: 'AI & Analitik Governance',
+            route: 'admin.ai.index',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
+            roles: ['admin'],
+            order: 96,
+            group: 'Grup & Admin',
+            activePattern: 'admin/ai-governance*',
+        );
+
+        $registry->addItem(
+            label: 'Mobile Suite Governance',
+            route: 'admin.mobile.index',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>',
+            roles: ['admin'],
+            order: 95,
+            group: 'Grup & Admin',
+            activePattern: 'admin/mobile-governance*',
+        );
+
+        $registry->addItem(
+            label: 'Resiliensi & DR Multi-Region',
+            route: 'admin.resilience.index',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+            roles: ['admin'],
+            order: 94,
+            group: 'Grup & Admin',
+            activePattern: 'admin/resilience-governance*',
+        );
+
+        $registry->addItem(
+            label: 'Simulasi & Event Spine',
+            route: 'admin.simulation.index',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+            roles: ['admin'],
+            order: 93,
+            group: 'Grup & Admin',
+            activePattern: 'admin/simulation-governance*',
+        );
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 VerifyPassportsCommand::class,
                 SuperHealthCheckCommand::class,
                 ProcessOutboxCommand::class,
+                ConsumeSpineCommand::class,
                 RunSimulationCommand::class,
                 TwelveLinesComprehensiveAuditCommand::class,
+                ScaleProvisionCommand::class,
+                BenchmarkRunCommand::class,
+                AuditAiCommand::class,
+                AuditMobileCommand::class,
+                AuditSimulationKernelCommand::class,
+                PqAuditChainsCommand::class,
             ]);
         }
 
         // === Event Listeners ===
-
-        // Passport Hash-Chain
         Event::listen(VehicleAcquired::class, RecordVehicleAcquiredPassportEvent::class);
-        Event::listen(BookingCompleted::class, RecordBookingCompletedPassportEvent::class);
 
-        // Platform Notifications + Activity Log
-        Event::listen(BookingCompleted::class, NotifyBookingCompleted::class);
-        Event::listen(PaymentCaptured::class, NotifyPaymentCaptured::class);
-        Event::listen(PaymentRefunded::class, NotifyPaymentRefunded::class);
+        // === Event Spine Cross-Module Consumers ===
+        CrossModuleSpineHandlers::registerAll();
     }
 }

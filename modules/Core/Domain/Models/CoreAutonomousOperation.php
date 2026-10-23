@@ -14,7 +14,16 @@ class CoreAutonomousOperation extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'operation_code',
+        'line_code',
+        'autonomy_level',
+        'action_name',
+        'kill_switch_active',
+        'kill_switched_at',
+        'execution_status',
+    ];
 
     protected $casts = [
         'autonomy_level' => 'integer',

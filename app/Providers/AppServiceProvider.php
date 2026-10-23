@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Quality\Adapters\TwelveLinesAuditAdapter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Contracts\TwelveLinesAuditPort;
 use Modules\Integration\Domain\Models\ApiClient;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,7 +17,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            TwelveLinesAuditPort::class,
+            TwelveLinesAuditAdapter::class
+        );
     }
 
     /**

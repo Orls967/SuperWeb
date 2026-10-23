@@ -6,6 +6,7 @@ namespace Modules\Hotel\tests\Feature;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Modules\Hotel\Application\Services\HotelFolioAndPackageService;
 use Modules\Hotel\Domain\Models\DestinationPackage;
@@ -105,5 +106,37 @@ class HotelFolioTimeshareAndPackageTest extends TestCase
 
         $this->assertEquals(6000000, $res['total_paid']);
         $this->assertEquals(3, $res['settled_vendors']);
+    }
+
+    public function test_corporate_billing_posts_to_city_ledger_ar(): void
+    {
+        $folio = HotelFolio::create([
+            'id' => (string) Str::uuid(),
+            'reservation_id' => (string) Str::uuid(),
+            'guest_user_id' => (string) Str::uuid(),
+            'total_room_charges' => 5000000,
+            'total_addon_charges' => 1500000,
+            'total_paid' => 0,
+            'outstanding_balance' => 6500000,
+            'status' => 'open',
+        ]);
+
+        $settledFolio = $this->service->settleCorporateBilling($folio->id, 'CORP-ASTRA-01', 6500000);
+
+        $this->assertEquals(0, $settledFolio->outstanding_balance);
+        $this->assertEquals('settled', $settledFolio->status);
+
+        $this->assertDatabaseHas('bank_ledger_transactions', [
+            'type' => 'HOTEL_FOLIO_SETTLEMENT',
+            'reference_type' => 'htl_folios',
+            'reference_id' => $folio->id,
+        ]);
+    }
+
+    public function test_hotel_audit_zero_discrepancy(): void
+    {
+        $exitHotelAudit = Artisan::call('hotel:audit');
+        $this->assertSame(0, $exitHotelAudit);
+        $this->assertStringContainsString('Hotel audit PASSED with 0 discrepancy', Artisan::output());
     }
 }

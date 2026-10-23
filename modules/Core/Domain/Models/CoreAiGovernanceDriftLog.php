@@ -14,7 +14,15 @@ class CoreAiGovernanceDriftLog extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'log_code',
+        'model_name',
+        'data_drift_score',
+        'concept_drift_score',
+        'requires_retraining',
+        'checked_at',
+    ];
 
     protected $casts = [
         'data_drift_score' => 'float',

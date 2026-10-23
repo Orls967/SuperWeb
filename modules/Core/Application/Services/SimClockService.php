@@ -47,8 +47,6 @@ class SimClockService implements SimClockInterface
             $this->activeRun = $run;
             $this->currentVirtualNow = $startTime->copy();
 
-            Carbon::setTestNow($this->currentVirtualNow);
-
             return $run;
         });
     }
@@ -63,8 +61,6 @@ class SimClockService implements SimClockInterface
 
         $this->activeRun->virtual_now = $this->currentVirtualNow;
         $this->activeRun->save();
-
-        Carbon::setTestNow($this->currentVirtualNow);
 
         return $this->currentVirtualNow->copy();
     }
@@ -83,7 +79,6 @@ class SimClockService implements SimClockInterface
 
         $this->activeRun = null;
         $this->currentVirtualNow = null;
-        Carbon::setTestNow(null);
     }
 
     public function activeRun(): ?SimRun

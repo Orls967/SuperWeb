@@ -10,7 +10,17 @@ class EchelonStock extends Model
 {
     protected $table = 'sct_echelon_stocks';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'item_code',
+        'item_name',
+        'echelon_node',
+        'on_hand_qty',
+        'in_transit_qty',
+        'reserved_qty',
+        'safety_stock_qty',
+        'abc_class',
+        'xyz_class',
+    ];
 
     protected $casts = [
         'on_hand_qty' => 'integer',

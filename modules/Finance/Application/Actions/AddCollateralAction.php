@@ -7,7 +7,6 @@ namespace Modules\Finance\Application\Actions;
 use App\Models\User;
 use Brick\Math\BigDecimal;
 use Exception;
-use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
@@ -58,8 +57,8 @@ class AddCollateralAction extends BaseAction
                 throw new Exception("Pinjaman berstatus {$locked->status->label()} tidak menerima tambahan kolateral.");
             }
 
-            // Setiap pinjaman punya uuid stabil, jadi kunci dari pemanggil opsional.
-            $key = $idempotencyKey ?? ('loan_collateral_add_'.$loan->uuid.'_'.Str::random(10));
+            // Kunci deterministik berdasarkan identitas bisnis pinjaman & nominal
+            $key = $idempotencyKey ?? sprintf('fin:loan_collateral_add:%s:%s', $loan->uuid, $addition->__toString());
 
             if (LedgerTransaction::where('idempotency_key', $key)->exists()) {
                 return $loan->fresh(['collateralAsset', 'installments']);

@@ -2,71 +2,32 @@
 
 declare(strict_types=1);
 
+$moduleDirs = glob(dirname(__DIR__, 2).'/modules/*') ?: [];
+$discoveredControllers = [];
+$discoveredDomains = [];
+
+foreach ($moduleDirs as $d) {
+    if (! is_dir($d)) {
+        continue;
+    }
+    $mod = basename($d);
+    if (is_dir($d.'/Http/Controllers')) {
+        $discoveredControllers[] = "Modules\\{$mod}\\Http\\Controllers";
+    }
+    if (is_dir($d.'/Domain')) {
+        $discoveredDomains[] = "Modules\\{$mod}\\Domain";
+    }
+}
+
+sort($discoveredControllers);
+sort($discoveredDomains);
+
 arch('controllers do not use DB facade directly')
-    ->expect([
-        'Modules\AutoServe\Http\Controllers',
-        'Modules\AutoDex\Http\Controllers',
-        'Modules\Banking\Http\Controllers',
-        'Modules\Payment\Http\Controllers',
-        'Modules\Store\Http\Controllers',
-        'Modules\Crypto\Http\Controllers',
-        'Modules\Resto\Http\Controllers',
-        'Modules\Mall\Http\Controllers',
-        'Modules\Core\Http\Controllers',
-        'Modules\Finance\Http\Controllers',
-        'Modules\Logistics\Http\Controllers',
-        'Modules\Contract\Http\Controllers',
-        'Modules\Party\Http\Controllers',
-        'Modules\Agency\Http\Controllers',
-        'Modules\Partner\Http\Controllers',
-        'Modules\Treasury\Http\Controllers',
-        'Modules\Trade\Http\Controllers',
-        'Modules\TradeFinance\Http\Controllers',
-        'Modules\International\Http\Controllers',
-        'Modules\Intercompany\Http\Controllers',
-        'Modules\ControlTower\Http\Controllers',
-        'Modules\EnterpriseFinance\Http\Controllers',
-        'Modules\Integration\Http\Controllers',
-        'Modules\Hcm\Http\Controllers',
-        'Modules\Plm\Http\Controllers',
-        'Modules\Esg\Http\Controllers',
-        'Modules\B2b\Http\Controllers',
-        'Modules\Agri\Http\Controllers',
-        'Modules\Epc\Http\Controllers',
-    ])
+    ->expect($discoveredControllers)
     ->not->toUse('Illuminate\Support\Facades\DB');
 
 arch('domain does not depend on Http')
-    ->expect([
-        'Modules\AutoServe\Domain',
-        'Modules\AutoDex\Domain',
-        'Modules\Banking\Domain',
-        'Modules\Core\Domain',
-        'Modules\Payment\Domain',
-        'Modules\Shared\Domain',
-        'Modules\Store\Domain',
-        'Modules\Inventory\Domain',
-        'Modules\Crypto\Domain',
-        'Modules\Resto\Domain',
-        'Modules\Mall\Domain',
-        'Modules\Logistics\Domain',
-        'Modules\Agency\Domain',
-        'Modules\Partner\Domain',
-        'Modules\Treasury\Domain',
-        'Modules\Trade\Domain',
-        'Modules\TradeFinance\Domain',
-        'Modules\International\Domain',
-        'Modules\Intercompany\Domain',
-        'Modules\ControlTower\Domain',
-        'Modules\EnterpriseFinance\Domain',
-        'Modules\Integration\Domain',
-        'Modules\Hcm\Domain',
-        'Modules\Plm\Domain',
-        'Modules\Esg\Domain',
-        'Modules\B2b\Domain',
-        'Modules\Agri\Domain',
-        'Modules\Epc\Domain',
-    ])
+    ->expect($discoveredDomains)
     ->not->toUse([
         'Illuminate\Http',
         'Illuminate\Routing',

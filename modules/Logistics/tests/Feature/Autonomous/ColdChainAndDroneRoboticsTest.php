@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Logistics\tests\Feature\Autonomous;
 
 use Database\Seeders\LedgerAccountsSeeder;
@@ -7,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Logistics\Application\Services\Autonomous\AutonomousLogisticsService;
 use Modules\Logistics\Domain\Models\Autonomous\DroneUnit;
+use Modules\Logistics\Domain\Models\Autonomous\TempBreachHold;
 use Tests\TestCase;
 
 class ColdChainAndDroneRoboticsTest extends TestCase
@@ -111,5 +114,64 @@ class ColdChainAndDroneRoboticsTest extends TestCase
         $this->assertEquals('DELIVERED', $delivered->status);
         $this->assertNotNull($delivered->pod_signature_hash);
         $this->assertEquals('IDLE', $drone->refresh()->status);
+    }
+
+    public function test_80_7_two_source_audit_passes_cleanly(): void
+    {
+        $drone = DroneUnit::create([
+            'drone_code' => 'DRN-CLEAN-01',
+            'model_name' => 'Standard Drone',
+            'battery_percent' => 100,
+            'max_payload_kg' => 5.0,
+            'max_range_km' => 15.0,
+            'status' => 'IDLE',
+        ]);
+
+        $mission = $this->service->dispatchDroneMission(
+            drone: $drone,
+            shipmentCode: 'SHP-CLEAN-01',
+            packageWeightKg: 1.5,
+            distanceKm: 4.0,
+            destinationGeoHash: 'qqs-clean'
+        );
+
+        $this->service->completeDroneDelivery($mission, 'drop-01');
+
+        $breach = $this->service->recordTemperatureCheck(
+            shipmentCode: 'SHP-CLEAN-COLD-01',
+            carrierId: 10,
+            recordedTempC: 10.0,
+            maxAllowedTempC: 4.0,
+            durationMinutes: 15,
+            carrierPayableIdr: 2_000_000
+        );
+
+        $audit = $this->service->auditColdChain();
+
+        $this->assertTrue($audit['passed']);
+        $this->assertEmpty($audit['discrepancies']);
+        $this->assertEquals(1, $audit['holds_checked']);
+        $this->assertEquals(1, $audit['missions_checked']);
+    }
+
+    public function test_80_7_audit_fails_when_data_is_corrupted(): void
+    {
+        TempBreachHold::create([
+            'breach_code' => 'BRC-CORRUPT-TEST-01',
+            'shipment_code' => 'SHP-CORRUPT-01',
+            'carrier_id' => 99,
+            'recorded_temp_c' => 15.0,
+            'max_allowed_temp_c' => 4.0,
+            'duration_minutes' => 30,
+            'hold_amount_idr' => 10_000_000,
+            'hash_proof' => 'invalid_tampered_proof',
+            'status' => 'HELD',
+        ]);
+
+        $audit = $this->service->auditColdChain();
+
+        $this->assertFalse($audit['passed']);
+        $this->assertNotEmpty($audit['discrepancies']);
+        $this->assertStringContainsString('BRC-CORRUPT-TEST-01', $audit['discrepancies'][0]);
     }
 }

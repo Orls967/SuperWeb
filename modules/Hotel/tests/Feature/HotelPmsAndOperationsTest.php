@@ -6,6 +6,7 @@ namespace Modules\Hotel\tests\Feature;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Modules\Hotel\Application\Services\HotelOperationsService;
 use Modules\Hotel\Domain\Models\HotelProperty;
@@ -134,5 +135,173 @@ class HotelPmsAndOperationsTest extends TestCase
         $this->assertEquals('available', $room->status);
         $this->assertNull($room->smart_lock_token);
         $this->assertTrue($room->energy_setback_active);
+    }
+
+    public function test_a_oversell_within_percent_limit_and_reconfirmation_flow(): void
+    {
+        // Create a property with 100 rooms of type SUITE
+        $property = HotelProperty::create([
+            'id' => (string) Str::uuid(),
+            'property_code' => 'HTL-JAKARTA-01',
+            'name' => 'Grand Hyatt Jakarta',
+            'property_type' => 'CITY_HOTEL',
+            'city' => 'Jakarta Pusat',
+            'total_rooms' => 100,
+        ]);
+
+        for ($i = 1; $i <= 100; $i++) {
+            HotelRoom::create([
+                'id' => (string) Str::uuid(),
+                'property_id' => $property->id,
+                'room_number' => "SUITE-{$i}",
+                'room_type' => 'SUITE',
+                'base_rate_idr' => 2000000,
+                'status' => 'available',
+            ]);
+        }
+
+        // Fill all 100 rooms
+        for ($i = 1; $i <= 100; $i++) {
+            $this->hotelService->createReservation(
+                propertyId: $property->id,
+                roomType: 'SUITE',
+                guestUserId: (string) Str::uuid(),
+                checkInDate: '2026-12-01',
+                checkOutDate: '2026-12-02',
+                requestedRateIdr: 2000000
+            );
+        }
+
+        // 101, 102, 103 should be accepted with status confirmed_overbooked (3% overbooking limit)
+        $overbooked1 = $this->hotelService->createReservation(
+            propertyId: $property->id,
+            roomType: 'SUITE',
+            guestUserId: (string) Str::uuid(),
+            checkInDate: '2026-12-01',
+            checkOutDate: '2026-12-02',
+            requestedRateIdr: 2000000
+        );
+        $this->assertEquals('confirmed_overbooked', $overbooked1->status);
+
+        // Reconfirmation flow
+        $reconfirmed = $this->hotelService->reconfirmReservation($overbooked1->id);
+        $this->assertEquals('confirmed_reconfirmed', $reconfirmed->status);
+
+        $overbooked2 = $this->hotelService->createReservation(
+            propertyId: $property->id,
+            roomType: 'SUITE',
+            guestUserId: (string) Str::uuid(),
+            checkInDate: '2026-12-01',
+            checkOutDate: '2026-12-02',
+            requestedRateIdr: 2000000
+        );
+        $this->assertEquals('confirmed_overbooked', $overbooked2->status);
+
+        $overbooked3 = $this->hotelService->createReservation(
+            propertyId: $property->id,
+            roomType: 'SUITE',
+            guestUserId: (string) Str::uuid(),
+            checkInDate: '2026-12-01',
+            checkOutDate: '2026-12-02',
+            requestedRateIdr: 2000000
+        );
+        $this->assertEquals('confirmed_overbooked', $overbooked3->status);
+
+        // 104th reservation exceeds 3% overbooking limit and must be rejected
+        $this->expectException(\RuntimeException::class);
+        $this->hotelService->createReservation(
+            propertyId: $property->id,
+            roomType: 'SUITE',
+            guestUserId: (string) Str::uuid(),
+            checkInDate: '2026-12-01',
+            checkOutDate: '2026-12-02',
+            requestedRateIdr: 2000000
+        );
+    }
+
+    public function test_b_smart_lock_duplicate_and_expired_token_rejected(): void
+    {
+        $guestId = (string) Str::uuid();
+        $res = $this->hotelService->createReservation(
+            propertyId: $this->property->id,
+            roomType: 'VILLA',
+            guestUserId: $guestId,
+            checkInDate: '2026-11-01',
+            checkOutDate: '2026-11-03',
+            requestedRateIdr: 3000000
+        );
+
+        $this->hotelService->checkIn($res->id);
+        $room = $this->room->fresh();
+
+        // Valid token accepted
+        $this->assertTrue($this->hotelService->verifySmartLockAccess($room->id, $room->smart_lock_token));
+
+        // Invalid token rejected
+        $this->assertFalse($this->hotelService->verifySmartLockAccess($room->id, 'WRONG-TOKEN-999'));
+
+        // Expired token rejected
+        $room->update(['smart_lock_expires_at' => now()->subDay()]);
+        $this->assertFalse($this->hotelService->verifySmartLockAccess($room->id, $room->smart_lock_token));
+    }
+
+    public function test_c_dynamic_rate_respects_floor_and_contract_rate_wins(): void
+    {
+        // 1. Below floor rate (1,500,000 < 3,000,000) -> floor rate (3,000,000) enforced
+        $res1 = $this->hotelService->createReservation(
+            propertyId: $this->property->id,
+            roomType: 'VILLA',
+            guestUserId: (string) Str::uuid(),
+            checkInDate: '2026-11-10',
+            checkOutDate: '2026-11-12',
+            requestedRateIdr: 1500000,
+            contractRateIdr: null
+        );
+        $this->assertEquals(3000000, $res1->daily_rate_idr);
+
+        // 2. Corporate contract rate (2,500,000) wins immutably over floor and requested rate
+        $res1->update(['status' => 'cancelled']);
+        HotelRoom::where('id', $this->room->id)->update(['status' => 'available']);
+        $res2 = $this->hotelService->createReservation(
+            propertyId: $this->property->id,
+            roomType: 'VILLA',
+            guestUserId: (string) Str::uuid(),
+            checkInDate: '2026-11-10',
+            checkOutDate: '2026-11-12',
+            requestedRateIdr: 4500000,
+            contractRateIdr: 2500000
+        );
+        $this->assertEquals(2500000, $res2->daily_rate_idr);
+    }
+
+    public function test_d_vacant_room_triggers_energy_setback(): void
+    {
+        $guestId = (string) Str::uuid();
+        $res = $this->hotelService->createReservation(
+            propertyId: $this->property->id,
+            roomType: 'VILLA',
+            guestUserId: $guestId,
+            checkInDate: '2026-11-01',
+            checkOutDate: '2026-11-02',
+            requestedRateIdr: 3000000
+        );
+
+        $this->hotelService->checkIn($res->id);
+        $this->assertFalse($this->room->fresh()->energy_setback_active);
+
+        // Checkout sets vacant room setback active
+        $this->hotelService->checkOutAndSettleFolio($res->id, 3000000);
+        $this->assertTrue($this->room->fresh()->energy_setback_active);
+    }
+
+    public function test_e_hotel_audit_reconciles_room_night_revenue_with_ledger(): void
+    {
+        $exitHotelAudit = Artisan::call('hotel:audit');
+        $this->assertSame(0, $exitHotelAudit);
+        $this->assertStringContainsString('Hotel audit PASSED with 0 discrepancy', Artisan::output());
+
+        $exitHtlAudit = Artisan::call('htl:audit');
+        $this->assertSame(0, $exitHtlAudit);
+        $this->assertStringContainsString('Hotel audit PASSED with 0 discrepancy', Artisan::output());
     }
 }

@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Hospital\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ImagingStudy extends Model
 {
@@ -24,5 +27,10 @@ class ImagingStudy extends Model
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class, 'patient_id');
+    }
+
+    public function series(): HasMany
+    {
+        return $this->hasMany(ImagingSeries::class, 'study_id');
     }
 }

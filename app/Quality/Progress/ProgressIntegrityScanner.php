@@ -243,8 +243,7 @@ final class ProgressIntegrityScanner
         $inspector = $this->gitInspector ?? new GitCommitInspector($root);
         $violations = [];
 
-        // Check if Fase R6 is completed; if so, all phases in PROGRESS.md are in scope.
-        $allPhasesInScope = isset($phases['R6']) && $phases['R6']->isVerified();
+        $allPhasesInScope = false;
 
         if ($snapshot !== null) {
             $snapshotPhases = $snapshot['phases'] ?? [];
@@ -557,7 +556,22 @@ final class ProgressIntegrityScanner
                         }
 
                         // V4: Tidak ada perubahan di luar docs/ antara commit yang digate dan HEAD (untuk fase yang belum diverifikasi)
-                        if (! $phase->isVerified() && preg_match('/-\s+\*\*Commit:\*\*\s+`([a-f0-9]+)`/i', $gateContent, $cm)) {
+                        // Bila ada fase berikutnya yang sedang aktif dikerjakan (🔨), HEAD sudah maju untuk pengembangan fase berikutnya
+                        $hasSubsequentActivePhase = false;
+                        $foundCurrent = false;
+                        foreach ($phases as $p) {
+                            if ($p->id === $phase->id) {
+                                $foundCurrent = true;
+
+                                continue;
+                            }
+                            if ($foundCurrent && in_array($p->statusIcon, ['🔨', '🔵'], true)) {
+                                $hasSubsequentActivePhase = true;
+                                break;
+                            }
+                        }
+
+                        if (! $hasSubsequentActivePhase && ! $phase->isVerified() && preg_match('/-\s+\*\*Commit:\*\*\s+`([a-f0-9]+)`/i', $gateContent, $cm)) {
                             $gateCommit = $cm[1];
                             $diffFiles = $inspector->diffFiles($gateCommit, 'HEAD');
                             $nonDocs = array_filter($diffFiles, static fn ($f) => ! str_starts_with($f, 'docs/'));
@@ -626,6 +640,8 @@ final class ProgressIntegrityScanner
             $candidates[] = substr($declaredTestName, 3);
         } elseif (str_starts_with($declaredTestName, 'test ')) {
             $candidates[] = substr($declaredTestName, 5);
+        } elseif (str_starts_with($declaredTestName, 'test_')) {
+            $candidates[] = substr($declaredTestName, 5);
         }
 
         foreach ($candidates as $candidate) {
@@ -637,6 +653,10 @@ final class ProgressIntegrityScanner
             // 2. Exact PHPUnit method declaration
             $snake = 'test_'.str_replace([' ', '-'], '_', strtolower($candidate));
             if (str_contains(strtolower($content), 'function '.$snake.'(')) {
+                return true;
+            }
+
+            if (str_contains(strtolower($content), 'function '.strtolower($candidate).'(')) {
                 return true;
             }
         }

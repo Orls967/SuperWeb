@@ -3,6 +3,7 @@
 namespace Modules\B2b\tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\B2b\Application\Services\B2bService;
 use Modules\B2b\Domain\Models\B2bEscrowAccount;
@@ -14,6 +15,12 @@ use Tests\TestCase;
 class B2bTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(LedgerAccountsSeeder::class);
+    }
 
     public function test_can_create_wholesale_catalog_item_and_rfq(): void
     {

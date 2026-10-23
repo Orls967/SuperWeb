@@ -152,10 +152,12 @@ class MallLoyaltyLedgerService implements LoyaltyLedger
                 PostingEntryDTO::forAccount($mallPointsLiability->id, 'PTS', $ptsBd),
             ];
 
+            $ptsRef = $referenceId ? (string) $referenceId : ('usr_'.$user->id.'_pts_'.$pointsToRedeem);
+
             $this->ledger->post(new PostingDTO(
                 type: TransactionType::LOYALTY_REDEEM->value,
                 description: $description." ({$pointsToRedeem} PTS)",
-                idempotencyKey: 'pts_redeem_disc_'.Str::uuid(),
+                idempotencyKey: "mall:points_redeem:{$user->id}:{$ptsRef}",
                 entries: $ptsEntries,
                 referenceType: 'points_discount',
                 referenceId: $referenceId ? (int) $referenceId : null,
@@ -199,7 +201,7 @@ class MallLoyaltyLedgerService implements LoyaltyLedger
             $this->ledger->post(new PostingDTO(
                 type: TransactionType::VOUCHER_ISSUE->value,
                 description: "Subsidi diskon poin loyalty: {$description} (Rp ".number_format($discountAmountIdr).')',
-                idempotencyKey: 'idr_pts_disc_'.Str::uuid(),
+                idempotencyKey: "mall:points_discount_idr:{$user->id}:{$ptsRef}",
                 entries: $idrEntries,
                 referenceType: 'points_discount_idr',
                 referenceId: $referenceId ? (int) $referenceId : null,

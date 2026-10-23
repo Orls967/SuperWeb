@@ -14,7 +14,14 @@ class RetSubscriptionBundle extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'bundle_code',
+        'bundle_name',
+        'monthly_price_minor',
+        'line_settlement_breakdown',
+        'status',
+    ];
 
     protected $casts = [
         'monthly_price_minor' => 'integer',

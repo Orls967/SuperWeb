@@ -14,7 +14,18 @@ class EscoPerformanceContract extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'contract_number',
+        'client_property_id',
+        'baseline_energy_cost_minor',
+        'actual_energy_cost_minor',
+        'verified_savings_minor',
+        'esco_share_pct',
+        'esco_remuneration_minor',
+        'client_retained_saving_minor',
+        'ledger_transaction_id',
+    ];
 
     protected $casts = [
         'baseline_energy_cost_minor' => 'integer',

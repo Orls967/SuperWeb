@@ -10,7 +10,14 @@ class SodRule extends Model
 {
     protected $table = 'ef_sod_rules';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'rule_code',
+        'role_a',
+        'role_b',
+        'description',
+        'risk_level',
+        'is_active',
+    ];
 
     protected $casts = [
         'is_active' => 'boolean',

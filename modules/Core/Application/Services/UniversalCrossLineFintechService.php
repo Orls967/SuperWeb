@@ -62,7 +62,7 @@ class UniversalCrossLineFintechService
             $this->ledger->post(new PostingDTO(
                 type: 'CROSS_LINE_STABLECOIN_SETTLE',
                 description: "Cross-line stablecoin clearing: {$sourceEntity} -> {$targetEntity} ({$referenceMemo})",
-                idempotencyKey: "stable_clear:{$sourceEntity}:{$targetEntity}:".(string) Str::uuid(),
+                idempotencyKey: "core:stable_clear:{$sourceEntity}:{$targetEntity}:".md5($referenceMemo),
                 entries: [
                     PostingEntryDTO::forCode("clearing:stablecoin:{$sourceEntity}:USDC", 'USDC', -$stablecoinMinorUnits),
                     PostingEntryDTO::forCode("clearing:stablecoin:{$targetEntity}:USDC", 'USDC', $stablecoinMinorUnits),

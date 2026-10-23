@@ -14,7 +14,18 @@ class EduContingentContract extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'contract_code',
+        'worker_id',
+        'client_entity_id',
+        'project_code',
+        'contract_max_hours',
+        'hours_rendered',
+        'hourly_rate_minor',
+        'valid_until',
+        'status',
+    ];
 
     protected $casts = [
         'contract_max_hours' => 'integer',

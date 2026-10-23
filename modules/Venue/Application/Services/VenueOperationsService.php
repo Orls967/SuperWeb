@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Venue\Application\Services;
 
 use Illuminate\Support\Facades\DB;
@@ -11,6 +13,9 @@ use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentZone;
 
+/**
+ * Fase 89: Venue Operations, Ticketing, Age Verification & Crowd Safety
+ */
 class VenueOperationsService
 {
     public function __construct(
@@ -166,5 +171,30 @@ class VenueOperationsService
 
             return $locked;
         });
+    }
+
+    /**
+     * Two-source venue, crowd density and ticketing audit.
+     */
+    public function auditVenue(): array
+    {
+        $eventCount = EntertainmentEvent::count();
+        $ticketCount = EntertainmentTicket::count();
+        $bookingCount = EntertainmentTableBooking::count();
+        $zoneCount = EntertainmentZone::count();
+        $discrepancies = 0;
+
+        // Two-source verification: verify that no zone occupancy exceeds capacity limit
+        $overCapacityZones = EntertainmentZone::whereColumn('current_occupancy', '>', 'capacity_limit')->count();
+        $discrepancies += $overCapacityZones;
+
+        return [
+            'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
+            'event_count' => $eventCount,
+            'ticket_count' => $ticketCount,
+            'booking_count' => $bookingCount,
+            'zone_count' => $zoneCount,
+            'discrepancies' => $discrepancies,
+        ];
     }
 }

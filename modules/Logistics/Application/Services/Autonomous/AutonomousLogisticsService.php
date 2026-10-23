@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Logistics\Application\Services\Autonomous;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
@@ -43,7 +46,8 @@ class AutonomousLogisticsService
                 return $existing; // Idempotent check
             }
 
-            $breachCode = 'BRC-'.strtoupper(bin2hex(random_bytes(6)));
+            $seed = hash('sha256', "{$shipmentCode}:{$carrierId}:{$recordedTempC}:{$durationMinutes}");
+            $breachCode = 'BRC-'.strtoupper(substr($seed, 0, 10));
             $proof = hash('sha256', "{$breachCode}:{$shipmentCode}:{$carrierId}:{$recordedTempC}:{$durationMinutes}");
 
             $hold = TempBreachHold::create([
@@ -142,8 +146,11 @@ class AutonomousLogisticsService
                 'battery_percent' => max(0, $lockedDrone->battery_percent - (int) ceil($distanceKm * 2 * 3)),
             ]);
 
+            $missionSeed = hash('sha256', "{$lockedDrone->id}:{$shipmentCode}:{$packageWeightKg}:{$distanceKm}:{$destinationGeoHash}");
+            $missionCode = 'DRN-'.strtoupper(substr($missionSeed, 0, 10));
+
             return DroneMission::create([
-                'mission_code' => 'DRN-'.strtoupper(bin2hex(random_bytes(6))),
+                'mission_code' => $missionCode,
                 'drone_unit_id' => $lockedDrone->id,
                 'shipment_code' => $shipmentCode,
                 'package_weight_kg' => $packageWeightKg,
@@ -162,7 +169,7 @@ class AutonomousLogisticsService
         return DB::transaction(function () use ($mission, $podGeoHash) {
             $locked = DroneMission::where('id', $mission->id)->lockForUpdate()->firstOrFail();
 
-            $signature = hash('sha256', "{$locked->mission_code}:{$podGeoHash}:".now()->toIso8601String());
+            $signature = hash('sha256', "{$locked->mission_code}:{$podGeoHash}:DELIVERED");
 
             $locked->update([
                 'status' => 'DELIVERED',
@@ -175,5 +182,59 @@ class AutonomousLogisticsService
 
             return $locked;
         });
+    }
+
+    /**
+     * Two-source audit for Autonomous Cold-Chain & Drone Robotics:
+     * Source 1: Verification of breach holds hash proof and drone missions POD integrity.
+     * Source 2: Verification of dispute escrow ledger balance consistency.
+     */
+    public function auditColdChain(): array
+    {
+        $discrepancies = [];
+
+        $holds = TempBreachHold::all();
+        $holdsChecked = $holds->count();
+
+        foreach ($holds as $hold) {
+            // Verify hash proof
+            $expectedProof = hash('sha256', "{$hold->breach_code}:{$hold->shipment_code}:{$hold->carrier_id}:{$hold->recorded_temp_c}:{$hold->duration_minutes}");
+            if ($hold->hash_proof !== $expectedProof) {
+                $discrepancies[] = "Breach {$hold->breach_code} hash proof invalid or tampered";
+            }
+        }
+
+        $missions = DroneMission::all();
+        $missionsChecked = $missions->count();
+
+        foreach ($missions as $mission) {
+            if ($mission->status === 'DELIVERED' && empty($mission->pod_signature_hash)) {
+                $discrepancies[] = "Mission {$mission->mission_code} delivered without POD signature hash";
+            }
+        }
+
+        $dronesChecked = DroneUnit::count();
+
+        // Source 2: Ledger consistency for active HELD escrow balances
+        if (Schema::hasTable('bk_ledger_accounts')) {
+            $activeHolds = TempBreachHold::where('status', 'HELD')->get();
+            $expectedEscrowBalance = (int) $activeHolds->sum('hold_amount_idr');
+
+            $rows = DB::select('SELECT cached_balance FROM bk_ledger_accounts WHERE code = ? LIMIT 1', ['lgx:dispute_escrow:IDR']);
+            if (! empty($rows)) {
+                $actualEscrow = abs((int) $rows[0]->cached_balance);
+                if ($expectedEscrowBalance !== $actualEscrow) {
+                    $discrepancies[] = "Ledger escrow mismatch: expected {$expectedEscrowBalance}, got {$actualEscrow} in lgx:dispute_escrow:IDR";
+                }
+            }
+        }
+
+        return [
+            'holds_checked' => $holdsChecked,
+            'missions_checked' => $missionsChecked,
+            'drones_checked' => $dronesChecked,
+            'discrepancies' => $discrepancies,
+            'passed' => empty($discrepancies),
+        ];
     }
 }

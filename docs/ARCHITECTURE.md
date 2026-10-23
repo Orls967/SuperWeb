@@ -124,6 +124,15 @@ File baseline, `route-roles.php`, workflow CI, `PROGRESS.md`, `DECISIONS.md`, `d
 | **Media** | `med_` | Stage-gate produksi film/musik, DRM watermark tamper-evident, distribusi SVOD/broadcast, royalti kreator, sponsorship escrow. |
 | **Education** | `edu_` | Student cohort class, grading engine, sertifikasi kompetensi digital hash-chain, akreditasi kurikulum, tuition split & scholarship fee. |
 | **Retail** | `ret_` | Omnichannel OMS, inventory allocation, dark store picking wave, q-commerce ultra-fast dispatch, dynamic loyalty sync. |
+| **CloudKitchen** | `ck_` | Dapur satelit terdistribusi, katering industri, meal plan HCM, pembagian pesanan multi-brand dan integrasi POS. |
+| **Ev** | `ev_` | Ekosistem kendaraan listrik, stasiun pengisian SPKLU, monitoring sesi daya kWh, dynamic pricing tarif beban puncak. |
+| **Fleet** | `flt_` | Manajemen armada korporat, pemeliharaan preventif berbasis kilometer, monitoring utilisasi aset kendaraan grup. |
+| **Insurance** | `ins_` | InsurTech terpadu, polis parametrik otomatis, underwriting risiko multi-vektor, penyelesaian klaim autopilot tanpa berkas manual. |
+| **Proptech** | `prp_` | Manajemen gedung pintar IoT, model BIM digital twin, kapitalisasi konstruksi dan pemesanan flex-space anti-overlap. |
+| **Rwa** | `rwa_` | Tokenisasi Real World Asset, alokasi dividen pro-rata integer minor unit, pengamanan deviasi rounding reserve. |
+| **Telematics** | `tlm_` | Ingestion data sensor IoT kendaraan, CAN-bus OBD-II telemetri real-time, deteksi kode diagnostik kerusakan (DTC) dan skor pengemudi. |
+| **Vending** | `vnd_` | Jaringan mesin penjual pintar otomatis, pembayaran dompet QRIS instan, pemantauan stok rak nirkabel dan auto-replenishment. |
+| **Wealth** | `wm_` | Wealth management terpadu, profil risiko investor, portofolio robo-advisor otomatis, guardrail dana darurat. |
 
 ---
 
@@ -583,3 +592,478 @@ $$\sum \text{Entries Seluruh Akun per Aset} = 0$$
 | `lgx:cash:hub:{id}:IDR` | IDR | CASH | true | Posisi kas setoran COD di hub operasi |
 | `lgx:claim_expense:IDR` | IDR | EXPENSE | false | Beban pembayaran klaim kerusakan / kehilangan barang |
 | `lgx:fuel_expense:IDR` | IDR | EXPENSE | false | Beban pembelian bahan bakar minyak armada |
+| `rwa:dust_reserve:IDR` | IDR | REVENUE | false | Penampung residu pembulatan pro-rata dividen token RWA |
+| `rwa:dividend_pool:IDR` | IDR | LIABILITY | true | Pool penampung dividen siap disalurkan ke investor RWA |
+| `escrow:gig:task:{id}:IDR` | IDR | ESCROW | false | Rekening penampung upah talenta gig board hingga pekerjaan tervalidasi |
+
+---
+
+## 8. ARSITEKTUR INTEGRASI KONGLOMERASI 12 LINI BISNIS (FASE 96–100)
+
+Platform AutoServe telah mencapai tingkat kematangan arsitektur enterprise konglomerasi 12 lini bisnis terpadu dengan 5 pilar gelombang evolusi:
+
+```mermaid
+graph TD
+    subgraph "FinTech & Aset Riil (Fase 96)"
+        RWA["RWA Token Engine<br/>Pro-Rata & Dust Reserve"]
+        INS["InsurTech 12 Parametric<br/>Auto-Disbursement"]
+        CREDIT["360° Credit Scoring<br/>Multi-Vector Analytics"]
+        USDC["24/7 USDC Locked FX<br/>Dynamic Cash Sweep"]
+    end
+
+    subgraph "HCM, ESG & Event Spine (Fase 97)"
+        GIG["Universal Talent Gig Board<br/>UU 13/2003 Overtime Guardrail"]
+        ESG["Consolidated Scope 1-3 ESG<br/>Carbon Emission Engine"]
+        SPINE["Universal Event Spine<br/>Transactional Outbox & DLQ"]
+        CMD["Executive Command Center<br/>12-Lines Consolidated P&L"]
+    end
+
+    subgraph "Skalabilitas & Resiliensi (Fase 98)"
+        SEEDER["Twelve Lines Ultra Seeder<br/>Memory-Capped < 64MB"]
+        INDEX["Composite Scale Indexes<br/>Query Budget CI Guardrails"]
+        LOCK["1.000 Req Pessimistic Lock<br/>Zero Room/Seat Oversell"]
+        CHAOS["Mid-Tx Crash Rollback<br/>Clean DLQ Worker Recovery"]
+    end
+
+    subgraph "AI & Analitik Prediktif (Fase 99)"
+        PRICE["Dynamic Pricing Engine<br/>CONTRACT_PRIORITY Wins"]
+        FORECAST["Multi-Vector Forecasting<br/>MAPE ≤ 12.5% Target"]
+        QUARANTINE["AI Anomaly Quarantine<br/>5-Vector Risk Score ≥ 60"]
+        OPS["Prescriptive Operations<br/>Autonomous vs Managerial"]
+    end
+
+    subgraph "Keamanan & Tata Kelola (Fase 100)"
+        RBAC["60+ Enterprise Roles<br/>Granular Conglomerate RBAC"]
+        ENCRYPT["AES-256 Medical Encryption<br/>Field-Level NIK & Diagnosis"]
+        CALENDAR["12-Lines Compliance Calendar<br/>Permit Expiry Auto-Alerts"]
+        ABUSE["Anti-Abuse Rate Limiter<br/>Biometric & IoT Token Rotation"]
+        HEALTH["super:health-check<br/>12 Platform Pillars Observability"]
+    end
+
+    RWA --> SPINE
+    INS --> SPINE
+    GIG --> SPINE
+    SPINE --> CMD
+    CMD --> HEALTH
+    PRICE --> QUARANTINE
+    QUARANTINE --> HEALTH
+    RBAC --> HEALTH
+```
+
+### 8.1 FinTech, Tokenisasi Aset Riil & Asuransi Parametrik (Fase 96)
+- **RWA Pro-Rata Dividend Invariant**:
+  $$\sum_{i=1}^n \text{payout}_i + \text{dust} = \text{total\_pool}$$
+  Alokasi dividen per token dihitung proporsional berbasis minor-unit integer. Selisih pembulatan (*dust*) dikreditkan langsung ke rekening penampung holding `rwa:dust_reserve:IDR`, menjamin nol kebocoran moneter.
+- **Parametric Insurance Engine**: 12 pemicu parametrik otomatis (cuaca ekstrem, delay logistik > 120 menit, suhu reefer cold chain $> 4^\circ\text{C}$, dsb.) memicu pembayaran klaim instan tanpa intervensi manual saat sensor telemetri tervalidasi.
+- **USDC Locked Clearing**: Kliring valas 24/7 menggunakan settlement stablecoin dengan kurs terkunci saat order quote terbit.
+
+### 8.2 Talent Gig Interoperability, ESG & Event Spine (Fase 97)
+- **Universal Talent Gig Board**: Pertukaran tenaga kerja terampil antar-anak usaha (Hotel, Venue, RS, Tambang, Logistik). Penugasan otomatis dipagari aturan hukum ketenagakerjaan UU 13/2003 (maks 8 jam/hari, 14 jam lembur/minggu) dengan pencairan upah berbasis bukti kerja terverifikasi (anti-self-approval).
+- **Consolidated Scope 1, 2, 3 ESG**:
+  - Scope 1: Emisi bahan bakar armada dan alat berat tambang.
+  - Scope 2: Konsumsi listrik gedung, mall, dan charging EV SPKLU.
+  - Scope 3: Rantai pasok pengadaan bahan mentah dan vendor pihak ketiga.
+- **Transactional Outbox Event Spine**: Publikasi event lintas modul terdistribusi dengan garansi delivery at-least-once, de-duplikasi idempoten, dan pengalihan ke Dead-Letter Queue (DLQ) setelah 3 kegagalan beruntun.
+
+### 8.3 Skalabilitas Bertekanan Tinggi & Resiliensi Ekstrem (Fase 98)
+- **Ultra Seeder Skala**: Dataset realistis ratusan ribu baris yang dibuat secara deterministik dalam chunk 500 baris dengan konsumsi memori terisolasi $< 64\text{ MB}$.
+- **Pessimistic Concurrency Interlock**: Pemesanan kamar hotel dan tiket venue dilindungi klausa `lockForUpdate()`, membuktikan nol oversell di bawah 1.000 transaksi bersamaan.
+- **Crash Rollback & DLQ**: Interupsi worker atau kegagalan transaksi seketika memicu rollback ACID bersih tanpa baris orphan, sementara pesan outbox yang gagal dieksekusi dialihkan ke DLQ untuk inspeksi pasca-insiden.
+
+### 8.4 AI Prediktif, Penetapan Harga & Karantina Anti-Fraud (Fase 99)
+- **Unified Dynamic Pricing Engine**:
+  - Aturan mutlak: `CONTRACT_PRIORITY` menang tanpa syarat atas segala pengali lonjakan permintaan dinamis (*surge multiplier*).
+  - Transaksi non-kontrak dibatasi ketat oleh batas lantai (*floor price*) dan batas atap (*ceiling price*).
+- **Multi-Vector Demand Forecasting**: Memadukan data footfall mall, reservasi hotel, tren musim, dan kalender festival dengan target akurasi MAPE $\le 12.5\%$.
+- **Karantina Anti-Fraud AI 5-Vektor**: Evaluasi transaksi seketika atas 5 indikator (kecepatan transaksi, anomali magnitudo, lonjakan geolokasi, kepatuhan kontrak, dan sidik jari perangkat). Skor risiko $\ge 60$ otomatis mengisolasi transaksi ke `core_ai_anomaly_quarantines` dan memblokir settlement buku besar.
+
+### 8.5 Keamanan Enterprise, Enkripsi Medis & Observabilitas 12 Pilar (Fase 100)
+- **RBAC 60+ Role Konglomerasi**: Matriks otorisasi data-driven melayani 60+ peran granular lintas lini (medis, hotel, venue, tambang, logistik, treasury, compliance).
+- **Field-Level AES-256 Medical Encryption**: Data rekam medis sensitif (NIK pasien, diagnosis ICD-10, rincian obat resep) pada model `PatientMedicalRecord` terenkripsi AES-256-GCM secara native di database, mematuhi standar privasi UU PDP / HIPAA.
+- **Compliance Calendar 12 Lini**: Pemantauan otomatis masa berlaku izin operasional (RS, keramaian venue, pariwisata hotel, IUP/AMDAL tambang, halal BPOM) dengan eskalasi alert `WARNING_EXPIRING_SOON` dan `CRITICAL_EXPIRED`.
+- **Anti-Abuse Rate Limiting Engine**:
+  - Verifikasi usia venue dengan biometrik simulasi & lockout bruteforce.
+  - Akses darurat IGD terisolasi dengan auto-lockout terminal IP 15 menit pasca-3 kegagalan.
+  - Pencegahan bot mass-booking (anti-scalping) tiket & kamar hotel.
+  - Rotasi berkala token perangkat IoT telematika dengan grace period 60 detik.
+- **Master Multi-Pillar Observability (`super:health-check`)**: Memindai kesehatan 12 pilar utama ekosistem platform secara serentak dengan toleransi zero-discrepancy:
+  1. Koneksi Database Primary (latensi $< 50$ ms)
+  2. Cache & In-Memory Store
+  3. Izin Akses Direktori Storage (writable)
+  4. Konsistensi Double-Entry Ledger (`bank:reconcile` 0 selisih)
+  5. Integritas Hash-Chain Paspor Kendaraan (`core:verify-passports` rantai utuh)
+  6. Audit Tagihan & Revenue Mall (`mall:audit-billing` 0 selisih)
+  7. Operasional & Shift Kasir Resto (`resto:close-day --check` seimbang)
+  8. Logistik: Billing & Rantai Kustodi (`lgx:audit-billing` & `lgx:verify-custody` bersih)
+  9. Aset: Subledger & Rantai Hash (`ast:audit` 0 selisih)
+  10. Pembelian: Subledger AP & GR/IR (`proc:audit` 0 selisih)
+  11. Kontrak: Subledger Plafon & Rantai Versi (`ctr:audit` & `contracts:verify-chain` valid)
+  12. Manufaktur: Biaya Produksi WIP & Mutu QMS (`mfg:audit-costing` & `mfg:qms-audit` seimbang)
+
+### 8.6 Skenario Emas 12 Lini, Krisis Recall Produk & DR Kuantum (Fase 101)
+- **Skenario Emas Otomatis 12 Lini Bisnis**:
+  Alur data terpadu mengaitkan rantai nilai hulu-ke-hilir: panen petani plasma `agri` $\to$ distribusi cold-chain `lgx` $\to$ pengolahan pabrik `mfg` $\to$ penjualan resto/hotel/venue $\to$ perbekalan medis rumah sakit `hsp` $\to$ operasional armada listrik `ev` $\to$ perdagangan komoditas `min` $\to$ konsolidasi buku besar holding grup dengan keseimbangan akuntansi absolut ($\sum = 0$).
+- **Bidirectional Product Recall Traceability**:
+  Saat kontaminasi terdeteksi, `CrisisProductRecallService` melakukan penelusuran maju (forward: dari bahan baku ke pasien penerima obat / konsumen restoran) dan mundur (backward: dari laporan insiden ke nomor lot vendor pemasok) dalam waktu $< 1$ detik, mengunci seluruh lot yang terdampak ke status `QUARANTINED`.
+- **Multi-Region Active-Active DR & Konsensus Raft**:
+  Arsitektur 3 node terdistribusi (Jakarta primary, Surabaya secondary, Singapore witness) dengan protokol konsensus Raft:
+  - RPO = 0: Zero ledger entry loss pada saat failover.
+  - RTO < 15 menit: Promosi sekunder otonom bila kuorum $2/3$ node tercapai.
+  - Split-brain defense: Bila jaringan terputus parsial, cluster secara otomatis membatasi diri ke mode `READ_ONLY` guna mencegah dual-master write.
+- **Kesiapan Kriptografi Pasca-Kuantum (PQC)**:
+  Verifikasi berkala 8 rantai hash Merkle append-only (Paspor Kendaraan, Paspor Pasien, Tiket Acara, Kustodi Logistik, Timbangan Tambang, Kontrak Korporat, Aset Tetap, ECO Manufaktur) melalui `php artisan pq:audit-chains` dan skema rotasi kunci master envelop KMS tanpa merusak pembacaan data historis.
+
+### 8.7 Enterprise REST API v3, Webhook Outbox & Mobile Offline Sync (Fase 102)
+- **Enterprise REST API v3**:
+  - Endpoint `/api/v3/executive/kpis` dan `/api/v3/executive/snapshot` menyediakan ringkasan operasional dan kesehatan cluster secara near-real-time.
+  - Kepatuhan standar RFC 7807 Problem Details (`application/problem+json`) untuk seluruh jalur galat HTTP.
+  - Proteksi idempotensi terdistribusi melalui header `Idempotency-Key` dengan kunci sewa cache atomik.
+- **Mobile Offline-First Delta Synchronization**:
+  - Endpoint `/api/v3/mobile/sync/pull` dan `/api/v3/mobile/sync/push` melayani pertukaran delta entitas staf lapangan (dokter, perawat, kurir, surveyor tambang).
+  - Jam Vektor (*Vector Clocks*) melacak kausalitas mutasi konkuren lintas node perangkat dan server.
+  - Strategi resolusi konflik deterministik:
+    - Konflik catatan medis diselesaikan dengan `SERVER_HEALTHCARE_AUTHORITY_PRIORITY`.
+    - Konflik stok fisik diselesaikan dengan pembuatan jurnal pembukuan penyesuaian kompensasi otomatis pada `core_sync_conflict_ledgers`.
+- **Mitra Webhook Outbox & Dead-Letter Queue (DLQ)**:
+  - Registrasi webhook mitra terisolasi multi-tenant (`X-Tenant-ID`) dengan penandatanganan payload HMAC-SHA256.
+  - Mekanisme pengiriman ulang otomatis exponential backoff hingga 5 kali. Pesan yang gagal permanen dialihkan ke antrean DLQ dan dapat dipicu ulang melalui `POST /api/v3/partner/webhooks/{id}/replay`.
+
+### 8.8 Playbook 60+ Peran Konglomerasi & Standard Operating Procedures (Fase 103)
+- **Struktur Otorisasi 60 Peran Konglomerasi**:
+  Matriks peran RBAC mencakup seluruh lini bisnis holding dengan batasan kewenangan pengeluaran anggaran dan approval berjenjang (Operational Staf $\le$ Rp 10 Jt, Manajer $\le$ Rp 100 Jt, Direktur Unit $\le$ Rp 1 M, Holding Board $>$ Rp 1 M).
+- **Prosedur Standar Operasional (SOP) Lintas Lini**:
+  - SOP-01: Prosedur Penarikan Produk Krisis Lintas Lini (Holding Crisis Protocol).
+  - SOP-02: Triage Gawat Darurat & Evakuasi Medis Lintas Cabang Faskes.
+  - SOP-03: Rekonsiliasi & Eliminasi Finansial Intercompany Tutup Buku Bulanan.
+
+### 8.9 Layanan Kesehatan Digital, Telemedis & Farmasi FEFO (Fase 104)
+- **Telemedis & E-Resep Terotentikasi**:
+  - Triase digital konsultasi video/chat (`hsp_tele_consults`) terintegrasi EMR Paspor Pasien.
+  - E-resep digital (`hsp_epharmacy_orders`) wajib memuat tanda tangan kriptografis dokter berlisensi (`doctor_signature_hash`); resep tanpa tanda tangan otomatis ditolak oleh sistem.
+- **Safety Engine Alergi Silang & Toksisitas Ginjal**:
+  - Penegakan kontraindikasi langsung dan alergi silang kelas obat (contoh: riwayat alergi kelas penisilin memblokir peresepan amoksisilin dengan status `CRITICAL_CONTRAINDICATION`).
+  - Proteksi klirens kreatinin ginjal: pasien dengan estimasi $\text{CrCl} < 30\text{ mL/min}$ otomatis diblokir dari obat-obatan nefrotoksik.
+- **Manajemen Inventori Farmasi FEFO**:
+  - Alokasi stok apotek memprioritaskan tanggal kedaluwarsa terdekat (*First-Expired-First-Out*).
+  - Lot obat berstatus `QUARANTINED` otomatis dikeluarkan dari alokasi pemenuhan resep.
+- **Multi-Branch Pharmacy Routing & Langganan Obat Kronis**:
+  - Routing pemenuhan otomatis mengarahkan pesanan ke apotek cabang terdekat dengan failover ke hub regional bila stok setempat habis.
+  - Langganan obat kronis mengeksekusi pengiriman berulang berkala dengan auto-debit dompet dan buku besar berpasangan seimbang.
+
+### 8.10 Jaringan Laboratorium LOINC, Kustodi Spesimen 3-Hop & PACS Imaging (Fase 105)
+- **Katalog LOINC & Deteksi Nilai Panik Kritis**:
+  - Standardisasi 10.000 parameter tes laboratorium LOINC dengan batas rentang nilai panik fisiologis (`hsp_lab_critical_ranges`).
+  - Hasil tes dengan anomali kritis (Kalium $< 2.5\text{ mEq/L}$, Troponin $> 0.04\text{ ng/mL}$) otomatis memicu `PANIC_ALERT` dan penahanan rilis hingga diverifikasi langsung oleh dokter spesialis patologi.
+- **Rantai Kustodi Spesimen 3-Hop Anti-Pelanggaran Rantai Dingin**:
+  - Pelacakan berantai faskes $\to$ kurir cold-chain $\to$ lab rujukan berintegritas hash Merkle (`hsp_lab_custody_transfers`).
+  - Sensor suhu IoT yang mendeteksi suhu $> 8^\circ\text{C}$ (pelanggaran rantai dingin) seketika memicu auto-rejection spesimen dan penerbitan instruksi penarikan sampel ulang.
+- **Pencitraan DICOM PACS & SLA STAT**:
+  - Penyimpanan metadata irisan seri radiologi DICOM PACS (`hsp_imaging_series`).
+  - Penegakan SLA pembacaan citra radiologi: pemeriksaan gawat darurat STAT wajib selesai $\le 60$ menit, dan pemeriksaan rutin $\le 24$ jam.
+- **Kliring Finansial Antar-Cabang Apotek & Faskes**:
+  - Kliring resiprokal kewajiban antar-cabang faskes (`hsp_inter_branch_clearings`) dengan penyelesaian saldo buku besar double-entry 0-diskrepansi.
+
+
+
+
+---
+
+## 10. Diagram Sekuensial Lintas Lini Bisnis Konglomerasi
+
+Bagian ini memodelkan interaksi mikro-layanan dan alur data end-to-end melintasi batas domain modular untuk 12 skenario bisnis utama konglomerasi.
+
+### 10.1 Skenario 1: E2E Consumer Journey — Multi-Tenant Super-App Checkout to Instant Settlement
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Customer as "Konsumen (Super-App)"
+    participant Store as "Modul Store / Resto"
+    participant PayHub as "Payment Hub Sentral"
+    participant Ledger as "Banking Ledger"
+    participant WMS as "Logistics & WMS"
+    participant Mall as "Mall Property"
+    Customer->>Store: Checkout multi-merchant cart
+    Store->>PayHub: Request unified charge (kontrak Payable)
+    PayHub->>Ledger: Atomic hold saldo dompet IDR / QRIS
+    Ledger-->>PayHub: Hold confirmed (journal locked)
+    PayHub->>Store: Capture payment confirmation
+    Store->>WMS: Generate automated packing list & dispatch task
+    Store->>Mall: Record tenant turnover sales for revenue share
+    Store-->>Customer: Order confirmation & digital receipt
+```
+
+### 10.2 Skenario 2: Multi-Tier Procurement — 3-Way Match dengan Automated AP Ledger Posting
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Buyer as "Procurement Buyer"
+    participant PRC as "Procurement Core"
+    participant SUP as "Portal Supplier"
+    participant WMS as "Warehouse Receiving"
+    participant FIN as "Accounts Payable (AP)"
+    participant GL as "General Ledger"
+    Buyer->>PRC: Create Purchase Order (PO)
+    PRC->>SUP: Transmit approved PO via B2B EDI
+    SUP->>WMS: Delivery with electronic Surat Jalan (DO)
+    WMS->>PRC: Record Good Receipt Note (GRN)
+    SUP->>FIN: Submit electronic Commercial Invoice
+    FIN->>PRC: Execute automated 3-Way Match (PO, GRN, Inv)
+    PRC-->>FIN: Match 100% within tolerance
+    FIN->>GL: Post automated journal: Debit Inventory / Credit AP
+```
+
+### 10.3 Skenario 3: Cold-Chain Bio-Pharma Logistics — IoT Telemetry ke Blockchain Escrow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Reefer as "Reefer IoT Sensor (2-8C)"
+    participant Telemetry as "Telematics Ingestion"
+    participant ColdChain as "Cold Chain Supervisor"
+    participant Escrow as "Smart Contract Escrow"
+    participant Hospital as "Hospital Pharmacy"
+    Reefer->>Telemetry: Ping encrypted GPS & temperature payload
+    Telemetry->>ColdChain: Validate thermal compliance threshold
+    alt Suhu Aman (2C - 8C)
+        ColdChain->>Escrow: Append telemetry cryptographic seal
+        Reefer->>Hospital: Physical handoff with ePoD scan
+        Hospital->>Escrow: Confirm custody acceptance
+        Escrow->>Escrow: Release carrier delivery fee payment
+    else Ekskursi Suhu (> 8C)
+        ColdChain->>Hospital: Alert thermal breach: AUTO-QUARANTINE LOT
+        ColdChain->>Escrow: Freeze payout & trigger insurer claim
+    end
+```
+
+### 10.4 Skenario 4: Employee Meal & Perk Deduction — Multi-Company HCM ke Central Kitchen POS
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Emp as "Karyawan Holding"
+    participant POS as "Cloud Kitchen / Kantin POS"
+    participant HCM as "HCM Benefits & Meal Plan"
+    participant Payroll as "Payroll PPh 21 Engine"
+    participant GL as "Intercompany Ledger"
+    Emp->>POS: Tap RFID employee badge for lunch package
+    POS->>HCM: Verify employee meal allowance quota
+    HCM-->>POS: Quota valid (subsidi Rp 35.000 approved)
+    POS->>GL: Debit Entitas Pegawai / Credit Resto Unit
+    opt Nilai Belanja Melebihi Kuota
+        HCM->>Payroll: Queue payroll deduction for excess amount
+        Payroll->>Payroll: Deduct at next monthly pay slip
+    end
+```
+
+### 10.5 Skenario 5: Hospital Emergency Admission ke BPJS INA-CBG Automated Claim Reconciliation
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Patient as "Pasien Gawat Darurat (IGD)"
+    participant Triage as "Perawat IGD & Triase"
+    participant EMR as "Electronic Medical Record (AES-256)"
+    participant Pharmacy as "Apotek IGD (FEFO)"
+    participant BPJS as "BPJS INA-CBG Grouper Gateway"
+    participant Billing as "Hospital Billing Engine"
+    Patient->>Triage: Triage assessment & NIK identification
+    Triage->>EMR: Emergency admission record
+    Triage->>Pharmacy: Emergency resus drugs order (bypass payment)
+    Pharmacy-->>Triage: Instant dispensing & lot batch recording
+    EMR->>BPJS: Transmit ICD-10 & ICD-9-CM surgical codes
+    BPJS-->>Billing: Return INA-CBG package tariff approval
+    Billing->>Billing: Generate split bill (BPJS covered vs excess)
+```
+
+### 10.6 Skenario 6: Beach Club VIP Cabana — Min-Spend RFID Wristband ke Ledger Split
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor VIP as "Tamu VIP Cabana"
+    participant Turnstile as "Turnstile Gate Scanner"
+    participant Venue as "Venue Booking & Cabana Host"
+    participant POS as "Bar & Lounge POS"
+    participant Ledger as "Escrow & Revenue Split Ledger"
+    VIP->>Turnstile: Tap pre-paid VIP QR ticket
+    Turnstile->>Venue: Issue active RFID wristband linked to folio
+    Venue->>Ledger: Lock minimum spend escrow (e.g. Rp 15.000.000)
+    VIP->>POS: Order premium champagne & platters via wristband
+    POS->>Venue: Deduct order from minimum spend balance
+    Venue->>Ledger: Split revenue: Venue Rental 40% / F&B 50% / Service 10%
+    Venue-->>VIP: Real-time balance notification on Super-App
+```
+
+### 10.7 Skenario 7: Hotel Night Audit — Automated Folio Split, City Ledger & Housekeeping Turnover
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor NightAuditor as "Night Auditor (Cron / Staf FO)"
+    participant PMS as "Property Management System (PMS)"
+    participant RoomEngine as "Smart Room IoT & Minibar"
+    participant Housekeeping as "Housekeeping Task Engine"
+    participant CityLedger as "Corporate City Ledger (AR)"
+    participant GL as "General Ledger"
+    NightAuditor->>PMS: Initiate Automated Night Audit Run (02:00 AM)
+    PMS->>RoomEngine: Ingest automated minibar weight sensors
+    PMS->>PMS: Post Room Charge & Hotel Tax (PB1) to in-house folios
+    PMS->>CityLedger: Transfer corporate accounts to City Ledger AR
+    PMS->>Housekeeping: Generate morning room turnover schedule
+    PMS->>GL: Post automated daily revenue journal batch
+    PMS-->>NightAuditor: Trial balance locked & Day Closed
+```
+
+### 10.8 Skenario 8: Mining Fleet Dispatch — High-Precision Weighbridge ke Perhitungan Royalti
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Truck as "Haul Truck Driver"
+    participant Pit as "Excavator GPS & Dig Dispatch"
+    participant WB as "Digital Weighbridge Scale"
+    participant Lab as "Assay Coal Quality Lab"
+    participant Royalty as "ESDM Royalty & PNBP Engine"
+    Truck->>Pit: Loaded with thermal coal at Pit 3 North
+    Pit->>Truck: Transmit digital manifest to truck tablet
+    Truck->>WB: Drive onto weighbridge (RFID scan)
+    WB->>WB: Record Gross Tare Net weight (certified calibration)
+    Lab->>Royalty: Transmit Calorific Value (CV) & Moisture assay
+    WB->>Royalty: Link weight ticket with assay record
+    Royalty->>Royalty: Compute progressive statutory royalty (HBA rate)
+    Royalty-->>Truck: Certified hauling ticket issued with SHA-256 seal
+```
+
+### 10.9 Skenario 9: Real-World Asset (RWA) — Fractional Tokenization & Automated Dividend Distribution
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Investor as "Retail & Institutional Investor"
+    participant RWA as "RWA Tokenization Engine"
+    participant Asset as "Physical Asset Registry (PSAK 16)"
+    participant Prop as "Property / SPKLU Revenue"
+    participant DivEngine as "Dividend Pro-Rata Calculator"
+    participant Wallet as "User Multi-Asset Wallets"
+    Asset->>RWA: Tokenize physical commercial asset into 1.000.000 units
+    Investor->>RWA: Purchase fractional tokens using IDR / Stablecoin
+    Prop->>DivEngine: Deposit quarterly net operational rental revenue
+    DivEngine->>DivEngine: Run exact integer minor unit pro-rata allocation
+    DivEngine->>DivEngine: Route fractional rounding residue to reserve account
+    DivEngine->>Wallet: Instant credit dividend to token holders' wallets
+```
+
+### 10.10 Skenario 10: Insurtech Parametric Flight Delay — Automated Weather Oracle ke Escrow Payout
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Traveler as "Wisatawan Super-App"
+    participant Insure as "Insurtech Micro-Policy Engine"
+    participant Oracle as "Aviation / Weather Data Oracle"
+    participant Escrow as "Insurance Reserve Escrow"
+    participant Bank as "Instant Payout Gateway"
+    Traveler->>Insure: Bind parametric policy during hotel / flight booking
+    Insure->>Escrow: Lock indemnity reserve balance
+    Oracle->>Insure: Ingest certified flight delay event (> 120 minutes)
+    Insure->>Insure: Autopilot claim trigger (zero claim paperwork required)
+    Insure->>Escrow: Release claim funds authorization
+    Escrow->>Bank: Instant bank transfer / wallet credit to traveler
+    Bank-->>Traveler: Push notification: Indemnity credited Rp 1.000.000
+```
+
+### 10.11 Skenario 11: Robo-Advisor Wealth Engine — Target-Allocation Drift ke Treasury Rebalance
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as "Nasabah Wealth Management"
+    participant Robo as "Robo-Advisor Portfolio Engine"
+    participant Risk as "Risk Profile & Emergency Guardrail"
+    participant Market as "Market Price Stream"
+    participant Treasury as "Treasury Multi-Asset Order Router"
+    Client->>Robo: Define Moderate Growth goal (60% Stock, 30% Bond, 10% Gold)
+    Market->>Robo: Asset price fluctuations detect portfolio drift > 5%
+    Robo->>Risk: Validate proposed rebalancing against liquidity guardrails
+    Risk-->>Robo: Rebalancing plan approved
+    Robo->>Treasury: Execute atomic sell overweighted asset / buy underweighted
+    Treasury-->>Client: Rebalancing executed with zero slippage penalty
+```
+
+### 10.12 Skenario 12: Multi-Region Disaster Recovery — PostgreSQL Cross-DC Failover dengan Zero Ledger Loss
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant PrimaryDC as "Primary Data Center (DC-Jakarta)"
+    participant Witness as "Raft Witness Node (DC-Surabaya)"
+    participant StandbyDC as "Standby Data Center (DC-Bali)"
+    participant AppCluster as "App Cluster & Route53 / BGP DNS"
+    PrimaryDC->>StandbyDC: Synchronous streaming replication (WAL logs)
+    Note over PrimaryDC: Primary DC network partition / physical disaster
+    Witness->>PrimaryDC: Heartbeat ping failed (timeout > 3.000 ms)
+    Witness->>StandbyDC: Request quorum voting for failover election
+    StandbyDC->>Witness: Quorum 2/3 validated (Zero WAL lag confirmed)
+    StandbyDC->>StandbyDC: Promote standby node to Read-Write Master
+    StandbyDC->>AppCluster: Update connection pool DNS routing
+    AppCluster-->>AppCluster: Resume transactions with RPO=0 and RTO < 30s
+```
+
+---
+
+## 11. Diagram C4 Arsitektur Sistem Konglomerasi
+
+### 11.1 C4 Context Diagram: Interaksi Platform dengan Pengguna & Sistem Eksternal
+
+```mermaid
+flowchart TB
+    subgraph External_Users["Pengguna Sistem Eksternal"]
+        UserCons["Konsumen / Pembeli Super-App"]
+        UserB2B["Mitra B2B / Supplier / Tenant Mall"]
+        UserCorp["Manajemen Korporat & Auditor Holding"]
+    end
+    subgraph Core_Platform["Superwebsite Konglomerasi Enterprise"]
+        Gateway["API Gateway & Reverse Proxy Nginx"]
+        Monolith["Modular Monolith (Laravel 12 / PHP ^8.4)"]
+        EventSpine["Universal Event Spine (Redis Outbox & Kafka)"]
+        Database[("PostgreSQL Primary & Standby Replica")]
+    end
+    subgraph External_Systems["Layanan & Regulator Eksternal"]
+        PaymentGateways["Payment Gateways & BI-FAST"]
+        GovRegulators["Regulator (OJK, BPOM, DJP Pajak, ESDM)"]
+        CloudStorage["S3 Object Storage (DICOM & Dokumen)"]
+    end
+    UserCons -->|HTTPS / Mobile REST API| Gateway
+    UserB2B -->|EDIFACT / REST API v2-v3| Gateway
+    UserCorp -->|Web Portal & SSO RBAC| Gateway
+    Gateway --> Monolith
+    Monolith --> Database
+    Monolith --> EventSpine
+    Monolith -->|Settlement| PaymentGateways
+    Monolith -->|Kepatuhan & Laporan| GovRegulators
+    Monolith -->|Arsip Terenkripsi| CloudStorage
+```
+
+## 12. Matriks Protokol & Jaringan (Port & Network Matrix)
+
+| Layanan / Komponen | Port | Protokol | Keamanan / Enkripsi | Batasan Akses (Firewall / Subnet) |
+|---|---|---|---|---|
+| HTTP / HTTPS Public | 80, 443 | TCP / TLS 1.3 | HSTS, Let's Encrypt / Wildcard | Publik (Cloudflare WAF) |
+| API v1 / v2 / v3 | 443 | HTTPS REST | HMAC SHA-256 / Bearer Sanctum | Publik berkuota rate limit |
+| PostgreSQL Primary | 5432 | TCP | TLS (Mutual TLS cert) | Hanya VPC Internal Aplikasi |
+| Redis Cluster & Outbox | 6379, 16379 | TCP | AUTH + TLS | Hanya Subnet VPC Private |
+| OCPP 2.0.1 EV Station | 8443 | WSS (WebSocket) | TLS 1.3, Client Certificate | IP Whitelist SPKLU Hub |
+| DICOM PACS Image Server | 11112 | TCP / DICOM | TLS DICOM-TLS profile | Subnet Intranet Rumah Sakit |
+| IoT Telematics & Fleet | 8883 | MQTTS | TLS 1.3, X.509 Device Cert | Publik Gateway Broker IoT |
+| Raft Consensus DR | 7000 | TCP | Raft mTLS encryption | Subnet Inter-DC Dedicated Leased Line |
+
+## 13. Universal Event Spine & Pola Transactional Outbox
+
+Seluruh integrasi asinkron antar-modul diwajibkan menggunakan pola **Transactional Outbox** untuk menjamin *at-least-once delivery* dan konsistensi data transaksional:
+
+1. **Pencatatan Atomik**: Domain event disimpan ke dalam tabel outbox dalam transaksi database yang sama dengan mutasi data bisnis.
+2. **Dispatcher Mandiri**: Pekerja latar belakang (`php artisan outbox:dispatch`) membaca event pending dan memancarkannya ke bus pesan.
+3. **Idempotensi Penerima**: Modul konsumen mencatat ID event yang telah diproses untuk mencegah pemrosesan duplikat (*idempotent consumer*).
+4. **Dead-Letter Queue (DLQ)**: Kegagalan berulang setelah 8 kali percobaan secara otomatis dipindahkan ke tabel DLQ untuk inspeksi tim operasional.

@@ -14,7 +14,13 @@ class RetCouponRedemption extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'coupon_code',
+        'customer_id',
+        'order_id',
+        'redeemed_at',
+    ];
 
     protected $casts = [
         'redeemed_at' => 'datetime',

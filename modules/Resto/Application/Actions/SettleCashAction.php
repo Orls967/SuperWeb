@@ -41,9 +41,10 @@ class SettleCashAction
 
             // Every deposit is a distinct business event, so the key stays unique unless the
             // caller supplies one (one per submitted form) to collapse a double submit.
+            $fallback = ($userId ?? 'cashier').':'.$amount.':'.sha1($note ?? '');
             $ledgerKey = $idempotencyKey !== null && $idempotencyKey !== ''
                 ? "resto:settle:cash:{$outlet->id}:{$idempotencyKey}"
-                : "resto:settle:cash:{$outlet->id}:".Str::uuid();
+                : "resto:settle:cash:{$outlet->id}:{$fallback}";
 
             $existing = LedgerTransaction::where('idempotency_key', $ledgerKey)->first();
             if ($existing !== null) {

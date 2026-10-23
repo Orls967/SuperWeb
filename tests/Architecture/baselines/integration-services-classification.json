@@ -1,0 +1,2072 @@
+{
+    "AcademicIndustryResearchService": {
+        "service": "AcademicIndustryResearchService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "AdvancedAnalyticsGraphResearchService": {
+        "service": "AdvancedAnalyticsGraphResearchService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "AdvancedSupplyOptimizationService": {
+        "service": "AdvancedSupplyOptimizationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "AgentHitlOrchestrationService": {
+        "service": "AgentHitlOrchestrationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "AgentMarketplaceGovernedToolsService": {
+        "service": "AgentMarketplaceGovernedToolsService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "AgentSafetyGuardrailsService": {
+        "service": "AgentSafetyGuardrailsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "AiCostSustainabilityService": {
+        "service": "AiCostSustainabilityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "AiDecisionAuditService": {
+        "service": "AiDecisionAuditService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "AiForecastingSopService": {
+        "service": "AiForecastingSopService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "AiFraudAmlMeshService": {
+        "service": "AiFraudAmlMeshService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "AiGenerativeCopilotService": {
+        "service": "AiGenerativeCopilotService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "AiHumanAccountabilityService": {
+        "service": "AiHumanAccountabilityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "AiModelGuardrailService": {
+        "service": "AiModelGuardrailService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "AiOptimizationEngineService": {
+        "service": "AiOptimizationEngineService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "AirlineNetworkService": {
+        "service": "AirlineNetworkService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "AnalyticsFederationService": {
+        "service": "AnalyticsFederationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "AnalyticsModelMonitoringService": {
+        "service": "AnalyticsModelMonitoringService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ApiIntegrationQualityGatesService": {
+        "service": "ApiIntegrationQualityGatesService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "AquacultureExportService": {
+        "service": "AquacultureExportService",
+        "category": "pindah ke modul Agri",
+        "target": "Agri",
+        "reason": "Domain agrikultur, perikanan/kelautan, & komoditas pangan"
+    },
+    "ArchitectureFitnessMonolithHealthService": {
+        "service": "ArchitectureFitnessMonolithHealthService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "AssetAvailabilityProgramService": {
+        "service": "AssetAvailabilityProgramService",
+        "category": "pindah ke modul Asset",
+        "target": "Asset",
+        "reason": "Domain pemeliharaan & manajemen aset"
+    },
+    "AssetProjectCapitalLifecycleService": {
+        "service": "AssetProjectCapitalLifecycleService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "AssetReliabilityService": {
+        "service": "AssetReliabilityService",
+        "category": "pindah ke modul Asset",
+        "target": "Asset",
+        "reason": "Domain pemeliharaan & manajemen aset"
+    },
+    "AutomationControlPlaneRemediationService": {
+        "service": "AutomationControlPlaneRemediationService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "AutonomousEnterpriseLadderService": {
+        "service": "AutonomousEnterpriseLadderService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "AutonomousFieldFleetService": {
+        "service": "AutonomousFieldFleetService",
+        "category": "pindah ke modul Logistics",
+        "target": "Logistics",
+        "reason": "Domain rantai pasok, logistik, pergudangan, & armada"
+    },
+    "AviationService": {
+        "service": "AviationService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "B2bIndustryEcosystemPlatformService": {
+        "service": "B2bIndustryEcosystemPlatformService",
+        "category": "pindah ke modul B2b",
+        "target": "B2b",
+        "reason": "Domain ekosistem B2B, partner, & kemitraan"
+    },
+    "BiodiversityLandUseProgramService": {
+        "service": "BiodiversityLandUseProgramService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "BmtMicrofinanceService": {
+        "service": "BmtMicrofinanceService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "BoardGovernanceDoaService": {
+        "service": "BoardGovernanceDoaService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "BoardManagementReportingIntegrityService": {
+        "service": "BoardManagementReportingIntegrityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "BusinessContinuityCrisisService": {
+        "service": "BusinessContinuityCrisisService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "BusinessContinuityCrisisSimulationService": {
+        "service": "BusinessContinuityCrisisSimulationService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "BusinessEthicsAntiCorruptionService": {
+        "service": "BusinessEthicsAntiCorruptionService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "BusinessKpiObservabilityService": {
+        "service": "BusinessKpiObservabilityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "BusinessLineTransitionPlansService": {
+        "service": "BusinessLineTransitionPlansService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "BusinessProcessOrchestrationService": {
+        "service": "BusinessProcessOrchestrationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CampusEducationService": {
+        "service": "CampusEducationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CapacityCertificationReadinessService": {
+        "service": "CapacityCertificationReadinessService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CapitalAllocationPortfolioService": {
+        "service": "CapitalAllocationPortfolioService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "CapitalFundingStrategyService": {
+        "service": "CapitalFundingStrategyService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "CaseLoyaltyUnificationService": {
+        "service": "CaseLoyaltyUnificationService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "CashForecastingLiquidityCommandService": {
+        "service": "CashForecastingLiquidityCommandService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "CircularBusinessModelsRevenueService": {
+        "service": "CircularBusinessModelsRevenueService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CircularEconomyService": {
+        "service": "CircularEconomyService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CircularityWasteProgramService": {
+        "service": "CircularityWasteProgramService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "CircularityWaterNatureService": {
+        "service": "CircularityWaterNatureService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "ClimateAdaptationResilienceService": {
+        "service": "ClimateAdaptationResilienceService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "ClimateDecarbonizationRoadmapService": {
+        "service": "ClimateDecarbonizationRoadmapService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "ClimateRiskInsuranceResilienceService": {
+        "service": "ClimateRiskInsuranceResilienceService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "ClimateTargetsAllocationService": {
+        "service": "ClimateTargetsAllocationService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "ClimateTransitionFinanceService": {
+        "service": "ClimateTransitionFinanceService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "CoalitionLoyaltyBreakageService": {
+        "service": "CoalitionLoyaltyBreakageService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "ColdChainHighValueLogisticsService": {
+        "service": "ColdChainHighValueLogisticsService",
+        "category": "pindah ke modul Logistics",
+        "target": "Logistics",
+        "reason": "Domain rantai pasok, logistik, pergudangan, & armada"
+    },
+    "CommercialRevenueGrowthPlanningService": {
+        "service": "CommercialRevenueGrowthPlanningService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "CommonAuditReconciliationService": {
+        "service": "CommonAuditReconciliationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "CommunityUgcSocialCommerceService": {
+        "service": "CommunityUgcSocialCommerceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CommunityValueSocialProcurementService": {
+        "service": "CommunityValueSocialProcurementService",
+        "category": "pindah ke modul Procurement",
+        "target": "Procurement",
+        "reason": "Domain pengadaan barang/jasa & kolaborasi supplier"
+    },
+    "CompensationBenefitsService": {
+        "service": "CompensationBenefitsService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "CompensationGovernancePayEquityService": {
+        "service": "CompensationGovernancePayEquityService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "ConcurrencyLockingService": {
+        "service": "ConcurrencyLockingService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ConglomerateSimulationService": {
+        "service": "ConglomerateSimulationService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "ContinuousControlsMonitoringService": {
+        "service": "ContinuousControlsMonitoringService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CorporateTaxEngineService": {
+        "service": "CorporateTaxEngineService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "CorporateVentureIncubationService": {
+        "service": "CorporateVentureIncubationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CostCapacityValueGovernanceService": {
+        "service": "CostCapacityValueGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "CostEfficiencyPerformanceService": {
+        "service": "CostEfficiencyPerformanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CpqOrderToCashService": {
+        "service": "CpqOrderToCashService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "CrisisContinuityService": {
+        "service": "CrisisContinuityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "CrisisMegaScenarioService": {
+        "service": "CrisisMegaScenarioService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "CriticalLeadershipCoverageService": {
+        "service": "CriticalLeadershipCoverageService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "CrossBorderPayrollService": {
+        "service": "CrossBorderPayrollService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "CrossEcosystemWave2OrchestrationService": {
+        "service": "CrossEcosystemWave2OrchestrationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CrossLineProcessMeshService": {
+        "service": "CrossLineProcessMeshService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CrossLineServiceBundlesService": {
+        "service": "CrossLineServiceBundlesService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CryptoNativeDefiSimulationService": {
+        "service": "CryptoNativeDefiSimulationService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "CustomerCrm360Service": {
+        "service": "CustomerCrm360Service",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "CustomerDataPlatformActivationService": {
+        "service": "CustomerDataPlatformActivationService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "CustomerLoyaltySubscriptionEconomyService": {
+        "service": "CustomerLoyaltySubscriptionEconomyService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "CustomerPricingFairnessService": {
+        "service": "CustomerPricingFairnessService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "CustomerServiceAgenticCommerceService": {
+        "service": "CustomerServiceAgenticCommerceService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "CxMetricsVocOrchestrationService": {
+        "service": "CxMetricsVocOrchestrationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "CyberRansomwareRecoveryDrillService": {
+        "service": "CyberRansomwareRecoveryDrillService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "CyberResilienceService": {
+        "service": "CyberResilienceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "DataAccessDomainSelfService": {
+        "service": "DataAccessDomainSelfService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "DataGovernanceLineageService": {
+        "service": "DataGovernanceLineageService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "DataMeshFederatedGovernanceService": {
+        "service": "DataMeshFederatedGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "DataModelOpsGovernanceService": {
+        "service": "DataModelOpsGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "DataPlatformService": {
+        "service": "DataPlatformService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "DataProductsMonetizationService": {
+        "service": "DataProductsMonetizationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "DataQualityDriftLoadService": {
+        "service": "DataQualityDriftLoadService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "DataResilienceMigrationService": {
+        "service": "DataResilienceMigrationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "DataValueCostTransparencyService": {
+        "service": "DataValueCostTransparencyService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "DatabasePartitionScaleService": {
+        "service": "DatabasePartitionScaleService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "DecisionIntelligencePlatformService": {
+        "service": "DecisionIntelligencePlatformService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "DecisionOptimizationGovernanceService": {
+        "service": "DecisionOptimizationGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "DesignSystemAccessibilityService": {
+        "service": "DesignSystemAccessibilityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "DeveloperExperienceQualityService": {
+        "service": "DeveloperExperienceQualityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "DeveloperProductivityEngineeringService": {
+        "service": "DeveloperProductivityEngineeringService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "DigitalProductExperimentationService": {
+        "service": "DigitalProductExperimentationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "DigitalSecuritiesCapitalMarketsService": {
+        "service": "DigitalSecuritiesCapitalMarketsService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "DisasterRecoveryProofService": {
+        "service": "DisasterRecoveryProofService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "DistributedTransactionSafetyService": {
+        "service": "DistributedTransactionSafetyService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "DistributorRetailerCollaborationService": {
+        "service": "DistributorRetailerCollaborationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "DocumentRecordAutomationService": {
+        "service": "DocumentRecordAutomationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "DomainCapacityEnvelopesService": {
+        "service": "DomainCapacityEnvelopesService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "DomainGovernanceService": {
+        "service": "DomainGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "DynamicMarketplaceC2cCommerceService": {
+        "service": "DynamicMarketplaceC2cCommerceService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "EcosystemDaoGovernanceService": {
+        "service": "EcosystemDaoGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EcosystemHealthNetworkGovernanceService": {
+        "service": "EcosystemHealthNetworkGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EdgeModelRegistryRolloutService": {
+        "service": "EdgeModelRegistryRolloutService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EducationCredentialAuthorizationService": {
+        "service": "EducationCredentialAuthorizationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EgovRegulatoryDigitalServicesService": {
+        "service": "EgovRegulatoryDigitalServicesService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EmbeddedInsuranceService": {
+        "service": "EmbeddedInsuranceService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "EndToEndFinanceService": {
+        "service": "EndToEndFinanceService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "EndToEndOrderServiceOrchestrationService": {
+        "service": "EndToEndOrderServiceOrchestrationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EndToEndRiskService": {
+        "service": "EndToEndRiskService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "EndToEndSupplyChainService": {
+        "service": "EndToEndSupplyChainService",
+        "category": "pindah ke modul Logistics",
+        "target": "Logistics",
+        "reason": "Domain rantai pasok, logistik, pergudangan, & armada"
+    },
+    "EndToEndTalentService": {
+        "service": "EndToEndTalentService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "EnergyDatacenterResilienceService": {
+        "service": "EnergyDatacenterResilienceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "EnterpriseAccountGovernanceService": {
+        "service": "EnterpriseAccountGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EnterpriseAiGovernanceOperatingModelService": {
+        "service": "EnterpriseAiGovernanceOperatingModelService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EnterpriseArchitectureGovernanceService": {
+        "service": "EnterpriseArchitectureGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EnterpriseCustomerValueGovernanceService": {
+        "service": "EnterpriseCustomerValueGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EnterpriseDataMigrationRetirementService": {
+        "service": "EnterpriseDataMigrationRetirementService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterpriseDigitalTrustService": {
+        "service": "EnterpriseDigitalTrustService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "EnterpriseEthicsSocialLicenseService": {
+        "service": "EnterpriseEthicsSocialLicenseService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterpriseFinancialControlAssuranceService": {
+        "service": "EnterpriseFinancialControlAssuranceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterpriseFinancialIntegrityService": {
+        "service": "EnterpriseFinancialIntegrityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterpriseFutureReadinessService": {
+        "service": "EnterpriseFutureReadinessService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterpriseIdentityZeroTrustService": {
+        "service": "EnterpriseIdentityZeroTrustService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EnterpriseInnovationRdGovernanceService": {
+        "service": "EnterpriseInnovationRdGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EnterpriseLearningFlywheelService": {
+        "service": "EnterpriseLearningFlywheelService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "EnterpriseMasterDataGovernanceService": {
+        "service": "EnterpriseMasterDataGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EnterpriseOperatingModelReadinessService": {
+        "service": "EnterpriseOperatingModelReadinessService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterprisePerformanceManagementService": {
+        "service": "EnterprisePerformanceManagementService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterprisePolicyEngineService": {
+        "service": "EnterprisePolicyEngineService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterprisePolicySimulationService": {
+        "service": "EnterprisePolicySimulationService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "EnterpriseProcessIntegrityService": {
+        "service": "EnterpriseProcessIntegrityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterpriseQualityGovernanceService": {
+        "service": "EnterpriseQualityGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EnterpriseResilienceAntiFragilityService": {
+        "service": "EnterpriseResilienceAntiFragilityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "EnterpriseRiskAppetiteBoardReportingService": {
+        "service": "EnterpriseRiskAppetiteBoardReportingService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "EnterpriseRiskService": {
+        "service": "EnterpriseRiskService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterpriseSearchKnowledgeDocOpsService": {
+        "service": "EnterpriseSearchKnowledgeDocOpsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterpriseSearchKnowledgeGraphService": {
+        "service": "EnterpriseSearchKnowledgeGraphService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterpriseServiceManagementCmdbService": {
+        "service": "EnterpriseServiceManagementCmdbService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterpriseStakeholderValueReportingService": {
+        "service": "EnterpriseStakeholderValueReportingService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "EnterpriseSupplyChainGovernanceService": {
+        "service": "EnterpriseSupplyChainGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EnterpriseSustainabilityGovernanceService": {
+        "service": "EnterpriseSustainabilityGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EsgAssuranceDisclosureControlService": {
+        "service": "EsgAssuranceDisclosureControlService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "EsgClimateDisclosureControlService": {
+        "service": "EsgClimateDisclosureControlService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "EsgDataAssuranceDigitalReportingService": {
+        "service": "EsgDataAssuranceDigitalReportingService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "EsgDataFabricService": {
+        "service": "EsgDataFabricService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "EsgHumanRightsJustTransitionService": {
+        "service": "EsgHumanRightsJustTransitionService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "EsgImpactAuditScaleService": {
+        "service": "EsgImpactAuditScaleService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "EsgOperatingModelOwnershipService": {
+        "service": "EsgOperatingModelOwnershipService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "EthicalSourcingService": {
+        "service": "EthicalSourcingService",
+        "category": "pindah ke modul Procurement",
+        "target": "Procurement",
+        "reason": "Domain pengadaan barang/jasa & kolaborasi supplier"
+    },
+    "EthicsComplianceMaturityService": {
+        "service": "EthicsComplianceMaturityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "EventDrivenCqrsSagaService": {
+        "service": "EventDrivenCqrsSagaService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "EventSpineReplayCenterService": {
+        "service": "EventSpineReplayCenterService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "FashionRetailCircularService": {
+        "service": "FashionRetailCircularService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "FashionSourcingService": {
+        "service": "FashionSourcingService",
+        "category": "pindah ke modul Procurement",
+        "target": "Procurement",
+        "reason": "Domain pengadaan barang/jasa & kolaborasi supplier"
+    },
+    "FederatedEdgeAiOperationsService": {
+        "service": "FederatedEdgeAiOperationsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "FieldRemoteSiteOperationsIntegrityService": {
+        "service": "FieldRemoteSiteOperationsIntegrityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "FieldServiceSlaService": {
+        "service": "FieldServiceSlaService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "FinanceCloseAgilityService": {
+        "service": "FinanceCloseAgilityService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "FinancialCrimeSanctionsService": {
+        "service": "FinancialCrimeSanctionsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "FintechInsurtechPartnerService": {
+        "service": "FintechInsurtechPartnerService",
+        "category": "pindah ke modul B2b",
+        "target": "B2b",
+        "reason": "Domain ekosistem B2B, partner, & kemitraan"
+    },
+    "FleetAssetUtilizationOptimizationService": {
+        "service": "FleetAssetUtilizationOptimizationService",
+        "category": "pindah ke modul Logistics",
+        "target": "Logistics",
+        "reason": "Domain rantai pasok, logistik, pergudangan, & armada"
+    },
+    "FoodBrandNutritionService": {
+        "service": "FoodBrandNutritionService",
+        "category": "pindah ke modul Agri",
+        "target": "Agri",
+        "reason": "Domain agrikultur, perikanan/kelautan, & komoditas pangan"
+    },
+    "FoodProcessingService": {
+        "service": "FoodProcessingService",
+        "category": "pindah ke modul Agri",
+        "target": "Agri",
+        "reason": "Domain agrikultur, perikanan/kelautan, & komoditas pangan"
+    },
+    "ForestryTimberService": {
+        "service": "ForestryTimberService",
+        "category": "pindah ke modul Agri",
+        "target": "Agri",
+        "reason": "Domain agrikultur, perikanan/kelautan, & komoditas pangan"
+    },
+    "FpaDriverBasedBudgetingService": {
+        "service": "FpaDriverBasedBudgetingService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "FraudRiskAssessmentDetectionService": {
+        "service": "FraudRiskAssessmentDetectionService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "FulfillmentOrchestrationPromiseService": {
+        "service": "FulfillmentOrchestrationPromiseService",
+        "category": "pindah ke modul Logistics",
+        "target": "Logistics",
+        "reason": "Domain rantai pasok, logistik, pergudangan, & armada"
+    },
+    "FullInsuranceService": {
+        "service": "FullInsuranceService",
+        "category": "pindah ke modul Insurance",
+        "target": "Insurance",
+        "reason": "Domain asuransi & kemitraan penjaminan"
+    },
+    "GenerativeEngineeringCopilotService": {
+        "service": "GenerativeEngineeringCopilotService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "GlobalCommandService": {
+        "service": "GlobalCommandService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "GlobalFinanceTreasuryRiskService": {
+        "service": "GlobalFinanceTreasuryRiskService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "GlobalPayrollCloseReconciliationService": {
+        "service": "GlobalPayrollCloseReconciliationService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "GlobalSearchService": {
+        "service": "GlobalSearchService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "GoldenScenarioMegaAuditService": {
+        "service": "GoldenScenarioMegaAuditService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "GovEthicsAiBiometricsService": {
+        "service": "GovEthicsAiBiometricsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "GovInternalAuditAssuranceService": {
+        "service": "GovInternalAuditAssuranceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "GovTrustServicesSignaturesService": {
+        "service": "GovTrustServicesSignaturesService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "GovernanceDataRetentionDiscoveryService": {
+        "service": "GovernanceDataRetentionDiscoveryService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "GreenProcurementLeaseChoiceService": {
+        "service": "GreenProcurementLeaseChoiceService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "GreenProcurementSupplierDevelopmentService": {
+        "service": "GreenProcurementSupplierDevelopmentService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "GroupCommandCenterService": {
+        "service": "GroupCommandCenterService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "GroupFinanceOperatingModelService": {
+        "service": "GroupFinanceOperatingModelService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "HealthInsuranceWellbeingService": {
+        "service": "HealthInsuranceWellbeingService",
+        "category": "pindah ke modul Insurance",
+        "target": "Insurance",
+        "reason": "Domain asuransi & kemitraan penjaminan"
+    },
+    "HospitalityOperationsPlaybookService": {
+        "service": "HospitalityOperationsPlaybookService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "HumanAiCollaborationWorkflowsService": {
+        "service": "HumanAiCollaborationWorkflowsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "IdentityTenancyService": {
+        "service": "IdentityTenancyService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "InstitutionalMemoryKnowledgeService": {
+        "service": "InstitutionalMemoryKnowledgeService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "InsuranceSyariahSecuritiesFinanceService": {
+        "service": "InsuranceSyariahSecuritiesFinanceService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "IntegrationService": {
+        "service": "IntegrationService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "InternalCapabilitiesMarketplaceService": {
+        "service": "InternalCapabilitiesMarketplaceService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "InternalControlMaturityService": {
+        "service": "InternalControlMaturityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "InternalControlSodService": {
+        "service": "InternalControlSodService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "InvestorLenderReportingService": {
+        "service": "InvestorLenderReportingService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "InvestorRelationsService": {
+        "service": "InvestorRelationsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "IslamicTradeFinanceService": {
+        "service": "IslamicTradeFinanceService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "JourneyAnalyticsOptimizationService": {
+        "service": "JourneyAnalyticsOptimizationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "KamPartnershipRevenueService": {
+        "service": "KamPartnershipRevenueService",
+        "category": "pindah ke modul B2b",
+        "target": "B2b",
+        "reason": "Domain ekosistem B2B, partner, & kemitraan"
+    },
+    "KnowledgeGraphEnterpriseCopilotService": {
+        "service": "KnowledgeGraphEnterpriseCopilotService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "KnowledgeGroundingCitationService": {
+        "service": "KnowledgeGroundingCitationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "LeadershipPipelineExecutiveService": {
+        "service": "LeadershipPipelineExecutiveService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "LearningOperationsEffectivenessService": {
+        "service": "LearningOperationsEffectivenessService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "LearningPlatformService": {
+        "service": "LearningPlatformService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "LearningSkillIntelligenceService": {
+        "service": "LearningSkillIntelligenceService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "LegalOperationsService": {
+        "service": "LegalOperationsService",
+        "category": "pindah ke modul Contract",
+        "target": "Contract",
+        "reason": "Domain hukum & manajemen kontrak"
+    },
+    "LegalRegulatoryChangeExecutionService": {
+        "service": "LegalRegulatoryChangeExecutionService",
+        "category": "pindah ke modul Contract",
+        "target": "Contract",
+        "reason": "Domain hukum & manajemen kontrak"
+    },
+    "LifeHealthWellnessService": {
+        "service": "LifeHealthWellnessService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "MaintenanceReliabilityGovernanceService": {
+        "service": "MaintenanceReliabilityGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "MarineAquacultureService": {
+        "service": "MarineAquacultureService",
+        "category": "pindah ke modul Agri",
+        "target": "Agri",
+        "reason": "Domain agrikultur, perikanan/kelautan, & komoditas pangan"
+    },
+    "MarketDisruptionSimulationService": {
+        "service": "MarketDisruptionSimulationService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "MarketingAutomationAttributionService": {
+        "service": "MarketingAutomationAttributionService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "MarketplaceDisputeBuyerProtectionService": {
+        "service": "MarketplaceDisputeBuyerProtectionService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "MediaCommerceContentRightsService": {
+        "service": "MediaCommerceContentRightsService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "MegaScenarioService": {
+        "service": "MegaScenarioService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "MiningPortCommodityFlowService": {
+        "service": "MiningPortCommodityFlowService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "MnaDueDiligencePmiService": {
+        "service": "MnaDueDiligencePmiService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "MnaMegaScenarioRestructuringService": {
+        "service": "MnaMegaScenarioRestructuringService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "ModelIncidentSafetyCaseService": {
+        "service": "ModelIncidentSafetyCaseService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "MultiModalVisionIntegrationService": {
+        "service": "MultiModalVisionIntegrationService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "MultiRegionEdgeArchitectureService": {
+        "service": "MultiRegionEdgeArchitectureService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "NatureFinanceService": {
+        "service": "NatureFinanceService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "NatureWaterCommunityFinanceService": {
+        "service": "NatureWaterCommunityFinanceService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "NetworkResilienceChaosService": {
+        "service": "NetworkResilienceChaosService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "ObservabilitySloCapacityService": {
+        "service": "ObservabilitySloCapacityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ObservabilitySloEconomyService": {
+        "service": "ObservabilitySloEconomyService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "OceanFleetService": {
+        "service": "OceanFleetService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "OmnichannelServiceConsistencySlaService": {
+        "service": "OmnichannelServiceConsistencySlaService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "OperationsExcellenceGovernanceService": {
+        "service": "OperationsExcellenceGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "OperationsExcellenceService": {
+        "service": "OperationsExcellenceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "OrgDesignChangeManagementService": {
+        "service": "OrgDesignChangeManagementService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "OrgDesignWorkforcePlanningService": {
+        "service": "OrgDesignWorkforcePlanningService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "PartitionArchiveService": {
+        "service": "PartitionArchiveService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "PartnerApiEconomicsBillingService": {
+        "service": "PartnerApiEconomicsBillingService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "PartnerCosellAffiliateService": {
+        "service": "PartnerCosellAffiliateService",
+        "category": "pindah ke modul B2b",
+        "target": "B2b",
+        "reason": "Domain ekosistem B2B, partner, & kemitraan"
+    },
+    "PartnerOnboardingEcosystemService": {
+        "service": "PartnerOnboardingEcosystemService",
+        "category": "pindah ke modul B2b",
+        "target": "B2b",
+        "reason": "Domain ekosistem B2B, partner, & kemitraan"
+    },
+    "PerformanceCostOptimizationService": {
+        "service": "PerformanceCostOptimizationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "PerformanceEngagementAnalyticsService": {
+        "service": "PerformanceEngagementAnalyticsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "PerformanceRewardsTalentDecisionsService": {
+        "service": "PerformanceRewardsTalentDecisionsService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "PlanningSchedulingUnificationService": {
+        "service": "PlanningSchedulingUnificationService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "PlatformAutomatedOpsFinopsService": {
+        "service": "PlatformAutomatedOpsFinopsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "PlatformEconomyService": {
+        "service": "PlatformEconomyService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "PlatformFeatureFlagsParityService": {
+        "service": "PlatformFeatureFlagsParityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "PlatformFinalStressSecuritySimulationService": {
+        "service": "PlatformFinalStressSecuritySimulationService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "PlatformMonolithEvolutionService": {
+        "service": "PlatformMonolithEvolutionService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "PlatformRelease300HandoverService": {
+        "service": "PlatformRelease300HandoverService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "PlatformReleaseCandidateDocsService": {
+        "service": "PlatformReleaseCandidateDocsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "PolicyComplianceTestingRemediationService": {
+        "service": "PolicyComplianceTestingRemediationService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "PortOperationsService": {
+        "service": "PortOperationsService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "PredictiveOperationsDigitalTwinService": {
+        "service": "PredictiveOperationsDigitalTwinService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "PricingScienceRevenueOptimizationService": {
+        "service": "PricingScienceRevenueOptimizationService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "PrivacyEngineeringDataProductsService": {
+        "service": "PrivacyEngineeringDataProductsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "PrivacyVaultService": {
+        "service": "PrivacyVaultService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "ProblemManagementRootCauseService": {
+        "service": "ProblemManagementRootCauseService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ProductLifecycleCircularDesignService": {
+        "service": "ProductLifecycleCircularDesignService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ProductStewardshipEprService": {
+        "service": "ProductStewardshipEprService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ProfessionalServicesService": {
+        "service": "ProfessionalServicesService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ProfitabilityCostIntelligenceService": {
+        "service": "ProfitabilityCostIntelligenceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ProjectPortfolioManagementService": {
+        "service": "ProjectPortfolioManagementService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "PublicAffairsLicenseService": {
+        "service": "PublicAffairsLicenseService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "QualityAssuranceInspectionProgramService": {
+        "service": "QualityAssuranceInspectionProgramService",
+        "category": "pindah ke modul Manufacturing",
+        "target": "Manufacturing",
+        "reason": "Domain manufaktur, QA inspeksi, & rekayasa kualitas"
+    },
+    "QualityEngineeringAutomationService": {
+        "service": "QualityEngineeringAutomationService",
+        "category": "pindah ke modul Manufacturing",
+        "target": "Manufacturing",
+        "reason": "Domain manufaktur, QA inspeksi, & rekayasa kualitas"
+    },
+    "QualityManagementSystemService": {
+        "service": "QualityManagementSystemService",
+        "category": "pindah ke modul Manufacturing",
+        "target": "Manufacturing",
+        "reason": "Domain manufaktur, QA inspeksi, & rekayasa kualitas"
+    },
+    "QueueSchedulerBatchService": {
+        "service": "QueueSchedulerBatchService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ReadWriteReplicaLagService": {
+        "service": "ReadWriteReplicaLagService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "RealtimeStreamProcessingService": {
+        "service": "RealtimeStreamProcessingService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "RegulatoryChangeMegaScenarioService": {
+        "service": "RegulatoryChangeMegaScenarioService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "RegulatoryComplianceService": {
+        "service": "RegulatoryComplianceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "RegulatoryPolicyLifecycleService": {
+        "service": "RegulatoryPolicyLifecycleService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "RegulatoryTaxOperationsService": {
+        "service": "RegulatoryTaxOperationsService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "ReinsuranceAndCatService": {
+        "service": "ReinsuranceAndCatService",
+        "category": "pindah ke modul Insurance",
+        "target": "Insurance",
+        "reason": "Domain asuransi & kemitraan penjaminan"
+    },
+    "ReleaseManagementChangeAdvisoryService": {
+        "service": "ReleaseManagementChangeAdvisoryService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ReleaseTrainDeploymentSafetyService": {
+        "service": "ReleaseTrainDeploymentSafetyService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "ResilienceWave2Service": {
+        "service": "ResilienceWave2Service",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "RndTechTransferService": {
+        "service": "RndTechTransferService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "SafetyCertifiedPermitAccessService": {
+        "service": "SafetyCertifiedPermitAccessService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "SalesForcePipelineExcellenceService": {
+        "service": "SalesForcePipelineExcellenceService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "ScaleBenchmarkService": {
+        "service": "ScaleBenchmarkService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "SdmOrgHealthCultureService": {
+        "service": "SdmOrgHealthCultureService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "SdmWellnessOccupationalHealthService": {
+        "service": "SdmWellnessOccupationalHealthService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "SecurityEngineeringSupplyChainIntegrityService": {
+        "service": "SecurityEngineeringSupplyChainIntegrityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "SecurityPenTestService": {
+        "service": "SecurityPenTestService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "SecurityPenetrationRegressionService": {
+        "service": "SecurityPenetrationRegressionService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "ServiceCatalogDeveloperPortalService": {
+        "service": "ServiceCatalogDeveloperPortalService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ServiceLifecycleSunsetService": {
+        "service": "ServiceLifecycleSunsetService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ServiceOncallSloGovernanceService": {
+        "service": "ServiceOncallSloGovernanceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "ServiceRecoveryLoyaltyProtectionService": {
+        "service": "ServiceRecoveryLoyaltyProtectionService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "SimulationSyntheticFactoryService": {
+        "service": "SimulationSyntheticFactoryService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "SkillsEconomyInternalMobilityService": {
+        "service": "SkillsEconomyInternalMobilityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "SmartDistrictService": {
+        "service": "SmartDistrictService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "SocialImpactCommunityProgramService": {
+        "service": "SocialImpactCommunityProgramService",
+        "category": "pindah ke modul Esg",
+        "target": "Esg",
+        "reason": "Domain keberlanjutan, dekarbonisasi, & tata kelola ESG"
+    },
+    "StrategicPlanningExecutionService": {
+        "service": "StrategicPlanningExecutionService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "StrategicWorkforceCapabilityService": {
+        "service": "StrategicWorkforceCapabilityService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "StressBenchmarkBaselineService": {
+        "service": "StressBenchmarkBaselineService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "SubscriptionBillingRetentionService": {
+        "service": "SubscriptionBillingRetentionService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "SubscriptionCommerceReplenishmentService": {
+        "service": "SubscriptionCommerceReplenishmentService",
+        "category": "pindah ke modul Pricing",
+        "target": "Pricing",
+        "reason": "Domain penetapan harga, CRM, pelanggan, & komersial"
+    },
+    "SukukAndZakatService": {
+        "service": "SukukAndZakatService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "SuperAppMiniAppPlatformService": {
+        "service": "SuperAppMiniAppPlatformService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "SupplierCollaborativeSourcingService": {
+        "service": "SupplierCollaborativeSourcingService",
+        "category": "pindah ke modul Procurement",
+        "target": "Procurement",
+        "reason": "Domain pengadaan barang/jasa & kolaborasi supplier"
+    },
+    "SupplierFinanceCollaborativePlanningService": {
+        "service": "SupplierFinanceCollaborativePlanningService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "SupplyChainGovernanceScorecardsService": {
+        "service": "SupplyChainGovernanceScorecardsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "SupplyChainNetworkService": {
+        "service": "SupplyChainNetworkService",
+        "category": "pindah ke modul Logistics",
+        "target": "Logistics",
+        "reason": "Domain rantai pasok, logistik, pergudangan, & armada"
+    },
+    "SupplyChainResilienceService": {
+        "service": "SupplyChainResilienceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "SupplyChainTraceabilityService": {
+        "service": "SupplyChainTraceabilityService",
+        "category": "pindah ke modul Logistics",
+        "target": "Logistics",
+        "reason": "Domain rantai pasok, logistik, pergudangan, & armada"
+    },
+    "SupplyChainTradeMaterialFlowsService": {
+        "service": "SupplyChainTradeMaterialFlowsService",
+        "category": "pindah ke modul Logistics",
+        "target": "Logistics",
+        "reason": "Domain rantai pasok, logistik, pergudangan, & armada"
+    },
+    "SustainabilityFinanceDataService": {
+        "service": "SustainabilityFinanceDataService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "SustainableFinanceReportingService": {
+        "service": "SustainableFinanceReportingService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "SyariahBankingService": {
+        "service": "SyariahBankingService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "SyariahOperationsService": {
+        "service": "SyariahOperationsService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "SyntheticDataTrainingGovernanceService": {
+        "service": "SyntheticDataTrainingGovernanceService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "TakafulAndAgriService": {
+        "service": "TakafulAndAgriService",
+        "category": "pindah ke modul Agri",
+        "target": "Agri",
+        "reason": "Domain agrikultur, perikanan/kelautan, & komoditas pangan"
+    },
+    "TalentAcquisitionEmployerBrandService": {
+        "service": "TalentAcquisitionEmployerBrandService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "TalentLifecycleService": {
+        "service": "TalentLifecycleService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "TalentValueOrganizationalOutcomesService": {
+        "service": "TalentValueOrganizationalOutcomesService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "TaxCustomsTradeService": {
+        "service": "TaxCustomsTradeService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "TaxTransferPricingOperationsService": {
+        "service": "TaxTransferPricingOperationsService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "TelecomIdentityService": {
+        "service": "TelecomIdentityService",
+        "category": "pertahankan di Integration",
+        "target": "Integration",
+        "reason": "Adapter/konektor integrasi eksternal, protokol jaringan, atau gateway mitra"
+    },
+    "TenderBidManagementService": {
+        "service": "TenderBidManagementService",
+        "category": "pindah ke modul Procurement",
+        "target": "Procurement",
+        "reason": "Domain pengadaan barang/jasa & kolaborasi supplier"
+    },
+    "TestDataComplianceService": {
+        "service": "TestDataComplianceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "ThirdPartyEcosystemResilienceService": {
+        "service": "ThirdPartyEcosystemResilienceService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Platform resilience, business continuity, & disaster recovery Core"
+    },
+    "ThirdPartyRiskService": {
+        "service": "ThirdPartyRiskService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ThreatDetectionService": {
+        "service": "ThreatDetectionService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "TotalWellbeingSustainabilityService": {
+        "service": "TotalWellbeingSustainabilityService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Fondasi komputasi AI / model engine di platform Core"
+    },
+    "TreasuryAlgorithmicMarketRiskService": {
+        "service": "TreasuryAlgorithmicMarketRiskService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "TreasuryUnificationService": {
+        "service": "TreasuryUnificationService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "TrustSafetyModerationProtectionService": {
+        "service": "TrustSafetyModerationProtectionService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "UnifiedControlTowerDecisionService": {
+        "service": "UnifiedControlTowerDecisionService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "UserResearchDesignSystemService": {
+        "service": "UserResearchDesignSystemService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "ValueChainSimulationService": {
+        "service": "ValueChainSimulationService",
+        "category": "arsipkan/hapus (izin pemilik)",
+        "target": "Arsip",
+        "reason": "Prototipe simulasi spekulatif / mega skenario tanpa entitas domain riil"
+    },
+    "WarehouseRoboticsAutomationService": {
+        "service": "WarehouseRoboticsAutomationService",
+        "category": "pindah ke modul Logistics",
+        "target": "Logistics",
+        "reason": "Domain rantai pasok, logistik, pergudangan, & armada"
+    },
+    "WaterEnergyManagementService": {
+        "service": "WaterEnergyManagementService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Infrastruktur platform bersama, observability, arsitektur data Core"
+    },
+    "WhistleblowingEthicsService": {
+        "service": "WhistleblowingEthicsService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "WhistleblowingEthicsSpeakUpService": {
+        "service": "WhistleblowingEthicsSpeakUpService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    },
+    "WorkforceAutomationRoleDesignService": {
+        "service": "WorkforceAutomationRoleDesignService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "WorkforceLaborComplianceIntegrityService": {
+        "service": "WorkforceLaborComplianceIntegrityService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "WorkforceSkillsOperatingCapacityService": {
+        "service": "WorkforceSkillsOperatingCapacityService",
+        "category": "pindah ke modul Hcm",
+        "target": "Hcm",
+        "reason": "Domain human capital management, payroll, & workforce analytics"
+    },
+    "WorkingCapitalScfService": {
+        "service": "WorkingCapitalScfService",
+        "category": "pindah ke modul Treasury",
+        "target": "Treasury",
+        "reason": "Domain treasury, likuiditas, perpajakan, & manajemen modal"
+    },
+    "ZeroTrustService": {
+        "service": "ZeroTrustService",
+        "category": "pindah ke modul Core",
+        "target": "Core",
+        "reason": "Domain keamanan siber, fraud/AML, GRC, & audit compliance Core platform"
+    }
+}

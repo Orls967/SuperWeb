@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Rwa\Application\Services\RwaTokenService;
+use Modules\Rwa\Console\Commands\AuditRwaCommand;
 
 class RwaServiceProvider extends ServiceProvider
 {
@@ -24,5 +25,13 @@ class RwaServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'rwa');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                AuditRwaCommand::class,
+            ]);
+        }
     }
 }

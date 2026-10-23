@@ -14,7 +14,16 @@ class CoreAiDecisionSnapshot extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'decision_code',
+        'model_name',
+        'model_version',
+        'seed',
+        'input_snapshot',
+        'decision_output',
+        'decision_hash',
+    ];
 
     protected $casts = [
         'input_snapshot' => 'array',

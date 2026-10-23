@@ -21,6 +21,7 @@ final class SourceFile
     public function __construct(
         public readonly string $relativePath,
         public readonly string $contents,
+        public readonly ?string $absolutePath = null,
     ) {}
 
     public static function fromDisk(string $basePath, string $relativePath): self
@@ -32,7 +33,7 @@ final class SourceFile
             throw new RuntimeException("Tidak bisa membaca file {$absolutePath}.");
         }
 
-        return new self(str_replace('\\', '/', ltrim($relativePath, '/')), $contents);
+        return new self(str_replace('\\', '/', ltrim($relativePath, '/')), $contents, $absolutePath);
     }
 
     /**

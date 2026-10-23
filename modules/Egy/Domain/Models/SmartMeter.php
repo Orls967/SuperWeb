@@ -14,7 +14,16 @@ class SmartMeter extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'meter_serial_number',
+        'consumer_property_type',
+        'consumer_property_id',
+        'grid_node_id',
+        'total_kwh_accumulated',
+        'tariff_category',
+        'status',
+    ];
 
     protected $casts = [
         'total_kwh_accumulated' => 'float',

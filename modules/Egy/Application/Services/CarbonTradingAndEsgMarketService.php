@@ -139,7 +139,7 @@ class CarbonTradingAndEsgMarketService
             $tx = null;
             if ($discountAmount > 0) {
                 $tx = $this->ledgerService->post(new PostingDTO(
-                    type: 'ENERGY_GREEN_LEASE_DISCOUNT_ACCRUAL',
+                    type: 'ENERGY_GREEN_LEASE_DISCOUNT',
                     description: "Green lease ESG discount for tenant {$tenantPropertyId}",
                     idempotencyKey: 'EGY-DSC-'.$discountCode,
                     entries: Posting::lines()

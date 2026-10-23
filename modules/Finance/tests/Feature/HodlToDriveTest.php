@@ -63,10 +63,12 @@ class HodlToDriveTest extends TestCase
 
         $topUp = app(TopUpAction::class);
         $remaining = $idrBalance;
+        $chunkIndex = 0;
         while ($remaining > 0) {
             $chunk = min($remaining, 50_000_000);
-            $topUp->execute($user, $chunk);
+            $topUp->execute($user, $chunk, "seed_topup_{$user->id}_{$chunkIndex}");
             $remaining -= $chunk;
+            $chunkIndex++;
         }
 
         // Kredit holding BTC lewat ledger agar reconcile tetap seimbang

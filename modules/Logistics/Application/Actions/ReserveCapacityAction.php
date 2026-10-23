@@ -7,7 +7,6 @@ namespace Modules\Logistics\Application\Actions;
 use Brick\Math\BigDecimal;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Modules\Logistics\Domain\Enums\ScheduleStatus;
 use Modules\Logistics\Domain\Exceptions\CapacityCutoffExceededException;
 use Modules\Logistics\Domain\Exceptions\CapacityExceededException;
@@ -158,10 +157,12 @@ class ReserveCapacityAction
             $schedule->save();
 
             // 8. Persist Capacity Reservation
+            $fallbackKey = sprintf('logistics:reserve_cap:%s:%s', $schedule->id, $shipmentId ?? ('w'.(string) $neededWeight.'v'.$volumeDm3));
+
             return CapacityReservation::create([
                 'schedule_id' => $schedule->id,
                 'shipment_id' => $shipmentId,
-                'idempotency_key' => $idempotencyKey ?: (string) Str::uuid(),
+                'idempotency_key' => $idempotencyKey ?: $fallbackKey,
                 'allocated_weight_kg' => (string) $neededWeight,
                 'allocated_volume_dm3' => $volumeDm3,
                 'allocated_teu' => $teu,

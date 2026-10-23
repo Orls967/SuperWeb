@@ -44,10 +44,24 @@ return new class extends Migration
                 $table->unique(['profile_id', 'asset_type']);
             });
         }
+
+        if (! Schema::hasTable('wm_orders')) {
+            Schema::create('wm_orders', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('profile_id')->constrained('wm_profiles')->cascadeOnDelete();
+                $table->string('asset_type', 32); // mutual_fund, digital_gold, crypto
+                $table->unsignedBigInteger('amount_idr');
+                $table->string('status', 32)->default('EXECUTED');
+                $table->string('idempotency_key', 64)->unique();
+                $table->timestamp('executed_at')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('wm_orders');
         Schema::dropIfExists('wm_holdings');
         Schema::dropIfExists('wm_plans');
         Schema::dropIfExists('wm_profiles');

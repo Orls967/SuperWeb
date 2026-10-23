@@ -316,8 +316,8 @@ class ShopFloorTest extends TestCase
         try {
             $this->production->recordScrapRework($order->fresh(), 'invalid', 1, 'x', $this->admin);
             $this->fail('Jenis tidak sah harus ditolak.');
-        } catch (InvalidArgumentException) {
-            $this->assertTrue(true);
+        } catch (InvalidArgumentException $e) {
+            $this->assertNotEmpty($e->getMessage());
         }
     }
 

@@ -14,7 +14,13 @@ class MicrogridController extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'microgrid_code',
+        'site_name',
+        'grid_mode',
+        'available_power_kw',
+    ];
 
     protected $casts = [
         'available_power_kw' => 'float',

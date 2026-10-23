@@ -495,7 +495,7 @@ class AgencyService
                     title: "Payout komisi {$locked->number} ({$locked->period})",
                     creator: $creator,
                     approvable: $locked,
-                    amount: (float) (int) $locked->net_idr,
+                    amount: (int) $locked->net_idr,
                     steps: [['role' => 'procurement'], ['role' => 'admin']],
                     slaHours: 48,
                     metadata: ['payout_id' => $locked->id, 'agent_id' => $locked->agent_id],

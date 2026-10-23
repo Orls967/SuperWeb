@@ -72,7 +72,7 @@ class ActivateLeaseAction
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::LEASE_DEPOSIT->value,
                     description: "Setoran deposit jaminan sewa unit {$locked->unit->unit_number} (#{$locked->lease_number})",
-                    idempotencyKey: "mall:lease:activate:{$locked->id}:".Str::uuid(),
+                    idempotencyKey: "mall:lease:activate:{$locked->id}",
                     entries: [
                         PostingEntryDTO::forCode($walletAccount->code, 'IDR', $depositBd->negated()),
                         PostingEntryDTO::forCode($liabilityAccount->code, 'IDR', $depositBd),

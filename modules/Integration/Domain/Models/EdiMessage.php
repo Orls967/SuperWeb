@@ -10,5 +10,13 @@ class EdiMessage extends Model
 {
     protected $table = 'intg_edi_messages';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'control_number',
+        'edi_standard',
+        'transaction_set',
+        'sender_id',
+        'receiver_id',
+        'raw_message',
+        'functional_status',
+    ];
 }

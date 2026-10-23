@@ -13,6 +13,9 @@ use Modules\Venue\Domain\Models\FestivalBundle;
 use Modules\Venue\Domain\Models\VenueMembership;
 use RuntimeException;
 
+/**
+ * Fase 90: Artist Contracts, Bar Supply, PTS Loyalty & Festival Economy
+ */
 class VenueEconomyService
 {
     public function __construct(

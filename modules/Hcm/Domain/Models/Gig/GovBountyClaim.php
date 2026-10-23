@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Hcm\Domain\Models\Gig;
 
 use Illuminate\Database\Eloquent\Model;
@@ -10,10 +12,19 @@ class GovBountyClaim extends Model
 {
     protected $table = 'gov_bounty_claims';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'claim_code',
+        'bounty_id',
+        'employee_id',
+        'work_permit_code',
+        'mobility_points_earned',
+        'claimed_at',
+        'status',
+    ];
 
     protected $casts = [
         'claimed_at' => 'datetime',
+        'mobility_points_earned' => 'integer',
     ];
 
     public function bounty(): BelongsTo

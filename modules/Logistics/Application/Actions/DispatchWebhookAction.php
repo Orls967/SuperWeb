@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Logistics\Application\Actions;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Logistics\Domain\Models\WebhookDelivery;
 use Modules\Logistics\Domain\Models\WebhookEndpoint;
@@ -46,7 +45,8 @@ class DispatchWebhookAction
                 continue;
             }
 
-            $idempotencyKey = Str::uuid()->toString();
+            $ref = (string) ($payload['shipment_id'] ?? $payload['id'] ?? sha1(json_encode($payload)));
+            $idempotencyKey = "logistics:webhook:{$endpoint->id}:{$eventType}:{$ref}";
 
             $delivery = WebhookDelivery::create([
                 'endpoint_id' => $endpoint->id,

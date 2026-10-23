@@ -11,14 +11,14 @@ class SuperHealthCheckCommand extends Command
 {
     protected $signature = 'super:health-check';
 
-    protected $description = 'Jalankan diagnosa komprehensif kesehatan seluruh ekosistem platform (DB, Cache, Storage, Ledger, Passport, Mall, Resto)';
+    protected $description = 'Jalankan diagnosa komprehensif kesehatan seluruh ekosistem platform 12 pilar (DB, Cache, Storage, Ledger, Passport, Mall, Resto, Logistik, Aset, Pembelian, Kontrak, Manufaktur)';
 
     public function handle(SystemHealthService $healthService): int
     {
         $this->info('================================================================');
         $this->info('  SUPERWEBSITE SYSTEM OBSERVABILITY & HEALTH MONITOR');
         $this->info('================================================================');
-        $this->line('Memulai pemindaian status kesehatan 7 pilar arsitektur platform...');
+        $this->line('Memulai pemindaian status kesehatan 12 pilar arsitektur platform...');
 
         $result = $healthService->check();
 

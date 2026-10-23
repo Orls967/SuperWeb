@@ -14,7 +14,16 @@ class RetFulfillmentSplit extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'split_code',
+        'order_id',
+        'sku',
+        'quantity',
+        'fulfillment_location_type',
+        'facility_id',
+        'status',
+    ];
 
     protected $casts = [
         'quantity' => 'integer',

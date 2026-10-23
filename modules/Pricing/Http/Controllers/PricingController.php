@@ -8,19 +8,26 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
+use Modules\Pricing\Application\Services\AlgorithmicSurgePricingService;
 use Modules\Pricing\Application\Services\PricingService;
 use Modules\Pricing\Domain\Models\AnalyticsSnapshot;
 use Modules\Pricing\Domain\Models\DiscountRule;
+use Modules\Pricing\Domain\Models\FrozenQuote;
 use Modules\Pricing\Domain\Models\MarginPolicy;
 use Modules\Pricing\Domain\Models\PriceList;
 use Modules\Pricing\Domain\Models\PriceLock;
 use Modules\Pricing\Domain\Models\PriceOverride;
+use Modules\Pricing\Domain\Models\PriceTick;
+use Modules\Pricing\Domain\Models\PriceTickAggregate;
 use Modules\Pricing\Domain\Models\Promotion;
 use Modules\Pricing\Domain\Models\PromotionClaim;
 
 class PricingController extends Controller
 {
-    public function __construct(private readonly PricingService $service) {}
+    public function __construct(
+        private readonly PricingService $service,
+        private readonly AlgorithmicSurgePricingService $surgeService
+    ) {}
 
     public function index(): View
     {
@@ -62,7 +69,7 @@ class PricingController extends Controller
         try {
             $this->service->setPriceListItem($list, $data['sku'], (int) $data['price_idr'], (float) $data['min_qty']);
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('item', $e->getMessage());
+            return back()->withErrors(['item' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Item harga disimpan.');
@@ -73,7 +80,7 @@ class PricingController extends Controller
         try {
             $this->service->activatePriceList($list);
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('list', $e->getMessage());
+            return back()->withErrors(['list' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', "Price list {$list->code} aktif.");
@@ -124,7 +131,7 @@ class PricingController extends Controller
                 $request->user(), $data['evidence_note'],
             );
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('claim', $e->getMessage());
+            return back()->withErrors(['claim' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', "Klaim {$claim->source_ref} terkirim.");
@@ -135,7 +142,7 @@ class PricingController extends Controller
         try {
             $this->service->approvePromotionClaim($claim, $request->user());
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('claim', $e->getMessage());
+            return back()->withErrors(['claim' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Klaim tervalidasi (menunggu settlement four-eyes).');
@@ -146,7 +153,7 @@ class PricingController extends Controller
         try {
             $this->service->settlePromotionClaim($claim, $request->user());
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('claim', $e->getMessage());
+            return back()->withErrors(['claim' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Klaim promo disettle.');
@@ -178,7 +185,7 @@ class PricingController extends Controller
                 $data['sku'], $data['channel'], (int) $data['proposed_price_idr'], $data['reason'], $request->user(),
             );
         } catch (\InvalidArgumentException $e) {
-            return back()->errors()->add('override', $e->getMessage());
+            return back()->withErrors(['override' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', "Override #{$override->id} diajukan (four-eyes).");
@@ -192,7 +199,7 @@ class PricingController extends Controller
         try {
             $this->service->decideOverride($override, $request->user(), $data['decision'] === 'approve', $data['note'] ?? null);
         } catch (\InvalidArgumentException|\RuntimeException $e) {
-            return back()->errors()->add('override', $e->getMessage());
+            return back()->withErrors(['override' => $e->getMessage()])->withInput();
         }
 
         return back()->with('success', 'Keputusan override tercatat.');
@@ -210,5 +217,92 @@ class PricingController extends Controller
             $data['period'], (float) $snapshot->realized_vs_list_percent,
             number_format((int) $snapshot->discount_leakage_idr), (float) $snapshot->avg_discount_percent,
         ));
+    }
+
+    public function ticks(Request $request): View
+    {
+        $sku = (string) $request->query('sku', 'PART-BRAKE-01');
+        $ticks = PriceTick::where('sku', $sku)->orderByDesc('tick_time')->limit(50)->get();
+        $aggregates = PriceTickAggregate::where('sku', $sku)->orderByDesc('bucket_minute')->limit(30)->get();
+        $quotes = FrozenQuote::where('sku', $sku)->orderByDesc('created_at')->limit(30)->get();
+        $analytics = $this->surgeService->getAnalyticsSummary($sku);
+
+        return view('pricing::ticks', [
+            'selectedSku' => $sku,
+            'ticks' => $ticks,
+            'aggregates' => $aggregates,
+            'quotes' => $quotes,
+            'analytics' => $analytics,
+        ]);
+    }
+
+    public function storeTick(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'sku' => 'required|string|max:64',
+            'price_idr' => 'required|integer|min:0',
+            'demand_index' => 'required|numeric|min:0.1|max:10.0',
+            'driver_source' => 'required|string|max:32',
+        ]);
+
+        $this->surgeService->recordPriceTick(
+            sku: $data['sku'],
+            tickTime: now(),
+            priceIdr: (int) $data['price_idr'],
+            demandIndex: (float) $data['demand_index'],
+            driverSource: $data['driver_source'],
+        );
+
+        return back()->with('success', "Price tick tercatat untuk {$data['sku']}.");
+    }
+
+    public function freezeQuote(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'sku' => 'required|string|max:64',
+            'base_hpp_idr' => 'required|integer|min:1',
+            'het_ceiling_idr' => 'required|integer|min:1',
+            'demand_index' => 'required|numeric|min:0.1|max:10.0',
+            'channel' => 'nullable|string|in:STORE_B2C,DISTRIBUTOR_WHOLESALE,B2B_MARKETPLACE,EXPORT,VENDING',
+            'contract_price_idr' => 'nullable|integer|min:0',
+            'lock_minutes' => 'nullable|integer|min:1|max:1440',
+        ]);
+
+        $channel = $data['channel'] ?? 'STORE_B2C';
+        $calc = $this->surgeService->quoteForChannel(
+            channel: $channel,
+            sku: $data['sku'],
+            baseHppIdr: (int) $data['base_hpp_idr'],
+            hetCeilingIdr: (int) $data['het_ceiling_idr'],
+            demandIndex: (float) $data['demand_index'],
+            contractPriceIdr: isset($data['contract_price_idr']) && $data['contract_price_idr'] > 0 ? (int) $data['contract_price_idr'] : null,
+        );
+
+        $quote = $this->surgeService->freezePriceQuote(
+            sku: $data['sku'],
+            effectivePriceIdr: (int) $calc['effective_price_idr'],
+            floorPriceIdr: (int) $calc['floor_price_idr'],
+            ceilingPriceIdr: (int) $calc['ceiling_price_idr'],
+            lockMinutes: (int) ($data['lock_minutes'] ?? 30),
+            channel: $channel,
+        );
+
+        return back()->with('success', "Quote {$quote->quote_code} berhasil dibekukan pada Rp ".number_format($quote->frozen_price_idr).'.');
+    }
+
+    public function convertQuote(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'quote_code' => 'required|string|max:32',
+            'order_ref' => 'required|string|max:64',
+        ]);
+
+        try {
+            $quote = $this->surgeService->convertFrozenQuoteToOrder($data['quote_code'], $data['order_ref']);
+
+            return back()->with('success', "Quote {$quote->quote_code} berhasil dikonversi ke order {$quote->order_ref}.");
+        } catch (\Throwable $e) {
+            return back()->withErrors(['quote' => $e->getMessage()]);
+        }
     }
 }

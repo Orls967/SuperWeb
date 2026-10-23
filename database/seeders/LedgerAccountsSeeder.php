@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Modules\Agri\Ledger\AgriAccounts;
+use Modules\B2b\Ledger\B2bAccounts;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\CloudKitchen\Ledger\CloudKitchenAccounts;
@@ -14,6 +15,8 @@ use Modules\Core\Ledger\CoreAccounts;
 use Modules\Edu\Ledger\EduAccounts;
 use Modules\Egy\Ledger\EgyAccounts;
 use Modules\EnterpriseFinance\Ledger\EnterpriseFinanceAccounts;
+use Modules\Epc\Ledger\EpcAccounts;
+use Modules\Esg\Ledger\EsgAccounts;
 use Modules\Ev\Ledger\EvAccounts;
 use Modules\Fleet\Ledger\FleetAccounts;
 use Modules\Hcm\Ledger\HcmAccounts;
@@ -37,8 +40,8 @@ use Modules\Venue\Ledger\VenueAccounts;
 use Modules\Wealth\Ledger\WealthAccounts;
 
 /**
- * Seeder untuk mendaftarkan Bagan Akun Standar (Chart of Accounts)
- * lintas modul sesuai KONSEP.md §A2.3 (R1.3).
+ * Bagan Akun Standar (Chart of Accounts) untuk modul-modul ekosistem.
+ * Didaftarkan ke LedgerAccountsSeeder (KONSEP.md §A2.3).
  */
 class LedgerAccountsSeeder extends Seeder
 {
@@ -47,11 +50,14 @@ class LedgerAccountsSeeder extends Seeder
      */
     public const ACCOUNT_REGISTRIES = [
         AgriAccounts::class,
+        B2bAccounts::class,
         CloudKitchenAccounts::class,
         CoreAccounts::class,
         EduAccounts::class,
         EgyAccounts::class,
         EnterpriseFinanceAccounts::class,
+        EpcAccounts::class,
+        EsgAccounts::class,
         EvAccounts::class,
         FleetAccounts::class,
         HcmAccounts::class,

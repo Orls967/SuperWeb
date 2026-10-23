@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Proptech\tests\Feature;
 
+use App\Quality\Audit\Fixtures\ProptechFlexCorruptionFixture;
 use Carbon\Carbon;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Proptech\Application\Services\FlexSpaceService;
 use Modules\Proptech\Domain\Models\BuildingSensor;
@@ -115,5 +119,28 @@ class FlexSpaceBookingTest extends TestCase
         // Penalty revenue earned = deposit amount (90,000 IDR)
         $penaltyRev = LedgerAccount::where('code', 'prp:flex_penalty_rev:IDR')->first();
         $this->assertEquals('90000', (string) $penaltyRev->cached_balance);
+    }
+
+    public function test_78_7_two_source_audit_passes_cleanly(): void
+    {
+        $code = Artisan::call('prp:audit-flex');
+        $this->assertSame(0, $code);
+
+        $result = $this->flexService->auditFlex();
+        $this->assertTrue($result['passed']);
+        $this->assertEmpty($result['discrepancies']);
+    }
+
+    public function test_78_7_audit_fails_when_overlap_is_injected(): void
+    {
+        $fixture = new ProptechFlexCorruptionFixture;
+        $fixture->corrupt();
+
+        $code = Artisan::call('prp:audit-flex');
+        $this->assertSame(1, $code);
+
+        $result = $this->flexService->auditFlex();
+        $this->assertFalse($result['passed']);
+        $this->assertNotEmpty($result['discrepancies']);
     }
 }

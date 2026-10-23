@@ -14,7 +14,14 @@ class RetInventoryItem extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'sku',
+        'product_name',
+        'stock_available',
+        'stock_reserved',
+        'map_price_minor',
+    ];
 
     protected $casts = [
         'stock_available' => 'integer',

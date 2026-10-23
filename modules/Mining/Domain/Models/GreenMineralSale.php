@@ -14,7 +14,18 @@ class GreenMineralSale extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'contract_number',
+        'buyer_party_id',
+        'commodity',
+        'tonnage',
+        'dpp_passport_hash',
+        'base_price_minor',
+        'green_premium_adder_minor',
+        'total_settled_minor',
+        'ledger_transaction_id',
+    ];
 
     protected $casts = [
         'tonnage' => 'float',

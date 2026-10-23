@@ -14,7 +14,18 @@ class BessArbitrageRun extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'bess_asset_id',
+        'run_code',
+        'energy_discharged_kwh',
+        'charging_cost_minor',
+        'discharging_revenue_minor',
+        'net_arbitrage_profit_minor',
+        'battery_cycle_count_increment',
+        'state_of_health_pct',
+        'ledger_transaction_id',
+    ];
 
     protected $casts = [
         'energy_discharged_kwh' => 'float',

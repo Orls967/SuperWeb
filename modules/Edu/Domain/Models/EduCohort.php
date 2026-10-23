@@ -14,7 +14,17 @@ class EduCohort extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'cohort_code',
+        'program_id',
+        'instructor_party_id',
+        'start_date',
+        'end_date',
+        'max_capacity',
+        'enrolled_count',
+        'status',
+    ];
 
     protected $casts = [
         'start_date' => 'date',

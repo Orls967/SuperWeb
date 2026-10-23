@@ -8,11 +8,16 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\AutoServe\Application\Listeners\CreatePredictiveMaintenanceBooking;
+use Modules\AutoServe\Application\Listeners\NotifyBookingCompleted;
+use Modules\AutoServe\Application\Listeners\RecordBookingCompletedPassportEvent;
 use Modules\AutoServe\Application\Services\AutoServeFleetMaintenanceBooking;
+use Modules\AutoServe\Application\Services\AutoServeSearchProvider;
 use Modules\AutoServe\Application\Services\AutoServeTenantSalesProvider;
+use Modules\AutoServe\Domain\Events\BookingCompleted;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\Logistics\Contracts\FleetMaintenanceBooking;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Shared\Application\SearchRegistry;
 use Modules\Telematics\Domain\Events\VehicleAnomalyDetected;
 
 class AutoServeServiceProvider extends ServiceProvider
@@ -72,5 +77,13 @@ class AutoServeServiceProvider extends ServiceProvider
             VehicleAnomalyDetected::class,
             CreatePredictiveMaintenanceBooking::class
         );
+
+        Event::listen(BookingCompleted::class, RecordBookingCompletedPassportEvent::class);
+        Event::listen(BookingCompleted::class, NotifyBookingCompleted::class);
+
+        if ($this->app->bound(SearchRegistry::class)) {
+            $this->app->make(SearchRegistry::class)
+                ->registerProvider(new AutoServeSearchProvider);
+        }
     }
 }

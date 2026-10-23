@@ -14,7 +14,17 @@ class EduInternalTransfer extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'transfer_code',
+        'employee_id',
+        'from_entity_id',
+        'to_entity_id',
+        'effective_date',
+        'base_salary_minor',
+        'payroll_processed',
+        'status',
+    ];
 
     protected $casts = [
         'effective_date' => 'date',

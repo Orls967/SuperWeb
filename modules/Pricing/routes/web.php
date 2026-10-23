@@ -10,6 +10,7 @@ Route::middleware(['web', 'auth', 'verified'])
     ->name('pricing.')
     ->group(function () {
         Route::get('/', [PricingController::class, 'index'])->middleware('role:admin,procurement,auditor')->name('index');
+        Route::get('/ticks', [PricingController::class, 'ticks'])->middleware('role:admin,procurement,auditor')->name('ticks');
         Route::middleware('role:admin,procurement')->group(function () {
             Route::post('/price-lists', [PricingController::class, 'storePriceList'])->name('price-lists.store');
             Route::post('/price-lists/items', [PricingController::class, 'storePriceListItem'])->name('price-lists.items.store');
@@ -23,5 +24,8 @@ Route::middleware(['web', 'auth', 'verified'])
             Route::post('/overrides', [PricingController::class, 'storeOverride'])->name('overrides.store');
             Route::post('/overrides/{override}/decide', [PricingController::class, 'decideOverride'])->name('overrides.decide');
             Route::post('/analytics', [PricingController::class, 'computeAnalytics'])->name('analytics.compute');
+            Route::post('/ticks', [PricingController::class, 'storeTick'])->name('ticks.store');
+            Route::post('/quote/freeze', [PricingController::class, 'freezeQuote'])->name('quote.freeze');
+            Route::post('/quote/convert', [PricingController::class, 'convertQuote'])->name('quote.convert');
         });
     });

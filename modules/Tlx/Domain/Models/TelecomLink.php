@@ -14,7 +14,19 @@ class TelecomLink extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'link_code',
+        'origin_site_id',
+        'dest_site_id',
+        'link_medium',
+        'bandwidth_capacity_gbps',
+        'allocated_bandwidth_gbps',
+        'target_sla_uptime_pct',
+        'actual_sla_uptime_pct',
+        'downtime_minutes_month',
+        'status',
+    ];
 
     protected $casts = [
         'bandwidth_capacity_gbps' => 'float',

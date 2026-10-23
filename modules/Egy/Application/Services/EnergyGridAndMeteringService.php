@@ -137,7 +137,7 @@ class EnergyGridAndMeteringService
 
         return DB::transaction(function () use ($params, $contractNumber, $feedInTariff, $surplusKwh, $settlementAmount) {
             $tx = $this->ledgerService->post(new PostingDTO(
-                type: 'ENERGY_PPA_NET_METERING_SETTLEMENT',
+                type: 'ENERGY_PPA_NET_METER_SETTLE',
                 description: "Net metering feed-in tariff credit for solar producer {$params['producer_entity_id']}",
                 idempotencyKey: 'EGY-PPA-'.$contractNumber,
                 entries: Posting::lines()
