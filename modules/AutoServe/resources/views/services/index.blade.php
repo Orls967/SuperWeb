@@ -4,6 +4,8 @@
 @section('subtitle', 'Kelola jenis servis bengkel')
 
 @section('content')
+    <x-enterprise.module-dashboard module="AutoServe" />
+
 <div class="space-y-6">
 
     {{-- Form Tambah --}}

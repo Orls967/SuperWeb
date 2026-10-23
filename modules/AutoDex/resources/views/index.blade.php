@@ -4,6 +4,8 @@
 @section('subtitle', 'Jelajahi ensiklopedia mobil global dan tambahkan ke garasi Anda')
 
 @section('content')
+    <x-enterprise.module-dashboard module="AutoDex" />
+
 <div x-data="autodex()" x-init="initData()">
     
     <!-- Tab Navigation -->

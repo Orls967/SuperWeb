@@ -3,6 +3,8 @@
 @section('title', 'Enterprise Finance & Conglomerate Governance Cockpit')
 
 @section('content')
+    <x-enterprise.module-dashboard module="EnterpriseFinance" />
+
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>

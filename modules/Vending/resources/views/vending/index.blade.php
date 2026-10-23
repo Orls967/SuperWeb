@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+    <x-enterprise.module-dashboard module="Vending" />
+
 <div class="py-12 bg-gray-900 text-gray-100">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
         <div class="p-6 bg-gray-800 shadow-xl rounded-xl border border-gray-700">
