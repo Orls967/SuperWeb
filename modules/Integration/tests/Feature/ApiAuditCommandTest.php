@@ -6,14 +6,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Modules\Integration\Application\Services\IntegrationService;
 use Modules\Integration\Application\Services\PlatformEconomyService;
+
 /*
 | PROGRESS R0.6: `api:audit` is one command that runs both the Fase 55 integration
 | audit (webhook HMAC & EDI) and the Fase 147 platform economy audit. Before R0.6 two
 */
 
-use Tests\TestCase;
-
-uses(TestCase::class, RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 it('runs the integration and platform economy audits and passes on consistent data', function (): void {
     $integration = app(IntegrationService::class);

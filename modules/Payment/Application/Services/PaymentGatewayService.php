@@ -19,6 +19,7 @@ use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Payment\Contracts\Payable;
 use Modules\Payment\Contracts\PaymentGateway;
+use Modules\Payment\Contracts\PaymentIntent as ContractPaymentIntent;
 use Modules\Payment\Domain\Enums\PaymentIntentStatus;
 use Modules\Payment\Domain\Events\PaymentCaptured;
 use Modules\Payment\Domain\Events\PaymentHeld;
@@ -192,7 +193,7 @@ class PaymentGatewayService implements PaymentGateway
         });
     }
 
-    public function capture(PaymentIntent $intent, Money $finalAmount, ?string $idempotencyKey = null): PaymentIntent
+    public function capture(ContractPaymentIntent $intent, Money $finalAmount, ?string $idempotencyKey = null): PaymentIntent
     {
         return DB::transaction(function () use ($intent, $finalAmount, $idempotencyKey) {
             /** @var PaymentIntent $locked */
@@ -291,7 +292,7 @@ class PaymentGatewayService implements PaymentGateway
         });
     }
 
-    public function release(PaymentIntent $intent, ?string $idempotencyKey = null): PaymentIntent
+    public function release(ContractPaymentIntent $intent, ?string $idempotencyKey = null): PaymentIntent
     {
         return DB::transaction(function () use ($intent, $idempotencyKey) {
             /** @var PaymentIntent $locked */
@@ -345,7 +346,7 @@ class PaymentGatewayService implements PaymentGateway
     }
 
     public function refund(
-        PaymentIntent $intent,
+        ContractPaymentIntent $intent,
         string $refundId,
         ?Money $refundAmount = null,
         string $reason = '',

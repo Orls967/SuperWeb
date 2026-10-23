@@ -289,6 +289,7 @@ class LogisticsLargeSeeder extends Seeder
         $endDate = $now->timestamp;
         $rangeSeconds = max(1, $endDate - $startDate);
 
+        $userTable = 'users';
         $shipperIds = DB::table($userTable)->where('role', 'shipper')->pluck('id')->all();
 
         if (empty($shipperIds)) {

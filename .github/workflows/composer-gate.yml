@@ -1,0 +1,183 @@
+name: Composer Gate & Enterprise Sharded CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+      - main
+      - 'release/**'
+      - 'feat/**'
+      - 'fix/**'
+      - 'refactor/**'
+      - 'test/**'
+  pull_request:
+    branches:
+      - master
+      - main
+      - 'release/**'
+      - 'feat/**'
+      - 'fix/**'
+      - 'refactor/**'
+      - 'test/**'
+
+concurrency:
+  group: composer-gate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ============================================================================
+  # Job 1: Static Analysis, Architecture Ratchet & Spec Contract Gate
+  # ============================================================================
+  static-and-architecture-gate:
+    name: Static & Architecture Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP 8.4 Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, pdo, pdo_sqlite, intl, bcmath, pcntl, redis
+          coverage: none
+
+      - name: Setup Application Environment
+        run: |
+          cp .env.example .env
+          touch database/database.sqlite
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Generate Application Encryption Key
+        run: php artisan key:generate --ansi
+
+      - name: Step 1.1 — Validate Code Styling with Pint
+        run: ./vendor/bin/pint --test
+
+      - name: Step 1.2 — Architecture Invariant Scan (A1-A13)
+        run: php artisan arch:scan
+
+      - name: Step 1.3 — OpenAPI 3.1 Specification Contract Validation
+        run: php artisan openapi:validate
+
+      - name: Step 1.4 — Codebase Documentation Inventory Synchronization
+        run: php artisan docs:inventory --check
+
+      - name: Step 1.5 — Architecture Suite Contract Verification
+        run: ./vendor/bin/pest tests/Architecture
+
+  # ============================================================================
+  # Job 2: Sharded Pest Test Matrix Across 46 Enterprise Modules
+  # ============================================================================
+  pest-sharded-matrix:
+    name: Pest Sharded Matrix (Shard ${{ matrix.shard }}/4)
+    runs-on: ubuntu-latest
+    needs: static-and-architecture-gate
+    timeout-minutes: 25
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP 8.4 Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, pdo, pdo_sqlite, intl, bcmath, pcntl, redis
+          coverage: none
+
+      - name: Setup Application Environment
+        run: |
+          cp .env.example .env
+          touch database/database.sqlite
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Generate Application Encryption Key
+        run: php artisan key:generate --ansi
+
+      - name: Migrate & Seed Isolated Test Database
+        run: php artisan migrate --force --seed
+
+      - name: Execute Parallel Shard Test Suite
+        run: ./vendor/bin/pest --shard=${{ matrix.shard }}/4
+
+  # ============================================================================
+  # Job 3: Chaos Engineering & Concurrency Stress Verification
+  # ============================================================================
+  chaos-and-concurrency-verification:
+    name: Chaos & Concurrency Verification
+    runs-on: ubuntu-latest
+    needs: static-and-architecture-gate
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP 8.4 Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, pdo, pdo_sqlite, intl, bcmath, pcntl, redis
+          coverage: none
+
+      - name: Setup Application Environment
+        run: |
+          cp .env.example .env
+          touch database/database.sqlite
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Generate Application Encryption Key
+        run: php artisan key:generate --ansi
+
+      - name: Migrate & Seed Test Database
+        run: php artisan migrate:fresh --seed --force
+
+      - name: Run High-Concurrency Ledger & Subledger Stress Verification
+        run: php artisan platform:stress-concurrency --iterations=10
+
+      - name: Run Chaos Fault Injection & Resiliency Verification
+        run: php artisan platform:chaos-verify

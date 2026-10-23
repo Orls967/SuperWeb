@@ -20,9 +20,10 @@ class StoreOrderReaderService implements StoreOrderReaderInterface
                 'oi.id as item_id',
                 'oi.product_id',
                 'p.sku',
-                'oi.quantity',
-                'oi.quantity as qty',
-                'oi.unit_price',
+                'oi.qty',
+                'oi.qty as quantity',
+                'oi.qty as qty',
+                'oi.price_snapshot as unit_price',
                 'oi.price_snapshot',
             ]);
     }

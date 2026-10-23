@@ -10,7 +10,7 @@ use Modules\Supplier\Contracts\SupplierRiskInterface;
 class SupplierRiskService implements SupplierRiskInterface
 {
     public function createRiskFlag(
-        int $supplierId,
+        int|string $supplierId,
         string $type,
         string $severity,
         string $message,

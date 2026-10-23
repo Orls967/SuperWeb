@@ -1004,3 +1004,117 @@ Simulasi failover multi-region dijalankan setiap semester untuk menjamin kesiapa
 4. **Validasi Promosi Otomatis**: Periksa apakah node Raft saksi mempromosikan standby replica menjadi master dalam waktu $< 30$ detik.
 5. **Verifikasi Transaksi Buku Besar**: Jalankan `php artisan bank:reconcile` di DC sekunder untuk memastikan zero balance loss.
 6. **Failback**: Setelah latihan selesai, pulihkan peran master kembali ke DC primer menggunakan streaming reverse replication.
+
+---
+
+## 12. Panduan Eksekusi Production Containerization Stack (Docker & Compose)
+
+Platform SuperWeb Enterprise menyediakan image kontainer multi-stage siap produksi berbasis PHP 8.4 CLI/FPM/FrankenPHP dengan ekstensi enterprise lengkap (`pdo_mysql`, `bcmath`, `intl`, `pcntl`, `redis`, dan `opcache` preloading).
+
+### 12.1 Membangun Image Produksi Multi-Stage
+```bash
+# Build image aplikasi produksi
+docker build -t superweb-enterprise:latest -f Dockerfile .
+```
+
+### 12.2 Menjalankan Klaster Layanan Lengkap (docker-compose.prod.yml)
+Klaster produksi mengorkestrasi 7 layanan terintegrasi:
+```bash
+# Jalankan seluruh stack kontainerisasi produksi di latar belakang
+docker compose -f docker-compose.prod.yml up -d
+
+# Periksa status kesehatan seluruh kontainer
+docker compose -f docker-compose.prod.yml ps
+```
+
+**Daftar Layanan & Parameter Operasional:**
+1. **`app`** (`superweb_app`): Server aplikasi web utama (PHP 8.4, port `8000`, non-root user `www-data`).
+2. **`worker`** (`superweb_worker`): Worker antrean asinkron (`php artisan queue:work --tries=3 --timeout=90`).
+3. **`scheduler`** (`superweb_scheduler`): Scheduler periodik platform (`php artisan schedule:work`).
+4. **`mysql`** (`superweb_mysql`): Database relasional MySQL 8.4 dengan isolasi transaksi `READ-COMMITTED` dan `innodb_lock_wait_timeout=50`.
+5. **`redis`** (`superweb_redis`): Redis 7 Alpine untuk high-throughput cache, rate-limiter, dan broker antrean.
+6. **`prometheus`** (`superweb_prometheus`): Scraper metrik real-time port `9090`.
+7. **`grafana`** (`superweb_grafana`): Visualisasi dashboard port `3000`.
+
+---
+
+## 13. Observabilitas Real-Time Prometheus & Grafana 46 Modul
+
+Observabilitas platform SuperWeb mencakup metrik telemetri real-time lintas seluruh 46 modul kanonikal, kepatuhan arsitektur A1–A13, command audit, dan konsistensi buku besar finansial.
+
+### 13.1 Pengambilan Metrik Prometheus via Artisan CLI
+```bash
+# Cetak metrik Prometheus Exposition Format (text/plain; version=0.0.4)
+php artisan metrics:prometheus
+```
+
+### 13.2 Endpoint Observabilitas HTTP
+Akses endpoint metrik melalui HTTP:
+```bash
+curl -s http://127.0.0.1:8000/ops/metrics
+```
+Output menyediakan format standar:
+- `superweb_modules_registered_total`: Total modul kanonikal aktif (46 modul).
+- `superweb_arch_scan_violations_total{rule="A1..A13"}`: Pelanggaran arsitektur per aturan (target wajib: `0`).
+- `superweb_audit_commands_registered_total`: Total command audit dan rekonsiliasi yang terdaftar.
+- `superweb_routes_registered_total`: Total rute aplikasi yang aktif.
+- `superweb_ledger_accounts_total` & `superweb_ledger_entries_total`: Total akun dan jurnal pembukuan berimbang.
+- `superweb_module_tables_count{module="..."}`: Distribusi tabel database untuk seluruh 46 modul kanonikal.
+
+### 13.3 Konfigurasi Scrape & Dashboard Grafana
+- **Konfigurasi Prometheus**: `ops/prometheus/prometheus.yml` (mengekstrak metrik dari `app:8000/ops/metrics` setiap 10 detik).
+- **Dashboard Grafana**: `ops/grafana/dashboards/superweb-46-modules-overview.json` siap impor di `http://localhost:3000` (User: `admin`, Password: `superweb_grafana_secret`).
+
+---
+
+## 14. Validasi & Regenerasi Spesifikasi Kontrak OpenAPI 3.1
+
+Dokumentasi antarmuka publik dan gateway platform divalidasi terhadap kontrak arsitektur dan rute aktual menggunakan OpenAPI 3.1.0:
+
+### 14.1 Memvalidasi Kontrak Spesifikasi
+```bash
+php artisan openapi:validate
+```
+**Parameter Validasi Wajib**:
+- Kepatuhan versi spesifikasi OpenAPI 3.1.0.
+- 100% rute aplikasi (`api/*`) terdaftar pada spesifikasi.
+- Cakupan penuh 46/46 modul kanonikal pada tags dokumen.
+- Format mata uang non-float IEEE 754 (`integer` / `int64` minor unit).
+- Header idempotensi (`Idempotency-Key`) dan tracing (`X-Correlation-Id`).
+- Skema galat standar RFC 7807 Problem Details.
+
+### 14.2 Regenerasi Dokumen Spesifikasi Resmi
+```bash
+# Menghasilkan ulang dokumen JSON, YAML, dan Interactive Explorer
+php artisan openapi:generate
+```
+
+---
+
+## 15. Verifikasi Ketahanan Konkurensi & Simulasi Chaos Engineering
+
+Untuk memastikan ketahanan platform menghadapi beban transaksi ekstrem dan kegagalan komponen tak terduga:
+
+### 15.1 Stress Testing Konkurensi Transaksi Finansial
+```bash
+# Menjalankan stress test konkurensi pada transaksi buku besar dan subledger
+php artisan platform:stress-concurrency --iterations=25
+
+# Mode cepat untuk lingkungan CI:
+php artisan platform:stress-concurrency --iterations=10
+```
+**Invarian yang Dijamin**:
+- Saldo kas buku besar tidak pernah bernilai negatif (`no negative balances`).
+- Tidak terjadi deadlock atau locking timeout (`zero deadlocks`).
+- Integritas debet/kredit tetap seimbang sempurna ($\sum \text{debet} = \sum \text{kredit}$).
+
+### 15.2 Verifikasi Resiliensi & Fault Injection (Chaos Verification)
+```bash
+# Menjalankan suite verifikasi chaos engineering
+php artisan platform:chaos-verify
+```
+**Cakupan Pengujian**:
+- Injeksi kegagalan transaksi jaringan dan kegagalan commit parsial.
+- Mekanisme idempotensi transaksi berulang (idempotency token deduplication).
+- Pemulihan otomatis idempotency outbox dan quarantine state machine.
+

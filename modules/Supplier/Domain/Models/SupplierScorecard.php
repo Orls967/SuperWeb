@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Supplier\Domain\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Supplier\Contracts\SupplierScorecard as BaseSupplierScorecard;
 
-class SupplierScorecard extends Model
+class SupplierScorecard extends BaseSupplierScorecard
 {
     protected $table = 'sup_scorecards';
 
