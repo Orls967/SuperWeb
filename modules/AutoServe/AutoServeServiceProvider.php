@@ -18,6 +18,7 @@ use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\Logistics\Contracts\FleetMaintenanceBooking;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Shared\Application\SearchRegistry;
+use Modules\Shared\Contracts\SearchProviderInterface;
 use Modules\Telematics\Domain\Events\VehicleAnomalyDetected;
 
 class AutoServeServiceProvider extends ServiceProvider
@@ -29,6 +30,10 @@ class AutoServeServiceProvider extends ServiceProvider
         $this->app->bind(
             FleetMaintenanceBooking::class,
             AutoServeFleetMaintenanceBooking::class
+        );
+        $this->app->bind(
+            SearchProviderInterface::class,
+            AutoServeSearchProvider::class
         );
     }
 

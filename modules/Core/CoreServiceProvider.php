@@ -31,6 +31,7 @@ use Modules\Core\Application\Services\Resilience\MultiRegionResilienceEngineServ
 use Modules\Core\Application\Services\Scale\OutboxScaleProvisioner;
 use Modules\Core\Application\Services\Scale\PassportScaleProvisioner;
 use Modules\Core\Application\Services\SimClockService;
+use Modules\Core\Application\TickHandlers\BillingTickHandler;
 use Modules\Core\Console\Commands\AuditAiCommand;
 use Modules\Core\Console\Commands\AuditMobileCommand;
 use Modules\Core\Console\Commands\AuditSimulationKernelCommand;
@@ -53,7 +54,9 @@ use Modules\Core\Contracts\DocumentStoreInterface;
 use Modules\Core\Contracts\DynamicPricingEngineInterface;
 use Modules\Core\Contracts\EventSpineInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
+use Modules\Core\Contracts\ScaleProvisionerInterface;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Core\Contracts\SimTickHandlerInterface;
 use Modules\Core\Contracts\StockPrescriptionEngineInterface;
 use Modules\Core\Contracts\TransactionAnomalyDetectorInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
@@ -175,6 +178,16 @@ class CoreServiceProvider extends ServiceProvider
             PassportScaleProvisioner::class,
             OutboxScaleProvisioner::class,
         ], 'scale.provisioner');
+
+        $this->app->bind(
+            ScaleProvisionerInterface::class,
+            OutboxScaleProvisioner::class
+        );
+
+        $this->app->bind(
+            SimTickHandlerInterface::class,
+            BillingTickHandler::class
+        );
     }
 
     public function boot(): void

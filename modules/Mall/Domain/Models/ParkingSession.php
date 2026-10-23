@@ -15,7 +15,7 @@ use Modules\Mall\Domain\Enums\ParkingSessionStatus;
 use Modules\Mall\Domain\Enums\VehicleType;
 use Modules\Mall\Domain\Exceptions\InvalidParkingTicketException;
 use Modules\Payment\Contracts\Payable;
-use Modules\Payment\Domain\Models\PaymentIntent;
+use Modules\Payment\Contracts\PaymentIntent;
 use Modules\Shared\Domain\Traits\HasUuid;
 use Modules\Shared\Domain\ValueObjects\Money;
 

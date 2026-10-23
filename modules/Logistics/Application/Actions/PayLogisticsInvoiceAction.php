@@ -6,9 +6,9 @@ namespace Modules\Logistics\Application\Actions;
 
 use App\Models\User;
 use DomainException;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Enums\AccountKind;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Logistics\Domain\Models\LogisticsInvoice;
 use Modules\Payment\Contracts\PaymentGateway;
 

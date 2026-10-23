@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Modules\Payment\Domain\Models;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Banking\Contracts\LedgerTransaction;
+use Modules\Payment\Contracts\PaymentIntent as ContractPaymentIntent;
 use Modules\Payment\Domain\Enums\PaymentIntentStatus;
 use Modules\Payment\Domain\Exceptions\InvalidPaymentStateException;
 use Modules\Shared\Domain\Traits\HasUuid;
 use Modules\Shared\Domain\ValueObjects\Money;
 
-class PaymentIntent extends Model
+class PaymentIntent extends ContractPaymentIntent
 {
     use HasUuid;
 

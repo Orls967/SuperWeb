@@ -13,9 +13,9 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Distribution\Domain\Models\ConsignmentSale;
@@ -35,10 +35,10 @@ use Modules\Distribution\Domain\Models\SelloutReport;
 use Modules\Distribution\Domain\Models\StockLevel;
 use Modules\Distribution\Domain\Models\Tier;
 use Modules\Inventory\Contracts\InventoryService;
+use Modules\Inventory\Contracts\StockMovement;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
-use Modules\Inventory\Domain\Models\StockMovement;
 use Modules\Logistics\Contracts\ShipmentBooking;
-use Modules\Store\Domain\Models\Product;
+use Modules\Store\Contracts\Product;
 
 /**
  * Eksekusi distribusi (Fase 43): order (limit + ATP + alokasi),

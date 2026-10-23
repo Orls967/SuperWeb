@@ -11,6 +11,7 @@ use Modules\Core\Domain\Events\VehicleOwnershipTransferred;
 use Modules\Mall\Application\Actions\ValidateParkingAction;
 use Modules\Mall\Application\Services\MallLoyaltyLedgerService;
 use Modules\Mall\Application\Services\MallSearchProvider;
+use Modules\Mall\Application\Services\MallUsageReaderService;
 use Modules\Mall\Application\Services\TenantSalesService;
 use Modules\Mall\Console\Commands\ApplyPenaltiesCommand;
 use Modules\Mall\Console\Commands\AuditBillingCommand;
@@ -23,6 +24,7 @@ use Modules\Mall\Console\Commands\RenewParkingMembersCommand;
 use Modules\Mall\Console\Commands\SettleVouchersCommand;
 use Modules\Mall\Console\Commands\SimulateFootfallCommand;
 use Modules\Mall\Contracts\LoyaltyLedger;
+use Modules\Mall\Contracts\MallUsageReaderInterface;
 use Modules\Mall\Contracts\ParkingValidator;
 use Modules\Mall\Domain\Models\Asset;
 use Modules\Mall\Domain\Models\EventBooking;
@@ -65,6 +67,11 @@ class MallServiceProvider extends ServiceProvider
         $this->app->bind(
             LoyaltyLedger::class,
             MallLoyaltyLedgerService::class
+        );
+
+        $this->app->bind(
+            MallUsageReaderInterface::class,
+            MallUsageReaderService::class
         );
     }
 

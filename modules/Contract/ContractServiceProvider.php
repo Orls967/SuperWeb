@@ -7,6 +7,7 @@ namespace Modules\Contract;
 use Illuminate\Support\ServiceProvider;
 use Modules\Contract\Application\Services\ContractAmendmentService;
 use Modules\Contract\Application\Services\ContractFinanceService;
+use Modules\Contract\Application\Services\ContractLookupService;
 use Modules\Contract\Application\Services\ContractRateResolver;
 use Modules\Contract\Application\Services\ContractReportService;
 use Modules\Contract\Application\Services\ContractRiskService;
@@ -16,6 +17,7 @@ use Modules\Contract\Application\Services\ContractUsageSyncService;
 use Modules\Contract\Console\Commands\AuditContractCommand;
 use Modules\Contract\Console\Commands\RemindContractObligationsCommand;
 use Modules\Contract\Console\Commands\VerifyContractChainsCommand;
+use Modules\Contract\Contracts\ContractLookupInterface;
 use Modules\Logistics\Contracts\RateCardOverrideResolver;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -33,6 +35,11 @@ class ContractServiceProvider extends ServiceProvider
 
         // 29.6 — rate card kontrak mengalahkan tarif standar (interface contract).
         $this->app->bind(RateCardOverrideResolver::class, ContractRateResolver::class);
+
+        $this->app->bind(
+            ContractLookupInterface::class,
+            ContractLookupService::class
+        );
     }
 
     public function boot(): void

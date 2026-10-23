@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Contract\Domain\Enums\ContractStatus;
 use Modules\Contract\Domain\Enums\ContractType;
-use Modules\Party\Domain\Models\LegalEntity;
+use Modules\Party\Contracts\LegalEntity;
 
 class Contract extends Model
 {

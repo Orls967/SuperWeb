@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Modules\Asset\Domain\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Asset\Contracts\Asset as BaseAsset;
 use Modules\Asset\Domain\Enums\AssetStatus;
-use Modules\Core\Domain\Models\DocumentAttachment;
+use Modules\Core\Contracts\DocumentAttachment;
 
 /**
  * Register aset grup tunggal (30.2).
@@ -17,7 +17,7 @@ use Modules\Core\Domain\Models\DocumentAttachment;
  * Nilai uang menggunakan integer IDR. Domain aset tidak mengimpor
  * Mall/Logistics/Resto; konsolidasi aset lama memakai `asset_id` nullable.
  */
-class Asset extends Model
+class Asset extends BaseAsset
 {
     use HasUuids;
 

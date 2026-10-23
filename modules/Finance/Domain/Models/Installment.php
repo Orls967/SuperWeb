@@ -7,7 +7,7 @@ namespace Modules\Finance\Domain\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Finance\Domain\Enums\InstallmentStatus;
 use Modules\Shared\Domain\Exceptions\InvalidStateTransition;
 

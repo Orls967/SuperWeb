@@ -10,4 +10,8 @@ use Modules\Banking\Domain\Models\LedgerTransaction;
 interface Ledger
 {
     public function post(PostingDTO $dto): LedgerTransaction;
+
+    public function getCachedBalance(string $code): ?string;
+
+    public function findAccountByCode(string $code): ?LedgerAccount;
 }

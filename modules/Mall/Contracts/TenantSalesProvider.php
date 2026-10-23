@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Mall\Contracts;
 
-use Modules\Mall\Domain\Models\Lease;
-
 interface TenantSalesProvider
 {
     /**

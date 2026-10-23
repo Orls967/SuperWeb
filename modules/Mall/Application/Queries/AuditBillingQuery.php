@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Mall\Application\Queries;
 
 use Brick\Math\BigDecimal;
-use Modules\Banking\Domain\Models\LedgerAccount;
-use Modules\Banking\Domain\Models\LedgerEntry;
-use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Banking\Contracts\LedgerAccount;
+use Modules\Banking\Contracts\LedgerEntry;
+use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Mall\Domain\Enums\InvoiceLineType;
 use Modules\Mall\Domain\Enums\InvoiceStatus;
 use Modules\Mall\Domain\Models\Invoice;

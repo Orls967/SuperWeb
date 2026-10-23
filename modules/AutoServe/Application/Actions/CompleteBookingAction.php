@@ -14,8 +14,8 @@ use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Inventory\Domain\Exceptions\InsufficientStockException;
 use Modules\Payment\Contracts\PaymentGateway;
+use Modules\Payment\Contracts\PaymentIntent;
 use Modules\Payment\Domain\Enums\PaymentIntentStatus;
-use Modules\Payment\Domain\Models\PaymentIntent;
 use Modules\Shared\Application\BaseAction;
 use Modules\Shared\Domain\ValueObjects\Money;
 

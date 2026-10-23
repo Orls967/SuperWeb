@@ -8,8 +8,8 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Str;
 use Modules\Core\Domain\Models\Vehicle;
+use Modules\Inventory\Contracts\StockMovement;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
-use Modules\Inventory\Domain\Models\StockMovement;
 use Modules\Shared\Application\BaseAction;
 use Modules\Store\Domain\Models\Product;
 

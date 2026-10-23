@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Modules\Mall\Domain\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Mall\Contracts\Lease as BaseLease;
 use Modules\Mall\Domain\Enums\DepositStatus;
 use Modules\Mall\Domain\Enums\LeaseStatus;
 use Modules\Mall\Domain\Enums\RentModel;
 use Modules\Mall\Domain\Enums\UnitStatus;
 use Modules\Payment\Contracts\Payable;
-use Modules\Payment\Domain\Models\PaymentIntent;
+use Modules\Payment\Contracts\PaymentIntent;
 use Modules\Shared\Domain\Traits\HasUuid;
 use Modules\Shared\Domain\ValueObjects\Money;
 
-class Lease extends Model implements Payable
+class Lease extends BaseLease implements Payable
 {
     use HasUuid;
 

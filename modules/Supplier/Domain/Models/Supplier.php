@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Modules\Supplier\Domain\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Party\Domain\Models\Party;
+use Modules\Party\Contracts\Party;
+use Modules\Supplier\Contracts\Supplier as BaseSupplier;
 use Modules\Supplier\Domain\Enums\SupplierStatus;
 
-class Supplier extends Model
+class Supplier extends BaseSupplier
 {
     use HasUuids;
 

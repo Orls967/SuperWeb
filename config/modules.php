@@ -109,9 +109,15 @@ return [
         'resto_kitchen_stations' => 'CloudKitchen',
         'resto_station_tasks' => 'CloudKitchen',
         'resto_temperature_logs' => 'CloudKitchen',
+        'resto_catering_subscriptions' => 'CloudKitchen',
+        'resto_ck_catering_orders' => 'CloudKitchen',
+        'resto_ck_kitchens' => 'CloudKitchen',
         'gov_bounties' => 'Hcm',
         'gov_bounty_claims' => 'Hcm',
         'gov_bounty_pofs' => 'Hcm',
+        'gov_proposals' => 'Agri',
+        'gov_votes' => 'Agri',
+        'gov_voter_weights' => 'Agri',
     ],
     'kernel_modules' => [
         0 => 'Shared',
@@ -612,5 +618,26 @@ return [
         'wms_transfers.appointment_id' => 'Referensi lintas modul Wms (appointment_id)',
         'workforce_burnout_risk_profiles.employee_id' => 'Referensi lintas modul  (employee_id)',
         'working_capital_dynamic_discounts.supplier_id' => 'Referensi lintas modul  (supplier_id)',
+    ],
+    'shared_tables' => [
+        'Mall' => ['users'],
+        'Party' => ['lgx_carriers', 'lgx_shipper_accounts', 'mall_tenants', 'resto_suppliers'],
+        'Payment' => ['serve_bookings'],
+        'Store' => ['spareparts', 'inv_stock_movements'],
+        'Integration' => (static function (): array {
+            $path = dirname(__DIR__).'/tests/Architecture/baselines/integration-freeze.json';
+            if (! file_exists($path)) {
+                return [];
+            }
+            $data = json_decode((string) file_get_contents($path), true);
+            $tables = [];
+            foreach ($data['entries'] ?? [] as $entry) {
+                if (str_starts_with($entry, 'table:')) {
+                    $tables[] = substr($entry, 6);
+                }
+            }
+
+            return $tables;
+        })(),
     ],
 ];

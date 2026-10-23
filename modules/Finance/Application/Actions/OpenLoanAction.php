@@ -11,11 +11,11 @@ use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Enums\TransactionType;
-use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Crypto\Contracts\CryptoAsset;
 use Modules\Crypto\Contracts\PriceFeed;
-use Modules\Crypto\Domain\Models\CryptoAsset;
 use Modules\Finance\Application\Services\LoanSimulator;
 use Modules\Finance\Domain\Enums\InstallmentStatus;
 use Modules\Finance\Domain\Enums\LoanStatus;
@@ -24,10 +24,10 @@ use Modules\Finance\Domain\Models\Loan;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Payment\Contracts\PaymentGateway;
 use Modules\Shared\Application\BaseAction;
+use Modules\Store\Contracts\Order;
+use Modules\Store\Contracts\OrderItem;
+use Modules\Store\Contracts\Product;
 use Modules\Store\Domain\Enums\OrderStatus;
-use Modules\Store\Domain\Models\Order;
-use Modules\Store\Domain\Models\OrderItem;
-use Modules\Store\Domain\Models\Product;
 
 /**
  * HODL-to-Drive: beli mobil dengan DP tunai + pembiayaan berjaminan kripto.

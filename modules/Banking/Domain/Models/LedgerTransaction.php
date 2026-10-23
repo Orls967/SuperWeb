@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Modules\Banking\Domain\Models;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Modules\Banking\Contracts\LedgerTransaction as BaseLedgerTransaction;
 use Modules\Banking\Domain\Exceptions\ImmutableRecordException;
 use Modules\Shared\Domain\Traits\HasUuid;
 
-class LedgerTransaction extends Model
+class LedgerTransaction extends BaseLedgerTransaction
 {
     use HasUuid;
 

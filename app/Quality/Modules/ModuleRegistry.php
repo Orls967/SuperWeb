@@ -18,6 +18,7 @@ final class ModuleRegistry
      * @param  list<string>  $kernelModules  modules that must not depend on business modules (A9)
      * @param  list<string>  $sharedKernelNamespaces  namespaces every module may import (A1 exceptions)
      * @param  array<string, string>  $crossModuleColumns  `table.column` => reason (A12 exceptions)
+     * @param  array<string, list<string>>  $sharedTables  module => list of allowed table names
      */
     public function __construct(
         array $tablePrefixes,
@@ -25,13 +26,14 @@ final class ModuleRegistry
         private readonly array $kernelModules = [],
         private readonly array $sharedKernelNamespaces = [],
         private readonly array $crossModuleColumns = [],
+        private readonly array $sharedTables = [],
     ) {
         uksort($tablePrefixes, static fn (string $a, string $b): int => strlen($b) <=> strlen($a) ?: strcmp($a, $b));
         $this->tablePrefixes = $tablePrefixes;
     }
 
     /**
-     * @param  array{table_prefixes?: array<string, string>, legacy_tables?: array<string, string>, kernel_modules?: list<string>, shared_kernel_namespaces?: list<string>, cross_module_columns?: array<string, string>}  $config
+     * @param  array{table_prefixes?: array<string, string>, legacy_tables?: array<string, string>, kernel_modules?: list<string>, shared_kernel_namespaces?: list<string>, cross_module_columns?: array<string, string>, shared_tables?: array<string, list<string>>}  $config
      */
     public static function fromConfig(array $config): self
     {
@@ -41,6 +43,7 @@ final class ModuleRegistry
             $config['kernel_modules'] ?? [],
             $config['shared_kernel_namespaces'] ?? [],
             $config['cross_module_columns'] ?? [],
+            $config['shared_tables'] ?? [],
         );
     }
 
@@ -62,6 +65,23 @@ final class ModuleRegistry
         return null;
     }
 
+    public function isTableAllowedForModule(string $table, string $module): bool
+    {
+        if ($this->ownerOfTable($table) === $module) {
+            return true;
+        }
+
+        if (isset($this->sharedTables[$module]) && in_array($table, $this->sharedTables[$module], true)) {
+            return true;
+        }
+
+        if (isset($this->sharedTables['*']) && in_array($table, $this->sharedTables['*'], true)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function isKernelModule(string $module): bool
     {
         return in_array($module, $this->kernelModules, true);
@@ -70,7 +90,7 @@ final class ModuleRegistry
     public function isSharedKernelNamespace(string $fullyQualifiedName): bool
     {
         foreach ($this->sharedKernelNamespaces as $namespace) {
-            if (str_starts_with($fullyQualifiedName, rtrim($namespace, '\\').'\\')) {
+            if ($fullyQualifiedName === $namespace || str_starts_with($fullyQualifiedName, rtrim($namespace, '\\').'\\')) {
                 return true;
             }
         }
