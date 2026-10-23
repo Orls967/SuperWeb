@@ -45,7 +45,7 @@ class ProfitabilityCostIntelligenceService
     /**
      * Build margin bridge ensuring exact decomposition into variance drivers.
      */
-    public function recordMarginBridge(string $period, float $volume, float $mix, int $price, int $cost, float $fx, float $actualDelta): object
+    public function recordMarginBridge(string $period, float $volume, float $mix, $price, $cost, float $fx, float $actualDelta): object
     {
         $sumDrivers = round($volume + $mix + $price + $cost + $fx, 2);
         $diff = round(abs($actualDelta - $sumDrivers), 2);

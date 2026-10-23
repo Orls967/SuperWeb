@@ -81,7 +81,7 @@ class CommunityUgcSocialCommerceService
         string $liveSessionId,
         string $productSku,
         int $quantity,
-        int $unitPriceUsd,
+        $unitPriceUsd,
         float $hostCommissionRatePct = 5.0
     ): object {
         $sku = strtoupper($productSku);

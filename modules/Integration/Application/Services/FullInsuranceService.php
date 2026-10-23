@@ -77,7 +77,7 @@ class FullInsuranceService
     /**
      * Submit a claim against a policy.
      */
-    public function submitClaim(string $policyNumber, string $description, int $claimedAmount): object
+    public function submitClaim(string $policyNumber, string $description, $claimedAmount): object
     {
         $policy = DB::table('ins_policies_penuh')->where('policy_number', $policyNumber)->first();
         if (! $policy || $policy->status !== 'ACTIVE') {
@@ -115,7 +115,7 @@ class FullInsuranceService
     /**
      * Approve claim with subrogation recovery.
      */
-    public function approveClaim(string $claimNumber, int $approvedAmount, float $subrogationRecovery = 0.0): object
+    public function approveClaim(string $claimNumber, $approvedAmount, float $subrogationRecovery = 0.0): object
     {
         $netPayout = max(0.0, round($approvedAmount - $subrogationRecovery, 2));
         $ledgerRef = 'LEDGER-INS-PAY-'.strtoupper(Str::random(8));

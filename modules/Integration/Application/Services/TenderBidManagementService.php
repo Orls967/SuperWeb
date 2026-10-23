@@ -66,7 +66,7 @@ class TenderBidManagementService
     public function logBidCost(
         int $tenderId,
         string $costCategory,
-        int $amountUsd,
+        $amountUsd,
         string $accountingTreatment = 'EXPENSE'
     ): object {
         $id = DB::table('tender_bid_costs')->insertGetId([

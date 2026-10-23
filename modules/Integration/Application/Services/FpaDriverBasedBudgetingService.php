@@ -30,7 +30,7 @@ class FpaDriverBasedBudgetingService
         int $traffic,
         float $conversionRate,
         float $aovUsd,
-        int $actualRevenueUsd = 0
+        $actualRevenueUsd = 0
     ): object {
         $pCode = strtoupper($planCode);
 

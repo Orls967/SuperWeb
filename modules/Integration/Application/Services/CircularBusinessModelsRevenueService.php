@@ -27,7 +27,7 @@ class CircularBusinessModelsRevenueService
         string $contractCode,
         string $sku,
         string $businessModel,
-        int $monthlyFeeUsd,
+        $monthlyFeeUsd,
         float $depositUsd,
         bool $isProfitable = true
     ): object {

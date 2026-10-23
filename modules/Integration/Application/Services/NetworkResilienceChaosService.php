@@ -27,7 +27,7 @@ class NetworkResilienceChaosService
         string $dependencyCode,
         string $component,
         bool $hasNMinusOneFailover,
-        int $redundancyCostUsd,
+        $redundancyCostUsd,
         #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $tradeOffApproved = true
     ): object {
         $dCode = strtoupper($dependencyCode);

@@ -32,14 +32,14 @@ class EgyAuditCommand extends Command
         $discrepancies = 0;
 
         // Check severe transformer overload
-        $overloadedNodes = GridNode::whereColumn('current_load_kva', '>', 'transformer_capacity_kva')->count();
+        $overloadedNodes = GridNode::whereColumn('current_load_mw', '>', 'peak_capacity_mw')->count();
         if ($overloadedNodes > 0) {
             $this->warn("Found {$overloadedNodes} transformers exceeding maximum design capacity.");
             $discrepancies += $overloadedNodes;
         }
 
         // Check negative energy in RECs
-        $invalidRecs = RenewableEnergyCertificate::where('mwh_generated', '<=', 0)->count();
+        $invalidRecs = RenewableEnergyCertificate::where('energy_mwh', '<=', 0)->count();
         if ($invalidRecs > 0) {
             $this->warn("Found {$invalidRecs} RECs with non-positive MWh value.");
             $discrepancies += $invalidRecs;

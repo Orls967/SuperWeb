@@ -73,7 +73,7 @@ class AssetAvailabilityProgramService
         string $resolutionType,
         ?string $substituteClass,
         #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $qualityGateApproved,
-        int $cost,
+        $cost,
         string $approvedBy
     ): object {
         // 410.6 Risk: substitution without quality gate approval is blocked

@@ -27,7 +27,7 @@ class PartnerCosellAffiliateService
     public function registerPartner(
         string $partnerCode,
         string $partnerName,
-        int $ytdRevenueUsd = 0
+        $ytdRevenueUsd = 0
     ): object {
         $code = strtoupper($partnerCode);
 
@@ -120,7 +120,7 @@ class PartnerCosellAffiliateService
     public function trackAffiliateReferral(
         string $affiliateId,
         string $buyerId,
-        int $saleAmountUsd,
+        $saleAmountUsd,
         float $commissionPct = 10.00
     ): object {
         $affUpper = strtoupper($affiliateId);

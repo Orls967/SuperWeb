@@ -43,7 +43,7 @@ class AviationService
      * Book passenger flight.
      * Enforces airworthiness certificate validity and aircraft seating capacity.
      */
-    public function bookFlight(string $tailNumber, string $flightNum, int $seats, int $fareIdr): object
+    public function bookFlight(string $tailNumber, string $flightNum, int $seats, $fareIdr): object
     {
         $aircraft = DB::table('avi_aircrafts')->where('tail_number', $tailNumber)->first();
         if (! $aircraft) {

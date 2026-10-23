@@ -27,8 +27,8 @@ class DataValueCostTransparencyService
         string $trackingCode,
         string $domainName,
         string $consumerId,
-        int $queryCostUsd,
-        int $domainBudgetUsd
+        $queryCostUsd,
+        $domainBudgetUsd
     ): object {
         $tCode = strtoupper($trackingCode);
         $dName = strtoupper($domainName);

@@ -106,7 +106,7 @@ class PerformanceRewardsTalentDecisionsService
     /**
      * 423.4 Gate: Bonus payout strictly requires locked rating
      */
-    public function payoutReward(string $ratingCode, int $bonusAmount): object
+    public function payoutReward(string $ratingCode, $bonusAmount): object
     {
         $rating = DB::table('hcm_talent_ratings')->where('rating_code', strtoupper($ratingCode))->first();
         if (! $rating) {

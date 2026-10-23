@@ -22,6 +22,8 @@ use App\Quality\Audit\Fixtures\CtrAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\DistAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\DrAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EcosystemAudit12LinesCorruptionFixture;
+use App\Quality\Audit\Fixtures\EduAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\EgyAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EnterpriseAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EpcAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EsgAuditCorruptionFixture;
@@ -39,6 +41,7 @@ use App\Quality\Audit\Fixtures\LgxVerifyCustodyCorruptionFixture;
 use App\Quality\Audit\Fixtures\LogisticsCircularCorruptionFixture;
 use App\Quality\Audit\Fixtures\LogisticsColdChainCorruptionFixture;
 use App\Quality\Audit\Fixtures\MallAuditBillingCorruptionFixture;
+use App\Quality\Audit\Fixtures\MedAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgAuditCostingCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgQmsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\MinAuditCorruptionFixture;
@@ -52,11 +55,13 @@ use App\Quality\Audit\Fixtures\ProptechFlexCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProptechSmartBuildingCorruptionFixture;
 use App\Quality\Audit\Fixtures\PrpAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PtnAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\RetAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SecurityAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SimAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TfAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TlmAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\TlxAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TowerAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TradeAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TreasuryAuditCorruptionFixture;
@@ -95,6 +100,8 @@ final class AuditCommandRegistry
             'dist:audit' => new DistAuditCorruptionFixture,
             'dr:audit' => new DrAuditCorruptionFixture,
             'ecosystem:audit-12-lines' => new EcosystemAudit12LinesCorruptionFixture,
+            'edu:audit' => new EduAuditCorruptionFixture,
+            'egy:audit' => new EgyAuditCorruptionFixture,
             'enterprise:audit' => new EnterpriseAuditCorruptionFixture,
             'epc:audit' => new EpcAuditCorruptionFixture,
             'esg:audit' => new EsgAuditCorruptionFixture,
@@ -114,6 +121,7 @@ final class AuditCommandRegistry
             'lgx:audit-coldchain' => new LogisticsColdChainCorruptionFixture,
             'lgx:verify-custody' => new LgxVerifyCustodyCorruptionFixture,
             'mall:audit-billing' => new MallAuditBillingCorruptionFixture,
+            'med:audit' => new MedAuditCorruptionFixture,
             'mfg:audit-costing' => new MfgAuditCostingCorruptionFixture,
             'mfg:qms-audit' => new MfgQmsAuditCorruptionFixture,
             'min:audit' => new MinAuditCorruptionFixture,
@@ -128,11 +136,13 @@ final class AuditCommandRegistry
             'prp:audit-flex' => new ProptechFlexCorruptionFixture,
             'prp:audit-smartbuilding' => new ProptechSmartBuildingCorruptionFixture,
             'ptn:audit' => new PtnAuditCorruptionFixture,
+            'ret:audit' => new RetAuditCorruptionFixture,
             'rwa:audit' => new RwaAuditCorruptionFixture,
             'security:audit' => new SecurityAuditCorruptionFixture,
             'sim:audit' => new SimAuditCorruptionFixture,
             'tf:audit' => new TfAuditCorruptionFixture,
             'tlm:audit' => new TlmAuditCorruptionFixture,
+            'tlx:audit' => new TlxAuditCorruptionFixture,
             'tower:audit' => new TowerAuditCorruptionFixture,
             'trade:audit' => new TradeAuditCorruptionFixture,
             'treasury:audit' => new TreasuryAuditCorruptionFixture,

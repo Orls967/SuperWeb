@@ -89,7 +89,7 @@ class FashionSourcingService
      * Plan promotional markdown.
      * Enforces minimum margin guardrail (discounted price must stay >= unit cost).
      */
-    public function planMarkdown(string $collection, int $origPrice, float $discountPct, int $unitCost): object
+    public function planMarkdown(string $collection, $origPrice, float $discountPct, $unitCost): object
     {
         $discountAmount = round($origPrice * ($discountPct / 100.0), 2);
         $discountedPrice = round($origPrice - $discountAmount, 2);

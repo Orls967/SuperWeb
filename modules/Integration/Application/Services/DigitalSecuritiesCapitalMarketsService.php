@@ -28,7 +28,7 @@ class DigitalSecuritiesCapitalMarketsService
         string $issuanceCode,
         string $tokenSymbol,
         string $securityType,
-        int $totalTokens,
+        $totalTokens,
         float $faceValueUsd
     ): object {
         $code = strtoupper($issuanceCode);
@@ -54,7 +54,7 @@ class DigitalSecuritiesCapitalMarketsService
     public function allocateTokens(
         string $issuanceCode,
         string $investorId,
-        int $tokenAmount
+        $tokenAmount
     ): object {
         $code = strtoupper($issuanceCode);
         $issuance = DB::table('digital_securities_issuances')->where('issuance_code', $code)->first();
@@ -135,8 +135,8 @@ class DigitalSecuritiesCapitalMarketsService
      */
     public function updateMarketMakingQuote(
         string $marketSymbol,
-        int $bidPrice,
-        int $askPrice,
+        $bidPrice,
+        $askPrice,
         float $currentInventoryUsd,
         float $maxInventoryLimitUsd,
         float $orderbookDepthUsd

@@ -9,7 +9,6 @@ use Modules\Integration\Application\Services\PlatformEconomyService;
 /*
 | PROGRESS R0.6: `api:audit` is one command that runs both the Fase 55 integration
 | audit (webhook HMAC & EDI) and the Fase 147 platform economy audit. Before R0.6 two
-| classes declared the same name and only the last one ever ran.
 */
 
 use Tests\TestCase;
@@ -22,7 +21,7 @@ it('runs the integration and platform economy audits and passes on consistent da
     $integration->dispatchWebhook($subscription, 'EVT-1', ['po' => 1]);
     $platform = app(PlatformEconomyService::class);
     $developer = $platform->registerDeveloper('Audit Dev', 'audit@dev.test', 'PRO');
-    $platform->processEmbeddedFinance($developer->developer_code, 'ESCROW', 500000.00, 2.0);
+    $platform->processEmbeddedFinance($developer->developer_code, 'ESCROW', 500000, 2.0);
 
     $this->artisan('api:audit')
         ->expectsOutputToContain('API & EDI Integration audit PASSED with 0 discrepancy.')
@@ -46,7 +45,7 @@ it('fails when a webhook delivery payload no longer matches its HMAC signature',
 it('fails when an embedded finance transaction does not equal its fees', function (): void {
     $platform = app(PlatformEconomyService::class);
     $developer = $platform->registerDeveloper('Audit Dev', 'audit@dev.test', 'PRO');
-    $platform->processEmbeddedFinance($developer->developer_code, 'ESCROW', 500000.00, 2.0);
+    $platform->processEmbeddedFinance($developer->developer_code, 'ESCROW', 500000, 2.0);
     DB::table('pe_embedded_finance_txs')->update(['gross_amount' => 1]);
 
     $this->artisan('api:audit')

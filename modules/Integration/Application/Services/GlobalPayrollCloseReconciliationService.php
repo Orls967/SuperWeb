@@ -79,7 +79,7 @@ class GlobalPayrollCloseReconciliationService
         string $exceptionCode,
         string $batchCode,
         string $employeeId,
-        int $failedAmountUsd,
+        $failedAmountUsd,
         string $reason,
         bool $slaEscalated = false
     ): object {

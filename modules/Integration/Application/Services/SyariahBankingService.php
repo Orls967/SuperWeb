@@ -42,7 +42,7 @@ class SyariahBankingService
     /**
      * Create Murabahah financing contract with direct vendor disbursement.
      */
-    public function createMurabahahContract(string $accountNumber, string $vendorCode, int $costPrice, float $marginProfit, int $tenorMonths): object
+    public function createMurabahahContract(string $accountNumber, string $vendorCode, $costPrice, float $marginProfit, int $tenorMonths): object
     {
         $totalSelling = round($costPrice + $marginProfit, 2);
         $installment = round($totalSelling / max(1, $tenorMonths), 2);
@@ -72,7 +72,7 @@ class SyariahBankingService
     /**
      * Pay installment: recognize monthly margin proportionally and direct late penalty to Amil charity pool.
      */
-    public function payMurabahahInstallment(string $contractCode, int $paidAmount, int $lateFee = 0): object
+    public function payMurabahahInstallment(string $contractCode, $paidAmount, $lateFee = 0): object
     {
         $contract = DB::table('syb_murabahah_contracts')->where('contract_code', $contractCode)->first();
         $monthlyMargin = round((float) $contract->margin_profit / (int) $contract->tenor_months, 2);
@@ -89,7 +89,7 @@ class SyariahBankingService
     /**
      * Distribute Mudharabah investment pool profit sharing.
      */
-    public function distributeMudharabahPool(string $period, int $totalProfit, float $customerNisbahPct = 60.0): object
+    public function distributeMudharabahPool(string $period, $totalProfit, float $customerNisbahPct = 60.0): object
     {
         $customerShare = round($totalProfit * ($customerNisbahPct / 100.0), 2);
         $bankShare = round($totalProfit - $customerShare, 2);

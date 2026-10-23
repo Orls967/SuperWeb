@@ -60,8 +60,8 @@ class DataQualityDriftLoadService
      */
     public function evaluatePriceFeedDrift(
         string $feedSymbol,
-        int $baselinePrice,
-        int $incomingPrice,
+        $baselinePrice,
+        $incomingPrice,
         float $maxAllowedDriftPercent = 15.0
     ): object {
         $symbol = strtoupper($feedSymbol);

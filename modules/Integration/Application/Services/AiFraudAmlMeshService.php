@@ -66,7 +66,7 @@ class AiFraudAmlMeshService
     /**
      * File gapless AML Suspicious Activity Report (SAR).
      */
-    public function fileAmlSar(string $caseCode, int $suspiciousAmount): object
+    public function fileAmlSar(string $caseCode, $suspiciousAmount): object
     {
         return DB::transaction(function () use ($caseCode, $suspiciousAmount) {
             $lastSeq = DB::table('ai_aml_sar_filings')->lockForUpdate()->max('sar_sequence_number') ?? 0;

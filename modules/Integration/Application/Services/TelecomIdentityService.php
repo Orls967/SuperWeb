@@ -101,7 +101,7 @@ class TelecomIdentityService
     /**
      * Generate bandwidth usage metering bill.
      */
-    public function billBandwidthUsage(string $tenantCode, float $gigabytes, int $ratePerGbIdr): object
+    public function billBandwidthUsage(string $tenantCode, float $gigabytes, $ratePerGbIdr): object
     {
         $total = round($gigabytes * $ratePerGbIdr, 2);
         $code = 'BIL-TEL-'.strtoupper(Str::random(8));

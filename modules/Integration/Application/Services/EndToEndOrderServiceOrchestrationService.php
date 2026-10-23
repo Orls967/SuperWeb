@@ -24,7 +24,7 @@ class EndToEndOrderServiceOrchestrationService
     public function createBundleOrder(
         string $bundleCode,
         string $customerId,
-        int $totalAmount,
+        $totalAmount,
         array $components
     ): object {
         $bundleId = DB::table('ops_orchestration_bundles')->insertGetId([

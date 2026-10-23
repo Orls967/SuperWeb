@@ -83,8 +83,8 @@ class B2bIndustryEcosystemPlatformService
     public function allocateLiquiditySubsidy(
         string $campaignCode,
         string $vertical,
-        int $allocatedBudgetUsd,
-        int $disbursedAmountUsd
+        $allocatedBudgetUsd,
+        $disbursedAmountUsd
     ): object {
         $cCode = strtoupper($campaignCode);
 

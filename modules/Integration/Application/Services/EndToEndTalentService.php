@@ -127,7 +127,7 @@ class EndToEndTalentService
         string $department,
         float $automationImpactPct,
         int $projectedHeadcountDelta,
-        int $costTrajectoryUsd
+        $costTrajectoryUsd
     ): object {
         $reskillingTriggered = ($automationImpactPct >= 20.0);
         $code = 'SCEN-'.strtoupper(Str::random(8));

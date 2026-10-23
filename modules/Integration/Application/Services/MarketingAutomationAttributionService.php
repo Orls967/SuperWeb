@@ -50,8 +50,8 @@ class MarketingAutomationAttributionService
         string $code,
         string $name,
         string $segmentCode,
-        int $allocatedBudget,
-        int $maxBudgetLimit
+        $allocatedBudget,
+        $maxBudgetLimit
     ): object {
         $id = DB::table('crm_marketing_campaigns')->insertGetId([
             'campaign_code' => strtoupper($code),
@@ -99,7 +99,7 @@ class MarketingAutomationAttributionService
         string $campaignCode,
         string $goldenId,
         string $channel,
-        int $cost = 10.0
+        $cost = 10
     ): object {
         $campaign = DB::table('crm_marketing_campaigns')
             ->where('campaign_code', strtoupper($campaignCode))

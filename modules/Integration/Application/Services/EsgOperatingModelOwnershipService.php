@@ -103,7 +103,7 @@ class EsgOperatingModelOwnershipService
     /**
      * 441.3, 441.4, 441.5 Payout incentive bonus under verified assurance and anti-gaming guardrail
      */
-    public function payoutEsgIncentive(string $scorecardCode, int $bonusAmount, bool $antiGamingCleared = true): object
+    public function payoutEsgIncentive(string $scorecardCode, $bonusAmount, bool $antiGamingCleared = true): object
     {
         $card = DB::table('esg_leadership_incentive_scorecards')->where('scorecard_code', strtoupper($scorecardCode))->first();
         if (! $card) {

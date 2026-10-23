@@ -60,7 +60,7 @@ class CommunityValueSocialProcurementService
     public function closeCommunityGrievance(
         string $grievanceCode,
         string $communityId,
-        int $remedyBudgetUsd,
+        $remedyBudgetUsd,
         bool $remedyImplemented,
         bool $confirmedByCommunityRep
     ): object {

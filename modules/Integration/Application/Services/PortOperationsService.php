@@ -96,7 +96,7 @@ class PortOperationsService
     /**
      * Generate terminal dues and crane moves invoice.
      */
-    public function generateTerminalInvoice(string $resCode, int $craneMoves, int $ratePerMoveIdr, int $portDuesIdr): object
+    public function generateTerminalInvoice(string $resCode, int $craneMoves, $ratePerMoveIdr, $portDuesIdr): object
     {
         $movesAmount = round($craneMoves * $ratePerMoveIdr, 2);
         $total = round($movesAmount + $portDuesIdr, 2);

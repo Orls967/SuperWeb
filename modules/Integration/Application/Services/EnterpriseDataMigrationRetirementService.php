@@ -124,7 +124,7 @@ class EnterpriseDataMigrationRetirementService
     public function decommissionLegacySystem(
         string $systemCode,
         bool $consumerConfirmedOrWaived,
-        int $costSavingRealized
+        $costSavingRealized
     ): object {
         $sys = DB::table('int_legacy_system_retirements')->where('system_code', strtoupper($systemCode))->first();
         if (! $sys) {

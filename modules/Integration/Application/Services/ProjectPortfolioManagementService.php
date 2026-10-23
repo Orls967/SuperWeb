@@ -50,7 +50,7 @@ class ProjectPortfolioManagementService
     /**
      * Submit change request for scope and budget revision.
      */
-    public function submitChangeRequest(string $project, string $description, int $budgetImpact, int $daysImpact): object
+    public function submitChangeRequest(string $project, string $description, $budgetImpact, int $daysImpact): object
     {
         $code = 'CR-'.strtoupper(Str::random(8));
 

@@ -27,7 +27,7 @@ class CircularityWasteProgramService
         string $wasteStream,
         string $hierarchyLevel,
         float $quantityTonnes,
-        int $costPerTonne,
+        $costPerTonne,
         ?string $justification = null,
         bool $emergencyApproval = false
     ): object {
@@ -58,7 +58,7 @@ class CircularityWasteProgramService
         string $paymentCode,
         string $vendorCode,
         string $treatmentCertNo,
-        int $amount
+        $amount
     ): object {
         $id = DB::table('esg_waste_vendor_payments')->insertGetId([
             'payment_code' => strtoupper($paymentCode),

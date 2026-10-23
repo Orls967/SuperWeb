@@ -26,7 +26,7 @@ class EnterpriseInnovationRdGovernanceService
         string $title,
         string $stage,
         string $horizon,
-        int $budget
+        $budget
     ): object {
         $id = DB::table('int_innovation_funnel_projects')->insertGetId([
             'project_code' => strtoupper($code),

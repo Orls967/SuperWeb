@@ -64,7 +64,7 @@ class SyariahOperationsService
      * Process wallet payment across 30 lines.
      * Enforces halal certificate gate: rejects uncertified food/hospitality merchants.
      */
-    public function processWalletPayment(string $accountNumber, string $merchantCode, string $lineCode, int $amount): object
+    public function processWalletPayment(string $accountNumber, string $merchantCode, string $lineCode, $amount): object
     {
         $cert = DB::table('syb_halal_certificates')->where('merchant_code', $merchantCode)->first();
         $isCertified = $cert && (bool) $cert->is_certified_halal && Carbon::parse($cert->expires_at)->isFuture();

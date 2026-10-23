@@ -78,7 +78,7 @@ class BoardGovernanceDoaService
         string $meetingCode,
         string $committeeType,
         string $scheduledDate,
-        int $totalEligibleMembers,
+        $totalEligibleMembers,
         int $attendingMembersCount,
         int $abstainedMembersCount = 0
     ): object {

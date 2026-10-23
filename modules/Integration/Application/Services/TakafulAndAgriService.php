@@ -39,7 +39,7 @@ class TakafulAndAgriService
      * Deposit participant contribution into Takaful fund.
      * Segregates: contribution = wakalah_fee + tabarru_pool.
      */
-    public function depositContribution(string $fundCode, int $contributionAmount): object
+    public function depositContribution(string $fundCode, $contributionAmount): object
     {
         $fund = DB::table('tak_funds')->where('fund_code', $fundCode)->first();
         $feeRate = (float) ($fund->wakalah_fee_rate_pct ?? 15.0);

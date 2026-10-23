@@ -71,7 +71,7 @@ class CommercialRevenueGrowthPlanningService
         string $overrideCode,
         string $plannerId,
         float $projectedErrorSavingsUsd,
-        int $overrideFinanceCostUsd
+        $overrideFinanceCostUsd
     ): object {
         $oCode = strtoupper($overrideCode);
 

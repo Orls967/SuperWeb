@@ -53,7 +53,7 @@ class HealthInsuranceWellbeingService
      */
     public function fileDisputedClaimAppeal(
         string $claimCode,
-        int $claimAmountUsd,
+        $claimAmountUsd,
         bool $isClinicallyValid,
         bool $insurerRejected
     ): object {

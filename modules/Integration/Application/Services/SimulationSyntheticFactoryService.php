@@ -63,7 +63,7 @@ class SimulationSyntheticFactoryService
     public function executeMarketplaceSimulation(
         string $simulatorType,
         string $requestorTeam,
-        int $costPerRunUsd,
+        $costPerRunUsd,
         array $inputParameters,
         bool $attemptProductionWrite = false
     ): object {
@@ -98,7 +98,7 @@ class SimulationSyntheticFactoryService
      */
     public function runCounterfactualAnalysis(
         string $scenarioCode,
-        int $baselinePriceUsd,
+        $baselinePriceUsd,
         float $priceDeltaPct,
         int $seedValue = 20261008
     ): object {

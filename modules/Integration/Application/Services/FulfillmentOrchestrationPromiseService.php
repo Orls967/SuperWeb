@@ -28,7 +28,7 @@ class FulfillmentOrchestrationPromiseService
         string $sku,
         int $quantity,
         string $promisedDate,
-        int $frozenContractPriceUsd
+        $frozenContractPriceUsd
     ): object {
         $oCode = strtoupper($orderCode);
 
@@ -82,7 +82,7 @@ class FulfillmentOrchestrationPromiseService
     public function configureOrchestrationRule(
         string $ruleCode,
         string $node,
-        int $costToServeUsd,
+        $costToServeUsd,
         bool $honorContractPriceFreeze = true
     ): object {
         $rCode = strtoupper($ruleCode);

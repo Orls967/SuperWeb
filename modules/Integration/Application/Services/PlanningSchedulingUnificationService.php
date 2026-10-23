@@ -30,7 +30,7 @@ class PlanningSchedulingUnificationService
         float $demandUnits,
         float $capacityHours,
         float $workforceHeadcount,
-        int $financialBudgetUsd,
+        $financialBudgetUsd,
         #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $isSignedOff = false
     ): object {
         $code = strtoupper($planCode);
@@ -59,7 +59,7 @@ class PlanningSchedulingUnificationService
     public function reviseSignedOffPlan(
         string $existingPlanCode,
         float $newDemandUnits,
-        int $newBudgetUsd
+        $newBudgetUsd
     ): object {
         $code = strtoupper($existingPlanCode);
         $prevPlan = DB::table('operations_unified_plans')->where('plan_code', $code)->first();

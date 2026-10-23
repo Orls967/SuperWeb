@@ -61,7 +61,7 @@ class CustomerLoyaltySubscriptionEconomyService
     public function settleIntercompanyRedemption(
         string $redemptionCode,
         string $customerId,
-        int $grossAmount,
+        $grossAmount,
         float $entityAShare,
         float $entityBShare
     ): object {

@@ -27,7 +27,7 @@ class ClimateTransitionFinanceService
         string $siteCode,
         float $nominalCapexUsd,
         float $annualCarbonTco2e,
-        int $shadowPriceUsdPerTon = 75.00
+        $shadowPriceUsdPerTon = 75
     ): object {
         $code = strtoupper($appraisalCode);
 

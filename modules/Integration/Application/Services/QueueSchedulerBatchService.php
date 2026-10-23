@@ -25,7 +25,7 @@ class QueueSchedulerBatchService
     public function processQueueJob(
         string $jobCode,
         int $retryCount,
-        int $maxRetryBudget = 3
+        $maxRetryBudget = 3
     ): object {
         $jCode = strtoupper($jobCode);
 

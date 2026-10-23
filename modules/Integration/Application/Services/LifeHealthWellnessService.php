@@ -45,7 +45,7 @@ class LifeHealthWellnessService
      * Authorize hospital cashless Guarantee Letter (GL).
      * Enforces invarian: authorized_amount <= annual_limit.
      */
-    public function authorizeCashless(string $policyNumber, string $hospitalCode, float $annualLimit, int $requestedAmount): object
+    public function authorizeCashless(string $policyNumber, string $hospitalCode, float $annualLimit, $requestedAmount): object
     {
         $glNumber = 'GL-'.strtoupper(Str::random(8));
         $isWithinLimit = ($requestedAmount <= $annualLimit);

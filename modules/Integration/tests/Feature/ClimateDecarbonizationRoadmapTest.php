@@ -66,7 +66,7 @@ class ClimateDecarbonizationRoadmapTest extends TestCase
             60000,  // Annual electricity savings
             12.5,   // IRR
             1000,   // tCO2e abatement
-            50.0    // Shadow carbon price USD
+            50    // Shadow carbon price USD
         );
 
         $this->assertEquals(50000.0, (float) $proj->shadow_carbon_value);

@@ -92,8 +92,8 @@ class EsgHumanRightsJustTransitionService
         string $planCode,
         string $siteCode,
         int $affectedWorkers,
-        int $reskillingBudgetUsd,
-        int $incomeProtectionBudgetUsd
+        $reskillingBudgetUsd,
+        $incomeProtectionBudgetUsd
     ): object {
         $pCode = strtoupper($planCode);
 
@@ -122,7 +122,7 @@ class EsgHumanRightsJustTransitionService
     public function allocateBenefitSharingFund(
         string $fundCode,
         string $projectCode,
-        int $grossRevenueUsd,
+        $grossRevenueUsd,
         float $ratePct = 2.50
     ): object {
         $fCode = strtoupper($fundCode);
@@ -145,7 +145,7 @@ class EsgHumanRightsJustTransitionService
     /**
      * Distribute fund to community-voted projects ensuring sum conservation (288.4 & 288.5).
      */
-    public function distributeCommunityFund(string $fundCode, int $distributionAmountUsd): object
+    public function distributeCommunityFund(string $fundCode, $distributionAmountUsd): object
     {
         $fCode = strtoupper($fundCode);
         $fund = DB::table('esg_community_benefit_funds')->where('fund_code', $fCode)->first();

@@ -49,7 +49,7 @@ class RegulatoryTaxOperationsService
         string $evidenceHash,
         bool $isLate = false,
         ?string $rootCause = null,
-        int $penaltyAmount = 0
+        $penaltyAmount = 0
     ): object {
         $obligation = DB::table('gov_regulatory_obligations')->where('obligation_code', strtoupper($obligationCode))->first();
         if (! $obligation) {
@@ -77,8 +77,8 @@ class RegulatoryTaxOperationsService
     public function registerTaxProvision(
         string $provisionCode,
         string $fiscalYear,
-        int $estimatedAmount,
-        int $uncertainTaxPositionAmount,
+        $estimatedAmount,
+        $uncertainTaxPositionAmount,
         array $sourceLineage,
         #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $approvedByCfo = true
     ): object {

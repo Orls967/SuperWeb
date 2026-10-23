@@ -78,7 +78,7 @@ class EthicalSourcingService
     /**
      * Set living wage benchmark and calculate local wage gap.
      */
-    public function setLivingWageBenchmark(string $countryCode, int $monthlyAmount, string $currency): void
+    public function setLivingWageBenchmark(string $countryCode, $monthlyAmount, string $currency): void
     {
         DB::table('eth_living_wage_benchmarks')->updateOrInsert(
             ['country_code' => strtoupper($countryCode)],

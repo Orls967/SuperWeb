@@ -20,7 +20,7 @@ class ValueChainSimulationService
      * Run 90-day compressed value chain simulation (e.g. fertilizer -> farmer -> food processing -> restaurant -> retail).
      * Enforces double-entry ledger balance: sum(debits) - sum(credits) == 0.
      */
-    public function runValueChainSimulation(string $chainName, int $compressionDays, int $totalDebits, int $totalCredits): object
+    public function runValueChainSimulation(string $chainName, int $compressionDays, $totalDebits, $totalCredits): object
     {
         $imbalance = round($totalDebits - $totalCredits, 2);
         if ($imbalance !== 0.0) {
@@ -47,7 +47,7 @@ class ValueChainSimulationService
     /**
      * Bridge cross-line contract to Core Contract without duplicate state authority.
      */
-    public function bridgeCrossLineContract(string $coreContractCode, string $contractType, string $upstreamLine, string $downstreamLine, int $valueIdr): object
+    public function bridgeCrossLineContract(string $coreContractCode, string $contractType, string $upstreamLine, string $downstreamLine, $valueIdr): object
     {
         $existing = DB::table('val_contract_bridges')->where('core_contract_code', $coreContractCode)->first();
         if ($existing) {

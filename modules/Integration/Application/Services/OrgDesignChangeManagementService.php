@@ -26,7 +26,7 @@ class OrgDesignChangeManagementService
         string $scenarioCode,
         string $title,
         int $spanOfControlRatio,
-        int $totalProjectedCost,
+        $totalProjectedCost,
         float $readinessScore,
         bool $continuityCoverage = true
     ): object {
@@ -51,7 +51,7 @@ class OrgDesignChangeManagementService
         string $positionCode,
         string $employeeId,
         string $actionType,
-        int $severanceAmount = 0,
+        $severanceAmount = 0,
         bool $encumbranceCleared = true
     ): object {
         $sc = DB::table('hcm_org_design_scenarios')->where('scenario_code', strtoupper($scenarioCode))->first();

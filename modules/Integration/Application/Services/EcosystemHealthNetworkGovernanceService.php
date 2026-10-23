@@ -66,7 +66,7 @@ class EcosystemHealthNetworkGovernanceService
     public function issueHealthIntervention(
         string $interventionCode,
         string $partnerCode,
-        int $subsidyAmountUsd,
+        $subsidyAmountUsd,
         float $subsidyCapUsd = 5000.00,
         bool $hasMarketDistortion = false
     ): object {

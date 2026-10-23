@@ -53,7 +53,7 @@ class TalentValueOrganizationalOutcomesService
     public function registerInvestmentDecision(
         string $decisionCode,
         string $type,
-        int $costUsd,
+        $costUsd,
         float $projectedBenefitUsd,
         float $uncertaintyPct = 15.00,
         #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasEmpiricalEvidence = false

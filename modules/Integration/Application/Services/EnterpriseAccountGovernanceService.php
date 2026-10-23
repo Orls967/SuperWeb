@@ -25,7 +25,7 @@ class EnterpriseAccountGovernanceService
         string $code,
         string $clientName,
         string $executiveSponsor,
-        int $totalValue
+        $totalValue
     ): object {
         $id = DB::table('crm_enterprise_umbrella_agreements')->insertGetId([
             'agreement_code' => strtoupper($code),
@@ -45,8 +45,8 @@ class EnterpriseAccountGovernanceService
         string $umbrellaCode,
         string $orderCode,
         string $businessLine,
-        int $billingAmount,
-        int $settlementAmount
+        $billingAmount,
+        $settlementAmount
     ): object {
         $umb = DB::table('crm_enterprise_umbrella_agreements')->where('agreement_code', strtoupper($umbrellaCode))->first();
         if (! $umb) {
