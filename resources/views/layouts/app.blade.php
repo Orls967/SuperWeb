@@ -56,6 +56,46 @@
                 from { opacity: 0; transform: translateY(-10px); }
                 to { opacity: 1; transform: translateY(0); }
             }
+
+            /* Print-Ready Executive Report Styles */
+            @media print {
+                aside, header, .enterprise-export-toolbar, .no-print, button, form, nav, .enterprise-command-palette-wrapper, .enterprise-role-matrix-banner button {
+                    display: none !important;
+                }
+                body, .min-h-screen, div, main {
+                    background: #ffffff !important;
+                    color: #0f172a !important;
+                    margin: 0 !important;
+                    padding: 8px !important;
+                    width: 100% !important;
+                }
+                table {
+                    width: 100% !important;
+                    border-collapse: collapse !important;
+                    color: #0f172a !important;
+                    font-size: 10pt !important;
+                }
+                th, td {
+                    border: 1px solid #cbd5e1 !important;
+                    padding: 6px 10px !important;
+                    color: #0f172a !important;
+                }
+                th {
+                    background-color: #f1f5f9 !important;
+                    font-weight: bold !important;
+                }
+                .print-header {
+                    display: block !important;
+                    margin-bottom: 16px !important;
+                    border-bottom: 2px solid #0f172a !important;
+                    padding-bottom: 8px !important;
+                }
+            }
+            @media screen {
+                .print-header {
+                    display: none;
+                }
+            }
         </style>
     </head>
     <body class="antialiased bg-slate-900 text-slate-200">
@@ -171,11 +211,11 @@
                         </div>
 
                         {{-- Search Trigger Button --}}
-                        <button @click="searchOpen = true; $nextTick(() => { if($refs.globalSearchInput) { $refs.globalSearchInput.focus(); executeSearch(); } })"
+                        <button @click="$dispatch('open-command-palette')"
                                 type="button"
                                 class="hidden md:flex items-center gap-3 px-3.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 text-slate-400 hover:text-slate-200 transition-all text-xs shadow-inner">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                            <span class="text-slate-400">Cari modul, tenant, menu, tiket...</span>
+                            <span class="text-slate-400">Cari 46+ modul, 60 peran RBAC, audit...</span>
                             <kbd class="px-1.5 py-0.5 rounded bg-slate-900/80 text-[10px] font-mono text-slate-400 border border-slate-700/80">⌘K</kbd>
                         </button>
                     </div>
@@ -300,6 +340,7 @@
 
                 {{-- Page Content --}}
                 <main class="p-6">
+                    <x-enterprise.role-matrix-banner />
                     {{ $slot ?? '' }}
                     @yield('content')
                 </main>
@@ -391,8 +432,8 @@
                 </div>
             </div>
         </div>
-        </div>
-
+        <x-enterprise.command-palette />
+        <x-enterprise.interactive-simulator-modal />
         <x-toast />
     </body>
 </html>

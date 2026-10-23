@@ -9,6 +9,8 @@
             </span>
         </div>
     </x-slot>
+    <x-enterprise.module-dashboard module="Logistics" />
+
 
     <div class="py-8 bg-slate-950 min-h-screen text-slate-100">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

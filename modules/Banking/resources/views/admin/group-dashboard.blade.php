@@ -4,6 +4,8 @@
 @section('subtitle', 'Laporan Laba Rugi (P&L) Multi-Lini Bisnis Real-Time dari Buku Besar Double-Entry')
 
 @section('content')
+    <x-enterprise.module-dashboard module="Banking" />
+
 <div class="space-y-8" x-data="{ activeTab: 'all' }">
 
     {{-- Top Header Action & Period Filter --}}

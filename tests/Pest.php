@@ -1,5 +1,8 @@
 <?php
 
+$_ENV['APP_BASE_PATH'] = dirname(__DIR__);
+putenv('APP_BASE_PATH='.dirname(__DIR__));
+
 use App\Quality\ArchScan\Rule;
 use App\Quality\ArchScan\ScanReport;
 use App\Quality\ArchScan\Violation;

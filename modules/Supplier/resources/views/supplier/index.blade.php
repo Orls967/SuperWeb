@@ -4,6 +4,8 @@
 @section('subtitle', 'Direktori pemasok & produsen (kualifikasi, harga, skor, risiko)')
 
 @section('content')
+    <x-enterprise.module-dashboard module="Supplier" />
+
 <div class="max-w-7xl mx-auto px-4 py-8">
     <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
         <div>

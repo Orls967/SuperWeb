@@ -4,6 +4,8 @@
 @section('subtitle', 'Beli mobil bekas dengan dana ditahan escrow dan riwayat servis terverifikasi')
 
 @section('content')
+    <x-enterprise.module-dashboard module="Store" />
+
 <div class="space-y-8">
     <div class="flex flex-wrap items-center justify-between gap-4">
         <nav class="flex items-center gap-2 text-xs text-slate-400">

@@ -3,6 +3,8 @@
 @section('title', 'Party Directory')
 
 @section('content')
+    <x-enterprise.module-dashboard module="Party" />
+
 <div class="max-w-7xl mx-auto px-4 py-8">
     {{-- Header --}}
     <div class="flex items-center justify-between mb-8">

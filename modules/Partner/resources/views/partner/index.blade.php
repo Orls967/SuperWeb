@@ -1,4 +1,6 @@
 <x-app-layout>
+    <x-enterprise.module-dashboard module="Partner" />
+
     <div class="py-6 max-w-7xl mx-auto px-4">
         <h1 class="text-2xl font-bold mb-4">Direktori Mitra & Kemitraan</h1>
         <div class="bg-white rounded shadow p-4">
