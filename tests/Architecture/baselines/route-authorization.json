@@ -1,6 +1,6 @@
 {
-    "about": "Snapshot proteksi rute (PROGRESS R0.9, KONSEP §A14.3). Rute baseline tidak boleh melemah (role bertambah/auth hilang = gagal), menguatkan boleh; rute baru tanpa entri peta = gagal.",
-    "total": 598,
+    "about": "Snapshot proteksi rute (PROGRESS R0.9, KONSEP \u00a7A14.3). Rute baseline tidak boleh melemah (role bertambah/auth hilang = gagal), menguatkan boleh; rute baru tanpa entri peta = gagal.",
+    "total": 961,
     "routes": {
         "GET /": "public",
         "GET up": "public",
@@ -8,6 +8,21 @@
         "POST login": "public",
         "POST register": "public",
         "activity.index": "auth",
+        "admin.ai.calculate-pricing": [
+            "admin"
+        ],
+        "admin.ai.generate-stock-recommendation": [
+            "admin"
+        ],
+        "admin.ai.index": [
+            "admin"
+        ],
+        "admin.ai.release-quarantine": [
+            "admin"
+        ],
+        "admin.ai.screen-anomaly": [
+            "admin"
+        ],
         "admin.audit-logs.index": [
             "admin"
         ],
@@ -35,6 +50,21 @@
         "admin.ledger.show": [
             "admin"
         ],
+        "admin.mobile.index": [
+            "admin"
+        ],
+        "admin.mobile.record-action": [
+            "admin"
+        ],
+        "admin.mobile.revoke-device": [
+            "admin"
+        ],
+        "admin.mobile.submit-epod": [
+            "admin"
+        ],
+        "admin.mobile.sync-batch": [
+            "admin"
+        ],
         "admin.rbac.assign": [
             "admin"
         ],
@@ -51,6 +81,33 @@
             "admin"
         ],
         "admin.rbac.user": [
+            "admin"
+        ],
+        "admin.resilience.check-residency": [
+            "admin"
+        ],
+        "admin.resilience.execute-drill": [
+            "admin"
+        ],
+        "admin.resilience.index": [
+            "admin"
+        ],
+        "admin.resilience.rotate-kms": [
+            "admin"
+        ],
+        "admin.simulation.advance": [
+            "admin"
+        ],
+        "admin.simulation.index": [
+            "admin"
+        ],
+        "admin.simulation.publish-spine": [
+            "admin"
+        ],
+        "admin.simulation.record-twin": [
+            "admin"
+        ],
+        "admin.simulation.scale-provision": [
             "admin"
         ],
         "agency.accruals.clawback": [
@@ -155,13 +212,59 @@
             "auditor",
             "procurement"
         ],
+        "agri.contracts.index": [
+            "admin",
+            "farmer",
+            "procurement"
+        ],
+        "agri.contracts.register": [
+            "admin",
+            "farmer",
+            "procurement"
+        ],
+        "agri.dashboard": [
+            "admin",
+            "farmer",
+            "procurement"
+        ],
+        "agri.grading.evaluate": [
+            "admin",
+            "farmer",
+            "procurement"
+        ],
+        "agri.grading.index": [
+            "admin",
+            "farmer",
+            "procurement"
+        ],
         "agri.index": "auth",
+        "agri.payout.index": [
+            "admin",
+            "farmer",
+            "procurement"
+        ],
+        "agri.payout.settle": [
+            "admin",
+            "farmer",
+            "procurement"
+        ],
         "api.global-search": "auth",
+        "api.v1.integration.ping": "public",
         "api.v1.logistics.quotes.store": "auth",
         "api.v1.logistics.shipments.index": "auth",
         "api.v1.logistics.shipments.show": "auth",
         "api.v1.logistics.shipments.store": "auth",
         "api.v1.logistics.tracking.show": "public",
+        "api.v3.executive.kpis": "public",
+        "api.v3.executive.snapshot": "public",
+        "api.v3.mobile.sync.conflicts": "public",
+        "api.v3.mobile.sync.pull": "public",
+        "api.v3.mobile.sync.push": "public",
+        "api.v3.partner.webhooks.index": "public",
+        "api.v3.partner.webhooks.replay": [
+            "admin"
+        ],
+        "api.v3.partner.webhooks.store": "public",
         "asset.audit": [
             "admin",
             "asset_manager"
@@ -263,7 +366,47 @@
         "autodex.index": "auth",
         "autodex.show": "auth",
         "autodex.wishlist.toggle": "auth",
+        "b2b.auction.create": [
+            "admin",
+            "b2b_buyer",
+            "procurement"
+        ],
+        "b2b.auction.index": [
+            "admin",
+            "b2b_buyer",
+            "procurement"
+        ],
+        "b2b.dashboard": [
+            "admin",
+            "b2b_buyer",
+            "procurement"
+        ],
+        "b2b.escrow.index": [
+            "admin",
+            "b2b_buyer",
+            "procurement"
+        ],
+        "b2b.escrow.lock": [
+            "admin",
+            "b2b_buyer",
+            "procurement"
+        ],
+        "b2b.escrow.release": [
+            "admin",
+            "b2b_buyer",
+            "procurement"
+        ],
         "b2b.index": "auth",
+        "b2b.wholesale.index": [
+            "admin",
+            "b2b_buyer",
+            "procurement"
+        ],
+        "b2b.wholesale.publish": [
+            "admin",
+            "b2b_buyer",
+            "procurement"
+        ],
         "bookings.addSparepart": [
             "admin",
             "mekanik"
@@ -288,6 +431,66 @@
             "mekanik"
         ],
         "boost.browser-logs": "public",
+        "cloud_kitchen.index": [
+            "admin",
+            "customer",
+            "kitchen",
+            "outlet_manager"
+        ],
+        "cloud_kitchen.operations.audit-thermal": [
+            "admin",
+            "customer",
+            "kitchen",
+            "outlet_manager"
+        ],
+        "cloud_kitchen.operations.batch-couriers": [
+            "admin",
+            "customer",
+            "kitchen",
+            "outlet_manager"
+        ],
+        "cloud_kitchen.operations.courier-batches": [
+            "admin",
+            "customer",
+            "kitchen",
+            "outlet_manager"
+        ],
+        "cloud_kitchen.operations.order-routing": [
+            "admin",
+            "customer",
+            "kitchen",
+            "outlet_manager"
+        ],
+        "cloud_kitchen.operations.revenue-split": [
+            "admin",
+            "customer",
+            "kitchen",
+            "outlet_manager"
+        ],
+        "cloud_kitchen.operations.route-order": [
+            "admin",
+            "customer",
+            "kitchen",
+            "outlet_manager"
+        ],
+        "cloud_kitchen.operations.settle-split": [
+            "admin",
+            "customer",
+            "kitchen",
+            "outlet_manager"
+        ],
+        "cloud_kitchen.operations.thermal-audit": [
+            "admin",
+            "customer",
+            "kitchen",
+            "outlet_manager"
+        ],
+        "cloud_kitchen.subscriptions.dispatch": [
+            "admin",
+            "customer",
+            "kitchen",
+            "outlet_manager"
+        ],
         "contract.advance.pay": [
             "admin",
             "contract_manager",
@@ -488,6 +691,30 @@
             "contract_manager",
             "legal"
         ],
+        "control_tower.autonomous.bottlenecks": [
+            "admin",
+            "auditor",
+            "logistics_admin",
+            "planner"
+        ],
+        "control_tower.autonomous.forecast": [
+            "admin",
+            "auditor",
+            "logistics_admin",
+            "planner"
+        ],
+        "control_tower.autonomous.index": [
+            "admin",
+            "auditor",
+            "logistics_admin",
+            "planner"
+        ],
+        "control_tower.autonomous.reallocate": [
+            "admin",
+            "auditor",
+            "logistics_admin",
+            "planner"
+        ],
         "control_tower.index": "auth",
         "control_tower.promises": "auth",
         "crypto.alerts.destroy": "auth",
@@ -601,10 +828,251 @@
             "distributor",
             "procurement"
         ],
+        "edu.academy.enroll": [
+            "admin",
+            "cert_officer",
+            "corp_lnd",
+            "edu_admin",
+            "instructor"
+        ],
+        "edu.academy.index": [
+            "admin",
+            "cert_officer",
+            "corp_lnd",
+            "edu_admin",
+            "instructor"
+        ],
+        "edu.academy.show": [
+            "admin",
+            "cert_officer",
+            "corp_lnd",
+            "edu_admin",
+            "instructor"
+        ],
+        "edu.certification.index": [
+            "admin",
+            "cert_officer",
+            "corp_lnd",
+            "edu_admin",
+            "instructor"
+        ],
+        "edu.certification.issue": [
+            "admin",
+            "cert_officer",
+            "corp_lnd",
+            "edu_admin",
+            "instructor"
+        ],
+        "edu.certification.verify": [
+            "admin",
+            "cert_officer",
+            "corp_lnd",
+            "edu_admin",
+            "instructor"
+        ],
+        "edu.grants.disburse": [
+            "admin",
+            "cert_officer",
+            "corp_lnd",
+            "edu_admin",
+            "instructor"
+        ],
+        "edu.grants.index": [
+            "admin",
+            "cert_officer",
+            "corp_lnd",
+            "edu_admin",
+            "instructor"
+        ],
+        "edu.grants.show": [
+            "admin",
+            "cert_officer",
+            "corp_lnd",
+            "edu_admin",
+            "instructor"
+        ],
+        "education.index": [
+            "admin",
+            "cert_officer",
+            "corp_lnd",
+            "edu_admin",
+            "instructor"
+        ],
+        "egy.grid.anomaly": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "egy.grid.index": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "egy.grid.meters": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "egy.grid.telemetry": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "egy.microgrid.dispatch": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "egy.microgrid.index": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "egy.microgrid.p2p": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "egy.ppa.index": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "egy.ppa.settle": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "egy.ppa.show": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "egy.rec.index": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "egy.rec.mint": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
+        "energy.index": [
+            "admin",
+            "energy_auditor",
+            "genco_trader",
+            "grid_operator",
+            "renewable_dev"
+        ],
         "enterprise_finance.budgets": "auth",
+        "enterprise_finance.governance.budget.enforce": [
+            "admin",
+            "auditor",
+            "treasury"
+        ],
+        "enterprise_finance.governance.covenants.monitor": [
+            "admin",
+            "auditor",
+            "treasury"
+        ],
+        "enterprise_finance.governance.index": [
+            "admin",
+            "auditor",
+            "treasury"
+        ],
+        "enterprise_finance.governance.trial_balance.consolidate": [
+            "admin",
+            "auditor",
+            "treasury"
+        ],
         "enterprise_finance.index": "auth",
+        "epc.bast.index": [
+            "admin",
+            "asset_manager",
+            "epc_manager"
+        ],
+        "epc.bast.issue": [
+            "admin",
+            "asset_manager",
+            "epc_manager"
+        ],
+        "epc.capitalization.capitalize": [
+            "admin",
+            "asset_manager",
+            "epc_manager"
+        ],
+        "epc.capitalization.index": [
+            "admin",
+            "asset_manager",
+            "epc_manager"
+        ],
+        "epc.claims.index": [
+            "admin",
+            "asset_manager",
+            "epc_manager"
+        ],
+        "epc.claims.record": [
+            "admin",
+            "asset_manager",
+            "epc_manager"
+        ],
+        "epc.dashboard": [
+            "admin",
+            "asset_manager",
+            "epc_manager"
+        ],
         "epc.index": "auth",
         "esg.index": "auth",
+        "esg.operations.credits.purchase": [
+            "admin",
+            "auditor",
+            "esg_officer"
+        ],
+        "esg.operations.credits.retire": [
+            "admin",
+            "auditor",
+            "esg_officer"
+        ],
+        "esg.operations.emissions.calculate": [
+            "admin",
+            "auditor",
+            "esg_officer"
+        ],
+        "esg.operations.index": [
+            "admin",
+            "auditor",
+            "esg_officer"
+        ],
+        "esg.operations.supplier.evaluate": [
+            "admin",
+            "auditor",
+            "esg_officer"
+        ],
         "estimates.approve": "auth",
         "estimates.receiveBackorder": [
             "admin",
@@ -619,6 +1087,76 @@
             "admin",
             "mekanik"
         ],
+        "ev.chargers.checkin": [
+            "admin",
+            "driver",
+            "ev_admin",
+            "station_operator"
+        ],
+        "ev.chargers.reserve": [
+            "admin",
+            "driver",
+            "ev_admin",
+            "station_operator"
+        ],
+        "ev.index": [
+            "admin",
+            "driver",
+            "ev_admin",
+            "station_operator"
+        ],
+        "ev.sessions.complete": [
+            "admin",
+            "ev_admin",
+            "station_operator"
+        ],
+        "ev.smart-grid.battery-passport": [
+            "admin",
+            "driver",
+            "ev_admin",
+            "station_operator"
+        ],
+        "ev.smart-grid.discharge-v2g": [
+            "admin",
+            "driver",
+            "ev_admin",
+            "station_operator"
+        ],
+        "ev.smart-grid.ocpp-sessions": [
+            "admin",
+            "driver",
+            "ev_admin",
+            "station_operator"
+        ],
+        "ev.smart-grid.settle-tou": [
+            "admin",
+            "driver",
+            "ev_admin",
+            "station_operator"
+        ],
+        "ev.smart-grid.start-ocpp": [
+            "admin",
+            "driver",
+            "ev_admin",
+            "station_operator"
+        ],
+        "ev.smart-grid.tou-tariffs": [
+            "admin",
+            "driver",
+            "ev_admin",
+            "station_operator"
+        ],
+        "ev.smart-grid.v2g-feedin": [
+            "admin",
+            "driver",
+            "ev_admin",
+            "station_operator"
+        ],
+        "ev.stations.loadbalance": [
+            "admin",
+            "ev_admin",
+            "station_operator"
+        ],
         "finance.loans.index": "auth",
         "finance.loans.payInstallment": "auth",
         "finance.loans.payOff": "auth",
@@ -627,14 +1165,413 @@
         "finance.loans.simulate": "auth",
         "finance.loans.store": "auth",
         "finance.loans.topUpCollateral": "auth",
+        "fleet.contracts.amortize": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.contracts.return-unit": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.contracts.sla-claim": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.contracts.store": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.index": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.lifecycle.amortization-schedule": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.lifecycle.bill-excess": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.lifecycle.excess-mileage": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.lifecycle.originate-psak73": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.lifecycle.psak73-leases": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.lifecycle.recognize-amortization": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.lifecycle.run-tco": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "fleet.lifecycle.tco-optimization": [
+            "admin",
+            "fleet_admin",
+            "lease_manager"
+        ],
+        "hcm.bounties.claim": [
+            "admin",
+            "hcm_manager"
+        ],
+        "hcm.bounties.index": [
+            "admin",
+            "hcm_manager"
+        ],
+        "hcm.bounties.payout": [
+            "admin",
+            "hcm_manager"
+        ],
+        "hcm.bounties.store": [
+            "admin",
+            "hcm_manager"
+        ],
         "hcm.index": "auth",
+        "hcm.operations.attendance.record": [
+            "admin",
+            "hcm_manager"
+        ],
+        "hcm.operations.audit.reconcile": [
+            "admin",
+            "hcm_manager"
+        ],
+        "hcm.operations.department.create": [
+            "admin",
+            "hcm_manager"
+        ],
+        "hcm.operations.index": [
+            "admin",
+            "hcm_manager"
+        ],
+        "hcm.operations.job_grade.assign": [
+            "admin",
+            "hcm_manager"
+        ],
+        "hcm.operations.labor.allocate": [
+            "admin",
+            "hcm_manager"
+        ],
+        "hcm.operations.payroll.calculate": [
+            "admin",
+            "hcm_manager"
+        ],
+        "hospital.epharmacy.routing.dispatch": [
+            "admin",
+            "pharmacist"
+        ],
+        "hospital.epharmacy.subscriptions.index": [
+            "admin",
+            "auditor",
+            "doctor",
+            "pharmacist"
+        ],
+        "hospital.imaging.pacs.index": [
+            "admin",
+            "auditor",
+            "doctor"
+        ],
+        "hospital.index": [
+            "admin",
+            "doctor",
+            "hospital_admin"
+        ],
+        "hospital.laboratory.catalog.index": [
+            "admin",
+            "auditor",
+            "doctor",
+            "nurse",
+            "pharmacist"
+        ],
+        "hospital.laboratory.outsourcing.index": [
+            "admin",
+            "auditor",
+            "doctor"
+        ],
+        "hospital.laboratory.results.verify": [
+            "admin",
+            "doctor"
+        ],
+        "hospital.laboratory.specimens.custody": [
+            "admin",
+            "doctor",
+            "nurse"
+        ],
+        "hospital.telemedicine.index": [
+            "admin",
+            "auditor",
+            "doctor",
+            "nurse"
+        ],
+        "hospital.telemedicine.prescriptions.evaluate": [
+            "admin",
+            "doctor",
+            "pharmacist"
+        ],
+        "hospital.trials.bill": [
+            "admin",
+            "doctor",
+            "hospital_admin"
+        ],
+        "hotel.index": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.banquet": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.banquet.create": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.destination-packages": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.destination-packages.settle": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.night-audit": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.night-audit.run": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.overbooking": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.overbooking.walk": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.reservations": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.reservations.book": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.split-folios": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.split-folios.settle": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.timeshare": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.timeshare.mint": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.yield-rates": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.pms.yield-rates.calculate": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "hotel.reservations.settle": [
+            "admin",
+            "front_desk",
+            "hotel_admin"
+        ],
+        "insurance.index": [
+            "admin",
+            "customer",
+            "insurance_admin",
+            "underwriter"
+        ],
+        "insurance.products.issue": [
+            "admin",
+            "customer",
+            "insurance_admin",
+            "underwriter"
+        ],
+        "insurance.workflow.claims": [
+            "admin",
+            "customer",
+            "insurance_admin",
+            "underwriter"
+        ],
+        "insurance.workflow.evaluate-fraud": [
+            "admin",
+            "customer",
+            "insurance_admin",
+            "underwriter"
+        ],
+        "insurance.workflow.fraud-evaluations": [
+            "admin",
+            "customer",
+            "insurance_admin",
+            "underwriter"
+        ],
+        "insurance.workflow.issue-policy": [
+            "admin",
+            "customer",
+            "insurance_admin",
+            "underwriter"
+        ],
+        "insurance.workflow.parametric-triggers": [
+            "admin",
+            "customer",
+            "insurance_admin",
+            "underwriter"
+        ],
+        "insurance.workflow.policies": [
+            "admin",
+            "customer",
+            "insurance_admin",
+            "underwriter"
+        ],
+        "insurance.workflow.settle-claim": [
+            "admin",
+            "customer",
+            "insurance_admin",
+            "underwriter"
+        ],
+        "insurance.workflow.trigger-parametric": [
+            "admin",
+            "customer",
+            "insurance_admin",
+            "underwriter"
+        ],
         "integration.index": "auth",
         "integration.webhooks": "auth",
+        "intercompany.consolidation.elimination": [
+            "admin",
+            "auditor",
+            "legal",
+            "treasury"
+        ],
+        "intercompany.consolidation.index": [
+            "admin",
+            "auditor",
+            "legal",
+            "treasury"
+        ],
+        "intercompany.consolidation.markup": [
+            "admin",
+            "auditor",
+            "legal",
+            "treasury"
+        ],
+        "intercompany.consolidation.mirror-tx": [
+            "admin",
+            "auditor",
+            "legal",
+            "treasury"
+        ],
         "intercompany.index": "auth",
         "intercompany.transactions": "auth",
         "international.index": "auth",
         "international.jvs": "auth",
+        "international.tax_royalty.index": [
+            "admin",
+            "auditor",
+            "legal",
+            "treasury"
+        ],
+        "international.tax_royalty.oem.tooling": [
+            "admin",
+            "auditor",
+            "legal",
+            "treasury"
+        ],
+        "international.tax_royalty.royalty.calculate": [
+            "admin",
+            "auditor",
+            "legal",
+            "treasury"
+        ],
+        "international.tax_royalty.treaty.relief": [
+            "admin",
+            "auditor",
+            "legal",
+            "treasury"
+        ],
+        "inventory.explorer.index": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "inventory.explorer.show": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
         "login": "public",
+        "logistics.autonomous.breaches.release": [
+            "admin",
+            "dispatcher",
+            "logistics_admin",
+            "treasury"
+        ],
+        "logistics.autonomous.deliver": [
+            "admin",
+            "dispatcher",
+            "hub_operator",
+            "logistics_admin"
+        ],
+        "logistics.autonomous.dispatch": [
+            "admin",
+            "dispatcher",
+            "hub_operator",
+            "logistics_admin"
+        ],
+        "logistics.autonomous.index": [
+            "admin",
+            "auditor",
+            "dispatcher",
+            "hub_operator",
+            "logistics_admin"
+        ],
         "logistics.carriers.index": "auth",
         "logistics.carriers.pay": "auth",
         "logistics.carriers.store": "auth",
@@ -689,6 +1626,25 @@
         "logistics.locations.store": "auth",
         "logistics.locations.update": "auth",
         "logistics.margins": "auth",
+        "logistics.reverse.index": [
+            "admin",
+            "auditor",
+            "dispatcher",
+            "hub_operator",
+            "logistics_admin"
+        ],
+        "logistics.reverse.intake": [
+            "admin",
+            "dispatcher",
+            "hub_operator",
+            "logistics_admin"
+        ],
+        "logistics.reverse.store": [
+            "admin",
+            "dispatcher",
+            "hub_operator",
+            "logistics_admin"
+        ],
         "logistics.shipments.bulk": "auth",
         "logistics.shipments.bulk.process": "auth",
         "logistics.shipments.create": "auth",
@@ -752,6 +1708,21 @@
             "operator",
             "planner",
             "qc_inspector"
+        ],
+        "manufacturing.c2m.orders.cancel": [
+            "admin",
+            "planner",
+            "procurement"
+        ],
+        "manufacturing.c2m.orders.spk": [
+            "admin",
+            "planner",
+            "procurement"
+        ],
+        "manufacturing.c2m.orders.store": [
+            "admin",
+            "planner",
+            "procurement"
         ],
         "manufacturing.costing.index": [
             "admin",
@@ -1070,17 +2041,224 @@
             "planner",
             "qc_inspector"
         ],
+        "manufacturing.vmi-c2m.index": [
+            "admin",
+            "auditor",
+            "operator",
+            "planner",
+            "procurement"
+        ],
+        "manufacturing.vmi.approve": [
+            "admin",
+            "planner",
+            "procurement"
+        ],
+        "manufacturing.vmi.trigger": [
+            "admin",
+            "planner",
+            "procurement"
+        ],
         "manufacturing.workers.store": [
             "admin",
             "operator",
             "planner",
             "qc_inspector"
         ],
+        "med.ads.book": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "med.ads.index": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "med.licensing.grant": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "med.licensing.index": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "med.licensing.show": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "med.royalties.distribute": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "med.royalties.index": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "med.royalties.talent.settle": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "med.studios.greenlight": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "med.studios.index": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "med.studios.show": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "media.index": [
+            "admin",
+            "ip_manager",
+            "producer",
+            "studio_ops",
+            "talent_mgmt"
+        ],
+        "mining.dispatch": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.index": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.blast-safety": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.blast-safety.lock": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.block-planning": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.block-planning.plan": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.grade-reconciliation": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.grade-reconciliation.reconcile": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.haul-dispatch": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.haul-dispatch.truck": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.pnbp-royalty": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.pnbp-royalty.calculate": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.reclamation": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.reclamation.bond": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.smelter": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.smelter.run": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.weighbridge": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
+        "mining.operations.weighbridge.ticket": [
+            "admin",
+            "mining_admin",
+            "site_manager"
+        ],
         "notifications.index": "auth",
         "notifications.markAllRead": "auth",
         "notifications.markAllReadJson": "auth",
         "notifications.read": "auth",
         "notifications.recent": "auth",
+        "ops.metrics": "public",
+        "partner.governance.audit_ip": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "partner.governance.profit_share": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "partner.governance.settle_milestone": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
         "partners.index": [
             "admin",
             "auditor",
@@ -1163,7 +2341,37 @@
         "password.reset": "public",
         "password.store": "public",
         "password.update": "auth",
+        "payment.inspector.index": [
+            "admin",
+            "auditor",
+            "treasury"
+        ],
+        "payment.inspector.show": [
+            "admin",
+            "auditor",
+            "treasury"
+        ],
         "plm.index": "auth",
+        "plm.operations.eco.execute": [
+            "admin",
+            "rnd_specialist"
+        ],
+        "plm.operations.index": [
+            "admin",
+            "rnd_specialist"
+        ],
+        "plm.operations.lab.test": [
+            "admin",
+            "rnd_specialist"
+        ],
+        "plm.operations.mbom.convert": [
+            "admin",
+            "rnd_specialist"
+        ],
+        "plm.operations.stage.advance": [
+            "admin",
+            "rnd_specialist"
+        ],
         "pricing.analytics.compute": [
             "admin",
             "auditor",
@@ -1227,6 +2435,23 @@
         "pricing.promotions.store": [
             "admin",
             "auditor",
+            "procurement"
+        ],
+        "pricing.quote.convert": [
+            "admin",
+            "procurement"
+        ],
+        "pricing.quote.freeze": [
+            "admin",
+            "procurement"
+        ],
+        "pricing.ticks": [
+            "admin",
+            "auditor",
+            "procurement"
+        ],
+        "pricing.ticks.store": [
+            "admin",
             "procurement"
         ],
         "procurement.dashboard": [
@@ -1339,6 +2564,111 @@
         "profile.destroy": "auth",
         "profile.edit": "auth",
         "profile.update": "auth",
+        "proptech.bim.capitalize": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.bim.index": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.bim.simulate": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.flex.checkin": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.flex.index": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.flex.noshow": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.flex.store": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.index": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.bms": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.bms.optimize": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.epc-handover": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.epc-handover.handover": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.evacuation": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.evacuation.run": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.flex-booking": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.flex-booking.store": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.retrofit": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.retrofit.calculate": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.smart-lock": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.intelligence.smart-lock.generate": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
+        "proptech.zones.bill": [
+            "admin",
+            "facility_manager",
+            "proptech_admin"
+        ],
         "register": "public",
         "resto.analytics.index": "auth",
         "resto.catering.cancel": "auth",
@@ -1429,6 +2759,151 @@
         "resto.transfers.show": "auth",
         "resto.transfers.store": "auth",
         "resto.transfers.update": "auth",
+        "ret.compliance.audit": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "ret.compliance.index": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "ret.darkstore.allocate": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "ret.darkstore.index": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "ret.darkstore.pickpack": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "ret.orders.checkout": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "ret.orders.index": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "ret.orders.pickup": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "ret.orders.show": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "ret.pricing.index": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "ret.pricing.markdown": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "ret.pricing.shrinkage": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "retail.index": [
+            "admin",
+            "category_mgr",
+            "last_mile_cs",
+            "marketplace_mgr",
+            "retail_ops"
+        ],
+        "rwa.assets.distribute": [
+            "admin",
+            "asset_manager",
+            "investor",
+            "rwa_admin"
+        ],
+        "rwa.exchange.distribute-yield": [
+            "admin",
+            "asset_manager",
+            "investor",
+            "rwa_admin"
+        ],
+        "rwa.exchange.holdings": [
+            "admin",
+            "asset_manager",
+            "investor",
+            "rwa_admin"
+        ],
+        "rwa.exchange.match-trade": [
+            "admin",
+            "asset_manager",
+            "investor",
+            "rwa_admin"
+        ],
+        "rwa.exchange.offerings": [
+            "admin",
+            "asset_manager",
+            "investor",
+            "rwa_admin"
+        ],
+        "rwa.exchange.orderbook": [
+            "admin",
+            "asset_manager",
+            "investor",
+            "rwa_admin"
+        ],
+        "rwa.exchange.subscribe-offering": [
+            "admin",
+            "asset_manager",
+            "investor",
+            "rwa_admin"
+        ],
+        "rwa.exchange.yield-distribution": [
+            "admin",
+            "asset_manager",
+            "investor",
+            "rwa_admin"
+        ],
+        "rwa.index": [
+            "admin",
+            "asset_manager",
+            "investor",
+            "rwa_admin"
+        ],
         "sanctum.csrf-cookie": "public",
         "services.destroy": [
             "admin"
@@ -1580,12 +3055,413 @@
             "party_manager",
             "procurement"
         ],
+        "telecom.index": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "telematics.devices.ingest": [
+            "admin",
+            "fleet_manager",
+            "telematics_admin"
+        ],
+        "telematics.index": [
+            "admin",
+            "fleet_manager",
+            "telematics_admin"
+        ],
+        "telematics.operations.baselines": [
+            "admin",
+            "fleet_manager",
+            "telematics_admin"
+        ],
+        "telematics.operations.dispatch-tow": [
+            "admin",
+            "fleet_manager",
+            "telematics_admin"
+        ],
+        "telematics.operations.driver-scores": [
+            "admin",
+            "fleet_manager",
+            "telematics_admin"
+        ],
+        "telematics.operations.dtc-alerts": [
+            "admin",
+            "fleet_manager",
+            "telematics_admin"
+        ],
+        "telematics.operations.emergency-dispatches": [
+            "admin",
+            "fleet_manager",
+            "telematics_admin"
+        ],
+        "telematics.operations.evaluate-dtc": [
+            "admin",
+            "fleet_manager",
+            "telematics_admin"
+        ],
+        "tlx.billing.cdr.rate": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "tlx.billing.index": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "tlx.billing.roaming": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "tlx.billing.roaming.settle": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "tlx.datacenter.index": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "tlx.datacenter.pue.enforce": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "tlx.datacenter.racks": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "tlx.datacenter.racks.allocate": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "tlx.network.esim.activate": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "tlx.network.index": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "tlx.network.slices": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
+        "tlx.network.slices.provision": [
+            "admin",
+            "datacenter_ops",
+            "noc_engineer",
+            "telecom_billing",
+            "tlx_admin"
+        ],
         "track.index": "public",
         "track.show": "public",
+        "trade.bidding.agents.store": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade.bidding.index": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade.bidding.runs.evaluate": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade.bidding.runs.prepare": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade.bidding.submissions.approve": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade.bidding.submissions.result": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade.customs.audit_bonded_zone": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade.customs.landed_cost": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade.customs.submit_peb": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade.customs.submit_pib": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
         "trade.index": "auth",
+        "trade_finance.crossborder.cbam": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade_finance.crossborder.deposit": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade_finance.crossborder.dispute": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade_finance.crossborder.index": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade_finance.crossborder.release": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade_finance.crossborder.resolve-dispute": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
         "trade_finance.index": "auth",
         "trade_finance.lcs": "auth",
+        "trade_finance.operations.index": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade_finance.operations.lc.issue": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade_finance.operations.lc.verify-presentation": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "trade_finance.operations.scf.discount": [
+            "admin",
+            "auditor",
+            "procurement",
+            "treasury"
+        ],
+        "treasury.fx_revalue": [
+            "admin",
+            "auditor",
+            "treasury"
+        ],
         "treasury.index": "auth",
+        "treasury.settle_hedge": [
+            "admin",
+            "auditor",
+            "treasury"
+        ],
+        "treasury.sweep_cash_pool": [
+            "admin",
+            "auditor",
+            "treasury"
+        ],
+        "vending.index": [
+            "admin",
+            "store_manager",
+            "vending_operator"
+        ],
+        "vending.operations.auto-replenishment": [
+            "admin",
+            "store_manager",
+            "vending_operator"
+        ],
+        "vending.operations.auto-replenishment.trigger": [
+            "admin",
+            "store_manager",
+            "vending_operator"
+        ],
+        "vending.operations.cart-dispense": [
+            "admin",
+            "store_manager",
+            "vending_operator"
+        ],
+        "vending.operations.cart-dispense.dispense": [
+            "admin",
+            "store_manager",
+            "vending_operator"
+        ],
+        "vending.operations.demand-forecast": [
+            "admin",
+            "store_manager",
+            "vending_operator"
+        ],
+        "vending.operations.demand-forecast.run": [
+            "admin",
+            "store_manager",
+            "vending_operator"
+        ],
+        "vending.operations.markdowns": [
+            "admin",
+            "store_manager",
+            "vending_operator"
+        ],
+        "vending.operations.markdowns.calculate": [
+            "admin",
+            "store_manager",
+            "vending_operator"
+        ],
+        "vending.units.dispense": [
+            "admin",
+            "store_manager",
+            "vending_operator"
+        ],
+        "venue.artist.index": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.artist.royalties": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.artist.royalties.accrue": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.artist.royalties.release": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.artist.settle": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.gate.scan": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.index": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.tables.index": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.tables.liquor-audit": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.tables.liquor-audit.reconcile": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.tables.reserve": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.tables.surge": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.tables.surge.calculate": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.ticketing.gate": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.ticketing.gate.scan": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.ticketing.index": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
+        "venue.ticketing.issue": [
+            "admin",
+            "venue_manager",
+            "venue_staff"
+        ],
         "verification.notice": "auth",
         "verification.send": "auth",
         "verification.verify": "auth",
@@ -1597,6 +3473,76 @@
         "wallet.transfer": "auth",
         "wallet.transfer.lookup": "auth",
         "wallet.transfer.store": "auth",
+        "wealth.index": [
+            "admin",
+            "customer",
+            "investor",
+            "treasury",
+            "wealth_manager"
+        ],
+        "wealth.profiles.invest": [
+            "admin",
+            "customer",
+            "investor",
+            "treasury",
+            "wealth_manager"
+        ],
+        "wealth.treasury.allocate-mpt": [
+            "admin",
+            "customer",
+            "investor",
+            "treasury",
+            "wealth_manager"
+        ],
+        "wealth.treasury.cash-sweep": [
+            "admin",
+            "customer",
+            "investor",
+            "treasury",
+            "wealth_manager"
+        ],
+        "wealth.treasury.compute-profile": [
+            "admin",
+            "customer",
+            "investor",
+            "treasury",
+            "wealth_manager"
+        ],
+        "wealth.treasury.mpt-allocation": [
+            "admin",
+            "customer",
+            "investor",
+            "treasury",
+            "wealth_manager"
+        ],
+        "wealth.treasury.portfolio-rebalancing": [
+            "admin",
+            "customer",
+            "investor",
+            "treasury",
+            "wealth_manager"
+        ],
+        "wealth.treasury.rebalance": [
+            "admin",
+            "customer",
+            "investor",
+            "treasury",
+            "wealth_manager"
+        ],
+        "wealth.treasury.risk-profiles": [
+            "admin",
+            "customer",
+            "investor",
+            "treasury",
+            "wealth_manager"
+        ],
+        "wealth.treasury.sweep-cash": [
+            "admin",
+            "customer",
+            "investor",
+            "treasury",
+            "wealth_manager"
+        ],
         "wms.cycle-counts.apply": [
             "admin",
             "auditor",
@@ -1681,12 +3627,5 @@
             "hub_operator",
             "procurement"
         ]
-    },
-    "approved_additions": [
-        {
-            "date": "2026-10-10",
-            "decision": "DECISIONS.md#2026-10-10-baseline-awal-detektor-lain-fase-r0-r09r011",
-            "entries": "baseline awal: 598 rute"
-        }
-    ]
+    }
 }

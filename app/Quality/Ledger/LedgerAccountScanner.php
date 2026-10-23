@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Quality\Ledger;
 
 use App\Quality\Support\SourceFile;
+use Modules\Banking\Domain\Support\ChartOfAccounts;
 
 /**
  * Scans production source code for ledger account references and verifies
@@ -69,6 +70,15 @@ final class LedgerAccountScanner
                 if (fnmatch($code, $seeded) || fnmatch($seeded, $code)) {
                     $matched = true;
                     break;
+                }
+            }
+
+            if (! $matched && class_exists(ChartOfAccounts::class)) {
+                foreach (ChartOfAccounts::dynamicPatterns() as $pattern) {
+                    if (fnmatch($pattern, $code) || fnmatch($code, $pattern)) {
+                        $matched = true;
+                        break;
+                    }
                 }
             }
 

@@ -148,7 +148,8 @@ it('freezes auth entries in route-roles.php against baseline set (V8b)', functio
     $map = require __DIR__.'/route-roles.php';
     $currentAuth = [];
     foreach ($map as $route => $protection) {
-        if ($protection === 'auth') {
+        $protStr = is_array($protection) ? ($protection['protection'] ?? null) : $protection;
+        if ($protStr === 'auth') {
             $currentAuth[] = $route;
         }
     }
