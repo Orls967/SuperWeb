@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Application\Actions\AcquireVehicleAction;
 use Modules\Core\Application\Actions\TransferVehicleOwnershipAction;
+use Modules\Core\Application\Copilot\ExecutiveCopilotEngine;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
 use Modules\Core\Application\Services\ActivityLogger;
 use Modules\Core\Application\Services\Ai\DynamicPricingEngineService;
@@ -31,17 +32,20 @@ use Modules\Core\Application\Services\Resilience\MultiRegionResilienceEngineServ
 use Modules\Core\Application\Services\Scale\OutboxScaleProvisioner;
 use Modules\Core\Application\Services\Scale\PassportScaleProvisioner;
 use Modules\Core\Application\Services\SimClockService;
+use Modules\Core\Application\Telemetry\LiveTelemetryStreamService;
 use Modules\Core\Application\TickHandlers\BillingTickHandler;
 use Modules\Core\Console\Commands\AuditAiCommand;
 use Modules\Core\Console\Commands\AuditMobileCommand;
 use Modules\Core\Console\Commands\AuditSimulationKernelCommand;
 use Modules\Core\Console\Commands\BenchmarkRunCommand;
 use Modules\Core\Console\Commands\ConsumeSpineCommand;
+use Modules\Core\Console\Commands\CopilotAskCommand;
 use Modules\Core\Console\Commands\PqAuditChainsCommand;
 use Modules\Core\Console\Commands\ProcessOutboxCommand;
 use Modules\Core\Console\Commands\RunSimulationCommand;
 use Modules\Core\Console\Commands\ScaleProvisionCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
+use Modules\Core\Console\Commands\TelemetrySnapshotCommand;
 use Modules\Core\Console\Commands\TwelveLinesComprehensiveAuditCommand;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
 use Modules\Core\Contracts\AcquiresVehicle;
@@ -173,6 +177,8 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(DisasterRecoveryDrillService::class);
         $this->app->singleton(MultiRegionResilienceEngineService::class);
         $this->app->singleton(DataSovereigntyComplianceService::class);
+        $this->app->singleton(ExecutiveCopilotEngine::class);
+        $this->app->singleton(LiveTelemetryStreamService::class);
 
         $this->app->tag([
             PassportScaleProvisioner::class,
@@ -319,6 +325,8 @@ class CoreServiceProvider extends ServiceProvider
                 AuditMobileCommand::class,
                 AuditSimulationKernelCommand::class,
                 PqAuditChainsCommand::class,
+                CopilotAskCommand::class,
+                TelemetrySnapshotCommand::class,
             ]);
         }
 
