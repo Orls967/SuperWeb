@@ -2,6 +2,28 @@
 
 $_ENV['APP_BASE_PATH'] = dirname(__DIR__);
 putenv('APP_BASE_PATH='.dirname(__DIR__));
+ini_set('memory_limit', '2G');
+
+spl_autoload_register(function (string $class): void {
+    $base = dirname(__DIR__);
+    $prefixes = [
+        'Modules\\' => $base.'/modules/',
+        'App\\' => $base.'/app/',
+        'Database\\Seeders\\' => $base.'/database/seeders/',
+        'Database\\Factories\\' => $base.'/database/factories/',
+    ];
+    foreach ($prefixes as $prefix => $dir) {
+        if (str_starts_with($class, $prefix)) {
+            $relative = str_replace('\\', '/', substr($class, strlen($prefix)));
+            $file = $dir.$relative.'.php';
+            if (is_file($file)) {
+                require_once $file;
+
+                return;
+            }
+        }
+    }
+}, true, true);
 
 use App\Quality\ArchScan\Rule;
 use App\Quality\ArchScan\ScanReport;

@@ -14,6 +14,27 @@ use Illuminate\Routing\Middleware\ThrottleRequestsWithRedis;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+spl_autoload_register(function (string $class): void {
+    $base = dirname(__DIR__);
+    $prefixes = [
+        'Modules\\' => $base.'/modules/',
+        'App\\' => $base.'/app/',
+        'Database\\Seeders\\' => $base.'/database/seeders/',
+        'Database\\Factories\\' => $base.'/database/factories/',
+    ];
+    foreach ($prefixes as $prefix => $dir) {
+        if (str_starts_with($class, $prefix)) {
+            $relative = str_replace('\\', '/', substr($class, strlen($prefix)));
+            $file = $dir.$relative.'.php';
+            if (is_file($file)) {
+                require_once $file;
+
+                return;
+            }
+        }
+    }
+}, true, true);
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',

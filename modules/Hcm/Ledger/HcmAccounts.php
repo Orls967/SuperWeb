@@ -74,6 +74,55 @@ final class HcmAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'hotel:gig_expense:IDR',
+                'name' => 'Hotel Gig Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'venue:gig_expense:IDR',
+                'name' => 'Venue Gig Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'mining:gig_expense:IDR',
+                'name' => 'Mining Gig Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'logistics:gig_expense:IDR',
+                'name' => 'Logistics Gig Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'hospital:gig_expense:IDR',
+                'name' => 'Hospital Gig Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'resto:gig_expense:IDR',
+                'name' => 'Resto Gig Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'payroll:worker_payable:20:IDR',
+                'name' => 'Worker 20 Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }

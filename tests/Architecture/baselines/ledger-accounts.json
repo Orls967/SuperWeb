@@ -1,12 +1,7 @@
 {
     "about": "Akun ledger yang dipakai di kode produksi tetapi belum terdefinisi & terseed di database seeder (PROGRESS R0.10, KONSEP §A14.5). Hanya boleh menyusut (R1.3).",
-    "total": 4,
-    "entries": [
-        "account:*:gig_expense:IDR",
-        "account:esg:carbon_credit_inventory:IDR",
-        "account:esg:carbon_offset_expense:IDR",
-        "account:payroll:worker_payable:*:IDR"
-    ],
+    "total": 0,
+    "entries": [],
     "approved_additions": [
         {
             "date": "2026-10-10",

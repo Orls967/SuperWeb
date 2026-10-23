@@ -54473,9 +54473,9 @@ paths:
       tags:
         - Core
       summary: 'PUT Storage in Core'
-      description: 'Operational endpoint for Core module. Protected by role matrix: [signed].'
+      description: 'Operational endpoint for Core module. Protected by role matrix: [public].'
       x-allowed-roles:
-        - signed
+        - public
       parameters:
         -
           name: path
@@ -54526,9 +54526,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          HmacWebhookSignature: {}
+      security: {}
       requestBody:
         description: 'Request payload for putStorageLocalUpload'
         required: true

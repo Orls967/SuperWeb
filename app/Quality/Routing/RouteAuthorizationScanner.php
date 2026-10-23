@@ -196,17 +196,24 @@ final class RouteAuthorizationScanner
                     $mismatches[] = "{$key}: mapped as {$expected}, actual is ".(is_string($actual) ? $actual : 'role:'.implode(',', $actual['roles']));
                 }
             } elseif (is_array($expected)) {
-                $expectedRoles = $expected['roles'] ?? [];
-                sort($expectedRoles);
-
-                if (! is_array($actual)) {
-                    $mismatches[] = "{$key}: mapped as role:".implode(',', $expectedRoles).", actual is {$actual}";
+                $protectionType = $expected['protection'] ?? null;
+                if ($protectionType !== null && ! isset($expected['roles'])) {
+                    if ($protectionType !== $actual) {
+                        $mismatches[] = "{$key}: mapped as {$protectionType}, actual is ".(is_string($actual) ? $actual : 'role:'.implode(',', $actual['roles']));
+                    }
                 } else {
-                    $actualRoles = $actual['roles'];
-                    sort($actualRoles);
+                    $expectedRoles = $expected['roles'] ?? [];
+                    sort($expectedRoles);
 
-                    if ($expectedRoles !== $actualRoles) {
-                        $mismatches[] = "{$key}: mapped roles [".implode(',', $expectedRoles).'] != actual roles ['.implode(',', $actualRoles).']';
+                    if (! is_array($actual)) {
+                        $mismatches[] = "{$key}: mapped as role:".implode(',', $expectedRoles).", actual is {$actual}";
+                    } else {
+                        $actualRoles = $actual['roles'];
+                        sort($actualRoles);
+
+                        if ($expectedRoles !== $actualRoles) {
+                            $mismatches[] = "{$key}: mapped roles [".implode(',', $expectedRoles).'] != actual roles ['.implode(',', $actualRoles).']';
+                        }
                     }
                 }
             }
