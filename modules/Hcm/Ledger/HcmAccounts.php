@@ -67,6 +67,13 @@ final class HcmAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'expense:hcm:labor_absorbed:IDR',
+                'name' => 'HCM Direct Labor Absorbed into Manufacturing',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }
