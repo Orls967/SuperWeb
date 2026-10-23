@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * FieldRemoteSiteOperationsIntegrityService (Fase 411)
@@ -45,7 +46,7 @@ class FieldRemoteSiteOperationsIntegrityService
 
     public function clearPreStartGate(
         string $taskCode,
-        bool $credentialsVerified,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $credentialsVerified,
         bool $safetyPermitIssued,
         bool $equipmentChecked
     ): object {

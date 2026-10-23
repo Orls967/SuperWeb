@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * GovEthicsAiBiometricsService (Fase 294)
@@ -28,7 +29,7 @@ class GovEthicsAiBiometricsService
         string $systemName,
         string $tier,
         string $necessityJustification,
-        bool $ethicsBoardApproved = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $ethicsBoardApproved = false
     ): object {
         $aCode = strtoupper($assessmentCode);
 

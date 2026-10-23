@@ -47,10 +47,10 @@ return new class extends Migration
             $table->id();
             $table->string('markdown_code')->unique();
             $table->string('collection_name');
-            $table->decimal('original_price_idr', 18, 2);
+            $table->bigInteger('original_price_idr');
             $table->decimal('discount_pct', 5, 2);
-            $table->decimal('discounted_price_idr', 18, 2);
-            $table->decimal('unit_cost_idr', 18, 2);
+            $table->bigInteger('discounted_price_idr');
+            $table->bigInteger('unit_cost_idr');
             $table->boolean('margin_approved')->default(false);
             $table->timestamps();
         });

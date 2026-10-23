@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CustomerDataPlatformActivationService (Fase 416)
@@ -25,7 +26,7 @@ class CustomerDataPlatformActivationService
         string $profileCode,
         string $email,
         string $phone,
-        bool $consent = false,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $consent = false,
         bool $suppressed = false,
         string $segment = 'STANDARD'
     ): object {
@@ -80,7 +81,7 @@ class CustomerDataPlatformActivationService
         string $targetCode,
         string $reason,
         string $reviewer,
-        bool $manualReviewApproved = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $manualReviewApproved = true
     ): object {
         // 416.5 Edge case: Never auto-merge if manual review is not approved
         if (! $manualReviewApproved) {

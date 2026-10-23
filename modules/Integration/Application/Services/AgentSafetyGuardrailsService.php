@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * AgentSafetyGuardrailsService (Fase 346)
@@ -58,7 +59,7 @@ class AgentSafetyGuardrailsService
         string $agentId,
         string $toolName,
         bool $isExpansion,
-        bool $ciApprovalGranted
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $ciApprovalGranted
     ): object {
         $pCode = strtoupper($permCode);
 

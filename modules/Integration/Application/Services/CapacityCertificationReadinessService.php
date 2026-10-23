@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CapacityCertificationReadinessService (Fase 400)
@@ -24,7 +25,7 @@ class CapacityCertificationReadinessService
      */
     public function certifyDomain(
         string $domainName,
-        bool $hasPassingBenchmarkEvidence = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasPassingBenchmarkEvidence = true
     ): object {
         $dName = strtoupper($domainName);
 

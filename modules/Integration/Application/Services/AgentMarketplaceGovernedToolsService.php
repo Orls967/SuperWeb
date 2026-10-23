@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * AgentMarketplaceGovernedToolsService (Fase 358)
@@ -68,7 +69,7 @@ class AgentMarketplaceGovernedToolsService
         string $executionCode,
         string $agentCode,
         string $toolName,
-        bool $toolPermissionGranted,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $toolPermissionGranted,
         bool $secretExposed = false
     ): object {
         $eCode = strtoupper($executionCode);

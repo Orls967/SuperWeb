@@ -7,6 +7,7 @@ namespace Modules\Integration\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EnterprisePolicyEngineService (Fase 290)
@@ -48,7 +49,7 @@ class EnterprisePolicyEngineService
     /**
      * Run policy simulation test (290.1 & 290.5).
      */
-    public function simulatePolicyTest(string $policyCode, bool $simulationPassed = true): object
+    public function simulatePolicyTest(string $policyCode, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $simulationPassed = true): object
     {
         $pCode = strtoupper($policyCode);
         DB::table('gov_policy_catalog')

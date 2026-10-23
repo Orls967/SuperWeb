@@ -66,7 +66,7 @@ class MnaDueDiligencePmiService
         string $synergyCode,
         string $dealCode,
         string $synergyType,
-        float $targetAmount
+        int $targetAmount
     ): object {
         $id = DB::table('gov_pmi_synergy_trackers')->insertGetId([
             'synergy_code' => strtoupper($synergyCode),
@@ -86,7 +86,7 @@ class MnaDueDiligencePmiService
     /**
      * 453.3, 453.4, 453.5 Record realized synergy; if underperforming, require evaluation
      */
-    public function recordRealizedSynergy(string $synergyCode, float $measuredAmount): object
+    public function recordRealizedSynergy(string $synergyCode, int $measuredAmount): object
     {
         $syn = DB::table('gov_pmi_synergy_trackers')->where('synergy_code', strtoupper($synergyCode))->first();
         if (! $syn) {

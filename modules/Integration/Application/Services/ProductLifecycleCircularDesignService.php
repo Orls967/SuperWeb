@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * ProductLifecycleCircularDesignService (Fase 328)
@@ -29,7 +30,7 @@ class ProductLifecycleCircularDesignService
         string $version,
         float $emissionsKgCo2e,
         bool $hasCompleteData,
-        bool $ecoApproved = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $ecoApproved = true
     ): object {
         $aCode = strtoupper($assessmentCode);
         $pSku = strtoupper($sku);

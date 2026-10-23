@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CustomerLoyaltySubscriptionEconomyService (Fase 378)
@@ -25,7 +26,7 @@ class CustomerLoyaltySubscriptionEconomyService
     public function grantCrossLineEntitlement(
         string $entitlementCode,
         string $customerId,
-        bool $customerConsentActive,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $customerConsentActive,
         string $singlePolicyRuleId
     ): object {
         $eCode = strtoupper($entitlementCode);
@@ -60,7 +61,7 @@ class CustomerLoyaltySubscriptionEconomyService
     public function settleIntercompanyRedemption(
         string $redemptionCode,
         string $customerId,
-        float $grossAmount,
+        int $grossAmount,
         float $entityAShare,
         float $entityBShare
     ): object {

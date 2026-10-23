@@ -51,7 +51,7 @@ return new class extends Migration
             $table->string('item_code')->unique();
             $table->integer('base_safety_stock');
             $table->integer('risk_adjusted_buffer');
-            $table->decimal('carrying_cost_idr', 18, 2);
+            $table->bigInteger('carrying_cost_idr');
             $table->boolean('treasury_approved')->default(true);
             $table->timestamps();
         });

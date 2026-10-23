@@ -7,6 +7,7 @@ namespace Modules\Integration\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * FleetAssetUtilizationOptimizationService (Fase 278)
@@ -28,8 +29,8 @@ class FleetAssetUtilizationOptimizationService
         string $assetCategory,
         float $operatingHours,
         float $idleHours,
-        float $generatedRevenueUsd,
-        float $idleHourlyCostUsd = 50.0
+        int $generatedRevenueUsd,
+        int $idleHourlyCostUsd = 50.0
     ): object {
         $code = strtoupper($assetCode);
         $totalHours = $operatingHours + $idleHours;
@@ -64,7 +65,7 @@ class FleetAssetUtilizationOptimizationService
         string $assetCode,
         string $demandContractRef,
         bool $maintenanceCleared = true,
-        bool $crewCertifiedCleared = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $crewCertifiedCleared = true
     ): object {
         $code = strtoupper($assetCode);
 
@@ -94,8 +95,8 @@ class FleetAssetUtilizationOptimizationService
      */
     public function evaluateRepairOrReplace(
         string $assetCode,
-        float $cumulativeRepairCostUsd,
-        float $replacementCostUsd,
+        int $cumulativeRepairCostUsd,
+        int $replacementCostUsd,
         float $salvageValueUsd,
         bool $budgetEncumbered = false
     ): object {

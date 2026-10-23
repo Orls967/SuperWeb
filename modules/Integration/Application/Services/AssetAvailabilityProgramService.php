@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * AssetAvailabilityProgramService (Fase 410)
@@ -71,8 +72,8 @@ class AssetAvailabilityProgramService
         string $assetClass,
         string $resolutionType,
         ?string $substituteClass,
-        bool $qualityGateApproved,
-        float $cost,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $qualityGateApproved,
+        int $cost,
         string $approvedBy
     ): object {
         // 410.6 Risk: substitution without quality gate approval is blocked

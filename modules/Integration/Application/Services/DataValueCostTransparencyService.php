@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * DataValueCostTransparencyService (Fase 342)
@@ -26,8 +27,8 @@ class DataValueCostTransparencyService
         string $trackingCode,
         string $domainName,
         string $consumerId,
-        float $queryCostUsd,
-        float $domainBudgetUsd
+        int $queryCostUsd,
+        int $domainBudgetUsd
     ): object {
         $tCode = strtoupper($trackingCode);
         $dName = strtoupper($domainName);
@@ -66,7 +67,7 @@ class DataValueCostTransparencyService
         string $useCase,
         string $method,
         float $attributedValueUsd,
-        bool $financeApproved
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $financeApproved
     ): object {
         $aCode = strtoupper($attributionCode);
         $mMethod = strtoupper($method);

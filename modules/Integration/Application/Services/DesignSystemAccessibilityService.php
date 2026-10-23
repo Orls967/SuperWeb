@@ -7,6 +7,7 @@ namespace Modules\Integration\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * DesignSystemAccessibilityService (Fase 240)
@@ -54,7 +55,7 @@ class DesignSystemAccessibilityService
         string $componentName,
         float $wcagContrastRatio = 4.50,
         bool $keyboardNavigable = true,
-        bool $ariaCompliant = true,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $ariaCompliant = true,
         string $requestingModule = 'CORE'
     ): object {
         $id = DB::table('platform_ui_components')->insertGetId([
@@ -81,7 +82,7 @@ class DesignSystemAccessibilityService
         string $componentName,
         string $requestingModule,
         float $wcagContrastRatio = 4.50,
-        bool $approvedImmediately = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $approvedImmediately = false
     ): object {
         $id = DB::table('platform_ui_components')->insertGetId([
             'component_code' => strtoupper($componentCode),

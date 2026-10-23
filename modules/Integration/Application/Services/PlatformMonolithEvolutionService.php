@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * PlatformMonolithEvolutionService (Fase 295)
@@ -84,7 +85,7 @@ class PlatformMonolithEvolutionService
         string $adrCode,
         string $targetModule,
         string $evidenceSummary,
-        bool $architectApproved = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $architectApproved = false
     ): object {
         $aCode = strtoupper($adrCode);
 

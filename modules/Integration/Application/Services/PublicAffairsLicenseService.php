@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * PublicAffairsLicenseService (Fase 339)
@@ -27,7 +28,7 @@ class PublicAffairsLicenseService
         string $lineCode,
         string $severity,
         string $draftStatement,
-        bool $approvedByCorpComms,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $approvedByCorpComms,
         bool $releaseStatement = false
     ): object {
         $iCode = strtoupper($issueCode);

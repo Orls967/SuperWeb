@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EnterpriseSustainabilityGovernanceService (Fase 464)
@@ -28,7 +29,7 @@ class EnterpriseSustainabilityGovernanceService
         string $owner,
         string $dueDate,
         bool $integratedIntoRisk = true,
-        bool $verifiedMetrics = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $verifiedMetrics = true
     ): object {
         // 464.1 & 464.5 Trade-off rationale cannot be empty
         if (empty(trim($tradeoffRationale))) {

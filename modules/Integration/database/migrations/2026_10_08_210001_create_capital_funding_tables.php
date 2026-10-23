@@ -27,8 +27,8 @@ return new class extends Migration
             $table->id();
             $table->string('distribution_code')->unique();
             $table->string('entity_code');
-            $table->decimal('available_retained_profit_idr', 18, 2);
-            $table->decimal('proposed_distribution_idr', 18, 2);
+            $table->bigInteger('available_retained_profit_idr');
+            $table->bigInteger('proposed_distribution_idr');
             $table->boolean('solvency_test_passed')->default(true);
             $table->string('approval_status')->default('APPROVED');
             $table->timestamps();

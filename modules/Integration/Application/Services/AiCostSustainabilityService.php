@@ -26,7 +26,7 @@ class AiCostSustainabilityService
         string $invocationCode,
         string $domainName,
         string $agentId,
-        float $costUsd,
+        int $costUsd,
         int $consecutiveCount = 1
     ): object {
         $iCode = strtoupper($invocationCode);

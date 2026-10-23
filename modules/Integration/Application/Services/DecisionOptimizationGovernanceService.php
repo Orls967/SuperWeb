@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * DecisionOptimizationGovernanceService (Fase 348)
@@ -26,7 +27,7 @@ class DecisionOptimizationGovernanceService
         string $domainName,
         string $solverVersion,
         string $owner,
-        bool $governanceApproved
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $governanceApproved
     ): object {
         $pCode = strtoupper($problemCode);
 

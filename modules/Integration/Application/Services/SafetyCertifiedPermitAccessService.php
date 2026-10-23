@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * SafetyCertifiedPermitAccessService (Fase 323)
@@ -30,7 +31,7 @@ class SafetyCertifiedPermitAccessService
         bool $validCert,
         bool $certExpired,
         bool $siteInductionCompleted,
-        bool $supervisorSignedOff,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $supervisorSignedOff,
         bool $isEmergency = false,
         bool $emergencyPostReview = false
     ): object {

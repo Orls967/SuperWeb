@@ -26,7 +26,7 @@ return new class extends Migration
             $table->unsignedBigInteger('customer_id');
             $table->string('garment_type');
             $table->string('grading'); // RESALE, REPAIR, RECYCLE
-            $table->decimal('loyalty_credit_idr', 18, 2);
+            $table->bigInteger('loyalty_credit_idr');
             $table->boolean('credit_issued')->default(false);
             $table->timestamps();
         });

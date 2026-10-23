@@ -37,8 +37,8 @@ return new class extends Migration
             $table->string('bill_code')->unique();
             $table->string('tenant_code');
             $table->decimal('metered_gigabytes', 18, 2);
-            $table->decimal('rate_per_gb_idr', 18, 2);
-            $table->decimal('total_billed_idr', 18, 2);
+            $table->bigInteger('rate_per_gb_idr');
+            $table->bigInteger('total_billed_idr');
             $table->timestamps();
         });
     }

@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * DynamicMarketplaceC2cCommerceService (Fase 313)
@@ -26,8 +27,8 @@ class DynamicMarketplaceC2cCommerceService
         string $listingCode,
         string $sellerId,
         string $category,
-        float $askingPriceUsd,
-        bool $identityVerified,
+        int $askingPriceUsd,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $identityVerified,
         int $sellerActiveVelocityCount = 1
     ): object {
         $lCode = strtoupper($listingCode);
@@ -58,7 +59,7 @@ class DynamicMarketplaceC2cCommerceService
     public function lockEscrowFunds(
         string $escrowCode,
         string $listingCode,
-        float $amountUsd,
+        int $amountUsd,
         string $buyerId,
         string $sellerId
     ): object {
@@ -130,7 +131,7 @@ class DynamicMarketplaceC2cCommerceService
         string $offerCode,
         string $assetSku,
         float $telematicsHealthScore,
-        float $baseMarketPriceUsd
+        int $baseMarketPriceUsd
     ): object {
         $oCode = strtoupper($offerCode);
 

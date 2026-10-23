@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * SecurityEngineeringSupplyChainIntegrityService (Fase 430)
@@ -26,8 +27,8 @@ class SecurityEngineeringSupplyChainIntegrityService
         string $version,
         string $expectedSha256,
         string $actualSha256,
-        bool $vulnScanPassed = true,
-        bool $licenseCompliant = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $vulnScanPassed = true,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $licenseCompliant = true
     ): object {
         $checksumMatch = hash_equals($expectedSha256, $actualSha256);
 

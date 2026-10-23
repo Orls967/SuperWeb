@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * PartnerOnboardingEcosystemService (Fase 371)
@@ -25,9 +26,9 @@ class PartnerOnboardingEcosystemService
     public function evaluateOnboardingGoLive(
         string $partnerCode,
         string $partnerName,
-        bool $kybVerified,
-        bool $contractSigned,
-        bool $certificationPassed
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $kybVerified,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $contractSigned,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $certificationPassed
     ): object {
         $pCode = strtoupper($partnerCode);
 

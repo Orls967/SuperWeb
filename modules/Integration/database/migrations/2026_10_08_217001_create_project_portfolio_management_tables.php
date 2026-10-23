@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('change_request_code')->unique();
             $table->string('project_code');
             $table->text('scope_modification_description');
-            $table->decimal('budget_impact_idr', 18, 2);
+            $table->bigInteger('budget_impact_idr');
             $table->integer('schedule_impact_days');
             $table->string('approval_status')->default('SUBMITTED'); // SUBMITTED, APPROVED, EXECUTED
             $table->string('approved_by')->nullable();

@@ -7,6 +7,7 @@ namespace Modules\Integration\Application\Services;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Core\Contracts\DocumentStoreInterface;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EnterpriseDigitalTrustService (Fase 484)
@@ -91,7 +92,7 @@ class EnterpriseDigitalTrustService
         string $domain,
         float $verificationCoverage,
         float $auditPassRate,
-        bool $verifiedDataOnly = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $verifiedDataOnly = true
     ): object {
         // 484.6 Risk: Unverified data input blocked
         if (! $verifiedDataOnly) {

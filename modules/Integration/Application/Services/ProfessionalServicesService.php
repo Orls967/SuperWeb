@@ -21,7 +21,7 @@ class ProfessionalServicesService
     /**
      * Submit sealed RFP proposal.
      */
-    public function submitSealedProposal(string $rfpCode, string $firmId, float $bidAmount): object
+    public function submitSealedProposal(string $rfpCode, string $firmId, int $bidAmount): object
     {
         $code = 'PRP-PSV-'.strtoupper(Str::random(8));
 
@@ -74,7 +74,7 @@ class ProfessionalServicesService
     /**
      * Create project milestone with deliverable requirement.
      */
-    public function createMilestone(string $sowCode, string $title, float $amountIdr): object
+    public function createMilestone(string $sowCode, string $title, int $amountIdr): object
     {
         $code = 'MLS-PSV-'.strtoupper(Str::random(8));
 

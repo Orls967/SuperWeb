@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * FpaDriverBasedBudgetingService (Fase 312)
@@ -29,7 +30,7 @@ class FpaDriverBasedBudgetingService
         int $traffic,
         float $conversionRate,
         float $aovUsd,
-        float $actualRevenueUsd = 0.00
+        int $actualRevenueUsd = 0
     ): object {
         $pCode = strtoupper($planCode);
 
@@ -73,7 +74,7 @@ class FpaDriverBasedBudgetingService
         string $costCenter,
         float $baselineExpenseUsd,
         float $eliminatedSavingsUsd,
-        bool $boardCarveoutApproved = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $boardCarveoutApproved = false
     ): object {
         $iCode = strtoupper($initiativeCode);
 

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('transaction_key')->unique(); // Idempotent key
             $table->string('line_code'); // L01 - L30
             $table->string('payment_method'); // WALLET, VA, QRIS, ESCROW
-            $table->decimal('gross_amount_idr', 18, 2);
+            $table->bigInteger('gross_amount_idr');
             $table->string('status')->default('SETTLED');
             $table->timestamps();
         });
@@ -27,9 +27,9 @@ return new class extends Migration
             $table->string('netting_batch_code')->unique();
             $table->string('entity_a');
             $table->string('entity_b');
-            $table->decimal('gross_receivables_idr', 18, 2);
-            $table->decimal('gross_payables_idr', 18, 2);
-            $table->decimal('netted_settlement_idr', 18, 2);
+            $table->bigInteger('gross_receivables_idr');
+            $table->bigInteger('gross_payables_idr');
+            $table->bigInteger('netted_settlement_idr');
             $table->string('settling_entity');
             $table->timestamps();
         });
@@ -40,8 +40,8 @@ return new class extends Migration
             $table->string('sweep_code')->unique();
             $table->string('source_account');
             $table->string('target_pool_account');
-            $table->decimal('swept_amount_idr', 18, 2);
-            $table->decimal('source_balance_after_idr', 18, 2);
+            $table->bigInteger('swept_amount_idr');
+            $table->bigInteger('source_balance_after_idr');
             $table->timestamps();
         });
     }

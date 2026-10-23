@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * BiodiversityLandUseProgramService (Fase 445)
@@ -81,7 +82,7 @@ class BiodiversityLandUseProgramService
         bool $avoidanceInfeasible,
         bool $additionality,
         bool $permanence,
-        bool $communityConsent
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $communityConsent
     ): object {
         $id = DB::table('esg_biodiversity_offset_projects')->insertGetId([
             'project_code' => strtoupper($code),

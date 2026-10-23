@@ -7,6 +7,7 @@ namespace Modules\Integration\Application\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * DataAccessDomainSelfService (Fase 344)
@@ -29,7 +30,7 @@ class DataAccessDomainSelfService
         string $userId,
         string $domainName,
         string $accessTier,
-        bool $userCertified,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $userCertified,
         Carbon $expiresAt
     ): object {
         $gCode = strtoupper($grantCode);
@@ -83,7 +84,7 @@ class DataAccessDomainSelfService
         string $templateCode,
         string $domainName,
         bool $fromGovernanceCouncil,
-        bool $ciCheckPassed
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $ciCheckPassed
     ): object {
         $tCode = strtoupper($templateCode);
 

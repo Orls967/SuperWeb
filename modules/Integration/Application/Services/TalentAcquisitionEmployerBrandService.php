@@ -26,7 +26,7 @@ class TalentAcquisitionEmployerBrandService
         string $roleFamily,
         int $headcount,
         string $sourceChannel,
-        float $costPerHire = 3500000.00,
+        int $costPerHire = 3500000.00,
         int $timeToFillDays = 21
     ): object {
         $id = DB::table('hcm_talent_requisitions')->insertGetId([

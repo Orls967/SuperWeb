@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * DisasterRecoveryProofService (Fase 399)
@@ -71,7 +72,7 @@ class DisasterRecoveryProofService
     public function verifyLedgerRecovery(
         string $recoveryCode,
         int $unexplainedDiscrepancies,
-        bool $hashChainVerified = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hashChainVerified = true
     ): object {
         $rCode = strtoupper($recoveryCode);
 

@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * RegulatoryTaxOperationsService (Fase 404)
@@ -48,7 +49,7 @@ class RegulatoryTaxOperationsService
         string $evidenceHash,
         bool $isLate = false,
         ?string $rootCause = null,
-        float $penaltyAmount = 0.00
+        int $penaltyAmount = 0
     ): object {
         $obligation = DB::table('gov_regulatory_obligations')->where('obligation_code', strtoupper($obligationCode))->first();
         if (! $obligation) {
@@ -76,10 +77,10 @@ class RegulatoryTaxOperationsService
     public function registerTaxProvision(
         string $provisionCode,
         string $fiscalYear,
-        float $estimatedAmount,
-        float $uncertainTaxPositionAmount,
+        int $estimatedAmount,
+        int $uncertainTaxPositionAmount,
         array $sourceLineage,
-        bool $approvedByCfo = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $approvedByCfo = true
     ): object {
         $id = DB::table('gov_tax_provisions')->insertGetId([
             'provision_code' => strtoupper($provisionCode),

@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * GreenProcurementLeaseChoiceService (Fase 332)
@@ -26,7 +27,7 @@ class GreenProcurementLeaseChoiceService
         string $evaluationCode,
         string $rfqCode,
         string $supplierId,
-        bool $passedComplianceGate,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $passedComplianceGate,
         float $carbonScore,
         float $circularityScore,
         bool $isAwarded = false
@@ -68,7 +69,7 @@ class GreenProcurementLeaseChoiceService
         bool $tenantAcceptedTarget,
         float $verifiedReductionPct,
         float $baseRentUsd,
-        bool $performanceVerified = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $performanceVerified = true
     ): object {
         $lCode = strtoupper($leaseCode);
 

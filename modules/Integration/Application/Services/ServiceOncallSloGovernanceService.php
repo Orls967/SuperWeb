@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * ServiceOncallSloGovernanceService (Fase 363)
@@ -63,7 +64,7 @@ class ServiceOncallSloGovernanceService
         string $releaseCode,
         string $serviceCode,
         float $remainingBudgetPct,
-        bool $exceptionApproved = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $exceptionApproved = false
     ): object {
         $rCode = strtoupper($releaseCode);
         $sCode = strtoupper($serviceCode);

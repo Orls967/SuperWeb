@@ -66,7 +66,7 @@ class PartitionArchiveService
     /**
      * Record materialized domain rollup summary.
      */
-    public function recordRollup(string $domainCode, string $date, float $amountIdr, int $eventsCount): object
+    public function recordRollup(string $domainCode, string $date, int $amountIdr, int $eventsCount): object
     {
         $code = 'RLP-'.strtoupper($domainCode).'-'.str_replace('-', '', $date);
 

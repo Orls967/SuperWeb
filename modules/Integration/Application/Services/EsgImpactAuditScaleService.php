@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EsgImpactAuditScaleService (Fase 286)
@@ -137,7 +138,7 @@ class EsgImpactAuditScaleService
         string $claimCode,
         string $claimStatement,
         string $evidenceDocRef,
-        bool $legalApproved = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $legalApproved = true
     ): object {
         $cCode = strtoupper($claimCode);
 

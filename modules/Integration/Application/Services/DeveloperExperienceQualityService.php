@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * DeveloperExperienceQualityService (Fase 237)
@@ -66,9 +67,9 @@ class DeveloperExperienceQualityService
      */
     public function evaluateQualityGate(
         string $commitHash,
-        bool $lintPassed,
-        bool $staticAnalysisPassed,
-        bool $securityAuditPassed,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $lintPassed,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $staticAnalysisPassed,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $securityAuditPassed,
         float $mutationScorePct = 85.00
     ): object {
         $rejectionReasons = [];

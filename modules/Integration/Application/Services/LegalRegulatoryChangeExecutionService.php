@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * LegalRegulatoryChangeExecutionService (Fase 338)
@@ -26,9 +27,9 @@ class LegalRegulatoryChangeExecutionService
         string $pipelineCode,
         string $regulationRef,
         string $jurisdictionCountry,
-        bool $hasEvidence,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasEvidence,
         bool $isMajorSystemChange = false,
-        bool $replanApproved = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $replanApproved = true
     ): object {
         $pCode = strtoupper($pipelineCode);
 
@@ -65,7 +66,7 @@ class LegalRegulatoryChangeExecutionService
         string $caseTitle,
         float $provisionUsd,
         bool $materialityDocumented,
-        bool $provisionApproved
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $provisionApproved
     ): object {
         $cCode = strtoupper($caseCode);
 

@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * UnifiedControlTowerDecisionService (Fase 388)
@@ -65,7 +66,7 @@ class UnifiedControlTowerDecisionService
      */
     public function executeDecision(
         string $decisionCode,
-        bool $approvalGranted = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $approvalGranted = false
     ): object {
         $dCode = strtoupper($decisionCode);
 

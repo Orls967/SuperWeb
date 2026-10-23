@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CommunityValueSocialProcurementService (Fase 335)
@@ -26,7 +27,7 @@ class CommunityValueSocialProcurementService
         string $programCode,
         string $supplierId,
         string $regionCode,
-        bool $hasMilestoneEvidence,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasMilestoneEvidence,
         bool $hasMeasurableOutcome = true
     ): object {
         $pCode = strtoupper($programCode);
@@ -59,7 +60,7 @@ class CommunityValueSocialProcurementService
     public function closeCommunityGrievance(
         string $grievanceCode,
         string $communityId,
-        float $remedyBudgetUsd,
+        int $remedyBudgetUsd,
         bool $remedyImplemented,
         bool $confirmedByCommunityRep
     ): object {

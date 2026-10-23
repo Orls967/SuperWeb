@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * InternalControlMaturityService (Fase 401)
@@ -55,7 +56,7 @@ class InternalControlMaturityService
     public function evaluateControl(
         string $controlCode,
         string $period,
-        bool $testPassed,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $testPassed,
         bool $isAutomated = true,
         ?string $attestationBy = null,
         ?string $reviewedBy = null,

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('quote_code')->unique();
             $table->string('route_code'); // CGK-DPS
-            $table->decimal('floor_price_idr', 18, 2);
-            $table->decimal('quoted_fare_idr', 18, 2);
+            $table->bigInteger('floor_price_idr');
+            $table->bigInteger('quoted_fare_idr');
             $table->boolean('floor_price_respected')->default(true);
             $table->timestamps();
         });
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->unsignedBigInteger('member_id');
             $table->string('flight_code');
             $table->integer('miles_earned');
-            $table->decimal('liability_value_idr', 18, 2); // Rp 150 / mile
+            $table->bigInteger('liability_value_idr'); // Rp 150 / mile
             $table->timestamps();
         });
 
@@ -38,9 +38,9 @@ return new class extends Migration
             $table->string('disruption_code')->unique();
             $table->string('flight_code');
             $table->string('reason'); // MECHANICAL, WEATHER
-            $table->decimal('statutory_compensation_per_pax_idr', 18, 2)->default(300000.00); // Permenhub 89/2015
+            $table->bigInteger('statutory_compensation_per_pax_idr')->default(300000.00); // Permenhub 89/2015
             $table->integer('impacted_pax_count');
-            $table->decimal('total_compensation_pool_idr', 18, 2);
+            $table->bigInteger('total_compensation_pool_idr');
             $table->timestamps();
         });
     }

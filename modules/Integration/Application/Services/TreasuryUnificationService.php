@@ -20,7 +20,7 @@ class TreasuryUnificationService
     /**
      * Process unified payment across 30 lines idempotently.
      */
-    public function processPayment(string $txKey, string $lineCode, string $method, float $amountIdr): object
+    public function processPayment(string $txKey, string $lineCode, string $method, int $amountIdr): object
     {
         $existing = DB::table('pay_unified_transactions')->where('transaction_key', $txKey)->first();
         if ($existing) {
@@ -69,7 +69,7 @@ class TreasuryUnificationService
      * Perform cash pool sweep from operating entity to group master pool.
      * Enforces invariant: cash pool sweep cannot leave source account balance negative.
      */
-    public function executePoolSweep(string $sourceAcc, string $targetPool, float $sweepAmount, float $sourceCurrentBalance): object
+    public function executePoolSweep(string $sourceAcc, string $targetPool, int $sweepAmount, int $sourceCurrentBalance): object
     {
         $balanceAfter = round($sourceCurrentBalance - $sweepAmount, 2);
         if ($balanceAfter < 0.0) {

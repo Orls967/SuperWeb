@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * DataResilienceMigrationService (Fase 343)
@@ -60,7 +61,7 @@ class DataResilienceMigrationService
         string $drillCode,
         string $clusterName,
         float $measuredRtoMinutes,
-        bool $validationPassed,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $validationPassed,
         float $targetRtoMinutes = 60.00
     ): object {
         $dCode = strtoupper($drillCode);

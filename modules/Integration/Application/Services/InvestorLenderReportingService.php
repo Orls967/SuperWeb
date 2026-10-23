@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * InvestorLenderReportingService (Fase 439)
@@ -71,7 +72,7 @@ class InvestorLenderReportingService
     /**
      * 439.3, 439.4, 439.6 Verify internal consistency and legal sign off before publishing
      */
-    public function publishDisclosure(string $code, bool $consistencyVerified, bool $legalSignOff): object
+    public function publishDisclosure(string $code, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $consistencyVerified, bool $legalSignOff): object
     {
         $d = DB::table('fin_investor_disclosures')->where('disclosure_code', strtoupper($code))->first();
         if (! $d) {

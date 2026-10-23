@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * StressBenchmarkBaselineService (Fase 391)
@@ -27,7 +28,7 @@ class StressBenchmarkBaselineService
         string $environmentFingerprint,
         float $measuredTps,
         float $baselineTps,
-        bool $suiteCompletenessVerified = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $suiteCompletenessVerified = true
     ): object {
         $bCode = strtoupper($benchmarkCode);
         $fingerprint = strtoupper($environmentFingerprint);

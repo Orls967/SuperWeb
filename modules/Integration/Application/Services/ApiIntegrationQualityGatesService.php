@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * ApiIntegrationQualityGatesService (Fase 429)
@@ -42,9 +43,9 @@ class ApiIntegrationQualityGatesService
 
     public function recordCertificationResults(
         string $partnerCode,
-        bool $sandboxPassed,
-        bool $schemaPassed,
-        bool $semanticApproved
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $sandboxPassed,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $schemaPassed,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $semanticApproved
     ): object {
         $p = DB::table('plt_api_partner_certifications')->where('partner_code', strtoupper($partnerCode))->first();
         if (! $p) {

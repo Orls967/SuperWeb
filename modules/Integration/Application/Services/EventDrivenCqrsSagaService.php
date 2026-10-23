@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EventDrivenCqrsSagaService (Fase 257)
@@ -49,7 +50,7 @@ class EventDrivenCqrsSagaService
      */
     public function rebuildProjectionFromEvents(
         string $aggregateId,
-        ?float $expectedAmount = null
+        ?int $expectedAmount = null
     ): object {
         $aggUpper = strtoupper($aggregateId);
         $events = DB::table('eda_event_journal')
@@ -169,7 +170,7 @@ class EventDrivenCqrsSagaService
         string $sagaCode,
         int $newTimeoutSeconds,
         int $newPolicyVersion,
-        bool $isOwnerApproved = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $isOwnerApproved = false
     ): object {
         if (! $isOwnerApproved) {
             throw new InvalidArgumentException('Unauthorized: Updating saga timeout policy requires domain owner approval (257.7).');

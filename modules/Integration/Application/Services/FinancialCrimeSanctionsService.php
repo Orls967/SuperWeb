@@ -96,8 +96,8 @@ class FinancialCrimeSanctionsService
     public function evaluateTradeAml(
         string $tradeRef,
         string $commodityCode,
-        float $unitPriceUsd,
-        float $benchmarkPriceUsd,
+        int $unitPriceUsd,
+        int $benchmarkPriceUsd,
         bool $isDualUse = false,
         bool $isCircular = false
     ): object {

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('raw_intake_kg', 18, 2);
             $table->decimal('grade_score', 5, 2);
             $table->decimal('settlement_price_per_kg', 18, 2);
-            $table->decimal('total_settlement_idr', 18, 2);
+            $table->bigInteger('total_settlement_idr');
             $table->string('status')->default('RECEIVED'); // RECEIVED, PROCESSING, QUARANTINED
             $table->timestamps();
         });

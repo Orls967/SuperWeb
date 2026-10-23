@@ -82,7 +82,7 @@ class OrgDesignWorkforcePlanningService
     /**
      * Create headcount requisition with budget check (223.4 & 223.5) and freeze awareness (223.6).
      */
-    public function createRequisition(string $posCode, int $requestedCount = 1, float $estimatedCost = 0): object
+    public function createRequisition(string $posCode, int $requestedCount = 1, int $estimatedCost = 0): object
     {
         $pos = DB::table('hcm_positions')->where('position_code', strtoupper($posCode))->first();
         if (! $pos) {

@@ -88,7 +88,7 @@ class MediaCommerceContentRightsService
      */
     public function resolvePostExpiryServingIncident(
         string $licenseCode,
-        float $compensationAmountUsd
+        int $compensationAmountUsd
     ): object {
         $lCode = strtoupper($licenseCode);
 

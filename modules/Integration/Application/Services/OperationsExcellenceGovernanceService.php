@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * OperationsExcellenceGovernanceService (Fase 408)
@@ -51,8 +52,8 @@ class OperationsExcellenceGovernanceService
 
     public function validateBenefit(
         string $code,
-        float $benefitAmount,
-        bool $financeApproved = true
+        int $benefitAmount,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $financeApproved = true
     ): object {
         $init = DB::table('ops_excellence_initiatives')->where('initiative_code', strtoupper($code))->first();
         if (! $init) {
