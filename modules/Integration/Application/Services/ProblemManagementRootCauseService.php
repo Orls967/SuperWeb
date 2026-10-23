@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * ProblemManagementRootCauseService (Fase 428)
@@ -66,7 +67,7 @@ class ProblemManagementRootCauseService
     /**
      * 428.2 & 428.4 Complete RCA and close with verified effectiveness
      */
-    public function closeProblemWithRca(string $problemCode, string $fiveWhys, bool $effectivenessVerified): object
+    public function closeProblemWithRca(string $problemCode, string $fiveWhys, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $effectivenessVerified): object
     {
         $prob = DB::table('plt_problem_records')->where('problem_code', strtoupper($problemCode))->first();
         if (! $prob) {

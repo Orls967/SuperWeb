@@ -90,7 +90,7 @@ class ObservabilitySloCapacityService
         return (object) DB::table('plt_observability_alerts')->where('id', $id)->first();
     }
 
-    public function forecastCapacity(float $currentRps, float $growthRatePercent, float $unitCostPer1000Rps = 500000.00): array
+    public function forecastCapacity(float $currentRps, float $growthRatePercent, int $unitCostPer1000Rps = 500000.00): array
     {
         // 431.3 Deterministic capacity projection
         $projectedRps = round($currentRps * (1 + ($growthRatePercent / 100)), 2);

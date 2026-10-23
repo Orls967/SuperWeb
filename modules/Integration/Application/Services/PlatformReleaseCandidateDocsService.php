@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * PlatformReleaseCandidateDocsService (Fase 299)
@@ -25,7 +26,7 @@ class PlatformReleaseCandidateDocsService
     public function auditDocumentationDrift(
         string $auditCode,
         string $featureKey,
-        bool $codebaseVerified
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $codebaseVerified
     ): object {
         $aCode = strtoupper($auditCode);
 
@@ -58,7 +59,7 @@ class PlatformReleaseCandidateDocsService
         string $gitCommitSha,
         bool $allAuditsHealthy,
         bool $securityCleared,
-        bool $runbooksVerified,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $runbooksVerified,
         bool $apiDocsDriftClean
     ): object {
         $rc = strtoupper($rcVersion);

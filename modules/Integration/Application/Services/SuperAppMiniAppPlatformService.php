@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * SuperAppMiniAppPlatformService (Fase 315)
@@ -89,7 +90,7 @@ class SuperAppMiniAppPlatformService
         string $sourceApp,
         string $targetMiniApp,
         array $scopedContext,
-        bool $consentGranted
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $consentGranted
     ): object {
         $t = strtoupper($token);
 

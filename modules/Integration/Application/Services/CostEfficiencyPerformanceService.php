@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CostEfficiencyPerformanceService (Fase 434)
@@ -24,7 +25,7 @@ class CostEfficiencyPerformanceService
     public function registerEfficiencyItem(
         string $itemCode,
         string $category,
-        float $baselineCostPerMonth
+        int $baselineCostPerMonth
     ): object {
         // 434.6 Risk: Mandatory verified baseline
         if ($baselineCostPerMonth <= 0.00) {
@@ -48,8 +49,8 @@ class CostEfficiencyPerformanceService
 
     public function validateEfficiencySavings(
         string $itemCode,
-        float $postOptCost,
-        bool $tradeoffApproved = true
+        int $postOptCost,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $tradeoffApproved = true
     ): object {
         $item = DB::table('plt_efficiency_backlog_items')->where('item_code', strtoupper($itemCode))->first();
         if (! $item) {

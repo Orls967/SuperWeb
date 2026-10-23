@@ -37,10 +37,10 @@ return new class extends Migration
             $table->id();
             $table->string('share_code')->unique();
             $table->string('project_code');
-            $table->decimal('total_proceeds_idr', 18, 2);
+            $table->bigInteger('total_proceeds_idr');
             $table->decimal('community_share_pct', 5, 2)->default(30.00); // 30% to local community
-            $table->decimal('community_disbursement_idr', 18, 2);
-            $table->decimal('developer_share_idr', 18, 2);
+            $table->bigInteger('community_disbursement_idr');
+            $table->bigInteger('developer_share_idr');
             $table->boolean('math_sums_to_proceeds')->default(true);
             $table->timestamps();
         });

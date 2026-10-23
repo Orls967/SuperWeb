@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * WorkforceSkillsOperatingCapacityService (Fase 379)
@@ -26,7 +27,7 @@ class WorkforceSkillsOperatingCapacityService
         string $deploymentCode,
         string $workerId,
         string $targetLine,
-        bool $qualificationGatePassed,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $qualificationGatePassed,
         bool $restRulesRespected = true
     ): object {
         $dCode = strtoupper($deploymentCode);

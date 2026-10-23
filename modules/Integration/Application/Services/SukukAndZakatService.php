@@ -22,7 +22,7 @@ class SukukAndZakatService
     /**
      * Issue Sukuk investment token.
      */
-    public function issueSukuk(string $assetCode, float $issuanceAmount, float $couponRatePct, Carbon $maturity): object
+    public function issueSukuk(string $assetCode, int $issuanceAmount, float $couponRatePct, Carbon $maturity): object
     {
         $code = 'SKK-'.strtoupper(Str::random(8));
 
@@ -126,7 +126,7 @@ class SukukAndZakatService
     /**
      * Calculate and deduct Zakat Mal (2.5% on qualifying wealth above Nisab).
      */
-    public function calculateZakatMal(int $customerId, string $year, float $wealthAmount, float $nisab = 85000000.00): object
+    public function calculateZakatMal(int $customerId, string $year, int $wealthAmount, float $nisab = 85000000.00): object
     {
         $isAboveNisab = ($wealthAmount >= $nisab);
         $zakatDue = $isAboveNisab ? round($wealthAmount * 0.025, 2) : 0.00;

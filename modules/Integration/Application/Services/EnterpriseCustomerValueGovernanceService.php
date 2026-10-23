@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EnterpriseCustomerValueGovernanceService (Fase 463)
@@ -80,7 +81,7 @@ class EnterpriseCustomerValueGovernanceService
     /**
      * 463.3, 463.4, 463.6 Approve sales proof point strictly requiring verified empirical evidence
      */
-    public function approveProofPoint(string $proofCode, bool $evidenceVerified): object
+    public function approveProofPoint(string $proofCode, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $evidenceVerified): object
     {
         $pp = DB::table('int_value_selling_proof_points')->where('proof_code', strtoupper($proofCode))->first();
         if (! $pp) {

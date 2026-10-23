@@ -87,10 +87,10 @@ class EndToEndSupplyChainService
      */
     public function recordOrderCostToServe(
         string $orderCode,
-        float $manufactureCost,
-        float $moveTransportCost,
-        float $sellCommercialCost,
-        float $serviceSupportCost,
+        int $manufactureCost,
+        int $moveTransportCost,
+        int $sellCommercialCost,
+        int $serviceSupportCost,
         float $baseCo2EmissionsKg,
         bool $isGreenShippingOpted = false
     ): object {

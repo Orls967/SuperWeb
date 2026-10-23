@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * MultiModalVisionIntegrationService (Fase 351)
@@ -26,8 +27,8 @@ class MultiModalVisionIntegrationService
         string $extractionCode,
         string $docType,
         string $sourceUrl,
-        float $extractedAmountUsd,
-        bool $humanVerified,
+        int $extractedAmountUsd,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $humanVerified,
         bool $postToLedger = false
     ): object {
         $eCode = strtoupper($extractionCode);

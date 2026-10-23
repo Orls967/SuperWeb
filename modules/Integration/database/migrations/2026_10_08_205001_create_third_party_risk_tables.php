@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('vendor_code')->unique();
             $table->string('vendor_name');
             $table->string('criticality_tier'); // TIER_1_CRITICAL, TIER_2_SIGNIFICANT, TIER_3_STANDARD
-            $table->decimal('max_allowed_concentration_idr', 18, 2);
-            $table->decimal('current_aggregate_exposure_idr', 18, 2)->default(0.00);
+            $table->bigInteger('max_allowed_concentration_idr');
+            $table->bigInteger('current_aggregate_exposure_idr')->default(0);
             $table->boolean('concentration_breached')->default(false);
             $table->boolean('has_exit_continuity_playbook')->default(true);
             $table->timestamps();

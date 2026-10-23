@@ -63,9 +63,9 @@ class PerformanceCostOptimizationService
         string $moduleCode,
         string $periodMonth,
         int $transactionCount,
-        float $computeCostUsd,
-        float $storageCostUsd,
-        float $queueCostUsd,
+        int $computeCostUsd,
+        int $storageCostUsd,
+        int $queueCostUsd,
         float $savingsAchievedUsd = 0.00
     ): object {
         if ($computeCostUsd < 0 || $storageCostUsd < 0 || $queueCostUsd < 0) {

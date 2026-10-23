@@ -7,6 +7,7 @@ namespace Modules\Integration\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * DataGovernanceLineageService (Fase 241)
@@ -124,7 +125,7 @@ class DataGovernanceLineageService
         string $termKey,
         string $domainName,
         string $definition,
-        bool $approvedBySteward = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $approvedBySteward = false
     ): object {
         $keyUpper = strtoupper($termKey);
 

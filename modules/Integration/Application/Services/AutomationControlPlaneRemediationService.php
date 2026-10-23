@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * AutomationControlPlaneRemediationService (Fase 364)
@@ -25,7 +26,7 @@ class AutomationControlPlaneRemediationService
     public function executeRemediationAction(
         string $actionCode,
         string $actionType,
-        bool $preconditionsPassed,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $preconditionsPassed,
         bool $killSwitchActive,
         bool $failsMidAction = false
     ): object {

@@ -62,7 +62,7 @@ class CustomerServiceAgenticCommerceService
     public function processCommerceRefund(
         string $refundCode,
         string $customerId,
-        float $amountUsd,
+        int $amountUsd,
         float $autonomousLimitUsd = 100.00
     ): object {
         $rCode = strtoupper($refundCode);

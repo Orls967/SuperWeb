@@ -78,7 +78,7 @@ class ClimateTargetsAllocationService
         string $measureCode,
         string $title,
         float $abatementPotentialMt,
-        float $costPerTonneUsd,
+        int $costPerTonneUsd,
         string $scopeTier,
         string $curveVersion = '1.0',
         string $confidenceLabel = 'HIGH'

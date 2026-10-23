@@ -25,8 +25,8 @@ class BoardManagementReportingIntegrityService
         string $packCode,
         string $period,
         string $title,
-        float $reportedRevenue,
-        float $ledgerVerifiedRevenue,
+        int $reportedRevenue,
+        int $ledgerVerifiedRevenue,
         string $narrativeSummary,
         string $preparer
     ): object {
@@ -100,7 +100,7 @@ class BoardManagementReportingIntegrityService
 
     public function restateReportPack(
         string $packCode,
-        float $newRevenue,
+        int $newRevenue,
         string $reason,
         string $approvedBy
     ): object {

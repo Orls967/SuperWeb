@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('hierarchy_code')->unique();
             $table->string('entity_code');
-            $table->decimal('reported_entity_profit_idr', 18, 2);
-            $table->decimal('aggregated_units_profit_idr', 18, 2);
-            $table->decimal('hierarchy_discrepancy_idr', 18, 2)->default(0.00); // Must be 0
+            $table->bigInteger('reported_entity_profit_idr');
+            $table->bigInteger('aggregated_units_profit_idr');
+            $table->bigInteger('hierarchy_discrepancy_idr')->default(0); // Must be 0
             $table->timestamps();
         });
 
@@ -26,13 +26,13 @@ return new class extends Migration
             $table->id();
             $table->string('bridge_code')->unique();
             $table->string('period_code');
-            $table->decimal('volume_variance_idr', 18, 2);
-            $table->decimal('mix_variance_idr', 18, 2);
-            $table->decimal('price_variance_idr', 18, 2);
-            $table->decimal('cost_variance_idr', 18, 2);
-            $table->decimal('fx_variance_idr', 18, 2);
-            $table->decimal('total_actual_margin_delta_idr', 18, 2);
-            $table->decimal('unexplained_bridge_variance_idr', 18, 2)->default(0.00); // Sum == Delta
+            $table->bigInteger('volume_variance_idr');
+            $table->bigInteger('mix_variance_idr');
+            $table->bigInteger('price_variance_idr');
+            $table->bigInteger('cost_variance_idr');
+            $table->bigInteger('fx_variance_idr');
+            $table->bigInteger('total_actual_margin_delta_idr');
+            $table->bigInteger('unexplained_bridge_variance_idr')->default(0); // Sum == Delta
             $table->timestamps();
         });
     }

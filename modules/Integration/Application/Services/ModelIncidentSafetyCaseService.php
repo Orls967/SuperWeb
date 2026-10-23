@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * ModelIncidentSafetyCaseService (Fase 356)
@@ -26,7 +27,7 @@ class ModelIncidentSafetyCaseService
         string $caseCode,
         string $modelId,
         string $impactTier,
-        bool $hasApprovedCase
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasApprovedCase
     ): object {
         $cCode = strtoupper($caseCode);
         $tier = strtoupper($impactTier);

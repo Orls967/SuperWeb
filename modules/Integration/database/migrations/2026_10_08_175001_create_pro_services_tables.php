@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('proposal_code')->unique();
             $table->string('rfp_code');
             $table->string('consulting_firm_id');
-            $table->decimal('bid_amount_idr', 18, 2);
+            $table->bigInteger('bid_amount_idr');
             $table->boolean('is_sealed')->default(true);
             $table->timestamp('opened_at')->nullable();
             $table->timestamps();
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('milestone_code')->unique();
             $table->string('sow_code');
             $table->string('title');
-            $table->decimal('milestone_amount_idr', 18, 2);
+            $table->bigInteger('milestone_amount_idr');
             $table->boolean('is_deliverable_accepted')->default(false);
             $table->boolean('is_paid')->default(false);
             $table->string('deliverable_checksum')->nullable();

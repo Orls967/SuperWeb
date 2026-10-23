@@ -21,7 +21,7 @@ class BmtMicrofinanceService
     /**
      * Create group microfinance facility.
      */
-    public function createGroupFacility(string $groupName, int $members, float $amount): object
+    public function createGroupFacility(string $groupName, int $members, int $amount): object
     {
         $code = 'GRP-BMT-'.strtoupper(Str::random(6));
 
@@ -42,7 +42,7 @@ class BmtMicrofinanceService
     /**
      * Create gig worker microcredit.
      */
-    public function issueGigMicrocredit(int $workerId, float $amount, float $deductPct = 20.0): object
+    public function issueGigMicrocredit(int $workerId, int $amount, float $deductPct = 20.0): object
     {
         $code = 'GIG-'.strtoupper(Str::random(8));
 
@@ -91,7 +91,7 @@ class BmtMicrofinanceService
     /**
      * Disburse farmer milestone only if satellite NDVI threshold is met.
      */
-    public function disburseFarmerMilestone(string $farmerId, string $milestone, float $amount, float $minNdvi, float $currentNdvi): object
+    public function disburseFarmerMilestone(string $farmerId, string $milestone, int $amount, float $minNdvi, float $currentNdvi): object
     {
         $meetsGate = ($currentNdvi >= $minNdvi);
 

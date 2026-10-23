@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('efaktur_number')->unique();
             $table->string('jurisdiction'); // ID, SG, MY
             $table->string('tax_type'); // PPN_11, PPH_23, PPH_21, WHT
-            $table->decimal('taxable_base_amount_idr', 18, 2);
+            $table->bigInteger('taxable_base_amount_idr');
             $table->decimal('tax_rate_percent', 5, 2);
-            $table->decimal('calculated_tax_amount_idr', 18, 2);
+            $table->bigInteger('calculated_tax_amount_idr');
             $table->timestamps();
         });
 
@@ -28,8 +28,8 @@ return new class extends Migration
             $table->id();
             $table->string('trade_code')->unique();
             $table->string('invoice_number');
-            $table->decimal('customs_declared_value_idr', 18, 2);
-            $table->decimal('invoice_value_idr', 18, 2);
+            $table->bigInteger('customs_declared_value_idr');
+            $table->bigInteger('invoice_value_idr');
             $table->decimal('variance_percent', 6, 2);
             $table->boolean('is_flagged_for_review')->default(false);
             $table->string('status')->default('CLEARED'); // CLEARED, HELD_FOR_REVIEW

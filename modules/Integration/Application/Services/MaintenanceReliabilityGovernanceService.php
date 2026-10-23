@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * MaintenanceReliabilityGovernanceService (Fase 413)
@@ -72,7 +73,7 @@ class MaintenanceReliabilityGovernanceService
         string $improvementCode,
         string $chronicFailureCause,
         string $changeDetails,
-        bool $verified = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $verified = true
     ): object {
         $prog = DB::table('ops_maintenance_programs')->where('program_code', strtoupper($programCode))->first();
         if (! $prog) {

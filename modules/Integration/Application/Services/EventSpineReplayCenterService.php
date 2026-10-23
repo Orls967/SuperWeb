@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EventSpineReplayCenterService (Fase 369)
@@ -24,7 +25,7 @@ class EventSpineReplayCenterService
     public function executeEventReplay(
         string $replayCode,
         string $eventTopic,
-        bool $approvalGranted,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $approvalGranted,
         bool $disableExternalSideEffects = true,
         bool $attemptDoublePostLedger = false
     ): object {

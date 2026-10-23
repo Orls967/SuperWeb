@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('rollup_code')->unique();
             $table->string('domain_code');
             $table->string('period_date'); // YYYY-MM-DD
-            $table->decimal('total_amount_idr', 18, 2);
+            $table->bigInteger('total_amount_idr');
             $table->integer('total_events');
             $table->timestamps();
         });

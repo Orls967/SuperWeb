@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * TalentLifecycleService (Fase 225)
@@ -27,7 +28,7 @@ class TalentLifecycleService
         string $reqCode,
         string $fullName,
         float $skillScore,
-        bool $consentGiven = true,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $consentGiven = true,
         string $rehireEligibility = 'ELIGIBLE'
     ): object {
         if (! $consentGiven) {
@@ -56,7 +57,7 @@ class TalentLifecycleService
     /**
      * Record background check decision (225.6 Edge Case: Failures documented & retained).
      */
-    public function recordBackgroundCheck(string $candCode, bool $passed, ?string $notes = null): object
+    public function recordBackgroundCheck(string $candCode, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $passed, ?string $notes = null): object
     {
         $candidate = DB::table('hcm_candidates')->where('candidate_code', strtoupper($candCode))->first();
         if (! $candidate) {
@@ -236,7 +237,7 @@ class TalentLifecycleService
     /**
      * Disburse final settlement gated by asset return (225.5 Asset Return Gate).
      */
-    public function processFinalSettlement(string $offboardingCode, float $amount): object
+    public function processFinalSettlement(string $offboardingCode, int $amount): object
     {
         $checklist = DB::table('hcm_offboarding_checklists')
             ->where('offboarding_code', strtoupper($offboardingCode))

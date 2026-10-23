@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * SustainableFinanceReportingService (Fase 448)
@@ -24,9 +25,9 @@ class SustainableFinanceReportingService
     public function registerInstrument(
         string $instrumentCode,
         string $type,
-        float $facilityAmount,
+        int $facilityAmount,
         float $baseMarginPercent,
-        bool $reviewerVerified = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $reviewerVerified = false
     ): object {
         $id = DB::table('fin_sustainable_financing_instruments')->insertGetId([
             'instrument_code' => strtoupper($instrumentCode),
@@ -50,7 +51,7 @@ class SustainableFinanceReportingService
         string $allocationCode,
         string $instrumentCode,
         string $projectCode,
-        float $amount,
+        int $amount,
         bool $isEligible = true
     ): object {
         $inst = DB::table('fin_sustainable_financing_instruments')->where('instrument_code', strtoupper($instrumentCode))->first();

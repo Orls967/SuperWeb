@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EthicalSourcingService (Fase 154)
@@ -21,7 +22,7 @@ class EthicalSourcingService
     /**
      * Register candidate in global talent pool.
      */
-    public function registerCandidate(string $name, string $countryCode, string $skillDomain, bool $workAuthVerified): object
+    public function registerCandidate(string $name, string $countryCode, string $skillDomain, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $workAuthVerified): object
     {
         $code = 'CAND-'.strtoupper(Str::random(8));
 
@@ -77,7 +78,7 @@ class EthicalSourcingService
     /**
      * Set living wage benchmark and calculate local wage gap.
      */
-    public function setLivingWageBenchmark(string $countryCode, float $monthlyAmount, string $currency): void
+    public function setLivingWageBenchmark(string $countryCode, int $monthlyAmount, string $currency): void
     {
         DB::table('eth_living_wage_benchmarks')->updateOrInsert(
             ['country_code' => strtoupper($countryCode)],

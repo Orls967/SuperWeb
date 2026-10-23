@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EsgAssuranceDisclosureControlService (Fase 331)
@@ -29,7 +30,7 @@ class EsgAssuranceDisclosureControlService
         string $metricName,
         float $reportedValue,
         string $dataTier,
-        bool $hasEvidence
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasEvidence
     ): object {
         $pCode = strtoupper($publicationCode);
         $tier = strtoupper($dataTier);

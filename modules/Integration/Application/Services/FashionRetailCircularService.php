@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * FashionRetailCircularService (Fase 182 — Lini 28)
@@ -46,7 +47,7 @@ class FashionRetailCircularService
     /**
      * Order made-to-measure custom garments. Enforces customer measurement privacy consent.
      */
-    public function orderCustomTailoring(int $customerId, string $designSpec, bool $consentGranted): object
+    public function orderCustomTailoring(int $customerId, string $designSpec, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $consentGranted): object
     {
         if (! $consentGranted) {
             throw new \RuntimeException('Tailoring order blocked: Customer measurement data consent is mandatory before processing bespoke tailoring.');
@@ -70,7 +71,7 @@ class FashionRetailCircularService
     /**
      * Issue take-back credit for used garment recycling. Credit issued once (idempotent).
      */
-    public function issueTakebackCredit(int $customerId, string $garmentType, string $grading, float $creditIdr): object
+    public function issueTakebackCredit(int $customerId, string $garmentType, string $grading, int $creditIdr): object
     {
         $code = 'TBK-FSH-'.strtoupper(Str::random(8));
 

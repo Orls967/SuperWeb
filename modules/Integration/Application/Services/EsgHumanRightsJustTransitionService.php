@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EsgHumanRightsJustTransitionService (Fase 288)
@@ -58,7 +59,7 @@ class EsgHumanRightsJustTransitionService
     public function closeRemediationWithPartyVerification(
         string $grievanceCode,
         string $remedyDescription,
-        bool $affectedPartyVerified
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $affectedPartyVerified
     ): object {
         $gCode = strtoupper($grievanceCode);
         $grievance = DB::table('esg_community_grievances')->where('grievance_code', $gCode)->first();
@@ -91,8 +92,8 @@ class EsgHumanRightsJustTransitionService
         string $planCode,
         string $siteCode,
         int $affectedWorkers,
-        float $reskillingBudgetUsd,
-        float $incomeProtectionBudgetUsd
+        int $reskillingBudgetUsd,
+        int $incomeProtectionBudgetUsd
     ): object {
         $pCode = strtoupper($planCode);
 
@@ -121,7 +122,7 @@ class EsgHumanRightsJustTransitionService
     public function allocateBenefitSharingFund(
         string $fundCode,
         string $projectCode,
-        float $grossRevenueUsd,
+        int $grossRevenueUsd,
         float $ratePct = 2.50
     ): object {
         $fCode = strtoupper($fundCode);
@@ -144,7 +145,7 @@ class EsgHumanRightsJustTransitionService
     /**
      * Distribute fund to community-voted projects ensuring sum conservation (288.4 & 288.5).
      */
-    public function distributeCommunityFund(string $fundCode, float $distributionAmountUsd): object
+    public function distributeCommunityFund(string $fundCode, int $distributionAmountUsd): object
     {
         $fCode = strtoupper($fundCode);
         $fund = DB::table('esg_community_benefit_funds')->where('fund_code', $fCode)->first();

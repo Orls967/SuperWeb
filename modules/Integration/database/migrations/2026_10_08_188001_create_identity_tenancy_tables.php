@@ -38,8 +38,8 @@ return new class extends Migration
         Schema::create('idp_vendor_group_exposures', function (Blueprint $table) {
             $table->id();
             $table->string('vendor_code')->unique();
-            $table->decimal('group_credit_limit_idr', 18, 2);
-            $table->decimal('current_consolidated_exposure_idr', 18, 2)->default(0.00);
+            $table->bigInteger('group_credit_limit_idr');
+            $table->bigInteger('current_consolidated_exposure_idr')->default(0);
             $table->boolean('is_limit_breached')->default(false);
             $table->timestamps();
         });

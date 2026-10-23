@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * GenerativeEngineeringCopilotService (Fase 352)
@@ -25,7 +26,7 @@ class GenerativeEngineeringCopilotService
     public function adoptDesignEco(
         string $ecoCode,
         string $componentName,
-        bool $passedFto,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $passedFto,
         bool $engineerValidated
     ): object {
         $eCode = strtoupper($ecoCode);
@@ -59,8 +60,8 @@ class GenerativeEngineeringCopilotService
     public function mergeCodeProposal(
         string $proposalCode,
         string $repoName,
-        bool $humanApproved,
-        bool $ciPassed,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $humanApproved,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $ciPassed,
         bool $directWriteAttempt = false
     ): object {
         $pCode = strtoupper($proposalCode);

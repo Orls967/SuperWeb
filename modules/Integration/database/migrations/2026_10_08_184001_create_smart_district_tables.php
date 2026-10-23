@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('contract_code')->unique();
             $table->string('government_agency_tenant');
             $table->string('district_name');
-            $table->decimal('contract_value_idr', 18, 2);
+            $table->bigInteger('contract_value_idr');
             $table->boolean('milestone_accepted')->default(false);
             $table->boolean('is_paid')->default(false);
             $table->timestamps();

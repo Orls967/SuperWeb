@@ -25,7 +25,7 @@ class WorkingCapitalScfService
     public function issueDynamicDiscount(
         string $offerCode,
         string $supplierId,
-        float $invoiceAmountUsd,
+        int $invoiceAmountUsd,
         float $annualizedYieldPct,
         float $availableScfPoolLiquidityUsd
     ): object {

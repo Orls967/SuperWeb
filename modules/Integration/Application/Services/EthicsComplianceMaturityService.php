@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EthicsComplianceMaturityService (Fase 337)
@@ -63,7 +64,7 @@ class EthicsComplianceMaturityService
         string $caseCode,
         string $vendorId,
         string $incidentType,
-        bool $speakUpChannelVerified,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $speakUpChannelVerified,
         bool $violationSubstantiated,
         bool $exerciseTermination = false
     ): object {

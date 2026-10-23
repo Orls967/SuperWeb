@@ -7,6 +7,7 @@ namespace Modules\Integration\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CxMetricsVocOrchestrationService (Fase 250)
@@ -109,7 +110,7 @@ class CxMetricsVocOrchestrationService
         string $customerId,
         string $touchpoint,
         string $messagePayload,
-        bool $userConsentGranted,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $userConsentGranted,
         int $recentInteractionsToday = 0
     ): object {
         // Strict privacy consent guard (250.3 & 250.5)

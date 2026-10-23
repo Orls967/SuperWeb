@@ -25,7 +25,7 @@ class CostCapacityValueGovernanceService
         string $allocationCode,
         string $capabilityCode,
         float $usageUnits,
-        float $costPerUnitUsd
+        int $costPerUnitUsd
     ): object {
         $aCode = strtoupper($allocationCode);
         $cCode = strtoupper($capabilityCode);

@@ -60,7 +60,7 @@ return new class extends Migration
             $table->decimal('shadow_payroll_tax', 18, 2)->default(0.00);
             $table->boolean('is_shadow')->default(false);
             $table->string('currency', 3);
-            $table->decimal('consolidated_cost_idr', 18, 2);
+            $table->bigInteger('consolidated_cost_idr');
             $table->timestamps();
         });
     }

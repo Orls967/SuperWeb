@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CommonAuditReconciliationService (Fase 389)
@@ -27,7 +28,7 @@ class CommonAuditReconciliationService
         string $runCode,
         string $domainName,
         ?string $upstreamDomain = null,
-        bool $upstreamAuditPassed = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $upstreamAuditPassed = true
     ): object {
         $rCode = strtoupper($runCode);
         $dName = strtoupper($domainName);

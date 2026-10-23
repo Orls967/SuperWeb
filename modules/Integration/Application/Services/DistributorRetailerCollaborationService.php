@@ -57,7 +57,7 @@ class DistributorRetailerCollaborationService
         string $outletCode,
         string $batchDate,
         int $unitsSold,
-        float $revenueUsd,
+        int $revenueUsd,
         bool $isFeedDelayedOrCorrupted = false
     ): object {
         $keyUpper = strtoupper($idempotencyKey);

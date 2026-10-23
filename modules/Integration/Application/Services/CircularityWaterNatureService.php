@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CircularityWaterNatureService (Fase 230)
@@ -30,7 +31,7 @@ class CircularityWaterNatureService
         float $recycledContentTons,
         float $wasteDivertedTons = 0,
         float $takebackTons = 0,
-        bool $isVerified = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $isVerified = false
     ): object {
         // Physical mass balance check: virgin + recycled must sum to input (within 0.05 tons tolerance)
         $componentSum = $virginMaterialTons + $recycledContentTons;
@@ -135,7 +136,7 @@ class CircularityWaterNatureService
         string $habitatType,
         float $restoredHectares,
         float $operationalFootprintHectares,
-        bool $isVerified = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $isVerified = false
     ): object {
         $netPositiveRatio = round($restoredHectares / max(0.1, $operationalFootprintHectares), 2);
 
@@ -162,7 +163,7 @@ class CircularityWaterNatureService
         string $vendorCode,
         float $commercialScore,
         float $greenCriteriaScore,
-        bool $mandatoryPassed = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $mandatoryPassed = true
     ): object {
         // Composite award score: 70% Commercial, 30% Green Sustainability criteria
         $compositeScore = round(($commercialScore * 0.70) + ($greenCriteriaScore * 0.30), 2);

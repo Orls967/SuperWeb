@@ -39,7 +39,7 @@ return new class extends Migration
             $table->integer('sla_target_minutes');
             $table->integer('actual_resolution_minutes');
             $table->boolean('is_breached')->default(false);
-            $table->decimal('penalty_credit_amount_idr', 18, 2)->default(0.00);
+            $table->bigInteger('penalty_credit_amount_idr')->default(0);
             $table->string('penalty_status')->default('NONE'); // NONE, PENALTY_CREDITED
             $table->timestamps();
         });

@@ -66,7 +66,7 @@ class ProductStewardshipEprService
         string $reportingQuarter,
         int $unitsSold,
         float $packagingWeightKgPerUnit,
-        float $feePerKgUsd = 0.1500
+        int $feePerKgUsd = 0.1500
     ): object {
         $oCode = strtoupper($obligationCode);
 
@@ -124,7 +124,7 @@ class ProductStewardshipEprService
         string $recallCode,
         int $contactedUnits,
         int $remediedUnits,
-        float $remedyCostPerUnitUsd = 120.0
+        int $remedyCostPerUnitUsd = 120.0
     ): object {
         $rCode = strtoupper($recallCode);
         $recall = DB::table('product_safety_recalls')->where('recall_code', $rCode)->first();

@@ -40,7 +40,7 @@ class CrossBorderPayrollService
     /**
      * Register an expatriate assignment, checking valid work permit.
      */
-    public function assignExpatriate(int $userId, string $homeCountry, string $hostCountry, Carbon $startDate, Carbon $endDate, float $baseSalary, string $currency): object
+    public function assignExpatriate(int $userId, string $homeCountry, string $hostCountry, Carbon $startDate, Carbon $endDate, int $baseSalary, string $currency): object
     {
         $host = strtoupper($hostCountry);
 
@@ -96,7 +96,7 @@ class CrossBorderPayrollService
     /**
      * Run pay run for country/assignment with optional shadow payroll.
      */
-    public function executePayRun(string $countryCode, float $grossPay, float $rateToIdr, ?string $assignmentCode = null, bool $isShadow = false): object
+    public function executePayRun(string $countryCode, float $grossPay, int $rateToIdr, ?string $assignmentCode = null, bool $isShadow = false): object
     {
         $country = strtoupper($countryCode);
         $rule = DB::table('gbl_country_payroll_rules')->where('country_code', $country)->first();

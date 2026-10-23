@@ -77,10 +77,10 @@ class QualityAssuranceInspectionProgramService
     public function recordCostOfQuality(
         string $recordCode,
         string $businessLine,
-        float $preventionCost,
-        float $appraisalCost,
-        float $internalFailureCost,
-        float $externalFailureCost
+        int $preventionCost,
+        int $appraisalCost,
+        int $internalFailureCost,
+        int $externalFailureCost
     ): object {
         // 412.3 & 412.4 Cost of Quality reconciliation
         $totalCoq = $preventionCost + $appraisalCost + $internalFailureCost + $externalFailureCost;

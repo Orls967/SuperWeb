@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CircularityWasteProgramService (Fase 443)
@@ -26,7 +27,7 @@ class CircularityWasteProgramService
         string $wasteStream,
         string $hierarchyLevel,
         float $quantityTonnes,
-        float $costPerTonne,
+        int $costPerTonne,
         ?string $justification = null,
         bool $emergencyApproval = false
     ): object {
@@ -57,7 +58,7 @@ class CircularityWasteProgramService
         string $paymentCode,
         string $vendorCode,
         string $treatmentCertNo,
-        float $amount
+        int $amount
     ): object {
         $id = DB::table('esg_waste_vendor_payments')->insertGetId([
             'payment_code' => strtoupper($paymentCode),
@@ -76,7 +77,7 @@ class CircularityWasteProgramService
     /**
      * 443.2 & 443.4 Waste handler vendor payment strictly requires verified environmental treatment certificate
      */
-    public function releaseVendorPayment(string $paymentCode, bool $certVerified): object
+    public function releaseVendorPayment(string $paymentCode, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $certVerified): object
     {
         $payment = DB::table('esg_waste_vendor_payments')->where('payment_code', strtoupper($paymentCode))->first();
         if (! $payment) {

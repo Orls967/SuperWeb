@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('domain_code')->unique(); // L01 - L30
             $table->integer('total_records_seeded')->default(0);
-            $table->decimal('total_ledger_debit_idr', 18, 2)->default(0.00);
-            $table->decimal('total_ledger_credit_idr', 18, 2)->default(0.00);
+            $table->bigInteger('total_ledger_debit_idr')->default(0);
+            $table->bigInteger('total_ledger_credit_idr')->default(0);
             $table->string('status')->default('COMPLETED'); // IN_PROGRESS, COMPLETED
             $table->timestamps();
         });

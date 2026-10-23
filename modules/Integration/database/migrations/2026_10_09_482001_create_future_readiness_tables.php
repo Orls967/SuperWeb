@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('scenario_code')->unique();
             $table->string('title');
             $table->string('time_horizon'); // e.g. 2030, 2035 (482.1, 482.2)
-            $table->decimal('option_investment_idr', 18, 2)->default(0.00); // 482.2, 482.4
+            $table->bigInteger('option_investment_idr')->default(0); // 482.2, 482.4
             $table->string('trigger_monitoring_owner'); // 482.6 risk
             $table->string('monitoring_cadence'); // e.g. quarterly
             $table->boolean('assumptions_reviewed')->default(false); // 482.5 edge case

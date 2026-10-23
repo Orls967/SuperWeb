@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EnterpriseFinancialIntegrityService (Fase 480)
@@ -66,7 +67,7 @@ class EnterpriseFinancialIntegrityService
     /**
      * 480.3 & 480.6 Issue external auditor unqualified opinion with sample verification
      */
-    public function issueAuditorOpinion(string $code, string $opinion = 'unqualified', bool $sampleVerified = true): object
+    public function issueAuditorOpinion(string $code, string $opinion = 'unqualified', #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $sampleVerified = true): object
     {
         $stmt = DB::table('int_enterprise_financial_integrity_statements')->where('statement_code', strtoupper($code))->first();
         if (! $stmt) {

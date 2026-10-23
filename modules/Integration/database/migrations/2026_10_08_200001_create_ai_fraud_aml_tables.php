@@ -28,7 +28,7 @@ return new class extends Migration
             $table->integer('sar_sequence_number')->unique();
             $table->string('sar_reference_code')->unique();
             $table->string('case_code');
-            $table->decimal('suspicious_amount_idr', 18, 2);
+            $table->bigInteger('suspicious_amount_idr');
             $table->timestamps();
         });
     }

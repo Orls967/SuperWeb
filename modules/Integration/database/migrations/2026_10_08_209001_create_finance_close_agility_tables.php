@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('fin_close_period_locks', function (Blueprint $table) {
             $table->id();
             $table->string('period_code')->unique(); // e.g. 2026-M10
-            $table->decimal('general_ledger_balance_idr', 18, 2);
-            $table->decimal('subledger_aggregate_idr', 18, 2);
-            $table->decimal('reconciliation_variance_idr', 18, 2)->default(0.00);
+            $table->bigInteger('general_ledger_balance_idr');
+            $table->bigInteger('subledger_aggregate_idr');
+            $table->bigInteger('reconciliation_variance_idr')->default(0);
             $table->boolean('is_period_locked')->default(false);
             $table->string('locked_by')->nullable();
             $table->timestamps();
@@ -28,9 +28,9 @@ return new class extends Migration
             $table->string('match_code')->unique();
             $table->string('source_entity_code');
             $table->string('target_entity_code');
-            $table->decimal('sender_invoice_amount_idr', 18, 2);
-            $table->decimal('receiver_bill_amount_idr', 18, 2);
-            $table->decimal('variance_idr', 18, 2)->default(0.00);
+            $table->bigInteger('sender_invoice_amount_idr');
+            $table->bigInteger('receiver_bill_amount_idr');
+            $table->bigInteger('variance_idr')->default(0);
             $table->string('elimination_status')->default('BALANCED'); // BALANCED, MISMATCHED
             $table->timestamps();
         });

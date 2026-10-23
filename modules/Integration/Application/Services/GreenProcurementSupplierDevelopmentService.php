@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * GreenProcurementSupplierDevelopmentService (Fase 447)
@@ -25,7 +26,7 @@ class GreenProcurementSupplierDevelopmentService
         string $supplierCode,
         string $supplierName,
         float $sustainabilityScore,
-        bool $hasVerifiedData = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasVerifiedData = false
     ): object {
         $tier = 'tier_2_neutral';
         if ($sustainabilityScore >= 80.00) {

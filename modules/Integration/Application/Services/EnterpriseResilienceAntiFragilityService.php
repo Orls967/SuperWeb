@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * EnterpriseResilienceAntiFragilityService (Fase 479)
@@ -27,7 +28,7 @@ class EnterpriseResilienceAntiFragilityService
         float $redundancy,
         float $diversity,
         float $learningRate,
-        bool $drillVerified = false
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $drillVerified = false
     ): object {
         // 479.1 Deterministic composite score (weighted mean)
         $composite = round(($recovery * 0.35) + ($redundancy * 0.25) + ($diversity * 0.20) + ($learningRate * 0.20), 2);

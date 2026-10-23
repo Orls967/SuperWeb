@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * BusinessContinuityCrisisSimulationService (Fase 452)
@@ -88,7 +89,7 @@ class BusinessContinuityCrisisSimulationService
     /**
      * 452.3, 452.4, 452.6 Authorize crisis communications release with strict spokesperson chain
      */
-    public function releaseCrisisComms(string $broadcastCode, bool $spokespersonApproved): object
+    public function releaseCrisisComms(string $broadcastCode, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $spokespersonApproved): object
     {
         $comms = DB::table('gov_crisis_communications')->where('broadcast_code', strtoupper($broadcastCode))->first();
         if (! $comms) {

@@ -28,7 +28,7 @@ class StrategicWorkforceCapabilityService
         string $lineCode,
         string $scenarioType,
         int $headcountRequired,
-        float $annualCostUsd
+        int $annualCostUsd
     ): object {
         $sCode = strtoupper($scenarioCode);
 

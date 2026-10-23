@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * GroupFinanceOperatingModelService (Fase 436)
@@ -66,7 +67,7 @@ class GroupFinanceOperatingModelService
     /**
      * 436.2 & 436.4 Complete close task with prerequisite dependency validation
      */
-    public function completeCloseTask(string $taskCode, bool $autoChecksPassed): object
+    public function completeCloseTask(string $taskCode, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $autoChecksPassed): object
     {
         $task = DB::table('fin_close_orchestration_tasks')->where('task_code', strtoupper($taskCode))->first();
         if (! $task) {

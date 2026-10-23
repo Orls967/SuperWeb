@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('bridge_code')->unique();
             $table->string('period_code');
             $table->string('metric_name'); // e.g. ADJUSTED_EBITDA
-            $table->decimal('reported_nongaap_amount_idr', 18, 2);
-            $table->decimal('gaap_operating_profit_idr', 18, 2);
-            $table->decimal('reconciling_items_net_idr', 18, 2);
-            $table->decimal('bridge_discrepancy_idr', 18, 2)->default(0.00); // GAAP + Net items == Non-GAAP
+            $table->bigInteger('reported_nongaap_amount_idr');
+            $table->bigInteger('gaap_operating_profit_idr');
+            $table->bigInteger('reconciling_items_net_idr');
+            $table->bigInteger('bridge_discrepancy_idr')->default(0); // GAAP + Net items == Non-GAAP
             $table->timestamps();
         });
 

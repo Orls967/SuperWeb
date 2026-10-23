@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * NatureWaterCommunityFinanceService (Fase 330)
@@ -26,8 +27,8 @@ class NatureWaterCommunityFinanceService
         string $projectCode,
         string $projectType,
         float $grossProceedsUsd,
-        bool $verifiedAdditionality,
-        bool $communityConsentGranted,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $verifiedAdditionality,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $communityConsentGranted,
         bool $socialRemediationFiled = false,
         float $benefitSharePct = 30.00
     ): object {

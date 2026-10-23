@@ -46,7 +46,7 @@ class InsuranceSyariahSecuritiesFinanceService
     /**
      * 440.5 Edge case: Approve top-up for under-reserved insurance pool
      */
-    public function topUpInsuranceReserve(string $poolCode, float $topUpAmount): object
+    public function topUpInsuranceReserve(string $poolCode, int $topUpAmount): object
     {
         $pool = DB::table('fin_insurance_portfolio_reserves')->where('policy_pool_code', strtoupper($poolCode))->first();
         if (! $pool) {

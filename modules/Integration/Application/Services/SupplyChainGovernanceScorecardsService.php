@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * SupplyChainGovernanceScorecardsService (Fase 414)
@@ -73,7 +74,7 @@ class SupplyChainGovernanceScorecardsService
         return (object) DB::table('ops_supply_corrective_actions')->where('id', $id)->first();
     }
 
-    public function closeCorrectiveAction(string $actionCode, bool $effectivenessVerified): object
+    public function closeCorrectiveAction(string $actionCode, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $effectivenessVerified): object
     {
         $action = DB::table('ops_supply_corrective_actions')->where('action_code', strtoupper($actionCode))->first();
         if (! $action) {

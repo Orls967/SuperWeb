@@ -59,7 +59,7 @@ class TaxTransferPricingOperationsService
     public function recordControversyNotice(
         string $noticeCode,
         string $jurisdiction,
-        float $disputedTaxAmount
+        int $disputedTaxAmount
     ): object {
         $id = DB::table('fin_tax_controversy_notices')->insertGetId([
             'notice_code' => strtoupper($noticeCode),
@@ -78,7 +78,7 @@ class TaxTransferPricingOperationsService
     /**
      * 438.3 & 438.5 Attach defense pack and update accounting contingent tax provision
      */
-    public function fileTaxDefenseAndProvision(string $noticeCode, float $provisionAmount, bool $hasDefensePack): object
+    public function fileTaxDefenseAndProvision(string $noticeCode, int $provisionAmount, bool $hasDefensePack): object
     {
         $notice = DB::table('fin_tax_controversy_notices')->where('notice_code', strtoupper($noticeCode))->first();
         if (! $notice) {

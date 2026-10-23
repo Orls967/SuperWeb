@@ -150,7 +150,7 @@ class PlatformEconomyService
     /**
      * Create isolated white-label tenant instance.
      */
-    public function createWhiteLabelTenant(string $brandName, string $solutionType, float $subscriptionFee): object
+    public function createWhiteLabelTenant(string $brandName, string $solutionType, int $subscriptionFee): object
     {
         $tenantCode = 'WL-'.strtoupper(Str::random(8));
         $prefix = strtolower(Str::slug($brandName)).'_schema';
@@ -172,7 +172,7 @@ class PlatformEconomyService
     /**
      * Execute embedded finance transaction with fee split.
      */
-    public function processEmbeddedFinance(string $developerCode, string $productType, float $grossAmount, float $platformFeePct = 2.5): object
+    public function processEmbeddedFinance(string $developerCode, string $productType, int $grossAmount, float $platformFeePct = 2.5): object
     {
         $txCode = 'EF-'.strtoupper(Str::random(10));
         $platformFee = round($grossAmount * ($platformFeePct / 100.0), 2);
@@ -230,7 +230,7 @@ class PlatformEconomyService
     /**
      * Report bug bounty and issue ledger payout.
      */
-    public function reportBugBounty(string $reporterEmail, string $severity, float $payoutAmount): object
+    public function reportBugBounty(string $reporterEmail, string $severity, int $payoutAmount): object
     {
         $reportCode = 'BB-'.strtoupper(Str::random(8));
         $ledgerRef = 'PAYOUT-BOUNTY-'.strtoupper(Str::random(8));

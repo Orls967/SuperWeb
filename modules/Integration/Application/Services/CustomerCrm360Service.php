@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * CustomerCrm360Service (Fase 219)
@@ -94,7 +95,7 @@ class CustomerCrm360Service
     /**
      * Set or query consent.
      */
-    public function setConsent(string $goldenId, string $purpose, bool $granted): object
+    public function setConsent(string $goldenId, string $purpose, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $granted): object
     {
         $code = 'CST-'.strtoupper($goldenId).'-'.strtoupper($purpose);
 

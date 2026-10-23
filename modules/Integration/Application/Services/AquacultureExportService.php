@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * AquacultureExportService (Fase 171 — Lini 22)
@@ -71,7 +72,7 @@ class AquacultureExportService
     /**
      * Issue Blue ESG credit tied to satellite evidence and water quality.
      */
-    public function issueBlueCarbonCredit(string $mangrovePolygonId, float $waterIndex, float $carbonTons, bool $hasSatelliteEvidence): object
+    public function issueBlueCarbonCredit(string $mangrovePolygonId, float $waterIndex, float $carbonTons, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $hasSatelliteEvidence): object
     {
         if (! $hasSatelliteEvidence) {
             throw new \RuntimeException('Blue ESG credit issuance rejected: Satellite evidence required.');

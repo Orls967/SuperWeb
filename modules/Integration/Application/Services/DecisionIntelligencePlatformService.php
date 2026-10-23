@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * DecisionIntelligencePlatformService (Fase 266)
@@ -72,7 +73,7 @@ class DecisionIntelligencePlatformService
         string $ownerRole,
         string $modelUsed,
         float $predictedOutcomeValue,
-        bool $passedWorkbenchSimulation = true
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $passedWorkbenchSimulation = true
     ): object {
         $code = strtoupper($decisionCode);
         $isException = ! $passedWorkbenchSimulation;

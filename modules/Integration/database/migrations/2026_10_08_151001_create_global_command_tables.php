@@ -47,8 +47,8 @@ return new class extends Migration
             $table->string('currency', 3);
             $table->decimal('exposure_amount', 18, 4)->default(0.0000);
             $table->decimal('hedged_amount', 18, 4)->default(0.0000);
-            $table->decimal('rate_to_idr', 18, 4)->default(1.0000);
-            $table->decimal('consolidated_idr', 18, 2)->default(0.00);
+            $table->bigInteger('rate_to_idr')->default(1);
+            $table->bigInteger('consolidated_idr')->default(0);
             $table->timestamps();
         });
     }

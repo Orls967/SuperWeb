@@ -41,9 +41,9 @@ return new class extends Migration
             $table->string('invoice_code')->unique();
             $table->string('reservation_code');
             $table->integer('container_moves');
-            $table->decimal('rate_per_move_idr', 18, 2);
-            $table->decimal('port_dues_idr', 18, 2);
-            $table->decimal('total_amount_idr', 18, 2);
+            $table->bigInteger('rate_per_move_idr');
+            $table->bigInteger('port_dues_idr');
+            $table->bigInteger('total_amount_idr');
             $table->timestamps();
         });
     }

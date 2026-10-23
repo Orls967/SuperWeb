@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * BusinessEthicsAntiCorruptionService (Fase 340)
@@ -27,7 +28,7 @@ class BusinessEthicsAntiCorruptionService
         string $employeeId,
         string $counterparty,
         float $valueUsd,
-        bool $preApproved = false,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $preApproved = false,
         float $thresholdUsd = 100.00
     ): object {
         $gCode = strtoupper($giftCode);
@@ -58,7 +59,7 @@ class BusinessEthicsAntiCorruptionService
     public function processIntermediaryPayment(
         string $paymentCode,
         string $agentId,
-        float $feeAmountUsd,
+        int $feeAmountUsd,
         bool $hasEconomicRationale,
         bool $briberySuspected = false
     ): object {

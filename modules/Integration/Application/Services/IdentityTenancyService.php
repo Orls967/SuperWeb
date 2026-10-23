@@ -7,6 +7,7 @@ namespace Modules\Integration\Application\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * IdentityTenancyService (Fase 188)
@@ -69,7 +70,7 @@ class IdentityTenancyService
     /**
      * Link customer across verticals with consent.
      */
-    public function linkCustomerConsent(int $customerId, string $sourceVertical, string $targetVertical, bool $consentGranted): object
+    public function linkCustomerConsent(int $customerId, string $sourceVertical, string $targetVertical, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $consentGranted): object
     {
         $code = 'LNK-IDP-'.strtoupper(Str::random(8));
 

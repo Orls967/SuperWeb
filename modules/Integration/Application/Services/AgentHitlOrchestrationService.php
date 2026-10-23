@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * AgentHitlOrchestrationService (Fase 196)
@@ -66,7 +67,7 @@ class AgentHitlOrchestrationService
     /**
      * Enqueue high-risk action for Human-in-the-loop review.
      */
-    public function enqueueHitlReview(string $agentCode, string $actionName, float $riskAmountIdr, string $reviewerRole): object
+    public function enqueueHitlReview(string $agentCode, string $actionName, int $riskAmountIdr, string $reviewerRole): object
     {
         $code = 'REV-HITL-'.strtoupper(Str::random(8));
 
@@ -87,7 +88,7 @@ class AgentHitlOrchestrationService
     /**
      * Resolve Human-in-the-loop review (Approve or Reject with mandatory audit reason).
      */
-    public function resolveHitlReview(string $reviewCode, bool $approved, string $reason): object
+    public function resolveHitlReview(string $reviewCode, #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $approved, string $reason): object
     {
         if (empty(trim($reason))) {
             throw new \InvalidArgumentException('Audit requirement: Reviewer reason cannot be empty.');

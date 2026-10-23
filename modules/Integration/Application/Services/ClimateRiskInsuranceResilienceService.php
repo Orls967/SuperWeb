@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Shared\Domain\Attributes\NotAControl;
 
 /**
  * ClimateRiskInsuranceResilienceService (Fase 329)
@@ -27,7 +28,7 @@ class ClimateRiskInsuranceResilienceService
         string $policyCode,
         string $siteCode,
         float $basePremiumUsd,
-        bool $verifiedAdaptationMeasure,
+        #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $verifiedAdaptationMeasure,
         float $requestedMitigationCreditUsd = 0.00
     ): object {
         $pCode = strtoupper($policyCode);
