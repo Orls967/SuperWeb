@@ -21,7 +21,7 @@ class EmbeddedInsuranceService
     /**
      * Register embedded insurance product.
      */
-    public function registerEmbeddedProduct(string $lineCode, string $name, int $premiumFee, int $coverageAmount): object
+    public function registerEmbeddedProduct(string $lineCode, string $name, $premiumFee, $coverageAmount): object
     {
         $code = 'EMB-'.strtoupper($lineCode).'-'.strtoupper(Str::random(6));
 

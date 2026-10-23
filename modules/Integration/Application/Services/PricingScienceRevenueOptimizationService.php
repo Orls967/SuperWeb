@@ -27,8 +27,8 @@ class PricingScienceRevenueOptimizationService
     public function createPricingPolicy(
         string $businessLine,
         string $pricingModel,
-        int $priceFloor,
-        int $priceCeiling,
+        $priceFloor,
+        $priceCeiling,
         float $minMarginPct = 15.00,
         float $circuitBreakerDropPct = 25.00
     ): object {
@@ -58,8 +58,8 @@ class PricingScienceRevenueOptimizationService
      */
     public function proposePriceChange(
         int $policyRuleId,
-        int $proposedPrice,
-        int $previousPrice,
+        $proposedPrice,
+        $previousPrice,
         bool $isMassChange = false,
         int $noticeDays = 0
     ): object {
@@ -141,7 +141,7 @@ class PricingScienceRevenueOptimizationService
      */
     public function calculateElasticityPriceLadder(
         string $segment,
-        int $currentPrice,
+        $currentPrice,
         float $elasticityCoefficient
     ): array {
         // Optimal markup based on elasticity formula: P* = Cost / (1 + 1/e)
@@ -178,8 +178,8 @@ class PricingScienceRevenueOptimizationService
         string $businessLine,
         string $segment,
         string $channel,
-        int $grossRevenue,
-        int $cogsCost,
+        $grossRevenue,
+        $cogsCost,
         string $strategicPosture
     ): object {
         $netProfit = round($grossRevenue - $cogsCost, 2);

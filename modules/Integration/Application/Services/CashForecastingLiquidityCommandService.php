@@ -91,7 +91,7 @@ class CashForecastingLiquidityCommandService
     public function updateIntradayPosition(
         string $accountCode,
         string $bankName,
-        int $currentBalanceUsd,
+        $currentBalanceUsd,
         float $projectedEodUsd,
         ?Carbon $syncedAt = null
     ): object {
@@ -118,7 +118,7 @@ class CashForecastingLiquidityCommandService
     /**
      * Execute treasury sweep guard: sweep amount cannot drive account balance negative or use stale data (275.2, 275.4, 275.6).
      */
-    public function executeAccountSweep(string $accountCode, int $sweepAmountUsd): object
+    public function executeAccountSweep(string $accountCode, $sweepAmountUsd): object
     {
         $code = strtoupper($accountCode);
         $acc = DB::table('cash_intraday_positions')->where('account_code', $code)->first();

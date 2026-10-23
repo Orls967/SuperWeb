@@ -87,7 +87,7 @@ class AcademicIndustryResearchService
     public function releaseFundingTranche(
         int $projectId,
         int $trancheNumber,
-        int $amountUsd,
+        $amountUsd,
         string $milestoneDeliverable
     ): object {
         $proj = DB::table('academic_research_projects')->find($projectId);
@@ -121,7 +121,7 @@ class AcademicIndustryResearchService
         string $evaluator1Id,
         string $evaluator2Id,
         string $winnerSubmissionCode,
-        int $totalPrizeUsd
+        $totalPrizeUsd
     ): object {
         $ev1 = strtoupper($evaluator1Id);
         $ev2 = strtoupper($evaluator2Id);

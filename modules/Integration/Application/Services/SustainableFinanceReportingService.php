@@ -25,7 +25,7 @@ class SustainableFinanceReportingService
     public function registerInstrument(
         string $instrumentCode,
         string $type,
-        int $facilityAmount,
+        $facilityAmount,
         float $baseMarginPercent,
         #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $reviewerVerified = false
     ): object {
@@ -51,7 +51,7 @@ class SustainableFinanceReportingService
         string $allocationCode,
         string $instrumentCode,
         string $projectCode,
-        int $amount,
+        $amount,
         bool $isEligible = true
     ): object {
         $inst = DB::table('fin_sustainable_financing_instruments')->where('instrument_code', strtoupper($instrumentCode))->first();

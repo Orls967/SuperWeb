@@ -43,7 +43,7 @@ class FoodBrandNutritionService
     /**
      * Order private label production keeping customer materials segregated.
      */
-    public function orderPrivateLabel(string $clientEntity, string $formulationCode, float $custMaterialQty, int $serviceFee): object
+    public function orderPrivateLabel(string $clientEntity, string $formulationCode, float $custMaterialQty, $serviceFee): object
     {
         $code = 'PL-'.strtoupper(Str::random(8));
 

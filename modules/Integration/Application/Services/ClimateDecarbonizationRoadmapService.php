@@ -96,7 +96,7 @@ class ClimateDecarbonizationRoadmapService
         float $annualSavings,
         float $expectedIrrPct,
         float $annualAbatementTco2e,
-        int $shadowPriceUsd = 50.00
+        $shadowPriceUsd = 50
     ): object {
         // 229.3 Shadow carbon value calculation
         $shadowCarbonValue = $annualAbatementTco2e * $shadowPriceUsd;

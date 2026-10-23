@@ -77,7 +77,7 @@ class LegalOperationsService
     /**
      * Settle dispute and post to financial ledger once (idempotent).
      */
-    public function executeSettlement(string $matterCode, int $amountIdr): object
+    public function executeSettlement(string $matterCode, $amountIdr): object
     {
         $existing = DB::table('leg_dispute_settlements')->where('matter_code', $matterCode)->first();
         if ($existing && (bool) $existing->is_posted_to_ledger) {

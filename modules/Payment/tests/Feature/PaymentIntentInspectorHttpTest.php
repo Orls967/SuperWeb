@@ -23,7 +23,7 @@ class PaymentIntentInspectorHttpTest extends TestCase
 
     public function test_authenticated_user_can_view_payment_intent_inspector(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
 
         $intent1 = PaymentIntent::create([
             'uuid' => (string) Str::uuid(),
@@ -59,7 +59,7 @@ class PaymentIntentInspectorHttpTest extends TestCase
 
     public function test_filter_intents_by_status(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
 
         $intentCaptured = PaymentIntent::create([
             'uuid' => (string) Str::uuid(),
@@ -96,7 +96,7 @@ class PaymentIntentInspectorHttpTest extends TestCase
 
     public function test_inspect_single_payment_intent_detail(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
 
         $uuid = (string) Str::uuid();
         $intent = PaymentIntent::create([

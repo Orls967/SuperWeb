@@ -20,7 +20,7 @@ class AirlineNetworkService
     /**
      * Generate dynamic fare quote. Enforces regulatory floor guardrails (fare >= floor).
      */
-    public function quoteDynamicFare(string $routeCode, float $baseFare, float $demandMultiplier, int $floorPrice): object
+    public function quoteDynamicFare(string $routeCode, float $baseFare, float $demandMultiplier, $floorPrice): object
     {
         $calculatedFare = round($baseFare * $demandMultiplier, 2);
         // Floor guardrail: cannot sell below minimum floor price

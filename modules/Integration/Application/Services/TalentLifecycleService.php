@@ -237,7 +237,7 @@ class TalentLifecycleService
     /**
      * Disburse final settlement gated by asset return (225.5 Asset Return Gate).
      */
-    public function processFinalSettlement(string $offboardingCode, int $amount): object
+    public function processFinalSettlement(string $offboardingCode, $amount): object
     {
         $checklist = DB::table('hcm_offboarding_checklists')
             ->where('offboarding_code', strtoupper($offboardingCode))

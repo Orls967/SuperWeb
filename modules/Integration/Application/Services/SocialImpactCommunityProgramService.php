@@ -25,7 +25,7 @@ class SocialImpactCommunityProgramService
     public function registerProgram(
         string $programCode,
         string $communityName,
-        int $totalBudget,
+        $totalBudget,
         bool $needAssessmentCompleted = true
     ): object {
         $id = DB::table('esg_community_programs')->insertGetId([
@@ -45,7 +45,7 @@ class SocialImpactCommunityProgramService
     public function scheduleBenefitPayout(
         string $payoutCode,
         string $programCode,
-        int $calculatedAmount,
+        $calculatedAmount,
         #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $communityConsent = true
     ): object {
         $prog = DB::table('esg_community_programs')->where('program_code', strtoupper($programCode))->first();

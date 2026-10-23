@@ -59,7 +59,7 @@ class BusinessEthicsAntiCorruptionService
     public function processIntermediaryPayment(
         string $paymentCode,
         string $agentId,
-        int $feeAmountUsd,
+        $feeAmountUsd,
         bool $hasEconomicRationale,
         bool $briberySuspected = false
     ): object {

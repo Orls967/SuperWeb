@@ -76,7 +76,7 @@ class GlobalFinanceTreasuryRiskService
      */
     public function executeFundingWaterfall(
         string $waterfallCode,
-        int $requestedAmountUsd,
+        $requestedAmountUsd,
         float $cashPoolAvailableUsd,
         float $committedFacilitiesAvailableUsd
     ): object {

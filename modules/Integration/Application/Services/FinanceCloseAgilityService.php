@@ -19,7 +19,7 @@ class FinanceCloseAgilityService
     /**
      * Reconcile subledger and lock period if zero variance.
      */
-    public function reconcileAndLockPeriod(string $period, int $glBalance, int $subledgerBalance, string $officer): object
+    public function reconcileAndLockPeriod(string $period, $glBalance, $subledgerBalance, string $officer): object
     {
         $variance = round(abs($glBalance - $subledgerBalance), 2);
         if ($variance > 0.0) {
@@ -44,7 +44,7 @@ class FinanceCloseAgilityService
     /**
      * Match intercompany invoice vs bill for clean group consolidation.
      */
-    public function matchIntercompanyTransactions(string $fromEntity, string $toEntity, int $invAmount, int $billAmount): object
+    public function matchIntercompanyTransactions(string $fromEntity, string $toEntity, $invAmount, $billAmount): object
     {
         $code = 'IC-'.strtoupper(Str::random(8));
         $diff = round(abs($invAmount - $billAmount), 2);

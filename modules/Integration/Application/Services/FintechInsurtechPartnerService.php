@@ -52,7 +52,7 @@ class FintechInsurtechPartnerService
     /**
      * Route transaction with automated partner failover and degraded safe hold (264.1, 264.4, 264.5 Edge Case).
      */
-    public function routeTransaction(string $countryCode, int $amountUsd): object
+    public function routeTransaction(string $countryCode, $amountUsd): object
     {
         $country = strtoupper($countryCode);
         $routes = DB::table('fintech_partner_routes')
@@ -110,8 +110,8 @@ class FintechInsurtechPartnerService
     public function reconcileDailySettlement(
         string $partnerName,
         string $settlementDate,
-        int $internalLedgerAmountUsd,
-        int $partnerStatementAmountUsd,
+        $internalLedgerAmountUsd,
+        $partnerStatementAmountUsd,
         int $agingDays = 0
     ): object {
         $variance = abs($internalLedgerAmountUsd - $partnerStatementAmountUsd);

@@ -52,7 +52,7 @@ class OperationsExcellenceGovernanceService
 
     public function validateBenefit(
         string $code,
-        int $benefitAmount,
+        $benefitAmount,
         #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $financeApproved = true
     ): object {
         $init = DB::table('ops_excellence_initiatives')->where('initiative_code', strtoupper($code))->first();

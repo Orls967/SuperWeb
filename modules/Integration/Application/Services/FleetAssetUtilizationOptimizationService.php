@@ -29,8 +29,8 @@ class FleetAssetUtilizationOptimizationService
         string $assetCategory,
         float $operatingHours,
         float $idleHours,
-        int $generatedRevenueUsd,
-        int $idleHourlyCostUsd = 50.0
+        $generatedRevenueUsd,
+        $idleHourlyCostUsd = 50
     ): object {
         $code = strtoupper($assetCode);
         $totalHours = $operatingHours + $idleHours;
@@ -95,8 +95,8 @@ class FleetAssetUtilizationOptimizationService
      */
     public function evaluateRepairOrReplace(
         string $assetCode,
-        int $cumulativeRepairCostUsd,
-        int $replacementCostUsd,
+        $cumulativeRepairCostUsd,
+        $replacementCostUsd,
         float $salvageValueUsd,
         bool $budgetEncumbered = false
     ): object {

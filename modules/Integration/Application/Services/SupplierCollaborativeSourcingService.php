@@ -28,7 +28,7 @@ class SupplierCollaborativeSourcingService
         string $programCode,
         string $supplierId,
         string $briefTopic,
-        int $targetCostUsd,
+        $targetCostUsd,
         bool $openBookDisclosed = true,
         float $sharedSavingsPct = 50.00
     ): object {
@@ -59,9 +59,9 @@ class SupplierCollaborativeSourcingService
     public function awardReverseAuction(
         string $auctionCode,
         string $commodityLot,
-        int $floorPriceUsd,
+        $floorPriceUsd,
         string $winningSupplierId,
-        int $bidPriceUsd,
+        $bidPriceUsd,
         float $riskLogisticsQualityAdjustmentUsd,
         string $rationale
     ): object {

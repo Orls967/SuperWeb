@@ -27,7 +27,7 @@ class DynamicMarketplaceC2cCommerceService
         string $listingCode,
         string $sellerId,
         string $category,
-        int $askingPriceUsd,
+        $askingPriceUsd,
         #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $identityVerified,
         int $sellerActiveVelocityCount = 1
     ): object {
@@ -59,7 +59,7 @@ class DynamicMarketplaceC2cCommerceService
     public function lockEscrowFunds(
         string $escrowCode,
         string $listingCode,
-        int $amountUsd,
+        $amountUsd,
         string $buyerId,
         string $sellerId
     ): object {
@@ -131,7 +131,7 @@ class DynamicMarketplaceC2cCommerceService
         string $offerCode,
         string $assetSku,
         float $telematicsHealthScore,
-        int $baseMarketPriceUsd
+        $baseMarketPriceUsd
     ): object {
         $oCode = strtoupper($offerCode);
 

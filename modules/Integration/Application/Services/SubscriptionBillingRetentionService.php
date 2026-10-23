@@ -27,7 +27,7 @@ class SubscriptionBillingRetentionService
         string $goldenId,
         string $businessLine,
         string $planCode,
-        int $price,
+        $price,
         bool $isTrial = false
     ): object {
         $subCode = 'SUB-'.strtoupper(Str::random(8));
@@ -107,7 +107,7 @@ class SubscriptionBillingRetentionService
     /**
      * Generate invoice for subscription.
      */
-    public function generateInvoice(string $subCode, int $amount, ?string $dueAt = null): object
+    public function generateInvoice(string $subCode, $amount, ?string $dueAt = null): object
     {
         $sub = DB::table('crm_subscriptions')->where('subscription_code', strtoupper($subCode))->first();
         if (! $sub) {

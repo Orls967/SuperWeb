@@ -50,7 +50,7 @@ class AiGenerativeCopilotService
     /**
      * Start SOP execution checklist.
      */
-    public function startSopChecklist(string $sopCode, string $title, int $totalSteps): object
+    public function startSopChecklist(string $sopCode, string $title, $totalSteps): object
     {
         DB::table('ai_sop_checklists')->updateOrInsert(
             ['sop_code' => $sopCode],

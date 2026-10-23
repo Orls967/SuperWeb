@@ -28,7 +28,7 @@ class InternalCapabilitiesMarketplaceService
         string $name,
         string $category,
         string $version,
-        int $unitCost,
+        $unitCost,
         float $slaAvailability = 99.90,
         int $latencyTargetMs = 100
     ): object {
@@ -116,7 +116,7 @@ class InternalCapabilitiesMarketplaceService
         string $capabilityCode,
         string $consumerUnit,
         float $actualAvailabilityPct,
-        int $creditPenaltyAmount
+        $creditPenaltyAmount
     ): object {
         $cap = DB::table('ppm_internal_capabilities')->where('capability_code', strtoupper($capabilityCode))->first();
         if (! $cap) {

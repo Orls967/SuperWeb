@@ -20,7 +20,7 @@ class ScaleBenchmarkService
      * Checkpoint or seed domain records idempotently.
      * Enforces ledger balance invariance: debit == credit.
      */
-    public function recordSeederCheckpoint(string $domainCode, int $recordsCount, int $debitsIdr, int $creditsIdr): object
+    public function recordSeederCheckpoint(string $domainCode, int $recordsCount, $debitsIdr, $creditsIdr): object
     {
         $imbalance = round($debitsIdr - $creditsIdr, 2);
         if ($imbalance !== 0.0) {

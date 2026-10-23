@@ -102,7 +102,7 @@ class NatureFinanceService
      * Calculate community benefit share from carbon/nature credit proceeds.
      * Invarian: community_disbursement + developer_share = total_proceeds.
      */
-    public function distributeBenefitShare(string $projectCode, int $proceedsIdr, float $communityPct = 30.0): object
+    public function distributeBenefitShare(string $projectCode, $proceedsIdr, float $communityPct = 30.0): object
     {
         $communityAmount = round($proceedsIdr * ($communityPct / 100.0), 2);
         $developerAmount = round($proceedsIdr - $communityAmount, 2);

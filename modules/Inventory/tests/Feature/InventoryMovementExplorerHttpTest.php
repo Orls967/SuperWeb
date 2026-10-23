@@ -39,7 +39,7 @@ class InventoryMovementExplorerHttpTest extends TestCase
 
     public function test_authenticated_user_can_view_movement_explorer_index(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
         $product = $this->createProduct(50);
 
         StockMovement::create([
@@ -71,7 +71,7 @@ class InventoryMovementExplorerHttpTest extends TestCase
 
     public function test_filter_movements_by_reason(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
         $product = $this->createProduct(30);
 
         StockMovement::create([
@@ -101,7 +101,7 @@ class InventoryMovementExplorerHttpTest extends TestCase
 
     public function test_authenticated_user_can_inspect_single_movement(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
         $product = $this->createProduct(15);
 
         $movement = StockMovement::create([

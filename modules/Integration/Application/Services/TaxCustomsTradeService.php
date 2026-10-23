@@ -18,7 +18,7 @@ class TaxCustomsTradeService
     /**
      * Issue tax invoice with gapless sequence and rate calculation.
      */
-    public function issueTaxInvoice(string $jurisdiction, string $taxType, int $baseAmount, float $ratePercent): object
+    public function issueTaxInvoice(string $jurisdiction, string $taxType, $baseAmount, float $ratePercent): object
     {
         return DB::transaction(function () use ($jurisdiction, $taxType, $baseAmount, $ratePercent) {
             $lastSeq = DB::table('erm_tax_compliance_records')->lockForUpdate()->max('tax_invoice_seq') ?? 0;

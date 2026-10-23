@@ -49,9 +49,9 @@ class CompensationGovernancePayEquityService
         string $reviewCode,
         string $employeeId,
         string $bandCode,
-        int $currentSalary,
+        $currentSalary,
         float $meritPercent,
-        int $meritBudgetCap = 10.00,
+        $meritBudgetCap = 10,
         ?string $committeeApproval = null
     ): object {
         $band = DB::table('hcm_compensation_bands')->where('band_code', strtoupper($bandCode))->first();
@@ -111,7 +111,7 @@ class CompensationGovernancePayEquityService
         return (object) DB::table('hcm_merit_pay_reviews')->where('id', $review->id)->first();
     }
 
-    public function completeEquityRemediation(string $reviewCode, int $adjustedSalary): object
+    public function completeEquityRemediation(string $reviewCode, $adjustedSalary): object
     {
         $review = DB::table('hcm_merit_pay_reviews')->where('review_code', strtoupper($reviewCode))->first();
         if (! $review) {

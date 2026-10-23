@@ -21,7 +21,7 @@ class AgentHitlOrchestrationService
     /**
      * Register agent with tool whitelist and step budget.
      */
-    public function registerAgent(string $agentCode, string $role, array $toolWhitelist, int $stepBudget = 10): object
+    public function registerAgent(string $agentCode, string $role, array $toolWhitelist, $stepBudget = 10): object
     {
         DB::table('ai_agent_runtimes')->updateOrInsert(
             ['agent_code' => strtoupper($agentCode)],
@@ -67,7 +67,7 @@ class AgentHitlOrchestrationService
     /**
      * Enqueue high-risk action for Human-in-the-loop review.
      */
-    public function enqueueHitlReview(string $agentCode, string $actionName, int $riskAmountIdr, string $reviewerRole): object
+    public function enqueueHitlReview(string $agentCode, string $actionName, $riskAmountIdr, string $reviewerRole): object
     {
         $code = 'REV-HITL-'.strtoupper(Str::random(8));
 

@@ -71,7 +71,7 @@ class FashionRetailCircularService
     /**
      * Issue take-back credit for used garment recycling. Credit issued once (idempotent).
      */
-    public function issueTakebackCredit(int $customerId, string $garmentType, string $grading, int $creditIdr): object
+    public function issueTakebackCredit(int $customerId, string $garmentType, string $grading, $creditIdr): object
     {
         $code = 'TBK-FSH-'.strtoupper(Str::random(8));
 

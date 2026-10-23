@@ -15,7 +15,6 @@ use Modules\Tlx\Application\Actions\SettleInterCarrierRoamingClearingAction;
 use Modules\Tlx\Domain\Models\TelecomDataCenter;
 use Modules\Tlx\Domain\Models\TelecomLink;
 use Modules\Tlx\Domain\Models\TelecomSite;
-use Tests\TestCase;
 
 uses(RefreshDatabase::class);
 

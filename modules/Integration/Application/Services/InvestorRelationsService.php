@@ -19,7 +19,7 @@ class InvestorRelationsService
     /**
      * Build non-GAAP bridge verifying exact formula parity.
      */
-    public function recordNonGaapBridge(string $period, string $metricName, int $nongaapAmount, int $gaapAmount, float $reconcilingItems): object
+    public function recordNonGaapBridge(string $period, string $metricName, $nongaapAmount, $gaapAmount, float $reconcilingItems): object
     {
         $expectedNonGaap = round($gaapAmount + $reconcilingItems, 2);
         $diff = round(abs($nongaapAmount - $expectedNonGaap), 2);

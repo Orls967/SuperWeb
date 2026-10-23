@@ -70,7 +70,7 @@ class MarketplaceDisputeBuyerProtectionService
     public function releaseProtectionHold(
         string $holdCode,
         string $disputeCode,
-        int $holdAmountUsd,
+        $holdAmountUsd,
         bool $outcomeAdjudicated
     ): object {
         $hCode = strtoupper($holdCode);

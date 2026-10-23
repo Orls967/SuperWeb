@@ -19,7 +19,7 @@ class SmartDistrictService
     /**
      * Create B2G public service contract with segregated tenant scope.
      */
-    public function createB2GContract(string $govAgencyTenant, string $districtName, int $valueIdr): object
+    public function createB2GContract(string $govAgencyTenant, string $districtName, $valueIdr): object
     {
         $code = 'B2G-DST-'.strtoupper(Str::random(8));
 

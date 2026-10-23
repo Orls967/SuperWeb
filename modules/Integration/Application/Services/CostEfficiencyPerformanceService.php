@@ -25,7 +25,7 @@ class CostEfficiencyPerformanceService
     public function registerEfficiencyItem(
         string $itemCode,
         string $category,
-        int $baselineCostPerMonth
+        $baselineCostPerMonth
     ): object {
         // 434.6 Risk: Mandatory verified baseline
         if ($baselineCostPerMonth <= 0.00) {
@@ -49,7 +49,7 @@ class CostEfficiencyPerformanceService
 
     public function validateEfficiencySavings(
         string $itemCode,
-        int $postOptCost,
+        $postOptCost,
         #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $tradeoffApproved = true
     ): object {
         $item = DB::table('plt_efficiency_backlog_items')->where('item_code', strtoupper($itemCode))->first();

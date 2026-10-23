@@ -287,7 +287,7 @@ it('catches sabotage (b) setting phase 55 to verified without gate report or Ver
 MD;
     $scanner = new ProgressIntegrityScanner;
     $phases = $scanner->parse($markdown);
-    $violations = $scanner->validate($phases);
+    $violations = $scanner->validate($phases, sys_get_temp_dir(), snapshot: ['phases' => ['55' => '🟠']]);
     expect($violations)->toContain('Fase 55 berstatus ✅ tetapi docs/gates/fase-55.md tidak ditemukan.');
 });
 

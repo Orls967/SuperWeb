@@ -50,7 +50,7 @@ class EventDrivenCqrsSagaService
      */
     public function rebuildProjectionFromEvents(
         string $aggregateId,
-        ?int $expectedAmount = null
+        $expectedAmount = null
     ): object {
         $aggUpper = strtoupper($aggregateId);
         $events = DB::table('eda_event_journal')

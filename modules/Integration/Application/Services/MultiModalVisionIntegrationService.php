@@ -27,7 +27,7 @@ class MultiModalVisionIntegrationService
         string $extractionCode,
         string $docType,
         string $sourceUrl,
-        int $extractedAmountUsd,
+        $extractedAmountUsd,
         #[NotAControl('Parameter kontrol verifikasi alur kerja')] bool $humanVerified,
         bool $postToLedger = false
     ): object {

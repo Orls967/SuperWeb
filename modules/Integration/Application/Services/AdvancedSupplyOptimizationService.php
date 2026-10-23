@@ -25,7 +25,7 @@ class AdvancedSupplyOptimizationService
     public function optimizeNetworkPlan(
         string $planCode,
         string $planningMonth,
-        int $projectedCostUsd,
+        $projectedCostUsd,
         float $simulatedServiceLevelPct,
         float $targetServiceLevelPct = 98.50,
         bool $isSandbox = true

@@ -24,7 +24,7 @@ class AssetProjectCapitalLifecycleService
     public function capitalizeProjectAsset(
         string $assetCode,
         string $projectCode,
-        int $capitalizedCostUsd
+        $capitalizedCostUsd
     ): object {
         $aCode = strtoupper($assetCode);
         $pCode = strtoupper($projectCode);

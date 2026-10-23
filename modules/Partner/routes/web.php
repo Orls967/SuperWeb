@@ -16,7 +16,7 @@ Route::middleware(['web', 'auth', 'verified'])
         Route::post('/{partner}/transition', [PartnerController::class, 'transition'])->middleware('role:admin,procurement')->name('transition');
     });
 
-Route::middleware(['web', 'auth'])
+Route::middleware(['web', 'auth', 'role:admin,auditor,procurement'])
     ->prefix('partner/governance')
     ->name('partner.governance.')
     ->group(function () {

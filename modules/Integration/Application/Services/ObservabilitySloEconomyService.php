@@ -28,7 +28,7 @@ class ObservabilitySloEconomyService
         string $serviceName,
         string $sliMetricName,
         float $targetSloPct = 99.90,
-        int $errorBudgetTotalMins = 43.20
+        $errorBudgetTotalMins = 43
     ): object {
         $id = DB::table('observability_slo_targets')->insertGetId([
             'service_name' => strtoupper($serviceName),

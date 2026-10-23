@@ -28,7 +28,7 @@ class CryptoNativeDefiSimulationService
     public function createVault(
         string $vaultCode,
         string $vaultType,
-        int $initialBalanceUsd,
+        $initialBalanceUsd,
         float $dailyLimitUsd = 500000.0
     ): object {
         $code = strtoupper($vaultCode);
@@ -51,7 +51,7 @@ class CryptoNativeDefiSimulationService
      */
     public function proposeMultiSigTx(
         string $vaultCode,
-        int $amountUsd,
+        $amountUsd,
         string $destinationAddress,
         int $requiredSignatures = 3
     ): object {
@@ -169,7 +169,7 @@ class CryptoNativeDefiSimulationService
      */
     public function swapExactTokens(
         string $poolSymbol,
-        int $amountInX,
+        $amountInX,
         bool $tamperInvariant = false
     ): object {
         $symbol = strtoupper($poolSymbol);
@@ -232,7 +232,7 @@ class CryptoNativeDefiSimulationService
     /**
      * Emit staking reward respecting emission cap (272.3 & 272.4).
      */
-    public function emitStakingRewards(string $programCode, int $rewardAmountUsd): object
+    public function emitStakingRewards(string $programCode, $rewardAmountUsd): object
     {
         $code = strtoupper($programCode);
         $prog = DB::table('defi_staking_programs')->where('program_code', $code)->first();

@@ -70,7 +70,7 @@ class QualityManagementSystemService
     /**
      * Resolve customer complaint with verified ledger link when compensation is granted.
      */
-    public function resolveComplaint(string $channel, string $product, int $compensationAmount, ?string $ledgerCreditRef = null): object
+    public function resolveComplaint(string $channel, string $product, $compensationAmount, ?string $ledgerCreditRef = null): object
     {
         if ($compensationAmount > 0.0 && empty($ledgerCreditRef)) {
             throw new \InvalidArgumentException('Complaint resolution requirement: Monetary compensation requires a valid ledger credit reference.');

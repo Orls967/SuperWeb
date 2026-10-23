@@ -84,7 +84,7 @@ class GlobalCommandService
     /**
      * Compute regional translation and FX consolidated exposure.
      */
-    public function recordFxExposure(string $regionCode, string $currency, int $amount, int $rateToIdr, int $hedgedAmount = 0): object
+    public function recordFxExposure(string $regionCode, string $currency, $amount, $rateToIdr, $hedgedAmount = 0): object
     {
         $consolidatedIdr = $amount * $rateToIdr;
 
@@ -106,7 +106,7 @@ class GlobalCommandService
      * Tax Equalization Calculator for Global Mobility.
      * Computes hypothetical home tax vs actual host tax; company covers excess.
      */
-    public function calculateTaxEqualization(int $baseSalaryIdr, float $homeTaxRatePct, float $hostTaxRatePct): array
+    public function calculateTaxEqualization($baseSalaryIdr, float $homeTaxRatePct, float $hostTaxRatePct): array
     {
         $hypoHomeTax = round($baseSalaryIdr * ($homeTaxRatePct / 100.0), 2);
         $actualHostTax = round($baseSalaryIdr * ($hostTaxRatePct / 100.0), 2);

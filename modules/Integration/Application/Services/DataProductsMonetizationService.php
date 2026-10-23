@@ -27,7 +27,7 @@ class DataProductsMonetizationService
     public function publishDataProduct(
         string $productCode,
         string $productName,
-        int $subscriptionPriceMonthly,
+        $subscriptionPriceMonthly,
         int $minCohortSize = 50
     ): object {
         $code = strtoupper($productCode);
@@ -177,7 +177,7 @@ class DataProductsMonetizationService
      */
     public function recordMonetizationAccounting(
         string $productCode,
-        int $grossRevenueUsd,
+        $grossRevenueUsd,
         float $computeCogsUsd
     ): object {
         $netMargin = round($grossRevenueUsd - $computeCogsUsd, 2);

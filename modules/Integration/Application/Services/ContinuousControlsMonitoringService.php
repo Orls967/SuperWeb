@@ -25,7 +25,7 @@ class ContinuousControlsMonitoringService
      */
     public function monitorTransaction(
         string $txCode,
-        int $amountUsd,
+        $amountUsd,
         string $counterparty,
         bool $isSuspiciousSplit,
         bool $stepUpMfaCompleted = false
@@ -85,7 +85,7 @@ class ContinuousControlsMonitoringService
      */
     public function recordReconciliationBatch(
         string $batchCode,
-        int $totalRecords,
+        $totalRecords,
         int $matchedRecords,
         float $minTargetStpPct = 95.00
     ): object {

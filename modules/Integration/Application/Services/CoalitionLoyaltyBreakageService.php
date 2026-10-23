@@ -109,7 +109,7 @@ class CoalitionLoyaltyBreakageService
     /**
      * Handle coalition partner settlement default utilizing reserve (283.6 Edge Case).
      */
-    public function handlePartnerSettlementDefault(string $partnerCode, int $unpaidAmountUsd): object
+    public function handlePartnerSettlementDefault(string $partnerCode, $unpaidAmountUsd): object
     {
         $code = strtoupper($partnerCode);
         $partner = DB::table('coalition_loyalty_partners')->where('partner_code', $code)->first();
@@ -139,7 +139,7 @@ class CoalitionLoyaltyBreakageService
         string $recognitionCode,
         string $periodName,
         float $forecastRedemptionPct,
-        int $breakageRevenueUsd,
+        $breakageRevenueUsd,
         ?float $actualRedemptionPct = null
     ): object {
         $code = strtoupper($recognitionCode);

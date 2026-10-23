@@ -70,7 +70,7 @@ class PlatformRelease300HandoverService
         string $executiveArchitectId,
         bool $all30LinesHealthy,
         bool $allHashChainsValid,
-        int $totalLedgerVarianceUsd,
+        $totalLedgerVarianceUsd,
         bool $drFailoverProven
     ): object {
         $code = strtoupper($signoffCode);

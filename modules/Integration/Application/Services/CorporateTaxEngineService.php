@@ -88,7 +88,7 @@ class CorporateTaxEngineService
         string $voucherCode,
         string $provisionCode,
         string $sourceGlJournalRef,
-        int $taxableAmountUsd,
+        $taxableAmountUsd,
         string $evidencePackDoc,
         int $ruleVersion = 1
     ): object {
@@ -113,7 +113,7 @@ class CorporateTaxEngineService
     public function recomputeRetroactiveRuleChange(
         string $voucherCode,
         int $newRuleVersion,
-        int $recomputedTaxableAmountUsd
+        $recomputedTaxableAmountUsd
     ): object {
         $code = strtoupper($voucherCode);
 
@@ -136,7 +136,7 @@ class CorporateTaxEngineService
         string $caseCode,
         string $taxAuthority,
         string $category,
-        int $contestedAmountUsd,
+        $contestedAmountUsd,
         string $defensePackDoc
     ): object {
         $id = DB::table('corporate_tax_controversies')->insertGetId([
