@@ -84,7 +84,9 @@ it('verifies that every phase from 1 to 105 and 57B contains all 6 required sect
     $phaseMap = [];
     foreach ($phaseSections as $sec) {
         if (preg_match('/^## FASE ([0-9]+|57B)\b/mi', $sec, $m)) {
-            $phaseMap[$m[1]] = $sec;
+            if (in_array($m[1], $allPhaseKeys, true)) {
+                $phaseMap[$m[1]] = $sec;
+            }
         }
     }
 

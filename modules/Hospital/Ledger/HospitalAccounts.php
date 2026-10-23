@@ -47,6 +47,13 @@ final class HospitalAccounts
                 'allow_negative' => false,
             ],
             [
+                'code' => 'hsp:hospital_package_revenue:IDR',
+                'name' => 'Hospital Medical Tourism Package Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
                 'code' => 'hsp:imaging_receivable:IDR',
                 'name' => 'Hospital Imaging Center Receivable',
                 'kind' => AccountKind::ASSET,
