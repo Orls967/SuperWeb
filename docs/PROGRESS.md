@@ -4666,79 +4666,88 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-35.md
 
 ## FASE 36 — PERENCANAAN PRODUKSI (MPS / MRP / CRP)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 36.1 Forecast & demand input: order penjualan, forecast distributor (Fase 43), reorder-point; versi skenario
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 36.1 Forecast & demand input: order penjualan, forecast distributor (Fase 43), reorder-point; versi skenario
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.2 **MPS** (jadwal induk): kuantitas per periode untuk barang jadi, time fence, freeze period
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.2 **MPS** (jadwal induk): kuantitas per periode untuk barang jadi, time fence, freeze period
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.3 **MRP**: ledakan BOM bertingkat, netting terhadap stok/PO/produksi terbuka, lot sizing (L4L, EOQ, fixed, periodik), lead time offset → rencana PR/PO & order produksi (planned)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.3 **MRP**: ledakan BOM bertingkat, netting terhadap stok/PO/produksi terbuka, lot sizing (L4L, EOQ, fixed, periodik), lead time offset → rencana PR/PO & order produksi (planned)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.4 **CRP** (kapasitas): beban per work center per periode vs kapasitas, bottleneck, pemerataan/penjadwalan maju-mundur sederhana
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.4 **CRP** (kapasitas): beban per work center per periode vs kapasitas, bottleneck, pemerataan/penjadwalan maju-mundur sederhana
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.5 Konversi planned → firm order produksi; reservasi bahan (hard/soft), konflik alokasi diselesaikan prioritas
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.5 Konversi planned → firm order produksi; reservasi bahan (hard/soft), konflik alokasi diselesaikan prioritas
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.6 Mengusulkan PR otomatis ke Procurement (Fase 33) dengan lead time pemasok & MOQ
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.6 Mengusulkan PR otomatis ke Procurement (Fase 33) dengan lead time pemasok & MOQ
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.7 Aturan stok pengaman & titik pesan ulang; simulasi "what-if" (skenario tidak mengubah data nyata)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.7 Aturan stok pengaman & titik pesan ulang; simulasi "what-if" (skenario tidak mengubah data nyata)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.8 `mfg:run-mrp` terjadwal & idempoten (run id, perbandingan antar-run, hasil dapat diulang dengan data sama)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.8 `mfg:run-mrp` terjadwal & idempoten (run id, perbandingan antar-run, hasil dapat diulang dengan data sama)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.9 Quality gate Fase 36
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.9 Quality gate Fase 36
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
+    - (dibatalkan) gate: docs/gates/fase-36.md
 
 ## FASE 37 — EKSEKUSI PRODUKSI (SHOP FLOOR)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
