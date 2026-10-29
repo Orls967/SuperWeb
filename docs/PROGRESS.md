@@ -2699,122 +2699,136 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - (dibatalkan) gate: docs/gates/fase-11.md
 
 ## FASE 12 — MODUL MALL: FONDASI, UNIT & LEASING
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 12.1 Modul Mall + provider + menu. Tabel: mall_properties, mall_zones, mall_units, mall_tenants
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 12.1 Modul Mall + provider + menu. Tabel: mall_properties, mall_zones, mall_units, mall_tenants
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
-- [x] 12.2 mall_leases: fit_out_days, rent_model (fixed|revenue_share|greater_of), eskalasi tahunan, billing_day, grace_days, denda harian
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-12.md
+- [ ] 12.2 mall_leases: fit_out_days, rent_model (fixed|revenue_share|greater_of), eskalasi tahunan, billing_day, grace_days, denda harian
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
-- [x] 12.3 Actions: CreateLeaseAction (anti-overlap), ActivateLeaseAction (tarik deposit via Payment Hub ke deposit:tenant), TerminateLeaseAction (potong tunggakan dari deposit), RenewLeaseAction
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-12.md
+- [ ] 12.3 Actions: CreateLeaseAction (anti-overlap), ActivateLeaseAction (tarik deposit via Payment Hub ke deposit:tenant), TerminateLeaseAction (potong tunggakan dari deposit), RenewLeaseAction
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
-- [x] 12.4 UI: site plan per lantai (Tailwind grid/SVG interaktif), occupancy & GLA, daftar lease & expiring soon (<90 hari), direktori tenant publik
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-12.md
+- [ ] 12.4 UI: site plan per lantai (Tailwind grid/SVG interaktif), occupancy & GLA, daftar lease & expiring soon (<90 hari), direktori tenant publik
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
-- [x] 12.5 Tests: lease ganda ditolak, deposit liability, terminate potong deposit, eskalasi tahun ke-2, occupancy rate, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-12.md
+- [ ] 12.5 Tests: lease ganda ditolak, deposit liability, terminate potong deposit, eskalasi tahun ke-2, occupancy rate, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
-- [x] 12.6 Quality gate Fase 12
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-12.md
+- [ ] 12.6 Quality gate Fase 12
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
+    - (dibatalkan) gate: docs/gates/fase-12.md
 
 ## FASE 13 — MALL: LAPORAN PENJUALAN TENANT, TAGIHAN BULANAN & TUNGGAKAN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 13.1 mall_tenant_sales_reports, portal tenant lapor penjualan, TenantSalesProvider contract untuk tenant terintegrasi
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 13.1 mall_tenant_sales_reports, portal tenant lapor penjualan, TenantSalesProvider contract untuk tenant terintegrasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.2 Utilitas: mall_utility_readings, mall_utility_tariffs bertingkat, mall_overtime_requests AC overtime
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.2 Utilitas: mall_utility_readings, mall_utility_tariffs bertingkat, mall_overtime_requests AC overtime
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.3 Tagihan bulanan: mall_invoices, mall_invoice_lines, command mall:generate-invoices idempoten, MallAutoDebitAction tanpa PIN, command mall:apply-penalties denda 0,1%/hari bertingkat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.3 Tagihan bulanan: mall_invoices, mall_invoice_lines, command mall:generate-invoices idempoten, MallAutoDebitAction tanpa PIN, command mall:apply-penalties denda 0,1%/hari bertingkat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.4 Pembayaran sebagian via portal (wallet + PIN) alokasi urut (denda -> utilitas -> service charge -> sewa), status partially_paid
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.4 Pembayaran sebagian via portal (wallet + PIN) alokasi urut (denda -> utilitas -> service charge -> sewa), status partially_paid
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.5 Command mall:audit-billing: audit kesesuaian invoice vs ledger, masukkan ke quality gate
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.5 Command mall:audit-billing: audit kesesuaian invoice vs ledger, masukkan ke quality gate
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.6 UI: dashboard billing, aging receivable, detail tagihan, input meteran batch, portal tenant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.6 UI: dashboard billing, aging receivable, detail tagihan, input meteran batch, portal tenant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.7 Tests: generate-invoices idempoten, revenue_share_topup bila % > base rent, tarif utilitas bertingkat, bayar cicil urut, denda harian, suspend H+30, isolasi tenant IDOR, audit-billing & reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.7 Tests: generate-invoices idempoten, revenue_share_topup bila % > base rent, tarif utilitas bertingkat, bayar cicil urut, denda harian, suspend H+30, isolasi tenant IDOR, audit-billing & reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.8 Quality gate Fase 13
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.8 Quality gate Fase 13
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
+    - (dibatalkan) gate: docs/gates/fase-13.md
 
 ## FASE 14 — MALL: PARKIR, AKSES & FOOTFALL
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
