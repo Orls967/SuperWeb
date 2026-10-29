@@ -22,6 +22,18 @@ class CheckInGuestAction extends BaseAction
         protected HotelInventoryService $inventoryService
     ) {}
 
+    public function checkIn(
+        string $reservationId,
+        string $assignedRoomId,
+        string $idType,
+        string $idNumber,
+        string $fullName,
+        ?string $phone = null,
+        ?string $idempotencyKey = null,
+    ): array {
+        return $this->handle($reservationId, $assignedRoomId, $idType, $idNumber, $fullName, $phone);
+    }
+
     /**
      * @return array{
      *     reservation: HotelReservation,

@@ -15,6 +15,19 @@ class HotelBusinessDateService
         protected ?ClockInterface $clock = null
     ) {}
 
+    public function initializeBusinessDate(string $propertyId, string $date): HotelBusinessDate
+    {
+        return HotelBusinessDate::updateOrCreate(
+            ['property_id' => $propertyId],
+            [
+                'current_business_date' => $date,
+                'status' => 'open',
+                'last_checkpoint' => null,
+                'audited_at' => null,
+            ]
+        );
+    }
+
     public function getCurrentBusinessDate(string $propertyId): string
     {
         $record = HotelBusinessDate::where('property_id', $propertyId)->first();

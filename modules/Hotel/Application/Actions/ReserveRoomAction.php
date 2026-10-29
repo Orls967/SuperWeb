@@ -27,6 +27,13 @@ class ReserveRoomAction extends BaseAction
         protected ?DocumentNumberingInterface $documentNumbering = null
     ) {}
 
+    public function execute(ReserveRoomDTO $dto): HotelReservation
+    {
+        $result = $this->handle($dto);
+
+        return $result['reservation'];
+    }
+
     /**
      * @return array{
      *     reservation: HotelReservation,
