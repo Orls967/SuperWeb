@@ -9,6 +9,8 @@ use Modules\Core\Contracts\HotelFolioPort;
 use Modules\Hotel\Application\Services\HotelFolioAdapter;
 use Modules\Hotel\Application\Services\HotelOperationsService;
 use Modules\Hotel\Console\Commands\AuditHotelCommand;
+use Modules\Hotel\Console\Commands\HotelAvailabilityAuditCommand;
+use Modules\Hotel\Console\Commands\HotelFolioAuditCommand;
 use Modules\Hotel\Console\Commands\HotelNightAuditCommand;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -40,6 +42,8 @@ class HotelServiceProvider extends ServiceProvider
             $this->commands([
                 AuditHotelCommand::class,
                 HotelNightAuditCommand::class,
+                HotelFolioAuditCommand::class,
+                HotelAvailabilityAuditCommand::class,
             ]);
         }
     }
