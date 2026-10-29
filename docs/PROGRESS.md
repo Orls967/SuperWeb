@@ -2318,66 +2318,73 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - (dibatalkan) gate: docs/gates/fase-5.md
 
 ## FASE 6 — PLATFORM SERVICES
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 6.1 Notification module + bell icon + unread counter
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 6.1 Notification module + bell icon + unread counter
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.2 Activity feed
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.2 Activity feed
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.3 Dashboard Customer terpadu
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.3 Dashboard Customer terpadu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.4 Dashboard Admin terpadu
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.4 Dashboard Admin terpadu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.5 Dashboard Mekanik terpadu
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.5 Dashboard Mekanik terpadu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.6 Seeder demo lengkap — **DITUTUP 2026-09-30 (Fase 19)**: diimplementasikan komprehensif via `DemoCustomerSeeder` (20 customer ber-PIN & bersaldo, 20 kendaraan berpaspor, 40+ booking terbayar lewat ledger, 3 pinjaman HODL-to-Drive aktif LTV < 70%, 6 produk mobil Store, reconcile 0) dan diverifikasi oleh `DemoCustomerSeederTest`.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.6 Seeder demo lengkap — **DITUTUP 2026-09-30 (Fase 19)**: diimplementasikan komprehensif via `DemoCustomerSeeder` (20 customer ber-PIN & bersaldo, 20 kendaraan berpaspor, 40+ booking terbayar lewat ledger, 3 pinjaman HODL-to-Drive aktif LTV < 70%, 6 produk mobil Store, reconcile 0) dan diverifikasi oleh `DemoCustomerSeederTest`.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.7 Quality gate Fase 6
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.7 Quality gate Fase 6
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
+    - (dibatalkan) gate: docs/gates/fase-6.md
 
 ## DEFINITION OF DONE (FASE 0–6)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task tercentang
 - [x] migrate:fresh --seed, test, build, pint → lolos
 - [x] Arch tests hijau
@@ -2389,55 +2396,61 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - [x] docs/DECISIONS.md lengkap
 
 ## FASE 7 — MODUL RESTO: FONDASI, MENU, RESEP, HPP
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 7.1 Modul Resto + provider + menu sidebar + route group + tabel resto_outlets, resto_ingredients, resto_unit_conversions, resto_ingredient_costs
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 7.1 Modul Resto + provider + menu sidebar + route group + tabel resto_outlets, resto_ingredients, resto_unit_conversions, resto_ingredient_costs
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
-- [x] 7.2 Menu & kategori khas Padang (resto_menu_categories, resto_menu_items, resto_menu_item_outlet) + Seeder menu realistis min 40 item
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-7.md
+- [ ] 7.2 Menu & kategori khas Padang (resto_menu_categories, resto_menu_items, resto_menu_item_outlet) + Seeder menu realistis min 40 item
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
-- [x] 7.3 Resep berlapis (BOM multi-level) + RecipeCycleDetected exception + RecipeCostCalculator (HPP per porsi, moving average cost, waste_percent)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-7.md
+- [ ] 7.3 Resep berlapis (BOM multi-level) + RecipeCycleDetected exception + RecipeCostCalculator (HPP per porsi, moving average cost, waste_percent)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
-- [x] 7.4 Halaman admin: CRUD menu (builder resep dinamis Alpine, HPP per porsi real-time via JSON), CRUD bahan + konversi satuan, outlet list + margin badge
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-7.md
+- [ ] 7.4 Halaman admin: CRUD menu (builder resep dinamis Alpine, HPP per porsi real-time via JSON), CRUD bahan + konversi satuan, outlet list + margin badge
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
-- [x] 7.5 Tests: konversi satuan, HPP resep berlapis presisi 6 desimal, resep sirkular ditolak, harga per outlet override, menu nonaktif tersembunyi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-7.md
+- [ ] 7.5 Tests: konversi satuan, HPP resep berlapis presisi 6 desimal, resep sirkular ditolak, harga per outlet override, menu nonaktif tersembunyi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
-- [x] 7.6 Quality gate Fase 7
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-7.md
+- [ ] 7.6 Quality gate Fase 7
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
+    - (dibatalkan) gate: docs/gates/fase-7.md
 
 ## FASE 8 — RESTO: DAPUR, BATCH PRODUKSI & SIKLUS ETALASE HIDANG
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
