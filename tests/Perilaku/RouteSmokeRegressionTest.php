@@ -73,4 +73,15 @@ class RouteSmokeRegressionTest extends TestCase
 
         $response->assertOk();
     }
+
+    public function test_p06_party_show_route_renders_successfully(): void
+    {
+        $party = \Modules\Party\Domain\Models\Party::whereHas('roles')->first() ?? \Modules\Party\Domain\Models\Party::first();
+        $this->assertNotNull($party, 'Seed party must exist');
+
+        $user = User::where('role', 'admin')->first() ?? User::factory()->create(['role' => 'admin', 'email_verified_at' => now()]);
+        $response = $this->actingAs($user)->get('/party/'.$party->id);
+
+        $response->assertOk();
+    }
 }
