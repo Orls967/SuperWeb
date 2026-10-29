@@ -2118,55 +2118,61 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - (dibatalkan) gate: docs/gates/fase-3.md
 
 ## FASE 4 — CRYPTO TRACKER (SIMULASI)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 4.1 crypto_assets + crypto_price_ticks + seeder
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 4.1 crypto_assets + crypto_price_ticks + seeder
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
-- [x] 4.2 PriceEngine (crypto:tick) + PriceFeed contract + quotes
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-4.md
+- [ ] 4.2 PriceEngine (crypto:tick) + PriceFeed contract + quotes
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
-- [x] 4.3 crypto_trades + buy/sell flow
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-4.md
+- [ ] 4.3 crypto_trades + buy/sell flow
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
-- [x] 4.4 Portfolio: holdings, P/L, charts, alerts
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-4.md
+- [ ] 4.4 Portfolio: holdings, P/L, charts, alerts
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
-- [x] 4.5 Tests: buy/sell balance, fee, quote expired, holding limit, reconcile
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-4.md
+- [ ] 4.5 Tests: buy/sell balance, fee, quote expired, holding limit, reconcile
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
-- [x] 4.6 Quality gate Fase 4
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-4.md
+- [ ] 4.6 Quality gate Fase 4
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
+    - (dibatalkan) gate: docs/gates/fase-4.md
 
 ## FASE 5 — FITUR LINTAS MODUL
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
