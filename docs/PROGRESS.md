@@ -3260,55 +3260,61 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
     - (dibatalkan) gate: docs/gates/fase-19.md
 
 ## FASE 20 — FONDASI LOGISTIK: MODUL, JARINGAN, ARMADA
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 20.1 Kerangka modul modules/Logistics, provider, MenuRegistry "Logistik", roles (logistics_admin, dispatcher, hub_operator, driver, shipper), policies, arch tests batas modul
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 20.1 Kerangka modul modules/Logistics, provider, MenuRegistry "Logistik", roles (logistics_admin, dispatcher, hub_operator, driver, shipper), policies, arch tests batas modul
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
-- [x] 20.2 Lokasi & jaringan: lgx_locations, lgx_lanes, seed jaringan berpusat di Banjarmasin (pelabuhan UN/LOCODE, bandara IATA, hub darat, CFS, depot), CRUD + SVG skematik
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-20.md
+- [ ] 20.2 Lokasi & jaringan: lgx_locations, lgx_lanes, seed jaringan berpusat di Banjarmasin (pelabuhan UN/LOCODE, bandara IATA, hub darat, CFS, depot), CRUD + SVG skematik
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
-- [x] 20.3 Armada: lgx_trucks (terhubung Vehicle Passport core_vehicles, DA plate), lgx_trailers, lgx_vessels (IMO check digit), lgx_aircraft, lgx_containers (ISO 6346 check digit), lgx_ulds, unit tests check digit
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-20.md
+- [ ] 20.3 Armada: lgx_trucks (terhubung Vehicle Passport core_vehicles, DA plate), lgx_trailers, lgx_vessels (IMO check digit), lgx_aircraft, lgx_containers (ISO 6346 check digit), lgx_ulds, unit tests check digit
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
-- [x] 20.4 Pengemudi & kru: lgx_drivers (SIM class, expiry, hub asal), batas jam mengemudi UU 22/2009 maks 8 jam/hari & istirahat 30 menit per 4 jam
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-20.md
+- [ ] 20.4 Pengemudi & kru: lgx_drivers (SIM class, expiry, hub asal), batas jam mengemudi UU 22/2009 maks 8 jam/hari & istirahat 30 menit per 4 jam
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
-- [x] 20.5 Seeder LogisticsSeeder (30 truk berpaspor, 8 trailer, 4 kapal, 2 pesawat, 300 kontainer ISO 6346, 12 driver, 3 dispatcher, 4 hub operator, 5 shipper, 1 admin), akun demo di README
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-20.md
+- [ ] 20.5 Seeder LogisticsSeeder (30 truk berpaspor, 8 trailer, 4 kapal, 2 pesawat, 300 kontainer ISO 6346, 12 driver, 3 dispatcher, 4 hub operator, 5 shipper, 1 admin), akun demo di README
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
-- [x] 20.6 Quality gate Fase 20
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-20.md
+- [ ] 20.6 Quality gate Fase 20
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
+    - (dibatalkan) gate: docs/gates/fase-20.md
 
 ## FASE 21 — SHIPMENT, TARIF, BOOKING & PORTAL SHIPPER
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
