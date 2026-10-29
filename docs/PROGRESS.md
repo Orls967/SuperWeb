@@ -685,7 +685,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/LedgerNormalBalanceTest.php::it keeps accounts with inverted normal balances within the ratchet baseline
     - minus: M-R0-6
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d4-test-tanda-salah
-    - gate: docs/gates/fase-r1.md
+    - (dibatalkan) gate: docs/gates/fase-r1.md
 - [x] R1.3 **Chart of accounts sebagai kode** (K-11): `modules/{M}/Ledger/{M}Accounts.php` (konstanta + definisi kind/aset/allow_negative/normal side) untuk setiap modul yang memposting; `LedgerAccountsSeeder` memprovisi semuanya secara idempoten; hapus `LedgerAccount::create` dari 44 file test (ganti `$this->seed(LedgerAccountsSeeder::class)`).
   Bukti:
     - jenis: tooling
@@ -816,7 +816,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d3-alter-decimal-idr-to-bigint
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d5-integer-arithmetic-half-up
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d9-a3-integration-freeze
-    - gate: docs/gates/fase-r1.md
+    - (dibatalkan) gate: docs/gates/fase-r1.md
 - [x] R1.9 **Presisi & rekonsiliasi portabel** (K-14, K-18): tentukan penyimpanan aset non-IDR (integer minor unit per aset **atau** DB produksi MySQL/PostgreSQL dengan `DECIMAL(36,18)` eksak) dan catat di DECISIONS; `bank:reconcile` tanpa `group_concat` (SUM native di MySQL/PostgreSQL, `chunkById` + BigDecimal di SQLite) dan mendukung checkpoint inkremental.
   - Test wajib: nilai 18 desimal bertahan utuh pulang-pergi DB (grup `db-portability`); reconcile mendeteksi selisih 1 unit terkecil.
   Bukti:
@@ -838,13 +838,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Banking/ReconcileDetectsOneUnitTest.php::reconcile detects one atto unit 1e minus 18 discrepancy on crypto ledger
     - test: tests/Feature/Banking/ReconcileDetectsOneUnitTest.php::incremental reconcile detects stale or corrupted checkpoint
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d1-non-idr-minor-units
-    - gate: docs/gates/fase-r1.md
-- [x] R1.10 Quality gate Fase R1 + verifikasi silang.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r1.md
+- [ ] R1.10 Quality gate Fase R1 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 4ff89eb
     - file: docs/gates/fase-r1.md
-    - gate: docs/gates/fase-r1.md
+    - (dibatalkan) gate: docs/gates/fase-r1.md
 
 #### Register Minus Fase R1
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
@@ -928,7 +929,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::memperbarui diskon pada hitung tagihan ulang hanya mengubah grand total tanpa efek samping stok atau ledger
     - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::endpoint kalkulasi tagihan pos resto oleh role berhak dan tidak berhak
     - akses: route POST /resto/pos/session/{session}/bill [role: admin,cashier,outlet_manager]
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 - [x] R2.2 **Tender benar-benar tersegel** (K-22): skema commit–reveal atau isi penawaran terenkripsi sampai `openBids()`; perbaiki `TenderBid::isSealIntact()` (formula hash sama dengan saat menyegel) dan panggil saat pembukaan; tolak bid yang segelnya tidak cocok.
   - Test wajib: isi penawaran tidak terbaca sebelum dibuka; manipulasi isi setelah segel → ditolak saat open.
   Bukti:
@@ -944,7 +945,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Procurement/tests/Feature/BlindTenderSealTest.php::manipulasi isi penawaran atau seal hash setelah segel ditolak saat open bids
     - akses: route POST /procurement/tenders/{tender}/seal [role: admin,procurement,supplier]
     - akses: route POST /procurement/tenders/{tender}/open [role: admin,procurement]
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 - [ ] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: test HTTP per jalur galat → redirect + session error (bukan 500).
@@ -966,7 +967,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - minus: M-R0-11
     - akses: route GET /contracts/clauses/create [role: admin,contract_manager,legal]
     - akses: route GET /contracts/reports [role: admin,contract_manager,legal]
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 - [x] R2.4 **Inventory benar-benar append-only** (K-24): `commit()`/`release()` membuat movement baru yang menautkan reservasi (tanpa mengubah baris lama); unique index `(outlet_id, ingredient_id)` + upsert atomik; akses tabel `resto_*` dipindah ke Contract milik Resto.
   Bukti:
     - jenis: fitur
@@ -983,7 +984,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::model stock movement menolak update dan delete secara langsung
     - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::deduct ingredient dan add ingredient bekerja secara atomik lewat kontrak resto dengan unique constraint outlet id dan ingredient id
     - akses: route POST /resto/pos/session/{session}/bill [role: admin,cashier,outlet_manager]
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 - [ ] R2.5 **Outbox yang benar** (K-08, K-23, K-31): status dispatch per subscriber (retry hanya yang gagal); klaim pesan atomik antar-worker; target non-webhook dieksekusi lewat handler terdaftar (bukan ditandai sukses); allowlist host + tolak IP privat/link-local; `IntegrationService::dispatchWebhook()` lewat outbox nyata (atau diganti status `simulated_*`).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: subscriber A sukses + B gagal → retry hanya ke B; dua worker paralel → satu pengiriman; URL `http://169.254.169.254` ditolak.
@@ -998,7 +999,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php::test_url_webhook_privat_localhost_dan_cloud_metadata_169_254_169_254_ditolak_oleh_guard_anti_ssrf
     - test: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php::test_target_subscriber_non_webhook_dieksekusi_lewat_handler_terdaftar_dan_gagal_jika_handler_tidak_ditemukan
     - akses: route GET /integration/webhooks [role: admin]
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 - [ ] R2.6 **Telematics** (K-26, K-30): baseline rolling 7 hari dari tick nyata; hanya DTC dari daftar kritis yang `critical`/`grounded`; event domain dipancarkan `afterCommit` dan dedup per jam sama seperti publish spine.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1011,7 +1012,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_seven_day_rolling_baseline_calculated_from_actual_historical_ticks
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_anomaly_event_dispatched_after_commit_and_deduplicated_hourly
     - akses: route GET /logistics/fleet [role: admin,auditor,dispatcher,hub_operator,logistics_admin]
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 - [ ] R2.7 **ESG faktor emisi**: `recordEmission()` menolak jenis aktivitas tak dikenal (sekarang diam-diam faktor 1.0); nomor dokumen lewat `DocumentNumberingInterface` (bukan `Str::random`).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1025,7 +1026,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Esg/tests/Feature/EsgTest.php::test_can_purchase_and_retire_carbon_credits
     - test: modules/Esg/tests/Feature/EsgTest.php::test_esg_web_index_accessible
     - akses: route GET /esg [role: admin,esg_officer,auditor]
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 - [ ] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: adapter gagal → status gagal tercatat (bukan sukses).
@@ -1040,7 +1041,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_claim_without_evidence_attachment_is_marked_simulated_unverified
     - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_claim_with_persisted_evidence_document_is_published_verified
     - akses: route GET /integration [role: admin]
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 - [ ] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1054,13 +1055,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/SilentDefaultEliminationTest.php::test_esg_record_emission_rejects_unknown_activity_without_silent_default_factor
     - test: tests/Feature/SilentDefaultEliminationTest.php::test_explicit_valid_payloads_create_records_cleanly_without_hidden_defaults
     - akses: route GET /hcm [role: admin,hcm_manager]
-    - gate: docs/gates/fase-r2.md
-- [x] R2.10 Quality gate Fase R2 + verifikasi silang.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r2.md
+- [ ] R2.10 Quality gate Fase R2 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 58f3b65
     - file: docs/gates/fase-r2.md
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 
 #### Register Minus Fase R2
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
@@ -1355,7 +1357,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Architecture/baselines/arch-scan.json
     - test: tests/Architecture/StrictTypesComplianceTest.php::it enforces declare(strict_types=1) across all module PHP files excluding migrations and tests
     - test: tests/Architecture/ModuleBoundariesTest.php::domain does not depend on Http
-    - gate: docs/gates/fase-r4.md
+    - (dibatalkan) gate: docs/gates/fase-r4.md
 - [x] R4.2 **Registry prefiks tabel** (K-05): `config/modules.php` (atau setara) memetakan prefiks → modul; `arch:scan` A2 menolak `Schema::create` dengan prefiks milik modul lain dan `DB::table('{prefiks lain}_…')`. Selesaikan bentrokan: `prc_` (Pricing → `pric_`), `ven_` (Vending → `vnd_`), `resto_` di CloudKitchen → `ckt_`, `oto_` (gabung Telematics/Ev/Fleet jadi modul Mobility), serta tabel `esg_/hcm_/fin_/ins_/gov_/platform_/sim_/…` buatan Integration → pindah ke modul pemilik.
   Bukti:
     - jenis: konfigurasi
@@ -1365,7 +1367,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/ModulePrefixRegistryTest.php::it ensures table prefixes are well-formed and unique
     - test: tests/Architecture/ModulePrefixRegistryTest.php::it resolves specific disambiguated prefixes correctly
     - test: tests/Architecture/ModulePrefixRegistryTest.php::it flags foreign table access via ForeignTablePrefixRule
-    - gate: docs/gates/fase-r4.md
+    - (dibatalkan) gate: docs/gates/fase-r4.md
 - [ ] R4.3 **Putus dependensi terbalik**: `Shared\Application\Queries\GlobalSearchQuery` tidak mengimpor Mall (pakai registry pencarian yang diisi modul); `Core\…\TwelveLinesCrossEcosystemService` tidak mengimpor Hotel; `InventoryService` tidak mengimpor `Store\Domain\Models\Product` (baseline `arch:scan` A9 = 0).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1376,7 +1378,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Store/Contracts/StoreProductStockPort.php
     - file: tests/Architecture/KernelZeroBusinessDependencyTest.php
     - test: tests/Architecture/KernelZeroBusinessDependencyTest.php::it enforces that kernel modules (Shared, Core) have zero dependencies on business modules (A9 = 0)
-    - gate: docs/gates/fase-r4.md
+    - (dibatalkan) gate: docs/gates/fase-r4.md
 - [ ] R4.4 **Pecah modul Integration** (K-05, K-06): tabel klasifikasi 345 service → {pertahankan di Integration (adapter eksternal), pindah ke modul X, arsipkan/hapus (izin pemilik)}; kosongkan `IntegrationServiceProvider` dari singleton tanpa konfigurasi (auto-resolve). Pindahkan bertahap per lini sesuai R7.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1391,7 +1393,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/IntegrationServicesClassificationTest.php::it ensures docs/INTEGRATION_SERVICES_CLASSIFICATION.md exists and documents all 345 services
     - test: tests/Architecture/IntegrationServicesClassificationTest.php::it confirms Integration services auto-resolve seamlessly via service container
     - minus: M-R1-1
-    - gate: docs/gates/fase-r4.md
+    - (dibatalkan) gate: docs/gates/fase-r4.md
 - [ ] R4.5 **Turunkan baseline batas modul**: `arch:scan` A1 (Domain lintas modul) & A2 (DB::table lintas prefiks) = 0 di luar allowlist shared kernel yang tercatat di DECISIONS.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1401,7 +1403,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: docs/DECISIONS.md
     - file: tests/Architecture/baselines/arch-scan.json
     - test: tests/Architecture/ArchScanBaselineTest.php::it keeps module code within the arch:scan ratchet baseline
-    - gate: docs/gates/fase-r4.md
+    - (dibatalkan) gate: docs/gates/fase-r4.md
 - [ ] R4.6 **Skema** (K-25): FK + index untuk setiap `*_id` intra-modul; ganti `$guarded = []` dengan `$fillable`; `strict_types` di semua file (baseline `arch:scan` A10–A12 = 0).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1413,13 +1415,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Architecture/baselines/arch-scan.json
     - test: tests/Architecture/ModelFillableIntegrityTest.php::it enforces that no module model uses unguarded array
     - test: tests/Architecture/ModelFillableIntegrityTest.php::it verifies arch-scan baseline locks A10 at zero
-    - gate: docs/gates/fase-r4.md
-- [x] R4.7 Quality gate Fase R4 + verifikasi silang.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r4.md
+- [ ] R4.7 Quality gate Fase R4 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 269e964
     - file: docs/gates/fase-r4.md
-    - gate: docs/gates/fase-r4.md
+    - (dibatalkan) gate: docs/gates/fase-r4.md
 
 #### Register Minus Fase R4
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
@@ -1456,7 +1459,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Architecture/CodebaseInventorySyncTest.php
     - file: docs/CODEBASE.md
     - test: tests/Architecture/CodebaseInventorySyncTest.php::it ensures php artisan docs:inventory passes and verifies synchronization with CODEBASE.md
-    - gate: docs/gates/fase-r5.md
+    - (dibatalkan) gate: docs/gates/fase-r5.md
 - [ ] R5.2 **Fixture korupsi untuk semua audit** (K-02): baseline `AuditCommandContractTest` = 0 — setiap `*:audit` terdaftar membandingkan dua sumber dan punya fixture yang membuatnya gagal.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1468,7 +1471,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/AuditCommandContractTest.php::it keeps audit commands without corruption fixtures within the ratchet baseline
     - test: tests/Architecture/AuditCommandContractTest.php::it confirms bank:reconcile passes on clean state and fails when data is corrupted
     - test: tests/Architecture/AuditCommandContractTest.php::it confirms api:audit passes on clean state and fails when signature is corrupted
-    - gate: docs/gates/fase-r5.md
+    - (dibatalkan) gate: docs/gates/fase-r5.md
 - [ ] R5.3 **`super:health-check` jujur**: hanya melaporkan pilar yang benar-benar dicek; tambahkan pilar baru hanya bersama audit dua-sumbernya.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1482,7 +1485,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Quality/HonestSuperHealthCheckTest.php::it fails honestly when the ledger pillar is corrupted
     - test: tests/Feature/Quality/HonestSuperHealthCheckTest.php::it fails honestly when the mall billing pillar is corrupted
     - akses: command super:health-check
-    - gate: docs/gates/fase-r5.md
+    - (dibatalkan) gate: docs/gates/fase-r5.md
 - [ ] R5.4 **Format gate di AUDIT.md**: hanya tautan ke `docs/gates/fase-N.md` hasil `gate:report`; entri lama yang hanya sub-suite diberi catatan "tidak representatif".
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1493,7 +1496,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/AuditDocGateFormatTest.php::it verifies that docs/AUDIT.md exists and contains the unrepresentative note for pre-R0 entries
     - test: tests/Architecture/AuditDocGateFormatTest.php::it verifies that all official gate reports referenced in docs/AUDIT.md physically exist
     - test: tests/Architecture/AuditDocGateFormatTest.php::it ensures all completed R phase gates are referenced in docs/AUDIT.md
-    - gate: docs/gates/fase-r5.md
+    - (dibatalkan) gate: docs/gates/fase-r5.md
 - [ ] R5.5 **Higiene test** (K-27): baseline `TestHygieneTest` = 0; setiap modul yang punya rute memiliki test HTTP (role berhak & tak berhak); setiap fitur uang punya test (c) retry dan (d) invarian.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1507,7 +1510,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Unauthorized role is forbidden from asset index
     - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Asset manager can access asset index
     - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Admin can access asset create
-    - gate: docs/gates/fase-r5.md
+    - (dibatalkan) gate: docs/gates/fase-r5.md
 - [ ] R5.6 Quality gate Fase R5 + verifikasi silang.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1515,7 +1518,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - commit: a445d88
     - file: docs/CODEBASE.md
     - file: docs/gates/fase-r5.md
-    - gate: docs/gates/fase-r5.md
+    - (dibatalkan) gate: docs/gates/fase-r5.md
 
 #### Register Minus Fase R5
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
@@ -1543,14 +1546,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - jenis: dokumen
     - commit: 13afdcc
     - file: docs/DECISIONS.md
-    - gate: docs/gates/fase-r6.md
+    - (dibatalkan) gate: docs/gates/fase-r6.md
 - [ ] R6.2 Untuk fase 🟡 (41, 47–54, 56, 57, 57B, 59–63): verifikasi per item; lengkapi yang kurang sebagai vertical slice atau turunkan klaim item lewat P10.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 13afdcc
     - file: docs/DECISIONS.md
-    - gate: docs/gates/fase-r6.md
+    - (dibatalkan) gate: docs/gates/fase-r6.md
 - [ ] R6.3 Kerjakan ulang Fase 55 (API v2, webhook nyata, EDI parser minimal, scoping multi-entitas) dan Fase 58 (HCM: shift & absensi, payroll dengan aturan pajak/BPJS yang dinyatakan eksplisit, jurnal payroll & alokasi biaya ke Manufaktur) sesuai item aslinya.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1561,7 +1564,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Hcm/tests/Feature/HcmTest.php::test_can_register_employee_and_generate_payroll
     - test: modules/Hcm/tests/Feature/HcmTest.php::test_can_allocate_labor_cost_to_production
     - test: modules/Hcm/tests/Feature/HcmTest.php::test_hcm_audit_passes_with_zero_discrepancy
-    - gate: docs/gates/fase-r6.md
+    - (dibatalkan) gate: docs/gates/fase-r6.md
 - [ ] R6.4 Lengkapi integrasi uang 60–63: ESG (akun inventaris kredit karbon), B2B (escrow via ledger/PaymentGateway), Agri (payout petani via ledger), EPC (CIP di ledger + kapitalisasi lewat Contract modul Asset).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1571,7 +1574,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Esg/tests/Feature/EsgTest.php
     - test: modules/Esg/tests/Feature/EsgTest.php::test_can_purchase_and_retire_carbon_credits
     - test: modules/Esg/tests/Feature/EsgTest.php::test_esg_audit_passes_cleanly
-    - gate: docs/gates/fase-r6.md
+    - (dibatalkan) gate: docs/gates/fase-r6.md
 - [ ] R6.5 **Koreksi kebenaran domain** (K-30): setiap klaim berikut diimplementasikan sesuai definisi **atau** diturunkan lewat P10 — randomisasi blok uji klinis (sekarang paritas `crc32 % 2`), gate review PLM (sekarang bisa lompat tahap), "PSAK 73" sewa armada (sekarang tanpa PV/ROU), klasifikasi DTC kritis Telematics, aturan pajak/BPJS HCM (R6.3).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1580,14 +1583,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Core/Application/Services/SimClockService.php
     - file: modules/Core/tests/Feature/SimulationKernelTest.php
     - test: modules/Core/tests/Feature/SimulationKernelTest.php::test_simulation_clock_advancement_is_deterministic
-    - gate: docs/gates/fase-r6.md
+    - (dibatalkan) gate: docs/gates/fase-r6.md
 - [ ] R6.6 Quality gate Fase R6 + verifikasi silang.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 5de4e45
     - file: docs/gates/fase-r6.md
-    - gate: docs/gates/fase-r6.md
+    - (dibatalkan) gate: docs/gates/fase-r6.md
 
 #### Register Minus Fase R6
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
@@ -1620,7 +1623,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Hospital/Application/Services/ClinicalTrialAndResearchService.php
     - file: modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php
     - test: modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php::test_106_6_a_duplicate_subject_enrollment_in_same_study_is_rejected
-    - gate: docs/gates/fase-r7.md
+    - (dibatalkan) gate: docs/gates/fase-r7.md
 - [ ] R7.2 Pindahkan service lini tersebut yang masih di `Integration` ke modulnya (R4.4), ditulis ulang mengikuti template `KONSEP.md` §A15 (X21).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1629,7 +1632,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: docs/INTEGRATION_SERVICES_CLASSIFICATION.md
     - file: tests/Architecture/IntegrationServicesClassificationTest.php
     - test: tests/Architecture/IntegrationServicesClassificationTest.php::it classifies all 345 services in modules/Integration/Application/Services
-    - gate: docs/gates/fase-r7.md
+    - (dibatalkan) gate: docs/gates/fase-r7.md
 - [ ] R7.3 Verifikasi silang per lini (P7) — lini tidak dianggap selesai sebelum ✅.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1638,14 +1641,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: docs/DECISIONS.md
     - file: tests/Architecture/ModuleBoundariesTest.php
     - test: tests/Architecture/ModuleBoundariesTest.php::controllers do not use DB facade directly
-    - gate: docs/gates/fase-r7.md
+    - (dibatalkan) gate: docs/gates/fase-r7.md
 - [ ] R7.4 Quality gate per lini.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: b86cd9f
     - file: docs/gates/fase-r7.md
-    - gate: docs/gates/fase-r7.md
+    - (dibatalkan) gate: docs/gates/fase-r7.md
 
 #### Register Minus Fase R7
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
@@ -1678,7 +1681,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Core/Domain/Events/EventCatalog.php
     - file: tests/Architecture/EventCatalogContractTest.php
     - test: tests/Architecture/EventCatalogContractTest.php::test_all_catalog_events_follow_versioned_naming_and_have_producers_and_consumers
-    - gate: docs/gates/fase-r8.md
+    - (dibatalkan) gate: docs/gates/fase-r8.md
 - [ ] R8.2 **Consumer group & replay**: worker `core:consume-spine {group}` dengan offset tersimpan; replay dari offset N idempoten.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1687,7 +1690,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Core/Console/Commands/ConsumeSpineCommand.php
     - file: modules/Core/tests/Feature/EventSpineConsumerGroupTest.php
     - test: modules/Core/tests/Feature/EventSpineConsumerGroupTest.php::test_consumer_group_consumes_and_commits_offset
-    - gate: docs/gates/fase-r8.md
+    - (dibatalkan) gate: docs/gates/fase-r8.md
 - [ ] R8.3 **ClockInterface** (K-09): semua action peka waktu memakai jam terinjeksi; hapus `Carbon::setTestNow()` dari kode produksi (baseline `arch:scan` A8 = 0).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1696,7 +1699,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Core/Contracts/ClockInterface.php
     - file: tests/Architecture/ClockInterfaceHygieneTest.php
     - test: tests/Architecture/ClockInterfaceHygieneTest.php::test_clock_interface_is_bound_and_resolvable
-    - gate: docs/gates/fase-r8.md
+    - (dibatalkan) gate: docs/gates/fase-r8.md
 - [ ] R8.4 **`sim:run --days=N --resume`**: loop per hari virtual menjalankan *tick handler* terdaftar (depresiasi, cicilan, tagihan, expiry poin/voucher, MRP, D&D, royalti) dengan checkpoint; test: dua run identik → hash state identik.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1705,14 +1708,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Core/Console/Commands/RunSimulationCommand.php
     - file: modules/Core/tests/Feature/SimulationDeterministicRunTest.php
     - test: modules/Core/tests/Feature/SimulationDeterministicRunTest.php::test_two_identical_simulation_runs_produce_identical_state_hash
-    - gate: docs/gates/fase-r8.md
+    - (dibatalkan) gate: docs/gates/fase-r8.md
 - [ ] R8.5 Quality gate Fase R8 + verifikasi silang.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 42be624
     - file: docs/gates/fase-r8.md
-    - gate: docs/gates/fase-r8.md
+    - (dibatalkan) gate: docs/gates/fase-r8.md
 
 #### Register Minus Fase R8
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
@@ -1747,7 +1750,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Core/Console/Commands/ScaleProvisionCommand.php
     - file: modules/Core/tests/Feature/ScaleProvisionerTest.php
     - test: modules/Core/tests/Feature/ScaleProvisionerTest.php::test_dry_run_does_not_modify_database
-    - gate: docs/gates/fase-r9.md
+    - (dibatalkan) gate: docs/gates/fase-r9.md
 - [ ] R9.2 Benchmark: waktu seed, p95 halaman kritis, durasi `bank:reconcile` & audit utama; hasil dilampirkan oleh `gate:report`.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1756,7 +1759,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Core/Console/Commands/BenchmarkRunCommand.php
     - file: tests/Feature/Benchmark/PlatformBenchmarkTest.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_artisan_benchmark_run_command_exits_cleanly
-    - gate: docs/gates/fase-r9.md
+    - (dibatalkan) gate: docs/gates/fase-r9.md
 - [ ] R9.3 Ganti pola tidak skalabel (K-32): `::all()` di audit, filter subscription di PHP, sampel `limit(50)` tanpa urutan, screening sanksi O(n·m).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -1765,14 +1768,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Hcm/Application/Services/HcmService.php
     - file: tests/Feature/Performance/K32ScalabilityRefactorTest.php
     - test: tests/Feature/Performance/K32ScalabilityRefactorTest.php::test_k32_hcm_audit_handles_chunked_payrolls_and_flags_corruptions
-    - gate: docs/gates/fase-r9.md
+    - (dibatalkan) gate: docs/gates/fase-r9.md
 - [ ] R9.4 Quality gate Fase R9 + verifikasi silang.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 2ff5c50
     - file: docs/gates/fase-r9.md
-    - gate: docs/gates/fase-r9.md
+    - (dibatalkan) gate: docs/gates/fase-r9.md
 
 #### Register Minus Fase R9
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
