@@ -4489,79 +4489,88 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-33.md
 
 ## FASE 34 — PENERIMAAN BARANG, HUTANG USAHA & PEMBAYARAN PEMASOK
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 34.1 Goods Receipt (GRN): terhadap PO, parsial/berkali, toleransi over/under-delivery, lot/batch & kedaluwarsa, penempatan ke gudang via `InventoryService`
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 34.1 Goods Receipt (GRN): terhadap PO, parsial/berkali, toleransi over/under-delivery, lot/batch & kedaluwarsa, penempatan ke gudang via `InventoryService`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.2 Inspeksi penerimaan (hook ke QMS Fase 39): kuarantina sampai lulus; retur ke pemasok (debit note)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.2 Inspeksi penerimaan (hook ke QMS Fase 39): kuarantina sampai lulus; retur ke pemasok (debit note)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.3 Invoice pemasok & **3-way match** (PO–GRN–Invoice) dengan toleransi harga/qty; selisih → hold + approval
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.3 Invoice pemasok & **3-way match** (PO–GRN–Invoice) dengan toleransi harga/qty; selisih → hold + approval
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.4 Akuntansi: GR/IR clearing (`inv:grir`), `ap:supplier`, PPN masukan 11% (simulasi), PPh 23 dipotong (simulasi), selisih harga (PPV)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.4 Akuntansi: GR/IR clearing (`inv:grir`), `ap:supplier`, PPN masukan 11% (simulasi), PPh 23 dipotong (simulasi), selisih harga (PPV)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.5 Jadwal & eksekusi pembayaran: termin, diskon pembayaran dini, batch payment run dengan approval, bukti potong, pembayaran via PaymentGateway/ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.5 Jadwal & eksekusi pembayaran: termin, diskon pembayaran dini, batch payment run dengan approval, bukti potong, pembayaran via PaymentGateway/ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.6 Uang muka pemasok & kompensasi; kredit memo; pelunasan sebagian
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.6 Uang muka pemasok & kompensasi; kredit memo; pelunasan sebagian
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.7 Landed cost: alokasi biaya angkut/bea/asuransi ke nilai persediaan (by nilai/berat/qty), jurnal koreksi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.7 Landed cost: alokasi biaya angkut/bea/asuransi ke nilai persediaan (by nilai/berat/qty), jurnal koreksi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.8 `proc:audit` (subledger AP = ledger, GR/IR = 0 untuk PO selesai), pilar health-check
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.8 `proc:audit` (subledger AP = ledger, GR/IR = 0 untuk PO selesai), pilar health-check
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.9 Quality gate Fase 34
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.9 Quality gate Fase 34
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
+    - (dibatalkan) gate: docs/gates/fase-34.md
 
 ## FASE 35 — PABRIK: MASTER DATA MANUFAKTUR (MODUL `mfg_`)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
