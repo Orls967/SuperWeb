@@ -1523,7 +1523,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | - | - | Tidak ada minus terbuka (seluruh deliverable R5.1 s/d R5.6 serta minus warisan M-R0-4, M-R0-14, M-R0-15, M-R0-16 tuntas 100%) | - | - | - |
 
 ### FASE R6 — VERIFIKASI ULANG ITEM FASE 26–63
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R1–R5 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R5 🔵.
 
 #### DoR Fase R6 — Verifikasi Ulang Item Fase 26–63
 - Disetujui pemilik: [x] 2026-10-17 (chat)
@@ -1537,20 +1537,23 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - Daftar test wajib: `Modules\Core\tests\Feature\SimulationKernelTest`, `Modules\Hospital\tests\Feature\ClinicalTrialAndResearchTest`, `Modules\Plm\tests\Feature\PlmTest`, `Modules\Fleet\tests\Feature\FleetTest`, `Modules\Telematics\tests\Feature\TelematicsTest`, `Modules\Hcm\tests\Feature\HcmTest`, `Modules\Esg\tests\Feature\EsgTest`, `Modules\B2b\tests\Feature\B2bTest`, `Modules\Agri\tests\Feature\AgriTest`, `Modules\Epc\tests\Feature\EpcTest`.
 - Jalan pintas yang dihindari: X1–X25 (dilarang melemahkan test, dilarang silent default, dilarang modifikasi teks item tanpa P10).
 
-- [x] R6.1 Untuk setiap item fase 26–46 bertanda ✅: tambahkan blok `Bukti:` (P2). Item yang ternyata tidak terbukti → `[ ]` + Register Minus.
-  Bukti:
+- [ ] R6.1 Untuk setiap item fase 26–46 bertanda ✅: tambahkan blok `Bukti:` (P2). Item yang ternyata tidak terbukti → `[ ]` + Register Minus.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 13afdcc
     - file: docs/DECISIONS.md
     - gate: docs/gates/fase-r6.md
-- [x] R6.2 Untuk fase 🟡 (41, 47–54, 56, 57, 57B, 59–63): verifikasi per item; lengkapi yang kurang sebagai vertical slice atau turunkan klaim item lewat P10.
-  Bukti:
+- [ ] R6.2 Untuk fase 🟡 (41, 47–54, 56, 57, 57B, 59–63): verifikasi per item; lengkapi yang kurang sebagai vertical slice atau turunkan klaim item lewat P10.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 13afdcc
     - file: docs/DECISIONS.md
     - gate: docs/gates/fase-r6.md
-- [x] R6.3 Kerjakan ulang Fase 55 (API v2, webhook nyata, EDI parser minimal, scoping multi-entitas) dan Fase 58 (HCM: shift & absensi, payroll dengan aturan pajak/BPJS yang dinyatakan eksplisit, jurnal payroll & alokasi biaya ke Manufaktur) sesuai item aslinya.
-  Bukti:
+- [ ] R6.3 Kerjakan ulang Fase 55 (API v2, webhook nyata, EDI parser minimal, scoping multi-entitas) dan Fase 58 (HCM: shift & absensi, payroll dengan aturan pajak/BPJS yang dinyatakan eksplisit, jurnal payroll & alokasi biaya ke Manufaktur) sesuai item aslinya.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 556f804
     - file: modules/Hcm/Application/Services/HcmService.php
@@ -1559,8 +1562,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Hcm/tests/Feature/HcmTest.php::test_can_allocate_labor_cost_to_production
     - test: modules/Hcm/tests/Feature/HcmTest.php::test_hcm_audit_passes_with_zero_discrepancy
     - gate: docs/gates/fase-r6.md
-- [x] R6.4 Lengkapi integrasi uang 60–63: ESG (akun inventaris kredit karbon), B2B (escrow via ledger/PaymentGateway), Agri (payout petani via ledger), EPC (CIP di ledger + kapitalisasi lewat Contract modul Asset).
-  Bukti:
+- [ ] R6.4 Lengkapi integrasi uang 60–63: ESG (akun inventaris kredit karbon), B2B (escrow via ledger/PaymentGateway), Agri (payout petani via ledger), EPC (CIP di ledger + kapitalisasi lewat Contract modul Asset).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: bc0f475
     - file: modules/Esg/Application/Services/EsgService.php
@@ -1568,16 +1572,18 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Esg/tests/Feature/EsgTest.php::test_can_purchase_and_retire_carbon_credits
     - test: modules/Esg/tests/Feature/EsgTest.php::test_esg_audit_passes_cleanly
     - gate: docs/gates/fase-r6.md
-- [x] R6.5 **Koreksi kebenaran domain** (K-30): setiap klaim berikut diimplementasikan sesuai definisi **atau** diturunkan lewat P10 — randomisasi blok uji klinis (sekarang paritas `crc32 % 2`), gate review PLM (sekarang bisa lompat tahap), "PSAK 73" sewa armada (sekarang tanpa PV/ROU), klasifikasi DTC kritis Telematics, aturan pajak/BPJS HCM (R6.3).
-  Bukti:
+- [ ] R6.5 **Koreksi kebenaran domain** (K-30): setiap klaim berikut diimplementasikan sesuai definisi **atau** diturunkan lewat P10 — randomisasi blok uji klinis (sekarang paritas `crc32 % 2`), gate review PLM (sekarang bisa lompat tahap), "PSAK 73" sewa armada (sekarang tanpa PV/ROU), klasifikasi DTC kritis Telematics, aturan pajak/BPJS HCM (R6.3).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 43e2ba7
     - file: modules/Core/Application/Services/SimClockService.php
     - file: modules/Core/tests/Feature/SimulationKernelTest.php
     - test: modules/Core/tests/Feature/SimulationKernelTest.php::test_simulation_clock_advancement_is_deterministic
     - gate: docs/gates/fase-r6.md
-- [x] R6.6 Quality gate Fase R6 + verifikasi silang.
-  Bukti:
+- [ ] R6.6 Quality gate Fase R6 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 5de4e45
     - file: docs/gates/fase-r6.md
@@ -1589,7 +1595,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | - | - | Tidak ada minus terbuka (seluruh deliverable R6.1 s/d R6.6 tuntas 100%, A8=0) | - | - | - |
 
 ### FASE R7 — VERTICAL SLICE LINI GELOMBANG 1 (67–94)
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R1–R6 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R6 🔵.
 
 #### DoR Fase R7 — Vertical Slice Lini Gelombang 1
 - Disetujui pemilik: [x] 2026-10-17 (chat)
@@ -1606,32 +1612,36 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - Daftar test wajib: `ClinicalTrialAndResearchTest`, `HotelPmsAndOperationsTest`, `BeachClubAndVenueOperationsTest`, `MiningResourceCommandTest`, `ProptechSmartBuildingTest`, `IntegrationServicesClassificationTest`, `IntegrationFreezeTest`.
 - Jalan pintas yang dihindari: X1–X25 (dilarang melemahkan test, dilarang silent default, dilarang modifikasi teks item tanpa P10).
 
-- [x] R7.1 Per lini: rute + controller + view minimal + menu + role (dari `KONSEP.md` xF), chart of accounts + seeder T1, `{prefix}:audit` dua-sumber + fixture korupsi, test HTTP (a)–(e). Centang ulang item fase 87–94 / 68–86 yang terpenuhi dengan blok bukti.
-  Bukti:
+- [ ] R7.1 Per lini: rute + controller + view minimal + menu + role (dari `KONSEP.md` xF), chart of accounts + seeder T1, `{prefix}:audit` dua-sumber + fixture korupsi, test HTTP (a)–(e). Centang ulang item fase 87–94 / 68–86 yang terpenuhi dengan blok bukti.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: d55dc03
     - file: modules/Hospital/Application/Services/ClinicalTrialAndResearchService.php
     - file: modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php
     - test: modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php::test_106_6_a_duplicate_subject_enrollment_in_same_study_is_rejected
     - gate: docs/gates/fase-r7.md
-- [x] R7.2 Pindahkan service lini tersebut yang masih di `Integration` ke modulnya (R4.4), ditulis ulang mengikuti template `KONSEP.md` §A15 (X21).
-  Bukti:
+- [ ] R7.2 Pindahkan service lini tersebut yang masih di `Integration` ke modulnya (R4.4), ditulis ulang mengikuti template `KONSEP.md` §A15 (X21).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 279af36
     - file: docs/INTEGRATION_SERVICES_CLASSIFICATION.md
     - file: tests/Architecture/IntegrationServicesClassificationTest.php
     - test: tests/Architecture/IntegrationServicesClassificationTest.php::it classifies all 345 services in modules/Integration/Application/Services
     - gate: docs/gates/fase-r7.md
-- [x] R7.3 Verifikasi silang per lini (P7) — lini tidak dianggap selesai sebelum ✅.
-  Bukti:
+- [ ] R7.3 Verifikasi silang per lini (P7) — lini tidak dianggap selesai sebelum ✅.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: c5a0c75
     - file: docs/DECISIONS.md
     - file: tests/Architecture/ModuleBoundariesTest.php
     - test: tests/Architecture/ModuleBoundariesTest.php::controllers do not use DB facade directly
     - gate: docs/gates/fase-r7.md
-- [x] R7.4 Quality gate per lini.
-  Bukti:
+- [ ] R7.4 Quality gate per lini.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: b86cd9f
     - file: docs/gates/fase-r7.md
