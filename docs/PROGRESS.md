@@ -3086,58 +3086,64 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - (dibatalkan) gate: docs/gates/fase-17.md
 
 ## FASE 18 — DOKUMENTASI & PENUTUP
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 18.1 README.md: ringkasan platform 5 lini bisnis, cara menjalankan, daftar command, tabel akun demo lengkap per role
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 18.1 README.md: ringkasan platform 5 lini bisnis, cara menjalankan, daftar command, tabel akun demo lengkap per role
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
-- [x] 18.2 docs/ARCHITECTURE.md: ERD Mermaid, diagram integrasi, contracts & events, konvensi ledger (IDR/PTS/kripto), sequence diagram Mermaid
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-18.md
+- [ ] 18.2 docs/ARCHITECTURE.md: ERD Mermaid, diagram integrasi, contracts & events, konvensi ledger (IDR/PTS/kripto), sequence diagram Mermaid
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
-- [x] 18.3 docs/RUNBOOK.md: panduan troubleshooting operasional
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-18.md
+- [ ] 18.3 docs/RUNBOOK.md: panduan troubleshooting operasional
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
-- [x] 18.4 docs/DECISIONS.md final: seluruh keputusan teknis Fase 7-18 tercatat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-18.md
+- [ ] 18.4 docs/DECISIONS.md final: seluruh keputusan teknis Fase 7-18 tercatat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
-- [x] 18.5 Pembersihan kode: tidak ada TODO/FIXME/stub/dd()/dump()
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-18.md
+- [ ] 18.5 Pembersihan kode: tidak ada TODO/FIXME/stub/dd()/dump()
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
-- [x] 18.6 Quality gate final & laporan penutup di docs/PROGRESS.md
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-18.md
+- [ ] 18.6 Quality gate final & laporan penutup di docs/PROGRESS.md
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
+    - (dibatalkan) gate: docs/gates/fase-18.md
 
 ## DEFINITION OF DONE (FASE 7–18)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task 7.1–18.6 tercentang di docs/PROGRESS.md
 - [x] migrate:fresh --seed, php artisan test, npm run build, pint → semua lolos
 - [x] bank:reconcile bersih untuk SEMUA aset (IDR, PTS, BTC/ETH/SOL/BNB/USDT)
@@ -3153,7 +3159,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 ---
 
 ## 🏆 LAPORAN PENUTUP & SERAH TERIMA PROYEK (FINAL SIGN-OFF)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 
 Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superwebsite** (Fase 0 hingga Fase 18) telah diselesaikan secara tuntas dan mandiri dengan standar rekayasa perangkat lunak enterprise:
 
@@ -3170,79 +3176,88 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 ---
 
 ## FASE 19 — PENUTUPAN UTANG FASE 18
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 19.1 Baseline & commit Fase 18 (AUDIT.md baseline dicatat, docs phase 18 committed)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 19.1 Baseline & commit Fase 18 (AUDIT.md baseline dicatat, docs phase 18 committed)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.2 Stabilkan DemoCustomerSeeder (deterministik, quote kripto, saldo cukup, ListCarProductAction stok tersedia, buffer kolateral 1.6x)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.2 Stabilkan DemoCustomerSeeder (deterministik, quote kripto, saldo cukup, ListCarProductAction stok tersedia, buffer kolateral 1.6x)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.3 Test seeder: tests/Feature/Seed/DemoCustomerSeederTest.php (20 customer ber-PIN dan saldo > 0, >=20 kendaraan berpaspor valid, >=40 booking terbayar lewat ledger, tepat 3 pinjaman HODL-to-Drive aktif LTV < 70%, 6 produk mobil Store, reconcile 0)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.3 Test seeder: tests/Feature/Seed/DemoCustomerSeederTest.php (20 customer ber-PIN dan saldo > 0, >=20 kendaraan berpaspor valid, >=40 booking terbayar lewat ledger, tepat 3 pinjaman HODL-to-Drive aktif LTV < 70%, 6 produk mobil Store, reconcile 0)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.4 Perbaiki test yang terdampak data seed baru (SecurityTest, RouteSmokeTest, QueryBudgetTest, dll.) tanpa melemahkan assertion/anggaran
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.4 Perbaiki test yang terdampak data seed baru (SecurityTest, RouteSmokeTest, QueryBudgetTest, dll.) tanpa melemahkan assertion/anggaran
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.5 Gate harian tidak boleh lolos karena kosong: default seed memuat >= 1 hari usaha Resto ditutup dengan >= 5 order terbayar, dan >= 1 bulan tagihan Mall terbit sebagian dibayar, audit-billing dan resto:close-day melaporkan nilai non-nol
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.5 Gate harian tidak boleh lolos karena kosong: default seed memuat >= 1 hari usaha Resto ditutup dengan >= 5 order terbayar, dan >= 1 bulan tagihan Mall terbit sebagian dibayar, audit-billing dan resto:close-day melaporkan nilai non-nol
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.6 Hapus kolom users.pin: migrasi drop kolom, hapus referensi, verifikasi PIN tetap via contract Banking
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.6 Hapus kolom users.pin: migrasi drop kolom, hapus referensi, verifikasi PIN tetap via contract Banking
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.7 Kompatibilitas DemoLargeSeeder: jalankan ulang di atas DatabaseSeeder baru tanpa bentrok unique, ukur ulang benchmark (3.24s, 0 collision)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.7 Kompatibilitas DemoLargeSeeder: jalankan ulang di atas DatabaseSeeder baru tanpa bentrok unique, ukur ulang benchmark (3.24s, 0 collision)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.8 Rapikan dokumen: centang 6.6 dengan catatan benar, perbaiki DoD 0-6, catat DECISIONS seeder, update akun demo di README
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.8 Rapikan dokumen: centang 6.6 dengan catatan benar, perbaiki DoD 0-6, catat DECISIONS seeder, update akun demo di README
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.9 Quality gate Fase 19 (305 passed / 1569 assertions, Pint clean, build clean, 89 ledger accounts, 30 passports valid, resto/mall/health gates pass)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.9 Quality gate Fase 19 (305 passed / 1569 assertions, Pint clean, build clean, 89 ledger accounts, 30 passports valid, resto/mall/health gates pass)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
+    - (dibatalkan) gate: docs/gates/fase-19.md
 
 ## FASE 20 — FONDASI LOGISTIK: MODUL, JARINGAN, ARMADA
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
