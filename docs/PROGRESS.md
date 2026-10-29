@@ -1884,87 +1884,97 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - (dibatalkan) gate: docs/gates/fase-0.md
 
 ## FASE 1 — CORE BANKING (DOUBLE-ENTRY LEDGER)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 1.1 Migrations (ledger_accounts, ledger_transactions, ledger_entries, wallet_pins)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 1.1 Migrations (ledger_accounts, ledger_transactions, ledger_entries, wallet_pins)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.2 LedgerService (double-entry posting, idempotency, locking)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.2 LedgerService (double-entry posting, idempotency, locking)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.3 Akun sistem via seeder
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.3 Akun sistem via seeder
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.4 HasLedgerAccounts trait + auto wallet creation
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.4 HasLedgerAccounts trait + auto wallet creation
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.5 Actions: SetPin, VerifyPin, TopUp, Transfer, FreezeAccount, ManualAdjustment
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.5 Actions: SetPin, VerifyPin, TopUp, Transfer, FreezeAccount, ManualAdjustment
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.6 StatementQuery + CSV export
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.6 StatementQuery + CSV export
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.7 bank:reconcile command
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.7 bank:reconcile command
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.8 UI: Wallet, Transfer, Mutasi, Admin Ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.8 UI: Wallet, Transfer, Mutasi, Admin Ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.9 Tests: posting, insufficient funds, idempotency, concurrent, PIN lockout, reconcile
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.9 Tests: posting, insufficient funds, idempotency, concurrent, PIN lockout, reconcile
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.10 Quality gate Fase 1
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.10 Quality gate Fase 1
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
+    - (dibatalkan) gate: docs/gates/fase-1.md
 
 ## FASE 2 — PAYMENT HUB + INTEGRASI AUTOSERVE
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
