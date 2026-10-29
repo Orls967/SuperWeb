@@ -32,16 +32,14 @@ class RouteSmokeRegressionTest extends TestCase
      *
      * @var array<int, array{uri: string, role: string, method?: string, expected_status?: array<int>}>
      */
-    public static array $fixedRoutes = [];
+    public static array $fixedRoutes = [
+        ['uri' => '/resto/menu/create', 'role' => 'admin', 'expected_status' => [200]],
+        ['uri' => '/resto/catering/create', 'role' => 'admin', 'expected_status' => [200]],
+        ['uri' => '/resto/ingredients/create', 'role' => 'admin', 'expected_status' => [200]],
+    ];
 
     public function test_fixed_routes_do_not_regress(): void
     {
-        if (empty(static::$fixedRoutes)) {
-            $this->assertTrue(true, 'Belum ada rute teregister untuk regresi; diisi di Bagian D.');
-
-            return;
-        }
-
         foreach (static::$fixedRoutes as $routeInfo) {
             $uri = $routeInfo['uri'];
             $role = $routeInfo['role'];
