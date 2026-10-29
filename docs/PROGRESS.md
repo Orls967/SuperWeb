@@ -5516,79 +5516,88 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-45.md
 
 ## FASE 46 — AGENSI: EKOSISTEM, LEAD, TIER & KEPATUHAN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 46.1 CRM ringan: lead/prospek, pipeline, aktivitas, konversi → order; penugasan lead ke agen
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 46.1 CRM ringan: lead/prospek, pipeline, aktivitas, konversi → order; penugasan lead ke agen
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.2 Rekrutmen & onboarding agen: pendaftaran, KYC (27.2), pelatihan/sertifikasi internal, lisensi (mis. agen asuransi/properti — data simulasi) dengan masa berlaku
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.2 Rekrutmen & onboarding agen: pendaftaran, KYC (27.2), pelatihan/sertifikasi internal, lisensi (mis. agen asuransi/properti — data simulasi) dengan masa berlaku
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.3 Tier & gamifikasi: level agen, syarat naik/turun, benefit; leaderboard (privasi dijaga)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.3 Tier & gamifikasi: level agen, syarat naik/turun, benefit; leaderboard (privasi dijaga)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.4 Agensi merek/keagenan impor: agen tunggal pemegang merek (APM-style) → hak impor, garansi, purna jual terhubung AutoServe (kontrak)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.4 Agensi merek/keagenan impor: agen tunggal pemegang merek (APM-style) → hak impor, garansi, purna jual terhubung AutoServe (kontrak)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.5 Kepatuhan agen: pelanggaran (diskon liar, klaim palsu), sanksi bertingkat, suspensi komisi, banding
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.5 Kepatuhan agen: pelanggaran (diskon liar, klaim palsu), sanksi bertingkat, suspensi komisi, banding
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.6 Deteksi kecurangan: pola self-referral, penjualan palsu, anomali komisi (aturan + skor simulasi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.6 Deteksi kecurangan: pola self-referral, penjualan palsu, anomali komisi (aturan + skor simulasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.7 Integrasi lintas lini: agen properti Mall (leasing unit), agen kendaraan Store/AutoDex, agen katering Resto
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.7 Integrasi lintas lini: agen properti Mall (leasing unit), agen kendaraan Store/AutoDex, agen katering Resto
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.8 Analitik: ROI agen, biaya akuisisi, retensi, kontribusi downline
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.8 Analitik: ROI agen, biaya akuisisi, retensi, kontribusi downline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.9 Quality gate Fase 46
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.9 Quality gate Fase 46
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
+    - (dibatalkan) gate: docs/gates/fase-46.md
 
 ## FASE 47 — MITRA & KEMITRAAN (MODUL `ptn_`)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
