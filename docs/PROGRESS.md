@@ -7949,73 +7949,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 72.1–72.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 73 — ROBO-ADVISOR WEALTH MANAGEMENT & TREASURY YIELD
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, surplus auto-invest multi-aset, rebalance deterministik, fee accrual presisi, dan quality gate pass.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Wealth (`wm_`) · **Prasyarat:** Fase 58 ulang (R6.3) ✅ · **Acuan:** KONSEP 2F slice 3
 > **Jalan pintas terlarang di fase ini:** NAV/alokasi memakai float; alokasi melanggar guardrail likuiditas tanpa ditolak — ditambah seluruh X1–X25.
-- [x] 73.1 Tabel `wm_profiles` (profil risiko konservatif/agresif, tujuan, horizon), `wm_plans` (alokasi bulanan), `wm_orders` (reksadana simulasi, emas digital, kripto), `wm_holdings`
-  Bukti:
+- [ ] 73.1 Tabel `wm_profiles` (profil risiko konservatif/agresif, tujuan, horizon), `wm_plans` (alokasi bulanan), `wm_orders` (reksadana simulasi, emas digital, kripto), `wm_holdings`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Domain/Models/WmOrder.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_surplus_auto_invest_allocates_correctly_and_creates_orders
     - akses: route GET /wealth [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.2 **Surplus detector**: membaca pola gaji (HCM payroll event) dan pengeluaran (mutasi wallet 3 bulan) → menghitung surplus bulanan yang aman; guardrail wajib: likuiditas minimum 2 bulan pengeluaran TIDAK boleh diinvestasikan, dana darurat tetap cair
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.2 **Surplus detector**: membaca pola gaji (HCM payroll event) dan pengeluaran (mutasi wallet 3 bulan) → menghitung surplus bulanan yang aman; guardrail wajib: likuiditas minimum 2 bulan pengeluaran TIDAK boleh diinvestasikan, dana darurat tetap cair
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Application/Services/RoboAdvisorService.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_liquidity_guardrail_prevents_investing_emergency_fund
     - akses: route GET /wealth [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.3 Eksekusi alokasi bulanan otomatis (opt-in per pengguna): split ke reksadana/emas/kripto sesuai profil → order via PriceFeed Fase 4 → posting ledger; penarikan kembali 1-klik (T+0 simulasi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.3 Eksekusi alokasi bulanan otomatis (opt-in per pengguna): split ke reksadana/emas/kripto sesuai profil → order via PriceFeed Fase 4 → posting ledger; penarikan kembali 1-klik (T+0 simulasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Application/Services/RoboAdvisorService.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_surplus_auto_invest_allocates_correctly_and_creates_orders
     - akses: route POST /wealth/profiles/{profile}/invest [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.4 **Yield ke Treasury**: saldo mengendap platform & hasil investasi dana kelolaan mengalir ke akun `treasury:pool` (Fase 48) → likuiditas grup terjaga; laporan kontribusi yield per bulan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.4 **Yield ke Treasury**: saldo mengendap platform & hasil investasi dana kelolaan mengalir ke akun `treasury:pool` (Fase 48) → likuiditas grup terjaga; laporan kontribusi yield per bulan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Ledger/WealthAccounts.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_surplus_auto_invest_allocates_correctly_and_creates_orders
     - akses: route GET /wealth [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.5 Rebalancing berkala (drift > 5% target → rebalance), performance vs benchmark, fee dana kelolaan (accrual harian)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.5 Rebalancing berkala (drift > 5% target → rebalance), performance vs benchmark, fee dana kelolaan (accrual harian)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Application/Services/RoboAdvisorService.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_portfolio_rebalance_triggers_on_drift_exceeding_five_percent
     - akses: route GET /wealth [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.6 Dashboard: kinerja portofolio vs benchmark, rekomendasi bulanan, dampak ke Treasury, cash-flow pengguna
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.6 Dashboard: kinerja portofolio vs benchmark, rekomendasi bulanan, dampak ke Treasury, cash-flow pengguna
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Application/Services/RoboAdvisorService.php
     - test: modules/Wealth/tests/Feature/WealthVerticalSliceHttpTest.php::test_a_authorized_user_can_access_wealth_index_and_invest
     - akses: route GET /wealth [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.7 Tests: (a) alokasi tidak pernah menembus guardrail likuiditas (b) order terdividasi = dana terpotong (c) rebalance deterministik (d) fee akurat 6 desimal (e) reconcile holdings = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.7 Tests: (a) alokasi tidak pernah menembus guardrail likuiditas (b) order terdividasi = dana terpotong (c) rebalance deterministik (d) fee akurat 6 desimal (e) reconcile holdings = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: b1d6419
     - file: modules/Wealth/tests/Feature/WealthTest.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_reconcile_wealth_holdings_equals_executed_orders
-    - gate: docs/gates/fase-73.md
-- [x] 73.8 Quality gate Fase 73
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.8 Quality gate Fase 73
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: b1d6419
     - file: modules/Wealth/tests/Feature/WealthTest.php
     - test: modules/Wealth/tests/Feature/WealthVerticalSliceHttpTest.php::test_d_two_source_wealth_audit_passes_cleanly
     - akses: command wm:audit
-    - gate: docs/gates/fase-73.md
+    - (dibatalkan) gate: docs/gates/fase-73.md
 
 ### Register Minus Fase 73
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
