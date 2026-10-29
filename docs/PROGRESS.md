@@ -2831,106 +2831,118 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - (dibatalkan) gate: docs/gates/fase-13.md
 
 ## FASE 14 — MALL: PARKIR, AKSES & FOOTFALL
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 14.1 Tabel mall_parking_zones, mall_parking_tariffs, mall_parking_sessions, mall_parking_members
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 14.1 Tabel mall_parking_zones, mall_parking_tariffs, mall_parking_sessions, mall_parking_members
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
-- [x] 14.2 Tarif progresif BigDecimal: grace 15 menit, pembulatan jam, batas harian, tiket hilang, validasi parkir oleh tenant jadi piutang tenant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-14.md
+- [ ] 14.2 Tarif progresif BigDecimal: grace 15 menit, pembulatan jam, batas harian, tiket hilang, validasi parkir oleh tenant jadi piutang tenant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
-- [x] 14.3 Gate simulasi UI: gate masuk (tiket/plat member) & gate keluar (scan tiket, bayar, buka gate), tolak jika penuh, real-time occupancy polling
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-14.md
+- [ ] 14.3 Gate simulasi UI: gate masuk (tiket/plat member) & gate keluar (scan tiket, bayar, buka gate), tolak jika penuh, real-time occupancy polling
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
-- [x] 14.4 Footfall: mall_footfall_counts, command mall:simulate-footfall, dashboard footfall & konversi tenant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-14.md
+- [ ] 14.4 Footfall: mall_footfall_counts, command mall:simulate-footfall, dashboard footfall & konversi tenant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
-- [x] 14.5 Tests: tarif grace, 61 menit, 8 jam batas harian, tiket hilang, member aktif gratis, member kedaluwarsa bayar, validasi tenant, kapasitas penuh ditolak, tiket ganda ditolak, query budget, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-14.md
+- [ ] 14.5 Tests: tarif grace, 61 menit, 8 jam batas harian, tiket hilang, member aktif gratis, member kedaluwarsa bayar, validasi tenant, kapasitas penuh ditolak, tiket ganda ditolak, query budget, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
-- [x] 14.6 Quality gate Fase 14
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-14.md
+- [ ] 14.6 Quality gate Fase 14
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
+    - (dibatalkan) gate: docs/gates/fase-14.md
 
 ## FASE 15 — MALL: LOYALTY, VOUCHER, EVENT & FACILITY MANAGEMENT
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 15.1 Loyalty Duta Points (aset ledger PTS): points:user:{id}:PTS & liability:mall:points:PTS, earn dari belanja / struk klaim unik, redeem voucher & tier membership, FIFO expiry mall:expire-points
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 15.1 Loyalty Duta Points (aset ledger PTS): points:user:{id}:PTS & liability:mall:points:PTS, earn dari belanja / struk klaim unik, redeem voucher & tier membership, FIFO expiry mall:expire-points
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
-- [x] 15.2 Voucher mall: mall_vouchers, liability:mall:voucher, settlement mingguan mall:settle-vouchers ke wallet tenant, voucher expired balik ke breakage/penalty
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-15.md
+- [ ] 15.2 Voucher mall: mall_vouchers, liability:mall:voucher, settlement mingguan mall:settle-vouchers ke wallet tenant, voucher expired balik ke breakage/penalty
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
-- [x] 15.3 Event & atrium: mall_event_spaces, mall_event_bookings, deteksi bentrok jadwal ConflictException, bazaar booth, kalender bulanan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-15.md
+- [ ] 15.3 Event & atrium: mall_event_spaces, mall_event_bookings, deteksi bentrok jadwal ConflictException, bazaar booth, kalender bulanan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
-- [x] 15.4 Facility management: mall_assets, mall_work_orders, SLA priority, command mall:generate-pm-orders, biaya perbaikan masuk tagihan tenant, Kanban board
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-15.md
+- [ ] 15.4 Facility management: mall_assets, mall_work_orders, SLA priority, command mall:generate-pm-orders, biaya perbaikan masuk tagihan tenant, Kanban board
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
-- [x] 15.5 Tests: earn poin belanja, klaim struk dobel ditolak, redeem voucher, voucher dipakai lalu settle, voucher expired, event bentrok ditolak, PM order terjadwal, SLA breach, biaya perbaikan ke invoice, reconcile IDR & PTS bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-15.md
+- [ ] 15.5 Tests: earn poin belanja, klaim struk dobel ditolak, redeem voucher, voucher dipakai lalu settle, voucher expired, event bentrok ditolak, PM order terjadwal, SLA breach, biaya perbaikan ke invoice, reconcile IDR & PTS bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
-- [x] 15.6 Quality gate Fase 15
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-15.md
+- [ ] 15.6 Quality gate Fase 15
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
+    - (dibatalkan) gate: docs/gates/fase-15.md
 
 ## FASE 16 — INTEGRASI LINTAS LINI
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
