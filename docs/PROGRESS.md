@@ -10133,83 +10133,92 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-98.md
 
 ## FASE 99 — AI & ANALITIK PREDIKTIF TERPADU 12 LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 99.1–99.6 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 27baaafc).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul Analytics/AI · **Prasyarat:** Fase 64 ✅ · **Acuan:** KONSEP §A10
 > **Jalan pintas terlarang di fase ini:** AI terpadu tanpa fondasi Fase 64; skor dari parameter pemanggil; auto-execute tanpa kill-switch yang diuji — ditambah seluruh X1–X25.
-- [x] 99.1 **Dynamic pricing unified**: satu engine (Fase 81 + 64.1) mengatur harga lintas kanal — tiket venue, room rate hotel, ongkir logistik, suku cadang, harga grosir, tarif EV, royalti komoditas — dengan guardrail & contract-price-wins seragam, `ai:audit` membuktikan determinisme
-  Bukti:
+- [ ] 99.1 **Dynamic pricing unified**: satu engine (Fase 81 + 64.1) mengatur harga lintas kanal — tiket venue, room rate hotel, ongkir logistik, suku cadang, harga grosir, tarif EV, royalti komoditas — dengan guardrail & contract-price-wins seragam, `ai:audit` membuktikan determinisme
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 27baaafc
     - file: modules/Core/Application/Services/UnifiedDynamicPricingEngineService.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
-- [x] 99.2 **Forecasting terpadu**: demand resto dari footfall mall & event venue (Fase 75.1), forecast S&OP pabrik (Fase 53.2), forecast okupansi hotel dari kalender event & festival, forecast produksi tambang dari rencana → satu kerangka MAPE & override ter-audit
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-99.md
+- [ ] 99.2 **Forecasting terpadu**: demand resto dari footfall mall & event venue (Fase 75.1), forecast S&OP pabrik (Fase 53.2), forecast okupansi hotel dari kalender event & festival, forecast produksi tambang dari rencana → satu kerangka MAPE & override ter-audit
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 27baaafc
     - file: modules/Core/Application/Services/MultiVectorDemandForecastingService.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_demand_forecasting_mape_accuracy
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
-- [x] 99.3 **Anomaly detection & anti-fraud lintas lini** (memperluas Fase 64.2): skor anomali untuk klaim asuransi, transaksi dompet, penjualan venue, tagihan RS, fuel tambang, resale tiket → quarantine transaksi berisiko sebelum settlement
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-99.md
+- [ ] 99.3 **Anomaly detection & anti-fraud lintas lini** (memperluas Fase 64.2): skor anomali untuk klaim asuransi, transaksi dompet, penjualan venue, tagihan RS, fuel tambang, resale tiket → quarantine transaksi berisiko sebelum settlement
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 27baaafc
     - file: modules/Core/Application/Services/CoreAiAnomalyQuarantineService.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_anomaly_fraud_quarantine_blocks_suspicious_settlement
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
-- [x] 99.4 **Prescriptive ops**: rekomendasi stok & PO (Fase 64.3), replenishment VMI (Fase 82), blending tambang (Fase 94.2), shift & bounty (Fase 97.1), energy setback (Fase 91.6) — semua berbentuk usulan yang dieksekusi otomatis di bawah ambang / approval di atas ambang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-99.md
+- [ ] 99.4 **Prescriptive ops**: rekomendasi stok & PO (Fase 64.3), replenishment VMI (Fase 82), blending tambang (Fase 94.2), shift & bounty (Fase 97.1), energy setback (Fase 91.6) — semua berbentuk usulan yang dieksekusi otomatis di bawah ambang / approval di atas ambang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 27baaafc
     - file: modules/Core/Application/Services/PrescriptiveOperationsService.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_prescriptive_ops_auto_executes_below_threshold
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
-- [x] 99.5 **AI bid agent & claim agent** (Fase 84 + 72) diuji ulang terhadap dataset ultra (Fase 98.1) → konsistensi & auditabilitas terbukti pada skala
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-99.md
+- [ ] 99.5 **AI bid agent & claim agent** (Fase 84 + 72) diuji ulang terhadap dataset ultra (Fase 98.1) → konsistensi & auditabilitas terbukti pada skala
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 27baaafc
     - file: tests/Feature/UnifiedDynamicPricingTest.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
-- [x] 99.6 Quality gate Fase 99
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-99.md
+- [ ] 99.6 Quality gate Fase 99
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 27baaafc
     - file: docs/gates/fase-99.md
     - test: tests/Architecture/TestHygieneTest.php
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
+    - (dibatalkan) gate: docs/gates/fase-99.md
 
 ## FASE 100 — KEAMANAN, RBAC 60+ ROLE, KEPATUHAN & OBSERVABILITAS 12 LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-96-fintech-rwa (commit 08438aae) tuntas vertical slice keamanan, RBAC 60+ dan observabilitas Fase 100.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core RBAC + semua modul · **Prasyarat:** R3 ✅ · **Acuan:** KONSEP §A6
 > **Jalan pintas terlarang di fase ini:** role disebut di seeder tetapi rute tidak dibatasi; enkripsi field-level diklaim tanpa `encrypted` cast; `*:audit` lini diklaim tanpa command — ditambah seluruh X1–X25.
-- [x] 100.1 **RBAC 12 lini**: role baru (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`, `front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`, `ev_operator`, `fleet_manager`, `wm_advisor`, dst.) → matriks otorisasi data-driven, RouteSmokeTest & SecurityTest mencakup seluruh rute baru
-  Bukti:
+- [ ] 100.1 **RBAC 12 lini**: role baru (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`, `front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`, `ev_operator`, `fleet_manager`, `wm_advisor`, dst.) → matriks otorisasi data-driven, RouteSmokeTest & SecurityTest mencakup seluruh rute baru
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 08438aae
     - file: database/seeders/RbacConglomerateSeeder.php
     - test: tests/Feature/SuperHealthCheckSuiteTest.php::test_super_health_check_passes_cleanly
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
-- [x] 100.2 **Privacy & PII khusus**: data medis (rekam medis, telemetri pasien) ter-encrypt field-level + audit akses ketat (siapa membaca apa), data tamu hotel/venue (ID, kebiasaan) ter-scope ketat anti-IDOR lintas properti; PII minimization di pelacakan publik
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-100.md
+- [ ] 100.2 **Privacy & PII khusus**: data medis (rekam medis, telemetri pasien) ter-encrypt field-level + audit akses ketat (siapa membaca apa), data tamu hotel/venue (ID, kebiasaan) ter-scope ketat anti-IDOR lintas properti; PII minimization di pelacakan publik
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 08438aae
     - file: modules/Hospital/Domain/Models/PatientMedicalRecord.php
     - file: modules/Hospital/database/migrations/2026_10_22_000009_create_hsp_patient_records_table.php
     - test: tests/Feature/PatientMedicalRecordEncryptionTest.php::test_sensitive_medical_fields_are_encrypted_in_database
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
-- [x] 100.3 **Compliance kalender 12 lini**: izin RS (izin praktik, radiologi), izin venue (keramaian, minuman keras), izin hotel (pariwisata, kebakaran), izin tambang (IUP, AMDAL), sertifikasi halal/BPOM lintas F&B, CBAM lintas ekspor → pengingat & eskalasi terpusat (memperluas Fase 54.6)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-100.md
+- [ ] 100.3 **Compliance kalender 12 lini**: izin RS (izin praktik, radiologi), izin venue (keramaian, minuman keras), izin hotel (pariwisata, kebakaran), izin tambang (IUP, AMDAL), sertifikasi halal/BPOM lintas F&B, CBAM lintas ekspor → pengingat & eskalasi terpusat (memperluas Fase 54.6)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 08438aae
     - file: modules/Core/Domain/Models/CoreComplianceObligation.php
@@ -10217,32 +10226,35 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - file: modules/Core/database/migrations/2026_10_22_000008_create_core_compliance_obligations_table.php
     - test: tests/Feature/TwelveLinesComplianceCalendarTest.php::test_compliance_calendar_flags_expiring_permits
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
-- [x] 100.4 **Health-check & audit 12 lini**: `super:health-check` mencakup pilar baru (hsp, ven, htl, min, rwa, ins, wm, otelematics, prc, gov); seluruh `*:audit` baru (hosp:audit, venue:audit, hotel:audit, mining:audit, clearing:audit, pricing:audit, governance:audit, dll.) masuk quality gate default
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-100.md
+- [ ] 100.4 **Health-check & audit 12 lini**: `super:health-check` mencakup pilar baru (hsp, ven, htl, min, rwa, ins, wm, otelematics, prc, gov); seluruh `*:audit` baru (hosp:audit, venue:audit, hotel:audit, mining:audit, clearing:audit, pricing:audit, governance:audit, dll.) masuk quality gate default
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 08438aae
     - file: tests/Feature/SuperHealthCheckSuiteTest.php
     - test: tests/Feature/SuperHealthCheckSuiteTest.php::test_super_health_check_passes_cleanly
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
-- [x] 100.5 Rate limit & anti-abuse khusus: verifikasi usia venue (biometrik simulasi), akses IGD (anti-bruteforce berbeda dari login normal), booking massal (anti-scalping tiket & kamar), telematik ingest (device token rotation)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-100.md
+- [ ] 100.5 Rate limit & anti-abuse khusus: verifikasi usia venue (biometrik simulasi), akses IGD (anti-bruteforce berbeda dari login normal), booking massal (anti-scalping tiket & kamar), telematik ingest (device token rotation)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 08438aae
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
-- [x] 100.6 Quality gate Fase 100
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-100.md
+- [ ] 100.6 Quality gate Fase 100
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 08438aae
     - file: tests/Feature/SuperHealthCheckSuiteTest.php
     - file: docs/gates/fase-100.md
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
+    - (dibatalkan) gate: docs/gates/fase-100.md
 
 ## FASE 101 — SKENARIO EMAS 12 LINI & KETAHANAN (DISASTER RECOVERY)
 > **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit d0292f0d) tuntas vertical slice Fase 101.
