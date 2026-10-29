@@ -4927,79 +4927,88 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-38.md
 
 ## FASE 39 — MUTU & KETERTELUSURAN (QMS, LOT, RECALL)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 39.1 Rencana inspeksi: karakteristik (atribut/variabel), batas spesifikasi, sampling (AQL simulasi), frekuensi
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 39.1 Rencana inspeksi: karakteristik (atribut/variabel), batas spesifikasi, sampling (AQL simulasi), frekuensi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.2 Inspeksi: penerimaan (GRN), in-process (operasi), akhir (FG); hasil lulus/gagal/dispensasi (approval); pelepasan lot
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.2 Inspeksi: penerimaan (GRN), in-process (operasi), akhir (FG); hasil lulus/gagal/dispensasi (approval); pelepasan lot
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.3 Statistical process control sederhana (X-bar/R, Cp/Cpk), alarm di luar kendali
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.3 Statistical process control sederhana (X-bar/R, Cp/Cpk), alarm di luar kendali
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.4 **NCR** (ketidaksesuaian) → investigasi → **CAPA** (korektif/preventif) dengan tenggat, efektivitas, status; terhubung ke SCAR pemasok (Fase 32)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.4 **NCR** (ketidaksesuaian) → investigasi → **CAPA** (korektif/preventif) dengan tenggat, efektivitas, status; terhubung ke SCAR pemasok (Fase 32)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.5 **Ketertelusuran lot maju-mundur**: dari lot FG ke bahan baku & pemasok, dan sebaliknya ke semua pelanggan/distributor penerima; waktu respons ≤ ambang (query budget)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.5 **Ketertelusuran lot maju-mundur**: dari lot FG ke bahan baku & pemasok, dan sebaliknya ke semua pelanggan/distributor penerima; waktu respons ≤ ambang (query budget)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.6 **Recall**: pilih lot terdampak → daftar penerima (distributor/agen/pelanggan) → notifikasi, kuarantina stok, retur & penghancuran bersertifikat, laporan akhir; jurnal biaya recall
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.6 **Recall**: pilih lot terdampak → daftar penerima (distributor/agen/pelanggan) → notifikasi, kuarantina stok, retur & penghancuran bersertifikat, laporan akhir; jurnal biaya recall
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.7 Sertifikat (COA/COC) per lot, dokumen kepatuhan (SNI/Halal/BPOM/GMP — **data simulasi**), kedaluwarsa sertifikat memblokir rilis
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.7 Sertifikat (COA/COC) per lot, dokumen kepatuhan (SNI/Halal/BPOM/GMP — **data simulasi**), kedaluwarsa sertifikat memblokir rilis
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.8 Kalibrasi alat ukur (jadwal, bukti), alat kedaluwarsa memblokir inspeksi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.8 Kalibrasi alat ukur (jadwal, bukti), alat kedaluwarsa memblokir inspeksi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.9 Quality gate Fase 39
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.9 Quality gate Fase 39
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
+    - (dibatalkan) gate: docs/gates/fase-39.md
 
 ## FASE 40 — PEMELIHARAAN PABRIK, OEE & K3
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
