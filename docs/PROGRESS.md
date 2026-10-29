@@ -10377,71 +10377,78 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-102.md
 
 ## FASE 103 — DOKUMENTASI FINAL, PLAYBOOK 60+ ROLE & SERAH TERIMA EKSPANSI 12 LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 299f91fb) tuntas dokumentasi final, playbook 60+ role dan gate ekspansi 12 lini.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** dokumen hasil `docs:inventory` & `gate:report` · **Prasyarat:** semua fase 67–102 ✅ · **Acuan:** PROGRESS P7, X24
 > **Jalan pintas terlarang di fase ini:** dokumen klaim/playbook tanpa command generator; mencentang serah terima sebelum fase sebelumnya ✅ — ditambah seluruh X1–X25.
-- [x] 103.1 **README final**: ringkasan 12 lini bisnis dalam satu website monolith, tabel akun demo per role baru, cara menjalankan simulasi kernel & seeder ultra, daftar seluruh command `*:audit`/`verify-*`
-  Bukti:
+- [ ] 103.1 **README final**: ringkasan 12 lini bisnis dalam satu website monolith, tabel akun demo per role baru, cara menjalankan simulasi kernel & seeder ultra, daftar seluruh command `*:audit`/`verify-*`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/ROLES_60_PLAYBOOK.md
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.2 **docs/ARCHITECTURE.md**: ERD 12 modul baru, peta Universal Event Spine & Digital Twin Bus, sequence diagram integrasi lintas lini, konvensi ledger multi-aset baru (stablecoin, token RWA, reserve asuransi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.2 **docs/ARCHITECTURE.md**: ERD 12 modul baru, peta Universal Event Spine & Digital Twin Bus, sequence diagram integrasi lintas lini, konvensi ledger multi-aset baru (stablecoin, token RWA, reserve asuransi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.3 **docs/CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 67–103 tercatat, peta orientasi sesi baru lengkap
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.3 **docs/CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 67–103 tercatat, peta orientasi sesi baru lengkap
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/DECISIONS.md
     - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.4 **docs/RUNBOOK.md**: SOP operasional 12 lini (bed board, door venue, dispatch tambang, claims autopilot, EV ops, rate optimizer), jadwal scheduler baru, recovery kegagalan, DR drill
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.4 **docs/RUNBOOK.md**: SOP operasional 12 lini (bed board, door venue, dispatch tambang, claims autopilot, EV ops, rate optimizer), jadwal scheduler baru, recovery kegagalan, DR drill
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/RUNBOOK.md
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.5 **Role Playbooks 60+ role**: panduan peran baru (doctor, nurse, pharmacist, front office, housekeeping, revenue manager, venue manager, crowd safety, artist relations, mine planner, fleet dispatcher, hse officer, royalty officer, ev operator, fleet manager, wm advisor, vmi supplier, BPJS/insurance partner, OTA partner, kontraktor tambang, dll.)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.5 **Role Playbooks 60+ role**: panduan peran baru (doctor, nurse, pharmacist, front office, housekeeping, revenue manager, venue manager, crowd safety, artist relations, mine planner, fleet dispatcher, hse officer, royalty officer, ev operator, fleet manager, wm advisor, vmi supplier, BPJS/insurance partner, OTA partner, kontraktor tambang, dll.)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/ROLES_60_PLAYBOOK.md
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.6 **Quality gate final ekspansi**: seluruh test suite 100% hijau tanpa test di-skip/dilemahkan (target jumlah test naik drastis dari baseline Fase 63: 931+ test), Pint 100%, build bersih, 0 artefak debug, seluruh `*:audit` = 0 selisih, seluruh hash-chain valid, `super:health-check` HEALTHY untuk seluruh pilar, working tree bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.6 **Quality gate final ekspansi**: seluruh test suite 100% hijau tanpa test di-skip/dilemahkan (target jumlah test naik drastis dari baseline Fase 63: 931+ test), Pint 100%, build bersih, 0 artefak debug, seluruh `*:audit` = 0 selisih, seluruh hash-chain valid, `super:health-check` HEALTHY untuk seluruh pilar, working tree bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/gates/fase-103.md
     - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.7 **Berita Acara Serah Terima Ekspansi 12 Lini** di `docs/PROGRESS.md` + laporan penutup final (metrik test/audit/stress, peta 12 lini terintegrasi dalam satu monolith)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.7 **Berita Acara Serah Terima Ekspansi 12 Lini** di `docs/PROGRESS.md` + laporan penutup final (metrik test/audit/stress, peta 12 lini terintegrasi dalam satu monolith)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/AUDIT.md
     - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
+    - (dibatalkan) gate: docs/gates/fase-103.md
 
 ---
 
 ## DEFINITION OF DONE (FASE 67–103)
-> **Status audit 2026-10-22:** seluruh butir TERPENUHI & TERVERIFIKASI.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task 67.1–103.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 63: 931+ test/4778+ assertion) tanpa ada test di-skip/dilemahkan.
 - [x] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` baru & lama = 0 selisih; semua hash-chain (passport kendaraan, paspor pasien, tiket venue, custody logistik, weighbridge, kontrak, aset, ECO, RWA supply) valid.
 - [x] Setiap alur uang/stok/tiket/kamar/klaim/royalti baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role 12 lini.
@@ -10459,66 +10466,73 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > Konvensi Fase 26+ tetap berlaku penuh tanpa pengecualian.
 
 ## FASE 104 — KESEHATAN: TELEMEDICINE, E-PHARMACY & JARINGAN APOTEK
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 705912fa) tuntas vertical slice Fase 104.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [x] 104.1 Tabel `hsp_tele_consults` (konsultasi jarak jauh: video/chat simulasi, triase awal), `hsp_epharmacy_orders`, `hsp_pharmacy_branches` (500 apotek jaringan + 5.000 apotek mitra Party)
-  Bukti:
+- [ ] 104.1 Tabel `hsp_tele_consults` (konsultasi jarak jauh: video/chat simulasi, triase awal), `hsp_epharmacy_orders`, `hsp_pharmacy_branches` (500 apotek jaringan + 5.000 apotek mitra Party)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/Domain/Models/ChronicSubscription.php
     - test: modules/Hospital/tests/Feature/TelemedicineAndEPharmacyTest.php::test_104_1_book_tele_consultation
     - akses: route GET /hospital/telemedicine [role: admin, doctor, nurse, auditor]
-    - gate: docs/gates/fase-104.md
-- [x] 104.2 Alur triase → konsultasi → **e-resep digital** (tanda tangan dokter hash) → fulfillment apotek terdekat (stok terpotong via InventoryService, FEFO lot) → pengiriman obat last-mile via Logistics (rentang 2 jam kota besar)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.2 Alur triase → konsultasi → **e-resep digital** (tanda tangan dokter hash) → fulfillment apotek terdekat (stok terpotong via InventoryService, FEFO lot) → pengiriman obat last-mile via Logistics (rentang 2 jam kota besar)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/Application/Services/PrescriptionSafetyEvaluator.php
     - test: modules/Hospital/tests/Feature/TelemedicineAndEPharmacyTest.php::test_104_6_a_prescription_without_doctor_signature_is_rejected
     - akses: route GET /hospital/telemedicine [role: admin, doctor, nurse, auditor]
-    - gate: docs/gates/fase-104.md
-- [x] 104.3 Interaksi obat & alergi dicek rule engine terhadap Human Passport (Fase 87.2) sebelum e-resep disahkan; obat keras/psikotropika butuh verifikasi resep fisik (approval dokter kedua)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.3 Interaksi obat & alergi dicek rule engine terhadap Human Passport (Fase 87.2) sebelum e-resep disahkan; obat keras/psikotropika butuh verifikasi resep fisik (approval dokter kedua)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/Domain/Models/AllergyMatrix.php
     - test: modules/Hospital/tests/Feature/PrescriptionSafetyEvaluationTest.php::test_cross_allergy_class_blocks_amoxicillin_for_penicillin_allergic_patient
     - akses: route POST /hospital/telemedicine/prescriptions/evaluate [role: admin, doctor, pharmacist]
-    - gate: docs/gates/fase-104.md
-- [x] 104.4 Subscription obat kronis (pasien jantung/diabetes): pengiriman berulang otomatis bulanan, debit wallet, auto-renew resep setelah konsultasi kontrol berikutnya
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.4 Subscription obat kronis (pasien jantung/diabetes): pengiriman berulang otomatis bulanan, debit wallet, auto-renew resep setelah konsultasi kontrol berikutnya
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/Application/Services/ChronicDrugSubscriptionService.php
     - test: modules/Hospital/tests/Feature/ChronicDrugSubscriptionTest.php::test_chronic_subscription_registration_and_recurring_batch_refill
     - akses: route GET /hospital/epharmacy/subscriptions [role: admin, doctor, pharmacist, auditor]
-    - gate: docs/gates/fase-104.md
-- [x] 104.5 Integrasi BI): konsultasi → rujukan rawat inap → bed booking (Fase 87.3) → episode billing (Fase 88.1) dalam satu identitas pasien
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.5 Integrasi BI): konsultasi → rujukan rawat inap → bed booking (Fase 87.3) → episode billing (Fase 88.1) dalam satu identitas pasien
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/Application/Services/PharmacyMultiBranchRoutingService.php
     - test: modules/Hospital/tests/Feature/PharmacyMultiBranchRoutingTest.php::test_routing_selects_local_branch_when_stock_is_sufficient
     - akses: route POST /hospital/epharmacy/routing [role: admin, pharmacist]
-    - gate: docs/gates/fase-104.md
-- [x] 104.6 Tests: (a) e-resep tanpa tanda tangan dokter ditolak (b) interaksi obat kritis memblokir order (c) stok apotek terpotong = item terkirim (d) pengiriman obat keras wajib POD ber-sign (e) `hosp:audit` tetap 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.6 Tests: (a) e-resep tanpa tanda tangan dokter ditolak (b) interaksi obat kritis memblokir order (c) stok apotek terpotong = item terkirim (d) pengiriman obat keras wajib POD ber-sign (e) `hosp:audit` tetap 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/tests/Feature/FefoInventoryManagementTest.php
     - test: modules/Hospital/tests/Feature/FefoInventoryManagementTest.php::test_fefo_depletes_earliest_expiring_lot_first
     - akses: command super:health-check
-    - gate: docs/gates/fase-104.md
-- [x] 104.7 Quality gate Fase 104
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.7 Quality gate Fase 104
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 705912fa
     - file: docs/gates/fase-104.md
     - test: modules/Hospital/tests/Feature/PrescriptionSafetyEvaluationTest.php::test_renal_clearance_under_thirty_blocks_nephrotoxic_drugs
     - akses: command super:health-check
-    - gate: docs/gates/fase-104.md
+    - (dibatalkan) gate: docs/gates/fase-104.md
 
 ## FASE 105 — KESEHATAN: JARINGAN LABORATORIUM & DIAGNOSTIK IMAGING
 > **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 13e5f0f0) tuntas vertical slice Fase 105.
