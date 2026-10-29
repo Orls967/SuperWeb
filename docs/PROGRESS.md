@@ -3882,80 +3882,89 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-26.md
 
 ## FASE 27 — PARTY MASTER & BADAN HUKUM (FONDASI PIHAK)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 *Satu sumber kebenaran untuk semua pihak: pemasok, produsen, distributor, agen, mitra, pelanggan, carrier.*
-- [x] 27.1 Modul `Party` (`pty_`): `Party` (orang/perusahaan), `PartyRole` (supplier, producer, distributor, agent, partner, customer, carrier, tenant, franchisee), alamat, kontak, NPWP/NIB/NIK (terenkripsi sebagian), rekening bank
-  Bukti:
+- [ ] 27.1 Modul `Party` (`pty_`): `Party` (orang/perusahaan), `PartyRole` (supplier, producer, distributor, agent, partner, customer, carrier, tenant, franchisee), alamat, kontak, NPWP/NIB/NIK (terenkripsi sebagian), rekening bank
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.2 KYC/KYB workflow: dokumen (akta, NIB, NPWP, SIUP), verifikasi bertahap lewat approval engine, masa berlaku dokumen + pengingat kedaluwarsa, status `pending/verified/suspended/blacklisted`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.2 KYC/KYB workflow: dokumen (akta, NIB, NPWP, SIUP), verifikasi bertahap lewat approval engine, masa berlaku dokumen + pengingat kedaluwarsa, status `pending/verified/suspended/blacklisted`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.3 **Legal entity** grup (`pty_legal_entities`): induk–anak perusahaan, mata uang fungsional, NPWP entitas, tahun fiskal; **chart of accounts per entitas** (mapping ke akun ledger yang ada tanpa memecah ledger lama)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.3 **Legal entity** grup (`pty_legal_entities`): induk–anak perusahaan, mata uang fungsional, NPWP entitas, tahun fiskal; **chart of accounts per entitas** (mapping ke akun ledger yang ada tanpa memecah ledger lama)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.4 Tautan non-breaking ke data lama: `Carrier`, `ShipperAccount` (Logistics), `Tenant` (Mall), seller C2C (Store), supplier Resto → `party_id` (nullable → diisi backfill idempoten)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.4 Tautan non-breaking ke data lama: `Carrier`, `ShipperAccount` (Logistics), `Tenant` (Mall), seller C2C (Store), supplier Resto → `party_id` (nullable → diisi backfill idempoten)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.5 Deteksi duplikat & merge party (aturan NPWP/nama/telepon; merge tercatat, reversible lewat audit trail)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.5 Deteksi duplikat & merge party (aturan NPWP/nama/telepon; merge tercatat, reversible lewat audit trail)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.6 Screening daftar hitam/sanksi (data simulasi) saat onboarding & sebelum transaksi bernilai tinggi; hasil tersimpan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.6 Screening daftar hitam/sanksi (data simulasi) saat onboarding & sebelum transaksi bernilai tinggi; hasil tersimpan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.7 Credit profile pihak (limit, skor internal simulasi, eksposur gabungan lintas modul)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.7 Credit profile pihak (limit, skor internal simulasi, eksposur gabungan lintas modul)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.8 UI direktori pihak + detail 360° (kontrak, transaksi, aset, eksposur — placeholder tautan ke fase berikutnya)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.8 UI direktori pihak + detail 360° (kontrak, transaksi, aset, eksposur — placeholder tautan ke fase berikutnya)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.9 Quality gate Fase 27
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.9 Quality gate Fase 27
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
+    - (dibatalkan) gate: docs/gates/fase-27.md
 
 ## FASE 28 — KONTRAK INTI (MODUL `ctr_`)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
