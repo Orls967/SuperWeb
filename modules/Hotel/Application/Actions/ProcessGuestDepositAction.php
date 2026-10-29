@@ -23,6 +23,19 @@ class ProcessGuestDepositAction extends BaseAction
     /**
      * @return array{deposit: HotelDeposit, status: string}
      */
+    public function execute(
+        string $propertyId,
+        string $reservationId,
+        string $guestUserId,
+        int $amountIdr,
+        string $paymentMethod,
+        string $idempotencyKey
+    ): HotelDeposit {
+        $result = $this->handle($propertyId, $reservationId, $guestUserId, $amountIdr, $paymentMethod, $idempotencyKey);
+
+        return $result['deposit'];
+    }
+
     public function handle(
         string $propertyId,
         string $reservationId,
