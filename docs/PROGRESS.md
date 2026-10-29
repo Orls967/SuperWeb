@@ -3653,82 +3653,91 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
     - (dibatalkan) gate: docs/gates/fase-24.md
 
 ## FASE 25 — SKALA, API, HARDENING, CONTROL TOWER
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 25.1 LogisticsLargeSeeder: >= 200.000 shipment, >= 2.000.000 tracking event, >= 5.000 kontainer, >= 20 kapal, >= 300 truk, 12 bulan riwayat, B2B postpaid ledger, benchmark waktu
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 25.1 LogisticsLargeSeeder: >= 200.000 shipment, >= 2.000.000 tracking event, >= 5.000 kontainer, >= 20 kapal, >= 300 truk, 12 bulan riwayat, B2B postpaid ledger, benchmark waktu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.2 Anggaran kinerja (QueryBudgetTest): lookup resi <= 3 query p95 < 50ms, dispatcher <= 10 query, control tower <= 12 query, lgx:accrue-dd < 30s, EXPLAIN docs
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.2 Anggaran kinerja (QueryBudgetTest): lookup resi <= 3 query p95 < 50ms, dispatcher <= 10 query, control tower <= 12 query, lgx:accrue-dd < 30s, EXPLAIN docs
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.3 API v1 (Sanctum): quotes, shipments (Idempotency-Key header), tracking, token abilities, rate limit, docs/API.md
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.3 API v1 (Sanctum): quotes, shipments (Idempotency-Key header), tracking, token abilities, rate limit, docs/API.md
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.4 Webhook outbox: lgx_webhook_endpoints + deliveries, HMAC-SHA256, exponential backoff max 8 retry, dead-letter, manual replay
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.4 Webhook outbox: lgx_webhook_endpoints + deliveries, HMAC-SHA256, exponential backoff max 8 retry, dead-letter, manual replay
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.5 Queue & scheduler: queued jobs idempotent ShouldBeUnique, seluruh command di routes/console.php, docs/RUNBOOK.md update
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.5 Queue & scheduler: queued jobs idempotent ShouldBeUnique, seluruh command di routes/console.php, docs/RUNBOOK.md update
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.6 Matriks otorisasi: SecurityTest & RouteSmokeTest mencakup seluruh rute dan role logistik
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.6 Matriks otorisasi: SecurityTest & RouteSmokeTest mencakup seluruh rute dan role logistik
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.7 Control Tower (logistics_admin): KPI OTIF, status chart, armada, dwell time, COD, margin per lane
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.7 Control Tower (logistics_admin): KPI OTIF, status chart, armada, dwell time, COD, margin per lane
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.8 Dokumentasi final: ARCHITECTURE, RUNBOOK, README, DECISIONS lengkap
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.8 Dokumentasi final: ARCHITECTURE, RUNBOOK, README, DECISIONS lengkap
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.9 Quality gate final: seluruh test & large seeder lolos, semua gate hijau
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.9 Quality gate final: seluruh test & large seeder lolos, semua gate hijau
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
+    - (dibatalkan) gate: docs/gates/fase-25.md
 
 ## DEFINITION OF DONE (FASE 19–25)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task 19.1–25.9 tercentang.
 - [x] Jumlah test >= baseline 19.1 (297 test, 1317 assertions) dan naik di setiap fase (mencapai 538 tests, 3189 assertions); tidak ada test yang di-skip/dilemahkan.
 - [x] Semua quality gate lulus pada commit terakhir; bank:reconcile = 0 untuk semua aset.
@@ -3741,7 +3750,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 ---
 
 ## 🏆 LAPORAN PENUTUP & SERAH TERIMA FINAL (FASE 24 & 25)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 
 Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebsite** (Fase 24 hingga Fase 25) telah diselesaikan secara tuntas dan mandiri dengan standar rekayasa perangkat lunak enterprise:
 
