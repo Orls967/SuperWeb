@@ -7072,180 +7072,195 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Command `esg:audit` (Faktor emisi terstandarisasi, rekonsiliasi total emisi vs pensiun sertifikat, integritas neraca kredit karbon 100%, 0 diskrepansi).
 
 ## FASE 61 — MARKETPLACE B2B, SURPLUS ASSET AUCTION & ESCROW
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 61.1 **Portal Marketplace B2B Multi-Vendor & Katalog Grosir Tertutup**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 61.1 **Portal Marketplace B2B Multi-Vendor & Katalog Grosir Tertutup**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command b2b:audit
-    - gate: docs/gates/fase-61.md
+    - (dibatalkan) gate: docs/gates/fase-61.md
   - Direktori etalase katalog grosir tertutup: produk eksklusif distributor, pabrik, dan mitra resmi terverifikasi.
   - Penetapan harga bertingkat berbasis kuantitas (*Tiered Pricing Matrix* JSON) dan kepatuhan MOQ (*Minimum Order Quantity*).
   - Proteksi privasi harga industri: isolasi visibilitas katalog antar tier pembeli B2B.
-- [x] 61.2 **Alur Negosiasi RFQ (Request for Quotation) Publik & Termin Pembayaran Tempo**:
-  Bukti:
+- [ ] 61.2 **Alur Negosiasi RFQ (Request for Quotation) Publik & Termin Pembayaran Tempo**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command b2b:audit
-    - gate: docs/gates/fase-61.md
+    - (dibatalkan) gate: docs/gates/fase-61.md
   - Alur penerbitan RFQ formal antar-badan usaha dengan spesifikasi target harga dan kuantitas pesanan.
   - Negosiasi termin pembayaran komersial fleksibel: TOP 30, TOP 60, TOP 90, atau Cash on Delivery.
   - Transisi status terkelola: *open → quoted → negotiated → accepted → contract_bound*.
-- [x] 61.3 **Balai Lelang Digital Aset Surplus, Mesin Pabrik & Armada Bekas**:
-  Bukti:
+- [ ] 61.3 **Balai Lelang Digital Aset Surplus, Mesin Pabrik & Armada Bekas**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command b2b:audit
-    - gate: docs/gates/fase-61.md
+    - (dibatalkan) gate: docs/gates/fase-61.md
   - Pendaftaran barang lelang surplus: unit kendaraan bekas AutoDex, mesin pabrik idle modul Asset, atau persediaan lambat gerak (*slow-moving inventory*) WMS.
   - Mesin lelang real-time (*English Auction*): penetapan harga awal (*starting bid*), batas cadangan rahasia (*reserve price*), dan kelipatan penawaran (*bid increment*).
   - Fitur perlindungan lelang: perpanjangan waktu otomatis (*anti-sniping protection* 5 menit) saat penawaran masuk di menit-menit akhir penutupan lelang.
   - Row-level lock (`lockForUpdate`) untuk mencegah race condition penawaran simultan antar peserta lelang.
-- [x] 61.4 **Escrow Multi-Pihak Terproteksi (Multi-Party Escrow Engine)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 61.4 **Escrow Multi-Pihak Terproteksi (Multi-Party Escrow Engine)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command b2b:audit
-    - gate: docs/gates/fase-61.md
+    - (dibatalkan) gate: docs/gates/fase-61.md
   - Penguncian dana deposit lelang dan pembayaran pesanan B2B di rekening escrow platform (`B2bEscrowAccount`).
   - Rekonsiliasi mutasi dana escrow: saldo tersimpan (`deposit_amount_idr`), pencairan bertahap (`released_amount_idr`), dan pengembalian jaminan (`refunded_amount_idr`).
   - Rilis dana bersyarat aman: hanya dapat dicairkan ke penjual setelah konfirmasi fisik BAST digital atau e-POD resmi disahkan.
-- [x] 61.5 **B2bService, Web Portal & Audit Command `b2b:audit`**:
-  Bukti:
+- [ ] 61.5 **B2bService, Web Portal & Audit Command `b2b:audit`**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command b2b:audit
-    - gate: docs/gates/fase-61.md
+    - (dibatalkan) gate: docs/gates/fase-61.md
   - Layanan `Modules\B2b\Application\Services\B2bService` menangani orkestrasi katalog, lelang, dan escrow.
   - Web UI `/b2b` direktori lelang aktif dan status transaksi grosir.
   - Command `b2b:audit` (Invarian dana rekening escrow = saldo komitmen lelang + transaksi berjalan, validasi tanggal lelang, 0 diskrepansi).
 
 ## FASE 62 — AGRIBISNIS, KONTRAK PETANI & HULU RANTAI PASOK MAKANAN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 62.1 **Kemitraan Petani, Kebun Plasma & Pemetaan GIS Lahan**:
-  Bukti:
+- [ ] 62.1 **Kemitraan Petani, Kebun Plasma & Pemetaan GIS Lahan**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Agri/Application/Actions/GradeHarvestQualityAtCollectionCenterAction.php
     - test: modules/Agri/tests/Feature/AgriOperationsSliceTest.php::test_register_plasma_farmer_contract_with_input_loan_ledger_disbursement
     - akses: command agri:audit
-    - gate: docs/gates/fase-62.md
+    - (dibatalkan) gate: docs/gates/fase-62.md
   - Registrasi master kelompok tani (Poktan) dan petani plasma mandiri dengan identifikasi kode unik per wilayah.
   - Pencatatan pemetaan poligon spasial lahan (`land_polygon_geojson`), luas hektar garapan, dan profil komoditas tanam unggulan (cabe merah, beras organik, sayuran hidroponik, peternakan).
   - Riwayat kepatuhan sertifikasi budidaya baik (*Good Agricultural Practices - GAP*).
-- [x] 62.2 **Kontrak Tani Bagi Hasil (Contract Farming) & Pembiayaan Uang Muka Input**:
-  Bukti:
+- [ ] 62.2 **Kontrak Tani Bagi Hasil (Contract Farming) & Pembiayaan Uang Muka Input**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Agri/Application/Actions/GradeHarvestQualityAtCollectionCenterAction.php
     - test: modules/Agri/tests/Feature/AgriOperationsSliceTest.php::test_register_plasma_farmer_contract_with_input_loan_ledger_disbursement
     - akses: command agri:audit
-    - gate: docs/gates/fase-62.md
+    - (dibatalkan) gate: docs/gates/fase-62.md
   - Penerbitan kontrak budidaya komprehensif: tanggal tanam, proyeksi jadwal panen, estimasi target tonase (*target yield kg*).
   - Skema uang muka input produksi: penyediaan bibit bersertifikat dan pupuk berkualitas tinggi yang dicatat sebagai piutang uang muka terpotong (*advance deductible*).
   - Perlindungan harga petani: penetapan jaminan harga dasar minimum (*guaranteed floor price*) untuk memitigasi volatilitas fluktuasi pasar bebas.
-- [x] 62.3 **Sentra Pengumpul (Collection Center) & Grading Mutu Komoditas**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 62.3 **Sentra Pengumpul (Collection Center) & Grading Mutu Komoditas**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Agri/Application/Actions/GradeHarvestQualityAtCollectionCenterAction.php
     - test: modules/Agri/tests/Feature/AgriOperationsSliceTest.php::test_register_plasma_farmer_contract_with_input_loan_ledger_disbursement
     - akses: command agri:audit
-    - gate: docs/gates/fase-62.md
+    - (dibatalkan) gate: docs/gates/fase-62.md
   - Operasional pos pengumpul hasil panen pedesaan: penerimaan hasil tani harian, penimbangan akurat digital, dan inspeksi mutu multi-parameter (kadar air, kebersihan, visual).
   - Matriks penentuan mutu bertingkat: *Grade A (100% floor price), Grade B (90%), Grade C (80%)*.
   - Mekanisme pemotongan otomatis uang muka: amortisasi piutang bibit/pupuk langsung dari hasil panen bruto dengan jaminan tidak melebihi hasil panen.
   - Pelunasan seketika (*instant payout*) bersih ke dompet petani atau rekening bank mitra tani.
-- [x] 62.4 **Rantai Dingin Terpadu (Cold Chain IoT) ke Dapur Sentral Resto & Pabrik**:
-  Bukti:
+- [ ] 62.4 **Rantai Dingin Terpadu (Cold Chain IoT) ke Dapur Sentral Resto & Pabrik**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Agri/Application/Actions/GradeHarvestQualityAtCollectionCenterAction.php
     - test: modules/Agri/tests/Feature/AgriOperationsSliceTest.php::test_register_plasma_farmer_contract_with_input_loan_ledger_disbursement
     - akses: command agri:audit
-    - gate: docs/gates/fase-62.md
+    - (dibatalkan) gate: docs/gates/fase-62.md
   - Alur pengiriman terjadwal armada truk berpendingin (*reefer truck*) dari pos pengumpul langsung ke CK-01 Resto Sari Ranah atau Pabrik Manufaktur Makanan.
   - Integrasi telemetri sensor IoT suhu dan kelembaban berkala: deteksi status optimal (2°C - 8°C), status peringatan (8°C - 12°C), dan status pelanggaran mutu (*temperature breach*).
   - Verifikasi sertifikasi rantai pasok halal dari lahan pertanian hingga meja santap.
-- [x] 62.5 **AgriService, Web Portal & Audit Command `agri:audit`**:
-  Bukti:
+- [ ] 62.5 **AgriService, Web Portal & Audit Command `agri:audit`**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Agri/Application/Actions/GradeHarvestQualityAtCollectionCenterAction.php
     - test: modules/Agri/tests/Feature/AgriOperationsSliceTest.php::test_register_plasma_farmer_contract_with_input_loan_ledger_disbursement
     - akses: command agri:audit
-    - gate: docs/gates/fase-62.md
+    - (dibatalkan) gate: docs/gates/fase-62.md
   - Layanan `Modules\Agri\Application\Services\AgriService` mengorkestrasi kontrak tani, penerimaan panen, dan telemetri suhu.
   - Web UI `/agri` dasbor pemantauan hasil panen, serapan komoditas resto, dan logistik rantai dingin.
   - Command `agri:audit` (Konsistensi pembagian hasil panen, verifikasi pemotongan piutang uang muka tidak over-deducted, 0 diskrepansi).
 
 ## FASE 63 — KONSTRUKSI EPC, MANAJEMEN PROYEK PROPERTI & ASSET CAPITALIZATION
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 63.1 **Work Breakdown Structure (WBS) & Rencana Anggaran Biaya (RAB Proyek)**:
-  Bukti:
+- [ ] 63.1 **Work Breakdown Structure (WBS) & Rencana Anggaran Biaya (RAB Proyek)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Epc/Application/Actions/CapitalizeCompletedCipToFixedAssetAction.php
     - test: modules/Epc/tests/Feature/EpcOperationsSliceTest.php::test_record_wbs_progress_and_cip_ledger_cost
     - akses: command epc:audit
-    - gate: docs/gates/fase-63.md
+    - (dibatalkan) gate: docs/gates/fase-63.md
   - Struktur hierarki proyek teknik & konstruksi: Proyek (Ekstensi Duta Mall, Pabrik Baru Cikande, Central Kitchen CK-02 Surabaya) → Paket Pekerjaan (Struktur Sipil, Arsitektur, MEP, Infrastruktur) → Node Aktivitas WBS terukur.
   - Alokasi anggaran terperinci: komponen material (beton, baja, tiang pancang), upah subkontraktor, dan sewa alat berat.
   - Penentuan bobot persentase penyelesaian fisik (*weight percentage*) per simpul aktivitas dengan total akumulatif persis 100%.
-- [x] 63.2 **Manajemen Progres Fisik Proyek, Analisis Kurva-S & Monthly Certificate (MC)**:
-  Bukti:
+- [ ] 63.2 **Manajemen Progres Fisik Proyek, Analisis Kurva-S & Monthly Certificate (MC)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Epc/Application/Actions/CapitalizeCompletedCipToFixedAssetAction.php
     - test: modules/Epc/tests/Feature/EpcOperationsSliceTest.php::test_record_wbs_progress_and_cip_ledger_cost
     - akses: command epc:audit
-    - gate: docs/gates/fase-63.md
+    - (dibatalkan) gate: docs/gates/fase-63.md
   - Pelacakan deviasi progres aktual lapangan vs kurva-S rencana kerja.
   - Verifikasi progres prestasi kerja oleh Konsultan Pengawas Independen terakreditasi (*PT Virama Karya Konsultan*).
   - Penerbitan Sertifikat Prestasi Bulanan (*Monthly Certificate - MC*): perhitungan klaim termin bruto (*gross claim amount*), pemotongan retensi pemeliharaan 5% (*retention deduction*), dan penerbitan nilai tagihan bersih (*net payable*).
-- [x] 63.3 **Konstruksi Dalam Pengerjaan (CIP) & Akuntansi Biaya Modal**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 63.3 **Konstruksi Dalam Pengerjaan (CIP) & Akuntansi Biaya Modal**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Epc/Application/Actions/CapitalizeCompletedCipToFixedAssetAction.php
     - test: modules/Epc/tests/Feature/EpcOperationsSliceTest.php::test_record_wbs_progress_and_cip_ledger_cost
     - akses: command epc:audit
-    - gate: docs/gates/fase-63.md
+    - (dibatalkan) gate: docs/gates/fase-63.md
   - Akumulasi seluruh biaya proyek, jasa konstruksi, dan sertifikat prestasi bulanan ke akun buku besar Konstruksi Dalam Pengerjaan (`accumulated_cip_cost_idr`).
   - Rekonsiliasi periodik antara realisasi fisik MC konsultan dengan mutasi finansial buku besar CIP.
   - Guardrail pencegah kapitalisasi dini sebelum pekerjaan fisik diverifikasi tuntas.
-- [x] 63.4 **Serah Terima Akhir Proyek (BAST 1 & 2) & Kapitalisasi Aset Tetap Modul Asset**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 63.4 **Serah Terima Akhir Proyek (BAST 1 & 2) & Kapitalisasi Aset Tetap Modul Asset**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Epc/Application/Actions/CapitalizeCompletedCipToFixedAssetAction.php
     - test: modules/Epc/tests/Feature/EpcOperationsSliceTest.php::test_record_wbs_progress_and_cip_ledger_cost
     - akses: command epc:audit
-    - gate: docs/gates/fase-63.md
+    - (dibatalkan) gate: docs/gates/fase-63.md
   - Pelaksanaan Berita Acara Serah Terima Parsial (BAST 1) dan Berita Acara Serah Terima Final (BAST Final).
   - Penutupan saldo akun CIP dan reklasifikasi otomatis menjadi Aset Tetap Bangunan, Gedung, Mesin, dan Instalasi Fasilitas di Modul Aset (`Modules\Asset`).
   - Pemutakhiran nilai buku aset kapitalisasi (`capitalized_asset_value_idr`) dan pengikatan ID register aset tetap baru.
-- [x] 63.5 **EpcService, Web Portal & Audit Command `epc:audit`**:
-  Bukti:
+- [ ] 63.5 **EpcService, Web Portal & Audit Command `epc:audit`**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Epc/Application/Actions/CapitalizeCompletedCipToFixedAssetAction.php
     - test: modules/Epc/tests/Feature/EpcOperationsSliceTest.php::test_record_wbs_progress_and_cip_ledger_cost
     - akses: command epc:audit
-    - gate: docs/gates/fase-63.md
+    - (dibatalkan) gate: docs/gates/fase-63.md
   - Layanan `Modules\Epc\Application\Services\EpcService` mengorkestrasi WBS, sertifikat progres, dan kapitalisasi aset tetap.
   - Web UI `/epc` visualisasi kurva-S progres konstruksi dan status kapitalisasi gedung baru.
   - Command `epc:audit` (Realisasi termin tagihan = klaim MC tersertifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, batas progres maksimal 100%, 0 diskrepansi).
