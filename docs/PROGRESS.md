@@ -5011,71 +5011,79 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-39.md
 
 ## FASE 40 — PEMELIHARAAN PABRIK, OEE & K3
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 40.1 **OEE** per mesin/line (Availability × Performance × Quality) dari downtime/produksi nyata; dasbor shift/harian
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 40.1 **OEE** per mesin/line (Availability × Performance × Quality) dari downtime/produksi nyata; dasbor shift/harian
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.2 Pemeliharaan korektif/preventif/prediktif (aturan ambang sensor **simulasi**), work order mesin memakai modul Aset (31.5)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.2 Pemeliharaan korektif/preventif/prediktif (aturan ambang sensor **simulasi**), work order mesin memakai modul Aset (31.5)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.3 Suku cadang pabrik: BOM peralatan, stok minimum, penggunaan per WO, biaya → TCO aset
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.3 Suku cadang pabrik: BOM peralatan, stok minimum, penggunaan per WO, biaya → TCO aset
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.4 Simulasi sensor IoT (`mfg_sensor_readings`): suhu/getaran/arus; alarm → WO otomatis (idempoten)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.4 Simulasi sensor IoT (`mfg_sensor_readings`): suhu/getaran/arus; alarm → WO otomatis (idempoten)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.5 Pareto downtime, MTBF/MTTR, backlog pemeliharaan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.5 Pareto downtime, MTBF/MTTR, backlog pemeliharaan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.6 K3/HSE: insiden & near-miss, investigasi, tindakan, izin kerja berisiko (hot work/confined space) dengan approval & masa berlaku
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.6 K3/HSE: insiden & near-miss, investigasi, tindakan, izin kerja berisiko (hot work/confined space) dengan approval & masa berlaku
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.7 Lingkungan & energi: pemakaian listrik/air/limbah per order, intensitas per unit (dasar ESG di backlog)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.7 Lingkungan & energi: pemakaian listrik/air/limbah per order, intensitas per unit (dasar ESG di backlog)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.8 Quality gate Fase 40
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.8 Quality gate Fase 40
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
+    - (dibatalkan) gate: docs/gates/fase-40.md
 
 ## FASE 41 — GUDANG & PUSAT DISTRIBUSI (WMS, MODUL `wms_`)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
