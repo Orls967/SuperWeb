@@ -7867,73 +7867,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 71.1–71.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 72 — INSURTECH: MICRO-INSURANCE TERSEMAT & CLAIMS AUTOPILOT
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, double-entry ledger konsisten, dan quality gate 9/9 langkah pass.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Insurance (`ins_`) · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP 2F slice 2
 > **Jalan pintas terlarang di fase ini:** klaim dicairkan dengan flag `$approved`; premi diakui penuh saat dibayar; klaim ganda untuk event yang sama — ditambah seluruh X1–X25.
-- [x] 72.1 Tabel `ins_products` (premi mikro: keterlambatan logistik, kerusakan kendaraan, cold-chain breach, pembatalan event, cuti sakit karyawan), `ins_policies` (tersemat otomatis ke dompet pengguna/shipment/kontrak), `ins_claims`
-  Bukti:
+- [ ] 72.1 Tabel `ins_products` (premi mikro: keterlambatan logistik, kerusakan kendaraan, cold-chain breach, pembatalan event, cuti sakit karyawan), `ins_policies` (tersemat otomatis ke dompet pengguna/shipment/kontrak), `ins_claims`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_issue_embedded_policy_and_deduct_premium
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.2 **Trigger otomatis tanpa formulir**: event spine (`lgx.late>4h`, `auto.collision_dtc`, `lgx.temp_breach>10m`, `ven.event_cancelled`) → smart-contract simulasi memvalidasi bukti hash-chain → klaim **cair langsung ke dompet dalam detik** (posting ledger `ins:claims_paid`)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.2 **Trigger otomatis tanpa formulir**: event spine (`lgx.late>4h`, `auto.collision_dtc`, `lgx.temp_breach>10m`, `ven.event_cancelled`) → smart-contract simulasi memvalidasi bukti hash-chain → klaim **cair langsung ke dompet dalam detik** (posting ledger `ins:claims_paid`)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_claims_autopilot_pays_instantaneously_and_is_idempotent
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.3 Akuntansi premi: akrual premi harian/bulanan dari saldo, reserve klaim (akun liabilitas), loss ratio & combined ratio per produk; batas payout per polis & per hari (anti-fraud)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.3 Akuntansi premi: akrual premi harian/bulanan dari saldo, reserve klaim (akun liabilitas), loss ratio & combined ratio per produk; batas payout per polis & per hari (anti-fraud)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_insurance_reserve_exceeds_or_equals_paid_liabilities
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.4 Fraud guard: skor anomali klaim (klaim beruntun, polis baru langsung klaim) → hold manual four-eyes sebelum cair; audit trail penuh
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.4 Fraud guard: skor anomali klaim (klaim beruntun, polis baru langsung klaim) → hold manual four-eyes sebelum cair; audit trail penuh
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_fraud_anomaly_score_triggers_manual_review_hold
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.5 Reinstatement & cancellation, grace period premi, dan klaim manual (unggah bukti) untuk kasus non-tersemat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.5 Reinstatement & cancellation, grace period premi, dan klaim manual (unggah bukti) untuk kasus non-tersemat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_premium_payment_failure_leads_to_policy_lapse
     - akses: route POST /insurance/products/{product}/issue [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.6 Dashboard: claims autopilot (days-to-pay = detik), loss ratio per produk, reserve vs kewajiban, top trigger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.6 Dashboard: claims autopilot (days-to-pay = detik), loss ratio per produk, reserve vs kewajiban, top trigger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceVerticalSliceHttpTest.php::test_a_authorized_user_can_access_insurance_index_and_issue
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.7 Tests: (a) trigger sah → klaim cair 1x, ganda ditolak (b) reserve ≥ kewajiban terbayar (c) fraud score tinggi masuk hold (d) premi gagal bayar → polis lapse + notifikasi (e) reconcile reserve = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.7 Tests: (a) trigger sah → klaim cair 1x, ganda ditolak (b) reserve ≥ kewajiban terbayar (c) fraud score tinggi masuk hold (d) premi gagal bayar → polis lapse + notifikasi (e) reconcile reserve = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: f406adc
     - file: modules/Insurance/tests/Feature/InsuranceTest.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_reconcile_insurance_reserve_equals_ledger
-    - gate: docs/gates/fase-72.md
-- [x] 72.8 Quality gate Fase 72
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.8 Quality gate Fase 72
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: f406adc
     - file: modules/Insurance/tests/Feature/InsuranceTest.php
     - test: modules/Insurance/tests/Feature/InsuranceVerticalSliceHttpTest.php::test_d_two_source_insurance_audit_passes_cleanly
     - akses: command ins:audit
-    - gate: docs/gates/fase-72.md
+    - (dibatalkan) gate: docs/gates/fase-72.md
 
 ### Register Minus Fase 72
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
