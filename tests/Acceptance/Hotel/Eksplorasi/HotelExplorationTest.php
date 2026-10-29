@@ -98,8 +98,8 @@ class HotelExplorationTest extends TestCase
             $doubleBooked = false;
         }
 
-        // Simpan temuan: Action lama membiarkan double-booking karena query overlap cacat
-        $this->assertTrue($doubleBooked, 'BUKTI CACAT: ReserveRoomWithInventoryNightLockAction mengizinkan booking di tengah masa inap karena query overlap cacat');
+        // Setelah perbaikan: double-booking berhasil dicegah
+        $this->assertFalse($doubleBooked, 'Anti-overlap kini berhasil mencegah double-booking di tengah masa inap');
     }
 
     /**

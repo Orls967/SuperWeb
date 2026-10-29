@@ -37,13 +37,11 @@ class ReserveRoomWithInventoryNightLockAction extends BaseAction
                 throw new \InvalidArgumentException('Check-out date must be after check-in date.');
             }
 
-            // Anti-overlap verification
+            // Anti-overlap verification: (check_in_date < $out) and (check_out_date > $in)
             $hasOverlap = HotelReservation::where('room_id', $room->id)
                 ->whereIn('status', ['confirmed', 'checked_in'])
-                ->where(function ($q) use ($in, $out) {
-                    $q->whereBetween('check_in_date', [$in, $out])
-                        ->orWhereBetween('check_out_date', [$in, $out]);
-                })
+                ->whereDate('check_in_date', '<', $out->toDateString())
+                ->whereDate('check_out_date', '>', $in->toDateString())
                 ->exists();
 
             if ($hasOverlap) {
