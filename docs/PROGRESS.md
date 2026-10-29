@@ -8613,73 +8613,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 6 — MANUFAKTUR, DISTRIBUSI & KEBIJAKAN HARGA
 
 ## FASE 81 — ALGORITHMIC & SURGE PRICING ENGINE (DETIK-PER-DETIK)
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 81 tuntas: mesin harga detik-per-detik real-time, guardrail mutlak floor (1.15x HPP) / ceiling (HET) / daily band (±35%), supremasi kontrak & price list bertingkat, dokumen quote immutable kriptografis timelock SHA-256, partisi & agregat per-menit, integrasi multi-kanal (Store B2C, Wholesale, B2B Marketplace, Export, Vending), analitik guardrail (0 temuan), command audit `pricing:audit` = 0 selisih vs dokumen order. Quality gate lulus di commit `30eadf0c`.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Pricing (`pric_`) · **Prasyarat:** R4.2 ✅ (prefiks `prc_`→`pric_`) · **Acuan:** KONSEP 6F slice 1
 > **Jalan pintas terlarang di fase ini:** harga order mengikuti tick terbaru; tick tanpa guardrail floor/ceiling; tabel `prc_` di Pricing — ditambah seluruh X1–X25.
-- [x] 81.1 Tabel `prc_price_ticks` partisi (SKU, detik, harga, sumber penggerak: demand index, stok WMS, harga komoditas global feed, musim, okupansi gudang) — target 1 miliar tick/tahun pada skala simulasi, agregat per menit untuk query
-  Bukti:
+- [ ] 81.1 Tabel `prc_price_ticks` partisi (SKU, detik, harga, sumber penggerak: demand index, stok WMS, harga komoditas global feed, musim, okupansi gudang) — target 1 miliar tick/tahun pada skala simulasi, agregat per menit untuk query
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_1_tick_idempotency_and_minute_aggregates
     - akses: route POST /pricing/ticks [role: admin, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.2 **Mesin harga detik-per-detik**: harga suku cadang Store, ongkir logistik (Fase 80.5), bahan baku grosir Distributor → elastisitas & aturan surge deterministik → harga berfluktuasi real-time layaknya tiket pesawat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.2 **Mesin harga detik-per-detik**: harga suku cadang Store, ongkir logistik (Fase 80.5), bahan baku grosir Distributor → elastisitas & aturan surge deterministik → harga berfluktuasi real-time layaknya tiket pesawat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_3_strict_floor_and_ceiling_guardrails
     - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.3 **Guardrail mutlak**: floor price (HPP + margin minimum), ceiling (HET simulasi), band maksimal per hari; kontrak harga (Fase 44.4) & price list bertingkat (Fase 44.1) selalu mengalahkan harga dinamis; setiap perubahan tercatat di price waterfall audit
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.3 **Guardrail mutlak**: floor price (HPP + margin minimum), ceiling (HET simulasi), band maksimal per hari; kontrak harga (Fase 44.4) & price list bertingkat (Fase 44.1) selalu mengalahkan harga dinamis; setiap perubahan tercatat di price waterfall audit
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_3_b2b_contract_price_always_beats_dynamic_surge
     - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.4 **Dokumen immutable**: harga "dikunci" saat quote/order dibuat (quote hash timelock) → meski tick berubah, dokumen tetap harga saat itu (memperluas lgx_quotes & price freeze Fase 44.4)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.4 **Dokumen immutable**: harga "dikunci" saat quote/order dibuat (quote hash timelock) → meski tick berubah, dokumen tetap harga saat itu (memperluas lgx_quotes & price freeze Fase 44.4)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_4_quote_freeze_and_immutable_conversion_to_order
     - akses: route POST /pricing/quote/freeze [role: admin, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.5 Integrasi kanal: Store B2C, portal grosir Distributor, B2B Marketplace, ekspor (formula harga kontrak impor/ekspor), vending (Fase 75.5)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.5 Integrasi kanal: Store B2C, portal grosir Distributor, B2B Marketplace, ekspor (formula harga kontrak impor/ekspor), vending (Fase 75.5)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_5_channel_specific_quoting
     - akses: route POST /pricing/quote/freeze [role: admin, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.6 Analitik: realisasi vs list per tick, penyimpangan guardrail (harus 0), margin per transaksi, harga efektif per wilayah
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.6 Analitik: realisasi vs list per tick, penyimpangan guardrail (harus 0), margin per transaksi, harga efektif per wilayah
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_6_analytics_summary_reports_zero_guardrail_violations
     - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.7 Tests: (a) harga tak pernah di bawah floor / di atas ceiling (b) harga kontrak menang atas dinamis (c) order membekukan harga tick saat itu (d) tick ganda idempoten (e) `pricing:audit` = 0 selisih vs dokumen order
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.7 Tests: (a) harga tak pernah di bawah floor / di atas ceiling (b) harga kontrak menang atas dinamis (c) order membekukan harga tick saat itu (d) tick ganda idempoten (e) `pricing:audit` = 0 selisih vs dokumen order
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 30eadf0c
     - file: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_7_pricing_audit_command_enforces_zero_discrepancy
-    - gate: docs/gates/fase-81.md
-- [x] 81.8 Quality gate Fase 81
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.8 Quality gate Fase 81
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 30eadf0c
     - file: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_http_endpoints_and_rbac
     - akses: command pricing:audit
-    - gate: docs/gates/fase-81.md
+    - (dibatalkan) gate: docs/gates/fase-81.md
 
 ### Register Minus Fase 81
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
