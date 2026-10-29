@@ -3317,87 +3317,97 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
     - (dibatalkan) gate: docs/gates/fase-20.md
 
 ## FASE 21 — SHIPMENT, TARIF, BOOKING & PORTAL SHIPPER
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 21.1 Model shipment: lgx_shipments (SRX + 10 digit + check digit Luhn), state machine canTransitionTo(), lgx_packages (berat, dimensi, hs_code, dg_un_number, temp reefer)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 21.1 Model shipment: lgx_shipments (SRX + 10 digit + check digit Luhn), state machine canTransitionTo(), lgx_packages (berat, dimensi, hs_code, dg_un_number, temp reefer)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.2 Berat tertagih (chargeable weight) BigDecimal: max(aktual, volumetrik), pembagi volumetrik per mode, pembulatan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.2 Berat tertagih (chargeable weight) BigDecimal: max(aktual, volumetrik), pembagi volumetrik per mode, pembulatan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.3 Rate card & surcharge: lgx_rate_cards, lgx_rate_brackets, lgx_surcharges, validasi non-overlapping, PPN simulasi 11%
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.3 Rate card & surcharge: lgx_rate_cards, lgx_rate_brackets, lgx_surcharges, validasi non-overlapping, PPN simulasi 11%
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.4 Quote: QuoteShipmentAction -> lgx_quotes timelock 15 menit + hash anti-manipulasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.4 Quote: QuoteShipmentAction -> lgx_quotes timelock 15 menit + hash anti-manipulasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.5 Booking prabayar: BookShipmentAction, PIN wajib via VerifiesWalletPin, PaymentGateway::charge ke lgx:unearned_freight
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.5 Booking prabayar: BookShipmentAction, PIN wajib via VerifiesWalletPin, PaymentGateway::charge ke lgx:unearned_freight
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.6 Akun postpaid B2B: lgx_shipper_accounts, credit limit, lgx:invoice-shippers bulanan idempotent, bayar invoice via wallet + PIN
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.6 Akun postpaid B2B: lgx_shipper_accounts, credit limit, lgx:invoice-shippers bulanan idempotent, bayar invoice via wallet + PIN
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.7 Pembatalan: refund via gateway dikurangi cancellation fee -> lgx:freight_revenue (pre-pickup), tolak post-pickup
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.7 Pembatalan: refund via gateway dikurangi cancellation fee -> lgx:freight_revenue (pre-pickup), tolak post-pickup
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.8 Portal shipper (mobile-responsive): form buat shipment, upload massal CSV s/d 5.000 baris queued job, cetak label QR
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.8 Portal shipper (mobile-responsive): form buat shipment, upload massal CSV s/d 5.000 baris queued job, cetak label QR
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.9 Pelacakan publik: /track/{tracking_number} tanpa login, throttle 30/menit, penyamaran PII data consignee, timeline event
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.9 Pelacakan publik: /track/{tracking_number} tanpa login, throttle 30/menit, penyamaran PII data consignee, timeline event
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.10 Quality gate Fase 21
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.10 Quality gate Fase 21
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
+    - (dibatalkan) gate: docs/gates/fase-21.md
 
 ## FASE 22 — OPERASI JARINGAN MULTIMODA: KAPASITAS, RUTE, KONSOLIDASI, HUB, LAST-MILE
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
