@@ -7613,75 +7613,83 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 68.1–68.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 69 — EKOSISTEM EV: CHARGING NETWORK & BATTERY PASSPORT
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI. Selesai tuntas pada Fase 69.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mobility (`oto_`) · **Prasyarat:** Fase 68 ✅ · **Acuan:** KONSEP 1F slice 2
 > **Jalan pintas terlarang di fase ini:** sesi EV tanpa hold/capture PaymentGateway; SoH dari angka masukan bebas; stop sesi ganda menggandakan capture — ditambah seluruh X1–X25.
-- [x] 69.1 Tabel `oto_ev_stations` (SPKLU: lokasi hub/ mall/ resto/ rute logistik), `oto_ev_chargers` (AC/DC, kW, status), `oto_ev_sessions` (booking → plug → meter kWh → selesai → tagih)
-  Bukti:
+- [ ] 69.1 Tabel `oto_ev_stations` (SPKLU: lokasi hub/ mall/ resto/ rute logistik), `oto_ev_chargers` (AC/DC, kW, status), `oto_ev_sessions` (booking → plug → meter kWh → selesai → tagih)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/database/migrations/2026_10_07_690100_create_oto_ev_tables.php
     - file: modules/Ev/Domain/Models/EvStation.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_booking_conflict_is_rejected
     - akses: route GET /ev [role: admin, ev_admin, station_operator, driver]
-    - gate: docs/gates/fase-69.md
-- [x] 69.2 Booking slot time-lock dari garasi AutoDex/portal: reservasi 30 menit, no-show fee, anti-overlap per charger; check-in via scan QR charger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.2 Booking slot time-lock dari garasi AutoDex/portal: reservasi 30 menit, no-show fee, anti-overlap per charger; check-in via scan QR charger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/Application/Services/EvChargingService.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_no_show_fee_posts_to_ledger
     - akses: route POST /ev/chargers/{charger}/reserve [role: admin, ev_admin, station_operator, driver]
-    - gate: docs/gates/fase-69.md
-- [x] 69.3 Meteran kWh presisi (integer Wh) → tagihan otomatis via Payment Hub (tarif per kWh bertingkat per jam sibuk/non-sibuk, saldo wallet atau stablecoin) → posting ledger `oto:ev_revenue`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.3 Meteran kWh presisi (integer Wh) → tagihan otomatis via Payment Hub (tarif per kWh bertingkat per jam sibuk/non-sibuk, saldo wallet atau stablecoin) → posting ledger `oto:ev_revenue`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/Application/Services/EvChargingService.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_kwh_metering_matches_exact_ledger_revenue_billing
     - akses: route POST /ev/sessions/{session}/complete [role: admin, ev_admin, station_operator]
-    - gate: docs/gates/fase-69.md
-- [x] 69.4 **Battery Passport hash-chain**: siklus charge, suhu sel, SoC/SoH dihitung per sesi → ditulis append-only ke passport kendaraan; degradasi SoH < 70% memicu event tukar-tambah (link ke Store/AutoDex) dan rekomendasi HODL-to-Drive untuk unit pengganti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.4 **Battery Passport hash-chain**: siklus charge, suhu sel, SoC/SoH dihitung per sesi → ditulis append-only ke passport kendaraan; degradasi SoH < 70% memicu event tukar-tambah (link ke Store/AutoDex) dan rekomendasi HODL-to-Drive untuk unit pengganti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/Application/Services/BatteryPassportService.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_battery_passport_hash_chain_records_soh_degradation_deterministically
     - akses: route GET /ev [role: admin, ev_admin, station_operator, driver]
-    - gate: docs/gates/fase-69.md
-- [x] 69.5 Grid ops simulasi: okupansi charger real-time, antrian, beban puncak (load balancing simulasi — session non-kritis ditunda 15 menit), laporan energi & margin per stasiun
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.5 Grid ops simulasi: okupansi charger real-time, antrian, beban puncak (load balancing simulasi — session non-kritis ditunda 15 menit), laporan energi & margin per stasiun
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/Application/Services/EvChargingService.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_grid_load_balancing_defers_non_critical_session_without_cancellation
     - akses: route POST /ev/stations/{station}/load-balance [role: admin, ev_admin, station_operator]
-    - gate: docs/gates/fase-69.md
-- [x] 69.6 Integrasi ESG: kWh dari grid terkonversi emisi Scope 2 (faktor Fase 60.1) per sesi → dashboard EV "green km"
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.6 Integrasi ESG: kWh dari grid terkonversi emisi Scope 2 (faktor Fase 60.1) per sesi → dashboard EV "green km"
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/resources/views/ev/index.blade.php
     - test: modules/Ev/tests/Feature/EvVerticalSliceHttpTest.php::test_a_authorized_user_can_access_ev_index_and_reserve
     - akses: route GET /ev [role: admin, ev_admin, station_operator, driver]
-    - gate: docs/gates/fase-69.md
-- [x] 69.7 Tests: (a) booking bentrok ditolak (b) kWh meteran = tagihan ledger (c) SoH turun tercatat valid di hash-chain (d) no-show fee ter-posting (e) simulasi load balancing tidak membuat sesi dibatalkan sepihak
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.7 Tests: (a) booking bentrok ditolak (b) kWh meteran = tagihan ledger (c) SoH turun tercatat valid di hash-chain (d) no-show fee ter-posting (e) simulasi load balancing tidak membuat sesi dibatalkan sepihak
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 50f6c44
     - file: modules/Ev/tests/Feature/EvTest.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_booking_conflict_is_rejected
-    - gate: docs/gates/fase-69.md
-- [x] 69.8 Quality gate Fase 69
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.8 Quality gate Fase 69
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 50f6c44
     - file: docs/gates/fase-69.md
     - file: modules/Ev/tests/Feature/EvVerticalSliceHttpTest.php
     - test: modules/Ev/tests/Feature/EvVerticalSliceHttpTest.php::test_d_two_source_ev_audit_passes_cleanly
     - akses: command ev:audit
-    - gate: docs/gates/fase-69.md
+    - (dibatalkan) gate: docs/gates/fase-69.md
 
 ### Register Minus Fase 69
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
