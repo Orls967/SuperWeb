@@ -13,9 +13,7 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\LedgerTransaction;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Mall\Domain\Enums\ReceiptClaimStatus;
 use Modules\Mall\Domain\Exceptions\DuplicateReceiptClaimException;
@@ -23,6 +21,7 @@ use Modules\Mall\Domain\Models\LoyaltyMember;
 use Modules\Mall\Domain\Models\PointBatch;
 use Modules\Mall\Domain\Models\ReceiptClaim;
 use Modules\Mall\Domain\Models\Tenant;
+use Modules\Mall\Ledger\MallAccounts;
 
 class ClaimReceiptPointsAction
 {
@@ -90,25 +89,14 @@ class ClaimReceiptPointsAction
             if ($pointsEarned > 0) {
                 $userPointsAccount = $user->pointsAccount();
 
-                $mallLiabilityAccount = LedgerAccount::firstOrCreate(
-                    ['code' => 'liability:mall:points:PTS'],
-                    [
-                        'uuid' => (string) Str::uuid(),
-                        'name' => 'Kewajiban Poin Loyalitas Duta Mall',
-                        'asset_code' => 'PTS',
-                        'kind' => AccountKind::CLEARING->value,
-                        'allow_negative' => true,
-                        'cached_balance' => '0',
-                        'is_frozen' => false,
-                    ]
-                );
+                $mallLiabilityAccount = MallAccounts::pointsLiabilityAccount();
 
                 $ptsBd = BigDecimal::of($pointsEarned);
 
-                // Entri seimbang: Debit akun user (+pts), Kredit kewajiban mall (-pts)
+                // Entri seimbang: Debit akun aset/user (-pts), Kredit kewajiban mall (+pts) (K-1)
                 $entries = [
-                    PostingEntryDTO::forAccount($userPointsAccount->id, 'PTS', $ptsBd),
-                    PostingEntryDTO::forAccount($mallLiabilityAccount->id, 'PTS', $ptsBd->negated()),
+                    PostingEntryDTO::forAccount($userPointsAccount->id, 'PTS', $ptsBd->negated()),
+                    PostingEntryDTO::forAccount($mallLiabilityAccount->id, 'PTS', $ptsBd),
                 ];
 
                 // Kunci deterministik dari nomor struk agar retry tidak men-posting ganda

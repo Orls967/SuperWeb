@@ -48,7 +48,7 @@ trait HasLedgerAccounts
                 'asset_code' => 'PTS',
                 'kind' => AccountKind::POINTS->value,
                 'name' => "Poin Loyalitas - {$this->name}",
-                'allow_negative' => false,
+                'allow_negative' => true,
                 'cached_balance' => '0',
                 'is_frozen' => false,
             ]
@@ -66,7 +66,7 @@ trait HasLedgerAccounts
     {
         $account = $this->pointsAccount();
 
-        return (int) $account->cached_balance;
+        return abs((int) $account->cached_balance);
     }
 
     public function walletPin(): HasOne

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Mall\Ledger;
 
 use Modules\Banking\Domain\Enums\AccountKind;
+use Modules\Banking\Domain\Models\LedgerAccount;
 
 /**
  * Bagan Akun Standar (Chart of Accounts) untuk modul Mall.
@@ -12,12 +13,21 @@ use Modules\Banking\Domain\Enums\AccountKind;
  */
 final class MallAccounts
 {
+    public const LIABILITY_POINTS_PTS = 'liability:mall:points:PTS';
+
     /**
      * @return list<array{code: string, name: string, kind: AccountKind, asset_code: string, allow_negative: bool}>
      */
     public static function definitions(): array
     {
         return [
+            [
+                'code' => self::LIABILITY_POINTS_PTS,
+                'name' => 'Kewajiban Poin Loyalitas Duta Mall',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'PTS',
+                'allow_negative' => true,
+            ],
             [
                 'code' => 'revenue:mall:parking:IDR',
                 'name' => 'Pendapatan Parkir Duta Mall',
@@ -68,5 +78,20 @@ final class MallAccounts
                 'allow_negative' => true,
             ],
         ];
+    }
+
+    public static function pointsLiabilityAccount(): LedgerAccount
+    {
+        return LedgerAccount::firstOrCreate(
+            ['code' => self::LIABILITY_POINTS_PTS],
+            [
+                'name' => 'Kewajiban Poin Loyalitas Duta Mall',
+                'asset_code' => 'PTS',
+                'kind' => AccountKind::LIABILITY,
+                'allow_negative' => true,
+                'cached_balance' => '0',
+                'is_frozen' => false,
+            ]
+        );
     }
 }

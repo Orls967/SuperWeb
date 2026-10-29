@@ -8,15 +8,13 @@ use App\Models\User;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\LedgerTransaction;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Mall\Domain\Models\PointBatch;
+use Modules\Mall\Ledger\MallAccounts;
 
 class ExpirePointsAction
 {
@@ -46,18 +44,7 @@ class ExpirePointsAction
                 return;
             }
 
-            $mallLiabilityAccount = LedgerAccount::firstOrCreate(
-                ['code' => 'liability:mall:points:PTS'],
-                [
-                    'uuid' => (string) Str::uuid(),
-                    'name' => 'Kewajiban Poin Loyalitas Duta Mall',
-                    'asset_code' => 'PTS',
-                    'kind' => AccountKind::CLEARING->value,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
+            $mallLiabilityAccount = MallAccounts::pointsLiabilityAccount();
 
             // Kelompokkan per user untuk meminimalisasi jumlah transaksi buku besar
             $userBatches = $batches->groupBy('user_id');
@@ -90,10 +77,10 @@ class ExpirePointsAction
                 $userPointsAccount = $user->pointsAccount();
                 $ptsBd = BigDecimal::of($userTotal);
 
-                // Reversal: Kredit akun user (-pts), Debit kewajiban mall (+pts)
+                // Reversal: Debit kewajiban mall (-pts), Kredit akun aset/user (+pts) (K-1)
                 $entries = [
-                    PostingEntryDTO::forAccount($userPointsAccount->id, 'PTS', $ptsBd->negated()),
-                    PostingEntryDTO::forAccount($mallLiabilityAccount->id, 'PTS', $ptsBd),
+                    PostingEntryDTO::forAccount($userPointsAccount->id, 'PTS', $ptsBd),
+                    PostingEntryDTO::forAccount($mallLiabilityAccount->id, 'PTS', $ptsBd->negated()),
                 ];
 
                 $dto = new PostingDTO(

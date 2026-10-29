@@ -66,17 +66,17 @@ class MallPointsLiabilityTest extends TestCase
 
         $kindVal = is_object($account->kind) ? $account->kind->value : (string) $account->kind;
         $this->assertSame(
-            AccountKind::CLEARING->value,
+            AccountKind::LIABILITY->value,
             $kindVal,
-            'Akun liability:mall:points:PTS direklasifikasi menjadi CLEARING di commit c6f7392'
+            'Akun liability:mall:points:PTS wajib bertipe LIABILITY sesuai K-1'
         );
 
-        // Bukti 2: Saldo setelah klaim 100 poin bernilai -100 (terbalik dari konvensi tanda tunggal kredit = +)
+        // Saldo setelah klaim 100 poin bernilai +100 (kredit kewajiban bertambah)
         $balanceAfterClaim = (int) $account->fresh()->cached_balance;
         $this->assertSame(
-            -100,
+            100,
             $balanceAfterClaim,
-            'Saldo kewajiban aktual bernilai -100 (debit balance), membuktikan arah posting terbalik'
+            'Saldo kewajiban bertambah menjadi +100 (kredit balance)'
         );
 
         // 2. Redeem 30 poin
@@ -94,9 +94,9 @@ class MallPointsLiabilityTest extends TestCase
         $redeemAction = app(RedeemVoucherAction::class);
         $redeemAction->execute($user, $template);
 
-        // Setelah redeem 30 poin: aktual -100 + 30 = -70
+        // Setelah redeem 30 poin: 100 - 30 = 70
         $balanceAfterRedeem = (int) $account->fresh()->cached_balance;
-        $this->assertSame(-70, $balanceAfterRedeem);
+        $this->assertSame(70, $balanceAfterRedeem, 'Saldo kewajiban berkurang menjadi +70 setelah redeem 30 pts');
 
         // 3. Expire 20 poin
         $batch = PointBatch::where('user_id', $user->id)->firstOrFail();
@@ -108,21 +108,19 @@ class MallPointsLiabilityTest extends TestCase
         $expireAction = app(ExpirePointsAction::class);
         $expireAction->execute(now());
 
-        // Setelah expire 20 poin: aktual -70 + 20 = -50
+        // Setelah expire 20 poin: 70 - 20 = 50
         $balanceAfterExpire = (int) $account->fresh()->cached_balance;
         $this->assertSame(
-            -50,
+            50,
             $balanceAfterExpire,
-            'Saldo akhir bernilai -50 (seharusnya +50 jika sisi normal kewajiban kredit dipatuhi)'
+            'Saldo akhir bernilai +50 sesuai sisi normal kewajiban kredit'
         );
 
-        // Bukti 3: Bila dikembalikan ke LIABILITY, scanner normal balance langsung mendeteksi pelanggaran!
-        $account->update(['kind' => AccountKind::LIABILITY]);
+        // Memastikan scanner normal balance tidak menemukan pelanggaran
         $violations = LedgerNormalBalanceScanner::violations([$account]);
-        $this->assertContains(
-            'account:liability:mall:points:PTS:credit_normal_has_debit_balance',
+        $this->assertEmpty(
             $violations,
-            'Akun terbukti melanggar saldo normal jika bertipe LIABILITY (M-R0-6 sesungguhnya belum tuntas diperbaiki)'
+            'Akun liability:mall:points:PTS tidak boleh memiliki pelanggaran saldo normal'
         );
     }
 }

@@ -15,6 +15,7 @@ it('maps every AccountKind to its correct normal side', function (): void {
         AccountKind::CASH->value => 'debit',
         AccountKind::INVENTORY->value => 'debit',
         AccountKind::LOAN_RECEIVABLE->value => 'debit',
+        AccountKind::POINTS->value => 'debit',
         AccountKind::EXPENSE->value => 'debit',
 
         AccountKind::REVENUE->value => 'credit',
@@ -24,7 +25,6 @@ it('maps every AccountKind to its correct normal side', function (): void {
         AccountKind::DEPOSIT->value => 'credit',
         AccountKind::ESCROW->value => 'credit',
         AccountKind::WALLET->value => 'credit',
-        AccountKind::POINTS->value => 'credit',
         AccountKind::CONTRA_ASSET->value => 'credit',
         AccountKind::COLLATERAL->value => 'credit',
 

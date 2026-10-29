@@ -22,6 +22,7 @@ use Modules\Mall\Domain\Exceptions\InsufficientPointsException;
 use Modules\Mall\Domain\Exceptions\InvalidVoucherException;
 use Modules\Mall\Domain\Models\PointBatch;
 use Modules\Mall\Domain\Models\Tenant;
+use Modules\Mall\Ledger\MallAccounts;
 
 class MallLoyaltyLedgerService implements LoyaltyLedger
 {
@@ -133,23 +134,13 @@ class MallLoyaltyLedgerService implements LoyaltyLedger
 
             // 2. Double-Entry Posting untuk PTS
             $userPointsAccount = $user->pointsAccount();
-            $mallPointsLiability = LedgerAccount::firstOrCreate(
-                ['code' => 'liability:mall:points:PTS'],
-                [
-                    'uuid' => (string) Str::uuid(),
-                    'name' => 'Kewajiban Poin Loyalitas Duta Mall',
-                    'asset_code' => 'PTS',
-                    'kind' => AccountKind::CLEARING->value,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
+            $mallPointsLiability = MallAccounts::pointsLiabilityAccount();
 
             $ptsBd = BigDecimal::of($pointsToRedeem);
+            // Entri seimbang: Debit kewajiban mall (-pts), Kredit akun aset/user (+pts) (K-1)
             $ptsEntries = [
-                PostingEntryDTO::forAccount($userPointsAccount->id, 'PTS', $ptsBd->negated()),
-                PostingEntryDTO::forAccount($mallPointsLiability->id, 'PTS', $ptsBd),
+                PostingEntryDTO::forAccount($userPointsAccount->id, 'PTS', $ptsBd),
+                PostingEntryDTO::forAccount($mallPointsLiability->id, 'PTS', $ptsBd->negated()),
             ];
 
             $ptsRef = $referenceId ? (string) $referenceId : ('usr_'.$user->id.'_pts_'.$pointsToRedeem);
