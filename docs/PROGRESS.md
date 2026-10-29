@@ -4573,87 +4573,97 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-34.md
 
 ## FASE 35 — PABRIK: MASTER DATA MANUFAKTUR (MODUL `mfg_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 35.1 Modul Manufacturing: **Plant** (pabrik) per entitas hukum, area/line, kalender kerja & shift (hari libur, lembur), kapasitas nominal
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 35.1 Modul Manufacturing: **Plant** (pabrik) per entitas hukum, area/line, kalender kerja & shift (hari libur, lembur), kapasitas nominal
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.2 Work center & mesin: kapasitas/jam, efisiensi, biaya per jam (mesin + tenaga kerja + overhead), mesin ↔ aset (Fase 30)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.2 Work center & mesin: kapasitas/jam, efisiensi, biaya per jam (mesin + tenaga kerja + overhead), mesin ↔ aset (Fase 30)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.3 Master material: bahan baku, setengah jadi (WIP), barang jadi, kemasan, by-product/co-product; satuan & konversi; atribut lot/kedaluwarsa/serial
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.3 Master material: bahan baku, setengah jadi (WIP), barang jadi, kemasan, by-product/co-product; satuan & konversi; atribut lot/kedaluwarsa/serial
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.4 **BOM multi-level ber-versi** (generalisasi BOM Resto): efektif-dari/sampai, alternatif/substitusi, scrap %, by-product; BOM Resto tetap berjalan lewat adapter (tidak merusak HPP resto)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.4 **BOM multi-level ber-versi** (generalisasi BOM Resto): efektif-dari/sampai, alternatif/substitusi, scrap %, by-product; BOM Resto tetap berjalan lewat adapter (tidak merusak HPP resto)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.5 Routing: urutan operasi, work center, waktu setup & run, instruksi kerja, inspeksi di titik tertentu
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.5 Routing: urutan operasi, work center, waktu setup & run, instruksi kerja, inspeksi di titik tertentu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.6 Resep/formula untuk proses (pangan/kimia): yield, toleransi, bahan aktif; kontrol perubahan formula (approval + versi + hash)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.6 Resep/formula untuk proses (pangan/kimia): yield, toleransi, bahan aktif; kontrol perubahan formula (approval + versi + hash)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.7 Konversi Dapur Sentral **CK-01** menjadi plant tipe `central_kitchen` (batch produksi Resto tetap sah; sinkron stok & HPP lewat contract)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.7 Konversi Dapur Sentral **CK-01** menjadi plant tipe `central_kitchen` (batch produksi Resto tetap sah; sinkron stok & HPP lewat contract)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.8 Master tenaga kerja produksi: operator, skill, sertifikasi, jadwal shift (tanpa payroll; hanya penugasan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.8 Master tenaga kerja produksi: operator, skill, sertifikasi, jadwal shift (tanpa payroll; hanya penugasan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.9 UI master data + validasi BOM (siklus/kuantitas nol/UoM tak kompatibel dideteksi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.9 UI master data + validasi BOM (siklus/kuantitas nol/UoM tak kompatibel dideteksi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.10 Quality gate Fase 35
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.10 Quality gate Fase 35
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
+    - (dibatalkan) gate: docs/gates/fase-35.md
 
 ## FASE 36 — PERENCANAAN PRODUKSI (MPS / MRP / CRP)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
