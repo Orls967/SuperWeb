@@ -3410,87 +3410,97 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
     - (dibatalkan) gate: docs/gates/fase-21.md
 
 ## FASE 22 — OPERASI JARINGAN MULTIMODA: KAPASITAS, RUTE, KONSOLIDASI, HUB, LAST-MILE
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 22.1 Jadwal: lgx_schedules (truk, kapal voyage multi-port, pesawat freighter), kapasitas multi-dimensi
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 22.1 Jadwal: lgx_schedules (truk, kapal voyage multi-port, pesawat freighter), kapasitas multi-dimensi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.2 Reservasi kapasitas: ReserveCapacityAction lockForUpdate, ReleaseCapacityAction, lgx:capacity-check
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.2 Reservasi kapasitas: ReserveCapacityAction lockForUpdate, ReleaseCapacityAction, lgx:capacity-check
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.3 Perencana rute: RoutePlanner pure domain service (Dijkstra/k-shortest paths graf terisolasi), filter mode & DG & reefer, lgx_shipment_legs
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.3 Perencana rute: RoutePlanner pure domain service (Dijkstra/k-shortest paths graf terisolasi), filter mode & DG & reefer, lgx_shipment_legs
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.4 Konsolidasi & load planning: lgx_loads + lgx_load_items (FCL, LCL first-fit-decreasing CFS, VGM SOLAS sebelum muat kapal)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.4 Konsolidasi & load planning: lgx_loads + lgx_load_items (FCL, LCL first-fit-decreasing CFS, VGM SOLAS sebelum muat kapal)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.5 Chain of custody: lgx_tracking_events append-only hash chain per shipment, immutable, lgx:verify-custody chunkById
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.5 Chain of custody: lgx_tracking_events append-only hash chain per shipment, immutable, lgx:verify-custody chunkById
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.6 Operasi hub (hub_operator, mobile): scan inbound, sortir, outbound, deteksi otomatis exception missort
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.6 Operasi hub (hub_operator, mobile): scan inbound, sortir, outbound, deteksi otomatis exception missort
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.7 Papan dispatch (dispatcher): assign armada + driver dengan validasi SIM, jam kerja, status maintenance, paspor kendaraan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.7 Papan dispatch (dispatcher): assign armada + driver dengan validasi SIM, jam kerja, status maintenance, paspor kendaraan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.8 Aplikasi driver (mobile): daftar stop, scan pickup, Proof of Delivery (nama penerima, OTP 6 digit hash, foto bukti, tanda tangan canvas), 3x gagal -> ReturnToSender
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.8 Aplikasi driver (mobile): daftar stop, scan pickup, Proof of Delivery (nama penerima, OTP 6 digit hash, foto bukti, tanda tangan canvas), 3x gagal -> ReturnToSender
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.9 Exception & SLA: tipe exception terstruktur, SLA monitoring, lgx:detect-late idempotent
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.9 Exception & SLA: tipe exception terstruktur, SLA monitoring, lgx:detect-late idempotent
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.10 Quality gate Fase 22 (termasuk lgx:verify-custody dan lgx:capacity-check)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.10 Quality gate Fase 22 (termasuk lgx:verify-custody dan lgx:capacity-check)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
+    - (dibatalkan) gate: docs/gates/fase-22.md
 
 ## FASE 23 — UANG LOGISTIK: PENDAPATAN, COD, CARRIER, KLAIM, D&D, BEA CUKAI
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
