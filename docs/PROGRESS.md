@@ -6111,89 +6111,97 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 
 ## FASE 52 — KERJA SAMA INTERNASIONAL II: INTERCOMPANY, TRANSFER PRICING & KONSOLIDASI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 52.1 **Arsitektur Transaksi Antar-Entitas Grup (Intercompany Transactions Engine)**:
-  Bukti:
+- [ ] 52.1 **Arsitektur Transaksi Antar-Entitas Grup (Intercompany Transactions Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Transaksi otomatis *Mirror Transaction*: penjualan barang/jasa dari Entitas A ke Entitas B menghasilkan otomatis Sales Order/Invoice di A dan Purchase Order/Bill di B secara atomik.
   - Pengelolaan pinjaman antar-perusahaan (*Intercompany Loans*): jadwal amortisasi bunga arm's length, penarikan dana, dan integrasi cash pooling Treasury (Fase 48.8).
   - Skema penagihan biaya bersama (*Cost Sharing / Management Fee Allocation*) berdasarkan porsi headcount atau omzet entitas.
-- [x] 52.2 **Transfer Pricing Engine & Dokumentasi Simulasi (OECD & PMK Compliance)**:
-  Bukti:
+- [ ] 52.2 **Transfer Pricing Engine & Dokumentasi Simulasi (OECD & PMK Compliance)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Penerapan metode transfer pricing: *Comparable Uncontrolled Price* (CUP), *Cost Plus Method* (CPM), *Resale Price Method* (RPM), dan *Transactional Net Margin Method* (TNMM).
   - Penegakan prinsip kewajaran dan kelaziman usaha (*Arm's Length Principle*): rentang margin intercompany terverifikasi otomatis terhadap benchmark industri simulasi.
   - Generator draf Local File & Master File TP Doc simulasi: analisis fungsi, aset, dan risiko (FAR) per entitas grup.
   - Penyesuaian transfer pricing akhir tahun (*Year-End TP True-up Adjustments*) dengan jurnal penyesuaian otomatis.
-- [x] 52.3 **Perpindahan Aset & Logistik Antar-Entitas/Negara**:
-  Bukti:
+- [ ] 52.3 **Perpindahan Aset & Logistik Antar-Entitas/Negara**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Mutasi aset tetap antar-entitas: transfer nilai buku, transfer akumulasi depresiasi, dan faktur pengalihan aset.
   - Pengiriman stok antar-entitas lintas batas: integrasi ke modul Logistik (`lgx_`) dan dokumen kepabeanan ekspor-impor (PEB/PIB), penanganan PPN/bea masuk antar-anak perusahaan.
-- [x] 52.4 **Mesin Eliminasi Intercompany & Konsolidasi Keuangan Otomatis**:
-  Bukti:
+- [ ] 52.4 **Mesin Eliminasi Intercompany & Konsolidasi Keuangan Otomatis**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Eliminasi saldo akun timbal balik (*Reciprocal Balances*): eliminasi piutang-hutang intercompany (`ic:ar` vs `ic:ap`).
   - Eliminasi transaksi penjualan/pembelian intercompany agar omzet grup tidak terhitung ganda (*double-counting*).
   - Eliminasi laba antar-perusahaan yang belum terealisasi (*Unrealized Profit in Ending Inventory*).
   - Translasi laporan keuangan mata uang asing ke mata uang pelaporan IDR sesuai standar akuntansi: pos neraca memakai kurs penutupan (*closing rate*), pos laba rugi memakai kurs rata-rata (*average rate*), dan selisih kurs translasi dicatat pada akun Ekuitas (*Foreign Currency Translation Reserve*).
-- [x] 52.5 **Kepemilikan Kepentingan Non-Pengendali (Non-Controlling Interest - NCI)**:
-  Bukti:
+- [ ] 52.5 **Kepemilikan Kepentingan Non-Pengendali (Non-Controlling Interest - NCI)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Perhitungan porsi laba/rugi bersih dan ekuitas yang diatribusikan kepada pemegang saham minoritas pada anak perusahaan / JV parsial.
   - Pencatatan pembagian dividen kepada pihak ketiga non-pengendali.
-- [x] 52.6 **Pelaporan Segmen Usaha Terkonsolidasi (Segment Reporting)**:
-  Bukti:
+- [ ] 52.6 **Pelaporan Segmen Usaha Terkonsolidasi (Segment Reporting)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Laporan laba rugi dan neraca per segmen operasi (Manufaktur, Logistik, Retail/Store, Resto, Mall) dan per wilayah geografis.
   - Fitur drill-down dari laporan konsolidasi grup hingga ke level voucher jurnal sumber di entitas anak.
-- [x] 52.7 `group:audit` (Invarian eliminasi: Σ Eliminasi debit = Σ Eliminasi kredit, selisih rekonsiliasi IC = 0, translasi matematis konsisten 100%).
-  Bukti:
+- [ ] 52.7 `group:audit` (Invarian eliminasi: Σ Eliminasi debit = Σ Eliminasi kredit, selisih rekonsiliasi IC = 0, translasi matematis konsisten 100%).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
-- [x] 52.8 Quality gate Fase 52.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-52.md
+- [ ] 52.8 Quality gate Fase 52.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
 
 
 ## FASE 53 — SUPPLY CHAIN CONTROL TOWER & SALES AND OPERATIONS PLANNING (S&OP)
