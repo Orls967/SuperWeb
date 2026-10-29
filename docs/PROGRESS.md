@@ -4843,79 +4843,88 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-37.md
 
 ## FASE 38 — BIAYA PRODUKSI (COSTING)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 38.1 Standard cost per item (roll-up BOM + routing + overhead), versi biaya, approval perubahan
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 38.1 Standard cost per item (roll-up BOM + routing + overhead), versi biaya, approval perubahan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.2 Actual costing per order: bahan (MAC/FIFO), tenaga kerja (jam × tarif), mesin (jam × tarif), overhead (alokasi by driver), subkon
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.2 Actual costing per order: bahan (MAC/FIFO), tenaga kerja (jam × tarif), mesin (jam × tarif), overhead (alokasi by driver), subkon
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.3 Jurnal produksi: bahan → WIP (`mfg:wip`), konversi → WIP, FG receipt WIP → persediaan barang jadi; **konvensi tanda sesuai ledger (kredit +/debit −)** dicatat di DECISIONS
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.3 Jurnal produksi: bahan → WIP (`mfg:wip`), konversi → WIP, FG receipt WIP → persediaan barang jadi; **konvensi tanda sesuai ledger (kredit +/debit −)** dicatat di DECISIONS
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.4 Varians: harga bahan, penggunaan, efisiensi tenaga/mesin, volume overhead, yield; posting ke akun varians atau capitalize sesuai kebijakan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.4 Varians: harga bahan, penggunaan, efisiensi tenaga/mesin, volume overhead, yield; posting ke akun varians atau capitalize sesuai kebijakan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.5 Harga pokok produksi (COGM) & HPP penjualan (COGS) saat barang jadi dijual (Store/Distribusi) — integrasi event
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.5 Harga pokok produksi (COGM) & HPP penjualan (COGS) saat barang jadi dijual (Store/Distribusi) — integrasi event
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.6 Biaya by-product/co-product (alokasi nilai relatif), reprosesing
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.6 Biaya by-product/co-product (alokasi nilai relatif), reprosesing
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.7 Laporan: margin per produk/line/plant, tren biaya, drill-down ke order
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.7 Laporan: margin per produk/line/plant, tren biaya, drill-down ke order
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.8 `mfg:audit-costing` (WIP + FG = ledger, 0 selisih; semua order closed tidak punya sisa WIP)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.8 `mfg:audit-costing` (WIP + FG = ledger, 0 selisih; semua order closed tidak punya sisa WIP)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.9 Quality gate Fase 38
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.9 Quality gate Fase 38
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
+    - (dibatalkan) gate: docs/gates/fase-38.md
 
 ## FASE 39 — MUTU & KETERTELUSURAN (QMS, LOT, RECALL)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
