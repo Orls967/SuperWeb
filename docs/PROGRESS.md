@@ -3788,88 +3788,98 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ---
 
 ## FASE 26 — PELUNASAN UTANG TEKNIS & FONDASI PLATFORM
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 *Wajib selesai sebelum modul baru; sebagian besar temuan dari audit Fase 24–25.*
-- [x] 26.1 **Sanctum asli**: `composer require laravel/sanctum`, migrasi `personal_access_tokens`, penerbitan/pencabutan token (UI profil + endpoint), kedaluwarsa, enforcement abilities (`tokenCan`); **hapus** `class_alias` palsu `Laravel\Sanctum\Sanctum`, guard `viaRequest('sanctum')` yang hanya mengembalikan user session, dan `Domain/Support/Sanctum.php`; ubah semua test API ke `Laravel\Sanctum\Sanctum::actingAs`. Test: tanpa token 401, token tanpa ability 403, token dicabut/kedaluwarsa 401, session cookie **tidak** lolos ke API
-  Bukti:
+- [ ] 26.1 **Sanctum asli**: `composer require laravel/sanctum`, migrasi `personal_access_tokens`, penerbitan/pencabutan token (UI profil + endpoint), kedaluwarsa, enforcement abilities (`tokenCan`); **hapus** `class_alias` palsu `Laravel\Sanctum\Sanctum`, guard `viaRequest('sanctum')` yang hanya mengembalikan user session, dan `Domain/Support/Sanctum.php`; ubah semua test API ke `Laravel\Sanctum\Sanctum::actingAs`. Test: tanpa token 401, token tanpa ability 403, token dicabut/kedaluwarsa 401, session cookie **tidak** lolos ke API
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.2 Tulis section **Quality Gate Fase 25** di `docs/AUDIT.md` (belum ada); sinkronkan angka (538 test/3189 assertion) dan verifikasi README (Logistics, `lgx:*`, API)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.2 Tulis section **Quality Gate Fase 25** di `docs/AUDIT.md` (belum ada); sinkronkan angka (538 test/3189 assertion) dan verifikasi README (Logistics, `lgx:*`, API)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.3 Sweep kebenaran seluruh Action semua modul: `DB::transaction`, key idempotensi deterministik, event `afterCommit`, `lockForUpdate` pada alokasi kritis; laporan temuan + test regresi (incl. test race berurutan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.3 Sweep kebenaran seluruh Action semua modul: `DB::transaction`, key idempotensi deterministik, event `afterCommit`, `lockForUpdate` pada alokasi kritis; laporan temuan + test regresi (incl. test race berurutan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.4 Sweep performa: N+1 di seluruh controller/view, indeks FK/status/tanggal, command berat → `chunkById`/`cursor`; `BillingAuditor` & `bank:reconcile` ke agregat SQL; perbarui `QueryBudgetTest`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.4 Sweep performa: N+1 di seluruh controller/view, indeks FK/status/tanggal, command berat → `chunkById`/`cursor`; `BillingAuditor` & `bank:reconcile` ke agregat SQL; perbarui `QueryBudgetTest`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.5 **RBAC granular**: tabel `permissions`, `roles`, `role_permission`, `user_role` (multi-role + scope entitas), `Gate`/Policy generik; `users.role` tetap sebagai kompatibilitas (mirror) sampai seluruh modul dimigrasikan; matriks otorisasi data-driven
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.5 **RBAC granular**: tabel `permissions`, `roles`, `role_permission`, `user_role` (multi-role + scope entitas), `Gate`/Policy generik; `users.role` tetap sebagai kompatibilitas (mirror) sampai seluruh modul dimigrasikan; matriks otorisasi data-driven
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.6 **Audit trail generik**: setiap Action ber-impact (uang/state/ownership) menulis `core_audit_logs` (siapa, apa, sebelum/sesudah, IP, correlation id); append-only; halaman pencarian admin
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.6 **Audit trail generik**: setiap Action ber-impact (uang/state/ownership) menulis `core_audit_logs` (siapa, apa, sebelum/sesudah, IP, correlation id); append-only; halaman pencarian admin
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.7 **Outbox & event bus generik** (`core_outbox`): generalisasi webhook outbox Logistics — event domain → outbox transaksional → dispatcher idempoten; dead-letter + replay; Logistics dimigrasikan ke bus ini
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.7 **Outbox & event bus generik** (`core_outbox`): generalisasi webhook outbox Logistics — event domain → outbox transaksional → dispatcher idempoten; dead-letter + replay; Logistics dimigrasikan ke bus ini
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.8 **Document numbering & document store**: layanan nomor gapless per (entitas, jenis, tahun, reset bulanan/tahunan) dengan lock; penyimpanan dokumen (lampiran) ber-checksum, kebijakan retensi, antivirus/mime guard
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.8 **Document numbering & document store**: layanan nomor gapless per (entitas, jenis, tahun, reset bulanan/tahunan) dengan lock; penyimpanan dokumen (lampiran) ber-checksum, kebijakan retensi, antivirus/mime guard
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.9 **Approval engine generik**: alur multi-level berdasarkan nilai/jenis, four-eyes (pembuat ≠ penyetuju), delegasi, SLA & eskalasi, histori; dipakai Kontrak/PO/Aset/Klaim (klaim & pembayaran carrier dimigrasikan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.9 **Approval engine generik**: alur multi-level berdasarkan nilai/jenis, four-eyes (pembuat ≠ penyetuju), delegasi, SLA & eskalasi, histori; dipakai Kontrak/PO/Aset/Klaim (klaim & pembayaran carrier dimigrasikan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.10 Quality gate Fase 26
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.10 Quality gate Fase 26
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
+    - (dibatalkan) gate: docs/gates/fase-26.md
 
 ## FASE 27 — PARTY MASTER & BADAN HUKUM (FONDASI PIHAK)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
