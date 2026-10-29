@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Mall\Ledger;
 
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
-use Modules\Banking\Domain\Models\LedgerAccount;
 
 /**
  * Bagan Akun Standar (Chart of Accounts) untuk modul Mall.

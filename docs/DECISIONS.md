@@ -1882,3 +1882,34 @@
   - Mencegah sertifikasi palsu/massal dan menegakkan prinsip pemisahan peran bahwa verifikasi independen harus terisolasi di dokumen gate saja.
 - **Verification:**
   - `tests/Architecture/MassCertificationGuardTest.php` PASS.
+
+
+## 2026-10-30: Pemulihan Baseline Arsitektur dan Tata Kelola Allowlist Config Modules (K-2)
+- **Anchor:** `2026-10-30-pemulihan-baseline`
+- **Context:**
+  - Audit forensik 2026-10-30 (F-06, K-2) menemukan bahwa `config/modules.php` telah membengkak dari 131 baris menjadi 643 baris. Sebanyak 34 tabel berprefiks modular dimasukkan secara ilegal ke `legacy_tables` untuk mematikan aturan A2, 304 kolom foreign key internal (intra-modul) dimasukkan ke `cross_module_columns` untuk mematikan aturan A12, dan model Eloquent `Modules\Core\Domain\Models\Vehicle` dimasukkan ke `shared_kernel_namespaces` untuk mematikan aturan A1.
+- **Decision:**
+  1. Membersihkan `config/modules.php`:
+     - Menghapus 34 entri ilegal dari `legacy_tables`, mengembalikan ke 22 tabel legacy murni.
+     - Menghapus 304 entri kolom intra-modul dari `cross_module_columns`, menyisakan 172 entri referensi lintas-modul nyata.
+     - Menghapus model `Modules\Core\Domain\Models\Vehicle` dari `shared_kernel_namespaces`.
+  2. Mengakui 12 namespace kernel yang sah (murni Contracts, DTOs, Enums, Exceptions, dan Events) di `shared_kernel_namespaces`:
+     - `Modules\Banking\Contracts\` (kontrak antar-modul)
+     - `Modules\Banking\Application\DTOs\` (DTO transaksi moneter)
+     - `Modules\Core\Domain\Enums\` (enum domain inti)
+     - `Modules\Banking\Domain\Exceptions\` (eksepsi moneter perbankan)
+     - `Modules\Inventory\Domain\Enums\` (enum status inventaris)
+     - `Modules\Inventory\Domain\Exceptions\` (eksepsi kontrol stok)
+     - `Modules\Payment\Domain\Enums\` (enum transaksi pembayaran)
+     - `Modules\Store\Domain\Enums\` (enum status pemesanan)
+     - `Modules\Core\Domain\Events\` (event domain inti)
+     - `Modules\Store\Domain\Events\` (event transaksi store)
+     - `Modules\Crypto\Domain\Events\` (event perdagangan kripto)
+     - `Modules\Telematics\Domain\Events\` (event telemetri mobilitas)
+  3. Mengakui 172 kolom `cross_module_columns` yang sah dan 5 entri bridge di `shared_tables` dalam `tests/Architecture/baselines/config-allowlists.json` ber-anchor keputusan ini.
+  4. Menetapkan kenaikan baseline nyata arch-scan (A1, A2, A12) dalam `tests/Architecture/baselines/arch-scan.json` via `--allow-new="DECISIONS.md#2026-10-30-pemulihan-baseline"` sehingga transparansi arsitektur pulih tanpa manipulasi config.
+- **Reason:**
+  - Menghentikan penyembunyian utang teknis arsitektur di file konfigurasi dan memastikan baseline arch-scan mencerminkan realitas kode produksi.
+- **Verification:**
+  - `tests/Architecture/ConfigAllowlistGovernanceTest.php` PASS.
+  - `php artisan arch:scan` PASS terhadap baseline nyata yang disetujui.
