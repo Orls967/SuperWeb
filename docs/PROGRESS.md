@@ -5255,87 +5255,97 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-42.md
 
 ## FASE 43 — DISTRIBUSI: ORDER, SELL-IN/SELL-OUT, KONSINYASI, RETUR, REBATE
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 43.1 Order distributor: validasi limit kredit & stok (ATP), alokasi (prioritas/fair-share saat langka), backorder & pecah kirim
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 43.1 Order distributor: validasi limit kredit & stok (ATP), alokasi (prioritas/fair-share saat langka), backorder & pecah kirim
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.2 Pemenuhan: pick di WMS → shipment Logistics (FTL/LTL/multimoda) → POD → pengakuan penjualan; faktur pajak **simulasi** (nomor seri, PPN 11%)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.2 Pemenuhan: pick di WMS → shipment Logistics (FTL/LTL/multimoda) → POD → pengakuan penjualan; faktur pajak **simulasi** (nomor seri, PPN 11%)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.3 Sell-out reporting: distributor melaporkan penjualan & stok (unggah/API), validasi, deteksi anomali (stuffing, diversi, harga)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.3 Sell-out reporting: distributor melaporkan penjualan & stok (unggah/API), validasi, deteksi anomali (stuffing, diversi, harga)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.4 **Konsinyasi**: stok milik prinsipal di lokasi distributor, laporan penjualan memicu faktur & transfer kepemilikan, rekonsiliasi stok konsinyasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.4 **Konsinyasi**: stok milik prinsipal di lokasi distributor, laporan penjualan memicu faktur & transfer kepemilikan, rekonsiliasi stok konsinyasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.5 Retur & klaim: kedaluwarsa, rusak, salah kirim; kebijakan retur per kontrak; kredit nota; restock/kuarantina/musnahkan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.5 Retur & klaim: kedaluwarsa, rusak, salah kirim; kebijakan retur per kontrak; kredit nota; restock/kuarantina/musnahkan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.6 **Rebate & insentif**: program volume/pertumbuhan/bertingkat, akrual per transaksi (`dist:rebate_payable`), penyelesaian periodik via approval; breakage
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.6 **Rebate & insentif**: program volume/pertumbuhan/bertingkat, akrual per transaksi (`dist:rebate_payable`), penyelesaian periodik via approval; breakage
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.7 Perhitungan margin distributor & price compliance (harga tebus vs HET simulasi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.7 Perhitungan margin distributor & price compliance (harga tebus vs HET simulasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.8 Stok kritis distributor → saran replenishment (VMI sederhana)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.8 Stok kritis distributor → saran replenishment (VMI sederhana)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.9 `dist:audit` (AR distributor, rebate, konsinyasi = ledger/stok, 0 selisih)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.9 `dist:audit` (AR distributor, rebate, konsinyasi = ledger/stok, 0 selisih)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.10 Quality gate Fase 43
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.10 Quality gate Fase 43
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
+    - (dibatalkan) gate: docs/gates/fase-43.md
 
 ## FASE 44 — HARGA, PROMO & TRADE TERMS (PRICING ENGINE)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
