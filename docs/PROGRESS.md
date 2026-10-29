@@ -9562,82 +9562,91 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 91.1–91.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 92 — PERHOTELAN II: FOLIO, F&B/BANQUET, LOYALTY NIGHTS, TIMESHARE & DESTINATION PACKAGE
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 92.1–92.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
-- [x] 92.1 **Folio & upsell**: seluruh item inap (kamar, F&B room service, spa, laundry, minibar, parkir valet) masuk satu folio → split settlement, corporate billing (invoicing bulanan ke perusahaan = piutang), deposit & city ledger per tamu
-  Bukti:
+- [ ] 92.1 **Folio & upsell**: seluruh item inap (kamar, F&B room service, spa, laundry, minibar, parkir valet) masuk satu folio → split settlement, corporate billing (invoicing bulanan ke perusahaan = piutang), deposit & city ledger per tamu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_folio_addon_charge_roll_up
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.2 **F&B & banquet**: restoran hotel memakai modul Resto penuh (HPP, batch, shift Fase 7–9) + banquet multi-event (memperluas katering Fase 11.2) → kitchen terhubung cold-chain Logistics; konsumsi room service ter-charge ke folio otomatis
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.2 **F&B & banquet**: restoran hotel memakai modul Resto penuh (HPP, batch, shift Fase 7–9) + banquet multi-event (memperluas katering Fase 11.2) → kitchen terhubung cold-chain Logistics; konsumsi room service ter-charge ke folio otomatis
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_folio_addon_charge_roll_up
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.3 **Spa & wellness**: katalog treatment, booking terapis (HCM gig via bounty Fase 85), konsumsi produk ter-charge; treatment medis ringan terhubung konsultasi RS (Pilar 9)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.3 **Spa & wellness**: katalog treatment, booking terapis (HCM gig via bounty Fase 85), konsumsi produk ter-charge; treatment medis ringan terhubung konsultasi RS (Pilar 9)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_folio_addon_charge_roll_up
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.4 **Stay passport & loyalty nights**: riwayat menginap, preferensi (lantai, bantal, alergi), poin per room-night (PTS lintas ekosistem: tukar tiket venue, diskon Resto, spa) → tier Silver/Gold/Platinum dengan benefit upgrade & night gratis → churn risk scoring
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.4 **Stay passport & loyalty nights**: riwayat menginap, preferensi (lantai, bantal, alergi), poin per room-night (PTS lintas ekosistem: tukar tiket venue, diskon Resto, spa) → tier Silver/Gold/Platinum dengan benefit upgrade & night gratis → churn risk scoring
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_corporate_billing_posts_to_city_ledger_ar
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.5 **Timeshare & fractional ownership**: unit villa/kamar tertentu di-tokenisasi (memperluas RWA Fase 71) → pemilik dapat hak jadwal inap + bagi hasil sewa saat tidak dipakai → jadwal penggunaan via booking engine → dividen harian dari okupansi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.5 **Timeshare & fractional ownership**: unit villa/kamar tertentu di-tokenisasi (memperluas RWA Fase 71) → pemilik dapat hak jadwal inap + bagi hasil sewa saat tidak dipakai → jadwal penggunaan via booking engine → dividen harian dari okupansi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_timeshare_fractional_dividend_distribution_invariants
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.6 **Destination package engine**: bundling hotel + tiket festival/club + restoran + transport + spa → **satu harga, satu pembayaran, satu invoice multi-vendor** → settlement otomatis ke tiap pihak via escrow (Fase 61.4) + fee platform
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.6 **Destination package engine**: bundling hotel + tiket festival/club + restoran + transport + spa → **satu harga, satu pembayaran, satu invoice multi-vendor** → settlement otomatis ke tiap pihak via escrow (Fase 61.4) + fee platform
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_destination_package_multi_vendor_settlement
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.7 **MICE & wedding sales**: pipeline B2B (konvensi, wedding, corporate retreat) → proposal harga berjenjang → deposit milestone → koordinasi venue (atrium mall Fase 15.3 / beach club Fase 89 / hall hotel) → kontrak via modul Contract
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.7 **MICE & wedding sales**: pipeline B2B (konvensi, wedding, corporate retreat) → proposal harga berjenjang → deposit milestone → koordinasi venue (atrium mall Fase 15.3 / beach club Fase 89 / hall hotel) → kontrak via modul Contract
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_corporate_billing_posts_to_city_ledger_ar
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.8 Tests: (a) folio item = Σ order terkait (b) bundle settlement Σ = pembayaran tamu (c) timeshare Σ token = unit terdaftar & dividen pro-rata akurat (d) corporate billing masuk AR & aging (e) `hotel:audit` = 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.8 Tests: (a) folio item = Σ order terkait (b) bundle settlement Σ = pembayaran tamu (c) timeshare Σ token = unit terdaftar & dividen pro-rata akurat (d) corporate billing masuk AR & aging (e) `hotel:audit` = 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_hotel_audit_zero_discrepancy
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.9 Quality gate Fase 92
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.9 Quality gate Fase 92
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_hotel_audit_zero_discrepancy
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
+    - (dibatalkan) gate: docs/gates/fase-92.md
 
 ### Register Minus Fase 92
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
