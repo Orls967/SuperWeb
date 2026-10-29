@@ -7443,12 +7443,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## KONSEP BERSAMA — ENABLER LINTAS PILAR
 
 ## FASE 67 — SIMULATION KERNEL, UNIVERSAL EVENT SPINE, DIGITAL TWIN BUS & SCALE PROVISIONER
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI. Selesai tuntas pada Fase 67.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core (`core_`, `sim_`) · **Prasyarat:** R2.5, R4 ✅ · **Acuan:** KONSEP §A10
 > **Jalan pintas terlarang di fase ini:** jam virtual tanpa menjalankan tick handler; `Carbon::setTestNow()` di produksi; event spine tanpa konsumen nyata — ditambah seluruh X1–X25.
-- [x] 67.1 **Simulation Kernel**: lapisan orkestrasi waktu `sim:run --days=N` menjalankan seluruh modul maju N hari kompresi (event time, bukan wall clock); clock virtual terpusat disuntikkan ke scheduler/scheduler-idempoten sehingga penyusutan aset, jatuh tempo kontrak, siklus S&OP, expiry poin, dan tenure berjalan bertahun-tahun dalam hitungan menit; deterministik (seed sama → hasil sama)
-  Bukti:
+- [ ] 67.1 **Simulation Kernel**: lapisan orkestrasi waktu `sim:run --days=N` menjalankan seluruh modul maju N hari kompresi (event time, bukan wall clock); clock virtual terpusat disuntikkan ke scheduler/scheduler-idempoten sehingga penyusutan aset, jatuh tempo kontrak, siklus S&OP, expiry poin, dan tenure berjalan bertahun-tahun dalam hitungan menit; deterministik (seed sama → hasil sama)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 02bb65e
     - file: modules/Core/Http/Controllers/SimulationGovernanceController.php
@@ -7456,9 +7457,10 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_advance_simulation_clock_via_post_endpoint
     - akses: command sim:run
     - akses: route POST /admin/simulation-governance/advance [role: admin]
-    - gate: docs/gates/fase-67.md
-- [x] 67.2 **Universal Event Spine**: generalisasi `core_outbox` menjadi tulang punggung event ber-topik per pilar (`auto.*`, `fintech.*`, `resto.*`, `proptech.*`, `lgx.*`, `mfg.*`, `trade.*`, `gov.*`, `hsp.*`, `ven.*`, `htl.*`, `min.*`), schema registry ber-versi, consumer group idempoten, dan replay dari offset tertentu — setiap pilar dapat "menyaksikan" kejadian pilar lain tanpa coupling
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.2 **Universal Event Spine**: generalisasi `core_outbox` menjadi tulang punggung event ber-topik per pilar (`auto.*`, `fintech.*`, `resto.*`, `proptech.*`, `lgx.*`, `mfg.*`, `trade.*`, `gov.*`, `hsp.*`, `ven.*`, `htl.*`, `min.*`), schema registry ber-versi, consumer group idempoten, dan replay dari offset tertentu — setiap pilar dapat "menyaksikan" kejadian pilar lain tanpa coupling
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 02bb65e
     - file: modules/Core/Http/Controllers/SimulationGovernanceController.php
@@ -7466,18 +7468,20 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_publish_spine_event_via_post_endpoint
     - akses: command core:consume-spine
     - akses: route POST /admin/simulation-governance/publish-spine [role: admin]
-    - gate: docs/gates/fase-67.md
-- [x] 67.3 **Digital Twin Bus**: kontrak `TwinState` generik (entity_type, entity_id, state JSON, valid_from, hash prev) untuk entitas bernilai tinggi (kendaraan, gedung, kontainer, pabrik, petak lahan, kamar hotel, alat berat, pasien-episode, venue zone); update twin idempoten & teraudit, simulasi what-if berjalan di sandbox tanpa menyentuh ledger riil
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.3 **Digital Twin Bus**: kontrak `TwinState` generik (entity_type, entity_id, state JSON, valid_from, hash prev) untuk entitas bernilai tinggi (kendaraan, gedung, kontainer, pabrik, petak lahan, kamar hotel, alat berat, pasien-episode, venue zone); update twin idempoten & teraudit, simulasi what-if berjalan di sandbox tanpa menyentuh ledger riil
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 02bb65e
     - file: modules/Core/Http/Controllers/SimulationGovernanceController.php
     - file: modules/Core/Domain/Models/SimTwinState.php
     - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_record_digital_twin_state_via_post_endpoint
     - akses: route POST /admin/simulation-governance/record-twin [role: admin]
-    - gate: docs/gates/fase-67.md
-- [x] 67.4 **Fictional Scale Provisioner**: kerangka seeder deterministik per pilar (memperluas pola `EnterpriseUniverseSeeder`) dengan checkpoint/resume, chunk streaming bulk-insert, benchmark per etape, dan target volume raksasa (jutaan baris) yang tetap idempoten
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.4 **Fictional Scale Provisioner**: kerangka seeder deterministik per pilar (memperluas pola `EnterpriseUniverseSeeder`) dengan checkpoint/resume, chunk streaming bulk-insert, benchmark per etape, dan target volume raksasa (jutaan baris) yang tetap idempoten
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 02bb65e
     - file: modules/Core/Http/Controllers/SimulationGovernanceController.php
@@ -7485,23 +7489,26 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_update_scale_seeder_checkpoint_via_post_endpoint
     - akses: command scale:provision
     - akses: route POST /admin/simulation-governance/scale-provision [role: admin]
-    - gate: docs/gates/fase-67.md
-- [x] 67.5 Arch test untuk kerangka baru: modul manapun hanya boleh subscribe event spine via Contract; twin state tidak boleh menjadi sumber kebenaran uang/stok; kernel waktu tidak diakses langsung dari controller
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.5 Arch test untuk kerangka baru: modul manapun hanya boleh subscribe event spine via Contract; twin state tidak boleh menjadi sumber kebenaran uang/stok; kernel waktu tidak diakses langsung dari controller
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 02bb65e
     - file: tests/Architecture/SimulationKernelArchitectureTest.php
     - test: tests/Architecture/SimulationKernelArchitectureTest.php::sim_twin_states does not have balance or stock columns as source of truth
-    - gate: docs/gates/fase-67.md
-- [x] 67.6 Tests: (a) simulasi 365 hari identik dua kali berjalan (deterministik) (b) replay event spine dari offset N idempoten (c) twin update ganda tidak duplikat (d) ledger tetap Σ=0 selama simulasi (e) checkpoint resume seeder tanpa duplikasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.6 Tests: (a) simulasi 365 hari identik dua kali berjalan (deterministik) (b) replay event spine dari offset N idempoten (c) twin update ganda tidak duplikat (d) ledger tetap Σ=0 selama simulasi (e) checkpoint resume seeder tanpa duplikasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 02bb65e
     - file: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php
     - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_view_simulation_governance_dashboard_with_200_status
-    - gate: docs/gates/fase-67.md
-- [x] 67.7 Quality gate Fase 67
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.7 Quality gate Fase 67
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 02bb65e
     - file: docs/gates/fase-67.md
@@ -7511,7 +7518,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - akses: command sim:audit
     - akses: route GET /admin/simulation-governance [role: admin]
     - audit: sim:audit
-    - gate: docs/gates/fase-67.md
+    - (dibatalkan) gate: docs/gates/fase-67.md
 
 ### Register Minus Fase 67
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7521,76 +7528,84 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 1 — OTOMOTIF & PEMBIAYAAN KENDARAAN
 
 ## FASE 68 — TELEMATICS & IOT CONNECTED CAR (PREDICTIVE MAINTENANCE)
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI. Selesai tuntas pada Fase 68.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mobility (`oto_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 1F slice 1
 > **Jalan pintas terlarang di fase ini:** baseline konstan; semua DTC dianggap critical; event di dalam transaksi tanpa `afterCommit`; akun `oto:*` dibuat di test; nilai sensor default diam-diam — ditambah seluruh X1–X25.
-- [x] 68.1 Tabel `oto_telematics_devices` (OBD2/GPS, terikat `core_vehicles`), `oto_telematics_ticks` partisi harian (GPS, RPM, suhu oli, level baterai, kode DTC) — target ingest 500 juta tick/hari pada skala simulasi, retensi hot 30 hari / warm 1 tahun / cold arsip
-  Bukti:
+- [ ] 68.1 Tabel `oto_telematics_devices` (OBD2/GPS, terikat `core_vehicles`), `oto_telematics_ticks` partisi harian (GPS, RPM, suhu oli, level baterai, kode DTC) — target ingest 500 juta tick/hari pada skala simulasi, retensi hot 30 hari / warm 1 tahun / cold arsip
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2996b45
     - file: modules/Telematics/Domain/Models/TelematicsAggregate.php
     - file: modules/Telematics/database/migrations/2026_10_18_000005_create_oto_telematics_aggregates_table.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::telematics tick ingest idempotency
     - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
-    - gate: docs/gates/fase-68.md
-- [x] 68.2 Ingest pipeline idempoten (device_id + seq + ts sebagai key), normalisasi satuan, penolakan tick di luar jendela waktu (anti-replay), dan agregat 5-menitan (avg/max/min) untuk menghemat ruang query
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.2 Ingest pipeline idempoten (device_id + seq + ts sebagai key), normalisasi satuan, penolakan tick di luar jendela waktu (anti-replay), dan agregat 5-menitan (avg/max/min) untuk menghemat ruang query
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2996b45
     - file: modules/Telematics/Application/Services/TelematicsIngestService.php
     - file: modules/Telematics/Domain/Models/TelematicsAggregate.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::five minute aggregate computed accurately from ticks
     - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
-    - gate: docs/gates/fase-68.md
-- [x] 68.3 Baseline per kendaraan (7 hari rolling) + deteksi anomali deterministik: suhu oli > 15% baseline, DTC kritis, konsumsi BBM menyimpang, baterai voltage drop → event `VehicleAnomalyDetected`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.3 Baseline per kendaraan (7 hari rolling) + deteksi anomali deterministik: suhu oli > 15% baseline, DTC kritis, konsumsi BBM menyimpang, baterai voltage drop → event `VehicleAnomalyDetected`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2996b45
     - file: modules/Telematics/Application/Services/TelematicsIngestService.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::seven day rolling baseline calculated from actual historical ticks
     - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
-    - gate: docs/gates/fase-68.md
-- [x] 68.4 **Predictive Maintenance → AutoServe**: listener event anomaly membuat **draf booking servis** + estimasi biaya (harga komponen dari Store) + slot terdekat per outlet; opsi konfirmasi sekali klik (bayar wallet+PIN / tunai / ajukan pembiayaan); DTC kritis menandai unit `grounded` dan menolak dispatch armada
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.4 **Predictive Maintenance → AutoServe**: listener event anomaly membuat **draf booking servis** + estimasi biaya (harga komponen dari Store) + slot terdekat per outlet; opsi konfirmasi sekali klik (bayar wallet+PIN / tunai / ajukan pembiayaan); DTC kritis menandai unit `grounded` dan menolak dispatch armada
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2996b45
     - file: modules/Telematics/Application/Services/TelematicsIngestService.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::anomaly triggers draft booking once
     - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
-    - gate: docs/gates/fase-68.md
-- [x] 68.5 KPI & dashboard: MAPE prediksi kerusakan vs aktual (apakah booking benar-benar diperlukan), antrian draf booking, pendapatan preventif per outlet, mean-time-to-service
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.5 KPI & dashboard: MAPE prediksi kerusakan vs aktual (apakah booking benar-benar diperlukan), antrian draf booking, pendapatan preventif per outlet, mean-time-to-service
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2996b45
     - file: modules/Telematics/Http/Controllers/TelematicsController.php
     - file: modules/Telematics/resources/views/telematics/index.blade.php
     - test: modules/Telematics/tests/Feature/TelematicsVerticalSliceHttpTest.php::test_admin_can_access_telematics_dashboard_and_see_kpi_cards
     - akses: route GET /telematics [role: admin, fleet_manager, telematics_admin]
-    - gate: docs/gates/fase-68.md
-- [x] 68.6 Seeder skala: 10 juta kendaraan berpaspor (subset aktif memancarkan tick), 180 hari riwayat telematik, benchmark ingest & query baseline
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.6 Seeder skala: 10 juta kendaraan berpaspor (subset aktif memancarkan tick), 180 hari riwayat telematik, benchmark ingest & query baseline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 2996b45
     - file: modules/Telematics/database/seeders/TelematicsDemoSeeder.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::anti replay window rejects expired ticks
-    - gate: docs/gates/fase-68.md
-- [x] 68.7 Tests: (a) anomaly memicu draf booking tepat 1x (b) DTC kritis grounded menolak dispatch (c) tick duplikat idempoten (d) biaya servis ter-posting seimbang ke ledger (e) ingest massal tidak melanggar query budget halaman dashboard
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.7 Tests: (a) anomaly memicu draf booking tepat 1x (b) DTC kritis grounded menolak dispatch (c) tick duplikat idempoten (d) biaya servis ter-posting seimbang ke ledger (e) ingest massal tidak melanggar query budget halaman dashboard
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 2996b45
     - file: modules/Telematics/tests/Feature/TelematicsTest.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::grounded vehicle rejects fleet dispatch
-    - gate: docs/gates/fase-68.md
-- [x] 68.8 Quality gate Fase 68
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.8 Quality gate Fase 68
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 2996b45
     - file: docs/gates/fase-68.md
     - file: modules/Telematics/Console/Commands/AuditTelematicsCommand.php
     - test: modules/Telematics/tests/Feature/TelematicsVerticalSliceHttpTest.php::test_admin_can_access_telematics_dashboard_and_see_kpi_cards
     - akses: command tlm:audit
-    - gate: docs/gates/fase-68.md
+    - (dibatalkan) gate: docs/gates/fase-68.md
 
 ### Register Minus Fase 68
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
