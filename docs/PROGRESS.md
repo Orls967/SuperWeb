@@ -9287,82 +9287,91 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 88.1–88.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 89 — BEACH CLUB & CLUBS I: TICKETING, ACCESS CONTROL, USIA & VENUE OPERATIONS
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 89.1–89.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) · **Prasyarat:** R1–R4 ✅, R4.2 (Vending pindah ke `vnd_`) · **Acuan:** KONSEP 10F
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [x] 89.1 Modul `Venue` (`ven_`): provider, MenuRegistry "Venue & Entertainment", roles (`venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`), policies, arch test; tabel `ven_venues`, `ven_zones` (pool/beach/dance floor/VIP/garden), `ven_tables`, `ven_events`, `ven_tickets`
-  Bukti:
+- [ ] 89.1 Modul `Venue` (`ven_`): provider, MenuRegistry "Venue & Entertainment", roles (`venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`), policies, arch test; tabel `ven_venues`, `ven_zones` (pool/beach/dance floor/VIP/garden), `ven_tables`, `ven_events`, `ven_tickets`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.2 **Skala**: 1.000 venue global (500 Indonesia + 500 internasional simulasi), 100 ribu event/tahun, 50 juta tiket/tahun, kapasitas puncak 1 juta pengunjung/hari (festival); venue terikat properti (Mall/properti grup Fase 12) atau lahan mandiri
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.2 **Skala**: 1.000 venue global (500 Indonesia + 500 internasional simulasi), 100 ribu event/tahun, 50 juta tiket/tahun, kapasitas puncak 1 juta pengunjung/hari (festival); venue terikat properti (Mall/properti grup Fase 12) atau lahan mandiri
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.3 **Ticketing hash-chain non-fungible**: tiket digital dengan hash unik + anti-replay; transfer sekali (secondary market resmi dengan fee), QR scan di gate → **verifikasi identitas & usia** via Human Passport/KYC (umur min 21 club / 18+ tertentu) → gate terbuka (integrasi smart door seperti flex-space Fase 78.3); tiket ganda/replay ditolak
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.3 **Ticketing hash-chain non-fungible**: tiket digital dengan hash unik + anti-replay; transfer sekali (secondary market resmi dengan fee), QR scan di gate → **verifikasi identitas & usia** via Human Passport/KYC (umur min 21 club / 18+ tertentu) → gate terbuka (integrasi smart door seperti flex-space Fase 78.3); tiket ganda/replay ditolak
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
     - akses: route POST /venue/tickets/{ticket}/scan [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.4 **Kapasitas & keselamatan kerumunan**: density sensor per zone → ambang kapasitas ditolak masuk (mirip parkir Fase 14.3), heatmap density live, protokol crowd crush simulasi (lock gate zona, arah evakuasi), ambulans on-standby tercatat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.4 **Kapasitas & keselamatan kerumunan**: density sensor per zone → ambang kapasitas ditolak masuk (mirip parkir Fase 14.3), heatmap density live, protokol crowd crush simulasi (lock gate zona, arah evakuasi), ambulans on-standby tercatat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_4_zone_at_max_capacity_blocks_further_entry
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.5 **Table/bottle service & VIP**: pemesanan meja dengan minimum spend → deposit escrow (hold saat booking → capture saat hadir → no-show fee) → konsumsi tercatat POS venue (memperluas modul Resto Fase 9) → tagihan akhir ke dompet
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.5 **Table/bottle service & VIP**: pemesanan meja dengan minimum spend → deposit escrow (hold saat booking → capture saat hadir → no-show fee) → konsumsi tercatat POS venue (memperluas modul Resto Fase 9) → tagihan akhir ke dompet
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_5_vip_table_escrow_deposit_and_no_show_forfeiture
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.6 **Dynamic pricing tiket**: harga real-time mengikuti countdown tier (early bird → GA → door), demand forecast, cuaca pesisir (feed simulasi), okupansi — memakai Pricing Engine Fase 81 dengan floor (harga dasar artis) & ceiling
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.6 **Dynamic pricing tiket**: harga real-time mengikuti countdown tier (early bird → GA → door), demand forecast, cuaca pesisir (feed simulasi), okupansi — memakai Pricing Engine Fase 81 dengan floor (harga dasar artis) & ceiling
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.7 Izin & compliance: izin keramaian (dokumen gapless 26.8), kapasitas max legal, kebijakan substance screening simulasi (pemeriksaan acak tercatat, tanpa detail medis), asuransi event tersemat (Pilar 2 Fase 72)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.7 Izin & compliance: izin keramaian (dokumen gapless 26.8), kapasitas max legal, kebijakan substance screening simulasi (pemeriksaan acak tercatat, tanpa detail medis), asuransi event tersemat (Pilar 2 Fase 72)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.8 Tests: (a) tiket replay/ganda ditolak (b) usia di bawah minimum ditolak (c) zona penuh → gate tolak (d) escrow meja → capture/no-show konsisten (e) harga tiket tak keluar dari band floor/ceiling
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.8 Tests: (a) tiket replay/ganda ditolak (b) usia di bawah minimum ditolak (c) zona penuh → gate tolak (d) escrow meja → capture/no-show konsisten (e) harga tiket tak keluar dari band floor/ceiling
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - file: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_5_vip_table_escrow_deposit_and_no_show_forfeiture
-    - gate: docs/gates/fase-89.md
-- [x] 89.9 Quality gate Fase 89
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.9 Quality gate Fase 89
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: cfdf6bda
     - file: modules/Venue/Console/Commands/AuditVenueCommand.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_4_zone_at_max_capacity_blocks_further_entry
     - akses: command ven:audit
-    - gate: docs/gates/fase-89.md
+    - (dibatalkan) gate: docs/gates/fase-89.md
 
 ### Register Minus Fase 89
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
