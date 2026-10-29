@@ -6880,178 +6880,193 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 *Roadmap strategis lanjutan berskala industri konglomerasi multi-sektor, memperluas rantai nilai dari hulu agrikultur, teknik rekayasa R&D, konstruksi EPC, SDM terpadu, hingga ketahanan bencana multi-region.*
 
 ## FASE 58 — HUMAN CAPITAL MANAGEMENT (HCM), TALENT & PRODUCTION PAYROLL
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hcm (`hcm_`) · **Prasyarat:** R1, R3 ✅ · **Acuan:** KONSEP 8F
 > **Jalan pintas terlarang di fase ini:** pajak/BPJS tarif datar tanpa label simulasi & persetujuan P10; payroll tanpa jurnal; status payroll di-hard-code; gaji/rekening default diam-diam (X25); halaman gaji tanpa role — ditambah seluruh X1–X25.
-- [x] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
-  Bukti:
+- [ ] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
     - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
     - akses: command hcm:audit
-    - gate: docs/gates/fase-58.md
+    - (dibatalkan) gate: docs/gates/fase-58.md
   - Struktur organisasi hierarkis: Holding → Anak Perusahaan → Direktorat → Divisi → Departemen → Seksi → Posisi/Jabatan.
   - Profil karyawan 360°: identitas kependudukan terenkripsi (NIK/Paspor), riwayat pendidikan, rekam jejak kepangkatan, grade gaji, dan rekening penggajian bank.
   - Jenis hubungan kerja: PKWT (kontrak waktu tertentu), PKWTT (karyawan tetap), tenaga kerja lepas (*casual worker*), magang, dan tenaga alih daya (*outsourcing*).
-- [x] 58.2 **Manajemen Waktu, Absensi Biometrik & Penjadwalan Shift Pabrik Kompleks**:
-  Bukti:
+- [ ] 58.2 **Manajemen Waktu, Absensi Biometrik & Penjadwalan Shift Pabrik Kompleks**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
     - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
     - akses: command hcm:audit
-    - gate: docs/gates/fase-58.md
+    - (dibatalkan) gate: docs/gates/fase-58.md
   - Penjadwalan shift multi-pola: shift 3/1, shift 2/2, shift bergilir 24/7 di lantai pabrik manufaktur dan operasional hub logistik.
   - Integrasi mesin absensi biometrik & geofencing mobile: pencatatan clock-in/out, dispensasi toleransi keterlambatan, dan approval lembur (SPL - Surat Perintah Lembur).
   - Manajemen cuti, izin sakit dengan surat dokter, dan akumulasi hak cuti tahunan (*leave accrual engine*).
-- [x] 58.3 **Mesin Penggajian Terotomasi (Enterprise Payroll & Tax Engine)**:
-  Bukti:
+- [ ] 58.3 **Mesin Penggajian Terotomasi (Enterprise Payroll & Tax Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
     - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
     - akses: command hcm:audit
-    - gate: docs/gates/fase-58.md
+    - (dibatalkan) gate: docs/gates/fase-58.md
   - Perhitungan gaji bruto: gaji pokok, tunjangan tetap/tidak tetap, premi kehadiran, dan kalkulasi upah lembur resmi Depnaker (1.5x jam pertama, 2x jam berikutnya).
   - Pemotongan jaminan sosial tenaga kerja nasional: BPJS Ketenagakerjaan (JKK, JKM, JHT, JP) dan BPJS Kesehatan dengan pembagian porsi perusahaan vs porsi pekerja.
   - Engine PPh Pasal 21 Terintegrasi (TER - Tarif Efektif Rata-Rata bulanan & kalkulasi masa pajak Desember dengan PTKP dinamis).
   - Alur approval penggajian bertingkat (HR Manager → CFO) dan penerbitan slip gaji terenkripsi PDF.
-- [x] 58.4 **Alokasi Biaya Tenaga Kerja Langsung ke Modul Manufaktur (Direct Labor Costing)**:
-  Bukti:
+- [ ] 58.4 **Alokasi Biaya Tenaga Kerja Langsung ke Modul Manufaktur (Direct Labor Costing)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
     - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
     - akses: command hcm:audit
-    - gate: docs/gates/fase-58.md
+    - (dibatalkan) gate: docs/gates/fase-58.md
   - Integrasi langsung ke `CostingService` Manufaktur (Fase 38): menggantikan placeholder biaya tenaga kerja dengan jam kerja aktual operator per Work Order SPK.
   - Rekonsiliasi payroll clearing: pencatatan jurnal `DR mfg:labor_wip / CR clearing:payroll_payable`.
-- [x] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
-  Bukti:
+- [ ] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
     - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
     - akses: command hcm:audit
-    - gate: docs/gates/fase-58.md
+    - (dibatalkan) gate: docs/gates/fase-58.md
 
 ## FASE 59 — RESEARCH & DEVELOPMENT (R&D) & PRODUCT LIFECYCLE MANAGEMENT (PLM)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process Enterprise**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process Enterprise**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Plm/Application/Actions/ConvertEbomToManufacturingMbomAction.php
     - test: modules/Plm/tests/Feature/PlmStageGateAndEngineeringTest.php::test_advance_stage_gate_strict_sequential_success
     - akses: command plm:audit
-    - gate: docs/gates/fase-59.md
+    - (dibatalkan) gate: docs/gates/fase-59.md
   - Pipeline inovasi produk bertahap (*Stage-Gate Model*): *Ideation → Scoping → Business Case → Development → Testing/Pilot → Commercial Launch*.
   - Matriks penilaian kelayakan: estimasi anggaran R&D (`budget_rd_idr`), proyeksi ROI (`projected_roi_percent`), analisis kanibalisasi portofolio produk, dan penilaian risiko kepatuhan regulasi (BPOM, SNI, Halal).
   - Gate review approval matrix: persetujuan formal R&D Lead, Finance Controller, dan Head of Manufacturing sebelum promosi stage.
-- [x] 59.2 **Engineering BOM (EBOM) vs Manufacturing BOM (MBOM) & Transisi Terkontrol**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 59.2 **Engineering BOM (EBOM) vs Manufacturing BOM (MBOM) & Transisi Terkontrol**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Plm/Application/Actions/ConvertEbomToManufacturingMbomAction.php
     - test: modules/Plm/tests/Feature/PlmStageGateAndEngineeringTest.php::test_advance_stage_gate_strict_sequential_success
     - akses: command plm:audit
-    - gate: docs/gates/fase-59.md
+    - (dibatalkan) gate: docs/gates/fase-59.md
   - Pengelolaan versi rancangan teknik: transisi terkontrol dari purwarupa R&D (EBOM) ke resep produksi massal pabrik (MBOM di modul Manufacturing).
   - Komparasi struktur BOM & toleransi komponen: deteksi substitusi bahan baku, analisis variance cost estimasi vs standar pabrik.
   - Snapshot representasi komponen bertingkat (`components` JSON schema validation) dan status siklus draft/released/superseded.
-- [x] 59.3 **Manajemen Perubahan Teknik Berantai Kriptografis (Engineering Change Order - ECO & ECN)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 59.3 **Manajemen Perubahan Teknik Berantai Kriptografis (Engineering Change Order - ECO & ECN)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Plm/Application/Actions/ConvertEbomToManufacturingMbomAction.php
     - test: modules/Plm/tests/Feature/PlmStageGateAndEngineeringTest.php::test_advance_stage_gate_strict_sequential_success
     - akses: command plm:audit
-    - gate: docs/gates/fase-59.md
+    - (dibatalkan) gate: docs/gates/fase-59.md
   - Alur persetujuan perubahan spesifikasi material: peninjauan dampak biaya (`cost_impact_idr`), disposisi sisa stok lama (*scrap, rework, use-as-is, run-out*).
   - Rantai hash tamper-evident append-only SHA-256 (`prev_hash` → `hash` linking) untuk audit trail otentikasi perubahan rancangan teknis.
   - Notifikasi otomatis delegasi perubahan rekayasa ke modul Manufacturing, WMS, dan Procurement.
-- [x] 59.4 **Electronic Lab Notebook (ELN), Formulasi Rahasia & Uji Stabilitas**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 59.4 **Electronic Lab Notebook (ELN), Formulasi Rahasia & Uji Stabilitas**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Plm/Application/Actions/ConvertEbomToManufacturingMbomAction.php
     - test: modules/Plm/tests/Feature/PlmStageGateAndEngineeringTest.php::test_advance_stage_gate_strict_sequential_success
     - akses: command plm:audit
-    - gate: docs/gates/fase-59.md
+    - (dibatalkan) gate: docs/gates/fase-59.md
   - Buku catatan laboratorium elektronik: formula rahasia terenkripsi AES/base64 payload untuk perlindungan hak kekayaan intelektual resep inti.
   - Uji stabilitas suhu & kelembaban terakselerasi (*accelerated shelf-life testing - ASLT*) dengan verdict deterministik (*pass, conditional, fail*).
   - Evaluasi sensori organoleptik panelis skala 1-10 (aroma, rasa, tekstur, visual) serta pelacakan nomor batch sampel riset.
-- [x] 59.5 **PlmService, Web Interface & Audit Command `plm:audit`**:
-  Bukti:
+- [ ] 59.5 **PlmService, Web Interface & Audit Command `plm:audit`**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Plm/Application/Actions/ConvertEbomToManufacturingMbomAction.php
     - test: modules/Plm/tests/Feature/PlmStageGateAndEngineeringTest.php::test_advance_stage_gate_strict_sequential_success
     - akses: command plm:audit
-    - gate: docs/gates/fase-59.md
+    - (dibatalkan) gate: docs/gates/fase-59.md
   - Implementasi `Modules\Plm\Application\Services\PlmService` dengan transaksi atomic `DB::transaction`.
   - Web UI `/plm` untuk visibilitas dasbor pipeline riset dan status ECO terkini.
   - Command `plm:audit` (Integritas riwayat revisi ECO hash-chain terverifikasi, sinkronisasi EBOM ke MBOM konsisten 100%, 0 diskrepansi).
 
 ## FASE 60 — ESG, EMISI KARBON & SUSTAINABLE VALUE CHAIN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol Enterprise)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol Enterprise)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Esg/Application/Actions/CalculateScope123GhgEmissionAction.php
     - test: modules/Esg/tests/Feature/EsgOperationsAndCarbonLedgerTest.php::test_calculate_scope_1_direct_emission
     - akses: command esg:audit
-    - gate: docs/gates/fase-60.md
+    - (dibatalkan) gate: docs/gates/fase-60.md
   - Cakupan 1 (Emisi Langsung): kalkulasi konsumsi bahan bakar armada diesel/gasoline logistik (`lgx_fleets`) dan genset/boiler pabrik manufaktur (faktor emisi 2.68 kg CO2e/liter diesel, 2.31 kg CO2e/liter bensin).
   - Cakupan 2 (Emisi Tidak Langsung): pemakaian listrik PLN di seluruh mall, outlet resto, kantor, dan fasilitas gudang (faktor emisi grid Jawa-Madura-Bali 0.79 kg CO2e/kWh).
   - Cakupan 3 (Rantai Nilai Hulu/Hilir): emisi freight darat/laut pihak ketiga (0.12 kg CO2e/ton-km) dan estimasi emisi pengadaan bahan mentah pertanian.
   - Pencatatan multi-satuan dengan konversi standar kg CO2e terpresisi tinggi dan pencatatan nomor pelaporan gapless.
-- [x] 60.2 **Akuntansi Karbon, Registrasi Kredit Karbon & Bursa Karbon (IDX Carbon)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 60.2 **Akuntansi Karbon, Registrasi Kredit Karbon & Bursa Karbon (IDX Carbon)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Esg/Application/Actions/CalculateScope123GhgEmissionAction.php
     - test: modules/Esg/tests/Feature/EsgOperationsAndCarbonLedgerTest.php::test_calculate_scope_1_direct_emission
     - akses: command esg:audit
-    - gate: docs/gates/fase-60.md
+    - (dibatalkan) gate: docs/gates/fase-60.md
   - Registrasi sertifikat kredit karbon terverifikasi (IDX Carbon / Verra / Gold Standard) dengan penatausahaan tahun vintage, volume tonase, dan nilai perolehan IDR.
   - Neraca buku besar karbon: debit perolehan kredit karbon, kredit pelepasan penyeimbangan emisi (*offset retirement*).
   - Penguncian kuota kredit karbon idempoten untuk mencegah double-counting atau penarikan melebihi saldo aktif.
-- [x] 60.3 **Mekanisme Pensiun Kredit Karbon (Carbon Offset Retirement) & Net-Zero Target**:
-  Bukti:
+- [ ] 60.3 **Mekanisme Pensiun Kredit Karbon (Carbon Offset Retirement) & Net-Zero Target**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Esg/Application/Actions/CalculateScope123GhgEmissionAction.php
     - test: modules/Esg/tests/Feature/EsgOperationsAndCarbonLedgerTest.php::test_calculate_scope_1_direct_emission
     - akses: command esg:audit
-    - gate: docs/gates/fase-60.md
+    - (dibatalkan) gate: docs/gates/fase-60.md
   - Alur pensiun kredit emisi (*retirement workflow*) spesifik per entitas bisnis (Holding, Mall, Pabrik, Resto, Logistik).
   - Validasi ketat batas penarikan: larangan mutlak over-retirement melebihi volume sertifikat terbitan.
   - Penerbitan Berita Acara Pensiun Karbon digital dengan tautan sertifikat pembatalan emisi resmi.
-- [x] 60.4 **Penilaian Pemasok Berkelanjutan (Supplier ESG Scorecard) & Kepatuhan GRI**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 60.4 **Penilaian Pemasok Berkelanjutan (Supplier ESG Scorecard) & Kepatuhan GRI**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Esg/Application/Actions/CalculateScope123GhgEmissionAction.php
     - test: modules/Esg/tests/Feature/EsgOperationsAndCarbonLedgerTest.php::test_calculate_scope_1_direct_emission
     - akses: command esg:audit
-    - gate: docs/gates/fase-60.md
+    - (dibatalkan) gate: docs/gates/fase-60.md
   - Evaluasi tiga pilar keberlanjutan: Environmental (bobot 40%), Social (bobot 30%), Governance (bobot 30%).
   - Verifikasi sertifikasi ramah lingkungan pemasok: FSC, RSPO, ISO 14001, PROPER Hijau/Emas dengan rating dinamis (*LEAD, ADVANCED, COMPLIANT, HIGH_RISK*).
   - Integrasi indikator risiko pemasok ke modul Supplier Management (`Modules\Supplier`).
-- [x] 60.5 **EsgService, Web Portal & Audit Command `esg:audit`**:
-  Bukti:
+- [ ] 60.5 **EsgService, Web Portal & Audit Command `esg:audit`**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Esg/Application/Actions/CalculateScope123GhgEmissionAction.php
     - test: modules/Esg/tests/Feature/EsgOperationsAndCarbonLedgerTest.php::test_calculate_scope_1_direct_emission
     - akses: command esg:audit
-    - gate: docs/gates/fase-60.md
+    - (dibatalkan) gate: docs/gates/fase-60.md
   - Layanan `Modules\Esg\Application\Services\EsgService` dengan enkapsulasi DTO dan isolasi transaksi database.
   - Web UI `/esg` dasbor dekarbonisasi real-time dan rasio kompensasi emisi karbon korporat.
   - Command `esg:audit` (Faktor emisi terstandarisasi, rekonsiliasi total emisi vs pensiun sertifikat, integritas neraca kredit karbon 100%, 0 diskrepansi).
