@@ -1791,87 +1791,97 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 ---
 
 ## FASE 0 — FONDASI & REFACTOR
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 0.1 Audit codebase → docs/AUDIT.md
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 0.1 Audit codebase → docs/AUDIT.md
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.2 Setup Pest + tests/Architecture
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.2 Setup Pest + tests/Architecture
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.3 Characterization tests (AutoServe + AutoDex)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.3 Characterization tests (AutoServe + AutoDex)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.4 Modul Shared + Core
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.4 Modul Shared + Core
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.5 Pindahkan AutoServe & AutoDex ke modules/
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.5 Pindahkan AutoServe & AutoDex ke modules/
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.6 Entity Vehicle (core_vehicles) + migrasi garage
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.6 Entity Vehicle (core_vehicles) + migrasi garage
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.7 AutoServe: vehicle_id di bookings
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.7 AutoServe: vehicle_id di bookings
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.8 BookingStatus Enum + state machine
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.8 BookingStatus Enum + state machine
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.9 Arch tests batas modul
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.9 Arch tests batas modul
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.10 Quality gate Fase 0
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.10 Quality gate Fase 0
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
+    - (dibatalkan) gate: docs/gates/fase-0.md
 
 ## FASE 1 — CORE BANKING (DOUBLE-ENTRY LEDGER)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
