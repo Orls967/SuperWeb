@@ -9851,75 +9851,83 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 # INTEGRASI 12 LINI, SKALA ULTRA, AI, KEAMANAN & PENUTUPAN — FASE 95–103
 
 ## FASE 95 — INTEGRASI LINTAS 12 LINI (A): OTOMOTIF, EV, LOGISTIK, HOTEL, VENUE, RUMAH SAKIT
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 95.1–95.8 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
 > **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
-- [x] 95.1 **Otomotif ↔ Logistik**: armada sewa (Fase 70) & haul truck tambang (Fase 93) memakai dispatch & custody Logistik (Fase 22) satu papan; odometer servis (Fase 24.3) berlaku untuk semua armada lintas lini; EV charger hub tersedia di Hub Logistik & Mall
-  Bukti:
+- [ ] 95.1 **Otomotif ↔ Logistik**: armada sewa (Fase 70) & haul truck tambang (Fase 93) memakai dispatch & custody Logistik (Fase 22) satu papan; odometer servis (Fase 24.3) berlaku untuk semua armada lintas lini; EV charger hub tersedia di Hub Logistik & Mall
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_odometer_sync_across_rental_and_mining_fleet
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.2 **EV ↔ infrastruktur lini**: SPKLU dipasang di Mall (Fase 76), Venue (Fase 89), Hotel (Fase 91), site tambang (Fase 94) → satu jaringan charger, tarif konsisten, kWh masuk ESG masing-masing properti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.2 **EV ↔ infrastruktur lini**: SPKLU dipasang di Mall (Fase 76), Venue (Fase 89), Hotel (Fase 91), site tambang (Fase 94) → satu jaringan charger, tarif konsisten, kWh masuk ESG masing-masing properti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_spklu_ev_charging_across_properties_with_esg_scope2
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.3 **Hotel ↔ Venue ↔ Resto**: destination package (Fase 92.6) mencakup tiket festival (Fase 90.5) dan dining (Fase 74) → satu pembayaran, settlement multi-vendor escrow; folio hotel menerima charge venue/restaurant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.3 **Hotel ↔ Venue ↔ Resto**: destination package (Fase 92.6) mencakup tiket festival (Fase 90.5) dan dining (Fase 74) → satu pembayaran, settlement multi-vendor escrow; folio hotel menerima charge venue/restaurant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_venue_charge_posted_to_hotel_folio_via_port
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.4 **Rumah Sakit ↔ Hotel**: medical tourism package (RS + hotel + transport Logistics) → bundle satu harga; kamar hotel disiapkan untuk pasien pasca-operasi; diet meals RS dikirim dapur sentral Resto (Fase 74.3)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.4 **Rumah Sakit ↔ Hotel**: medical tourism package (RS + hotel + transport Logistics) → bundle satu harga; kamar hotel disiapkan untuk pasien pasca-operasi; diet meals RS dikirim dapur sentral Resto (Fase 74.3)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_medical_tourism_bundle_settlement_cross_3_lines
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.5 **Rumah Sakit ↔ Logistik ↔ Farmasi**: rantai dingin obat/darah (Fase 88.5) memakai cold-chain Logistik (Fase 80) → satu telemetri suhu, satu hash-chain kustodi, hold pembayaran seragam; limbah medis masuk reverse logistics (Fase 79)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.5 **Rumah Sakit ↔ Logistik ↔ Farmasi**: rantai dingin obat/darah (Fase 88.5) memakai cold-chain Logistik (Fase 80) → satu telemetri suhu, satu hash-chain kustodi, hold pembayaran seragam; limbah medis masuk reverse logistics (Fase 79)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_medical_tourism_bundle_settlement_cross_3_lines
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.6 **Akses & identitas tunggal**: Human Passport (RS Fase 87.2) + Paspor Kendaraan (Fase 5A) + Paspor Digital (DAO Fase 86.4) → satu identitas lintas lini; smart door Hotel/Venue/Flex-Space/RS memindai kredensial yang sama
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.6 **Akses & identitas tunggal**: Human Passport (RS Fase 87.2) + Paspor Kendaraan (Fase 5A) + Paspor Digital (DAO Fase 86.4) → satu identitas lintas lini; smart door Hotel/Venue/Flex-Space/RS memindai kredensial yang sama
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_unified_single_credential_access_control
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.7 Test integrasi end-to-end satu hari lintas 6 lini (inap hotel → check-in venue → bayar bundle → katering karyawan → servis prediktif mobil → cold-chain obat masuk RS) + reconcile semua ledger terdampak = 0
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.7 Test integrasi end-to-end satu hari lintas 6 lini (inap hotel → check-in venue → bayar bundle → katering karyawan → servis prediktif mobil → cold-chain obat masuk RS) + reconcile semua ledger terdampak = 0
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_end_to_end_cross_line_ecosystem_audit_zero_discrepancy
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.8 Quality gate Fase 95
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.8 Quality gate Fase 95
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 63f891a8
     - file: docs/gates/fase-95.md
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_end_to_end_cross_line_ecosystem_audit_zero_discrepancy
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
+    - (dibatalkan) gate: docs/gates/fase-95.md
 
 ### Register Minus Fase 95
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -9927,66 +9935,73 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 95.1–95.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 96 — INTEGRASI LINTAS 12 LINI (B): FINTECH, RWA, INSURTECH & PEMBIAYAAN UNTUK SEMUA LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 96.1–96.7 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit fafca066).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
 > **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
-- [x] 96.1 **RWA lintas lini**: tokenisasi unit hotel/timeshare (Fase 92.5), unit mall (Fase 71), truk logistik (Fase 71), mesin tambang (Fase 94), alat RS medis → satu marketplace RWA, satu orderbook, satu engine dividen; omzet sumber dari lini mana pun mengalir pro-rata ke holder
-  Bukti:
+- [ ] 96.1 **RWA lintas lini**: tokenisasi unit hotel/timeshare (Fase 92.5), unit mall (Fase 71), truk logistik (Fase 71), mesin tambang (Fase 94), alat RS medis → satu marketplace RWA, satu orderbook, satu engine dividen; omzet sumber dari lini mana pun mengalir pro-rata ke holder
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Rwa/Application/Services/RwaCrossLineDividendDistributionService.php
     - test: modules/Rwa/tests/Feature/RwaCrossLineDividendDistributionTest.php::test_rwa_pro_rata_dividend_distribution_with_dust_reserve_invariant
     - akses: route GET /rwa [role: admin, asset_manager, investor, rwa_admin]
-    - gate: docs/gates/fase-96.md
-- [x] 96.2 **InsurTech tersemat universal**: trigger dari 12 lini (keterlambatan logistik, kecelakaan kendaraan, cold-chain breach venue/RS/hotel, pembatalan event, cuaca tambang, no-show kontrak) → claims autopilot (Fase 72) satu kerangka, reserve terpusat di Treasury
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.2 **InsurTech tersemat universal**: trigger dari 12 lini (keterlambatan logistik, kecelakaan kendaraan, cold-chain breach venue/RS/hotel, pembatalan event, cuaca tambang, no-show kontrak) → claims autopilot (Fase 72) satu kerangka, reserve terpusat di Treasury
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Insurance/Application/Services/UniversalCrossLineInsuranceClaimService.php
     - test: modules/Insurance/tests/Feature/UniversalCrossLineInsuranceClaimTest.php::test_universal_parametric_claim_autopilot_across_12_lines
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-96.md
-- [x] 96.3 **Pembiayaan lintas lini**: HODL-to-Drive (Fase 5C) → diperluas: pembiayaan alat berat tambang, pembiayaan fit-out tenant, pembiayaan modal tani (Fase 62) & pre-payment petani berbasis NDVI (Fase 86.2) — satu engine kredit dengan credit profile 360° (Fase 27.7)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.3 **Pembiayaan lintas lini**: HODL-to-Drive (Fase 5C) → diperluas: pembiayaan alat berat tambang, pembiayaan fit-out tenant, pembiayaan modal tani (Fase 62) & pre-payment petani berbasis NDVI (Fase 86.2) — satu engine kredit dengan credit profile 360° (Fase 27.7)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Finance/Application/Services/UniversalCreditEvaluationService.php
     - test: modules/Finance/tests/Feature/UniversalCreditEvaluationTest.php::test_credit_profile_360_scoring_and_tier_classification
     - akses: route GET /rwa [role: admin, asset_manager, investor, rwa_admin]
-    - gate: docs/gates/fase-96.md
-- [x] 96.4 **Stablecoin settlement gr**up: settlement intercompany & cross-border (venue internasional, artist luar negeri, offtake tambang) memakai stablecoin internal (Fase 83) → clear real-time 24/7, kurs terkunci, Σ ledger seimbang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.4 **Stablecoin settlement gr**up: settlement intercompany & cross-border (venue internasional, artist luar negeri, offtake tambang) memakai stablecoin internal (Fase 83) → clear real-time 24/7, kurs terkunci, Σ ledger seimbang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Core/Application/Services/UniversalStablecoinClearingService.php
     - test: modules/Core/tests/Feature/UniversalCrossLineFintechIntegrationTest.php::test_stablecoin_24_7_cross_border_clearing_with_locked_fx
     - akses: command rwa:audit
-    - gate: docs/gates/fase-96.md
-- [x] 96.5 **Yield & treasury terpadu**: saldo idle 12 lini → robo-advisor/Treasury yield (Fase 73) → cash pooling antar entitas (Fase 48.8) → group liquidity teroptimasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.5 **Yield & treasury terpadu**: saldo idle 12 lini → robo-advisor/Treasury yield (Fase 73) → cash pooling antar entitas (Fase 48.8) → group liquidity teroptimasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Treasury/Application/Services/UniversalGroupCashPoolingService.php
     - test: modules/Treasury/tests/Feature/UniversalGroupCashPoolingTest.php::test_daily_idle_cash_sweep_to_treasury_yield_pool
     - akses: command rwa:audit
-    - gate: docs/gates/fase-96.md
-- [x] 96.6 Test integrasi: pembayaran bundle hotel-venue-resto → settle ke vendor + fee platform + poin loyalty; klaim insuransi lintas 3 lini cair otomatis; Σ semua = 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.6 Test integrasi: pembayaran bundle hotel-venue-resto → settle ke vendor + fee platform + poin loyalty; klaim insuransi lintas 3 lini cair otomatis; Σ semua = 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Core/tests/Feature/UniversalCrossLineFintechIntegrationTest.php
     - test: modules/Core/tests/Feature/UniversalCrossLineFintechIntegrationTest.php::test_cross_line_bundle_settlement_and_three_line_insurance_autopilot
     - akses: command ins:audit
-    - gate: docs/gates/fase-96.md
-- [x] 96.7 Quality gate Fase 96
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.7 Quality gate Fase 96
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: fafca066
     - file: docs/gates/fase-96.md
     - test: tests/Architecture/TestHygieneTest.php
     - akses: command rwa:audit
-    - gate: docs/gates/fase-96.md
+    - (dibatalkan) gate: docs/gates/fase-96.md
 
 ## FASE 97 — INTEGRASI LINTAS 12 LINI (C): TALENT GIG, ESG TERPADU & EVENT SPINE PENUH
 > **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 97.1–97.7 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 55726620).
