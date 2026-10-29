@@ -4144,87 +4144,97 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-29.md
 
 ## FASE 30 — ASET INTI (MODUL `ast_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 30.1 Modul Asset: kategori (tanah, bangunan, mesin pabrik, kendaraan, peralatan, IT, hak/intangible), umur ekonomis & metode default per kategori (PSAK 16, **simulasi**)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 30.1 Modul Asset: kategori (tanah, bangunan, mesin pabrik, kendaraan, peralatan, IT, hak/intangible), umur ekonomis & metode default per kategori (PSAK 16, **simulasi**)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.2 Register aset: kode via 26.8, tag/QR, lokasi (hirarki entitas→site→area), penanggung jawab, kondisi, foto/dokumen
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.2 Register aset: kode via 26.8, tag/QR, lokasi (hirarki entitas→site→area), penanggung jawab, kondisi, foto/dokumen
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.3 **Akuisisi & kapitalisasi**: dari PO/GRN (Fase 34), pembelian langsung, atau konstruksi (CIP → aset); posting `ast:fixed_assets`, `ap`/kas; biaya perolehan termasuk landed cost
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.3 **Akuisisi & kapitalisasi**: dari PO/GRN (Fase 34), pembelian langsung, atau konstruksi (CIP → aset); posting `ast:fixed_assets`, `ap`/kas; biaya perolehan termasuk landed cost
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.4 Riwayat aset **hash-chain** append-only (akuisisi, pindah, perbaikan, revaluasi, disposal); `ast:verify-chain`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.4 Riwayat aset **hash-chain** append-only (akuisisi, pindah, perbaikan, revaluasi, disposal); `ast:verify-chain`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.5 Mutasi aset antar lokasi/entitas (approval; transfer antar-entitas memicu intercompany di Fase 52)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.5 Mutasi aset antar lokasi/entitas (approval; transfer antar-entitas memicu intercompany di Fase 52)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.6 Konsolidasi aset lama: `Mall\Asset`, armada Logistics (`Truck/Trailer/Vessel/Aircraft/Container`), peralatan dapur Resto → tautan `asset_id` non-breaking + backfill idempoten
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.6 Konsolidasi aset lama: `Mall\Asset`, armada Logistics (`Truck/Trailer/Vessel/Aircraft/Container`), peralatan dapur Resto → tautan `asset_id` non-breaking + backfill idempoten
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.7 Stok opname aset (scan QR, selisih ditemukan/hilang, penyesuaian dengan approval)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.7 Stok opname aset (scan QR, selisih ditemukan/hilang, penyesuaian dengan approval)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.8 Penugasan & peminjaman aset (check-out/in), asuransi aset (polis, jatuh tempo, klaim)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.8 Penugasan & peminjaman aset (check-out/in), asuransi aset (polis, jatuh tempo, klaim)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.9 UI register, detail aset, pemindaian QR publik terbatas; role `asset_manager`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.9 UI register, detail aset, pemindaian QR publik terbatas; role `asset_manager`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.10 Quality gate Fase 30
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.10 Quality gate Fase 30
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
+    - (dibatalkan) gate: docs/gates/fase-30.md
 
 ## FASE 31 — ASET: PENYUSUTAN, PEMELIHARAAN, REVALUASI & DISPOSAL
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
