@@ -4405,79 +4405,88 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-32.md
 
 ## FASE 33 — PROCUREMENT: PR → RFQ → TENDER → PO
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 33.1 Purchase Requisition (PR): dari kebutuhan manual, MRP (Fase 36), atau reorder-point; approval berjenjang berdasar nilai & pusat biaya
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 33.1 Purchase Requisition (PR): dari kebutuhan manual, MRP (Fase 36), atau reorder-point; approval berjenjang berdasar nilai & pusat biaya
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.2 RFQ multi-pemasok, perbandingan penawaran (matriks harga/lead time/skor), pemilihan dengan alasan tercatat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.2 RFQ multi-pemasok, perbandingan penawaran (matriks harga/lead time/skor), pemilihan dengan alasan tercatat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.3 Tender tertutup/terbuka: periode, addendum, segel penawaran (hash), buka bersamaan, evaluasi berbobot, penetapan pemenang (approval)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.3 Tender tertutup/terbuka: periode, addendum, segel penawaran (hash), buka bersamaan, evaluasi berbobot, penetapan pemenang (approval)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.4 Purchase Order (PO): dari PR/RFQ/kontrak kerangka; versi PO, perubahan via approval, close/cancel; blanket PO & call-off
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.4 Purchase Order (PO): dari PR/RFQ/kontrak kerangka; versi PO, perubahan via approval, close/cancel; blanket PO & call-off
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.5 PO impor: mata uang asing, Incoterm, pelabuhan, estimasi landed cost (menghubungkan Fase 48–49)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.5 PO impor: mata uang asing, Incoterm, pelabuhan, estimasi landed cost (menghubungkan Fase 48–49)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.6 Komitmen anggaran: PR/PO mengunci anggaran (encumbrance) per pusat biaya; peringatan melebihi anggaran
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.6 Komitmen anggaran: PR/PO mengunci anggaran (encumbrance) per pusat biaya; peringatan melebihi anggaran
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.7 Integrasi Logistics: PO inbound membuat shipment masuk (via `ShipmentBooking`), jadwal kedatangan, appointment dock (Fase 24.5 untuk gudang/pabrik)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.7 Integrasi Logistics: PO inbound membuat shipment masuk (via `ShipmentBooking`), jadwal kedatangan, appointment dock (Fase 24.5 untuk gudang/pabrik)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.8 Dashboard procurement: spend analysis, saving, siklus PR→PO, PO terbuka/lewat jatuh tempo
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.8 Dashboard procurement: spend analysis, saving, siklus PR→PO, PO terbuka/lewat jatuh tempo
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.9 Quality gate Fase 33
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.9 Quality gate Fase 33
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
+    - (dibatalkan) gate: docs/gates/fase-33.md
 
 ## FASE 34 — PENERIMAAN BARANG, HUTANG USAHA & PEMBAYARAN PEMASOK
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
