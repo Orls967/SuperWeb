@@ -5600,88 +5600,98 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-46.md
 
 ## FASE 47 — MITRA & KEMITRAAN (MODUL `ptn_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 47.1 Modul Partner: jenis mitra (strategis, teknologi, saluran, waralaba, JV, riset, CSR), siklus hidup `prospect → due diligence → negotiation → active → review → exit`
-  Bukti:
+- [ ] 47.1 Modul Partner: jenis mitra (strategis, teknologi, saluran, waralaba, JV, riset, CSR), siklus hidup `prospect → due diligence → negotiation → active → review → exit`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.2 Due diligence: checklist (legal, keuangan, reputasi, ESG, sanksi), skor risiko, approval berjenjang, dokumen
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.2 Due diligence: checklist (legal, keuangan, reputasi, ESG, sanksi), skor risiko, approval berjenjang, dokumen
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.3 Perjanjian kemitraan (Fase 28/29) + rencana kerja bersama (joint business plan): sasaran, KPI, anggaran, PIC kedua pihak
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.3 Perjanjian kemitraan (Fase 28/29) + rencana kerja bersama (joint business plan): sasaran, KPI, anggaran, PIC kedua pihak
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.4 **Revenue/profit sharing** generik: aturan bagi hasil (persentase, bertingkat, setelah biaya), periode, perhitungan dari ledger; mengganti pola khusus (Resto royalti, Mall revenue share) lewat adapter tanpa mengubah hasil lama
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.4 **Revenue/profit sharing** generik: aturan bagi hasil (persentase, bertingkat, setelah biaya), periode, perhitungan dari ledger; mengganti pola khusus (Resto royalti, Mall revenue share) lewat adapter tanpa mengubah hasil lama
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.5 Co-selling & marketplace B2B sederhana: katalog mitra, referral antar-mitra, lead sharing, atribusi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.5 Co-selling & marketplace B2B sederhana: katalog mitra, referral antar-mitra, lead sharing, atribusi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.6 Portal mitra (role `partner`): proyek, laporan, statement bagi hasil, dokumen, tiket
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.6 Portal mitra (role `partner`): proyek, laporan, statement bagi hasil, dokumen, tiket
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.7 SLA mitra & penalti, scorecard & review berkala (QBR), rencana perbaikan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.7 SLA mitra & penalti, scorecard & review berkala (QBR), rencana perbaikan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.8 Aset & HKI bersama: kepemilikan bersama aset (Fase 30), hak kekayaan intelektual (merek/paten/hak cipta — register, masa berlaku, lisensi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.8 Aset & HKI bersama: kepemilikan bersama aset (Fase 30), hak kekayaan intelektual (merek/paten/hak cipta — register, masa berlaku, lisensi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.9 Exit & transisi: terminasi kemitraan, pembagian aset/utang, pembayaran terakhir, retensi data
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.9 Exit & transisi: terminasi kemitraan, pembagian aset/utang, pembayaran terakhir, retensi data
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.10 Quality gate Fase 47
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.10 Quality gate Fase 47
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
+    - (dibatalkan) gate: docs/gates/fase-47.md
 
 ## FASE 48 — MULTI-CURRENCY & TREASURY
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
