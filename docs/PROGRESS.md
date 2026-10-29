@@ -4237,79 +4237,88 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-30.md
 
 ## FASE 31 — ASET: PENYUSUTAN, PEMELIHARAAN, REVALUASI & DISPOSAL
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 31.1 Penyusutan: garis lurus, saldo menurun, unit produksi (jam mesin/km); `ast:depreciate` bulanan idempoten per (aset, periode); akun `ast:accumulated_depreciation`, `ast:depreciation_expense`
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 31.1 Penyusutan: garis lurus, saldo menurun, unit produksi (jam mesin/km); `ast:depreciate` bulanan idempoten per (aset, periode); akun `ast:accumulated_depreciation`, `ast:depreciation_expense`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.2 Penyusutan fiskal vs komersial (dua buku, selisih temporer — simulasi), laporan rekonsiliasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.2 Penyusutan fiskal vs komersial (dua buku, selisih temporer — simulasi), laporan rekonsiliasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.3 Impairment & revaluasi (approval, jurnal selisih, surplus revaluasi di ekuitas)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.3 Impairment & revaluasi (approval, jurnal selisih, surplus revaluasi di ekuitas)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.4 Disposal: jual, hapus, hibah, hilang; laba/rugi pelepasan; link ke penjualan (Store/Auction sederhana) dan Payment
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.4 Disposal: jual, hapus, hibah, hilang; laba/rugi pelepasan; link ke penjualan (Store/Auction sederhana) dan Payment
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.5 Pemeliharaan preventif berbasis waktu/penggunaan; work order aset (generalisasi Mall `WorkOrder` & AutoServe fleet service via contract); biaya pemeliharaan → kapitalisasi vs beban
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.5 Pemeliharaan preventif berbasis waktu/penggunaan; work order aset (generalisasi Mall `WorkOrder` & AutoServe fleet service via contract); biaya pemeliharaan → kapitalisasi vs beban
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.6 Sewa (PSAK 73 **simulasi**): hak guna aset & liabilitas sewa dari kontrak sewa (Fase 29), amortisasi bunga
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.6 Sewa (PSAK 73 **simulasi**): hak guna aset & liabilitas sewa dari kontrak sewa (Fase 29), amortisasi bunga
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.7 Total cost of ownership per aset (susut + pemeliharaan + BBM/asuransi), rekomendasi ganti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.7 Total cost of ownership per aset (susut + pemeliharaan + BBM/asuransi), rekomendasi ganti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.8 `ast:audit` (subledger aset = ledger, 0 selisih), pilar baru di `super:health-check`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.8 `ast:audit` (subledger aset = ledger, 0 selisih), pilar baru di `super:health-check`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.9 Quality gate Fase 31
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.9 Quality gate Fase 31
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
+    - (dibatalkan) gate: docs/gates/fase-31.md
 
 ## FASE 32 — PRODUSEN & PEMASOK (SUPPLIER MANAGEMENT, MODUL `sup_`)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
