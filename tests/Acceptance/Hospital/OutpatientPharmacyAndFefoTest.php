@@ -62,7 +62,7 @@ class OutpatientPharmacyAndFefoTest extends HospitalAcceptanceHelper
         $encounter = $this->createExaminedEncounterFixture();
         $doctorUser = $encounter->doctor->user;
 
-        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Instalasi Farmasi Utama', 'address' => 'Gedung A Lt 1', 'is_central' => true]);
+        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Instalasi Farmasi Utama', 'city' => 'Jakarta', 'is_active' => true]);
         $lot = PharmacyBranchLot::create([
             'branch_id' => $branch->id,
             'drug_code' => 'AMX-500',
@@ -93,7 +93,7 @@ class OutpatientPharmacyAndFefoTest extends HospitalAcceptanceHelper
     {
         $encounter = $this->createExaminedEncounterFixture();
         $pharmacist = $this->createHospitalUser('pharmacist');
-        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Farmasi', 'address' => 'Gedung A', 'is_central' => true]);
+        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Farmasi', 'city' => 'Jakarta', 'is_active' => true]);
 
         // Dua lot: Lot A kedaluwarsa 2 bulan lagi, Lot B kedaluwarsa 6 bulan lagi
         $lotA = PharmacyBranchLot::create([
@@ -141,7 +141,7 @@ class OutpatientPharmacyAndFefoTest extends HospitalAcceptanceHelper
     {
         $encounter = $this->createExaminedEncounterFixture();
         $pharmacist = $this->createHospitalUser('pharmacist');
-        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Farmasi', 'address' => 'Gedung A', 'is_central' => true]);
+        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Farmasi', 'city' => 'Jakarta', 'is_active' => true]);
 
         // Lot expired
         $expiredLot = PharmacyBranchLot::create([
@@ -189,7 +189,7 @@ class OutpatientPharmacyAndFefoTest extends HospitalAcceptanceHelper
     {
         $encounter = $this->createExaminedEncounterFixture();
         $pharmacist = $this->createHospitalUser('pharmacist');
-        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Farmasi', 'address' => 'Gedung A', 'is_central' => true]);
+        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Farmasi', 'city' => 'Jakarta', 'is_active' => true]);
 
         $lot = PharmacyBranchLot::create([
             'branch_id' => $branch->id,
@@ -225,7 +225,7 @@ class OutpatientPharmacyAndFefoTest extends HospitalAcceptanceHelper
     {
         $encounter = $this->createExaminedEncounterFixture();
         $pharmacist = $this->createHospitalUser('pharmacist');
-        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Farmasi', 'address' => 'Gedung A', 'is_central' => true]);
+        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Farmasi', 'city' => 'Jakarta', 'is_active' => true]);
 
         PharmacyBranchLot::create([
             'branch_id' => $branch->id,
@@ -253,24 +253,15 @@ class OutpatientPharmacyAndFefoTest extends HospitalAcceptanceHelper
         $dispenseAction->execute($prescription, $branch->id, $pharmacist);
 
         // Assert ledger entry created: DEBIT hsp:cogs_pharmacy:IDR Rp 12.000, CREDIT hsp:inventory_pharmacy:IDR Rp 12.000
-        $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'hsp:cogs_pharmacy:IDR',
-            'direction' => 'DEBIT',
-            'amount' => 12000,
-        ]);
-
-        $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'hsp:inventory_pharmacy:IDR',
-            'direction' => 'CREDIT',
-            'amount' => 12000,
-        ]);
+        $this->assertLedgerPosted('hsp:cogs_pharmacy:IDR', 12000, 'DEBIT');
+        $this->assertLedgerPosted('hsp:inventory_pharmacy:IDR', 12000, 'CREDIT');
     }
 
     public function test_resep_obat_yang_sudah_diserahkan_tidak_dapat_diserahkan_kembali(): void
     {
         $encounter = $this->createExaminedEncounterFixture();
         $pharmacist = $this->createHospitalUser('pharmacist');
-        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Farmasi', 'address' => 'Gedung A', 'is_central' => true]);
+        $branch = PharmacyBranch::firstOrCreate(['branch_code' => 'MAIN'], ['name' => 'Farmasi', 'city' => 'Jakarta', 'is_active' => true]);
 
         PharmacyBranchLot::create([
             'branch_id' => $branch->id,

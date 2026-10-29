@@ -37,7 +37,7 @@ final class HospitalAccounts
                 'name' => 'Hospital Outpatient Pharmacy Cost of Goods Sold',
                 'kind' => AccountKind::EXPENSE,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'hsp:inventory_pharmacy:IDR',
@@ -65,7 +65,7 @@ final class HospitalAccounts
                 'name' => 'Hospital BPJS Rejected Claim Expense',
                 'kind' => AccountKind::EXPENSE,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'hsp:bpjs_receivable:IDR',
