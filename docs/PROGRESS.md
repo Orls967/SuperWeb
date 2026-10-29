@@ -5423,87 +5423,97 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-44.md
 
 ## FASE 45 — AGENSI: AGEN PENJUALAN & KOMISI (MODUL `agy_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 45.1 Modul Agency: agen individu/badan (party role), tipe (agen penjualan, broker, reseller, afiliasi, agen tunggal merek), hirarki upline/downline
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 45.1 Modul Agency: agen individu/badan (party role), tipe (agen penjualan, broker, reseller, afiliasi, agen tunggal merek), hirarki upline/downline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.2 Kontrak keagenan (Fase 28/29): wilayah/produk, eksklusivitas, komisi, masa berlaku, non-compete (flag), penghentian
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.2 Kontrak keagenan (Fase 28/29): wilayah/produk, eksklusivitas, komisi, masa berlaku, non-compete (flag), penghentian
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.3 **Skema komisi** fleksibel: flat, persentase, bertingkat (slab), per produk/saluran, bonus target; komisi berjenjang (override upline, maks N level)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.3 **Skema komisi** fleksibel: flat, persentase, bertingkat (slab), per produk/saluran, bonus target; komisi berjenjang (override upline, maks N level)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.4 Atribusi penjualan: kode agen/referral/lead, aturan prioritas bila konflik (last-touch/first-touch), masa atribusi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.4 Atribusi penjualan: kode agen/referral/lead, aturan prioritas bila konflik (last-touch/first-touch), masa atribusi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.5 Perhitungan komisi per transaksi (event penjualan terkonfirmasi/dibayar), **hold sampai periode retur lewat**, akrual `agy:commission_payable`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.5 Perhitungan komisi per transaksi (event penjualan terkonfirmasi/dibayar), **hold sampai periode retur lewat**, akrual `agy:commission_payable`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.6 **Clawback**: retur/pembatalan/chargeback membalik komisi (saldo agen bisa negatif → dikompensasi periode berikut)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.6 **Clawback**: retur/pembatalan/chargeback membalik komisi (saldo agen bisa negatif → dikompensasi periode berikut)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.7 Payout periodik: statement komisi, PPh 21/23 dipotong (simulasi), approval, pembayaran via ledger/PaymentGateway, bukti potong
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.7 Payout periodik: statement komisi, PPh 21/23 dipotong (simulasi), approval, pembayaran via ledger/PaymentGateway, bukti potong
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.8 Portal agen (role `agent`): lead, penjualan, komisi, statement, materi, target; laporan downline
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.8 Portal agen (role `agent`): lead, penjualan, komisi, statement, materi, target; laporan downline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.9 `agy:audit` (komisi akrual = payout + saldo, 0 selisih)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.9 `agy:audit` (komisi akrual = payout + saldo, 0 selisih)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.10 Quality gate Fase 45
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.10 Quality gate Fase 45
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
+    - (dibatalkan) gate: docs/gates/fase-45.md
 
 ## FASE 46 — AGENSI: EKOSISTEM, LEAD, TIER & KEPATUHAN
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
