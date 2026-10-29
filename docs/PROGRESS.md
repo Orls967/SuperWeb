@@ -4060,79 +4060,88 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-28.md
 
 ## FASE 29 — KONTRAK LANJUTAN: KEUANGAN, KEPATUHAN & INTEGRASI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 29.1 Jadwal pembayaran kontrak (termin, milestone, berkala), retensi (retention %), uang muka (advance) & pelunasannya; akun ledger `ctr:advance`, `ctr:retention_payable/receivable`
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 29.1 Jadwal pembayaran kontrak (termin, milestone, berkala), retensi (retention %), uang muka (advance) & pelunasannya; akun ledger `ctr:advance`, `ctr:retention_payable/receivable`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.2 Denda & liquidated damages: aturan (per hari/%) dihitung otomatis dari keterlambatan obligasi; pembebasan (waiver) via approval
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.2 Denda & liquidated damages: aturan (per hari/%) dihitung otomatis dari keterlambatan obligasi; pembebasan (waiver) via approval
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.3 Eskalasi harga & indeksasi (formula + indeks tersimpan), rate card kontrak yang mengalahkan harga standar
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.3 Eskalasi harga & indeksasi (formula + indeks tersimpan), rate card kontrak yang mengalahkan harga standar
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.4 **Amandemen & addendum**: perubahan nilai/jangka waktu menghasilkan versi baru, dampak jadwal bayar dihitung ulang, jejak lengkap
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.4 **Amandemen & addendum**: perubahan nilai/jangka waktu menghasilkan versi baru, dampak jadwal bayar dihitung ulang, jejak lengkap
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.5 Rekonsiliasi kontrak ↔ transaksi riil (PO/penjualan/pengiriman): nilai terpakai vs plafon, early warning 80%/100%
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.5 Rekonsiliasi kontrak ↔ transaksi riil (PO/penjualan/pengiriman): nilai terpakai vs plafon, early warning 80%/100%
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.6 Integrasi: kontrak pengiriman B2B → `RateCard`/postpaid Logistics; kontrak sewa → Mall `Lease` (tautan, bukan duplikasi); kontrak waralaba → Resto royalti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.6 Integrasi: kontrak pengiriman B2B → `RateCard`/postpaid Logistics; kontrak sewa → Mall `Lease` (tautan, bukan duplikasi); kontrak waralaba → Resto royalti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.7 Klausul kepatuhan: governing law, yurisdiksi/arbitrase (BANI/ICC/SIAC — data referensi), force majeure, kerahasiaan; flag risiko kontrak (skor aturan simulasi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.7 Klausul kepatuhan: governing law, yurisdiksi/arbitrase (BANI/ICC/SIAC — data referensi), force majeure, kerahasiaan; flag risiko kontrak (skor aturan simulasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.8 Laporan: eksposur kontrak, nilai kontrak aktif per jenis/pihak, aging obligasi, kontrak yang akan kedaluwarsa; `ctr:audit` (0 selisih vs ledger)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.8 Laporan: eksposur kontrak, nilai kontrak aktif per jenis/pihak, aging obligasi, kontrak yang akan kedaluwarsa; `ctr:audit` (0 selisih vs ledger)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.9 Quality gate Fase 29
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.9 Quality gate Fase 29
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
+    - (dibatalkan) gate: docs/gates/fase-29.md
 
 ## FASE 30 — ASET INTI (MODUL `ast_`)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
