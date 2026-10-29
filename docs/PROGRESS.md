@@ -3967,87 +3967,97 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-27.md
 
 ## FASE 28 — KONTRAK INTI (MODUL `ctr_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 28.1 Modul Contract: `Contract` (jenis: pembelian, penjualan, distribusi, keagenan, sewa, jasa, lisensi, JV, OEM/ODM, NDA), `ContractParty` (≥ 2 pihak, peran), nomor via 26.8
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 28.1 Modul Contract: `Contract` (jenis: pembelian, penjualan, distribusi, keagenan, sewa, jasa, lisensi, JV, OEM/ODM, NDA), `ContractParty` (≥ 2 pihak, peran), nomor via 26.8
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.2 Library klausul & templat: klausul ber-versi, variabel (`{{party.name}}`, nilai, tanggal), perakitan kontrak dari templat, pratinjau
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.2 Library klausul & templat: klausul ber-versi, variabel (`{{party.name}}`, nilai, tanggal), perakitan kontrak dari templat, pratinjau
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.3 State machine kontrak: `draft → review → negotiation → approved → signed → active → (suspended) → expired|terminated|renewed`, guard transisi, alasan wajib untuk terminate/suspend
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.3 State machine kontrak: `draft → review → negotiation → approved → signed → active → (suspended) → expired|terminated|renewed`, guard transisi, alasan wajib untuk terminate/suspend
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.4 **Versioning hash-chain**: tiap revisi/negosiasi tercatat append-only (SHA-256 berantai, seperti Vehicle Passport); `contracts:verify-chain`; diff antar versi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.4 **Versioning hash-chain**: tiap revisi/negosiasi tercatat append-only (SHA-256 berantai, seperti Vehicle Passport); `contracts:verify-chain`; diff antar versi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.5 Persetujuan berjenjang (26.9) berdasarkan nilai & jenis; e-sign **simulasi** (tanda tangan terenkripsi + hash dokumen + timestamp, urutan penandatangan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.5 Persetujuan berjenjang (26.9) berdasarkan nilai & jenis; e-sign **simulasi** (tanda tangan terenkripsi + hash dokumen + timestamp, urutan penandatangan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.6 Lampiran & dokumen pendukung (26.8), tautan kontrak ↔ pihak (27) ↔ entitas hukum
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.6 Lampiran & dokumen pendukung (26.8), tautan kontrak ↔ pihak (27) ↔ entitas hukum
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.7 Obligasi & milestone: tanggal, penanggung jawab, status, bukti penyelesaian; dashboard kewajiban jatuh tempo
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.7 Obligasi & milestone: tanggal, penanggung jawab, status, bukti penyelesaian; dashboard kewajiban jatuh tempo
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.8 Pengingat otomatis (`ctr:remind`): kedaluwarsa, perpanjangan, milestone, notice period (in-app + outbox)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.8 Pengingat otomatis (`ctr:remind`): kedaluwarsa, perpanjangan, milestone, notice period (in-app + outbox)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.9 UI: daftar, editor kontrak, linimasa, tab pihak/obligasi/versi; role `contract_manager`, `legal`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.9 UI: daftar, editor kontrak, linimasa, tab pihak/obligasi/versi; role `contract_manager`, `legal`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.10 Quality gate Fase 28
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.10 Quality gate Fase 28
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
+    - (dibatalkan) gate: docs/gates/fase-28.md
 
 ## FASE 29 — KONTRAK LANJUTAN: KEUANGAN, KEPATUHAN & INTEGRASI
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
