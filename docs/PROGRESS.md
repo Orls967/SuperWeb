@@ -8033,73 +8033,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 3 — KULINER, RESTORAN & WARALABA
 
 ## FASE 74 — CLOUD KITCHEN, DELIVERY AGGREGATOR INTERNAL & KATERING PAYROLL DEDUCTION
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, kapasitas hourly cloud kitchen, payroll deduction HCM, pembatalan dan refund ledger, serta quality gate pass.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** CloudKitchen (`ckt_`) · **Prasyarat:** R4.2 ✅ (prefiks), R6.3 ✅ · **Acuan:** KONSEP 3F slice 1–2
 > **Jalan pintas terlarang di fase ini:** CloudKitchen menulis tabel `resto_`; potongan katering di luar baris payroll — ditambah seluruh X1–X25.
-- [x] 74.1 Modul cloud kitchen (`resto_ck_kitchens`): 200 satelit + 5 dapur sentral + 300 outlet berlisensi, masing-masing dengan kapasitas produksi/jam, menu subset, dan radius layanan
-  Bukti:
+- [ ] 74.1 Modul cloud kitchen (`resto_ck_kitchens`): 200 satelit + 5 dapur sentral + 300 outlet berlisensi, masing-masing dengan kapasitas produksi/jam, menu subset, dan radius layanan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_catering_payroll_deduction_equals_recorded_consumption
     - akses: route GET /cloud-kitchen [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.2 **Delivery aggregator internal**: order dari kanal mana pun di-assign ke kitchen/ outlet terdekat berdasarkan kapasitas & ETA (algoritma deterministik), armada Logistics sendiri (Fase 22 last-mile) → satu tracking number untuk pelanggan, ongkir tiered
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.2 **Delivery aggregator internal**: order dari kanal mana pun di-assign ke kitchen/ outlet terdekat berdasarkan kapasitas & ETA (algoritma deterministik), armada Logistics sendiri (Fase 22 last-mile) → satu tracking number untuk pelanggan, ongkir tiered
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_assign_kitchen_does_not_exceed_capacity
     - akses: route GET /cloud-kitchen [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.3 **Katering payroll deduction**: langganan harian/mingguan karyawan EPC/pabrik & tenant Mall → debit otomatis dari gaji bulanan HCM (akun `hcm:meals_deduction`) kuota harian, menu rotasi mingguan, opt-out via self-service; potongan dikompensasi jika outlet tutup (refund ledger)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.3 **Katering payroll deduction**: langganan harian/mingguan karyawan EPC/pabrik & tenant Mall → debit otomatis dari gaji bulanan HCM (akun `hcm:meals_deduction`) kuota harian, menu rotasi mingguan, opt-out via self-service; potongan dikompensasi jika outlet tutup (refund ledger)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_catering_payroll_deduction_equals_recorded_consumption
     - akses: route POST /cloud-kitchen/subscriptions/{subscription}/dispatch [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.4 Subscription management: paket (2x/hari, 5 hari/minggu), upgrade/downgrade berlaku bulan depan, suspended jika gaji/tunjangan berhenti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.4 Subscription management: paket (2x/hari, 5 hari/minggu), upgrade/downgrade berlaku bulan depan, suspended jika gaji/tunjangan berhenti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_daily_quota_exhausted_rejects_subsequent_order
     - akses: route GET /cloud-kitchen [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.5 Integrasi cold-chain: bahan segar dari Agri → dapur sentral → satelit via Logistics reefer dengan telemetri suhu (sudah Fase 24.4, diperluas cakupan 200 satelit)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.5 Integrasi cold-chain: bahan segar dari Agri → dapur sentral → satelit via Logistics reefer dengan telemetri suhu (sudah Fase 24.4, diperluas cakupan 200 satelit)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_catering_payroll_deduction_equals_recorded_consumption
     - akses: route GET /cloud-kitchen [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.6 Dashboard: okupansi dapur per jam, delivery ETA real-time, deduction payroll tersinkron HCM, katering aktif per entitas
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.6 Dashboard: okupansi dapur per jam, delivery ETA real-time, deduction payroll tersinkron HCM, katering aktif per entitas
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenVerticalSliceHttpTest.php::test_a_authorized_user_can_access_cloud_kitchen_index_and_dispatch_meal
     - akses: route GET /cloud-kitchen [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.7 Tests: (a) kuota harian habis → tolak order berikutnya (b) deduction payroll = konsumsi tercatat (c) refund outlet tutup masuk gaji berikutnya (d) assign kitchen tidak melebihi kapasitas (e) reconcile deduction = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.7 Tests: (a) kuota harian habis → tolak order berikutnya (b) deduction payroll = konsumsi tercatat (c) refund outlet tutup masuk gaji berikutnya (d) assign kitchen tidak melebihi kapasitas (e) reconcile deduction = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: e2eeab6d
     - file: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_reconcile_catering_deductions_equals_ledger
-    - gate: docs/gates/fase-74.md
-- [x] 74.8 Quality gate Fase 74
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.8 Quality gate Fase 74
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: e2eeab6d
     - file: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenVerticalSliceHttpTest.php::test_d_two_source_cloud_kitchen_audit_passes_cleanly
     - akses: command ck:audit
-    - gate: docs/gates/fase-74.md
+    - (dibatalkan) gate: docs/gates/fase-74.md
 
 ### Register Minus Fase 74
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
