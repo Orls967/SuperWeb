@@ -446,7 +446,7 @@ class MallLoyaltyAndFacilityTest extends TestCase
         $this->assertSame(450_000, $repairLine->amount);
 
         // Pelunasan tagihan via AllocatePaymentAction
-        app(TopUpAction::class)->execute($boutiqueUser, 1_000_000);
+        app(TopUpAction::class)->execute($boutiqueUser, 1_000_000, 'boutique_topup_loyalty_test');
         $allocateAction = app(AllocatePaymentAction::class);
         $paidInvoice = $allocateAction->execute($invoice, 450_000);
 

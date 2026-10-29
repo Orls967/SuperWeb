@@ -27,34 +27,18 @@ class TopUpSameAmountTwiceTest extends TestCase
     }
 
     /**
-     * Membuktikan bahwa dua transaksi top-up sah dengan nominal yang sama
-     * gagal tercatat jika tidak menyertakan explicit key, karena default key
-     * berbasis nominal `banking:topup:{user}:{amount}` bertabrakan.
+     * Membuktikan bahwa transaksi top-up tanpa key ditolak dengan InvalidArgumentException (K-3),
+     * sehingga menghilangkan risiko tabrakan kunci default lama banking:topup:{user}:{amount}.
      */
-    public function test_two_distinct_top_ups_with_same_amount_collide_under_default_key(): void
+    public function test_top_up_without_idempotency_key_throws_invalid_argument_exception(): void
     {
         $user = User::factory()->create();
         $action = app(TopUpAction::class);
 
-        // Permintaan 1: Klien top-up 100.000 (tanpa key)
-        $tx1 = $action->execute($user, 100_000);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Idempotency key wajib diisi');
 
-        // Permintaan 2: Klien top-up 100.000 lagi 5 menit kemudian (tanpa key)
-        $tx2 = $action->execute($user, 100_000);
-
-        // Di master saat ini, tx1->id === tx2->id karena key sama:
-        $this->assertSame(
-            $tx1->id,
-            $tx2->id,
-            'Terbukti: Di master, pemanggilan kedua mengembalikan transaksi pertama karena kunci default bertabrakan'
-        );
-
-        $wallet = $user->walletAccount('IDR');
-        $this->assertSame(
-            100_000,
-            (int) $wallet->cached_balance,
-            'Terbukti: Saldo dompet hanya bertambah 100.000 padahal top-up 2x (top-up kedua hilang)'
-        );
+        $action->execute($user, 100_000);
     }
 
     /**

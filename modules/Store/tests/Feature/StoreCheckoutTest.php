@@ -47,7 +47,7 @@ class StoreCheckoutTest extends TestCase
         app(SetPinAction::class)->execute($user, $pin);
 
         if ($balance > 0) {
-            app(TopUpAction::class)->execute($user, $balance);
+            app(TopUpAction::class)->execute($user, $balance, 'store_topup_'.$user->id.'_'.uniqid());
         }
 
         return $user;

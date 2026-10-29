@@ -52,7 +52,7 @@ beforeEach(function () {
     ]);
 
     app(SetPinAction::class)->execute($this->customer, '123456');
-    app(TopUpAction::class)->execute($this->customer, 5_000_000);
+    app(TopUpAction::class)->execute($this->customer, 5_000_000, 'smart_repair_topup_customer');
 
     $this->service = Service::create([
         'name' => 'Overhaul Ringan',
@@ -338,7 +338,7 @@ test('customer lain tidak dapat menyetujui estimasi milik orang lain', function 
         'role' => 'customer',
     ]);
     app(SetPinAction::class)->execute($orangLain, '654321');
-    app(TopUpAction::class)->execute($orangLain, 2_000_000);
+    app(TopUpAction::class)->execute($orangLain, 2_000_000, 'smart_repair_topup_orang_lain');
 
     expect(fn () => app(ApproveEstimateAction::class)->execute($estimate, $orangLain, '654321'))
         ->toThrow(Exception::class);

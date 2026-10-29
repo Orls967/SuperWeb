@@ -33,8 +33,11 @@ test('top up action without explicit idempotency key is idempotent and produces 
     $user = User::factory()->create();
     $action = app(TopUpAction::class);
 
-    $tx1 = $action->execute($user, 100_000);
-    $tx2 = $action->execute($user, 100_000);
+    expect(fn () => $action->execute($user, 100_000))
+        ->toThrow(InvalidArgumentException::class);
+
+    $tx1 = $action->execute($user, 100_000, 'req-topup-test-1');
+    $tx2 = $action->execute($user, 100_000, 'req-topup-test-1');
 
     expect($tx1->id)->toBe($tx2->id);
 
@@ -56,8 +59,11 @@ test('transfer action without explicit key is idempotent and produces single tra
 
     $transfer = app(TransferAction::class);
 
-    $tx1 = $transfer->execute($sender, $recipient, 50_000, '123456', 'Bayar makan siang');
-    $tx2 = $transfer->execute($sender, $recipient, 50_000, '123456', 'Bayar makan siang');
+    expect(fn () => $transfer->execute($sender, $recipient, 50_000, '123456', 'Bayar makan siang'))
+        ->toThrow(InvalidArgumentException::class);
+
+    $tx1 = $transfer->execute($sender, $recipient, 50_000, '123456', 'Bayar makan siang', 'req-transfer-test-1');
+    $tx2 = $transfer->execute($sender, $recipient, 50_000, '123456', 'Bayar makan siang', 'req-transfer-test-1');
 
     expect($tx1->id)->toBe($tx2->id);
 
@@ -77,8 +83,11 @@ test('manual adjustment action is idempotent producing single ledger transaction
 
     $action = app(ManualAdjustmentAction::class);
 
-    $tx1 = $action->execute($account, 25_000, 'Koreksi audit penyesuaian', $admin);
-    $tx2 = $action->execute($account, 25_000, 'Koreksi audit penyesuaian', $admin);
+    expect(fn () => $action->execute($account, 25_000, 'Koreksi audit penyesuaian', $admin))
+        ->toThrow(InvalidArgumentException::class);
+
+    $tx1 = $action->execute($account, 25_000, 'Koreksi audit penyesuaian', $admin, 'req-adj-test-1');
+    $tx2 = $action->execute($account, 25_000, 'Koreksi audit penyesuaian', $admin, 'req-adj-test-1');
 
     expect($tx1->id)->toBe($tx2->id);
 

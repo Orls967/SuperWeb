@@ -36,7 +36,15 @@ class TopUpAction
         $userWallet = $user->walletAccount('IDR');
         $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
             ? trim($idempotencyKey)
-            : sprintf('banking:topup:%s:%s', $user->id, $amountBd->__toString());
+            : (request()?->header('Idempotency-Key')
+                ?? request()?->input('request_id')
+                ?? request()?->input('idempotency_key'));
+
+        if ($key === null || trim((string) $key) === '') {
+            throw new InvalidArgumentException('Idempotency key wajib diisi untuk transaksi finansial top up.');
+        }
+
+        $key = trim((string) $key);
 
         $dto = new PostingDTO(
             type: TransactionType::TOPUP->value,

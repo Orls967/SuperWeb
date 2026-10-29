@@ -61,8 +61,14 @@ test('user dapat mengatur PIN baru via HTTP POST', function () {
 });
 
 test('user dapat melakukan top up saldo via HTTP POST', function () {
+    // Tanpa idempotency key -> 422 (K-3)
+    $this->actingAs($this->customer)->post(route('wallet.topup.store'), [
+        'amount' => '500000',
+    ])->assertStatus(422);
+
     $response = $this->actingAs($this->customer)->post(route('wallet.topup.store'), [
         'amount' => '500000',
+        'idempotency_key' => 'topup-http-test-key-1',
     ]);
 
     $response->assertRedirect(route('wallet.index'))
@@ -94,6 +100,7 @@ test('user dapat melakukan transfer dana antar akun via HTTP POST', function () 
         'amount' => '500000',
         'pin' => '123456',
         'note' => 'Transfer via web',
+        'idempotency_key' => 'transfer-http-test-key-1',
     ]);
 
     $response->assertRedirect(route('wallet.index'))
@@ -139,6 +146,7 @@ test('admin dapat mengakses ledger, melihat transaksi, freeze akun dan penyesuai
     $adjustResp = $this->actingAs($this->admin)->post(route('admin.ledger.adjust', $acc), [
         'amount' => '100000',
         'reason' => 'Penyesuaian audit kas',
+        'idempotency_key' => 'adjust-http-test-key-1',
     ]);
     $adjustResp->assertRedirect();
 

@@ -14,6 +14,14 @@ class TopUpController extends Controller
 {
     public function store(Request $request, TopUpAction $topUpAction): RedirectResponse
     {
+        $idempotencyKey = $request->header('Idempotency-Key')
+            ?? $request->input('request_id')
+            ?? $request->input('idempotency_key');
+
+        if (empty($idempotencyKey)) {
+            abort(422, 'Idempotency key wajib disertakan via header Idempotency-Key atau input request_id/idempotency_key.');
+        }
+
         $validated = $request->validate([
             'amount' => ['required', 'numeric', 'min:10000', 'max:50000000'],
             'idempotency_key' => ['nullable', 'string', 'max:64'],
@@ -26,7 +34,7 @@ class TopUpController extends Controller
         $tx = $topUpAction->execute(
             $request->user(),
             (string) $validated['amount'],
-            $validated['idempotency_key'] ?? null,
+            (string) $idempotencyKey,
         );
 
         $formatted = Money::IDR($validated['amount'])->format();
