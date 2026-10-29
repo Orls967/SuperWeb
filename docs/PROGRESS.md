@@ -2175,132 +2175,147 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - (dibatalkan) gate: docs/gates/fase-4.md
 
 ## FASE 5 — FITUR LINTAS MODUL
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 ### 5A. Vehicle Passport
-- [x] 5A.1 core_vehicle_events (hash-chain, append-only)
-  Bukti:
+- [ ] 5A.1 core_vehicle_events (hash-chain, append-only)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5A.2 Listeners: VehicleAcquired, BookingCompleted
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5A.2 Listeners: VehicleAcquired, BookingCompleted
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5A.3 VerifyPassportAction + halaman publik + QR
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5A.3 VerifyPassportAction + halaman publik + QR
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5A.4 Jual mobil bekas C2C (escrow)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5A.4 Jual mobil bekas C2C (escrow)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5A.5 Tests: rantai valid, manipulasi, C2C, reconcile
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5A.5 Tests: rantai valid, manipulasi, C2C, reconcile
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
+    - (dibatalkan) gate: docs/gates/fase-5.md
 
 ### 5B. Smart Repair Escrow
-- [x] 5B.1 serve_estimates table
-  Bukti:
+- [ ] 5B.1 serve_estimates table
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5B.2 Flow: estimasi → hold → complete → capture/split
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5B.2 Flow: estimasi → hold → complete → capture/split
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5B.3 Tests: final < hold, final > hold, reject, waiting_parts, cancel
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5B.3 Tests: final < hold, final > hold, reject, waiting_parts, cancel
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
+    - (dibatalkan) gate: docs/gates/fase-5.md
 
 ### 5C. HODL-to-Drive (Crypto-Backed Financing)
-- [x] 5C.1 fin_loans + fin_installments
-  Bukti:
+- [ ] 5C.1 fin_loans + fin_installments
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5C.2 Loan flow: kolateral → pinjaman → bayar → alur Store
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5C.2 Loan flow: kolateral → pinjaman → bayar → alur Store
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5C.3 Scheduler cicilan + overdue + denda
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5C.3 Scheduler cicilan + overdue + denda
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5C.4 Risk monitor (LTV) + margin call + likuidasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5C.4 Risk monitor (LTV) + margin call + likuidasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5C.5 UI: dashboard pinjaman
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5C.5 UI: dashboard pinjaman
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5C.6 Tests: open loan, cicilan, overdue, margin call, likuidasi, pelunasan, reconcile
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5C.6 Tests: open loan, cicilan, overdue, margin call, likuidasi, pelunasan, reconcile
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5.7 Quality gate Fase 5
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5.7 Quality gate Fase 5
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
+    - (dibatalkan) gate: docs/gates/fase-5.md
 
 ## FASE 6 — PLATFORM SERVICES
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
