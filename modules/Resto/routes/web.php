@@ -73,7 +73,7 @@ Route::middleware(['web', 'auth'])->prefix('resto')->name('resto.')->group(funct
     Route::middleware(['role:admin,outlet_manager,procurement'])->group(function () {
         Route::post('purchases/{purchase}/receive', [PurchaseController::class, 'receive'])->name('purchases.receive');
         Route::post('purchases/{purchase}/pay', [PurchaseController::class, 'pay'])->name('purchases.pay');
-        Route::resource('purchases', PurchaseController::class)->except(['index', 'show']);
+        Route::resource('purchases', PurchaseController::class)->only(['store']);
     });
     Route::middleware(['role:admin,auditor,outlet_manager,procurement'])->group(function () {
         Route::resource('purchases', PurchaseController::class)->only(['index', 'show']);
@@ -82,7 +82,7 @@ Route::middleware(['web', 'auth'])->prefix('resto')->name('resto.')->group(funct
     // Transfer Antar Outlet
     Route::middleware(['role:admin,kitchen,outlet_manager'])->group(function () {
         Route::post('transfers/{transfer}/receive', [StockTransferController::class, 'receive'])->name('transfers.receive');
-        Route::resource('transfers', StockTransferController::class)->except(['index', 'show']);
+        Route::resource('transfers', StockTransferController::class)->only(['store']);
     });
     Route::middleware(['role:admin,auditor,kitchen,outlet_manager'])->group(function () {
         Route::resource('transfers', StockTransferController::class)->only(['index', 'show']);
