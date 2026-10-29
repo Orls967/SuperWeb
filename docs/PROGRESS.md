@@ -1977,130 +1977,145 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - (dibatalkan) gate: docs/gates/fase-1.md
 
 ## FASE 2 — PAYMENT HUB + INTEGRASI AUTOSERVE
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 2.1 Payable contract
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 2.1 Payable contract
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.2 pay_payment_intents table
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.2 pay_payment_intents table
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.3 PaymentGateway: charge, hold, capture, release, refund
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.3 PaymentGateway: charge, hold, capture, release, refund
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.4 AutoServe Invoice implements Payable
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.4 AutoServe Invoice implements Payable
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.5 Flow bayar invoice (saldo, PIN, badge LUNAS)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.5 Flow bayar invoice (saldo, PIN, badge LUNAS)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.6 Tests: bayar, saldo kurang, idempotent, hold/capture/release, refund, reconcile
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.6 Tests: bayar, saldo kurang, idempotent, hold/capture/release, refund, reconcile
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.7 Quality gate Fase 2
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.7 Quality gate Fase 2
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
+    - (dibatalkan) gate: docs/gates/fase-2.md
 
 ## FASE 3 — CATALOG, INVENTORY & STORE
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 3.1 Inventory: stock_movements, InventoryService
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 3.1 Inventory: stock_movements, InventoryService
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.2 store_products + store_items + store_categories, migrasi sparepart
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.2 store_products + store_items + store_categories, migrasi sparepart
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.3 Refactor AutoServe stok → InventoryService
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.3 Refactor AutoServe stok → InventoryService
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.4 Mobil sebagai produk (dex_car → store_product)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.4 Mobil sebagai produk (dex_car → store_product)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.5 Cart & Checkout, Orders, auto-cancel
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.5 Cart & Checkout, Orders, auto-cancel
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.6 UI Store: katalog, produk, cart, checkout, riwayat order
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.6 UI Store: katalog, produk, cart, checkout, riwayat order
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.7 Tests: checkout, stok kurang, saldo kurang, beli mobil → Vehicle, refund
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.7 Tests: checkout, stok kurang, saldo kurang, beli mobil → Vehicle, refund
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.8 Quality gate Fase 3
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.8 Quality gate Fase 3
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
+    - (dibatalkan) gate: docs/gates/fase-3.md
 
 ## FASE 4 — CRYPTO TRACKER (SIMULASI)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
