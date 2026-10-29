@@ -9746,90 +9746,100 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 93.1–93.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 94 — PERTAMBANGAN II: WEIGHBRIDGE, GRADE RECONCILIATION, ROYALTY, HSE & OFFTAKE
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 94.1–94.10 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [x] 94.1 **Weighbridge & stockpile**: timbangan digital tercatat hash-chain per truck load (plat, muatan, tujuan, waktu) → stockpile model 3D (digital twin via Fase 67.3) → **rekonsiliasi ore vs concentrate vs shipment** (yang masuk smelter/ekspor = yang dicatat) → selisih > toleransi → investigasi otomatis + approval
-  Bukti:
+- [ ] 94.1 **Weighbridge & stockpile**: timbangan digital tercatat hash-chain per truck load (plat, muatan, tujuan, waktu) → stockpile model 3D (digital twin via Fase 67.3) → **rekonsiliasi ore vs concentrate vs shipment** (yang masuk smelter/ekspor = yang dicatat) → selisih > toleransi → investigasi otomatis + approval
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_weighbridge_ticket_hash_chain
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.2 **Grade control**: sampling & assay lab per stockpile/load (hasil terverifikasi teknisi) → blending optimization (AI deterministik teraudit) agar feed smelter stabil → recovery % per unit pengolahan → assay bias dilaporkan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.2 **Grade control**: sampling & assay lab per stockpile/load (hasil terverifikasi teknisi) → blending optimization (AI deterministik teraudit) agar feed smelter stabil → recovery % per unit pengolahan → assay bias dilaporkan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_c_assay_bias_outside_tolerance_triggers_investigation
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.3 **Smelter & hilirisasi**: ore → concentrate → bahan jadi (nickel pig iron, tembaga katoda simulasi) → memakai modul Manufacturing (BOM, costing Fase 35–38 dengan routing khusus pertambangan) → produk jadi masuk Store/Trade
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.3 **Smelter & hilirisasi**: ore → concentrate → bahan jadi (nickel pig iron, tembaga katoda simulasi) → memakai modul Manufacturing (BOM, costing Fase 35–38 dengan routing khusus pertambangan) → produk jadi masuk Store/Trade
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_weighbridge_ticket_hash_chain
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.4 **Royalty & pajak komoditas (simulasi)**: produksi bulanan × tarif royalti per komoditas → jurnal kewajiban (`min:royalty_payable`) → pembayaran ke pemerintah (dokumen gapless) + PPN/PPh final; IUP/IUPK masa berlaku → pengingat & perpanjangan via ApprovalEngine (Fase 54.6)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.4 **Royalty & pajak komoditas (simulasi)**: produksi bulanan × tarif royalti per komoditas → jurnal kewajiban (`min:royalty_payable`) → pembayaran ke pemerintah (dokumen gapless) + PPN/PPh final; IUP/IUPK masa berlaku → pengingat & perpanjangan via ApprovalEngine (Fase 54.6)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.5 **HSE & lingkungan**: izin kerja berisiko (memperluas Fase 40.6: blasting, ketinggian, confined space) dengan approval & masa berlaku; incident & near-miss → investigasi → CAPA; IoT lingkungan (debu, noise, tremor, kualitas air) → ambang → shutdown area + notifikasi; kepatuhan AMDAL simulasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.5 **HSE & lingkungan**: izin kerja berisiko (memperluas Fase 40.6: blasting, ketinggian, confined space) dengan approval & masa berlaku; incident & near-miss → investigasi → CAPA; IoT lingkungan (debu, noise, tremor, kualitas air) → ambang → shutdown area + notifikasi; kepatuhan AMDAL simulasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_hse_work_permit_verification
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.6 **Reklamasi & pascatambang**: jadwal reklamasi sebagai proyek EPC (Fase 63) → biaya capitalisasi + provisi liabilitas pascatambang (simulasi PSAK) → track progress vs amdal
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.6 **Reklamasi & pascatambang**: jadwal reklamasi sebagai proyek EPC (Fase 63) → biaya capitalisasi + provisi liabilitas pascatambang (simulasi PSAK) → track progress vs amdal
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.7 **Offtake & komoditas trading**: kontrak penjualan ore/coal ke smelter/mitra dengan formula harga (index komoditas + kalori/grade adjustment) → settlement bertingkat + assay final → LC/SCF via Trade Finance (Fase 50) → ekspor via Fase 49 dengan B2B marketplace (Fase 61)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.7 **Offtake & komoditas trading**: kontrak penjualan ore/coal ke smelter/mitra dengan formula harga (index komoditas + kalori/grade adjustment) → settlement bertingkat + assay final → LC/SCF via Trade Finance (Fase 50) → ekspor via Fase 49 dengan B2B marketplace (Fase 61)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.8 **Emisi & ESG tambang**: Scope 1 (BBM alat berat, blasting) & Scope 2 (listrik plant) → kredit karbon (Fase 60) → rencana elektrifikasi fleet & solar plant → laporan ESG per konsesi; HSE dashboard (jam tanpa kecelakaan, permit aktif, ambang lingkungan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.8 **Emisi & ESG tambang**: Scope 1 (BBM alat berat, blasting) & Scope 2 (listrik plant) → kredit karbon (Fase 60) → rencana elektrifikasi fleet & solar plant → laporan ESG per konsesi; HSE dashboard (jam tanpa kecelakaan, permit aktif, ambang lingkungan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.9 Tests: (a) weighbridge Σ = stockpile movement = shipment (b) royalti = produksi × tarif (c) assay bias di luar toleransi → investigasi (d) izin kedaluwarsa → kerja ditolak (e) `mining:audit` = 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.9 Tests: (a) weighbridge Σ = stockpile movement = shipment (b) royalti = produksi × tarif (c) assay bias di luar toleransi → investigasi (d) izin kedaluwarsa → kerja ditolak (e) `mining:audit` = 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_e_mining_audit_zero_discrepancy
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.10 Quality gate Fase 94
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.10 Quality gate Fase 94
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_e_mining_audit_zero_discrepancy
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
+    - (dibatalkan) gate: docs/gates/fase-94.md
 
 ### Register Minus Fase 94
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
