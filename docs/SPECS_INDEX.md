@@ -21,6 +21,9 @@ Seluruh spesifikasi modular disimpan di dalam direktori `docs/specs/` yang terba
 14. `docs/specs/fase-087-094-hospital-venue-hotel-mining.md` (Fase 87–94)
 15. `docs/specs/fase-095-100-conglomerate-integration-scale-ai-security.md` (Fase 95–100)
 16. `docs/specs/fase-101-105-golden-api-v3-handover-healthcare-wave2.md` (Fase 101–105)
+17. `docs/specs/FASE_106_125_SPECS.md` (Fase 106–125)
+18. `docs/specs/FASE_126_150_SPECS.md` (Fase 126–150)
+19. `docs/specs/FASE_151_300_SPECS.md` (Fase 151–300)
 
 ## 2. Matriks Ketertelusuran Lengkap (Traceability Matrix)
 
@@ -186,7 +189,6 @@ Seluruh spesifikasi modular disimpan di dalam direktori `docs/specs/` yang terba
 | 158 | `Fase 147` | Platform Economy: Open API v3+ & Ecosystem Devs | `Core` | [`docs/specs/FASE_126_150_SPECS.md`](docs/specs/FASE_126_150_SPECS.md) | 2 | 3 | 1 | 1 | `LULUS 🟢` | [`docs/gates/fase-147.md`](docs/gates/fase-147.md) |
 | 159 | `Fase 148` | Skenario Emas 12 Bulan Konglomerasi 17 Lini | `Core` | [`docs/specs/FASE_126_150_SPECS.md`](docs/specs/FASE_126_150_SPECS.md) | 2 | 3 | 1 | 1 | `LULUS 🟢` | [`docs/gates/fase-148.md`](docs/gates/fase-148.md) |
 | 160 | `Fase 149` | Dokumentasi & Playbook 100+ Role Gelombang 2 | `Core` | [`docs/specs/FASE_126_150_SPECS.md`](docs/specs/FASE_126_150_SPECS.md) | 2 | 3 | 1 | 1 | `LULUS 🟢` | [`docs/gates/fase-149.md`](docs/gates/fase-149.md) |
-| 161 | `Fase 150` | Quality Gate Ekspansi Penuh & Serah Terima Akhir | `Core` | [`docs/specs/FASE_126_150_SPECS.md`](docs/specs/FASE_126_150_SPECS.md) | 2 | 3 | 1 | 1 | `LULUS 🟢` | [`docs/gates/fase-150.md`](docs/gates/fase-150.md) |
 
 ## 3. Total Metrik & Rekapitulasi Verifikasi Arsitektur
 
