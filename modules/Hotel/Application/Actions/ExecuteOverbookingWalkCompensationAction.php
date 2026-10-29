@@ -5,11 +5,19 @@ declare(strict_types=1);
 namespace Modules\Hotel\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Modules\Banking\Application\DTOs\PostingDTO;
+use Modules\Banking\Application\DTOs\PostingEntryDTO;
+use Modules\Banking\Contracts\Ledger;
 use Modules\Hotel\Domain\Models\HotelReservation;
+use Modules\Hotel\Ledger\HotelTransactionTypes;
 use Modules\Shared\Application\BaseAction;
 
 class ExecuteOverbookingWalkCompensationAction extends BaseAction
 {
+    public function __construct(
+        protected ?Ledger $ledger = null
+    ) {}
+
     /**
      * Relocate walked overbooked guest to partner hotel with transport allowance and compensation credits.
      *
@@ -29,6 +37,20 @@ class ExecuteOverbookingWalkCompensationAction extends BaseAction
 
             $complimentaryNightCostIdr = (int) $reservation->daily_rate_idr;
             $totalCompensationIdr = $complimentaryNightCostIdr + $transportAllowanceIdr + $goodwillCreditIdr;
+
+            if ($this->ledger) {
+                $this->ledger->post(new PostingDTO(
+                    type: HotelTransactionTypes::HOTEL_OVERBOOKING_WALK->value,
+                    description: "Kompensasi walk overbooking {$reservation->reservation_number}",
+                    idempotencyKey: hash('sha256', "walk_ledger_{$reservation->id}"),
+                    entries: [
+                        PostingEntryDTO::forCode('htl:overbooking_expense:IDR', 'IDR', -$totalCompensationIdr),
+                        PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', $totalCompensationIdr),
+                    ],
+                    referenceType: 'htl_reservations',
+                    referenceId: $reservation->id,
+                ));
+            }
 
             $this->audit(
                 action: 'hotel.overbooking.walk_compensated',
