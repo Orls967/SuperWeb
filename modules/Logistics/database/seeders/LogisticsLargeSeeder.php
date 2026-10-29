@@ -509,7 +509,7 @@ class LogisticsLargeSeeder extends Seeder
             return;
         }
 
-        $now = Carbon::now();
+        $now = Carbon::now()->startOfMonth();
         $batch = [];
 
         foreach ($accounts as $account) {

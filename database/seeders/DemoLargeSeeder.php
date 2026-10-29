@@ -292,7 +292,7 @@ class DemoLargeSeeder extends Seeder
     {
         $this->command?->info('  [3/4] Menghasilkan 12 Bulan Riwayat Tagihan Bulanan (Billing History)...');
 
-        $now = Carbon::now();
+        $now = Carbon::now()->startOfMonth();
         $periods = [];
         for ($i = 11; $i >= 0; $i--) {
             $periods[] = $now->copy()->subMonths($i)->format('Y-m');
