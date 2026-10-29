@@ -1,0 +1,12 @@
+{
+    "about": "Baseline ratchet allowlist konfigurasi config/modules.php (K-2, KONSEP §A14.1). Jumlah entri tidak boleh bertambah dari baseline 37aebb76 kecuali dicatat di approved_additions dengan anchor DECISIONS.md yang sah.",
+    "baselines": {
+        "table_prefixes": 58,
+        "legacy_tables": 20,
+        "kernel_modules": 1,
+        "shared_kernel_namespaces": 3,
+        "cross_module_columns": 0,
+        "shared_tables": 0
+    },
+    "approved_additions": []
+}
