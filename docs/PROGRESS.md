@@ -2453,114 +2453,127 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - (dibatalkan) gate: docs/gates/fase-7.md
 
 ## FASE 8 — RESTO: DAPUR, BATCH PRODUKSI & SIKLUS ETALASE HIDANG
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 8.1 Tabel resto_production_batches & resto_batch_consumptions
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 8.1 Tabel resto_production_batches & resto_batch_consumptions
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
-- [x] 8.2 CookBatchAction: stok potong via InventoryService, cost_total aktual, posting ledger, ShortageException, scale-down resep, varians produksi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-8.md
+- [ ] 8.2 CookBatchAction: stok potong via InventoryService, cost_total aktual, posting ledger, ShortageException, scale-down resep, varians produksi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
-- [x] 8.3 Siklus etalase: resto_display_trays, aturan recirculate (max 3x, max 6 jam), waste expense, piring disentuh dihitung terjual, command resto:expire-display
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-8.md
+- [ ] 8.3 Siklus etalase: resto_display_trays, aturan recirculate (max 3x, max 6 jam), waste expense, piring disentuh dihitung terjual, command resto:expire-display
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
-- [x] 8.4 UI Dapur (role kitchen): papan produksi harian, tombol "Masak Batch", monitor etalase countdown warna, tombol buang, rekap waste
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-8.md
+- [ ] 8.4 UI Dapur (role kitchen): papan produksi harian, tombol "Masak Batch", monitor etalase countdown warna, tombol buang, rekap waste
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
-- [x] 8.5 Tests: potong bahan, kekurangan stok ditolak, scale-down produksi, cost_per_portion, tray expired jadi waste, recirculate ke-4 ditolak, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-8.md
+- [ ] 8.5 Tests: potong bahan, kekurangan stok ditolak, scale-down produksi, cost_per_portion, tray expired jadi waste, recirculate ke-4 ditolak, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
-- [x] 8.6 Quality gate Fase 8
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-8.md
+- [ ] 8.6 Quality gate Fase 8
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
+    - (dibatalkan) gate: docs/gates/fase-8.md
 
 ## FASE 9 — RESTO: POS HIDANG, SESI MEJA, SHIFT KASIR & TUTUP HARIAN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 9.1 Tabel resto_tables, resto_table_sessions, resto_order_items, resto_orders
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 9.1 Tabel resto_tables, resto_table_sessions, resto_order_items, resto_orders
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.2 Flow hidang: sesi meja, piring hidang presented, hitung hidangan (consumed vs returned), nasi/minuman pesan, tambuah cepat, PB1 10%, pembulatan Rp100, bayar tunai/wallet/voucher/split, void/refund
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.2 Flow hidang: sesi meja, piring hidang presented, hitung hidangan (consumed vs returned), nasi/minuman pesan, tambuah cepat, PB1 10%, pembulatan Rp100, bayar tunai/wallet/voucher/split, void/refund
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.3 Shift kasir & kas: resto_shifts, OpenShiftAction, CloseShiftAction, cash variance posting, SettleCashAction
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.3 Shift kasir & kas: resto_shifts, OpenShiftAction, CloseShiftAction, cash variance posting, SettleCashAction
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.4 POS UI: tablet/mobile friendly, grid menu, panel meja & etalase, layar hitung hidangan, keypad, idempotency offline-tolerant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.4 POS UI: tablet/mobile friendly, grid menu, panel meja & etalase, layar hitung hidangan, keypad, idempotency offline-tolerant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.5 Tutup harian: command resto:close-day, resto_daily_summaries, flag --check vs ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.5 Tutup harian: command resto:close-day, resto_daily_summaries, flag --check vs ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.6 Tests: alur hidang lengkap, disentuh sebagian dihitung penuh, PB1 & pembulatan, tunai & wallet, submit ganda idempoten, konkurensi meja, shift variance, void/refund, close-day --check cocok ledger, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.6 Tests: alur hidang lengkap, disentuh sebagian dihitung penuh, PB1 & pembulatan, tunai & wallet, submit ganda idempoten, konkurensi meja, shift variance, void/refund, close-day --check cocok ledger, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.7 Quality gate Fase 9
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.7 Quality gate Fase 9
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
+    - (dibatalkan) gate: docs/gates/fase-9.md
 
 ## FASE 10 — RESTO: RANTAI PASOK, DAPUR SENTRAL & MULTI-OUTLET
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
