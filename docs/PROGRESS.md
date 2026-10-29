@@ -2945,130 +2945,145 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - (dibatalkan) gate: docs/gates/fase-15.md
 
 ## FASE 16 — INTEGRASI LINTAS LINI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 16.1 Resto & AutoServe sebagai tenant Duta Mall via TenantSalesProvider (omzet terintegrasi otomatis masuk revenue_share_topup tanpa input manual)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 16.1 Resto & AutoServe sebagai tenant Duta Mall via TenantSalesProvider (omzet terintegrasi otomatis masuk revenue_share_topup tanpa input manual)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.2 Validasi parkir dari POS Resto via ParkingValidator contract, potong tarif dan masuk piutang tenant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.2 Validasi parkir dari POS Resto via ParkingValidator contract, potong tarif dan masuk piutang tenant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.3 Poin & Voucher lintas modul: LoyaltyLedger contract, order Resto dapat poin, voucher mall bisa dipakai di Resto & Store, poin tukar diskon Store
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.3 Poin & Voucher lintas modul: LoyaltyLedger contract, order Resto dapat poin, voucher mall bisa dipakai di Resto & Store, poin tukar diskon Store
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.4 Kendaraan & parkir: member parkir disinkronkan ke core_vehicles, transfer kepemilikan nonaktifkan parkir member
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.4 Kendaraan & parkir: member parkir disinkronkan ke core_vehicles, transfer kepemilikan nonaktifkan parkir member
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.5 Dashboard Grup konsolidasi (role admin): P&L per lini bisnis dari ledger, grafik 30 hari, query budget <= 30 query
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.5 Dashboard Grup konsolidasi (role admin): P&L per lini bisnis dari ledger, grafik 30 hari, query budget <= 30 query
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.6 Navigasi terpadu: sidebar dikelompokkan per lini (Otomotif, Keuangan, Kuliner, Properti), global search Ctrl+K lintas modul
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.6 Navigasi terpadu: sidebar dikelompokkan per lini (Otomotif, Keuangan, Kuliner, Properti), global search Ctrl+K lintas modul
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.7 Test integrasi end-to-end satu hari penuh (parkir -> makan hidang -> bayar wallet -> dapat poin -> validasi parkir -> keluar gate -> akhir bulan tagih sewa revenue share -> tenant bayar -> reconcile & audit-billing bersih)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.7 Test integrasi end-to-end satu hari penuh (parkir -> makan hidang -> bayar wallet -> dapat poin -> validasi parkir -> keluar gate -> akhir bulan tagih sewa revenue share -> tenant bayar -> reconcile & audit-billing bersih)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.8 Quality gate Fase 16
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.8 Quality gate Fase 16
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
+    - (dibatalkan) gate: docs/gates/fase-16.md
 
 ## FASE 17 — SKALA, HARDENING & OPERASIONAL
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 17.1 Seeder demo skala besar DemoLargeSeeder (3 outlet resto, 1 central kitchen, 60 tenant, 12 bulan billing, 150.000 parkir, batch inserts)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 17.1 Seeder demo skala besar DemoLargeSeeder (3 outlet resto, 1 central kitchen, 60 tenant, 12 bulan billing, 150.000 parkir, batch inserts)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.2 Performa: tests/Performance/QueryBudgetTest.php, eliminasi N+1, index database yang tepat, cursor pagination, tabel ringkasan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.2 Performa: tests/Performance/QueryBudgetTest.php, eliminasi N+1, index database yang tepat, cursor pagination, tabel ringkasan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.3 Smoke test semua route: tests/Feature/RouteSmokeTest.php assert per role (200/302/403)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.3 Smoke test semua route: tests/Feature/RouteSmokeTest.php assert per role (200/302/403)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.4 Keamanan: tests/Feature/SecurityTest.php (IDOR, mass assignment, rate limit, brute force PIN, signed URL, replay key, XSS)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.4 Keamanan: tests/Feature/SecurityTest.php (IDOR, mass assignment, rate limit, brute force PIN, signed URL, replay key, XSS)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.5 Observability & ops: core_audit_logs, halaman admin Kesehatan Sistem, command super:health-check
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.5 Observability & ops: core_audit_logs, halaman admin Kesehatan Sistem, command super:health-check
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.6 Arch tests diperluas: batas modul Resto & Mall, tidak ada DB facade di controller, VerifiesWalletPin contract
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.6 Arch tests diperluas: batas modul Resto & Mall, tidak ada DB facade di controller, VerifiesWalletPin contract
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.7 Quality gate Fase 17 + super:health-check bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.7 Quality gate Fase 17 + super:health-check bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
+    - (dibatalkan) gate: docs/gates/fase-17.md
 
 ## FASE 18 — DOKUMENTASI & PENUTUP
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
