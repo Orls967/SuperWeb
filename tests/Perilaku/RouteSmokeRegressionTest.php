@@ -12,6 +12,15 @@ use Tests\TestCase;
 #[Group('perilaku')]
 class RouteSmokeRegressionTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config(['database.connections.sqlite.database' => database_path('database.sqlite')]);
+        \Illuminate\Support\Facades\DB::purge('sqlite');
+        \Illuminate\Support\Facades\DB::reconnect('sqlite');
+    }
+
     /**
      * Rute-rute yang dipulihkan di Bagian D.
      * Format: ['uri' => '...', 'role' => '...', 'method' => 'GET', 'expected_status' => [200, 302]]
@@ -52,5 +61,16 @@ class RouteSmokeRegressionTest extends TestCase
                 "Regresi pada rute {$uri} dengan role {$role}: status {$response->getStatusCode()}"
             );
         }
+    }
+
+    public function test_p07_contract_show_route_renders_successfully(): void
+    {
+        $contract = \Modules\Contract\Domain\Models\Contract::first();
+        $this->assertNotNull($contract, 'Seed contract must exist');
+
+        $user = User::where('role', 'admin')->first() ?? User::factory()->create(['role' => 'admin', 'email_verified_at' => now()]);
+        $response = $this->actingAs($user)->get('/contracts/'.$contract->id);
+
+        $response->assertOk();
     }
 }
