@@ -8695,73 +8695,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 81.1–81.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 82 — VENDOR-MANAGED INVENTORY (VMI) & C2M (CONSUMER-TO-MANUFACTURER)
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 82 tuntas: integrasi titik pesan ulang WMS memicu auto-PO dengan plafon kontrak kerangka (Fase 32.4), approval multi-level di atas plafon, komitmen anggaran double-entry ledger (`VMI_PURCHASE_COMMITMENT`), C2M configurator 3D parametric dengan validasi anti-cycle (DFS), roll-up BOM cost + complexity factor, routing instruksi SPK pabrik, penalti material saat pembatalan setelah produksi, dashboard analitik VMI/C2M, dan command audit `vmi:audit` = 0 selisih. Quality gate lulus di commit `9d80960f`.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Procurement + Wms (VMI) · Manufacturing + Plm + Store (C2M) · **Prasyarat:** Fase 81 ✅ · **Acuan:** KONSEP 6F slice 2–3
 > **Jalan pintas terlarang di fase ini:** auto-PO tanpa plafon kontrak/approval; C2M tanpa BOM/routing nyata — ditambah seluruh X1–X25.
-- [x] 82.1 **VMI**: akses khusus pemasok via API v2 (Fase 55, ability `vmi:read` + `vmi:po`) → mereka memantau stok rak WMS milik kita (read-only + scope partikel per SKU mereka) → menyentuh titik pesan ulang → **PO otomatis terbit tanpa staf pengadaan** (plafon per kontrak kerangka Fase 32.4; di atas plafon → approval)
-  Bukti:
+- [ ] 82.1 **VMI**: akses khusus pemasok via API v2 (Fase 55, ability `vmi:read` + `vmi:po`) → mereka memantau stok rak WMS milik kita (read-only + scope partikel per SKU mereka) → menyentuh titik pesan ulang → **PO otomatis terbit tanpa staf pengadaan** (plafon per kontrak kerangka Fase 32.4; di atas plafon → approval)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_1_vmi_reorder_point_triggers_auto_po_and_commits_budget
     - akses: route POST /manufacturing/vmi/trigger [role: admin, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.2 Penerimaan VMI: ASN dari pemasok → GRN → 3-way match (Fase 34.3) → kredit terms → siklus P2P penuh; performance pemasok masuk supplier scorecard (Fase 32.6)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.2 Penerimaan VMI: ASN dari pemasok → GRN → 3-way match (Fase 34.3) → kredit terms → siklus P2P penuh; performance pemasok masuk supplier scorecard (Fase 32.6)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_1_vmi_approval_posts_ledger_commitment
     - akses: route POST /manufacturing/vmi/{replenishment}/approve [role: admin, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.3 **C2M configurator 3D**: pembeli Store B2C mendesain suku cadang modifikasi mobil (parametric: ukuran, bahan, finishing) → validasi kelayakan (toleransi, beban) → harga live dari BOM + complexity factor
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.3 **C2M configurator 3D**: pembeli Store B2C mendesain suku cadang modifikasi mobil (parametric: ukuran, bahan, finishing) → validasi kelayakan (toleransi, beban) → harga live dari BOM + complexity factor
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_c2m_bom_cycle_detection_blocks_circular_dependency
     - akses: route POST /manufacturing/c2m/orders [role: admin, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.4 **Routing instruksi pabrik**: desain → dikonversi menjadi BOM khusus + routing operasi (memperluas PLM EBOM/MBOM Fase 59.2) → planned order di MRP → konversi ke SPK → produksi → QC (Fase 39) → pengiriman via Logistics
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.4 **Routing instruksi pabrik**: desain → dikonversi menjadi BOM khusus + routing operasi (memperluas PLM EBOM/MBOM Fase 59.2) → planned order di MRP → konversi ke SPK → produksi → QC (Fase 39) → pengiriman via Logistics
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_and_82_4_c2m_configurator_bom_cost_roll_up_and_spk_routing
     - akses: route POST /manufacturing/c2m/orders/{order}/spk [role: admin, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.5 Lead time C2M dihitung dari beban work center (CRP Fase 36.4) → ETA real-time ke pembeli; pembatalan setelah produksi dimulai dikenakan biaya material
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.5 Lead time C2M dihitung dari beban work center (CRP Fase 36.4) → ETA real-time ke pembeli; pembatalan setelah produksi dimulai dikenakan biaya material
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_and_82_4_c2m_configurator_bom_cost_roll_up_and_spk_routing
     - akses: route POST /manufacturing/c2m/orders/{order}/cancel [role: admin, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.6 Dashboard: stok per rak pemasok, auto-PO terbit, fill rate VMI; papan produksi C2M (desain → status SPK → biaya aktual vs penawaran)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.6 Dashboard: stok per rak pemasok, auto-PO terbit, fill rate VMI; papan produksi C2M (desain → status SPK → biaya aktual vs penawaran)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_6_vmi_and_c2m_summaries
     - akses: route GET /manufacturing/vmi-c2m [role: admin, auditor, operator, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.7 Tests: (a) titik pesan ulang → PO 1x idempoten (b) PO di atas plafon butuh approval (c) desain C2M menghasilkan BOM valid tanpa siklus (d) harga C2M = roll-up BOM + complexity (e) reconcile auto-PO komitmen anggaran
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.7 Tests: (a) titik pesan ulang → PO 1x idempoten (b) PO di atas plafon butuh approval (c) desain C2M menghasilkan BOM valid tanpa siklus (d) harga C2M = roll-up BOM + complexity (e) reconcile auto-PO komitmen anggaran
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 9d80960f
     - file: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_7_vmi_audit_command_enforces_zero_discrepancy
-    - gate: docs/gates/fase-82.md
-- [x] 82.8 Quality gate Fase 82
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.8 Quality gate Fase 82
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 9d80960f
     - file: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_http_endpoints_and_rbac
     - akses: command vmi:audit
-    - gate: docs/gates/fase-82.md
+    - (dibatalkan) gate: docs/gates/fase-82.md
 
 ### Register Minus Fase 82
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8771,65 +8779,72 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 7 — PERDAGANGAN INTERNASIONAL & PENGADAAN
 
 ## FASE 83 — CROSS-BORDER CLEARING HOUSE BERBASIS KRIPTO & CBAM COMPLIANCE
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 83 tuntas: stablecoin escrow lintas batas terdesentralisasi (USDC), kunci kurs FX terkunci saat deposit, verifikasi Bill of Lading & chain of custody POD hash rilis otomatis ke eksportir, dispute window 24 jam dengan opsi refund/proceed, kepatuhan sertifikasi EU CBAM dengan metodologi jejak karbon terikat emisi pabrik, pengurangan landed cost / margin ekspor, dashboard analitik likuiditas escrow & CBAM, dan command audit `clearing:audit` = 0 selisih. Quality gate lulus di commit `22c1dbe5`.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** TradeFinance (`tf_`) + Trade + Esg + Logistics custody · **Prasyarat:** R1–R4 ✅, R6.4 ✅ · **Acuan:** KONSEP 7F slice 1–2
 > **Jalan pintas terlarang di fase ini:** rilis escrow tanpa verifikasi hash custody; CBAM dari masukan emisi bebas — ditambah seluruh X1–X25.
-- [x] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
-  Bukti:
+- [ ] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 22c1dbe5
     - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_1_and_83_2_stablecoin_escrow_deposit_anti_duplicate_bl_and_release
     - akses: route POST /trade-finance/cross-border/deposit [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-83.md
-- [x] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 22c1dbe5
     - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_2_dispute_window_hold_and_resolution_refund
     - akses: route POST /trade-finance/cross-border/{escrow}/dispute [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-83.md
-- [x] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 22c1dbe5
     - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_3_and_83_4_cbam_carbon_emission_certification_and_margin_impact
     - akses: route POST /trade-finance/cross-border/cbam [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-83.md
-- [x] 83.4 Biaya bea karbon: simulasi nilai CBAM per kontainer → mengurangi margin ekspor → masuk perhitungan landed cost & pricing ekspor (Fase 49.3)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.4 Biaya bea karbon: simulasi nilai CBAM per kontainer → mengurangi margin ekspor → masuk perhitungan landed cost & pricing ekspor (Fase 49.3)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 22c1dbe5
     - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_3_and_83_4_cbam_carbon_emission_certification_and_margin_impact
     - akses: route POST /trade-finance/cross-border/cbam [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-83.md
-- [x] 83.5 Dashboard: posisi dana escrow per koridor, BL menunggu verifikasi, sertifikat karbon per kontainer, exposure CBAM
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.5 Dashboard: posisi dana escrow per koridor, BL menunggu verifikasi, sertifikat karbon per kontainer, exposure CBAM
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 22c1dbe5
     - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_5_escrow_and_cbam_summaries
     - akses: route GET /trade-finance/cross-border [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-83.md
-- [x] 83.6 Tests: (a) BL valid → release 1x, duplikat ditolak (b) escrow = komitmen aktif + dispute (c) sertifikat karbon konsisten dengan emisi ESG sumber (d) release multi-currency Σ seimbang (e) `clearing:audit` = 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.6 Tests: (a) BL valid → release 1x, duplikat ditolak (b) escrow = komitmen aktif + dispute (c) sertifikat karbon konsisten dengan emisi ESG sumber (d) release multi-currency Σ seimbang (e) `clearing:audit` = 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 22c1dbe5
     - file: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_6_clearing_audit_command_enforces_zero_discrepancy
-    - gate: docs/gates/fase-83.md
-- [x] 83.7 Quality gate Fase 83
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.7 Quality gate Fase 83
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 22c1dbe5
     - file: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_http_endpoints_and_rbac
     - akses: command clearing:audit
-    - gate: docs/gates/fase-83.md
+    - (dibatalkan) gate: docs/gates/fase-83.md
 
 ### Register Minus Fase 83
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
