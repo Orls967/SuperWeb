@@ -9196,81 +9196,90 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 87.1–87.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 88 — RUMAH SAKIT II: ORDER-TO-CASH, FARMASI, LAB, FARMASI SUPPLY CHAIN, KLAIM & REVENUE CYCLE
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 88.1–88.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [x] 88.1 **Billing episode**: seluruh item (bed-day, tindakan, obat, alat habis pakai, lab, radiologi, dokter) tergabung satu folio episode → struktur tarif bertingkat (mirip tarif utilitas mall Fase 13.2) → tagihan akhir saat discharge
-  Bukti:
+- [ ] 88.1 **Billing episode**: seluruh item (bed-day, tindakan, obat, alat habis pakai, lab, radiologi, dokter) tergabung satu folio episode → struktur tarif bertingkat (mirip tarif utilitas mall Fase 13.2) → tagihan akhir saat discharge
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.2 **Pembayaran campuran**: BPJS simulasi (klaim batch), insurance copay (via escrow/marketplace asuransi), self-pay wallet+PIN (Payment Hub Fase 2) → alokasi urut & split payment; bedah besar memakai **escrow deposit** (hold saat masuk → capture saat pulang → sisa refund)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.2 **Pembayaran campuran**: BPJS simulasi (klaim batch), insurance copay (via escrow/marketplace asuransi), self-pay wallet+PIN (Payment Hub Fase 2) → alokasi urut & split payment; bedah besar memakai **escrow deposit** (hold saat masuk → capture saat pulang → sisa refund)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.3 **e-Prescription → Farmasi**: resep digital → farmasi menyiap → stok obat terpotong via InventoryService (FEFO lot/kedaluwarsa) → item masuk tagihan pasien; interaksi obat terdeteksi (rule engine deterministik) → peringatan apoteker
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.3 **e-Prescription → Farmasi**: resep digital → farmasi menyiap → stok obat terpotong via InventoryService (FEFO lot/kedaluwarsa) → item masuk tagihan pasien; interaksi obat terdeteksi (rule engine deterministik) → peringatan apoteker
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_3_e_prescription_contraindication_alert
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.4 **Lab & radiologi**: order lab → hasil terverifikasi (teknisi sign-off) → hasil masuk rekam medis paspor → biaya ter-charge; lab outsourcing (Party) → piutang pihak ketiga
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.4 **Lab & radiologi**: order lab → hasil terverifikasi (teknisi sign-off) → hasil masuk rekam medis paspor → biaya ter-charge; lab outsourcing (Party) → piutang pihak ketiga
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.5 **Cold-chain medis & supply**: darah, vaksin, obat sitostatik disimpan di fridge IoT → breach suhu → quarantine lot + recall internal + **hold pembayaran pemasok** (memperluas Fase 80.1); rantai dingin Logistics dari pemasok ke farmasi RS
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.5 **Cold-chain medis & supply**: darah, vaksin, obat sitostatik disimpan di fridge IoT → breach suhu → quarantine lot + recall internal + **hold pembayaran pemasok** (memperluas Fase 80.1); rantai dingin Logistics dari pemasok ke farmasi RS
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_5_vaccine_fridge_breach_quarantines_lot_and_holds_supplier_payable
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.6 **Limbah medis B3**: pengumpulan terpisah → armada Logistics khusus dengan rantai kustodi hash (memperluas reverse logistics Fase 79) → vendor pengolah tersertifikasi → kredit ESG limbah medis
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.6 **Limbah medis B3**: pengumpulan terpisah → armada Logistics khusus dengan rantai kustodi hash (memperluas reverse logistics Fase 79) → vendor pengolah tersertifikasi → kredit ESG limbah medis
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_5_vaccine_fridge_breach_quarantines_lot_and_holds_supplier_payable
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.7 **Revenue cycle dashboard**: pemungutan per unit (rawat jalan, rawat inap, bedah, lab, farmasi), aging klaim BPJS/insurance, denial rate, LOS rata-rata, cash collection time
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.7 **Revenue cycle dashboard**: pemungutan per unit (rawat jalan, rawat inap, bedah, lab, farmasi), aging klaim BPJS/insurance, denial rate, LOS rata-rata, cash collection time
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.8 Tests: (a) episode tagihan = Σ item order (b) escrow deposit → capture/refund seimbang (c) stok obat terpotong = item ter-charge (d) fridge breach → quarantine + hold 1x (e) `hosp:audit` = 0 selisih vs ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.8 Tests: (a) episode tagihan = Σ item order (b) escrow deposit → capture/refund seimbang (c) stok obat terpotong = item ter-charge (d) fridge breach → quarantine + hold 1x (e) `hosp:audit` = 0 selisih vs ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: cfdf6bda
     - file: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_5_vaccine_fridge_breach_quarantines_lot_and_holds_supplier_payable
-    - gate: docs/gates/fase-88.md
-- [x] 88.9 Quality gate Fase 88
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.9 Quality gate Fase 88
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: cfdf6bda
     - file: modules/Hospital/Console/Commands/AuditHospitalCommand.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
     - akses: command hosp:audit
-    - gate: docs/gates/fase-88.md
+    - (dibatalkan) gate: docs/gates/fase-88.md
 
 ### Register Minus Fase 88
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
