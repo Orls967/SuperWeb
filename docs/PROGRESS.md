@@ -8199,73 +8199,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 4 — PROPERTI KOMERSIAL & EPC
 
 ## FASE 76 — PROPTECH & SMART BUILDING OPERATIONS (IOT + ESG REAL-TIME) ✅ TERVERIFIKASI
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Vertical slice Fase 76 lengkap V1–V12: model Eloquent (BuildingZone, BuildingSensor, HvacCommand, ZoneUtilityBilling, PrescriptiveOp), Service ProptechService dengan ingest idempoten, histeresis HVAC, tagihan utilitas presisi + overtime AC Rp 75k/jam, emisi GRK real-time (faktor 0.85 kg/kWh), prescriptive ops tanpa boolean flags, UI dashboard dark-mode premium, dan command audit dua-sumber prp:audit-smartbuilding. 17 test pass 100%. Gate Fase 76 lulus.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Proptech (`prp_`) + Mall · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 4F slice 1
 > **Jalan pintas terlarang di fase ini:** tagihan utilitas dari estimasi, bukan bacaan; Proptech menulis tabel `mall_`; bacaan ganda menggandakan tagihan — ditambah seluruh X1–X25.
-- [x] 76.1 Tabel `prp_building_sensors` (suhu, kelembaban, arus, CO2, okupansi CCTV/footfall) per zona gedung → ingest idempoten (memperluas pola telematik Fase 68)
-  Bukti:
+- [ ] 76.1 Tabel `prp_building_sensors` (suhu, kelembaban, arus, CO2, okupansi CCTV/footfall) per zona gedung → ingest idempoten (memperluas pola telematik Fase 68)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/Application/Services/ProptechService.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_1_sensor_ingest_idempotency_and_occupancy_update
     - akses: route GET /proptech [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.2 **Otomasi HVAC & pencahayaan**: rule engine deterministik (okupansi > ambang → turunkan suhu target; jam non-operasional → setback) → perintah ke simulasi perangkat → penghematan kWh dihitung vs baseline
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.2 **Otomasi HVAC & pencahayaan**: rule engine deterministik (okupansi > ambang → turunkan suhu target; jam non-operasional → setback) → perintah ke simulasi perangkat → penghematan kWh dihitung vs baseline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/Application/Services/ProptechService.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_2_deterministic_hvac_automation_rules
     - akses: route GET /proptech [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.3 **Tagihan listrik tenant per zona aktual**: meteran per zona (memperluas `mall_utility_readings` Fase 13.2) → tarif bertingkat → invoice tenant presisi bukan estimasi; Overtime AC tetap berlaku
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.3 **Tagihan listrik tenant per zona aktual**: meteran per zona (memperluas `mall_utility_readings` Fase 13.2) → tarif bertingkat → invoice tenant presisi bukan estimasi; Overtime AC tetap berlaku
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/Application/Services/ProptechService.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_3_and_76_4_zone_utility_billing_and_ghg_emissions_with_ledger
     - akses: route POST /proptech/zones/{zone}/bill [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.4 **GRK real-time per gedung**: kWh terkonsumsi × faktor grid (Fase 60.1) → dashboard emisi gedung per hari, per tenant, tren → masuk laporan ESG per properti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.4 **GRK real-time per gedung**: kWh terkonsumsi × faktor grid (Fase 60.1) → dashboard emisi gedung per hari, per tenant, tren → masuk laporan ESG per properti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/Application/Services/ProptechService.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_3_and_76_4_zone_utility_billing_and_ghg_emissions_with_ledger
     - akses: route GET /proptech [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.5 Prescriptive ops: rekomendasi optimasi (mis. setback jam 13.00–15.00) dengan estimasi penghematan & payback; approval opsional sebelum diterapkan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.5 Prescriptive ops: rekomendasi optimasi (mis. setback jam 13.00–15.00) dengan estimasi penghematan & payback; approval opsional sebelum diterapkan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/Application/Services/ProptechService.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_5_prescriptive_operations_workflow
     - akses: route GET /proptech [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.6 Dashboard smart building: denah per lantai dengan status zona live, konsumsi vs baseline, emisi, alarm sensor offline
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.6 Dashboard smart building: denah per lantai dengan status zona live, konsumsi vs baseline, emisi, alarm sensor offline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/resources/views/proptech/index.blade.php
     - test: modules/Proptech/tests/Feature/ProptechVerticalSliceHttpTest.php::test_a_authorized_user_can_access_proptech_index_and_generate_bill_with_overtime
     - akses: route GET /proptech [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.7 Tests: (a) aturan okupansi memicu perintah tepat 1x (b) tagihan zona = Σ pembacaan × tarif (c) kWh ESG = tagihan utilitas (d) sensor duplikat idempoten (e) reconcile utilitas = ledger (audit-billing hijau)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.7 Tests: (a) aturan okupansi memicu perintah tepat 1x (b) tagihan zona = Σ pembacaan × tarif (c) kWh ESG = tagihan utilitas (d) sensor duplikat idempoten (e) reconcile utilitas = ledger (audit-billing hijau)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 5a29248
     - file: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_3_and_76_4_zone_utility_billing_and_ghg_emissions_with_ledger
-    - gate: docs/gates/fase-76.md
-- [x] 76.8 Quality gate Fase 76
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.8 Quality gate Fase 76
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 5a29248
     - file: modules/Proptech/tests/Feature/ProptechVerticalSliceHttpTest.php
     - test: modules/Proptech/tests/Feature/ProptechVerticalSliceHttpTest.php::test_d_two_source_proptech_audit_passes_cleanly
     - akses: command prp:audit-smartbuilding
-    - gate: docs/gates/fase-76.md
+    - (dibatalkan) gate: docs/gates/fase-76.md
 
 ### Register Minus Fase 76
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
