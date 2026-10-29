@@ -7697,77 +7697,85 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 69.1–69.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 70 — B2B FLEET & CORPORATE LEASING
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI. Selesai tuntas pada Fase 70.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mobility (`oto_`) + Contract · **Prasyarat:** Fase 68 ✅ · **Acuan:** KONSEP 1F slice 3
 > **Jalan pintas terlarang di fase ini:** akumulasi amortisasi sebelum posting ber-key; `Str::random` di key kompensasi SLA; klaim 'PSAK 73' tanpa PV/ROU (implementasi atau turunkan lewat P10) — ditambah seluruh X1–X25.
-- [x] 70.1 Tabel `oto_fleet_contracts` (perusahaan penyewa = party, durasi 1–5 tahun, jumlah unit, SLA downtime maks, batas km/tahun, opsi perpanjangan/akuisisi), `oto_fleet_contract_units` (unit terikat, odometer baseline)
-  Bukti:
+- [ ] 70.1 Tabel `oto_fleet_contracts` (perusahaan penyewa = party, durasi 1–5 tahun, jumlah unit, SLA downtime maks, batas km/tahun, opsi perpanjangan/akuisisi), `oto_fleet_contract_units` (unit terikat, odometer baseline)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/database/migrations/2026_10_07_700100_create_oto_fleet_tables.php
     - file: modules/Fleet/Domain/Models/FleetContract.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_fleet_contract_creation_and_double_lease_prevention
     - akses: route GET /fleet [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.2 Onboarding B2B: KYB Party (Fase 27), credit profile, deposit/garansi via Payment Hub, approval four-eyes di atas ambang nilai
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.2 Onboarding B2B: KYB Party (Fase 27), credit profile, deposit/garansi via Payment Hub, approval four-eyes di atas ambang nilai
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/Application/Services/FleetLeasingService.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_four_eyes_approval_workflow
     - akses: route POST /fleet/contracts [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.3 **Amortisasi nilai sewa** (PSAK 73 simulasi): hak guna + liabilitas sewa per kontrak, jurnal bulanan idempoten, bunga vs pokok, perhitungan sisa nilai — terhubung modul Aset (Fase 31.6)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.3 **Amortisasi nilai sewa** (PSAK 73 simulasi): hak guna + liabilitas sewa per kontrak, jurnal bulanan idempoten, bunga vs pokok, perhitungan sisa nilai — terhubung modul Aset (Fase 31.6)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/Application/Services/FleetLeasingService.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_psak_73_schedule_principal_and_interest_invariants
     - akses: route POST /fleet/contracts/{contract}/amortize [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.4 **SLA & telematik armada sewa**: tick telematik (Fase 68) + status Maintenance (AutoServe) dihitung menjadi downtime; pelanggaran SLA → kredit/kompensasi otomatis ke invoice penyewa; rute harian armada dipantau via kontrak ke Logistics (Fase 24.3 diperluas)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.4 **SLA & telematik armada sewa**: tick telematik (Fase 68) + status Maintenance (AutoServe) dihitung menjadi downtime; pelanggaran SLA → kredit/kompensasi otomatis ke invoice penyewa; rute harian armada dipantau via kontrak ke Logistics (Fase 24.3 diperluas)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/Application/Services/FleetSlaMonitorService.php
     - file: modules/Fleet/Domain/Models/FleetSlaLog.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_sla_breach_telematics_and_workshop_creates_ar_credit_note
     - akses: route POST /fleet/contracts/{contract}/sla-claim [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.5 Lifecycle: denda km berlebih, penggantian unit di tengah kontrak, early termination (hitung sisa liabilitas), end-of-lease condition report → unit masuk kembali ke AutoDex/Store sebagai bekas (berpaspor)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.5 Lifecycle: denda km berlebih, penggantian unit di tengah kontrak, early termination (hitung sisa liabilitas), end-of-lease condition report → unit masuk kembali ke AutoDex/Store sebagai bekas (berpaspor)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/Application/Services/FleetLeasingService.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_end_of_lease_inspection_and_return_to_autodex
     - akses: route POST /fleet/contracts/{contract}/return-unit [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.6 Dashboard fleet B2B: utilisasi per unit, biaya total kepemilikan (TCO), uptime, jatuh tempo kontrak, eksposur piutang sewa
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.6 Dashboard fleet B2B: utilisasi per unit, biaya total kepemilikan (TCO), uptime, jatuh tempo kontrak, eksposur piutang sewa
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/Http/Controllers/FleetController.php
     - file: modules/Fleet/resources/views/fleet/index.blade.php
     - test: modules/Fleet/tests/Feature/FleetVerticalSliceHttpTest.php::test_a_authorized_user_can_access_fleet_index_and_amortize
     - akses: route GET /fleet [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.7 Tests: (a) amortisasi bulan 1..60 Σ = nilai sewa (b) SLA breach menghasilkan kredit yang mengurangi AR (c) lease ganda per unit ditolak (d) end-of-lease transfer unit ke inventaris sah (e) reconcile sewa = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.7 Tests: (a) amortisasi bulan 1..60 Σ = nilai sewa (b) SLA breach menghasilkan kredit yang mengurangi AR (c) lease ganda per unit ditolak (d) end-of-lease transfer unit ke inventaris sah (e) reconcile sewa = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 76633f9
     - file: modules/Fleet/tests/Feature/FleetTest.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_fleet_lease_amortization_sums_to_total_lease_value_and_completes
-    - gate: docs/gates/fase-70.md
-- [x] 70.8 Quality gate Fase 70
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.8 Quality gate Fase 70
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 76633f9
     - file: docs/gates/fase-70.md
     - file: modules/Fleet/tests/Feature/FleetVerticalSliceHttpTest.php
     - test: modules/Fleet/tests/Feature/FleetVerticalSliceHttpTest.php::test_d_two_source_fleet_audit_passes_cleanly
     - akses: command flt:audit
-    - gate: docs/gates/fase-70.md
+    - (dibatalkan) gate: docs/gates/fase-70.md
 
 ### Register Minus Fase 70
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
