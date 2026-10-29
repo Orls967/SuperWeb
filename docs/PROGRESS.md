@@ -2576,114 +2576,127 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - (dibatalkan) gate: docs/gates/fase-9.md
 
 ## FASE 10 — RESTO: RANTAI PASOK, DAPUR SENTRAL & MULTI-OUTLET
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 10.1 Tabel resto_suppliers, resto_purchase_orders, resto_purchase_order_lines, resto_goods_receipts
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 10.1 Tabel resto_suppliers, resto_purchase_orders, resto_purchase_order_lines, resto_goods_receipts
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.2 ReceiveGoodsAction: stok bahan masuk via InventoryService, moving avg cost BigDecimal, varians harga, posting AP supplier & inventory, PaySupplierAction, aging payable
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.2 ReceiveGoodsAction: stok bahan masuk via InventoryService, moving avg cost BigDecimal, varians harga, posting AP supplier & inventory, PaySupplierAction, aging payable
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.3 Dapur sentral & transfer antar outlet: resto_stock_transfers, in-transit account, selisih terima ke waste
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.3 Dapur sentral & transfer antar outlet: resto_stock_transfers, in-transit account, selisih terima ke waste
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.4 Stock opname: resto_stock_counts, adjustment via InventoryService, posting selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.4 Stock opname: resto_stock_counts, adjustment via InventoryService, posting selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.5 Peringatan otomatis: stok di bawah min_stock notifikasi + draft PO otomatis, perishable mendekati kedaluwarsa notifikasi dapur
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.5 Peringatan otomatis: stok di bawah min_stock notifikasi + draft PO otomatis, perishable mendekati kedaluwarsa notifikasi dapur
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.6 Tests: PO terima parsial & penuh, moving avg cost 3 harga, transfer in-transit, opname minus, aging payable, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.6 Tests: PO terima parsial & penuh, moving avg cost 3 harga, transfer in-transit, opname minus, aging payable, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.7 Quality gate Fase 10
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.7 Quality gate Fase 10
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
+    - (dibatalkan) gate: docs/gates/fase-10.md
 
 ## FASE 11 — RESTO: KANAL PENJUALAN, KATERING, FRANCHISE & ANALITIK
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 11.1 Bungkus & delivery: harga takeaway, potong bahan kemasan, resto_deliveries ongkir bertingkat, pesan online wallet, refund parsial
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 11.1 Bungkus & delivery: harga takeaway, potong bahan kemasan, resto_deliveries ongkir bertingkat, pesan online wallet, refund parsial
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
-- [x] 11.2 Katering & nasi bungkus massal: resto_catering_orders, flow quote -> customer approve -> HOLD deposit 30% -> produksi -> deliver -> capture + charge sisa, batal < 3 hari potongan deposit, validasi kapasitas pax
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-11.md
+- [ ] 11.2 Katering & nasi bungkus massal: resto_catering_orders, flow quote -> customer approve -> HOLD deposit 30% -> produksi -> deliver -> capture + charge sisa, batal < 3 hari potongan deposit, validasi kapasitas pax
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
-- [x] 11.3 Franchise royalty: resto_outlet_contracts, command resto:post-royalty harian dari daily summary ke revenue:group:royalty
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-11.md
+- [ ] 11.3 Franchise royalty: resto_outlet_contracts, command resto:post-royalty harian dari daily summary ke revenue:group:royalty
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
-- [x] 11.4 Analitik: Menu engineering (Star/Plowhorse/Puzzle/Dog scatter chart), waste report, heatmap sales mix per jam, P&L per outlet dari ledger, peramalan rata-rata bergerak 4 minggu
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-11.md
+- [ ] 11.4 Analitik: Menu engineering (Star/Plowhorse/Puzzle/Dog scatter chart), waste report, heatmap sales mix per jam, P&L per outlet dari ledger, peramalan rata-rata bergerak 4 minggu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
-- [x] 11.5 Tests: takeaway pakai harga bungkus, kemasan potong stok, delivery gagal refund, katering hold -> capture, batal potongan deposit, kapasitas penuh ditolak, royalty posting, klasifikasi menu engineering, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-11.md
+- [ ] 11.5 Tests: takeaway pakai harga bungkus, kemasan potong stok, delivery gagal refund, katering hold -> capture, batal potongan deposit, kapasitas penuh ditolak, royalty posting, klasifikasi menu engineering, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
-- [x] 11.6 Quality gate Fase 11
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-11.md
+- [ ] 11.6 Quality gate Fase 11
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
+    - (dibatalkan) gate: docs/gates/fase-11.md
 
 ## FASE 12 — MODUL MALL: FONDASI, UNIT & LEASING
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
