@@ -5882,109 +5882,119 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-49.md
 
 ## FASE 50 — TRADE FINANCE (L/C, GARANSI, KOLEKSI DOKUMEN & PEMBIAYAAN SUPPLY CHAIN)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 50.1 **Letter of Credit Engine (UCP 600 Simulasi Lanjutan)**:
-  Bukti:
+- [ ] 50.1 **Letter of Credit Engine (UCP 600 Simulasi Lanjutan)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Siklus penuh L/C: *Application → Issuance → Advising → Amendment → Document Presentation → Examination → Acceptance → Payment / Usance Settlement*.
   - Klasifikasi instrumen: Sight L/C, Usance L/C (deferred payment/tenor 30/60/90/180 hari), Revolving L/C, Transferable L/C, dan Standby L/C (SBLC).
   - Alur amandemen: pelacakan versi amandemen gapless, rekonsiliasi selisih nilai notional, dan persetujuan formal kedua belah pihak via ApprovalEngine.
-- [x] 50.2 **Pemeriksaan Dokumen L/C & Otomasi Deteksi Diskrepansi (Document Checking Engine)**:
-  Bukti:
+- [ ] 50.2 **Pemeriksaan Dokumen L/C & Otomasi Deteksi Diskrepansi (Document Checking Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Checklist otomatis kesesuaian dokumen dagang (Commercial Invoice, Bill of Lading / Air Waybill, Packing List, Certificate of Origin, Insurance Certificate) terhadap klausul L/C.
   - Aturan deteksi diskrepansi otomatis: ketidakcocokan nilai nominal, perbedaan deskripsi barang (toleransi ketat UCP 600), pelabuhan muat/tujuan tidak sesuai, tanggal dokumen melebihi masa berlaku (*stale documents*).
   - Workflow *Discrepancy Notice* & alur waiver persetujuan applicant (four-eyes approval) sebelum bank melakukan akseptasi/pembayaran.
-- [x] 50.3 **Documentary Collection (D/P, D/A) & Open Account Monitoring**:
-  Bukti:
+- [ ] 50.3 **Documentary Collection (D/P, D/A) & Open Account Monitoring**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Instrumen Dokumen Inkaso: *Documents against Payment* (D/P) dan *Documents against Acceptance* (D/A) dengan pelacakan jatuh tempo bill of exchange/wesel.
   - Manajemen Open Account dengan batasan limit eksposur kredit perdagangan per mitra buyer/seller, pemantauan batas waktu penagihan, dan mitigasi risiko default.
-- [x] 50.4 **Garansi Bank & Obligasi Kontrak Terpadu (Bank Guarantee & Surety Bonds)**:
-  Bukti:
+- [ ] 50.4 **Garansi Bank & Obligasi Kontrak Terpadu (Bank Guarantee & Surety Bonds)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Pengelolaan tipe garansi: *Bid Bond* (Jaminan Tender), *Performance Bond* (Jaminan Pelaksanaan), *Advance Payment Guarantee* (Jaminan Uang Muka), dan *Retention Bond* (Jaminan Pemeliharaan).
   - Integrasi dua arah: terhubung langsung ke modul Procurement Tender (Fase 33.3) dan Kontrak Bisnis (Fase 28/29.1).
   - Siklus penjaminan: penerbitan, perpanjangan masa berlaku otomatis, pengajuan klaim default, penyelesaian arbitrase, dan pelepasan formal jaminan (*guarantee release*).
-- [x] 50.5 **Pembiayaan Perdagangan & Supply Chain Finance (SCF) Multi-Fasilitas**:
-  Bukti:
+- [ ] 50.5 **Pembiayaan Perdagangan & Supply Chain Finance (SCF) Multi-Fasilitas**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - *Pre-Shipment Export Financing* (kredit modal kerja ekspor berbasis Purchase Order terkonfirmasi).
   - *Post-Shipment Financing & Invoice Discounting* (pencairan piutang dagang segera sebelum jatuh tempo pembayaran buyer).
   - *Dynamic Discounting Pemasok*: pembiayaan rantai pasok berbasis skala waktu pelunasan lebih awal dengan potongan harga dinamis.
   - Anjak Piutang (*Factoring*) simulasi: *with recourse* vs *without recourse*, cadangan retensi, dan biaya administrasi diskonto.
-- [x] 50.6 **Asuransi Kargo Internasional & Integrasi Klaim Logistik**:
-  Bukti:
+- [ ] 50.6 **Asuransi Kargo Internasional & Integrasi Klaim Logistik**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Polis kargo laut/udara berbasis Institute Cargo Clauses (ICC A/B/C): perhitungan premi terintegrasi CIF, klausul perils laut, perang, pemogokan.
   - Integrasi klaim asuransi kargo ke insiden kerusakan logistik (Fase 23.4) & sengketa perdagangan (Fase 49.7), lengkap dengan alur subrogasi hukum.
-- [x] 50.7 **Akuntansi Trade Finance, Biaya Bank & Jurnal Double-Entry Terintegrasi**:
-  Bukti:
+- [ ] 50.7 **Akuntansi Trade Finance, Biaya Bank & Jurnal Double-Entry Terintegrasi**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Akun memorandum kontinjensi: pencatatan komitmen off-balance-sheet untuk L/C dan Garansi Bank aktif (`DR tf:contingent_lc:IDR / CR tf:contra_lc:IDR`).
   - Pembebanan biaya administrasi, provisi bank, komisi advising/akseptasi, dan margin deposit yang ditahan di bank (`bank_accounts`).
   - Integrasi selisih kurs valas (Fase 48): pengakuan untung/rugi kurs pada tanggal penyelesaian wesel usance vs tanggal akseptasi.
-- [x] 50.8 **Portal & Observabilitas Trade Finance**:
-  Bukti:
+- [ ] 50.8 **Portal & Observabilitas Trade Finance**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Portal role `treasury` dan `procurement`: pemantauan plafon fasilitas trade finance, kalender jatuh tempo L/C, monitoring dokumen inkaso, dan dashboard eksposur per bank mitra.
-- [x] 50.9 `tf:audit` (Plafon garansi = subledger, saldo komitmen memorandum L/C = transaksi aktif, klaim <= plafon, 0 selisih diskrepansi).
-  Bukti:
+- [ ] 50.9 `tf:audit` (Plafon garansi = subledger, saldo komitmen memorandum L/C = transaksi aktif, klaim <= plafon, 0 selisih diskrepansi).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
-- [x] 50.10 Quality gate Fase 50.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-50.md
+- [ ] 50.10 Quality gate Fase 50.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
 
 
 ## FASE 51 — KERJA SAMA INTERNASIONAL I: JV, LISENSI, OEM/ODM & ALIH TEKNOLOGI
