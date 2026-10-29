@@ -1,0 +1,1564 @@
+{
+    "generated_at": "2026-10-29T18:51:42+00:00",
+    "total_get_routes": 382,
+    "total_executions": 1109,
+    "tested_routes_count": 351,
+    "untested_routes_count": 31,
+    "untested_routes": [
+        {
+            "uri_pattern": "resto/pos/session/{session}",
+            "module": "Resto",
+            "reason": "tidak teruji: parameter (session)",
+            "roles": [
+                "admin",
+                "cashier",
+                "outlet_manager"
+            ]
+        },
+        {
+            "uri_pattern": "resto/purchases/{purchase}",
+            "module": "Resto",
+            "reason": "tidak teruji: parameter (purchase)",
+            "roles": [
+                "admin",
+                "auditor",
+                "outlet_manager",
+                "procurement"
+            ]
+        },
+        {
+            "uri_pattern": "resto/purchases/{purchase}/edit",
+            "module": "Resto",
+            "reason": "tidak teruji: parameter (purchase)",
+            "roles": [
+                "admin",
+                "outlet_manager",
+                "procurement"
+            ]
+        },
+        {
+            "uri_pattern": "resto/transfers/{transfer}",
+            "module": "Resto",
+            "reason": "tidak teruji: parameter (transfer)",
+            "roles": [
+                "admin",
+                "auditor",
+                "kitchen",
+                "outlet_manager"
+            ]
+        },
+        {
+            "uri_pattern": "resto/transfers/{transfer}/edit",
+            "module": "Resto",
+            "reason": "tidak teruji: parameter (transfer)",
+            "roles": [
+                "admin",
+                "kitchen",
+                "outlet_manager"
+            ]
+        },
+        {
+            "uri_pattern": "resto/stock-counts/{stock_count}",
+            "module": "Resto",
+            "reason": "tidak teruji: parameter (stock_count)",
+            "roles": [
+                "admin",
+                "auditor",
+                "outlet_manager"
+            ]
+        },
+        {
+            "uri_pattern": "resto/stock-counts/{stock_count}/edit",
+            "module": "Resto",
+            "reason": "tidak teruji: parameter (stock_count)",
+            "roles": [
+                "admin",
+                "outlet_manager"
+            ]
+        },
+        {
+            "uri_pattern": "resto/deliveries/{delivery}",
+            "module": "Resto",
+            "reason": "tidak teruji: parameter (delivery)",
+            "roles": [
+                "admin",
+                "auditor",
+                "driver",
+                "outlet_manager"
+            ]
+        },
+        {
+            "uri_pattern": "resto/deliveries/{delivery}/edit",
+            "module": "Resto",
+            "reason": "tidak teruji: parameter (delivery)",
+            "roles": [
+                "admin",
+                "driver",
+                "outlet_manager"
+            ]
+        },
+        {
+            "uri_pattern": "resto/catering/{catering}",
+            "module": "Resto",
+            "reason": "tidak teruji: parameter (catering)",
+            "roles": [
+                "admin",
+                "auditor",
+                "outlet_manager"
+            ]
+        },
+        {
+            "uri_pattern": "resto/catering/{catering}/edit",
+            "module": "Resto",
+            "reason": "tidak teruji: parameter (catering)",
+            "roles": [
+                "admin",
+                "outlet_manager"
+            ]
+        },
+        {
+            "uri_pattern": "logistics/shipments/errors/{batchId}",
+            "module": "Logistics",
+            "reason": "tidak teruji: parameter (batchId)",
+            "roles": [
+                "admin",
+                "dispatcher",
+                "logistics_admin",
+                "shipper"
+            ]
+        },
+        {
+            "uri_pattern": "procurement/rfqs/{rfq}",
+            "module": "Procurement",
+            "reason": "tidak teruji: parameter (rfq)",
+            "roles": [
+                "admin",
+                "procurement",
+                "supplier"
+            ]
+        },
+        {
+            "uri_pattern": "procurement/tenders/{tender}",
+            "module": "Procurement",
+            "reason": "tidak teruji: parameter (tender)",
+            "roles": [
+                "admin",
+                "procurement",
+                "supplier"
+            ]
+        },
+        {
+            "uri_pattern": "procurement/pos/{po}",
+            "module": "Procurement",
+            "reason": "tidak teruji: parameter (po)",
+            "roles": [
+                "admin",
+                "procurement",
+                "supplier"
+            ]
+        },
+        {
+            "uri_pattern": "manufacturing/quality/lots/{lot}/trace",
+            "module": "Manufacturing",
+            "reason": "tidak teruji: parameter (lot)",
+            "roles": [
+                "admin",
+                "planner",
+                "qc_inspector",
+                "auditor"
+            ]
+        },
+        {
+            "uri_pattern": "agency/{agent}",
+            "module": "Agency",
+            "reason": "tidak teruji: parameter (agent)",
+            "roles": [
+                "admin",
+                "agent",
+                "procurement",
+                "auditor"
+            ]
+        },
+        {
+            "uri_pattern": "partners/{partner}",
+            "module": "Partner",
+            "reason": "tidak teruji: parameter (partner)",
+            "roles": [
+                "admin",
+                "procurement",
+                "auditor"
+            ]
+        },
+        {
+            "uri_pattern": "partner/governance/{partner}/ip-audit",
+            "module": "Partner",
+            "reason": "tidak teruji: parameter (partner)",
+            "roles": [
+                "admin",
+                "auditor",
+                "procurement"
+            ]
+        },
+        {
+            "uri_pattern": "distribution/{distributor}",
+            "module": "Distribution",
+            "reason": "tidak teruji: parameter (distributor)",
+            "roles": [
+                "admin",
+                "procurement",
+                "distributor",
+                "auditor"
+            ]
+        },
+        {
+            "uri_pattern": "trade/customs/bonded-zone/{importOrder}/audit",
+            "module": "Trade",
+            "reason": "tidak teruji: parameter (importOrder)",
+            "roles": [
+                "admin",
+                "auditor",
+                "procurement",
+                "treasury"
+            ]
+        },
+        {
+            "uri_pattern": "energy/ppa/{id}",
+            "module": "Egy",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "grid_operator",
+                "genco_trader",
+                "energy_auditor",
+                "renewable_dev"
+            ]
+        },
+        {
+            "uri_pattern": "media/studios/{id}",
+            "module": "Med",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "producer",
+                "studio_ops",
+                "ip_manager",
+                "talent_mgmt"
+            ]
+        },
+        {
+            "uri_pattern": "media/licensing/{id}",
+            "module": "Med",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "producer",
+                "studio_ops",
+                "ip_manager",
+                "talent_mgmt"
+            ]
+        },
+        {
+            "uri_pattern": "education/cohorts/{id}",
+            "module": "Edu",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "edu_admin",
+                "instructor",
+                "cert_officer",
+                "corp_lnd"
+            ]
+        },
+        {
+            "uri_pattern": "education/certifications/verify/{hash}",
+            "module": "Edu",
+            "reason": "tidak teruji: parameter (hash)",
+            "roles": [
+                "admin",
+                "edu_admin",
+                "instructor",
+                "cert_officer",
+                "corp_lnd"
+            ]
+        },
+        {
+            "uri_pattern": "education/grants/{id}",
+            "module": "Edu",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "edu_admin",
+                "instructor",
+                "cert_officer",
+                "corp_lnd"
+            ]
+        },
+        {
+            "uri_pattern": "retail/orders/{id}",
+            "module": "Ret",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "retail_ops",
+                "marketplace_mgr",
+                "category_mgr",
+                "last_mile_cs"
+            ]
+        },
+        {
+            "uri_pattern": "reset-password/{token}",
+            "module": "Core",
+            "reason": "tidak teruji: parameter (token)",
+            "roles": [
+                "guest"
+            ]
+        },
+        {
+            "uri_pattern": "verify-email/{id}/{hash}",
+            "module": "Core",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin"
+            ]
+        },
+        {
+            "uri_pattern": "storage/{path}",
+            "module": "Core",
+            "reason": "tidak teruji: parameter (path)",
+            "roles": [
+                "guest"
+            ]
+        }
+    ],
+    "module_stats": {
+        "Core": {
+            "total": 32,
+            "tested": 29,
+            "untested": 3,
+            "2xx": 23,
+            "3xx": 5,
+            "4xx": 1,
+            "500": 0
+        },
+        "AutoServe": {
+            "total": 13,
+            "tested": 13,
+            "untested": 0,
+            "2xx": 11,
+            "3xx": 0,
+            "4xx": 2,
+            "500": 0
+        },
+        "AutoDex": {
+            "total": 9,
+            "tested": 9,
+            "untested": 0,
+            "2xx": 6,
+            "3xx": 0,
+            "4xx": 3,
+            "500": 0
+        },
+        "Banking": {
+            "total": 15,
+            "tested": 15,
+            "untested": 0,
+            "2xx": 15,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Payment": {
+            "total": 6,
+            "tested": 6,
+            "untested": 0,
+            "2xx": 6,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Inventory": {
+            "total": 6,
+            "tested": 6,
+            "untested": 0,
+            "2xx": 6,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Store": {
+            "total": 27,
+            "tested": 27,
+            "untested": 0,
+            "2xx": 16,
+            "3xx": 3,
+            "4xx": 8,
+            "500": 0
+        },
+        "Crypto": {
+            "total": 12,
+            "tested": 12,
+            "untested": 0,
+            "2xx": 12,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Finance": {
+            "total": 12,
+            "tested": 12,
+            "untested": 0,
+            "2xx": 4,
+            "3xx": 0,
+            "4xx": 8,
+            "500": 0
+        },
+        "Resto": {
+            "total": 87,
+            "tested": 76,
+            "untested": 11,
+            "2xx": 49,
+            "3xx": 0,
+            "4xx": 13,
+            "500": 14
+        },
+        "Mall": {
+            "total": 70,
+            "tested": 70,
+            "untested": 0,
+            "2xx": 67,
+            "3xx": 0,
+            "4xx": 3,
+            "500": 0
+        },
+        "Logistics": {
+            "total": 144,
+            "tested": 143,
+            "untested": 1,
+            "2xx": 127,
+            "3xx": 0,
+            "4xx": 16,
+            "500": 0
+        },
+        "Party": {
+            "total": 12,
+            "tested": 12,
+            "untested": 0,
+            "2xx": 9,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 3
+        },
+        "Asset": {
+            "total": 12,
+            "tested": 12,
+            "untested": 0,
+            "2xx": 12,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Contract": {
+            "total": 39,
+            "tested": 39,
+            "untested": 0,
+            "2xx": 30,
+            "3xx": 3,
+            "4xx": 3,
+            "500": 3
+        },
+        "Supplier": {
+            "total": 14,
+            "tested": 14,
+            "untested": 0,
+            "2xx": 10,
+            "3xx": 3,
+            "4xx": 1,
+            "500": 0
+        },
+        "Procurement": {
+            "total": 9,
+            "tested": 6,
+            "untested": 3,
+            "2xx": 5,
+            "3xx": 0,
+            "4xx": 1,
+            "500": 0
+        },
+        "Manufacturing": {
+            "total": 28,
+            "tested": 27,
+            "untested": 1,
+            "2xx": 27,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Agency": {
+            "total": 5,
+            "tested": 4,
+            "untested": 1,
+            "2xx": 4,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Partner": {
+            "total": 5,
+            "tested": 3,
+            "untested": 2,
+            "2xx": 3,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Distribution": {
+            "total": 7,
+            "tested": 6,
+            "untested": 1,
+            "2xx": 5,
+            "3xx": 0,
+            "4xx": 1,
+            "500": 0
+        },
+        "Pricing": {
+            "total": 6,
+            "tested": 6,
+            "untested": 0,
+            "2xx": 6,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Wms": {
+            "total": 4,
+            "tested": 4,
+            "untested": 0,
+            "2xx": 4,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Treasury": {
+            "total": 3,
+            "tested": 3,
+            "untested": 0,
+            "2xx": 3,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Trade": {
+            "total": 9,
+            "tested": 8,
+            "untested": 1,
+            "2xx": 8,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "TradeFinance": {
+            "total": 16,
+            "tested": 16,
+            "untested": 0,
+            "2xx": 16,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "International": {
+            "total": 12,
+            "tested": 12,
+            "untested": 0,
+            "2xx": 12,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Intercompany": {
+            "total": 12,
+            "tested": 12,
+            "untested": 0,
+            "2xx": 12,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "ControlTower": {
+            "total": 16,
+            "tested": 16,
+            "untested": 0,
+            "2xx": 16,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "EnterpriseFinance": {
+            "total": 9,
+            "tested": 9,
+            "untested": 0,
+            "2xx": 9,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Integration": {
+            "total": 3,
+            "tested": 3,
+            "untested": 0,
+            "2xx": 3,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Hcm": {
+            "total": 6,
+            "tested": 6,
+            "untested": 0,
+            "2xx": 6,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Plm": {
+            "total": 4,
+            "tested": 4,
+            "untested": 0,
+            "2xx": 4,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Esg": {
+            "total": 6,
+            "tested": 6,
+            "untested": 0,
+            "2xx": 6,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "B2b": {
+            "total": 15,
+            "tested": 15,
+            "untested": 0,
+            "2xx": 15,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Agri": {
+            "total": 15,
+            "tested": 15,
+            "untested": 0,
+            "2xx": 15,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Epc": {
+            "total": 15,
+            "tested": 15,
+            "untested": 0,
+            "2xx": 15,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Telematics": {
+            "total": 15,
+            "tested": 15,
+            "untested": 0,
+            "2xx": 15,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Ev": {
+            "total": 20,
+            "tested": 20,
+            "untested": 0,
+            "2xx": 20,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Fleet": {
+            "total": 15,
+            "tested": 15,
+            "untested": 0,
+            "2xx": 15,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Rwa": {
+            "total": 20,
+            "tested": 20,
+            "untested": 0,
+            "2xx": 20,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Insurance": {
+            "total": 20,
+            "tested": 20,
+            "untested": 0,
+            "2xx": 20,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Wealth": {
+            "total": 25,
+            "tested": 25,
+            "untested": 0,
+            "2xx": 25,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "CloudKitchen": {
+            "total": 20,
+            "tested": 20,
+            "untested": 0,
+            "2xx": 20,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Vending": {
+            "total": 15,
+            "tested": 15,
+            "untested": 0,
+            "2xx": 15,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Proptech": {
+            "total": 27,
+            "tested": 27,
+            "untested": 0,
+            "2xx": 27,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Hospital": {
+            "total": 22,
+            "tested": 22,
+            "untested": 0,
+            "2xx": 22,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Venue": {
+            "total": 24,
+            "tested": 24,
+            "untested": 0,
+            "2xx": 24,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Hotel": {
+            "total": 27,
+            "tested": 27,
+            "untested": 0,
+            "2xx": 27,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Mining": {
+            "total": 27,
+            "tested": 27,
+            "untested": 0,
+            "2xx": 27,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Egy": {
+            "total": 31,
+            "tested": 30,
+            "untested": 1,
+            "2xx": 30,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Tlx": {
+            "total": 35,
+            "tested": 35,
+            "untested": 0,
+            "2xx": 35,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Med": {
+            "total": 27,
+            "tested": 25,
+            "untested": 2,
+            "2xx": 25,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Edu": {
+            "total": 23,
+            "tested": 20,
+            "untested": 3,
+            "2xx": 20,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Ret": {
+            "total": 31,
+            "tested": 30,
+            "untested": 1,
+            "2xx": 30,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Shared": {
+            "total": 1,
+            "tested": 1,
+            "untested": 0,
+            "2xx": 1,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        }
+    },
+    "errors_500_count": 20,
+    "errors_500_first_30": [
+        {
+            "uri_pattern": "resto/menu/{menu}",
+            "uri_tested": "/resto/menu/1",
+            "module": "Resto",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 157.31,
+            "query_count": 3,
+            "body_size": 1158886,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: Attempt to read property \"value\" on null (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Resto/resources/views/menu/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/19d875b0cc77e0d7de667039278377bf.php",
+                "line": 19
+            }
+        },
+        {
+            "uri_pattern": "resto/menu/{menu}",
+            "uri_tested": "/resto/menu/1",
+            "module": "Resto",
+            "role": "auditor",
+            "status": 500,
+            "duration_ms": 120.63,
+            "query_count": 3,
+            "body_size": 1158886,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: Attempt to read property \"value\" on null (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Resto/resources/views/menu/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/19d875b0cc77e0d7de667039278377bf.php",
+                "line": 19
+            }
+        },
+        {
+            "uri_pattern": "resto/menu/{menu}",
+            "uri_tested": "/resto/menu/1",
+            "module": "Resto",
+            "role": "outlet_manager",
+            "status": 500,
+            "duration_ms": 119.94,
+            "query_count": 3,
+            "body_size": 1158886,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: Attempt to read property \"value\" on null (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Resto/resources/views/menu/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/19d875b0cc77e0d7de667039278377bf.php",
+                "line": 19
+            }
+        },
+        {
+            "uri_pattern": "resto/menu/create",
+            "uri_tested": "/resto/menu/create",
+            "module": "Resto",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 120.38,
+            "query_count": 3,
+            "body_size": 1158921,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: Attempt to read property \"value\" on null (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Resto/resources/views/menu/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/19d875b0cc77e0d7de667039278377bf.php",
+                "line": 19
+            }
+        },
+        {
+            "uri_pattern": "resto/menu/create",
+            "uri_tested": "/resto/menu/create",
+            "module": "Resto",
+            "role": "outlet_manager",
+            "status": 500,
+            "duration_ms": 118.67,
+            "query_count": 3,
+            "body_size": 1158921,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: Attempt to read property \"value\" on null (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Resto/resources/views/menu/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/19d875b0cc77e0d7de667039278377bf.php",
+                "line": 19
+            }
+        },
+        {
+            "uri_pattern": "resto/menu/{menu}/edit",
+            "uri_tested": "/resto/menu/1/edit",
+            "module": "Resto",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 132.28,
+            "query_count": 7,
+            "body_size": 1169333,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: Missing required parameter for [Route: resto.menu.update] [URI: resto/menu/{menu}] [Missing parameter: menu]. (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Resto/resources/views/menu/edit.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/vendor/laravel/framework/src/Illuminate/Routing/Exceptions/UrlGenerationException.php",
+                "line": 35
+            }
+        },
+        {
+            "uri_pattern": "resto/menu/{menu}/edit",
+            "uri_tested": "/resto/menu/1/edit",
+            "module": "Resto",
+            "role": "outlet_manager",
+            "status": 500,
+            "duration_ms": 122.33,
+            "query_count": 7,
+            "body_size": 1169333,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: Missing required parameter for [Route: resto.menu.update] [URI: resto/menu/{menu}] [Missing parameter: menu]. (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Resto/resources/views/menu/edit.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/vendor/laravel/framework/src/Illuminate/Routing/Exceptions/UrlGenerationException.php",
+                "line": 35
+            }
+        },
+        {
+            "uri_pattern": "resto/ingredients/{ingredient}",
+            "uri_tested": "/resto/ingredients/1",
+            "module": "Resto",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 72.79,
+            "query_count": 1,
+            "body_size": 1136632,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Error: Call to undefined method Modules\\Resto\\Http\\Controllers\\IngredientController::show()",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php",
+                "line": 46
+            }
+        },
+        {
+            "uri_pattern": "resto/ingredients/{ingredient}",
+            "uri_tested": "/resto/ingredients/1",
+            "module": "Resto",
+            "role": "auditor",
+            "status": 500,
+            "duration_ms": 71.02,
+            "query_count": 1,
+            "body_size": 1136632,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Error: Call to undefined method Modules\\Resto\\Http\\Controllers\\IngredientController::show()",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php",
+                "line": 46
+            }
+        },
+        {
+            "uri_pattern": "resto/ingredients/{ingredient}",
+            "uri_tested": "/resto/ingredients/1",
+            "module": "Resto",
+            "role": "outlet_manager",
+            "status": 500,
+            "duration_ms": 70.35,
+            "query_count": 1,
+            "body_size": 1136632,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Error: Call to undefined method Modules\\Resto\\Http\\Controllers\\IngredientController::show()",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php",
+                "line": 46
+            }
+        },
+        {
+            "uri_pattern": "resto/ingredients/create",
+            "uri_tested": "/resto/ingredients/create",
+            "module": "Resto",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 69.83,
+            "query_count": 1,
+            "body_size": 1136667,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Error: Call to undefined method Modules\\Resto\\Http\\Controllers\\IngredientController::show()",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php",
+                "line": 46
+            }
+        },
+        {
+            "uri_pattern": "resto/ingredients/create",
+            "uri_tested": "/resto/ingredients/create",
+            "module": "Resto",
+            "role": "outlet_manager",
+            "status": 500,
+            "duration_ms": 72.97,
+            "query_count": 1,
+            "body_size": 1136667,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Error: Call to undefined method Modules\\Resto\\Http\\Controllers\\IngredientController::show()",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php",
+                "line": 46
+            }
+        },
+        {
+            "uri_pattern": "resto/catering/create",
+            "uri_tested": "/resto/catering/create",
+            "module": "Resto",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 115.26,
+            "query_count": 1,
+            "body_size": 1157388,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: Call to a member function format() on null (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Resto/resources/views/catering/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/8c0c5a8a484c7b0535baab1f8411cf06.php",
+                "line": 22
+            }
+        },
+        {
+            "uri_pattern": "resto/catering/create",
+            "uri_tested": "/resto/catering/create",
+            "module": "Resto",
+            "role": "outlet_manager",
+            "status": 500,
+            "duration_ms": 114.27,
+            "query_count": 1,
+            "body_size": 1157388,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: Call to a member function format() on null (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Resto/resources/views/catering/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/8c0c5a8a484c7b0535baab1f8411cf06.php",
+                "line": 22
+            }
+        },
+        {
+            "uri_pattern": "party/{party}",
+            "uri_tested": "/party/01a188f9-c958-730d-90bf-d178cfeb476e",
+            "module": "Party",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 130.31,
+            "query_count": 11,
+            "body_size": 1176274,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: str_replace(): Argument #3 ($subject) must be of type array|string, Modules\\Party\\Domain\\Enums\\PartyRoleType given (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Party/resources/views/party/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/2e532ffef1034cfc5d8ea5be9a684222.php",
+                "line": 150
+            }
+        },
+        {
+            "uri_pattern": "party/{party}",
+            "uri_tested": "/party/01a188f9-c958-730d-90bf-d178cfeb476e",
+            "module": "Party",
+            "role": "logistics_admin",
+            "status": 500,
+            "duration_ms": 123.47,
+            "query_count": 11,
+            "body_size": 1176274,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: str_replace(): Argument #3 ($subject) must be of type array|string, Modules\\Party\\Domain\\Enums\\PartyRoleType given (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Party/resources/views/party/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/2e532ffef1034cfc5d8ea5be9a684222.php",
+                "line": 150
+            }
+        },
+        {
+            "uri_pattern": "party/{party}",
+            "uri_tested": "/party/01a188f9-c958-730d-90bf-d178cfeb476e",
+            "module": "Party",
+            "role": "party_manager",
+            "status": 500,
+            "duration_ms": 124.44,
+            "query_count": 11,
+            "body_size": 1176274,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: str_replace(): Argument #3 ($subject) must be of type array|string, Modules\\Party\\Domain\\Enums\\PartyRoleType given (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Party/resources/views/party/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/2e532ffef1034cfc5d8ea5be9a684222.php",
+                "line": 150
+            }
+        },
+        {
+            "uri_pattern": "contracts/{contract}",
+            "uri_tested": "/contracts/01a188f9-c970-7221-a3b3-60fa03451b12",
+            "module": "Contract",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 132.26,
+            "query_count": 17,
+            "body_size": 1181420,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: str_replace(): Argument #3 ($subject) must be of type array|string, Modules\\Contract\\Domain\\Enums\\ContractPartyRole given (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Contract/resources/views/contract/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/15d0a7c591087d86eccb9ebb64b0a110.php",
+                "line": 193
+            }
+        },
+        {
+            "uri_pattern": "contracts/{contract}",
+            "uri_tested": "/contracts/01a188f9-c970-7221-a3b3-60fa03451b12",
+            "module": "Contract",
+            "role": "contract_manager",
+            "status": 500,
+            "duration_ms": 125.18,
+            "query_count": 17,
+            "body_size": 1181420,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: str_replace(): Argument #3 ($subject) must be of type array|string, Modules\\Contract\\Domain\\Enums\\ContractPartyRole given (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Contract/resources/views/contract/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/15d0a7c591087d86eccb9ebb64b0a110.php",
+                "line": 193
+            }
+        },
+        {
+            "uri_pattern": "contracts/{contract}",
+            "uri_tested": "/contracts/01a188f9-c970-7221-a3b3-60fa03451b12",
+            "module": "Contract",
+            "role": "legal",
+            "status": 500,
+            "duration_ms": 139.77,
+            "query_count": 17,
+            "body_size": 1181420,
+            "has_error_text": true,
+            "page_title": "Laravel",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: str_replace(): Argument #3 ($subject) must be of type array|string, Modules\\Contract\\Domain\\Enums\\ContractPartyRole given (View: /Users/orl123456/Documents/typeshit/w4p-perilaku/modules/Contract/resources/views/contract/show.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/w4p-perilaku/storage/framework/views/15d0a7c591087d86eccb9ebb64b0a110.php",
+                "line": 193
+            }
+        }
+    ],
+    "top_20_query_heavy": [
+        {
+            "uri": "/admin/health",
+            "module": "Core",
+            "role": "admin",
+            "query_count": 233,
+            "duration_ms": 134.18,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?)) as \"exists\"",
+                "select count(*) as \"aggregate\" from \"bank_ledger_accounts\"",
+                "select * from \"bank_ledger_entries\" where \"id\" is not null order by \"id\" asc limit 1000",
+                "select * from \"bank_ledger_accounts\"",
+                "select count(*) as \"aggregate\" from \"core_vehicles\" where \"core_vehicles\".\"deleted_at\" is null",
+                "select * from \"core_vehicles\" where \"id\" is not null and \"core_vehicles\".\"deleted_at\" is null order by \"id\" asc limit 200",
+                "select * from \"dex_cars\" where \"dex_cars\".\"id\" in (1, 2, 3, 4, 5, 7, 9, 10, 11, 12, 13, 16, 17, 19, 21, 24, 25, 27, 28, 29, 30, 31, 58, 60, 63, 64, 67, 82, 83, 84, 85, 86, 87, 88)",
+                "select * from \"dex_brands\" where \"dex_brands\".\"id\" in (1, 2, 3, 4, 6, 7, 8, 18, 19, 20, 21, 27)",
+                "select * from \"core_vehicle_events\" where \"vehicle_id\" = ? order by \"sequence\" asc",
+                "select * from \"core_vehicle_events\" where \"vehicle_id\" = ? order by \"sequence\" asc"
+            ]
+        },
+        {
+            "uri": "/resto/analytics",
+            "module": "Resto",
+            "role": "admin",
+            "query_count": 97,
+            "duration_ms": 18.16,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
+                "select * from \"resto_outlets\" where \"is_active\" = ?",
+                "select * from \"resto_menu_items\" where \"is_active\" = ?",
+                "select * from \"resto_menu_categories\" where \"resto_menu_categories\".\"id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9)",
+                "select menu_item_id, SUM(qty) as total_qty, SUM(line_total) as total_revenue from \"resto_order_items\" where exists (select * from \"resto_orders\" where \"resto_order_items\".\"order_id\" = \"resto_orders\".\"id\" and \"status\" = ? and \"created_at\" >= ?) group by \"menu_item_id\"",
+                "select * from \"resto_recipes\" where \"resto_recipes\".\"menu_item_id\" = ? and \"resto_recipes\".\"menu_item_id\" is not null and \"is_active\" = ? limit 1",
+                "select * from \"resto_recipe_lines\" where \"resto_recipe_lines\".\"recipe_id\" = ? and \"resto_recipe_lines\".\"recipe_id\" is not null",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1",
+                "select * from \"resto_ingredients\" where \"resto_ingredients\".\"id\" = ? limit 1",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1"
+            ]
+        },
+        {
+            "uri": "/resto/analytics",
+            "module": "Resto",
+            "role": "auditor",
+            "query_count": 97,
+            "duration_ms": 16.29,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
+                "select * from \"resto_outlets\" where \"is_active\" = ?",
+                "select * from \"resto_menu_items\" where \"is_active\" = ?",
+                "select * from \"resto_menu_categories\" where \"resto_menu_categories\".\"id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9)",
+                "select menu_item_id, SUM(qty) as total_qty, SUM(line_total) as total_revenue from \"resto_order_items\" where exists (select * from \"resto_orders\" where \"resto_order_items\".\"order_id\" = \"resto_orders\".\"id\" and \"status\" = ? and \"created_at\" >= ?) group by \"menu_item_id\"",
+                "select * from \"resto_recipes\" where \"resto_recipes\".\"menu_item_id\" = ? and \"resto_recipes\".\"menu_item_id\" is not null and \"is_active\" = ? limit 1",
+                "select * from \"resto_recipe_lines\" where \"resto_recipe_lines\".\"recipe_id\" = ? and \"resto_recipe_lines\".\"recipe_id\" is not null",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1",
+                "select * from \"resto_ingredients\" where \"resto_ingredients\".\"id\" = ? limit 1",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1"
+            ]
+        },
+        {
+            "uri": "/resto/analytics",
+            "module": "Resto",
+            "role": "outlet_manager",
+            "query_count": 96,
+            "duration_ms": 15.49,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
+                "select * from \"resto_outlets\" where \"is_active\" = ?",
+                "select * from \"resto_menu_items\" where \"is_active\" = ?",
+                "select * from \"resto_menu_categories\" where \"resto_menu_categories\".\"id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9)",
+                "select menu_item_id, SUM(qty) as total_qty, SUM(line_total) as total_revenue from \"resto_order_items\" where exists (select * from \"resto_orders\" where \"resto_order_items\".\"order_id\" = \"resto_orders\".\"id\" and \"status\" = ? and \"created_at\" >= ?) group by \"menu_item_id\"",
+                "select * from \"resto_recipes\" where \"resto_recipes\".\"menu_item_id\" = ? and \"resto_recipes\".\"menu_item_id\" is not null and \"is_active\" = ? limit 1",
+                "select * from \"resto_recipe_lines\" where \"resto_recipe_lines\".\"recipe_id\" = ? and \"resto_recipe_lines\".\"recipe_id\" is not null",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1",
+                "select * from \"resto_ingredients\" where \"resto_ingredients\".\"id\" = ? limit 1",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1"
+            ]
+        },
+        {
+            "uri": "/crypto/portfolio",
+            "module": "Crypto",
+            "role": "admin",
+            "query_count": 37,
+            "duration_ms": 9.65,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
+                "select * from \"crypto_assets\" where \"is_active\" = ?",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_trades\" where \"user_id\" = ? and \"asset_id\" = ? and \"side\" = ? and \"status\" = ?",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1"
+            ]
+        },
+        {
+            "uri": "/crypto/portfolio",
+            "module": "Crypto",
+            "role": "customer",
+            "query_count": 37,
+            "duration_ms": 8.34,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
+                "select * from \"crypto_assets\" where \"is_active\" = ?",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_trades\" where \"user_id\" = ? and \"asset_id\" = ? and \"side\" = ? and \"status\" = ?",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1"
+            ]
+        },
+        {
+            "uri": "/crypto/portfolio",
+            "module": "Crypto",
+            "role": "auditor",
+            "query_count": 37,
+            "duration_ms": 8.31,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
+                "select * from \"crypto_assets\" where \"is_active\" = ?",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_trades\" where \"user_id\" = ? and \"asset_id\" = ? and \"side\" = ? and \"status\" = ?",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1"
+            ]
+        },
+        {
+            "uri": "/resto/menu",
+            "module": "Resto",
+            "role": "admin",
+            "query_count": 37,
+            "duration_ms": 10.78,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
+                "select count(*) as \"aggregate\" from \"resto_menu_items\"",
+                "select * from \"resto_menu_items\" order by \"category_id\" asc, \"sort\" asc limit 20 offset 0",
+                "select * from \"resto_menu_categories\" where \"resto_menu_categories\".\"id\" in (1, 2, 3, 4)",
+                "select * from \"resto_recipes\" where \"is_active\" = ? and \"resto_recipes\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
+                "select * from \"resto_recipe_lines\" where \"resto_recipe_lines\".\"recipe_id\" in (3, 4)",
+                "select * from \"resto_ingredients\" where \"resto_ingredients\".\"id\" in (1, 3, 20)",
+                "select * from \"resto_recipes\" where \"resto_recipes\".\"id\" in (1, 2)",
+                "select * from \"resto_menu_item_outlet\" where \"resto_menu_item_outlet\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1"
+            ]
+        },
+        {
+            "uri": "/resto/menu",
+            "module": "Resto",
+            "role": "auditor",
+            "query_count": 37,
+            "duration_ms": 7.84,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
+                "select count(*) as \"aggregate\" from \"resto_menu_items\"",
+                "select * from \"resto_menu_items\" order by \"category_id\" asc, \"sort\" asc limit 20 offset 0",
+                "select * from \"resto_menu_categories\" where \"resto_menu_categories\".\"id\" in (1, 2, 3, 4)",
+                "select * from \"resto_recipes\" where \"is_active\" = ? and \"resto_recipes\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
+                "select * from \"resto_recipe_lines\" where \"resto_recipe_lines\".\"recipe_id\" in (3, 4)",
+                "select * from \"resto_ingredients\" where \"resto_ingredients\".\"id\" in (1, 3, 20)",
+                "select * from \"resto_recipes\" where \"resto_recipes\".\"id\" in (1, 2)",
+                "select * from \"resto_menu_item_outlet\" where \"resto_menu_item_outlet\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1"
+            ]
+        },
+        {
+            "uri": "/crypto/portfolio",
+            "module": "Crypto",
+            "role": "treasury",
+            "query_count": 36,
+            "duration_ms": 8.16,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
+                "select * from \"crypto_assets\" where \"is_active\" = ?",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_trades\" where \"user_id\" = ? and \"asset_id\" = ? and \"side\" = ? and \"status\" = ?",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1"
+            ]
+        },
+        {
+            "uri": "/resto/menu",
+            "module": "Resto",
+            "role": "outlet_manager",
+            "query_count": 36,
+            "duration_ms": 7.68,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
+                "select count(*) as \"aggregate\" from \"resto_menu_items\"",
+                "select * from \"resto_menu_items\" order by \"category_id\" asc, \"sort\" asc limit 20 offset 0",
+                "select * from \"resto_menu_categories\" where \"resto_menu_categories\".\"id\" in (1, 2, 3, 4)",
+                "select * from \"resto_recipes\" where \"is_active\" = ? and \"resto_recipes\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
+                "select * from \"resto_recipe_lines\" where \"resto_recipe_lines\".\"recipe_id\" in (3, 4)",
+                "select * from \"resto_ingredients\" where \"resto_ingredients\".\"id\" in (1, 3, 20)",
+                "select * from \"resto_recipes\" where \"resto_recipes\".\"id\" in (1, 2)",
+                "select * from \"resto_menu_item_outlet\" where \"resto_menu_item_outlet\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1"
+            ]
+        },
+        {
+            "uri": "/assets/01a188f9-c97f-7151-9bb9-6d9510a5074b",
+            "module": "Asset",
+            "role": "admin",
+            "query_count": 29,
+            "duration_ms": 7.69,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
+                "select * from \"ast_assets\" where \"id\" = ? limit 1",
+                "select * from \"ast_categories\" where \"ast_categories\".\"id\" in (2)",
+                "select * from \"ast_locations\" where \"ast_locations\".\"id\" in (2)",
+                "select * from \"ast_events\" where \"ast_events\".\"asset_id\" in (?) order by \"sequence\" asc",
+                "select * from \"ast_assignments\" where \"ast_assignments\".\"asset_id\" in (?) order by \"checked_out_at\" desc",
+                "select * from \"ast_insurances\" where \"ast_insurances\".\"asset_id\" in (?) order by \"end_date\" desc",
+                "select * from \"ast_stocktakes\" where \"ast_stocktakes\".\"asset_id\" in (?) order by \"created_at\" desc",
+                "select * from \"ast_work_orders\" where \"ast_work_orders\".\"asset_id\" in (?) order by \"created_at\" desc",
+                "select * from \"ast_leases\" where \"ast_leases\".\"asset_id\" in (?) order by \"created_at\" desc"
+            ]
+        },
+        {
+            "uri": "/assets/01a188f9-c97f-7151-9bb9-6d9510a5074b",
+            "module": "Asset",
+            "role": "asset_manager",
+            "query_count": 28,
+            "duration_ms": 6.18,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
+                "select * from \"ast_assets\" where \"id\" = ? limit 1",
+                "select * from \"ast_categories\" where \"ast_categories\".\"id\" in (2)",
+                "select * from \"ast_locations\" where \"ast_locations\".\"id\" in (2)",
+                "select * from \"ast_events\" where \"ast_events\".\"asset_id\" in (?) order by \"sequence\" asc",
+                "select * from \"ast_assignments\" where \"ast_assignments\".\"asset_id\" in (?) order by \"checked_out_at\" desc",
+                "select * from \"ast_insurances\" where \"ast_insurances\".\"asset_id\" in (?) order by \"end_date\" desc",
+                "select * from \"ast_stocktakes\" where \"ast_stocktakes\".\"asset_id\" in (?) order by \"created_at\" desc",
+                "select * from \"ast_work_orders\" where \"ast_work_orders\".\"asset_id\" in (?) order by \"created_at\" desc",
+                "select * from \"ast_leases\" where \"ast_leases\".\"asset_id\" in (?) order by \"created_at\" desc"
+            ]
+        },
+        {
+            "uri": "/crypto",
+            "module": "Crypto",
+            "role": "guest",
+            "query_count": 24,
+            "duration_ms": 11.49,
+            "queries": [
+                "select * from \"crypto_assets\" where \"is_active\" = ?",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1"
+            ]
+        },
+        {
+            "uri": "/dashboard",
+            "module": "Core",
+            "role": "admin",
+            "query_count": 24,
+            "duration_ms": 7.77,
+            "queries": [
+                "select count(*) as \"aggregate\" from \"store_orders\"",
+                "select count(*) as \"aggregate\" from \"store_orders\" where \"status\" = ?",
+                "select count(*) as \"aggregate\" from \"serve_bookings\"",
+                "select count(*) as \"aggregate\" from \"serve_bookings\" where \"status\" = ?",
+                "select count(*) as \"aggregate\" from \"serve_bookings\" where \"status\" = ?",
+                "select count(*) as \"aggregate\" from \"serve_bookings\" where \"status\" = ? and strftime('%Y-%m-%d', \"updated_at\") = cast(? as text)",
+                "select sum(\"grand_total\") as \"aggregate\" from \"serve_bookings\" where \"status\" in (?, ?)",
+                "select count(*) as \"aggregate\" from \"serve_spareparts\" where \"stock\" <= ?",
+                "select count(*) as \"aggregate\" from \"users\"",
+                "select count(*) as \"aggregate\" from \"users\" where \"role\" = ?"
+            ]
+        },
+        {
+            "uri": "/logistics/fleet",
+            "module": "Logistics",
+            "role": "admin",
+            "query_count": 23,
+            "duration_ms": 9.28,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?, ?)) as \"exists\"",
+                "select count(*) as \"aggregate\" from \"lgx_trucks\"",
+                "select * from \"lgx_trucks\" limit 15 offset 0",
+                "select * from \"core_vehicles\" where \"core_vehicles\".\"id\" in (31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45) and \"core_vehicles\".\"deleted_at\" is null",
+                "select * from \"dex_cars\" where \"dex_cars\".\"id\" in (82, 83, 84)",
+                "select * from \"dex_brands\" where \"dex_brands\".\"id\" in (27)",
+                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (16, 17, 19, 20)",
+                "select count(*) as \"aggregate\" from \"lgx_trailers\"",
+                "select * from \"lgx_trailers\" limit 15 offset 0",
+                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (1, 2, 3)"
+            ]
+        },
+        {
+            "uri": "/logistics/fleet",
+            "module": "Logistics",
+            "role": "auditor",
+            "query_count": 23,
+            "duration_ms": 6.37,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?, ?)) as \"exists\"",
+                "select count(*) as \"aggregate\" from \"lgx_trucks\"",
+                "select * from \"lgx_trucks\" limit 15 offset 0",
+                "select * from \"core_vehicles\" where \"core_vehicles\".\"id\" in (31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45) and \"core_vehicles\".\"deleted_at\" is null",
+                "select * from \"dex_cars\" where \"dex_cars\".\"id\" in (82, 83, 84)",
+                "select * from \"dex_brands\" where \"dex_brands\".\"id\" in (27)",
+                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (16, 17, 19, 20)",
+                "select count(*) as \"aggregate\" from \"lgx_trailers\"",
+                "select * from \"lgx_trailers\" limit 15 offset 0",
+                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (1, 2, 3)"
+            ]
+        },
+        {
+            "uri": "/logistics/fleet",
+            "module": "Logistics",
+            "role": "dispatcher",
+            "query_count": 22,
+            "duration_ms": 6.15,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?, ?)) as \"exists\"",
+                "select count(*) as \"aggregate\" from \"lgx_trucks\"",
+                "select * from \"lgx_trucks\" limit 15 offset 0",
+                "select * from \"core_vehicles\" where \"core_vehicles\".\"id\" in (31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45) and \"core_vehicles\".\"deleted_at\" is null",
+                "select * from \"dex_cars\" where \"dex_cars\".\"id\" in (82, 83, 84)",
+                "select * from \"dex_brands\" where \"dex_brands\".\"id\" in (27)",
+                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (16, 17, 19, 20)",
+                "select count(*) as \"aggregate\" from \"lgx_trailers\"",
+                "select * from \"lgx_trailers\" limit 15 offset 0",
+                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (1, 2, 3)"
+            ]
+        },
+        {
+            "uri": "/logistics/fleet",
+            "module": "Logistics",
+            "role": "hub_operator",
+            "query_count": 22,
+            "duration_ms": 6,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?, ?)) as \"exists\"",
+                "select count(*) as \"aggregate\" from \"lgx_trucks\"",
+                "select * from \"lgx_trucks\" limit 15 offset 0",
+                "select * from \"core_vehicles\" where \"core_vehicles\".\"id\" in (31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45) and \"core_vehicles\".\"deleted_at\" is null",
+                "select * from \"dex_cars\" where \"dex_cars\".\"id\" in (82, 83, 84)",
+                "select * from \"dex_brands\" where \"dex_brands\".\"id\" in (27)",
+                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (16, 17, 19, 20)",
+                "select count(*) as \"aggregate\" from \"lgx_trailers\"",
+                "select * from \"lgx_trailers\" limit 15 offset 0",
+                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (1, 2, 3)"
+            ]
+        },
+        {
+            "uri": "/logistics/fleet",
+            "module": "Logistics",
+            "role": "logistics_admin",
+            "query_count": 22,
+            "duration_ms": 6.24,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?, ?)) as \"exists\"",
+                "select count(*) as \"aggregate\" from \"lgx_trucks\"",
+                "select * from \"lgx_trucks\" limit 15 offset 0",
+                "select * from \"core_vehicles\" where \"core_vehicles\".\"id\" in (31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45) and \"core_vehicles\".\"deleted_at\" is null",
+                "select * from \"dex_cars\" where \"dex_cars\".\"id\" in (82, 83, 84)",
+                "select * from \"dex_brands\" where \"dex_brands\".\"id\" in (27)",
+                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (16, 17, 19, 20)",
+                "select count(*) as \"aggregate\" from \"lgx_trailers\"",
+                "select * from \"lgx_trailers\" limit 15 offset 0",
+                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (1, 2, 3)"
+            ]
+        }
+    ]
+}
