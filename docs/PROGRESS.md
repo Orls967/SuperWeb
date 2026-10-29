@@ -4321,79 +4321,88 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-31.md
 
 ## FASE 32 — PRODUSEN & PEMASOK (SUPPLIER MANAGEMENT, MODUL `sup_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 32.1 Modul Supplier: profil pemasok/produsen (party role), kategori barang/jasa, kapabilitas, lokasi pabrik, sertifikasi (ISO, SNI, Halal, BPOM, GMP) dengan masa berlaku
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 32.1 Modul Supplier: profil pemasok/produsen (party role), kategori barang/jasa, kapabilitas, lokasi pabrik, sertifikasi (ISO, SNI, Halal, BPOM, GMP) dengan masa berlaku
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.2 Kualifikasi & onboarding: kuesioner, audit lokasi (checklist + skor), approval, status `candidate → approved → preferred → probation → disqualified`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.2 Kualifikasi & onboarding: kuesioner, audit lokasi (checklist + skor), approval, status `candidate → approved → preferred → probation → disqualified`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.3 Katalog & daftar harga pemasok: item pemasok (SKU pemasok ↔ SKU internal), harga bertingkat (qty), mata uang, berlaku-dari/sampai tanpa overlap, MOQ, lead time
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.3 Katalog & daftar harga pemasok: item pemasok (SKU pemasok ↔ SKU internal), harga bertingkat (qty), mata uang, berlaku-dari/sampai tanpa overlap, MOQ, lead time
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.4 Kontrak kerangka pemasok (Fase 28/29) memengaruhi harga & syarat bayar; verifikasi otomatis saat PO
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.4 Kontrak kerangka pemasok (Fase 28/29) memengaruhi harga & syarat bayar; verifikasi otomatis saat PO
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.5 Portal pemasok: lihat PO, konfirmasi, kirim ASN (advance ship notice), unggah sertifikat/COA, lihat pembayaran; role `supplier`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.5 Portal pemasok: lihat PO, konfirmasi, kirim ASN (advance ship notice), unggah sertifikat/COA, lihat pembayaran; role `supplier`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.6 **Supplier scorecard**: OTD, kualitas (reject rate), harga vs pasar, responsivitas; skor periodik, ambang tindakan korektif (SCAR)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.6 **Supplier scorecard**: OTD, kualitas (reject rate), harga vs pasar, responsivitas; skor periodik, ambang tindakan korektif (SCAR)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.7 Manajemen risiko pemasok: konsentrasi (single source), ketergantungan, sertifikat kedaluwarsa, sanksi (27.6)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.7 Manajemen risiko pemasok: konsentrasi (single source), ketergantungan, sertifikat kedaluwarsa, sanksi (27.6)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.8 Integrasi Resto: pemasok bahan resto → supplier; harga terakhir memperbarui MAC referensi (kontrak, bukan impor domain)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.8 Integrasi Resto: pemasok bahan resto → supplier; harga terakhir memperbarui MAC referensi (kontrak, bukan impor domain)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.9 Quality gate Fase 32
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.9 Quality gate Fase 32
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
+    - (dibatalkan) gate: docs/gates/fase-32.md
 
 ## FASE 33 — PROCUREMENT: PR → RFQ → TENDER → PO
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
