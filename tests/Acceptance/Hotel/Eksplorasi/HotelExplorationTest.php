@@ -206,8 +206,8 @@ class HotelExplorationTest extends TestCase
         $this->assertEquals('RELOCATED_WALK', $result['reservation']->status);
         $this->assertGreaterThan(0, $result['total_compensation_idr']);
 
-        // BUKTI: Tidak ada posting ledger beban kompensasi
-        $this->assertEquals($initialLedgerTxCount, LedgerTransaction::count(), 'BUKTI CACAT: Walk compensation tidak mencatat beban & kewajiban di Ledger');
+        // BUKTI: Walk compensation sekarang mencatat beban & kewajiban di Ledger
+        $this->assertGreaterThan($initialLedgerTxCount, LedgerTransaction::count());
     }
 
     /**
