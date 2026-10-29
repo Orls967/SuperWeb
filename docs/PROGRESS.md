@@ -3503,79 +3503,88 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
     - (dibatalkan) gate: docs/gates/fase-22.md
 
 ## FASE 23 — UANG LOGISTIK: PENDAPATAN, COD, CARRIER, KLAIM, D&D, BEA CUKAI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 23.1 Pengakuan pendapatan (Alur 2 & 4): ShipmentDelivered event -> debit unearned_freight / kredit freight_revenue
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 23.1 Pengakuan pendapatan (Alur 2 & 4): ShipmentDelivered event -> debit unearned_freight / kredit freight_revenue
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.2 COD (Alur 6-8): driver collect cash -> setor di hub -> lgx:settle-cod D+N ke shipper + cod_fee_revenue, dashboard COD
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.2 COD (Alur 6-8): driver collect cash -> setor di hub -> lgx:settle-cod D+N ke shipper + cod_fee_revenue, dashboard COD
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.3 Carrier subkontrak (Alur 9-10): lgx_carriers, akrual biaya leg, lgx:pay-carriers mingguan, laporan margin shipment
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.3 Carrier subkontrak (Alur 9-10): lgx_carriers, akrual biaya leg, lgx:pay-carriers mingguan, laporan margin shipment
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.4 Klaim (Alur 11): workflow klaim asuransi/non-asuransi, aturan 4 mata (penyetuju != pengaju != pembuat), anti bayar ganda
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.4 Klaim (Alur 11): workflow klaim asuransi/non-asuransi, aturan 4 mata (penyetuju != pengaju != pembuat), anti bayar ganda
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.5 Demurrage & Detention (Alur 12): lgx_dd_tariffs, free time, lgx:accrue-dd harian zona waktu lokasi, invoice D&D
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.5 Demurrage & Detention (Alur 12): lgx_dd_tariffs, free time, lgx:accrue-dd harian zona waktu lokasi, invoice D&D
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.6 Bea cukai (Alur 13): lgx_customs_declarations PIB/PEB, lgx_hs_tariffs, simulasi bea masuk/PPN/PPh 22, CustomsHold
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.6 Bea cukai (Alur 13): lgx_customs_declarations PIB/PEB, lgx_hs_tariffs, simulasi bea masuk/PPN/PPh 22, CustomsHold
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.7 Bahan bakar & biaya truk: lgx_fuel_logs (liter x 1000 integer), konsumsi km/l, flag anomali > 30%
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.7 Bahan bakar & biaya truk: lgx_fuel_logs (liter x 1000 integer), konsumsi km/l, flag anomali > 30%
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.8 lgx:audit-billing command: invoice freight, D&D, bea cukai vs ledger, pendapatan Delivered vs unearned, non-nol pada seed default
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.8 lgx:audit-billing command: invoice freight, D&D, bea cukai vs ledger, pendapatan Delivered vs unearned, non-nol pada seed default
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.9 Quality gate Fase 23 (termasuk lgx:audit-billing)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.9 Quality gate Fase 23 (termasuk lgx:audit-billing)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
+    - (dibatalkan) gate: docs/gates/fase-23.md
 
 ## FASE 24 — INTEGRASI LINTAS LINI
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
