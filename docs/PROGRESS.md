@@ -544,7 +544,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R0-26~~ | R0.2 | ~~Laporan gate docs/gates/fase-r0.md di repository belum disinkronkan dengan artefak CI commit 8724437 (masih mencatat commit 48b5529 dan 2.588 test)~~ | ~~Laporan quality gate lokal tidak mencerminkan commit kode terakhir~~ | ~~P2~~ | Tuntas (laporan disinkronkan dari artefak CI PR #12 run #38698698291 pada commit d58263a, 2.595 test / 11.492 asersi lulus) |
 
 ### FASE R1 — LEDGER & UANG (P0)
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Prasyarat: R0 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R0 ✅.
 
 #### DoR Fase R1 — Ledger & uang
 - Disetujui pemilik: [x] 2026-10-16 (chat) — D1–D8 sesuai prompt 9
@@ -631,8 +631,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Unit/Quality/Ledger/PostingHelperTest.php
     - test: tests/Unit/Quality/Ledger/PostingHelperTest.php::it maps every AccountKind to its correct normal side
     - test: tests/Unit/Quality/Ledger/PostingHelperTest.php::it enforces single sign convention with debit as negative and credit as positive
-- [x] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif) — dicatat sebagai `keputusan:` di Bukti (X17).
-  Bukti:
+- [ ] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif) — dicatat sebagai `keputusan:` di Bukti (X17).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 184e6de
     - commit: 01de149
@@ -696,9 +697,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
     - minus: M-R0-5
     - minus: M-R0-8
-- [x] R1.4 **Guard `LedgerService`** (K-13, K-19): (1) tolak entri yang `asset_code`-nya ≠ aset akun; (2) simpan `payload_hash` di `bank_ledger_transactions` dan tolak key sama-payload beda (`IdempotencyConflictException`); (3) tangkap unique violation → kembalikan transaksi pemenang; (4) migrasi `restrictOnDelete` + model `LedgerEntry`/`LedgerTransaction` melempar exception pada `updating`/`deleting`; (5) `type` wajib dari `TransactionType` (atau registry per modul) dan ≤ 32 karakter — perbaiki 12 type yang terlalu panjang (baseline `arch:scan` A5 = 0).
+- [ ] R1.4 **Guard `LedgerService`** (K-13, K-19): (1) tolak entri yang `asset_code`-nya ≠ aset akun; (2) simpan `payload_hash` di `bank_ledger_transactions` dan tolak key sama-payload beda (`IdempotencyConflictException`); (3) tangkap unique violation → kembalikan transaksi pemenang; (4) migrasi `restrictOnDelete` + model `LedgerEntry`/`LedgerTransaction` melempar exception pada `updating`/`deleting`; (5) `type` wajib dari `TransactionType` (atau registry per modul) dan ≤ 32 karakter — perbaiki 12 type yang terlalu panjang (baseline `arch:scan` A5 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: satu test per guard; test konkurensi dua koneksi (grup `db-portability`).
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 8a40eb3
     - commit: c081ba5
@@ -727,9 +729,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/TransactionTypeRegistryUniqueTest.php::it ensures all transaction type values are unique across all module registries
     - test: tests/Feature/Banking/LedgerConcurrencyTest.php::two database connections racing same idempotency key return winner without double posting
     - test: tests/Feature/Banking/LedgerConcurrencyTest.php::ledger service locks accounts in deterministic ascending id order to prevent deadlock
-- [x] R1.5 **Idempotency key deterministik** (K-12): ganti 27 lokasi `Str::uuid()/Str::random()/now()` dengan key identitas bisnis (baseline `arch:scan` A4 = 0); perbaiki `FleetLeasingService::amortizeMonthly()` (kunci kontrak, marker per bulan, akumulasi hanya bila posting baru).
+- [ ] R1.5 **Idempotency key deterministik** (K-12): ganti 27 lokasi `Str::uuid()/Str::random()/now()` dengan key identitas bisnis (baseline `arch:scan` A4 = 0); perbaiki `FleetLeasingService::amortizeMonthly()` (kunci kontrak, marker per bulan, akumulasi hanya bila posting baru).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: per lokasi, panggil dua kali → satu transaksi ledger & state tidak bergeser.
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 0c75647
     - commit: 4d89235
@@ -856,7 +859,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R1-8~~ | R1.10 | ~~Laporan gate `docs/gates/fase-r1.md` basi (mencatat commit `f17b6f1`, bukan HEAD `4f287a1`)~~ | ~~Laporan quality gate lokal tidak mencerminkan HEAD commit repositori~~ | ~~P2~~ | Tuntas (laporan quality gate docs/gates/fase-r1.md digenerate ulang dan disinkronkan dengan commit HEAD terakhir) |
 
 ### FASE R2 — BUG FUNGSIONAL TERVERIFIKASI
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Prasyarat: R1 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R1 🔵.
 
 #### DoR Fase R2 — Bug fungsional terverifikasi
 - Disetujui pemilik: [x]   2026-10-14 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) — DoR mencakup perbaikan bug fungsional K-16, K-22, K-29, serta perluasan lingkup untuk bug HTTP 500 modul Contract (M-R0-10 & M-R0-11) sesuai adendum M-R0-25.
@@ -942,9 +945,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - akses: route POST /procurement/tenders/{tender}/seal [role: admin,procurement,supplier]
     - akses: route POST /procurement/tenders/{tender}/open [role: admin,procurement]
     - gate: docs/gates/fase-r2.md
-- [x] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
+- [ ] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: test HTTP per jalur galat → redirect + session error (bukan 500).
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 4d55b93
     - file: modules/Agency/Http/Controllers/AgencyController.php
@@ -980,9 +984,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::deduct ingredient dan add ingredient bekerja secara atomik lewat kontrak resto dengan unique constraint outlet id dan ingredient id
     - akses: route POST /resto/pos/session/{session}/bill [role: admin,cashier,outlet_manager]
     - gate: docs/gates/fase-r2.md
-- [x] R2.5 **Outbox yang benar** (K-08, K-23, K-31): status dispatch per subscriber (retry hanya yang gagal); klaim pesan atomik antar-worker; target non-webhook dieksekusi lewat handler terdaftar (bukan ditandai sukses); allowlist host + tolak IP privat/link-local; `IntegrationService::dispatchWebhook()` lewat outbox nyata (atau diganti status `simulated_*`).
+- [ ] R2.5 **Outbox yang benar** (K-08, K-23, K-31): status dispatch per subscriber (retry hanya yang gagal); klaim pesan atomik antar-worker; target non-webhook dieksekusi lewat handler terdaftar (bukan ditandai sukses); allowlist host + tolak IP privat/link-local; `IntegrationService::dispatchWebhook()` lewat outbox nyata (atau diganti status `simulated_*`).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: subscriber A sukses + B gagal → retry hanya ke B; dua worker paralel → satu pengiriman; URL `http://169.254.169.254` ditolak.
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 41ffd7c
     - file: modules/Core/Application/Services/OutboxBusService.php
@@ -994,8 +999,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php::test_target_subscriber_non_webhook_dieksekusi_lewat_handler_terdaftar_dan_gagal_jika_handler_tidak_ditemukan
     - akses: route GET /integration/webhooks [role: admin]
     - gate: docs/gates/fase-r2.md
-- [x] R2.6 **Telematics** (K-26, K-30): baseline rolling 7 hari dari tick nyata; hanya DTC dari daftar kritis yang `critical`/`grounded`; event domain dipancarkan `afterCommit` dan dedup per jam sama seperti publish spine.
-  Bukti:
+- [ ] R2.6 **Telematics** (K-26, K-30): baseline rolling 7 hari dari tick nyata; hanya DTC dari daftar kritis yang `critical`/`grounded`; event domain dipancarkan `afterCommit` dan dedup per jam sama seperti publish spine.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 39f9a2f
     - file: modules/Telematics/Application/Services/TelematicsIngestService.php
@@ -1006,8 +1012,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_anomaly_event_dispatched_after_commit_and_deduplicated_hourly
     - akses: route GET /logistics/fleet [role: admin,auditor,dispatcher,hub_operator,logistics_admin]
     - gate: docs/gates/fase-r2.md
-- [x] R2.7 **ESG faktor emisi**: `recordEmission()` menolak jenis aktivitas tak dikenal (sekarang diam-diam faktor 1.0); nomor dokumen lewat `DocumentNumberingInterface` (bukan `Str::random`).
-  Bukti:
+- [ ] R2.7 **ESG faktor emisi**: `recordEmission()` menolak jenis aktivitas tak dikenal (sekarang diam-diam faktor 1.0); nomor dokumen lewat `DocumentNumberingInterface` (bukan `Str::random`).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bc0f475
     - file: modules/Esg/Application/Services/EsgService.php
@@ -1019,9 +1026,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Esg/tests/Feature/EsgTest.php::test_esg_web_index_accessible
     - akses: route GET /esg [role: admin,esg_officer,auditor]
     - gate: docs/gates/fase-r2.md
-- [x] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
+- [ ] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: adapter gagal → status gagal tercatat (bukan sukses).
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d1ec63
     - file: modules/Integration/Application/Services/IntegrationService.php
@@ -1033,8 +1041,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_claim_with_persisted_evidence_document_is_published_verified
     - akses: route GET /integration [role: admin]
     - gate: docs/gates/fase-r2.md
-- [x] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
-  Bukti:
+- [ ] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 556f804
     - file: modules/Hcm/Application/Services/HcmService.php
