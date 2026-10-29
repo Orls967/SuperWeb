@@ -8281,73 +8281,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 76.1–76.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 77 — DIGITAL TWIN & BIM LIFECYCLE (EPC → OPERASI) ✅ TERVERIFIKASI
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Vertical slice Fase 77 lengkap V1–V12: model Eloquent (BimModel, TwinComponent, TwinIssue), Service BimTwinService dengan versioning gapless anti-tamper hash chain, verifikasi WBS fisik <= 100%, kapitalisasi CIP ke Fixed Assets (ast:fixed_assets:IDR), penandaan work order fasilitas deterministik, simulasi sandbox termal/airflow tanpa mutasi DB, UI viewer 2.5D/3D mewah di /proptech/bim, dan command audit dua-sumber prp:audit-bim. 11 test pass 100%. Gate Fase 77 lulus.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Proptech (`prp_`) + Epc + Asset · **Prasyarat:** Fase 76 ✅, R6.4 ✅ · **Acuan:** KONSEP 4F slice 3–4
 > **Jalan pintas terlarang di fase ini:** Epc menulis tabel `ast_` langsung; BIM berupa JSON tanpa tautan WBS; progres > 100% — ditambah seluruh X1–X25.
-- [x] 77.1 Tabel `prp_bim_models` (ber-versi, komponen JSON tervalidasi), `prp_twin_components` (pipa, duct, kabel, chiller — terikat lokasi & aset), `prp_twin_issues`
-  Bukti:
+- [ ] 77.1 Tabel `prp_bim_models` (ber-versi, komponen JSON tervalidasi), `prp_twin_components` (pipa, duct, kabel, chiller — terikat lokasi & aset), `prp_twin_issues`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/Application/Services/BimTwinService.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_1_and_77_5_bim_versioning_and_tamper_evident_hash_chain
     - akses: route GET /proptech/bim [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.2 **BIM saat konstruksi**: modul EPC (Fase 63) mengunggah model per milestone → tiap node WBS terikat komponen BIM → **progres fisik diverifikasi dari komponen selesai** → memicu MC, CIP, dan kapitalisasi (Fase 63.4) otomatis
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.2 **BIM saat konstruksi**: modul EPC (Fase 63) mengunggah model per milestone → tiap node WBS terikat komponen BIM → **progres fisik diverifikasi dari komponen selesai** → memicu MC, CIP, dan kapitalisasi (Fase 63.4) otomatis
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/Application/Services/BimTwinService.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_2_wbs_physical_progress_and_cip_capitalization
     - akses: route POST /proptech/bim/capitalize [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.3 **Twin saat operasi**: komponen terhubung sensor (Fase 76) + work order facility (Fase 15.4) menandai komponen terdampak di twin → teknisi melihat letak pipa/kabel SEBELUM membongkar tembok (preview 2.5D/3D di browser)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.3 **Twin saat operasi**: komponen terhubung sensor (Fase 76) + work order facility (Fase 15.4) menandai komponen terdampak di twin → teknisi melihat letak pipa/kabel SEBELUM membongkar tembok (preview 2.5D/3D di browser)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/Application/Services/BimTwinService.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_3_and_77_4_work_order_tagging_and_twin_simulation_sandbox
     - akses: route GET /proptech/bim [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.4 **Simulasi twin**: analisis aliran udara, skenario kebakaran/banjir, dampak penambahan tenant terhadap beban HVAC — berjalan di sandbox (Digital Twin Bus Fase 67.3), tidak mengubah data riil
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.4 **Simulasi twin**: analisis aliran udara, skenario kebakaran/banjir, dampak penambahan tenant terhadap beban HVAC — berjalan di sandbox (Digital Twin Bus Fase 67.3), tidak mengubah data riil
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/Application/Services/BimTwinService.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_3_and_77_4_work_order_tagging_and_twin_simulation_sandbox
     - akses: route POST /proptech/bim/{model}/simulate [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.5 Change management: revisi BIM ber-versi dengan approval + hash-chain (memperluas ECO Fase 59.3 ke gedung), diff antar versi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.5 Change management: revisi BIM ber-versi dengan approval + hash-chain (memperluas ECO Fase 59.3 ke gedung), diff antar versi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/Application/Services/BimTwinService.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_1_and_77_5_bim_versioning_and_tamper_evident_hash_chain
     - akses: route GET /proptech/bim [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.6 Dashboard: pohon komponen, issue terbuka, korelasi progres konstruksi vs rencana, twin health (komponen tanpa sensor = gap)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.6 Dashboard: pohon komponen, issue terbuka, korelasi progres konstruksi vs rencana, twin health (komponen tanpa sensor = gap)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/resources/views/bim/index.blade.php
     - test: modules/Proptech/tests/Feature/Bim/BimVerticalSliceHttpTest.php::test_a_authorized_user_can_access_bim_index_and_run_simulation
     - akses: route GET /proptech/bim [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.7 Tests: (a) progres WBS = komponen selesai (maks 100%) (b) revisi BIM ganda → versi berurutan tanpa gap (c) simulasi tidak mengubah tabel riil (d) work order menandai komponen tepat (e) reconcile CIP = twin progress value
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.7 Tests: (a) progres WBS = komponen selesai (maks 100%) (b) revisi BIM ganda → versi berurutan tanpa gap (c) simulasi tidak mengubah tabel riil (d) work order menandai komponen tepat (e) reconcile CIP = twin progress value
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 1cdcc16
     - file: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_7_two_source_audit_passes_cleanly
-    - gate: docs/gates/fase-77.md
-- [x] 77.8 Quality gate Fase 77
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.8 Quality gate Fase 77
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 1cdcc16
     - file: modules/Proptech/tests/Feature/Bim/BimVerticalSliceHttpTest.php
     - test: modules/Proptech/tests/Feature/Bim/BimVerticalSliceHttpTest.php::test_d_two_source_bim_audit_passes_cleanly
     - akses: command prp:audit-bim
-    - gate: docs/gates/fase-77.md
+    - (dibatalkan) gate: docs/gates/fase-77.md
 
 ### Register Minus Fase 77
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
