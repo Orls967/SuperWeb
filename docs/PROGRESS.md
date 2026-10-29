@@ -5171,79 +5171,88 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-41.md
 
 ## FASE 42 — JARINGAN DISTRIBUTOR (MODUL `dist_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 42.1 Modul Distribution: distributor / sub-distributor / agen grosir / dealer (party role), hirarki jaringan, kode toko/outlet
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 42.1 Modul Distribution: distributor / sub-distributor / agen grosir / dealer (party role), hirarki jaringan, kode toko/outlet
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.2 Teritori & coverage: wilayah eksklusif/non-eksklusif, peta wilayah (provinsi→kota→kecamatan), konflik teritori terdeteksi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.2 Teritori & coverage: wilayah eksklusif/non-eksklusif, peta wilayah (provinsi→kota→kecamatan), konflik teritori terdeteksi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.3 Onboarding distributor: KYB (27), kontrak distribusi (28/29), jaminan (bank garansi/deposit), limit kredit, termin
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.3 Onboarding distributor: KYB (27), kontrak distribusi (28/29), jaminan (bank garansi/deposit), limit kredit, termin
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.4 Kredit & piutang distributor: limit, eksposur, blokir otomatis saat lewat limit/jatuh tempo, aging, denda; `dist:ar` subledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.4 Kredit & piutang distributor: limit, eksposur, blokir otomatis saat lewat limit/jatuh tempo, aging, denda; `dist:ar` subledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.5 Target penjualan & performa: target bulanan/kuartal per produk, capaian, tier (Gold/Silver/Bronze) dengan hak diskon
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.5 Target penjualan & performa: target bulanan/kuartal per produk, capaian, tier (Gold/Silver/Bronze) dengan hak diskon
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.6 Portal distributor (role `distributor`): harga sesuai tier, tagihan+aging, target, outlet, status akun; order/klaim/laporan stok lanjut di Fase 43
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.6 Portal distributor (role `distributor`): harga sesuai tier, tagihan+aging, target, outlet, status akun; order/klaim/laporan stok lanjut di Fase 43
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.7 Master outlet/pelanggan distributor (sell-out) & segmentasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.7 Master outlet/pelanggan distributor (sell-out) & segmentasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.8 Kinerja & scorecard distributor: sell-in vs sell-out, DSO, fill rate, kepatuhan harga
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.8 Kinerja & scorecard distributor: sell-in vs sell-out, DSO, fill rate, kepatuhan harga
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.9 Quality gate Fase 42
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.9 Quality gate Fase 42
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
+    - (dibatalkan) gate: docs/gates/fase-42.md
 
 ## FASE 43 — DISTRIBUSI: ORDER, SELL-IN/SELL-OUT, KONSINYASI, RETUR, REBATE
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
