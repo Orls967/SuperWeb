@@ -10004,120 +10004,133 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-96.md
 
 ## FASE 97 — INTEGRASI LINTAS 12 LINI (C): TALENT GIG, ESG TERPADU & EVENT SPINE PENUH
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 97.1–97.7 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 55726620).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
 > **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
-- [x] 97.1 **Talent marketplace universal**: bounty lintas lini (Resto overload, setup venue, bongkar muat logistik, cuci armada, asistensi RS dadakan, operasional shift hotel, crew tambang kontraktor) → satu papan, aturan upah & K3 konsisten (Fase 85), bayar via Core Banking
-  Bukti:
+- [ ] 97.1 **Talent marketplace universal**: bounty lintas lini (Resto overload, setup venue, bongkar muat logistik, cuci armada, asistensi RS dadakan, operasional shift hotel, crew tambang kontraktor) → satu papan, aturan upah & K3 konsisten (Fase 85), bayar via Core Banking
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Hcm/Application/Services/UniversalTalentGigOrchestratorService.php
     - test: modules/Hcm/tests/Feature/UniversalTalentGigTest.php::test_claim_and_payout_disbursement_via_ledger
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.2 **ESG terpadu 12 lini**: agregasi emisi Scope 1–3 dari armada (Fase 60), gedung/hotel/venue (Fase 76), pabrik & tambang (Fase 94.8), limbah sirkular (Fase 79) → neraca karbon grup → kredit karbon pensiun → laporan GRI per lini & konsolidasi grup
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.2 **ESG terpadu 12 lini**: agregasi emisi Scope 1–3 dari armada (Fase 60), gedung/hotel/venue (Fase 76), pabrik & tambang (Fase 94.8), limbah sirkular (Fase 79) → neraca karbon grup → kredit karbon pensiun → laporan GRI per lini & konsolidasi grup
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Esg/Application/Services/ConsolidatedTwelveLinesEsgService.php
     - test: modules/Esg/tests/Feature/ConsolidatedTwelveLinesEsgTest.php::test_carbon_credit_retirement_double_entry_ledger_posting
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.3 **Universal Event Spine penuh** (Fase 67.2): seluruh event 12 lini terbit & terkonsumsi lintas pilar — contoh: `min.ore_shipped` → `lgx.container_loaded` → `trade.bl_issued` → `fintech.escrow_released`; `ven.event_ticket_sold` → `htl.bundle_confirmed` → `resto.catering_ready`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.3 **Universal Event Spine penuh** (Fase 67.2): seluruh event 12 lini terbit & terkonsumsi lintas pilar — contoh: `min.ore_shipped` → `lgx.container_loaded` → `trade.bl_issued` → `fintech.escrow_released`; `ven.event_ticket_sold` → `htl.bundle_confirmed` → `resto.catering_ready`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Core/Application/Services/UniversalEventSpineOutboxService.php
     - test: modules/Core/tests/Feature/UniversalEventSpineOutboxTest.php::test_publish_and_consume_event_spine_idempotently
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.4 **Group command center 12 lini** (memperluas Fase 57.4/16.5): P&L per lini, arus kas, kesehatan seluruh `*:audit` (kini 40+ perintah), status event spine (lag, dead-letter), twin health per entitas — dalam batas query budget
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.4 **Group command center 12 lini** (memperluas Fase 57.4/16.5): P&L per lini, arus kas, kesehatan seluruh `*:audit` (kini 40+ perintah), status event spine (lag, dead-letter), twin health per entitas — dalam batas query budget
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Core/Application/Services/GroupCommandCenterExecutiveService.php
     - test: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php::test_command_center_query_budget_and_health_score
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.5 **Skor kesehatan ekosistem** per entitas & per lini (finansial, talenta, ESG, risiko — memperluas ide 8E) → dasar keputusan alokasi modal & prioritas ekspansi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.5 **Skor kesehatan ekosistem** per entitas & per lini (finansial, talenta, ESG, risiko — memperluas ide 8E) → dasar keputusan alokasi modal & prioritas ekspansi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Core/Domain/Models/CoreEcosystemHealthScore.php
     - test: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php::test_command_center_query_budget_and_health_score
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.6 Tests: (a) event lintas lini diproses idempoten saat replay (b) ESG grup = Σ emisi lini (c) P&L 12 lini = ledger konsolidasi (d) gig payout lintas lini konsisten payroll (e) query budget command center terpenuhi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.6 Tests: (a) event lintas lini diproses idempoten saat replay (b) ESG grup = Σ emisi lini (c) P&L 12 lini = ledger konsolidasi (d) gig payout lintas lini konsisten payroll (e) query budget command center terpenuhi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php
     - test: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php::test_event_spine_idempotent_replay
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.7 Quality gate Fase 97
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.7 Quality gate Fase 97
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 55726620
     - file: docs/gates/fase-97.md
     - test: tests/Architecture/TestHygieneTest.php
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
+    - (dibatalkan) gate: docs/gates/fase-97.md
 
 ## FASE 98 — SKALA ULTRA: SEEDER 12 LINI, QUERY BUDGET & STRESS TEST
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 98.1–98.6 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 815b4180).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core (Scale Provisioner) + seeder per lini · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
 > **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report` — ditambah seluruh X1–X25.
-- [x] 98.1 **TwelveLinesUltraSeeder**: dataset raksasa deterministik idempoten (memperluas Fase 56.1 & 67.4): 10 juta kendaraan berpaspor + telematik 180 hari, 5 juta dompet + ratusan juta mutasi, 5.000 outlet + 730 juta order (12 bulan), 200 properti + 50 ribu lease + 12 bulan billing, 5 juta shipment + 100 juta event kustodi, 100 pabrik + 1 juta SPK, 10 ribu koridor dagang + 50 ribu L/C, 10 juta pasien + 100 juta encounter, 1.000 venue + 50 juta tiket, 5.000 properti hotel + 100 juta room-night, 500 pit + 50 ribu alat berat + miliaran tick telematik; checkpoint/resume, benchmark per etape
-  Bukti:
+- [ ] 98.1 **TwelveLinesUltraSeeder**: dataset raksasa deterministik idempoten (memperluas Fase 56.1 & 67.4): 10 juta kendaraan berpaspor + telematik 180 hari, 5 juta dompet + ratusan juta mutasi, 5.000 outlet + 730 juta order (12 bulan), 200 properti + 50 ribu lease + 12 bulan billing, 5 juta shipment + 100 juta event kustodi, 100 pabrik + 1 juta SPK, 10 ribu koridor dagang + 50 ribu L/C, 10 juta pasien + 100 juta encounter, 1.000 venue + 50 juta tiket, 5.000 properti hotel + 100 juta room-night, 500 pit + 50 ribu alat berat + miliaran tick telematik; checkpoint/resume, benchmark per etape
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 815b4180
     - file: database/seeders/TwelveLinesUltraSeeder.php
     - test: tests/Feature/TwelveLinesQueryBudgetTest.php::test_ultra_seeder_executes_within_memory_and_query_budget
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
-- [x] 98.2 **Query budget penuh**: endpoint kritis tiap lini (bed board, bed board venue, bed board tambang, RWA orderbook, claims autopilot, rate optimizer, tick feed) diuji p95 latensi & jumlah query di bawah ambang; dokumentasi EXPLAIN tanpa full table scan pada tabel > 100 ribu baris
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-98.md
+- [ ] 98.2 **Query budget penuh**: endpoint kritis tiap lini (bed board, bed board venue, bed board tambang, RWA orderbook, claims autopilot, rate optimizer, tick feed) diuji p95 latensi & jumlah query di bawah ambang; dokumentasi EXPLAIN tanpa full table scan pada tabel > 100 ribu baris
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 815b4180
     - file: database/migrations/2026_10_22_000006_add_composite_indexes_for_scale.php
     - test: tests/Feature/TwelveLinesQueryBudgetTest.php::test_critical_endpoints_and_command_center_query_budget
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
-- [x] 98.3 **Race condition ekstrem lintas lini**: 1.000 booking kamar serentak atas 10 kamar sisa, 500 tiket atas 100 kursi, 500 bid atas 10 unit RWA, penarikan saldo massal → alokasi tepat, tak pernah negatif/ganda
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-98.md
+- [ ] 98.3 **Race condition ekstrem lintas lini**: 1.000 booking kamar serentak atas 10 kamar sisa, 500 tiket atas 100 kursi, 500 bid atas 10 unit RWA, penarikan saldo massal → alokasi tepat, tak pernah negatif/ganda
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 815b4180
     - file: tests/Feature/TwelveLinesExtremeConcurrencyTest.php
     - test: tests/Feature/TwelveLinesExtremeConcurrencyTest.php::test_pessimistic_locking_prevents_room_oversell
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
-- [x] 98.4 **Chaos engineering lintas lini**: kegagalan worker di tengah klaim asuransi multi-entri, event spine duplikat, deadlock batch settlement → rollback sempurna/retry idempoten
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-98.md
+- [ ] 98.4 **Chaos engineering lintas lini**: kegagalan worker di tengah klaim asuransi multi-entri, event spine duplikat, deadlock batch settlement → rollback sempurna/retry idempoten
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 815b4180
     - file: tests/Feature/TwelveLinesChaosResiliencyTest.php
     - test: tests/Feature/TwelveLinesChaosResiliencyTest.php::test_mid_transaction_crash_rolls_back_cleanly
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
-- [x] 98.5 Laporan performa sebelum vs sesudah optimasi (memperluas Fase 56.7) untuk seluruh lini baru
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-98.md
+- [ ] 98.5 Laporan performa sebelum vs sesudah optimasi (memperluas Fase 56.7) untuk seluruh lini baru
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 815b4180
     - file: tests/Feature/TwelveLinesQueryBudgetTest.php
     - test: tests/Feature/TwelveLinesQueryBudgetTest.php::test_critical_endpoints_and_command_center_query_budget
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
-- [x] 98.6 Quality gate Fase 98
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-98.md
+- [ ] 98.6 Quality gate Fase 98
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 815b4180
     - file: docs/gates/fase-98.md
     - test: tests/Architecture/TestHygieneTest.php
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
+    - (dibatalkan) gate: docs/gates/fase-98.md
 
 ## FASE 99 — AI & ANALITIK PREDIKTIF TERPADU 12 LINI
 > **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 99.1–99.6 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 27baaafc).
