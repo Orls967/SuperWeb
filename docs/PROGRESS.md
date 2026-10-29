@@ -9470,82 +9470,91 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 90.1–90.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 91 — PERHOTELAN I: PMS, CENTRAL RESERVATION, RATE MANAGEMENT & SMART ROOM
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 91.1–91.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
-- [x] 91.1 Modul `Hotel` (`htl_`): provider, MenuRegistry "Perhotelan", roles (`front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `concierge`), policies, arch test; tabel `htl_properties`, `htl_rooms`, `htl_rate_plans`, `htl_reservations`, `htl_folios`
-  Bukti:
+- [ ] 91.1 Modul `Hotel` (`htl_`): provider, MenuRegistry "Perhotelan", roles (`front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `concierge`), policies, arch test; tabel `htl_properties`, `htl_rooms`, `htl_rate_plans`, `htl_reservations`, `htl_folios`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_reservation_creation_with_floor_rate_and_contract_rate
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.2 **Skala**: 5.000 properti (city hotel, resort, villa, serviced apartment, kapsul, glamping) × 500.000 kamar, 100 juta room-night/tahun, 200 juta booking channel/tahun; properti terikat aset (Fase 30) & sewa (mall/ruko)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.2 **Skala**: 5.000 properti (city hotel, resort, villa, serviced apartment, kapsul, glamping) × 500.000 kamar, 100 juta room-night/tahun, 200 juta booking channel/tahun; properti terikat aset (Fase 30) & sewa (mall/ruko)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_reservation_creation_with_floor_rate_and_contract_rate
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.3 **Central reservation & anti-oversell**: kanal (web, app, OTA simulasi, corporate, walk-in) memakai inventori kamar terpusat dengan lock kapasitas (memperluas Fase 22.2) → overbooking bertingkat (mis. 3% dengan konfirmasi ulang) → konversi ke properti tetangga bila penuh
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.3 **Central reservation & anti-oversell**: kanal (web, app, OTA simulasi, corporate, walk-in) memakai inventori kamar terpusat dengan lock kapasitas (memperluas Fase 22.2) → overbooking bertingkat (mis. 3% dengan konfirmasi ulang) → konversi ke properti tetangga bila penuh
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_a_oversell_within_percent_limit_and_reconfirmation_flow
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.4 **Check-in/out & smart lock**: identitas via Human Passport/KYC → kamar diberi smart-lock QR/biometrik (sesi berlaku masa inap) → early check-in/late checkout berbayar masuk folio → folio terbuka selama inap → check-out settlement (kartu/wallet/escrow corporate) → posting ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.4 **Check-in/out & smart lock**: identitas via Human Passport/KYC → kamar diberi smart-lock QR/biometrik (sesi berlaku masa inap) → early check-in/late checkout berbayar masuk folio → folio terbuka selama inap → check-out settlement (kartu/wallet/escrow corporate) → posting ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_b_smart_lock_duplicate_and_expired_token_rejected
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.5 **Rate & revenue management**: tarif per kamar per hari per channel mengikuti demand, event kota (mall event Fase 15.3, festival Fase 90.5, konvensi EPC), lead time, okupansi — **dynamic rate** real-time (memperluas Fase 81) dengan guardrail: corporate/contract rate immutable (Fase 44.4), floor = variable cost per malam
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.5 **Rate & revenue management**: tarif per kamar per hari per channel mengikuti demand, event kota (mall event Fase 15.3, festival Fase 90.5, konvensi EPC), lead time, okupansi — **dynamic rate** real-time (memperluas Fase 81) dengan guardrail: corporate/contract rate immutable (Fase 44.4), floor = variable cost per malam
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_c_dynamic_rate_respects_floor_and_contract_rate_wins
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.6 **Smart room & energy twin**: occupancy sensor + status TV → "make-up on request" → kamar kosong → HVAC setback otomatis (memperluas smart building Fase 76.2) → energi per occupied-room-night terhitung ESG (Fase 60) → digital twin kamar via Twin Bus (Fase 67.3)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.6 **Smart room & energy twin**: occupancy sensor + status TV → "make-up on request" → kamar kosong → HVAC setback otomatis (memperluas smart building Fase 76.2) → energi per occupied-room-night terhitung ESG (Fase 60) → digital twin kamar via Twin Bus (Fase 67.3)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_d_vacant_room_triggers_energy_setback
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.7 **Housekeeping & maintenance IoT**: tugas kebersihan terdistribusi (rute terpendek ala pick WMS Fase 41.3), inspect quality score; kerusakan (AC, shower) → work order otomatis (Fase 31.5) → SLA durasi → gangguan > jam → kompensasi tamu otomatis (voucher)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.7 **Housekeeping & maintenance IoT**: tugas kebersihan terdistribusi (rute terpendek ala pick WMS Fase 41.3), inspect quality score; kerusakan (AC, shower) → work order otomatis (Fase 31.5) → SLA durasi → gangguan > jam → kompensasi tamu otomatis (voucher)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_checkout_and_folio_settlement_posting_to_ledger
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.8 Tests: (a) oversell berada di batas % & konfirmasi ulang berjalan (b) smart lock ganda/kadaluarsa ditolak (c) rate dinamis tak menembus floor & contract rate menang (d) kamar kosong → setback terpicu (e) `hotel:audit` = room-night revenue = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.8 Tests: (a) oversell berada di batas % & konfirmasi ulang berjalan (b) smart lock ganda/kadaluarsa ditolak (c) rate dinamis tak menembus floor & contract rate menang (d) kamar kosong → setback terpicu (e) `hotel:audit` = room-night revenue = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_e_hotel_audit_reconciles_room_night_revenue_with_ledger
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.9 Quality gate Fase 91
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.9 Quality gate Fase 91
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_e_hotel_audit_reconciles_room_night_revenue_with_ledger
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
+    - (dibatalkan) gate: docs/gates/fase-91.md
 
 ### Register Minus Fase 91
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
