@@ -7266,47 +7266,51 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Command `epc:audit` (Realisasi termin tagihan = klaim MC tersertifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, batas progres maksimal 100%, 0 diskrepansi).
 
 ## FASE 64 — ANALITIK PREDIKTIF, AI-DRIVEN REVENUE MANAGEMENT & ANOMALY DETECTION
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul Analytics/AI (keputusan di DoR; boleh di Core `core_ai_*`) · **Prasyarat:** Fase R ✅ · **Acuan:** KONSEP §A3, §A10
 > **Jalan pintas terlarang di fase ini:** 'AI' berupa angka acak/rumus tanpa snapshot input & seed; eksekusi otomatis tanpa approval di atas ambang; `ai:audit` yang hanya menghitung baris — ditambah seluruh X1–X25.
-- [x] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
+- [ ] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Algoritma penetapan harga dinamis deterministik: elastisitas harga permintaan, sisa umur simpan produk, dan tingkat keterisian ruang mall/katering.
   - Guardrail keamanan batas harga: proteksi harga batas bawah (*floor price*) dan kepatuhan regulasi HET pemerintah.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: fcabdd5
     - file: modules/Core/Application/Services/Ai/DynamicPricingEngineService.php
     - test: modules/Core/tests/Feature/Ai/DynamicPricingTest.php::calculates deterministic dynamic prices with identical hash for identical seed and inputs
     - akses: route POST /admin/ai-governance/calculate-pricing [role: admin]
-    - gate: docs/gates/fase-64.md
-- [x] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
+    - (dibatalkan) gate: docs/gates/fase-64.md
+- [ ] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Skor anomali transaksi real-time: pola belanja abnormal, split bill mencurigakan, order fiktif agen, atau deviasi konsumsi bahan bakar logistik.
   - Trigger otomatis karantina transaksi berisiko tinggi sebelum settlement bank dieksekusi.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: fcabdd5
     - file: modules/Core/Application/Services/Ai/TransactionAnomalyDetectorService.php
     - file: modules/Core/Domain/Models/CoreAiAnomalyQuarantine.php
     - test: modules/Core/tests/Feature/Ai/TransactionAnomalyDetectorTest.php::evaluates normal transactions as low risk without triggering quarantine
     - akses: route POST /admin/ai-governance/screen-anomaly [role: admin]
-    - gate: docs/gates/fase-64.md
-- [x] 64.3 **Rekomendasi Preskriptif Perencanaan Stok & Pengadaan Cerdas**:
+    - (dibatalkan) gate: docs/gates/fase-64.md
+- [ ] 64.3 **Rekomendasi Preskriptif Perencanaan Stok & Pengadaan Cerdas**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Analisis tren musiman eksternal (hari libur nasional, musim hujan, tren pasar) menghasilkan usulan rekomendasi revisi safety stock dan rilis PO ke vendor secara otomatis.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: fcabdd5
     - file: modules/Core/Application/Services/Ai/StockPrescriptionEngineService.php
     - file: modules/Core/Domain/Models/CoreAiStockRecommendation.php
     - test: modules/Core/tests/Feature/Ai/StockPrescriptionTest.php::calculates adaptive safety stock and ROP higher during peak holiday seasons
     - akses: route POST /admin/ai-governance/generate-stock-recommendation [role: admin]
-    - gate: docs/gates/fase-64.md
-- [x] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-64.md
+- [ ] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - commit: fcabdd5
     - file: modules/Core/Console/Commands/AuditAiCommand.php
     - file: app/Quality/Audit/Fixtures/AiAuditCorruptionFixture.php
     - test: modules/Core/tests/Feature/Ai/AiAuditCommandTest.php::ai:audit succeeds on clean state with valid deterministic snapshots
     - akses: command ai:audit
     - audit: ai:audit
-    - gate: docs/gates/fase-64.md
+    - (dibatalkan) gate: docs/gates/fase-64.md
 
 ### Register Minus Fase 64
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7314,41 +7318,44 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 64.1–64.4 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 65 — ENTERPRISE MOBILE SUITE (PWA/HYBRID OFFLINE-FIRST ARCHITECTURE)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core + modul peran (Manufacturing, Wms, Logistics, Agency); PWA di `resources/` · **Prasyarat:** R3 ✅ · **Acuan:** KONSEP §A7
 > **Jalan pintas terlarang di fase ini:** klaim offline tanpa antrean lokal yang diuji; sinkronisasi tanpa `Idempotency-Key`; `mobile:audit` tautologis — ditambah seluruh X1–X25.
-- [x] 65.1 **Aplikasi Mobile Lapangan Khusus 4 Peran Kunci**:
+- [ ] 65.1 **Aplikasi Mobile Lapangan Khusus 4 Peran Kunci**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - *Operator Pabrik*: scan QR work order, input output produksi, catat downtime mesin.
   - *Petugas WMS*: scanner barcode rak/bin, konfirmasi putaway, picking wave panduan jalur terpendek.
   - *Driver Logistik*: navigasi rute optimal, bukti serah terima foto + tanda tangan digital (e-POD offline-capable).
   - *Sales Agen Lapangan*: katalog mobile offline, pembuatan pesanan di lokasi pelanggan, dan pengecekan komisi.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: d9d84cf
     - file: modules/Core/Application/Services/Mobile/MobileOfflineSyncEngineService.php
     - test: modules/Core/tests/Feature/Mobile/MobileFieldRoleActionTest.php::executes offline field actions across 4 operational roles deterministically
     - akses: route POST /admin/mobile-governance/record-action [role: admin]
-    - gate: docs/gates/fase-65.md
-- [x] 65.2 **Sinkronisasi Data Dua Arah Berbasis Idempotensi (Offline-First Sync Engine)**:
+    - (dibatalkan) gate: docs/gates/fase-65.md
+- [ ] 65.2 **Sinkronisasi Data Dua Arah Berbasis Idempotensi (Offline-First Sync Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Penyimpanan lokal perangkat (SQLite / IndexedDB): operasional tetap berjalan tanpa koneksi internet di area terpencil/gudang bawah tanah.
   - Mekanisme rekonsiliasi saat online: transmisi antrean mutasi dengan key idempotensi unik deterministik dan resolusi konflik berbasis *Last-Write-Wins with Timestamp Guard*.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: d9d84cf
     - file: modules/Core/Application/Services/Mobile/MobileOfflineSyncEngineService.php
     - file: modules/Core/Application/Services/Mobile/EpodIntegrityVerifierService.php
     - test: modules/Core/tests/Feature/Mobile/MobileOfflineSyncTest.php::resolves sync conflicts using last write wins with timestamp guard and skips duplicates
     - test: modules/Core/tests/Feature/Mobile/EpodIntegrityTest.php::validates digital signature sha256 hash and flags tampered epod records
     - akses: route POST /admin/mobile-governance/sync-batch [role: admin]
-    - gate: docs/gates/fase-65.md
-- [x] 65.3 `mobile:audit` (Zero duplicate records akibat sync retry, integritas hash tanda tangan e-POD 100% valid).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-65.md
+- [ ] 65.3 `mobile:audit` (Zero duplicate records akibat sync retry, integritas hash tanda tangan e-POD 100% valid).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - commit: d9d84cf
     - file: modules/Core/Console/Commands/AuditMobileCommand.php
     - file: app/Quality/Audit/Fixtures/MobileAuditCorruptionFixture.php
     - test: modules/Core/tests/Feature/Mobile/MobileAuditCommandTest.php::mobile:audit succeeds on clean state and catches tampered epod hashes
     - akses: command mobile:audit
     - audit: mobile:audit
-    - gate: docs/gates/fase-65.md
+    - (dibatalkan) gate: docs/gates/fase-65.md
 
 ### Register Minus Fase 65
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7356,47 +7363,51 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 65.1–65.3 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 66 — RESILIENSI GLOBAL, DISASTER RECOVERY MULTI-REGION & DATA SOVEREIGNTY
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** infrastruktur/ops + `dr:audit` di Core · **Prasyarat:** R0.3 ✅ · **Acuan:** KONSEP §A9, §A5
 > **Jalan pintas terlarang di fase ini:** klaim RPO/RTO/multi-region tanpa drill backup→restore yang benar-benar dijalankan dan outputnya terlampir; bila tanpa infrastruktur, nyatakan sebagai simulasi S3 (drill restore lokal) — ditambah seluruh X1–X25.
-- [x] 66.1 **Arsitektur Multi-Region Replikasi Aktif-Pasif**:
+- [ ] 66.1 **Arsitektur Multi-Region Replikasi Aktif-Pasif**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Replikasi basis data asinkron antar-data center geografis (Region Primer Jakarta vs Region Sekunder Surabaya/Singapura).
   - Mekanisme failover otomatis: pendeteksian kegagalan primer via health-check heartbeat dan pengalihan trafik DNS/Load Balancer tanpa kehilangan data (RPO = 0 untuk transaksi ledger).
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: df2a76d
     - file: modules/Core/Application/Services/Resilience/MultiRegionResilienceEngineService.php
     - test: modules/Core/tests/Feature/Resilience/MultiRegionResilienceTest.php::evaluates multi region replication topology and sla thresholds
     - akses: route GET /admin/resilience-governance [role: admin]
-    - gate: docs/gates/fase-66.md
-- [x] 66.2 **Drill Pemulihan Bencana Berkala (Disaster Recovery Simulation Drill)**:
+    - (dibatalkan) gate: docs/gates/fase-66.md
+- [ ] 66.2 **Drill Pemulihan Bencana Berkala (Disaster Recovery Simulation Drill)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Prosedur simulasi darurat pemadaman data center utama: pengukuran waktu pemulihan aktual (*Recovery Time Objective - RTO*) target < 15 menit.
   - Validasi konsistensi integritas ledger paska-failover: eksekusi otomatis `bank:reconcile` dan verifikasi hash-chain di data center cadangan.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: df2a76d
     - file: modules/Core/Application/Services/Resilience/DisasterRecoveryDrillService.php
     - test: modules/Core/tests/Feature/Resilience/DisasterRecoveryDrillTest.php::executes chaos failover drill with rpo and rto within strict sla
     - akses: route POST /admin/resilience-governance/execute-drill [role: admin]
-    - gate: docs/gates/fase-66.md
-- [x] 66.3 **Kedaulatan Data & Enkripsi Tingkat Tinggi (Data Sovereignty & Post-Quantum Readiness)**:
+    - (dibatalkan) gate: docs/gates/fase-66.md
+- [ ] 66.3 **Kedaulatan Data & Enkripsi Tingkat Tinggi (Data Sovereignty & Post-Quantum Readiness)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Klasifikasi data residensi: data sensitif keuangan dan NIK/NPWP diisolasi strictly di yurisdiksi Indonesia (PP 71/2019).
   - Enkripsi end-to-end data at rest (AES-256 GCM) dan data in transit (TLS 1.3), serta audit rotasi kunci master KMS berkala.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: df2a76d
     - file: modules/Core/Application/Services/Resilience/DataSovereigntyComplianceService.php
     - test: modules/Core/tests/Feature/Resilience/DataSovereigntyComplianceTest.php::validates data sovereignty residency under uu pdp
     - test: modules/Core/tests/Feature/Resilience/DataSovereigntyComplianceTest.php::rotates kms keys deterministically with active version progression
     - akses: route POST /admin/resilience-governance/rotate-kms [role: admin]
-    - gate: docs/gates/fase-66.md
-- [x] 66.4 `dr:audit` (Kesiapan failover drill terverifikasi, integritas sinkronisasi replika 100%, 0 paket data hilang).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-66.md
+- [ ] 66.4 `dr:audit` (Kesiapan failover drill terverifikasi, integritas sinkronisasi replika 100%, 0 paket data hilang).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - commit: df2a76d
     - file: modules/Integration/Console/Commands/DrAuditCommand.php
     - file: app/Quality/Audit/Fixtures/DrAuditCorruptionFixture.php
     - test: modules/Core/tests/Feature/Resilience/DisasterRecoveryAuditCommandTest.php::dr audit succeeds on clean state and catches divergence and tampered kms keys
     - akses: command dr:audit
     - audit: dr:audit
-    - gate: docs/gates/fase-66.md
+    - (dibatalkan) gate: docs/gates/fase-66.md
 
 ### Register Minus Fase 66
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7406,7 +7417,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ---
 
 ## DEFINITION OF DONE (FASE 26–63)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task 26.1–63.5 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 25: 538 test/3189 assertion → Fase 63: 931+ test / 4778+ assertion), tidak ada test di-skip/dilemahkan.
 - [x] Semua quality gate hijau pada commit terakhir; semua `*:audit` (bank, lgx, mall, ast, proc, mfg, wms, dist, pricing, agy, ptn, treasury, trade, tf, group, ctr, tower, enterprise, api, hcm, plm, esg, b2b, agri, epc) = 0 selisih; semua hash-chain (passport, custody, kontrak, aset, formula, PEB leg, ECO) valid.
 - [x] Setiap alur uang/stok baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × 32 role baru (`supplier`, `distributor`, `agent`, `partner`, `contract_manager`, `legal`, `asset_manager`, `planner`, `operator`, `qc_inspector`, `party_manager`, `treasury`, `auditor`, `hcm_manager`, `rnd_specialist`, `esg_officer`, `b2b_buyer`, `farmer`, `epc_manager`).
@@ -7416,7 +7427,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] Working tree bersih; ARCHITECTURE, DECISIONS, RUNBOOK, README, API, AUDIT, CODEBASE mutakhir.
 
 ## DEFINITION OF DONE (FASE 64–66)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task 64.1–66.4 tercentang, masing-masing di commit sendiri.
 - [x] Semua prosedur audit (`ai:audit`, `mobile:audit`, `dr:audit`) terverifikasi dengan hasil konsisten 0 diskrepansi atau duplikasi.
 - [x] Protokol DR failover disimulasikan dan menghasilkan RTO di bawah target dengan data mutlak (0 data loss).
