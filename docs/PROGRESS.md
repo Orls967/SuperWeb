@@ -4750,87 +4750,97 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-36.md
 
 ## FASE 37 — EKSEKUSI PRODUKSI (SHOP FLOOR)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 37.1 **Order produksi** (`mfg_production_orders`): state `planned → released → in_progress → completed → closed|cancelled`; nomor via 26.8
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 37.1 **Order produksi** (`mfg_production_orders`): state `planned → released → in_progress → completed → closed|cancelled`; nomor via 26.8
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.2 Pengeluaran bahan (issue) & backflush; kontrol lot FIFO/FEFO; kekurangan bahan memicu alert; stok tidak boleh negatif
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.2 Pengeluaran bahan (issue) & backflush; kontrol lot FIFO/FEFO; kekurangan bahan memicu alert; stok tidak boleh negatif
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.3 Pelaporan operasi: mulai/selesai, qty baik/scrap/rework, operator, mesin, durasi; terminal operator UI responsif (mobile/tablet)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.3 Pelaporan operasi: mulai/selesai, qty baik/scrap/rework, operator, mesin, durasi; terminal operator UI responsif (mobile/tablet)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.4 Downtime & alasan (mesin rusak, tunggu bahan, setup, istirahat) dengan kode standar → bahan OEE (Fase 40)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.4 Downtime & alasan (mesin rusak, tunggu bahan, setup, istirahat) dengan kode standar → bahan OEE (Fase 40)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.5 Penerimaan barang jadi ke gudang (FG receipt), pembuatan lot/serial; by-product masuk stok
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.5 Penerimaan barang jadi ke gudang (FG receipt), pembuatan lot/serial; by-product masuk stok
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.6 WIP: persediaan dalam proses per order/operasi; transfer WIP antar-operasi; `mfg:wip` laporan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.6 WIP: persediaan dalam proses per order/operasi; transfer WIP antar-operasi; `mfg:wip` laporan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.7 Rework & scrap: order rework, alasan, biaya scrap; scrap melebihi toleransi → NCR (Fase 39)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.7 Rework & scrap: order rework, alasan, biaya scrap; scrap melebihi toleransi → NCR (Fase 39)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.8 Subkontrak operasi (maklon proses): kirim bahan ke subkon via Logistics, terima barang olahan, biaya subkon → PO jasa
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.8 Subkontrak operasi (maklon proses): kirim bahan ke subkon via Logistics, terima barang olahan, biaya subkon → PO jasa
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.9 Konsistensi: Σ bahan keluar + scrap = input; hasil produksi = BOM × qty ± toleransi (test invarian)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.9 Konsistensi: Σ bahan keluar + scrap = input; hasil produksi = BOM × qty ± toleransi (test invarian)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.10 Quality gate Fase 37
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.10 Quality gate Fase 37
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
+    - (dibatalkan) gate: docs/gates/fase-37.md
 
 ## FASE 38 — BIAYA PRODUKSI (COSTING)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
