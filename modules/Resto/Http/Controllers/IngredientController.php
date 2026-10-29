@@ -86,6 +86,11 @@ class IngredientController extends Controller
             ->with('success', "Bahan {$ingredient->name} berhasil ditambahkan.");
     }
 
+    public function show(Ingredient $ingredient): View
+    {
+        return $this->edit($ingredient);
+    }
+
     public function edit(Ingredient $ingredient): View
     {
         $categories = IngredientCategory::cases();

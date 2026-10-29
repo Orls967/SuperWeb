@@ -176,16 +176,18 @@ class MenuItemController extends Controller
             ->with('success', "Menu {$item->name} berhasil ditambahkan.");
     }
 
-    public function show(MenuItem $item): View
+    public function show(MenuItem $menu): View
     {
+        $item = $menu;
         $item->load(['category', 'recipe.lines.ingredient', 'recipe.lines.subRecipe', 'outletOverrides.outlet']);
         $costData = $this->calculator->calculateForMenuItem($item);
 
         return view('resto::menu.show', compact('item', 'costData'));
     }
 
-    public function edit(MenuItem $item): View
+    public function edit(MenuItem $menu): View
     {
+        $item = $menu;
         $item->load(['category', 'recipe.lines', 'outletOverrides']);
         $categories = MenuCategory::orderBy('sort')->get();
         $serviceStyles = ServiceStyle::cases();
@@ -196,8 +198,9 @@ class MenuItemController extends Controller
         return view('resto::menu.edit', compact('item', 'categories', 'serviceStyles', 'ingredients', 'subRecipes', 'outlets'));
     }
 
-    public function update(Request $request, MenuItem $item): RedirectResponse
+    public function update(Request $request, MenuItem $menu): RedirectResponse
     {
+        $item = $menu;
         $validated = $request->validate([
             'sku' => ['required', 'string', 'max:50', 'unique:resto_menu_items,sku,'.$item->id],
             'name' => ['required', 'string', 'max:255'],

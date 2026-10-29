@@ -18,21 +18,21 @@ use Modules\Resto\Http\Controllers\StockTransferController;
 
 Route::middleware(['web', 'auth'])->prefix('resto')->name('resto.')->group(function () {
     // Menu Management
-    Route::middleware(['role:admin,auditor,outlet_manager'])->group(function () {
-        Route::resource('menu', MenuItemController::class)->only(['index', 'show']);
-    });
     Route::middleware(['role:admin,outlet_manager'])->group(function () {
         Route::post('menu/calculate-cost', [MenuItemController::class, 'calculateCost'])->name('menu.calculate-cost');
         Route::resource('menu', MenuItemController::class)->except(['index', 'show']);
     });
+    Route::middleware(['role:admin,auditor,outlet_manager'])->group(function () {
+        Route::resource('menu', MenuItemController::class)->only(['index', 'show']);
+    });
 
     // Ingredients & Unit Conversions
-    Route::middleware(['role:admin,auditor,outlet_manager'])->group(function () {
-        Route::resource('ingredients', IngredientController::class)->only(['index', 'show']);
-    });
     Route::middleware(['role:admin,outlet_manager'])->group(function () {
         Route::post('ingredients/conversions', [IngredientController::class, 'storeConversion'])->name('ingredients.conversions.store');
         Route::resource('ingredients', IngredientController::class)->except(['index', 'show']);
+    });
+    Route::middleware(['role:admin,auditor,outlet_manager'])->group(function () {
+        Route::resource('ingredients', IngredientController::class)->only(['index', 'show']);
     });
 
     // Kitchen & Etalase Monitor
@@ -62,60 +62,60 @@ Route::middleware(['web', 'auth'])->prefix('resto')->name('resto.')->group(funct
     });
 
     // Outlets & Central Kitchens
-    Route::middleware(['role:admin,auditor,outlet_manager'])->group(function () {
-        Route::resource('outlets', OutletController::class)->only(['index', 'show']);
-    });
     Route::middleware(['role:admin,outlet_manager'])->group(function () {
         Route::resource('outlets', OutletController::class)->except(['index', 'show']);
     });
+    Route::middleware(['role:admin,auditor,outlet_manager'])->group(function () {
+        Route::resource('outlets', OutletController::class)->only(['index', 'show']);
+    });
 
     // Rantai Pasok & Purchase Orders
-    Route::middleware(['role:admin,auditor,outlet_manager,procurement'])->group(function () {
-        Route::resource('purchases', PurchaseController::class)->only(['index', 'show']);
-    });
     Route::middleware(['role:admin,outlet_manager,procurement'])->group(function () {
         Route::post('purchases/{purchase}/receive', [PurchaseController::class, 'receive'])->name('purchases.receive');
         Route::post('purchases/{purchase}/pay', [PurchaseController::class, 'pay'])->name('purchases.pay');
         Route::resource('purchases', PurchaseController::class)->except(['index', 'show']);
     });
+    Route::middleware(['role:admin,auditor,outlet_manager,procurement'])->group(function () {
+        Route::resource('purchases', PurchaseController::class)->only(['index', 'show']);
+    });
 
     // Transfer Antar Outlet
-    Route::middleware(['role:admin,auditor,kitchen,outlet_manager'])->group(function () {
-        Route::resource('transfers', StockTransferController::class)->only(['index', 'show']);
-    });
     Route::middleware(['role:admin,kitchen,outlet_manager'])->group(function () {
         Route::post('transfers/{transfer}/receive', [StockTransferController::class, 'receive'])->name('transfers.receive');
         Route::resource('transfers', StockTransferController::class)->except(['index', 'show']);
     });
+    Route::middleware(['role:admin,auditor,kitchen,outlet_manager'])->group(function () {
+        Route::resource('transfers', StockTransferController::class)->only(['index', 'show']);
+    });
 
     // Stock Opname
-    Route::middleware(['role:admin,auditor,outlet_manager'])->group(function () {
-        Route::resource('stock-counts', StockCountController::class)->only(['index', 'show']);
-    });
     Route::middleware(['role:admin,outlet_manager'])->group(function () {
         Route::post('stock-counts/{stock_count}/approve', [StockCountController::class, 'approve'])->name('stock-counts.approve');
         Route::resource('stock-counts', StockCountController::class)->except(['index', 'show']);
     });
+    Route::middleware(['role:admin,auditor,outlet_manager'])->group(function () {
+        Route::resource('stock-counts', StockCountController::class)->only(['index', 'show']);
+    });
 
     // Delivery & Bungkus Jarak Jauh
-    Route::middleware(['role:admin,auditor,driver,outlet_manager'])->group(function () {
-        Route::resource('deliveries', DeliveryController::class)->only(['index', 'show']);
-    });
     Route::middleware(['role:admin,driver,outlet_manager'])->group(function () {
         Route::post('deliveries/{delivery}/status', [DeliveryController::class, 'updateStatus'])->name('deliveries.status');
         Route::post('deliveries/{delivery}/fail', [DeliveryController::class, 'fail'])->name('deliveries.fail');
         Route::resource('deliveries', DeliveryController::class)->except(['index', 'show']);
     });
+    Route::middleware(['role:admin,auditor,driver,outlet_manager'])->group(function () {
+        Route::resource('deliveries', DeliveryController::class)->only(['index', 'show']);
+    });
 
     // Katering & Pesanan Acara
-    Route::middleware(['role:admin,auditor,outlet_manager'])->group(function () {
-        Route::resource('catering', CateringController::class)->only(['index', 'show']);
-    });
     Route::middleware(['role:admin,outlet_manager'])->group(function () {
         Route::post('catering/{order}/deposit', [CateringController::class, 'holdDeposit'])->name('catering.deposit');
         Route::post('catering/{order}/complete', [CateringController::class, 'complete'])->name('catering.complete');
         Route::post('catering/{order}/cancel', [CateringController::class, 'cancel'])->name('catering.cancel');
         Route::resource('catering', CateringController::class)->except(['index', 'show']);
+    });
+    Route::middleware(['role:admin,auditor,outlet_manager'])->group(function () {
+        Route::resource('catering', CateringController::class)->only(['index', 'show']);
     });
 
     // Analitik & Menu Engineering

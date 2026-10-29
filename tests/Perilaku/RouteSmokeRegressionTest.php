@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace Tests\Perilaku;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Modules\Contract\Domain\Models\Contract;
 use Modules\Core\Domain\Models\Role;
+use Modules\Party\Domain\Models\Party;
+use Modules\Resto\Domain\Models\Ingredient;
+use Modules\Resto\Domain\Models\MenuItem;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
@@ -17,8 +22,8 @@ class RouteSmokeRegressionTest extends TestCase
         parent::setUp();
 
         config(['database.connections.sqlite.database' => database_path('database.sqlite')]);
-        \Illuminate\Support\Facades\DB::purge('sqlite');
-        \Illuminate\Support\Facades\DB::reconnect('sqlite');
+        DB::purge('sqlite');
+        DB::reconnect('sqlite');
     }
 
     /**
@@ -65,7 +70,7 @@ class RouteSmokeRegressionTest extends TestCase
 
     public function test_p07_contract_show_route_renders_successfully(): void
     {
-        $contract = \Modules\Contract\Domain\Models\Contract::first();
+        $contract = Contract::first();
         $this->assertNotNull($contract, 'Seed contract must exist');
 
         $user = User::where('role', 'admin')->first() ?? User::factory()->create(['role' => 'admin', 'email_verified_at' => now()]);
@@ -76,12 +81,55 @@ class RouteSmokeRegressionTest extends TestCase
 
     public function test_p06_party_show_route_renders_successfully(): void
     {
-        $party = \Modules\Party\Domain\Models\Party::whereHas('roles')->first() ?? \Modules\Party\Domain\Models\Party::first();
+        $party = Party::whereHas('roles')->first() ?? Party::first();
         $this->assertNotNull($party, 'Seed party must exist');
 
         $user = User::where('role', 'admin')->first() ?? User::factory()->create(['role' => 'admin', 'email_verified_at' => now()]);
         $response = $this->actingAs($user)->get('/party/'.$party->id);
 
         $response->assertOk();
+    }
+
+    public function test_p01_p02_p03_resto_menu_routes_render_ok(): void
+    {
+        $admin = User::where('role', 'admin')->first() ?? User::factory()->create(['role' => 'admin', 'email_verified_at' => now()]);
+        $menu = MenuItem::first();
+        $this->assertNotNull($menu, 'Seed menu item must exist');
+
+        // P-01: menu show
+        $resShow = $this->actingAs($admin)->get('/resto/menu/'.$menu->id);
+        $resShow->assertOk();
+
+        // P-02: menu create
+        $resCreate = $this->actingAs($admin)->get('/resto/menu/create');
+        $resCreate->assertOk();
+
+        // P-03: menu edit
+        $resEdit = $this->actingAs($admin)->get('/resto/menu/'.$menu->id.'/edit');
+        $resEdit->assertOk();
+    }
+
+    public function test_p04_resto_ingredient_routes_render_ok(): void
+    {
+        $admin = User::where('role', 'admin')->first() ?? User::factory()->create(['role' => 'admin', 'email_verified_at' => now()]);
+        $ing = Ingredient::first();
+        $this->assertNotNull($ing, 'Seed ingredient must exist');
+
+        // P-04: ingredient show
+        $resShow = $this->actingAs($admin)->get('/resto/ingredients/'.$ing->id);
+        $resShow->assertOk();
+
+        // ingredient create
+        $resCreate = $this->actingAs($admin)->get('/resto/ingredients/create');
+        $resCreate->assertOk();
+    }
+
+    public function test_p05_resto_catering_create_renders_ok(): void
+    {
+        $admin = User::where('role', 'admin')->first() ?? User::factory()->create(['role' => 'admin', 'email_verified_at' => now()]);
+
+        // P-05: catering create
+        $resCreate = $this->actingAs($admin)->get('/resto/catering/create');
+        $resCreate->assertOk();
     }
 }
