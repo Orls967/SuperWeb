@@ -6316,104 +6316,114 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 
 ## FASE 54 — FINANCE GRUP, ANGGARAN, AUDIT TRAIL & KEPATUHAN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 54.1 **Sistem Perencanaan & Pengendalian Anggaran (Enterprise Budgeting & Encumbrance)**:
-  Bukti:
+- [ ] 54.1 **Sistem Perencanaan & Pengendalian Anggaran (Enterprise Budgeting & Encumbrance)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Struktur anggaran hierarkis: Anggaran per Entitas → Direktorat → Pusat Biaya (*Cost Center*) → Mata Anggaran (Akun Beban).
   - Mekanisme kontrol anggaran ketat: *Hard-Stop* (menolak transaksi jika melebihi plafon) vs *Soft-Stop* (peringatan & eskalasi approval ke Direktur Keuangan).
   - Alur komitmen anggaran (*Budget Encumbrance*): penguncian dana sejak PR/PO disetujui hingga realisasi invoice pelunasan.
   - Pelaporan *Budget vs Actual vs Encumbrance* secara real-time dan mekanisme revisi anggaran resmi ber-versi.
-- [x] 54.2 **Laporan Keuangan Standar Enterprise & Prosedur Tutup Buku Periode (Financial Close)**:
-  Bukti:
+- [ ] 54.2 **Laporan Keuangan Standar Enterprise & Prosedur Tutup Buku Periode (Financial Close)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Penerbitan otomatis Laporan Neraca (*Balance Sheet*), Laporan Laba Rugi Komprehensif (*Income Statement*), dan Laporan Arus Kas Metode Langsung & Tidak Langsung.
   - Checklist tutup buku akhir bulan/tahun (*Month-End Close Workflow*): penyesuaian depresiasi, rekonsiliasi subledger, penutupan akun nominal, dan penguncian periode akuntansi (*Period Lock*) anti-backdating.
-- [x] 54.3 **Simulator Kepatuhan Perpajakan Nasional (Tax Engine & e-Faktur Simulation)**:
-  Bukti:
+- [ ] 54.3 **Simulator Kepatuhan Perpajakan Nasional (Tax Engine & e-Faktur Simulation)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Rekonsiliasi PPN Masukan vs PPN Keluaran, pembuatan draf pelaporan SPT Masa PPN 1111 dengan nomor seri faktur pajak gapless.
   - Agregasi pemotongan pajak penghasilan: PPh Pasal 21 (karyawan/agen), PPh 23 (jasa/sewa), PPh 4 ayat 2 (final sewa Mall/properti), dan PPh 22 (impor/pengadaan).
   - Ekspor format CSV siap impor simulator e-Faktur dan e-Bupot DJP.
-- [x] 54.4 **Penegakan Pemisahan Tugas Mutlak (Segregation of Duties - SoD Matrix Engine)**:
-  Bukti:
+- [ ] 54.4 **Penegakan Pemisahan Tugas Mutlak (Segregation of Duties - SoD Matrix Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Matriks konflik wewenang: larangan satu akun memiliki dua role bertentangan (misal: Pembuat PO dilarang menyetujui PO; Penginput Invoice dilarang mengeksekusi pembayaran bank; Kasir POS dilarang melakukan void tanpa persetujuan SPV).
   - Deteksi dan pelaporan otomatis pelanggaran SoD dalam log audit keamanan.
-- [x] 54.5 **Kerangka Pengendalian Internal & Risk Control Matrix (RCM)**:
-  Bukti:
+- [ ] 54.5 **Kerangka Pengendalian Internal & Risk Control Matrix (RCM)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Katalog titik kendali internal operasional: verifikasi approval ganda, pencocokan 3-way match, validasi batas toleransi timbangan logistik, dan batas margin harga tebus.
   - Pengujian kontrol otomatis harian: sistem mencatat temuan anomali (*control exception*) dan menugaskan tindakan korektif ke manajer terkait.
-- [x] 54.6 **Kalender Kepatuhan Regulasi & Pengingat Kedaluwarsa Hukum**:
-  Bukti:
+- [ ] 54.6 **Kalender Kepatuhan Regulasi & Pengingat Kedaluwarsa Hukum**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Penjadwalan pemenuhan kewajiban: pelaporan pajak bulanan, perpanjangan izin edar BPOM/Halal, kedaluwarsa polis asuransi aset, dan masa berlaku kontrak perjanjian kemitraan.
   - Eskalasi bertingkat via notifikasi outbox kepada penanggung jawab hukum sebelum jatuh tempo.
-- [x] 54.7 **Paket Bukti Audit Eksternal Terpadu (Auditor Data Pack Generator)**:
-  Bukti:
+- [ ] 54.7 **Paket Bukti Audit Eksternal Terpadu (Auditor Data Pack Generator)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Satu-klik ekspor bukti audit untuk KAP: buku besar, neraca saldo, daftar mutasi bank terverifikasi, register aset tetap, serta laporan verifikasi integritas hash-chain sistem.
-- [x] 54.8 Perluasan pilar observabilitas `super:health-check` ke seluruh 16 domain arsitektur platform.
-  Bukti:
+- [ ] 54.8 Perluasan pilar observabilitas `super:health-check` ke seluruh 16 domain arsitektur platform.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
-- [x] 54.9 `enterprise:audit` (Buku besar = subledger AR/AP/Aset/Persediaan/Pajak, selisih fiskal terjelaskan, saldo kas = bank statement, 0 diskrepansi).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-54.md
+- [ ] 54.9 `enterprise:audit` (Buku besar = subledger AR/AP/Aset/Persediaan/Pajak, selisih fiskal terjelaskan, saldo kas = bank statement, 0 diskrepansi).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
-- [x] 54.10 Quality gate Fase 54.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-54.md
+- [ ] 54.10 Quality gate Fase 54.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
 
 
 ## FASE 55 — INTEGRASI API V2, B2B ELECTRONIC DATA INTERCHANGE (EDI) & MULTI-TENANCY
