@@ -5998,106 +5998,116 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 
 ## FASE 51 — KERJA SAMA INTERNASIONAL I: JV, LISENSI, OEM/ODM & ALIH TEKNOLOGI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 51.1 **Master Entitas Mitra Asing & Tata Kelola Multi-Yurisdiksi**:
-  Bukti:
+- [ ] 51.1 **Master Entitas Mitra Asing & Tata Kelola Multi-Yurisdiksi**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Perluasan modul Party (`pty_`): registrasi entitas hukum asing, nomor registrasi bisnis yurisdiksi asal, legalisasi dokumen / Apostille Convention, dan kuasa hukum/wakil sah di Indonesia.
   - Penentuan mata uang fungsional, regulasi anti-pencucian uang (AML/Sanction screening internasional), dan yurisdiksi hukum penyelesaian sengketa (Arbitrase BANI/SIAC/ICC).
-- [x] 51.2 **Struktur Usaha Patungan (Joint Venture - JV Management)**:
-  Bukti:
+- [ ] 51.2 **Struktur Usaha Patungan (Joint Venture - JV Management)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Struktur Equity JV vs Contractual JV: porsi kepemilikan modal saham, jadwal setoran modal bertahap (*capital calls*), dan pencatatan kepemilikan saham di entitas anak (`pty_legal_entities`).
   - Tata kelola dewan: klausul hak veto pemegang saham minoritas, kuorum rapat pemegang saham, dan pembagian dividen bersyarat KPI performa.
-- [x] 51.3 **Lisensi Hak Cipta, Merek & Waralaba Internasional**:
-  Bukti:
+- [ ] 51.3 **Lisensi Hak Cipta, Merek & Waralaba Internasional**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Registrasi lisensi teknologi dan merek (HKI Fase 47.8): cakupan teritori geografis, hak eksklusif vs non-eksklusif, sub-lisensi, dan masa berlaku.
   - Kalkulasi royalti otomatis: basis persentase penjualan kotor/bersih, *minimum annual guarantee* (MAG), slab berjenjang, dan audit keselarasan laporan royalti terhadap sell-out Store/Distribusi.
-- [x] 51.4 **OEM/ODM & Contract Manufacturing Lintas Batas**:
-  Bukti:
+- [ ] 51.4 **OEM/ODM & Contract Manufacturing Lintas Batas**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Pabrik platform memproduksi barang untuk merek prinsipal global (OEM) atau sebaliknya menerima pasokan barang ber-desain khusus (ODM).
   - Pengelolaan bahan baku konsinyasi milik prinsipal: persediaan terpisah tanpa pengakuan hutang dagang, biaya konversi manufaktur (*conversion cost/tolling fee*), dan klausul kerahasiaan desain (NDA).
   - Integrasi ke modul Manufaktur (`mfg_`): routing khusus OEM, pengawasan mutu bersama (*joint QA/QC*), dan sertifikasi kepatuhan pabrik (*social compliance audit*).
-- [x] 51.5 **Alih Teknologi, R&D Bersama & Milestone Delivery**:
-  Bukti:
+- [ ] 51.5 **Alih Teknologi, R&D Bersama & Milestone Delivery**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Paket alih teknologi: blueprint teknis, formula terenkripsi, program pelatihan teknisi, dan asistensi teknis lapangan.
   - Alur pembayaran bertahap berbasis milestone penerimaan (*acceptance testing sign-off*) via approval four-eyes lintas direksi.
   - Klausul hak kekayaan intelektual turunan (*derivative IP*): pembagian hak kepemilikan atas paten/invensi baru hasil pengembangan bersama.
-- [x] 51.6 **Kontrak Lintas Yurisdiksi & Perjanjian Dwi-Bahasa (Bilingual Legal Contracts)**:
-  Bukti:
+- [ ] 51.6 **Kontrak Lintas Yurisdiksi & Perjanjian Dwi-Bahasa (Bilingual Legal Contracts)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Pembuatan kontrak bisnis dua bahasa (Bahasa Indonesia & Bahasa Inggris) otomatis via modul Contract (`ctr_`) dengan klausul *prevailing language*.
   - Klausul standar internasional: *Force Majeure*, pembatasan liabilitas (*limitation of liability*), sanksi kepatuhan ekspor dual-use, dan klausul anti-suap/korupsi (FCPA / UK Bribery Act / UU Tipikor).
-- [x] 51.7 **Perpajakan Lintas Negara Simulasi (Tax Treaty / P3B & Withholding Tax)**:
-  Bukti:
+- [ ] 51.7 **Perpajakan Lintas Negara Simulasi (Tax Treaty / P3B & Withholding Tax)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Pemotongan PPh Pasal 26 / WHT atas royalti, bunga, dividen, dan jasa teknik luar negeri.
   - Engine P3B (Perjanjian Penghindaran Pajak Berganda) ber-versi: validasi *Certificate of Domicile* (Form DGT simulasi) untuk menentukan tarif pajak efektif yang berlaku (misal: 10% vs tarif normal 20%).
   - Penerbitan bukti potong pajak luar negeri simulasi dan pencatatan kredit pajak luar negeri.
-- [x] 51.8 **Audit Kepatuhan Internasional (Compliance & Anti-Bribery Checklists)**:
-  Bukti:
+- [ ] 51.8 **Audit Kepatuhan Internasional (Compliance & Anti-Bribery Checklists)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Kuesioner uji tuntas (*due diligence*) kepatuhan mitra asing: verifikasi *Beneficial Ownership*, deklarasi non-suap, dan screening daftar sanksi PBB/OFAC.
-- [x] 51.9 Dashboard portofolio kerja sama internasional: visualisasi proyek JV, aliran royalti global, status transfer teknologi, dan eksposur nilai tukar.
-  Bukti:
+- [ ] 51.9 Dashboard portofolio kerja sama internasional: visualisasi proyek JV, aliran royalti global, status transfer teknologi, dan eksposur nilai tukar.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
-- [x] 51.10 Quality gate Fase 51.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-51.md
+- [ ] 51.10 Quality gate Fase 51.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
 
 
 ## FASE 52 — KERJA SAMA INTERNASIONAL II: INTERCOMPANY, TRANSFER PRICING & KONSOLIDASI
