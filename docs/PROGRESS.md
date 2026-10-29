@@ -3587,63 +3587,70 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
     - (dibatalkan) gate: docs/gates/fase-23.md
 
 ## FASE 24 — INTEGRASI LINTAS LINI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 24.1 Store -> Logistik: event order dibayar -> shipment otomatis via ShipmentBooking contract, ongkir Store -> unearned_freight, resi di order detail
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 24.1 Store -> Logistik: event order dibayar -> shipment otomatis via ShipmentBooking contract, ongkir Store -> unearned_freight, resi di order detail
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.2 Pengiriman mobil (Store/AutoDex/HODL-to-Drive): shipment FTL car carrier, event delivered_by_carrier masuk Vehicle Passport
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.2 Pengiriman mobil (Store/AutoDex/HODL-to-Drive): shipment FTL car carrier, event delivered_by_carrier masuk Vehicle Passport
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.3 Perawatan armada -> AutoServe: trip odometer trigger service_interval_m -> FleetServiceDue event -> booking bengkel via contract, status Maintenance
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.3 Perawatan armada -> AutoServe: trip odometer trigger service_interval_m -> FleetServiceDue event -> booking bengkel via contract, status Maintenance
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.4 Resto -> Logistik (cold-chain): replenishment dapur pusat CK-01 -> shipment reefer, lgx_temperature_readings, excursion alert, terima stok via Inventory
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.4 Resto -> Logistik (cold-chain): replenishment dapur pusat CK-01 -> shipment reefer, lgx_temperature_readings, excursion alert, terima stok via Inventory
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.5 Mall -> Logistik (loading dock): lgx_dock_appointments di Duta Mall, slot time-lock tanpa overlap, portal tenant booking dock, satpam check-in/out
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.5 Mall -> Logistik (loading dock): lgx_dock_appointments di Duta Mall, slot time-lock tanpa overlap, portal tenant booking dock, satpam check-in/out
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.6 Finance & observabilitas: pendapatan Logistik masuk Group Dashboard P&L tanpa menaikkan query budget, pilar Logistik di super:health-check
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.6 Finance & observabilitas: pendapatan Logistik masuk Group Dashboard P&L tanpa menaikkan query budget, pilar Logistik di super:health-check
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.7 Quality gate Fase 24
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.7 Quality gate Fase 24
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
+    - (dibatalkan) gate: docs/gates/fase-24.md
 
 ## FASE 25 — SKALA, API, HARDENING, CONTROL TOWER
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
