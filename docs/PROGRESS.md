@@ -6427,113 +6427,123 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 
 
 ## FASE 55 — INTEGRASI API V2, B2B ELECTRONIC DATA INTERCHANGE (EDI) & MULTI-TENANCY
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Integration (`intg_`) — **hanya** adapter API/webhook/EDI; logika bisnis tetap di modul pemilik · **Prasyarat:** R0–R3 ✅ · **Acuan:** KONSEP §A4.5, §A6
 > **Jalan pintas terlarang di fase ini:** rute API tanpa Sanctum/`Idempotency-Key`/rate limit; webhook berstatus `delivered` tanpa request; EDI `accepted` tanpa parsing; 'multi-tenant' tanpa global scope yang diuji — ditambah seluruh X1–X25.
-- [x] 55.1 **Enterprise RESTful & GraphQL API v2 Terstandarisasi**:
-  Bukti:
+- [ ] 55.1 **Enterprise RESTful & GraphQL API v2 Terstandarisasi**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Spesifikasi kontrak OpenAPI 3.1 publik lengkap untuk seluruh modul ekosistem (Procurement, WMS, Logistics, Trade, Treasury, Finance).
   - Autentikasi berbasis token Sanctum asli dengan enforcement granular abilities (`tokenCan`).
   - Standarisasi format envelope JSON: pagination terstandarisasi, sorting multi-kolom, filter dinamis, dan error payload RFC 7807 (*Problem Details for HTTP APIs*).
   - Penegakan header wajib `Idempotency-Key` pada seluruh endpoint HTTP berbobot mutasi state/uang.
-- [x] 55.2 **Mesin Webhook B2B Andal Berbasis Transaksional Outbox**:
-  Bukti:
+- [ ] 55.2 **Mesin Webhook B2B Andal Berbasis Transaksional Outbox**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Katalog event domain kaya untuk konsumsi mitra eksternal: perubahan status pesanan, notifikasi pembayaran, perubahan status tracking kontainer, dan peluncuran PO baru.
   - Keamanan transmisi webhook: penandatanganan payload dengan signature kriptografis HMAC-SHA256 (`X-Signature`).
   - Mekanisme pengiriman andal: antrean pengiriman asinkron, retry eksponensial otomatis dengan jitter, penanganan sirkuit terputus (*circuit breaker*), dan *Dead-Letter Queue* (DLQ) untuk pengiriman gagal.
-- [x] 55.3 **Subsistem Electronic Data Interchange (EDI) Otomotif & Ritel (EDIFACT / X12 Simulasi)**:
-  Bukti:
+- [ ] 55.3 **Subsistem Electronic Data Interchange (EDI) Otomotif & Ritel (EDIFACT / X12 Simulasi)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Penerjemah pesan bisnis standar EDI:
     - EDI 850 / ORDERS: Purchase Order dari mitra pembeli.
     - EDI 855 / ORDRSP: Purchase Order Acknowledgment.
     - EDI 856 / DESADV: Advance Shipping Notice (ASN) dengan hierarki packing list terstruktur.
     - EDI 810 / INVOIC: Faktur tagihan elektronik terverifikasi.
   - Parser dan generator dokumen EDI dengan validasi skema ketat serta penerbitan Functional Acknowledgment (EDI 997 / CONTRL).
-- [x] 55.4 **Mesin Ekspor/Impor Data Massal Berperforma Tinggi**:
-  Bukti:
+- [ ] 55.4 **Mesin Ekspor/Impor Data Massal Berperforma Tinggi**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Upload file spreadsheet massal (CSV/XLSX) berbasis streaming memory: validasi baris demi baris, pratinjau kesalahan komprehensif, dan eksekusi batch transaksional terisolasi.
   - Ekspor asynchronous untuk dataset ratusan ribu baris dengan kompresi ZIP otomatis dan link unduh kedaluwarsa terproteksi tanda tangan token.
-- [x] 55.5 **Pengelolaan Klien B2B, Kuota API & Keamanan Gateway**:
-  Bukti:
+- [ ] 55.5 **Pengelolaan Klien B2B, Kuota API & Keamanan Gateway**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Portal manajemen API Key per badan hukum mitra dengan fitur rotasi kunci rahasia (*secret rotation*) tanpa downtime.
   - Pembatasan tingkat penggunaan bertingkat (*Tiered Rate Limiting*) berbasis kuota harian/menit per tier mitra (Silver, Gold, Platinum).
-- [x] 55.6 **Portal Pengembang Interaktif (Developer Hub & Mock Sandbox)**:
-  Bukti:
+- [ ] 55.6 **Portal Pengembang Interaktif (Developer Hub & Mock Sandbox)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Halaman dokumentasi interaktif dengan konsol uji coba langsung (*API Playground*), skema data interaktif, dan contoh kode curl/SDK terverifikasi.
   - Lingkungan *Sandbox* dengan data terisolasi untuk pengujian integrasi pihak ketiga tanpa risiko merusak data produksi.
-- [x] 55.7 **Isolasi Data Multi-Tenant & Penegakan Scoping Tingkat Baris (Row-Level Security)**:
-  Bukti:
+- [ ] 55.7 **Isolasi Data Multi-Tenant & Penegakan Scoping Tingkat Baris (Row-Level Security)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Penerapan global query scope otomatis pada setiap model entitas domain berdasarkan `tenant_id` / `entity_id` / `party_id` pengguna yang terautentikasi.
   - Pengujian penetrasi otomatis untuk memvalidasi zero data leakage antar-badan hukum independen.
-- [x] 55.8 **Manajemen Siklus Hidup Data, Partisi & Retensi**:
-  Bukti:
+- [ ] 55.8 **Manajemen Siklus Hidup Data, Partisi & Retensi**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Pemindahan otomatis data transaksional historis (> 5 tahun) ke tabel arsip dingin (*cold storage archive*) untuk menjaga efisiensi kinerja indeks tabel aktif.
   - Prosedur validasi integritas backup basis data berkala dengan uji pemulihan (*disaster recovery drill*) terukur.
-- [x] 55.9 `api:audit` (Validasi skema OpenAPI vs implementasi rute aktual, uji integritas signature HMAC webhook 100% cocok).
-  Bukti:
+- [ ] 55.9 `api:audit` (Validasi skema OpenAPI vs implementasi rute aktual, uji integritas signature HMAC webhook 100% cocok).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
-- [x] 55.10 Quality gate Fase 55.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-55.md
+- [ ] 55.10 Quality gate Fase 55.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
 
 ## FASE 56 — STRESS TESTING SKALA ULTRA, SIMULASI 12 BULAN & RESILIENCE
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
