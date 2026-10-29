@@ -7785,73 +7785,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 2 — FINTECH, PERBANKAN & KRIPTO
 
 ## FASE 71 — TOKENISASI ASET RIIL (RWA) & DIVIDEN OTOMATIS
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, double-entry ledger konsisten, dan quality gate 9/9 langkah pass.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Rwa (`rwa_`) + Asset + Party + Contract · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP 2F slice 1
 > **Jalan pintas terlarang di fase ini:** dividen dari angka masukan, bukan dari pendapatan terposting; kepemilikan token hanya di tabel tanpa ledger aset `RWA-{id}`; pembelian tanpa KYC — ditambah seluruh X1–X25.
-- [x] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
-  Bukti:
+- [ ] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/database/migrations/2026_10_07_710100_create_rwa_tables.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_issuance_and_holdings_sum_equals_supply
     - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/Application/Services/RwaTokenService.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_issuance_and_holdings_sum_equals_supply
     - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/Application/Services/RwaOrderbookService.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_orderbook_double_settlement_rejected_and_kyc_guardrail
     - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.4 **Dividen harian otomatis**: omzet sumber aset (mis. pendapatan logistik per truk dari Core Banking, sewa unit mall dari invoice) → dihitung pro-rata per holder → batch posting idempoten per hari ke dompet holder; gagal payout → antrean retry + alert
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.4 **Dividen harian otomatis**: omzet sumber aset (mis. pendapatan logistik per truk dari Core Banking, sewa unit mall dari invoice) → dihitung pro-rata per holder → batch posting idempoten per hari ke dompet holder; gagal payout → antrean retry + alert
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/Application/Services/RwaTokenService.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_daily_dividend_pro_rata_distribution_and_rounding
     - akses: route POST /rwa/assets/{asset}/distribute [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.5 Corporate action: redemsi parsial (aset dijual → token ditebus pro-rata), dilusi, pembatalan token; seluruh perubahan supply tercatat hash-chain
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.5 Corporate action: redemsi parsial (aset dijual → token ditebus pro-rata), dilusi, pembatalan token; seluruh perubahan supply tercatat hash-chain
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/Application/Services/RwaCorporateActionService.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_token_redemption_decreases_supply_consistently
     - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.6 Dashboard RWA: katalog aset, orderbook, kepemilikan, riwayat dividen, exposure per holder; guardrail konsentrasi (maks X% aset per holder)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.6 Dashboard RWA: katalog aset, orderbook, kepemilikan, riwayat dividen, exposure per holder; guardrail konsentrasi (maks X% aset per holder)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/Application/Services/RwaTokenService.php
     - test: modules/Rwa/tests/Feature/RwaVerticalSliceHttpTest.php::test_a_authorized_user_can_access_rwa_index_and_distribute
     - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.7 Tests: (a) Σ token terbit = Σ holdings (b) dividen harian = omzet × pro-rata (dibulatkan, sisa ke rounding reserve) (c) double-settlement orderbook ditolak (d) redemsi menurunkan supply konsisten (e) reconcile aset ledger = holdings
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.7 Tests: (a) Σ token terbit = Σ holdings (b) dividen harian = omzet × pro-rata (dibulatkan, sisa ke rounding reserve) (c) double-settlement orderbook ditolak (d) redemsi menurunkan supply konsisten (e) reconcile aset ledger = holdings
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 044c37a
     - file: modules/Rwa/tests/Feature/RwaTest.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_reconcile_asset_ledger_equals_holdings
-    - gate: docs/gates/fase-71.md
-- [x] 71.8 Quality gate Fase 71
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.8 Quality gate Fase 71
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 044c37a
     - file: modules/Rwa/tests/Feature/RwaTest.php
     - test: modules/Rwa/tests/Feature/RwaVerticalSliceHttpTest.php::test_d_two_source_rwa_audit_passes_cleanly
     - akses: command rwa:audit
-    - gate: docs/gates/fase-71.md
+    - (dibatalkan) gate: docs/gates/fase-71.md
 
 ### Register Minus Fase 71
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
