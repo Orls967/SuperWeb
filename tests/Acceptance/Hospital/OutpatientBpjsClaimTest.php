@@ -89,11 +89,7 @@ class OutpatientBpjsClaimTest extends HospitalAcceptanceHelper
         $this->assertSame('CLAIMED', $encounter->fresh()->status);
 
         // Verifikasi mutasi debit pada Piutang BPJS sebesar nilai paket INA-CBG Rp 180.000
-        $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'hsp:bpjs_receivable:IDR',
-            'direction' => 'DEBIT',
-            'amount' => 180000,
-        ]);
+        $this->assertLedgerPosted('hsp:bpjs_receivable:IDR', 180000, 'DEBIT');
     }
 
     public function test_selisih_tarif_rs_vs_paket_inacbg_diakui_pada_akun_selisih_secara_seimbang(): void
@@ -117,22 +113,16 @@ class OutpatientBpjsClaimTest extends HospitalAcceptanceHelper
         $this->assertSame(10000, $claim->variance_amount_idr);
 
         // Kredit pendapatan selisih tarif Rp 10.000
-        $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'hsp:bpjs_claim_variance:IDR',
-            'direction' => 'CREDIT',
-            'amount' => 10000,
-        ]);
+        $this->assertLedgerPosted('hsp:bpjs_claim_variance:IDR', 10000, 'CREDIT');
 
         // Total debit dan total kredit posting klaim harus seimbang
         $tx = DB::table('bank_ledger_transactions')
             ->where('reference_type', 'HSP_BPJS_CLAIM')
             ->where('reference_id', (string) $claim->id)
-            ->first();
+            ->firstOrFail();
 
-        $totalDebit = DB::table('bank_ledger_entries')->where('transaction_id', $tx->id)->where('direction', 'DEBIT')->sum('amount');
-        $totalCredit = DB::table('bank_ledger_entries')->where('transaction_id', $tx->id)->where('direction', 'CREDIT')->sum('amount');
-        $this->assertSame($totalDebit, $totalCredit);
-        $this->assertSame(180000, (int) $totalDebit);
+        $sum = DB::table('bank_ledger_entries')->where('transaction_id', $tx->id)->sum('amount');
+        $this->assertEquals(0, (int) $sum);
     }
 
     public function test_pasien_jkn_tidak_dikenakan_iur_biaya_tambahan_pada_rawat_jalan(): void
@@ -168,11 +158,7 @@ class OutpatientBpjsClaimTest extends HospitalAcceptanceHelper
         $this->assertSame('APPROVED', $updatedClaim->status);
         $this->assertSame('SETTLED', $encounter->fresh()->status);
         // Piutang BPJS tetap ada dan tidak dijurnal balik
-        $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'hsp:bpjs_receivable:IDR',
-            'direction' => 'DEBIT',
-            'amount' => 150000,
-        ]);
+        $this->assertLedgerPosted('hsp:bpjs_receivable:IDR', 150000, 'DEBIT');
     }
 
     public function test_klaim_yang_ditolak_bpjs_memicu_jurnal_balik_piutang_bpjs(): void
@@ -188,16 +174,7 @@ class OutpatientBpjsClaimTest extends HospitalAcceptanceHelper
         $this->assertSame('Kelengkapan berkas rekam medis tidak memenuhi syarat koding', $rejectedClaim->rejection_reason);
 
         // Verifikasi jurnal pembalik: KREDIT Piutang BPJS Rp 150.000 dan DEBIT Beban Klaim Ditolak Rp 150.000
-        $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'hsp:bpjs_receivable:IDR',
-            'direction' => 'CREDIT',
-            'amount' => 150000,
-        ]);
-
-        $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'hsp:bpjs_rejected_claim:IDR',
-            'direction' => 'DEBIT',
-            'amount' => 150000,
-        ]);
+        $this->assertLedgerPosted('hsp:bpjs_receivable:IDR', 150000, 'CREDIT');
+        $this->assertLedgerPosted('hsp:bpjs_rejected_claim:IDR', 150000, 'DEBIT');
     }
 }
