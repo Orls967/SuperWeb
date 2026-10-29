@@ -9113,74 +9113,82 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 # 4 LINI BISNIS TAMBAHAN — RUMAH SAKIT, BEACH CLUB & CLUBS, PERHOTELAN, PERTAMBANGAN
 
 ## FASE 87 — RUMAH SAKIT I: IDENTITAS PASIEN, EMR, BED MANAGEMENT & CLINICAL PATHWAY
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 87.1–87.8 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [x] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
-  Bukti:
+- [ ] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_2_patient_registration_with_hash_chained_health_passport
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_2_patient_registration_with_hash_chained_health_passport
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_3_real_time_bed_allocation_and_anti_overlap_guardrail
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.4 **Clinical pathway (CPG simulasi)**: order dokter (medis, lab, radiologi, prosedur) dijadwalkan berurutan per diagnosis → keterlambatan order memicu alert ke perawat; status order real-time (pending → in-progress → resulted)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.4 **Clinical pathway (CPG simulasi)**: order dokter (medis, lab, radiologi, prosedur) dijadwalkan berurutan per diagnosis → keterlambatan order memicu alert ke perawat; status order real-time (pending → in-progress → resulted)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.5 IoT critical care simulasi: monitor pasien memancarkan telemetri (SpO2, ECG, suhu) → ambang batas → **code blue alert** prioritas ke perawat via Notification + halaman monitor → seluruh kejadian tercatat hash-chain sebagai bukti review mutu & malpractice defense
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.5 IoT critical care simulasi: monitor pasien memancarkan telemetri (SpO2, ECG, suhu) → ambang batas → **code blue alert** prioritas ke perawat via Notification + halaman monitor → seluruh kejadian tercatat hash-chain sebagai bukti review mutu & malpractice defense
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.6 Seeder skala: 10 juta pasien, 100 juta encounter/tahun (12 bulan riwayat), 500.000 kamar-tempat-tidur, telemetri ICU 1 juta titik/jam; benchmark query antrean IGD & bed board
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.6 Seeder skala: 10 juta pasien, 100 juta encounter/tahun (12 bulan riwayat), 500.000 kamar-tempat-tidur, telemetri ICU 1 juta titik/jam; benchmark query antrean IGD & bed board
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_3_real_time_bed_allocation_and_anti_overlap_guardrail
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.7 Tests: (a) alokasi bed ganda ditolak (b) paspor pasien hash valid & manipulasi terdeteksi (c) clinical pathway telat memicu alert 1x (d) telemetri ambang → code blue alert idempoten (e) query budget bed board ≤ ambang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.7 Tests: (a) alokasi bed ganda ditolak (b) paspor pasien hash valid & manipulasi terdeteksi (c) clinical pathway telat memicu alert 1x (d) telemetri ambang → code blue alert idempoten (e) query budget bed board ≤ ambang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - file: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
-    - gate: docs/gates/fase-87.md
-- [x] 87.8 Quality gate Fase 87
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.8 Quality gate Fase 87
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: cfdf6bda
     - file: modules/Hospital/Console/Commands/AuditHospitalCommand.php
     - test: modules/Hospital/tests/Feature/HospitalVerticalSliceHttpTest.php::test_d_two_source_hospital_audit_passes_cleanly
     - akses: command hsp:audit
-    - gate: docs/gates/fase-87.md
+    - (dibatalkan) gate: docs/gates/fase-87.md
 
 ### Register Minus Fase 87
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
