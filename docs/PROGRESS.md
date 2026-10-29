@@ -5788,88 +5788,98 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-48.md
 
 ## FASE 49 — EKSPOR–IMPOR (TRADE OPERATIONS)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 49.1 Master negara/pelabuhan/zona, **Incoterms 2020** (tanggung jawab biaya/risiko per istilah), HS code ber-versi (memperluas `HsTariff` Logistics), larangan/pembatasan (lartas — simulasi)
-  Bukti:
+- [ ] 49.1 Master negara/pelabuhan/zona, **Incoterms 2020** (tanggung jawab biaya/risiko per istilah), HS code ber-versi (memperluas `HsTariff` Logistics), larangan/pembatasan (lartas — simulasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.2 **Order ekspor**: proforma → commercial invoice → packing list → booking kapal/pesawat (Logistics) → dokumen ekspor (PEB simulasi) → pengakuan pendapatan saat risiko berpindah (sesuai Incoterm)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.2 **Order ekspor**: proforma → commercial invoice → packing list → booking kapal/pesawat (Logistics) → dokumen ekspor (PEB simulasi) → pengakuan pendapatan saat risiko berpindah (sesuai Incoterm)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.3 **Order impor**: PO impor (33.5) → ASN → dokumen (BL/AWB, invoice) → PIB simulasi (BM/PPN/PPh 22 via `CustomsDutyCalculator`) → penerimaan; **landed cost** otomatis ke persediaan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.3 **Order impor**: PO impor (33.5) → ASN → dokumen (BL/AWB, invoice) → PIB simulasi (BM/PPN/PPh 22 via `CustomsDutyCalculator`) → penerimaan; **landed cost** otomatis ke persediaan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.4 Dokumen perdagangan: Certificate of Origin (Form E/D/AANZ… data referensi), fumigasi, Phytosanitary, Halal/BPOM lintas negara (simulasi), checklist per negara & produk
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.4 Dokumen perdagangan: Certificate of Origin (Form E/D/AANZ… data referensi), fumigasi, Phytosanitary, Halal/BPOM lintas negara (simulasi), checklist per negara & produk
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.5 Kuota & preferensi tarif (FTA — simulasi): tarif preferensial bila CoO valid, penghematan dilaporkan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.5 Kuota & preferensi tarif (FTA — simulasi): tarif preferensial bila CoO valid, penghematan dilaporkan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.6 Pelacakan lintas batas: status tiap leg internasional (origin → port → transit → customs → destination) memakai tracking Logistik hash-chain
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.6 Pelacakan lintas batas: status tiap leg internasional (origin → port → transit → customs → destination) memakai tracking Logistik hash-chain
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.7 Sengketa & klaim dagang internasional (barang rusak/selisih/keterlambatan), asuransi kargo (Fase 23.4) & subrogasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.7 Sengketa & klaim dagang internasional (barang rusak/selisih/keterlambatan), asuransi kargo (Fase 23.4) & subrogasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.8 Kepatuhan: kontrol ekspor/dual-use (daftar simulasi), sanksi (27.6), pelaporan ekspor-impor bulanan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.8 Kepatuhan: kontrol ekspor/dual-use (daftar simulasi), sanksi (27.6), pelaporan ekspor-impor bulanan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.9 `trade:audit` (invoice ekspor/impor ↔ ledger ↔ stok, 0 selisih)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.9 `trade:audit` (invoice ekspor/impor ↔ ledger ↔ stok, 0 selisih)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.10 Quality gate Fase 49
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.10 Quality gate Fase 49
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
+    - (dibatalkan) gate: docs/gates/fase-49.md
 
 ## FASE 50 — TRADE FINANCE (L/C, GARANSI, KOLEKSI DOKUMEN & PEMBIAYAAN SUPPLY CHAIN)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
