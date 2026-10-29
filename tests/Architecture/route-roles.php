@@ -34,6 +34,7 @@ use Modules\Hcm\Domain\Models\Gig\GovBountyClaim;
 use Modules\Hospital\Domain\Models\ClinicalTrial;
 use Modules\Hotel\database\seeders\HotelDemoSeeder;
 use Modules\Hotel\Domain\Models\HotelReservation;
+use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Insurance\Domain\Models\InsuranceProduct;
 use Modules\Logistics\Domain\Enums\LocationType;
 use Modules\Logistics\Domain\Models\Autonomous\DroneMission;
@@ -2875,4 +2876,17 @@ return [
     'wealth.treasury.rebalance' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.risk-profiles' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.sweep-cash' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
+
+    // hotel-siklus-tamu
+    'hotel.reservations.index' => ['roles' => ['admin', 'front_desk', 'front_office', 'hotel_admin', 'hotel_manager', 'reservation_agent']],
+    'hotel.reservations.store' => ['roles' => ['admin', 'front_desk', 'front_office', 'hotel_admin', 'hotel_manager', 'reservation_agent']],
+    'hotel.housekeeping.index' => ['roles' => ['admin', 'front_office', 'hotel_manager', 'housekeeping']],
+    'hotel.housekeeping.update' => [
+        'roles' => ['admin', 'front_office', 'hotel_manager', 'housekeeping'],
+        'params' => fn () => ['room' => HotelRoom::first()?->id ?? 1],
+    ],
+    'hotel.night-audit.index' => ['roles' => ['admin', 'hotel_manager', 'night_auditor']],
+    'hotel.night-audit.run' => ['roles' => ['admin', 'hotel_manager', 'night_auditor']],
+    'hotel.portal.guest' => ['roles' => ['admin', 'customer', 'guest']],
+    'hotel.portal.corporate' => ['roles' => ['admin', 'corporate_client']],
 ];
