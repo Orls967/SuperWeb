@@ -12,8 +12,11 @@ return new class extends Migration
             if (! Schema::hasColumn('hsp_patients', 'national_id_nik')) {
                 $table->text('national_id_nik')->nullable();
             }
+            if (! Schema::hasColumn('hsp_patients', 'nik_bidx')) {
+                $table->char('nik_bidx', 64)->nullable()->index();
+            }
             if (! Schema::hasColumn('hsp_patients', 'nik_blind_index')) {
-                $table->string('nik_blind_index', 64)->nullable()->index();
+                $table->string('nik_blind_index', 64)->nullable();
             }
             if (! Schema::hasColumn('hsp_patients', 'user_id')) {
                 $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();

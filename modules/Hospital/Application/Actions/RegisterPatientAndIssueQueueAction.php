@@ -34,7 +34,7 @@ class RegisterPatientAndIssueQueueAction
         $today = now()->toDateString();
 
         return DB::transaction(function () use ($dto, $blindIndex, $today) {
-            $patient = Patient::where('nik_blind_index', $blindIndex)->first();
+            $patient = Patient::where('nik_bidx', $blindIndex)->orWhere('nik_blind_index', $blindIndex)->first();
 
             if ($patient !== null) {
                 // Cek apakah pasien sudah terdaftar di poli yang sama hari ini
@@ -58,7 +58,7 @@ class RegisterPatientAndIssueQueueAction
                     'blood_type' => $dto->bloodType,
                     'passport_hash' => $passportHash,
                     'national_id_nik' => $dto->nik,
-                    'nik_blind_index' => $blindIndex,
+                    'nik_bidx' => $blindIndex,
                     'user_id' => $dto->userId,
                 ]);
             }

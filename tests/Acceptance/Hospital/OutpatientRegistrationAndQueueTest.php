@@ -59,7 +59,7 @@ class OutpatientRegistrationAndQueueTest extends HospitalAcceptanceHelper
         $rawPatient = DB::table('hsp_patients')->where('id', $result['encounter']->patient_id)->first();
         $this->assertNotNull($rawPatient);
         $this->assertStringNotContainsString('3171012345670001', $rawPatient->national_id_nik ?? '');
-        $this->assertNotNull($rawPatient->nik_blind_index ?? null);
+        $this->assertNotNull($rawPatient->nik_bidx ?? $rawPatient->nik_blind_index ?? null);
     }
 
     public function test_pendaftaran_pasien_dengan_nik_sama_ditolak_agar_tidak_ganda(): void

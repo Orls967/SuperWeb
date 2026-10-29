@@ -22,7 +22,7 @@ class Patient extends Model
         'encrypted_chronic_diagnoses',
         'passport_hash',
         'national_id_nik',
-        'nik_blind_index',
+        'nik_bidx',
         'user_id',
     ];
 
@@ -32,6 +32,17 @@ class Patient extends Model
         'encrypted_chronic_diagnoses' => 'array',
         'national_id_nik' => 'encrypted',
     ];
+
+    public function setNikBlindIndexAttribute(?string $value): void
+    {
+        $this->attributes['nik_bidx'] = $value;
+        $this->attributes['nik_blind_index'] = $value;
+    }
+
+    public function getNikBlindIndexAttribute(): ?string
+    {
+        return $this->attributes['nik_bidx'] ?? $this->attributes['nik_blind_index'] ?? null;
+    }
 
     public function user(): BelongsTo
     {
