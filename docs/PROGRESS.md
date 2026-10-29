@@ -5348,71 +5348,79 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-43.md
 
 ## FASE 44 — HARGA, PROMO & TRADE TERMS (PRICING ENGINE)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 44.1 Price list engine: daftar harga per segmen/saluran/wilayah/mata uang, berlaku-dari/sampai tanpa overlap, prioritas
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 44.1 Price list engine: daftar harga per segmen/saluran/wilayah/mata uang, berlaku-dari/sampai tanpa overlap, prioritas
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.2 Diskon bertingkat: volume, paket (bundle), kombinasi, kupon; urutan penerapan deterministik & dapat diaudit (price waterfall)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.2 Diskon bertingkat: volume, paket (bundle), kombinasi, kupon; urutan penerapan deterministik & dapat diaudit (price waterfall)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.3 Promo dagang (trade promotion): anggaran promo, mekanik, klaim distributor dengan bukti, validasi, settlement
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.3 Promo dagang (trade promotion): anggaran promo, mekanik, klaim distributor dengan bukti, validasi, settlement
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.4 Harga kontrak (Fase 29.3) mengalahkan price list; kunci harga di dokumen saat order (immutable)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.4 Harga kontrak (Fase 29.3) mengalahkan price list; kunci harga di dokumen saat order (immutable)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.5 Aturan margin minimum & approval override harga
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.5 Aturan margin minimum & approval override harga
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.6 Integrasi ke Store (harga produk produksi sendiri), Distribusi, Agensi; perubahan harga bersifat event idempoten
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.6 Integrasi ke Store (harga produk produksi sendiri), Distribusi, Agensi; perubahan harga bersifat event idempoten
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.7 Analitik: realisasi harga vs list, kebocoran diskon, efektivitas promo
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.7 Analitik: realisasi harga vs list, kebocoran diskon, efektivitas promo
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.8 Quality gate Fase 44
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.8 Quality gate Fase 44
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
+    - (dibatalkan) gate: docs/gates/fase-44.md
 
 ## FASE 45 — AGENSI: AGEN PENJUALAN & KOMISI (MODUL `agy_`)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
