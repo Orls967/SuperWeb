@@ -9018,81 +9018,90 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 85.1–85.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 86 — PRECISION AGRI-TECH (NDVI SATELIT) & DAO CORPORATE GOVERNANCE
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 86.1–86.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Agri (`agri_`) + Governance (`gov_`) · **Prasyarat:** R6.4 ✅, Fase 71 ✅ (bobot token) · **Acuan:** KONSEP 8F slice 2–3
 > **Jalan pintas terlarang di fase ini:** voting tanpa snapshot bobot; hasil voting langsung mengeksekusi tanpa approval; NDVI dari masukan bebas tanpa jejak scan — ditambah seluruh X1–X25.
-- [x] 86.1 **NDVI satelit** (`agri_satellite_scans` per petak plasma, feed simulasi): indeks kehijauan per poligon lahan (`land_polygon_geojson` Fase 62.1) per 5 hari → tren per musim → deteksi stres tanaman
-  Bukti:
+- [ ] 86.1 **NDVI satelit** (`agri_satellite_scans` per petak plasma, feed simulasi): indeks kehijauan per poligon lahan (`land_polygon_geojson` Fase 62.1) per 5 hari → tren per musim → deteksi stres tanaman
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_1_and_86_2_satellite_ndvi_scan_and_conditional_loan_disbursement
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.2 **Cicilan prestasi**: ratchet kontrak tani Fase 62.2 diperluas — pencairan cicilan modal pembiayaan ke petani **hanya bila NDVI ≥ standar kualitas**; gagal → penundaan + rencana korektif (irigasi/pupuk via Agri), 2x gagal → restrukturisasi via ApprovalEngine
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.2 **Cicilan prestasi**: ratchet kontrak tani Fase 62.2 diperluas — pencairan cicilan modal pembiayaan ke petani **hanya bila NDVI ≥ standar kualitas**; gagal → penundaan + rencana korektif (irigasi/pupuk via Agri), 2x gagal → restrukturisasi via ApprovalEngine
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_1_and_86_2_satellite_ndvi_scan_and_conditional_loan_disbursement
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.3 Korelasi NDVI vs hasil panen aktual (grade A/B/C Fase 62.3) → validasi model presisi; skor risiko petak → memengaruhi plafon pembiayaan berikutnya
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.3 Korelasi NDVI vs hasil panen aktual (grade A/B/C Fase 62.3) → validasi model presisi; skor risiko petak → memengaruhi plafon pembiayaan berikutnya
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_1_and_86_2_satellite_ndvi_scan_and_conditional_loan_disbursement
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.4 **DAO governance** (`gov_proposals`, `gov_votes`, `gov_voter_weights`): pemegang hak suara = karyawan (HCM), pemegang token RWA (Fase 71), franchisee (Resto), partner (Fase 47) → bobot berbasis Paspor Digital/token holdings
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.4 **DAO governance** (`gov_proposals`, `gov_votes`, `gov_voter_weights`): pemegang hak suara = karyawan (HCM), pemegang token RWA (Fase 71), franchisee (Resto), partner (Fase 47) → bobot berbasis Paspor Digital/token holdings
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.5 Voting: masa kampanye → kuartil pemungutan → kuorum minimum → tally weighted hash-chained (jejak tak terubah) → hasil disetujui/ ditolak; kuorum, quorum-weighted, dan aturan abstain terdefinisi per jenis proposal
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.5 Voting: masa kampanye → kuartil pemungutan → kuorum minimum → tally weighted hash-chained (jejak tak terubah) → hasil disetujui/ ditolak; kuorum, quorum-weighted, dan aturan abstain terdefinisi per jenis proposal
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.6 **Eksekusi otomatis bila disetujui**: proposal "buka cabang Resto di kota B" → membuat proyek Contract/EPC/Investasi draft (Fase 63) + budget request; proposal "akuisisi pabrik" → memicu due diligence Party (Fase 47.2); semuanya tetap melewati approval dewan sebelum eksekusi final
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.6 **Eksekusi otomatis bila disetujui**: proposal "buka cabang Resto di kota B" → membuat proyek Contract/EPC/Investasi draft (Fase 63) + budget request; proposal "akuisisi pabrik" → memicu due diligence Party (Fase 47.2); semuanya tetap melewati approval dewan sebelum eksekusi final
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.7 Dashboard: peta NDVI + status cicilan, proposal aktif, distribusi bobot suara, riwayat keputusan & eksekusinya
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.7 Dashboard: peta NDVI + status cicilan, proposal aktif, distribusi bobot suara, riwayat keputusan & eksekusinya
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/resources/views/agri/index.blade.php
     - test: modules/Agri/tests/Feature/AgriTest.php::test_agri_web_index_accessible
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.8 Tests: (a) NDVI di bawah standar → cicilan tertahan (b) Σ bobot suara = paspor/token terbit (c) vote ganda per pemilih ditolak (d) proposal disetujui → draft proyek terbentuk tepat 1x (e) `governance:audit` + `agri:audit` = 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.8 Tests: (a) NDVI di bawah standar → cicilan tertahan (b) Σ bobot suara = paspor/token terbit (c) vote ganda per pemilih ditolak (d) proposal disetujui → draft proyek terbentuk tepat 1x (e) `governance:audit` + `agri:audit` = 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: cfdf6bda
     - file: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
-    - gate: docs/gates/fase-86.md
-- [x] 86.9 Quality gate Fase 86
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.9 Quality gate Fase 86
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: cfdf6bda
     - file: modules/Agri/Console/Commands/AuditGovernanceCommand.php
     - test: modules/Agri/tests/Feature/AgriTest.php::test_agri_audit_passes_cleanly
     - akses: command governance:audit
-    - gate: docs/gates/fase-86.md
+    - (dibatalkan) gate: docs/gates/fase-86.md
 
 ### Register Minus Fase 86
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
