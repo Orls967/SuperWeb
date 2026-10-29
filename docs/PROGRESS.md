@@ -1653,7 +1653,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | - | - | Tidak ada minus terbuka (seluruh deliverable R7.1 s/d R7.4 tuntas 100%) | - | - | - |
 
 ### FASE R8 — EVENT SPINE & SIMULATION KERNEL NYATA
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R2.5, R4 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R7 🔵.
 
 #### DoR Fase R8 — Event Spine & Simulation Kernel Nyata
 - Disetujui pemilik: [x] 2026-10-17 (chat)
@@ -1670,40 +1670,45 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - Daftar test wajib: `EventCatalogContractTest`, `EventSpineConsumerGroupTest`, `ClockInterfaceHygieneTest`, `SimulationDeterministicRunTest`, `SimulationKernelTest`.
 - Jalan pintas yang dihindari: X1–X25 (dilarang mock kosong, dilarang modifikasi teks item tanpa P10).
 
-- [x] R8.1 **Katalog event** (`KONSEP.md` §A4): nama ber-versi, skema payload, produsen, konsumen; test katalog gagal bila ada event lintas modul tanpa konsumen nyata.
-  Bukti:
+- [ ] R8.1 **Katalog event** (`KONSEP.md` §A4): nama ber-versi, skema payload, produsen, konsumen; test katalog gagal bila ada event lintas modul tanpa konsumen nyata.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: b349885
     - file: modules/Core/Domain/Events/EventCatalog.php
     - file: tests/Architecture/EventCatalogContractTest.php
     - test: tests/Architecture/EventCatalogContractTest.php::test_all_catalog_events_follow_versioned_naming_and_have_producers_and_consumers
     - gate: docs/gates/fase-r8.md
-- [x] R8.2 **Consumer group & replay**: worker `core:consume-spine {group}` dengan offset tersimpan; replay dari offset N idempoten.
-  Bukti:
+- [ ] R8.2 **Consumer group & replay**: worker `core:consume-spine {group}` dengan offset tersimpan; replay dari offset N idempoten.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: bd8439e
     - file: modules/Core/Console/Commands/ConsumeSpineCommand.php
     - file: modules/Core/tests/Feature/EventSpineConsumerGroupTest.php
     - test: modules/Core/tests/Feature/EventSpineConsumerGroupTest.php::test_consumer_group_consumes_and_commits_offset
     - gate: docs/gates/fase-r8.md
-- [x] R8.3 **ClockInterface** (K-09): semua action peka waktu memakai jam terinjeksi; hapus `Carbon::setTestNow()` dari kode produksi (baseline `arch:scan` A8 = 0).
-  Bukti:
+- [ ] R8.3 **ClockInterface** (K-09): semua action peka waktu memakai jam terinjeksi; hapus `Carbon::setTestNow()` dari kode produksi (baseline `arch:scan` A8 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 28b0f25
     - file: modules/Core/Contracts/ClockInterface.php
     - file: tests/Architecture/ClockInterfaceHygieneTest.php
     - test: tests/Architecture/ClockInterfaceHygieneTest.php::test_clock_interface_is_bound_and_resolvable
     - gate: docs/gates/fase-r8.md
-- [x] R8.4 **`sim:run --days=N --resume`**: loop per hari virtual menjalankan *tick handler* terdaftar (depresiasi, cicilan, tagihan, expiry poin/voucher, MRP, D&D, royalti) dengan checkpoint; test: dua run identik → hash state identik.
-  Bukti:
+- [ ] R8.4 **`sim:run --days=N --resume`**: loop per hari virtual menjalankan *tick handler* terdaftar (depresiasi, cicilan, tagihan, expiry poin/voucher, MRP, D&D, royalti) dengan checkpoint; test: dua run identik → hash state identik.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: b5faa1a
     - file: modules/Core/Console/Commands/RunSimulationCommand.php
     - file: modules/Core/tests/Feature/SimulationDeterministicRunTest.php
     - test: modules/Core/tests/Feature/SimulationDeterministicRunTest.php::test_two_identical_simulation_runs_produce_identical_state_hash
     - gate: docs/gates/fase-r8.md
-- [x] R8.5 Quality gate Fase R8 + verifikasi silang.
-  Bukti:
+- [ ] R8.5 Quality gate Fase R8 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 42be624
     - file: docs/gates/fase-r8.md
@@ -1716,7 +1721,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 
 
 ### FASE R9 — SKALA BERTINGKAT & BENCHMARK
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-18) · Prasyarat: R1–R8 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R8 🔵.
 
 #### DoR Fase R9 — Skala Bertingkat & Benchmark
 - Disetujui pemilik: [x] 2026-10-17 (chat)
@@ -1734,32 +1739,36 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - Daftar test wajib: `ScaleProvisionerTest`, `PlatformBenchmarkTest`, `K32ScalabilityRefactorTest`.
 - Jalan pintas yang dihindari: X1–X25 (dilarang mock kosong, dilarang modifikasi teks item tanpa P10).
 
-- [x] R9.1 Seeder T1 (demo ribuan baris) per lini yang ✅; seeder T2 (ratusan ribu–jutaan) dengan chunk + checkpoint, hanya dijalankan di MySQL/PostgreSQL.
-  Bukti:
+- [ ] R9.1 Seeder T1 (demo ribuan baris) per lini yang ✅; seeder T2 (ratusan ribu–jutaan) dengan chunk + checkpoint, hanya dijalankan di MySQL/PostgreSQL.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 15f46b7
     - file: modules/Core/Console/Commands/ScaleProvisionCommand.php
     - file: modules/Core/tests/Feature/ScaleProvisionerTest.php
     - test: modules/Core/tests/Feature/ScaleProvisionerTest.php::test_dry_run_does_not_modify_database
     - gate: docs/gates/fase-r9.md
-- [x] R9.2 Benchmark: waktu seed, p95 halaman kritis, durasi `bank:reconcile` & audit utama; hasil dilampirkan oleh `gate:report`.
-  Bukti:
+- [ ] R9.2 Benchmark: waktu seed, p95 halaman kritis, durasi `bank:reconcile` & audit utama; hasil dilampirkan oleh `gate:report`.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 35cee83
     - file: modules/Core/Console/Commands/BenchmarkRunCommand.php
     - file: tests/Feature/Benchmark/PlatformBenchmarkTest.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_artisan_benchmark_run_command_exits_cleanly
     - gate: docs/gates/fase-r9.md
-- [x] R9.3 Ganti pola tidak skalabel (K-32): `::all()` di audit, filter subscription di PHP, sampel `limit(50)` tanpa urutan, screening sanksi O(n·m).
-  Bukti:
+- [ ] R9.3 Ganti pola tidak skalabel (K-32): `::all()` di audit, filter subscription di PHP, sampel `limit(50)` tanpa urutan, screening sanksi O(n·m).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: e62f27e
     - file: modules/Hcm/Application/Services/HcmService.php
     - file: tests/Feature/Performance/K32ScalabilityRefactorTest.php
     - test: tests/Feature/Performance/K32ScalabilityRefactorTest.php::test_k32_hcm_audit_handles_chunked_payrolls_and_flags_corruptions
     - gate: docs/gates/fase-r9.md
-- [x] R9.4 Quality gate Fase R9 + verifikasi silang.
-  Bukti:
+- [ ] R9.4 Quality gate Fase R9 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 2ff5c50
     - file: docs/gates/fase-r9.md
