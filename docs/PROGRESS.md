@@ -1322,7 +1322,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 ### FASE R4 — BATAS MODUL & KEPEMILIKAN DATA
 
 
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R1 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R3 ✅.
 
 #### DoR Fase R4 — Batas Modul & Kepemilikan Data
 - Disetujui pemilik: [x] 2026-10-16 (chat)
@@ -1344,9 +1344,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - `ModelFillableIntegrityTest`
 - Jalan pintas yang dihindari: menaikkan baseline tanpa keputusan pemilik, mengabaikan reverse dependencies dengan allowlist liar, mass-assignment bypass tanpa fillable eksplisit, strict_types dilewati pada file baru/modifikasi.
 
-- [x] R4.1 **Arch test generik** (K-07): untuk setiap pasangan modul A≠B, `Modules\A` tidak boleh memakai `Modules\B\Domain` kecuali shared kernel yang ditetapkan (mis. `Shared\Ledger\*`); `Shared` & `Core` tidak boleh bergantung ke modul bisnis; seluruh `modules/` wajib `declare(strict_types=1)`.
+- [ ] R4.1 **Arch test generik** (K-07): untuk setiap pasangan modul A≠B, `Modules\A` tidak boleh memakai `Modules\B\Domain` kecuali shared kernel yang ditetapkan (mis. `Shared\Ledger\*`); `Shared` & `Core` tidak boleh bergantung ke modul bisnis; seluruh `modules/` wajib `declare(strict_types=1)`.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Kriteria terima: aturan berbasis daftar modul dinamis (bukan pasangan manual); pelanggaran yang tersisa hanya di baseline ber-tanggal-kedaluwarsa.
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: d55dc03
     - file: tests/Architecture/StrictTypesComplianceTest.php
@@ -1365,8 +1366,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/ModulePrefixRegistryTest.php::it resolves specific disambiguated prefixes correctly
     - test: tests/Architecture/ModulePrefixRegistryTest.php::it flags foreign table access via ForeignTablePrefixRule
     - gate: docs/gates/fase-r4.md
-- [x] R4.3 **Putus dependensi terbalik**: `Shared\Application\Queries\GlobalSearchQuery` tidak mengimpor Mall (pakai registry pencarian yang diisi modul); `Core\…\TwelveLinesCrossEcosystemService` tidak mengimpor Hotel; `InventoryService` tidak mengimpor `Store\Domain\Models\Product` (baseline `arch:scan` A9 = 0).
-  Bukti:
+- [ ] R4.3 **Putus dependensi terbalik**: `Shared\Application\Queries\GlobalSearchQuery` tidak mengimpor Mall (pakai registry pencarian yang diisi modul); `Core\…\TwelveLinesCrossEcosystemService` tidak mengimpor Hotel; `InventoryService` tidak mengimpor `Store\Domain\Models\Product` (baseline `arch:scan` A9 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 2ed527b
     - file: modules/Shared/Application/SearchRegistry.php
@@ -1375,8 +1377,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Architecture/KernelZeroBusinessDependencyTest.php
     - test: tests/Architecture/KernelZeroBusinessDependencyTest.php::it enforces that kernel modules (Shared, Core) have zero dependencies on business modules (A9 = 0)
     - gate: docs/gates/fase-r4.md
-- [x] R4.4 **Pecah modul Integration** (K-05, K-06): tabel klasifikasi 345 service → {pertahankan di Integration (adapter eksternal), pindah ke modul X, arsipkan/hapus (izin pemilik)}; kosongkan `IntegrationServiceProvider` dari singleton tanpa konfigurasi (auto-resolve). Pindahkan bertahap per lini sesuai R7.
-  Bukti:
+- [ ] R4.4 **Pecah modul Integration** (K-05, K-06): tabel klasifikasi 345 service → {pertahankan di Integration (adapter eksternal), pindah ke modul X, arsipkan/hapus (izin pemilik)}; kosongkan `IntegrationServiceProvider` dari singleton tanpa konfigurasi (auto-resolve). Pindahkan bertahap per lini sesuai R7.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 279af36
     - file: docs/INTEGRATION_SERVICES_CLASSIFICATION.md
@@ -1389,8 +1392,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/IntegrationServicesClassificationTest.php::it confirms Integration services auto-resolve seamlessly via service container
     - minus: M-R1-1
     - gate: docs/gates/fase-r4.md
-- [x] R4.5 **Turunkan baseline batas modul**: `arch:scan` A1 (Domain lintas modul) & A2 (DB::table lintas prefiks) = 0 di luar allowlist shared kernel yang tercatat di DECISIONS.
-  Bukti:
+- [ ] R4.5 **Turunkan baseline batas modul**: `arch:scan` A1 (Domain lintas modul) & A2 (DB::table lintas prefiks) = 0 di luar allowlist shared kernel yang tercatat di DECISIONS.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: konfigurasi
     - commit: 3f47c92
     - file: config/modules.php
@@ -1398,8 +1402,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Architecture/baselines/arch-scan.json
     - test: tests/Architecture/ArchScanBaselineTest.php::it keeps module code within the arch:scan ratchet baseline
     - gate: docs/gates/fase-r4.md
-- [x] R4.6 **Skema** (K-25): FK + index untuk setiap `*_id` intra-modul; ganti `$guarded = []` dengan `$fillable`; `strict_types` di semua file (baseline `arch:scan` A10–A12 = 0).
-  Bukti:
+- [ ] R4.6 **Skema** (K-25): FK + index untuk setiap `*_id` intra-modul; ganti `$guarded = []` dengan `$fillable`; `strict_types` di semua file (baseline `arch:scan` A10–A12 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 35ea47e
     - file: app/Quality/ArchScan/Rules/MissingForeignKeyRule.php
@@ -1423,7 +1428,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 
 
 ### FASE R5 — DOKUMENTASI, AUDIT & TEST YANG JUJUR
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Prasyarat: R0 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R4 🔵.
 
 #### DoR Fase R5 — Dokumentasi, audit & test yang jujur
 - Disetujui pemilik: [x] 2026-10-16 (chat)
@@ -1442,8 +1447,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - `TestHygieneTest`
 - Jalan pintas yang dihindari: fixture palsu yang tidak memicu failure pada command audit, asersi kosong / `assertTrue(true)` baru, skipping test tanpa blocker sah, klaim status sehat tanpa verifikasi DB nyata.
 
-- [x] R5.1 **CODEBASE otomatis** (K-03): `php artisan docs:inventory` menghasilkan bagian faktual `CODEBASE.md` (modul, prefiks, jumlah tabel, rute per modul + middleware, command & jadwal, akun ledger per modul); test gagal bila hasil generate ≠ isi file.
-  Bukti:
+- [ ] R5.1 **CODEBASE otomatis** (K-03): `php artisan docs:inventory` menghasilkan bagian faktual `CODEBASE.md` (modul, prefiks, jumlah tabel, rute per modul + middleware, command & jadwal, akun ledger per modul); test gagal bila hasil generate ≠ isi file.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 4407dcb
     - file: app/Console/Commands/DocsInventoryCommand.php
@@ -1451,8 +1457,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: docs/CODEBASE.md
     - test: tests/Architecture/CodebaseInventorySyncTest.php::it ensures php artisan docs:inventory passes and verifies synchronization with CODEBASE.md
     - gate: docs/gates/fase-r5.md
-- [x] R5.2 **Fixture korupsi untuk semua audit** (K-02): baseline `AuditCommandContractTest` = 0 — setiap `*:audit` terdaftar membandingkan dua sumber dan punya fixture yang membuatnya gagal.
-  Bukti:
+- [ ] R5.2 **Fixture korupsi untuk semua audit** (K-02): baseline `AuditCommandContractTest` = 0 — setiap `*:audit` terdaftar membandingkan dua sumber dan punya fixture yang membuatnya gagal.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 6824e6f
     - file: tests/Architecture/AuditCommandContractTest.php
@@ -1462,8 +1469,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/AuditCommandContractTest.php::it confirms bank:reconcile passes on clean state and fails when data is corrupted
     - test: tests/Architecture/AuditCommandContractTest.php::it confirms api:audit passes on clean state and fails when signature is corrupted
     - gate: docs/gates/fase-r5.md
-- [x] R5.3 **`super:health-check` jujur**: hanya melaporkan pilar yang benar-benar dicek; tambahkan pilar baru hanya bersama audit dua-sumbernya.
-  Bukti:
+- [ ] R5.3 **`super:health-check` jujur**: hanya melaporkan pilar yang benar-benar dicek; tambahkan pilar baru hanya bersama audit dua-sumbernya.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ccea63b
     - file: modules/Core/Application/Services/SystemHealthService.php
@@ -1475,8 +1483,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Quality/HonestSuperHealthCheckTest.php::it fails honestly when the mall billing pillar is corrupted
     - akses: command super:health-check
     - gate: docs/gates/fase-r5.md
-- [x] R5.4 **Format gate di AUDIT.md**: hanya tautan ke `docs/gates/fase-N.md` hasil `gate:report`; entri lama yang hanya sub-suite diberi catatan "tidak representatif".
-  Bukti:
+- [ ] R5.4 **Format gate di AUDIT.md**: hanya tautan ke `docs/gates/fase-N.md` hasil `gate:report`; entri lama yang hanya sub-suite diberi catatan "tidak representatif".
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: a230e54
     - file: docs/AUDIT.md
@@ -1485,8 +1494,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/AuditDocGateFormatTest.php::it verifies that all official gate reports referenced in docs/AUDIT.md physically exist
     - test: tests/Architecture/AuditDocGateFormatTest.php::it ensures all completed R phase gates are referenced in docs/AUDIT.md
     - gate: docs/gates/fase-r5.md
-- [x] R5.5 **Higiene test** (K-27): baseline `TestHygieneTest` = 0; setiap modul yang punya rute memiliki test HTTP (role berhak & tak berhak); setiap fitur uang punya test (c) retry dan (d) invarian.
-  Bukti:
+- [ ] R5.5 **Higiene test** (K-27): baseline `TestHygieneTest` = 0; setiap modul yang punya rute memiliki test HTTP (role berhak & tak berhak); setiap fitur uang punya test (c) retry dan (d) invarian.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 9a40940
     - file: tests/Architecture/TestHygieneTest.php
@@ -1498,8 +1508,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Asset manager can access asset index
     - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Admin can access asset create
     - gate: docs/gates/fase-r5.md
-- [x] R5.6 Quality gate Fase R5 + verifikasi silang.
-  Bukti:
+- [ ] R5.6 Quality gate Fase R5 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: a445d88
     - file: docs/CODEBASE.md
