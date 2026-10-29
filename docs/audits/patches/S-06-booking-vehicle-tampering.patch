@@ -1,0 +1,17 @@
+diff --git a/modules/AutoServe/Http/Controllers/BookingController.php b/modules/AutoServe/Http/Controllers/BookingController.php
+index bc770c54..10dca17d 100644
+--- a/modules/AutoServe/Http/Controllers/BookingController.php
++++ b/modules/AutoServe/Http/Controllers/BookingController.php
+@@ -69,6 +69,12 @@ public function store(Request $request)
+         ];
+ 
+         if (! empty($validated['vehicle_id'])) {
++            $isOwner = Vehicle::where('id', $validated['vehicle_id'])
++                ->where('user_id', auth()->id())
++                ->exists();
++            if (! $isOwner && auth()->user()?->role !== 'admin') {
++                abort(403, 'Anda tidak memiliki hak akses atas kendaraan ini.');
++            }
+             $data['vehicle_id'] = $validated['vehicle_id'];
+         } elseif ($request->boolean('save_to_garage')) {
+             $createdVehicle = Vehicle::create([
