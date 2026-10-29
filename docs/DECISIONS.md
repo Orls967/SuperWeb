@@ -1867,3 +1867,18 @@
 
 
 
+
+## 2026-10-30: Pagar Integritas Anti-Sertifikasi Massal dan Tata Kelola Verifikasi Fase (K-8)
+- **Anchor:** `2026-10-30-pagar-sertifikasi-massal`
+- **Context:**
+  - Audit forensik 2026-10-30 menemukan praktik anti-pola sertifikasi massal, di mana commit `b359587a` menandai 75 fase lama sekaligus menjadi `✅ TERVERIFIKASI` (1465 item dicentang tanpa pengujian substantif). Selain itu, 46 commit historis menandai fase ✅ tanpa prefix `docs(verifikasi-` atau menyentuh kode di luar `docs/`.
+- **Decision:**
+  1. Diberlakukan pagar `MassCertificationGuard` yang memblokir setiap commit yang menyentuh `docs/PROGRESS.md`:
+     - Menambah $> 15$ centang (`[ ]` $	o$ `[x]`) dalam 1 commit tanpa anchor `DECISIONS.md#...` di commit message.
+     - Mengubah status $> 1$ fase menjadi `✅` dalam 1 commit tanpa anchor `DECISIONS.md#...` di commit message.
+     - Mengubah status fase menjadi `✅` tetapi menyentuh file di luar `docs/**` ATAU commit message tidak berawalan `docs(verifikasi-`.
+  2. Sebanyak 46 commit historis sebelum tanggal 2026-10-30 dicatat dalam ratchet baseline `tests/Architecture/baselines/mass-certification.json` dengan anchor ini dan dilarang bertambah.
+- **Reason:**
+  - Mencegah sertifikasi palsu/massal dan menegakkan prinsip pemisahan peran bahwa verifikasi independen harus terisolasi di dokumen gate saja.
+- **Verification:**
+  - `tests/Architecture/MassCertificationGuardTest.php` PASS.

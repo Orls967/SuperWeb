@@ -208,3 +208,45 @@ jobs:
       - name: Mutation kelas diubah PR
         run: php -d memory_limit=1G artisan test:mutate --git-diff --parallel --base="${{ github.base_ref || 'master' }}" --min=60
 
+  integrity-fence:
+    name: Pagar integritas
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, bcmath
+          coverage: none
+
+      - name: Setup Environment File
+        run: cp .env.example .env
+
+      - name: Install Composer dependencies
+        env:
+          APP_ENV: local
+          BLIND_INDEX_PEPPER: your-blind-index-pepper-placeholder
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Generate Application Key
+        run: php artisan key:generate --ansi
+
+      - name: Run Integrity Fence Tests
+        run: |
+          vendor/bin/pest \
+            tests/Architecture/ProgressIntegrityTest.php \
+            tests/Architecture/ScannerScopeContractTest.php \
+            tests/Architecture/MassCertificationGuardTest.php \
+            tests/Architecture/ConfigAllowlistGovernanceTest.php \
+            tests/Architecture/MemoryBudgetContractTest.php \
+            tests/Architecture/MutationFenceContractTest.php
+
+
