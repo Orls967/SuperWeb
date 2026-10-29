@@ -19,6 +19,13 @@ final class HospitalAccounts
     {
         return [
             [
+                'code' => 'hsp:cash:IDR',
+                'name' => 'Hospital Outpatient Cash On Hand',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
                 'code' => 'hsp:doctor_fee_revenue:IDR',
                 'name' => 'Hospital Outpatient Doctor Fee Revenue',
                 'kind' => AccountKind::REVENUE,

@@ -23,10 +23,15 @@ class OutpatientBillingAndCashierTest extends HospitalAcceptanceHelper
 {
     protected function createDispensedEncounterFixture(): OutpatientEncounter
     {
-        $poli = Polyclinic::create(['code' => 'POLI_INT', 'name' => 'Poli Dalam', 'is_active' => true]);
-        $doctor = Doctor::create(['user_id' => $this->createHospitalUser('doctor')->id, 'polyclinic_id' => $poli->id, 'doctor_code' => 'DOC-01', 'is_active' => true]);
+        $poli = Polyclinic::firstOrCreate(['code' => 'POLI_INT'], ['name' => 'Poli Dalam', 'is_active' => true]);
+        $doctorUser = $this->createHospitalUser('doctor');
+        $doctor = Doctor::firstOrCreate(['doctor_code' => 'DOC-01'], [
+            'user_id' => $doctorUser->id,
+            'polyclinic_id' => $poli->id,
+            'is_active' => true,
+        ]);
         $patient = Patient::create(['mrn' => 'MRN-'.uniqid(), 'name' => 'Pasien Billing', 'date_of_birth' => '1985-05-12', 'blood_type' => 'O', 'passport_hash' => hash('sha256', 'p')]);
-        $queue = QueueTicket::create(['polyclinic_id' => $poli->id, 'doctor_id' => $doctor->id, 'queue_date' => now()->toDateString(), 'queue_number' => 1, 'queue_code' => 'T-01', 'status' => 'SERVED']);
+        $queue = QueueTicket::create(['polyclinic_id' => $poli->id, 'doctor_id' => $doctor->id, 'queue_date' => now()->toDateString(), 'queue_number' => (int) (QueueTicket::count() + 1), 'queue_code' => 'T-'.uniqid(), 'status' => 'SERVED']);
 
         $encounter = OutpatientEncounter::create([
             'encounter_code' => 'ENC-'.uniqid(),
@@ -110,17 +115,8 @@ class OutpatientBillingAndCashierTest extends HospitalAcceptanceHelper
         $this->assertSame('SETTLED', $encounter->fresh()->status);
 
         // Verifikasi mutasi debit kas dan kredit piutang pasien di ledger
-        $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'bank:cash:IDR',
-            'direction' => 'DEBIT',
-            'amount' => 170000,
-        ]);
-
-        $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'hsp:patient_receivable:IDR',
-            'direction' => 'CREDIT',
-            'amount' => 170000,
-        ]);
+        $this->assertLedgerPosted('hsp:cash:IDR', 170000, 'DEBIT');
+        $this->assertLedgerPosted('hsp:patient_receivable:IDR', 170000, 'CREDIT');
     }
 
     public function test_pembayaran_tanpa_header_idempotency_key_ditolak_422(): void
@@ -214,8 +210,9 @@ class OutpatientBillingAndCashierTest extends HospitalAcceptanceHelper
         $p2 = $action->execute(new CashPaymentDTO(invoiceId: $inv2->id, cashReceivedIdr: 100000, idempotencyKey: 'IDEMP-DISTINCT-2', cashierUserId: $cashier->id));
 
         $this->assertNotSame($p1->id, $p2->id);
-        $totalDebitCash = DB::table('bank_ledger_entries')->where('account_code', 'bank:cash:IDR')->sum('amount');
-        $this->assertSame(200000, (int) $totalDebitCash);
+        $cashAcc = DB::table('bank_ledger_accounts')->where('code', 'hsp:cash:IDR')->firstOrFail();
+        $totalDebitCash = DB::table('bank_ledger_entries')->where('account_id', $cashAcc->id)->sum('amount');
+        $this->assertSame(-200000, (int) $totalDebitCash);
     }
 
     public function test_pembayaran_kurang_bayar_ditolak(): void
