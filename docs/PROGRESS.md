@@ -5694,88 +5694,98 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-47.md
 
 ## FASE 48 — MULTI-CURRENCY & TREASURY
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 48.1 Master mata uang & kurs: kurs harian (sumber simulasi + input manual), jenis kurs (spot/tengah/pajak), tabel kurs ber-versi tak dapat diubah
-  Bukti:
+- [ ] 48.1 Master mata uang & kurs: kurs harian (sumber simulasi + input manual), jenis kurs (spot/tengah/pajak), tabel kurs ber-versi tak dapat diubah
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.2 Ledger multi-currency: transaksi dalam mata uang asing dengan nilai fungsional tersimpan (minor unit), **tanpa float**; Σ per mata uang & Σ fungsional seimbang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.2 Ledger multi-currency: transaksi dalam mata uang asing dengan nilai fungsional tersimpan (minor unit), **tanpa float**; Σ per mata uang & Σ fungsional seimbang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.3 Revaluasi piutang/utang/kas valas akhir periode, laba/rugi kurs terealisasi & belum terealisasi, jurnal pembalik otomatis
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.3 Revaluasi piutang/utang/kas valas akhir periode, laba/rugi kurs terealisasi & belum terealisasi, jurnal pembalik otomatis
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.4 Rekening bank perusahaan & kas: saldo, rekonsiliasi bank (impor mutasi simulasi, pencocokan otomatis, selisih), kas kecil
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.4 Rekening bank perusahaan & kas: saldo, rekonsiliasi bank (impor mutasi simulasi, pencocokan otomatis, selisih), kas kecil
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.5 Forecast arus kas (AR/AP/PO/payroll-placeholder/pajak), horizon 13 minggu, skenario
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.5 Forecast arus kas (AR/AP/PO/payroll-placeholder/pajak), horizon 13 minggu, skenario
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.6 Lindung nilai sederhana (forward contract simulasi): eksposur, kontrak, mark-to-market, penyelesaian
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.6 Lindung nilai sederhana (forward contract simulasi): eksposur, kontrak, mark-to-market, penyelesaian
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.7 Pinjaman & fasilitas bank: plafon, penarikan, bunga, covenant (rasio) & peringatan pelanggaran
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.7 Pinjaman & fasilitas bank: plafon, penarikan, bunga, covenant (rasio) & peringatan pelanggaran
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.8 Pooling kas antar-entitas (Fase 52 intercompany loan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.8 Pooling kas antar-entitas (Fase 52 intercompany loan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.9 `treasury:audit` (0 selisih), pilar health-check
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.9 `treasury:audit` (0 selisih), pilar health-check
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.10 Quality gate Fase 48
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.10 Quality gate Fase 48
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
+    - (dibatalkan) gate: docs/gates/fase-48.md
 
 ## FASE 49 — EKSPOR–IMPOR (TRADE OPERATIONS)
 > **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
