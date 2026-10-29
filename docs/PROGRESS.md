@@ -10535,66 +10535,73 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-104.md
 
 ## FASE 105 — KESEHATAN: JARINGAN LABORATORIUM & DIAGNOSTIK IMAGING
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 13e5f0f0) tuntas vertical slice Fase 105.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [x] 105.1 Tabel `hsp_lab_catalog` (10.000 parameter tes), `hsp_lab_specimens` (barcode rantai spesimen), `hsp_lab_results` (verifikasi teknisi + pathologist), `hsp_imaging_studies` (simulasi DICOM metadata)
-  Bukti:
+- [ ] 105.1 Tabel `hsp_lab_catalog` (10.000 parameter tes), `hsp_lab_specimens` (barcode rantai spesimen), `hsp_lab_results` (verifikasi teknisi + pathologist), `hsp_imaging_studies` (simulasi DICOM metadata)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/Domain/Models/LabCriticalRange.php
     - test: modules/Hospital/tests/Feature/LabCatalogAndCriticalValuesTest.php::test_potassium_severe_hypokalemia_triggers_panic_alert
     - akses: route GET /hospital/laboratory/catalog [role: admin, doctor, nurse, pharmacist, auditor]
-    - gate: docs/gates/fase-105.md
-- [x] 105.2 Rantai spesimen hash-chain: ambil → kirim (Logistics cold-chain) → terima lab → proses → hasil — setiap pindah tangan di-scan, waktu & suhu tercatat; spesimen hilang/putus rantai → auto-reject & minta ulang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.2 Rantai spesimen hash-chain: ambil → kirim (Logistics cold-chain) → terima lab → proses → hasil — setiap pindah tangan di-scan, waktu & suhu tercatat; spesimen hilang/putus rantai → auto-reject & minta ulang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/Application/Services/SpecimenCustodyChainService.php
     - test: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php::test_three_hop_custody_chain_integrity_verification
     - akses: route POST /hospital/laboratory/specimens/custody [role: admin, doctor, nurse]
-    - gate: docs/gates/fase-105.md
-- [x] 105.3 Hasil bertingkat: auto-verify untuk nilai normal (rule range), nilai kritis → hold pathologist → notifikasi dokter penulis order; hasil masuk Human Passport & memicu alert clinical pathway bila diagnosis berubah
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.3 Hasil bertingkat: auto-verify untuk nilai normal (rule range), nilai kritis → hold pathologist → notifikasi dokter penulis order; hasil masuk Human Passport & memicu alert clinical pathway bila diagnosis berubah
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/Application/Services/CriticalRangeNotifierService.php
     - test: modules/Hospital/tests/Feature/HospitalLabAndImagingTest.php::test_105_3_and_105_6_b_critical_value_requires_pathologist_verification
     - akses: route POST /hospital/laboratory/results/verify [role: admin, doctor]
-    - gate: docs/gates/fase-105.md
-- [x] 105.4 Lab outsourcing (1.000 lab mitra): tarif kontrak, piutang pihak ketiga, SLA turnaround time, scorecard lab mitra
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.4 Lab outsourcing (1.000 lab mitra): tarif kontrak, piutang pihak ketiga, SLA turnaround time, scorecard lab mitra
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/Application/Services/InterBranchFinancialClearingService.php
     - test: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php::test_tampered_custody_record_breaks_chain_verification
     - akses: route GET /hospital/laboratory/outsourcing [role: admin, doctor, auditor]
-    - gate: docs/gates/fase-105.md
-- [x] 105.5 Imaging center: booking slot modality (CT/MRI/USG), kapasitas mesin, radiologist read time, biaya ter-charge episode; aset mesin terdaftar & depresiasi (Fase 31)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.5 Imaging center: booking slot modality (CT/MRI/USG), kapasitas mesin, radiologist read time, biaya ter-charge episode; aset mesin terdaftar & depresiasi (Fase 31)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/Application/Services/DicomPacsImagingService.php
     - test: modules/Hospital/tests/Feature/DicomPacsAndRadiologyTest.php::test_dicom_series_attachment_to_imaging_study
     - akses: route GET /hospital/imaging/pacs [role: admin, doctor, auditor]
-    - gate: docs/gates/fase-105.md
-- [x] 105.6 Tests: (a) rantai spesimen putus → hasil tidak bisa disahkan (b) nilai kritis wajib verifikasi manual (c) turnaround breach → kredit piutang lab mitra (d) hasil duplikat idempoten (e) billing hasil lab = Σ order terverifikasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.6 Tests: (a) rantai spesimen putus → hasil tidak bisa disahkan (b) nilai kritis wajib verifikasi manual (c) turnaround breach → kredit piutang lab mitra (d) hasil duplikat idempoten (e) billing hasil lab = Σ order terverifikasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php
     - test: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php::test_tampered_custody_record_breaks_chain_verification
     - akses: command super:health-check
-    - gate: docs/gates/fase-105.md
-- [x] 105.7 Quality gate Fase 105
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.7 Quality gate Fase 105
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 13e5f0f0
     - file: docs/gates/fase-105.md
     - test: modules/Hospital/tests/Feature/InterBranchFinancialClearingTest.php::test_inter_branch_obligation_creation_and_balanced_ledger_settlement
     - akses: command super:health-check
-    - gate: docs/gates/fase-105.md
+    - (dibatalkan) gate: docs/gates/fase-105.md
 
 ## FASE 106 — KESEHATAN: CLINICAL TRIAL, RESEARCH & DATA VAULT
 > **Status audit 2026-10-22:** 🔨 DIKERJAKAN — branch feature/fase-101-105-vertical-slice bersiap untuk clinical trial, research & data vault Fase 106.
