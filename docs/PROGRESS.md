@@ -8936,73 +8936,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 8 — TATA KELOLA, KORPORASI & INTEGRASI ENTERPRISE
 
 ## FASE 85 — INTERNAL GIG ECONOMY (TALENT MARKETPLACE & BOUNTY)
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 85 tuntas 100% dan terverifikasi di Gerbang 1–6.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hcm (`hcm_`) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F slice 1
 > **Jalan pintas terlarang di fase ini:** bounty dibayar di luar payroll; klaim bounty tanpa cek sertifikat/jam kerja — ditambah seluruh X1–X25.
-- [x] 85.1 Tabel `gov_bounties` (pemesan unit bisnis: Resto overload, gudang butuh bongkar muat dadakan, event mall setup, cuci armada), `gov_bounty_claims` (pengambil shift lintas unit), `gov_bounty_pofs` (proof of work: scan lokasi, foto, sign-off supervisor)
-  Bukti:
+- [ ] 85.1 Tabel `gov_bounties` (pemesan unit bisnis: Resto overload, gudang butuh bongkar muat dadakan, event mall setup, cuci armada), `gov_bounty_claims` (pengambil shift lintas unit), `gov_bounty_pofs` (proof of work: scan lokasi, foto, sign-off supervisor)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/database/migrations/2026_10_19_850200_enhance_bounty_gig_tables.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_1_and_85_2_claim_matching_with_schedule_conflict_and_max_hours_guardrail
     - akses: table gov_bounties, gov_bounty_claims, gov_bounty_pofs
-    - gate: docs/gates/fase-85.md
-- [x] 85.2 **Matching**: karyawan eligible (skill, sertifikasi K3, lokasi, tidak tabrakan jadwal shift utama, batas jam kerja UU 22/2009 8 jam/hari) → first-come/berbasis skor; konflik jadwal ditolak sistem
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.2 **Matching**: karyawan eligible (skill, sertifikasi K3, lokasi, tidak tabrakan jadwal shift utama, batas jam kerja UU 22/2009 8 jam/hari) → first-come/berbasis skor; konflik jadwal ditolak sistem
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/Application/Services/Gig/InternalGigEconomyService.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_1_and_85_2_claim_matching_with_schedule_conflict_and_max_hours_guardrail
     - akses: route POST /hcm/bounties/{bounty}/claim [role: admin, hcm_manager]
-    - gate: docs/gates/fase-85.md
-- [x] 85.3 **Bayar per jam via Core Banking**: POF disetujui → upah lembur (tarif 1.5x/2x Fase 58.3) terhitung → posting `hcm:bounty_payout` ke dompet karyawan; biaya dibebankan ke pusat biaya unit pemesan (budget encumbrance Fase 54.1)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.3 **Bayar per jam via Core Banking**: POF disetujui → upah lembur (tarif 1.5x/2x Fase 58.3) terhitung → posting `hcm:bounty_payout` ke dompet karyawan; biaya dibebankan ke pusat biaya unit pemesan (budget encumbrance Fase 54.1)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/Application/Services/Gig/InternalGigEconomyService.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_3_proof_of_work_approval_calculates_overtime_and_posts_ledger_payout
     - akses: route POST /hcm/bounties/claims/{claim}/payout [role: admin, hcm_manager]
-    - gate: docs/gates/fase-85.md
-- [x] 85.4 Kepatuhan: batas lembur mingguan, hari libur wajib, keselamatan (izin kerja berisiko Fase 40.6 untuk tugas berbahaya), asuransi kecelakaan kerja tersemat (memperluas Pilar 2)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.4 Kepatuhan: batas lembur mingguan, hari libur wajib, keselamatan (izin kerja berisiko Fase 40.6 untuk tugas berbahaya), asuransi kecelakaan kerja tersemat (memperluas Pilar 2)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/Application/Services/Gig/InternalGigEconomyService.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_4_weekly_overtime_limit_and_high_risk_permit_mandatory
     - akses: route POST /hcm/bounties/{bounty}/claim [role: admin, hcm_manager]
-    - gate: docs/gates/fase-85.md
-- [x] 85.5 Incentive: skor internal mobility, bonus pengisian bounty cepat, unit pemesan dengan rating pekerja terbaik
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.5 Incentive: skor internal mobility, bonus pengisian bounty cepat, unit pemesan dengan rating pekerja terbaik
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/Application/Services/Gig/InternalGigEconomyService.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_5_supervisor_self_approval_and_duplicate_pof_rejected
     - akses: route POST /hcm/bounties [role: admin, hcm_manager]
-    - gate: docs/gates/fase-85.md
-- [x] 85.6 Dashboard: bounty terbuka/terisi, biaya tenaga kerja fleksibel vs tetap, utilisasi talenta lintas lini, kepuasan karyawan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.6 Dashboard: bounty terbuka/terisi, biaya tenaga kerja fleksibel vs tetap, utilisasi talenta lintas lini, kepuasan karyawan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/resources/views/hcm/bounties.blade.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_5_supervisor_self_approval_and_duplicate_pof_rejected
     - akses: route GET /hcm/bounties [role: admin, hcm_manager]
-    - gate: docs/gates/fase-85.md
-- [x] 85.7 Tests: (a) jadwal bentrok / melebihi jam kerja ditolak (b) POF ganda tidak bayar dua kali (c) payout = jam × tarif lembur, ledger seimbang (d) biaya masuk budget unit pemesan (e) reconcile bounty = ledger + payroll
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.7 Tests: (a) jadwal bentrok / melebihi jam kerja ditolak (b) POF ganda tidak bayar dua kali (c) payout = jam × tarif lembur, ledger seimbang (d) biaya masuk budget unit pemesan (e) reconcile bounty = ledger + payroll
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 5579c813
     - file: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_hcm_audit_command_and_corruption_detection
-    - gate: docs/gates/fase-85.md
-- [x] 85.8 Quality gate Fase 85
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.8 Quality gate Fase 85
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 5579c813
     - file: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_http_endpoints_and_rbac
     - akses: command hcm:audit
-    - gate: docs/gates/fase-85.md
+    - (dibatalkan) gate: docs/gates/fase-85.md
 
 ### Register Minus Fase 85
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
