@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Fleet\Application\Actions;
 
+use Modules\Fleet\Domain\Models\FleetContract;
 use Modules\Fleet\Domain\Models\FleetContractUnit;
 
 class AssignVehicleToContractAction
@@ -17,6 +18,8 @@ class AssignVehicleToContractAction
         if ($alreadyAssigned) {
             throw new \LogicException('Vehicle is already assigned to an active contract');
         }
+
+        FleetContract::where('id', $contractId)->increment('total_units');
 
         return FleetContractUnit::create([
             'contract_id' => $contractId,
