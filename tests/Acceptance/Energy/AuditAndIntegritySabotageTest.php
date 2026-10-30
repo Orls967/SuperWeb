@@ -10,7 +10,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerEntry;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Egy\Application\Services\ConsolidatedUtilityBillingService;
 use Modules\Egy\Domain\Models\MeterReading;
 use Modules\Egy\Domain\Models\SmartMeter;
@@ -100,14 +102,23 @@ class AuditAndIntegritySabotageTest extends TestCase
     public function test_corruption_fixture_broken_intercompany_pair_caught_by_audit(): void
     {
         // Seed an un-mirrored / broken intercompany transaction
+        $tx = LedgerTransaction::create([
+            'uuid' => (string) Str::uuid(),
+            'type' => 'ENERGY_PPA_NET_METER_SETTLE',
+            'idempotency_key' => 'sabotage:ic:broken:01',
+            'description' => 'Unmirrored IC entry',
+            'posted_at' => now(),
+        ]);
+
+        $arAccount = LedgerAccount::where('code', 'ar:ic:producer:egy:IDR')->firstOrFail();
+
         DB::table('bank_ledger_entries')->insert([
-            'id' => (string) Str::uuid(),
-            'transaction_id' => (string) Str::uuid(),
-            'account_code' => 'ar:ic:producer:egy:IDR',
-            'amount_minor' => 1000000,
-            'currency' => 'IDR',
+            'transaction_id' => $tx->id,
+            'account_id' => $arAccount->id,
+            'asset_code' => 'IDR',
+            'amount' => '-1000000.00',
+            'balance_after' => '-1000000.00',
             'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
         $exitCode = Artisan::call('egy:audit');
