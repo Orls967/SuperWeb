@@ -38,14 +38,60 @@ final class IntegerBlendRounder
         // 1. Floor tiap variabel kontinu ke kg integer
         /** @var list<int> $x */
         $x = [];
+        $fractionalRemainders = [];
         foreach ($xRational as $idx => $val) {
             $floor = $val->getNumerator()->quotient($val->getDenominator())->toInt();
             // Jaga tidak melebihi kapasitas stockpile
             $cap = $stockpileCapsKg[$idx] ?? PHP_INT_MAX;
-            $x[] = max(0, min($floor, $cap));
+            $floorVal = max(0, min($floor, $cap));
+            $x[] = $floorVal;
+
+            $rem = $val->minus(BigRational::of($floorVal));
+            $fractionalRemainders[] = [
+                'idx' => $idx,
+                'rem' => $rem,
+            ];
         }
 
         $totalKg = array_sum($x);
+
+        // Bila total hasil floor kurang dari minTonnageKg, distribusikan kekurangan menggunakan largest remainder
+        if ($totalKg < $minTonnageKg) {
+            $shortfall = $minTonnageKg - $totalKg;
+
+            usort($fractionalRemainders, function ($a, $b) use ($ratioConstraints) {
+                $cmp = $b['rem']->compareTo($a['rem']);
+                if ($cmp !== 0) {
+                    return $cmp;
+                }
+
+                $sumA = 0;
+                $sumB = 0;
+                foreach ($ratioConstraints as $row) {
+                    $sumA += $row[$a['idx']] ?? 0;
+                    $sumB += $row[$b['idx']] ?? 0;
+                }
+                if ($sumA !== $sumB) {
+                    return $sumA <=> $sumB;
+                }
+
+                return $a['idx'] <=> $b['idx'];
+            });
+
+            foreach ($fractionalRemainders as $item) {
+                if ($shortfall <= 0) {
+                    break;
+                }
+                $idx = $item['idx'];
+                $cap = $stockpileCapsKg[$idx] ?? PHP_INT_MAX;
+                if ($x[$idx] < $cap) {
+                    $x[$idx]++;
+                    $shortfall--;
+                }
+            }
+            $totalKg = array_sum($x);
+        }
+
         if ($totalKg > $maxTonnageKg) {
             $excess = $totalKg - $maxTonnageKg;
             for ($j = $n - 1; $j >= 0 && $excess > 0; $j--) {

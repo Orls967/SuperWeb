@@ -223,10 +223,9 @@ class MiningOldCodeExplorationTest extends TestCase
         $allowNegativeAccounts = array_filter($definitions, fn ($acc) => $acc['allow_negative'] === true);
         $this->assertNotEmpty($allowNegativeAccounts);
 
-        // Buktikan bahwa expense:mining_royalty:IDR dan min:royalty_payable:IDR mengizinkan saldo negatif
+        // Buktikan bahwa expense:mining_royalty:IDR mengizinkan saldo negatif (saldo normal debit)
         $negativeCodes = array_column($allowNegativeAccounts, 'code');
         $this->assertContains('expense:mining_royalty:IDR', $negativeCodes);
-        $this->assertContains('min:royalty_payable:IDR', $negativeCodes);
 
         // 2. Cek min:audit command (46 baris)
         // Command lama hanya memeriksa dispatched equipment vs in_progress runs,

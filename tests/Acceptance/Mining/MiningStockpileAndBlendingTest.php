@@ -9,10 +9,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Mining\Application\Actions\CreateBlendPlanAction;
 use Modules\Mining\Application\Actions\ExecuteShipmentBlendAction;
+use Modules\Mining\Domain\Algorithms\LpCertificateVerifier;
 use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Mining\Domain\Models\MiningStockpile;
 use Modules\Mining\Domain\Models\StockpileMovement;
-use Modules\Shared\Domain\Algorithms\LinearProgramming\LpCertificateVerifier;
 use Tests\TestCase;
 
 class MiningStockpileAndBlendingTest extends TestCase

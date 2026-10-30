@@ -384,10 +384,10 @@ class MiningRoyaltyCalculationTest extends TestCase
         $royaltyPayable = collect($definitions)->firstWhere('code', 'min:royalty_payable:IDR');
 
         $this->assertNotNull($royaltyExpense);
-        $this->assertFalse($royaltyExpense['allow_negative']);
+        $this->assertTrue($royaltyExpense['allow_negative']); // Expense normal debit balance
 
         $this->assertNotNull($royaltyPayable);
-        $this->assertFalse($royaltyPayable['allow_negative']);
+        $this->assertFalse($royaltyPayable['allow_negative']); // Liability normal credit balance
     }
 
     public function test_posting_delta_seimbang_nol_di_buku_besar(): void
