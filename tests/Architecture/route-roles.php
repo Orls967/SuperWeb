@@ -936,6 +936,8 @@ return [
         },
     ],
     'insurance.index' => ['roles' => ['admin', 'customer', 'insurance_admin', 'underwriter']],
+    'insurance.policies' => ['roles' => ['admin', 'customer', 'insurance_admin', 'underwriter']],
+    'insurance.policies.issue' => ['roles' => ['admin', 'customer', 'insurance_admin', 'underwriter']],
     'insurance.products.issue' => [
         'roles' => ['admin', 'customer', 'insurance_admin', 'underwriter'],
         'params' => function () {
@@ -1722,6 +1724,13 @@ return [
             return ['asset' => $asset->id];
         },
     ],
+    'rwa.offerings' => ['roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin']],
+    'rwa.offerings.subscribe' => [
+        'roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin'],
+        'params' => fn () => ['offering' => 1],
+    ],
+    'rwa.orderbook' => ['roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin']],
+    'rwa.yield-distribution' => ['roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin']],
     'resto.analytics.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
     'resto.catering.cancel' => [
         'roles' => ['admin', 'outlet_manager'],
@@ -2489,7 +2498,9 @@ return [
     'wallet.transfer' => ['roles' => ['admin', 'auditor', 'customer']],
     'wallet.transfer.lookup' => ['roles' => ['admin', 'customer']],
     'wallet.transfer.store' => ['roles' => ['admin', 'customer']],
+    'wealth.cash-sweep' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.index' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
+    'wealth.portfolio-rebalancing' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.profiles.invest' => [
         'roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager'],
         'params' => function () {
@@ -2498,6 +2509,7 @@ return [
             return ['profile' => $prof->id];
         },
     ],
+    'wealth.risk-profiles.submit' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wms.cycle-counts.apply' => ['roles' => ['admin'], 'params' => fn () => ['count' => 1]],
     'wms.cycle-counts.store' => ['roles' => ['admin', 'hub_operator']],
     'wms.cycle-counts.submit' => ['roles' => ['admin', 'hub_operator'], 'params' => fn () => ['count' => 1]],
