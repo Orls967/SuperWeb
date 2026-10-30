@@ -48,10 +48,10 @@ class WealthLegacyExplorationTest extends TestCase
         expect(Schema::hasTable('wm_holdings'))->toBeTrue();
         expect(Schema::hasTable('wm_orders'))->toBeTrue();
 
-        // Missing tables required by KONSEP §2F and W-1..W-5
-        expect(Schema::hasTable('wm_portfolio_holdings'))->toBeFalse(); // Unit-based NAV holdings
-        expect(Schema::hasTable('wm_nav_history'))->toBeFalse();        // NAV oracle price history
-        expect(Schema::hasTable('wm_sweep_configs'))->toBeFalse();       // Payroll & cash sweep rules
+        // Extended tables required by KONSEP §2F and W-1..W-5
+        expect(Schema::hasTable('wm_portfolio_holdings'))->toBeTrue(); // Unit-based NAV holdings
+        expect(Schema::hasTable('wm_nav_history'))->toBeTrue();        // NAV oracle price history
+        expect(Schema::hasTable('wm_sweep_configs'))->toBeTrue();       // Payroll & cash sweep rules
     }
 
     public function test_legacy_ledger_accounts_missing_custody_and_transit_accounts(): void

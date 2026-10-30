@@ -56,10 +56,10 @@ class RwaLegacyExplorationTest extends TestCase
         expect(Schema::hasTable('rwa_orderbook_orders'))->toBeTrue();
         expect(Schema::hasTable('rwa_dividends'))->toBeTrue();
 
-        // Missing tables required by KONSEP §2F and R-1..R-5
-        expect(Schema::hasTable('rwa_investor_verifications'))->toBeFalse(); // R-2 KYC verification registry
-        expect(Schema::hasTable('rwa_offering_orders'))->toBeFalse();       // R-3 Hamilton offering orders
-        expect(Schema::hasTable('rwa_token_transfers'))->toBeFalse();       // PR5 append-only transfer log
+        // Extended tables required by KONSEP §2F and R-1..R-5
+        expect(Schema::hasTable('rwa_investor_verifications'))->toBeTrue(); // R-2 KYC verification registry
+        expect(Schema::hasTable('rwa_offering_orders'))->toBeTrue();       // R-3 Hamilton offering orders
+        expect(Schema::hasTable('rwa_token_transfers'))->toBeTrue();       // PR5 append-only transfer log
     }
 
     public function test_legacy_ledger_accounts_allow_negative_violating_u3(): void

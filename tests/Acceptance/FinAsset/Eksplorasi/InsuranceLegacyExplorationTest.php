@@ -57,10 +57,10 @@ class InsuranceLegacyExplorationTest extends TestCase
         expect(Schema::hasTable('ins_policies'))->toBeTrue();
         expect(Schema::hasTable('ins_claims'))->toBeTrue();
 
-        // Missing tables required by KONSEP §2F and I-1..I-5
-        expect(Schema::hasTable('ins_policy_sequences'))->toBeFalse(); // I-1 Gapless sequence counter
-        expect(Schema::hasTable('ins_policy_earnings'))->toBeFalse();  // I-2 Daily cumulative premium earning
-        expect(Schema::hasTable('ins_parametric_oracles'))->toBeFalse(); // I-3 Oracle registry
+        // Extended tables required by KONSEP §2F and I-1..I-5
+        expect(Schema::hasTable('ins_policy_sequences'))->toBeTrue(); // I-1 Gapless sequence counter
+        expect(Schema::hasTable('ins_policy_earnings'))->toBeTrue();  // I-2 Daily cumulative premium earning
+        expect(Schema::hasTable('ins_parametric_oracles'))->toBeTrue(); // I-3 Oracle registry
     }
 
     public function test_legacy_ledger_accounts_missing_unearned_and_earned_premium(): void
