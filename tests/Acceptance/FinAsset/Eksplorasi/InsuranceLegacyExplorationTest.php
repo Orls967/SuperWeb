@@ -68,10 +68,10 @@ class InsuranceLegacyExplorationTest extends TestCase
         $definitions = InsuranceAccounts::definitions();
         $codes = array_column($definitions, 'code');
 
-        // Legacy has only premium reserve, reserve pool, and claimant payable
+        // Accounts include unearned premium liability and earned premium revenue
         expect($codes)->toContain('ins:premium_reserve:IDR');
-        expect($codes)->not->toContain('ins:unearned_premium:IDR');
-        expect($codes)->not->toContain('ins:earned_premium_revenue:IDR');
+        expect($codes)->toContain('ins:unearned_premium:IDR');
+        expect($codes)->toContain('ins:earned_premium_revenue:IDR');
     }
 
     public function test_issue_policy_action_status_sebagian(): void

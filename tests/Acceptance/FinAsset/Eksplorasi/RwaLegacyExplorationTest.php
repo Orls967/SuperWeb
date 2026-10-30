@@ -67,16 +67,22 @@ class RwaLegacyExplorationTest extends TestCase
         $definitions = RwaAccounts::definitions();
         expect($definitions)->not->toBeEmpty();
 
-        $allAllowNegative = true;
-        foreach ($definitions as $def) {
-            if (! ($def['allow_negative'] ?? false)) {
-                $allAllowNegative = false;
-                break;
-            }
-        }
+        // U-3 requires allow_negative = false except clearing/escrow
+        $escrowOrClearing = array_filter(
+            $definitions,
+            fn ($d) => str_contains($d['code'], 'clearing') || str_contains($d['code'], 'escrow')
+        );
+        $nonEscrow = array_filter(
+            $definitions,
+            fn ($d) => ! str_contains($d['code'], 'clearing') && ! str_contains($d['code'], 'escrow')
+        );
 
-        // Legacy allowed negative on all accounts, violating U-3 strict invariant
-        expect($allAllowNegative)->toBeTrue();
+        foreach ($nonEscrow as $def) {
+            expect($def['allow_negative'])->toBeFalse();
+        }
+        foreach ($escrowOrClearing as $def) {
+            expect($def['allow_negative'])->toBeTrue();
+        }
     }
 
     public function test_tokenize_action_status_sebagian(): void

@@ -60,8 +60,8 @@ class WealthLegacyExplorationTest extends TestCase
         $codes = array_column($definitions, 'code');
 
         expect($codes)->toContain('wm:management_fee:IDR');
-        expect($codes)->not->toContain('wm:cash_sweep_clearing:IDR');
-        expect($codes)->not->toContain('wm:portfolio_custody:default:IDR');
+        expect($codes)->toContain('wm:cash_sweep_clearing:IDR');
+        expect($codes)->toContain('wm:portfolio_custody:default:IDR');
     }
 
     public function test_compute_risk_profile_action_status_sebagian(): void
