@@ -7,10 +7,12 @@ use Modules\Egy\Http\Controllers\EgyGridMeterController;
 use Modules\Egy\Http\Controllers\EgyMicrogridRecController;
 use Modules\Egy\Http\Controllers\EgyPowerPurchaseController;
 
-Route::middleware(['web', 'auth', 'role:admin,grid_operator,genco_trader,energy_auditor,renewable_dev'])->prefix('energy')->group(function () {
+Route::middleware(['web', 'auth', 'role:admin,grid_operator,energy_manager,genco_trader,energy_auditor,renewable_dev'])->prefix('energy')->group(function () {
     Route::get('/', [EgyGridMeterController::class, 'index'])->name('egy.grid.index');
     Route::get('/overview', [EgyGridMeterController::class, 'index'])->name('energy.index');
     Route::get('/meters', [EgyGridMeterController::class, 'meters'])->name('egy.grid.meters');
+    Route::get('/dispatch', [EgyGridMeterController::class, 'dispatchView'])->name('egy.grid.dispatch');
+    Route::get('/invoices', [EgyGridMeterController::class, 'invoicesView'])->name('egy.grid.invoices');
     Route::post('/telemetry', [EgyGridMeterController::class, 'ingestTelemetry'])->name('egy.grid.telemetry');
     Route::post('/nodes/{nodeId}/anomaly', [EgyGridMeterController::class, 'scanAnomaly'])->name('egy.grid.anomaly');
 
