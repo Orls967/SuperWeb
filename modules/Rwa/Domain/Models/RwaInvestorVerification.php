@@ -17,6 +17,8 @@ class RwaInvestorVerification extends Model
         'kyc_document_id',
         'approval_id',
         'status',
+        'idempotency_key',
+        'payload_hash',
         'verified_at',
         'expires_at',
     ];

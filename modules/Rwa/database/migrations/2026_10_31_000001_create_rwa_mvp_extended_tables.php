@@ -23,6 +23,8 @@ return new class extends Migration
                 $table->string('kyc_document_id');
                 $table->string('approval_id')->nullable();
                 $table->string('status')->default('VERIFIED'); // VERIFIED, EXPIRED, REVOKED
+                $table->string('idempotency_key')->nullable()->unique();
+                $table->string('payload_hash')->nullable();
                 $table->timestamp('verified_at');
                 $table->timestamp('expires_at');
                 $table->timestamps();
@@ -53,9 +55,9 @@ return new class extends Migration
         if (! Schema::hasTable('rwa_token_transfers')) {
             Schema::create('rwa_token_transfers', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('rwa_asset_id')->constrained('rwa_assets')->cascadeOnDelete();
-                $table->foreignId('from_user_id')->nullable()->constrained('users');
-                $table->foreignId('to_user_id')->constrained('users');
+                $table->unsignedBigInteger('rwa_asset_id')->index();
+                $table->unsignedBigInteger('from_user_id')->nullable()->index();
+                $table->unsignedBigInteger('to_user_id')->index();
                 $table->unsignedBigInteger('quantity');
                 $table->unsignedBigInteger('price_per_token_idr')->default(0);
                 $table->string('transfer_type'); // PRIMARY_ISSUANCE, SECONDARY_TRADE, ESCROW_RELEASE
