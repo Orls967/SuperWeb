@@ -289,6 +289,9 @@ Contoh Parameter:
    - Tabel `htl_folio_lines` tidak memiliki operasi `UPDATE` atau `DELETE` pada level aplikasi. Pembatalan tagihan menggunakan baris baru dengan nominal negatif bertipe `reversal` yang merujuk pada `reversal_of_id`.
 3. **DECISION-HTL-03 (Pemisahan Business Date)**:
    - Setiap transaksi finansial operasional hotel mencatat `business_date` yang bersumber dari tabel `htl_business_dates` milik properti bersangkutan, menjamin konsistensi laporan harian terlepas dari zona waktu server.
+4. **DECISION-HTL-04 (Foreign Key Kolom Legacy M6 & Pembersihan Config)**:
+   - Empat kolom relasi intra-modul pada tabel lama (`htl_folio_items.folio_id`, `htl_reservations.property_id`, `htl_reservations.room_id`, `htl_timeshare_investors.timeshare_unit_id`) telah memiliki constraint Foreign Key nyata melalui migrasi `2026_10_29_195404_add_foreign_keys_to_legacy_htl_tables.php` (0 orphan di seeder dan test). Entri pengecualian keempat kolom tersebut pada `config/modules.php` dapat dihapus pada sesi pemulihan.
+   - Dua kolom lainnya (`htl_folios.reservation_id`, `htl_timeshare_units.property_id`) memiliki 0 orphan pada seeder, tetapi 3 file test legacy lama (`HotelEnterpriseDeepeningTest`, `HotelFolioEnterpriseDeepeningTest`, `HotelFolioTimeshareAndPackageTest`) membuat fixture `Str::uuid()` tanpa record induk, sehingga FK kedua kolom tersebut ditangguhkan sesuai titik henti M6 sampai test legacy tersebut diperbarui pada sesi pemulihan.
 
 ---
 
@@ -300,28 +303,37 @@ Contoh Parameter:
 - [ ] R7.HTL.1 **Vertical Slice Siklus Tamu Perhotelan**: Reservasi multi-malam (anti-overlap inventory lock per malam), deposit kewajiban, check-in aman identitas terenkripsi (KTP/paspor + blind index), housekeeping state machine (dirty->cleaning->inspected->available), pembebanan folio append-only & F&B outlet, night audit idempoten (pengakuan pendapatan harian, PBJT 10% & service 10%, no-show penalty, snapshot harian, pemajuan business date), check-out pelunasan (tunai/kartu/city ledger korporat/deposit), split folio, refund deposit, pembatalan & walk compensation seimbang di ledger, portal tamu & korporat, laporan okupansi/ADR/RevPAR cocok ledger, dan artisan command hotel:night-audit, hotel:folio-audit, hotel:availability-audit dua-sumber.
   Bukti:
     - jenis: fitur
-    - commit: (akan diisi commit implementasi)
+    - commit: 3bdf8772, e4e202aa, 8dc7d7e1, 9a343549, bbbeef20, d9c6b61a, feb129a1, 6f988fb7, cb1f1f4c, a3296d53, cb8ef129, e9e29a48, 5944befc, f0ed7934, 571422df, a74f1b58, b429a039, 3232a1a4, fef909ce, 912845c1, 21ce0bb0, 98b849f0
     - file: modules/Hotel/Application/Actions/ReserveRoomAction.php
     - file: modules/Hotel/Application/Actions/ProcessGuestDepositAction.php
+    - file: modules/Hotel/Application/Actions/RefundGuestDepositAction.php
     - file: modules/Hotel/Application/Actions/CheckInGuestAction.php
     - file: modules/Hotel/Application/Actions/ChargeFolioOutletAction.php
+    - file: modules/Hotel/Application/Actions/TransferFolioToCityLedgerAction.php
     - file: modules/Hotel/Application/Actions/ExecuteHotelNightAuditAction.php
     - file: modules/Hotel/Application/Actions/CheckOutAndSettleFolioAction.php
     - file: modules/Hotel/Application/Actions/CancelReservationAction.php
     - file: modules/Hotel/Application/Actions/ExecuteWalkCompensationAction.php
+    - file: modules/Hotel/Application/Services/HotelBusinessDateService.php
+    - file: modules/Hotel/Application/Services/HotelInventoryService.php
+    - file: modules/Hotel/Application/Services/HotelReportService.php
     - file: modules/Hotel/Console/Commands/HotelNightAuditCommand.php
     - file: modules/Hotel/Console/Commands/HotelFolioAuditCommand.php
     - file: modules/Hotel/Console/Commands/HotelAvailabilityAuditCommand.php
-    - test: tests/Acceptance/Hotel/HotelReservationAndInventoryTest.php
-    - test: tests/Acceptance/Hotel/HotelDepositAndPaymentTest.php
-    - test: tests/Acceptance/Hotel/HotelCheckInOutAndHousekeepingTest.php
-    - test: tests/Acceptance/Hotel/HotelFolioAndOutletTest.php
-    - test: tests/Acceptance/Hotel/HotelNightAuditTest.php
-    - test: tests/Acceptance/Hotel/HotelCancellationAndWalkTest.php
-    - test: tests/Acceptance/Hotel/HotelAccessControlTest.php
-    - test: tests/Acceptance/Hotel/HotelLedgerAndReconciliationAuditTest.php
-    - test: tests/Acceptance/Hotel/HotelOccupancyAdrRevparReportTest.php
-    - test: tests/Acceptance/Hotel/HotelUiAndValidationTest.php
+    - test: tests/Acceptance/Hotel/Eksplorasi/HotelExplorationTest.php (5 passed)
+    - test: tests/Acceptance/Hotel/HotelReservationAndInventoryTest.php (12 passed)
+    - test: tests/Acceptance/Hotel/HotelDepositAndPaymentTest.php (10 passed)
+    - test: tests/Acceptance/Hotel/HotelCheckInOutAndHousekeepingTest.php (10 passed)
+    - test: tests/Acceptance/Hotel/HotelFolioAndOutletTest.php (8 passed)
+    - test: tests/Acceptance/Hotel/HotelNightAuditTest.php (12 passed)
+    - test: tests/Acceptance/Hotel/HotelCancellationAndWalkTest.php (5 passed)
+    - test: tests/Acceptance/Hotel/HotelAccessControlTest.php (8 passed)
+    - test: tests/Acceptance/Hotel/HotelLedgerAndReconciliationAuditTest.php (5 passed)
+    - test: tests/Acceptance/Hotel/HotelOccupancyAdrRevparReportTest.php (4 passed)
+    - test: tests/Acceptance/Hotel/HotelUiAndValidationTest.php (6 passed)
+    - test: tests/Acceptance/Hotel/HotelSevenDaySimulationTest.php (1 passed, 63 assertions)
+    - test: modules/Hotel/tests/Feature/ReserveRoomAntiOverlapRegressionTest.php (3 passed)
+    - mutasi: ReserveRoomWithInventoryNightLockAction 73.58%, HotelInventoryService 60.00%, ExecuteHotelNightAuditAction 62.22%, RefundGuestDepositAction 70.59%, TransferFolioToCityLedgerAction 90.24%, ChargeFolioOutletAction 70.79%
     - akses: route GET /hotel [role: admin, hotel_manager, front_office]
     - akses: route GET /hotel/reservations [role: admin, hotel_manager, front_office, reservation_agent]
     - akses: route GET /hotel/housekeeping [role: admin, hotel_manager, housekeeping, front_office]
