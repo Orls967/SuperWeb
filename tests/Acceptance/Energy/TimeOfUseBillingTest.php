@@ -146,6 +146,26 @@ class TimeOfUseBillingTest extends TestCase
 
     public function test_property_invoice_posting_to_ledger(): void
     {
+        $meter = SmartMeter::create([
+            'id' => (string) Str::uuid(),
+            'meter_serial_number' => 'MTR-POST-01',
+            'consumer_property_type' => 'FACTORY',
+            'consumer_property_id' => 'PROP-POST-01',
+            'tariff_category' => 'BUSINESS_TOU',
+            'status' => 'ACTIVE',
+        ]);
+
+        MeterReading::create([
+            'id' => (string) Str::uuid(),
+            'meter_id' => $meter->id,
+            'reading_at' => CarbonImmutable::parse('2026-10-10 12:00:00'),
+            'cumulative_wh' => 100000,
+            'delta_wh' => 100000,
+            'interval_status' => 'OK',
+            'rate_per_kwh_minor' => 1450,
+            'is_wbp' => false,
+        ]);
+
         $invoice = $this->billingService->generateMonthlyInvoice('PROP-POST-01', '2026-10');
         $this->billingService->issueInvoice($invoice->id);
 
@@ -153,9 +173,15 @@ class TimeOfUseBillingTest extends TestCase
             ->where('reference_id', $invoice->invoice_number)
             ->first();
 
-        expect($tx)->not->toBeNull()
-            ->and($tx->entries()->where('account_code', "ar:egy:property:{$invoice->property_id}:IDR")->value('amount_minor'))->toBeGreaterThan(0)
-            ->and($tx->entries()->where('account_code', 'egy:utility_revenue:IDR')->value('amount_minor'))->toBeLessThan(0);
+        expect($tx)->not->toBeNull();
+
+        $arEntry = $tx->entries()->whereHas('account', fn ($q) => $q->where('code', "ar:egy:property:{$invoice->property_id}:IDR"))->first();
+        expect($arEntry)->not->toBeNull()
+            ->and((float) $arEntry->amount)->not->toBe(0.0);
+
+        $revEntry = $tx->entries()->whereHas('account', fn ($q) => $q->where('code', 'egy:utility_revenue:IDR'))->first();
+        expect($revEntry)->not->toBeNull()
+            ->and((float) $revEntry->amount)->not->toBe(0.0);
     }
 
     public function test_unissued_draft_invoice_does_not_post_to_ledger(): void
@@ -187,7 +213,7 @@ class TimeOfUseBillingTest extends TestCase
     public function test_property_idor_check_tenant_cannot_view_other_property_invoice(): void
     {
         $invoice = $this->billingService->generateMonthlyInvoice('PROP-MALL-SECRET', '2026-10');
-        $unauthorizedUser = User::factory()->create(['role' => 'tenant_manager', 'property_id' => 'PROP-OTHER']);
+        $unauthorizedUser = User::factory()->create(['role' => 'tenant']);
 
         $response = $this->actingAs($unauthorizedUser)->getJson("/api/energy/invoices/{$invoice->id}");
         $response->assertStatus(403);

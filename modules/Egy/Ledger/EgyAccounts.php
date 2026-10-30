@@ -103,6 +103,13 @@ final class EgyAccounts
                 'allow_negative' => false,
             ],
             [
+                'code' => 'egy:utility_revenue:IDR',
+                'name' => 'Utility Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
                 'code' => 'egy:utility_receivable:IDR',
                 'name' => 'Utility Receivable',
                 'kind' => AccountKind::ASSET,

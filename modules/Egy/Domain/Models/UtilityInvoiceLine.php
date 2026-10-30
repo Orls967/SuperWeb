@@ -21,12 +21,14 @@ class UtilityInvoiceLine extends Model
         'window_type',
         'wh_consumed',
         'rate_per_kwh_minor',
+        'subtotal_minor',
         'line_total_minor',
     ];
 
     protected $casts = [
         'wh_consumed' => 'integer',
         'rate_per_kwh_minor' => 'integer',
+        'subtotal_minor' => 'integer',
         'line_total_minor' => 'integer',
     ];
 

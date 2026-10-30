@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Modules\Egy;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Egy\Application\Services\ConsolidatedUtilityBillingService;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
 use Modules\Egy\Console\Commands\EgyAuditCommand;
+use Modules\Egy\Console\Commands\EgyBillPropertiesCommand;
 use Modules\Egy\Console\Commands\EgyIngestReadingsCommand;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -15,6 +17,7 @@ class EgyServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(EnergyGridAndMeteringService::class);
+        $this->app->singleton(ConsolidatedUtilityBillingService::class);
     }
 
     public function boot(): void
@@ -32,6 +35,7 @@ class EgyServiceProvider extends ServiceProvider
             $this->commands([
                 EgyAuditCommand::class,
                 EgyIngestReadingsCommand::class,
+                EgyBillPropertiesCommand::class,
             ]);
         }
 

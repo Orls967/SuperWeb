@@ -3,8 +3,13 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Egy\Http\Controllers\Api\EgyInvoiceApiController;
 use Modules\Egy\Http\Controllers\Api\EgyMeterApiController;
 
 Route::middleware(['api', 'throttle:60,1'])->prefix('api/energy')->group(function () {
     Route::post('/telemetry', [EgyMeterApiController::class, 'ingest'])->name('api.energy.telemetry');
+
+    Route::get('/invoices/{id}', [EgyInvoiceApiController::class, 'show'])->name('api.energy.invoices.show');
+    Route::post('/billing/calculate', [EgyInvoiceApiController::class, 'calculate'])->name('api.energy.billing.calculate');
+    Route::post('/invoices/{id}/issue', [EgyInvoiceApiController::class, 'issue'])->name('api.energy.invoices.issue');
 });
