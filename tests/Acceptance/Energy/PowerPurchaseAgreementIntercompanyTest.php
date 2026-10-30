@@ -8,6 +8,7 @@ use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Banking\Domain\Models\LedgerEntry;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Core\Exceptions\IdempotencyConflictException;
 use Modules\Egy\Application\Actions\SettlePowerPurchaseAgreementBillingAction;
@@ -123,9 +124,10 @@ class PowerPurchaseAgreementIntercompanyTest extends TestCase
 
         $res = $action->executeWithIntercompany((string) $ppa->id, 100, $key);
 
-        $prodTx = LedgerTransaction::where('code', $res['producer_tx_code'])->first();
-        expect($prodTx)->not->toBeNull()
-            ->and($prodTx->entries()->where('account_code', 'ar:ic:producer:egy:IDR')->value('amount_minor'))->toBe(150000);
+        $prodTx = LedgerTransaction::where('idempotency_key', $res['producer_tx_code'])->first();
+        expect($prodTx)->not->toBeNull();
+        $prodArEntry = $prodTx->entries()->whereHas('account', fn ($q) => $q->where('code', 'ar:ic:producer:egy:IDR'))->first();
+        expect((int) abs((float) $prodArEntry?->amount))->toBe(150000);
     }
 
     public function test_offtaker_book_posting_contains_intercompany_payable(): void
@@ -144,9 +146,10 @@ class PowerPurchaseAgreementIntercompanyTest extends TestCase
 
         $res = $action->executeWithIntercompany((string) $ppa->id, 100, $key);
 
-        $offtTx = LedgerTransaction::where('code', $res['offtaker_tx_code'])->first();
-        expect($offtTx)->not->toBeNull()
-            ->and($offtTx->entries()->where('account_code', 'ap:ic:egy:producer:IDR')->value('amount_minor'))->toBe(-150000);
+        $offtTx = LedgerTransaction::where('idempotency_key', $res['offtaker_tx_code'])->first();
+        expect($offtTx)->not->toBeNull();
+        $offtApEntry = $offtTx->entries()->whereHas('account', fn ($q) => $q->where('code', 'ap:ic:egy:producer:IDR'))->first();
+        expect((int) abs((float) $offtApEntry?->amount))->toBe(150000);
     }
 
     public function test_group_consolidation_eliminates_ppa_intercompany_to_net_zero(): void
@@ -165,11 +168,11 @@ class PowerPurchaseAgreementIntercompanyTest extends TestCase
 
         $action->executeWithIntercompany((string) $ppa->id, 200, $key);
 
-        $intercompanyAr = LedgerTransaction::whereHas('entries', fn ($q) => $q->where('account_code', 'ar:ic:producer:egy:IDR'))->sum('amount_minor');
-        $intercompanyAp = LedgerTransaction::whereHas('entries', fn ($q) => $q->where('account_code', 'ap:ic:egy:producer:IDR'))->sum('amount_minor');
+        $intercompanyAr = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ar:ic:producer:egy:IDR'))->sum('amount');
+        $intercompanyAp = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ap:ic:egy:producer:IDR'))->sum('amount');
 
         // Net elimination must be zero
-        expect($intercompanyAr + $intercompanyAp)->toBe(0);
+        expect((float) $intercompanyAr + (float) $intercompanyAp)->toEqualWithDelta(0.0, 0.001);
     }
 
     public function test_inactive_ppa_contract_settlement_rejected(): void

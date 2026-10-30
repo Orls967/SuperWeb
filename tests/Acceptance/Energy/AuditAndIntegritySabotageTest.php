@@ -139,9 +139,12 @@ class AuditAndIntegritySabotageTest extends TestCase
         $this->billingService->issueInvoice($invoice->id);
 
         // Sabotage: corrupt the posted AR entry
-        LedgerEntry::where('account_code', "ar:egy:property:{$invoice->property_id}:IDR")->update([
-            'amount_minor' => 1,
-        ]);
+        $entry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', "ar:egy:property:{$invoice->property_id}:IDR"))->first();
+        if ($entry) {
+            DB::table('bank_ledger_entries')->where('id', $entry->id)->update([
+                'amount' => '1.00',
+            ]);
+        }
 
         $exitCode = Artisan::call('egy:audit');
         expect($exitCode)->toBe(1);
