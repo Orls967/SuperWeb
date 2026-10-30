@@ -150,8 +150,8 @@ class VenueBestAvailableSeatFinderTest extends TestCase
             'status' => 'BOOKED',
         ]);
 
-        // Baris B memiliki kursi 1, 2, 3, 4 AVAILABLE
-        for ($s = 1; $s <= 4; $s++) {
+        // Baris B memiliki kursi 1, 2, 3, 4, 5 AVAILABLE
+        for ($s = 1; $s <= 5; $s++) {
             SeatClaim::create([
                 'event_id' => $this->event->id,
                 'tier_id' => $this->tier->id,

@@ -6,7 +6,7 @@ namespace Tests\Acceptance\Venue;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Enums\AccountKind;
-use Modules\Rbac\Domain\Models\Role;
+use Modules\Core\Domain\Models\Role;
 use Modules\Venue\Database\Seeders\VenueRbacSeeder;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentVenue;

@@ -12,8 +12,10 @@ use Modules\Venue\Application\Actions\ExecuteArtistContractEscrowAndWhtPayoutAct
 use Modules\Venue\Domain\Models\ArtistContract;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
+#[CoversClass(ExecuteArtistContractEscrowAndWhtPayoutAction::class)]
 class VenueArtistSettlementTest extends TestCase
 {
     use RefreshDatabase;

@@ -99,14 +99,14 @@ class VenueOldCodeExplorationTest extends TestCase
         // Evaluasi: Menandai HELD, namun booking code menggunakan acak random_bytes(4) (PR3 determinisme terlanggar),
         // tidak terintegrasi PaymentGateway authorize/hold, dan belum terikat clock untuk pelepasan hold (V-2).
         $reserveAction = app(ReserveTableWithMinimumSpendDepositAction::class);
-        $resReserve = $reserveAction->handle($event->id, 1, 'T-01', 5000000, 2000000);
+        $resReserve = $reserveAction->handle($event->id, 1, 'T-01', 5000000, 2000000, 'ven:exp:tbl:1');
         $this->assertSame('HELD', $resReserve['booking']->status);
 
         // 4. ExecuteArtistContractEscrowAndWhtPayoutAction: SALAH
         // Evaluasi: Menggunakan kalkulasi float untuk persentase bagi hasil dan pajak PPh 23 (U-1),
         // tidak ada posting jurnal ledger untuk pelepasan escrow dan kewajiban pajak.
         $artistAction = app(ExecuteArtistContractEscrowAndWhtPayoutAction::class);
-        $resArtist = $artistAction->handle((string) $contract->id, 500000000, 2.0);
+        $resArtist = $artistAction->handle((string) $contract->id, 500000000, 200, 'ven:exp:art:1');
         $this->assertSame('settled', $resArtist['contract']->status);
 
         // 5. ApplyDynamicBottleSurgePricingAction: KERANGKA
@@ -155,7 +155,7 @@ class VenueOldCodeExplorationTest extends TestCase
 
         // Periksa akun kontrol ven:ticket_unearned:IDR
         $codes = array_column($definitions, 'code');
-        $this->assertNotContains('ven:ticket_unearned:IDR', $codes, 'Akun ven:ticket_unearned:IDR belum terdaftar di VenueAccounts');
+        $this->assertContains('ven:ticket_unearned:IDR', $codes, 'Akun ven:ticket_unearned:IDR terdaftar di VenueAccounts');
 
         // Cek ven:audit command (46 baris)
         $exitCode = Artisan::call('ven:audit');

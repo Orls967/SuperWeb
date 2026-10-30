@@ -98,3 +98,4 @@
   - Dilarang menggunakan float untuk pembagian door share artis atau tarif pajak.
   - Dilarang menggunakan idempotency key berbasis random string atau timestamp `now()`.
   - Dilarang mencampur prefiks tabel dengan modul lain.
+

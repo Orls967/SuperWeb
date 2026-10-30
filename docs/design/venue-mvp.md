@@ -211,3 +211,4 @@ Command `ven:audit` diperkuat untuk memeriksa invarian konsistensi dua arah (KON
 3. **Rekonsiliasi Kapasitas Zona:**
    Okupansi aktual di setiap zona tidak boleh melebihi `capacity_limit`.
 4. Command mengembalikan exit code 0 bila selisih 0, dan exit code 1 bila terdeteksi anomali.
+
