@@ -500,7 +500,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 20 | **Finance** | `fin_` | 1 |
 | 21 | **Fleet** | — | 1 |
 | 22 | **Hcm** | `hcm_` | 6 |
-| 23 | **Hospital** | `hsp_` | 13 |
+| 23 | **Hospital** | `hsp_` | 15 |
 | 24 | **Hotel** | `htl_` | 7 |
 | 25 | **Insurance** | `ins_` | 1 |
 | 26 | **Integration** | `intg_` | 340 |
@@ -534,7 +534,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 54 | **Venue** | `ven_` | 5 |
 | 55 | **Wealth** | `wm_` | 1 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **569 Migrasi** |
+| | **Total: 56 Modul** | | **571 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -562,7 +562,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Finance** | 8 | `pembiayaan`, `pembiayaan/simulasi/{product}`, `pembiayaan/{loan}` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Fleet** | 13 | `fleet`, `fleet/contracts`, `fleet/contracts/{contract}/amortize` ... | web, auth, role:admin,fleet_admin,lease_manager |
 | **Hcm** | 12 | `hcm`, `hcm/operations`, `hcm/operations/department` ... | web, auth, role:admin,hcm_manager |
-| **Hospital** | 11 | `hospital`, `hospital/trials/{trial}/bill-milestone`, `hospital/telemedicine` ... | web, auth, role:admin,hospital_admin,doctor |
+| **Hospital** | 28 | `hospital/outpatient/registration`, `hospital/outpatient/queue-board`, `hospital/outpatient/queue/{queue}/call` ... | web, auth, role:admin,hospital_registration |
 | **Hotel** | 18 | `hotel`, `hotel/reservations/{reservation}/settle`, `hotel/pms/reservations` ... | web, auth, role:admin,hotel_admin,front_desk |
 | **Insurance** | 10 | `insurance`, `insurance/products/{product}/issue`, `insurance/workflow/policies` ... | web, auth, role:admin,insurance_admin,underwriter,customer |
 | **Integration** | 2 | `integration`, `integration/webhooks` | web, auth, role:admin |
@@ -596,7 +596,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 10 | `wealth`, `wealth/profiles/{profile}/invest`, `wealth/treasury/risk-profiles` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **959 Rute** | | |
+| **Total** | **976 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -620,6 +620,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ck:audit` | `manual` | Perform two-source verification of cloud kitchen capacities, catering subscriptions, and meal order billings |
 | `clearing:audit` | `manual` | Audit Cross-Border Clearing: rekonsiliasi saldo escrow kripto, pelepasan POD, dan sertifikasi CBAM (0 selisih) |
 | `contracts:verify-chain` | **`dailyAt('03:00')`** | Verify the append-only cryptographic hash-chain across all contract versions |
+| `copilot:ask` | `manual` | Eksekusi AI Executive Copilot lintas 46 modul dengan deterministic tool-calling |
 | `core:consume-spine` | `manual` | Worker to consume events from the event spine by consumer group with persistent offset and idempotent replay |
 | `core:process-outbox` | `manual` | Process pending transactional outbox events and dispatch to subscribers |
 | `core:verify-passports` | `manual` | Verifikasi keabsahan kriptografis rantai hash-chain seluruh Paspor Kendaraan |
@@ -651,6 +652,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `hcm:audit` | `manual` | Audit Human Capital Management payroll calculations, deductions, and labor allocations (0 discrepancies) |
 | `hcm:encrypt-legacy` | `manual` | Idempotently backfill encrypted NIK and blind index for legacy employee records |
 | `hosp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, dan integritas subjek |
+| `hospital:outpatient-audit` | `manual` | Audit rekonsiliasi dua-sumber harian layanan rawat jalan: transaksi operasional vs buku besar perbankan |
 | `hotel:audit` | `manual` | Audit operasional hotel: kamar, reservasi, folio, dan integritas occupancy vs reservation |
 | `hsp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, dan integritas subjek |
 | `htl:audit` | `manual` | Audit operasional hotel: kamar, reservasi, folio, dan integritas occupancy vs reservation |
@@ -732,6 +734,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `sup:remind-certifications` | **`dailyAt('07:10')`** | Peringatkan sertifikasi pemasok yang akan kedaluwarsa atau sudah kedaluwarsa |
 | `sup:scan-risks` | **`dailyAt('06:45')`** | Pindai risiko pemasok: konsentrasi, sertifikasi kedaluwarsa, sanksi, dan skor rendah |
 | `super:health-check` | `manual` | Jalankan diagnosa komprehensif kesehatan seluruh ekosistem platform 12 pilar (DB, Cache, Storage, Ledger, Passport, Mall, Resto, Logistik, Aset, Pembelian, Kontrak, Manufaktur) |
+| `telemetry:snapshot` | `manual` | Generate real-time live telemetry snapshot across 6 enterprise command centers in JSON or SSE format |
 | `test` | `manual` | Run the application tests |
 | `test:mutate` | `manual` | Jalankan mutation testing Pest (--mutate) dengan ambang skor minimum 60% |
 | `tf:audit` | `manual` | Audit trade finance instruments (L/C exposure, bank guarantees, trade loans, and collections) |
@@ -748,7 +751,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 147 Command** | **37 Terjadwal** | |
+| **Total: 150 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -765,7 +768,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Ev** | `EvAccounts` | 1 | `oto:ev_revenue:IDR` |
 | **Fleet** | `FleetAccounts` | 4 | `ar:fleet:party:default:IDR`, `ar:fleet:party:501:IDR` ... |
 | **Hcm** | `HcmAccounts` | 15 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` ... |
-| **Hospital** | `HospitalAccounts` | 21 | `hsp:bpjs_receivable:IDR`, `hsp:epharmacy_receivable:IDR` ... |
+| **Hospital** | `HospitalAccounts` | 29 | `hsp:cash:IDR`, `hsp:doctor_fee_revenue:IDR` ... |
 | **Hotel** | `HotelAccounts` | 29 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
 | **Insurance** | `InsuranceAccounts` | 3 | `ins:premium_reserve:IDR`, `ins:reserve_pool:IDR` ... |
 | **Logistics** | `LogisticsAccounts` | 5 | `lgx:carrier_payable:IDR`, `lgx:circular_revenue:IDR` ... |
@@ -783,6 +786,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 2 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` |
 | **Venue** | `VenueAccounts` | 24 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 3 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 30 Registry** | | **268 Akun** | |
+| **Total: 30 Registry** | | **276 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
