@@ -41,9 +41,9 @@ class WealthAcceptanceTest extends TestCase
         parent::setUp();
         $this->seed(LedgerAccountsSeeder::class);
 
-        $this->investor1 = User::factory()->create();
-        $this->investor2 = User::factory()->create();
-        $this->wealthAdvisor = User::factory()->create();
+        $this->investor1 = User::factory()->create(['role' => 'investor']);
+        $this->investor2 = User::factory()->create(['role' => 'investor']);
+        $this->wealthAdvisor = User::factory()->create(['role' => 'wealth_manager']);
 
         $this->investor1->walletAccount('IDR');
         $this->investor2->walletAccount('IDR');

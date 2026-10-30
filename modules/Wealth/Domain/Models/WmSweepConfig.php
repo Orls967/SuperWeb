@@ -15,6 +15,8 @@ class WmSweepConfig extends Model
     protected $fillable = [
         'user_id',
         'profile_id',
+        'threshold_cash_idr',
+        'sweep_percentage_bps',
         'idle_cash_threshold_idr',
         'target_buffer_idr',
         'sweep_action',
@@ -25,6 +27,8 @@ class WmSweepConfig extends Model
     protected $casts = [
         'user_id' => 'integer',
         'profile_id' => 'integer',
+        'threshold_cash_idr' => 'integer',
+        'sweep_percentage_bps' => 'integer',
         'idle_cash_threshold_idr' => 'integer',
         'target_buffer_idr' => 'integer',
         'is_active' => 'boolean',

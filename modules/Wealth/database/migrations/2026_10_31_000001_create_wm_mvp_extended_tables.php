@@ -67,6 +67,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('threshold_cash_idr')->default(5000000);
                 $table->unsignedInteger('sweep_percentage_bps')->default(10000);
                 $table->boolean('is_active')->default(true);
+                $table->string('idempotency_key')->nullable();
                 $table->timestamps();
 
                 $table->unique('user_id');

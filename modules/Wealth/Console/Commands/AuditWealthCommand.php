@@ -9,7 +9,7 @@ use Modules\Wealth\Application\Services\RoboAdvisorService;
 
 class AuditWealthCommand extends Command
 {
-    protected $signature = 'wm:audit';
+    protected $signature = 'wealth:audit';
 
     protected $description = 'Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails';
 

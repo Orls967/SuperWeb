@@ -18,15 +18,20 @@ class WmNavHistory extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'asset_code',
         'asset_identifier',
         'nav_date',
+        'nav_scale_4',
         'nav_per_unit_scale4',
+        'source',
         'recorded_by',
+        'idempotency_key',
         'created_at',
     ];
 
     protected $casts = [
         'nav_date' => 'date',
+        'nav_scale_4' => 'integer',
         'nav_per_unit_scale4' => 'integer',
         'recorded_by' => 'integer',
         'created_at' => 'datetime',
