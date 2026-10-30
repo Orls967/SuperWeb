@@ -36,6 +36,45 @@ class CheckOutAndSettleFolioAction extends BaseAction
      *     status: string
      * }
      */
+    public function execute(
+        ?string $folioId = null,
+        ?string $reservationId = null,
+        string $paymentMethod = 'CASH',
+        string $idempotencyKey = '',
+        int $paymentAmountIdr = 0,
+        int $cashReceivedIdr = 0,
+        int $cardReceivedIdr = 0,
+        int|string|null $cashierUserId = null
+    ): array {
+        if (! $folioId && $reservationId) {
+            $folio = HotelFolio::where('reservation_id', $reservationId)->firstOrFail();
+            $folioId = $folio->id;
+        }
+
+        $amount = $paymentAmountIdr;
+        $method = $paymentMethod;
+        if ($cashReceivedIdr > 0 || $cardReceivedIdr > 0) {
+            $amount = $cashReceivedIdr + $cardReceivedIdr;
+            $method = ($cardReceivedIdr > 0 && $cashReceivedIdr === 0) ? 'CREDIT_CARD' : ($cashReceivedIdr > 0 && $cardReceivedIdr > 0 ? 'SPLIT_PAYMENT' : 'CASH');
+        }
+
+        return $this->handle(
+            folioId: (string) $folioId,
+            paymentMethod: $method,
+            idempotencyKey: $idempotencyKey,
+            paymentAmountIdr: $amount
+        );
+    }
+
+    /**
+     * @return array{
+     *     folio: HotelFolio,
+     *     reservation: HotelReservation,
+     *     room: HotelRoom,
+     *     deposit_applied_idr: int,
+     *     status: string
+     * }
+     */
     public function handle(
         string $folioId,
         string $paymentMethod = 'CASH',

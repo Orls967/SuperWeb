@@ -52,9 +52,14 @@ class ExecuteHotelNightAuditAction extends BaseAction
             }
 
             // Kunci status ke 'auditing'
+            $checkpoint = $businessDateRecord->last_checkpoint;
+            if ($checkpoint === 'COMPLETED' || $businessDateRecord->status === 'open' || ! $checkpoint) {
+                $checkpoint = 'STARTED';
+            }
+
             $businessDateRecord->update([
                 'status' => 'auditing',
-                'last_checkpoint' => $businessDateRecord->last_checkpoint ?? 'STARTED',
+                'last_checkpoint' => $checkpoint,
             ]);
 
             $serviceChargeBps = $property->service_charge_bps ?? 1000;

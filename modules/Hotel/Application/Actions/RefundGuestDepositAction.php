@@ -21,6 +21,18 @@ class RefundGuestDepositAction extends BaseAction
     /**
      * @return array{deposit: HotelDeposit, refunded_amount_idr: int, remaining_amount_idr: int}
      */
+    public function execute(
+        string $depositId,
+        int $refundAmountIdr,
+        string $idempotencyKey,
+        ?string $reason = null
+    ): array {
+        return $this->handle($depositId, $refundAmountIdr, $idempotencyKey);
+    }
+
+    /**
+     * @return array{deposit: HotelDeposit, refunded_amount_idr: int, remaining_amount_idr: int}
+     */
     public function handle(
         string $depositId,
         int $refundAmountIdr,

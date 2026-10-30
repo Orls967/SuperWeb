@@ -46,10 +46,16 @@ class HotelAvailabilityAuditCommand extends Command
         }
 
         // 3. Cek orphan room nights yang reservasinya sudah dibatalkan atau no-show
-        $invalidReservations = HotelReservation::whereIn('status', ['dibatalkan', 'dibatalkan_denda', 'no_show'])->pluck('id');
-        $orphanNights = HotelRoomNight::whereIn('reservation_id', $invalidReservations)
-            ->whereDate('night_date', '>', now()->toDateString())
-            ->get();
+        $cancelledIds = HotelReservation::whereIn('status', ['dibatalkan', 'dibatalkan_denda', 'cancelled', 'cancelled_with_penalty'])->pluck('id');
+        $orphanNights = HotelRoomNight::whereIn('reservation_id', $cancelledIds)->get();
+
+        $noShowReservations = HotelReservation::where('status', 'no_show')->get();
+        foreach ($noShowReservations as $noShow) {
+            $extraNights = HotelRoomNight::where('reservation_id', $noShow->id)
+                ->whereDate('night_date', '>', $noShow->check_in_date)
+                ->get();
+            $orphanNights = $orphanNights->merge($extraNights);
+        }
 
         foreach ($orphanNights as $night) {
             $this->error("Room night {$night->id} ({$night->night_date}) masih terdaftar untuk reservasi tidak aktif {$night->reservation_id}!");

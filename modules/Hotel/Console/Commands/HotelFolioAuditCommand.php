@@ -64,14 +64,15 @@ class HotelFolioAuditCommand extends Command
             }
         }
 
-        // 3. Verifikasi Saldo Outstanding Folio vs Jumlah Baris
+        // 3. Verifikasi Saldo Outstanding Folio vs Jumlah Baris & Pembayaran
         $folios = HotelFolio::with('lines')->get();
         foreach ($folios as $folio) {
             if ($folio->lines->isNotEmpty()) {
-                $calculatedBalance = (int) $folio->lines->sum('amount_idr');
-                // Outstanding balance harus konsisten dengan total baris
-                if ((int) $folio->outstanding_balance !== $calculatedBalance) {
-                    $this->error("Ketidakcocokan saldo folio {$folio->id}: Header={$folio->outstanding_balance}, SumLines={$calculatedBalance}");
+                $calculatedCharges = (int) $folio->lines->sum('amount_idr');
+                $expectedOutstanding = max(0, $calculatedCharges - (int) $folio->total_paid);
+                // Outstanding balance harus konsisten dengan total baris dikurangi pelunasan
+                if ((int) $folio->outstanding_balance !== $expectedOutstanding) {
+                    $this->error("Ketidakcocokan saldo folio {$folio->id}: Header={$folio->outstanding_balance}, Expected={$expectedOutstanding}");
                     $discrepancies++;
                 }
             }

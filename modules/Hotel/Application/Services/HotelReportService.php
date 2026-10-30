@@ -101,7 +101,8 @@ class HotelReportService
     public function getDateRangeReport(string $propertyId, string $startDate, string $endDate): Collection
     {
         return HotelDailyRevenueSnapshot::where('property_id', $propertyId)
-            ->whereBetween('business_date', [$startDate, $endDate])
+            ->whereDate('business_date', '>=', $startDate)
+            ->whereDate('business_date', '<=', $endDate)
             ->orderBy('business_date')
             ->get();
     }
