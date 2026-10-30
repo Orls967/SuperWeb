@@ -108,7 +108,7 @@ final class RwaAccounts
         ];
     }
 
-    public static function offeringEscrow(int|string $offeringId): LedgerAccount
+    public static function offeringEscrow(int|string $offeringId = 'default'): LedgerAccount
     {
         return LedgerAccount::firstOrCreate(
             ['code' => "rwa:offering_escrow:{$offeringId}:IDR"],
