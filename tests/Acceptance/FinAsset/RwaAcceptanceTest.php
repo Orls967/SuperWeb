@@ -53,11 +53,11 @@ class RwaAcceptanceTest extends TestCase
         parent::setUp();
         $this->seed(LedgerAccountsSeeder::class);
 
-        $this->issuer = User::factory()->create();
-        $this->complianceOfficer = User::factory()->create();
-        $this->investor1 = User::factory()->create();
-        $this->investor2 = User::factory()->create();
-        $this->investor3 = User::factory()->create();
+        $this->issuer = User::factory()->create(['role' => 'asset_manager']);
+        $this->complianceOfficer = User::factory()->create(['role' => 'admin']);
+        $this->investor1 = User::factory()->create(['role' => 'investor']);
+        $this->investor2 = User::factory()->create(['role' => 'investor']);
+        $this->investor3 = User::factory()->create(['role' => 'investor']);
 
         $this->issuer->walletAccount('IDR');
         $this->investor1->walletAccount('IDR');

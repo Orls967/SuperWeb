@@ -15,6 +15,7 @@ use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Rwa\Domain\Models\RwaDividend;
 use Modules\Rwa\Domain\Models\RwaHolding;
 use Modules\Rwa\Domain\Models\RwaOffering;
+use Modules\Rwa\Domain\Models\RwaTokenTransfer;
 
 class RwaTokenService
 {
@@ -327,6 +328,21 @@ class RwaTokenService
             if ($totalAllocated > $asset->total_supply_tokens) {
                 $discrepancies++;
                 $corruptDetails[] = "Asset ID {$asset->id} ({$asset->token_symbol}): holdings {$totalAllocated} exceeds supply {$asset->total_supply_tokens}";
+            }
+        }
+
+        $holdings = RwaHolding::all();
+        foreach ($holdings as $holding) {
+            $inbound = (int) RwaTokenTransfer::where('rwa_asset_id', $holding->rwa_asset_id)
+                ->where('to_user_id', $holding->user_id)
+                ->sum('quantity');
+            $outbound = (int) RwaTokenTransfer::where('rwa_asset_id', $holding->rwa_asset_id)
+                ->where('from_user_id', $holding->user_id)
+                ->sum('quantity');
+            $expected = $inbound - $outbound;
+            if ((int) $holding->token_balance !== $expected) {
+                $discrepancies++;
+                $corruptDetails[] = "Holding user {$holding->user_id} asset {$holding->rwa_asset_id}: balance {$holding->token_balance} does not match transfer log {$expected}";
             }
         }
 
