@@ -7,6 +7,7 @@ namespace Modules\Egy;
 use Illuminate\Support\ServiceProvider;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
 use Modules\Egy\Console\Commands\EgyAuditCommand;
+use Modules\Egy\Console\Commands\EgyIngestReadingsCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class EgyServiceProvider extends ServiceProvider
@@ -20,11 +21,17 @@ class EgyServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+
+        if (file_exists(__DIR__.'/routes/api.php')) {
+            $this->loadRoutesFrom(__DIR__.'/routes/api.php');
+        }
+
         $this->loadViewsFrom(__DIR__.'/resources/views', 'egy');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
                 EgyAuditCommand::class,
+                EgyIngestReadingsCommand::class,
             ]);
         }
 
