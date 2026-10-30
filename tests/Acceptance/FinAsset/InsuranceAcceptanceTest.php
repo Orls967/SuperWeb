@@ -48,10 +48,10 @@ class InsuranceAcceptanceTest extends TestCase
         parent::setUp();
         $this->seed(LedgerAccountsSeeder::class);
 
-        $this->customer1 = User::factory()->create();
-        $this->customer2 = User::factory()->create();
-        $this->underwriter = User::factory()->create();
-        $this->claimsOfficer = User::factory()->create();
+        $this->customer1 = User::factory()->create(['role' => 'customer']);
+        $this->customer2 = User::factory()->create(['role' => 'customer']);
+        $this->underwriter = User::factory()->create(['role' => 'underwriter']);
+        $this->claimsOfficer = User::factory()->create(['role' => 'underwriter']);
 
         $this->customer1->walletAccount('IDR');
         $this->customer2->walletAccount('IDR');

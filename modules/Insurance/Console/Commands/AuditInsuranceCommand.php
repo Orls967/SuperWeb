@@ -9,7 +9,7 @@ use Modules\Insurance\Application\Services\InsurTechClaimsService;
 
 class AuditInsuranceCommand extends Command
 {
-    protected $signature = 'ins:audit';
+    protected $signature = 'insurance:audit';
 
     protected $description = 'Perform two-source verification of InsurTech products, policies, and autopilot claim payouts';
 

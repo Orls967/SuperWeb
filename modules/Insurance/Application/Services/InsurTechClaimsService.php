@@ -16,6 +16,7 @@ use Modules\Core\Contracts\SimClockInterface;
 use Modules\Insurance\Domain\Models\InsuranceClaim;
 use Modules\Insurance\Domain\Models\InsuranceParametricOracle;
 use Modules\Insurance\Domain\Models\InsurancePolicy;
+use Modules\Insurance\Domain\Models\InsurancePolicyEarning;
 use Modules\Insurance\Domain\Models\InsuranceProduct;
 use Modules\Insurance\Ledger\InsuranceAccounts;
 
@@ -417,6 +418,11 @@ class InsurTechClaimsService
         $policies = InsurancePolicy::with('product')->get();
         foreach ($policies as $policy) {
             if ($policy->product && $policy->premium_paid_idr !== $policy->product->premium_amount_idr) {
+                $discrepancies++;
+            }
+
+            $totalEarned = (int) InsurancePolicyEarning::where('policy_id', $policy->id)->sum('daily_amount_idr');
+            if ($totalEarned > $policy->premium_paid_idr) {
                 $discrepancies++;
             }
         }
