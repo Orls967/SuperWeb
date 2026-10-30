@@ -21,6 +21,7 @@ use Modules\Rwa\Domain\Models\RwaInvestorVerification;
 use Modules\Rwa\Domain\Models\RwaOffering;
 use Modules\Rwa\Domain\Models\RwaOfferingOrder;
 use Modules\Rwa\Domain\Models\RwaTokenTransfer;
+use Modules\Rwa\Ledger\RwaAccounts;
 use Tests\TestCase;
 
 /**
@@ -737,8 +738,8 @@ class RwaAcceptanceTest extends TestCase
         RwaInvestorVerification::updateOrCreate(
             ['user_id' => $user->id],
             [
-                'kyc_document_id' => "KYC-DOC-{$user->id}",
-                'approval_id' => "APPR-{$user->id}",
+                'kyc_document_ref' => "KYC-DOC-{$user->id}",
+                'approval_ref' => "APPR-{$user->id}",
                 'verified_at' => now(),
                 'expires_at' => now()->addYear(),
                 'status' => 'VERIFIED',
@@ -801,16 +802,7 @@ class RwaAcceptanceTest extends TestCase
             'approved_at' => now(),
         ]);
 
-        LedgerAccount::firstOrCreate(
-            ['code' => "rwa:pool:{$symbol}:IDR"],
-            [
-                'name' => "RWA Revenue Pool {$symbol}",
-                'kind' => 'liability',
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-                'cached_balance' => '0',
-            ]
-        );
+        RwaAccounts::revenuePool($symbol);
 
         foreach ($holders as $userId => $qty) {
             RwaHolding::create([

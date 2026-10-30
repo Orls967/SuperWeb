@@ -17,7 +17,7 @@ class RwaOfferingOrder extends Model
         'user_id',
         'quantity_requested',
         'quantity_allocated',
-        'hold_reference_id',
+        'hold_reference',
         'amount_held_idr',
         'amount_captured_idr',
         'status',

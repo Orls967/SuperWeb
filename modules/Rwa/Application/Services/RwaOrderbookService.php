@@ -213,7 +213,7 @@ class RwaOrderbookService
                 'quantity' => $matchedQty,
                 'price_per_token_idr' => $tradePriceIdr,
                 'transfer_type' => 'SECONDARY_TRADE',
-                'reference_id' => "TRADE-{$buyOrderId}-{$sellOrderId}",
+                'reference_code' => "TRADE-{$buyOrderId}-{$sellOrderId}",
                 'idempotency_key' => $idempotencyKey,
                 'created_at' => $this->simClock->now(),
             ]);

@@ -9,7 +9,7 @@ use DomainException;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Banking\Application\Services\LedgerService;
-use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Rwa\Domain\Models\RwaDividend;

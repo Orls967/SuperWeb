@@ -11,7 +11,7 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
-use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Insurance\Domain\Models\InsuranceClaim;
 use Modules\Insurance\Domain\Models\InsuranceParametricOracle;
@@ -67,7 +67,7 @@ class InsurTechClaimsService
         }
 
         $policy = InsurancePolicy::findOrFail($policyId);
-        if ($policy->status !== 'active' || ($policy->expires_at && $policy->expires_at->isPast())) {
+        if ($policy->status !== 'active' || ($policy->expires_at && $policy->expires_at->lessThan($this->simClock->now()))) {
             throw new DomainException("Policy {$policyId} is expired or not active.");
         }
 

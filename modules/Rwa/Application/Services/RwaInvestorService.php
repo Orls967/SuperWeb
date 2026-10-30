@@ -45,8 +45,8 @@ class RwaInvestorService
             return RwaInvestorVerification::updateOrCreate(
                 ['user_id' => $userId],
                 [
-                    'kyc_document_id' => $kycDocumentId,
-                    'approval_id' => $approvalId,
+                    'kyc_document_ref' => $kycDocumentId,
+                    'approval_ref' => $approvalId,
                     'status' => 'VERIFIED',
                     'idempotency_key' => $idempotencyKey,
                     'payload_hash' => $payloadHash,

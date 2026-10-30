@@ -24,7 +24,7 @@ use Tests\TestCase;
  * - Unitized holdings dengan nilai unit/NAV skala 1e4; revaluasi MTM harian
  * - Auto-invest cash sweep dari event PayrollDisbursed & dividen RWA
  * - Rebalancing dengan B0′.8 PortfolioRebalancer saat drift melebihi batas band
- * - Audit command wealth:audit dua-sumber & fixture korupsi
+ * - Audit command wm:audit dua-sumber & fixture korupsi
  */
 class WealthAcceptanceTest extends TestCase
 {
@@ -399,7 +399,7 @@ class WealthAcceptanceTest extends TestCase
 
     public function test_25_audit_two_source_passes_with_reconciled_portfolio_and_custody(): void
     {
-        $exitCode = Artisan::call('wealth:audit');
+        $exitCode = Artisan::call('wm:audit');
         expect($exitCode)->toBe(0);
     }
 
@@ -420,7 +420,7 @@ class WealthAcceptanceTest extends TestCase
             ->where('asset_code', 'PU_INDEX')
             ->update(['units' => 9999]);
 
-        $exitCode = Artisan::call('wealth:audit');
+        $exitCode = Artisan::call('wm:audit');
         expect($exitCode)->not->toBe(0);
     }
 

@@ -14,8 +14,8 @@ class RwaInvestorVerification extends Model
 
     protected $fillable = [
         'user_id',
-        'kyc_document_id',
-        'approval_id',
+        'kyc_document_ref',
+        'approval_ref',
         'status',
         'idempotency_key',
         'payload_hash',

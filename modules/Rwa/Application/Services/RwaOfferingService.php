@@ -81,7 +81,7 @@ class RwaOfferingService
             'user_id' => $investorId,
             'quantity_requested' => $quantity,
             'quantity_allocated' => 0,
-            'hold_reference_id' => "HOLD-{$offeringId}-{$investorId}-{$quantity}",
+            'hold_reference' => "HOLD-{$offeringId}-{$investorId}-{$quantity}",
             'amount_held_idr' => $totalCostIdr,
             'amount_captured_idr' => 0,
             'status' => 'HELD',
@@ -184,7 +184,7 @@ class RwaOfferingService
                     'quantity' => $allocated,
                     'price_per_token_idr' => $offering->price_per_token_idr,
                     'transfer_type' => 'PRIMARY_ISSUANCE',
-                    'reference_id' => (string) $offering->id,
+                    'reference_code' => (string) $offering->id,
                     'idempotency_key' => "rwa:xfer:offering:{$offering->id}:{$order->user_id}",
                     'created_at' => $this->simClock->now(),
                 ]);

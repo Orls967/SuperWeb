@@ -34,6 +34,11 @@ class CashSweepService
             throw new InvalidArgumentException('Sweep percentage bps must be between 0 and 10000.');
         }
 
+        $threshold = (int) ($data['threshold_cash_idr'] ?? 0);
+        if ($threshold < 0) {
+            throw new InvalidArgumentException('Threshold cash must be positive or zero.');
+        }
+
         return WmSweepConfig::updateOrCreate(
             ['user_id' => $data['user_id']],
             [

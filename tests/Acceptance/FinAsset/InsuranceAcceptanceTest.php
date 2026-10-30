@@ -27,7 +27,7 @@ use Tests\TestCase;
  * - Pengakuan premi: masuk Unearned Premium (liabilitas); pro-rata harian ke Earned Premium via B0′.2 CumulativeRounding
  * - Oracle parametrik terdaftar; STP jika fraud score < threshold; investigasi jika >= threshold
  * - Settlement klaim indemnity debit beban klaim kredit hutang klaim -> kas dompet
- * - Audit command insurance:audit dua-sumber & fixture korupsi
+ * - Audit command ins:audit dua-sumber & fixture korupsi
  */
 class InsuranceAcceptanceTest extends TestCase
 {
@@ -550,7 +550,7 @@ class InsuranceAcceptanceTest extends TestCase
 
     public function test_30_audit_two_source_passes_with_balanced_premium_schedules(): void
     {
-        $exitCode = Artisan::call('insurance:audit');
+        $exitCode = Artisan::call('ins:audit');
         expect($exitCode)->toBe(0);
     }
 
@@ -567,7 +567,7 @@ class InsuranceAcceptanceTest extends TestCase
             'idempotency_key' => 'ins:earn:corr:031',
         ]);
 
-        $exitCode = Artisan::call('insurance:audit');
+        $exitCode = Artisan::call('ins:audit');
         expect($exitCode)->not->toBe(0);
     }
 

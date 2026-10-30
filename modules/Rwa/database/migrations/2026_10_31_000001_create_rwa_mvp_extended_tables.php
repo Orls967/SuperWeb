@@ -20,8 +20,8 @@ return new class extends Migration
             Schema::create('rwa_investor_verifications', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-                $table->string('kyc_document_id');
-                $table->string('approval_id')->nullable();
+                $table->string('kyc_document_ref');
+                $table->string('approval_ref')->nullable();
                 $table->string('status')->default('VERIFIED'); // VERIFIED, EXPIRED, REVOKED
                 $table->string('idempotency_key')->nullable()->unique();
                 $table->string('payload_hash')->nullable();
@@ -41,7 +41,7 @@ return new class extends Migration
                 $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
                 $table->unsignedBigInteger('quantity_requested');
                 $table->unsignedBigInteger('quantity_allocated')->default(0);
-                $table->string('hold_reference_id')->nullable();
+                $table->string('hold_reference')->nullable();
                 $table->unsignedBigInteger('amount_held_idr');
                 $table->unsignedBigInteger('amount_captured_idr')->default(0);
                 $table->string('status')->default('HELD'); // HELD, ALLOCATED, SETTLED, CANCELLED
@@ -61,7 +61,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('quantity');
                 $table->unsignedBigInteger('price_per_token_idr')->default(0);
                 $table->string('transfer_type'); // PRIMARY_ISSUANCE, SECONDARY_TRADE, ESCROW_RELEASE
-                $table->string('reference_id')->nullable();
+                $table->string('reference_code')->nullable();
                 $table->string('idempotency_key')->unique();
                 $table->timestamp('created_at')->useCurrent();
 

@@ -26,7 +26,7 @@ class RwaTokenTransfer extends Model
         'quantity',
         'price_per_token_idr',
         'transfer_type',
-        'reference_id',
+        'reference_code',
         'idempotency_key',
         'created_at',
     ];
