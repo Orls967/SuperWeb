@@ -17,8 +17,11 @@ use Modules\Hospital\Domain\Models\OutpatientInvoice;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\Polyclinic;
 use Modules\Hospital\Domain\Models\QueueTicket;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\Acceptance\Support\HospitalAcceptanceHelper;
 
+#[CoversClass(SubmitBpjsClaimAction::class)]
+#[CoversClass(AdjudicateBpjsClaimAction::class)]
 class OutpatientBpjsClaimTest extends HospitalAcceptanceHelper
 {
     protected function createBpjsEncounterFixture(): OutpatientEncounter

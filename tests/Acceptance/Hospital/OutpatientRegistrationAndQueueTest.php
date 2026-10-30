@@ -12,8 +12,10 @@ use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hospital\Domain\Models\Polyclinic;
 use Modules\Hospital\Domain\Models\Doctor;
 use Modules\Hospital\Domain\Models\QueueTicket;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\Acceptance\Support\HospitalAcceptanceHelper;
 
+#[CoversClass(RegisterPatientAndIssueQueueAction::class)]
 class OutpatientRegistrationAndQueueTest extends HospitalAcceptanceHelper
 {
     public function test_pasien_baru_dapat_didaftarkan_dengan_nik_terenkripsi_dan_blind_index_unik(): void

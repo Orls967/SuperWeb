@@ -17,8 +17,11 @@ use Modules\Hospital\Domain\Models\PharmacyBranch;
 use Modules\Hospital\Domain\Models\PharmacyBranchLot;
 use Modules\Hospital\Domain\Models\Polyclinic;
 use Modules\Hospital\Domain\Models\QueueTicket;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\Acceptance\Support\HospitalAcceptanceHelper;
 
+#[CoversClass(DispensePrescriptionFefoAction::class)]
+#[CoversClass(CreateOutpatientPrescriptionAction::class)]
 class OutpatientPharmacyAndFefoTest extends HospitalAcceptanceHelper
 {
     protected function createExaminedEncounterFixture(): OutpatientEncounter

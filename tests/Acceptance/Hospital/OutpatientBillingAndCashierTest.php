@@ -17,8 +17,11 @@ use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\Polyclinic;
 use Modules\Hospital\Domain\Models\QueueTicket;
 use Modules\Hospital\Domain\Models\TariffVersion;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\Acceptance\Support\HospitalAcceptanceHelper;
 
+#[CoversClass(ProcessCashPaymentAction::class)]
+#[CoversClass(GenerateOutpatientInvoiceAction::class)]
 class OutpatientBillingAndCashierTest extends HospitalAcceptanceHelper
 {
     protected function createDispensedEncounterFixture(): OutpatientEncounter
