@@ -302,6 +302,9 @@ class HotelNightAuditTest extends TestCase
 
         // Simulasi interupsi di checkpoint POST_ROOM_CHARGES
         $action->simulateCheckpointFailure($this->property->id, 'POST_ROOM_CHARGES');
+        $recordBefore = $this->businessDateService->getBusinessDateRecord($this->property->id);
+        $this->assertEquals('auditing', $recordBefore->status);
+        $this->assertEquals('POST_ROOM_CHARGES', $recordBefore->last_checkpoint);
 
         // Jalankan ulang night audit
         $snapshot = $action->execute($this->property->id, '2026-11-01');
@@ -310,6 +313,7 @@ class HotelNightAuditTest extends TestCase
         $record = $this->businessDateService->getBusinessDateRecord($this->property->id);
         $this->assertEquals('COMPLETED', $record->last_checkpoint);
         $this->assertEquals('open', $record->status);
+        $this->assertNotNull($record->audited_at);
     }
 
     public function test_snapshot_harian_hasil_audit_memiliki_total_pendapatan_yang_identik_dengan_mutasi_ledger(): void
@@ -319,7 +323,13 @@ class HotelNightAuditTest extends TestCase
         $action = app(ExecuteHotelNightAuditAction::class);
         $snapshot = $action->execute($this->property->id, '2026-11-01');
 
-        $this->assertGreaterThan(0, $snapshot->total_room_revenue_idr);
+        $this->assertEquals(3500000, $snapshot->total_room_revenue_idr);
+        $this->assertEquals(350000, $snapshot->total_service_charge_idr);
+        $this->assertEquals(385000, $snapshot->total_tax_pbjt_idr);
+        $this->assertEquals(1750000, $snapshot->adr_idr);
+        $this->assertGreaterThan(0, $snapshot->revpar_idr);
+        $this->assertGreaterThan(0, $snapshot->occupancy_rate_bps);
+        $this->assertEquals(2420000, $folio->fresh()->outstanding_balance);
 
         // Cari mutasi kredit pada htl:room_revenue:IDR
         $entries = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'htl:room_revenue:IDR'))->get();

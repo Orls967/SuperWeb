@@ -289,6 +289,27 @@ class HotelFolioAndOutletTest extends TestCase
             idempotencyKey: 'transfer-valid-limit',
         );
 
+        $this->assertEquals('Tagihan akomodasi meeting', $transfer->notes);
+        $this->assertEquals('transfer-valid-limit', $transfer->idempotency_key);
+
+        $transferLine = $folio->lines()->where('line_type', 'CITY_LEDGER_TRANSFER')->firstOrFail();
+        $this->assertEquals(-3000000, $transferLine->amount_idr);
+        $this->assertEquals('transfer-valid-limit', $transferLine->idempotency_key);
+
+        try {
+            $transferAction->execute($folio->id, $corp->id, 0, 'Zero', 'zero-key');
+            $this->fail('Nominal 0 harus ditolak');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertStringContainsString('lebih besar dari 0', $e->getMessage());
+        }
+
+        try {
+            $transferAction->execute($folio->id, $corp->id, 100000, 'No key', '   ');
+            $this->fail('Key kosong harus ditolak');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertStringContainsString('Idempotency-Key', $e->getMessage());
+        }
+
         $corp->refresh();
         $this->assertEquals(4000000, $corp->outstanding_balance_idr);
         $this->assertTrue($corp->outstanding_balance_idr <= $corp->credit_limit_idr);

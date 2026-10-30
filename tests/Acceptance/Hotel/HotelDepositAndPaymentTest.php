@@ -120,8 +120,39 @@ class HotelDepositAndPaymentTest extends TestCase
         );
 
         $this->assertEquals('PARTIALLY_REFUNDED', $refRes['deposit']->status);
+        $this->assertEquals('PARTIALLY_REFUNDED', $deposit->fresh()->status);
         $this->assertEquals(300000, $refRes['refunded_amount_idr']);
         $this->assertEquals(700000, $refRes['remaining_amount_idr']);
+
+        // Refund sisa penuh (boundary $refundAmountIdr === $remaining) via execute()
+        $refResFull = $refundAction->execute(
+            depositId: $deposit->id,
+            refundAmountIdr: 700000,
+            idempotencyKey: 'key_refund_tx_02'
+        );
+        $this->assertEquals('REFUNDED', $refResFull['deposit']->status);
+        $this->assertEquals('REFUNDED', $deposit->fresh()->status);
+        $this->assertEquals(0, $refResFull['remaining_amount_idr']);
+
+        // Pastikan jurnal ledger refund terposting
+        $refundTxCount = LedgerTransaction::where('reference_id', $deposit->id)
+            ->where('type', 'HOTEL_DEPOSIT_REFUND')
+            ->count();
+        $this->assertEquals(2, $refundTxCount);
+
+        try {
+            $refundAction->handle($deposit->id, 0, 'key_refund_zero');
+            $this->fail('Refund 0 wajib ditolak');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertStringContainsString('lebih besar dari 0', $e->getMessage());
+        }
+
+        try {
+            $refundAction->handle($deposit->id, 100, '   ');
+            $this->fail('Key spasi wajib ditolak');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertStringContainsString('Idempotency-Key', $e->getMessage());
+        }
     }
 
     public function test_refund_deposit_wajib_memiliki_idempotency_key_tersendiri(): void

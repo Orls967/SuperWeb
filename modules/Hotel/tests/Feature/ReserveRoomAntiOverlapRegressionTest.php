@@ -99,4 +99,46 @@ class ReserveRoomAntiOverlapRegressionTest extends TestCase
         );
         $this->assertEquals('confirmed', $res2['reservation']->status);
     }
+
+    public function test_single_night_booking_folio_and_checked_in_overlap_invariants(): void
+    {
+        $action = app(ReserveRoomWithInventoryNightLockAction::class);
+
+        $res = $action->handle(
+            propertyId: $this->property->id,
+            roomId: $this->room->id,
+            guestUserId: (string) $this->guest->id,
+            checkInDate: '2026-11-10',
+            checkOutDate: '2026-11-11',
+            dailyRateIdr: 1500000
+        );
+
+        $reservation = $res['reservation'];
+        $folio = $res['folio'];
+
+        $this->assertEquals(1, $res['nights']);
+        $this->assertEquals(1500000, $res['total_room_charge_idr']);
+        $this->assertStringStartsWith('HTL-RES-', $reservation->reservation_number);
+        $this->assertEquals(16, strlen($reservation->reservation_number));
+        $this->assertTrue(ctype_upper(substr($reservation->reservation_number, 8)) || ctype_xdigit(substr($reservation->reservation_number, 8)));
+
+        $this->assertEquals(1500000, $folio->total_room_charges);
+        $this->assertEquals(0, $folio->total_addon_charges);
+        $this->assertEquals(0, $folio->total_paid);
+        $this->assertEquals(1500000, $folio->outstanding_balance);
+        $this->assertEquals('open', $folio->status);
+
+        // Ubah status menjadi checked_in dan pastikan overlap tetap ditolak
+        $reservation->update(['status' => 'checked_in']);
+
+        $this->expectException(\RuntimeException::class);
+        $action->handle(
+            propertyId: $this->property->id,
+            roomId: $this->room->id,
+            guestUserId: (string) $this->guest->id,
+            checkInDate: '2026-11-10',
+            checkOutDate: '2026-11-11',
+            dailyRateIdr: 1500000
+        );
+    }
 }

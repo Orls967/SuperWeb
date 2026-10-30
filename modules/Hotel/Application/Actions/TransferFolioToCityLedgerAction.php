@@ -112,10 +112,6 @@ class TransferFolioToCityLedgerAction extends BaseAction
                 'line_type' => 'CITY_LEDGER_TRANSFER',
                 'description' => "Pengalihan tagihan ke City Ledger: {$account->company_name}",
                 'amount_idr' => -$amountIdr,
-                'base_amount_idr' => 0,
-                'service_charge_idr' => 0,
-                'tax_pbjt_idr' => 0,
-                'reversal_of_id' => null,
                 'idempotency_key' => $idempotencyKey,
             ]);
 

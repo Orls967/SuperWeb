@@ -62,8 +62,8 @@ class ExecuteHotelNightAuditAction extends BaseAction
                 'last_checkpoint' => $checkpoint,
             ]);
 
-            $serviceChargeBps = $property->service_charge_bps ?? 1000;
-            $taxPbjtBps = $property->tax_pbjt_bps ?? 1000;
+            $serviceChargeBps = $property->service_charge_bps;
+            $taxPbjtBps = $property->tax_pbjt_bps;
 
             // ========================================================
             // CHECKPOINT 1: POST_ROOM_CHARGES (Hanya untuk checked_in)
@@ -135,7 +135,6 @@ class ExecuteHotelNightAuditAction extends BaseAction
                         'base_amount_idr' => $baseRate,
                         'service_charge_idr' => $serviceCharge,
                         'tax_pbjt_idr' => $taxPbjt,
-                        'reversal_of_id' => null,
                         'idempotency_key' => $nightKey,
                     ]);
 
