@@ -23,6 +23,7 @@ class InsurancePolicyEarning extends Model
         'earning_date',
         'day_index',
         'amount_idr',
+        'daily_amount_idr',
         'cumulative_earned_idr',
         'idempotency_key',
         'created_at',

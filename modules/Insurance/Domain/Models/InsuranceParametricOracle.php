@@ -12,16 +12,19 @@ class InsuranceParametricOracle extends Model
 
     protected $fillable = [
         'oracle_code',
+        'name',
         'oracle_name',
         'source_type',
         'metric_name',
         'condition_operator',
         'threshold_value',
         'is_active',
+        'api_endpoint_config',
     ];
 
     protected $casts = [
         'threshold_value' => 'integer',
         'is_active' => 'boolean',
+        'api_endpoint_config' => 'array',
     ];
 }
