@@ -9,6 +9,7 @@ use Modules\Egy\Application\Services\ConsolidatedUtilityBillingService;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
 use Modules\Egy\Console\Commands\EgyAuditCommand;
 use Modules\Egy\Console\Commands\EgyBillPropertiesCommand;
+use Modules\Egy\Console\Commands\EgyCommitUnitsCommand;
 use Modules\Egy\Console\Commands\EgyIngestReadingsCommand;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -36,6 +37,7 @@ class EgyServiceProvider extends ServiceProvider
                 EgyAuditCommand::class,
                 EgyIngestReadingsCommand::class,
                 EgyBillPropertiesCommand::class,
+                EgyCommitUnitsCommand::class,
             ]);
         }
 
