@@ -10,14 +10,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Mobility\Domain\Models\EvCharger;
-use Modules\Mobility\Domain\Models\EvSession;
-use Modules\Mobility\Domain\Models\EvStation;
-use Modules\Mobility\Domain\Models\FleetContract;
-use Modules\Mobility\Domain\Models\FleetInvoice;
-use Modules\Mobility\Domain\Models\TelematicsBaseline;
-use Modules\Mobility\Domain\Models\TelematicsDevice;
-use Modules\Mobility\Domain\Models\TelematicsTick;
+use Modules\Ev\Domain\Models\EvCharger;
+use Modules\Ev\Domain\Models\EvSession;
+use Modules\Ev\Domain\Models\EvStation;
+use Modules\Fleet\Domain\Models\FleetContract;
+use Modules\Fleet\Domain\Models\FleetInvoice;
+use Modules\Telematics\Domain\Models\TelematicsBaseline;
+use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Telematics\Domain\Models\TelematicsTick;
 use Tests\TestCase;
 
 class MobilityAuditCommandTest extends TestCase

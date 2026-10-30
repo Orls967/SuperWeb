@@ -9,12 +9,12 @@ use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
-use Modules\Mobility\Application\Actions\IngestTelematicsTickAction;
-use Modules\Mobility\Application\Actions\RecomputeRobustBaselineAction;
-use Modules\Mobility\Domain\Events\TelematicsAnomalyDetectedEvent;
-use Modules\Mobility\Domain\Models\TelematicsBaseline;
-use Modules\Mobility\Domain\Models\TelematicsDevice;
-use Modules\Mobility\Domain\Models\TelematicsTick;
+use Modules\Telematics\Application\Actions\IngestTelematicsTickAction;
+use Modules\Telematics\Application\Actions\RecomputeRobustBaselineAction;
+use Modules\Telematics\Domain\Events\TelematicsAnomalyDetectedEvent;
+use Modules\Telematics\Domain\Models\TelematicsBaseline;
+use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Telematics\Domain\Models\TelematicsTick;
 use Tests\TestCase;
 
 class MobilityTelematicsBaselineAndAnomalyTest extends TestCase

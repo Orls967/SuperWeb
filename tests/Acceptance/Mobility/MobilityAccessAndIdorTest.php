@@ -8,10 +8,10 @@ use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Modules\Mobility\Database\Seeders\MobilityRbacSeeder;
-use Modules\Mobility\Domain\Models\EvCharger;
-use Modules\Mobility\Domain\Models\EvSession;
-use Modules\Mobility\Domain\Models\EvStation;
+use Modules\Ev\Domain\Models\EvCharger;
+use Modules\Ev\Domain\Models\EvSession;
+use Modules\Ev\Domain\Models\EvStation;
+use Modules\Fleet\Database\Seeders\MobilityRbacSeeder;
 use Tests\TestCase;
 
 class MobilityAccessAndIdorTest extends TestCase

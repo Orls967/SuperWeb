@@ -6,8 +6,8 @@ namespace Tests\Acceptance\Mobility;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Mobility\Application\Services\GeofenceEvaluationService;
-use Modules\Mobility\Domain\Models\GeofenceZone;
+use Modules\Fleet\Application\Services\GeofenceEvaluationService;
+use Modules\Fleet\Domain\Models\GeofenceZone;
 use Tests\TestCase;
 
 class MobilityGeofenceDepotTest extends TestCase

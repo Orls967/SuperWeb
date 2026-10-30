@@ -11,17 +11,17 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Mobility\Application\Actions\CancelEvChargingSessionAction;
-use Modules\Mobility\Application\Actions\RecordEvMeterValueAction;
-use Modules\Mobility\Application\Actions\SettleEvChargingSessionAction;
-use Modules\Mobility\Application\Actions\StartEvChargingSessionAction;
-use Modules\Mobility\Application\Services\TimeOfUseTariffCalculator;
-use Modules\Mobility\Domain\Events\EvSessionCompletedEvent;
-use Modules\Mobility\Domain\Models\EvCharger;
-use Modules\Mobility\Domain\Models\EvMeterValue;
-use Modules\Mobility\Domain\Models\EvSession;
-use Modules\Mobility\Domain\Models\EvStation;
-use Modules\Mobility\Domain\Models\EvTariffWindow;
+use Modules\Ev\Application\Actions\CancelEvChargingSessionAction;
+use Modules\Ev\Application\Actions\RecordEvMeterValueAction;
+use Modules\Ev\Application\Actions\SettleEvChargingSessionAction;
+use Modules\Ev\Application\Actions\StartEvChargingSessionAction;
+use Modules\Ev\Application\Services\TimeOfUseTariffCalculator;
+use Modules\Ev\Domain\Events\EvSessionCompletedEvent;
+use Modules\Ev\Domain\Models\EvCharger;
+use Modules\Ev\Domain\Models\EvMeterValue;
+use Modules\Ev\Domain\Models\EvSession;
+use Modules\Ev\Domain\Models\EvStation;
+use Modules\Ev\Domain\Models\EvTariffWindow;
 use Tests\TestCase;
 
 class MobilityEvSessionAndTariffTest extends TestCase

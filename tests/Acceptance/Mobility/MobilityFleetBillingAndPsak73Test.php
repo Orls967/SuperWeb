@@ -8,15 +8,15 @@ use Carbon\Carbon;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Mobility\Application\Actions\AssignVehicleToContractAction;
-use Modules\Mobility\Application\Actions\BillExcessMileageAction;
-use Modules\Mobility\Application\Actions\BillMonthlyFleetLeaseAction;
-use Modules\Mobility\Application\Actions\CreditSlaPenaltyAction;
-use Modules\Mobility\Application\Services\Psak73AmortizationEngine;
-use Modules\Mobility\Domain\Models\FleetContract;
-use Modules\Mobility\Domain\Models\FleetContractUnit;
-use Modules\Mobility\Domain\Models\FleetInvoice;
-use Modules\Mobility\Domain\Models\FleetSlaBreach;
+use Modules\Fleet\Application\Actions\AssignVehicleToContractAction;
+use Modules\Fleet\Application\Actions\BillExcessMileageAction;
+use Modules\Fleet\Application\Actions\BillMonthlyFleetLeaseAction;
+use Modules\Fleet\Application\Actions\CreditSlaPenaltyAction;
+use Modules\Fleet\Application\Services\Psak73AmortizationEngine;
+use Modules\Fleet\Domain\Models\FleetContract;
+use Modules\Fleet\Domain\Models\FleetContractUnit;
+use Modules\Fleet\Domain\Models\FleetInvoice;
+use Modules\Fleet\Domain\Models\FleetSlaBreach;
 use Tests\TestCase;
 
 class MobilityFleetBillingAndPsak73Test extends TestCase

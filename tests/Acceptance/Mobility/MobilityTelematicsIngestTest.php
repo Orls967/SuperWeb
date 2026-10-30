@@ -8,10 +8,10 @@ use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Modules\Mobility\Application\Actions\IngestTelematicsTickAction;
-use Modules\Mobility\Domain\Models\TelematicsDevice;
-use Modules\Mobility\Domain\Models\TelematicsSequenceGap;
-use Modules\Mobility\Domain\Models\TelematicsTick;
+use Modules\Telematics\Application\Actions\IngestTelematicsTickAction;
+use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Telematics\Domain\Models\TelematicsSequenceGap;
+use Modules\Telematics\Domain\Models\TelematicsTick;
 use Tests\TestCase;
 
 class MobilityTelematicsIngestTest extends TestCase
