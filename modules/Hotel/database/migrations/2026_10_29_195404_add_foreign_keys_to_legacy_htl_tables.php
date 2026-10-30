@@ -20,13 +20,6 @@ return new class extends Migration
                 ->cascadeOnDelete();
         });
 
-        Schema::table('htl_folios', function (Blueprint $table) {
-            $table->foreign('reservation_id')
-                ->references('id')
-                ->on('htl_reservations')
-                ->cascadeOnDelete();
-        });
-
         Schema::table('htl_reservations', function (Blueprint $table) {
             $table->foreign('property_id')
                 ->references('id')
@@ -37,13 +30,6 @@ return new class extends Migration
                 ->references('id')
                 ->on('htl_rooms')
                 ->nullOnDelete();
-        });
-
-        Schema::table('htl_timeshare_units', function (Blueprint $table) {
-            $table->foreign('property_id')
-                ->references('id')
-                ->on('htl_properties')
-                ->cascadeOnDelete();
         });
 
         Schema::table('htl_timeshare_investors', function (Blueprint $table) {
@@ -63,17 +49,9 @@ return new class extends Migration
             $table->dropForeign(['timeshare_unit_id']);
         });
 
-        Schema::table('htl_timeshare_units', function (Blueprint $table) {
-            $table->dropForeign(['property_id']);
-        });
-
         Schema::table('htl_reservations', function (Blueprint $table) {
             $table->dropForeign(['room_id']);
             $table->dropForeign(['property_id']);
-        });
-
-        Schema::table('htl_folios', function (Blueprint $table) {
-            $table->dropForeign(['reservation_id']);
         });
 
         Schema::table('htl_folio_items', function (Blueprint $table) {
