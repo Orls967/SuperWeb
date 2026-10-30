@@ -304,24 +304,45 @@ Diorganisasi ke dalam 8 kelompok file test di `tests/Acceptance/Hospital/`:
 - [ ] R7.HSP.1 **Vertical Slice Rawat Jalan Terpadu**: Pendaftaran antrian harian per poli (concurrency-safe), triage perawat, pemeriksaan dokter (ICD-10 terenkripsi), resep elektronik, dispensing FEFO farmasi & HPP, billing terpadu tunai/JKN, posting ledger seimbang, portal pasien, rekapitulasi harian, dan artisan command hospital:outpatient-audit dua-sumber.
   Bukti:
     - jenis: fitur
-    - commit: (akan diisi commit implementasi)
+    - commit: fdfc7fd4 feat(hospital): master data, skema tabel rawat jalan & akun ledger
+    - commit: a05e2539 feat(hospital): pendaftaran pasien dan alokasi antrian atomic per poli
+    - commit: ca5219a5 feat(hospital): triage perawat dan pemeriksaan medis diagnosis terenkripsi
+    - commit: 7e3a8cec feat(hospital): e-resep dokter dan dispensing farmasi berbasis fefo dengan hpp
+    - commit: f9bbcf88 feat(hospital): billing rawat jalan dan pembayaran kasir tunai idempotent
+    - commit: 23b631a8 feat(hospital): klaim bpjs ina-cbg tarif paket selisih tarif dan adjudikasi
+    - commit: 9e02459f feat(hospital): rekapitulasi harian per poli dan artisan command audit dua-sumber
+    - commit: a2e6e5cf feat(hospital): antarmuka ui blade pendaftaran antrian farmasi kasir portal dan laporan
+    - commit: 9f47a240 feat(hospital): integrasi matriks otorisasi rute arsitektur dan penyesuaian blind index bidx
+    - commit: 58d68275 test(hospital): anotasi covers class untuk pengujian mutasi tindakan rawat jalan
+    - commit: aa0691fc test(hospital): pengujian e2e alur lengkap tunai dan bpjs rawat jalan
+    - commit: 5558e464 docs(hospital): sinkronisasi openapi v3 spec untuk rute rawat jalan
+    - commit: 3e376359 docs(hospital): sinkronisasi inventaris faktual codebase di docs/CODEBASE.md
     - file: modules/Hospital/Application/Actions/RegisterPatientAndIssueQueueAction.php
+    - file: modules/Hospital/Application/Actions/RecordVitalSignsAction.php
     - file: modules/Hospital/Application/Actions/ExaminePatientAndDiagnoseAction.php
+    - file: modules/Hospital/Application/Actions/CreateOutpatientPrescriptionAction.php
     - file: modules/Hospital/Application/Actions/DispensePrescriptionFefoAction.php
+    - file: modules/Hospital/Application/Actions/GenerateOutpatientInvoiceAction.php
     - file: modules/Hospital/Application/Actions/ProcessCashPaymentAction.php
     - file: modules/Hospital/Application/Actions/SubmitBpjsClaimAction.php
+    - file: modules/Hospital/Application/Actions/AdjudicateBpjsClaimAction.php
+    - file: modules/Hospital/Application/Actions/GenerateDailyPolyclinicReportAction.php
     - file: modules/Hospital/Console/Commands/AuditOutpatientCommand.php
-    - test: tests/Acceptance/Hospital/OutpatientRegistrationAndQueueTest.php
-    - test: tests/Acceptance/Hospital/OutpatientExaminationAndTriageTest.php
-    - test: tests/Acceptance/Hospital/OutpatientPharmacyAndFefoTest.php
-    - test: tests/Acceptance/Hospital/OutpatientBillingAndCashierTest.php
-    - test: tests/Acceptance/Hospital/OutpatientBpjsClaimTest.php
-    - test: tests/Acceptance/Hospital/OutpatientAccessControlTest.php
-    - test: tests/Acceptance/Hospital/OutpatientReportAndAuditTest.php
-    - test: tests/Acceptance/Hospital/OutpatientUiAndValidationTest.php
+    - test: tests/Acceptance/Hospital/OutpatientRegistrationAndQueueTest.php (8 passed)
+    - test: tests/Acceptance/Hospital/OutpatientExaminationAndTriageTest.php (7 passed)
+    - test: tests/Acceptance/Hospital/OutpatientPharmacyAndFefoTest.php (7 passed)
+    - test: tests/Acceptance/Hospital/OutpatientBillingAndCashierTest.php (8 passed)
+    - test: tests/Acceptance/Hospital/OutpatientBpjsClaimTest.php (6 passed)
+    - test: tests/Acceptance/Hospital/OutpatientAccessControlTest.php (5 passed)
+    - test: tests/Acceptance/Hospital/OutpatientReportAndAuditTest.php (5 passed)
+    - test: tests/Acceptance/Hospital/OutpatientUiAndValidationTest.php (6 passed)
+    - test: tests/Acceptance/Hospital/OutpatientEndToEndFlowTest.php (2 passed)
     - akses: route GET /hospital/outpatient/registration [role: admin, hospital_registration]
-    - akses: route GET /hospital/outpatient/cashier [role: admin, cashier]
+    - akses: route GET /hospital/outpatient/queue-board [role: admin, doctor, hospital_registration, nurse]
+    - akses: route GET /hospital/outpatient/pharmacy [role: admin, pharmacist]
+    - akses: route GET /hospital/outpatient/cashier [role: admin, cashier, hospital_finance]
     - akses: route GET /hospital/outpatient/reports/daily [role: admin, hospital_finance, auditor]
+    - akses: route GET /hospital/outpatient/portal [role: admin, patient]
     - akses: command hospital:outpatient-audit
 ```
 
@@ -334,3 +355,5 @@ Diorganisasi ke dalam 8 kelompok file test di `tests/Acceptance/Hospital/`:
 | RM-HSP-01 | Integrasi BPJS Eksternal | Klaim INA-CBG menggunakan simulasi perhitungan lokal terstandar, belum menghubungkan webhook VClaim/PCare BPJS eksternal asli | Tidak ada kendala operasional lokal; klaim tetap menghasilkan pembukuan piutang akurat | P3 | Implementasi adapter bridge BPJS TrustMark saat integrasi API eksternal dijadwalkan |
 | RM-HSP-02 | Resep Obat Racikan | Resep rawat jalan menangani obat jadi terstandar, belum mendukung formula compounding racikan multi-bahan | Obat yang diresepkan adalah obat jadi dalam kemasan standar | P3 | Penambahan modul formularium racikan di fase pengembangan lanjutan farmasi |
 | RM-HSP-03 | Integrasi Bridging SATUSEHAT | Rekam medis terenkripsi lokal, belum mengirim payload FHIR ke Kemenkes SATUSEHAT | Kepatuhan rekam medis lokal terjamin, transmisi data nasional belum aktif | P3 | Penambahan background job pengiriman HL7/FHIR SATUSEHAT |
+| RM-HSP-04 | Rawat Inap & Alokasi Bed | Ruang lingkup saat ini adalah vertical slice Rawat Jalan (Outpatient); transfer pasien ke rawat inap (Inpatient) belum dicakup | Pasien yang butuh opname harus dipindahkan lewat modul terpisah | P2 | Integrasi modul Bed Management Fase 87 saat rawat inap diperluas |
+| RM-HSP-05 | Audit Ratchet Baseline Baseline | Command `hospital:outpatient-audit` menunggu penambahan fixture ke `AuditCommandRegistry` saat sesi pemulihan selesai | Command berfungsi penuh secara mandiri dan diverifikasi lewat unit/acceptance test | P3 | Ditambahkan ke `AuditCommandRegistry` dan baseline `audit-contract.json` saat PR pemulihan di-merge |
