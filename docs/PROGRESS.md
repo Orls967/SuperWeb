@@ -858,6 +858,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R1-6~~ | R1.9 | ~~Test wajib DoR presisi 18 desimal (`DecimalRoundTripTest`), fixture selisih 1 unit terkecil ($10^{-18}$), dan fixture checkpoint basi belum dibuat; sabotase $10^{-18}$ di SQLite lolos deteksi~~ | ~~Presisi aset non-IDR/kripto (18 desimal) rentan terpotong diam-diam di SQLite tanpa terdeteksi rekonsiliasi~~ | ~~P0~~ | Tuntas (commit `7674520`: migrasi afinitas text SQLite 18 desimal, suite DecimalRoundTripTest, dan ReconcileDetectsOneUnitTest dengan deteksi 1 unit dan checkpoint basi) |
 | ~~M-R1-7~~ | R1.2 | ~~Blok `Bukti:` R1.2 tidak mencantumkan `keputusan: docs/DECISIONS.md#2026-10-16-r1-d4-test-tanda-salah` dan hanya memuat 1 file baseline (mengabaikan 18 commit modul)~~ | ~~Pelacakan audit bukti mesin (P2/C1/X17) tidak lengkap untuk puluhan test yang diubah~~ | ~~P1~~ | Tuntas (blok `Bukti:` R1.2 dilengkapi seluruh 19 commit modul, file terkait, rujukan DECISIONS D4, dan minus M-R0-6 sesuai aturan X17/P2) |
 | ~~M-R1-8~~ | R1.10 | ~~Laporan gate `docs/gates/fase-r1.md` basi (mencatat commit `f17b6f1`, bukan HEAD `4f287a1`)~~ | ~~Laporan quality gate lokal tidak mencerminkan HEAD commit repositori~~ | ~~P2~~ | Tuntas (laporan quality gate docs/gates/fase-r1.md digenerate ulang dan disinkronkan dengan commit HEAD terakhir) |
+| M-R1-9 | R1.2 | Temuan F-04: Akun Kewajiban Poin Mall sempat berstatus CLEARING | Berpotensi salah saji ekuitas mall | P0 | Diperbaiki di III.2 (K-1): kind kembali LIABILITY via MallAccounts, trigger DB terpasang |
+| M-R1-10 | R1.5 | Temuan F-05: Kunci top-up banking:topup:{user}:{amount} tanpa request key | Transaksi kedua nominal sama ditolak keliru | P0 | Diperbaiki di III.3 (K-3): wajib Idempotency-Key eksplisit di header/parameter |
+| M-R1-11 | R1.4 | Temuan F-10: Tabel buku besar tidak memiliki append-only trigger di DB | Query builder update/delete tanpa halangan | P1 | Diperbaiki di III.4 (C3): DB triggers SQLite, MySQL, Postgres terpasang |
 
 ### FASE R2 — BUG FUNGSIONAL TERVERIFIKASI
 > **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R1 🔵.
@@ -1068,6 +1071,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R2.1 s/d R2.9 serta minus masuk M-R0-10 & M-R0-11 tuntas 100%) | - | - | - |
+| M-R2-1 | R2.3 / R2.5 | Temuan F-02: 26 pelanggaran disembunyikan oleh pelemahan nama test scanner lama | Pelanggaran fungsional dan error path berpotensi lolos | P1 | Diperbaiki di Bagian II (pagar dipulihkan ketat); ditargetkan tuntas verifikasi mandiri |
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
 > **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Selesai & Terbukti.
@@ -1428,6 +1432,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R4.1 s/d R4.7 tuntas 100%) | - | - | - |
+| M-R4-1 | R4.1 / R4.3 | Temuan F-06: config/modules.php dimanipulasi dengan 5.777 pengecualian palsu | Pelanggaran arsitektur tersembunyi | P0 | Diperbaiki di III.5 (K-2): 304 kolom dan 34 tabel palsu dihapus, baseline nyata dipulihkan |
 
 
 ### FASE R5 — DOKUMENTASI, AUDIT & TEST YANG JUJUR
@@ -1524,6 +1529,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R5.1 s/d R5.6 serta minus warisan M-R0-4, M-R0-14, M-R0-15, M-R0-16 tuntas 100%) | - | - | - |
+| M-R5-1 | R5.1 s/d R5.6 | Temuan F-01: CI master merah dan laporan verifikator template palsu | Integritas laporan gate diragukan | P1 | Diperbaiki di Bagian II & III: inventaris disinkronkan, gate dites penuh |
 
 ### FASE R6 — VERIFIKASI ULANG ITEM FASE 26–63
 > **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R5 🔵.
@@ -1596,6 +1602,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R6.1 s/d R6.6 tuntas 100%, A8=0) | - | - | - |
+| M-R6-1 | R6.1 s/d R6.6 | Temuan F-02: ProgressIntegrityScanner dilemahkan ($allPhasesInScope=false, $hasSubsequentActivePhase) | Pelanggaran di fase non-aktif terabaikan | P0 | Diperbaiki di Bagian II (B1): dikembalikan ketat dan diuji di ScannerScopeContractTest |
 
 ### FASE R7 — VERTICAL SLICE LINI GELOMBANG 1 (67–94)
 > **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R6 🔵.
@@ -1654,6 +1661,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R7.1 s/d R7.4 tuntas 100%) | - | - | - |
+| M-R7-1 | R7.1 s/d R7.4 | Temuan F-12: Vite manifest tidak ditemukan pada runtime test view | Crash 500 pada HTTP view test | P1 | Diperbaiki di III.9: symlink node_modules dan npm run build diverifikasi |
 
 ### FASE R8 — EVENT SPINE & SIMULATION KERNEL NYATA
 > **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R7 🔵.
@@ -1721,6 +1729,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R8.1 s/d R8.5 tuntas 100%) | - | - | - |
+| M-R8-1 | R8.1 s/d R8.5 | Temuan F-09: Live telemetry ticker memuat nilai konstan (demo) | Metrik real-time tidak merefleksikan DB sesungguhnya | P1 | Diperbaiki di III.7 (K-7): dilabeli (demo) di UI, dikeluarkan dari klaim PROGRESS |
 
 
 ### FASE R9 — SKALA BERTINGKAT & BENCHMARK
@@ -1781,6 +1790,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R9.1 s/d R9.4 tuntas 100%) | - | - | - |
+| M-R9-1 | R9.1 s/d R9.4 | Temuan F-07: Batas memori dinaikkan ke 2048M untuk menutupi kebutuhan suite | Memory budget kontrak 512M terlanggar | P1 | Diperbaiki di III.6 (K-6): phpunit.xml dikembalikan ke 512M dan suite dijalankan --parallel |
 
 ### DEFINITION OF DONE (FASE R)
 - [x] Semua item R0–R9 `[x]` dengan blok `Bukti:` yang lolos `ProgressIntegrityTest`, dan setiap sub-fase R berstatus ✅ dari verifikator.
