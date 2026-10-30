@@ -4,21 +4,203 @@ declare(strict_types=1);
 
 namespace Modules\Insurance\Application\Services;
 
+use App\Models\User;
+use DomainException;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Insurance\Domain\Models\InsuranceClaim;
+use Modules\Insurance\Domain\Models\InsuranceParametricOracle;
 use Modules\Insurance\Domain\Models\InsurancePolicy;
 use Modules\Insurance\Domain\Models\InsuranceProduct;
+use Modules\Insurance\Ledger\InsuranceAccounts;
 
 class InsurTechClaimsService
 {
+    public const STP_FRAUD_THRESHOLD_BPS = 3000;
+
     public function __construct(
         protected SimClockInterface $simClock,
         protected LedgerService $ledgerService
     ) {}
+
+    /**
+     * @param  array<string, mixed>  $evidencePayload
+     */
+    public function triggerParametricClaim(
+        string $oracleCode,
+        int $policyId,
+        string $triggerEventId,
+        array $evidencePayload,
+        string $idempotencyKey
+    ): InsuranceClaim {
+        if (trim($idempotencyKey) === '') {
+            throw new InvalidArgumentException('Idempotency key is required.');
+        }
+
+        $payloadHash = hash('sha256', json_encode([$oracleCode, $policyId, $triggerEventId, $evidencePayload]));
+        $existing = InsuranceClaim::where('idempotency_key', $idempotencyKey)->first();
+        if ($existing) {
+            $existingHash = hash('sha256', json_encode([$oracleCode, $existing->policy_id, $existing->trigger_event_id, $existing->evidence_payload ?? []]));
+            if ($existingHash !== $payloadHash) {
+                throw new DomainException("Idempotency conflict for claim key '{$idempotencyKey}'.");
+            }
+
+            return $existing;
+        }
+
+        $duplicate = InsuranceClaim::where('policy_id', $policyId)
+            ->where('trigger_event_id', $triggerEventId)
+            ->first();
+        if ($duplicate) {
+            throw new DomainException("Claim already triggered for event '{$triggerEventId}' on policy {$policyId}.");
+        }
+
+        $oracle = InsuranceParametricOracle::where('oracle_code', $oracleCode)->first();
+        if (! $oracle || ! $oracle->is_active) {
+            throw new DomainException("Oracle '{$oracleCode}' is inactive or not found.");
+        }
+
+        $policy = InsurancePolicy::findOrFail($policyId);
+        if ($policy->status !== 'active' || ($policy->expires_at && $policy->expires_at->isPast())) {
+            throw new DomainException("Policy {$policyId} is expired or not active.");
+        }
+
+        $payoutAmount = (int) $policy->coverage_limit_idr;
+        if (isset($evidencePayload['damage_estimate_idr'])) {
+            $payoutAmount = min($payoutAmount, (int) $evidencePayload['damage_estimate_idr']);
+        }
+
+        // Fraud score heuristic (in basis points, 0..10000)
+        $fraudScoreBps = 1000;
+        if (! empty($evidencePayload['geo_spoof_risk'])) {
+            $fraudScoreBps = 4500;
+        } elseif (! empty($evidencePayload['verified_carrier'])) {
+            $fraudScoreBps = 500;
+        }
+
+        $status = $fraudScoreBps < self::STP_FRAUD_THRESHOLD_BPS ? 'approved' : 'pending_investigation';
+
+        $claimNumber = 'CLM-'.strtoupper(substr(hash('sha256', "clm:{$policyId}:{$triggerEventId}"), 0, 10));
+
+        return DB::transaction(function () use (
+            $claimNumber,
+            $policyId,
+            $triggerEventId,
+            $payoutAmount,
+            $evidencePayload,
+            $status,
+            $idempotencyKey
+        ) {
+            $claim = InsuranceClaim::create([
+                'claim_number' => $claimNumber,
+                'policy_id' => $policyId,
+                'trigger_event_id' => $triggerEventId,
+                'payout_amount_idr' => $payoutAmount,
+                'evidence_payload' => $evidencePayload,
+                'status' => $status,
+                'idempotency_key' => $idempotencyKey,
+            ]);
+
+            if ($status === 'approved') {
+                $this->accrueClaimIndemnity($payoutAmount);
+            }
+
+            return $claim;
+        });
+    }
+
+    public function approveInvestigatedClaim(
+        int $claimId,
+        int $officerId,
+        string $notes,
+        string $idempotencyKey
+    ): InsuranceClaim {
+        if (trim($idempotencyKey) === '') {
+            throw new InvalidArgumentException('Idempotency key is required.');
+        }
+
+        return DB::transaction(function () use ($claimId) {
+            $claim = InsuranceClaim::lockForUpdate()->findOrFail($claimId);
+            $claim->status = 'approved';
+            $claim->save();
+
+            $this->accrueClaimIndemnity((int) $claim->payout_amount_idr);
+
+            return $claim;
+        });
+    }
+
+    public function rejectInvestigatedClaim(
+        int $claimId,
+        int $officerId,
+        string $reason,
+        string $idempotencyKey
+    ): InsuranceClaim {
+        if (trim($idempotencyKey) === '') {
+            throw new InvalidArgumentException('Idempotency key is required.');
+        }
+
+        return DB::transaction(function () use ($claimId) {
+            $claim = InsuranceClaim::lockForUpdate()->findOrFail($claimId);
+            $claim->status = 'rejected';
+            $claim->save();
+
+            return $claim;
+        });
+    }
+
+    public function settleApprovedClaim(int $claimId, string $idempotencyKey): void
+    {
+        if (trim($idempotencyKey) === '') {
+            throw new InvalidArgumentException('Idempotency key is required.');
+        }
+
+        DB::transaction(function () use ($claimId) {
+            $claim = InsuranceClaim::lockForUpdate()->findOrFail($claimId);
+            if ($claim->status !== 'approved') {
+                throw new DomainException("Cannot settle claim with status '{$claim->status}'. Must be 'approved'.");
+            }
+
+            $policy = $claim->policy;
+            $user = User::findOrFail($policy->user_id);
+            $wallet = $user->walletAccount('IDR');
+
+            $payout = (int) $claim->payout_amount_idr;
+
+            // Disburse to wallet
+            $wallet->cached_balance = (string) (((int) $wallet->cached_balance) + $payout);
+            $wallet->save();
+
+            // Clear claimant payable
+            $payable = LedgerAccount::where('code', 'claimant:payable:default:IDR')->first();
+            if ($payable) {
+                $payable->cached_balance = (string) max(0, ((int) $payable->cached_balance) - $payout);
+                $payable->save();
+            }
+
+            $claim->status = 'settled';
+            $claim->paid_at = $this->simClock->now();
+            $claim->save();
+        });
+    }
+
+    protected function accrueClaimIndemnity(int $payoutAmount): void
+    {
+        // Debit expense
+        $expense = InsuranceAccounts::claimExpense();
+        $expense->cached_balance = (string) (((int) $expense->cached_balance) + $payoutAmount);
+        $expense->save();
+
+        // Credit payable
+        $payable = InsuranceAccounts::claimantPayable();
+        $payable->cached_balance = (string) (((int) $payable->cached_balance) + $payoutAmount);
+        $payable->save();
+    }
 
     public function issueEmbeddedPolicy(
         InsuranceProduct $product,
