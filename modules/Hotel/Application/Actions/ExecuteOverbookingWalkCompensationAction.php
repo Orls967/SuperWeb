@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Ledger\HotelTransactionTypes;
 use Modules\Shared\Application\BaseAction;
@@ -38,7 +39,7 @@ class ExecuteOverbookingWalkCompensationAction extends BaseAction
             $complimentaryNightCostIdr = (int) $reservation->daily_rate_idr;
             $totalCompensationIdr = $complimentaryNightCostIdr + $transportAllowanceIdr + $goodwillCreditIdr;
 
-            if ($this->ledger) {
+            if ($this->ledger && LedgerAccount::where('code', 'htl:overbooking_expense:IDR')->exists()) {
                 $this->ledger->post(new PostingDTO(
                     type: HotelTransactionTypes::HOTEL_OVERBOOKING_WALK->value,
                     description: "Kompensasi walk overbooking {$reservation->reservation_number}",
