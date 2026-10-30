@@ -19,6 +19,62 @@ final class HospitalAccounts
     {
         return [
             [
+                'code' => 'hsp:cash:IDR',
+                'name' => 'Hospital Outpatient Cash On Hand',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'hsp:doctor_fee_revenue:IDR',
+                'name' => 'Hospital Outpatient Doctor Fee Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'hsp:pharmacy_revenue:IDR',
+                'name' => 'Hospital Outpatient Pharmacy Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'hsp:cogs_pharmacy:IDR',
+                'name' => 'Hospital Outpatient Pharmacy Cost of Goods Sold',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'hsp:inventory_pharmacy:IDR',
+                'name' => 'Hospital Pharmacy Inventory',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'hsp:patient_receivable:IDR',
+                'name' => 'Hospital Patient Outpatient Receivable',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'hsp:bpjs_claim_variance:IDR',
+                'name' => 'Hospital BPJS INA-CBG Claim Rate Variance',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'hsp:bpjs_rejected_claim:IDR',
+                'name' => 'Hospital BPJS Rejected Claim Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
                 'code' => 'hsp:bpjs_receivable:IDR',
                 'name' => 'Hospital BPJS Receivable',
                 'kind' => AccountKind::ASSET,

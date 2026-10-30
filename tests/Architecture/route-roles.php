@@ -31,7 +31,14 @@ use Modules\Finance\Domain\Models\Loan;
 use Modules\Fleet\Domain\Models\FleetContract;
 use Modules\Hcm\Domain\Models\Gig\GovBounty;
 use Modules\Hcm\Domain\Models\Gig\GovBountyClaim;
+use Modules\Hospital\Domain\Models\BpjsClaim;
 use Modules\Hospital\Domain\Models\ClinicalTrial;
+use Modules\Hospital\Domain\Models\OutpatientEncounter;
+use Modules\Hospital\Domain\Models\OutpatientInvoice;
+use Modules\Hospital\Domain\Models\OutpatientPrescription;
+use Modules\Hospital\Domain\Models\Patient;
+use Modules\Hospital\Domain\Models\Polyclinic;
+use Modules\Hospital\Domain\Models\QueueTicket;
 use Modules\Hotel\database\seeders\HotelDemoSeeder;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Insurance\Domain\Models\InsuranceProduct;
@@ -914,6 +921,56 @@ return [
     'hospital.trials.bill' => [
         'roles' => ['admin', 'doctor', 'hospital_admin'],
         'params' => fn () => ['trial' => ClinicalTrial::firstOrCreate(['trial_code' => 'TRL-CARDIO-01'], ['title' => 'Trial Card', 'phase' => 'PHASE_3', 'sponsor_name' => 'Novartis', 'target_subjects' => 10, 'status' => 'RECRUITING'])->id],
+    ],
+    // hospital-rawat-jalan
+    'hospital.outpatient.registration.index' => ['roles' => ['admin', 'hospital_registration']],
+    'hospital.outpatient.registration.store' => ['roles' => ['admin', 'hospital_registration']],
+    'hospital.outpatient.queue.index' => ['roles' => ['admin', 'doctor', 'hospital_registration', 'nurse']],
+    'hospital.outpatient.queue.call' => [
+        'roles' => ['admin', 'doctor', 'nurse'],
+        'params' => fn () => ['queue' => OutpatientEncounter::getOrCreateArchFixture()['queue']->id],
+    ],
+    'hospital.outpatient.encounters.triage' => [
+        'roles' => ['admin', 'nurse'],
+        'params' => fn () => ['encounter' => OutpatientEncounter::getOrCreateArchFixture()['encounter']->id],
+    ],
+    'hospital.outpatient.encounters.examine' => [
+        'roles' => ['admin', 'doctor'],
+        'params' => fn () => ['encounter' => OutpatientEncounter::getOrCreateArchFixture()['encounter']->id],
+    ],
+    'hospital.outpatient.encounters.prescribe' => [
+        'roles' => ['admin', 'doctor'],
+        'params' => fn () => ['encounter' => OutpatientEncounter::getOrCreateArchFixture()['encounter']->id],
+    ],
+    'hospital.outpatient.pharmacy.index' => ['roles' => ['admin', 'pharmacist']],
+    'hospital.outpatient.pharmacy.dispense' => [
+        'roles' => ['admin', 'pharmacist'],
+        'params' => fn () => ['prescription' => OutpatientEncounter::getOrCreateArchFixture()['prescription']->id],
+    ],
+    'hospital.outpatient.cashier.index' => ['roles' => ['admin', 'cashier', 'hospital_finance']],
+    'hospital.outpatient.cashier.pay' => [
+        'roles' => ['admin', 'cashier'],
+        'params' => fn () => ['invoice' => OutpatientEncounter::getOrCreateArchFixture()['invoice']->id],
+    ],
+    'hospital.outpatient.bpjs.claim' => [
+        'roles' => ['admin', 'cashier', 'hospital_finance'],
+        'params' => fn () => ['invoice' => OutpatientEncounter::getOrCreateArchFixture()['invoice']->id],
+    ],
+    'hospital.outpatient.bpjs.adjudicate' => [
+        'roles' => ['admin', 'hospital_finance'],
+        'params' => fn () => ['claim' => OutpatientEncounter::getOrCreateArchFixture()['claim']->id],
+    ],
+    'hospital.outpatient.reports.daily' => ['roles' => ['admin', 'auditor', 'hospital_finance']],
+    'hospital.outpatient.portal.index' => ['roles' => ['admin', 'patient']],
+    'hospital.outpatient.encounters.show' => [
+        'roles' => ['admin', 'doctor', 'nurse', 'patient'],
+        'setup' => fn (User $user) => OutpatientEncounter::getOrCreateArchFixture()['patient']->update(['user_id' => $user->id]),
+        'params' => fn () => ['encounter' => OutpatientEncounter::getOrCreateArchFixture()['encounter']->id],
+    ],
+    'hospital.outpatient.invoices.show' => [
+        'roles' => ['admin', 'cashier', 'hospital_finance', 'patient'],
+        'setup' => fn (User $user) => OutpatientEncounter::getOrCreateArchFixture()['patient']->update(['user_id' => $user->id]),
+        'params' => fn () => ['invoice' => OutpatientEncounter::getOrCreateArchFixture()['invoice']->id],
     ],
     'hotel.index' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.reservations.settle' => [

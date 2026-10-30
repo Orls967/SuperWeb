@@ -7,6 +7,7 @@ namespace Modules\Hospital;
 use Illuminate\Support\ServiceProvider;
 use Modules\Hospital\Application\Services\HospitalEmrAndBedService;
 use Modules\Hospital\Console\Commands\AuditHospitalCommand;
+use Modules\Hospital\Console\Commands\AuditOutpatientCommand;
 
 class HospitalServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,7 @@ class HospitalServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AuditHospitalCommand::class,
+                AuditOutpatientCommand::class,
             ]);
         }
     }
