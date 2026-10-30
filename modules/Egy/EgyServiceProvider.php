@@ -7,10 +7,13 @@ namespace Modules\Egy;
 use Illuminate\Support\ServiceProvider;
 use Modules\Egy\Application\Services\ConsolidatedUtilityBillingService;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
+use Modules\Egy\Application\Services\MicrogridAndResilienceService;
 use Modules\Egy\Console\Commands\EgyAuditCommand;
 use Modules\Egy\Console\Commands\EgyBillPropertiesCommand;
 use Modules\Egy\Console\Commands\EgyCommitUnitsCommand;
 use Modules\Egy\Console\Commands\EgyIngestReadingsCommand;
+use Modules\Egy\Console\Commands\EgyIslandCommand;
+use Modules\Egy\Console\Commands\EgyPlanBatteryCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class EgyServiceProvider extends ServiceProvider
@@ -19,6 +22,7 @@ class EgyServiceProvider extends ServiceProvider
     {
         $this->app->singleton(EnergyGridAndMeteringService::class);
         $this->app->singleton(ConsolidatedUtilityBillingService::class);
+        $this->app->singleton(MicrogridAndResilienceService::class);
     }
 
     public function boot(): void
@@ -38,6 +42,8 @@ class EgyServiceProvider extends ServiceProvider
                 EgyIngestReadingsCommand::class,
                 EgyBillPropertiesCommand::class,
                 EgyCommitUnitsCommand::class,
+                EgyIslandCommand::class,
+                EgyPlanBatteryCommand::class,
             ]);
         }
 
