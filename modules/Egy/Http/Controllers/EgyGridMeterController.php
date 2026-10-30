@@ -59,6 +59,7 @@ class EgyGridMeterController extends Controller
         $reading = $action->execute([
             'meter_number' => $validated['meter_number'],
             'cumulative_wh' => (int) $validated['kwh_consumed'] * 1000,
+            'delta_wh' => (int) $validated['kwh_consumed'] * 1000,
         ]);
 
         return redirect()->back()->with('success', "Telemetri meter dicatat [{$reading->kwh_consumed} kWh].");

@@ -94,6 +94,9 @@ class IntercompanyPortService implements IntercompanyPortInterface
             $offtExp = $params['offtaker_exp_account'] ?? 'expense:energy:purchase:IDR';
             $offtAp = $params['offtaker_ap_account'] ?? 'ap:ic:egy:producer:IDR';
 
+            $refType = $params['reference_type'] ?? 'IC_TRANSACTION';
+            $refId = $params['reference_id'] ?? $baseCode;
+
             // 1. Producer book: AR (debit = -), Revenue (credit = +)
             $this->ledgerService->post(new PostingDTO(
                 type: 'ENERGY_PPA_NET_METER_SETTLE',
@@ -103,8 +106,8 @@ class IntercompanyPortService implements IntercompanyPortInterface
                     ->debit($prodAr, $amountIdr)
                     ->credit($prodRev, $amountIdr)
                     ->toEntries($currency),
-                referenceType: 'IC_TRANSACTION',
-                referenceId: $baseCode,
+                referenceType: $refType,
+                referenceId: $refId,
             ));
 
             // 2. Offtaker book: Expense (debit = -), AP (credit = +)
@@ -116,8 +119,8 @@ class IntercompanyPortService implements IntercompanyPortInterface
                     ->debit($offtExp, $amountIdr)
                     ->credit($offtAp, $amountIdr)
                     ->toEntries($currency),
-                referenceType: 'IC_TRANSACTION',
-                referenceId: $baseCode,
+                referenceType: $refType,
+                referenceId: $refId,
             ));
         }
 

@@ -45,14 +45,20 @@ class IngestSmartGridMeterTelemetryAction extends BaseAction
             return $existing;
         }
 
-        return DB::transaction(function () use ($meter, $readingAt, $cumulativeWh, $isMeterReset) {
+        return DB::transaction(function () use ($meter, $readingAt, $cumulativeWh, $isMeterReset, $data) {
             $prevReading = MeterReading::where('meter_id', $meter->id)
                 ->where('reading_at', '<', $readingAt)
                 ->orderByDesc('reading_at')
                 ->first();
 
             $status = 'OK';
-            if ($isMeterReset) {
+            if (isset($data['delta_wh'])) {
+                $deltaWh = (int) $data['delta_wh'];
+                $status = 'OK';
+            } elseif (isset($data['kwh_consumed'])) {
+                $deltaWh = (int) ($data['kwh_consumed'] * 1000);
+                $status = 'OK';
+            } elseif ($isMeterReset) {
                 $deltaWh = $cumulativeWh;
                 $status = 'RESET';
             } elseif ($prevReading === null) {

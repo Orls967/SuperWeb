@@ -52,6 +52,8 @@ class SettlePowerPurchaseAgreementBillingAction extends BaseAction
                 'idempotency_key' => $idempotencyKey,
                 'sales_invoice_ref' => "INV-PPA-{$ppa->contract_number}",
                 'purchase_bill_ref' => "BILL-PPA-{$ppa->contract_number}",
+                'reference_type' => 'ENERGY_PPA_NET_METER_SETTLE',
+                'reference_id' => $ppa->contract_number,
                 'post_to_ledger' => true,
                 'producer_ar_account' => 'ar:ic:producer:egy:IDR',
                 'producer_rev_account' => 'revenue:energy:ppa:IDR',
