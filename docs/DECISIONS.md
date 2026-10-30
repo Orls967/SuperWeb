@@ -1868,6 +1868,7 @@
 
 
 
+<a id="2026-10-30-pagar-sertifikasi-massal"></a>
 ## 2026-10-30: Pagar Integritas Anti-Sertifikasi Massal dan Tata Kelola Verifikasi Fase (K-8)
 - **Anchor:** `2026-10-30-pagar-sertifikasi-massal`
 - **Context:**
@@ -1884,6 +1885,7 @@
   - `tests/Architecture/MassCertificationGuardTest.php` PASS.
 
 
+<a id="2026-10-30-pemulihan-baseline"></a>
 ## 2026-10-30: Pemulihan Baseline Arsitektur dan Tata Kelola Allowlist Config Modules (K-2)
 - **Anchor:** `2026-10-30-pemulihan-baseline`
 - **Context:**

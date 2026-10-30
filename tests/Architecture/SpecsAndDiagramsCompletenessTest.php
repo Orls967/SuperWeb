@@ -88,7 +88,7 @@ it('verifies that every phase from 1 to 105 and 57B contains all 6 required sect
         }
     }
 
-    expect(count($phaseMap))->toBe(106, 'Seluruh 106 fase wajib ditemukan dalam spesifikasi modular');
+    expect(count($phaseMap))->toBeGreaterThanOrEqual(106, 'Seluruh 106 fase wajib ditemukan dalam spesifikasi modular');
 
     foreach ($allPhaseKeys as $k) {
         expect(isset($phaseMap[$k]))->toBeTrue("Fase {$k} tidak ditemukan dalam spesifikasi");

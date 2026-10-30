@@ -514,7 +514,7 @@ class LogisticsLargeSeeder extends Seeder
 
         foreach ($accounts as $account) {
             for ($m = 11; $m >= 0; $m--) {
-                $period = $now->copy()->subMonths($m);
+                $period = $now->copy()->startOfMonth()->subMonths($m);
                 $periodStr = $period->format('Y-m');
                 $invoiceNumber = sprintf('INV-LGX-%s-%04d', str_replace('-', '', $periodStr), $account->id);
 

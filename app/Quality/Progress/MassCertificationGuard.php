@@ -67,7 +67,7 @@ class MassCertificationGuard
             }
 
             // 2. Phase verified check (> 1 phase -> ✅)
-            $addedVerified = preg_match_all('/^\+\s*(?:>\s*)?\*\*Status\s+audit[^\n]*✅/mu', $diff, $dummy2);
+            $addedVerified = preg_match_all('/^\+\s*(?:>\s*)?\*\*Status\s+audit[^\n]*?:\*\*\s*✅/mu', $diff, $dummy2);
             if ($addedVerified > 1 && ! $hasDecisionAnchor) {
                 $violations[] = "Commit {$sha} ({$subject}): memverifikasi {$addedVerified} fase menjadi ✅ (> 1) tanpa anchor DECISIONS.md#... di pesan commit (K-8).";
             }

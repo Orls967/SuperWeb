@@ -219,7 +219,7 @@ class MallBillingAndUtilitiesTest extends TestCase
     public function test_partial_payment_allocates_in_priority_order_penalty_utility_service_rent(): void
     {
         $topUp = app(TopUpAction::class);
-        $topUp->execute($this->tenantUser, 10000000); // 10 jt
+        $topUp->execute($this->tenantUser, 10000000, 'mall_billing_topup_1'); // 10 jt
 
         // Buat invoice buatan dengan semua jenis baris tagihan
         $invoice = Invoice::create([
@@ -467,7 +467,7 @@ class MallBillingAndUtilitiesTest extends TestCase
     {
         // Top up tenant dan bayar sebagian tagihan via action
         $topUp = app(TopUpAction::class);
-        $topUp->execute($this->tenantUser, 50000000); // 50 jt
+        $topUp->execute($this->tenantUser, 50000000, 'mall_billing_topup_2'); // 50 jt
 
         $invoice = Invoice::where('tenant_id', $this->tenant->id)->firstOrFail();
         $payAction = app(PayInvoiceAction::class);
