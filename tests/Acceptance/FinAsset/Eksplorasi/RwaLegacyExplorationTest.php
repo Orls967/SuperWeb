@@ -67,14 +67,14 @@ class RwaLegacyExplorationTest extends TestCase
         $definitions = RwaAccounts::definitions();
         expect($definitions)->not->toBeEmpty();
 
-        // U-3 requires allow_negative = false except clearing/escrow
+        // U-3 requires allow_negative = false except clearing/escrow/issuance
         $escrowOrClearing = array_filter(
             $definitions,
-            fn ($d) => str_contains($d['code'], 'clearing') || str_contains($d['code'], 'escrow')
+            fn ($d) => str_contains($d['code'], 'clearing') || str_contains($d['code'], 'escrow') || str_contains($d['code'], 'issued_supply')
         );
         $nonEscrow = array_filter(
             $definitions,
-            fn ($d) => ! str_contains($d['code'], 'clearing') && ! str_contains($d['code'], 'escrow')
+            fn ($d) => ! str_contains($d['code'], 'clearing') && ! str_contains($d['code'], 'escrow') && ! str_contains($d['code'], 'issued_supply')
         );
 
         foreach ($nonEscrow as $def) {

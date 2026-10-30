@@ -10,6 +10,12 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('rwa_assets') && ! Schema::hasColumn('rwa_assets', 'creator_id')) {
+            Schema::table('rwa_assets', function (Blueprint $table) {
+                $table->foreignId('creator_id')->nullable()->constrained('users');
+            });
+        }
+
         if (! Schema::hasTable('rwa_investor_verifications')) {
             Schema::create('rwa_investor_verifications', function (Blueprint $table) {
                 $table->id();

@@ -24,12 +24,14 @@ class RwaAsset extends Model
         'token_price_idr',
         'max_holder_concentration_pct',
         'status',
+        'creator_id',
         'approved_by_primary_id',
         'approved_by_secondary_id',
         'approved_at',
     ];
 
     protected $casts = [
+        'creator_id' => 'integer',
         'appraisal_value_idr' => 'integer',
         'total_supply_tokens' => 'integer',
         'token_price_idr' => 'integer',

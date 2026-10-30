@@ -23,9 +23,9 @@ class RwaTokenTransfer extends Model
         'rwa_asset_id',
         'from_user_id',
         'to_user_id',
-        'amount_tokens',
+        'quantity',
+        'price_per_token_idr',
         'transfer_type',
-        'reference_type',
         'reference_id',
         'idempotency_key',
         'created_at',
@@ -35,7 +35,8 @@ class RwaTokenTransfer extends Model
         'rwa_asset_id' => 'integer',
         'from_user_id' => 'integer',
         'to_user_id' => 'integer',
-        'amount_tokens' => 'integer',
+        'quantity' => 'integer',
+        'price_per_token_idr' => 'integer',
         'created_at' => 'datetime',
     ];
 

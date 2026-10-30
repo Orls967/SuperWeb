@@ -17,14 +17,14 @@ class RwaInvestorVerification extends Model
         'kyc_document_id',
         'approval_id',
         'status',
-        'berlaku_sampai',
-        'metadata',
+        'verified_at',
+        'expires_at',
     ];
 
     protected $casts = [
         'user_id' => 'integer',
-        'berlaku_sampai' => 'date',
-        'metadata' => 'array',
+        'verified_at' => 'datetime',
+        'expires_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

@@ -13,30 +13,29 @@ class RwaOfferingOrder extends Model
     protected $table = 'rwa_offering_orders';
 
     protected $fillable = [
-        'rwa_offering_id',
+        'offering_id',
         'user_id',
-        'tokens_requested',
-        'tokens_allocated',
+        'quantity_requested',
+        'quantity_allocated',
+        'hold_reference_id',
         'amount_held_idr',
         'amount_captured_idr',
-        'amount_refunded_idr',
         'status',
         'idempotency_key',
     ];
 
     protected $casts = [
-        'rwa_offering_id' => 'integer',
+        'offering_id' => 'integer',
         'user_id' => 'integer',
-        'tokens_requested' => 'integer',
-        'tokens_allocated' => 'integer',
+        'quantity_requested' => 'integer',
+        'quantity_allocated' => 'integer',
         'amount_held_idr' => 'integer',
         'amount_captured_idr' => 'integer',
-        'amount_refunded_idr' => 'integer',
     ];
 
     public function offering(): BelongsTo
     {
-        return $this->belongsTo(RwaOffering::class, 'rwa_offering_id');
+        return $this->belongsTo(RwaOffering::class, 'offering_id');
     }
 
     public function user(): BelongsTo

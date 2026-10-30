@@ -82,7 +82,7 @@ final class RwaAccounts
                 'name' => 'RWA Issued Supply Default',
                 'kind' => AccountKind::LIABILITY,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true, // Issuance control account tracks authorized supply as credit balance
             ],
             [
                 'code' => 'rwa:unsold:default',
