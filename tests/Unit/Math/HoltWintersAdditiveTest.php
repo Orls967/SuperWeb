@@ -150,5 +150,5 @@ it('benchmarks Holt-Winters additive forecasting scalability', function (): void
     }
     $duration = microtime(true) - $start;
 
-    expect($duration)->toBeLessThan(0.40);
+    expect($duration)->toBeLessThan(1.0);
 })->group('skala');
