@@ -19,5 +19,30 @@ class EgyMeterReadV1
         public readonly string $region,
         public readonly int $intervalWh,
         public readonly string $readingAt,
+        public readonly ?int $cumulativeWh = 0,
     ) {}
+
+    /**
+     * @return array{
+     *     reading_id: string,
+     *     meter_id: string,
+     *     property_id: string,
+     *     region: string,
+     *     interval_wh: int,
+     *     cumulative_wh: int|null,
+     *     reading_at: string
+     * }
+     */
+    public function toPayload(): array
+    {
+        return [
+            'reading_id' => $this->readingId,
+            'meter_id' => $this->meterId,
+            'property_id' => $this->propertyId,
+            'region' => $this->region,
+            'interval_wh' => $this->intervalWh,
+            'cumulative_wh' => $this->cumulativeWh,
+            'reading_at' => $this->readingAt,
+        ];
+    }
 }
