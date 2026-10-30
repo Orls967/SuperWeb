@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Fleet\Http\Controllers\FleetController;
 use Modules\Fleet\Http\Controllers\FleetLeaseLifecycleController;
@@ -24,4 +25,13 @@ Route::middleware(['web', 'auth', 'role:admin,fleet_admin,lease_manager'])->pref
         Route::post('/bill-excess', [FleetLeaseLifecycleController::class, 'billExcess'])->name('bill-excess');
         Route::post('/run-tco', [FleetLeaseLifecycleController::class, 'runTco'])->name('run-tco');
     });
+});
+
+Route::middleware(['web', 'auth'])->get('/oto/fleet', function (Request $request) {
+    $user = $request->user();
+    if (! $user->hasAnyRbacRole(['fleet_manager', 'admin', 'fleet_admin', 'lease_manager'])) {
+        abort(403, 'Akses ditolak: Khusus peran manajemen armada.');
+    }
+
+    return app(FleetController::class)->index($request);
 });

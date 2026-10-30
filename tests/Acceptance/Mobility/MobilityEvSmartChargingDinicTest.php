@@ -27,7 +27,9 @@ class MobilityEvSmartChargingDinicTest extends TestCase
         $station = EvStation::create([
             'station_code' => 'SPKLU-POW-01',
             'name' => 'SPKLU Central Power',
+            'address' => 'Jl. Pembangkit No 1',
             'timezone' => 'Asia/Jakarta',
+            'transformer_capacity_kw' => $sitePowerKw,
             'max_grid_power_kw' => $sitePowerKw,
             'location_type' => 'hub',
         ]);

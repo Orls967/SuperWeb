@@ -48,7 +48,7 @@ return new class extends Migration
         if (! Schema::hasTable('oto_telematics_baselines')) {
             Schema::create('oto_telematics_baselines', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('vehicle_id')->unique();
+                $table->unsignedBigInteger('vehicle_id')->index();
                 $table->decimal('avg_oil_temp_c', 6, 2)->default(90.0);
                 $table->decimal('avg_battery_voltage', 5, 2)->default(12.6);
                 $table->decimal('avg_fuel_consumption_rate', 6, 2)->default(8.5);

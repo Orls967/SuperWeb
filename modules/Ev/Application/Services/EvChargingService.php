@@ -254,20 +254,28 @@ class EvChargingService
         $sessionCount = EvSession::count();
         $discrepancies = 0;
 
-        $completedSessions = EvSession::where('status', 'completed')->get();
-        foreach ($completedSessions as $s) {
-            $expectedCost = (int) round(($s->energy_wh / 1000.0) * $s->tariff_per_kwh_idr);
-            if (abs($s->total_cost_idr - $expectedCost) > 1) {
-                $discrepancies++;
-            }
+        // 1. Rekonsiliasi pendapatan sesi completed vs saldo ledger oto:ev_charging_revenue:IDR
+        $totalCompletedRevenue = (int) EvSession::whereIn('status', ['COMPLETED', 'completed'])->sum('total_cost_idr');
+        $ledgerRevenue = (int) $this->ledgerService->getCachedBalance('oto:ev_charging_revenue:IDR');
+        if ($totalCompletedRevenue !== $ledgerRevenue) {
+            $discrepancies++;
         }
 
-        // Verify battery passport chain for all vehicles with recorded sessions
-        $vehicleIds = EvSession::whereNotNull('vehicle_id')->distinct()->pluck('vehicle_id');
-        foreach ($vehicleIds as $vId) {
-            $chainCheck = $this->batteryPassportService->verifyChain((int) $vId);
-            if (! $chainCheck['valid']) {
-                $discrepancies++;
+        // 2. Verifikasi monotonisitas nilai meteran pengisian
+        $meterSessions = DB::table('oto_ev_meter_values')->distinct()->pluck('session_id');
+        foreach ($meterSessions as $sId) {
+            $meters = DB::table('oto_ev_meter_values')
+                ->where('session_id', $sId)
+                ->orderBy('read_at', 'asc')
+                ->orderBy('id', 'asc')
+                ->get();
+            $prevWh = null;
+            foreach ($meters as $m) {
+                if ($prevWh !== null && $m->energy_wh < $prevWh) {
+                    $discrepancies++;
+                    break;
+                }
+                $prevWh = (int) $m->energy_wh;
             }
         }
 

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Acceptance\Mobility;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Fleet\Application\Actions\AssignVehicleToContractAction;
 use Modules\Fleet\Application\Actions\BillExcessMileageAction;
@@ -30,6 +32,20 @@ class MobilityFleetBillingAndPsak73Test extends TestCase
         parent::setUp();
         $this->seed(LedgerAccountsSeeder::class);
         $this->ledger = app(Ledger::class);
+    }
+
+    private function createVehicleId(): int
+    {
+        $user = User::factory()->create();
+
+        return (int) DB::table('core_vehicles')->insertGetId([
+            'user_id' => $user->id,
+            'plate_number' => 'B '.rand(1000, 9999).' FLT',
+            'vin' => 'VIN-FLT-'.uniqid(),
+            'status' => 'active',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
     private function createContract(int $monthlyRentalIdr = 20000000, int $durationMonths = 12): FleetContract
@@ -60,10 +76,10 @@ class MobilityFleetBillingAndPsak73Test extends TestCase
         $this->assertSame('ISSUED', $invoice->status);
 
         // Posting AR debit (-25 jt) & Revenue kredit (+25 jt)
-        $arBalance = $this->ledger->getAccountBalance('ar:oto:fleet:9001:IDR');
+        $arBalance = (int) $this->ledger->getCachedBalance('ar:oto:fleet:9001:IDR');
         $this->assertSame(-25000000, $arBalance);
 
-        $revBalance = $this->ledger->getAccountBalance('oto:fleet_lease_revenue:IDR');
+        $revBalance = (int) $this->ledger->getCachedBalance('oto:fleet_lease_revenue:IDR');
         $this->assertSame(25000000, $revBalance);
     }
 
@@ -79,16 +95,17 @@ class MobilityFleetBillingAndPsak73Test extends TestCase
         $this->assertSame(1, FleetInvoice::where('contract_id', $contract->id)->count());
 
         // Saldo piutang tetap 20 jt (tidak menjadi 40 jt)
-        $arBalance = $this->ledger->getAccountBalance('ar:oto:fleet:9001:IDR');
+        $arBalance = (int) $this->ledger->getCachedBalance('ar:oto:fleet:9001:IDR');
         $this->assertSame(-20000000, $arBalance);
     }
 
     public function test_kredit_sla_dihitung_persis_fee_unit_dikali_bps(): void
     {
         $contract = $this->createContract(15000000, 12);
+        $vehId = $this->createVehicleId();
         $unit = FleetContractUnit::create([
             'contract_id' => $contract->id,
-            'vehicle_id' => 101,
+            'vehicle_id' => $vehId,
             'status' => 'ASSIGNED',
             'assigned_at' => now(),
         ]);
@@ -115,19 +132,20 @@ class MobilityFleetBillingAndPsak73Test extends TestCase
         $this->assertSame(750000, $creditedBreach->penalty_amount_idr);
 
         // Ledger: debit expense:oto:fleet_sla_credit:IDR (-750.000) dan kredit ar:oto:fleet:9001:IDR (+750.000)
-        $expBalance = $this->ledger->getAccountBalance('expense:oto:fleet_sla_credit:IDR');
+        $expBalance = (int) $this->ledger->getCachedBalance('expense:oto:fleet_sla_credit:IDR');
         $this->assertSame(-750000, $expBalance);
 
-        $arBalance = $this->ledger->getAccountBalance('ar:oto:fleet:9001:IDR');
+        $arBalance = (int) $this->ledger->getCachedBalance('ar:oto:fleet:9001:IDR');
         $this->assertSame(750000, $arBalance);
     }
 
     public function test_kredit_sla_idempoten_per_breach_uuid(): void
     {
         $contract = $this->createContract(15000000, 12);
+        $vehId = $this->createVehicleId();
         $unit = FleetContractUnit::create([
             'contract_id' => $contract->id,
-            'vehicle_id' => 102,
+            'vehicle_id' => $vehId,
             'status' => 'ASSIGNED',
             'assigned_at' => now(),
         ]);
@@ -150,7 +168,7 @@ class MobilityFleetBillingAndPsak73Test extends TestCase
         $action->execute($breach);
 
         // Beban SLA hanya bertambah sekali 750.000
-        $expBalance = $this->ledger->getAccountBalance('expense:oto:fleet_sla_credit:IDR');
+        $expBalance = (int) $this->ledger->getCachedBalance('expense:oto:fleet_sla_credit:IDR');
         $this->assertSame(-750000, $expBalance);
     }
 
@@ -244,10 +262,11 @@ class MobilityFleetBillingAndPsak73Test extends TestCase
     public function test_penugasan_unit_armada_ke_kontrak_state_transitions(): void
     {
         $contract = $this->createContract(10000000, 12);
+        $vehId = $this->createVehicleId();
 
         $unit = FleetContractUnit::create([
             'contract_id' => $contract->id,
-            'vehicle_id' => 201,
+            'vehicle_id' => $vehId,
             'status' => 'ASSIGNED',
             'assigned_at' => now(),
         ]);
@@ -265,10 +284,11 @@ class MobilityFleetBillingAndPsak73Test extends TestCase
     {
         $c1 = $this->createContract(10000000, 12);
         $c2 = $this->createContract(10000000, 12);
+        $vehId = $this->createVehicleId();
 
         FleetContractUnit::create([
             'contract_id' => $c1->id,
-            'vehicle_id' => 301,
+            'vehicle_id' => $vehId,
             'status' => 'ASSIGNED',
             'assigned_at' => now(),
         ]);
@@ -277,6 +297,6 @@ class MobilityFleetBillingAndPsak73Test extends TestCase
         $this->expectExceptionMessage('Vehicle is already assigned to an active contract');
 
         $action = app(AssignVehicleToContractAction::class);
-        $action->execute(contractId: $c2->id, vehicleId: 301);
+        $action->execute(contractId: $c2->id, vehicleId: $vehId);
     }
 }

@@ -117,7 +117,7 @@ class MobilityEvSessionAndTariffTest extends TestCase
         $this->assertSame(150000, $session->deposit_held_idr);
 
         // Periksa akun escrow menerima kredit hold (+150.000) dan dompet debit (-150.000)
-        $escrowBalance = $this->ledger->getAccountBalance('escrow:payment:IDR');
+        $escrowBalance = (int) $this->ledger->getCachedBalance('escrow:payment:IDR');
         $this->assertSame(150000, $escrowBalance);
     }
 
@@ -164,11 +164,11 @@ class MobilityEvSessionAndTariffTest extends TestCase
         $this->assertSame('AVAILABLE', $charger->fresh()->status);
 
         // Periksa ledger pendapatan ter-posting persis 90.000
-        $revBalance = $this->ledger->getAccountBalance('oto:ev_charging_revenue:IDR');
+        $revBalance = (int) $this->ledger->getCachedBalance('oto:ev_charging_revenue:IDR');
         $this->assertSame(90000, $revBalance);
 
         // Sisa hold di escrow kembali ke 0
-        $escrowBalance = $this->ledger->getAccountBalance('escrow:payment:IDR');
+        $escrowBalance = (int) $this->ledger->getCachedBalance('escrow:payment:IDR');
         $this->assertSame(0, $escrowBalance);
     }
 
@@ -222,7 +222,7 @@ class MobilityEvSessionAndTariffTest extends TestCase
         $this->assertSame($res1->id, $res2->id);
 
         // Revenue ledger hanya bertambah sekali (10 kWh @ 2000 = 20.000 IDR)
-        $revBalance = $this->ledger->getAccountBalance('oto:ev_charging_revenue:IDR');
+        $revBalance = (int) $this->ledger->getCachedBalance('oto:ev_charging_revenue:IDR');
         $this->assertSame(20000, $revBalance);
     }
 
@@ -233,13 +233,13 @@ class MobilityEvSessionAndTariffTest extends TestCase
         $cancelAction = app(CancelEvChargingSessionAction::class);
 
         $session = $startAction->execute($charger->id, $vehicleId, $user->id, 75000, now());
-        $this->assertSame(75000, $this->ledger->getAccountBalance('escrow:payment:IDR'));
+        $this->assertSame(75000, (int) $this->ledger->getCachedBalance('escrow:payment:IDR'));
 
         $cancelled = $cancelAction->execute($session->id, 'Pengemudi membatalkan sebelum pengisian');
 
         $this->assertSame('CANCELLED', $cancelled->status);
         $this->assertSame('AVAILABLE', $charger->fresh()->status);
-        $this->assertSame(0, $this->ledger->getAccountBalance('escrow:payment:IDR'));
+        $this->assertSame(0, (int) $this->ledger->getCachedBalance('escrow:payment:IDR'));
     }
 
     public function test_meter_value_append_only_menolak_update_dan_delete(): void

@@ -15,6 +15,7 @@ class TelematicsDevice extends Model
         'device_id',
         'vehicle_id',
         'serial_number',
+        'token_hash',
         'protocol',
         'status',
         'last_heartbeat_at',
