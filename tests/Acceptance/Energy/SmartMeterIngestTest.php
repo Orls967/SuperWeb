@@ -9,10 +9,12 @@ use Carbon\CarbonImmutable;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Modules\Egy\Application\Actions\IngestSmartGridMeterTelemetryAction;
 use Modules\Egy\Domain\Models\MeterReading;
 use Modules\Egy\Domain\Models\SmartMeter;
+use Modules\Egy\Events\EgyMeterReadV1;
 use RuntimeException;
 use Tests\TestCase;
 
@@ -41,7 +43,7 @@ class SmartMeterIngestTest extends TestCase
         $action = app(IngestSmartGridMeterTelemetryAction::class);
 
         // Reading 1: 100,000 Wh at T0
-        $t0 = CarbonImmutable::parse('2026-10-01 10:00:00');
+        $t0 = CarbonImmutable::parse('2026-10-01 10:00:00', 'Asia/Jakarta');
         $r1 = $action->execute([
             'meter_number' => 'MTR-SMART-001',
             'reading_at' => $t0->toIso8601String(),
@@ -50,7 +52,13 @@ class SmartMeterIngestTest extends TestCase
         ]);
 
         expect($r1->cumulative_wh)->toBe(100000)
-            ->and($r1->delta_wh)->toBe(0);
+            ->and($r1->delta_wh)->toBe(0)
+            ->and($r1->kwh_consumed)->toBe(0.0)
+            ->and($r1->rate_per_kwh_minor)->toBe(1450)
+            ->and($r1->total_charge_minor)->toBe(0)
+            ->and($r1->is_wbp)->toBeFalse()
+            ->and($r1->is_peak_hour)->toBeFalse()
+            ->and($meter->fresh()->total_kwh_accumulated)->toBe(0.0);
 
         // Reading 2: 125,000 Wh at T0 + 15 min
         $t1 = $t0->addMinutes(15);
@@ -63,7 +71,49 @@ class SmartMeterIngestTest extends TestCase
 
         expect($r2->cumulative_wh)->toBe(125000)
             ->and($r2->delta_wh)->toBe(25000)
-            ->and($r2->interval_status)->toBe('OK');
+            ->and($r2->interval_status)->toBe('OK')
+            ->and($r2->is_wbp)->toBeFalse()
+            ->and($r2->is_peak_hour)->toBeFalse()
+            ->and($r2->kwh_consumed)->toBe(25.0)
+            ->and($r2->rate_per_kwh_minor)->toBe(1450)
+            ->and($r2->total_charge_minor)->toBe(36250)
+            ->and($r2->interval_start->format('Y-m-d H:i:s'))->toBe($t0->format('Y-m-d H:i:s'))
+            ->and($r2->interval_end->format('Y-m-d H:i:s'))->toBe($t1->format('Y-m-d H:i:s'))
+            ->and($meter->fresh()->total_kwh_accumulated)->toBe(25.0);
+
+        // Reading 3: Peak hour WBP at 18:00
+        $tPeak = CarbonImmutable::parse('2026-10-01 18:00:00', 'Asia/Jakarta');
+        $rPeak = $action->execute([
+            'meter_number' => 'MTR-SMART-001',
+            'reading_at' => $tPeak->toIso8601String(),
+            'cumulative_wh' => 135000,
+            'idempotency_key' => 'egy:telemetry:MTR-SMART-001:20261001180000',
+        ]);
+
+        expect($rPeak->delta_wh)->toBe(10000)
+            ->and($rPeak->is_wbp)->toBeTrue()
+            ->and($rPeak->is_peak_hour)->toBeTrue()
+            ->and($rPeak->kwh_consumed)->toBe(10.0)
+            ->and($rPeak->rate_per_kwh_minor)->toBe(2100)
+            ->and($rPeak->total_charge_minor)->toBe(21000)
+            ->and($meter->fresh()->total_kwh_accumulated)->toBe(35.0);
+
+        // Reading 4: 18:15 with event verification
+        Event::fake([EgyMeterReadV1::class]);
+        $tPeak2 = CarbonImmutable::parse('2026-10-01 18:15:00', 'Asia/Jakarta');
+        $action->execute([
+            'meter_number' => 'MTR-SMART-001',
+            'reading_at' => $tPeak2->toIso8601String(),
+            'cumulative_wh' => 140000,
+            'idempotency_key' => 'egy:telemetry:MTR-SMART-001:20261001181500',
+        ]);
+
+        Event::assertDispatched(EgyMeterReadV1::class, function ($e) use ($meter) {
+            return $e->meterId === $meter->id
+                && $e->propertyId === 'PROP-MALL-01'
+                && $e->region === 'JAMALI'
+                && $e->intervalWh === 5000;
+        });
     }
 
     public function test_duplicate_reading_with_same_timestamp_is_idempotent(): void
@@ -171,6 +221,15 @@ class SmartMeterIngestTest extends TestCase
         // Delta = 100,000,000 - 99,990,000 + 15,000 = 25,000 Wh
         expect($rRollover->delta_wh)->toBe(25000)
             ->and($rRollover->interval_status)->toBe('ROLLOVER');
+
+        // Subsequent equal reading is not rollover
+        $rEqual = $action->execute([
+            'meter_number' => 'MTR-SMART-004',
+            'reading_at' => $t0->addMinutes(30)->toIso8601String(),
+            'cumulative_wh' => 15000,
+            'idempotency_key' => 'egy:telemetry:MTR-SMART-004:t2',
+        ]);
+        expect($rEqual->interval_status)->toBe('OK');
     }
 
     public function test_meter_reset_event_handled_with_reset_status(): void
@@ -226,17 +285,35 @@ class SmartMeterIngestTest extends TestCase
             'idempotency_key' => 'egy:telemetry:MTR-SMART-006:t0',
         ]);
 
+        // Normal 15-minute interval: diff is exactly 15 min -> status OK
+        $r15 = $action->execute([
+            'meter_number' => 'MTR-SMART-006',
+            'reading_at' => $t0->addMinutes(15)->toIso8601String(),
+            'cumulative_wh' => 120000,
+            'idempotency_key' => 'egy:telemetry:MTR-SMART-006:t15',
+        ]);
+        expect($r15->interval_status)->toBe('OK');
+
+        // Gap of 16 minutes (> 15 min): status MISSING_INTERVAL_PREV
+        $r16 = $action->execute([
+            'meter_number' => 'MTR-SMART-006',
+            'reading_at' => $t0->addMinutes(31)->toIso8601String(),
+            'cumulative_wh' => 140000,
+            'idempotency_key' => 'egy:telemetry:MTR-SMART-006:t31',
+        ]);
+        expect($r16->interval_status)->toBe('MISSING_INTERVAL_PREV');
+
         // Gap of 45 minutes (skipped 10:15 and 10:30)
         $rGap = $action->execute([
             'meter_number' => 'MTR-SMART-006',
-            'reading_at' => $t0->addMinutes(45)->toIso8601String(),
+            'reading_at' => $t0->addMinutes(76)->toIso8601String(),
             'cumulative_wh' => 160000,
             'idempotency_key' => 'egy:telemetry:MTR-SMART-006:t3',
         ]);
 
         // Missing intervals must be flagged and not estimated silently
         expect($rGap->interval_status)->toBe('MISSING_INTERVAL_PREV')
-            ->and($rGap->delta_wh)->toBe(60000);
+            ->and($rGap->delta_wh)->toBe(20000);
     }
 
     public function test_meter_reading_is_append_only_and_rejects_update(): void

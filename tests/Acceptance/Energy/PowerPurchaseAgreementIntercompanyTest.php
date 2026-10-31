@@ -10,9 +10,11 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Domain\Models\LedgerEntry;
 use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Core\Domain\Models\AuditLog;
 use Modules\Core\Exceptions\IdempotencyConflictException;
 use Modules\Egy\Application\Actions\SettlePowerPurchaseAgreementBillingAction;
 use Modules\Egy\Domain\Models\PpaContract;
+use Modules\Intercompany\Domain\Models\IntercompanyTransaction;
 use RuntimeException;
 use Tests\TestCase;
 
@@ -42,9 +44,25 @@ class PowerPurchaseAgreementIntercompanyTest extends TestCase
 
         $result = $action->executeWithIntercompany((string) $ppa->id, 1000, $key);
 
+        $mirroredPair = IntercompanyTransaction::find($result['mirrored_pair_id']);
+        $auditLog = AuditLog::where('action', 'egy_ppa_billing_settled')->latest()->first();
+
         expect($result['status'])->toBe('SETTLED')
             ->and($result['mirrored_pair_id'])->not->toBeNull()
-            ->and($result['total_minor'])->toBe(1200000);
+            ->and($result['total_minor'])->toBe(1200000)
+            ->and($ppa->fresh()->surplus_kwh_exported)->toBe(1000.0)
+            ->and($ppa->fresh()->total_settlement_minor)->toBe(1200000)
+            ->and($mirroredPair)->not->toBeNull()
+            ->and($mirroredPair->selling_entity)->toBe('PTY-SOLAR-01')
+            ->and($mirroredPair->buying_entity)->toBe('ENT-EGY-01')
+            ->and($mirroredPair->amount_idr)->toBe(1200000)
+            ->and($mirroredPair->description)->toBe('PPA net settlement for contract PPA-IC-001 (1000 kWh)')
+            ->and($mirroredPair->sales_invoice_ref)->toBe('INV-PPA-PPA-IC-001')
+            ->and($mirroredPair->purchase_bill_ref)->toBe('BILL-PPA-PPA-IC-001')
+            ->and($auditLog)->not->toBeNull()
+            ->and($auditLog->new_values['delivered_kwh'])->toBe(1000)
+            ->and($auditLog->new_values['total_minor'])->toBe(1200000)
+            ->and($auditLog->new_values['mirrored_pair'])->toBe($mirroredPair->transaction_code);
     }
 
     public function test_mirrored_transactions_have_deterministic_codes_from_idempotency_key(): void
@@ -209,6 +227,55 @@ class PowerPurchaseAgreementIntercompanyTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $action->executeWithIntercompany((string) $ppa->id, 0, 'egy:ppa:zero:01');
+    }
+
+    public function test_negative_delivered_kwh_rejected(): void
+    {
+        $ppa = PpaContract::create([
+            'id' => (string) Str::uuid(),
+            'contract_number' => 'PPA-IC-NEG',
+            'producer_entity_id' => 'PTY-SOLAR-09',
+            'grid_offtaker_id' => 'ENT-EGY-01',
+            'feed_in_tariff_per_kwh_minor' => 1200,
+            'status' => 'ACTIVE',
+        ]);
+
+        $action = app(SettlePowerPurchaseAgreementBillingAction::class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $action->executeWithIntercompany((string) $ppa->id, -1, 'egy:ppa:neg:01');
+    }
+
+    public function test_boundary_minimum_one_kwh_accepted(): void
+    {
+        $ppa = PpaContract::create([
+            'id' => (string) Str::uuid(),
+            'contract_number' => 'PPA-IC-ONE',
+            'producer_entity_id' => 'PTY-SOLAR-09',
+            'grid_offtaker_id' => 'ENT-EGY-01',
+            'feed_in_tariff_per_kwh_minor' => 1200,
+            'status' => 'ACTIVE',
+        ]);
+
+        $action = app(SettlePowerPurchaseAgreementBillingAction::class);
+        $res = $action->executeWithIntercompany((string) $ppa->id, 1, 'egy:ppa:one:01');
+        expect($res['total_minor'])->toBe(1200);
+    }
+
+    public function test_legacy_execute_method_operates_correctly(): void
+    {
+        $ppa = PpaContract::create([
+            'id' => (string) Str::uuid(),
+            'contract_number' => 'PPA-IC-LEG',
+            'producer_entity_id' => 'PTY-SOLAR-09',
+            'grid_offtaker_id' => 'ENT-EGY-01',
+            'feed_in_tariff_per_kwh_minor' => 1200,
+            'status' => 'ACTIVE',
+        ]);
+
+        $action = app(SettlePowerPurchaseAgreementBillingAction::class);
+        $total = $action->execute((string) $ppa->id, 10);
+        expect($total)->toBe(12000);
     }
 
     public function test_cross_entity_settlement_verifies_authorization(): void
