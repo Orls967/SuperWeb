@@ -23,10 +23,6 @@ final class GateRunner
             'command' => 'composer validate --strict',
         ],
         [
-            'name' => 'npm run build',
-            'command' => 'npm run build',
-        ],
-        [
             'name' => 'pest',
             'command' => 'vendor/bin/pest --parallel --log-junit=storage/logs/pest-junit.xml',
         ],
@@ -53,6 +49,10 @@ final class GateRunner
         [
             'name' => 'super:health-check',
             'command' => 'php artisan super:health-check',
+        ],
+        [
+            'name' => 'npm run build',
+            'command' => 'npm run build',
         ],
     ];
 
