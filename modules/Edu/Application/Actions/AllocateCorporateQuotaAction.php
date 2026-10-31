@@ -59,9 +59,9 @@ final class AllocateCorporateQuotaAction extends BaseAction
             }
         }
 
-        return $this->transaction(function () use ($clientId, $programId, $quotaTotal, $unitPriceMinor, $idempotencyKey) {
+        return $this->transaction(function () use ($params, $clientId, $programId, $quotaTotal, $unitPriceMinor, $idempotencyKey) {
             return EduCorporateQuota::create([
-                'id' => (string) Str::uuid(),
+                'id' => (string) ($params['id'] ?? Str::uuid()),
                 'corporate_client_id' => $clientId,
                 'program_id' => $programId,
                 'quota_total' => $quotaTotal,

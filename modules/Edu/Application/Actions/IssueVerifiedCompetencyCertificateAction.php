@@ -66,7 +66,7 @@ class IssueVerifiedCompetencyCertificateAction extends BaseAction
             $programId = (string) ($params['program_id'] ?? ($cohort ? $cohort->program_id : 'PRG-DEFAULT'));
             $program = EduProgram::findOrFail($programId);
 
-            $competencyCode = (string) $params['skill_competency_code'];
+            $competencyCode = (string) ($params['skill_competency_code'] ?? $program->program_code);
             $issuedAt = Carbon::now();
             $expiresAt = isset($params['expires_at'])
                 ? Carbon::parse($params['expires_at'])
@@ -88,8 +88,7 @@ class IssueVerifiedCompetencyCertificateAction extends BaseAction
 
             // 2. Canonical Hash-Chain Generation (B0''.8 CanonicalHashChain)
             $lastCert = EduCertificate::where('program_id', $program->id)
-                ->orderBy('created_at', 'desc')
-                ->orderBy('id', 'desc')
+                ->orderBy('certificate_number', 'desc')
                 ->lockForUpdate()
                 ->first();
 
@@ -108,7 +107,7 @@ class IssueVerifiedCompetencyCertificateAction extends BaseAction
             $certHash = CanonicalHashChain::computeHash($prevHash, $payload);
 
             // 3. QR Token Signature
-            $certUuid = (string) Str::uuid();
+            $certUuid = (string) ($params['id'] ?? Str::uuid());
             $qrSigner = app(CertificateQrSigner::class);
             $qrToken = $qrSigner->generateToken($certUuid, 'v1');
             $qrUrl = url("/academy/certificates/verify?token={$qrToken}");

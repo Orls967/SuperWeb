@@ -6,7 +6,6 @@ namespace Modules\Edu\Application\Actions;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
@@ -42,7 +41,7 @@ class SettleHeadhunterFeeAction extends BaseAction
             $fee = EduHeadhunterFee::firstOrCreate(
                 ['placement_id' => $placement->id],
                 [
-                    'id' => (string) Str::uuid(),
+                    'id' => sprintf('00000000-0009-4000-8000-%012s', substr(hash('sha256', "{$placement->id}"), 0, 12)),
                     'fee_minor' => $feeMinor,
                     'status' => 'HELD',
                     'held_at' => Carbon::now(),

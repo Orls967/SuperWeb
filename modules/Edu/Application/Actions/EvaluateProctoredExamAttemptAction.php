@@ -64,7 +64,7 @@ class EvaluateProctoredExamAttemptAction extends BaseAction
             $isPassed = $score >= $passingScore;
 
             $attempt = EduExamAttempt::create([
-                'id' => (string) Str::uuid(),
+                'id' => (string) ($params['id'] ?? Str::uuid()),
                 'attempt_code' => $attemptCode,
                 'student_user_id' => $studentUserId,
                 'student_party_uuid' => $studentId,

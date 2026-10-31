@@ -119,7 +119,7 @@ class EnrollStudentInCohortAction extends BaseAction
             $enrollmentCode = $params['enrollment_code'] ?? ('ENR-'.strtoupper(substr(hash('sha256', $codeSeed), 0, 10)));
 
             $enrollment = EduEnrollment::create([
-                'id' => (string) Str::uuid(),
+                'id' => (string) ($params['id'] ?? Str::uuid()),
                 'enrollment_code' => $enrollmentCode,
                 'student_user_id' => $studentUserId,
                 'student_party_id' => $studentPartyId,

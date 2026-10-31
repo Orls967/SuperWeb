@@ -6,7 +6,6 @@ namespace Modules\Edu\Application\Actions;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Modules\Edu\Domain\Models\EduCertificate;
 use Modules\Edu\Domain\Models\EduExamAttempt;
 use Modules\Edu\Domain\Models\EduJobOpening;
@@ -73,7 +72,7 @@ class MatchTalentPoolAction extends BaseAction
                     $placement = EduPlacement::firstOrCreate(
                         ['student_user_id' => $userId, 'opening_id' => $orgId],
                         [
-                            'id' => (string) Str::uuid(),
+                            'id' => sprintf('00000000-0008-4000-8000-%012s', substr(hash('sha256', "{$orgId}:{$userId}"), 0, 12)),
                             'placement_code' => 'PLC-'.strtoupper(substr(hash('sha256', "{$orgId}:{$userId}"), 0, 10)),
                             'placed_at' => Carbon::now()->toDateString(),
                             'guarantee_days' => 90,
@@ -138,7 +137,7 @@ class MatchTalentPoolAction extends BaseAction
         if (! empty($programCodes)) {
             $query->whereIn('required_credential_code', $programCodes);
         }
-        $openings = $query->orderBy('id', 'asc')->get();
+        $openings = $query->orderBy('opening_code', 'asc')->orderBy('id', 'asc')->get();
 
         $openingsById = [];
         $organizations = [];
