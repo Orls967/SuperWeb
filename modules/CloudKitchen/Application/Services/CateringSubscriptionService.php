@@ -10,13 +10,11 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\CloudKitchen\Domain\Models\CateringPayrollDeduction;
 use Modules\CloudKitchen\Domain\Models\CateringSubscription;
 
 class CateringSubscriptionService
 {
-    /** @var array<string, array{deducted_idr: int, status: string}> */
-    protected static array $processedPayrollEvents = [];
-
     public function __construct(
         protected LedgerService $ledgerService
     ) {}
@@ -62,8 +60,9 @@ class CateringSubscriptionService
     public function handlePayrollPostedEvent(array $eventPayload): array
     {
         $idempotencyKey = $eventPayload['idempotency_key'];
-        if (isset(self::$processedPayrollEvents[$idempotencyKey])) {
-            return self::$processedPayrollEvents[$idempotencyKey];
+        $existing = CateringPayrollDeduction::where('idempotency_key', $idempotencyKey)->first();
+        if ($existing) {
+            return ['deducted_idr' => (int) $existing->amount_idr, 'status' => 'DEDUCTED'];
         }
 
         $employeeId = (int) $eventPayload['employee_id'];
@@ -72,15 +71,19 @@ class CateringSubscriptionService
             ->first();
 
         if (! $sub) {
-            $result = ['deducted_idr' => 0, 'status' => 'NO_ACTIVE_SUBSCRIPTION'];
-            self::$processedPayrollEvents[$idempotencyKey] = $result;
-
-            return $result;
+            return ['deducted_idr' => 0, 'status' => 'NO_ACTIVE_SUBSCRIPTION'];
         }
 
         $deductionAmount = (int) $sub->monthly_fee_idr;
 
-        DB::transaction(function () use ($deductionAmount, $idempotencyKey, $employeeId, $sub): void {
+        DB::transaction(function () use ($deductionAmount, $idempotencyKey, $employeeId, $sub, $eventPayload): void {
+            CateringPayrollDeduction::create([
+                'subscription_id' => $sub->id,
+                'payroll_period' => $eventPayload['payroll_period'] ?? date('Y-m'),
+                'amount_idr' => $deductionAmount,
+                'idempotency_key' => $idempotencyKey,
+            ]);
+
             $this->ledgerService->post(new PostingDTO(
                 type: 'hcm_catering_deduction',
                 description: "HCM Payroll Catering Deduction Period for User {$employeeId}",
@@ -94,9 +97,11 @@ class CateringSubscriptionService
             ));
         });
 
-        $result = ['deducted_idr' => $deductionAmount, 'status' => 'DEDUCTED'];
-        self::$processedPayrollEvents[$idempotencyKey] = $result;
+        return ['deducted_idr' => $deductionAmount, 'status' => 'DEDUCTED'];
+    }
 
-        return $result;
+    public static function getTotalDeductedIdr(): int
+    {
+        return (int) CateringPayrollDeduction::sum('amount_idr');
     }
 }

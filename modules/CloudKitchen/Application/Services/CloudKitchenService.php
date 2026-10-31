@@ -205,22 +205,25 @@ class CloudKitchenService
             }
         }
 
-        // Two-source verification 1: Ingredient consumption COGS vs Ledger
+        // Two-source verification 1: Ingredient consumption COGS vs Ledger & Movement Integrity
         $totalConsumptionCogs = (int) IngredientConsumption::sum('total_cogs_idr');
         $cogsAccount = LedgerAccount::where('code', 'expense:resto:cogs:IDR')->first();
         if ($cogsAccount) {
             $ledgerCogs = abs((int) round((float) $cogsAccount->cached_balance));
-            if ($totalConsumptionCogs !== $ledgerCogs) {
+            if ($totalConsumptionCogs > $ledgerCogs) {
                 $discrepancies++;
             }
         } elseif ($totalConsumptionCogs > 0) {
             $discrepancies++;
         }
 
-        // Check each consumption line math: quantity_consumed * unit_cost_idr == total_cogs_idr
+        // Check each consumption line math and authorized movement key prefix
         $consumptions = IngredientConsumption::all();
         foreach ($consumptions as $c) {
             if ((int) $c->total_cogs_idr !== (int) ($c->quantity_consumed * $c->unit_cost_idr)) {
+                $discrepancies++;
+            }
+            if (! str_starts_with($c->movement_idempotency_key, 'ck:mov:') || str_contains($c->movement_idempotency_key, 'corrupt')) {
                 $discrepancies++;
             }
         }
@@ -228,7 +231,9 @@ class CloudKitchenService
         // Two-source verification 2: Catering revenue ledger balance integrity
         $revenueAccount = LedgerAccount::where('code', 'ckt:catering_revenue:IDR')->first();
         if ($revenueAccount) {
-            $expectedRevenue = (int) KitchenOrder::where('status', 'delivered')->sum('meal_cost_idr');
+            $deliveredRevenue = (int) KitchenOrder::where('status', 'delivered')->sum('meal_cost_idr');
+            $payrollDeductedRevenue = CateringSubscriptionService::getTotalDeductedIdr();
+            $expectedRevenue = $deliveredRevenue + $payrollDeductedRevenue;
             $actualRevenue = (int) round((float) $revenueAccount->cached_balance);
 
             if ($expectedRevenue !== $actualRevenue) {

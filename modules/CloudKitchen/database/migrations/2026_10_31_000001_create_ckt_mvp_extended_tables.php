@@ -73,10 +73,22 @@ return new class extends Migration
                 $table->index(['order_id', 'ingredient_code']);
             });
         }
+
+        if (! Schema::hasTable('ckt_payroll_deductions')) {
+            Schema::create('ckt_payroll_deductions', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('subscription_id')->constrained('resto_catering_subscriptions')->cascadeOnDelete();
+                $table->string('payroll_period');
+                $table->unsignedBigInteger('amount_idr');
+                $table->string('idempotency_key')->unique();
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('ckt_payroll_deductions');
         Schema::dropIfExists('ckt_ingredient_consumptions');
         Schema::dropIfExists('ckt_orders');
         Schema::dropIfExists('ckt_recipe_ingredients');

@@ -22,7 +22,7 @@ class VendingRestockService
             'location_name' => $data['location_name'],
             'latitude' => $data['latitude'] ?? 0,
             'longitude' => $data['longitude'] ?? 0,
-            'current_stock' => 0,
+            'current_stock' => $data['current_stock'] ?? 0,
             'max_capacity' => $data['max_capacity'] ?? 100,
             'critical_threshold' => $data['critical_threshold'] ?? 15,
             'status' => 'active',
@@ -80,7 +80,7 @@ class VendingRestockService
 
         $unit = VendingUnit::findOrFail($unitId);
         $neededQty = max(1, $unit->max_capacity - $unit->current_stock);
-        $taskCode = 'RST-'.strtoupper(substr(hash('sha256', "rst:{$unit->id}:{$neededQty}:".date('YmdHis')), 0, 10));
+        $taskCode = 'RST-'.strtoupper(substr(hash('sha256', "rst:{$unit->id}:{$neededQty}:".microtime(true).':'.mt_rand()), 0, 10));
 
         return VendingRestockTask::create([
             'task_code' => $taskCode,
