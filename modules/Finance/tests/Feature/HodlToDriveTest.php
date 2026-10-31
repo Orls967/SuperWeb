@@ -414,6 +414,57 @@ class HodlToDriveTest extends TestCase
         $this->artisan('bank:reconcile')->assertSuccessful();
     }
 
+    public function test_tambah_kolateral_validasi_dan_idempotensi(): void
+    {
+        $this->btcAsset();
+        $user = $this->makeUser(self::DP, '3');
+        $product = $this->carProduct();
+        $loan = $this->openLoan($user, $product);
+
+        $action = app(AddCollateralAction::class);
+
+        // 1. Key kosong melempar InvalidArgumentException
+        try {
+            $action->execute($loan, $user, '0.1', '');
+            $this->fail('Harusnya melempar InvalidArgumentException');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertStringContainsString('Idempotency key', $e->getMessage());
+        }
+
+        // 2. User lain yang bukan admin
+        $otherUser = User::factory()->create(['role' => 'customer']);
+        try {
+            $action->execute($loan, $otherUser, '0.1', 'add-collat-key-other');
+            $this->fail('Harusnya melempar Exception karena user bukan pemilik');
+        } catch (Exception $e) {
+            $this->assertStringContainsString('pembiayaanmu sendiri', $e->getMessage());
+        }
+
+        // 3. Qty <= 0
+        try {
+            $action->execute($loan, $user, '0', 'add-collat-key-zero');
+            $this->fail('Harusnya melempar Exception');
+        } catch (Exception $e) {
+            $this->assertStringContainsString('lebih besar dari 0', $e->getMessage());
+        }
+
+        // 4. Saldo holding tidak cukup
+        try {
+            $action->execute($loan, $user, '999.0', 'add-collat-key-excess');
+            $this->fail('Harusnya melempar Exception');
+        } catch (Exception $e) {
+            $this->assertStringContainsString('tidak mencukupi', $e->getMessage());
+        }
+
+        // 5. Sukses dan idempotensi resubmit key yang sama
+        $key = 'add-collat-key-valid-1';
+        $res1 = $action->execute($loan, $user, '0.1', $key);
+        $qtyBefore = (string) $res1->collateral_qty;
+
+        $res2 = $action->execute($loan, $user, '0.1', $key);
+        $this->assertSame($qtyBefore, (string) $res2->collateral_qty);
+    }
+
     public function test_harga_jatuh_dalam_memicu_likuidasi_otomatis_dan_sisa_kembali_ke_user(): void
     {
         $this->btcAsset();
