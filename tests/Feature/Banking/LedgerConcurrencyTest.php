@@ -191,9 +191,9 @@ test('mysql two pdo connections lock for update blocks and serializes concurrent
     $accounts = LedgerAccount::whereIn('code', ['clearing:external:IDR', 'fee:banking:IDR'])->get();
     expect($accounts)->toHaveCount(2);
 
-    $pdo1 = DB::connection()->getPdo();
     $config = config('database.connections.'.config('database.default'));
     $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s', $config['host'], $config['port'], $config['database']);
+    $pdo1 = new PDO($dsn, $config['username'], $config['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     $pdo2 = new PDO($dsn, $config['username'], $config['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
     $pdo1->beginTransaction();
