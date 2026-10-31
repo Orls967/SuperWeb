@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Intercompany\Application\Services\IntercompanyPortService;
 use Modules\Intercompany\Application\Services\IntercompanyService;
 use Modules\Intercompany\Console\Commands\AuditIntercompanyCommand;
+use Modules\Intercompany\Contracts\IntercompanyBillingPort;
 use Modules\Intercompany\Contracts\IntercompanyPortInterface;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -18,6 +19,10 @@ class IntercompanyServiceProvider extends ServiceProvider
         $this->app->singleton(IntercompanyService::class);
         $this->app->singleton(
             IntercompanyPortInterface::class,
+            IntercompanyPortService::class
+        );
+        $this->app->singleton(
+            IntercompanyBillingPort::class,
             IntercompanyPortService::class
         );
     }

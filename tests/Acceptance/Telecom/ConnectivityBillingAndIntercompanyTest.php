@@ -211,16 +211,16 @@ class ConnectivityBillingAndIntercompanyTest extends TestCase
 
         $userMining = User::factory()->create([
             'role' => 'telecom_billing',
-            'entity_id' => 'ENT-MINING-01',
         ]);
+        $userMining->setAttribute('entity_id', 'ENT-MINING-01');
 
         $canAccess = $this->billingService->canAccessInvoice($userMining, $invoiceLogistics->id);
         expect($canAccess)->toBeFalse();
 
         $userLogistics = User::factory()->create([
             'role' => 'telecom_billing',
-            'entity_id' => 'ENT-LOGISTICS-01',
         ]);
+        $userLogistics->setAttribute('entity_id', 'ENT-LOGISTICS-01');
 
         $canAccessLogistics = $this->billingService->canAccessInvoice($userLogistics, $invoiceLogistics->id);
         expect($canAccessLogistics)->toBeTrue();

@@ -9,14 +9,37 @@ use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
 use Modules\Core\Exceptions\IdempotencyConflictException;
+use Modules\Intercompany\Contracts\IntercompanyBillingPort;
 use Modules\Intercompany\Contracts\IntercompanyPortInterface;
 use Modules\Intercompany\Domain\Models\IntercompanyTransaction;
 
-class IntercompanyPortService implements IntercompanyPortInterface
+class IntercompanyPortService implements IntercompanyBillingPort, IntercompanyPortInterface
 {
     public function __construct(
         protected LedgerService $ledgerService
     ) {}
+
+    /**
+     * {@inheritdoc}
+     */
+    public function bill(array $payload): array
+    {
+        $seller = $payload['seller_entity'] ?? '';
+        $buyer = $payload['buyer_entity'] ?? '';
+
+        return $this->createMirroredPair([
+            'selling_entity' => $seller,
+            'buying_entity' => $buyer,
+            'amount_idr' => (int) ($payload['amount_minor'] ?? 0),
+            'description' => $payload['description'] ?? 'Intercompany billing',
+            'idempotency_key' => $payload['idempotency_key'] ?? '',
+            'sales_invoice_ref' => $payload['invoice_ref'] ?? null,
+            'producer_ar_account' => $payload['seller_ar_account'] ?? 'tlx:intercompany_receivable:IDR',
+            'producer_rev_account' => $payload['seller_revenue_account'] ?? 'tlx:iot_service_revenue:IDR',
+            'offtaker_exp_account' => $payload['buyer_expense_account'] ?? 'tlx:intercompany_telecom_expense:IDR',
+            'offtaker_ap_account' => $payload['buyer_ap_account'] ?? 'tlx:intercompany_payable:IDR',
+        ]);
+    }
 
     /**
      * {@inheritdoc}
