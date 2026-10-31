@@ -150,11 +150,12 @@ class ConnectivityBillingService
             return false;
         }
 
-        if (in_array($user->role, ['admin', 'telecom_admin', 'tlx_admin'], true)) {
-            return true;
+        $entityId = $user->getAttribute('entity_id');
+        if ($entityId !== null) {
+            return $entityId === $invoice->owner_entity_id;
         }
 
-        return isset($user->entity_id) && $user->entity_id === $invoice->owner_entity_id;
+        return in_array($user->role, ['admin', 'telecom_billing', 'telecom_admin', 'tlx_admin'], true);
     }
 
     /**

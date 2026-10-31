@@ -90,6 +90,7 @@ use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
 use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Tlx\Domain\Models\IotConnectivityInvoice;
 use Modules\Trade\Domain\Models\Bidding\BiddingAgent;
 use Modules\Trade\Domain\Models\Bidding\BidRun;
 use Modules\Trade\Domain\Models\Bidding\BidSubmission;
@@ -2920,6 +2921,28 @@ return [
             'id' => PpaContract::firstOrCreate(
                 ['contract_number' => 'PPA-TEST-001'],
                 ['id' => (string) Str::uuid(), 'producer_entity_id' => 'ENT-01', 'grid_offtaker_id' => 'ENT-EGY-01', 'feed_in_tariff_per_kwh_minor' => 1000, 'status' => 'ACTIVE']
+            )->id,
+        ],
+    ],
+
+    // telecom-mvp
+    'tlx.noc.alarms' => ['roles' => ['admin', 'noc_engineer', 'tlx_admin']],
+    'tlx.datacenter.colocation' => ['roles' => ['admin', 'datacenter_ops', 'tlx_admin']],
+    'tlx.billing.connectivity' => ['roles' => ['admin', 'telecom_billing', 'tlx_admin']],
+    'tlx.billing.connectivity.detail' => [
+        'roles' => ['admin', 'telecom_billing', 'tlx_admin'],
+        'params' => fn () => [
+            'id' => IotConnectivityInvoice::firstOrCreate(
+                ['invoice_number' => 'INV-TLX-ROUTE-001'],
+                [
+                    'id' => (string) Str::uuid(),
+                    'owner_entity_id' => 'ENT-LOGISTICS-01',
+                    'billing_period' => '2026-10',
+                    'active_device_count' => 1,
+                    'total_consumed_mb' => 0.0,
+                    'total_charge_minor' => 30000,
+                    'status' => 'ISSUED',
+                ]
             )->id,
         ],
     ],

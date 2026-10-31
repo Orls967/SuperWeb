@@ -7,6 +7,7 @@ namespace Tests\Acceptance\Telecom;
 use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Modules\Tlx\Domain\Models\IotConnectivityInvoice;
 use Tests\TestCase;
 
@@ -22,8 +23,8 @@ class TelecomUiResponsivenessAndRbacTest extends TestCase
 
     public function test_telecom_dashboard_accessible_to_authorized_roles(): void
     {
-        $admin = User::factory()->create(['role' => 'telecom_admin']);
-        $nocOps = User::factory()->create(['role' => 'noc_operator']);
+        $admin = User::factory()->create(['role' => 'tlx_admin']);
+        $nocOps = User::factory()->create(['role' => 'noc_engineer']);
         $dcOps = User::factory()->create(['role' => 'datacenter_ops']);
 
         $this->actingAs($admin)->get('/telecom')->assertStatus(200);
@@ -42,7 +43,7 @@ class TelecomUiResponsivenessAndRbacTest extends TestCase
 
     public function test_noc_alarms_accessible_only_to_noc_roles(): void
     {
-        $nocOps = User::factory()->create(['role' => 'noc_operator']);
+        $nocOps = User::factory()->create(['role' => 'noc_engineer']);
         $billing = User::factory()->create(['role' => 'telecom_billing']);
 
         $this->actingAs($nocOps)->get('/telecom/noc/alarms')->assertStatus(200);
@@ -52,7 +53,7 @@ class TelecomUiResponsivenessAndRbacTest extends TestCase
     public function test_datacenter_colocation_accessible_only_to_dc_ops_and_admin(): void
     {
         $dcOps = User::factory()->create(['role' => 'datacenter_ops']);
-        $nocOps = User::factory()->create(['role' => 'noc_operator']);
+        $nocOps = User::factory()->create(['role' => 'noc_engineer']);
 
         $this->actingAs($dcOps)->get('/telecom/datacenter/colocation')->assertStatus(200);
         $this->actingAs($nocOps)->get('/telecom/datacenter/colocation')->assertStatus(403);
@@ -86,13 +87,13 @@ class TelecomUiResponsivenessAndRbacTest extends TestCase
 
         $userOtherEntity = User::factory()->create([
             'role' => 'telecom_billing',
-            'entity_id' => 'ENT-MINING-01',
         ]);
+        $userOtherEntity->setAttribute('entity_id', 'ENT-MINING-01');
 
         $userOwnEntity = User::factory()->create([
             'role' => 'telecom_billing',
-            'entity_id' => 'ENT-LOGISTICS-01',
         ]);
+        $userOwnEntity->setAttribute('entity_id', 'ENT-LOGISTICS-01');
 
         // Attempt by another entity must be 403 Forbidden
         $this->actingAs($userOtherEntity)
@@ -107,7 +108,7 @@ class TelecomUiResponsivenessAndRbacTest extends TestCase
 
     public function test_mobile_375px_responsiveness_for_noc_alarm_dashboard(): void
     {
-        $admin = User::factory()->create(['role' => 'telecom_admin']);
+        $admin = User::factory()->create(['role' => 'tlx_admin']);
 
         $response = $this->actingAs($admin)->get('/telecom/noc/alarms');
         $response->assertStatus(200);
