@@ -48,9 +48,13 @@ final class TopologySuppressorVerifier
      */
     public static function verify(
         array $result,
-        array $topology,
+        array $topology = [],
         array $downSeverities = ['down', 'critical'],
     ): bool {
+        if (empty($topology) && isset($result['topology'])) {
+            $topology = $result['topology'];
+        }
+
         if (! isset($result['total_alarms'], $result['root_causes_count'], $result['suppressed_count'], $result['independent_count'], $result['tickets'], $result['alarms'])) {
             throw new UnexpectedValueException('Missing required fields in TopologySuppressor result');
         }
