@@ -20,6 +20,9 @@ use Modules\Ret\Domain\Models\RetSeller;
 use Modules\Ret\Domain\Models\RetSellerSettlement;
 use Tests\TestCase;
 
+/**
+ * @covers \Modules\Ret\Application\Actions\SettleRetailSellerEscrowAction
+ */
 class MarketplaceSellerSettlementAndEscrowTest extends TestCase
 {
     use RefreshDatabase;

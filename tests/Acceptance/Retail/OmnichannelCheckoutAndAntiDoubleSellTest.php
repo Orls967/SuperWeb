@@ -17,6 +17,9 @@ use Modules\Ret\Domain\Models\RetOrder;
 use Modules\Ret\Domain\Models\RetSeller;
 use Tests\TestCase;
 
+/**
+ * @covers \Modules\Ret\Application\Actions\CheckoutOmnichannelOrderAction
+ */
 class OmnichannelCheckoutAndAntiDoubleSellTest extends TestCase
 {
     use RefreshDatabase;
