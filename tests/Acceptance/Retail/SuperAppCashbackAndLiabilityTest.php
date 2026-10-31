@@ -48,15 +48,17 @@ class SuperAppCashbackAndLiabilityTest extends TestCase
 
         // Check liability ledger (credit +)
         $liabilityEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:cashback_liability:IDR'))
-            ->where('amount', 25_000)
+            ->latest('id')
             ->first();
         $this->assertNotNull($liabilityEntry);
+        $this->assertEquals(25_000, (int) $liabilityEntry->amount);
 
         // Check marketing expense ledger (debit -)
         $expenseEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:cashback_promo_expense:IDR'))
-            ->where('amount', -25_000)
+            ->latest('id')
             ->first();
         $this->assertNotNull($expenseEntry);
+        $this->assertEquals(-25_000, (int) $expenseEntry->amount);
     }
 
     public function test_redeeming_cashback_reduces_liability_and_covers_payment(): void
@@ -83,9 +85,11 @@ class SuperAppCashbackAndLiabilityTest extends TestCase
 
         // Check liability debit (reversal/usage -30_000)
         $liabilityDebit = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:cashback_liability:IDR'))
-            ->where('amount', -30_000)
+            ->where('amount', '<', 0)
+            ->latest('id')
             ->first();
         $this->assertNotNull($liabilityDebit);
+        $this->assertEquals(-30_000, (int) $liabilityDebit->amount);
     }
 
     public function test_redeeming_more_cashback_than_available_is_rejected(): void
@@ -149,15 +153,18 @@ class SuperAppCashbackAndLiabilityTest extends TestCase
 
         // Liability debited (eliminated)
         $liabilityElim = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:cashback_liability:IDR'))
-            ->where('amount', -40_000)
+            ->where('amount', '<', 0)
+            ->latest('id')
             ->first();
         $this->assertNotNull($liabilityElim);
+        $this->assertEquals(-40_000, (int) $liabilityElim->amount);
 
         // Breakage revenue credited (+)
         $breakageRev = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:cashback_breakage_revenue:IDR'))
-            ->where('amount', 40_000)
+            ->latest('id')
             ->first();
         $this->assertNotNull($breakageRev);
+        $this->assertEquals(40_000, (int) $breakageRev->amount);
     }
 
     public function test_artisan_command_expire_cashback_is_idempotent(): void
