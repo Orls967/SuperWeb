@@ -13,6 +13,7 @@ use Modules\Ret\Application\Actions\ForfeitUnreturnedPackagingDepositAction;
 use Modules\Ret\Application\Actions\IssuePackagingDepositAction;
 use Modules\Ret\Application\Actions\RefundPackagingDepositAction;
 use Modules\Ret\Domain\Exceptions\PackagingAlreadyReturnedException;
+use Modules\Ret\Domain\Models\RetChannel;
 use Modules\Ret\Domain\Models\RetOrder;
 use Modules\Ret\Domain\Models\RetPackagingDeposit;
 use Tests\TestCase;
@@ -32,10 +33,20 @@ class PackagingDepositAndReverseLoopTest extends TestCase
 
         $this->customer = User::factory()->create(['role' => 'customer']);
 
+        $channel = RetChannel::create([
+            'id' => (string) Str::uuid(),
+            'channel_code' => 'PKG_STORE',
+            'channel_name' => 'Packaging Store',
+            'channel_type' => 'STORE',
+            'default_commission_bps' => 500,
+            'status' => 'ACTIVE',
+        ]);
+
         $this->order = RetOrder::create([
             'id' => (string) Str::uuid(),
             'order_number' => 'ORD-20261031-PKG01',
             'customer_id' => $this->customer->id,
+            'channel_id' => $channel->id,
             'total_amount_minor' => 120_000,
             'packaging_deposit_minor' => 20_000,
             'status' => 'PAID',
@@ -61,9 +72,10 @@ class PackagingDepositAndReverseLoopTest extends TestCase
 
         // Check liability ledger (credit +)
         $liabilityEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:deposit_liability:IDR'))
-            ->where('amount', 20_000)
+            ->latest('id')
             ->first();
         $this->assertNotNull($liabilityEntry);
+        $this->assertEquals(20_000, (int) $liabilityEntry->amount);
     }
 
     public function test_returning_package_in_good_condition_refunds_deposit(): void
@@ -89,9 +101,11 @@ class PackagingDepositAndReverseLoopTest extends TestCase
 
         // Liability debited (reversed -25_000)
         $liabilityDebit = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:deposit_liability:IDR'))
-            ->where('amount', -25_000)
+            ->where('amount', '<', 0)
+            ->latest('id')
             ->first();
         $this->assertNotNull($liabilityDebit);
+        $this->assertEquals(-25_000, (int) $liabilityDebit->amount);
     }
 
     public function test_double_return_attempt_rejected(): void
@@ -144,15 +158,18 @@ class PackagingDepositAndReverseLoopTest extends TestCase
 
         // Liability debited (-30_000)
         $liabilityDeb = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:deposit_liability:IDR'))
-            ->where('amount', -30_000)
+            ->where('amount', '<', 0)
+            ->latest('id')
             ->first();
         $this->assertNotNull($liabilityDeb);
+        $this->assertEquals(-30_000, (int) $liabilityDeb->amount);
 
         // Revenue credited (+30_000)
         $revCred = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:omnichannel_sales_revenue:IDR'))
-            ->where('amount', 30_000)
+            ->latest('id')
             ->first();
         $this->assertNotNull($revCred);
+        $this->assertEquals(30_000, (int) $revCred->amount);
     }
 
     public function test_total_held_deposits_equals_ledger_deposit_liability(): void
