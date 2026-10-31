@@ -174,6 +174,60 @@ class CurriculumPrerequisiteAndDagTest extends TestCase
         $this->assertEquals($p1->id, $p2->id);
     }
 
+    public function test_action_accepts_model_instances_and_string_prerequisite_id(): void
+    {
+        $progA = $this->createProgram('PRG-MODEL-A', 'Course Model A');
+        $progB = $this->createProgram('PRG-MODEL-B', 'Course Model B');
+        $progC = $this->createProgram('PRG-MODEL-C', 'Course Model C');
+
+        $action = app(AddProgramPrerequisiteAction::class);
+
+        // 1. Model + Model
+        $p1 = $action->execute($progB, $progA);
+        $this->assertEquals($progB->id, $p1->program_id);
+        $this->assertEquals($progA->id, $p1->prerequisite_program_id);
+
+        // 2. Model + String ID
+        $p2 = $action->execute($progC, (string) $progB->id);
+        $this->assertEquals($progC->id, $p2->program_id);
+        $this->assertEquals($progB->id, $p2->prerequisite_program_id);
+    }
+
+    public function test_action_rejects_invalid_arguments(): void
+    {
+        $progA = $this->createProgram('PRG-INV-A', 'Course Inv A');
+        $action = app(AddProgramPrerequisiteAction::class);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid arguments');
+        $action->execute($progA, null);
+    }
+
+    public function test_cycle_exception_message_contains_exact_prefix_and_path(): void
+    {
+        $progA = $this->createProgram('PRG-MSG-A', 'Course Msg A');
+        $progB = $this->createProgram('PRG-MSG-B', 'Course Msg B');
+
+        $action = app(AddProgramPrerequisiteAction::class);
+        $action->execute(['program_id' => $progB->id, 'prerequisite_program_id' => $progA->id]);
+
+        try {
+            $action->execute(['program_id' => $progA->id, 'prerequisite_program_id' => $progB->id]);
+            $this->fail('Expected PrerequisiteCycleException was not thrown.');
+        } catch (PrerequisiteCycleException $e) {
+            $this->assertStringStartsWith('Prerequisite cycle detected in curriculum graph: ', $e->getMessage());
+            $this->assertStringContainsString(' -> ', $e->getMessage());
+        }
+    }
+
+    public function test_get_transitive_prerequisites_returns_empty_when_program_has_no_prerequisites(): void
+    {
+        $standaloneProg = $this->createProgram('PRG-ISOLATED', 'Isolated Course');
+        $action = app(AddProgramPrerequisiteAction::class);
+
+        $transitive = $action->getTransitivePrerequisites($standaloneProg->id);
+        $this->assertSame([], $transitive);
+    }
+
     protected function createProgram(string $code, string $title): EduProgram
     {
         return EduProgram::create([

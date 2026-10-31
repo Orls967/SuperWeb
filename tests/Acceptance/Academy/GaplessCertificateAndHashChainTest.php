@@ -7,6 +7,7 @@ namespace Tests\Acceptance\Academy;
 use Database\Seeders\LedgerAccountsSeeder;
 use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Edu\Application\Actions\IssueVerifiedCompetencyCertificateAction;
 use Modules\Edu\Domain\Exceptions\ExamNotPassedException;
@@ -165,6 +166,74 @@ class GaplessCertificateAndHashChainTest extends TestCase
         ]);
 
         $this->assertEquals($c1->id, $c2->id);
+    }
+
+    public function test_certificate_issuance_marks_enrollment_as_graduated_and_records_audit(): void
+    {
+        $program = $this->createProgram('PRG-GRAD-01', 'Graduation Program');
+        $cohort = $this->createCohort($program);
+        $enrollment = $this->createEnrollment($cohort, 'student-grad-01');
+        $attempt = $this->createExamAttempt($enrollment, 'student-grad-01', 95, true);
+
+        $action = app(IssueVerifiedCompetencyCertificateAction::class);
+        $cert = $action->execute([
+            'enrollment_id' => $enrollment->id,
+            'exam_attempt_id' => $attempt->id,
+            'skill_competency_code' => 'k3_safety_expert',
+            'cpd_points_earned' => 25,
+            'idempotency_key' => 'edu:cert:grad:01',
+        ]);
+
+        // 1. Enrollment status must be updated to GRADUATED
+        $this->assertEquals('GRADUATED', $enrollment->fresh()->status);
+
+        // 2. CPD points overridden correctly
+        $this->assertEquals(25, $cert->cpd_points_earned);
+
+        // 3. QR verification URL contains token
+        $this->assertStringContainsString($cert->qr_token, $cert->qr_verification_url);
+
+        // 4. Expiration date set according to program validity months (24 months)
+        $this->assertEquals(now()->addMonths(24)->toDateString(), $cert->expires_at->toDateString());
+
+        // 5. Audit trail recorded
+        $auditEntry = DB::table('core_audit_logs')
+            ->where('action', 'edu_certificate_issued')
+            ->where('auditable_id', $cert->id)
+            ->first();
+        $this->assertNotNull($auditEntry);
+        $newValues = json_decode($auditEntry->new_values, true);
+        $this->assertEquals($cert->certificate_number, $newValues['certificate_number']);
+        $this->assertEquals('k3_safety_expert', $newValues['skill_code']);
+    }
+
+    public function test_certificate_canonical_payload_fields_produce_matching_hash(): void
+    {
+        $program = $this->createProgram('PRG-HASH-CHECK', 'Hash Check Program');
+        $cohort = $this->createCohort($program);
+        $enrollment = $this->createEnrollment($cohort, 'student-hash-01');
+        $attempt = $this->createExamAttempt($enrollment, 'student-hash-01', 88, true);
+
+        $action = app(IssueVerifiedCompetencyCertificateAction::class);
+        $cert = $action->execute([
+            'enrollment_id' => $enrollment->id,
+            'exam_attempt_id' => $attempt->id,
+            'skill_competency_code' => 'k3_loto',
+            'idempotency_key' => 'edu:cert:hash-check:01',
+        ]);
+
+        $canonicalPayload = [
+            'certificate_number' => $cert->certificate_number,
+            'program_id' => $program->id,
+            'student_identity' => 'student-hash-01',
+            'exam_attempt_id' => $attempt->id,
+            'skill_competency_code' => 'k3_loto',
+            'issued_at' => $cert->issued_at->toDateString(),
+            'expires_at' => $cert->expires_at->toDateString(),
+        ];
+
+        $expectedHash = CanonicalHashChain::computeHash($cert->prev_hash, $canonicalPayload);
+        $this->assertEquals($expectedHash, $cert->certificate_hash);
     }
 
     protected function createProgram(string $code, string $title): EduProgram

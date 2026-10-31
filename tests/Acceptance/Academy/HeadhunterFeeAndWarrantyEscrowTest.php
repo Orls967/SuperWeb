@@ -8,6 +8,7 @@ use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Contracts\LedgerEntry;
@@ -287,6 +288,86 @@ class HeadhunterFeeAndWarrantyEscrowTest extends TestCase
         $escrowAccount = EduAccounts::ESCROW_HEADHUNTER_GUARANTEE;
         $escrowBalance = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', $escrowAccount))->sum('amount');
         $this->assertEquals($totalHeld, $escrowBalance);
+    }
+
+    public function test_fee_half_up_rounding_rounds_half_minor_up(): void
+    {
+        $user = User::factory()->create();
+        $opening = EduJobOpening::create([
+            'id' => (string) Str::uuid(),
+            'opening_code' => 'JOB-ROUND-HALF',
+            'hiring_entity' => 'CorpRound',
+            'title' => 'Role',
+            'capacity' => 1,
+            'annual_salary_minor' => 1, // 1 * 5000 / 10000 = 0.5 minor
+            'headhunter_fee_bps' => 5000,
+            'required_credential_code' => 'PRG-GEN-01',
+            'status' => 'OPEN',
+        ]);
+
+        $placement = EduPlacement::create([
+            'id' => (string) Str::uuid(),
+            'placement_code' => 'PLC-ROUND-HALF',
+            'student_user_id' => $user->id,
+            'opening_id' => $opening->id,
+            'placed_at' => Carbon::now()->toDateString(),
+            'guarantee_days' => 90,
+            'status' => 'PLACED',
+        ]);
+
+        $action = app(SettleHeadhunterFeeAction::class);
+        $fee = $action->holdFee($placement);
+
+        // 0.5 must round up to 1 (HalfUp), floor would give 0
+        $this->assertEquals(1, $fee->fee_minor, '0.5 minor must round up to 1 via round_half_up');
+    }
+
+    public function test_capture_and_release_update_placement_status_and_audit(): void
+    {
+        $plc = $this->createOpeningAndPlacement(120_000_000);
+        $action = app(SettleHeadhunterFeeAction::class);
+
+        $fee = $action->holdFee($plc);
+        $this->assertEquals('HELD', $fee->status);
+
+        // Check hold audit
+        $holdAudit = DB::table('core_audit_logs')
+            ->where('action', 'edu_headhunter_fee_held')
+            ->where('auditable_id', $fee->id)
+            ->first();
+        $this->assertNotNull($holdAudit);
+
+        // Advance 91 days and capture
+        $action->captureFee($fee, Carbon::now()->addDays(91));
+        $this->assertEquals('CAPTURED', $fee->fresh()->status);
+        $this->assertEquals('CONFIRMED', $plc->fresh()->status, 'Placement must be CONFIRMED on capture');
+
+        // Check capture audit
+        $capAudit = DB::table('core_audit_logs')
+            ->where('action', 'edu_headhunter_fee_captured')
+            ->where('auditable_id', $fee->id)
+            ->first();
+        $this->assertNotNull($capAudit);
+        $decodedCap = json_decode($capAudit->new_values, true);
+        $this->assertEquals('CAPTURED', $decodedCap['status']);
+
+        // Now test release flow with second placement
+        $plc2 = $this->createOpeningAndPlacement(120_000_000);
+        $fee2 = $action->holdFee($plc2);
+
+        $action->releaseFee($fee2, 'Candidate resigned on day 15');
+        $this->assertEquals('RELEASED', $fee2->fresh()->status);
+        $this->assertEquals('RELEASED', $plc2->fresh()->status, 'Placement must be RELEASED on release');
+
+        // Check release audit
+        $relAudit = DB::table('core_audit_logs')
+            ->where('action', 'edu_headhunter_fee_released')
+            ->where('auditable_id', $fee2->id)
+            ->first();
+        $this->assertNotNull($relAudit);
+        $decodedRel = json_decode($relAudit->new_values, true);
+        $this->assertEquals('RELEASED', $decodedRel['status']);
+        $this->assertStringContainsString('resigned', $decodedRel['reason']);
     }
 
     private function createOpeningAndPlacement(int $salary): EduPlacement

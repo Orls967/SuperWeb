@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Edu\Application\Actions\AddProgramPrerequisiteAction;
 use Modules\Edu\Application\Actions\SettleHeadhunterFeeAction;
+use Modules\Edu\Domain\Exceptions\HeadhunterWarrantyNotExpiredException;
+use Modules\Edu\Domain\Exceptions\PrerequisiteCycleException;
 use Modules\Edu\Domain\Models\EduCertificate;
 use Modules\Edu\Domain\Models\EduCohort;
 use Modules\Edu\Domain\Models\EduCorporateQuota;
@@ -24,7 +27,11 @@ use Modules\Edu\Domain\Models\EduPlacement;
 use Modules\Edu\Domain\Models\EduProgram;
 use Modules\Edu\Domain\Services\CertificateQrSigner;
 use Modules\Edu\Ledger\EduAccounts;
+use Modules\Shared\Domain\Numerics\BlockingPairVerifier;
+use Modules\Shared\Domain\Numerics\CanonicalHashChain;
+use Modules\Shared\Domain\Numerics\CanonicalHashChainVerifier;
 use Tests\TestCase;
+use UnexpectedValueException;
 
 class AcademyAuditAndTwoSourceIntegrityTest extends TestCase
 {
@@ -394,5 +401,163 @@ class AcademyAuditAndTwoSourceIntegrityTest extends TestCase
             'proctor_verification_hash' => hash('sha256', "proctor-{$user->id}"),
             'status' => 'COMPLETED',
         ]);
+    }
+
+    public function test_sabotage_cycle_in_curriculum_dag_rejected_by_validator(): void
+    {
+        $progA = EduProgram::create([
+            'id' => (string) Str::uuid(),
+            'program_code' => 'PRG-SAB-DAG-A',
+            'title' => 'Program A',
+            'industry_sector' => 'IT',
+            'tuition_fee_minor' => 1_000_000,
+            'passing_score' => 70,
+            'validity_months' => 12,
+            'status' => 'ACTIVE',
+        ]);
+        $progB = EduProgram::create([
+            'id' => (string) Str::uuid(),
+            'program_code' => 'PRG-SAB-DAG-B',
+            'title' => 'Program B',
+            'industry_sector' => 'IT',
+            'tuition_fee_minor' => 1_000_000,
+            'passing_score' => 70,
+            'validity_months' => 12,
+            'status' => 'ACTIVE',
+        ]);
+        $progC = EduProgram::create([
+            'id' => (string) Str::uuid(),
+            'program_code' => 'PRG-SAB-DAG-C',
+            'title' => 'Program C',
+            'industry_sector' => 'IT',
+            'tuition_fee_minor' => 1_000_000,
+            'passing_score' => 70,
+            'validity_months' => 12,
+            'status' => 'ACTIVE',
+        ]);
+
+        $action = app(AddProgramPrerequisiteAction::class);
+        $action->execute(['program_id' => $progB->id, 'prerequisite_program_id' => $progA->id]);
+        $action->execute(['program_id' => $progC->id, 'prerequisite_program_id' => $progB->id]);
+
+        // Sabotage: inject cycle A -> C (so C -> B -> A -> C)
+        $this->expectException(PrerequisiteCycleException::class);
+        $action->execute(['program_id' => $progA->id, 'prerequisite_program_id' => $progC->id]);
+    }
+
+    public function test_sabotage_self_loop_in_curriculum_dag_rejected(): void
+    {
+        $progA = EduProgram::create([
+            'id' => (string) Str::uuid(),
+            'program_code' => 'PRG-SAB-LOOP-A',
+            'title' => 'Loop Program',
+            'industry_sector' => 'IT',
+            'tuition_fee_minor' => 1_000_000,
+            'passing_score' => 70,
+            'validity_months' => 12,
+            'status' => 'ACTIVE',
+        ]);
+
+        $action = app(AddProgramPrerequisiteAction::class);
+        $this->expectException(PrerequisiteCycleException::class);
+        $action->execute(['program_id' => $progA->id, 'prerequisite_program_id' => $progA->id]);
+    }
+
+    public function test_sabotage_headhunter_warranty_premature_capture_throws_not_expired(): void
+    {
+        $user = User::factory()->create();
+        $opening = EduJobOpening::create([
+            'id' => (string) Str::uuid(),
+            'opening_code' => 'JOB-SAB-HH-01',
+            'hiring_entity' => 'CorpSabotage',
+            'title' => 'Developer',
+            'capacity' => 1,
+            'annual_salary_minor' => 100_000_000,
+            'headhunter_fee_bps' => 1500,
+            'required_credential_code' => 'PRG-SAB-01',
+            'status' => 'OPEN',
+        ]);
+
+        $placement = EduPlacement::create([
+            'id' => (string) Str::uuid(),
+            'placement_code' => 'PLC-SAB-HH-001',
+            'student_user_id' => $user->id,
+            'opening_id' => $opening->id,
+            'placed_at' => Carbon::now()->toDateString(),
+            'guarantee_days' => 90,
+            'status' => 'PLACED',
+        ]);
+
+        $action = app(SettleHeadhunterFeeAction::class);
+        $fee = $action->holdFee($placement);
+
+        // Sabotage: attempt capture at day 10 (before 90 days)
+        $this->expectException(HeadhunterWarrantyNotExpiredException::class);
+        $action->captureFee($fee, Carbon::now()->addDays(10));
+    }
+
+    public function test_sabotage_gale_shapley_blocking_pair_detected_by_verifier(): void
+    {
+        $candidates = [
+            'c1' => ['o1', 'o2'],
+            'c2' => ['o1', 'o2'],
+        ];
+        $organizations = [
+            'o1' => [
+                'capacity' => 1,
+                'preferences' => ['c1', 'c2'],
+            ],
+            'o2' => [
+                'capacity' => 1,
+                'preferences' => ['c2', 'c1'],
+            ],
+        ];
+
+        // Stable matching would be: o1 => ['c1'], o2 => ['c2']
+        // Sabotaged unstable matching: swap assignments to o1 => ['c2'], o2 => ['c1']
+        // Now c1 prefers o1 (currently matched to o2), and o1 prefers c1 (currently matched to c2)
+        $sabotagedResult = [
+            'matches' => [
+                'o1' => ['c2'],
+                'o2' => ['c1'],
+            ],
+            'candidate_matches' => [
+                'c1' => 'o2',
+                'c2' => 'o1',
+            ],
+            'unmatched_candidates' => [],
+            'remaining_capacities' => [
+                'o1' => 0,
+                'o2' => 0,
+            ],
+        ];
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Blocking pair detected');
+        BlockingPairVerifier::verify($sabotagedResult, $candidates, $organizations);
+    }
+
+    public function test_sabotage_tampered_canonical_hash_chain_detected_by_verifier(): void
+    {
+        $prevHash = CanonicalHashChain::GENESIS_PREV_HASH;
+        $payload1 = ['cert' => 'CERT-001', 'user' => '1'];
+        $hash1 = CanonicalHashChain::computeHash($prevHash, $payload1);
+
+        $payload2 = ['cert' => 'CERT-002', 'user' => '2'];
+        $hash2 = CanonicalHashChain::computeHash($hash1, $payload2);
+
+        $chain = [
+            ['prev_hash' => $prevHash, 'payload' => $payload1, 'hash' => $hash1],
+            ['prev_hash' => $hash1, 'payload' => $payload2, 'hash' => $hash2],
+        ];
+
+        $this->assertNull(CanonicalHashChainVerifier::verifyChain($chain));
+
+        // Sabotage: alter payload in record 1
+        $sabotaged = $chain;
+        $sabotaged[1]['payload']['user'] = 'tampered-user-99';
+
+        $corruptedIndex = CanonicalHashChainVerifier::verifyChain($sabotaged);
+        $this->assertEquals(1, $corruptedIndex);
     }
 }
