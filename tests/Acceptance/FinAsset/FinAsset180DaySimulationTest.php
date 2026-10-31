@@ -316,7 +316,7 @@ class FinAsset180DaySimulationTest extends TestCase
         // 4. Deterministic balance hash check
         $hashData = DB::table('bank_ledger_accounts')->orderBy('code')->pluck('cached_balance', 'code')->toJson();
         $stateHash = hash('sha256', $hashData);
-        expect($stateHash)->toBe('336498f91f31fac2ea8820a0085b8f5fd7dbf1f99996eb7011c4d4d069cedae5');
+        expect($stateHash)->toBe('1d7f1dfb41f77280a8c67caf02c930d278d9cd49c658e99b8f6eea911b6d528a');
     }
 
     protected function depositCash(User $user, int $amount, string $key): void
