@@ -64,7 +64,7 @@ class SettleRetailSellerEscrowAction extends BaseAction
             $commissionAmountMinor = (int) round(($merchandiseMinor * $commissionBps) / 10000);
             $netSellerPayableMinor = $merchandiseMinor - $commissionAmountMinor;
 
-            $this->ensureSellerAccounts($seller->party_id);
+            $this->ensureSellerAccounts();
 
             // Post Ledger Settlement: Escrow Debit -> Commission Credit + Seller AP Credit
             $this->ledgerService->post(new PostingDTO(
@@ -74,7 +74,7 @@ class SettleRetailSellerEscrowAction extends BaseAction
                 entries: Posting::lines()
                     ->debit('escrow:payment:IDR', $merchandiseMinor)
                     ->credit('ret:commission_revenue:IDR', $commissionAmountMinor)
-                    ->credit("ap:ret:seller:{$seller->party_id}:IDR", $netSellerPayableMinor)
+                    ->credit('ret:seller_payable:IDR', $netSellerPayableMinor)
                     ->toEntries('IDR'),
                 referenceType: 'RET_SETTLEMENT',
                 referenceId: $order->order_number,
@@ -116,16 +116,16 @@ class SettleRetailSellerEscrowAction extends BaseAction
         });
     }
 
-    protected function ensureSellerAccounts(string $partyId): void
+    protected function ensureSellerAccounts(): void
     {
         LedgerAccount::firstOrCreate(
-            ['code' => "ap:ret:seller:{$partyId}:IDR"],
+            ['code' => 'ret:seller_payable:IDR'],
             [
                 'uuid' => (string) Str::uuid(),
-                'name' => "Accounts Payable Seller {$partyId}",
+                'name' => 'Omnichannel Merchant Settlement Payable',
                 'asset_code' => 'IDR',
-                'kind' => AccountKind::AP->value,
-                'allow_negative' => false,
+                'kind' => AccountKind::LIABILITY->value,
+                'allow_negative' => true,
                 'cached_balance' => '0',
                 'is_frozen' => false,
             ]

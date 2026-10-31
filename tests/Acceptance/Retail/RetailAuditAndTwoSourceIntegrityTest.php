@@ -65,7 +65,7 @@ class RetailAuditAndTwoSourceIntegrityTest extends TestCase
             'seller_name' => 'Audit Target Seller',
             'kyb_status' => 'VERIFIED',
             'commission_override_bps' => 1000,
-            'payout_account_id' => 'payout-aud-01',
+            'payout_account_ref' => 'payout-aud-01',
         ]);
 
         RetSellerSettlement::create([
@@ -215,7 +215,7 @@ class RetailAuditAndTwoSourceIntegrityTest extends TestCase
             'seller_name' => 'Reversed Posting Seller',
             'kyb_status' => 'VERIFIED',
             'commission_override_bps' => 1000,
-            'payout_account_id' => 'payout-sab-01',
+            'payout_account_ref' => 'payout-sab-01',
         ]);
 
         RetSellerSettlement::create([
@@ -238,10 +238,10 @@ class RetailAuditAndTwoSourceIntegrityTest extends TestCase
         ]);
 
         $account = LedgerAccount::firstOrCreate(
-            ['code' => "ap:ret:seller:{$seller->party_id}:IDR"],
+            ['code' => 'ret:seller_payable:IDR'],
             [
                 'id' => (string) Str::uuid(),
-                'name' => "Seller AP {$seller->party_id}",
+                'name' => 'Seller AP Control',
                 'kind' => AccountKind::LIABILITY,
                 'asset_code' => 'IDR',
                 'allow_negative' => true,

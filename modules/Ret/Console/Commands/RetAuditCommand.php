@@ -13,7 +13,6 @@ use Modules\Ret\Domain\Models\RetInventoryItem;
 use Modules\Ret\Domain\Models\RetOrder;
 use Modules\Ret\Domain\Models\RetPackagingDeposit;
 use Modules\Ret\Domain\Models\RetQuickCommerceOrder;
-use Modules\Ret\Domain\Models\RetSeller;
 use Modules\Ret\Domain\Models\RetSellerSettlement;
 
 class RetAuditCommand extends Command
@@ -50,19 +49,15 @@ class RetAuditCommand extends Command
         }
 
         // 3. Two-source Seller AP Reconciliation: Settlements vs Ledger Postings
-        $sellers = RetSeller::all();
-        foreach ($sellers as $seller) {
-            $expectedAp = (int) RetSellerSettlement::where('seller_id', $seller->id)
-                ->where('status', 'SETTLED')
-                ->sum('net_seller_payable_minor');
+        $expectedAp = (int) RetSellerSettlement::where('status', 'SETTLED')
+            ->sum('net_seller_payable_minor');
 
-            $actualAp = (int) LedgerEntry::whereHas('account', fn ($q) => $q->where('code', "ap:ret:seller:{$seller->party_id}:IDR"))
-                ->sum('amount');
+        $actualAp = (int) LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:seller_payable:IDR'))
+            ->sum('amount');
 
-            if ($expectedAp !== $actualAp) {
-                $this->error("Tampered seller AP balance for [{$seller->seller_name}]: expected {$expectedAp}, recorded {$actualAp}.");
-                $discrepancies++;
-            }
+        if ($expectedAp !== $actualAp) {
+            $this->error("Tampered seller AP balance: expected {$expectedAp}, recorded {$actualAp}.");
+            $discrepancies++;
         }
 
         // 4. Two-source Cashback Liability Reconciliation: Active Tranches vs Ledger Postings

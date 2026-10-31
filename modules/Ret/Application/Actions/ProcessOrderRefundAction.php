@@ -54,7 +54,7 @@ class ProcessOrderRefundAction extends BaseAction
                     idempotencyKey: $idempotencyKey,
                     entries: Posting::lines()
                         ->debit('ret:commission_revenue:IDR', $commissionRefund)
-                        ->debit("ap:ret:seller:{$seller->party_id}:IDR", $sellerApDeduction)
+                        ->debit('ret:seller_payable:IDR', $sellerApDeduction)
                         ->credit('ret:escrow_receivable:IDR', $refundAmount)
                         ->toEntries('IDR'),
                     referenceType: 'RET_REFUND',

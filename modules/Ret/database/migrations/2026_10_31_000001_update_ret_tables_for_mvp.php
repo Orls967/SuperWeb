@@ -19,7 +19,7 @@ return new class extends Migration
                 $table->string('seller_name');
                 $table->string('kyb_status')->default('VERIFIED');
                 $table->integer('commission_override_bps')->nullable();
-                $table->string('payout_account_id')->nullable();
+                $table->string('payout_account_ref')->nullable();
                 $table->integer('map_violation_count')->default(0);
                 $table->string('status')->default('ACTIVE');
                 $table->timestamps();

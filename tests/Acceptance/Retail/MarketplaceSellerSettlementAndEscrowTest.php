@@ -53,7 +53,7 @@ class MarketplaceSellerSettlementAndEscrowTest extends TestCase
             'seller_name' => 'Mega Electronics Official',
             'kyb_status' => 'VERIFIED',
             'commission_override_bps' => 1000, // 10%
-            'payout_account_id' => 'bank-acc-99',
+            'payout_account_ref' => 'bank-acc-99',
         ]);
 
         $this->customer = User::factory()->create(['role' => 'customer']);
@@ -96,7 +96,7 @@ class MarketplaceSellerSettlementAndEscrowTest extends TestCase
         $this->assertNotNull($commissionEntry);
         $this->assertEquals(100_000, (int) $commissionEntry->amount);
 
-        $sellerApEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', "ap:ret:seller:{$this->seller->party_id}:IDR"))
+        $sellerApEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:seller_payable:IDR'))
             ->latest('id')
             ->first();
         $this->assertNotNull($sellerApEntry);
@@ -171,7 +171,7 @@ class MarketplaceSellerSettlementAndEscrowTest extends TestCase
             'seller_name' => 'Shady Electronics',
             'kyb_status' => 'PENDING',
             'commission_override_bps' => 1000,
-            'payout_account_id' => 'bank-acc-unv',
+            'payout_account_ref' => 'bank-acc-unv',
         ]);
 
         $action = app(CheckoutOmnichannelOrderAction::class);
@@ -248,7 +248,7 @@ class MarketplaceSellerSettlementAndEscrowTest extends TestCase
         $this->assertEquals(-100_000, (int) $commissionReversal->amount);
 
         // Reversal of seller AP (debit seller AP)
-        $sellerApReversal = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', "ap:ret:seller:{$this->seller->party_id}:IDR"))
+        $sellerApReversal = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:seller_payable:IDR'))
             ->where('amount', '<', 0)
             ->latest('id')
             ->first();

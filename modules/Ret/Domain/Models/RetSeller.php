@@ -24,7 +24,7 @@ class RetSeller extends Model
         'seller_name',
         'kyb_status',
         'commission_override_bps',
-        'payout_account_id',
+        'payout_account_ref',
         'map_violation_count',
         'status',
     ];

@@ -49,7 +49,7 @@ class PricingConsistencyAndMapPolicyTest extends TestCase
             'seller_name' => 'Authorized Gadget Store',
             'kyb_status' => 'VERIFIED',
             'commission_override_bps' => 1000,
-            'payout_account_id' => 'payout-map',
+            'payout_account_ref' => 'payout-map',
         ]);
 
         $this->customer = User::factory()->create(['role' => 'customer']);

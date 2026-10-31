@@ -50,7 +50,7 @@ class OmnichannelCheckoutAndAntiDoubleSellTest extends TestCase
             'seller_name' => 'Official Tech Store',
             'kyb_status' => 'VERIFIED',
             'commission_override_bps' => 500,
-            'payout_account_id' => 'payout-01',
+            'payout_account_ref' => 'payout-01',
         ]);
 
         $this->customer = User::factory()->create(['role' => 'customer']);

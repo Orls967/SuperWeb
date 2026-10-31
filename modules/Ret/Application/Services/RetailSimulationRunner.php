@@ -128,7 +128,7 @@ class RetailSimulationRunner
                 'seller_name' => "Marketplace Merchant {$s}",
                 'kyb_status' => 'VERIFIED',
                 'commission_override_bps' => 500,
-                'payout_account_id' => "bank-acc-seller-{$s}",
+                'payout_account_ref' => "bank-acc-seller-{$s}",
                 'status' => 'ACTIVE',
             ]);
         }
