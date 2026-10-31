@@ -24,6 +24,8 @@ it('enforces declare(strict_types=1) across all module PHP files excluding migra
         foreach ($fileViolations as $violation) {
             $violations[] = $violation->path.':'.$violation->line;
         }
+
+        $file->releaseTokens();
     }
 
     expect($violations)->toBe([], 'Ditemukan file modul tanpa declare(strict_types=1): '.implode(', ', $violations));
