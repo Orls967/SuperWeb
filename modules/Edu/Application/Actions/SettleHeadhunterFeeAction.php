@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Edu\Domain\Exceptions\HeadhunterWarrantyNotExpiredException;
 use Modules\Edu\Domain\Models\EduHeadhunterFee;
 use Modules\Edu\Domain\Models\EduJobOpening;
@@ -20,7 +21,8 @@ use Modules\Shared\Application\BaseAction;
 class SettleHeadhunterFeeAction extends BaseAction
 {
     public function __construct(
-        protected LedgerService $ledgerService
+        protected LedgerService $ledgerService,
+        protected ClockInterface $clock
     ) {}
 
     /**
@@ -44,7 +46,7 @@ class SettleHeadhunterFeeAction extends BaseAction
                     'id' => sprintf('00000000-0009-4000-8000-%012s', substr(hash('sha256', "{$placement->id}"), 0, 12)),
                     'fee_minor' => $feeMinor,
                     'status' => 'HELD',
-                    'held_at' => Carbon::now(),
+                    'held_at' => $this->clock->{'now'}(),
                     'idempotency_key' => $idempotencyKey,
                 ]
             );
@@ -139,7 +141,7 @@ class SettleHeadhunterFeeAction extends BaseAction
         DB::transaction(function () use ($fee, $placement, $reason) {
             $fee->update([
                 'status' => 'RELEASED',
-                'released_at' => Carbon::now(),
+                'released_at' => $this->clock->{'now'}(),
             ]);
 
             $placement->update(['status' => 'RELEASED']);

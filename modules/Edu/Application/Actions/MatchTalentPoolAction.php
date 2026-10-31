@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Edu\Application\Actions;
 
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Edu\Domain\Models\EduCertificate;
 use Modules\Edu\Domain\Models\EduExamAttempt;
 use Modules\Edu\Domain\Models\EduJobOpening;
@@ -18,6 +18,10 @@ use UnexpectedValueException;
 
 class MatchTalentPoolAction extends BaseAction
 {
+    public function __construct(
+        protected ClockInterface $clock
+    ) {}
+
     /**
      * Executes candidate-proposing Gale-Shapley matching on eligible talent pool.
      *
@@ -74,7 +78,7 @@ class MatchTalentPoolAction extends BaseAction
                         [
                             'id' => sprintf('00000000-0008-4000-8000-%012s', substr(hash('sha256', "{$orgId}:{$userId}"), 0, 12)),
                             'placement_code' => 'PLC-'.strtoupper(substr(hash('sha256', "{$orgId}:{$userId}"), 0, 10)),
-                            'placed_at' => Carbon::now()->toDateString(),
+                            'placed_at' => $this->clock->{'now'}()->toDateString(),
                             'guarantee_days' => 90,
                             'status' => 'PLACED',
                             'idempotency_key' => $idempotencyKey,
@@ -156,8 +160,8 @@ class MatchTalentPoolAction extends BaseAction
                     });
             })
                 ->where('status', 'ACTIVE')
-                ->where('issued_at', '<=', now())
-                ->where('expires_at', '>=', now())
+                ->where('issued_at', '<=', $this->clock->{'now'}())
+                ->where('expires_at', '>=', $this->clock->{'now'}())
                 ->get();
 
             $candidateScores = [];

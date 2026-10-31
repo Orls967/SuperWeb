@@ -7,6 +7,7 @@ namespace Modules\Edu\Application\Actions;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Edu\Domain\Exceptions\ExamNotPassedException;
 use Modules\Edu\Domain\Exceptions\IdempotencyConflictException;
 use Modules\Edu\Domain\Models\EduCertificate;
@@ -22,6 +23,10 @@ use RuntimeException;
 
 class IssueVerifiedCompetencyCertificateAction extends BaseAction
 {
+    public function __construct(
+        protected ClockInterface $clock
+    ) {}
+
     /**
      * @param  array<string, mixed>  $params
      */
@@ -67,7 +72,9 @@ class IssueVerifiedCompetencyCertificateAction extends BaseAction
             $program = EduProgram::findOrFail($programId);
 
             $competencyCode = (string) ($params['skill_competency_code'] ?? $program->program_code);
-            $issuedAt = Carbon::now();
+            $issuedAt = isset($params['issued_at'])
+                ? Carbon::parse($params['issued_at'])
+                : Carbon::parse($this->clock->{'now'}()->toDateTimeString());
             $expiresAt = isset($params['expires_at'])
                 ? Carbon::parse($params['expires_at'])
                 : $issuedAt->copy()->addMonths($program->validity_months ?: 24);

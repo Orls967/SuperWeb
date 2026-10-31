@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Contracts\LedgerAccount;
+use Modules\Core\Contracts\SimClockInterface;
 use Modules\Edu\Application\Actions\AddProgramPrerequisiteAction;
 use Modules\Edu\Application\Actions\AllocateCorporateQuotaAction;
 use Modules\Edu\Application\Actions\EnrollStudentInCohortAction;
@@ -43,7 +44,8 @@ class AcademySimulationRunner
         protected EvaluateProctoredExamAttemptAction $evaluateAttemptAction,
         protected IssueVerifiedCompetencyCertificateAction $issueCertAction,
         protected MatchTalentPoolAction $matchTalentAction,
-        protected SettleHeadhunterFeeAction $settleHeadhunterAction
+        protected SettleHeadhunterFeeAction $settleHeadhunterAction,
+        protected SimClockInterface $simClock
     ) {}
 
     /**
@@ -89,6 +91,7 @@ class AcademySimulationRunner
         }
 
         $startDate = CarbonImmutable::parse('2026-01-01 00:00:00');
+        $this->simClock->initRun('edu-simulation-'.$seed, $startDate, $seed);
 
         // 1. Create 40 Programs across 8 sectors
         $sectors = ['ENERGY', 'MINING', 'MANUFACTURING', 'TELCO', 'RETAIL', 'HEALTHCARE', 'IT', 'FINANCE'];
@@ -233,7 +236,10 @@ class AcademySimulationRunner
         // 4. Monthly Simulation Loop (6 Months)
         for ($m = 1; $m <= $months; $m++) {
             $monthDate = $startDate->addMonths($m - 1);
-            Carbon::setTestNow($monthDate);
+            if ($m > 1) {
+                $days = (int) $startDate->addMonths($m - 2)->diffInDays($monthDate);
+                $this->simClock->advanceDays($days);
+            }
 
             DB::transaction(function () use (
                 $m,
@@ -420,6 +426,7 @@ class AcademySimulationRunner
                                 'exam_attempt_id' => $attempt->id,
                                 'program_id' => $prog->id,
                                 'skill_competency_code' => $prog->program_code,
+                                'issued_at' => $monthDate->toDateTimeString(),
                                 'idempotency_key' => "CERT:SIM:{$enrollment->id}:{$attempt->id}",
                             ]);
                             $certificatesIssued++;
@@ -542,11 +549,11 @@ class AcademySimulationRunner
             $prevHash = $monthlyHash;
         }
 
-        Carbon::setTestNow();
-
         // Audits at the end of Month 6
         $auditExitCode = Artisan::call('edu:audit');
         $bankReconcileExitCode = Artisan::call('bank:reconcile');
+
+        $this->simClock->reset();
 
         $finalPayload = [
             'seed' => $seed,
