@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Domain\Models\LedgerAccount;
-use Modules\Banking\Domain\Models\LedgerEntry;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Egy\Application\Services\ConsolidatedUtilityBillingService;
 use Modules\Egy\Domain\Models\MeterReading;
@@ -152,13 +151,10 @@ class AuditAndIntegritySabotageTest extends TestCase
         $invoice = $this->billingService->generateMonthlyInvoice('PROP-SAB-04', '2026-10');
         $this->billingService->issueInvoice($invoice->id);
 
-        // Sabotage: corrupt the posted AR entry
-        $entry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', "ar:egy:property:{$invoice->property_id}:IDR"))->first();
-        if ($entry) {
-            DB::table('bank_ledger_entries')->where('id', $entry->id)->update([
-                'amount' => '1.00',
-            ]);
-        }
+        // Sabotage: corrupt the invoice fact table to cause discrepancy against posted AR entry (T2 compliant)
+        DB::table('egy_utility_consolidated_invoices')->where('id', $invoice->id)->update([
+            'total_consolidated_minor' => $invoice->total_consolidated_minor + 99999,
+        ]);
 
         $exitCode = Artisan::call('egy:audit');
         expect($exitCode)->toBe(1);
