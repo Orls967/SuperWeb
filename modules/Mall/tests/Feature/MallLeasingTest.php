@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Artisan;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\database\seeders\BankingSeeder;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mall\Application\Actions\ActivateLeaseAction;
 use Modules\Mall\Application\Actions\CreateLeaseAction;
 use Modules\Mall\Application\Actions\RenewLeaseAction;
@@ -205,6 +206,7 @@ class MallLeasingTest extends TestCase
         $this->assertEquals(LeaseStatus::TERMINATED, $terminatedLease->status);
         $this->assertEquals(DepositStatus::PARTIALLY_APPLIED, $terminatedLease->deposit_status);
         $this->assertNotNull($terminatedLease->terminated_at);
+        $this->assertEquals('Tenant relokasi ke kota lain', $terminatedLease->termination_reason);
 
         // Unit kembali AVAILABLE
         $this->assertEquals(UnitStatus::AVAILABLE, $this->unit->fresh()->status);
@@ -216,6 +218,140 @@ class MallLeasingTest extends TestCase
         // 4. Akun pendapatan penyelesaian sewa menerima potongan Rp5.000.000
         $revAcc = LedgerAccount::where('code', 'revenue:mall:rent_settlement:IDR')->firstOrFail();
         $this->assertEquals(5000000, (int) $revAcc->cached_balance);
+
+        // 5. Periksa ledger transaction release deposit dan deskripsinya
+        $tx = LedgerTransaction::where('idempotency_key', "mall:lease:term:{$lease->id}")->first();
+        $this->assertNotNull($tx);
+        $this->assertSame('mall_lease', $tx->reference_type);
+        $this->assertEquals((string) $lease->id, (string) $tx->reference_id);
+        $this->assertStringContainsString('Pelepasan deposit sewa unit', $tx->description);
+        $this->assertStringContainsString('Tunggakan: Rp 5.000.000', $tx->description);
+        $this->assertStringContainsString('Refund: Rp 10.000.000', $tx->description);
+
+        // Mencoba terminasi ulang kontrak yang sudah TERMINATED melempar InvalidArgumentException
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('tidak valid untuk diterminasi');
+        $terminateAction->handle($terminatedLease);
+    }
+
+    public function test_terminate_lease_variations_draft_suspended_and_full_refund(): void
+    {
+        app(TopUpAction::class)->execute($this->tenantUser, '50000000', 'topup_tenant_variations');
+
+        $terminateAction = app(TerminateLeaseAction::class);
+
+        // 1. Terminasi DRAFT lease dengan parameter default
+        $draftLease = app(CreateLeaseAction::class)->handle(
+            propertyId: $this->property->id,
+            unitId: $this->unit->id,
+            tenantId: $this->tenant->id,
+            rentModel: RentModel::FIXED,
+            startDate: '2025-06-01',
+            endDate: '2026-05-31',
+            baseMonthlyRent: 10000000,
+            securityDepositMonths: 0
+        );
+
+        $terminatedDraft = $terminateAction->handle($draftLease);
+        $this->assertEquals(LeaseStatus::TERMINATED, $terminatedDraft->status);
+        $this->assertEquals('Kontrak sewa selesai', $terminatedDraft->termination_reason);
+        $this->assertEquals(DepositStatus::UNPAID, $terminatedDraft->deposit_status);
+
+        // 2. Terminasi SUSPENDED lease dengan full refund (outstandingDeductions = 0)
+        $unit2 = Unit::create([
+            'property_id' => $this->property->id,
+            'unit_number' => 'TEST-L2-99',
+            'floor' => 2,
+            'area_sqm' => 40.0,
+            'status' => UnitStatus::AVAILABLE,
+            'current_price_monthly' => 10000000,
+        ]);
+
+        $suspendedLease = app(CreateLeaseAction::class)->handle(
+            propertyId: $this->property->id,
+            unitId: $unit2->id,
+            tenantId: $this->tenant->id,
+            rentModel: RentModel::FIXED,
+            startDate: '2025-06-01',
+            endDate: '2026-05-31',
+            baseMonthlyRent: 10000000,
+            securityDepositMonths: 1
+        );
+
+        $suspendedLease = app(ActivateLeaseAction::class)->handle($suspendedLease, $this->tenantUser);
+        $suspendedLease->update(['status' => LeaseStatus::SUSPENDED]);
+
+        $walletBefore = (int) $this->tenantUser->walletAccount('IDR')->cached_balance;
+        $revBefore = (int) LedgerAccount::where('code', 'revenue:mall:rent_settlement:IDR')->firstOrFail()->cached_balance;
+
+        $terminatedSuspended = $terminateAction->handle($suspendedLease, 0, 'Suspensi berakhir terminasi');
+        $this->assertEquals(LeaseStatus::TERMINATED, $terminatedSuspended->status);
+        $this->assertEquals(DepositStatus::REFUNDED, $terminatedSuspended->deposit_status);
+        $this->assertEquals('Suspensi berakhir terminasi', $terminatedSuspended->termination_reason);
+
+        // Saldo kembali penuh (10.000.000) dan pendapatan tunggakan tidak bertambah
+        $this->tenantUser->walletAccount('IDR')->refresh();
+        $this->assertEquals($walletBefore + 10000000, (int) $this->tenantUser->walletAccount('IDR')->cached_balance);
+        $this->assertEquals($revBefore, (int) LedgerAccount::where('code', 'revenue:mall:rent_settlement:IDR')->firstOrFail()->cached_balance);
+
+        // 3. Terminasi ACTIVE lease dengan tunggakan melebihi deposit (potongan penuh, refund = 0)
+        $unit3 = Unit::create([
+            'property_id' => $this->property->id,
+            'unit_number' => 'TEST-L3-99',
+            'floor' => 3,
+            'area_sqm' => 50.0,
+            'status' => UnitStatus::AVAILABLE,
+            'current_price_monthly' => 10000000,
+        ]);
+
+        $activeLease = app(CreateLeaseAction::class)->handle(
+            propertyId: $this->property->id,
+            unitId: $unit3->id,
+            tenantId: $this->tenant->id,
+            rentModel: RentModel::FIXED,
+            startDate: '2025-06-01',
+            endDate: '2026-05-31',
+            baseMonthlyRent: 10000000,
+            securityDepositMonths: 1
+        );
+
+        $activeLease = app(ActivateLeaseAction::class)->handle($activeLease, $this->tenantUser);
+        $walletBefore = (int) $this->tenantUser->walletAccount('IDR')->cached_balance;
+        $revBefore = (int) LedgerAccount::where('code', 'revenue:mall:rent_settlement:IDR')->firstOrFail()->cached_balance;
+
+        // Potongan 20.000.000 pada deposit 10.000.000 (min(20jt, 10jt) = 10jt potongan penuh, refund = 0)
+        $termExcess = $terminateAction->handle($activeLease, 20000000, 'Tunggakan besar');
+        $this->assertEquals(DepositStatus::PARTIALLY_APPLIED, $termExcess->deposit_status);
+
+        // Saldo tenant tidak bertambah, pendapatan bertambah 10.000.000
+        $this->tenantUser->walletAccount('IDR')->refresh();
+        $this->assertEquals($walletBefore, (int) $this->tenantUser->walletAccount('IDR')->cached_balance);
+        $this->assertEquals($revBefore + 10000000, (int) LedgerAccount::where('code', 'revenue:mall:rent_settlement:IDR')->firstOrFail()->cached_balance);
+
+        // 4. Terminasi ACTIVE lease dengan potongan 1 rupiah (menguji deductAmount > 0 tepat di atas 0)
+        $unit4 = Unit::create([
+            'property_id' => $this->property->id,
+            'unit_number' => 'TEST-L4-99',
+            'floor' => 4,
+            'area_sqm' => 60.0,
+            'status' => UnitStatus::AVAILABLE,
+            'current_price_monthly' => 10000000,
+        ]);
+
+        $activeLease4 = app(CreateLeaseAction::class)->handle(
+            propertyId: $this->property->id,
+            unitId: $unit4->id,
+            tenantId: $this->tenant->id,
+            rentModel: RentModel::FIXED,
+            startDate: '2025-06-01',
+            endDate: '2026-05-31',
+            baseMonthlyRent: 10000000,
+            securityDepositMonths: 1
+        );
+
+        $activeLease4 = app(ActivateLeaseAction::class)->handle($activeLease4, $this->tenantUser);
+        $term1 = $terminateAction->handle($activeLease4, 1, 'Potongan 1 rupiah');
+        $this->assertEquals(DepositStatus::PARTIALLY_APPLIED, $term1->deposit_status);
     }
 
     public function test_annual_escalation_increases_rent_accurately_for_year_2(): void

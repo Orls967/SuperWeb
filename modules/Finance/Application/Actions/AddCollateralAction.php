@@ -27,7 +27,7 @@ class AddCollateralAction extends BaseAction
 
     public function execute(Loan $loan, User $user, string $qty, ?string $idempotencyKey = null): Loan
     {
-        if ((int) $loan->user_id !== (int) $user->id && ! $user->isAdmin()) {
+        if ($loan->user_id !== $user->id && ! $user->isAdmin()) {
             throw new Exception('Kamu hanya dapat menambah kolateral pada pembiayaanmu sendiri.');
         }
 
@@ -49,17 +49,17 @@ class AddCollateralAction extends BaseAction
             throw new Exception("Holding {$symbol} tidak mencukupi. Tersedia {$holding->__toString()} {$symbol}.");
         }
 
-        $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
-            ? trim($idempotencyKey)
-            : (request()?->header('Idempotency-Key')
+        $rawKey = $idempotencyKey;
+        if ($rawKey === null && app()->bound('request')) {
+            $rawKey = request()?->header('Idempotency-Key')
                 ?? request()?->input('idempotency_key')
-                ?? request()?->input('request_id'));
-
-        if ($key === null || trim((string) $key) === '') {
-            throw new \InvalidArgumentException('Idempotency key wajib diisi untuk penambahan kolateral.');
+                ?? request()?->input('request_id');
         }
 
-        $cleanKey = trim((string) $key);
+        $cleanKey = is_string($rawKey) ? trim($rawKey) : '';
+        if ($cleanKey === '') {
+            throw new \InvalidArgumentException('Idempotency key wajib diisi untuk penambahan kolateral.');
+        }
 
         return $this->transaction(function () use ($loan, $symbol, $cryptoAccount, $addition, $cleanKey) {
             // Kunci baris fin_loans dulu, lalu baca ulang kolateral di bawah kunci.

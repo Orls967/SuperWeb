@@ -34,21 +34,30 @@ class RedeemVoucherAction
      */
     public function execute(User $user, VoucherTemplate $template, ?string $idempotencyKey = null): Voucher
     {
-        $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
-            ? trim($idempotencyKey)
-            : (request()?->header('Idempotency-Key')
+        $rawKey = $idempotencyKey;
+        if ($rawKey === null && app()->bound('request')) {
+            $rawKey = request()?->header('Idempotency-Key')
                 ?? request()?->input('idempotency_key')
-                ?? request()?->input('request_id'));
+                ?? request()?->input('request_id');
+        }
 
-        if ($key === null || trim((string) $key) === '') {
+        $cleanKey = is_string($rawKey) ? trim($rawKey) : '';
+        if ($cleanKey === '') {
             throw new InvalidArgumentException('Idempotency key wajib diisi untuk penukaran voucher.');
         }
 
-        $cleanKey = trim((string) $key);
         $pointsKey = 'pts_redeem_'.$cleanKey;
         $voucherKey = 'vch_issue_'.$cleanKey;
 
         return DB::transaction(function () use ($user, $template, $pointsKey, $voucherKey) {
+            if (LedgerTransaction::query()->where('idempotency_key', $pointsKey)->exists()) {
+                return Voucher::query()
+                    ->where('user_id', $user->id)
+                    ->where('template_id', $template->id)
+                    ->latest('id')
+                    ->firstOrFail();
+            }
+
             $batches = PointBatch::query()
                 ->where('user_id', $user->id)
                 ->where('is_expired', false)
@@ -62,14 +71,6 @@ class RedeemVoucherAction
 
             if ($currentPoints < $template->points_required) {
                 throw new InsufficientPointsException("Poin tidak mencukupi (Tersedia: {$currentPoints} PTS, Diperlukan: {$template->points_required} PTS).");
-            }
-
-            if (LedgerTransaction::query()->where('idempotency_key', $pointsKey)->exists()) {
-                return Voucher::query()
-                    ->where('user_id', $user->id)
-                    ->where('template_id', $template->id)
-                    ->latest('id')
-                    ->firstOrFail();
             }
 
             // 1. Double-Entry Posting untuk aset PTS (Model C: debit dompet user, kredit revenue redeemed)

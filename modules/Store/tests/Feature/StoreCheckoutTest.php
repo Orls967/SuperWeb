@@ -17,6 +17,7 @@ use Modules\Inventory\Contracts\InventoryService;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Inventory\Domain\Exceptions\InsufficientStockException;
 use Modules\Inventory\Domain\Models\StockMovement;
+use Modules\Mall\Contracts\LoyaltyLedger;
 use Modules\Payment\Domain\Enums\PaymentIntentStatus;
 use Modules\Store\Application\Actions\CancelOrderAction;
 use Modules\Store\Application\Actions\ListCarProductAction;
@@ -129,6 +130,8 @@ class StoreCheckoutTest extends TestCase
 
         // Wallet balance reduced by 215.000
         $this->assertSame(500000 - 215000, (int) (string) $user->fresh()->walletBalance('IDR')->amount);
+        $this->assertTrue($order->relationLoaded('paymentIntents'));
+        $this->assertTrue($order->relationLoaded('items'));
     }
 
     public function test_checkout_ditolak_jika_stok_tidak_mencukupi(): void
@@ -175,6 +178,176 @@ class StoreCheckoutTest extends TestCase
             ->where('reason', StockMovementReason::RESERVATION_RELEASE)
             ->exists();
         $this->assertTrue($hasRelease);
+
+        $order = Order::latest()->first();
+        $this->assertNotNull($order);
+        $this->assertSame(OrderStatus::CANCELLED, $order->status);
+        $this->assertNotNull($order->cancelled_at);
+        $this->assertStringContainsString('Pembayaran gagal: Saldo tidak mencukupi', (string) $order->cancellation_reason);
+    }
+
+    public function test_checkout_pin_salah_membatalkan_order_dan_melepas_reservasi(): void
+    {
+        $user = $this->createCustomerWithWallet(500000, '123456');
+        $product = $this->createProduct(stock: 5, price: 80000);
+
+        $cartService = app(CartService::class);
+        $cartService->addItem($user, $product->id, 1);
+
+        $checkoutService = app(CheckoutService::class);
+        $shipping = [
+            'name' => 'Budi Santoso',
+            'phone' => '08123456789',
+            'address' => 'Jl. Merdeka No. 10',
+            'city' => 'Jakarta Pusat',
+            'postal_code' => '10110',
+        ];
+
+        try {
+            $checkoutService->checkout($user, $shipping, '999999', 'store-checkout-key-pin-fail');
+            $this->fail('Harusnya melempar exception PIN salah.');
+        } catch (\Throwable $e) {
+            $this->assertStringContainsString('PIN', $e->getMessage());
+        }
+
+        // Pastikan stok kembali ke 5 karena reservasi di-rollback
+        $this->assertSame(5, $product->fresh()->cached_stock);
+
+        $order = Order::latest()->first();
+        $this->assertNotNull($order);
+        $this->assertSame(OrderStatus::CANCELLED, $order->status);
+        $this->assertNotNull($order->cancelled_at);
+        $this->assertStringContainsString('PIN salah', (string) $order->cancellation_reason);
+    }
+
+    public function test_checkout_idempotency_key_validasi_dan_header(): void
+    {
+        $user = $this->createCustomerWithWallet(500000, '123456');
+        $product = $this->createProduct(stock: 5, price: 80000);
+
+        $cartService = app(CartService::class);
+        $cartService->addItem($user, $product->id, 1);
+
+        $checkoutService = app(CheckoutService::class);
+        $shipping = [
+            'name' => 'Budi Santoso',
+            'phone' => '08123456789',
+            'address' => 'Jl. Merdeka No. 10',
+            'city' => 'Jakarta Pusat',
+            'postal_code' => '10110',
+        ];
+
+        // Key kosong melempar InvalidArgumentException
+        try {
+            $checkoutService->checkout($user, $shipping, '123456', '   ');
+            $this->fail('Harusnya melempar InvalidArgumentException');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertStringContainsString('Idempotency key wajib diisi', $e->getMessage());
+        }
+
+        // Ambil key dari request header
+        request()->headers->set('Idempotency-Key', 'checkout-hdr-key-1');
+        $order = $checkoutService->checkout($user, $shipping, '123456');
+        $this->assertNotNull($order);
+        $this->assertSame(OrderStatus::PAID, $order->status);
+        request()->headers->remove('Idempotency-Key');
+    }
+
+    public function test_checkout_shipping_fee_berdasarkan_berat_barang(): void
+    {
+        $user = $this->createCustomerWithWallet(1000000, '123456');
+
+        // Produk dengan berat 2500 gram (2.5 kg -> ceil 3 kg -> ongkir Rp 30.000)
+        $productHeavy = Product::create([
+            'uuid' => (string) Str::uuid(),
+            'sku' => 'SKU-HEAVY-1',
+            'name' => 'Produk Berat',
+            'slug' => 'produk-berat-1',
+            'price' => 50000,
+            'cached_stock' => 5,
+            'is_listed' => true,
+            'is_car' => false,
+            'weight_gram' => 2500,
+        ]);
+        StockMovement::create([
+            'product_id' => $productHeavy->id,
+            'qty' => 5,
+            'reason' => StockMovementReason::INITIAL,
+            'source_type' => 'test',
+            'source_id' => 1,
+            'note' => 'Stok awal',
+            'created_at' => now(),
+        ]);
+
+        $cartService = app(CartService::class);
+        $cartService->addItem($user, $productHeavy->id, 1);
+
+        $checkoutService = app(CheckoutService::class);
+        $shipping = [
+            'name' => 'Budi',
+            'phone' => '08123456789',
+            'address' => 'Jl. Berat',
+            'city' => 'Jakarta',
+            'postal_code' => '10110',
+        ];
+
+        $order = $checkoutService->checkout($user, $shipping, '123456', 'key-heavy-1');
+        $this->assertSame(30000, $order->shipping_fee);
+        $this->assertSame(50000, $order->subtotal);
+        $this->assertSame(80000, $order->grand_total);
+    }
+
+    public function test_checkout_dengan_loyalty_ledger_voucher_dan_points(): void
+    {
+        $user = $this->createCustomerWithWallet(500000, '123456');
+        $product = $this->createProduct(stock: 5, price: 100000);
+
+        $cartService = app(CartService::class);
+        $cartService->addItem($user, $product->id, 1);
+
+        $mockLoyalty = \Mockery::mock(LoyaltyLedger::class);
+        $mockLoyalty->shouldReceive('applyVoucher')
+            ->once()
+            ->with('VOUCHER-TEST', 'AUTOSERVE-DM', 100000, 'key-loyalty-1')
+            ->andReturn(20000);
+
+        $mockLoyalty->shouldReceive('redeemPointsForDiscount')
+            ->once()
+            ->with($user, 50, 'Diskon Belanja AutoServe Store', 'key-loyalty-1')
+            ->andReturn(5000);
+
+        $mockLoyalty->shouldReceive('awardPoints')
+            ->once()
+            ->with($user, 90000, \Mockery::type('string'), 'AUTOSERVE-DM')
+            ->andReturn(10);
+
+        $this->app->instance(LoyaltyLedger::class, $mockLoyalty);
+
+        $checkoutService = app(CheckoutService::class);
+        $shipping = [
+            'name' => 'Budi Santoso',
+            'phone' => '08123456789',
+            'address' => 'Jl. Merdeka No. 10',
+            'city' => 'Jakarta Pusat',
+            'postal_code' => '10110',
+        ];
+
+        $order = $checkoutService->checkout(
+            user: $user,
+            shippingAddress: $shipping,
+            pin: '123456',
+            idempotencyKey: 'key-loyalty-1',
+            mallVoucherCode: 'VOUCHER-TEST',
+            redeemPoints: 50
+        );
+
+        $this->assertNotNull($order);
+        $this->assertTrue($order->relationLoaded('paymentIntents'));
+        $this->assertTrue($order->relationLoaded('items'));
+        $this->assertSame(25000, $order->discount);
+        $this->assertSame(100000, $order->subtotal);
+        $this->assertSame(15000, $order->shipping_fee);
+        $this->assertSame(90000, $order->grand_total);
     }
 
     public function test_dua_user_berebut_stok_terakhir_via_checkout(): void

@@ -62,17 +62,17 @@ class OpenLoanAction extends BaseAction
         ?string $idempotencyKey = null,
         ?BigDecimal $collateralQty = null,
     ): Loan {
-        $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
-            ? trim($idempotencyKey)
-            : (request()?->header('Idempotency-Key')
+        $rawKey = $idempotencyKey;
+        if ($rawKey === null && app()->bound('request')) {
+            $rawKey = request()?->header('Idempotency-Key')
                 ?? request()?->input('idempotency_key')
-                ?? request()?->input('request_id'));
-
-        if ($key === null || trim((string) $key) === '') {
-            throw new \InvalidArgumentException('Idempotency key wajib diisi untuk pembukaan pembiayaan.');
+                ?? request()?->input('request_id');
         }
 
-        $cleanKey = trim((string) $key);
+        $cleanKey = is_string($rawKey) ? trim($rawKey) : '';
+        if ($cleanKey === '') {
+            throw new \InvalidArgumentException('Idempotency key wajib diisi untuk pembukaan pembiayaan.');
+        }
 
         // Submit ulang dengan kunci yang sama harus mengembalikan pinjaman
         // yang sudah ada, bukan membuka pinjaman dan debit kolateral kedua kalinya.

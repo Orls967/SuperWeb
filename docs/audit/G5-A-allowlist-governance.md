@@ -94,3 +94,4 @@ Integritas `config/modules.php` dikawal secara otomatis di CI melalui test arsit
 4. **Validitas Sintaks**: Setiap entri `cross_module_columns` harus berformat `tabel.kolom` yang valid.
 
 Dengan demikian, `config/modules.php` berstatus sah sebagai alat tata kelola modularitas, bukan bypass utang teknis.
+

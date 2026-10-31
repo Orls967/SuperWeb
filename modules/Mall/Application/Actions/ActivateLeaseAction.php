@@ -55,7 +55,9 @@ class ActivateLeaseAction
                 $walletAccount = $user->walletAccount('IDR');
                 if (! $walletAccount->canCover($depositAmount)) {
                     throw new InsufficientFundsException(
-                        'Saldo dompet tenant tidak mencukupi untuk pembayaran deposit jaminan Rp '.number_format($depositAmount, 0, ',', '.')
+                        $walletAccount->code,
+                        (string) $walletAccount->cached_balance,
+                        (string) $depositAmount
                     );
                 }
 
