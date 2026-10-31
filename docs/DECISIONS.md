@@ -1955,3 +1955,31 @@
   - `modules/Mall/tests/Feature/MallPointsModelCTest.php` PASS.
   - `tests/Architecture/LedgerNormalBalanceTest.php` dan `LedgerAccountRegistryTest.php` PASS.
   - `git grep -n "abs("` pada jalur poin bernilai 0.
+
+<a id="2026-10-31-idempotency-key-kategori-dua"></a>
+## 2026-10-31: Penegakan Kunci Idempotensi K-3 (Kategori i Wajib, Kategori ii Entitas Tunggal)
+- **Anchor:** `2026-10-31-idempotency-key-kategori-dua`
+- **Context:**
+  - Audit menemukan 13 file dengan fallback idempotency key bawaan yang berpotensi menghasilkan replay berbahaya atau collision bila dibentuk dari nominal/waktu/hitungan/acak (Kategori i).
+  - Aksi-aksi Kategori (i) wajib mewajibkan key dari permintaan (header `Idempotency-Key` atau input request); tanpa key ditolak dengan 422 / `InvalidArgumentException`.
+  - Sebaliknya, aksi-aksi yang fallback-nya bersumber dari identitas entitas tunggal yang mewakili tepat satu kejadian bisnis (Kategori ii) diizinkan mempertahankan fallback tersebut selama terdokumentasi dan terbukti menghasilkan posting terpisah untuk dua kejadian sah berbeda.
+- **Decision:**
+  1. **Klasifikasi Kategori (i) — Kunci Wajib dari Permintaan (6 File):**
+     - `Finance AddCollateralAction`: Sebelumnya membentuk key dari nominal `$addition`. Kini wajib `idempotency_key` / `Idempotency-Key` header (422 jika kosong).
+     - `Finance OpenLoanAction`: Sebelumnya membentuk key acak `Str::uuid()`. Kini wajib `idempotency_key` / `Idempotency-Key` header (422 jika kosong).
+     - `Mall AllocatePaymentAction`: Sebelumnya membentuk key dari nominal tagihan `$paymentAmount` dan hitungan `$paid_amount`. Kini wajib `idempotency_key` (422 jika kosong).
+     - `Mall RedeemVoucherAction`: Sebelumnya membentuk key dari poin & nominal `$template->points_required` / `$template->nominal_value`. Kini wajib `idempotency_key` (422 jika kosong).
+     - `Store CheckoutService`: Sebelumnya membentuk key dari cart reusable `store:checkout:{user->id}:cart{cart->id}` yang berisiko tabrakan saat cart digunakan kembali. Kini wajib `idempotency_key` (422 jika kosong).
+     - `Venue VenueCreatorEconomyService::accrueStreamRevenue`: Sebelumnya membentuk key dari nominal `$streamGrossRevenueIdr`. Kini wajib `idempotency_key` / `Idempotency-Key` header (422 jika kosong).
+  2. **Klasifikasi Kategori (ii) — Entitas Tunggal Mewakili Tepat Satu Kejadian Bisnis (7 File):**
+     - `AutoServe ApproveEstimateAction`: Default `'estimate_hold_'.$estimate->uuid`. UUID estimasi mewakili satu kali persetujuan pengerjaan servis dan penahanan dana hold escrow secara atomik.
+     - `Core OutboxBusService`: Default `outbox:{eventType}:{aggType}:{aggId}`. Pasangan event dan aggregate ID mewakili domain event tunggal aggregate tersebut pada transactional outbox.
+     - `Finance PayInstallmentAction`: Default `'loan_inst_'.$loan->uuid.'_'.$lockedInstallment->sequence`. Baris angsuran ke-$n$ pinjaman hanya dapat dilunasi tepat satu kali.
+     - `Mall SettleParkingSessionAction`: Default `'mall:parking:settle:'.$session->uuid`. Sesi tiket parkir fisik hanya memiliki satu kali siklus keluar gerbang dan pelunasan.
+     - `Payment PaymentGatewayService`: Default `'tx_cap_'.$locked->id`, `'tx_rel_'.$locked->id`, dan `'refund:'.$trimmedRefundId`. Intent ID dan Refund ID mewakili status akhir atau transaksi pengembalian tunggal.
+     - `Proptech ProptechService::ingestSensorReading`: Default `hash('sha256', "{$zone->id}:{$sensorCode}:{$sensorType}:{$recordedAt->toIso8601String()}")`. Sampel telemetri fisik sensor pada koordinat dan stempel waktu `recordedAt` adalah observasi fisik unik yang tidak digerakkan oleh HTTP request pengguna.
+     - `Store PurchaseC2cVehicleAction`: Default `'order_'.$fresh->id`. Order mobil bekas C2C unik per unit kendaraan dan pembeli.
+- **Verification:**
+  - `tests/Feature/Banking/IdempotencyCategoryOneContractTest.php` memverifikasi seluruh 6 aksi Kategori (i): tanpa key $\to$ ditolak (422/exception), key sama $\to$ 1 efek, key berbeda $\to$ 2 efek.
+  - `tests/Feature/Banking/IdempotencyCategoryTwoContractTest.php` memverifikasi bahwa dua kejadian bisnis berbeda menghasilkan dua entitas/posting terpisah pada aksi Kategori (ii).
+  - `git grep -l "idempotencyKey ??\|idempotency_key ??" -- modules` berkurang dari 13 file menjadi tepat 7 file Kategori (ii).

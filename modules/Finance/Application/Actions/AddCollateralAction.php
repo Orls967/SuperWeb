@@ -49,7 +49,19 @@ class AddCollateralAction extends BaseAction
             throw new Exception("Holding {$symbol} tidak mencukupi. Tersedia {$holding->__toString()} {$symbol}.");
         }
 
-        return $this->transaction(function () use ($loan, $symbol, $cryptoAccount, $addition, $idempotencyKey) {
+        $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
+            ? trim($idempotencyKey)
+            : (request()?->header('Idempotency-Key')
+                ?? request()?->input('idempotency_key')
+                ?? request()?->input('request_id'));
+
+        if ($key === null || trim((string) $key) === '') {
+            throw new \InvalidArgumentException('Idempotency key wajib diisi untuk penambahan kolateral.');
+        }
+
+        $cleanKey = trim((string) $key);
+
+        return $this->transaction(function () use ($loan, $symbol, $cryptoAccount, $addition, $cleanKey) {
             // Kunci baris fin_loans dulu, lalu baca ulang kolateral di bawah kunci.
             $locked = Loan::whereKey($loan->getKey())->lockForUpdate()->firstOrFail();
 
@@ -57,17 +69,17 @@ class AddCollateralAction extends BaseAction
                 throw new Exception("Pinjaman berstatus {$locked->status->label()} tidak menerima tambahan kolateral.");
             }
 
-            // Kunci deterministik berdasarkan identitas bisnis pinjaman & nominal
-            $key = $idempotencyKey ?? sprintf('fin:loan_collateral_add:%s:%s', $loan->uuid, $addition->__toString());
+            // Kunci deterministik dari idempotency key permintaan
+            $txKey = 'fin:loan_collateral_add:'.$cleanKey;
 
-            if (LedgerTransaction::where('idempotency_key', $key)->exists()) {
+            if (LedgerTransaction::where('idempotency_key', $txKey)->exists()) {
                 return $loan->fresh(['collateralAsset', 'installments']);
             }
 
             $tx = $this->ledger->post(new PostingDTO(
                 type: TransactionType::LOAN_DISBURSEMENT->value,
                 description: "Penambahan kolateral {$symbol} pembiayaan {$loan->uuid}",
-                idempotencyKey: $key,
+                idempotencyKey: $txKey,
                 entries: [
                     PostingEntryDTO::forAccount($cryptoAccount->id, $symbol, $addition->negated()),
                     PostingEntryDTO::forCode("collateral:crypto:{$symbol}", $symbol, $addition),

@@ -100,7 +100,7 @@ class StoreCheckoutTest extends TestCase
             'postal_code' => '10110',
         ];
 
-        $order = $checkoutService->checkout($user, $shipping, '123456');
+        $order = $checkoutService->checkout($user, $shipping, '123456', 'store-checkout-key-1');
 
         // Order asserts
         $this->assertSame(OrderStatus::PAID, $order->status);
@@ -161,7 +161,7 @@ class StoreCheckoutTest extends TestCase
         ];
 
         try {
-            $checkoutService->checkout($user, $shipping, '123456');
+            $checkoutService->checkout($user, $shipping, '123456', 'store-checkout-key-2');
             $this->fail('Harusnya melempar exception saldo tidak mencukupi.');
         } catch (\Throwable $e) {
             $this->assertStringContainsString('Saldo tidak mencukupi', $e->getMessage());
@@ -195,7 +195,7 @@ class StoreCheckoutTest extends TestCase
 
         // User 1 beli unit terakhir
         $cartService->addItem($user1, $product->id, 1);
-        $order1 = $checkoutService->checkout($user1, $shipping, '123456');
+        $order1 = $checkoutService->checkout($user1, $shipping, '123456', 'store-checkout-key-3');
         $this->assertSame(OrderStatus::PAID, $order1->status);
         $this->assertSame(0, $product->fresh()->cached_stock);
 
@@ -291,7 +291,7 @@ class StoreCheckoutTest extends TestCase
             'address' => 'Kawasan Elit Blok A',
             'city' => 'Jakarta Selatan',
             'postal_code' => '12190',
-        ], '123456');
+        ], '123456', 'store-checkout-key-4');
 
         // Karena mobil, order langsung COMPLETED dan trigger fulfillment
         $this->assertSame(OrderStatus::COMPLETED, $order->status);
@@ -325,7 +325,7 @@ class StoreCheckoutTest extends TestCase
             'address' => 'Jl. Test',
             'city' => 'Jakarta',
             'postal_code' => '12345',
-        ], '123456');
+        ], '123456', 'store-checkout-key-5');
 
         $this->assertSame(OrderStatus::PAID, $order->status);
         $this->assertSame(8, $product->fresh()->cached_stock);

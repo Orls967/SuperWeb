@@ -80,11 +80,13 @@ class MallAutoDebitAction
 
         $debitAmount = min($walletBal, $needed);
 
+        $key = $idempotencyKey ?: (request()?->header('Idempotency-Key') ?: request()?->input('idempotency_key') ?: ('mall:autodebit:'.$invoice->id.':'.($invoice->period_month ?: now()->format('Y-m'))));
+
         $updatedInvoice = $this->allocatePaymentAction->execute(
             $invoice,
             $debitAmount,
             source: 'auto_debit',
-            idempotencyKey: $idempotencyKey
+            idempotencyKey: $key
         );
 
         return [

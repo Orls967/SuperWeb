@@ -130,8 +130,11 @@ test('venue creator stream accrual is idempotent and does not double count held 
     $creator = $service->registerCreator('DJ ElectroNusantara', 'MELODIC_TECHNO');
     $contract = $service->createRightsContract($creator, 70.0, 14);
 
-    $share1 = $service->accrueStreamRevenue($contract, 10_000_000);
-    $share2 = $service->accrueStreamRevenue($contract, 10_000_000);
+    expect(fn () => $service->accrueStreamRevenue($contract, 10_000_000))
+        ->toThrow(InvalidArgumentException::class);
+
+    $share1 = $service->accrueStreamRevenue($contract, 10_000_000, 'stream-accrual-key-1');
+    $share2 = $service->accrueStreamRevenue($contract, 10_000_000, 'stream-accrual-key-1');
 
     expect($share1)->toBe(7_000_000);
     expect($share2)->toBe(7_000_000);

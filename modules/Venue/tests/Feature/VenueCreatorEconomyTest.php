@@ -34,7 +34,7 @@ class VenueCreatorEconomyTest extends TestCase
         $contract = $this->service->createRightsContract($this->creator, 70.0, 14);
 
         // 1. Accrue stream revenue: 10,000,000 IDR -> 70% artist royalty = 7,000,000 IDR
-        $royaltyIdr = $this->service->accrueStreamRevenue($contract, 10_000_000);
+        $royaltyIdr = $this->service->accrueStreamRevenue($contract, 10_000_000, 'test-accrue-stream-1');
         $this->assertEquals(7_000_000, $royaltyIdr);
 
         $escrow = LedgerAccount::where('code', 'ven:creator_held_royalty_escrow:IDR')->first();

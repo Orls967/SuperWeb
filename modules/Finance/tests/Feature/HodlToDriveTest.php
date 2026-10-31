@@ -173,7 +173,7 @@ class HodlToDriveTest extends TestCase
         ];
     }
 
-    private function openLoan(User $user, Product $product, int $tenor = 12, int $dp = self::DP): Loan
+    private function openLoan(User $user, Product $product, int $tenor = 12, int $dp = self::DP, ?string $idempotencyKey = null): Loan
     {
         return app(OpenLoanAction::class)->execute(
             user: $user,
@@ -183,6 +183,7 @@ class HodlToDriveTest extends TestCase
             collateralSymbol: 'BTC',
             shippingAddress: $this->shippingAddress(),
             pin: '123456',
+            idempotencyKey: $idempotencyKey ?: (string) Str::uuid(),
         );
     }
 
@@ -388,7 +389,7 @@ class HodlToDriveTest extends TestCase
         $this->assertNotNull($loan->margin_called_at);
 
         // Tambah kolateral → LTV turun kembali di bawah 70%
-        app(AddCollateralAction::class)->execute($loan, $user, '0.2');
+        app(AddCollateralAction::class)->execute($loan, $user, '0.2', 'test-add-collateral-key-1');
 
         $loan->refresh();
         $this->assertSame(LoanStatus::Active, $loan->status);
@@ -482,6 +483,7 @@ class HodlToDriveTest extends TestCase
             'tenor_months' => 12,
             'collateral_symbol' => 'BTC',
             'pin' => '123456',
+            'idempotency_key' => 'http_open_loan_key_1',
         ]);
 
         $loan = Loan::where('user_id', $user->id)->firstOrFail();

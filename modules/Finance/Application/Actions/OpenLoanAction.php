@@ -62,17 +62,27 @@ class OpenLoanAction extends BaseAction
         ?string $idempotencyKey = null,
         ?BigDecimal $collateralQty = null,
     ): Loan {
-        if ($idempotencyKey !== null) {
-            // Submit ulang dengan kunci yang sama harus mengembalikan pinjaman
-            // yang sudah ada, bukan membuka pinjaman dan debit kolateral kedua kalinya.
-            $posted = LedgerTransaction::where('idempotency_key', 'loan_open_'.$idempotencyKey)->first();
+        $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
+            ? trim($idempotencyKey)
+            : (request()?->header('Idempotency-Key')
+                ?? request()?->input('idempotency_key')
+                ?? request()?->input('request_id'));
 
-            if ($posted !== null) {
-                $existing = Loan::where('order_id', $posted->reference_id)->first();
+        if ($key === null || trim((string) $key) === '') {
+            throw new \InvalidArgumentException('Idempotency key wajib diisi untuk pembukaan pembiayaan.');
+        }
 
-                if ($existing !== null) {
-                    return $existing->fresh(['installments', 'collateralAsset']);
-                }
+        $cleanKey = trim((string) $key);
+
+        // Submit ulang dengan kunci yang sama harus mengembalikan pinjaman
+        // yang sudah ada, bukan membuka pinjaman dan debit kolateral kedua kalinya.
+        $posted = LedgerTransaction::where('idempotency_key', 'loan_open_'.$cleanKey)->first();
+
+        if ($posted !== null) {
+            $existing = Loan::where('order_id', $posted->reference_id)->first();
+
+            if ($existing !== null) {
+                return $existing->fresh(['installments', 'collateralAsset']);
             }
         }
 
@@ -125,8 +135,6 @@ class OpenLoanAction extends BaseAction
 
         $this->verifyPinAction->execute($user, $pin);
 
-        $key = $idempotencyKey ?? (string) Str::uuid();
-
         return $this->transaction(function () use (
             $user,
             $product,
@@ -139,7 +147,7 @@ class OpenLoanAction extends BaseAction
             $grandTotal,
             $shippingAddress,
             $schedule,
-            $key
+            $cleanKey
         ) {
             // 1. Buat order unit mobil dan tahan stoknya
             $order = Order::create([
@@ -179,7 +187,7 @@ class OpenLoanAction extends BaseAction
             $this->ledger->post(new PostingDTO(
                 type: TransactionType::LOAN_DISBURSEMENT->value,
                 description: "Pencairan pembiayaan HODL-to-Drive untuk order {$order->number}",
-                idempotencyKey: 'loan_open_'.$key,
+                idempotencyKey: 'loan_open_'.$cleanKey,
                 entries: [
                     PostingEntryDTO::forAccount($cryptoAccount->id, $asset->symbol, $actualCollateralQty->negated()),
                     PostingEntryDTO::forCode("collateral:crypto:{$asset->symbol}", $asset->symbol, $actualCollateralQty),
@@ -199,7 +207,7 @@ class OpenLoanAction extends BaseAction
             ));
 
             // 3. Bayar order: DP dari saldo sendiri + dana pinjaman yang baru cair
-            $this->paymentGateway->charge($order->fresh(), 'loan_order_'.$key);
+            $this->paymentGateway->charge($order->fresh(), 'loan_order_'.$cleanKey);
 
             // 4. Catat pinjaman dan jadwal cicilannya
             $loan = Loan::create([

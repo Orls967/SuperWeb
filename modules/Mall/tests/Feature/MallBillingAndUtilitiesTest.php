@@ -299,7 +299,7 @@ class MallBillingAndUtilitiesTest extends TestCase
         // 4. Service charge: 0
         // 5. Sewa pokok: 0
         $allocator = app(AllocatePaymentAction::class);
-        $updated = $allocator->execute($invoice, 1200000, 'test_portal');
+        $updated = $allocator->execute($invoice, 1200000, 'test_portal', 'test-alloc-payment-1');
 
         $this->assertEquals(InvoiceStatus::PARTIALLY_PAID, $updated->status);
         $this->assertEquals(1200000, $updated->paid_amount);
@@ -472,7 +472,7 @@ class MallBillingAndUtilitiesTest extends TestCase
         $invoice = Invoice::where('tenant_id', $this->tenant->id)->firstOrFail();
         $payAction = app(PayInvoiceAction::class);
 
-        $payAction->execute($invoice, 20000000, '123456', $this->tenantUser); // Bayar 20 jt
+        $payAction->execute($invoice, 20000000, '123456', $this->tenantUser, 'test-pay-invoice-audit-1'); // Bayar 20 jt
 
         // Jalankan audit billing artisan
         $exitAudit = Artisan::call('mall:audit-billing');

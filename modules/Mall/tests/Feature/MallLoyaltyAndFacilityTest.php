@@ -175,7 +175,7 @@ class MallLoyaltyAndFacilityTest extends TestCase
 
         // Tukar voucher 50 PTS (Rp 50.000)
         $template = VoucherTemplate::where('points_required', 50)->firstOrFail();
-        $voucher = $redeemAction->execute($this->customer, $template);
+        $voucher = $redeemAction->execute($this->customer, $template, 'loyalty-test-redeem-1');
 
         $this->assertInstanceOf(Voucher::class, $voucher);
         $this->assertSame(VoucherStatus::ACTIVE, $voucher->status);
@@ -201,7 +201,7 @@ class MallLoyaltyAndFacilityTest extends TestCase
         $newUser = User::factory()->create(['role' => 'customer']);
 
         $this->expectException(InsufficientPointsException::class);
-        $redeemAction->execute($newUser, $template);
+        $redeemAction->execute($newUser, $template, 'loyalty-test-redeem-fail');
     }
 
     public function test_voucher_dipakai_di_tenant_lalu_disettle_via_command_ke_wallet_tenant(): void
@@ -213,7 +213,7 @@ class MallLoyaltyAndFacilityTest extends TestCase
 
         $claimAction->execute($this->customer, 'STR-VCH-USE', 500_000, Carbon::today());
         $template = VoucherTemplate::where('points_required', 25)->firstOrFail();
-        $voucher = $redeemAction->execute($this->customer, $template);
+        $voucher = $redeemAction->execute($this->customer, $template, 'loyalty-test-redeem-2');
 
         // 2. Customer memakai voucher di tenant (Belanja Rp 150.000)
         $usedVoucher = $useAction->execute(
@@ -448,7 +448,7 @@ class MallLoyaltyAndFacilityTest extends TestCase
         // Pelunasan tagihan via AllocatePaymentAction
         app(TopUpAction::class)->execute($boutiqueUser, 1_000_000, 'boutique_topup_loyalty_test');
         $allocateAction = app(AllocatePaymentAction::class);
-        $paidInvoice = $allocateAction->execute($invoice, 450_000);
+        $paidInvoice = $allocateAction->execute($invoice, 450_000, 'portal', 'test-alloc-repair-1');
 
         $this->assertSame(450_000, $repairLine->fresh()->paid_amount);
         $this->assertSame(0, Artisan::call('bank:reconcile'));
