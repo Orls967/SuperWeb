@@ -19,6 +19,7 @@ use Modules\Edu\Domain\Models\EduProgram;
 use Modules\Edu\Domain\Services\CertificateQrSigner;
 use Modules\Manufacturing\Application\Actions\IssueMaintenanceLotoSafetyPermitAction;
 use Modules\Manufacturing\Domain\Exceptions\SafetyPermitUnauthorizedException;
+use Modules\Manufacturing\Domain\Models\Plant;
 use Modules\Manufacturing\Domain\Models\WorkCenter;
 use Tests\TestCase;
 
@@ -231,8 +232,19 @@ class CredentialVerifierAndManufacturingIntegrationTest extends TestCase
 
     private function createSampleWorkCenter(): WorkCenter
     {
+        $plant = Plant::firstOrCreate(
+            ['code' => 'PLT-TEST-01'],
+            [
+                'name' => 'Smelting Plant Jakarta',
+                'type' => 'factory',
+                'timezone' => 'Asia/Jakarta',
+                'nominal_capacity_per_day' => 100,
+                'capacity_uom' => 'unit',
+            ]
+        );
+
         return WorkCenter::create([
-            'plant_id' => 1,
+            'plant_id' => $plant->id,
             'code' => 'WC-SMELT-01',
             'name' => 'Smelting Furnace 01',
             'type' => 'machine',

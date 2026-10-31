@@ -42,6 +42,15 @@ class EduEnrollment extends Model
         'student_user_id' => 'integer',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (EduEnrollment $enrollment) {
+            if (empty($enrollment->student_party_id)) {
+                $enrollment->student_party_id = 'student-'.($enrollment->student_user_id ?? 'direct');
+            }
+        });
+    }
+
     public function cohort(): BelongsTo
     {
         return $this->belongsTo(EduCohort::class, 'cohort_id', 'id');
