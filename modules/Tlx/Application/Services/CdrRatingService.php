@@ -75,26 +75,40 @@ class CdrRatingService
      */
     public function calculateMonthlyUsage(string $ownerEntityId, string $period, int $quotaMb): array
     {
-        $deviceIds = IotDevice::where('owner_entity_id', $ownerEntityId)->pluck('id');
-
         $startOfMonth = CarbonImmutable::parse($period.'-01')->startOfMonth();
         $endOfMonth = $startOfMonth->endOfMonth();
 
-        $ratedSessions = TelecomCdr::whereIn('device_id', $deviceIds)
-            ->whereBetween('started_at', [$startOfMonth, $endOfMonth])
-            ->select(['session_id', 'bytes_transferred'])
-            ->get()
-            ->map(fn ($cdr) => ['session_id' => $cdr->session_id, 'bytes' => $cdr->bytes_transferred])
-            ->toArray();
+        $cdrQuery = TelecomCdr::whereIn('device_id', function ($query) use ($ownerEntityId): void {
+            $query->select('id')->from('tlx_iot_devices')->where('owner_entity_id', $ownerEntityId);
+        })->whereBetween('started_at', [$startOfMonth, $endOfMonth]);
 
         $monthlyQuotaBytes = $quotaMb * UsageRater::BYTES_PER_MB;
+        $totalCount = (clone $cdrQuery)->count();
 
-        $rating = UsageRater::rate($ratedSessions, $monthlyQuotaBytes, 0, 0);
+        if ($totalCount <= 1000) {
+            $ratedSessions = $cdrQuery
+                ->select(['session_id', 'bytes_transferred'])
+                ->get()
+                ->map(fn ($cdr) => ['session_id' => $cdr->session_id, 'bytes' => $cdr->bytes_transferred])
+                ->toArray();
+
+            $rating = UsageRater::rate($ratedSessions, $monthlyQuotaBytes, 0, 0);
+
+            return [
+                'total_consumed_bytes' => $rating['total_rated_bytes'],
+                'quota_mb' => $quotaMb,
+                'excess_mb' => $rating['excess_mb'],
+            ];
+        }
+
+        $totalRatedBytes = (int) $cdrQuery->sum('rated_bytes');
+        $excessBytes = max(0, $totalRatedBytes - $monthlyQuotaBytes);
+        $excessMb = ($excessBytes === 0) ? 0 : (int) intdiv($excessBytes + (UsageRater::BYTES_PER_MB - 1), UsageRater::BYTES_PER_MB);
 
         return [
-            'total_consumed_bytes' => $rating['total_rated_bytes'],
+            'total_consumed_bytes' => $totalRatedBytes,
             'quota_mb' => $quotaMb,
-            'excess_mb' => $rating['excess_mb'],
+            'excess_mb' => $excessMb,
         ];
     }
 }
