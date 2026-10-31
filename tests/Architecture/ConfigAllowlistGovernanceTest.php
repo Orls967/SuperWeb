@@ -136,3 +136,20 @@ it('enforces that config/modules.php does not exceed baseline allowlists without
 
     expect($violations)->toBe([], "Ditemukan penambahan allowlist tanpa anchor DECISIONS.md di config/modules.php:\n".implode("\n", $violations));
 });
+
+it('validates syntax integrity of all cross_module_columns and audit documentation', function (): void {
+    $root = base_path();
+    $config = require $root.'/config/modules.php';
+    $crossColumns = $config['cross_module_columns'] ?? [];
+
+    expect($crossColumns)->toBeArray();
+    expect(count($crossColumns))->toBeLessThanOrEqual(172);
+
+    foreach ($crossColumns as $key => $description) {
+        expect($key)->toMatch('/^[a-z0-9_]+\.[a-z0-9_]+$/', "Format cross_module_columns '{$key}' harus table.column");
+        expect($description)->toBeString()->not->toBeEmpty();
+    }
+
+    $auditDocPath = $root.'/docs/audit/G5-A-allowlist-governance.md';
+    expect(file_exists($auditDocPath))->toBeTrue('Dokumen audit tata kelola docs/audit/G5-A-allowlist-governance.md wajib ada');
+});
