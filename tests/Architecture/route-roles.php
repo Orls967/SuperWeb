@@ -2549,6 +2549,9 @@ return [
         'roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor'],
         'params' => fn () => ['id' => 1],
     ],
+    'edu.admin.programs.index' => ['roles' => ['academy_admin', 'admin']],
+    'edu.admin.programs.store' => ['roles' => ['academy_admin', 'admin']],
+    'edu.api.certificates.verify' => 'public',
     'edu.certification.index' => ['roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor']],
     'edu.certification.issue' => ['roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor']],
     'edu.certification.verify' => [
@@ -2564,6 +2567,16 @@ return [
         'roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor'],
         'params' => fn () => ['id' => 1],
     ],
+    'edu.student.attempts.show' => [
+        'roles' => ['admin', 'student'],
+        'params' => fn () => ['id' => 1],
+    ],
+    'edu.student.certificates.show' => [
+        'roles' => ['admin', 'student'],
+        'params' => fn () => ['id' => 1],
+    ],
+    'edu.student.dashboard' => ['roles' => ['admin', 'student']],
+    'edu.web.certificates.verify' => 'public',
     'education.index' => ['roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor']],
     'egy.grid.anomaly' => [
         'roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev'],
