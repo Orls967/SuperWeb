@@ -771,7 +771,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Hotel** | `HotelAccounts` | 29 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
 | **Insurance** | `InsuranceAccounts` | 3 | `ins:premium_reserve:IDR`, `ins:reserve_pool:IDR` ... |
 | **Logistics** | `LogisticsAccounts` | 5 | `lgx:carrier_payable:IDR`, `lgx:circular_revenue:IDR` ... |
-| **Mall** | `MallAccounts` | 8 | `liability:mall:points:PTS`, `revenue:mall:parking:IDR` ... |
+| **Mall** | `MallAccounts` | 28 | `expense:mall:points_issued:PTS`, `revenue:mall:points_redeemed:PTS` ... |
 | **Manufacturing** | `ManufacturingAccounts` | 2 | `mfg:vmi_budget_encumbrance:IDR`, `mfg:vmi_commitment:IDR` |
 | **Med** | `MedAccounts` | 9 | `med:ad_platform_revenue:IDR`, `med:ad_publisher_payable:IDR` ... |
 | **Mining** | `MiningAccounts` | 23 | `expense:mining_royalty:IDR`, `min:base_metal_sales_revenue:IDR` ... |
@@ -785,6 +785,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 2 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` |
 | **Venue** | `VenueAccounts` | 24 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 3 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 30 Registry** | | **269 Akun** | |
+| **Total: 30 Registry** | | **289 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
