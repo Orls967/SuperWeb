@@ -145,6 +145,16 @@ jobs:
       - name: Generate Application Key
         run: php artisan key:generate --ansi
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install npm dependencies & build assets
+        run: |
+          npm ci
+          npm run build
+
       - name: Run DB Portability Tests
         env:
           DB_CONNECTION: mysql
@@ -197,6 +207,16 @@ jobs:
       - name: Generate Application Key
         run: php artisan key:generate --ansi
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install npm dependencies & build assets
+        run: |
+          npm ci
+          npm run build
+
       - name: Mutation pagar R0
         run: |
           php -d memory_limit=1G vendor/bin/pest tests/Unit/Quality/Progress/ProgressIntegrityScannerTest.php --mutate --parallel --class='App\Quality\Progress\ProgressIntegrityScanner' --min=60
@@ -238,6 +258,16 @@ jobs:
 
       - name: Generate Application Key
         run: php artisan key:generate --ansi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install npm dependencies & build assets
+        run: |
+          npm ci
+          npm run build
 
       - name: Run Integrity Fence Tests
         run: |
