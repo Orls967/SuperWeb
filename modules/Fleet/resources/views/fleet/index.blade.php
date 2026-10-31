@@ -17,7 +17,7 @@
                         </svg>
                     </span>
                     <div>
-                        <h1 class="text-2xl font-bold tracking-tight text-white">B2B Fleet &amp; Corporate Leasing</h1>
+                        <h1 class="text-2xl font-bold tracking-tight text-white">Manajemen Armada &amp; Corporate Leasing</h1>
                         <p class="text-sm text-slate-400">PSAK 73 Financial Amortization, Telematics SLA Tracking &amp; AutoDex Handoff</p>
                     </div>
                 </div>

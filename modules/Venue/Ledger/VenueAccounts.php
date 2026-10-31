@@ -186,6 +186,48 @@ final class VenueAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'ven:ticket_unearned:IDR',
+                'name' => 'Venue Unearned Ticket Revenue Liability',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'ven:table_revenue:IDR',
+                'name' => 'Venue VIP Table Minimum Spend Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'ven:platform_fee_revenue:IDR',
+                'name' => 'Venue Platform Ticketing Fee Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'ven:tax_ticket_payable:IDR',
+                'name' => 'Venue Entertainment Tax Retained Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'ven:organizer_payable:IDR',
+                'name' => 'Venue External Event Organizer Settlement Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'tax:wht23_payable:IDR',
+                'name' => 'Withholding Tax Article 23 Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
         ];
     }
 }

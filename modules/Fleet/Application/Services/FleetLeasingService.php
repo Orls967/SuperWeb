@@ -372,6 +372,47 @@ class FleetLeasingService
             }
         }
 
+        // 3. Verifikasi Konsistensi Invoice Sewa vs Saldo AR Ledger
+        $partiesWithInvoices = DB::table('oto_fleet_invoices')
+            ->where('oto_fleet_invoices.status', 'ISSUED')
+            ->join('oto_fleet_contracts', 'oto_fleet_invoices.contract_id', '=', 'oto_fleet_contracts.id')
+            ->distinct()
+            ->pluck('party_id');
+
+        foreach ($partiesWithInvoices as $partyId) {
+            $totalInvoiced = (int) DB::table('oto_fleet_invoices')
+                ->where('oto_fleet_invoices.status', 'ISSUED')
+                ->join('oto_fleet_contracts', 'oto_fleet_invoices.contract_id', '=', 'oto_fleet_contracts.id')
+                ->where('oto_fleet_contracts.party_id', $partyId)
+                ->sum('total_billed_idr');
+
+            $totalSlaCredits = (int) DB::table('oto_fleet_sla_breaches')
+                ->where('oto_fleet_sla_breaches.status', 'CREDITED')
+                ->join('oto_fleet_contracts', 'oto_fleet_sla_breaches.contract_id', '=', 'oto_fleet_contracts.id')
+                ->where('oto_fleet_contracts.party_id', $partyId)
+                ->sum('penalty_amount_idr');
+
+            $expectedNetAr = $totalInvoiced - $totalSlaCredits;
+
+            $arAccount = "ar:oto:fleet:{$partyId}:IDR";
+            $ledgerAr = abs((int) $this->ledgerService->getCachedBalance($arAccount));
+
+            if ($expectedNetAr !== $ledgerAr) {
+                $discrepancies++;
+                $errors[] = "Party {$partyId}: expected net AR {$expectedNetAr} != ledger AR {$ledgerAr}";
+            }
+        }
+
+        // 4. Verifikasi Amortisasi PSAK 73 (pokok + bunga == pembayaran)
+        $schedules = DB::table('oto_fleet_amortization_schedules')->get();
+        foreach ($schedules as $sched) {
+            $sum = (int) $sched->principal_idr + (int) $sched->interest_idr;
+            if ($sum !== (int) $sched->payment_idr) {
+                $discrepancies++;
+                $errors[] = "Schedule ID {$sched->id}: principal + interest != payment";
+            }
+        }
+
         return [
             'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
             'contract_count' => $contractCount,

@@ -70,6 +70,22 @@ class SimClockService implements SimClockInterface
         return $this->advanceSeconds($days * 86400);
     }
 
+    public function travel(int|CarbonInterface $secondsOrTarget): CarbonInterface
+    {
+        if ($secondsOrTarget instanceof CarbonInterface) {
+            $this->currentVirtualNow = $secondsOrTarget->copy();
+        } else {
+            $this->currentVirtualNow = $this->now()->addSeconds($secondsOrTarget);
+        }
+
+        if ($this->activeRun) {
+            $this->activeRun->virtual_now = $this->currentVirtualNow;
+            $this->activeRun->save();
+        }
+
+        return $this->currentVirtualNow->copy();
+    }
+
     public function reset(): void
     {
         if ($this->activeRun) {

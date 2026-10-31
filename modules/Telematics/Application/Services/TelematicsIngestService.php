@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Telematics\Application\Services;
 
+use Brick\Math\RoundingMode;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Cache;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Modules\Core\Contracts\EventSpineInterface;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Shared\Domain\Algorithms\Stats\RobustStatistics;
 use Modules\Telematics\Domain\Events\VehicleAnomalyDetected;
 use Modules\Telematics\Domain\Models\TelematicsAggregate;
 use Modules\Telematics\Domain\Models\TelematicsBaseline;
@@ -312,6 +314,35 @@ class TelematicsIngestService
                 ->exists();
             if (! $hasCriticalDtc) {
                 $discrepancies++;
+            }
+        }
+
+        // 1. Cek duplikasi sequence per perangkat
+        $duplicateSeqs = DB::table('oto_telematics_ticks')
+            ->select('device_id', 'sequence')
+            ->groupBy('device_id', 'sequence')
+            ->havingRaw('count(*) > 1')
+            ->get();
+        $discrepancies += $duplicateSeqs->count();
+
+        // 2. Cek integritas baseline vs tick nyata 7 hari
+        $baselines = TelematicsBaseline::all();
+        $robustStats = new RobustStatistics;
+        foreach ($baselines as $b) {
+            $windowStart = now()->subDays($b->window_days ?: 7);
+            $values = TelematicsTick::where('vehicle_id', $b->vehicle_id)
+                ->where('recorded_at', '>=', $windowStart)
+                ->whereNotNull($b->metric)
+                ->pluck($b->metric)
+                ->filter(fn ($v) => is_numeric($v))
+                ->map(fn ($v) => (int) $v)
+                ->all();
+
+            if (! empty($values)) {
+                $expectedMedian = $robustStats->median($values)->toScale(0, RoundingMode::HalfUp)->toInt();
+                if ((int) $b->median_value !== $expectedMedian) {
+                    $discrepancies++;
+                }
             }
         }
 

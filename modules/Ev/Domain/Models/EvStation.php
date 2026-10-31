@@ -10,6 +10,10 @@ class EvStation extends Model
 {
     protected $table = 'oto_ev_stations';
 
+    protected $attributes = [
+        'address' => 'Jl. Jenderal Sudirman No. 1, Jakarta',
+    ];
+
     protected $fillable = [
         'station_code',
         'name',
@@ -18,8 +22,15 @@ class EvStation extends Model
         'latitude',
         'longitude',
         'transformer_capacity_kw',
+        'max_grid_power_kw',
+        'timezone',
         'is_active',
     ];
+
+    public function getMaxGridPowerKwAttribute(): int
+    {
+        return (int) ($this->attributes['max_grid_power_kw'] ?? $this->attributes['transformer_capacity_kw'] ?? 100);
+    }
 
     protected $casts = [
         'transformer_capacity_kw' => 'integer',

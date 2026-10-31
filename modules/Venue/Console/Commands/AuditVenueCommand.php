@@ -34,7 +34,7 @@ class AuditVenueCommand extends Command
         );
 
         if ($result['discrepancies'] > 0) {
-            $this->error("Venue audit FAILED with {$result['discrepancies']} zone over-capacity discrepancies detected!");
+            $this->error("Venue audit FAILED with {$result['discrepancies']} discrepancies detected!");
 
             return self::FAILURE;
         }
