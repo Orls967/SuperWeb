@@ -9,7 +9,10 @@ use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Edu\Application\Actions\SettleHeadhunterFeeAction;
 use Modules\Edu\Domain\Models\EduCertificate;
 use Modules\Edu\Domain\Models\EduCohort;
@@ -21,7 +24,6 @@ use Modules\Edu\Domain\Models\EduPlacement;
 use Modules\Edu\Domain\Models\EduProgram;
 use Modules\Edu\Domain\Services\CertificateQrSigner;
 use Modules\Edu\Ledger\EduAccounts;
-use Modules\Ledger\Domain\Models\LedgerEntry;
 use Tests\TestCase;
 
 class AcademyAuditAndTwoSourceIntegrityTest extends TestCase
@@ -352,13 +354,15 @@ class AcademyAuditAndTwoSourceIntegrityTest extends TestCase
         $action->holdFee($placement); // Creates 15M HELD fee and posts to ledger
 
         // Sabotage ledger: inject fraudulent entry into escrow account
-        LedgerEntry::create([
-            'transaction_id' => (string) Str::uuid(),
-            'account_code' => EduAccounts::ESCROW_HEADHUNTER_GUARANTEE,
+        $escrowAcc = LedgerAccount::where('code', EduAccounts::ESCROW_HEADHUNTER_GUARANTEE)->firstOrFail();
+        $tx = LedgerTransaction::first();
+        DB::table('bank_ledger_entries')->insert([
+            'transaction_id' => $tx ? $tx->id : 1,
+            'account_id' => $escrowAcc->id,
+            'asset_code' => 'IDR',
             'amount' => 5_000_000, // Extra 5M phantom credit
-            'entry_type' => 'CREDIT',
-            'sequence_in_transaction' => 1,
-            'occurred_at' => Carbon::now(),
+            'balance_after' => 20_000_000,
+            'created_at' => Carbon::now(),
         ]);
 
         $exitCode = Artisan::call('edu:audit');
