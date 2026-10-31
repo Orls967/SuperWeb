@@ -18,6 +18,7 @@ use Modules\Med\Domain\Models\MedIpLicense;
 use Modules\Med\Domain\Models\MedIpRightsShare;
 use Modules\Med\Domain\Models\MedRoyaltyStatement;
 use Modules\Med\Domain\Models\MedStudio;
+use Modules\Med\Domain\Models\MedStudioBooking;
 use Modules\Med\Domain\Models\MedStudioSlotClaim;
 use Tests\TestCase;
 
@@ -68,6 +69,7 @@ class MediaAuditAndTwoSourceIntegrityTest extends TestCase
             'start_date' => '2026-01-01',
             'end_date' => '2026-12-31',
             'is_exclusive' => true,
+            'royalty_rate_pct' => 15.0,
             'status' => 'ACTIVE',
         ]);
 
@@ -114,6 +116,7 @@ class MediaAuditAndTwoSourceIntegrityTest extends TestCase
             'start_date' => '2026-01-01',
             'end_date' => '2026-12-31',
             'is_exclusive' => true,
+            'royalty_rate_pct' => 15.0,
             'status' => 'ACTIVE',
         ]);
 
@@ -129,6 +132,7 @@ class MediaAuditAndTwoSourceIntegrityTest extends TestCase
             'start_date' => '2026-06-01',
             'end_date' => '2027-06-01',
             'is_exclusive' => true,
+            'royalty_rate_pct' => 15.0,
             'status' => 'ACTIVE',
         ]);
 
@@ -215,21 +219,37 @@ class MediaAuditAndTwoSourceIntegrityTest extends TestCase
             'status' => 'AVAILABLE',
         ]);
 
+        $booking = MedStudioBooking::create([
+            'id' => (string) Str::uuid(),
+            'booking_code' => 'BKG-AUD-01',
+            'studio_id' => $studio->id,
+            'client_entity_id' => 'PARTY-CLIENT-01',
+            'start_time' => '2026-11-01 09:00:00',
+            'end_time' => '2026-11-01 10:00:00',
+            'total_price_minor' => 2000000,
+            'status' => 'CONFIRMED',
+        ]);
+
         MedStudioSlotClaim::create([
             'id' => (string) Str::uuid(),
             'studio_id' => $studio->id,
             'slot_start' => '2026-11-01 09:00:00',
             'slot_end' => '2026-11-01 09:30:00',
-            'booking_id' => (string) Str::uuid(),
+            'booking_id' => $booking->id,
         ]);
 
         // Second booking on exact same slot without unique constraint (raw DB)
+        try {
+            DB::statement('DROP INDEX IF EXISTS med_slot_claims_stu_start_uniq');
+        } catch (\Throwable $e) {
+        }
+
         DB::table('med_studio_slot_claims')->insert([
             'id' => (string) Str::uuid(),
             'studio_id' => $studio->id,
             'slot_start' => '2026-11-01 09:00:00',
             'slot_end' => '2026-11-01 09:30:00',
-            'booking_id' => (string) Str::uuid(),
+            'booking_id' => $booking->id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

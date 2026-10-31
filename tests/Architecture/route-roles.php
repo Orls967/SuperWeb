@@ -65,6 +65,8 @@ use Modules\Mall\Domain\Models\VoucherTemplate;
 use Modules\Mall\Domain\Models\WorkOrder;
 use Modules\Manufacturing\Domain\Models\C2m\C2mCustomOrder;
 use Modules\Manufacturing\Domain\Models\C2m\VmiReplenishment;
+use Modules\Med\Domain\Models\MedIpLicense;
+use Modules\Med\Domain\Models\MedRoyaltyStatement;
 use Modules\Mining\Domain\Models\MiningPit;
 use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Partner\Domain\Models\Partner;
@@ -2941,6 +2943,43 @@ return [
                     'active_device_count' => 1,
                     'total_consumed_mb' => 0.0,
                     'total_charge_minor' => 30000,
+                    'status' => 'ISSUED',
+                ]
+            )->id,
+        ],
+    ],
+
+    // media-mvp
+    'med.mvp.dashboard' => ['roles' => ['admin', 'auditor', 'media_admin', 'rights_manager', 'studio_manager']],
+    'med.mvp.studios' => ['roles' => ['admin', 'media_admin', 'studio_manager']],
+    'med.mvp.licensing' => ['roles' => ['admin', 'media_admin', 'rights_manager']],
+    'med.mvp.royalties.detail' => [
+        'roles' => ['admin', 'media_admin', 'rights_manager'],
+        'params' => fn () => [
+            'id' => MedRoyaltyStatement::firstOrCreate(
+                ['statement_number' => 'STMT-ROUTE-001'],
+                [
+                    'id' => (string) Str::uuid(),
+                    'license_id' => MedIpLicense::firstOrCreate(
+                        ['license_code' => 'LIC-ROUTE-001'],
+                        [
+                            'id' => (string) Str::uuid(),
+                            'ip_id' => (string) Str::uuid(),
+                            'licensee_entity_id' => 'PARTY-ROUTE-01',
+                            'rights_type' => 'STREAMING',
+                            'channel' => 'STREAMING',
+                            'territory' => 'GLOBAL',
+                            'start_date' => '2026-01-01',
+                            'end_date' => '2026-12-31',
+                            'royalty_rate_pct' => 10.0,
+                            'status' => 'ACTIVE',
+                        ]
+                    )->id,
+                    'billing_period' => '2026-10',
+                    'gross_revenue_minor' => 1000000,
+                    'total_distribution_fee_minor' => 100000,
+                    'total_recouped_minor' => 0,
+                    'total_royalty_distributed_minor' => 900000,
                     'status' => 'ISSUED',
                 ]
             )->id,

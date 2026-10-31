@@ -8,6 +8,8 @@ use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Modules\Med\Domain\Models\MedIpAsset;
+use Modules\Med\Domain\Models\MedIpLicense;
 use Modules\Med\Domain\Models\MedRoyaltyStatement;
 use Tests\TestCase;
 
@@ -61,10 +63,34 @@ class MediaUiResponsivenessAndRbacTest extends TestCase
 
     public function test_anti_idor_protects_royalty_statement_details_endpoint(): void
     {
+        $ip = MedIpAsset::create([
+            'id' => (string) Str::uuid(),
+            'ip_code' => 'IP-IDOR-01',
+            'title' => 'IDOR Test IP',
+            'ip_type' => 'SONG',
+            'owner_entity_id' => 'ENT-OWNER-01',
+            'status' => 'ACTIVE',
+        ]);
+
+        $license = MedIpLicense::create([
+            'id' => (string) Str::uuid(),
+            'license_code' => 'LIC-IDOR-01',
+            'ip_id' => $ip->id,
+            'licensee_entity_id' => 'ENT-OWNER-01',
+            'rights_type' => 'STREAMING',
+            'channel' => 'STREAMING',
+            'territory' => 'GLOBAL',
+            'start_date' => '2026-01-01',
+            'end_date' => '2026-12-31',
+            'is_exclusive' => true,
+            'royalty_rate_pct' => 10.0,
+            'status' => 'ACTIVE',
+        ]);
+
         $statement = MedRoyaltyStatement::create([
             'id' => (string) Str::uuid(),
             'statement_number' => 'STMT-IDOR-01',
-            'license_id' => (string) Str::uuid(),
+            'license_id' => $license->id,
             'billing_period' => '2026-10',
             'gross_revenue_minor' => 50_000_000,
             'total_distribution_fee_minor' => 5_000_000,
@@ -87,6 +113,11 @@ class MediaUiResponsivenessAndRbacTest extends TestCase
         $this->actingAs($userOtherEntity)
             ->get("/media/royalties/{$statement->id}")
             ->assertStatus(403);
+
+        // With matching entity, 200 OK
+        $this->actingAs($userOwnEntity)
+            ->get("/media/royalties/{$statement->id}")
+            ->assertStatus(200);
     }
 
     public function test_mobile_375px_responsiveness_for_media_dashboard(): void
