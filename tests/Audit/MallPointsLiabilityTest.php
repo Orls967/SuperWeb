@@ -6,9 +6,11 @@ namespace Tests\Audit;
 
 use App\Models\User;
 use App\Quality\Ledger\LedgerNormalBalanceScanner;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerEntry;
 use Modules\Mall\Application\Actions\ClaimReceiptPointsAction;
 use Modules\Mall\Application\Actions\ExpirePointsAction;
 use Modules\Mall\Application\Actions\RedeemVoucherAction;
@@ -17,6 +19,7 @@ use Modules\Mall\Domain\Models\LoyaltyMember;
 use Modules\Mall\Domain\Models\PointBatch;
 use Modules\Mall\Domain\Models\Property;
 use Modules\Mall\Domain\Models\VoucherTemplate;
+use Modules\Mall\Ledger\MallAccounts;
 use Tests\TestCase;
 
 class MallPointsLiabilityTest extends TestCase
@@ -24,27 +27,35 @@ class MallPointsLiabilityTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * M-R0-6 Audit: Membuktikan bahwa penutupan M-R0-6 di modul Mall dilakukan dengan
-     * reklasifikasi kind (LIABILITY -> CLEARING), bukan perbaikan arah posting debit/kredit.
+     * Audit Model Poin Mall (K-9 Opsi C — DECISIONS.md#2026-10-31-model-poin-mall):
+     *
+     * Membuktikan integritas model C (EXPENSE / REVENUE) sesuai KONSEP §A2.1:
+     * - POINTS dompet pengguna adalah kredit-normal (saldo bertambah positif: +100 -> +70 -> +50);
+     * - expense:mall:points_issued:PTS bersaldo -100 (sisi debit, beban loyalitas bertambah);
+     * - revenue:mall:points_redeemed:PTS bersaldo +30 (sisi kredit, pendapatan penukaran);
+     * - revenue:mall:points_breakage:PTS bersaldo +20 (sisi kredit, pendapatan kedaluwarsa);
+     * - Tidak ada akun PTS Mall berjenis CLEARING;
+     * - liability:mall:points:PTS tidak ada dan tidak menerima posting apa pun;
+     * - LedgerNormalBalanceScanner menghasilkan 0 pelanggaran untuk SELURUH akun PTS.
      *
      * @group audit-2026-10-18
      */
     public function test_mall_points_liability_posting_direction_and_reclassification(): void
     {
+        $this->seed(LedgerAccountsSeeder::class);
+
         $user = User::factory()->create(['role' => 'customer']);
         $processor = User::factory()->create(['role' => 'admin']);
 
         $member = LoyaltyMember::create([
             'user_id' => $user->id,
-            'member_number' => 'MALL-LOYAL-AUDIT-001',
             'tier' => LoyaltyTier::SILVER,
-            'total_points_earned' => 0,
-            'current_points' => 0,
             'lifetime_spend' => 0,
-            'tier_upgraded_at' => now(),
+            'current_year_spend' => 0,
+            'tier_expires_at' => now()->addYear(),
         ]);
 
-        $property = Property::create([
+        Property::create([
             'code' => 'PROP-DM-01',
             'name' => 'Duta Mall Banjarmasin',
             'address' => 'Jl. A. Yani Km 2, Banjarmasin',
@@ -52,7 +63,7 @@ class MallPointsLiabilityTest extends TestCase
             'timezone' => 'Asia/Makassar',
         ]);
 
-        // 1. Klaim 100 poin
+        // 1. Klaim 100 poin (Rp 1.000.000 -> 100 PTS)
         $claimAction = app(ClaimReceiptPointsAction::class);
         $claimAction->execute(
             user: $user,
@@ -62,22 +73,14 @@ class MallPointsLiabilityTest extends TestCase
             processor: $processor,
         );
 
-        $account = LedgerAccount::where('code', 'liability:mall:points:PTS')->firstOrFail();
+        $userAccount = LedgerAccount::where('code', "points:user:{$user->id}:PTS")->firstOrFail();
+        $issuedAccount = LedgerAccount::where('code', MallAccounts::EXPENSE_POINTS_ISSUED_PTS)->firstOrFail();
 
-        $kindVal = is_object($account->kind) ? $account->kind->value : (string) $account->kind;
-        $this->assertSame(
-            AccountKind::LIABILITY->value,
-            $kindVal,
-            'Akun liability:mall:points:PTS wajib bertipe LIABILITY sesuai K-1'
-        );
+        // Dompet user bertambah +100
+        $this->assertSame(100, (int) $userAccount->fresh()->cached_balance, 'Dompet pengguna wajib bernilai +100 setelah klaim');
 
-        // Saldo setelah klaim 100 poin bernilai +100 (kredit kewajiban bertambah)
-        $balanceAfterClaim = (int) $account->fresh()->cached_balance;
-        $this->assertSame(
-            100,
-            $balanceAfterClaim,
-            'Saldo kewajiban bertambah menjadi +100 (kredit balance)'
-        );
+        // Issued account bersaldo -100 (debit side)
+        $this->assertSame(-100, (int) $issuedAccount->fresh()->cached_balance, 'Akun expense:mall:points_issued:PTS wajib bersaldo -100');
 
         // 2. Redeem 30 poin
         $template = VoucherTemplate::create([
@@ -92,11 +95,15 @@ class MallPointsLiabilityTest extends TestCase
         ]);
 
         $redeemAction = app(RedeemVoucherAction::class);
-        $redeemAction->execute($user, $template);
+        $redeemAction->execute($user, $template, 'audit_redeem_key_1');
 
-        // Setelah redeem 30 poin: 100 - 30 = 70
-        $balanceAfterRedeem = (int) $account->fresh()->cached_balance;
-        $this->assertSame(70, $balanceAfterRedeem, 'Saldo kewajiban berkurang menjadi +70 setelah redeem 30 pts');
+        $redeemedAccount = LedgerAccount::where('code', MallAccounts::REVENUE_POINTS_REDEEMED_PTS)->firstOrFail();
+
+        // Dompet user berkurang 30 menjadi +70
+        $this->assertSame(70, (int) $userAccount->fresh()->cached_balance, 'Dompet pengguna wajib bernilai +70 setelah redeem 30 PTS');
+
+        // Redeemed account bersaldo +30 (credit side)
+        $this->assertSame(30, (int) $redeemedAccount->fresh()->cached_balance, 'Akun revenue:mall:points_redeemed:PTS wajib bersaldo +30');
 
         // 3. Expire 20 poin
         $batch = PointBatch::where('user_id', $user->id)->firstOrFail();
@@ -108,19 +115,35 @@ class MallPointsLiabilityTest extends TestCase
         $expireAction = app(ExpirePointsAction::class);
         $expireAction->execute(now());
 
-        // Setelah expire 20 poin: 70 - 20 = 50
-        $balanceAfterExpire = (int) $account->fresh()->cached_balance;
-        $this->assertSame(
-            50,
-            $balanceAfterExpire,
-            'Saldo akhir bernilai +50 sesuai sisi normal kewajiban kredit'
-        );
+        $breakageAccount = LedgerAccount::where('code', MallAccounts::REVENUE_POINTS_BREAKAGE_PTS)->firstOrFail();
 
-        // Memastikan scanner normal balance tidak menemukan pelanggaran
-        $violations = LedgerNormalBalanceScanner::violations([$account]);
+        // Dompet user berkurang 20 menjadi +50
+        $this->assertSame(50, (int) $userAccount->fresh()->cached_balance, 'Dompet pengguna wajib bernilai +50 setelah kedaluwarsa 20 PTS');
+
+        // Breakage account bersaldo +20 (credit side)
+        $this->assertSame(20, (int) $breakageAccount->fresh()->cached_balance, 'Akun revenue:mall:points_breakage:PTS wajib bersaldo +20');
+
+        // 4. Verifikasi Invarian Model C
+        // Tidak ada akun PTS Mall berjenis CLEARING
+        $clearingPts = LedgerAccount::where('asset_code', 'PTS')
+            ->where('kind', AccountKind::CLEARING->value)
+            ->first();
+        $this->assertNull($clearingPts, 'Dilarang ada akun PTS berjenis CLEARING di modul Mall');
+
+        // liability:mall:points:PTS tidak boleh ada dan tidak boleh menerima posting
+        $liabilityAccount = LedgerAccount::where('code', 'liability:mall:points:PTS')->first();
+        $this->assertNull($liabilityAccount, 'liability:mall:points:PTS tidak boleh ada di database');
+
+        $liabilityEntries = LedgerEntry::where('account_code', 'liability:mall:points:PTS')->count();
+        $this->assertSame(0, $liabilityEntries, 'liability:mall:points:PTS tidak boleh menerima posting apa pun');
+
+        // LedgerNormalBalanceScanner: NOL pelanggaran untuk SELURUH akun PTS
+        $allPtsAccounts = LedgerAccount::where('asset_code', 'PTS')->get()->all();
+        $this->assertNotEmpty($allPtsAccounts, 'Akun PTS wajib ada untuk diverifikasi');
+        $violations = LedgerNormalBalanceScanner::violations($allPtsAccounts);
         $this->assertEmpty(
             $violations,
-            'Akun liability:mall:points:PTS tidak boleh memiliki pelanggaran saldo normal'
+            'LedgerNormalBalanceScanner wajib nol pelanggaran untuk SEMUA akun PTS'
         );
     }
 }

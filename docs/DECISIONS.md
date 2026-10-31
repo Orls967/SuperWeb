@@ -1915,3 +1915,43 @@
 - **Verification:**
   - `tests/Architecture/ConfigAllowlistGovernanceTest.php` PASS.
   - `php artisan arch:scan` PASS terhadap baseline nyata yang disetujui.
+
+
+<a id="2026-10-31-model-poin-mall"></a>
+## 2026-10-31: Model Poin Loyalitas Mall (K-9 Opsi C — EXPENSE / REVENUE)
+- **Anchor:** `2026-10-31-model-poin-mall`
+- **Context:**
+  - Pada master, akun PTS sisi pengguna sudah benar (kredit bertambah positif). Namun akun penyeimbangnya, `liability:mall:points:PTS`, sebelumnya diklasifikasikan sebagai CLEARING bersaldo negatif. Pada branch pemulihan awal, sisi akun pengguna sempat dibalik menjadi debit-normal disertai pemanggilan `abs()`, yang melanggar prinsip buku besar perbankan KONSEP §A2.1.
+- **Decision:**
+  1. Menetapkan Model C (K-9 Opsi C) untuk seluruh siklus poin loyalitas Mall (PTS):
+     - `points:user:{id}:PTS` (AccountKind::POINTS) dikembalikan ke sisi normal kredit (saldo $\ge 0$, `allow_negative = false`, tanpa `abs()`).
+     - `expense:mall:points_issued:PTS` (AccountKind::EXPENSE, debit-normal, saldo bertambah negatif $-\text{PTS}$) sebagai beban operasional program loyalitas saat penerbitan poin.
+     - `revenue:mall:points_redeemed:PTS` (AccountKind::REVENUE, kredit-normal, saldo bertambah positif $+\text{PTS}$) sebagai pendapatan saat penukaran poin dengan voucher.
+     - `revenue:mall:points_breakage:PTS` (AccountKind::REVENUE, kredit-normal, saldo bertambah positif $+\text{PTS}$) sebagai pendapatan kedaluwarsa poin.
+     - Menghapus akun dan kode `liability:mall:points:PTS` secara permanen dari kode produksi. Modul Mall tidak lagi memiliki akun PTS berjenis CLEARING atau LIABILITY.
+  2. Arah posting double-entry buku besar:
+     - Klaim $n$ PTS: Debit `expense:mall:points_issued:PTS`, Kredit `points:user:{id}:PTS`.
+     - Redeem $n$ PTS: Debit `points:user:{id}:PTS`, Kredit `revenue:mall:points_redeemed:PTS`.
+     - Kedaluwarsa $n$ PTS: Debit `points:user:{id}:PTS`, Kredit `revenue:mall:points_breakage:PTS`. Satu posting per batch, dengan kunci deterministik `mall:pts_expire:{batch_id}` (KONSEP §A2.5).
+     - Seluruh posting menggunakan `Posting::lines()->debit(...)->credit(...)` tanpa manipulasi tanda negatif manual.
+  3. Buku lot & FIFO:
+     - `PointBatch` tetap menjadi buku lot pelacakan kedaluwarsa secara FIFO dengan `lockForUpdate`.
+     - Redeem mengonsumsi lot aktif secara atomik; jika saldo tidak mencukupi, permintaan ditolak sebelum posting buku besar dibuat.
+     - Saldo dompet diakses murni melalui `cached_balance` tanpa pemanggilan fungsi `abs()`.
+  4. Audit & Rekonsiliasi:
+     - Diperluas pada `mall:audit-billing`:
+       - Per user: Saldo `points:user:{id}:PTS` $=$ $\sum$ sisa lot aktif $=$ `current_points`.
+       - Global: $\sum$ saldo dompet pengguna $=$ $-$saldo issued $-$ saldo redeemed $-$ saldo breakage.
+- **Reason:**
+  - Mematuhi KONSEP §A2.1 bahwa akun berjenis POINTS memiliki saldo normal kredit $\ge 0$ (seperti dompet/simpanan pelanggan).
+  - Mengakui biaya program loyalitas sebagai beban (EXPENSE) saat poin diterbitkan dan merealisasikannya sebagai pendapatan (REVENUE) saat ditukar voucher belanja atau kedaluwarsa.
+  - Menghindari akun liar jenis CLEARING yang rawan saldo terbalik.
+- **Data Lama & Rencana:**
+  - Lingkungan pengembangan (dev/test): Cukup lakukan `php artisan migrate:fresh --seed`.
+  - Lingkungan non-dev/produksi: Dilakukan posting koreksi penyeimbang append-only dari akun lama ke akun Model C.
+  - Buku lot `PointBatch` direncanakan diekstraksi menjadi registry lot ekosistem bersama saat lini bisnis lain di luar Mall mulai menerbitkan unit PTS.
+- **Verification:**
+  - `tests/Audit/MallPointsLiabilityTest.php` ditulis ulang lebih ketat dan PASS.
+  - `modules/Mall/tests/Feature/MallPointsModelCTest.php` PASS.
+  - `tests/Architecture/LedgerNormalBalanceTest.php` dan `LedgerAccountRegistryTest.php` PASS.
+  - `git grep -n "abs("` pada jalur poin bernilai 0.

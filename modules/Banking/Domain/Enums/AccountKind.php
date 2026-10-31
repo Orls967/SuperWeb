@@ -60,7 +60,6 @@ enum AccountKind: string
             self::CASH,
             self::INVENTORY,
             self::LOAN_RECEIVABLE,
-            self::POINTS,
             self::EXPENSE => 'debit',
 
             self::REVENUE,
@@ -70,6 +69,7 @@ enum AccountKind: string
             self::DEPOSIT,
             self::ESCROW,
             self::WALLET,
+            self::POINTS,
             self::CONTRA_ASSET,
             self::COLLATERAL => 'credit',
 

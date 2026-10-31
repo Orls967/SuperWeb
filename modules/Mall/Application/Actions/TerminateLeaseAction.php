@@ -6,7 +6,6 @@ namespace Modules\Mall\Application\Actions;
 
 use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
@@ -18,6 +17,7 @@ use Modules\Mall\Domain\Enums\DepositStatus;
 use Modules\Mall\Domain\Enums\LeaseStatus;
 use Modules\Mall\Domain\Enums\UnitStatus;
 use Modules\Mall\Domain\Models\Lease;
+use Modules\Mall\Ledger\MallAccounts;
 
 class TerminateLeaseAction
 {
@@ -106,17 +106,6 @@ class TerminateLeaseAction
 
     private function ensureLedgerAccountExists(string $code, string $name, AccountKind $kind, bool $allowNegative = false): LedgerAccount
     {
-        return LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'uuid' => (string) Str::uuid(),
-                'name' => $name,
-                'asset_code' => 'IDR',
-                'kind' => $kind->value,
-                'allow_negative' => $allowNegative,
-                'cached_balance' => '0',
-                'is_frozen' => false,
-            ]
-        );
+        return MallAccounts::get($code);
     }
 }
