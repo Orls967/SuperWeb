@@ -313,7 +313,7 @@ class MediaSimulationRunner
         $totalVerifiedCount = $impressionsCount - $totalFraudCount;     // 1,980,000 verified
         $rejectedDuplicateImpressions = (int) round($impressionsCount * 0.03); // 60,000 duplicates
 
-        // High-speed chunked PDO insert for 2,000,000 impressions (80 rows per batch)
+        // High-speed chunked PDO insert for 2,000,000 impressions
         $pdo = DB::connection()->getPdo();
         $startedTx = false;
         if (! $pdo->inTransaction()) {
@@ -321,11 +321,9 @@ class MediaSimulationRunner
             $startedTx = true;
         }
 
-        $batchSize = 80;
-        $rowSql = '('.implode(',', array_fill(0, 10, '?')).')';
-        $batchSql = 'INSERT INTO med_ad_impressions (id, campaign_id, impression_hash, device_ip_hash, timestamp_utc, is_verified, is_fraud, fraud_reason, created_at, updated_at) VALUES '
-            .implode(',', array_fill(0, $batchSize, $rowSql));
-        $batchStmt = $pdo->prepare($batchSql);
+        $stmt = $pdo->prepare(
+            'INSERT INTO med_ad_impressions (id, campaign_id, impression_hash, device_ip_hash, timestamp_utc, is_verified, is_fraud, fraud_reason, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        );
 
         $now = now()->toDateTimeString();
         $campaignCount = count($campaigns);
@@ -336,7 +334,6 @@ class MediaSimulationRunner
 
         for ($cIdx = 0; $cIdx < $campaignCount; $cIdx++) {
             $campId = $campaigns[$cIdx]->id;
-            $batchParams = [];
 
             for ($imp = 1; $imp <= $impressionsPerCampaign; $imp++) {
                 $isFraud = ($imp <= $fraudPerCampaign);
@@ -345,9 +342,9 @@ class MediaSimulationRunner
 
                 $impId = (string) Str::uuid();
                 $impHash = "HASH-{$cIdx}-{$imp}-{$seed}";
-                $devIp = 'IP-'.$cIdx.'-'.($imp % 500);
+                $devIp = "IP-{$cIdx}-".($imp % 500);
 
-                array_push($batchParams,
+                $stmt->execute([
                     $impId,
                     $campId,
                     $impHash,
@@ -357,20 +354,8 @@ class MediaSimulationRunner
                     $isFraud ? 1 : 0,
                     $fraudReason,
                     $now,
-                    $now
-                );
-
-                if ($imp % $batchSize === 0) {
-                    $batchStmt->execute($batchParams);
-                    $batchParams = [];
-                }
-            }
-
-            if (! empty($batchParams)) {
-                $remRows = count($batchParams) / 10;
-                $remSql = 'INSERT INTO med_ad_impressions (id, campaign_id, impression_hash, device_ip_hash, timestamp_utc, is_verified, is_fraud, fraud_reason, created_at, updated_at) VALUES '
-                    .implode(',', array_fill(0, (int) $remRows, $rowSql));
-                $pdo->prepare($remSql)->execute($batchParams);
+                    $now,
+                ]);
             }
         }
         if ($startedTx) {
@@ -389,10 +374,13 @@ class MediaSimulationRunner
         $bankReconcileExitCode = Artisan::call('bank:reconcile');
 
         // 9. Final Canonical Hash for Module State (T4)
-        $medLedgerSummary = DB::table('bank_ledger_entries')
-            ->where('account_code', 'like', 'med:%')
-            ->selectRaw('COUNT(*) as entry_count, COALESCE(SUM(amount), 0) as balance_sum')
-            ->first();
+        $medLedgerRows = DB::select("
+            SELECT COUNT(*) as entry_count, COALESCE(SUM(e.amount), 0) as balance_sum
+            FROM bank_ledger_entries e
+            JOIN bank_ledger_accounts a ON e.account_id = a.id
+            WHERE a.code LIKE 'med:%'
+        ");
+        $medLedgerSummary = $medLedgerRows[0] ?? (object) ['entry_count' => 0, 'balance_sum' => 0];
 
         $finalPayload = [
             'seed' => $seed,

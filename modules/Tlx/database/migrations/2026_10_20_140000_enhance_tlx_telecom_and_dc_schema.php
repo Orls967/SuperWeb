@@ -29,7 +29,7 @@ return new class extends Migration
             $table->bigInteger('total_quota_mb')->default(0);
             $table->bigInteger('excess_mb')->default(0);
             $table->bigInteger('excess_charge_minor')->default(0);
-            $table->string('intercompany_transaction_id')->nullable();
+            $table->foreignId('intercompany_transaction_id')->nullable()->constrained('ic_transactions', indexName: 'tlx_conn_inv_ic_tx_fk')->nullOnDelete();
             $table->string('idempotency_key')->nullable()->unique('tlx_conn_inv_idemp_uniq');
             $table->string('status')->default('ISSUED');
         });
@@ -135,7 +135,28 @@ return new class extends Migration
                 ->nullOnDelete();
         });
 
-        // 9. Tabel tlx_noc_alarms (append-only)
+        // 9. Tabel tlx_noc_tickets
+        Schema::create('tlx_noc_tickets', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('ticket_number')->unique('tlx_noc_tkt_no_uniq');
+            $table->uuid('root_element_id');
+            $table->string('severity')->default('CRITICAL');
+            $table->string('status')->default('OPEN'); // OPEN, ACKNOWLEDGED, RESOLVED, CLOSED
+            $table->integer('mttr_minutes')->nullable();
+            $table->integer('sla_target_minutes')->default(120);
+            $table->boolean('is_sla_breached')->default(false);
+            $table->text('resolution_notes')->nullable();
+            $table->timestamp('opened_at');
+            $table->timestamp('resolved_at')->nullable();
+            $table->timestamps();
+
+            $table->foreign('root_element_id', 'tlx_noc_tkt_root_fk')
+                ->references('id')
+                ->on('tlx_network_elements')
+                ->cascadeOnDelete();
+        });
+
+        // 10. Tabel tlx_noc_alarms (append-only)
         Schema::create('tlx_noc_alarms', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('alarm_code')->unique('tlx_noc_alm_code_uniq');
@@ -157,34 +178,18 @@ return new class extends Migration
                 ->references('id')
                 ->on('tlx_network_elements')
                 ->nullOnDelete();
-        });
 
-        // 10. Tabel tlx_noc_tickets
-        Schema::create('tlx_noc_tickets', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('ticket_number')->unique('tlx_noc_tkt_no_uniq');
-            $table->uuid('root_element_id');
-            $table->string('severity')->default('CRITICAL');
-            $table->string('status')->default('OPEN'); // OPEN, ACKNOWLEDGED, RESOLVED, CLOSED
-            $table->integer('mttr_minutes')->nullable();
-            $table->integer('sla_target_minutes')->default(120);
-            $table->boolean('is_sla_breached')->default(false);
-            $table->text('resolution_notes')->nullable();
-            $table->timestamp('opened_at');
-            $table->timestamp('resolved_at')->nullable();
-            $table->timestamps();
-
-            $table->foreign('root_element_id', 'tlx_noc_tkt_root_fk')
+            $table->foreign('ticket_id', 'tlx_noc_alm_tkt_fk')
                 ->references('id')
-                ->on('tlx_network_elements')
-                ->cascadeOnDelete();
+                ->on('tlx_noc_tickets')
+                ->nullOnDelete();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('tlx_noc_tickets');
         Schema::dropIfExists('tlx_noc_alarms');
+        Schema::dropIfExists('tlx_noc_tickets');
         Schema::dropIfExists('tlx_network_elements');
         Schema::dropIfExists('tlx_colocation_invoices');
         Schema::dropIfExists('tlx_dc_power_readings');

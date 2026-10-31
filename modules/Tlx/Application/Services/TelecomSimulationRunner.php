@@ -497,10 +497,13 @@ class TelecomSimulationRunner
         $bankReconcileExitCode = Artisan::call('bank:reconcile');
 
         // 10. Ledger and Module Table Integrity for T4 Hash
-        $tlxLedgerSummary = DB::table('bank_ledger_entries')
-            ->where('account_code', 'like', 'tlx:%')
-            ->selectRaw('COUNT(*) as entry_count, COALESCE(SUM(amount), 0) as balance_sum')
-            ->first();
+        $tlxLedgerRows = DB::select("
+            SELECT COUNT(*) as entry_count, COALESCE(SUM(e.amount), 0) as balance_sum
+            FROM bank_ledger_entries e
+            JOIN bank_ledger_accounts a ON e.account_id = a.id
+            WHERE a.code LIKE 'tlx:%'
+        ");
+        $tlxLedgerSummary = $tlxLedgerRows[0] ?? (object) ['entry_count' => 0, 'balance_sum' => 0];
 
         $finalPayload = [
             'period' => $billingPeriod,

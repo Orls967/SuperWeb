@@ -164,6 +164,11 @@ return new class extends Migration
         Schema::table('med_ad_campaigns', function (Blueprint $table): void {
             $table->uuid('placement_id')->nullable();
             $table->string('idempotency_key', 64)->nullable()->unique('med_ad_cmp_idemp_uniq');
+
+            $table->foreign('placement_id', 'med_ad_cmp_plc_fk')
+                ->references('id')
+                ->on('med_ad_placements')
+                ->nullOnDelete();
         });
 
         // 11. Table med_ad_impressions (append-only fact table)

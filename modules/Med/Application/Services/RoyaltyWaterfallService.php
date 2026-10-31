@@ -36,7 +36,11 @@ class RoyaltyWaterfallService
      */
     public function recordAdvance(array $params): MedIpAdvanceBalance
     {
-        $idempotencyKey = $params['idempotency_key'] ?? ('ADV:'.Str::uuid());
+        if (empty($params['idempotency_key'])) {
+            throw new InvalidArgumentException('Idempotency key is required to record advance balance.');
+        }
+
+        $idempotencyKey = (string) $params['idempotency_key'];
 
         $existing = MedIpAdvanceBalance::where('idempotency_key', $idempotencyKey)->first();
         if ($existing !== null) {
@@ -78,7 +82,11 @@ class RoyaltyWaterfallService
             throw new InvalidArgumentException('Gross revenue cannot be negative');
         }
 
-        $idempotencyKey = $params['idempotency_key'] ?? ('STMT:'.Str::uuid());
+        if (empty($params['idempotency_key'])) {
+            throw new InvalidArgumentException('Idempotency key is required to settle royalty waterfall.');
+        }
+
+        $idempotencyKey = (string) $params['idempotency_key'];
         $existing = MedRoyaltyStatement::where('idempotency_key', $idempotencyKey)->first();
         if ($existing !== null) {
             return $existing;
@@ -97,9 +105,11 @@ class RoyaltyWaterfallService
             $periodStart = CarbonImmutable::parse($params['billing_period'].'-01');
             $activeShares = $this->rightsService->getActiveSharesAt($license->ip_id, $license->rights_type, $periodStart);
 
+            $statementNumber = 'STMT-'.$license->license_code.'-'.$params['billing_period'].'-'.strtoupper(substr(hash('sha256', $idempotencyKey), 0, 4));
+
             $statement = MedRoyaltyStatement::create([
                 'id' => (string) Str::uuid(),
-                'statement_number' => 'STMT-'.$license->license_code.'-'.$params['billing_period'].'-'.Str::upper(Str::random(4)),
+                'statement_number' => $statementNumber,
                 'license_id' => $license->id,
                 'billing_period' => $params['billing_period'],
                 'gross_revenue_minor' => $gross,

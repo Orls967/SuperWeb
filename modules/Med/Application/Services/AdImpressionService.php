@@ -36,7 +36,11 @@ class AdImpressionService
      */
     public function bookCampaign(array $params): MedAdCampaign
     {
-        $idempotencyKey = $params['idempotency_key'] ?? ('CMP:'.Str::uuid());
+        if (empty($params['idempotency_key'])) {
+            throw new InvalidArgumentException('Idempotency key is required to book an ad campaign.');
+        }
+
+        $idempotencyKey = (string) $params['idempotency_key'];
         $existing = MedAdCampaign::where('idempotency_key', $idempotencyKey)->first();
         if ($existing !== null) {
             return $existing;
@@ -51,7 +55,7 @@ class AdImpressionService
 
         return MedAdCampaign::create([
             'id' => (string) Str::uuid(),
-            'campaign_code' => 'CMP-'.Str::upper(Str::random(8)),
+            'campaign_code' => 'CMP-'.strtoupper(substr(hash('sha256', $idempotencyKey), 0, 8)),
             'advertiser_entity_id' => $params['advertiser_entity_id'],
             'agency_entity_id' => $params['agency_entity_id'] ?? null,
             'agency_commission_pct' => (float) ($params['agency_commission_pct'] ?? 0.0),
