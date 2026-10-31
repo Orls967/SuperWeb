@@ -32,6 +32,27 @@ final class CloudKitchenAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => false,
             ],
+            [
+                'code' => 'ckt:catering_revenue:IDR',
+                'name' => 'Cloud Kitchen Catering Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'expense:resto:cogs:IDR',
+                'name' => 'Resto and Cloud Kitchen COGS Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'inventory:resto:central:IDR',
+                'name' => 'Resto Central Kitchen Inventory Asset',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }

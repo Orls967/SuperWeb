@@ -8,6 +8,7 @@ use Modules\Vending\Http\Controllers\SmartVendingOperationsController;
 
 Route::middleware(['web', 'auth', 'role:admin,vending_operator,store_manager'])->prefix('vending')->group(function () {
     Route::get('/', [SmartVendingController::class, 'index'])->name('vending.index');
+    Route::post('/dispense', [SmartVendingController::class, 'dispenseApi'])->name('vending.dispense.api');
     Route::post('/units/{unit}/dispense', [SmartVendingController::class, 'dispense'])->name('vending.units.dispense');
 
     Route::prefix('operations')->name('vending.operations.')->group(function () {

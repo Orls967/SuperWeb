@@ -13,6 +13,8 @@ use Modules\Core\Contracts\SimClockInterface;
 use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Rwa\Domain\Models\RwaHolding;
 use Modules\Rwa\Domain\Models\RwaOrderbookOrder;
+use Modules\Rwa\Domain\Models\RwaTokenTransfer;
+use Modules\Rwa\Ledger\RwaAccounts;
 
 class RwaOrderbookService
 {
@@ -76,7 +78,170 @@ class RwaOrderbookService
         });
     }
 
-    public function matchOrders(RwaAsset $asset): void
+    public function placeLimitOrder(array $data, string $idempotencyKey): RwaOrderbookOrder
+    {
+        if (trim($idempotencyKey) === '') {
+            throw new \InvalidArgumentException('Idempotency key is required.');
+        }
+
+        $assetId = (int) $data['rwa_asset_id'];
+        $userId = (int) $data['user_id'];
+        $side = strtoupper((string) $data['side']);
+        $quantity = (int) $data['quantity'];
+        $price = (int) $data['price_per_token_idr'];
+
+        $asset = RwaAsset::findOrFail($assetId);
+
+        if ($asset->status !== 'issued' && $asset->status !== 'active') {
+            throw new \DomainException("RWA asset {$asset->token_symbol} is {$asset->status} and cannot be traded.");
+        }
+
+        if ($side === 'SELL') {
+            $holding = RwaHolding::where('rwa_asset_id', $assetId)
+                ->where('user_id', $userId)
+                ->first();
+
+            $balance = (int) ($holding?->token_balance ?? 0);
+            if ($balance < $quantity) {
+                throw new \DomainException("Insufficient unlocked tokens to place sell order. Available: {$balance}, requested: {$quantity}.");
+            }
+        }
+
+        if ($side === 'BUY') {
+            $user = User::findOrFail($userId);
+            $wallet = $user->walletAccount('IDR');
+            $balance = (int) ($wallet->cached_balance ?? 0);
+            $required = $quantity * $price;
+            if ($balance < $required) {
+                throw new \DomainException("Insufficient cash balance: required {$required} IDR, available {$balance} IDR.");
+            }
+        }
+
+        $orderCode = 'ORD-'.strtoupper(hash('crc32b', "{$assetId}:{$userId}:".$this->simClock->now()->timestamp.":{$side}"));
+
+        return RwaOrderbookOrder::create([
+            'order_code' => $orderCode,
+            'rwa_asset_id' => $assetId,
+            'user_id' => $userId,
+            'side' => $side,
+            'quantity' => $quantity,
+            'filled_quantity' => 0,
+            'price_per_token_idr' => $price,
+            'status' => 'OPEN',
+        ]);
+    }
+
+    public function matchOrders(int|RwaAsset $buyOrderIdOrAsset, ?int $sellOrderId = null, ?string $idempotencyKey = null): mixed
+    {
+        if ($buyOrderIdOrAsset instanceof RwaAsset) {
+            return $this->matchAssetOrders($buyOrderIdOrAsset);
+        }
+
+        $buyOrderId = (int) $buyOrderIdOrAsset;
+        $sellOrderId = (int) $sellOrderId;
+        $idempotencyKey = $idempotencyKey ?? "rwa:match:{$buyOrderId}:{$sellOrderId}";
+
+        return DB::transaction(function () use ($buyOrderId, $sellOrderId, $idempotencyKey) {
+            $buyOrder = RwaOrderbookOrder::lockForUpdate()->findOrFail($buyOrderId);
+            $sellOrder = RwaOrderbookOrder::lockForUpdate()->findOrFail($sellOrderId);
+
+            if ($buyOrder->side !== 'BUY' || $sellOrder->side !== 'SELL') {
+                throw new \DomainException('Invalid order sides for matching. Expected BUY and SELL.');
+            }
+
+            if ($buyOrder->rwa_asset_id !== $sellOrder->rwa_asset_id) {
+                throw new \DomainException('Cannot match orders across different RWA assets.');
+            }
+
+            if ($buyOrder->price_per_token_idr < $sellOrder->price_per_token_idr) {
+                throw new \DomainException('Buy price is below sell price. No trade possible.');
+            }
+
+            $buyRemaining = $buyOrder->quantity - $buyOrder->filled_quantity;
+            $sellRemaining = $sellOrder->quantity - $sellOrder->filled_quantity;
+
+            if ($buyRemaining <= 0 || $sellRemaining <= 0) {
+                throw new \DomainException('One or both orders are already fully filled.');
+            }
+
+            $matchedQty = min($buyRemaining, $sellRemaining);
+            $tradePriceIdr = $sellOrder->price_per_token_idr;
+            $totalTradeValueIdr = $matchedQty * $tradePriceIdr;
+
+            // Platform fee = 25 bps (0.25%)
+            $feeIdr = intdiv($totalTradeValueIdr * self::PLATFORM_FEE_BPS, 10_000);
+            $sellerNetIdr = $totalTradeValueIdr - $feeIdr;
+
+            // Cash settlement: Buyer -> Seller (-gross for buyer, +net for seller, +fee for platform)
+            $buyer = User::findOrFail($buyOrder->user_id);
+            $buyerWallet = $buyer->walletAccount('IDR');
+            $buyerWallet->cached_balance = (string) (((int) $buyerWallet->cached_balance) - $totalTradeValueIdr);
+            $buyerWallet->save();
+
+            $seller = User::findOrFail($sellOrder->user_id);
+            $sellerWallet = $seller->walletAccount('IDR');
+            $sellerWallet->cached_balance = (string) (((int) $sellerWallet->cached_balance) + $sellerNetIdr);
+            $sellerWallet->save();
+
+            if ($feeIdr > 0) {
+                $feeAccount = RwaAccounts::platformFees();
+                $feeAccount->cached_balance = (string) (((int) $feeAccount->cached_balance) + $feeIdr);
+                $feeAccount->save();
+            }
+
+            // Token holdings settlement: Seller -> Buyer
+            $sellerHolding = RwaHolding::where('rwa_asset_id', $sellOrder->rwa_asset_id)
+                ->where('user_id', $sellOrder->user_id)
+                ->lockForUpdate()
+                ->firstOrFail();
+            $sellerHolding->token_balance = ((int) $sellerHolding->token_balance) - $matchedQty;
+            $sellerHolding->save();
+
+            $buyerHolding = RwaHolding::firstOrNew([
+                'rwa_asset_id' => $buyOrder->rwa_asset_id,
+                'user_id' => $buyOrder->user_id,
+            ]);
+            $buyerHolding->token_balance = ((int) ($buyerHolding->token_balance ?? 0)) + $matchedQty;
+            $buyerHolding->is_kyc_verified = true;
+            $buyerHolding->save();
+
+            // Append-only token transfer log (PR5)
+            RwaTokenTransfer::create([
+                'rwa_asset_id' => $buyOrder->rwa_asset_id,
+                'from_user_id' => $sellOrder->user_id,
+                'to_user_id' => $buyOrder->user_id,
+                'quantity' => $matchedQty,
+                'price_per_token_idr' => $tradePriceIdr,
+                'transfer_type' => 'SECONDARY_TRADE',
+                'reference_code' => "TRADE-{$buyOrderId}-{$sellOrderId}",
+                'idempotency_key' => $idempotencyKey,
+                'created_at' => $this->simClock->now(),
+            ]);
+
+            // Update orders
+            $buyOrder->filled_quantity += $matchedQty;
+            if ($buyOrder->filled_quantity >= $buyOrder->quantity) {
+                $buyOrder->status = 'FILLED';
+            }
+            $buyOrder->save();
+
+            $sellOrder->filled_quantity += $matchedQty;
+            if ($sellOrder->filled_quantity >= $sellOrder->quantity) {
+                $sellOrder->status = 'FILLED';
+            }
+            $sellOrder->save();
+
+            return [
+                'matched_quantity' => $matchedQty,
+                'trade_price_idr' => $tradePriceIdr,
+                'total_trade_value_idr' => $totalTradeValueIdr,
+                'platform_fee_idr' => $feeIdr,
+                'status' => 'SETTLED',
+            ];
+        });
+    }
+
+    public function matchAssetOrders(RwaAsset $asset): void
     {
         // Price-time priority matching
         $bids = RwaOrderbookOrder::where('rwa_asset_id', $asset->id)

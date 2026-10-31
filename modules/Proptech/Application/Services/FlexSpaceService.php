@@ -35,17 +35,11 @@ class FlexSpaceService
             // Lock space to prevent concurrent race condition
             FlexSpace::where('id', $space->id)->lockForUpdate()->firstOrFail();
 
-            // Anti-overlap check
+            // Anti-overlap check: strict half-open interval collision
             $overlap = FlexBooking::where('flex_space_id', $space->id)
                 ->whereIn('status', ['HELD', 'CONFIRMED', 'CHECKED_IN'])
-                ->where(function ($query) use ($startTime, $endTime) {
-                    $query->whereBetween('start_time', [$startTime, $endTime])
-                        ->orWhereBetween('end_time', [$startTime, $endTime])
-                        ->orWhere(function ($q) use ($startTime, $endTime) {
-                            $q->where('start_time', '<=', $startTime)
-                                ->where('end_time', '>=', $endTime);
-                        });
-                })
+                ->where('start_time', '<', $endTime)
+                ->where('end_time', '>', $startTime)
                 ->exists();
 
             if ($overlap) {
@@ -209,11 +203,12 @@ class FlexSpaceService
         }
 
         // 2. Audit ledger consistency for captured bookings
-        if (Schema::hasTable('bk_ledger_accounts')) {
+        $table = Schema::hasTable('bank_ledger_accounts') ? 'bank_ledger_accounts' : (Schema::hasTable('bk_ledger_accounts') ? 'bk_ledger_accounts' : null);
+        if ($table !== null) {
             $capturedBookings = FlexBooking::where('status', 'CHECKED_IN')->get();
             $expectedCapturedRevenue = (int) $capturedBookings->sum('total_price_idr');
 
-            $rows = DB::select('SELECT cached_balance FROM bk_ledger_accounts WHERE code = ? LIMIT 1', ['prp:flex_revenue:IDR']);
+            $rows = DB::select("SELECT cached_balance FROM {$table} WHERE code = ? LIMIT 1", ['prp:flex_revenue:IDR']);
             if (! empty($rows)) {
                 $actualLedgerRevenue = abs((int) $rows[0]->cached_balance);
                 if ($expectedCapturedRevenue !== $actualLedgerRevenue) {

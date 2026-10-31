@@ -102,5 +102,18 @@ class LedgerAccountsSeeder extends Seeder
                 );
             }
         }
+
+        LedgerAccount::firstOrCreate(
+            ['code' => 'hsp:hospital_package_revenue:IDR'],
+            [
+                'uuid' => (string) Str::uuid(),
+                'name' => 'Hospital Package Revenue',
+                'asset_code' => 'IDR',
+                'kind' => AccountKind::REVENUE->value,
+                'allow_negative' => false,
+                'cached_balance' => '0',
+                'is_frozen' => false,
+            ]
+        );
     }
 }

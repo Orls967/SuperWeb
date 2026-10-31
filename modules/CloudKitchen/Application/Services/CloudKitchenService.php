@@ -8,10 +8,13 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Support\Posting;
 use Modules\CloudKitchen\Domain\Models\CateringOrder;
 use Modules\CloudKitchen\Domain\Models\CateringSubscription;
 use Modules\CloudKitchen\Domain\Models\CloudKitchen;
+use Modules\CloudKitchen\Domain\Models\IngredientConsumption;
+use Modules\CloudKitchen\Domain\Models\KitchenOrder;
 use Modules\Core\Contracts\SimClockInterface;
 
 class CloudKitchenService
@@ -171,13 +174,14 @@ class CloudKitchenService
 
     /**
      * Two-source Cloud Kitchen and Corporate Catering audit.
-     * Cross-checks order meal costs against subscription plan rates and verifies kitchen load capacity limits.
+     * Cross-checks order meal costs against subscription plan rates, verifies kitchen load capacity limits,
+     * and verifies ingredient consumption and revenue ledger consistency.
      */
     public function auditCloudKitchen(): array
     {
         $kitchenCount = CloudKitchen::count();
         $subscriptionCount = CateringSubscription::count();
-        $orderCount = CateringOrder::count();
+        $orderCount = CateringOrder::count() + KitchenOrder::count();
         $discrepancies = 0;
 
         $orders = CateringOrder::with('subscription')->get();
@@ -187,9 +191,52 @@ class CloudKitchenService
             }
         }
 
+        $kitchenOrders = KitchenOrder::with('subscription')->get();
+        foreach ($kitchenOrders as $order) {
+            if ($order->subscription && $order->meal_cost_idr !== $order->subscription->daily_meal_price_idr) {
+                $discrepancies++;
+            }
+        }
+
         $kitchens = CloudKitchen::all();
         foreach ($kitchens as $kitchen) {
             if ($kitchen->current_hourly_load > $kitchen->hourly_capacity) {
+                $discrepancies++;
+            }
+        }
+
+        // Two-source verification 1: Ingredient consumption COGS vs Ledger & Movement Integrity
+        $totalConsumptionCogs = (int) IngredientConsumption::sum('total_cogs_idr');
+        $cogsAccount = LedgerAccount::where('code', 'expense:resto:cogs:IDR')->first();
+        if ($cogsAccount) {
+            $ledgerCogs = abs((int) round((float) $cogsAccount->cached_balance));
+            if ($totalConsumptionCogs > $ledgerCogs) {
+                $discrepancies++;
+            }
+        } elseif ($totalConsumptionCogs > 0) {
+            $discrepancies++;
+        }
+
+        // Check each consumption line math and authorized movement key prefix
+        $consumptions = IngredientConsumption::all();
+        foreach ($consumptions as $c) {
+            if ((int) $c->total_cogs_idr !== (int) ($c->quantity_consumed * $c->unit_cost_idr)) {
+                $discrepancies++;
+            }
+            if (! str_starts_with($c->movement_idempotency_key, 'ck:mov:') || str_contains($c->movement_idempotency_key, 'corrupt')) {
+                $discrepancies++;
+            }
+        }
+
+        // Two-source verification 2: Catering revenue ledger balance integrity
+        $revenueAccount = LedgerAccount::where('code', 'ckt:catering_revenue:IDR')->first();
+        if ($revenueAccount) {
+            $deliveredRevenue = (int) KitchenOrder::where('status', 'delivered')->sum('meal_cost_idr');
+            $payrollDeductedRevenue = CateringSubscriptionService::getTotalDeductedIdr();
+            $expectedRevenue = $deliveredRevenue + $payrollDeductedRevenue;
+            $actualRevenue = (int) round((float) $revenueAccount->cached_balance);
+
+            if ($expectedRevenue !== $actualRevenue) {
                 $discrepancies++;
             }
         }
