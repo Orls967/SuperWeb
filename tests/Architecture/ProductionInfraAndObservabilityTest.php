@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Quality\Observability\PrometheusMetricsCollector;
 use App\Quality\OpenApi\OpenApiSpecGenerator;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Yaml\Yaml;
@@ -19,9 +18,24 @@ it('executes php artisan metrics:prometheus successfully and outputs valid metri
     // 1. Module registration invariant: exactly 46 canonical modules
     expect($output)->toContain('superweb_modules_registered_total 46');
 
-    // 2. Arch scan violations per rule: all A1 to A13 present
-    foreach (PrometheusMetricsCollector::ARCH_RULES as $rule) {
-        expect($output)->toMatch("/superweb_arch_scan_violations_total\{rule=\"{$rule}\"\} \d+/");
+    // 2. Arch scan violations per rule: angka nyata dari arch:scan baseline
+    $expectedViolations = [
+        'A1' => 20,
+        'A2' => 67,
+        'A3' => 0,
+        'A4' => 0,
+        'A5' => 0,
+        'A6' => 0,
+        'A7' => 0,
+        'A8' => 0,
+        'A9' => 0,
+        'A10' => 0,
+        'A11' => 0,
+        'A12' => 304,
+        'A13' => 0,
+    ];
+    foreach ($expectedViolations as $rule => $count) {
+        expect($output)->toContain("superweb_arch_scan_violations_total{rule=\"{$rule}\"} {$count}");
     }
 
     // 3. Operational counters & gauges
@@ -44,7 +58,9 @@ it('verifies /ops/metrics HTTP endpoint returns standard Prometheus exposition c
 
     $content = $response->getContent();
     expect($content)->toContain('superweb_modules_registered_total 46')
-        ->and($content)->toMatch('/superweb_arch_scan_violations_total\{rule="A1"\} \d+/')
+        ->and($content)->toContain('superweb_arch_scan_violations_total{rule="A1"} 20')
+        ->and($content)->toContain('superweb_arch_scan_violations_total{rule="A2"} 67')
+        ->and($content)->toContain('superweb_arch_scan_violations_total{rule="A12"} 304')
         ->and($content)->toContain('superweb_module_tables_count{module="AutoServe"}');
 });
 

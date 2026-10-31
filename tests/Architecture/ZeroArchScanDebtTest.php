@@ -18,21 +18,40 @@ it('ensures zero architecture scan debt across all rules A1 through A13 in basel
     expect($data)->toBeArray();
     expect($data['rules'] ?? null)->toBeArray();
 
-    $approvedDecisions = array_column($data['approved_additions'] ?? [], 'decision');
-    $hasBaselineRestoration = in_array('DECISIONS.md#2026-10-30-pemulihan-baseline', $approvedDecisions, true);
+    /**
+     * Plafon utang arsitektur per aturan (angka baseline saat sinkron terakhir).
+     * Plafon WAJIB diturunkan setiap kali utang turun (K4b).
+     * DILARANG menaikkan plafon tanpa persetujuan eksplisit.
+     */
+    $ceilings = [
+        'A1' => 20,
+        'A2' => 67,
+        'A3' => 0,
+        'A4' => 0,
+        'A5' => 0,
+        'A6' => 0,
+        'A7' => 0,
+        'A8' => 0,
+        'A9' => 0,
+        'A10' => 0,
+        'A11' => 0,
+        'A12' => 304,
+        'A13' => 0,
+    ];
 
     for ($i = 1; $i <= 13; $i++) {
         $ruleKey = "A{$i}";
         expect($data['rules'])->toHaveKey($ruleKey);
+        $ceiling = $ceilings[$ruleKey];
+        $actualTotal = $data['rules'][$ruleKey]['total'] ?? 0;
 
-        if (! $hasBaselineRestoration) {
-            expect($data['rules'][$ruleKey]['total'] ?? null)
-                ->toBe(0, "Architecture debt for rule {$ruleKey} must be exactly 0, got ".($data['rules'][$ruleKey]['total'] ?? 'null'));
-            expect($data['rules'][$ruleKey]['entries'] ?? null)
-                ->toBe([], "Entries for rule {$ruleKey} must be empty.");
-        } else {
-            // Under K-2, real technical debt is anchored in DECISIONS.md and bounded by ratchet
-            expect($data['rules'][$ruleKey]['total'] ?? 0)->toBeGreaterThanOrEqual(0);
+        expect($actualTotal)
+            ->toBeLessThanOrEqual($ceiling, "Utang arsitektur aturan {$ruleKey} ({$actualTotal}) melebihi plafon ({$ceiling}).")
+            ->toBe($ceiling, "Utang aturan {$ruleKey} ({$actualTotal}) tidak sama dengan plafon ({$ceiling}).");
+
+        if ($ceiling === 0) {
+            expect($data['rules'][$ruleKey]['entries'] ?? [])
+                ->toBe([], "Entries untuk aturan {$ruleKey} harus kosong.");
         }
     }
 });
