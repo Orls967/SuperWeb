@@ -203,11 +203,12 @@ class FlexSpaceService
         }
 
         // 2. Audit ledger consistency for captured bookings
-        if (Schema::hasTable('bk_ledger_accounts')) {
+        $table = Schema::hasTable('bank_ledger_accounts') ? 'bank_ledger_accounts' : (Schema::hasTable('bk_ledger_accounts') ? 'bk_ledger_accounts' : null);
+        if ($table !== null) {
             $capturedBookings = FlexBooking::where('status', 'CHECKED_IN')->get();
             $expectedCapturedRevenue = (int) $capturedBookings->sum('total_price_idr');
 
-            $rows = DB::select('SELECT cached_balance FROM bk_ledger_accounts WHERE code = ? LIMIT 1', ['prp:flex_revenue:IDR']);
+            $rows = DB::select("SELECT cached_balance FROM {$table} WHERE code = ? LIMIT 1", ['prp:flex_revenue:IDR']);
             if (! empty($rows)) {
                 $actualLedgerRevenue = abs((int) $rows[0]->cached_balance);
                 if ($expectedCapturedRevenue !== $actualLedgerRevenue) {
