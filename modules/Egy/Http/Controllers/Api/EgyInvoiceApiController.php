@@ -21,7 +21,7 @@ class EgyInvoiceApiController extends Controller
 
         $invoice = UtilityConsolidatedInvoice::with('lines')->findOrFail($id);
 
-        $isPrivileged = $user->hasAnyRbacRole(['admin', 'energy_manager', 'grid_operator', 'energy_auditor']);
+        $isPrivileged = $user->hasAnyRbacRole(['admin', 'energy_manager', 'grid_operator', 'energy_auditor', 'genco_trader']);
         $isOwnTenant = isset($user->property_id) && $user->property_id === $invoice->property_id;
 
         if (! $isPrivileged && ! $isOwnTenant) {
@@ -38,7 +38,7 @@ class EgyInvoiceApiController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        if (! $user->hasAnyRbacRole(['admin', 'energy_manager'])) {
+        if (! $user->hasAnyRbacRole(['admin', 'energy_manager', 'genco_trader'])) {
             return response()->json(['message' => 'Forbidden.'], 403);
         }
 
@@ -59,7 +59,7 @@ class EgyInvoiceApiController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        if (! $user->hasAnyRbacRole(['admin', 'energy_manager'])) {
+        if (! $user->hasAnyRbacRole(['admin', 'energy_manager', 'genco_trader'])) {
             return response()->json(['message' => 'Forbidden.'], 403);
         }
 

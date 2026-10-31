@@ -24,6 +24,8 @@ use Modules\Crypto\Domain\Models\CryptoAlert;
 use Modules\Crypto\Domain\Models\CryptoAsset;
 use Modules\Crypto\Domain\Models\CryptoPriceTick;
 use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Egy\Domain\Models\PpaContract;
+use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
 use Modules\Ev\Domain\Models\EvCharger;
 use Modules\Ev\Domain\Models\EvSession;
 use Modules\Ev\Domain\Models\EvStation;
@@ -2875,4 +2877,37 @@ return [
     'wealth.treasury.rebalance' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.risk-profiles' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.sweep-cash' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
+
+    // energy-mvp
+    'egy.grid.dispatch' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],
+    'egy.grid.invoices' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],
+    'api.energy.telemetry' => 'public',
+    'api.energy.billing.calculate' => ['roles' => ['admin', 'energy_manager', 'genco_trader']],
+    'api.energy.invoices.show' => [
+        'roles' => ['admin', 'energy_manager', 'genco_trader'],
+        'params' => fn () => [
+            'id' => UtilityConsolidatedInvoice::firstOrCreate(
+                ['invoice_number' => 'INV-UTIL-TEST-001'],
+                ['id' => (string) Str::uuid(), 'property_id' => 'PROP-TEST-01', 'billing_period' => '2026-10', 'total_consolidated_minor' => 100000, 'status' => 'ISSUED']
+            )->id,
+        ],
+    ],
+    'api.energy.invoices.issue' => [
+        'roles' => ['admin', 'energy_manager', 'genco_trader'],
+        'params' => fn () => [
+            'id' => UtilityConsolidatedInvoice::firstOrCreate(
+                ['invoice_number' => 'INV-UTIL-TEST-002'],
+                ['id' => (string) Str::uuid(), 'property_id' => 'PROP-TEST-02', 'billing_period' => '2026-10', 'total_consolidated_minor' => 100000, 'status' => 'DRAFT']
+            )->id,
+        ],
+    ],
+    'api.energy.ppa.settle' => [
+        'roles' => ['admin', 'energy_manager', 'genco_trader'],
+        'params' => fn () => [
+            'id' => PpaContract::firstOrCreate(
+                ['contract_number' => 'PPA-TEST-001'],
+                ['id' => (string) Str::uuid(), 'producer_entity_id' => 'ENT-01', 'grid_offtaker_id' => 'ENT-EGY-01', 'feed_in_tariff_per_kwh_minor' => 1000, 'status' => 'ACTIVE']
+            )->id,
+        ],
+    ],
 ];

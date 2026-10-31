@@ -18,7 +18,7 @@ class EgyPpaApiController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        if (! $user->hasAnyRbacRole(['admin', 'genco_trader'])) {
+        if (! $user->hasAnyRbacRole(['admin', 'genco_trader', 'energy_manager'])) {
             return response()->json(['message' => 'Forbidden.'], 403);
         }
 
