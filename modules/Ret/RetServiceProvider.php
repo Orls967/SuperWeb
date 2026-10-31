@@ -6,6 +6,7 @@ namespace Modules\Ret;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Ret\Console\Commands\RetAuditCommand;
+use Modules\Ret\Console\Commands\RetSettleSellersCommand;
 use Modules\Ret\Contracts\MapPriceLookupInterface;
 use Modules\Ret\Infrastructure\Adapters\DefaultMapPriceLookupAdapter;
 use Modules\Shared\Application\MenuRegistry;
@@ -29,6 +30,7 @@ class RetServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 RetAuditCommand::class,
+                RetSettleSellersCommand::class,
             ]);
         }
 

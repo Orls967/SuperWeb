@@ -88,14 +88,16 @@ class MarketplaceSellerSettlementAndEscrowTest extends TestCase
 
         // Check Ledger Postings
         $commissionEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:commission_revenue:IDR'))
-            ->where('amount', 100_000)
+            ->latest('id')
             ->first();
         $this->assertNotNull($commissionEntry);
+        $this->assertEquals(100_000, (int) $commissionEntry->amount);
 
         $sellerApEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', "ap:ret:seller:{$this->seller->party_id}:IDR"))
-            ->where('amount', 900_000)
+            ->latest('id')
             ->first();
         $this->assertNotNull($sellerApEntry);
+        $this->assertEquals(900_000, (int) $sellerApEntry->amount);
     }
 
     public function test_commission_split_preserves_exact_sum_via_hamilton_rounding(): void
@@ -206,9 +208,11 @@ class MarketplaceSellerSettlementAndEscrowTest extends TestCase
 
         // Escrow entry debited (reversed)
         $escrowDebit = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'escrow:payment:IDR'))
-            ->where('amount', -400_000)
+            ->where('amount', '<', 0)
+            ->latest('id')
             ->first();
         $this->assertNotNull($escrowDebit);
+        $this->assertEquals(-400_000, (int) $escrowDebit->amount);
     }
 
     public function test_refund_after_settlement_debits_seller_ap_and_reverses_commission(): void
@@ -234,15 +238,19 @@ class MarketplaceSellerSettlementAndEscrowTest extends TestCase
 
         // Reversal of commission (debit commission revenue)
         $commissionReversal = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ret:commission_revenue:IDR'))
-            ->where('amount', -100_000)
+            ->where('amount', '<', 0)
+            ->latest('id')
             ->first();
         $this->assertNotNull($commissionReversal);
+        $this->assertEquals(-100_000, (int) $commissionReversal->amount);
 
         // Reversal of seller AP (debit seller AP)
         $sellerApReversal = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', "ap:ret:seller:{$this->seller->party_id}:IDR"))
-            ->where('amount', -900_000)
+            ->where('amount', '<', 0)
+            ->latest('id')
             ->first();
         $this->assertNotNull($sellerApReversal);
+        $this->assertEquals(-900_000, (int) $sellerApReversal->amount);
     }
 
     public function test_partial_refund_prorates_commission_and_seller_ap(): void
