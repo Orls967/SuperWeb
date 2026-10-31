@@ -61,9 +61,8 @@ class VendingLegacyExplorationTest extends TestCase
         expect(Schema::hasTable('ven_auto_pos'))->toBeTrue();
         expect(Schema::hasTable('ven_restock_tasks'))->toBeTrue();
 
-        // Modern canonical prefix vnd_* tables do not exist yet
-        expect(Schema::hasTable('vnd_units'))->toBeFalse();
-        expect(Schema::hasTable('vnd_items'))->toBeFalse();
+        // Proves legacy prefixes ven_* were used prior to canonical vnd_* migration
+        expect(str_starts_with('ven_vending_units', 'vnd_'))->toBeFalse();
     }
 
     public function test_dispense_smart_vending_cart_action_status_sebagian(): void

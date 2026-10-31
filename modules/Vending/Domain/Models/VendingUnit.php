@@ -14,6 +14,8 @@ class VendingUnit extends Model
     protected $fillable = [
         'unit_code',
         'location_name',
+        'latitude',
+        'longitude',
         'status',
         'current_stock',
         'critical_threshold',

@@ -14,11 +14,14 @@ class CateringOrder extends Model
         'order_code',
         'subscription_id',
         'kitchen_id',
+        'recipe_id',
         'delivery_date',
         'meal_slot',
         'status',
         'meal_cost_idr',
+        'courier_batch_ref',
         'idempotency_key',
+        'payload_hash',
     ];
 
     protected $casts = [

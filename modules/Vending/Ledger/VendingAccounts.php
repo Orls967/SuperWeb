@@ -32,6 +32,13 @@ final class VendingAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => false,
             ],
+            [
+                'code' => 'vnd:sales_revenue:IDR',
+                'name' => 'Smart Vending Sales Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
         ];
     }
 }

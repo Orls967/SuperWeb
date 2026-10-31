@@ -663,9 +663,10 @@ return [
     'bookings.store' => ['roles' => ['admin', 'customer']],
     'bookings.updateStatus' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
     'boost.browser-logs' => 'public',
-    'cloud_kitchen.index' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.index' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.orders.store' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
     'cloud_kitchen.subscriptions.dispatch' => [
-        'roles' => ['admin', 'customer', 'kitchen', 'outlet_manager'],
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
         'params' => function () {
             $user = User::firstOrCreate(['id' => 1], ['name' => 'Arch User', 'email' => 'arch@test.test', 'password' => 'secret', 'role' => 'customer']);
             $sub = CateringSubscription::firstOrCreate(
@@ -2458,9 +2459,10 @@ return [
     'verification.notice' => 'auth',
     'verification.send' => 'auth',
     'verification.verify' => ['protection' => 'auth', 'params' => fn () => ['id' => 1, 'hash' => 'testhash']],
-    'vending.index' => ['roles' => ['admin', 'vending_operator', 'store_manager']],
+    'vending.dispense.api' => ['roles' => ['admin', 'store_manager', 'vending_operator']],
+    'vending.index' => ['roles' => ['admin', 'store_manager', 'vending_operator']],
     'vending.units.dispense' => [
-        'roles' => ['admin', 'vending_operator', 'store_manager'],
+        'roles' => ['admin', 'store_manager', 'vending_operator'],
         'params' => function () {
             $unit = VendingUnit::firstOrCreate(
                 ['unit_code' => 'VEN-ROUTER-01'],
@@ -2541,14 +2543,14 @@ return [
     'b2b.escrow.release' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.wholesale.index' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.wholesale.publish' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
-    'cloud_kitchen.operations.audit-thermal' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.batch-couriers' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.courier-batches' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.order-routing' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.revenue-split' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.route-order' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.settle-split' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.thermal-audit' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.audit-thermal' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.batch-couriers' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.courier-batches' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.order-routing' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.revenue-split' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.route-order' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.settle-split' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.thermal-audit' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
     'control_tower.autonomous.bottlenecks' => ['roles' => ['admin', 'auditor', 'logistics_admin', 'planner']],
     'control_tower.autonomous.forecast' => ['roles' => ['admin', 'auditor', 'logistics_admin', 'planner']],
     'control_tower.autonomous.index' => ['roles' => ['admin', 'auditor', 'logistics_admin', 'planner']],

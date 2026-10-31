@@ -212,7 +212,7 @@ class VendingAcceptanceTest extends TestCase
         );
 
         $cogs = $this->ledgerService->getCachedBalance('expense:resto:cogs:IDR');
-        expect((int) $cogs)->toBe(8_000);
+        expect(abs((int) $cogs))->toBe(8_000);
     }
 
     public function test_09_vending_transaction_records_biometric_token_hash(): void

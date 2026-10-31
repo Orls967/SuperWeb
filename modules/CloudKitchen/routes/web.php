@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Route;
 use Modules\CloudKitchen\Http\Controllers\CloudKitchenController;
 use Modules\CloudKitchen\Http\Controllers\CloudKitchenOperationsController;
 
-Route::middleware(['web', 'auth', 'role:admin,kitchen,outlet_manager,customer'])->prefix('cloud-kitchen')->group(function () {
+Route::middleware(['web', 'auth', 'role:admin,kitchen,outlet_manager'])->prefix('cloud-kitchen')->group(function () {
     Route::get('/', [CloudKitchenController::class, 'index'])->name('cloud_kitchen.index');
+    Route::post('/orders', [CloudKitchenController::class, 'storeOrder'])->name('cloud_kitchen.orders.store');
     Route::post('/subscriptions/{subscription}/dispatch', [CloudKitchenController::class, 'dispatchMeal'])->name('cloud_kitchen.subscriptions.dispatch');
 
     // CloudKitchen Operations, Multi-Drop Courier & Thermal HACCP Deepening Routes
