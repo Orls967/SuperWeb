@@ -10,13 +10,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Edu\Application\Actions\SettleHeadhunterFeeAction;
 use Modules\Edu\Domain\Exceptions\HeadhunterWarrantyNotExpiredException;
 use Modules\Edu\Domain\Models\EduHeadhunterFee;
 use Modules\Edu\Domain\Models\EduJobOpening;
 use Modules\Edu\Domain\Models\EduPlacement;
 use Modules\Edu\Ledger\EduAccounts;
-use Modules\Ledger\Domain\Models\LedgerEntry;
 use Tests\TestCase;
 
 class HeadhunterFeeAndWarrantyEscrowTest extends TestCase
@@ -97,8 +97,8 @@ class HeadhunterFeeAndWarrantyEscrowTest extends TestCase
         $escrowAccount = EduAccounts::ESCROW_HEADHUNTER_GUARANTEE;
         $receivableAccount = EduAccounts::HEADHUNTER_RECEIVABLE;
 
-        $escrowEntries = LedgerEntry::where('account_code', $escrowAccount)->get();
-        $receivableEntries = LedgerEntry::where('account_code', $receivableAccount)->get();
+        $escrowEntries = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', $escrowAccount))->get();
+        $receivableEntries = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', $receivableAccount))->get();
 
         $this->assertNotEmpty($escrowEntries);
         $this->assertNotEmpty($receivableEntries);
@@ -147,8 +147,8 @@ class HeadhunterFeeAndWarrantyEscrowTest extends TestCase
         $revenueAccount = EduAccounts::HEADHUNTER_REVENUE;
         $escrowAccount = EduAccounts::ESCROW_HEADHUNTER_GUARANTEE;
 
-        $revenueBalance = LedgerEntry::where('account_code', $revenueAccount)->sum('amount');
-        $escrowBalance = LedgerEntry::where('account_code', $escrowAccount)->sum('amount');
+        $revenueBalance = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', $revenueAccount))->sum('amount');
+        $escrowBalance = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', $escrowAccount))->sum('amount');
 
         $this->assertEquals(18_000_000, $revenueBalance, 'Headhunter revenue recognized');
         $this->assertEquals(0, $escrowBalance, 'Escrow returned to 0 after capture');
@@ -229,8 +229,8 @@ class HeadhunterFeeAndWarrantyEscrowTest extends TestCase
         $escrowAccount = EduAccounts::ESCROW_HEADHUNTER_GUARANTEE;
         $receivableAccount = EduAccounts::HEADHUNTER_RECEIVABLE;
 
-        $this->assertEquals(0, LedgerEntry::where('account_code', $escrowAccount)->sum('amount'));
-        $this->assertEquals(0, LedgerEntry::where('account_code', $receivableAccount)->sum('amount'));
+        $this->assertEquals(0, LedgerEntry::whereHas('account', fn ($q) => $q->where('code', $escrowAccount))->sum('amount'));
+        $this->assertEquals(0, LedgerEntry::whereHas('account', fn ($q) => $q->where('code', $receivableAccount))->sum('amount'));
     }
 
     public function test_double_capture_or_release_is_rejected(): void
@@ -285,7 +285,7 @@ class HeadhunterFeeAndWarrantyEscrowTest extends TestCase
         $this->assertEquals(67_500_000, $totalHeld);
 
         $escrowAccount = EduAccounts::ESCROW_HEADHUNTER_GUARANTEE;
-        $escrowBalance = LedgerEntry::where('account_code', $escrowAccount)->sum('amount');
+        $escrowBalance = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', $escrowAccount))->sum('amount');
         $this->assertEquals($totalHeld, $escrowBalance);
     }
 
