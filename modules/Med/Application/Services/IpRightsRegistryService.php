@@ -113,20 +113,22 @@ class IpRightsRegistryService
      */
     public function getActiveSharesAt(string $ipId, string $rightsType, CarbonImmutable|string $date): array
     {
-        $targetDate = is_string($date) ? $date : $date->toDateString();
+        $targetDate = is_string($date) ? CarbonImmutable::parse($date)->toDateString() : $date->toDateString();
 
         $latestEffectiveDate = MedIpRightsShare::where('ip_id', $ipId)
             ->where('rights_type', $rightsType)
-            ->where('effective_date', '<=', $targetDate)
+            ->whereDate('effective_date', '<=', $targetDate)
             ->max('effective_date');
 
         if (! $latestEffectiveDate) {
             return [];
         }
 
+        $latestDateString = CarbonImmutable::parse($latestEffectiveDate)->toDateString();
+
         return MedIpRightsShare::where('ip_id', $ipId)
             ->where('rights_type', $rightsType)
-            ->where('effective_date', $latestEffectiveDate)
+            ->whereDate('effective_date', $latestDateString)
             ->pluck('share_bps', 'rightsholder_party_id')
             ->toArray();
     }
