@@ -274,10 +274,10 @@ class OmnichannelCheckoutAndAntiDoubleSellTest extends TestCase
 
         // Escrow entry check
         $escrowEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'escrow:payment:IDR'))
-            ->where('amount', 1_000_000)
             ->first();
 
         $this->assertNotNull($escrowEntry);
+        $this->assertEquals(1_000_000, (int) $escrowEntry->amount);
     }
 
     public function test_order_number_is_deterministic_and_gapless(): void
