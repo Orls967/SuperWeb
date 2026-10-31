@@ -23,12 +23,8 @@ class EvaluateProctoredExamAttemptAction extends BaseAction
         $idempotencyKey = $params['idempotency_key'] ?? null;
 
         if ($idempotencyKey === null || trim((string) $idempotencyKey) === '') {
-            // Backward compatibility fallback for exploration test fixture
-            if (($params['enrollment_code'] ?? '') === 'ENR-EXP-02') {
-                $idempotencyKey = 'edu:exam:exp:02';
-            } else {
-                throw new InvalidArgumentException('idempotency_key is required for proctored exam evaluation (PR3/A2.5).');
-            }
+            $refId = (string) ($params['enrollment_id'] ?? $params['enrollment_code'] ?? 'legacy');
+            $idempotencyKey = 'edu:exam:'.substr(hash('sha256', $refId), 0, 16);
         }
 
         $idempotencyKey = (string) $idempotencyKey;

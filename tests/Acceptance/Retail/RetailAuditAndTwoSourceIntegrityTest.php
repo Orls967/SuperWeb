@@ -237,16 +237,7 @@ class RetailAuditAndTwoSourceIntegrityTest extends TestCase
             'posted_at' => now(),
         ]);
 
-        $account = LedgerAccount::firstOrCreate(
-            ['code' => 'ret:seller_payable:IDR'],
-            [
-                'id' => (string) Str::uuid(),
-                'name' => 'Seller AP Control',
-                'kind' => AccountKind::LIABILITY,
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-            ]
-        );
+        $account = LedgerAccount::where('code', 'ret:seller_payable:IDR')->firstOrFail();
 
         DB::table('bank_ledger_entries')->insert([
             'transaction_id' => $tx->id,

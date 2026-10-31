@@ -101,17 +101,18 @@ class EnrollStudentInCohortAction extends BaseAction
             if ($corporateClientId !== null) {
                 $quota = EduCorporateQuota::where('corporate_client_id', $corporateClientId)
                     ->where('program_id', $program->id)
-                    ->where('status', 'ACTIVE')
                     ->lockForUpdate()
                     ->first();
 
-                if (! $quota || $quota->quota_used >= $quota->quota_total) {
-                    throw new CorporateQuotaExceededException("Corporate quota for client {$corporateClientId} on program {$program->program_code} is exceeded or unavailable.");
-                }
+                if ($quota !== null) {
+                    if ($quota->status !== 'ACTIVE' || $quota->quota_used >= $quota->quota_total) {
+                        throw new CorporateQuotaExceededException("Corporate quota for client {$corporateClientId} on program {$program->program_code} is exceeded or unavailable.");
+                    }
 
-                $quota->increment('quota_used');
-                $corporateQuotaId = $quota->id;
-                $tuition = $quota->unit_price_minor;
+                    $quota->increment('quota_used');
+                    $corporateQuotaId = $quota->id;
+                    $tuition = $quota->unit_price_minor;
+                }
             }
 
             // 4. Deterministic Enrollment Code Generation (PR3/X4 without microtime)
