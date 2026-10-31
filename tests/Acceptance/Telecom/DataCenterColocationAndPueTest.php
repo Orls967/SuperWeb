@@ -272,16 +272,16 @@ class DataCenterColocationAndPueTest extends TestCase
 
         $userBeta = User::factory()->create([
             'role' => 'datacenter_ops',
-            'entity_id' => 'PARTY-TENANT-BETA',
         ]);
+        $userBeta->setAttribute('entity_id', 'PARTY-TENANT-BETA');
 
         $canAccess = $this->dcService->canAccessContract($userBeta, $contract->id);
         expect($canAccess)->toBeFalse();
 
         $userAlpha = User::factory()->create([
             'role' => 'datacenter_ops',
-            'entity_id' => 'PARTY-TENANT-ALPHA',
         ]);
+        $userAlpha->setAttribute('entity_id', 'PARTY-TENANT-ALPHA');
 
         $canAccessAlpha = $this->dcService->canAccessContract($userAlpha, $contract->id);
         expect($canAccessAlpha)->toBeTrue();
