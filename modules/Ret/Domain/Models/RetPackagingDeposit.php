@@ -6,6 +6,7 @@ namespace Modules\Ret\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 use Modules\Shared\Domain\Traits\HasUuid;
 
 class RetPackagingDeposit extends Model
@@ -40,6 +41,18 @@ class RetPackagingDeposit extends Model
         'refunded_at' => 'datetime',
         'forfeited_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $model): void {
+            if (empty($model->deposit_code)) {
+                $model->deposit_code = 'DEP-'.strtoupper(Str::random(10));
+            }
+            if (empty($model->packaging_type)) {
+                $model->packaging_type = 'INSULATED_TOTE';
+            }
+        });
+    }
 
     public function order(): BelongsTo
     {

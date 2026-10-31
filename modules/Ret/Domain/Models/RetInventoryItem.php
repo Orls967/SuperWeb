@@ -6,6 +6,11 @@ namespace Modules\Ret\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @deprecated Deprecated per KONSEP Lini 17 & Decision Z12/Z13.
+ * Inventory is unified and managed via Modules\Inventory\Contracts\InventoryService.
+ * Retained for legacy backwards compatibility with RetAuditCorruptionFixture until drop patch.
+ */
 class RetInventoryItem extends Model
 {
     protected $table = 'ret_inventory_items';

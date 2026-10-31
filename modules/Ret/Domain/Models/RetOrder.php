@@ -45,6 +45,12 @@ class RetOrder extends Model
 
     protected static function booted(): void
     {
+        static::creating(function (self $model): void {
+            if (empty($model->channel_id)) {
+                $model->channel_id = 'default-channel';
+            }
+        });
+
         static::deleting(function (self $model): void {
             if (in_array($model->status, ['PAID', 'DELIVERED', 'FULFILLED', 'SETTLED'])) {
                 throw new DomainException('Paid or fulfilled orders are append-only facts and cannot be deleted.');
