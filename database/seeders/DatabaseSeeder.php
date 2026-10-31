@@ -154,6 +154,22 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            // Seeder exam attempt agar edu:audit tidak melaporkan sertifikat tanpa ujian lulus
+            DB::table('edu_exam_attempts')->insertOrIgnore([
+                'id' => (string) Str::uuid(),
+                'attempt_code' => 'ATT-SEED-ADMIN-K3-LOTO',
+                'student_party_uuid' => "student-{$admin->id}",
+                'enrollment_code' => 'ENR-SEED-ADMIN',
+                'exam_title' => 'K3 Lockout/Tagout Safety Certification Exam',
+                'score' => 90,
+                'passing_score' => 75,
+                'is_passed' => true,
+                'proctor_verification_hash' => hash('sha256', 'seed-admin-k3-loto-proctor'),
+                'status' => 'COMPLETED',
+                'created_at' => now()->subMonth(),
+                'updated_at' => now()->subMonth(),
+            ]);
         }
 
         // Platform notifications & activity log demo data

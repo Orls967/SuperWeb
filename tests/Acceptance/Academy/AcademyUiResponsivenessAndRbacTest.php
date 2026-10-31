@@ -9,7 +9,7 @@ use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Modules\Edu\Database\Seeders\EduRbacSeeder;
+use Modules\Edu\database\seeders\EduRbacSeeder;
 use Modules\Edu\Domain\Models\EduCertificate;
 use Modules\Edu\Domain\Models\EduCohort;
 use Modules\Edu\Domain\Models\EduEnrollment;
