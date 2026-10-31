@@ -35,17 +35,11 @@ class FlexSpaceService
             // Lock space to prevent concurrent race condition
             FlexSpace::where('id', $space->id)->lockForUpdate()->firstOrFail();
 
-            // Anti-overlap check
+            // Anti-overlap check: strict half-open interval collision
             $overlap = FlexBooking::where('flex_space_id', $space->id)
                 ->whereIn('status', ['HELD', 'CONFIRMED', 'CHECKED_IN'])
-                ->where(function ($query) use ($startTime, $endTime) {
-                    $query->whereBetween('start_time', [$startTime, $endTime])
-                        ->orWhereBetween('end_time', [$startTime, $endTime])
-                        ->orWhere(function ($q) use ($startTime, $endTime) {
-                            $q->where('start_time', '<=', $startTime)
-                                ->where('end_time', '>=', $endTime);
-                        });
-                })
+                ->where('start_time', '<', $endTime)
+                ->where('end_time', '>', $startTime)
                 ->exists();
 
             if ($overlap) {

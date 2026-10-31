@@ -19,6 +19,7 @@ use Modules\Epc\Application\Services\MonthlyCertificateService;
 use Modules\Epc\Domain\Models\EpcCipCapitalization;
 use Modules\Epc\Domain\Models\EpcProject;
 use Modules\Epc\Domain\Models\EpcWbsNode;
+use Modules\Proptech\Domain\Models\Bim\BimModel;
 use Modules\Proptech\Domain\Models\Bim\TwinComponent;
 use Modules\Shared\Domain\Math\WeightedTree;
 use Modules\Shared\Domain\Math\WeightedTreeCertificateVerifier;
@@ -135,8 +136,8 @@ class EpcAssetAcceptanceTest extends TestCase
             'budget_allocation_idr' => 50_000_000,
         ]);
 
-        expect($node1->weight_percentage)->toBe(50.0);
-        expect($node2->weight_percentage)->toBe(50.0);
+        expect((float) $node1->weight_percentage)->toBe(50.0);
+        expect((float) $node2->weight_percentage)->toBe(50.0);
     }
 
     public function test_03_adding_wbs_node_exceeding_100_percent_is_rejected(): void
@@ -165,7 +166,7 @@ class EpcAssetAcceptanceTest extends TestCase
     public function test_05_wbs_node_cannot_have_negative_progress(): void
     {
         expect(fn () => $this->wbsCivil->update(['completion_percentage' => -10.0]))
-            ->toThrow(\Throwable::class);
+            ->toThrow(InvalidArgumentException::class);
     }
 
     // ─── SLICE 2: WBS PROGRESS CERTIFICATE VERIFICATION (PR2) (Tests 6-10) ───
@@ -174,9 +175,9 @@ class EpcAssetAcceptanceTest extends TestCase
     {
         // Root with two leaves: 4000 bps (Civil @ 5000 bps progress = 2000 bps contribution)
         // MEP 6000 bps (@ 10000 bps progress = 6000 bps contribution). Total = 8000 bps = 80.00%
-        $leafCivil = WeightedTreeNode::leaf('civil', 4_000, 5_000);
-        $leafMep = WeightedTreeNode::leaf('mep', 6_000, 10_000);
-        $root = WeightedTreeNode::composite('root', 10_000, [$leafCivil, $leafMep]);
+        $leafCivil = new WeightedTreeNode('civil', 4_000, 5_000);
+        $leafMep = new WeightedTreeNode('mep', 6_000, 10_000);
+        $root = new WeightedTreeNode('root', 10_000, null, [$leafCivil, $leafMep]);
 
         $result = WeightedTree::computeProgress($root);
 
@@ -186,9 +187,9 @@ class EpcAssetAcceptanceTest extends TestCase
 
     public function test_07_top_down_progress_verification_dual_traversal_certificate(): void
     {
-        $leaf1 = WeightedTreeNode::leaf('sub1', 3_000, 3_000);
-        $leaf2 = WeightedTreeNode::leaf('sub2', 7_000, 7_000);
-        $root = WeightedTreeNode::composite('root', 10_000, [$leaf1, $leaf2]);
+        $leaf1 = new WeightedTreeNode('sub1', 3_000, 3_000);
+        $leaf2 = new WeightedTreeNode('sub2', 7_000, 7_000);
+        $root = new WeightedTreeNode('root', 10_000, null, [$leaf1, $leaf2]);
 
         $result = WeightedTree::computeProgress($root);
 
@@ -197,9 +198,9 @@ class EpcAssetAcceptanceTest extends TestCase
 
     public function test_08_wbs_certificate_verification_detects_tampered_weights(): void
     {
-        $leaf1 = WeightedTreeNode::leaf('leaf1', 4_000, 5_000);
-        $leaf2 = WeightedTreeNode::leaf('leaf2', 5_000, 5_000); // 4000 + 5000 = 9000 != 10000 bps!
-        $root = WeightedTreeNode::composite('root', 10_000, [$leaf1, $leaf2]);
+        $leaf1 = new WeightedTreeNode('leaf1', 4_000, 5_000);
+        $leaf2 = new WeightedTreeNode('leaf2', 5_000, 5_000); // 4000 + 5000 = 9000 != 10000 bps!
+        $root = new WeightedTreeNode('root', 10_000, null, [$leaf1, $leaf2]);
 
         expect(fn () => WeightedTree::computeProgress($root))
             ->toThrow(InvalidArgumentException::class, 'must sum to 10000 bps');
@@ -318,11 +319,18 @@ class EpcAssetAcceptanceTest extends TestCase
             'certified_incremental_progress_pct' => 10.0,
         ]);
 
-        expect(fn () => $action->execute([
-            'project_id' => (string) $this->project->id,
-            'certificate_number' => 'MC-DUP-001',
-            'certified_incremental_progress_pct' => 10.0,
-        ]))->toThrow(\Throwable::class);
+        $threw = false;
+        try {
+            $action->execute([
+                'project_id' => (string) $this->project->id,
+                'certificate_number' => 'MC-DUP-001',
+                'certified_incremental_progress_pct' => 10.0,
+            ]);
+        } catch (\Throwable) {
+            $threw = true;
+        }
+
+        expect($threw)->toBeTrue();
     }
 
     public function test_17_cumulative_progress_cannot_exceed_100_percent(): void
@@ -525,39 +533,53 @@ class EpcAssetAcceptanceTest extends TestCase
 
     public function test_32_bim_twin_component_linked_to_wbs_node(): void
     {
+        $bim = BimModel::firstOrCreate(
+            ['model_code' => 'BIM-MOD-01', 'version' => 1],
+            [
+                'project_code' => 'EPC-PLAZA-01',
+                'name' => 'Plaza 3D Twin',
+                'current_hash' => hash('sha256', 'seed-hash'),
+                'status' => 'APPROVED',
+            ]
+        );
+
         $component = TwinComponent::create([
             'component_code' => 'BIM-COL-GF-01',
-            'bim_model_id' => 1,
-            'wbs_node_id' => 1,
+            'bim_model_id' => $bim->id,
+            'category' => 'STRUCTURAL',
+            'wbs_node_code' => 'WBS-CIV-01',
             'name' => 'Reinforced Concrete Column C1',
-            'discipline' => 'STRUCTURE',
-            'floor_level' => 'GF',
-            'weight_kg' => 5000.0,
-            'cost_estimate_idr' => 25_000_000,
-            'completion_pct' => 0.0,
-            'status' => 'PENDING',
+            'completion_pct' => 0,
+            'status' => 'PLANNED',
         ]);
 
         expect($component->component_code)->toBe('BIM-COL-GF-01');
-        expect($component->discipline)->toBe('STRUCTURE');
+        expect($component->category)->toBe('STRUCTURAL');
     }
 
     public function test_33_completing_twin_component_updates_status(): void
     {
+        $bim = BimModel::firstOrCreate(
+            ['model_code' => 'BIM-MOD-01', 'version' => 1],
+            [
+                'project_code' => 'EPC-PLAZA-01',
+                'name' => 'Plaza 3D Twin',
+                'current_hash' => hash('sha256', 'seed-hash'),
+                'status' => 'APPROVED',
+            ]
+        );
+
         $component = TwinComponent::create([
             'component_code' => 'BIM-CHILLER-01',
-            'bim_model_id' => 1,
-            'wbs_node_id' => 1,
+            'bim_model_id' => $bim->id,
+            'category' => 'HVAC_CHILLER',
+            'wbs_node_code' => 'WBS-MEP-01',
             'name' => 'Centrifugal Chiller 500TR',
-            'discipline' => 'HVAC',
-            'floor_level' => 'ROOF',
-            'weight_kg' => 12000.0,
-            'cost_estimate_idr' => 450_000_000,
-            'completion_pct' => 100.0,
+            'completion_pct' => 100,
             'status' => 'INSTALLED',
         ]);
 
-        expect($component->completion_pct)->toBe(100.0);
+        expect($component->completion_pct)->toBe(100);
         expect($component->status)->toBe('INSTALLED');
     }
 

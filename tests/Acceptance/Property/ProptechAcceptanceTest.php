@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Acceptance\Property;
 
 use App\Models\User;
+use Brick\Math\BigRational;
 use Carbon\Carbon;
 use Database\Seeders\LedgerAccountsSeeder;
 use Database\Seeders\RbacConglomerateSeeder;
@@ -20,6 +21,7 @@ use Modules\Proptech\Domain\Models\ZoneUtilityBilling;
 use Modules\Shared\Domain\Math\CumulativeRounding;
 use Modules\Shared\Domain\Math\CumulativeRoundingCertificate;
 use Modules\Shared\Domain\Math\CumulativeRoundingCertificateVerifier;
+use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
 use Tests\TestCase;
 
 class ProptechAcceptanceTest extends TestCase
@@ -191,10 +193,10 @@ class ProptechAcceptanceTest extends TestCase
         $weights = [3333, 3333, 3334]; // sum 10,000 bps
         $totalBill = 100_001; // IDR with fractional division
 
-        $result = CumulativeRounding::roundCumulative($totalBill, $weights);
+        $allocations = CumulativeRounding::scheduleWeighted($totalBill, $weights);
 
-        expect(array_sum($result->allocations))->toBe($totalBill);
-        expect(count($result->allocations))->toBe(3);
+        expect(array_sum($allocations))->toBe($totalBill);
+        expect(count($allocations))->toBe(3);
     }
 
     public function test_07_cumulative_rounding_invariant_sum_equals_total_exactly(): void
@@ -202,9 +204,9 @@ class ProptechAcceptanceTest extends TestCase
         $weights = [1500, 2500, 3500, 2500]; // sum 10,000 bps
         $totalBill = 1_234_567;
 
-        $result = CumulativeRounding::roundCumulative($totalBill, $weights);
+        $allocations = CumulativeRounding::scheduleWeighted($totalBill, $weights);
 
-        expect(array_sum($result->allocations))->toBe($totalBill);
+        expect(array_sum($allocations))->toBe($totalBill);
     }
 
     public function test_08_cumulative_rounding_invariant_each_step_within_one_idr_from_exact(): void
@@ -212,9 +214,9 @@ class ProptechAcceptanceTest extends TestCase
         $weights = [2000, 4000, 4000];
         $totalBill = 999_999;
 
-        $result = CumulativeRounding::roundCumulative($totalBill, $weights);
+        $allocations = CumulativeRounding::scheduleWeighted($totalBill, $weights);
 
-        foreach ($result->allocations as $i => $allocated) {
+        foreach ($allocations as $i => $allocated) {
             $exactTheoretical = ($totalBill * $weights[$i]) / 10000;
             expect(abs($allocated - $exactTheoretical))->toBeLessThanOrEqual(1.0);
         }
@@ -225,10 +227,20 @@ class ProptechAcceptanceTest extends TestCase
         $weights = [5000, 5000];
         $total = 750_001;
 
-        $result = CumulativeRounding::roundCumulative($total, $weights);
+        $allocations = CumulativeRounding::scheduleWeighted($total, $weights);
 
-        expect($result->certificate)->not->toBeNull();
-        expect(fn () => CumulativeRoundingCertificateVerifier::verify($result->certificate))->not->toThrow(\Throwable::class);
+        $exactRatio1 = BigRational::of((string) ($total * 5000))->dividedBy(BigRational::of('10000'));
+        $exactRatio2 = BigRational::of((string) ($total * 5000))->dividedBy(BigRational::of('10000'));
+
+        $certificate = new CumulativeRoundingCertificate(
+            total: $total,
+            periods: 2,
+            schedule: $allocations,
+            exactPortions: [$exactRatio1, $exactRatio2],
+            weights: $weights
+        );
+
+        expect(fn () => CumulativeRoundingCertificateVerifier::verify($certificate))->not->toThrow(\Throwable::class);
     }
 
     public function test_10_tampered_cumulative_rounding_certificate_is_rejected(): void
@@ -236,18 +248,20 @@ class ProptechAcceptanceTest extends TestCase
         $weights = [5000, 5000];
         $total = 500_000;
 
-        $result = CumulativeRounding::roundCumulative($total, $weights);
-        $certificate = $result->certificate;
+        $allocations = CumulativeRounding::scheduleWeighted($total, $weights);
+
+        $exactRatio = BigRational::of((string) ($total * 5000))->dividedBy(BigRational::of('10000'));
 
         // Tamper certificate: corrupt cumulative allocations
         $tampered = new CumulativeRoundingCertificate(
-            totalAmountIdr: $certificate->totalAmountIdr,
-            weightsBps: $certificate->weightsBps,
-            allocations: [200_000, 200_000], // sum != 500_000!
-            cumulativeSum: 400_000
+            total: $total,
+            periods: 2,
+            schedule: [200_000, 200_000], // sum 400,000 != 500,000!
+            exactPortions: [$exactRatio, $exactRatio],
+            weights: $weights
         );
 
-        expect(fn () => CumulativeRoundingCertificateVerifier::verify($tampered))->toThrow(\InvalidArgumentException::class);
+        expect(fn () => CumulativeRoundingCertificateVerifier::verify($tampered))->toThrow(InvalidCertificateException::class);
     }
 
     public function test_11_generating_billing_twice_is_idempotent(): void
@@ -268,7 +282,7 @@ class ProptechAcceptanceTest extends TestCase
         $b2 = $billingService->generateZoneBilling($this->zone, $this->tenantUser->id, $date);
 
         expect($b2->id)->toBe($b1->id);
-        expect(ZoneUtilityBilling::where('zone_id', $this->zone->id)->where('billing_date', $date->toDateString())->count())->toBe(1);
+        expect(ZoneUtilityBilling::where('zone_id', $this->zone->id)->whereDate('billing_date', $date->toDateString())->count())->toBe(1);
     }
 
     public function test_12_overtime_ac_hours_surcharge_calculation(): void
