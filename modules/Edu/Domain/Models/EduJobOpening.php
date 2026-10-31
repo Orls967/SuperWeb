@@ -45,7 +45,7 @@ class EduJobOpening extends Model
     {
         static::creating(function (EduJobOpening $opening) {
             if (empty($opening->job_code)) {
-                $opening->job_code = $opening->opening_code ?? ('JOB-'.strtoupper(substr(md5(uniqid()), 0, 8)));
+                $opening->job_code = $opening->opening_code ?? ('JOB-'.strtoupper(substr(hash('sha256', ($opening->title ?? 'JOB').'|'.($opening->hiring_entity_id ?? 'ENT').'|'.((string) Str::uuid())), 0, 8)));
             }
             if (empty($opening->opening_code)) {
                 $opening->opening_code = $opening->job_code;
