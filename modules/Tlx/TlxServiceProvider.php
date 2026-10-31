@@ -6,13 +6,17 @@ namespace Modules\Tlx;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Tlx\Application\Services\IotDeviceRegistryService;
 use Modules\Tlx\Application\Services\TelecomNetworkAndIotService;
 use Modules\Tlx\Console\Commands\TlxAuditCommand;
+use Modules\Tlx\Contracts\IotDeviceRegistry;
 
 class TlxServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(IotDeviceRegistry::class, IotDeviceRegistryService::class);
+        $this->app->singleton(IotDeviceRegistryService::class);
         $this->app->singleton(TelecomNetworkAndIotService::class);
     }
 
