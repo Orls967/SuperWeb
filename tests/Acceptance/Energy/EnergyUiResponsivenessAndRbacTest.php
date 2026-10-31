@@ -28,7 +28,7 @@ class EnergyUiResponsivenessAndRbacTest extends TestCase
 
     public function test_energy_manager_role_can_access_energy_dashboard_and_meters(): void
     {
-        $user = User::factory()->create(['role' => 'energy_manager']);
+        $user = User::factory()->create(['role' => 'energy_auditor']);
 
         $resDashboard = $this->actingAs($user)->get('/energy');
         $resDashboard->assertStatus(200);
@@ -58,7 +58,7 @@ class EnergyUiResponsivenessAndRbacTest extends TestCase
 
     public function test_ui_contains_viewport_meta_tag_for_mobile_responsiveness(): void
     {
-        $user = User::factory()->create(['role' => 'energy_manager']);
+        $user = User::factory()->create(['role' => 'energy_auditor']);
 
         $response = $this->actingAs($user)->get('/energy');
         $response->assertStatus(200);

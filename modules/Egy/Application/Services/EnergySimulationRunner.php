@@ -8,7 +8,7 @@ use Carbon\CarbonImmutable;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
-use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Egy\Application\Actions\IngestSmartGridMeterTelemetryAction;
 use Modules\Egy\Application\Actions\SettlePowerPurchaseAgreementBillingAction;
 use Modules\Egy\Domain\Models\PpaContract;

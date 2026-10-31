@@ -83,7 +83,7 @@ class SettlePowerPurchaseAgreementBillingAction extends BaseAction
 
     public function execute(string $contractId, int $deliveredKwh): int
     {
-        $idempotencyKey = "egy:ppa:legacy:{$contractId}:".now()->timestamp;
+        $idempotencyKey = "egy:ppa:legacy:{$contractId}:{$deliveredKwh}";
         $result = $this->executeWithIntercompany($contractId, $deliveredKwh, $idempotencyKey);
 
         return $result['total_minor'];

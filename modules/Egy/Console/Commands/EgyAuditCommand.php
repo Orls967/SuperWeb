@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Egy\Console\Commands;
 
 use Illuminate\Console\Command;
-use Modules\Banking\Domain\Models\LedgerEntry;
-use Modules\Banking\Domain\Models\LedgerTransaction;
+use Modules\Banking\Contracts\LedgerEntry;
+use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Egy\Domain\Models\BessArbitrageRun;
 use Modules\Egy\Domain\Models\GridNode;
 use Modules\Egy\Domain\Models\MeterReading;
@@ -108,7 +108,7 @@ class EgyAuditCommand extends Command
                     $this->error("Missing ledger transaction for issued invoice [{$inv->invoice_number}].");
                     $discrepancies++;
                 } else {
-                    $arEntry = $tx->entries()->whereHas('account', fn ($q) => $q->where('code', "ar:egy:property:{$inv->property_id}:IDR"))->first();
+                    $arEntry = LedgerEntry::where('transaction_id', $tx->id)->whereHas('account', fn ($q) => $q->where('code', "ar:egy:property:{$inv->property_id}:IDR"))->first();
                     if (! $arEntry) {
                         $this->error("Missing AR entry for invoice [{$inv->invoice_number}].");
                         $discrepancies++;
