@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Ret\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
@@ -59,6 +60,24 @@ class ProcessOrderRefundAction extends BaseAction
                     referenceType: 'RET_REFUND',
                     referenceId: $order->order_number,
                 ));
+
+                // Append-only compensating settlement record for seller AP clawback (PR4/PR5)
+                RetSellerSettlement::create([
+                    'id' => (string) Str::uuid(),
+                    'settlement_code' => 'CLAWBACK-'.strtoupper(Str::random(10)),
+                    'order_id' => $order->id,
+                    'seller_id' => $seller->id,
+                    'seller_party_id' => $seller->party_id,
+                    'verified_gmv_minor' => -$refundAmount,
+                    'gross_order_amount_minor' => -$refundAmount,
+                    'commission_rate_pct' => $commissionBps / 100.0,
+                    'commission_amount_minor' => -$commissionRefund,
+                    'commission_fee_minor' => -$commissionRefund,
+                    'net_seller_payable_minor' => -$sellerApDeduction,
+                    'net_payout_minor' => -$sellerApDeduction,
+                    'status' => 'SETTLED',
+                    'idempotency_key' => "{$idempotencyKey}:clawback",
+                ]);
             } else {
                 // Pre-settlement refund: reverse escrow
                 $this->ledgerService->post(new PostingDTO(

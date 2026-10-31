@@ -14,7 +14,7 @@ use Modules\Ret\Domain\Models\RetCashbackTransaction;
 
 class RetExpireCashbackCommand extends Command
 {
-    protected $signature = 'ret:expire-cashback';
+    protected $signature = 'ret:expire-cashback {--at= : Virtual evaluation timestamp}';
 
     protected $description = 'Proses kedaluwarsa saldo cashback super app dan pengakuan pendapatan breakage';
 
@@ -22,7 +22,7 @@ class RetExpireCashbackCommand extends Command
     {
         $this->info('Starting expired cashback breakage process...');
 
-        $now = Carbon::now();
+        $now = $this->option('at') ? Carbon::parse((string) $this->option('at')) : Carbon::now();
         $expiredTranches = RetCashbackTransaction::where('type', 'EARNED')
             ->whereNotNull('expires_at')
             ->where('expires_at', '<=', $now)

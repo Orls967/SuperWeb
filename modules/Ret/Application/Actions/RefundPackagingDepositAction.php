@@ -36,7 +36,9 @@ class RefundPackagingDepositAction extends BaseAction
             return $existing;
         }
 
-        $deposit = RetPackagingDeposit::findOrFail($params['deposit_id']);
+        $deposit = isset($params['deposit_id'])
+            ? RetPackagingDeposit::findOrFail($params['deposit_id'])
+            : RetPackagingDeposit::where('package_code', $params['package_code'])->firstOrFail();
 
         if ($deposit->status === 'REFUNDED') {
             throw new PackagingAlreadyReturnedException($deposit->package_code ?? $deposit->id);

@@ -45,12 +45,14 @@ class EarnSuperAppCashbackAction extends BaseAction
         $amountMinor = (int) $params['amount_minor'];
         $sourceDomain = (string) ($params['source_domain'] ?? 'superapp');
         $referenceId = isset($params['reference_id']) ? (string) $params['reference_id'] : null;
-        $expiresAt = isset($params['expires_at']) ? Carbon::parse($params['expires_at']) : Carbon::now()->addDays(90);
+        $now = isset($params['current_time']) ? Carbon::parse($params['current_time']) : Carbon::now();
+        $expiresAt = isset($params['expires_at']) ? Carbon::parse($params['expires_at']) : $now->copy()->addDays(90);
 
         // Anti-abuse velocity rule: maximum 500,000 IDR cashback per 24-hour day
         $todayEarned = (int) RetCashbackTransaction::where('customer_id', $customerId)
             ->where('type', 'EARNED')
-            ->where('created_at', '>=', Carbon::now()->startOfDay())
+            ->where('created_at', '>=', $now->copy()->startOfDay())
+            ->where('created_at', '<=', $now->copy()->endOfDay())
             ->sum('amount_minor');
 
         if (($todayEarned + $amountMinor) > self::DAILY_VELOCITY_LIMIT_MINOR) {
