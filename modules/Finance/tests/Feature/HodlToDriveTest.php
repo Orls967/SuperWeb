@@ -226,8 +226,24 @@ class HodlToDriveTest extends TestCase
 
         $this->assertSame($principal, $loan->principal);
         $this->assertSame($principal, $loan->outstanding_principal);
+        $this->assertSame(self::DP, $loan->down_payment);
+        $this->assertSame(12, $loan->tenor_months);
+        $this->assertEqualsWithDelta(0.08, (float) $loan->interest_rate_annual, 0.0001);
+        $this->assertNotNull($loan->opened_at);
+        $this->assertNotNull($loan->collateral_asset_id);
         $this->assertSame(LoanStatus::Active, $loan->status);
         $this->assertCount(12, $loan->installments);
+
+        $firstInst = $loan->installments->first();
+        $this->assertSame(1, $firstInst->sequence);
+        $this->assertNotNull($firstInst->due_date);
+        $this->assertGreaterThan(0, $firstInst->principal_part);
+        $this->assertGreaterThan(0, $firstInst->interest_part);
+        $this->assertSame($firstInst->amount, $firstInst->principal_part + $firstInst->interest_part);
+        $this->assertSame(InstallmentStatus::Scheduled, $firstInst->status);
+
+        $lastInst = $loan->installments->last();
+        $this->assertSame(12, $lastInst->sequence);
 
         // LTV pembukaan tepat 50%
         $this->assertEqualsWithDelta(0.5, (float) $loan->ltv_at_open, 0.0001);
@@ -511,5 +527,175 @@ class HodlToDriveTest extends TestCase
         $this->actingAs($orangLain)
             ->get(route('finance.loans.show', $loan))
             ->assertForbidden();
+    }
+
+    public function test_buka_pinjaman_validasi_idempotensi_dan_resubmit_mengembalikan_instance_yang_sama(): void
+    {
+        $this->btcAsset();
+        $user = $this->makeUser(self::DP, '2');
+        $product = $this->carProduct();
+
+        $this->expectException(\InvalidArgumentException::class);
+        app(OpenLoanAction::class)->execute(
+            user: $user,
+            product: $product,
+            downPayment: self::DP,
+            tenorMonths: 12,
+            collateralSymbol: 'BTC',
+            shippingAddress: $this->shippingAddress(),
+            pin: '123456',
+            idempotencyKey: '   ',
+        );
+    }
+
+    public function test_buka_pinjaman_resubmit_key_sama_mengembalikan_loan_yang_sama(): void
+    {
+        $this->btcAsset();
+        $user = $this->makeUser(self::DP, '2');
+        $product = $this->carProduct();
+        $key = 'test-idemp-resubmit-key-1';
+
+        $loan1 = app(OpenLoanAction::class)->execute(
+            user: $user,
+            product: $product,
+            downPayment: self::DP,
+            tenorMonths: 12,
+            collateralSymbol: 'BTC',
+            shippingAddress: $this->shippingAddress(),
+            pin: '123456',
+            idempotencyKey: $key,
+        );
+
+        $loan2 = app(OpenLoanAction::class)->execute(
+            user: $user,
+            product: $product,
+            downPayment: self::DP,
+            tenorMonths: 12,
+            collateralSymbol: 'BTC',
+            shippingAddress: $this->shippingAddress(),
+            pin: '123456',
+            idempotencyKey: $key,
+        );
+
+        $this->assertSame($loan1->id, $loan2->id);
+        $this->assertCount(12, $loan2->installments);
+    }
+
+    public function test_buka_pinjaman_validasi_produk_dan_ketersediaan_stok(): void
+    {
+        $this->btcAsset();
+        $user = $this->makeUser(self::DP, '2');
+
+        $nonCar = $this->carProduct();
+        $nonCar->update(['is_car' => false]);
+        try {
+            $this->openLoan($user, $nonCar);
+            $this->fail('Harusnya melempar Exception karena bukan mobil');
+        } catch (Exception $e) {
+            $this->assertStringContainsString('HODL-to-Drive', $e->getMessage());
+        }
+
+        $unlistedCar = $this->carProduct();
+        $unlistedCar->update(['is_listed' => false]);
+        try {
+            $this->openLoan($user, $unlistedCar);
+            $this->fail('Harusnya melempar Exception karena unlisted');
+        } catch (Exception $e) {
+            $this->assertStringContainsString('tidak tersedia', $e->getMessage());
+        }
+    }
+
+    public function test_buka_pinjaman_validasi_aset_kolateral_dan_uang_muka(): void
+    {
+        $this->btcAsset();
+        $user = $this->makeUser(self::DP, '2');
+        $product = $this->carProduct();
+
+        try {
+            app(OpenLoanAction::class)->execute(
+                user: $user,
+                product: $product,
+                downPayment: self::DP,
+                tenorMonths: 12,
+                collateralSymbol: 'UNKNOWN_CRYPTO',
+                shippingAddress: $this->shippingAddress(),
+                pin: '123456',
+                idempotencyKey: 'test-key-unknown-asset',
+            );
+            $this->fail('Harusnya melempar Exception aset tidak tersedia');
+        } catch (Exception $e) {
+            $this->assertStringContainsString('tidak tersedia', $e->getMessage());
+        }
+
+        try {
+            app(OpenLoanAction::class)->execute(
+                user: $user,
+                product: $product,
+                downPayment: -1,
+                tenorMonths: 12,
+                collateralSymbol: 'BTC',
+                shippingAddress: $this->shippingAddress(),
+                pin: '123456',
+                idempotencyKey: 'test-key-neg-dp',
+            );
+            $this->fail('Harusnya melempar Exception uang muka tidak sah');
+        } catch (Exception $e) {
+            $this->assertStringContainsString('Uang muka', $e->getMessage());
+        }
+
+        $grandTotal = (int) $product->price + 500_000;
+        try {
+            app(OpenLoanAction::class)->execute(
+                user: $user,
+                product: $product,
+                downPayment: $grandTotal + 1000,
+                tenorMonths: 12,
+                collateralSymbol: 'BTC',
+                shippingAddress: $this->shippingAddress(),
+                pin: '123456',
+                idempotencyKey: 'test-key-huge-dp',
+            );
+            $this->fail('Harusnya melempar Exception uang muka melebihi total');
+        } catch (Exception $e) {
+            $this->assertStringContainsString('Uang muka', $e->getMessage());
+        }
+    }
+
+    public function test_buka_pinjaman_dengan_custom_collateral_qty_dan_pin_salah(): void
+    {
+        $this->btcAsset();
+        $user = $this->makeUser(self::DP, '3');
+        $product = $this->carProduct();
+
+        try {
+            app(OpenLoanAction::class)->execute(
+                user: $user,
+                product: $product,
+                downPayment: self::DP,
+                tenorMonths: 12,
+                collateralSymbol: 'BTC',
+                shippingAddress: $this->shippingAddress(),
+                pin: '000000',
+                idempotencyKey: 'test-key-wrong-pin',
+            );
+            $this->fail('Harusnya melempar Exception PIN salah');
+        } catch (Exception $e) {
+            $this->assertStringContainsString('PIN', $e->getMessage());
+        }
+
+        $customQty = BigDecimal::of('1.5');
+        $loan = app(OpenLoanAction::class)->execute(
+            user: $user,
+            product: $product,
+            downPayment: self::DP,
+            tenorMonths: 12,
+            collateralSymbol: 'BTC',
+            shippingAddress: $this->shippingAddress(),
+            pin: '123456',
+            idempotencyKey: 'test-key-custom-qty',
+            collateralQty: $customQty,
+        );
+
+        $this->assertEqualsWithDelta(1.5, (float) $loan->collateral_qty, 0.0001);
     }
 }
