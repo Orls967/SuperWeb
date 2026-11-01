@@ -57,6 +57,9 @@ class MutationTestCommand extends Command
         foreach ($classes as $class) {
             $testPath = MutationTargetResolver::resolveTestPathForClass($class, base_path());
             $cmdParts = [
+                PHP_BINARY,
+                '-d',
+                'memory_limit=1G',
                 'vendor/bin/pest',
             ];
             if ($testPath !== null && $testPath !== '') {

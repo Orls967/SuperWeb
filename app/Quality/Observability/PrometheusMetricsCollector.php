@@ -150,7 +150,9 @@ final class PrometheusMetricsCollector
                 $decoded = json_decode((string) file_get_contents($sourcePath), true, 512, JSON_THROW_ON_ERROR);
                 $rulesData = $decoded['rules'] ?? [];
                 foreach (self::ARCH_RULES as $rule) {
-                    if (isset($rulesData[$rule]['total']) && is_numeric($rulesData[$rule]['total'])) {
+                    if (isset($rulesData[$rule]['count']) && is_numeric($rulesData[$rule]['count'])) {
+                        $violations[$rule] = (int) $rulesData[$rule]['count'];
+                    } elseif (isset($rulesData[$rule]['total']) && is_numeric($rulesData[$rule]['total'])) {
                         $violations[$rule] = (int) $rulesData[$rule]['total'];
                     }
                 }

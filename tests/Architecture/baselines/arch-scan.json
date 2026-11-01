@@ -67,153 +67,8 @@
             }
         },
         "A2": {
-            "total": 67,
-            "entries": {
-                "modules/Agri/Domain/Models/Ndvi/GovProposal.php": {
-                    "$table('gov_proposals')": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/GovVote.php": {
-                    "$table('gov_votes')": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/GovVoterWeight.php": {
-                    "$table('gov_voter_weights')": 1
-                },
-                "modules/Agri/database/migrations/2026_10_07_860100_create_ndvi_and_dao_tables.php": {
-                    "Schema::create('gov_proposals')": 1,
-                    "Schema::create('gov_voter_weights')": 1,
-                    "Schema::create('gov_votes')": 1
-                },
-                "modules/CloudKitchen/Domain/Models/CateringOrder.php": {
-                    "$table('resto_ck_catering_orders')": 1
-                },
-                "modules/CloudKitchen/Domain/Models/CateringSubscription.php": {
-                    "$table('resto_catering_subscriptions')": 1
-                },
-                "modules/CloudKitchen/Domain/Models/CloudKitchen.php": {
-                    "$table('resto_ck_kitchens')": 1
-                },
-                "modules/CloudKitchen/database/migrations/2026_10_07_740100_create_resto_ck_tables.php": {
-                    "Schema::create('resto_catering_subscriptions')": 1,
-                    "Schema::create('resto_ck_catering_orders')": 1,
-                    "Schema::create('resto_ck_kitchens')": 1
-                },
-                "modules/Ev/Domain/Models/EvBatteryPassport.php": {
-                    "$table('oto_ev_battery_passports')": 1
-                },
-                "modules/Ev/Domain/Models/EvCharger.php": {
-                    "$table('oto_ev_chargers')": 1
-                },
-                "modules/Ev/Domain/Models/EvSession.php": {
-                    "$table('oto_ev_sessions')": 1
-                },
-                "modules/Ev/Domain/Models/EvStation.php": {
-                    "$table('oto_ev_stations')": 1
-                },
-                "modules/Ev/database/migrations/2026_10_07_690100_create_oto_ev_tables.php": {
-                    "Schema::create('oto_ev_battery_passports')": 1,
-                    "Schema::create('oto_ev_chargers')": 1,
-                    "Schema::create('oto_ev_sessions')": 1,
-                    "Schema::create('oto_ev_stations')": 1
-                },
-                "modules/Fleet/Application/Services/FleetLeasingService.php": {
-                    "DB::table('oto_fleet_contract_units')": 1
-                },
-                "modules/Fleet/Domain/Models/FleetContract.php": {
-                    "$table('oto_fleet_contracts')": 1
-                },
-                "modules/Fleet/Domain/Models/FleetContractUnit.php": {
-                    "$table('oto_fleet_contract_units')": 1
-                },
-                "modules/Fleet/Domain/Models/FleetSlaLog.php": {
-                    "$table('oto_fleet_sla_logs')": 1
-                },
-                "modules/Fleet/database/migrations/2026_10_07_700100_create_oto_fleet_tables.php": {
-                    "Schema::create('oto_fleet_contract_units')": 1,
-                    "Schema::create('oto_fleet_contracts')": 1,
-                    "Schema::create('oto_fleet_sla_logs')": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBounty.php": {
-                    "$table('gov_bounties')": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBountyClaim.php": {
-                    "$table('gov_bounty_claims')": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBountyPof.php": {
-                    "$table('gov_bounty_pofs')": 1
-                },
-                "modules/Hcm/database/migrations/2026_10_07_850100_create_bounty_gig_tables.php": {
-                    "Schema::create('gov_bounties')": 1,
-                    "Schema::create('gov_bounty_claims')": 1,
-                    "Schema::create('gov_bounty_pofs')": 1
-                },
-                "modules/Hcm/database/migrations/2026_10_19_850200_enhance_bounty_gig_tables.php": {
-                    "Schema::table('gov_bounties')": 2,
-                    "Schema::table('gov_bounty_claims')": 2,
-                    "Schema::table('gov_bounty_pofs')": 2
-                },
-                "modules/Pricing/Console/Commands/AuditPricingCommand.php": {
-                    "DB::table('prc_frozen_quotes')": 2
-                },
-                "modules/Pricing/Domain/Models/FrozenQuote.php": {
-                    "$table('prc_frozen_quotes')": 1
-                },
-                "modules/Pricing/Domain/Models/PriceTick.php": {
-                    "$table('prc_price_ticks')": 1
-                },
-                "modules/Pricing/Domain/Models/PriceTickAggregate.php": {
-                    "$table('prc_price_tick_aggregates')": 1
-                },
-                "modules/Pricing/database/migrations/2026_10_07_810100_create_algorithmic_pricing_tables.php": {
-                    "Schema::create('prc_frozen_quotes')": 1,
-                    "Schema::create('prc_price_ticks')": 1
-                },
-                "modules/Pricing/database/migrations/2026_10_19_810200_create_price_aggregates_and_waterfall_logs.php": {
-                    "Schema::create('prc_price_tick_aggregates')": 1,
-                    "Schema::table('prc_frozen_quotes')": 2
-                },
-                "modules/Telematics/Domain/Models/TelematicsAggregate.php": {
-                    "$table('oto_telematics_aggregates')": 1
-                },
-                "modules/Telematics/Domain/Models/TelematicsBaseline.php": {
-                    "$table('oto_telematics_baselines')": 1
-                },
-                "modules/Telematics/Domain/Models/TelematicsDevice.php": {
-                    "$table('oto_telematics_devices')": 1
-                },
-                "modules/Telematics/Domain/Models/TelematicsTick.php": {
-                    "$table('oto_telematics_ticks')": 1
-                },
-                "modules/Telematics/database/migrations/2026_10_07_680100_create_oto_telematics_tables.php": {
-                    "Schema::create('oto_telematics_baselines')": 1,
-                    "Schema::create('oto_telematics_devices')": 1,
-                    "Schema::create('oto_telematics_ticks')": 1
-                },
-                "modules/Telematics/database/migrations/2026_10_18_000005_create_oto_telematics_aggregates_table.php": {
-                    "Schema::create('oto_telematics_aggregates')": 1
-                },
-                "modules/Vending/Domain/Models/VendingAutoPo.php": {
-                    "$table('ven_auto_pos')": 1
-                },
-                "modules/Vending/Domain/Models/VendingDemandForecast.php": {
-                    "$table('ven_demand_forecasts')": 1
-                },
-                "modules/Vending/Domain/Models/VendingRestockTask.php": {
-                    "$table('ven_restock_tasks')": 1
-                },
-                "modules/Vending/Domain/Models/VendingTransaction.php": {
-                    "$table('ven_vending_transactions')": 1
-                },
-                "modules/Vending/Domain/Models/VendingUnit.php": {
-                    "$table('ven_vending_units')": 1
-                },
-                "modules/Vending/database/migrations/2026_10_07_750100_create_ven_tables.php": {
-                    "Schema::create('ven_auto_pos')": 1,
-                    "Schema::create('ven_demand_forecasts')": 1,
-                    "Schema::create('ven_restock_tasks')": 1,
-                    "Schema::create('ven_vending_transactions')": 1,
-                    "Schema::create('ven_vending_units')": 1
-                }
-            }
+            "total": 0,
+            "entries": {}
         },
         "A3": {
             "total": 0,
@@ -252,7 +107,7 @@
             "entries": {}
         },
         "A12": {
-            "total": 304,
+            "total": 204,
             "entries": {
                 "modules/Agency/database/migrations/2026_10_05_450100_create_agy_tables.php": {
                     "agy_agents.owner_user_id": 1,
@@ -318,51 +173,6 @@
                     "dist_returns.order_id": 1,
                     "dist_sellout_lines.product_id": 1,
                     "dist_stock_levels.product_id": 1
-                },
-                "modules/Edu/database/migrations/2026_10_08_135100_create_edu_programs_and_certificates_tables.php": {
-                    "edu_certificates.enrollment_id": 1,
-                    "edu_certificates.program_id": 1,
-                    "edu_cohorts.instructor_party_id": 1,
-                    "edu_enrollments.cohort_id": 1,
-                    "edu_enrollments.corporate_client_id": 1,
-                    "edu_programs.prerequisite_program_id": 1
-                },
-                "modules/Edu/database/migrations/2026_10_08_136100_create_edu_talent_pipeline_tables.php": {
-                    "edu_contingent_contracts.client_entity_id": 1,
-                    "edu_headhunter_contracts.candidate_id": 1,
-                    "edu_headhunter_contracts.hiring_entity_id": 1,
-                    "edu_internal_transfers.from_entity_id": 1,
-                    "edu_internal_transfers.to_entity_id": 1,
-                    "edu_talent_profiles.candidate_id": 1
-                },
-                "modules/Egy/database/migrations/2026_10_08_126100_create_egy_grid_and_metering_tables.php": {
-                    "egy_ppa_contracts.grid_offtaker_id": 1,
-                    "egy_ppa_contracts.ledger_transaction_id": 1,
-                    "egy_smart_meters.grid_node_id": 1
-                },
-                "modules/Egy/database/migrations/2026_10_08_127100_create_egy_water_cooling_and_esco_tables.php": {
-                    "egy_esco_performance_contracts.ledger_transaction_id": 1,
-                    "egy_utility_consolidated_invoices.ledger_transaction_id": 1
-                },
-                "modules/Egy/database/migrations/2026_10_08_128100_create_egy_carbon_rec_and_esg_tables.php": {
-                    "egy_carbon_credit_orders.ledger_transaction_id": 1,
-                    "egy_cbam_certificates.billed_to_party_id": 1,
-                    "egy_cbam_certificates.container_id": 1,
-                    "egy_cbam_certificates.ledger_transaction_id": 1,
-                    "egy_green_lease_discounts.ledger_transaction_id": 1,
-                    "egy_renewable_energy_certificates.generation_asset_id": 1,
-                    "egy_renewable_energy_certificates.retired_by_property_id": 1
-                },
-                "modules/Egy/database/migrations/2026_10_08_129100_create_egy_microgrid_and_resilience_tables.php": {
-                    "egy_backup_generator_tests.generator_asset_id": 1,
-                    "egy_bess_arbitrage_runs.ledger_transaction_id": 1
-                },
-                "modules/EnterpriseFinance/database/migrations/2026_10_08_141100_create_ef_conglomerate_governance_tables.php": {
-                    "ef_subholding_dividends.subsidiary_entity_id": 1
-                },
-                "modules/Epc/database/migrations/2026_10_06_630100_create_epc_tables.php": {
-                    "epc_cip_capitalizations.created_asset_id": 1,
-                    "epc_projects.client_entity_id": 1
                 },
                 "modules/Esg/database/migrations/2026_10_06_600100_create_esg_tables.php": {
                     "esg_offset_retirements.entity_id": 1
@@ -455,10 +265,6 @@
                     "hcm_manager_effectiveness_scores.manager_id": 1,
                     "hcm_people_analytics_metrics.employee_id": 1,
                     "hcm_performance_reviews.employee_id": 1
-                },
-                "modules/Integration/database/migrations/2026_10_08_227001_create_learning_skill_intelligence_tables.php": {
-                    "edu_course_enrollments.employee_id": 1,
-                    "edu_employee_certifications.employee_id": 1
                 },
                 "modules/Integration/database/migrations/2026_10_08_229001_create_climate_decarbonization_tables.php": {
                     "esg_climate_asset_risks.linked_insurance_policy_id": 1
@@ -562,55 +368,6 @@
                 "modules/Mall/database/migrations/2026_09_30_150001_create_mall_loyalty_voucher_event_facility_tables.php": {
                     "mall_vouchers.settlement_id": 1
                 },
-                "modules/Manufacturing/database/migrations/2026_10_05_350101_create_mfg_bom_routing_formula_tables.php": {
-                    "mfg_formulas.approval_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_360100_create_mfg_planning_tables.php": {
-                    "mfg_planned_orders.production_order_id": 1,
-                    "mfg_planned_orders.superseded_by_run_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_370100_create_mfg_shopfloor_tables.php": {
-                    "mfg_downtime_logs.production_order_id": 1,
-                    "mfg_material_issues.lot_id": 1,
-                    "mfg_operation_reports.routing_operation_id": 1,
-                    "mfg_operation_reports.worker_id": 1,
-                    "mfg_production_orders.routing_id": 1,
-                    "mfg_rework_records.material_id": 1,
-                    "mfg_subcontract_receipts.supplier_id": 1,
-                    "mfg_wip_transfers.from_operation_id": 1,
-                    "mfg_wip_transfers.to_operation_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_380100_create_mfg_costing_tables.php": {
-                    "mfg_cost_versions.approval_id": 1,
-                    "mfg_variances.ledger_transaction_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_390100_create_mfg_qms_tables.php": {
-                    "mfg_inspections.gauge_id": 1,
-                    "mfg_inspections.lot_id": 1,
-                    "mfg_lot_sales.store_order_item_id": 1,
-                    "mfg_lot_sales.user_id": 1,
-                    "mfg_ncrs.inspection_id": 1,
-                    "mfg_ncrs.lot_id": 1,
-                    "mfg_ncrs.production_order_id": 1,
-                    "mfg_recall_recipients.lot_sale_id": 1,
-                    "mfg_recall_recipients.store_order_id": 1,
-                    "mfg_recall_recipients.user_id": 1,
-                    "mfg_recalls.ncr_id": 1,
-                    "mfg_spc_samples.inspection_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_390101_add_approval_to_inspections.php": {
-                    "mfg_inspections.approval_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_05_400100_create_mfg_oee_maintenance_hse_tables.php": {
-                    "mfg_hse_incidents.worker_id": 1,
-                    "mfg_maintenance_orders.asset_id": 1,
-                    "mfg_sensor_readings.maintenance_order_id": 1,
-                    "mfg_work_permits.approval_id": 1
-                },
-                "modules/Manufacturing/database/migrations/2026_10_07_820100_create_vmi_and_c2m_tables.php": {
-                    "mfg_c2m_custom_orders.user_id": 1,
-                    "mfg_vmi_replenishments.supplier_id": 1
-                },
                 "modules/Med/database/migrations/2026_10_08_133100_create_med_studios_and_ip_tables.php": {
                     "med_ip_assets.owner_entity_id": 1,
                     "med_ip_licenses.licensee_entity_id": 1,
@@ -620,43 +377,6 @@
                 "modules/Med/database/migrations/2026_10_08_134100_create_med_distribution_and_ads_tables.php": {
                     "med_ad_campaigns.agency_entity_id": 1,
                     "med_ad_campaigns.channel_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_07_930100_create_min_mining_tables.php": {
-                    "min_dispatch_runs.equipment_id": 1,
-                    "min_dispatch_runs.pit_id": 1,
-                    "min_dispatch_runs.site_id": 1,
-                    "min_equipment.site_id": 1,
-                    "min_pits.site_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_07_940100_create_min_weighbridge_and_royalty_tables.php": {
-                    "min_weighbridge_tickets.site_id": 1,
-                    "min_work_permits.site_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_120100_create_min_safety_and_contractor_tables.php": {
-                    "min_contractor_safety_evaluations.penalty_ledger_tx_id": 1,
-                    "min_fatigue_logs.equipment_id": 1,
-                    "min_fatigue_logs.site_id": 1,
-                    "min_safety_incidents.reporter_party_id": 1,
-                    "min_work_permits.allowed_pit_id": 1,
-                    "min_work_permits.worker_party_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_121100_create_min_smelter_and_metals_trading_tables.php": {
-                    "min_metal_warehouse_receipts.collateral_facility_id": 1,
-                    "min_offtaker_contracts.ledger_transaction_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_122100_create_min_export_terminal_and_dispute_tables.php": {
-                    "min_cargo_quality_disputes.surveyor_party_id": 1,
-                    "min_circular_fly_ash_sales.ledger_transaction_id": 1,
-                    "min_vessel_voyages.buyer_party_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_123100_create_min_renewable_and_carbon_tables.php": {
-                    "min_green_mineral_sales.ledger_transaction_id": 1,
-                    "min_renewable_energy_billings.ledger_transaction_id": 1
-                },
-                "modules/Mining/database/migrations/2026_10_08_124100_create_min_reclamation_and_water_tables.php": {
-                    "min_reclamation_provisions.accrual_ledger_tx_id": 1,
-                    "min_reclamation_provisions.release_ledger_tx_id": 1,
-                    "min_water_monitoring_readings.ledger_transaction_id": 1
                 },
                 "modules/Partner/database/migrations/2026_10_06_470100_create_ptn_tables.php": {
                     "ptn_due_diligences.approval_id": 1,
@@ -756,31 +476,6 @@
                 "modules/Treasury/database/migrations/2026_10_06_480100_create_trs_tables.php": {
                     "trs_bank_statements.matched_ledger_tx_id": 1,
                     "trs_revaluations.ledger_transaction_id": 1
-                },
-                "modules/Vending/database/migrations/2026_10_07_750100_create_ven_tables.php": {
-                    "ven_auto_pos.supplier_id": 1
-                },
-                "modules/Venue/database/migrations/2026_10_07_890100_create_ven_entertainment_tables.php": {
-                    "ven_entertainment_table_bookings.user_id": 1,
-                    "ven_entertainment_tickets.buyer_user_id": 1
-                },
-                "modules/Venue/database/migrations/2026_10_07_900100_create_ven_artist_and_festival_tables.php": {
-                    "ven_artist_contracts.event_id": 1,
-                    "ven_artist_contracts.venue_id": 1,
-                    "ven_bundle_orders.customer_user_id": 1,
-                    "ven_bundle_orders.festival_bundle_id": 1,
-                    "ven_memberships.user_id": 1
-                },
-                "modules/Venue/database/migrations/2026_10_08_115100_create_ven_creator_and_rights_tables.php": {
-                    "ven_creators.party_id": 1
-                },
-                "modules/Venue/database/migrations/2026_10_08_116100_create_ven_secondary_resale_tables.php": {
-                    "ven_ticket_resales.buyer_user_id": 1,
-                    "ven_ticket_resales.seller_user_id": 1,
-                    "ven_ticket_waitlists.user_id": 1
-                },
-                "modules/Venue/database/migrations/2026_10_08_117100_create_ven_biometric_and_crowd_tables.php": {
-                    "ven_biometric_credentials.user_id": 1
                 },
                 "modules/Wms/database/migrations/2026_10_05_410100_create_wms_tables.php": {
                     "wms_cycle_counts.approval_id": 1,

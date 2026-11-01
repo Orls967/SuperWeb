@@ -56,7 +56,7 @@ return new class extends Migration
             $table->unsignedBigInteger('buyer_user_id')->nullable();
             $table->timestamps();
 
-            $table->unique(['event_id', 'section_code', 'row_label', 'seat_number']);
+            $table->unique(['event_id', 'section_code', 'row_label', 'seat_number'], 'ven_seat_claims_seat_uniq');
             $table->index(['event_id', 'status', 'held_until']);
             $table->foreign('event_id')->references('id')->on('ven_entertainment_events')->cascadeOnDelete();
             $table->foreign('tier_id')->references('id')->on('ven_ticket_tiers')->cascadeOnDelete();
