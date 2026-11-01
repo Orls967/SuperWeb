@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,9 @@ final class ThrottleAuthAttemptsMiddleware
      */
     public function handle(Request $request, Closure $next, int $maxAttempts = 5, int $decaySeconds = 60): Response
     {
-        if ($request->isMethod('POST') && ($request->is('login') || $request->is('forgot-password') || $request->is('reset-password'))) {
+        $isAuthEndpoint = $request->isMethod('POST') && ($request->is('login') || $request->is('forgot-password') || $request->is('reset-password'));
+
+        if ($isAuthEndpoint) {
             $key = $this->resolveThrottleKey($request);
 
             if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
@@ -39,13 +42,27 @@ final class ThrottleAuthAttemptsMiddleware
                 );
             }
 
-            RateLimiter::hit($key, $decaySeconds);
+            try {
+                $response = $next($request);
+            } catch (\Throwable $e) {
+                RateLimiter::hit($key, $decaySeconds);
+
+                throw $e;
+            }
+
+            if (Auth::check()) {
+                RateLimiter::clear($key);
+            } else {
+                RateLimiter::hit($key, $decaySeconds);
+            }
+
+            return $response;
         }
 
         return $next($request);
     }
 
-    private function resolveThrottleKey(Request $request): string
+    public function resolveThrottleKey(Request $request): string
     {
         $email = (string) $request->input('email', '');
         $sanitizedEmail = Str::lower(trim($email));

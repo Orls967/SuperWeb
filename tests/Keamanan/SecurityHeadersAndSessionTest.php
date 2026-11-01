@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Keamanan;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
@@ -23,6 +24,11 @@ class SecurityHeadersAndSessionTest extends TestCase
         $response->assertHeader('X-Frame-Options', 'DENY');
         $response->assertHeader('X-Content-Type-Options', 'nosniff');
         $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+
+        $responseLogin = $this->get('/login');
+        $responseLogin->assertHeader('X-Frame-Options', 'DENY');
+        $responseLogin->assertHeader('X-Content-Type-Options', 'nosniff');
+        $responseLogin->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     }
 
     /**
@@ -44,6 +50,65 @@ class SecurityHeadersAndSessionTest extends TestCase
         ]);
 
         $this->assertEquals(429, $sixthAttempt->status(), 'Exceeding login threshold must return HTTP 429 Too Many Requests');
+    }
+
+    /**
+     * B5: Login sukses tidak dihitung sebagai gagal dan me-reset hit counter.
+     */
+    public function test_successful_login_does_not_count_as_failure_and_clears_throttle(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'legit-user@example.com',
+            'password' => bcrypt('secret123'),
+        ]);
+
+        // Gagal 4 kali
+        for ($i = 0; $i < 4; $i++) {
+            $this->post('/login', [
+                'email' => 'legit-user@example.com',
+                'password' => 'wrongpass',
+            ]);
+        }
+
+        // Login ke-5 sukses
+        $loginSuccess = $this->post('/login', [
+            'email' => 'legit-user@example.com',
+            'password' => 'secret123',
+        ]);
+        $loginSuccess->assertRedirect();
+        $this->assertAuthenticatedAs($user);
+
+        // Setelah sukses dan logout, throttle harus sudah bersih (tidak 429)
+        $this->post('/logout');
+
+        // Login salah 1x lagi tidak boleh langsung 429 karena counter sudah di-clear
+        $nextAttempt = $this->post('/login', [
+            'email' => 'legit-user@example.com',
+            'password' => 'wrongpass',
+        ]);
+        $this->assertNotEquals(429, $nextAttempt->status());
+    }
+
+    /**
+     * B5: Kunci throttle memakai email yang dinormalisasi (lowercase + trim).
+     */
+    public function test_throttle_key_uses_normalized_email(): void
+    {
+        // Failed login dengan email whitespace dan uppercase
+        for ($i = 0; $i < 5; $i++) {
+            $this->post('/login', [
+                'email' => '  TARGET-USER@example.COM  ',
+                'password' => 'wrongpass',
+            ]);
+        }
+
+        // Percobaan ke-6 dengan email bersih lowercase harus ter-throttle 429
+        $sixthAttempt = $this->post('/login', [
+            'email' => 'target-user@example.com',
+            'password' => 'wrongpass',
+        ]);
+
+        $this->assertEquals(429, $sixthAttempt->status(), 'Kunci throttle harus mengenali email yang dinormalisasi');
     }
 
     /**
