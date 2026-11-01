@@ -137,9 +137,16 @@ describe('Venue Financial Actions Mutation Test', function () {
     });
 
     it('closes event recognizing unearned revenue and platform fee with idempotency', function () {
-        User::factory()->create(['id' => 777]);
-        $hold = app(HoldGeneralAdmissionQuotaAction::class)->handle($this->event->id, $this->tier->id, 2, 777, 'ven:mut:hold:1');
-        app(PurchaseVenueTicketAction::class)->handle($hold['hold_token'], 777, 'wallet', 'ven:mut:buy:1');
+        $user = User::firstOrCreate(
+            ['id' => 777],
+            [
+                'name' => 'Venue Test User',
+                'email' => 'venue_test_777@superweb.test',
+                'password' => bcrypt('password'),
+            ]
+        );
+        $hold = app(HoldGeneralAdmissionQuotaAction::class)->handle($this->event->id, $this->tier->id, 2, (int) $user->id, 'ven:mut:hold:1');
+        app(PurchaseVenueTicketAction::class)->handle($hold['hold_token'], (int) $user->id, 'wallet', 'ven:mut:buy:1');
 
         $closeAction = app(CloseEntertainmentEventAction::class);
 
