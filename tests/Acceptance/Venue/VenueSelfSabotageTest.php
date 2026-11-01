@@ -40,6 +40,13 @@ class VenueSelfSabotageTest extends TestCase
         parent::setUp();
         $this->seed(LedgerAccountsSeeder::class);
 
+        $users = [];
+        for ($i = 900; $i <= 910; $i++) {
+            $users[] = ['id' => $i, 'name' => "Buyer {$i}", 'email' => "buyer{$i}@test.com", 'password' => 'secret'];
+        }
+        $users[] = ['id' => 1, 'name' => 'Scanner 1', 'email' => 'scanner1@test.com', 'password' => 'secret'];
+        DB::table('users')->insertOrIgnore($users);
+
         $this->venue = EntertainmentVenue::create([
             'venue_code' => 'BC-SABOTAGE-01',
             'name' => 'Sabotage Target Venue',

@@ -2062,3 +2062,29 @@
   - Seluruh 92 pengujian acceptance `tests/Acceptance/Culinary` lulus.
   - Seluruh pengujian fitur Agri, Hcm, Pricing, Vending, dan CloudKitchen lulus.
   - `arch:scan` A2 BASI bertambah 42 entri dan A2 BARU = 0.
+
+<a id="2026-11-02-fk-nyata-a12"></a>
+## 2026-11-02: Foreign Key Nyata A12 untuk Relasi Entitas User Kernel
+- **Anchor:** `2026-11-02-fk-nyata-a12`
+- **Context:**
+  - 5 kolom relasi user pada modul Mining dan Venue dibuat tanpa Foreign Key pada migrasi awal ML1, lalu diakali dengan menambahkan 5 entri ke `cross_module_columns` di `config/modules.php`:
+    - `min_dispatch_assignments.override_by_user_id`
+    - `min_reconciliation_investigations.resolved_by_user_id`
+    - `ven_seat_claims.buyer_user_id`
+    - `ven_quota_holds.buyer_user_id`
+    - `ven_gate_scans.scanned_by_user_id`
+  - Pola ini menyembunyikan pelanggaran aturan integritas referensial A12 (kolom `*_id` tanpa foreign key).
+- **Decision:**
+  1. Tabel `users` adalah entitas kernel Core/Auth yang boleh direferensikan via Foreign Key nyata oleh modul bisnis.
+  2. Memperbarui migrasi ML1 terkait pada modul Mining dan Venue untuk mendefinisikan Foreign Key nyata ke tabel `users`:
+     - `min_dispatch_assignments`: `foreignId('override_by_user_id')->nullable()->constrained('users')->nullOnDelete()`
+     - `min_reconciliation_investigations`: `foreignId('resolved_by_user_id')->nullable()->constrained('users')->nullOnDelete()`
+     - `ven_seat_claims`: `foreign('buyer_user_id')->references('id')->on('users')->nullOnDelete()`
+     - `ven_quota_holds`: `foreign('buyer_user_id')->references('id')->on('users')->cascadeOnDelete()`
+     - `ven_gate_scans`: `foreign('scanned_by_user_id')->references('id')->on('users')->nullOnDelete()`
+  3. Memperbaiki scanner `MissingForeignKeyRule` agar mencakup migrasi pada struktur modul bersarang (seperti `modules/*/*/database/migrations/*.php`).
+  4. Menghapus 5 entri tersebut dari `cross_module_columns` di `config/modules.php`.
+- **Verification:**
+  - `vendor/bin/pest tests/Feature/Architecture/M5RealForeignKeyConstraintTest.php` lulus 5/5, membuktikan percobaan insert `*_by_user_id` / `buyer_user_id` tanpa user yang valid di database ditolak dengan `QueryException` (FK violation).
+  - Seluruh pengujian acceptance `tests/Acceptance/Venue` dan `tests/Acceptance/Mining` lulus 170/170.
+  - `php artisan arch:scan` aturan A12 BARU = 0.

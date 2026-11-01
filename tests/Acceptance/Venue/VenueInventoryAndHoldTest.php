@@ -7,6 +7,7 @@ namespace Tests\Acceptance\Venue;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Venue\Application\Actions\HoldGeneralAdmissionQuotaAction;
 use Modules\Venue\Application\Actions\HoldNumberedSeatsAction;
@@ -36,6 +37,12 @@ class VenueInventoryAndHoldTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $users = [];
+        for ($i = 101; $i <= 110; $i++) {
+            $users[] = ['id' => $i, 'name' => "Buyer {$i}", 'email' => "buyer{$i}@test.com", 'password' => 'secret'];
+        }
+        DB::table('users')->insertOrIgnore($users);
 
         $this->venue = EntertainmentVenue::create([
             'venue_code' => 'BC-BALI-002',

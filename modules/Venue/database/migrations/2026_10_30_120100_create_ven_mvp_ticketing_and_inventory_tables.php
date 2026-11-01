@@ -60,6 +60,7 @@ return new class extends Migration
             $table->index(['event_id', 'status', 'held_until']);
             $table->foreign('event_id')->references('id')->on('ven_entertainment_events')->cascadeOnDelete();
             $table->foreign('tier_id')->references('id')->on('ven_ticket_tiers')->cascadeOnDelete();
+            $table->foreign('buyer_user_id')->references('id')->on('users')->nullOnDelete();
         });
 
         Schema::create('ven_quota_holds', function (Blueprint $table) {
@@ -77,6 +78,7 @@ return new class extends Migration
             $table->index(['event_id', 'status', 'held_until']);
             $table->foreign('event_id')->references('id')->on('ven_entertainment_events')->cascadeOnDelete();
             $table->foreign('tier_id')->references('id')->on('ven_ticket_tiers')->cascadeOnDelete();
+            $table->foreign('buyer_user_id')->references('id')->on('users')->cascadeOnDelete();
         });
 
         Schema::table('ven_entertainment_tickets', function (Blueprint $table) {
@@ -102,6 +104,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('ticket_id')->references('id')->on('ven_entertainment_tickets')->cascadeOnDelete();
+            $table->foreign('scanned_by_user_id')->references('id')->on('users')->nullOnDelete();
         });
 
         if (Schema::hasTable('ven_entertainment_events') && ! Schema::hasColumn('ven_entertainment_events', 'status')) {

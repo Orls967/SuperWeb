@@ -176,7 +176,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('estimated_cycle_seconds')->default(0);
                 $table->boolean('is_override')->default(false);
                 $table->text('override_reason')->nullable();
-                $table->unsignedBigInteger('override_by_user_id')->nullable();
+                $table->foreignId('override_by_user_id')->nullable()->constrained('users')->nullOnDelete();
                 $table->timestamps();
             });
         }
@@ -223,7 +223,7 @@ return new class extends Migration
                 $table->string('investigation_code')->unique();
                 $table->string('status', 32)->default('OPEN');
                 $table->text('resolution_notes')->nullable();
-                $table->unsignedBigInteger('resolved_by_user_id')->nullable();
+                $table->foreignId('resolved_by_user_id')->nullable()->constrained('users')->nullOnDelete();
                 $table->timestamp('resolved_at')->nullable();
                 $table->timestamps();
             });

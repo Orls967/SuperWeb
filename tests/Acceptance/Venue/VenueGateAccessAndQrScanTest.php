@@ -7,6 +7,7 @@ namespace Tests\Acceptance\Venue;
 use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Modules\Party\Contracts\PartyAgeVerificationInterface;
 use Modules\Venue\Application\Actions\HoldGeneralAdmissionQuotaAction;
 use Modules\Venue\Application\Actions\PurchaseVenueTicketAction;
@@ -42,6 +43,11 @@ class VenueGateAccessAndQrScanTest extends TestCase
     {
         parent::setUp();
         $this->seed(LedgerAccountsSeeder::class);
+
+        DB::table('users')->insertOrIgnore([
+            ['id' => 301, 'name' => 'Buyer 301', 'email' => 'buyer301@test.com', 'password' => 'secret'],
+            ['id' => 99, 'name' => 'Scanner 99', 'email' => 'scanner99@test.com', 'password' => 'secret'],
+        ]);
 
         $this->venue = EntertainmentVenue::create([
             'venue_code' => 'BC-BALI-004',

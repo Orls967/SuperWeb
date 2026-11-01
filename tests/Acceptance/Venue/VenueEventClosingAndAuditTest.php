@@ -40,6 +40,13 @@ class VenueEventClosingAndAuditTest extends TestCase
         parent::setUp();
         $this->seed(LedgerAccountsSeeder::class);
 
+        $users = [];
+        for ($i = 500; $i <= 510; $i++) {
+            $users[] = ['id' => $i, 'name' => "Buyer {$i}", 'email' => "buyer{$i}@test.com", 'password' => 'secret'];
+        }
+        $users[] = ['id' => 99, 'name' => 'Scanner 99', 'email' => 'scanner99@test.com', 'password' => 'secret'];
+        DB::table('users')->insertOrIgnore($users);
+
         $this->venue = EntertainmentVenue::create([
             'venue_code' => 'BC-BALI-007',
             'name' => 'Café del Mar Bali',

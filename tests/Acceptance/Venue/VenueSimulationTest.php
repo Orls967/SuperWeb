@@ -7,6 +7,7 @@ namespace Tests\Acceptance\Venue;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Party\Contracts\PartyAgeVerificationInterface;
 use Modules\Venue\Application\Actions\CaptureTableDepositAction;
@@ -36,6 +37,16 @@ class VenueSimulationTest extends TestCase
     {
         $this->seed(LedgerAccountsSeeder::class);
         $this->seed(VenueRbacSeeder::class);
+
+        $users = [];
+        for ($u = 1000; $u <= 1650; $u++) {
+            $users[] = ['id' => $u, 'name' => "User {$u}", 'email' => "user{$u}@test.com", 'password' => 'secret'];
+        }
+        $users[] = ['id' => 999, 'name' => 'Scanner 999', 'email' => 'scanner999@test.com', 'password' => 'secret'];
+        for ($u = 8001; $u <= 8050; $u++) {
+            $users[] = ['id' => $u, 'name' => "User {$u}", 'email' => "user{$u}@test.com", 'password' => 'secret'];
+        }
+        DB::table('users')->insertOrIgnore($users);
 
         // Mock payment gateway
         $mockGateway = $this->createMock(VenuePaymentGateway::class);

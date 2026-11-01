@@ -6,6 +6,7 @@ namespace Tests\Acceptance\Venue;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Modules\Banking\Domain\Models\LedgerEntry;
 use Modules\Venue\Application\Actions\HoldGeneralAdmissionQuotaAction;
@@ -38,6 +39,12 @@ class VenueTicketPurchaseAndRefundTest extends TestCase
     {
         parent::setUp();
         $this->seed(LedgerAccountsSeeder::class);
+
+        $users = [];
+        for ($i = 200; $i <= 220; $i++) {
+            $users[] = ['id' => $i, 'name' => "Buyer {$i}", 'email' => "buyer{$i}@test.com", 'password' => 'secret'];
+        }
+        DB::table('users')->insertOrIgnore($users);
 
         $this->venue = EntertainmentVenue::create([
             'venue_code' => 'BC-BALI-003',

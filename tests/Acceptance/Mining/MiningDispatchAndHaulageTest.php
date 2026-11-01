@@ -6,6 +6,7 @@ namespace Tests\Acceptance\Mining;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Mining\Application\Actions\GenerateDispatchPlanAction;
 use Modules\Mining\Domain\Algorithms\AssignmentCertificateVerifier;
@@ -34,6 +35,10 @@ class MiningDispatchAndHaulageTest extends TestCase
     {
         parent::setUp();
         $this->seed(LedgerAccountsSeeder::class);
+
+        DB::table('users')->insertOrIgnore([
+            ['id' => 99, 'name' => 'Dispatcher 99', 'email' => 'dispatcher99@test.com', 'password' => 'secret'],
+        ]);
 
         $this->site = MiningSite::create([
             'id' => (string) Str::uuid(),
