@@ -284,7 +284,7 @@ return new class extends Migration
                 $table->boolean('payment_held')->default(false);
                 $table->timestamps();
 
-                $table->unique(['contractor_party_id', 'period', 'site_id']);
+                $table->unique(['contractor_party_id', 'period', 'site_id'], 'min_contractor_eval_party_period_site_unique');
             });
         }
     }

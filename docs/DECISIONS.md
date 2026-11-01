@@ -1983,3 +1983,18 @@
   - `tests/Feature/Banking/IdempotencyCategoryOneContractTest.php` memverifikasi seluruh 6 aksi Kategori (i): tanpa key $\to$ ditolak (422/exception), key sama $\to$ 1 efek, key berbeda $\to$ 2 efek.
   - `tests/Feature/Banking/IdempotencyCategoryTwoContractTest.php` memverifikasi bahwa dua kejadian bisnis berbeda menghasilkan dua entitas/posting terpisah pada aksi Kategori (ii).
   - `git grep -l "idempotencyKey ??\|idempotency_key ??" -- modules` berkurang dari 13 file menjadi tepat 7 file Kategori (ii).
+
+
+<a id="2026-11-02-pemulihan-master"></a>
+## 2026-11-02: Pemulihan Master Pasca-Merge ML1+ML2+ML3 (K-12, K-18, K-19, K-20)
+- **Anchor:** `2026-11-02-pemulihan-master`
+- **Context:**
+  - Master menerima merge langsung ML1 (#37), ML2 (#38), ML3 (#39), serta PR #41 fondasi G5-A.
+  - Perbaikan dilakukan untuk merestorasi seluruh pagar arsitektur, kepatuhan skema identifier, pemindahan namespace, dan perbaikan integritas data tanpa melonggarkan aturan.
+- **Decision:**
+  1. **PSR-4 Seeder (M2):** Namespace `Modules\Venue\database\seeders\VenueRbacSeeder` dan `Modules\Fleet\database\seeders\MobilityRbacSeeder` disesuaikan ke huruf kecil mengikuti konvensi modul, menghijaukan `Psr4ComplianceTest`.
+  2. **Kontrak Venue & Payment (M7):** Hapus `PaymentGatewayInterface.php` lepasan dari `Modules\Payment\Contracts`. Venue mengadopsi `VenuePaymentGateway` adaptor internal. Menghijaukan `ZeroArchScanDebtTest`. Stub null `PartyAgeVerificationInterface` diverifikasi menolak akses usia.
+  3. **Identifier Skema ≤ 64 Karakter (M8c, K-19):**
+     - Indeks `ven_seat_claims_event_id_section_code_row_label_seat_number_unique` (66 kar) dinamai eksplisit `ven_seat_claims_event_sec_row_seat_unique` (42 kar).
+     - Indeks `min_contractor_evaluations_contractor_party_id_period_site_id_unique` (68 kar) dinamai eksplisit `min_contractor_eval_party_period_site_unique` (46 kar).
+     - Menghijaukan `SchemaIdentifierLengthTest` dan `MysqlSchemaCompatibilityTest`.
