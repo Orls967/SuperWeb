@@ -91,7 +91,8 @@ class SettleVouchersAction
                     ->first();
 
                 if ($existingSettlement !== null) {
-                    $replaySettlementId = $existingSettlement->meta['settlement_id'] ?? null;
+                    $meta = is_array($existingSettlement->meta) ? $existingSettlement->meta : json_decode($existingSettlement->meta, true);
+                    $replaySettlementId = $meta['settlement_id'] ?? null;
 
                     foreach ($items as $item) {
                         $item->update([

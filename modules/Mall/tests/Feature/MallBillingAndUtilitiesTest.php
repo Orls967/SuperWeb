@@ -157,7 +157,7 @@ class MallBillingAndUtilitiesTest extends TestCase
 
         // Case A: Omzet bersih Rp 400.000.000 -> 8% = Rp 32.000.000 (Kurang dari minimum Rp 42.000.000)
         // Maka hanya ada sewa pokok minimum, TANPA baris revenue_share_topup
-        $periodA = '2026-11';
+        $periodA = '2027-04';
         $salesService->recordManualSales($this->lease, $periodA, 450000000, 400000000, 3000);
         $invA = $action->generateForLease($this->lease, $periodA);
 
@@ -170,7 +170,7 @@ class MallBillingAndUtilitiesTest extends TestCase
 
         // Case B: Omzet bersih Rp 700.000.000 -> 8% = Rp 56.000.000 (Lebih besar dari minimum Rp 42.000.000)
         // Maka sewa pokok = 42.000.000 dan ada revenue_share_topup = 14.000.000 (Total sewa = 56.000.000)
-        $periodB = '2026-12';
+        $periodB = '2027-05';
         $salesService->recordManualSales($this->lease, $periodB, 750000000, 700000000, 4500);
         $invB = $action->generateForLease($this->lease, $periodB);
 
@@ -227,7 +227,7 @@ class MallBillingAndUtilitiesTest extends TestCase
             'lease_id' => $this->lease->id,
             'tenant_id' => $this->tenant->id,
             'property_id' => $this->property->id,
-            'period_month' => '2026-11',
+            'period_month' => '2027-06',
             'subtotal' => 6000000,
             'penalty_amount' => 500000,
             'total_amount' => 6500000,

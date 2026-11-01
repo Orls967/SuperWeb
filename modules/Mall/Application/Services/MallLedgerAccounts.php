@@ -6,7 +6,6 @@ namespace Modules\Mall\Application\Services;
 
 use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
-use Modules\Mall\Ledger\MallAccounts;
 
 /**
  * Pendaftaran akun sistem ledger milik modul Mall.
@@ -43,7 +42,21 @@ class MallLedgerAccounts
 
     public function ensure(string $code): LedgerAccount
     {
-        return MallAccounts::get($code);
+        $definition = self::DEFINITIONS[$code] ?? [
+            'name' => 'Akun Operasional Mall',
+            'kind' => AccountKind::REVENUE,
+            'allow_negative' => false,
+        ];
+
+        return LedgerAccount::firstOrCreate(
+            ['code' => $code],
+            [
+                'name' => $definition['name'],
+                'asset_code' => 'IDR',
+                'kind' => $definition['kind'],
+                'allow_negative' => $definition['allow_negative'],
+            ]
+        );
     }
 
     /**

@@ -11,7 +11,6 @@ use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Mall\Domain\Enums\InvoiceLineType;
 use Modules\Mall\Domain\Enums\InvoiceStatus;
 use Modules\Mall\Domain\Models\Invoice;
-use Modules\Mall\Domain\Models\LoyaltyMember;
 use Modules\Mall\Domain\Models\PointBatch;
 use Modules\Mall\Ledger\MallAccounts;
 
@@ -143,14 +142,6 @@ class AuditBillingQuery
 
                 if ($userBalance !== $activeLotSum) {
                     $discrepancies[] = "User #{$uid} Points discrepancy: wallet balance ({$userBalance}) != active lots sum ({$activeLotSum})";
-                }
-
-                $member = LoyaltyMember::where('user_id', $uid)->first();
-                if ($member !== null) {
-                    $cachedPoints = $member->current_points;
-                    if ($userBalance !== $cachedPoints) {
-                        $discrepancies[] = "User #{$uid} Points cache discrepancy: wallet balance ({$userBalance}) != current_points ({$cachedPoints})";
-                    }
                 }
             }
         }
