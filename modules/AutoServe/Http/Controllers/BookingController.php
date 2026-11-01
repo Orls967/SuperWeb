@@ -7,6 +7,7 @@ namespace Modules\AutoServe\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Modules\AutoServe\Application\Actions\CancelBookingAction;
 use Modules\AutoServe\Application\Actions\CompleteBookingAction;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
@@ -69,7 +70,9 @@ class BookingController extends Controller
         ];
 
         if (! empty($validated['vehicle_id'])) {
-            $data['vehicle_id'] = $validated['vehicle_id'];
+            $vehicle = Vehicle::findOrFail($validated['vehicle_id']);
+            Gate::authorize('attach', $vehicle);
+            $data['vehicle_id'] = $vehicle->id;
         } elseif ($request->boolean('save_to_garage')) {
             $createdVehicle = Vehicle::create([
                 'user_id' => auth()->id(),

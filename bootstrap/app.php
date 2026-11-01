@@ -76,7 +76,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->booted(function (): void {
         Gate::guessPolicyNamesUsing(function (string $class): string {
             if (preg_match('/^Modules\\\\([^\\\\]+)\\\\Domain\\\\Models\\\\([^\\\\]+)$/', $class, $matches)) {
-                return 'Modules\\'.$matches[1].'\\Policies\\'.$matches[2].'Policy';
+                $modulePolicy = 'Modules\\'.$matches[1].'\\Policies\\'.$matches[2].'Policy';
+                if (class_exists($modulePolicy)) {
+                    return $modulePolicy;
+                }
             }
 
             return 'App\\Policies\\'.class_basename($class).'Policy';
