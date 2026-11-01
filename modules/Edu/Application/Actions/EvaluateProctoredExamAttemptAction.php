@@ -6,6 +6,7 @@ namespace Modules\Edu\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Modules\Edu\Domain\Exceptions\IdempotencyConflictException;
 use Modules\Edu\Domain\Models\EduExamAttempt;
 use Modules\Shared\Application\BaseAction;
