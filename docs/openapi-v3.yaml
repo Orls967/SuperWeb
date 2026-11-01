@@ -273,6 +273,366 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailsRfc7807'
       security: {}
+  /academy/admin/programs:
+    get:
+      operationId: getEduAdminProgramsIndex
+      tags:
+        - Edu
+      summary: 'Index (Edu)'
+      description: 'Operational endpoint for Edu module. Protected by role matrix: [academy_admin, admin].'
+      x-allowed-roles:
+        - academy_admin
+        - admin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+    post:
+      operationId: postEduAdminProgramsStore
+      tags:
+        - Edu
+      summary: 'Store (Edu)'
+      description: 'Operational endpoint for Edu module. Protected by role matrix: [academy_admin, admin].'
+      x-allowed-roles:
+        - academy_admin
+        - admin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postEduAdminProgramsStore'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /academy/certificates/verify:
+    get:
+      operationId: getEduWebCertificatesVerify
+      tags:
+        - Edu
+      summary: 'Verify Web (Edu)'
+      description: 'Operational endpoint for Edu module. Protected by role matrix: [public].'
+      x-allowed-roles:
+        - public
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security: {}
+  '/academy/student/attempts/{id}':
+    get:
+      operationId: getEduStudentAttemptsShow
+      tags:
+        - Edu
+      summary: 'Show Attempt (Edu)'
+      description: 'Operational endpoint for Edu module. Protected by role matrix: [admin, student].'
+      x-allowed-roles:
+        - admin
+        - student
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          description: 'Identifier parameter id for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  '/academy/student/certificates/{id}':
+    get:
+      operationId: getEduStudentCertificatesShow
+      tags:
+        - Edu
+      summary: 'Show Certificate (Edu)'
+      description: 'Operational endpoint for Edu module. Protected by role matrix: [admin, student].'
+      x-allowed-roles:
+        - admin
+        - student
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          description: 'Identifier parameter id for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /academy/student/dashboard:
+    get:
+      operationId: getEduStudentDashboard
+      tags:
+        - Edu
+      summary: 'Dashboard (Edu)'
+      description: 'Operational endpoint for Edu module. Protected by role matrix: [admin, student].'
+      x-allowed-roles:
+        - admin
+        - student
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /activity:
     get:
       operationId: getActivityIndex
@@ -5235,6 +5595,190 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+  '/api/oto/sessions/{session}':
+    get:
+      operationId: getOtoSessionsShow
+      tags:
+        - Core
+      summary: 'GET Sessions in Core'
+      description: 'Operational endpoint for Core module. Protected by role matrix: [admin, driver, ev_operator, fleet_manager].'
+      x-allowed-roles:
+        - admin
+        - driver
+        - ev_operator
+        - fleet_manager
+      parameters:
+        -
+          name: session
+          in: path
+          required: true
+          description: 'Identifier parameter session for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /api/oto/telematics/clear-grounding:
+    post:
+      operationId: postOtoTelematicsClearGrounding
+      tags:
+        - Core
+      summary: 'POST Clear Grounding in Core'
+      description: 'Operational endpoint for Core module. Protected by role matrix: [admin, mechanic].'
+      x-allowed-roles:
+        - admin
+        - mechanic
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postOtoTelematicsClearGrounding'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /api/v1/edu/certificates/verify:
+    get:
+      operationId: getEduApiCertificatesVerify
+      tags:
+        - Edu
+      summary: 'Verify Api (Edu)'
+      description: 'Operational endpoint for Edu module. Protected by role matrix: [public].'
+      x-allowed-roles:
+        - public
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security: {}
   /api/v1/integration/ping:
     get:
       operationId: getApiV1IntegrationPing
@@ -9485,10 +10029,9 @@ paths:
       tags:
         - CloudKitchen
       summary: 'Index (CloudKitchen)'
-      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, customer, kitchen, outlet_manager].'
+      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, kitchen, outlet_manager].'
       x-allowed-roles:
         - admin
-        - customer
         - kitchen
         - outlet_manager
       parameters:
@@ -9545,10 +10088,9 @@ paths:
       tags:
         - CloudKitchen
       summary: 'Audit Thermal (CloudKitchen)'
-      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, customer, kitchen, outlet_manager].'
+      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, kitchen, outlet_manager].'
       x-allowed-roles:
         - admin
-        - customer
         - kitchen
         - outlet_manager
       parameters:
@@ -9613,10 +10155,9 @@ paths:
       tags:
         - CloudKitchen
       summary: 'Batch Couriers (CloudKitchen)'
-      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, customer, kitchen, outlet_manager].'
+      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, kitchen, outlet_manager].'
       x-allowed-roles:
         - admin
-        - customer
         - kitchen
         - outlet_manager
       parameters:
@@ -9681,10 +10222,9 @@ paths:
       tags:
         - CloudKitchen
       summary: 'Courier Batches (CloudKitchen)'
-      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, customer, kitchen, outlet_manager].'
+      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, kitchen, outlet_manager].'
       x-allowed-roles:
         - admin
-        - customer
         - kitchen
         - outlet_manager
       parameters:
@@ -9741,10 +10281,9 @@ paths:
       tags:
         - CloudKitchen
       summary: 'Order Routing (CloudKitchen)'
-      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, customer, kitchen, outlet_manager].'
+      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, kitchen, outlet_manager].'
       x-allowed-roles:
         - admin
-        - customer
         - kitchen
         - outlet_manager
       parameters:
@@ -9801,10 +10340,9 @@ paths:
       tags:
         - CloudKitchen
       summary: 'Revenue Split (CloudKitchen)'
-      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, customer, kitchen, outlet_manager].'
+      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, kitchen, outlet_manager].'
       x-allowed-roles:
         - admin
-        - customer
         - kitchen
         - outlet_manager
       parameters:
@@ -9861,10 +10399,9 @@ paths:
       tags:
         - CloudKitchen
       summary: 'Route Order (CloudKitchen)'
-      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, customer, kitchen, outlet_manager].'
+      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, kitchen, outlet_manager].'
       x-allowed-roles:
         - admin
-        - customer
         - kitchen
         - outlet_manager
       parameters:
@@ -9929,10 +10466,9 @@ paths:
       tags:
         - CloudKitchen
       summary: 'Settle Split (CloudKitchen)'
-      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, customer, kitchen, outlet_manager].'
+      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, kitchen, outlet_manager].'
       x-allowed-roles:
         - admin
-        - customer
         - kitchen
         - outlet_manager
       parameters:
@@ -9997,10 +10533,9 @@ paths:
       tags:
         - CloudKitchen
       summary: 'Thermal Audit (CloudKitchen)'
-      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, customer, kitchen, outlet_manager].'
+      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, kitchen, outlet_manager].'
       x-allowed-roles:
         - admin
-        - customer
         - kitchen
         - outlet_manager
       parameters:
@@ -10051,16 +10586,82 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+  /cloud-kitchen/orders:
+    post:
+      operationId: postCloudKitchenOrdersStore
+      tags:
+        - CloudKitchen
+      summary: 'Store Order (CloudKitchen)'
+      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, kitchen, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - kitchen
+        - outlet_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postCloudKitchenOrdersStore'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
   '/cloud-kitchen/subscriptions/{subscription}/dispatch':
     post:
       operationId: postCloudKitchenSubscriptionsDispatch
       tags:
         - CloudKitchen
       summary: 'Dispatch Meal (CloudKitchen)'
-      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, customer, kitchen, outlet_manager].'
+      description: 'Operational endpoint for CloudKitchen module. Protected by role matrix: [admin, kitchen, outlet_manager].'
       x-allowed-roles:
         - admin
-        - customer
         - kitchen
         - outlet_manager
       parameters:
@@ -18463,9 +19064,9 @@ paths:
     get:
       operationId: getEvIndex
       tags:
-        - Ev
-      summary: 'Index (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
+        - Mobility
+      summary: 'Index (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - driver
@@ -18523,9 +19124,9 @@ paths:
     post:
       operationId: postEvChargersCheckin
       tags:
-        - Ev
-      summary: 'Check In (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
+        - Mobility
+      summary: 'Check In (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - driver
@@ -18598,9 +19199,9 @@ paths:
     post:
       operationId: postEvChargersReserve
       tags:
-        - Ev
-      summary: 'Reserve (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
+        - Mobility
+      summary: 'Reserve (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - driver
@@ -18673,9 +19274,9 @@ paths:
     post:
       operationId: postEvSessionsComplete
       tags:
-        - Ev
-      summary: 'Complete (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, ev_admin, station_operator].'
+        - Mobility
+      summary: 'Complete (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - ev_admin
@@ -18747,9 +19348,9 @@ paths:
     get:
       operationId: getEvSmartGridBatteryPassport
       tags:
-        - Ev
-      summary: 'Battery Passport (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
+        - Mobility
+      summary: 'Battery Passport (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - driver
@@ -18807,9 +19408,9 @@ paths:
     post:
       operationId: postEvSmartGridDischargeV2g
       tags:
-        - Ev
-      summary: 'Discharge V2G (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
+        - Mobility
+      summary: 'Discharge V2G (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - driver
@@ -18875,9 +19476,9 @@ paths:
     get:
       operationId: getEvSmartGridOcppSessions
       tags:
-        - Ev
-      summary: 'Ocpp Sessions (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
+        - Mobility
+      summary: 'Ocpp Sessions (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - driver
@@ -18935,9 +19536,9 @@ paths:
     post:
       operationId: postEvSmartGridSettleTou
       tags:
-        - Ev
-      summary: 'Settle Tou (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
+        - Mobility
+      summary: 'Settle Tou (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - driver
@@ -19003,9 +19604,9 @@ paths:
     post:
       operationId: postEvSmartGridStartOcpp
       tags:
-        - Ev
-      summary: 'Start Ocpp (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
+        - Mobility
+      summary: 'Start Ocpp (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - driver
@@ -19071,9 +19672,9 @@ paths:
     get:
       operationId: getEvSmartGridTouTariffs
       tags:
-        - Ev
-      summary: 'Tou Tariffs (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
+        - Mobility
+      summary: 'Tou Tariffs (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - driver
@@ -19131,9 +19732,9 @@ paths:
     get:
       operationId: getEvSmartGridV2gFeedin
       tags:
-        - Ev
-      summary: 'V2G Feed In (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
+        - Mobility
+      summary: 'V2G Feed In (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - driver
@@ -19191,9 +19792,9 @@ paths:
     post:
       operationId: postEvStationsLoadbalance
       tags:
-        - Ev
-      summary: 'Load Balance (Ev)'
-      description: 'Operational endpoint for Ev module. Protected by role matrix: [admin, ev_admin, station_operator].'
+        - Mobility
+      summary: 'Load Balance (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, ev_admin, station_operator].'
       x-allowed-roles:
         - admin
         - ev_admin
@@ -19265,9 +19866,9 @@ paths:
     get:
       operationId: getFleetIndex
       tags:
-        - Fleet
-      summary: 'Index (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Index (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -19324,9 +19925,9 @@ paths:
     post:
       operationId: postFleetContractsStore
       tags:
-        - Fleet
-      summary: 'Store (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Store (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -19391,9 +19992,9 @@ paths:
     post:
       operationId: postFleetContractsAmortize
       tags:
-        - Fleet
-      summary: 'Amortize (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Amortize (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -19465,9 +20066,9 @@ paths:
     post:
       operationId: postFleetContractsReturnUnit
       tags:
-        - Fleet
-      summary: 'Return Unit (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Return Unit (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -19539,9 +20140,9 @@ paths:
     post:
       operationId: postFleetContractsSlaClaim
       tags:
-        - Fleet
-      summary: 'Sla Claim (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Sla Claim (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -19613,9 +20214,9 @@ paths:
     get:
       operationId: getFleetLifecycleAmortizationSchedule
       tags:
-        - Fleet
-      summary: 'Amortization Schedule (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Amortization Schedule (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -19672,9 +20273,9 @@ paths:
     post:
       operationId: postFleetLifecycleBillExcess
       tags:
-        - Fleet
-      summary: 'Bill Excess (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Bill Excess (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -19739,9 +20340,9 @@ paths:
     get:
       operationId: getFleetLifecycleExcessMileage
       tags:
-        - Fleet
-      summary: 'Excess Mileage (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Excess Mileage (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -19798,9 +20399,9 @@ paths:
     post:
       operationId: postFleetLifecycleOriginatePsak73
       tags:
-        - Fleet
-      summary: 'Originate Psak73 (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Originate Psak73 (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -19865,9 +20466,9 @@ paths:
     get:
       operationId: getFleetLifecyclePsak73Leases
       tags:
-        - Fleet
-      summary: 'Psak73 Leases (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Psak73 Leases (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -19924,9 +20525,9 @@ paths:
     post:
       operationId: postFleetLifecycleRecognizeAmortization
       tags:
-        - Fleet
-      summary: 'Recognize Amortization (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Recognize Amortization (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -19991,9 +20592,9 @@ paths:
     post:
       operationId: postFleetLifecycleRunTco
       tags:
-        - Fleet
-      summary: 'Run Tco (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Run Tco (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -20058,9 +20659,9 @@ paths:
     get:
       operationId: getFleetLifecycleTcoOptimization
       tags:
-        - Fleet
-      summary: 'Tco Optimization (Fleet)'
-      description: 'Operational endpoint for Fleet module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
+        - Mobility
+      summary: 'Tco Optimization (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_admin, lease_manager].'
       x-allowed-roles:
         - admin
         - fleet_admin
@@ -22920,6 +23521,134 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+  /insurance/policies:
+    get:
+      operationId: getInsurancePolicies
+      tags:
+        - Insurance
+      summary: 'Policies (Insurance)'
+      description: 'Operational endpoint for Insurance module. Protected by role matrix: [admin, customer, insurance_admin, underwriter].'
+      x-allowed-roles:
+        - admin
+        - customer
+        - insurance_admin
+        - underwriter
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /insurance/policies/issue:
+    post:
+      operationId: postInsurancePoliciesIssue
+      tags:
+        - Insurance
+      summary: 'Issue (Insurance)'
+      description: 'Operational endpoint for Insurance module. Protected by role matrix: [admin, customer, insurance_admin, underwriter].'
+      x-allowed-roles:
+        - admin
+        - customer
+        - insurance_admin
+        - underwriter
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postInsurancePoliciesIssue'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
   '/insurance/products/{product}/issue':
     post:
       operationId: postInsuranceProductsIssue
@@ -36887,17 +37616,17 @@ paths:
               description: 'Dynamic payload attributes governed by module domain rules'
   /media:
     get:
-      operationId: getMedStudiosIndex
+      operationId: getMedMvpDashboard
       tags:
         - Med
-      summary: 'Index (Med)'
-      description: 'Operational endpoint for Med module. Protected by role matrix: [admin, ip_manager, producer, studio_ops, talent_mgmt].'
+      summary: 'Dashboard (Med)'
+      description: 'Operational endpoint for Med module. Protected by role matrix: [admin, auditor, media_admin, rights_manager, studio_manager].'
       x-allowed-roles:
         - admin
-        - ip_manager
-        - producer
-        - studio_ops
-        - talent_mgmt
+        - auditor
+        - media_admin
+        - rights_manager
+        - studio_manager
       parameters:
         -
           $ref: '#/components/parameters/CorrelationIdHeader'
@@ -36946,7 +37675,66 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
-  /media/ads:
+  /media/licensing:
+    get:
+      operationId: getMedMvpLicensing
+      tags:
+        - Med
+      summary: 'Licensing (Med)'
+      description: 'Operational endpoint for Med module. Protected by role matrix: [admin, media_admin, rights_manager].'
+      x-allowed-roles:
+        - admin
+        - media_admin
+        - rights_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /media/production/ads:
     get:
       operationId: getMedAdsIndex
       tags:
@@ -37007,7 +37795,7 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
-  /media/ads/book:
+  /media/production/ads/book:
     post:
       operationId: postMedAdsBook
       tags:
@@ -37076,7 +37864,7 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
-  /media/licensing:
+  /media/production/licensing-legacy:
     get:
       operationId: getMedLicensingIndex
       tags:
@@ -37137,7 +37925,7 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
-  /media/licensing/grant:
+  /media/production/licensing/grant:
     post:
       operationId: postMedLicensingGrant
       tags:
@@ -37206,7 +37994,7 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
-  '/media/licensing/{id}':
+  '/media/production/licensing/{id}':
     get:
       operationId: getMedLicensingShow
       tags:
@@ -37272,7 +38060,7 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
-  /media/overview:
+  /media/production/overview:
     get:
       operationId: getMediaIndex
       tags:
@@ -37333,7 +38121,7 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
-  '/media/projects/{id}/greenlight':
+  '/media/production/projects/{id}/greenlight':
     post:
       operationId: postMedStudiosGreenlight
       tags:
@@ -37409,7 +38197,7 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
-  /media/royalties:
+  /media/production/royalties:
     get:
       operationId: getMedRoyaltiesIndex
       tags:
@@ -37470,7 +38258,7 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
-  '/media/royalties/projects/{id}/distribute':
+  '/media/production/royalties/projects/{id}/distribute':
     post:
       operationId: postMedRoyaltiesDistribute
       tags:
@@ -37546,7 +38334,7 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
-  '/media/royalties/talent/{contractId}/settle':
+  '/media/production/royalties/talent/{contractId}/settle':
     post:
       operationId: postMedRoyaltiesTalentSettle
       tags:
@@ -37622,7 +38410,68 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
-  '/media/studios/{id}':
+  /media/production/studios-legacy:
+    get:
+      operationId: getMedStudiosIndex
+      tags:
+        - Med
+      summary: 'Index (Med)'
+      description: 'Operational endpoint for Med module. Protected by role matrix: [admin, ip_manager, producer, studio_ops, talent_mgmt].'
+      x-allowed-roles:
+        - admin
+        - ip_manager
+        - producer
+        - studio_ops
+        - talent_mgmt
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  '/media/production/studios/{id}':
     get:
       operationId: getMedStudiosShow
       tags:
@@ -37688,6 +38537,129 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+  '/media/royalties/{id}':
+    get:
+      operationId: getMedMvpRoyaltiesDetail
+      tags:
+        - Med
+      summary: 'Royalty Statement Detail (Med)'
+      description: 'Operational endpoint for Med module. Protected by role matrix: [admin, media_admin, rights_manager].'
+      x-allowed-roles:
+        - admin
+        - media_admin
+        - rights_manager
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          description: 'Identifier parameter id for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /media/studios:
+    get:
+      operationId: getMedMvpStudios
+      tags:
+        - Med
+      summary: 'Studios (Med)'
+      description: 'Operational endpoint for Med module. Protected by role matrix: [admin, media_admin, studio_manager].'
+      x-allowed-roles:
+        - admin
+        - media_admin
+        - studio_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /mining:
     get:
       operationId: getMiningIndex
@@ -37697,6 +38669,187 @@ paths:
       description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, mining_admin, site_manager].'
       x-allowed-roles:
         - admin
+        - mining_admin
+        - site_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /mining/admin:
+    get:
+      operationId: getMiningAdmin
+      tags:
+        - Mining
+      summary: 'Index (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager, mining_admin, site_manager].'
+      x-allowed-roles:
+        - admin
+        - mine_manager
+        - mining_admin
+        - site_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /mining/dispatch:
+    get:
+      operationId: getMiningDispatchUi
+      tags:
+        - Core
+      summary: 'GET Dispatch in Core'
+      description: 'Operational endpoint for Core module. Protected by role matrix: [admin, dispatcher_mine, mine_manager, mining_admin, site_manager].'
+      x-allowed-roles:
+        - admin
+        - dispatcher_mine
+        - mine_manager
+        - mining_admin
+        - site_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /mining/hse:
+    get:
+      operationId: getMiningHse
+      tags:
+        - Mining
+      summary: 'Blast Safety (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, hse_officer, mining_admin, site_manager].'
+      x-allowed-roles:
+        - admin
+        - hse_officer
         - mining_admin
         - site_manager
       parameters:
@@ -38829,6 +39982,127 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /mining/royalties:
+    get:
+      operationId: getMiningRoyalties
+      tags:
+        - Mining
+      summary: 'Pnbp Royalty (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, finance_officer, mining_admin, site_manager].'
+      x-allowed-roles:
+        - admin
+        - finance_officer
+        - mining_admin
+        - site_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /mining/weighbridge:
+    get:
+      operationId: getMiningWeighbridge
+      tags:
+        - Core
+      summary: 'GET Weighbridge in Core'
+      description: 'Operational endpoint for Core module. Protected by role matrix: [admin, mine_manager, mining_admin, site_manager, weighbridge_operator].'
+      x-allowed-roles:
+        - admin
+        - mine_manager
+        - mining_admin
+        - site_manager
+        - weighbridge_operator
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /notifications:
     get:
       operationId: getNotificationsIndex
@@ -39198,6 +40472,126 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailsRfc7807'
       security: {}
+  /oto/charging:
+    get:
+      operationId: getOtoCharging
+      tags:
+        - Core
+      summary: 'GET Charging in Core'
+      description: 'Operational endpoint for Core module. Protected by role matrix: [admin, driver, ev_admin, station_operator].'
+      x-allowed-roles:
+        - admin
+        - driver
+        - ev_admin
+        - station_operator
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /oto/fleet:
+    get:
+      operationId: getOtoFleet
+      tags:
+        - Core
+      summary: 'GET Fleet in Core'
+      description: 'Operational endpoint for Core module. Protected by role matrix: [admin, fleet_admin, fleet_manager, lease_manager].'
+      x-allowed-roles:
+        - admin
+        - fleet_admin
+        - fleet_manager
+        - lease_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   '/partner/governance/joint-plans/{jointPlan}/milestone':
     post:
       operationId: postPartnerGovernanceSettleMilestone
@@ -54307,6 +55701,261 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+  /rwa/offerings:
+    get:
+      operationId: getRwaOfferings
+      tags:
+        - Rwa
+      summary: 'Offerings (Rwa)'
+      description: 'Operational endpoint for Rwa module. Protected by role matrix: [admin, asset_manager, investor, rwa_admin].'
+      x-allowed-roles:
+        - admin
+        - asset_manager
+        - investor
+        - rwa_admin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  '/rwa/offerings/{offering}/subscribe':
+    post:
+      operationId: postRwaOfferingsSubscribe
+      tags:
+        - Rwa
+      summary: 'Subscribe (Rwa)'
+      description: 'Operational endpoint for Rwa module. Protected by role matrix: [admin, asset_manager, investor, rwa_admin].'
+      x-allowed-roles:
+        - admin
+        - asset_manager
+        - investor
+        - rwa_admin
+      parameters:
+        -
+          name: offering
+          in: path
+          required: true
+          description: 'Identifier parameter offering for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postRwaOfferingsSubscribe'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /rwa/orderbook:
+    get:
+      operationId: getRwaOrderbook
+      tags:
+        - Rwa
+      summary: 'Orderbook (Rwa)'
+      description: 'Operational endpoint for Rwa module. Protected by role matrix: [admin, asset_manager, investor, rwa_admin].'
+      x-allowed-roles:
+        - admin
+        - asset_manager
+        - investor
+        - rwa_admin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /rwa/yield-distribution:
+    get:
+      operationId: getRwaYieldDistribution
+      tags:
+        - Rwa
+      summary: 'Yield Distribution (Rwa)'
+      description: 'Operational endpoint for Rwa module. Protected by role matrix: [admin, asset_manager, investor, rwa_admin].'
+      x-allowed-roles:
+        - admin
+        - asset_manager
+        - investor
+        - rwa_admin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /sanctum/csrf-cookie:
     get:
       operationId: getSanctumCsrfCookie
@@ -57442,6 +59091,129 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /telecom/billing/connectivity:
+    get:
+      operationId: getTlxBillingConnectivity
+      tags:
+        - Tlx
+      summary: 'Connectivity Billing (Tlx)'
+      description: 'Operational endpoint for Tlx module. Protected by role matrix: [admin, telecom_billing, tlx_admin].'
+      x-allowed-roles:
+        - admin
+        - telecom_billing
+        - tlx_admin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  '/telecom/billing/connectivity/{id}':
+    get:
+      operationId: getTlxBillingConnectivityDetail
+      tags:
+        - Tlx
+      summary: 'Connectivity Invoice Detail (Tlx)'
+      description: 'Operational endpoint for Tlx module. Protected by role matrix: [admin, telecom_billing, tlx_admin].'
+      x-allowed-roles:
+        - admin
+        - telecom_billing
+        - tlx_admin
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          description: 'Identifier parameter id for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /telecom/billing/roaming:
     get:
       operationId: getTlxBillingRoaming
@@ -57584,6 +59356,65 @@ paths:
         - datacenter_ops
         - noc_engineer
         - telecom_billing
+        - tlx_admin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /telecom/datacenter/colocation:
+    get:
+      operationId: getTlxDatacenterColocation
+      tags:
+        - Tlx
+      summary: 'Datacenter Colocation (Tlx)'
+      description: 'Operational endpoint for Tlx module. Protected by role matrix: [admin, datacenter_ops, tlx_admin].'
+      x-allowed-roles:
+        - admin
+        - datacenter_ops
         - tlx_admin
       parameters:
         -
@@ -58031,6 +59862,65 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /telecom/noc/alarms:
+    get:
+      operationId: getTlxNocAlarms
+      tags:
+        - Tlx
+      summary: 'Noc Alarms (Tlx)'
+      description: 'Operational endpoint for Tlx module. Protected by role matrix: [admin, noc_engineer, tlx_admin].'
+      x-allowed-roles:
+        - admin
+        - noc_engineer
+        - tlx_admin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /telecom/overview:
     get:
       operationId: getTelecomIndex
@@ -58096,9 +59986,9 @@ paths:
     get:
       operationId: getTelematicsIndex
       tags:
-        - Telematics
-      summary: 'Index (Telematics)'
-      description: 'Operational endpoint for Telematics module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
+        - Mobility
+      summary: 'Index (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
       x-allowed-roles:
         - admin
         - fleet_manager
@@ -58155,9 +60045,9 @@ paths:
     post:
       operationId: postTelematicsDevicesIngest
       tags:
-        - Telematics
-      summary: 'Ingest (Telematics)'
-      description: 'Operational endpoint for Telematics module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
+        - Mobility
+      summary: 'Ingest (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
       x-allowed-roles:
         - admin
         - fleet_manager
@@ -58229,9 +60119,9 @@ paths:
     get:
       operationId: getTelematicsOperationsBaselines
       tags:
-        - Telematics
-      summary: 'Baselines (Telematics)'
-      description: 'Operational endpoint for Telematics module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
+        - Mobility
+      summary: 'Baselines (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
       x-allowed-roles:
         - admin
         - fleet_manager
@@ -58288,9 +60178,9 @@ paths:
     post:
       operationId: postTelematicsOperationsDispatchTow
       tags:
-        - Telematics
-      summary: 'Dispatch Tow (Telematics)'
-      description: 'Operational endpoint for Telematics module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
+        - Mobility
+      summary: 'Dispatch Tow (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
       x-allowed-roles:
         - admin
         - fleet_manager
@@ -58355,9 +60245,9 @@ paths:
     get:
       operationId: getTelematicsOperationsDriverScores
       tags:
-        - Telematics
-      summary: 'Driver Scores (Telematics)'
-      description: 'Operational endpoint for Telematics module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
+        - Mobility
+      summary: 'Driver Scores (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
       x-allowed-roles:
         - admin
         - fleet_manager
@@ -58414,9 +60304,9 @@ paths:
     get:
       operationId: getTelematicsOperationsDtcAlerts
       tags:
-        - Telematics
-      summary: 'Dtc Alerts (Telematics)'
-      description: 'Operational endpoint for Telematics module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
+        - Mobility
+      summary: 'Dtc Alerts (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
       x-allowed-roles:
         - admin
         - fleet_manager
@@ -58473,9 +60363,9 @@ paths:
     get:
       operationId: getTelematicsOperationsEmergencyDispatches
       tags:
-        - Telematics
-      summary: 'Emergency Dispatches (Telematics)'
-      description: 'Operational endpoint for Telematics module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
+        - Mobility
+      summary: 'Emergency Dispatches (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
       x-allowed-roles:
         - admin
         - fleet_manager
@@ -58532,9 +60422,9 @@ paths:
     post:
       operationId: postTelematicsOperationsEvaluateDtc
       tags:
-        - Telematics
-      summary: 'Evaluate Dtc (Telematics)'
-      description: 'Operational endpoint for Telematics module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
+        - Mobility
+      summary: 'Evaluate Dtc (Mobility)'
+      description: 'Operational endpoint for Mobility module. Protected by role matrix: [admin, fleet_manager, telematics_admin].'
       x-allowed-roles:
         - admin
         - fleet_manager
@@ -60675,6 +62565,73 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+  /vending/dispense:
+    post:
+      operationId: postVendingDispenseApi
+      tags:
+        - Vending
+      summary: 'Dispense Api (Vending)'
+      description: 'Operational endpoint for Vending module. Protected by role matrix: [admin, store_manager, vending_operator].'
+      x-allowed-roles:
+        - admin
+        - store_manager
+        - vending_operator
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postVendingDispenseApi'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
   /vending/operations/auto-replenishment:
     get:
       operationId: getVendingOperationsAutoReplenishment
@@ -61627,6 +63584,63 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /venue/gate:
+    get:
+      operationId: getVenueGateMobile
+      tags:
+        - Core
+      summary: 'GET Gate in Core'
+      description: 'Operational endpoint for Core module. Protected by role matrix: [venue_staff].'
+      x-allowed-roles:
+        - venue_staff
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /venue/tables:
     get:
       operationId: getVenueTablesIndex
@@ -63017,6 +65031,128 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+  /wealth/cash-sweep:
+    get:
+      operationId: getWealthCashSweep
+      tags:
+        - Wealth
+      summary: 'Cash Sweep (Wealth)'
+      description: 'Operational endpoint for Wealth module. Protected by role matrix: [admin, customer, investor, treasury, wealth_manager].'
+      x-allowed-roles:
+        - admin
+        - customer
+        - investor
+        - treasury
+        - wealth_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /wealth/portfolio-rebalancing:
+    get:
+      operationId: getWealthPortfolioRebalancing
+      tags:
+        - Wealth
+      summary: 'Portfolio Rebalancing (Wealth)'
+      description: 'Operational endpoint for Wealth module. Protected by role matrix: [admin, customer, investor, treasury, wealth_manager].'
+      x-allowed-roles:
+        - admin
+        - customer
+        - investor
+        - treasury
+        - wealth_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   '/wealth/profiles/{profile}/invest':
     post:
       operationId: postWealthProfilesInvest
@@ -63087,6 +65223,75 @@ paths:
           SessionCookieAuth: {}
       requestBody:
         description: 'Request payload for postWealthProfilesInvest'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /wealth/risk-profiles/submit:
+    post:
+      operationId: postWealthRiskProfilesSubmit
+      tags:
+        - Wealth
+      summary: 'Submit (Wealth)'
+      description: 'Operational endpoint for Wealth module. Protected by role matrix: [admin, customer, investor, treasury, wealth_manager].'
+      x-allowed-roles:
+        - admin
+        - customer
+        - investor
+        - treasury
+        - wealth_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postWealthRiskProfilesSubmit'
         required: true
         content:
           application/json:

@@ -27,11 +27,12 @@ Route::middleware(['web', 'auth', 'role:admin,fleet_admin,lease_manager'])->pref
     });
 });
 
-Route::middleware(['web', 'auth'])->get('/oto/fleet', function (Request $request) {
-    $user = $request->user();
-    if (! $user->hasAnyRbacRole(['fleet_manager', 'admin', 'fleet_admin', 'lease_manager'])) {
-        abort(403, 'Akses ditolak: Khusus peran manajemen armada.');
-    }
+Route::middleware(['web', 'auth', 'role:admin,fleet_admin,fleet_manager,lease_manager'])
+    ->get('/oto/fleet', function (Request $request) {
+        $user = $request->user();
+        if (! $user->hasAnyRbacRole(['fleet_manager', 'admin', 'fleet_admin', 'lease_manager'])) {
+            abort(403, 'Akses ditolak: Khusus peran manajemen armada.');
+        }
 
-    return app(FleetController::class)->index($request);
-});
+        return app(FleetController::class)->index($request);
+    })->name('oto.fleet');

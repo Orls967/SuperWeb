@@ -30,19 +30,19 @@ Route::middleware(['web', 'auth', 'role:admin,ev_admin,station_operator,driver']
     });
 });
 
-Route::middleware(['web', 'auth'])->group(function () {
-    Route::get('/api/oto/sessions/{session}', function (Request $request, EvSession $session) {
+Route::middleware(['web', 'auth', 'role:admin,driver,ev_operator,fleet_manager'])
+    ->get('/api/oto/sessions/{session}', function (Request $request, EvSession $session) {
         $user = $request->user();
         if ($session->user_id !== $user->id && ! $user->hasAnyRbacRole(['ev_operator', 'admin', 'fleet_manager'])) {
             abort(403, 'Akses ditolak: Anda bukan pemilik sesi pengisian ini.');
         }
 
         return response()->json(['session' => $session]);
-    });
+    })->name('oto.sessions.show');
 
-    Route::get('/oto/charging', function (Request $request) {
+Route::middleware(['web', 'auth', 'role:admin,driver,ev_admin,station_operator'])
+    ->get('/oto/charging', function (Request $request) {
         $sessions = EvSession::where('user_id', $request->user()->id)->get();
 
         return view('ev::charging', compact('sessions'));
-    });
-});
+    })->name('oto.charging');

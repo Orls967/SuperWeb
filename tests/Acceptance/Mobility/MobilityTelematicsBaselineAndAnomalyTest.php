@@ -232,12 +232,15 @@ class MobilityTelematicsBaselineAndAnomalyTest extends TestCase
 
         $ingestAction = app(IngestTelematicsTickAction::class);
 
+        $morning = now()->startOfDay()->addHours(8);
+        $afternoon = now()->startOfDay()->addHours(14);
+
         // Tick pertama dengan anomali pagi hari
         $ingestAction->execute(
             device: $device,
             token: 'token-123',
             sequence: 1,
-            recordedAt: now(),
+            recordedAt: $morning,
             latitudeE6: -6200000,
             longitudeE6: 106816666,
             rpm: 3000,
@@ -253,7 +256,7 @@ class MobilityTelematicsBaselineAndAnomalyTest extends TestCase
             device: $device,
             token: 'token-123',
             sequence: 2,
-            recordedAt: now()->addHours(6),
+            recordedAt: $afternoon,
             latitudeE6: -6200000,
             longitudeE6: 106816666,
             rpm: 3000,

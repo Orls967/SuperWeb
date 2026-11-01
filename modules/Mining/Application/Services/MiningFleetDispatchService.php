@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Mining\Application\Services;
 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Mining\Domain\Algorithms\AssignmentCertificateVerifier;
 use Modules\Mining\Domain\Models\MiningDispatchAssignment;
@@ -25,6 +26,40 @@ class MiningFleetDispatchService
         private readonly MiningWeighbridgeChainService $chainService,
         private readonly AssignmentCertificateVerifier $assignmentVerifier
     ) {}
+
+    /**
+     * Dispatch haul truck with target payload
+     */
+    public function dispatchEquipment(
+        string $siteId,
+        string $pitId,
+        string $equipmentId,
+        string $shiftCode,
+        float $targetPayloadTon
+    ): MiningDispatchRun {
+        $equipment = MiningEquipment::findOrFail($equipmentId);
+        if ($equipment->status !== 'available') {
+            throw new \RuntimeException("Equipment {$equipment->equipment_code} is not available for dispatch (status: {$equipment->status})");
+        }
+
+        $equipment->update(['status' => 'dispatched']);
+
+        return MiningDispatchRun::create([
+            'id' => (string) Str::uuid(),
+            'site_id' => $siteId,
+            'pit_id' => $pitId,
+            'equipment_id' => $equipment->id,
+            'shift_code' => $shiftCode,
+            'target_payload_ton' => $targetPayloadTon,
+            'actual_payload_ton' => 0.00,
+            'payload_variance_ton' => 0.00,
+            'fuel_consumed_liter' => 0.00,
+            'distance_km' => 0.00,
+            'fuel_anomaly_detected' => false,
+            'contractor_payment_held' => false,
+            'status' => 'in_progress',
+        ]);
+    }
 
     /**
      * Comprehensive two-source audit for Mining operations:
