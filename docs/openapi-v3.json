@@ -8785,9 +8785,11 @@
                     "Core"
                 ],
                 "summary": "GET Sessions in Core",
-                "description": "Operational endpoint for Core module. Protected by role matrix: [auth].",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, ev_operator, fleet_manager].",
                 "x-allowed-roles": [
-                    "auth"
+                    "admin",
+                    "ev_operator",
+                    "fleet_manager"
                 ],
                 "parameters": [
                     {
@@ -8883,9 +8885,10 @@
                     "Core"
                 ],
                 "summary": "POST Clear Grounding in Core",
-                "description": "Operational endpoint for Core module. Protected by role matrix: [auth].",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, mechanic].",
                 "x-allowed-roles": [
-                    "auth"
+                    "admin",
+                    "mechanic"
                 ],
                 "parameters": [
                     {
@@ -60870,10 +60873,9 @@
                     "Mining"
                 ],
                 "summary": "Index (Mining)",
-                "description": "Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager, mining_admin, site_manager].",
+                "description": "Operational endpoint for Mining module. Protected by role matrix: [admin, mining_admin, site_manager].",
                 "x-allowed-roles": [
                     "admin",
-                    "mine_manager",
                     "mining_admin",
                     "site_manager"
                 ],
@@ -60960,14 +60962,15 @@
         },
         "/mining/dispatch": {
             "get": {
-                "operationId": "getMiningDispatch",
+                "operationId": "getMiningDispatchView",
                 "tags": [
                     "Core"
                 ],
                 "summary": "GET Dispatch in Core",
-                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, mining_admin, site_manager].",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, dispatcher_mine, mining_admin, site_manager].",
                 "x-allowed-roles": [
                     "admin",
+                    "dispatcher_mine",
                     "mining_admin",
                     "site_manager"
                 ],
@@ -62749,15 +62752,14 @@
         },
         "/mining/pits/{pit}/dispatch": {
             "post": {
-                "operationId": "postMiningPitDispatch",
+                "operationId": "postMiningDispatch",
                 "tags": [
                     "Mining"
                 ],
                 "summary": "Dispatch (Mining)",
-                "description": "Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager, mining_admin, site_manager].",
+                "description": "Operational endpoint for Mining module. Protected by role matrix: [admin, mining_admin, site_manager].",
                 "x-allowed-roles": [
                     "admin",
-                    "mine_manager",
                     "mining_admin",
                     "site_manager"
                 ],
@@ -62850,7 +62852,7 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "Request payload for postMiningPitDispatch",
+                    "description": "Request payload for postMiningDispatch",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -62965,10 +62967,9 @@
                     "Core"
                 ],
                 "summary": "GET Weighbridge in Core",
-                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, mine_manager, mining_admin, site_manager, weighbridge_operator].",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, mining_admin, site_manager, weighbridge_operator].",
                 "x-allowed-roles": [
                     "admin",
-                    "mine_manager",
                     "mining_admin",
                     "site_manager",
                     "weighbridge_operator"
@@ -63651,9 +63652,12 @@
                     "Core"
                 ],
                 "summary": "GET Charging in Core",
-                "description": "Operational endpoint for Core module. Protected by role matrix: [auth].",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, driver, ev_admin, station_operator].",
                 "x-allowed-roles": [
-                    "auth"
+                    "admin",
+                    "driver",
+                    "ev_admin",
+                    "station_operator"
                 ],
                 "parameters": [
                     {
@@ -63743,9 +63747,12 @@
                     "Core"
                 ],
                 "summary": "GET Fleet in Core",
-                "description": "Operational endpoint for Core module. Protected by role matrix: [auth].",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, fleet_admin, fleet_manager, lease_manager].",
                 "x-allowed-roles": [
-                    "auth"
+                    "admin",
+                    "fleet_admin",
+                    "fleet_manager",
+                    "lease_manager"
                 ],
                 "parameters": [
                     {

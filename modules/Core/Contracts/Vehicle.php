@@ -12,4 +12,17 @@ use Illuminate\Database\Eloquent\Model;
 class Vehicle extends Model
 {
     protected $table = 'core_vehicles';
+
+    protected $fillable = [
+        'uuid',
+        'user_id',
+        'car_id',
+        'plate_number',
+        'vin',
+        'color',
+        'year',
+        'mileage',
+        'status',
+        'meta',
+    ];
 }

@@ -941,6 +941,34 @@ return [
             return ['pit' => $pit->id];
         },
     ],
+    'mining.dispatch.view' => ['roles' => ['admin', 'dispatcher_mine', 'mining_admin', 'site_manager']],
+    'mining.admin' => ['roles' => ['admin', 'mining_admin', 'site_manager']],
+    'mining.royalties' => ['roles' => ['admin', 'finance_officer', 'mining_admin', 'site_manager']],
+    'mining.hse' => ['roles' => ['admin', 'hse_officer', 'mining_admin', 'site_manager']],
+    'mining.weighbridge' => ['roles' => ['admin', 'mining_admin', 'site_manager', 'weighbridge_operator']],
+    'venue.gate.mobile' => ['roles' => ['venue_staff']],
+    'GET api/oto/sessions/{session}' => [
+        'roles' => ['admin', 'ev_operator', 'fleet_manager'],
+        'params' => function () {
+            $sess = EvSession::firstOrCreate(
+                ['session_code' => 'SESS-GATE-DUMMY'],
+                [
+                    'charger_id' => 1,
+                    'user_id' => 1,
+                    'vehicle_id' => 1,
+                    'start_time' => now(),
+                    'energy_delivered_kwh' => 10.0,
+                    'total_cost_minor' => 15000,
+                    'status' => 'IN_PROGRESS',
+                ]
+            );
+
+            return ['session' => $sess->id];
+        },
+    ],
+    'GET oto/charging' => ['roles' => ['admin', 'driver', 'ev_admin', 'station_operator']],
+    'GET oto/fleet' => ['roles' => ['admin', 'fleet_admin', 'fleet_manager', 'lease_manager']],
+    'POST api/oto/telematics/clear-grounding' => ['roles' => ['admin', 'mechanic']],
     'insurance.index' => ['roles' => ['admin', 'customer', 'insurance_admin', 'underwriter']],
     'insurance.policies' => ['roles' => ['admin', 'customer', 'insurance_admin', 'underwriter']],
     'insurance.policies.issue' => ['roles' => ['admin', 'customer', 'insurance_admin', 'underwriter']],

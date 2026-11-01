@@ -1,9 +1,7 @@
 {
     "about": "Akun ledger yang dipakai di kode produksi tetapi belum terdefinisi & terseed di database seeder (PROGRESS R0.10, KONSEP §A14.5). Hanya boleh menyusut (R1.3).",
-    "total": 1,
-    "entries": [
-        "account:hsp:hospital_package_revenue:IDR"
-    ],
+    "total": 0,
+    "entries": [],
     "approved_additions": [
         {
             "date": "2026-10-10",
