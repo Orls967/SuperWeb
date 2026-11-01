@@ -313,10 +313,29 @@ class FinAsset180DaySimulationTest extends TestCase
         expect($totalDividendsDeclared)->toBe(6 * 5_000_000)
             ->and($totalDividendsPaid)->toBe(30_000_000);
 
-        // 4. Deterministic balance hash check
-        $hashData = DB::table('bank_ledger_accounts')->orderBy('code')->pluck('cached_balance', 'code')->toJson();
+        // 4. Deterministic balance hash check (M9a, PR3)
+        // Hash dibatasi secara deterministik hanya pada akun-akun FinAsset (rwa:, ins:, wm:, claimant:, treasury:pool)
+        // beserta akumulasi saldo entri ledger, sehingga tidak lagi bergantung pada akun modul lain yang di-seed.
+        $records = DB::table('bank_ledger_accounts as a')
+            ->leftJoin('bank_ledger_entries as e', 'e.account_id', '=', 'a.id')
+            ->where(function ($q) {
+                $q->where('a.code', 'LIKE', 'rwa:%')
+                    ->orWhere('a.code', 'LIKE', 'ins:%')
+                    ->orWhere('a.code', 'LIKE', 'wm:%')
+                    ->orWhereIn('a.code', [
+                        'claimant:payable:default:IDR',
+                        'treasury:pool:IDR',
+                    ]);
+            })
+            ->groupBy('a.id', 'a.code', 'a.cached_balance')
+            ->orderBy('a.code')
+            ->select('a.code', 'a.cached_balance', DB::raw('COALESCE(SUM(e.amount), 0) as total_entries'))
+            ->get();
+
+        $hashData = $records->toJson();
         $stateHash = hash('sha256', $hashData);
-        expect($stateHash)->toBe('1d7f1dfb41f77280a8c67caf02c930d278d9cd49c658e99b8f6eea911b6d528a');
+
+        expect($stateHash)->toBe('c7bc454fb3035642c02d8288630ab0592af44bd7afa0a5bf4c498e546da32856');
     }
 
     protected function depositCash(User $user, int $amount, string $key): void
