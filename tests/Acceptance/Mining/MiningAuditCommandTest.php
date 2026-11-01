@@ -188,9 +188,16 @@ class MiningAuditCommandTest extends TestCase
             idempotencyKey: 'min:roy:audit:roycorrupt'
         );
 
-        // Corrupt ledger royalty accrual entry directly
-        DB::table('bank_ledger_entries')->where('account_code', 'expense:min:royalty:IDR')->update([
-            'debit_amount' => 1, // Fraudulent under-reporting!
+        // Sisipkan entri liar (INSERT diizinkan append-only trigger) yang membuat selisih (K-18)
+        $royaltyAccount = DB::table('bank_ledger_accounts')->where('code', 'expense:min:royalty:IDR')->first();
+        $txId = DB::table('bank_ledger_transactions')->value('id');
+        DB::table('bank_ledger_entries')->insert([
+            'transaction_id' => $txId,
+            'account_id' => $royaltyAccount->id,
+            'asset_code' => 'IDR',
+            'amount' => '-1000000.000000000000000000',
+            'balance_after' => '0',
+            'created_at' => now(),
         ]);
 
         $exitCode = Artisan::call('min:audit');
@@ -272,8 +279,11 @@ class MiningAuditCommandTest extends TestCase
             idempotencyKey: 'min:roy:audit:ledger'
         );
 
-        $totalDebits = (int) DB::table('bank_ledger_entries')->sum('debit_amount');
-        $totalCredits = (int) DB::table('bank_ledger_entries')->sum('credit_amount');
+        $totalSum = (int) DB::table('bank_ledger_entries')->sum('amount');
+        $this->assertSame(0, $totalSum);
+
+        $totalDebits = abs((int) DB::table('bank_ledger_entries')->where('amount', '<', 0)->sum('amount'));
+        $totalCredits = (int) DB::table('bank_ledger_entries')->where('amount', '>', 0)->sum('amount');
 
         $this->assertGreaterThan(0, $totalDebits);
         $this->assertSame($totalDebits, $totalCredits);

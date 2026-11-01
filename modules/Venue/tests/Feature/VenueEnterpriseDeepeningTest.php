@@ -185,7 +185,8 @@ class VenueEnterpriseDeepeningTest extends TestCase
             userId: $this->admin->id,
             tableNumber: 'CABANA-05',
             minimumSpendIdr: 20000000,
-            depositAmountIdr: 5000000
+            depositAmountIdr: 5000000,
+            idempotencyKey: 'test-cabana-05-deposit'
         );
 
         $this->assertStringStartsWith('VIP-CABANA-05-', $result['booking_code']);
@@ -204,7 +205,8 @@ class VenueEnterpriseDeepeningTest extends TestCase
             userId: $this->admin->id,
             tableNumber: 'CABANA-05',
             minimumSpendIdr: 20000000,
-            depositAmountIdr: 5000000
+            depositAmountIdr: 5000000,
+            idempotencyKey: 'test-cabana-05-dup'
         );
     }
 
@@ -246,7 +248,8 @@ class VenueEnterpriseDeepeningTest extends TestCase
         $result = $action->handle(
             artistContractId: $contract->id,
             totalDoorSalesIdr: 200000000, // 200M door sales -> 20% = 40M gross
-            whtRatePct: 2.0 // PPh 23 2% = 800,000 IDR
+            whtRatePct: 2.0, // PPh 23 2% = 800,000 IDR
+            idempotencyKey: 'test-artist-settlement-1'
         );
 
         $this->assertEquals(40000000, $result['gross_share_idr']);

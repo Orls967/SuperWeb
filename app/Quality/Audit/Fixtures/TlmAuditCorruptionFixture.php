@@ -9,7 +9,7 @@ use App\Quality\Audit\CorruptionFixture;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Modules\Core\Domain\Models\Vehicle;
-use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Mobility\Telematics\Domain\Models\TelematicsDevice;
 
 final class TlmAuditCorruptionFixture implements CorruptionFixture
 {

@@ -134,7 +134,7 @@ class MallPointsLiabilityTest extends TestCase
         $liabilityAccount = LedgerAccount::where('code', 'liability:mall:points:PTS')->first();
         $this->assertNull($liabilityAccount, 'liability:mall:points:PTS tidak boleh ada di database');
 
-        $liabilityEntries = LedgerEntry::where('account_code', 'liability:mall:points:PTS')->count();
+        $liabilityEntries = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'liability:mall:points:PTS'))->count();
         $this->assertSame(0, $liabilityEntries, 'liability:mall:points:PTS tidak boleh menerima posting apa pun');
 
         // LedgerNormalBalanceScanner: NOL pelanggaran untuk SELURUH akun PTS

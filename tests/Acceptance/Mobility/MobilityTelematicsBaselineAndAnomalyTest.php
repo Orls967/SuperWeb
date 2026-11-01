@@ -9,12 +9,12 @@ use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
-use Modules\Telematics\Application\Actions\IngestTelematicsTickAction;
-use Modules\Telematics\Application\Actions\RecomputeRobustBaselineAction;
-use Modules\Telematics\Domain\Events\TelematicsAnomalyDetectedEvent;
-use Modules\Telematics\Domain\Models\TelematicsBaseline;
-use Modules\Telematics\Domain\Models\TelematicsDevice;
-use Modules\Telematics\Domain\Models\TelematicsTick;
+use Modules\Mobility\Telematics\Application\Actions\IngestTelematicsTickAction;
+use Modules\Mobility\Telematics\Application\Actions\RecomputeRobustBaselineAction;
+use Modules\Mobility\Telematics\Domain\Events\TelematicsAnomalyDetectedEvent;
+use Modules\Mobility\Telematics\Domain\Models\TelematicsBaseline;
+use Modules\Mobility\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Mobility\Telematics\Domain\Models\TelematicsTick;
 use Tests\TestCase;
 
 class MobilityTelematicsBaselineAndAnomalyTest extends TestCase
@@ -232,12 +232,15 @@ class MobilityTelematicsBaselineAndAnomalyTest extends TestCase
 
         $ingestAction = app(IngestTelematicsTickAction::class);
 
+        $morning = now()->startOfDay()->addHours(8);
+        $afternoon = now()->startOfDay()->addHours(14);
+
         // Tick pertama dengan anomali pagi hari
         $ingestAction->execute(
             device: $device,
             token: 'token-123',
             sequence: 1,
-            recordedAt: now(),
+            recordedAt: $morning,
             latitudeE6: -6200000,
             longitudeE6: 106816666,
             rpm: 3000,
@@ -253,7 +256,7 @@ class MobilityTelematicsBaselineAndAnomalyTest extends TestCase
             device: $device,
             token: 'token-123',
             sequence: 2,
-            recordedAt: now()->addHours(6),
+            recordedAt: $afternoon,
             latitudeE6: -6200000,
             longitudeE6: 106816666,
             rpm: 3000,

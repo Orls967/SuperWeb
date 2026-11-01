@@ -7,11 +7,12 @@ namespace Tests\Acceptance\Venue;
 use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Modules\Party\Contracts\PartyAgeVerificationInterface;
 use Modules\Venue\Application\Actions\HoldGeneralAdmissionQuotaAction;
 use Modules\Venue\Application\Actions\PurchaseVenueTicketAction;
 use Modules\Venue\Application\Actions\ScanTicketAtGateAction;
-use Modules\Venue\Database\Seeders\VenueRbacSeeder;
+use Modules\Venue\database\seeders\VenueRbacSeeder;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
@@ -42,6 +43,11 @@ class VenueGateAccessAndQrScanTest extends TestCase
     {
         parent::setUp();
         $this->seed(LedgerAccountsSeeder::class);
+
+        DB::table('users')->insertOrIgnore([
+            ['id' => 301, 'name' => 'Buyer 301', 'email' => 'buyer301@test.com', 'password' => 'secret'],
+            ['id' => 99, 'name' => 'Scanner 99', 'email' => 'scanner99@test.com', 'password' => 'secret'],
+        ]);
 
         $this->venue = EntertainmentVenue::create([
             'venue_code' => 'BC-BALI-004',
@@ -223,6 +229,25 @@ class VenueGateAccessAndQrScanTest extends TestCase
             direction: 'IN',
             scannedByUserId: 99,
             idempotencyKey: 'ven:scan:unverified:1'
+        );
+
+        $this->assertSame('DENIED', $res['status']);
+        $this->assertStringContainsString('Data usia belum terverifikasi di KYC Party', $res['message']);
+    }
+
+    public function test_default_stub_party_age_verification_mengembalikan_null_dan_menolak_aksi_berbatas_usia(): void
+    {
+        $stub = app(PartyAgeVerificationInterface::class);
+        $this->assertNull($stub->getVerifiedAge(99));
+
+        $action = app(ScanTicketAtGateAction::class);
+
+        $res = $action->handle(
+            qrPayload: $this->validQrString,
+            gateCode: 'GATE-CLIFF-A',
+            direction: 'IN',
+            scannedByUserId: 99,
+            idempotencyKey: 'ven:scan:stub_null:1'
         );
 
         $this->assertSame('DENIED', $res['status']);

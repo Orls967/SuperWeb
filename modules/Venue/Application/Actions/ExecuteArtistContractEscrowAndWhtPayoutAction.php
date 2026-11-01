@@ -27,8 +27,13 @@ class ExecuteArtistContractEscrowAndWhtPayoutAction extends BaseAction
         string $artistContractId,
         int $totalDoorSalesIdr,
         int $whtBps = 200,
-        string $idempotencyKey = ''
+        string $idempotencyKey = '',
+        ?float $whtRatePct = null
     ): array {
+        if ($whtRatePct !== null) {
+            $whtBps = (int) round($whtRatePct * 100);
+        }
+
         if (trim($idempotencyKey) === '') {
             throw new \InvalidArgumentException('Idempotency key wajib diisi (U-4)');
         }

@@ -7,6 +7,7 @@ namespace Tests\Acceptance\Retail;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Ret\Application\Services\RetailSimulationRunner;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 /**
@@ -16,6 +17,8 @@ use Tests\TestCase;
 class RetailDeterministicSimulationTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected static ?string $smallSeedRun1Hash = null;
 
     protected static ?string $run1StateHash = null;
 
@@ -31,6 +34,28 @@ class RetailDeterministicSimulationTest extends TestCase
         $this->runner = app(RetailSimulationRunner::class);
     }
 
+    public function test_deterministic_small_seed_simulation_run_1(): void
+    {
+        $result = $this->runner->run(days: 2, seed: 171717);
+
+        self::$smallSeedRun1Hash = $result['state_hash'];
+
+        expect($result['state_hash'])->toBeString()
+            ->and(strlen($result['state_hash']))->toBe(64)
+            ->and($result['chain_valid'])->toBeTrue()
+            ->and($result['audit_exit_code'])->toBe(0);
+    }
+
+    public function test_deterministic_small_seed_simulation_run_2_with_identical_seed_produces_identical_hash(): void
+    {
+        $result = $this->runner->run(days: 2, seed: 171717);
+
+        expect($result['state_hash'])->toBe(self::$smallSeedRun1Hash)
+            ->and($result['chain_valid'])->toBeTrue()
+            ->and($result['audit_exit_code'])->toBe(0);
+    }
+
+    #[Group('skala')]
     public function test_60_day_omnichannel_retail_simulation_run_1_completes_cleanly_and_passes_all_audits(): void
     {
         $result = $this->runner->run(days: 60, seed: 171717);
@@ -61,6 +86,7 @@ class RetailDeterministicSimulationTest extends TestCase
             ->and(strlen($result['state_hash']))->toBe(64);
     }
 
+    #[Group('skala')]
     public function test_60_day_omnichannel_retail_simulation_run_2_with_identical_seed_produces_identical_state_hash(): void
     {
         $result = $this->runner->run(days: 60, seed: 171717);
@@ -81,6 +107,7 @@ class RetailDeterministicSimulationTest extends TestCase
             ->and($result['bank_reconcile_exit_code'])->toBe(0);
     }
 
+    #[Group('skala')]
     public function test_60_day_simulation_run_with_different_seed_produces_divergent_hash(): void
     {
         $result = $this->runner->run(days: 60, seed: 99999);

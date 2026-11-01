@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class GovBounty extends Model
 {
-    protected $table = 'gov_bounties';
+    protected $table = 'hcm_bounties';
 
     protected $fillable = [
         'bounty_code',

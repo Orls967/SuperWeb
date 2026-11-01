@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VendingTransaction extends Model
 {
-    protected $table = 'ven_vending_transactions';
+    protected $table = 'vnd_vending_transactions';
 
     protected $fillable = [
         'tx_code',

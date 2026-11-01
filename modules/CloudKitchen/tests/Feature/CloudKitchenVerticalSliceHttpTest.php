@@ -42,7 +42,7 @@ class CloudKitchenVerticalSliceHttpTest extends TestCase
         $dispatchResponse->assertRedirect(route('cloud_kitchen.index'));
         $dispatchResponse->assertSessionHas('success');
 
-        $this->assertDatabaseHas('resto_ck_catering_orders', [
+        $this->assertDatabaseHas('ckt_catering_orders', [
             'subscription_id' => $subscription->id,
             'meal_slot' => 'dinner',
         ]);

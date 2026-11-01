@@ -45,6 +45,7 @@ use App\Quality\Audit\Fixtures\MedAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgAuditCostingCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgQmsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\MinAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\MobAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\MobileAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PlmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PqAuditChainsCorruptionFixture;
@@ -126,6 +127,7 @@ final class AuditCommandRegistry
             'mfg:qms-audit' => new MfgQmsAuditCorruptionFixture,
             'min:audit' => new MinAuditCorruptionFixture,
             'mining:audit' => new MinAuditCorruptionFixture,
+            'mob:audit' => new MobAuditCorruptionFixture,
             'mobile:audit' => new MobileAuditCorruptionFixture,
             'plm:audit' => new PlmAuditCorruptionFixture,
             'pq:audit-chains' => new PqAuditChainsCorruptionFixture,

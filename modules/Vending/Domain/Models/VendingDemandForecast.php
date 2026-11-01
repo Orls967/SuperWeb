@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class VendingDemandForecast extends Model
 {
-    protected $table = 'ven_demand_forecasts';
+    protected $table = 'vnd_demand_forecasts';
 
     protected $fillable = [
         'forecast_code',

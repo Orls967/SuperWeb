@@ -23,23 +23,23 @@ return new class extends Migration
             });
         }
 
-        if (Schema::hasTable('ven_vending_units')) {
-            Schema::table('ven_vending_units', function (Blueprint $table) {
-                if (! Schema::hasColumn('ven_vending_units', 'latitude')) {
+        if (Schema::hasTable('vnd_vending_units')) {
+            Schema::table('vnd_vending_units', function (Blueprint $table) {
+                if (! Schema::hasColumn('vnd_vending_units', 'latitude')) {
                     $table->bigInteger('latitude')->default(0);
                 }
-                if (! Schema::hasColumn('ven_vending_units', 'longitude')) {
+                if (! Schema::hasColumn('vnd_vending_units', 'longitude')) {
                     $table->bigInteger('longitude')->default(0);
                 }
             });
         }
 
-        if (Schema::hasTable('ven_vending_transactions')) {
-            Schema::table('ven_vending_transactions', function (Blueprint $table) {
-                if (! Schema::hasColumn('ven_vending_transactions', 'cogs_idr')) {
+        if (Schema::hasTable('vnd_vending_transactions')) {
+            Schema::table('vnd_vending_transactions', function (Blueprint $table) {
+                if (! Schema::hasColumn('vnd_vending_transactions', 'cogs_idr')) {
                     $table->bigInteger('cogs_idr')->default(0);
                 }
-                if (! Schema::hasColumn('ven_vending_transactions', 'idempotency_key')) {
+                if (! Schema::hasColumn('vnd_vending_transactions', 'idempotency_key')) {
                     $table->string('idempotency_key')->nullable()->unique();
                 }
             });

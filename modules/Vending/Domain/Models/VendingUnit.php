@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VendingUnit extends Model
 {
-    protected $table = 'ven_vending_units';
+    protected $table = 'vnd_vending_units';
 
     protected $fillable = [
         'unit_code',

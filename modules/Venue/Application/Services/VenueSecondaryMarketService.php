@@ -91,7 +91,6 @@ class VenueSecondaryMarketService
             // Update original ticket ownership
             $resale->ticket->update([
                 'buyer_user_id' => $buyerUserId,
-                'ticket_hash' => $newTicketHash,
             ]);
 
             // Ledger posting: Buyer pays totalPrice -> Seller payout + Platform Fee + Entertainment Tax

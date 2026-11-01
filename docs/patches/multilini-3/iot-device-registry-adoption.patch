@@ -16,10 +16,10 @@ index 251a5fb2..b04c568c 100644
          $existing = BuildingSensor::where('idempotency_key', $key)->first();
          if ($existing) {
              $existing->update([
-diff --git a/modules/Telematics/Application/Services/TelematicsIngestService.php b/modules/Telematics/Application/Services/TelematicsIngestService.php
+diff --git a/modules/Mobility/Telematics/Application/Services/TelematicsIngestService.php b/modules/Mobility/Telematics/Application/Services/TelematicsIngestService.php
 index 70bcfc72..f472e3b9 100644
---- a/modules/Telematics/Application/Services/TelematicsIngestService.php
-+++ b/modules/Telematics/Application/Services/TelematicsIngestService.php
+--- a/modules/Mobility/Telematics/Application/Services/TelematicsIngestService.php
++++ b/modules/Mobility/Telematics/Application/Services/TelematicsIngestService.php
 @@ -126,6 +126,13 @@ public function ingestTick(array $data): TelematicsTick
              throw new ValidationException($validator);
          }

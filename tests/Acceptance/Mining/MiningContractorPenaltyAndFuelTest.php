@@ -118,17 +118,15 @@ class MiningContractorPenaltyAndFuelTest extends TestCase
             idempotencyKey: 'min:pen:fuel:004'
         );
 
-        // Debit: ar:min:contractor:CONT-PT-003:IDR
-        $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'ar:min:contractor:CONT-PT-003:IDR',
-            'debit_amount' => 15000000,
-        ]);
+        // Debit: ar:min:contractor:CONT-PT-003:IDR (-15000000)
+        $entryDebit = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ar:min:contractor:CONT-PT-003:IDR'))->first();
+        $this->assertNotNull($entryDebit);
+        $this->assertSame(-15000000, (int) $entryDebit->amount);
 
-        // Credit: min:penalty_income:IDR
-        $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'min:penalty_income:IDR',
-            'credit_amount' => 15000000,
-        ]);
+        // Credit: min:penalty_income:IDR (+15000000)
+        $entryCredit = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'min:penalty_income:IDR'))->first();
+        $this->assertNotNull($entryCredit);
+        $this->assertSame(15000000, (int) $entryCredit->amount);
     }
 
     public function test_evaluasi_dan_penalti_dua_kali_dengan_key_sama_bersifat_idempoten(): void
@@ -176,9 +174,11 @@ class MiningContractorPenaltyAndFuelTest extends TestCase
             idempotencyKey: 'min:pen:fuel:006'
         );
 
-        $totalDebits = LedgerEntry::sum('debit_amount');
-        $totalCredits = LedgerEntry::sum('credit_amount');
+        $totalDebits = abs((int) LedgerEntry::where('amount', '<', 0)->sum('amount'));
+        $totalCredits = (int) LedgerEntry::where('amount', '>', 0)->sum('amount');
 
+        $this->assertGreaterThan(0, $totalDebits);
         $this->assertSame($totalDebits, $totalCredits);
+        $this->assertSame(0, (int) LedgerEntry::sum('amount'));
     }
 }

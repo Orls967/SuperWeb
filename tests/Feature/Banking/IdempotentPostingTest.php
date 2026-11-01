@@ -14,12 +14,12 @@ use Modules\Banking\database\seeders\BankingSeeder;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\LedgerTransaction;
-use Modules\Fleet\Application\Services\FleetLeasingService;
-use Modules\Fleet\Domain\Models\FleetContract;
 use Modules\Hotel\Application\Services\HotelFolioAndPackageService;
 use Modules\Hotel\Application\Services\HotelFranchiseAndBrandService;
 use Modules\Hotel\Domain\Models\DestinationPackage;
 use Modules\Hotel\Domain\Models\HotelProperty;
+use Modules\Mobility\Fleet\Application\Services\FleetLeasingService;
+use Modules\Mobility\Fleet\Domain\Models\FleetContract;
 use Modules\Venue\Application\Services\VenueCreatorEconomyService;
 
 uses(RefreshDatabase::class);

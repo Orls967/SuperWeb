@@ -6,10 +6,10 @@ namespace Tests\Acceptance\Mobility;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Ev\Application\Services\FlowCutCertificateVerifier;
-use Modules\Ev\Application\Services\SmartChargingDinicService;
-use Modules\Ev\Domain\Models\EvCharger;
-use Modules\Ev\Domain\Models\EvStation;
+use Modules\Mobility\Ev\Application\Services\FlowCutCertificateVerifier;
+use Modules\Mobility\Ev\Application\Services\SmartChargingDinicService;
+use Modules\Mobility\Ev\Domain\Models\EvCharger;
+use Modules\Mobility\Ev\Domain\Models\EvStation;
 use Tests\TestCase;
 
 class MobilityEvSmartChargingDinicTest extends TestCase

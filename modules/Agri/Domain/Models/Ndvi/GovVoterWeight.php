@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GovVoterWeight extends Model
 {
-    protected $table = 'gov_voter_weights';
+    protected $table = 'agri_voter_weights';
 
     protected $fillable = [
         'voter_user_id',

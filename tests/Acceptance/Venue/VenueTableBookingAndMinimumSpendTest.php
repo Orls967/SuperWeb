@@ -7,10 +7,10 @@ namespace Tests\Acceptance\Venue;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerEntry;
-use Modules\Payment\Contracts\PaymentGatewayInterface;
 use Modules\Venue\Application\Actions\CaptureTableDepositAction;
 use Modules\Venue\Application\Actions\ForfeitTableNoShowDepositAction;
 use Modules\Venue\Application\Actions\ReserveTableWithMinimumSpendDepositAction;
+use Modules\Venue\Application\Services\VenuePaymentGateway;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
@@ -51,7 +51,7 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
 
     public function test_reservasi_meja_vip_menghasilkan_booking_code_deterministik_dan_menahan_deposit_hold(): void
     {
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->expects($this->once())
             ->method('authorize')
             ->with($this->callback(function ($params) {
@@ -59,7 +59,7 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
                     && $params['idempotencyKey'] === 'ven:tbl:hold:401:1';
             }))
             ->willReturn(['success' => true, 'authorization_id' => 'auth_vip_401']);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         $action = app(ReserveTableWithMinimumSpendDepositAction::class);
 
@@ -116,7 +116,7 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
             'status' => 'HELD',
         ]);
 
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->expects($this->once())
             ->method('capture')
             ->with($this->callback(function ($params) {
@@ -124,7 +124,7 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
                     && $params['idempotencyKey'] === 'ven:tbl:cap:404:1';
             }))
             ->willReturn(['success' => true]);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         $action = app(CaptureTableDepositAction::class);
         $res = $action->handle(
@@ -135,8 +135,8 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
         $this->assertSame('SEATED', $res['booking']->status);
 
         // Verifikasi posting deposit ke akun ven:vip_escrow:IDR
-        $escrowEntry = LedgerEntry::where('account_code', 'ven:vip_escrow:IDR')
-            ->where('credit_amount', 2000000)
+        $escrowEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:vip_escrow:IDR'))
+            ->where('amount', '2000000.000000000000000000')
             ->first();
         $this->assertNotNull($escrowEntry, 'Capture deposit meja harus mengkredit ven:vip_escrow:IDR');
     }
@@ -153,11 +153,11 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
             'status' => 'HELD',
         ]);
 
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->expects($this->once())
             ->method('capture')
             ->willReturn(['success' => true]);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         $action = app(ForfeitTableNoShowDepositAction::class);
         $res = $action->handle(
@@ -169,8 +169,8 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
         $this->assertSame('NO_SHOW', $res['booking']->status);
 
         // Verifikasi pendapatan no-show diakui di ven:vip_noshow_rev:IDR
-        $forfeitEntry = LedgerEntry::where('account_code', 'ven:vip_noshow_rev:IDR')
-            ->where('credit_amount', 1500000)
+        $forfeitEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:vip_noshow_rev:IDR'))
+            ->where('amount', '1500000.000000000000000000')
             ->first();
         $this->assertNotNull($forfeitEntry, 'Deposit no-show harus diakui di ven:vip_noshow_rev:IDR');
     }
@@ -187,9 +187,9 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
             'status' => 'HELD',
         ]);
 
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->method('capture')->willReturn(['success' => true]);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         $action = app(ForfeitTableNoShowDepositAction::class);
 
@@ -198,7 +198,7 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
 
         $this->assertSame('NO_SHOW', $res1['booking']->status);
         $this->assertSame('NO_SHOW', $res2['booking']->status);
-        $this->assertSame(1, LedgerEntry::where('account_code', 'ven:vip_noshow_rev:IDR')->where('credit_amount', 1500000)->count());
+        $this->assertSame(1, LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:vip_noshow_rev:IDR'))->where('amount', '1500000.000000000000000000')->count());
     }
 
     public function test_reservasi_meja_tanpa_idempotency_key_ditolak(): void
@@ -230,15 +230,17 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
             'status' => 'HELD',
         ]);
 
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->method('capture')->willReturn(['success' => true]);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         $action = app(CaptureTableDepositAction::class);
         $action->handle($booking->id, 'ven:tbl:cap:408:balance');
 
-        $totalDebit = LedgerEntry::sum('debit_amount');
-        $totalCredit = LedgerEntry::sum('credit_amount');
-        $this->assertSame($totalDebit, $totalCredit, 'Total debit dan kredit harus seimbang nol (PR1, U-3)');
+        $totalDebits = abs((int) LedgerEntry::where('amount', '<', 0)->sum('amount'));
+        $totalCredits = (int) LedgerEntry::where('amount', '>', 0)->sum('amount');
+        $this->assertGreaterThan(0, $totalDebits);
+        $this->assertSame($totalDebits, $totalCredits, 'Total debit dan kredit harus seimbang nol (PR1, U-3)');
+        $this->assertSame(0, (int) LedgerEntry::sum('amount'));
     }
 }

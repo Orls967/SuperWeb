@@ -18,19 +18,14 @@ class LedgerEntry extends Model
     protected $fillable = [
         'transaction_id',
         'account_id',
-        'account_code',
         'asset_code',
         'amount',
-        'debit_amount',
-        'credit_amount',
         'balance_after',
         'created_at',
     ];
 
     protected $casts = [
         'amount' => 'string',
-        'debit_amount' => 'integer',
-        'credit_amount' => 'integer',
         'balance_after' => 'string',
         'created_at' => 'datetime',
     ];

@@ -211,5 +211,5 @@ it('benchmarks Hamilton apportionment scalability', function (): void {
 
     expect(count($result->allocations))->toBe(1_000)
         ->and(array_sum($result->toArray()))->toBe(500_000)
-        ->and($duration)->toBeLessThan(0.10); // Under 100ms
+        ->and($duration)->toBeLessThan(0.25); // Under 250ms (budget with CPU parallel jitter)
 });

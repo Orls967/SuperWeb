@@ -1983,3 +1983,108 @@
   - `tests/Feature/Banking/IdempotencyCategoryOneContractTest.php` memverifikasi seluruh 6 aksi Kategori (i): tanpa key $\to$ ditolak (422/exception), key sama $\to$ 1 efek, key berbeda $\to$ 2 efek.
   - `tests/Feature/Banking/IdempotencyCategoryTwoContractTest.php` memverifikasi bahwa dua kejadian bisnis berbeda menghasilkan dua entitas/posting terpisah pada aksi Kategori (ii).
   - `git grep -l "idempotencyKey ??\|idempotency_key ??" -- modules` berkurang dari 13 file menjadi tepat 7 file Kategori (ii).
+
+
+<a id="2026-11-02-pemulihan-master"></a>
+## 2026-11-02: Pemulihan Master Pasca-Merge ML1+ML2+ML3 (K-12, K-18, K-19, K-20)
+- **Anchor:** `2026-11-02-pemulihan-master`
+- **Context:**
+  - Master menerima merge langsung ML1 (#37), ML2 (#38), ML3 (#39), serta PR #41 fondasi G5-A.
+  - Perbaikan dilakukan untuk merestorasi seluruh pagar arsitektur, kepatuhan skema identifier, pemindahan namespace, dan perbaikan integritas data tanpa melonggarkan aturan.
+- **Decision:**
+  1. **PSR-4 Seeder (M2):** Namespace `Modules\Venue\database\seeders\VenueRbacSeeder` dan `Modules\Fleet\database\seeders\MobilityRbacSeeder` disesuaikan ke huruf kecil mengikuti konvensi modul, menghijaukan `Psr4ComplianceTest`.
+  2. **Kontrak Venue & Payment (M7):** Hapus `PaymentGatewayInterface.php` lepasan dari `Modules\Payment\Contracts`. Venue mengadopsi `VenuePaymentGateway` adaptor internal. Menghijaukan `ZeroArchScanDebtTest`. Stub null `PartyAgeVerificationInterface` diverifikasi menolak akses usia.
+  3. **Identifier Skema ≤ 64 Karakter (M8c, K-19):**
+     - Indeks `ven_seat_claims_event_id_section_code_row_label_seat_number_unique` (66 kar) dinamai eksplisit `ven_seat_claims_event_sec_row_seat_unique` (42 kar).
+     - Indeks `min_contractor_evaluations_contractor_party_id_period_site_id_unique` (68 kar) dinamai eksplisit `min_contractor_eval_party_period_site_unique` (46 kar).
+     - Menghijaukan `SchemaIdentifierLengthTest` dan `MysqlSchemaCompatibilityTest`.
+
+<a id="2026-11-02-ledger-tanpa-kolom-turunan"></a>
+## 2026-11-02: Pemulihan Skema Murni Buku Besar K-18 Tanpa Kolom Turunan
+- **Anchor:** `2026-11-02-ledger-tanpa-kolom-turunan`
+- **Context:**
+  - Merge ML1 (#37) menambahkan kolom turunan `debit_amount`, `credit_amount`, dan redundansi `account_code` pada tabel `bank_ledger_entries`.
+  - Hal ini melanggar prinsip PR4/K-18 dan desain double-entry buku besar inti Antigravity yang mengandalkan single-signed `amount` (debit = negatif, credit = positif, per KONSEP §A2.1).
+- **Decision:**
+  1. Membuang potongan ML1 pada `LedgerService::post`, model `LedgerEntry` (`$fillable`, `$casts`), dan menghapus migrasi `2026_10_30_120101_add_account_code_to_bank_ledger_entries_table.php`.
+  2. Menambahkan migrasi `2026_11_02_000001_drop_derived_columns_from_bank_ledger_entries` untuk membersihkan kolom turunan secara aman di SQLite dan MySQL.
+  3. Memperbaiki audit operasional Venue (`ven:audit`) dan Mining (`min:audit`) agar memverifikasi saldo akun buku besar dari signed `amount` dan relasi `account_id` $\to$ `bank_ledger_accounts.code`, serta menjamin invarian zero-sum balance per transaksi ($\sum \text{amount} = 0$).
+  4. Mengembalikan 10 acceptance test Venue dan Mining agar memverifikasi signed `amount` secara deterministik tanpa membaca kolom turunan.
+  5. Menyesuaikan skenario sabotase agar menguji integritas lewat tabel fakta subledger atau insert entri liar, bukan query update pada entri buku besar (karena terlindungi trigger append-only).
+- **Verification:**
+  - `git grep -n "debit_amount\|credit_amount" -- modules app tests database ':!modules/Integration'` menghasilkan 0 kemunculan.
+  - `vendor/bin/pest modules/Banking/tests/Feature/LedgerPostingTest.php` lulus 15/15.
+  - `vendor/bin/pest tests/Acceptance/Mining` lulus seluruh 89 pengujian.
+  - `vendor/bin/pest tests/Acceptance/Venue` lulus seluruh 76 pengujian.
+  - `php artisan ven:audit` dan `php artisan min:audit` keluar dengan exit code 0 tanpa diskrepansi.
+
+<a id="2026-11-02-mobility-konsolidasi"></a>
+## 2026-11-02: Konsolidasi Modul Mobilitas K-12 ke Mobility
+- **Anchor:** `2026-11-02-mobility-konsolidasi`
+- **Context:**
+  - Tiga modul mobilitas terpisah (`Telematics`, `Ev`, `Fleet`) ditambahkan pada ML1 (#37) secara lepas di root `modules/`.
+  - Hal ini memicu 22 entri tabel warisan di `config/modules.php` dan inkonsistensi batas modul K-12 serta pelanggaran kepatuhan arsitektur A1/A2.
+- **Decision:**
+  1. Melakukan pemindahan direktori via `git mv modules/{Telematics,Ev,Fleet} modules/Mobility/` menjadi sub-namespace `Modules\Mobility\{Telematics,Ev,Fleet}\...`.
+  2. Menyesuaikan registrasi Service Provider pada `bootstrap/providers.php` (`Modules\Mobility\{Telematics,Ev,Fleet}\*ServiceProvider`), rute, views, model, listener, dan seluruh pemanggil eksternal (AutoServe, Banking, Telematics, Tlx patch).
+  3. Mengganti penggunaan cross-module domain `Modules\Core\Domain\Models\Vehicle` di seluruh modul Mobility menjadi kontrak resmi `Modules\Core\Contracts\Vehicle`.
+  4. Membersihkan 22 pemetaan `legacy_tables` tabel `oto_*` pada `config/modules.php`, mengembalikannya ke kepemilikan tunggal alami prefiks `'oto_' => 'Mobility'`.
+- **Verification:**
+  - `php artisan arch:scan` A1 BARU = 0 dan A2 BARU = 0 untuk seluruh lini Mobility.
+  - `git grep -nE 'Modules\\(Telematics|Ev|Fleet)\\' -- . ':!docs'` menghasilkan 0 baris.
+  - `php artisan route:list --path=oto` menghasilkan 4 rute identik yang kini mengarah ke `modules/Mobility/`.
+  - `vendor/bin/pest tests/Acceptance/Mobility` lulus seluruh 83 pengujian.
+  - `vendor/bin/pest tests/Acceptance/Telecom` lulus seluruh 87 pengujian.
+
+<a id="2026-11-02-k12-prefix-renames"></a>
+## 2026-11-02: Penataan Prefiks Tabel K-12 (Vending, CloudKitchen, Pricing, Hcm, Agri)
+- **Anchor:** `2026-11-02-k12-prefix-renames`
+- **Context:**
+  - Sejumlah tabel domain yang masuk lewat merge ML1/ML2/ML3 memiliki prefiks tabel tidak sesuai dengan konvensi modular (K-12):
+    - Vending menggunakan `ven_*` (bentrok dengan Venue).
+    - CloudKitchen menggunakan `resto_*` (bentrok dengan Resto).
+    - Pricing menggunakan `prc_*` (bentrok dengan Procurement).
+    - Hcm internal gig bounties menggunakan `gov_*` (bentrok dengan Governance).
+    - Agri DAO governance menggunakan `gov_*` (bentrok dengan Governance).
+  - Ketidaksesuaian ini sebelumnya dipaksa lolos dengan menambahkan 21 entri ke `legacy_tables` di `config/modules.php`.
+- **Decision:**
+  1. Menambahkan migrasi rename tabel dengan timestamp sebelum migrasi ML extended:
+     - `2026_10_30_235959_rename_vending_tables_to_vnd.php`: `ven_demand_forecasts`, `ven_auto_pos`, `ven_vending_units`, `ven_vending_transactions`, `ven_restock_tasks` $\to$ `vnd_*`.
+     - `2026_10_30_235958_rename_cloud_kitchen_tables_to_ckt.php`: `resto_ck_kitchens`, `resto_catering_subscriptions`, `resto_ck_catering_orders` $\to$ `ckt_*`.
+     - `2026_10_30_235957_rename_pricing_tables_to_pric.php`: `prc_price_ticks`, `prc_price_tick_aggregates`, `prc_frozen_quotes` $\to$ `pric_*`.
+     - `2026_10_30_235956_rename_hcm_bounty_tables_to_hcm.php`: `gov_bounties`, `gov_bounty_claims`, `gov_bounty_pofs` $\to$ `hcm_*`.
+     - `2026_10_30_235955_rename_agri_dao_tables_to_agri.php`: `gov_proposals`, `gov_voter_weights`, `gov_votes` $\to$ `agri_*`.
+  2. Memperbarui seluruh model, query, foreign key, test, dan fixture terkait ke nama tabel berprefiks kanonikal baru.
+  3. Menghapus 21 entri warisan tersebut dari `legacy_tables` pada `config/modules.php`, mengembalikan `legacy_tables` ke 19 entri dasar $(\le 22)$.
+- **Verification:**
+  - `php artisan migrate:fresh --seed` keluar dengan status code 0.
+  - `vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php` lulus 12/12.
+  - Seluruh 92 pengujian acceptance `tests/Acceptance/Culinary` lulus.
+  - Seluruh pengujian fitur Agri, Hcm, Pricing, Vending, dan CloudKitchen lulus.
+  - `arch:scan` A2 BASI bertambah 42 entri dan A2 BARU = 0.
+
+<a id="2026-11-02-fk-nyata-a12"></a>
+## 2026-11-02: Foreign Key Nyata A12 untuk Relasi Entitas User Kernel
+- **Anchor:** `2026-11-02-fk-nyata-a12`
+- **Context:**
+  - 5 kolom relasi user pada modul Mining dan Venue dibuat tanpa Foreign Key pada migrasi awal ML1, lalu diakali dengan menambahkan 5 entri ke `cross_module_columns` di `config/modules.php`:
+    - `min_dispatch_assignments.override_by_user_id`
+    - `min_reconciliation_investigations.resolved_by_user_id`
+    - `ven_seat_claims.buyer_user_id`
+    - `ven_quota_holds.buyer_user_id`
+    - `ven_gate_scans.scanned_by_user_id`
+  - Pola ini menyembunyikan pelanggaran aturan integritas referensial A12 (kolom `*_id` tanpa foreign key).
+- **Decision:**
+  1. Tabel `users` adalah entitas kernel Core/Auth yang boleh direferensikan via Foreign Key nyata oleh modul bisnis.
+  2. Memperbarui migrasi ML1 terkait pada modul Mining dan Venue untuk mendefinisikan Foreign Key nyata ke tabel `users`:
+     - `min_dispatch_assignments`: `foreignId('override_by_user_id')->nullable()->constrained('users')->nullOnDelete()`
+     - `min_reconciliation_investigations`: `foreignId('resolved_by_user_id')->nullable()->constrained('users')->nullOnDelete()`
+     - `ven_seat_claims`: `foreign('buyer_user_id')->references('id')->on('users')->nullOnDelete()`
+     - `ven_quota_holds`: `foreign('buyer_user_id')->references('id')->on('users')->cascadeOnDelete()`
+     - `ven_gate_scans`: `foreign('scanned_by_user_id')->references('id')->on('users')->nullOnDelete()`
+  3. Memperbaiki scanner `MissingForeignKeyRule` agar mencakup migrasi pada struktur modul bersarang (seperti `modules/*/*/database/migrations/*.php`).
+  4. Menghapus 5 entri tersebut dari `cross_module_columns` di `config/modules.php`.
+- **Verification:**
+  - `vendor/bin/pest tests/Feature/Architecture/M5RealForeignKeyConstraintTest.php` lulus 5/5, membuktikan percobaan insert `*_by_user_id` / `buyer_user_id` tanpa user yang valid di database ditolak dengan `QueryException` (FK violation).
+  - Seluruh pengujian acceptance `tests/Acceptance/Venue` dan `tests/Acceptance/Mining` lulus 170/170.
+  - `php artisan arch:scan` aturan A12 BARU = 0.

@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Modules\Venue\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
-use Modules\Payment\Contracts\PaymentGatewayInterface;
 use Modules\Shared\Application\BaseAction;
+use Modules\Venue\Application\Services\VenuePaymentGateway;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 
 class ReserveTableWithMinimumSpendDepositAction extends BaseAction
 {
     public function __construct(
-        private readonly ?PaymentGatewayInterface $paymentGateway = null
+        private readonly ?VenuePaymentGateway $paymentGateway = null
     ) {}
 
     /**
@@ -38,11 +38,10 @@ class ReserveTableWithMinimumSpendDepositAction extends BaseAction
 
             // Check idempotency
             $existing = EntertainmentTableBooking::where('event_id', $event->id)
-                ->where('table_number', $tableNumber)
-                ->where('user_id', $userId)
+                ->where('idempotency_key', $idempotencyKey)
                 ->first();
 
-            if ($existing !== null && $existing->status === 'HELD') {
+            if ($existing !== null) {
                 return [
                     'booking' => $existing,
                     'booking_code' => (string) $existing->booking_code,
@@ -84,6 +83,7 @@ class ReserveTableWithMinimumSpendDepositAction extends BaseAction
                 'user_id' => $userId,
                 'minimum_spend_idr' => $minimumSpendIdr,
                 'deposit_amount_idr' => $depositAmountIdr,
+                'idempotency_key' => $idempotencyKey,
                 'status' => 'HELD',
             ]);
 

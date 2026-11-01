@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GovVote extends Model
 {
-    protected $table = 'gov_votes';
+    protected $table = 'agri_votes';
 
     protected $fillable = [
         'proposal_id',

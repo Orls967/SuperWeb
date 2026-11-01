@@ -9,14 +9,14 @@ use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Modules\Ev\Application\Actions\SettleTimeOfUseChargingSessionAction;
-use Modules\Ev\Application\Actions\StartOcppSmartChargingSessionAction;
-use Modules\Ev\Domain\Models\EvCharger;
-use Modules\Ev\Domain\Models\EvStation;
-use Modules\Fleet\Application\Actions\RecognizeMonthlyLeaseInterestAndRouAmortizationAction;
-use Modules\Fleet\Domain\Models\FleetContract;
-use Modules\Telematics\Application\Actions\IngestTelemetryAndCalculateRollingBaselineAction;
-use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Mobility\Ev\Application\Actions\SettleTimeOfUseChargingSessionAction;
+use Modules\Mobility\Ev\Application\Actions\StartOcppSmartChargingSessionAction;
+use Modules\Mobility\Ev\Domain\Models\EvCharger;
+use Modules\Mobility\Ev\Domain\Models\EvStation;
+use Modules\Mobility\Fleet\Application\Actions\RecognizeMonthlyLeaseInterestAndRouAmortizationAction;
+use Modules\Mobility\Fleet\Domain\Models\FleetContract;
+use Modules\Mobility\Telematics\Application\Actions\IngestTelemetryAndCalculateRollingBaselineAction;
+use Modules\Mobility\Telematics\Domain\Models\TelematicsDevice;
 use Tests\TestCase;
 
 class MobilityOldCodeExplorationTest extends TestCase

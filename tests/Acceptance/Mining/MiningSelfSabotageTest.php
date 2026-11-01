@@ -17,6 +17,7 @@ use Modules\Mining\Domain\Algorithms\LpCertificateVerifier;
 use Modules\Mining\Domain\Models\MiningArea;
 use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningPit;
+use Modules\Mining\Domain\Models\MiningRoyaltyReturn;
 use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Mining\Domain\Models\MiningStockpile;
 use Modules\Mining\Domain\Models\MiningWorkPermit;
@@ -237,10 +238,8 @@ class MiningSelfSabotageTest extends TestCase
             idempotencyKey: 'sab:roy:001'
         );
 
-        // Sabotase: Manipulasi angka royalti terakru di buku besar
-        DB::table('bank_ledger_entries')
-            ->where('account_code', 'expense:min:royalty:IDR')
-            ->update(['debit_amount' => 1000]); // Disunat dari 13 juta ke 1 ribu
+        // Sabotase: Manipulasi angka royalti pada tabel fakta
+        MiningRoyaltyReturn::query()->update(['calculated_royalty_idr' => 1000]); // Disunat dari 13 juta ke 1 ribu
 
         $exitCode = Artisan::call('min:audit');
         $this->assertSame(1, $exitCode);

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class VendingAutoPo extends Model
 {
-    protected $table = 'ven_auto_pos';
+    protected $table = 'vnd_auto_pos';
 
     protected $fillable = [
         'auto_po_code',

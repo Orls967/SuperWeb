@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Mining\Application\Services;
 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Mining\Domain\Algorithms\AssignmentCertificateVerifier;
 use Modules\Mining\Domain\Models\MiningDispatchAssignment;
@@ -25,6 +26,40 @@ class MiningFleetDispatchService
         private readonly MiningWeighbridgeChainService $chainService,
         private readonly AssignmentCertificateVerifier $assignmentVerifier
     ) {}
+
+    /**
+     * Dispatch haul truck with target payload
+     */
+    public function dispatchEquipment(
+        string $siteId,
+        string $pitId,
+        string $equipmentId,
+        string $shiftCode,
+        float $targetPayloadTon
+    ): MiningDispatchRun {
+        $equipment = MiningEquipment::findOrFail($equipmentId);
+        if ($equipment->status !== 'available') {
+            throw new \RuntimeException("Equipment {$equipment->equipment_code} is not available for dispatch (status: {$equipment->status})");
+        }
+
+        $equipment->update(['status' => 'dispatched']);
+
+        return MiningDispatchRun::create([
+            'id' => (string) Str::uuid(),
+            'site_id' => $siteId,
+            'pit_id' => $pitId,
+            'equipment_id' => $equipment->id,
+            'shift_code' => $shiftCode,
+            'target_payload_ton' => $targetPayloadTon,
+            'actual_payload_ton' => 0.00,
+            'payload_variance_ton' => 0.00,
+            'fuel_consumed_liter' => 0.00,
+            'distance_km' => 0.00,
+            'fuel_anomaly_detected' => false,
+            'contractor_payment_held' => false,
+            'status' => 'in_progress',
+        ]);
+    }
 
     /**
      * Comprehensive two-source audit for Mining operations:
@@ -93,11 +128,11 @@ class MiningFleetDispatchService
                 $errors[] = "Royalty discrepancy: Return {$ret->period_local} production ({$ret->total_production_kg}kg) != tickets ({$computedProduction}kg).";
             }
 
-            // Check ledger entry
+            // Check ledger entry (K-18: saldo normal expense adalah debit, tercatat sebagai nilai negatif pada amount)
             $expectedAmount = (int) ($ret->finalized_royalty_idr ?? $ret->calculated_royalty_idr);
             if ($expectedAmount > 0) {
-                $actualLedgerDebit = (int) LedgerEntry::where('account_code', 'expense:min:royalty:IDR')
-                    ->sum('debit_amount');
+                $actualLedgerDebit = -(int) LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'expense:min:royalty:IDR'))
+                    ->sum('amount');
 
                 if ($actualLedgerDebit !== $expectedAmount) {
                     $discrepancies++;
@@ -135,12 +170,15 @@ class MiningFleetDispatchService
             }
         }
 
-        // 6. Double-entry ledger balance
-        $totalDebits = (int) LedgerEntry::sum('debit_amount');
-        $totalCredits = (int) LedgerEntry::sum('credit_amount');
-        if ($totalDebits !== $totalCredits) {
+        // 6. Double-entry ledger balance: SUM(amount) per transaksi = 0 (K-18)
+        $unbalancedTxCount = LedgerEntry::selectRaw('transaction_id, SUM(amount) as balance')
+            ->groupBy('transaction_id')
+            ->havingRaw('ROUND(SUM(amount), 4) != 0')
+            ->count();
+
+        if ($unbalancedTxCount > 0) {
             $discrepancies++;
-            $errors[] = "Ledger out of balance: Debits ({$totalDebits}) != Credits ({$totalCredits}).";
+            $errors[] = "Ledger out of balance: {$unbalancedTxCount} unbalanced transactions detected.";
         }
 
         return [
@@ -172,8 +210,77 @@ class MiningFleetDispatchService
         return [
             'equipment_id' => $equipmentId,
             'current_engine_hours' => $currentHours,
+            'engine_hours' => $currentHours,
             'threshold_hours' => $thresholdHours,
             'maintenance_triggered' => $triggered,
+            'status' => $equipment->fresh()->status,
+        ];
+    }
+
+    /**
+     * Complete a dispatch haul run, recording actual payload and telemetry fuel consumption.
+     */
+    public function completeDispatchRun(
+        string $runId,
+        float $actualPayloadTon,
+        float $fuelConsumedLiter,
+        float $distanceKm
+    ): MiningDispatchRun {
+        $run = MiningDispatchRun::findOrFail($runId);
+        $payloadVariance = $actualPayloadTon - (float) $run->target_payload_ton;
+
+        $expectedFuel = $actualPayloadTon * $distanceKm * 0.45;
+        $fuelAnomaly = false;
+        if ($expectedFuel > 0 && (($fuelConsumedLiter - $expectedFuel) / $expectedFuel > 0.12)) {
+            $fuelAnomaly = true;
+        }
+
+        $run->update([
+            'actual_payload_ton' => $actualPayloadTon,
+            'payload_variance_ton' => $payloadVariance,
+            'fuel_consumed_liter' => $fuelConsumedLiter,
+            'distance_km' => $distanceKm,
+            'fuel_anomaly_detected' => $fuelAnomaly,
+            'contractor_payment_held' => $fuelAnomaly,
+            'status' => 'completed',
+        ]);
+
+        $equipment = MiningEquipment::find($run->equipment_id);
+        if ($equipment && $equipment->status === 'dispatched') {
+            $equipment->update(['status' => 'available']);
+        }
+
+        $pit = MiningPit::find($run->pit_id);
+        if ($pit) {
+            $pit->increment('actual_production_ton', (int) $actualPayloadTon);
+        }
+
+        return $run->fresh();
+    }
+
+    /**
+     * Get site dispatch board operational summary within strict database query budget (<= 2 queries).
+     *
+     * @return array{site_id: string, available_equipment: int, dispatched_equipment: int, maintenance_equipment: int, active_runs: int}
+     */
+    public function getDispatchBoardSummary(string $siteId): array
+    {
+        $equipmentCounts = MiningEquipment::where('site_id', $siteId)
+            ->selectRaw('status, count(*) as cnt')
+            ->groupBy('status')
+            ->pluck('cnt', 'status')
+            ->all();
+
+        $activeRuns = MiningDispatchRun::where('site_id', $siteId)
+            ->where('status', 'in_progress')
+            ->count();
+
+        return [
+            'site_id' => $siteId,
+            'available_equipment' => (int) ($equipmentCounts['available'] ?? 0),
+            'dispatched_equipment' => (int) ($equipmentCounts['dispatched'] ?? 0),
+            'maintenance_equipment' => (int) ($equipmentCounts['maintenance'] ?? 0),
+            'active_runs' => $activeRuns,
         ];
     }
 }

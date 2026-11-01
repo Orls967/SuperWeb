@@ -6,6 +6,7 @@ namespace Tests\Acceptance\Mining;
 
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Mining\Application\Actions\ReconcileStockpileAndShipmentAction;
 use Modules\Mining\Domain\Models\MiningReconciliationInvestigation;
@@ -22,6 +23,10 @@ class MiningReconciliationTest extends TestCase
     {
         parent::setUp();
         $this->seed(LedgerAccountsSeeder::class);
+
+        DB::table('users')->insertOrIgnore([
+            ['id' => 42, 'name' => 'Investigator 42', 'email' => 'inv42@test.com', 'password' => 'secret'],
+        ]);
 
         $this->site = MiningSite::create([
             'id' => (string) Str::uuid(),

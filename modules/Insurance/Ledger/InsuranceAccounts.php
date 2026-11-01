@@ -33,7 +33,7 @@ final class InsuranceAccounts
                 'name' => 'Central Treasury Insurance Reserve Pool',
                 'kind' => AccountKind::ASSET,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'claimant:payable:default:IDR',

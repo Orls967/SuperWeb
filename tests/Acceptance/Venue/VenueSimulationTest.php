@@ -7,9 +7,9 @@ namespace Tests\Acceptance\Venue;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Party\Contracts\PartyAgeVerificationInterface;
-use Modules\Payment\Contracts\PaymentGatewayInterface;
 use Modules\Venue\Application\Actions\CaptureTableDepositAction;
 use Modules\Venue\Application\Actions\CloseEntertainmentEventAction;
 use Modules\Venue\Application\Actions\ForfeitTableNoShowDepositAction;
@@ -18,7 +18,8 @@ use Modules\Venue\Application\Actions\PurchaseVenueTicketAction;
 use Modules\Venue\Application\Actions\RefundVenueTicketAction;
 use Modules\Venue\Application\Actions\ReserveTableWithMinimumSpendDepositAction;
 use Modules\Venue\Application\Actions\ScanTicketAtGateAction;
-use Modules\Venue\Database\Seeders\VenueRbacSeeder;
+use Modules\Venue\Application\Services\VenuePaymentGateway;
+use Modules\Venue\database\seeders\VenueRbacSeeder;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
@@ -37,11 +38,21 @@ class VenueSimulationTest extends TestCase
         $this->seed(LedgerAccountsSeeder::class);
         $this->seed(VenueRbacSeeder::class);
 
+        $users = [];
+        for ($u = 1000; $u <= 1650; $u++) {
+            $users[] = ['id' => $u, 'name' => "User {$u}", 'email' => "user{$u}@test.com", 'password' => 'secret'];
+        }
+        $users[] = ['id' => 999, 'name' => 'Scanner 999', 'email' => 'scanner999@test.com', 'password' => 'secret'];
+        for ($u = 8001; $u <= 8050; $u++) {
+            $users[] = ['id' => $u, 'name' => "User {$u}", 'email' => "user{$u}@test.com", 'password' => 'secret'];
+        }
+        DB::table('users')->insertOrIgnore($users);
+
         // Mock payment gateway
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->method('authorize')->willReturn(['success' => true]);
         $mockGateway->method('capture')->willReturn(['success' => true]);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         // Mock Party KYC: semua pengunjung usia 25 tahun (di atas 21)
         $mockParty = $this->createMock(PartyAgeVerificationInterface::class);
@@ -232,14 +243,15 @@ class VenueSimulationTest extends TestCase
 
         // 8. Invarian Akhir:
         // A. Zero unearned residue: seluruh saldo kewajiban unearned harus 0
-        $unearnedBalance = (int) (LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')->sum('credit_amount')
-            - LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')->sum('debit_amount'));
+        $unearnedBalance = (int) LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:ticket_unearned:IDR'))->sum('amount');
         $this->assertSame(0, $unearnedBalance, 'Residu unearned revenue harus tepat 0 setelah semua event ditutup');
 
         // B. Ledger balance Σ debit == Σ credit
-        $totalDebit = (int) LedgerEntry::sum('debit_amount');
-        $totalCredit = (int) LedgerEntry::sum('credit_amount');
-        $this->assertSame($totalDebit, $totalCredit, 'Double-entry ledger harus seimbang nol');
+        $totalDebits = abs((int) LedgerEntry::where('amount', '<', 0)->sum('amount'));
+        $totalCredits = (int) LedgerEntry::where('amount', '>', 0)->sum('amount');
+        $this->assertGreaterThan(0, $totalDebits);
+        $this->assertSame($totalDebits, $totalCredits, 'Double-entry ledger harus seimbang nol');
+        $this->assertSame(0, (int) LedgerEntry::sum('amount'));
 
         // C. Zero double-selling: nomor tiket unik
         $distinctTicketNumbers = EntertainmentTicket::distinct('ticket_number')->count('ticket_number');

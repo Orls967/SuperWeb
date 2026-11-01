@@ -7,6 +7,7 @@ namespace Tests\Acceptance\Mining;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Mining\Application\Actions\CalculateMonthlyRoyaltyAction;
 use Modules\Mining\Application\Actions\FinalizeRoyaltyReturnAction;
@@ -272,18 +273,18 @@ class MiningRoyaltyCalculationTest extends TestCase
 
         $amount = $res->royaltyReturn->calculated_royalty_idr;
 
-        // Debit: expense:min:royalty:IDR
+        // Debit: expense:min:royalty:IDR (amount < 0)
+        $expenseAcc = LedgerAccount::where('code', 'expense:min:royalty:IDR')->firstOrFail();
         $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'expense:min:royalty:IDR',
-            'debit_amount' => $amount,
-            'credit_amount' => 0,
+            'account_id' => $expenseAcc->id,
+            'amount' => -$amount.'.000000000000000000',
         ]);
 
-        // Credit: min:royalty_payable:IDR
+        // Credit: min:royalty_payable:IDR (amount > 0)
+        $payableAcc = LedgerAccount::where('code', 'min:royalty_payable:IDR')->firstOrFail();
         $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'min:royalty_payable:IDR',
-            'debit_amount' => 0,
-            'credit_amount' => $amount,
+            'account_id' => $payableAcc->id,
+            'amount' => $amount.'.000000000000000000',
         ]);
     }
 
@@ -323,13 +324,15 @@ class MiningRoyaltyCalculationTest extends TestCase
         $this->assertSame('FINALIZED', $res->royaltyReturn->status);
 
         // Verify delta posted to ledger
+        $expenseAcc = LedgerAccount::where('code', 'expense:min:royalty:IDR')->firstOrFail();
+        $payableAcc = LedgerAccount::where('code', 'min:royalty_payable:IDR')->firstOrFail();
         $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'expense:min:royalty:IDR',
-            'debit_amount' => 5484375,
+            'account_id' => $expenseAcc->id,
+            'amount' => '-5484375.000000000000000000',
         ]);
         $this->assertDatabaseHas('bank_ledger_entries', [
-            'account_code' => 'min:royalty_payable:IDR',
-            'credit_amount' => 5484375,
+            'account_id' => $payableAcc->id,
+            'amount' => '5484375.000000000000000000',
         ]);
     }
 
@@ -416,9 +419,11 @@ class MiningRoyaltyCalculationTest extends TestCase
             idempotencyKey: 'min:roy:fin:zerosum'
         );
 
-        $totalDebits = LedgerEntry::sum('debit_amount');
-        $totalCredits = LedgerEntry::sum('credit_amount');
+        $totalDebits = abs((int) LedgerEntry::where('amount', '<', 0)->sum('amount'));
+        $totalCredits = (int) LedgerEntry::where('amount', '>', 0)->sum('amount');
 
+        $this->assertGreaterThan(0, $totalDebits);
         $this->assertSame($totalDebits, $totalCredits);
+        $this->assertSame(0, (int) LedgerEntry::sum('amount'));
     }
 }

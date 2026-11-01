@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CloudKitchen extends Model
 {
-    protected $table = 'resto_ck_kitchens';
+    protected $table = 'ckt_kitchens';
 
     protected $fillable = [
         'kitchen_code',

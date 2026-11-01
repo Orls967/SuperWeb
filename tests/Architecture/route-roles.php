@@ -26,11 +26,7 @@ use Modules\Crypto\Domain\Models\CryptoPriceTick;
 use Modules\Distribution\Domain\Models\Distributor;
 use Modules\Egy\Domain\Models\PpaContract;
 use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
-use Modules\Ev\Domain\Models\EvCharger;
-use Modules\Ev\Domain\Models\EvSession;
-use Modules\Ev\Domain\Models\EvStation;
 use Modules\Finance\Domain\Models\Loan;
-use Modules\Fleet\Domain\Models\FleetContract;
 use Modules\Hcm\Domain\Models\Gig\GovBounty;
 use Modules\Hcm\Domain\Models\Gig\GovBountyClaim;
 use Modules\Hospital\Domain\Models\ClinicalTrial;
@@ -69,6 +65,11 @@ use Modules\Med\Domain\Models\MedIpLicense;
 use Modules\Med\Domain\Models\MedRoyaltyStatement;
 use Modules\Mining\Domain\Models\MiningPit;
 use Modules\Mining\Domain\Models\MiningSite;
+use Modules\Mobility\Ev\Domain\Models\EvCharger;
+use Modules\Mobility\Ev\Domain\Models\EvSession;
+use Modules\Mobility\Ev\Domain\Models\EvStation;
+use Modules\Mobility\Fleet\Domain\Models\FleetContract;
+use Modules\Mobility\Telematics\Domain\Models\TelematicsDevice;
 use Modules\Partner\Domain\Models\Partner;
 use Modules\Proptech\Domain\Models\Bim\BimModel;
 use Modules\Proptech\Domain\Models\BuildingZone;
@@ -91,7 +92,6 @@ use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
-use Modules\Telematics\Domain\Models\TelematicsDevice;
 use Modules\Tlx\Domain\Models\IotConnectivityInvoice;
 use Modules\Trade\Domain\Models\Bidding\BiddingAgent;
 use Modules\Trade\Domain\Models\Bidding\BidRun;
@@ -2998,5 +2998,41 @@ return [
                 ]
             )->id,
         ],
+    ],
+    'mining.admin' => ['roles' => ['admin', 'mine_manager', 'mining_admin', 'site_manager']],
+    'mining.dispatch.ui' => ['roles' => ['admin', 'dispatcher_mine', 'mine_manager', 'mining_admin', 'site_manager']],
+    'mining.hse' => ['roles' => ['admin', 'hse_officer', 'mining_admin', 'site_manager']],
+    'mining.royalties' => ['roles' => ['admin', 'finance_officer', 'mining_admin', 'site_manager']],
+    'mining.weighbridge' => ['roles' => ['admin', 'mine_manager', 'mining_admin', 'site_manager', 'weighbridge_operator']],
+    'venue.gate.mobile' => ['roles' => ['venue_staff']],
+    'oto.charging' => ['roles' => ['admin', 'driver', 'ev_admin', 'station_operator']],
+    'oto.fleet' => ['roles' => ['admin', 'fleet_admin', 'fleet_manager', 'lease_manager']],
+    'oto.telematics.clear-grounding' => ['roles' => ['admin', 'mechanic']],
+    'oto.sessions.show' => [
+        'roles' => ['admin', 'driver', 'ev_operator', 'fleet_manager'],
+        'params' => function () {
+            $user = User::firstOrCreate(['email' => 'driver-route@example.com'], ['name' => 'Route Driver', 'password' => 'secret']);
+            $vehicle = Vehicle::firstOrCreate(['vin' => 'VIN-ROUTE-01'], ['user_id' => $user->id, 'plate_number' => 'B 1111 EV', 'color' => 'White', 'odometer_km' => 1000, 'status' => 'active']);
+            $station = EvStation::firstOrCreate(['station_code' => 'SPKLU-PLN-01'], ['name' => 'SPKLU Sudirman', 'location_type' => 'PUBLIC', 'address' => 'Sudirman', 'latitude' => -6.2, 'longitude' => 106.8, 'is_active' => true]);
+            $charger = EvCharger::firstOrCreate(['charger_code' => 'CHG-CCS2-01'], ['station_id' => $station->id, 'type' => 'DC_FAST', 'max_kw' => 150, 'status' => 'available']);
+            $session = EvSession::firstOrCreate(
+                ['session_code' => 'SES-DYN-001'],
+                [
+                    'charger_id' => $charger->id,
+                    'vehicle_id' => $vehicle->id,
+                    'user_id' => $user->id,
+                    'status' => 'CHARGING',
+                    'deposit_held_idr' => 50000,
+                    'started_at' => now(),
+                ]
+            );
+
+            return ['session' => $session->id];
+        },
+        'setup' => function (User $user): void {
+            if ($user->role === 'driver') {
+                EvSession::where('session_code', 'SES-DYN-001')->update(['user_id' => $user->id]);
+            }
+        },
     ],
 ];
