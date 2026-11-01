@@ -210,8 +210,77 @@ class MiningFleetDispatchService
         return [
             'equipment_id' => $equipmentId,
             'current_engine_hours' => $currentHours,
+            'engine_hours' => $currentHours,
             'threshold_hours' => $thresholdHours,
             'maintenance_triggered' => $triggered,
+            'status' => $equipment->fresh()->status,
+        ];
+    }
+
+    /**
+     * Complete a dispatch haul run, recording actual payload and telemetry fuel consumption.
+     */
+    public function completeDispatchRun(
+        string $runId,
+        float $actualPayloadTon,
+        float $fuelConsumedLiter,
+        float $distanceKm
+    ): MiningDispatchRun {
+        $run = MiningDispatchRun::findOrFail($runId);
+        $payloadVariance = $actualPayloadTon - (float) $run->target_payload_ton;
+
+        $expectedFuel = $actualPayloadTon * $distanceKm * 0.45;
+        $fuelAnomaly = false;
+        if ($expectedFuel > 0 && (($fuelConsumedLiter - $expectedFuel) / $expectedFuel > 0.12)) {
+            $fuelAnomaly = true;
+        }
+
+        $run->update([
+            'actual_payload_ton' => $actualPayloadTon,
+            'payload_variance_ton' => $payloadVariance,
+            'fuel_consumed_liter' => $fuelConsumedLiter,
+            'distance_km' => $distanceKm,
+            'fuel_anomaly_detected' => $fuelAnomaly,
+            'contractor_payment_held' => $fuelAnomaly,
+            'status' => 'completed',
+        ]);
+
+        $equipment = MiningEquipment::find($run->equipment_id);
+        if ($equipment && $equipment->status === 'dispatched') {
+            $equipment->update(['status' => 'available']);
+        }
+
+        $pit = MiningPit::find($run->pit_id);
+        if ($pit) {
+            $pit->increment('actual_production_ton', (int) $actualPayloadTon);
+        }
+
+        return $run->fresh();
+    }
+
+    /**
+     * Get site dispatch board operational summary within strict database query budget (<= 2 queries).
+     *
+     * @return array{site_id: string, available_equipment: int, dispatched_equipment: int, maintenance_equipment: int, active_runs: int}
+     */
+    public function getDispatchBoardSummary(string $siteId): array
+    {
+        $equipmentCounts = MiningEquipment::where('site_id', $siteId)
+            ->selectRaw('status, count(*) as cnt')
+            ->groupBy('status')
+            ->pluck('cnt', 'status')
+            ->all();
+
+        $activeRuns = MiningDispatchRun::where('site_id', $siteId)
+            ->where('status', 'in_progress')
+            ->count();
+
+        return [
+            'site_id' => $siteId,
+            'available_equipment' => (int) ($equipmentCounts['available'] ?? 0),
+            'dispatched_equipment' => (int) ($equipmentCounts['dispatched'] ?? 0),
+            'maintenance_equipment' => (int) ($equipmentCounts['maintenance'] ?? 0),
+            'active_runs' => $activeRuns,
         ];
     }
 }

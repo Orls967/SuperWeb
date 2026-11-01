@@ -38,11 +38,10 @@ class ReserveTableWithMinimumSpendDepositAction extends BaseAction
 
             // Check idempotency
             $existing = EntertainmentTableBooking::where('event_id', $event->id)
-                ->where('table_number', $tableNumber)
-                ->where('user_id', $userId)
+                ->where('idempotency_key', $idempotencyKey)
                 ->first();
 
-            if ($existing !== null && $existing->status === 'HELD') {
+            if ($existing !== null) {
                 return [
                     'booking' => $existing,
                     'booking_code' => (string) $existing->booking_code,
@@ -84,6 +83,7 @@ class ReserveTableWithMinimumSpendDepositAction extends BaseAction
                 'user_id' => $userId,
                 'minimum_spend_idr' => $minimumSpendIdr,
                 'deposit_amount_idr' => $depositAmountIdr,
+                'idempotency_key' => $idempotencyKey,
                 'status' => 'HELD',
             ]);
 

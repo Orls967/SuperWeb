@@ -4,16 +4,31 @@ declare(strict_types=1);
 
 namespace Modules\Venue\database\seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
+use Modules\Banking\Application\DTOs\PostingDTO;
+use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Support\Posting;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
 use Modules\Venue\Domain\Models\EntertainmentZone;
+use Modules\Venue\Domain\Services\VenueTicketChainService;
 
 class VenueDemoSeeder extends Seeder
 {
     public function run(): void
     {
+        $user = User::firstOrCreate(
+            ['id' => 1],
+            [
+                'name' => 'Demo Patron',
+                'email' => 'patron@superweb.test',
+                'password' => bcrypt('password'),
+            ]
+        );
+
         $venue = EntertainmentVenue::firstOrCreate(
             ['venue_code' => 'VEN-ATLAS-01'],
             [
@@ -48,15 +63,42 @@ class VenueDemoSeeder extends Seeder
             ]
         );
 
-        EntertainmentTicket::firstOrCreate(
+        $chainService = app(VenueTicketChainService::class);
+        $ticketUuid = (string) Str::uuid();
+        $hashData = $chainService->computeTicketHash(
+            eventId: (int) $event->id,
+            ticketNumber: 'TCK-DEMO-001',
+            ticketUuid: $ticketUuid,
+            pricePaidIdr: 750000,
+            latestTicketHash: null
+        );
+
+        $ticket = EntertainmentTicket::firstOrCreate(
             ['ticket_number' => 'TCK-DEMO-001'],
             [
+                'ticket_uuid' => $ticketUuid,
                 'event_id' => $event->id,
-                'buyer_user_id' => 1,
+                'buyer_user_id' => $user->id,
                 'price_paid_idr' => 750000,
-                'ticket_hash' => hash('sha256', 'HASH-TCK-DEMO-001'),
+                'ticket_hash' => $hashData['ticket_hash'],
+                'prev_hash' => $hashData['prev_hash'],
+                'idempotency_key' => 'DEMO-VEN-TCK-001',
                 'status' => 'VALID',
             ]
         );
+
+        // Post unearned ticket revenue to ledger to reconcile subledger and ledger balance
+        $ledger = app(Ledger::class);
+        $ledger->post(new PostingDTO(
+            type: 'VENUE_TICKET_SALE',
+            description: 'Venue demo ticket sale',
+            idempotencyKey: 'DEMO-VEN-TCK-001',
+            entries: Posting::lines()
+                ->debit('ven:ticket_clearing:IDR', 750000)
+                ->credit('ven:ticket_unearned:IDR', 750000)
+                ->toEntries('IDR'),
+            referenceType: 'VENUE_TICKET',
+            referenceId: (string) $ticket->id,
+        ));
     }
 }

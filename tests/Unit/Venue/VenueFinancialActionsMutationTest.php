@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -136,6 +137,7 @@ describe('Venue Financial Actions Mutation Test', function () {
     });
 
     it('closes event recognizing unearned revenue and platform fee with idempotency', function () {
+        User::factory()->create(['id' => 777]);
         $hold = app(HoldGeneralAdmissionQuotaAction::class)->handle($this->event->id, $this->tier->id, 2, 777, 'ven:mut:hold:1');
         app(PurchaseVenueTicketAction::class)->handle($hold['hold_token'], 777, 'wallet', 'ven:mut:buy:1');
 
