@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Manufacturing\Application\Actions;
 
+use Carbon\CarbonImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
+use Modules\Edu\Contracts\CredentialVerifier;
+use Modules\Manufacturing\Domain\Exceptions\SafetyPermitUnauthorizedException;
 use Modules\Manufacturing\Domain\Models\WorkCenter;
 use Modules\Manufacturing\Domain\Models\WorkPermit;
 use Modules\Shared\Application\BaseAction;
@@ -30,6 +33,14 @@ final class IssueMaintenanceLotoSafetyPermitAction extends BaseAction
 
         if ($validUntil <= $validFrom) {
             throw new InvalidArgumentException('Batas waktu izin kerja harus lebih besar dari waktu mulai.');
+        }
+
+        // Z9 Adopsi Nyata: Verifikasi sertifikat K3 LOTO sebelum menerbitkan izin kerja berbahaya
+        if (str_contains(strtolower($permitType), 'loto')) {
+            $verifier = app(CredentialVerifier::class);
+            if (! $verifier->hasValid($requestedByUserId, 'k3_loto', CarbonImmutable::now())) {
+                throw new SafetyPermitUnauthorizedException("User [{$requestedByUserId}] lacks active k3_loto safety certification.");
+            }
         }
 
         return $this->transaction(function () use (

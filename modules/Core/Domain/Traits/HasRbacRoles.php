@@ -51,6 +51,14 @@ trait HasRbacRoles
     }
 
     /**
+     * Alias for assignRbacRole.
+     */
+    public function assignRole(string|Role $role, ?string $entityType = null, ?int $entityId = null): void
+    {
+        $this->assignRbacRole($role, $entityType, $entityId);
+    }
+
+    /**
      * Revoke an RBAC role, optionally scoped to an entity.
      * Idempotent — revoking a non-existent assignment is a no-op.
      */
@@ -92,6 +100,14 @@ trait HasRbacRoles
 
         // Fallback: legacy users.role column
         return $this->role === $roleName;
+    }
+
+    /**
+     * Alias for hasRbacRole.
+     */
+    public function hasRole(string $roleName, ?string $entityType = null, ?int $entityId = null): bool
+    {
+        return $this->hasRbacRole($roleName, $entityType, $entityId);
     }
 
     /**

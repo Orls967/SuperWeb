@@ -5,20 +5,30 @@ declare(strict_types=1);
 namespace Modules\Egy\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
-use Modules\Banking\Application\DTOs\PostingDTO;
+use InvalidArgumentException;
 use Modules\Banking\Application\Services\LedgerService;
-use Modules\Banking\Support\Posting;
 use Modules\Egy\Domain\Models\PpaContract;
+use Modules\Intercompany\Contracts\IntercompanyPortInterface;
 use Modules\Shared\Application\BaseAction;
 use RuntimeException;
 
 class SettlePowerPurchaseAgreementBillingAction extends BaseAction
 {
     public function __construct(
-        protected LedgerService $ledgerService
+        protected LedgerService $ledgerService,
+        protected IntercompanyPortInterface $intercompanyPort
     ) {}
 
-    public function execute(string $contractId, int $deliveredKwh): int
+    /**
+     * @return array{
+     *     status: string,
+     *     mirrored_pair_id: string,
+     *     total_minor: int,
+     *     producer_tx_code: string,
+     *     offtaker_tx_code: string
+     * }
+     */
+    public function executeWithIntercompany(string $contractId, int $deliveredKwh, string $idempotencyKey): array
     {
         $ppa = PpaContract::findOrFail($contractId);
 
@@ -26,25 +36,30 @@ class SettlePowerPurchaseAgreementBillingAction extends BaseAction
             throw new RuntimeException("PPA contract [{$ppa->contract_number}] is not active.");
         }
 
+        if ($deliveredKwh <= 0) {
+            throw new InvalidArgumentException('Delivered kWh must be greater than zero.');
+        }
+
         $rate = (int) $ppa->feed_in_tariff_per_kwh_minor;
         $totalBillMinor = $deliveredKwh * $rate;
 
-        return DB::transaction(function () use ($ppa, $deliveredKwh, $totalBillMinor) {
-            $idempotencyKey = hash('sha256', "PPA-SETTLE:{$ppa->contract_number}:{$deliveredKwh}:{$totalBillMinor}");
-
-            if ($totalBillMinor > 0) {
-                $this->ledgerService->post(new PostingDTO(
-                    type: 'ENERGY_PPA_NET_METER_SETTLE',
-                    description: "PPA net settlement for contract {$ppa->contract_number} ({$deliveredKwh} kWh)",
-                    idempotencyKey: $idempotencyKey,
-                    entries: Posting::lines()
-                        ->debit('egy:power_purchase_expense:IDR', $totalBillMinor)
-                        ->credit('egy:producer_payable:IDR', $totalBillMinor)
-                        ->toEntries('IDR'),
-                    referenceType: 'EGY_PPA_CONTRACT',
-                    referenceId: $ppa->contract_number,
-                ));
-            }
+        return DB::transaction(function () use ($ppa, $deliveredKwh, $totalBillMinor, $idempotencyKey) {
+            $icResult = $this->intercompanyPort->createMirroredPair([
+                'selling_entity' => $ppa->producer_entity_id,
+                'buying_entity' => $ppa->grid_offtaker_id,
+                'amount_idr' => $totalBillMinor,
+                'description' => "PPA net settlement for contract {$ppa->contract_number} ({$deliveredKwh} kWh)",
+                'idempotency_key' => $idempotencyKey,
+                'sales_invoice_ref' => "INV-PPA-{$ppa->contract_number}",
+                'purchase_bill_ref' => "BILL-PPA-{$ppa->contract_number}",
+                'reference_type' => 'ENERGY_PPA_NET_METER_SETTLE',
+                'reference_id' => $ppa->contract_number,
+                'post_to_ledger' => true,
+                'producer_ar_account' => 'ar:ic:producer:egy:IDR',
+                'producer_rev_account' => 'revenue:energy:ppa:IDR',
+                'offtaker_exp_account' => 'expense:energy:purchase:IDR',
+                'offtaker_ap_account' => 'ap:ic:egy:producer:IDR',
+            ]);
 
             $ppa->increment('surplus_kwh_exported', $deliveredKwh);
             $ppa->increment('total_settlement_minor', $totalBillMinor);
@@ -52,11 +67,25 @@ class SettlePowerPurchaseAgreementBillingAction extends BaseAction
             $this->audit(
                 action: 'egy_ppa_billing_settled',
                 auditable: $ppa,
-                newValues: ['delivered_kwh' => $deliveredKwh, 'total_minor' => $totalBillMinor],
+                newValues: ['delivered_kwh' => $deliveredKwh, 'total_minor' => $totalBillMinor, 'mirrored_pair' => $icResult['transaction_code']],
                 impactType: 'financial',
             );
 
-            return $totalBillMinor;
+            return [
+                'status' => 'SETTLED',
+                'mirrored_pair_id' => $icResult['mirrored_pair_id'],
+                'total_minor' => $totalBillMinor,
+                'producer_tx_code' => $icResult['producer_tx_code'],
+                'offtaker_tx_code' => $icResult['offtaker_tx_code'],
+            ];
         });
+    }
+
+    public function execute(string $contractId, int $deliveredKwh): int
+    {
+        $idempotencyKey = "egy:ppa:legacy:{$contractId}:{$deliveredKwh}";
+        $result = $this->executeWithIntercompany($contractId, $deliveredKwh, $idempotencyKey);
+
+        return $result['total_minor'];
     }
 }

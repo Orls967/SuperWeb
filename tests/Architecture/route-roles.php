@@ -24,6 +24,8 @@ use Modules\Crypto\Domain\Models\CryptoAlert;
 use Modules\Crypto\Domain\Models\CryptoAsset;
 use Modules\Crypto\Domain\Models\CryptoPriceTick;
 use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Egy\Domain\Models\PpaContract;
+use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
 use Modules\Ev\Domain\Models\EvCharger;
 use Modules\Ev\Domain\Models\EvSession;
 use Modules\Ev\Domain\Models\EvStation;
@@ -63,6 +65,8 @@ use Modules\Mall\Domain\Models\VoucherTemplate;
 use Modules\Mall\Domain\Models\WorkOrder;
 use Modules\Manufacturing\Domain\Models\C2m\C2mCustomOrder;
 use Modules\Manufacturing\Domain\Models\C2m\VmiReplenishment;
+use Modules\Med\Domain\Models\MedIpLicense;
+use Modules\Med\Domain\Models\MedRoyaltyStatement;
 use Modules\Mining\Domain\Models\MiningPit;
 use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Partner\Domain\Models\Partner;
@@ -88,6 +92,7 @@ use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
 use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Tlx\Domain\Models\IotConnectivityInvoice;
 use Modules\Trade\Domain\Models\Bidding\BiddingAgent;
 use Modules\Trade\Domain\Models\Bidding\BidRun;
 use Modules\Trade\Domain\Models\Bidding\BidSubmission;
@@ -2561,6 +2566,9 @@ return [
         'roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor'],
         'params' => fn () => ['id' => 1],
     ],
+    'edu.admin.programs.index' => ['roles' => ['academy_admin', 'admin']],
+    'edu.admin.programs.store' => ['roles' => ['academy_admin', 'admin']],
+    'edu.api.certificates.verify' => 'public',
     'edu.certification.index' => ['roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor']],
     'edu.certification.issue' => ['roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor']],
     'edu.certification.verify' => [
@@ -2576,6 +2584,16 @@ return [
         'roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor'],
         'params' => fn () => ['id' => 1],
     ],
+    'edu.student.attempts.show' => [
+        'roles' => ['admin', 'student'],
+        'params' => fn () => ['id' => 1],
+    ],
+    'edu.student.certificates.show' => [
+        'roles' => ['admin', 'student'],
+        'params' => fn () => ['id' => 1],
+    ],
+    'edu.student.dashboard' => ['roles' => ['admin', 'student']],
+    'edu.web.certificates.verify' => 'public',
     'education.index' => ['roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor']],
     'egy.grid.anomaly' => [
         'roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev'],
@@ -2889,4 +2907,96 @@ return [
     'wealth.treasury.rebalance' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.risk-profiles' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.sweep-cash' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
+
+    // energy-mvp
+    'egy.grid.dispatch' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],
+    'egy.grid.invoices' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],
+    'api.energy.telemetry' => 'public',
+    'api.energy.billing.calculate' => ['roles' => ['admin', 'energy_manager', 'genco_trader']],
+    'api.energy.invoices.show' => [
+        'roles' => ['admin', 'energy_manager', 'genco_trader'],
+        'params' => fn () => [
+            'id' => UtilityConsolidatedInvoice::firstOrCreate(
+                ['invoice_number' => 'INV-UTIL-TEST-001'],
+                ['id' => (string) Str::uuid(), 'property_id' => 'PROP-TEST-01', 'billing_period' => '2026-10', 'total_consolidated_minor' => 100000, 'status' => 'ISSUED']
+            )->id,
+        ],
+    ],
+    'api.energy.invoices.issue' => [
+        'roles' => ['admin', 'energy_manager', 'genco_trader'],
+        'params' => fn () => [
+            'id' => UtilityConsolidatedInvoice::firstOrCreate(
+                ['invoice_number' => 'INV-UTIL-TEST-002'],
+                ['id' => (string) Str::uuid(), 'property_id' => 'PROP-TEST-02', 'billing_period' => '2026-10', 'total_consolidated_minor' => 100000, 'status' => 'DRAFT']
+            )->id,
+        ],
+    ],
+    'api.energy.ppa.settle' => [
+        'roles' => ['admin', 'energy_manager', 'genco_trader'],
+        'params' => fn () => [
+            'id' => PpaContract::firstOrCreate(
+                ['contract_number' => 'PPA-TEST-001'],
+                ['id' => (string) Str::uuid(), 'producer_entity_id' => 'ENT-01', 'grid_offtaker_id' => 'ENT-EGY-01', 'feed_in_tariff_per_kwh_minor' => 1000, 'status' => 'ACTIVE']
+            )->id,
+        ],
+    ],
+
+    // telecom-mvp
+    'tlx.noc.alarms' => ['roles' => ['admin', 'noc_engineer', 'tlx_admin']],
+    'tlx.datacenter.colocation' => ['roles' => ['admin', 'datacenter_ops', 'tlx_admin']],
+    'tlx.billing.connectivity' => ['roles' => ['admin', 'telecom_billing', 'tlx_admin']],
+    'tlx.billing.connectivity.detail' => [
+        'roles' => ['admin', 'telecom_billing', 'tlx_admin'],
+        'params' => fn () => [
+            'id' => IotConnectivityInvoice::firstOrCreate(
+                ['invoice_number' => 'INV-TLX-ROUTE-001'],
+                [
+                    'id' => (string) Str::uuid(),
+                    'owner_entity_id' => 'ENT-LOGISTICS-01',
+                    'billing_period' => '2026-10',
+                    'active_device_count' => 1,
+                    'total_consumed_mb' => 0.0,
+                    'total_charge_minor' => 30000,
+                    'status' => 'ISSUED',
+                ]
+            )->id,
+        ],
+    ],
+
+    // media-mvp
+    'med.mvp.dashboard' => ['roles' => ['admin', 'auditor', 'media_admin', 'rights_manager', 'studio_manager']],
+    'med.mvp.studios' => ['roles' => ['admin', 'media_admin', 'studio_manager']],
+    'med.mvp.licensing' => ['roles' => ['admin', 'media_admin', 'rights_manager']],
+    'med.mvp.royalties.detail' => [
+        'roles' => ['admin', 'media_admin', 'rights_manager'],
+        'params' => fn () => [
+            'id' => MedRoyaltyStatement::firstOrCreate(
+                ['statement_number' => 'STMT-ROUTE-001'],
+                [
+                    'id' => (string) Str::uuid(),
+                    'license_id' => MedIpLicense::firstOrCreate(
+                        ['license_code' => 'LIC-ROUTE-001'],
+                        [
+                            'id' => (string) Str::uuid(),
+                            'ip_id' => (string) Str::uuid(),
+                            'licensee_entity_id' => 'PARTY-ROUTE-01',
+                            'rights_type' => 'STREAMING',
+                            'channel' => 'STREAMING',
+                            'territory' => 'GLOBAL',
+                            'start_date' => '2026-01-01',
+                            'end_date' => '2026-12-31',
+                            'royalty_rate_pct' => 10.0,
+                            'status' => 'ACTIVE',
+                        ]
+                    )->id,
+                    'billing_period' => '2026-10',
+                    'gross_revenue_minor' => 1000000,
+                    'total_distribution_fee_minor' => 100000,
+                    'total_recouped_minor' => 0,
+                    'total_royalty_distributed_minor' => 900000,
+                    'status' => 'ISSUED',
+                ]
+            )->id,
+        ],
+    ],
 ];

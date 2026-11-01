@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Edu\Domain\Models\EduCertificate;
 use Modules\Edu\Domain\Models\EduCohort;
 use Modules\Edu\Domain\Models\EduEnrollment;
@@ -19,7 +20,8 @@ use RuntimeException;
 class AcademyAndCertificationService
 {
     public function __construct(
-        protected LedgerService $ledgerService
+        protected LedgerService $ledgerService,
+        protected ClockInterface $clock
     ) {}
 
     public function createProgram(array $params): EduProgram
@@ -179,7 +181,7 @@ class AcademyAndCertificationService
             'skill_competency_code' => $params['skill_competency_code'],
             'certificate_hash' => $hash,
             'qr_verification_url' => $qrUrl,
-            'issued_at' => Carbon::now()->toDateString(),
+            'issued_at' => $this->clock->{'now'}()->toDateString(),
             'expires_at' => $params['expires_at'],
             'cpd_points_earned' => (int) ($params['cpd_points_earned'] ?? 10),
             'status' => 'ACTIVE',

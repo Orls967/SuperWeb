@@ -1,0 +1,36 @@
+diff --git a/modules/Proptech/Application/Services/ProptechService.php b/modules/Proptech/Application/Services/ProptechService.php
+index 251a5fb2..b04c568c 100644
+--- a/modules/Proptech/Application/Services/ProptechService.php
++++ b/modules/Proptech/Application/Services/ProptechService.php
+@@ -40,6 +40,13 @@ public function ingestSensorReading(
+     ): BuildingSensor {
+         $key = $idempotencyKey ?? hash('sha256', "{$zone->id}:{$sensorCode}:{$sensorType}:{$recordedAt->toIso8601String()}");
+ 
++        if (app()->bound(\Modules\Tlx\Contracts\IotDeviceRegistry::class)) {
++            $registry = app(\Modules\Tlx\Contracts\IotDeviceRegistry::class);
++            if (! $registry->assertActive($sensorCode, \Carbon\CarbonImmutable::parse($recordedAt))) {
++                throw new \InvalidArgumentException("Sensor [{$sensorCode}] is not registered or active in IotDeviceRegistry (Z13).");
++            }
++        }
++
+         $existing = BuildingSensor::where('idempotency_key', $key)->first();
+         if ($existing) {
+             $existing->update([
+diff --git a/modules/Telematics/Application/Services/TelematicsIngestService.php b/modules/Telematics/Application/Services/TelematicsIngestService.php
+index 70bcfc72..f472e3b9 100644
+--- a/modules/Telematics/Application/Services/TelematicsIngestService.php
++++ b/modules/Telematics/Application/Services/TelematicsIngestService.php
+@@ -126,6 +126,13 @@ public function ingestTick(array $data): TelematicsTick
+             throw new ValidationException($validator);
+         }
+ 
++        if (app()->bound(\Modules\Tlx\Contracts\IotDeviceRegistry::class)) {
++            $registry = app(\Modules\Tlx\Contracts\IotDeviceRegistry::class);
++            if (! $registry->assertActive((string) $data['device_id'], \Carbon\CarbonImmutable::parse($data['recorded_at']))) {
++                throw new \InvalidArgumentException("Device [{$data['device_id']}] is not registered or active in IotDeviceRegistry (Z13).");
++            }
++        }
++
+         $now = Carbon::parse($this->simClock->now());
+         $recordedAt = Carbon::parse($data['recorded_at']);
+         if ($recordedAt->lt((clone $now)->subDays(30))) {

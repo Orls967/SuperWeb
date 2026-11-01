@@ -252,6 +252,7 @@ return [
         'edu_certificates.program_id' => 'Referensi lintas modul Edu (program_id)',
         'edu_cohorts.instructor_party_id' => 'Referensi lintas modul Edu (instructor_party_id)',
         'edu_contingent_contracts.client_entity_id' => 'Referensi lintas modul Edu (client_entity_id)',
+        'edu_corporate_quotas.corporate_client_id' => 'Referensi lintas modul Edu (corporate_client_id)',
         'edu_course_enrollments.employee_id' => 'Referensi lintas modul Edu (employee_id)',
         'edu_employee_certifications.employee_id' => 'Referensi lintas modul Edu (employee_id)',
         'edu_enrollments.cohort_id' => 'Referensi lintas modul Edu (cohort_id)',
