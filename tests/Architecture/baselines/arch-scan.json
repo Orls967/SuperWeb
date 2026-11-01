@@ -2,7 +2,7 @@
     "about": "Baseline ratchet `php artisan arch:scan` (PROGRESS.md §P11, KONSEP.md §A14.1). Hanya boleh turun lewat `--update-baseline`; penambahan wajib `--allow-new=\"DECISIONS.md#…\"` dan tercatat di approved_additions.",
     "rules": {
         "A1": {
-            "total": 20,
+            "total": 14,
             "entries": {
                 "modules/AutoServe/Application/Listeners/CreatePredictiveMaintenanceBooking.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
@@ -14,18 +14,6 @@
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
                 "modules/AutoServe/Http/Controllers/BookingController.php": {
-                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
-                },
-                "modules/Ev/Domain/Models/EvSession.php": {
-                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
-                },
-                "modules/Ev/database/seeders/EvDemoSeeder.php": {
-                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
-                },
-                "modules/Fleet/Domain/Models/FleetContractUnit.php": {
-                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
-                },
-                "modules/Fleet/database/seeders/FleetDemoSeeder.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 },
                 "modules/Logistics/Application/Actions/DeliverVehicleByCarrierAction.php": {
@@ -57,89 +45,21 @@
                 },
                 "modules/Store/Http/Controllers/C2cController.php": {
                     "use Modules\\Core\\Domain\\Models\\Vehicle": 1
-                },
-                "modules/Telematics/Domain/Models/TelematicsDevice.php": {
-                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
-                },
-                "modules/Telematics/database/seeders/TelematicsDemoSeeder.php": {
-                    "use Modules\\Core\\Domain\\Models\\Vehicle": 1
                 }
             }
         },
         "A2": {
-            "total": 67,
+            "total": 25,
             "entries": {
-                "modules/Agri/Domain/Models/Ndvi/GovProposal.php": {
-                    "$table('gov_proposals')": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/GovVote.php": {
-                    "$table('gov_votes')": 1
-                },
-                "modules/Agri/Domain/Models/Ndvi/GovVoterWeight.php": {
-                    "$table('gov_voter_weights')": 1
-                },
                 "modules/Agri/database/migrations/2026_10_07_860100_create_ndvi_and_dao_tables.php": {
                     "Schema::create('gov_proposals')": 1,
                     "Schema::create('gov_voter_weights')": 1,
                     "Schema::create('gov_votes')": 1
                 },
-                "modules/CloudKitchen/Domain/Models/CateringOrder.php": {
-                    "$table('resto_ck_catering_orders')": 1
-                },
-                "modules/CloudKitchen/Domain/Models/CateringSubscription.php": {
-                    "$table('resto_catering_subscriptions')": 1
-                },
-                "modules/CloudKitchen/Domain/Models/CloudKitchen.php": {
-                    "$table('resto_ck_kitchens')": 1
-                },
                 "modules/CloudKitchen/database/migrations/2026_10_07_740100_create_resto_ck_tables.php": {
                     "Schema::create('resto_catering_subscriptions')": 1,
                     "Schema::create('resto_ck_catering_orders')": 1,
                     "Schema::create('resto_ck_kitchens')": 1
-                },
-                "modules/Ev/Domain/Models/EvBatteryPassport.php": {
-                    "$table('oto_ev_battery_passports')": 1
-                },
-                "modules/Ev/Domain/Models/EvCharger.php": {
-                    "$table('oto_ev_chargers')": 1
-                },
-                "modules/Ev/Domain/Models/EvSession.php": {
-                    "$table('oto_ev_sessions')": 1
-                },
-                "modules/Ev/Domain/Models/EvStation.php": {
-                    "$table('oto_ev_stations')": 1
-                },
-                "modules/Ev/database/migrations/2026_10_07_690100_create_oto_ev_tables.php": {
-                    "Schema::create('oto_ev_battery_passports')": 1,
-                    "Schema::create('oto_ev_chargers')": 1,
-                    "Schema::create('oto_ev_sessions')": 1,
-                    "Schema::create('oto_ev_stations')": 1
-                },
-                "modules/Fleet/Application/Services/FleetLeasingService.php": {
-                    "DB::table('oto_fleet_contract_units')": 1
-                },
-                "modules/Fleet/Domain/Models/FleetContract.php": {
-                    "$table('oto_fleet_contracts')": 1
-                },
-                "modules/Fleet/Domain/Models/FleetContractUnit.php": {
-                    "$table('oto_fleet_contract_units')": 1
-                },
-                "modules/Fleet/Domain/Models/FleetSlaLog.php": {
-                    "$table('oto_fleet_sla_logs')": 1
-                },
-                "modules/Fleet/database/migrations/2026_10_07_700100_create_oto_fleet_tables.php": {
-                    "Schema::create('oto_fleet_contract_units')": 1,
-                    "Schema::create('oto_fleet_contracts')": 1,
-                    "Schema::create('oto_fleet_sla_logs')": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBounty.php": {
-                    "$table('gov_bounties')": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBountyClaim.php": {
-                    "$table('gov_bounty_claims')": 1
-                },
-                "modules/Hcm/Domain/Models/Gig/GovBountyPof.php": {
-                    "$table('gov_bounty_pofs')": 1
                 },
                 "modules/Hcm/database/migrations/2026_10_07_850100_create_bounty_gig_tables.php": {
                     "Schema::create('gov_bounties')": 1,
@@ -151,18 +71,6 @@
                     "Schema::table('gov_bounty_claims')": 2,
                     "Schema::table('gov_bounty_pofs')": 2
                 },
-                "modules/Pricing/Console/Commands/AuditPricingCommand.php": {
-                    "DB::table('prc_frozen_quotes')": 2
-                },
-                "modules/Pricing/Domain/Models/FrozenQuote.php": {
-                    "$table('prc_frozen_quotes')": 1
-                },
-                "modules/Pricing/Domain/Models/PriceTick.php": {
-                    "$table('prc_price_ticks')": 1
-                },
-                "modules/Pricing/Domain/Models/PriceTickAggregate.php": {
-                    "$table('prc_price_tick_aggregates')": 1
-                },
                 "modules/Pricing/database/migrations/2026_10_07_810100_create_algorithmic_pricing_tables.php": {
                     "Schema::create('prc_frozen_quotes')": 1,
                     "Schema::create('prc_price_ticks')": 1
@@ -170,41 +78,6 @@
                 "modules/Pricing/database/migrations/2026_10_19_810200_create_price_aggregates_and_waterfall_logs.php": {
                     "Schema::create('prc_price_tick_aggregates')": 1,
                     "Schema::table('prc_frozen_quotes')": 2
-                },
-                "modules/Telematics/Domain/Models/TelematicsAggregate.php": {
-                    "$table('oto_telematics_aggregates')": 1
-                },
-                "modules/Telematics/Domain/Models/TelematicsBaseline.php": {
-                    "$table('oto_telematics_baselines')": 1
-                },
-                "modules/Telematics/Domain/Models/TelematicsDevice.php": {
-                    "$table('oto_telematics_devices')": 1
-                },
-                "modules/Telematics/Domain/Models/TelematicsTick.php": {
-                    "$table('oto_telematics_ticks')": 1
-                },
-                "modules/Telematics/database/migrations/2026_10_07_680100_create_oto_telematics_tables.php": {
-                    "Schema::create('oto_telematics_baselines')": 1,
-                    "Schema::create('oto_telematics_devices')": 1,
-                    "Schema::create('oto_telematics_ticks')": 1
-                },
-                "modules/Telematics/database/migrations/2026_10_18_000005_create_oto_telematics_aggregates_table.php": {
-                    "Schema::create('oto_telematics_aggregates')": 1
-                },
-                "modules/Vending/Domain/Models/VendingAutoPo.php": {
-                    "$table('ven_auto_pos')": 1
-                },
-                "modules/Vending/Domain/Models/VendingDemandForecast.php": {
-                    "$table('ven_demand_forecasts')": 1
-                },
-                "modules/Vending/Domain/Models/VendingRestockTask.php": {
-                    "$table('ven_restock_tasks')": 1
-                },
-                "modules/Vending/Domain/Models/VendingTransaction.php": {
-                    "$table('ven_vending_transactions')": 1
-                },
-                "modules/Vending/Domain/Models/VendingUnit.php": {
-                    "$table('ven_vending_units')": 1
                 },
                 "modules/Vending/database/migrations/2026_10_07_750100_create_ven_tables.php": {
                     "Schema::create('ven_auto_pos')": 1,

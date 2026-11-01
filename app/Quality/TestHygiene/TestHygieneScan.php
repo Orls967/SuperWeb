@@ -35,6 +35,8 @@ final class TestHygieneScan
             new ModuleWithoutHttpTestRule(self::modulesWithHttpTests($testFiles, $modules)),
         ];
 
+        gc_collect_cycles();
+
         return (new ArchScanner($rules, new ModuleRegistry([])))->scan([...$testFiles, ...$routeFiles]);
     }
 
