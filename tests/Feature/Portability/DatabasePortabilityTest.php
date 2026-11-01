@@ -196,6 +196,8 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
     $txId = DB::table('bank_ledger_transactions')->insertGetId([
         'uuid' => (string) Str::uuid(),
         'type' => 'transfer',
+        'idempotency_key' => 'portability:tx:'.uniqid(),
+        'payload_hash' => hash('sha256', 'portability-payload'),
         'description' => 'Portability 10^15 Transfer',
         'posted_at' => now(),
         'created_at' => now(),
@@ -208,16 +210,16 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
             'account_id' => $srcId,
             'asset_code' => 'IDR',
             'amount' => "-{$largeAmount}",
+            'balance_after' => "-{$largeAmount}",
             'created_at' => now(),
-            'updated_at' => now(),
         ],
         [
             'transaction_id' => $txId,
             'account_id' => $dstId,
             'asset_code' => 'IDR',
             'amount' => $largeAmount,
+            'balance_after' => $largeAmount,
             'created_at' => now(),
-            'updated_at' => now(),
         ],
     ]);
 
