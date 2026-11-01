@@ -1747,6 +1747,8 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R8.1 s/d R8.5 tuntas 100%) | - | - | - |
 | M-R8-1 | R8.1 s/d R8.5 | Temuan F-09: Live telemetry ticker memuat nilai konstan (demo) | Metrik real-time tidak merefleksikan DB sesungguhnya | P1 | Diperbaiki di III.7 (K-7): dilabeli (demo) di UI, dikeluarkan dari klaim PROGRESS |
+| M-R8-2 | R8.1 / S-14 | Temuan S-14: 8 event pada EventCatalog berstatus phantom tanpa handler terdaftar di CrossModuleSpineHandlers | Event diterbitkan tanpa handler yang memproses integrasi lintas modul | P1 | Dijadwalkan perbaikan di zona terkait (R8) |
+| M-R8-3 | R8.2 / S-15 | Temuan S-15: ±4.210 pemanggilan now() langsung di luar ClockInterface pada domain & application services | Waktu simulasi dan pengujian deterministik berpotensi bypass ClockInterface | P1 | Dijadwalkan migrasi bertahap ke ClockInterface di zona terkait (R8) |
 
 
 ### FASE R9 — SKALA BERTINGKAT & BENCHMARK
@@ -1808,6 +1810,8 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R9.1 s/d R9.4 tuntas 100%) | - | - | - |
 | M-R9-1 | R9.1 s/d R9.4 | Temuan F-07: Batas memori dinaikkan ke 2048M untuk menutupi kebutuhan suite | Memory budget kontrak 512M terlanggar | P1 | Diperbaiki di III.6 (K-6): phpunit.xml dikembalikan ke 512M dan suite dijalankan --parallel |
+| M-R9-2 | R9.1 / S-16 | Temuan S-16: Seeder skala bertingkat T1 hanya mencakup 3 modul dari total 28 modul bisnis | Uji skala konglomerasi belum merefleksikan seluruh modul platform | P2 | Dijadwalkan pelengkapan seeder T1 di zona terkait (R9) |
+| M-R9-3 | R9.2 / S-17 | Temuan S-17: Risiko memori pemanggilan Model::all() tanpa chunking di 30+ lokasi modul & benchmark p95 belum ada | Potensi kehabisan memori pada dataset skala produksi besar | P2 | Dijadwalkan refaktor chunking dan benchmark p95 di zona terkait (R9) |
 
 ### DEFINITION OF DONE (FASE R)
 - [x] Semua item R0–R9 `[x]` dengan blok `Bukti:` yang lolos `ProgressIntegrityTest`, dan setiap sub-fase R berstatus ✅ dari verifikator.
