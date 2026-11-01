@@ -170,6 +170,7 @@ it('captures unique violation on race condition across two connections and retur
 it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native SUM', function (): void {
     $largeAmount = '1000000000000000'; // 10^15 minor units
     $srcId = DB::table('bank_ledger_accounts')->insertGetId([
+        'uuid' => (string) Str::uuid(),
         'code' => 'portability:source:'.uniqid(),
         'name' => 'Portability Large Source',
         'asset_code' => 'IDR',
@@ -181,6 +182,7 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
     ]);
 
     $dstId = DB::table('bank_ledger_accounts')->insertGetId([
+        'uuid' => (string) Str::uuid(),
         'code' => 'portability:dest:'.uniqid(),
         'name' => 'Portability Large Dest',
         'asset_code' => 'IDR',

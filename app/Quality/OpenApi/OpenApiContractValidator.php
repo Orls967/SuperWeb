@@ -55,6 +55,7 @@ final class OpenApiContractValidator
             $yamlContent = (string) file_get_contents($yamlPath);
             /** @var array<string, mixed> $yamlSpec */
             $yamlSpec = Yaml::parse($yamlContent);
+            unset($yamlContent);
         } catch (\Throwable $e) {
             $errors[] = 'docs/openapi-v3.yaml bukan dokumen YAML yang valid: '.$e->getMessage();
 
@@ -69,6 +70,8 @@ final class OpenApiContractValidator
         if (($yamlSpec['openapi'] ?? '') !== '3.1.0') {
             $errors[] = "Versi OpenAPI pada docs/openapi-v3.yaml bukan '3.1.0' (ditemukan: ".($yamlSpec['openapi'] ?? 'null').').';
         }
+        unset($yamlSpec);
+        gc_collect_cycles();
 
         // 4. Info Section & Invariants
         $info = $jsonSpec['info'] ?? [];
@@ -264,7 +267,7 @@ final class OpenApiContractValidator
             'canonical_modules_covered' => count($canonical46),
             'api_routes_checked' => $apiRouteCount,
             'json_size_bytes' => strlen($jsonContent),
-            'yaml_size_bytes' => strlen($yamlContent),
+            'yaml_size_bytes' => (int) @filesize($yamlPath),
         ];
 
         return new OpenApiValidationResult(

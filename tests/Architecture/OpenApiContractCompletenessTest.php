@@ -47,13 +47,18 @@ it('ensures docs/openapi-v3.json and docs/openapi-v3.yaml exist, are valid, and 
 
     $jsonContent = (string) file_get_contents($jsonPath);
     $jsonSpec = json_decode($jsonContent, true);
+    unset($jsonContent);
     expect($jsonSpec)->toBeArray()
         ->and($jsonSpec['openapi'] ?? '')->toBe('3.1.0');
+    unset($jsonSpec);
 
     $yamlContent = (string) file_get_contents($yamlPath);
     $yamlSpec = Yaml::parse($yamlContent);
+    unset($yamlContent);
     expect($yamlSpec)->toBeArray()
         ->and($yamlSpec['openapi'] ?? '')->toBe('3.1.0');
+    unset($yamlSpec);
+    gc_collect_cycles();
 });
 
 it('ensures all 46 canonical enterprise modules are present in tags', function (): void {

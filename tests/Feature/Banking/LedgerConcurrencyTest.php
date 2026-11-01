@@ -188,13 +188,17 @@ test('mysql two pdo connections lock for update blocks and serializes concurrent
     expect(DB::connection()->getDriverName())
         ->not->toBe('sqlite', 'Test db-portability DILARANG dijalankan di SQLite. Wajib dijalankan pada MySQL 8 / PostgreSQL di CI.');
 
+    while (DB::transactionLevel() > 0) {
+        DB::commit();
+    }
+
     $accounts = LedgerAccount::whereIn('code', ['clearing:external:IDR', 'fee:banking:IDR'])->get();
     expect($accounts)->toHaveCount(2);
 
     $config = config('database.connections.'.config('database.default'));
     $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s', $config['host'], $config['port'], $config['database']);
-    $pdo1 = new PDO($dsn, $config['username'], $config['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-    $pdo2 = new PDO($dsn, $config['username'], $config['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $pdo1 = new PDO($dsn, $config['username'], $config['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 2]);
+    $pdo2 = new PDO($dsn, $config['username'], $config['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 2]);
 
     $pdo1->beginTransaction();
     $stmt1 = $pdo1->prepare('SELECT * FROM bank_ledger_accounts WHERE id = :id FOR UPDATE');
@@ -210,4 +214,6 @@ test('mysql two pdo connections lock for update blocks and serializes concurrent
 
     $pdo1->commit();
     expect($lockedOut)->toBeTrue();
+
+    DB::beginTransaction();
 })->group('db-portability');
