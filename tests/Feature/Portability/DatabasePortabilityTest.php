@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Brick\Math\BigDecimal;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -234,6 +235,6 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
         ->selectRaw('CAST(SUM(amount) AS CHAR) as total')
         ->value('total');
 
-    expect($srcSum)->toBe("-{$largeAmount}")
-        ->and($dstSum)->toBe($largeAmount);
+    expect((string) BigDecimal::of((string) $srcSum)->toScale(0))->toBe("-{$largeAmount}")
+        ->and((string) BigDecimal::of((string) $dstSum)->toScale(0))->toBe($largeAmount);
 })->group('db-portability');
