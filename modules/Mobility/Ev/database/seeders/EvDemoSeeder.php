@@ -37,16 +37,17 @@ class EvDemoSeeder extends Seeder
             ]
         );
 
-        $vehicle = Vehicle::firstOrCreate(
-            ['vin' => 'VIN-IONIQ-EV-001'],
-            [
-                'user_id' => $user->id,
-                'plate_number' => 'B 5555 EV',
-                'color' => 'White',
-                'odometer_km' => 5000,
-                'status' => 'active',
-            ]
-        );
+        $vehicle = Vehicle::where('vin', 'VIN-IONIQ-EV-001')->first();
+        if (! $vehicle) {
+            $vehicle = new Vehicle;
+            $vehicle->vin = 'VIN-IONIQ-EV-001';
+            $vehicle->user_id = $user->id;
+            $vehicle->plate_number = 'B 5555 EV';
+            $vehicle->color = 'White';
+            $vehicle->odometer_km = 5000;
+            $vehicle->status = 'active';
+            $vehicle->save();
+        }
 
         $station = EvStation::firstOrCreate(
             ['station_code' => 'SPKLU-PLN-SUDIRMAN'],

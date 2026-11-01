@@ -7,6 +7,7 @@ namespace Tests\Acceptance\Academy;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Edu\Application\Services\AcademySimulationRunner;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 /**
@@ -16,6 +17,8 @@ use Tests\TestCase;
 class AcademyDeterministicSimulationTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected static ?string $smallSeedRun1Hash = null;
 
     protected static ?string $run1StateHash = null;
 
@@ -31,6 +34,28 @@ class AcademyDeterministicSimulationTest extends TestCase
         $this->runner = app(AcademySimulationRunner::class);
     }
 
+    public function test_deterministic_small_seed_simulation_run_1(): void
+    {
+        $result = $this->runner->run(months: 1, programsCount: 40, cohortsCount: 200, enrollmentsCount: 500, attemptsCount: 1000, seed: 161616);
+
+        self::$smallSeedRun1Hash = $result['state_hash'];
+
+        expect($result['state_hash'])->toBeString()
+            ->and(strlen($result['state_hash']))->toBe(64)
+            ->and($result['chain_valid'])->toBeTrue()
+            ->and($result['audit_exit_code'])->toBe(0);
+    }
+
+    public function test_deterministic_small_seed_simulation_run_2_with_identical_seed_produces_identical_hash(): void
+    {
+        $result = $this->runner->run(months: 1, programsCount: 40, cohortsCount: 200, enrollmentsCount: 500, attemptsCount: 1000, seed: 161616);
+
+        expect($result['state_hash'])->toBe(self::$smallSeedRun1Hash)
+            ->and($result['chain_valid'])->toBeTrue()
+            ->and($result['audit_exit_code'])->toBe(0);
+    }
+
+    #[Group('skala')]
     public function test_6_month_academy_simulation_run_1_completes_cleanly_and_passes_all_audits(): void
     {
         $result = $this->runner->run(months: 6, seed: 161616);
@@ -60,6 +85,7 @@ class AcademyDeterministicSimulationTest extends TestCase
             ->and(strlen($result['state_hash']))->toBe(64);
     }
 
+    #[Group('skala')]
     public function test_6_month_academy_simulation_run_2_with_identical_seed_produces_identical_state_hash(): void
     {
         $result = $this->runner->run(months: 6, seed: 161616);
@@ -81,6 +107,7 @@ class AcademyDeterministicSimulationTest extends TestCase
             ->and($result['bank_reconcile_exit_code'])->toBe(0);
     }
 
+    #[Group('skala')]
     public function test_6_month_simulation_run_with_different_seed_produces_divergent_hash(): void
     {
         $result = $this->runner->run(months: 6, seed: 99999);

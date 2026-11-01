@@ -167,7 +167,7 @@ class EduAuditCommand extends Command
             return self::FAILURE;
         }
 
-        $this->info('Edu audit PASSED with 0 discrepancy.');
+        $this->info('Edu audit PASSED with 0 discrepancy (0 discrepancies found).');
 
         return self::SUCCESS;
     }
