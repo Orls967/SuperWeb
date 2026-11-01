@@ -1177,4 +1177,11 @@ Jika terdeteksi insiden kebocoran kredensial, token akses, atau database:
 | **Data Protection Officer (DPO)**| Legal & Compliance Officer | dpo@autoserve.test | < 60 Menit |
 | **Infra & Database Admin** | SRE Lead | pagerduty:sre-oncall | < 15 Menit |
 
+### 16.5 Konfigurasi Session Secure Cookie (K-13)
+Pada lingkungan produksi (`APP_ENV=production`), transmisi session cookie wajib dienkripsi via HTTPS dengan parameter cookie `secure: true`.
+- Nilai default pada `config/session.php`: `'secure' => env('SESSION_SECURE_COOKIE', env('APP_ENV') === 'production')`.
+- Di lingkungan produksi, `SESSION_SECURE_COOKIE` WAJIB bernilai `true` (atau dibiarkan default otomatis mengikuti `APP_ENV=production`).
+- Di lingkungan lokal/pengembangan, variabel `SESSION_SECURE_COOKIE` dikosongkan/dikomentari di `.env` sehingga bernilai `false`, memungkinkan login sesi bekerja pada HTTP biasa.
+
+
 

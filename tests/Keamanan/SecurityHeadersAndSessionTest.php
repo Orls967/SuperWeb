@@ -45,4 +45,47 @@ class SecurityHeadersAndSessionTest extends TestCase
 
         $this->assertEquals(429, $sixthAttempt->status(), 'Exceeding login threshold must return HTTP 429 Too Many Requests');
     }
+
+    /**
+     * K-13: Session secure cookie defaults to true in production and false in local development.
+     */
+    public function test_session_secure_cookie_configuration_k13(): void
+    {
+        $originalCookie = getenv('SESSION_SECURE_COOKIE');
+        $originalEnv = getenv('APP_ENV');
+
+        try {
+            putenv('SESSION_SECURE_COOKIE');
+            unset($_ENV['SESSION_SECURE_COOKIE'], $_SERVER['SESSION_SECURE_COOKIE']);
+
+            // Production env -> secure true
+            putenv('APP_ENV=production');
+            $_ENV['APP_ENV'] = 'production';
+            $_SERVER['APP_ENV'] = 'production';
+            $prodConfig = (require config_path('session.php'))['secure'];
+            $this->assertTrue($prodConfig, 'Session cookie must be secure: true in production environment');
+
+            // Local env -> secure false
+            putenv('APP_ENV=local');
+            $_ENV['APP_ENV'] = 'local';
+            $_SERVER['APP_ENV'] = 'local';
+            $localConfig = (require config_path('session.php'))['secure'];
+            $this->assertFalse($localConfig, 'Session cookie must be secure: false in local environment');
+        } finally {
+            if ($originalCookie !== false) {
+                putenv("SESSION_SECURE_COOKIE={$originalCookie}");
+                $_ENV['SESSION_SECURE_COOKIE'] = $originalCookie;
+                $_SERVER['SESSION_SECURE_COOKIE'] = $originalCookie;
+            } else {
+                putenv('SESSION_SECURE_COOKIE');
+                unset($_ENV['SESSION_SECURE_COOKIE'], $_SERVER['SESSION_SECURE_COOKIE']);
+            }
+
+            if ($originalEnv !== false) {
+                putenv("APP_ENV={$originalEnv}");
+                $_ENV['APP_ENV'] = $originalEnv;
+                $_SERVER['APP_ENV'] = $originalEnv;
+            }
+        }
+    }
 }
