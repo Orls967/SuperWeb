@@ -18,5 +18,7 @@ Route::middleware(['web', 'auth', 'role:admin,farmer,procurement'])->prefix('agr
     Route::post('/grading/evaluate', [AgriOperationsController::class, 'evaluateGrading'])->name('grading.evaluate');
 
     Route::get('/payout', [AgriOperationsController::class, 'payoutIndex'])->name('payout.index');
-    Route::post('/payout/settle', [AgriOperationsController::class, 'settlePayout'])->name('payout.settle');
+    Route::post('/payout/settle', [AgriOperationsController::class, 'settlePayout'])
+        ->middleware('role:admin,procurement')
+        ->name('payout.settle');
 });

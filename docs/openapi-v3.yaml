@@ -5137,10 +5137,9 @@ paths:
       tags:
         - Agri
       summary: 'Settle Payout (Agri)'
-      description: 'Operational endpoint for Agri module. Protected by role matrix: [admin, farmer, procurement].'
+      description: 'Operational endpoint for Agri module. Protected by role matrix: [admin, procurement].'
       x-allowed-roles:
         - admin
-        - farmer
         - procurement
       parameters:
         -
@@ -8999,10 +8998,9 @@ paths:
       tags:
         - B2b
       summary: 'Release Escrow (B2b)'
-      description: 'Operational endpoint for B2b module. Protected by role matrix: [admin, b2b_buyer, procurement].'
+      description: 'Operational endpoint for B2b module. Protected by role matrix: [admin, procurement].'
       x-allowed-roles:
         - admin
-        - b2b_buyer
         - procurement
       parameters:
         -
