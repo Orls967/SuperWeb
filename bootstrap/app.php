@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\SecurityHeadersMiddleware;
+use App\Http\Middleware\ThrottleAuthAttemptsMiddleware;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -42,8 +44,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->web(append: [
+            SecurityHeadersMiddleware::class,
+            ThrottleAuthAttemptsMiddleware::class,
+        ]);
+
         $middleware->alias([
             'role' => CheckRole::class,
+            'security.headers' => SecurityHeadersMiddleware::class,
+            'throttle.auth' => ThrottleAuthAttemptsMiddleware::class,
         ]);
 
         $middleware->priority([

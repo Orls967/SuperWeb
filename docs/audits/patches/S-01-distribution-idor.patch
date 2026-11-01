@@ -1,0 +1,19 @@
+diff --git a/modules/Distribution/Http/Controllers/DistributionController.php b/modules/Distribution/Http/Controllers/DistributionController.php
+index 3ccecf93..df89adf1 100644
+--- a/modules/Distribution/Http/Controllers/DistributionController.php
++++ b/modules/Distribution/Http/Controllers/DistributionController.php
+@@ -235,8 +235,13 @@ public function sweep(Request $request): RedirectResponse
+         return back()->with('success', "{$count} tagihan dikenai denda keterlambatan.");
+     }
+ 
+-    public function show(Distributor $distributor): View
++    public function show(Distributor $distributor, Request $request): View
+     {
++        $user = $request->user();
++        if ($user && $user->role === 'distributor' && $distributor->owner_user_id !== $user->id) {
++            abort(403, 'Akses distributor dibatasi hanya untuk pemilik entitas.');
++        }
++
+         $distributor->load(['children', 'outlets', 'coverages.territory', 'securities', 'scorecards']);
+ 
+         return view('distribution::show', [
