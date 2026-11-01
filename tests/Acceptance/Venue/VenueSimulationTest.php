@@ -18,7 +18,7 @@ use Modules\Venue\Application\Actions\PurchaseVenueTicketAction;
 use Modules\Venue\Application\Actions\RefundVenueTicketAction;
 use Modules\Venue\Application\Actions\ReserveTableWithMinimumSpendDepositAction;
 use Modules\Venue\Application\Actions\ScanTicketAtGateAction;
-use Modules\Venue\Database\Seeders\VenueRbacSeeder;
+use Modules\Venue\database\seeders\VenueRbacSeeder;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentVenue;

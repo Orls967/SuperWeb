@@ -18,7 +18,7 @@ use Modules\Ev\Application\Services\FlowCutCertificateVerifier;
 use Modules\Ev\Domain\Models\EvCharger;
 use Modules\Ev\Domain\Models\EvStation;
 use Modules\Fleet\Application\Actions\BillMonthlyFleetLeaseAction;
-use Modules\Fleet\Database\Seeders\MobilityRbacSeeder;
+use Modules\Fleet\database\seeders\MobilityRbacSeeder;
 use Modules\Fleet\Domain\Models\FleetContract;
 use Modules\Fleet\Domain\Models\FleetContractUnit;
 use Modules\Telematics\Application\Actions\ClearVehicleGroundingAction;

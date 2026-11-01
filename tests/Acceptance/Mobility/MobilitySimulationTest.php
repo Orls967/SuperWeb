@@ -22,7 +22,7 @@ use Modules\Fleet\Application\Actions\AssignVehicleToContractAction;
 use Modules\Fleet\Application\Actions\BillMonthlyFleetLeaseAction;
 use Modules\Fleet\Application\Actions\CreditSlaPenaltyAction;
 use Modules\Fleet\Application\Services\Psak73AmortizationEngine;
-use Modules\Fleet\Database\Seeders\MobilityRbacSeeder;
+use Modules\Fleet\database\seeders\MobilityRbacSeeder;
 use Modules\Fleet\Domain\Models\FleetAmortizationSchedule;
 use Modules\Fleet\Domain\Models\FleetContract;
 use Modules\Fleet\Domain\Models\FleetContractUnit;

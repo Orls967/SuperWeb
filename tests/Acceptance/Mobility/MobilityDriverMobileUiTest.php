@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Ev\Domain\Models\EvCharger;
 use Modules\Ev\Domain\Models\EvSession;
 use Modules\Ev\Domain\Models\EvStation;
-use Modules\Fleet\Database\Seeders\MobilityRbacSeeder;
+use Modules\Fleet\database\seeders\MobilityRbacSeeder;
 use Tests\TestCase;
 
 class MobilityDriverMobileUiTest extends TestCase
