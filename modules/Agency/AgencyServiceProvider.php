@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Agency;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Agency\Application\Services\AgencyService;
 use Modules\Agency\Console\Commands\AuditAgencyCommand;
+use Modules\Agency\Domain\Models\Agent;
+use Modules\Agency\Policies\AgentPolicy;
 use Modules\Shared\Application\MenuRegistry;
 
 class AgencyServiceProvider extends ServiceProvider
@@ -18,6 +21,8 @@ class AgencyServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Gate::policy(Agent::class, AgentPolicy::class);
+
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
         if (file_exists(__DIR__.'/routes/web.php')) {
