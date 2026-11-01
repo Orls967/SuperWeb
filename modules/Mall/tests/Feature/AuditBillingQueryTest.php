@@ -99,16 +99,10 @@ class AuditBillingQueryTest extends TestCase
             'paid_amount' => 500000,
         ]);
 
-        $revAcc = LedgerAccount::firstOrCreate(
-            ['code' => 'revenue:mall:rent'],
-            ['name' => 'Mall Rental Revenue', 'kind' => 'REVENUE', 'asset_code' => 'IDR', 'cached_balance' => '10500000']
-        );
+        $revAcc = MallAccounts::get('revenue:mall:rent:IDR');
         $revAcc->update(['cached_balance' => '10500000']);
 
-        $bankAcc = LedgerAccount::firstOrCreate(
-            ['code' => 'asset:bank:main'],
-            ['name' => 'Main Bank', 'kind' => 'ASSET', 'asset_code' => 'IDR', 'cached_balance' => '-10500000']
-        );
+        $bankAcc = LedgerAccount::where('code', 'clearing:external:IDR')->firstOrFail();
         $bankAcc->update(['cached_balance' => '-10500000']);
 
         $tx = LedgerTransaction::create([
@@ -195,13 +189,8 @@ class AuditBillingQueryTest extends TestCase
         ]);
 
         // Revenue account negative
-        LedgerAccount::create([
-            'code' => 'revenue:mall:test_negative',
-            'name' => 'Negative Rev',
-            'kind' => 'REVENUE',
-            'asset_code' => 'IDR',
-            'cached_balance' => '-1000',
-        ]);
+        $revNeg = MallAccounts::get('revenue:mall:rent:IDR');
+        $revNeg->update(['cached_balance' => '-1000']);
 
         // Unbalanced global IDR
         $tx = LedgerTransaction::create([
@@ -215,13 +204,8 @@ class AuditBillingQueryTest extends TestCase
             'asset_code' => 'IDR',
             'posted_at' => now(),
         ]);
-        $acc = LedgerAccount::create([
-            'code' => 'expense:mall:misc',
-            'name' => 'Mall Misc Expense',
-            'kind' => 'EXPENSE',
-            'asset_code' => 'IDR',
-            'cached_balance' => '1000',
-        ]);
+        $acc = MallAccounts::loyaltyExpenseAccount();
+        $acc->update(['cached_balance' => '1000']);
         LedgerEntry::create([
             'transaction_id' => $tx->id,
             'account_id' => $acc->id,
@@ -268,28 +252,14 @@ class AuditBillingQueryTest extends TestCase
         ]);
 
         // User wallet balance 300
-        LedgerAccount::create([
-            'code' => "points:user:{$user->id}:PTS",
-            'name' => "User {$user->id} PTS Wallet",
-            'kind' => 'LIABILITY',
-            'asset_code' => 'PTS',
-            'cached_balance' => '300',
-        ]);
+        $walletAcc = $user->pointsAccount();
+        $walletAcc->update(['cached_balance' => '300']);
 
         // Expense issued: -500, Revenue redeemed: 100, Revenue breakage: 100
         // Expected wallet sum: -(-500) - 100 - 100 = 300
-        LedgerAccount::updateOrCreate(
-            ['code' => MallAccounts::EXPENSE_POINTS_ISSUED_PTS],
-            ['name' => 'Points Issued Expense', 'kind' => 'EXPENSE', 'asset_code' => 'PTS', 'cached_balance' => '-500']
-        );
-        LedgerAccount::updateOrCreate(
-            ['code' => MallAccounts::REVENUE_POINTS_REDEEMED_PTS],
-            ['name' => 'Points Redeemed Revenue', 'kind' => 'REVENUE', 'asset_code' => 'PTS', 'cached_balance' => '100']
-        );
-        LedgerAccount::updateOrCreate(
-            ['code' => MallAccounts::REVENUE_POINTS_BREAKAGE_PTS],
-            ['name' => 'Points Breakage Revenue', 'kind' => 'REVENUE', 'asset_code' => 'PTS', 'cached_balance' => '100']
-        );
+        MallAccounts::pointsIssuedAccount()->update(['cached_balance' => '-500']);
+        MallAccounts::pointsRedeemedAccount()->update(['cached_balance' => '100']);
+        MallAccounts::pointsBreakageAccount()->update(['cached_balance' => '100']);
 
         $query = new AuditBillingQuery;
         $result = $query->execute();
@@ -314,27 +284,13 @@ class AuditBillingQueryTest extends TestCase
             'expires_at' => now()->addYear(),
         ]);
 
-        LedgerAccount::create([
-            'code' => "points:user:{$user->id}:PTS",
-            'name' => "User {$user->id} PTS Wallet",
-            'kind' => 'LIABILITY',
-            'asset_code' => 'PTS',
-            'cached_balance' => '300',
-        ]);
+        $walletAcc = $user->pointsAccount();
+        $walletAcc->update(['cached_balance' => '300']);
 
         // Global PTS accounts produce expected sum 0 != 300
-        LedgerAccount::updateOrCreate(
-            ['code' => MallAccounts::EXPENSE_POINTS_ISSUED_PTS],
-            ['name' => 'Points Issued Expense', 'kind' => 'EXPENSE', 'asset_code' => 'PTS', 'cached_balance' => '0']
-        );
-        LedgerAccount::updateOrCreate(
-            ['code' => MallAccounts::REVENUE_POINTS_REDEEMED_PTS],
-            ['name' => 'Points Redeemed Revenue', 'kind' => 'REVENUE', 'asset_code' => 'PTS', 'cached_balance' => '0']
-        );
-        LedgerAccount::updateOrCreate(
-            ['code' => MallAccounts::REVENUE_POINTS_BREAKAGE_PTS],
-            ['name' => 'Points Breakage Revenue', 'kind' => 'REVENUE', 'asset_code' => 'PTS', 'cached_balance' => '0']
-        );
+        MallAccounts::pointsIssuedAccount()->update(['cached_balance' => '0']);
+        MallAccounts::pointsRedeemedAccount()->update(['cached_balance' => '0']);
+        MallAccounts::pointsBreakageAccount()->update(['cached_balance' => '0']);
 
         $query = new AuditBillingQuery;
         $result = $query->execute();

@@ -267,7 +267,7 @@ class IdempotencyCategoryOneContractTest extends TestCase
             'lease_id' => $lease->id,
             'tenant_id' => $tenant->id,
             'property_id' => $lease->property_id,
-            'period_month' => '2026-11',
+            'period_month' => '2028-11',
             'subtotal' => 2_000_000,
             'penalty_amount' => 0,
             'total_amount' => 2_000_000,
