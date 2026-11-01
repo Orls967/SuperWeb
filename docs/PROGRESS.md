@@ -1075,7 +1075,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R2-1 | R2.3 / R2.5 | Temuan F-02: 26 pelanggaran disembunyikan oleh pelemahan nama test scanner lama | Pelanggaran fungsional dan error path berpotensi lolos | P1 | Diperbaiki di Bagian II (pagar dipulihkan ketat); ditargetkan tuntas verifikasi mandiri |
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Selesai & Terbukti.
+> **Status audit:** 🔁 DIBUKA KEMBALI (2026-10-31, audit keamanan S-01..S-06)
 
 #### DoR Fase R3 — Otorisasi & data sensitif
 - Disetujui pemilik: [x] 2026-10-15 (chat) — D1–D6 sesuai prompt disetujui
@@ -1228,8 +1228,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - **D5 (Pencabutan Hak Tulis Auditor, M-R0-18):** Persetujuan mencabut role `auditor` dari seluruh 37 rute POST mutasi di Manufacturing (23 rute), Pricing (12 rute), dan Partner (2 rute), sehingga auditor murni read-only.
   - **D6 (Rate Limit Default Klien API, R3.4):** Untuk klien API tanpa konfigurasi kustom `rate_limit_per_minute`, limit default ditetapkan 600 req/menit dengan format respons JSON 429 dan header `Retry-After: 60`.
 
-- [x] R3.1 **Tutup rute tanpa role** (K-20): isi `route-roles.php` untuk semua rute dan perbaiki minimal: Mall (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants, utilities, parking admin), Resto (menu, ingredients, outlets, purchases + `pay`, transfers, stock counts, POS), HCM, Treasury, Trade, Trade Finance, International, Intercompany, Control Tower, Enterprise Finance, ESG, B2B, Agri, EPC, PLM, Integration; tambah pemeriksaan role di Action uang (`MallAutoDebitAction`, `PaySupplierAction`).
-  Bukti:
+- [ ] R3.1 **Tutup rute tanpa role** (K-20): isi `route-roles.php` untuk semua rute dan perbaiki minimal: Mall (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants, utilities, parking admin), Resto (menu, ingredients, outlets, purchases + `pay`, transfers, stock counts, POS), HCM, Treasury, Trade, Trade Finance, International, Intercompany, Control Tower, Enterprise Finance, ESG, B2B, Agri, EPC, PLM, Integration; tambah pemeriksaan role di Action uang (`MallAutoDebitAction`, `PaySupplierAction`).
+  - Dibuka audit: docs/audits/2026-10-30-keamanan.md#S-01
+  (dibatalkan) Bukti:
     - commit: 8ccdcca
     - file: tests/Architecture/route-roles.php
     - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it maps every registered route in route-roles.php
@@ -1246,10 +1247,11 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - minus: M-R0-12
     - minus: M-R0-13
     - minus: M-R0-18
-    - gate: docs/gates/fase-r3.md
+    - (dibatalkan) gate: docs/gates/fase-r3.md
   - Kriteria terima: baseline `RouteAuthorizationMatrixTest` = 0; tidak ada rute mutasi/keuangan yang hanya `auth`.
-- [x] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin` (baseline `arch:scan` A7 = 0).
-  Bukti:
+- [ ] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin` (baseline `arch:scan` A7 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-keamanan.md#S-08
+  (dibatalkan) Bukti:
     - commit: 12202b6
     - commit: d38ea22
     - commit: da165c4
@@ -1275,10 +1277,11 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php::staff can view own salary and payroll slip
     - test: tests/Architecture/SensitiveDataCastingTest.php::it enforces that every Eloquent model with sensitive columns declares encrypted or hashed cast
     - akses: command hcm:encrypt-legacy
-    - gate: docs/gates/fase-r3.md
+    - (dibatalkan) gate: docs/gates/fase-r3.md
   - Test wajib: nilai di DB tidak sama dengan plaintext; pencarian via blind index bekerja.
-- [x] R3.3 **Hapus flag-sebagai-kontrol** (K-21) pada jalur yang menyentuh uang, akses data, atau kepatuhan: status diturunkan dari ApprovalEngine/DocumentStore/hasil pemeriksaan tersimpan (baseline `arch:scan` A6 untuk modul non-Integration = 0; sisanya mengikuti R4.4).
-  Bukti:
+- [ ] R3.3 **Hapus flag-sebagai-kontrol** (K-21) pada jalur yang menyentuh uang, akses data, atau kepatuhan: status diturunkan dari ApprovalEngine/DocumentStore/hasil pemeriksaan tersimpan (baseline `arch:scan` A6 untuk modul non-Integration = 0; sisanya mengikuti R4.4).
+  - Dibuka audit: docs/audits/2026-10-30-keamanan.md#S-01
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: aa0c007
     - file: modules/Venue/Application/Services/VenueCreatorEconomyService.php
@@ -1288,9 +1291,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout succeeds when hold window has passed
     - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout rejected when contract is disputed
     - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout returns zero when no held royalties
-    - gate: docs/gates/fase-r3.md
-- [x] R3.4 **Kuota API ditegakkan** (K-23): `RateLimiter` per klien API dari `rate_limit_per_minute`; halaman `/integration` hanya role admin/integrasi.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r3.md
+- [ ] R3.4 **Kuota API ditegakkan** (K-23): `RateLimiter` per klien API dari `rate_limit_per_minute`; halaman `/integration` hanya role admin/integrasi.
+  - Dibuka audit: docs/audits/2026-10-30-keamanan.md#S-10
+  (dibatalkan) Bukti:
     - commit: 53cc681
     - file: app/Providers/AppServiceProvider.php
     - file: modules/Integration/routes/web.php
@@ -1303,8 +1307,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiting enforced by client id header
     - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiter resets after clearing
     - akses: route GET /integration [role: admin]
-- [x] R3.5 Quality gate Fase R3 + verifikasi silang.
-  Bukti:
+- [ ] R3.5 Quality gate Fase R3 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-keamanan.md#S-01
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: ea89d37
     - file: docs/gates/fase-r3.md
@@ -1313,7 +1318,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Security/RotateBlindIndexCommandTest.php::rotate blind index dry run does not mutate database
     - test: tests/Feature/Security/RotateBlindIndexCommandTest.php::rotate blind index with force updates records idempotently
     - test: tests/Feature/Authorization/ApiClientRateLimitBlackBoxProofTest.php::black box client rate limiting and isolation
-    - gate: docs/gates/fase-r3.md
+    - (dibatalkan) gate: docs/gates/fase-r3.md
 
 #### Register Minus Fase R3
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
@@ -1325,6 +1330,17 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R3-5~~ | R3.1 / C3 | ~~Penurunan `route-dynamic-pending.json` hanya -43.21% (280 -> 159), belum mencapai target DoR/Prompt ≥ 50% (maksimal 140)~~ | ~~Masih ada 159 rute dengan parameter dinamis yang belum dipetakan parameter uji nyatanya~~ | ~~P2~~ | Tuntas: 23 rute dinamis (Distribution, Partners, Core RBAC, AutoServe, Store) dipetakan dengan parameter uji di `route-roles.php`, baseline turun dari 280 ke 136 rute (-51.43%) |
 | ~~M-R3-6~~ | R3.4 / C7 | ~~Test kuota API pelaksana (`ApiClientRateLimitingTest`) rapuh karena mengikat konvensi cache key internal (`RateLimiter::clear("api-client:...")`) dan mematikan key hashing (`ThrottleRequests::shouldHashKeys(false)`)~~ | ~~Refactoring implementasi rate limiter dapat merusak test tanpa merusak fungsionalitas~~ | ~~P2~~ | Tuntas: `ThrottleRequests::shouldHashKeys(false)` dihapus dari AppServiceProvider; pengujian refactored menggunakan `travel(61)->seconds()` dan isolasi multi-klien di `ApiClientRateLimitBlackBoxProofTest` |
 | ~~M-R3-7~~ | Proses | ~~Ketiga branch R3 (`feature/fase-r3-otorisasi`, `feature/fase-r3b-pii`, `feature/fase-r3c-a6-api-quota`) di-push ke origin tanpa konfirmasi/izin pemilik~~ | ~~Pelanggaran protokol verifikator & tata kelola git repository~~ | ~~P2~~ | Tuntas: izin push dan persetujuan tindak lanjut remediasi diberikan langsung oleh pemilik repositori pada chat 2026-10-16 |
+| ~~M-R3-8~~ | S-01 | ~~IDOR pada GET /distribution/{distributor}: distributor dapat melihat data finansial distributor lain~~ | ~~Kebocoran data kompetitor distributor~~ | ~~P0~~ | Tuntas: ditutup via DistributorPolicy (commit `6e888755`, test `IdorVulnerabilityTest::test_distributor_cannot_view_another_distributors_details`) |
+| ~~M-R3-9~~ | S-02 | ~~IDOR pada GET /agency/{agent}: agen dapat melihat buku komisi & statement agen lain~~ | ~~Kebocoran data pendapatan agen~~ | ~~P0~~ | Tuntas: ditutup via AgentPolicy (commit `3b13b75a`, test `IdorVulnerabilityTest::test_agent_cannot_view_another_agents_details`) |
+| ~~M-R3-10~~ | S-03 | ~~Multi-Tenancy & Outlet IDOR pada Resto Purchase Orders: outlet manager dapat melihat dan membayar PO outlet lain~~ | ~~Manipulasi pembayaran dan kebocoran PO lintas outlet~~ | ~~P0~~ | Tuntas: ditutup via PurchaseOrderPolicy (commit `35cdbfd4`, test `IdorVulnerabilityTest::test_outlet_manager_cannot_view_or_pay_other_outlet_purchase_orders`) |
+| ~~M-R3-11~~ | S-04 | ~~Privilege Escalation pada POST /b2b/escrow/release: b2b_buyer dapat merilis escrow arbitrer~~ | ~~Pencairan dana escrow tanpa hak~~ | ~~P0~~ | Tuntas: dibatasi hanya untuk admin/procurement via B2bEscrowAccountPolicy (commit `f7d9db63`, test `IdorVulnerabilityTest::test_b2b_buyer_cannot_release_arbitrary_escrow`) |
+| ~~M-R3-12~~ | S-05 | ~~Privilege Escalation pada POST /agri/payout/settle: farmer dapat memicu settlement payout hasil tani~~ | ~~Settlement sepihak tanpa verifikasi penimbangan~~ | ~~P0~~ | Tuntas: dibatasi hanya untuk admin/procurement via AgriContractPolicy (commit `5b08a8b8`, test `IdorVulnerabilityTest::test_farmer_cannot_settle_payout`) |
+| ~~M-R3-13~~ | S-06 | ~~Parameter Tampering pada POST /bookings: customer dapat menyematkan vehicle_id milik customer lain~~ | ~~Eksploitasi kepemilikan kendaraan pelanggan~~ | ~~P1~~ | Tuntas: divalidasi kepemilikan kendaraan via VehiclePolicy (commit `a11eaacc`, test `IdorVulnerabilityTest::test_customer_cannot_attach_vehicle_owned_by_other_user`) |
+| ~~M-R3-14~~ | S-07 | ~~SSRF pada DispatchWebhookAction modul Logistics: pengiriman webhook ke IP privat/metadata cloud~~ | ~~Potensi SSRF membaca metadata instance cloud~~ | ~~P1~~ | Tuntas: divalidasi OutboxBusService::isSafeWebhookUrl (commit `8ba8167a`, test `SsrfProtectionTest::test_logistics_webhook_delivery_blocks_private_ip_and_metadata_service`) |
+| ~~M-R3-15~~ | S-08 | ~~PII NIK & NPWP terekspos saat serialisasi toArray()/toJson() pada Party dan Employee~~ | ~~Kebocoran data identitas kependudukan~~ | ~~P1~~ | Tuntas: ditambahkan ke $hidden pada Party dan Employee (commit `6d98a9ce`, test `SensitiveDataExposureTest`) |
+| ~~M-R3-16~~ | S-13 | ~~XSS via Blade {!! session('success') !!} pada modul Vending dan Venue~~ | ~~Eksekusi JavaScript di peramban pengguna~~ | ~~P1~~ | Tuntas: diganti {{ session('success') }} (commit `9d92b0e9`, test `XssProtectionTest::test_views_escape_html_in_session_flash_messages`) |
+| ~~M-R3-17~~ | B3 (Zona B) | ~~IDOR Outlet show/update pada Resto OutletController & ad-hoc auth Booking/Invoice payment~~ | ~~Outlet manager dapat mengedit outlet lain / bypass via ad-hoc~~ | ~~P1~~ | Tuntas: ditutup via OutletPolicy dan BookingPolicy (commit `2aa6558f`, test `OutletAuthorizationTest`) |
+| M-R3-18 | B3 (Zona Lain) | Pola serupa otorisasi ad-hoc controller di luar Zona B: LoanController (Finance), OrderController (Store), TenantPortalController (Mall), EduStudentPortalController (Edu) | Konsistensi penegakan otorisasi via Policy belum seragam | P2 | Ditugaskan ke pelaksana zona masing-masing untuk direfaktor menjadi Policy murni |
 
 ### FASE R4 — BATAS MODUL & KEPEMILIKAN DATA
 
@@ -1731,6 +1747,8 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R8.1 s/d R8.5 tuntas 100%) | - | - | - |
 | M-R8-1 | R8.1 s/d R8.5 | Temuan F-09: Live telemetry ticker memuat nilai konstan (demo) | Metrik real-time tidak merefleksikan DB sesungguhnya | P1 | Diperbaiki di III.7 (K-7): dilabeli (demo) di UI, dikeluarkan dari klaim PROGRESS |
+| M-R8-2 | R8.1 / S-14 | Temuan S-14: 8 event pada EventCatalog berstatus phantom tanpa handler terdaftar di CrossModuleSpineHandlers | Event diterbitkan tanpa handler yang memproses integrasi lintas modul | P1 | Dijadwalkan perbaikan di zona terkait (R8) |
+| M-R8-3 | R8.2 / S-15 | Temuan S-15: ±4.210 pemanggilan now() langsung di luar ClockInterface pada domain & application services | Waktu simulasi dan pengujian deterministik berpotensi bypass ClockInterface | P1 | Dijadwalkan migrasi bertahap ke ClockInterface di zona terkait (R8) |
 
 
 ### FASE R9 — SKALA BERTINGKAT & BENCHMARK
@@ -1792,6 +1810,8 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R9.1 s/d R9.4 tuntas 100%) | - | - | - |
 | M-R9-1 | R9.1 s/d R9.4 | Temuan F-07: Batas memori dinaikkan ke 2048M untuk menutupi kebutuhan suite | Memory budget kontrak 512M terlanggar | P1 | Diperbaiki di III.6 (K-6): phpunit.xml dikembalikan ke 512M dan suite dijalankan --parallel |
+| M-R9-2 | R9.1 / S-16 | Temuan S-16: Seeder skala bertingkat T1 hanya mencakup 3 modul dari total 28 modul bisnis | Uji skala konglomerasi belum merefleksikan seluruh modul platform | P2 | Dijadwalkan pelengkapan seeder T1 di zona terkait (R9) |
+| M-R9-3 | R9.2 / S-17 | Temuan S-17: Risiko memori pemanggilan Model::all() tanpa chunking di 30+ lokasi modul & benchmark p95 belum ada | Potensi kehabisan memori pada dataset skala produksi besar | P2 | Dijadwalkan refaktor chunking dan benchmark p95 di zona terkait (R9) |
 
 ### DEFINITION OF DONE (FASE R)
 - [x] Semua item R0–R9 `[x]` dengan blok `Bukti:` yang lolos `ProgressIntegrityTest`, dan setiap sub-fase R berstatus ✅ dari verifikator.

@@ -1118,3 +1118,70 @@ php artisan platform:chaos-verify
 - Mekanisme idempotensi transaksi berulang (idempotency token deduplication).
 - Pemulihan otomatis idempotency outbox dan quarantine state machine.
 
+---
+
+## 16. Operasi Keamanan Siber, Manajemen Kunci & Respons Insiden
+
+### 16.1 Prosedur Rotasi APP_KEY (Master Encryption Key)
+Kunci aplikasi `APP_KEY` mengamankan seluruh atribut Eloquent yang menggunakan casting `encrypted` (NIK, NPWP, formula, dan webhook secret). Jika terjadi rotasi terjadwal atau kompromi kunci:
+
+1. **Persiapan Backup Penuh**:
+   ```bash
+   # Buat salinan database produksi sebelum rotasi
+   mysqldump -u autoserve -p autoserve_prod > /backup/pre_key_rotation_$(date +%Y%m%d%H%M%S).sql
+   ```
+2. **Re-enkripsi Kolom Basis Data**:
+   Simpan kunci lama pada konfigurasi fallback, lalu jalankan re-enkripsi:
+   ```bash
+   php artisan key:rotate --old-key="base64:OLD_KEY_HERE"
+   ```
+3. **Pembaruan Konfigurasi & Restart Worker**:
+   - Perbarui `APP_KEY` di secrets manager (Vault / AWS Secrets Manager).
+   - Jalankan `php artisan config:cache`.
+   - Restart seluruh background queue worker: `php artisan queue:restart`.
+
+### 16.2 Prosedur Rotasi BLIND_INDEX_PEPPER
+Blind index digunakan untuk pencarian eksak pada data terenkripsi tanpa membocorkan plaintext (`App\Security\BlindIndex`):
+1. **Pembaruan Pepper di Lingkungan**:
+   - Tetapkan `BLIND_INDEX_PEPPER_NEW` di secrets manager.
+2. **Jalankan Rekalkulasi Blind Index**:
+   ```bash
+   # Jalankan re-indexing bertahap dengan chunking
+   php artisan security:reindex-blind-index --chunk=500
+   ```
+3. **Verifikasi Pencarian Eksak**:
+   ```bash
+   php artisan test tests/Keamanan/R3/R3VerificationTest.php --filter=test_r3_2_encryption_and_blind_index_behavior
+   ```
+
+### 16.3 Protokol Tanggap Darurat Kebocoran Kredensial (Incident Response Plan)
+Jika terdeteksi insiden kebocoran kredensial, token akses, atau database:
+1. **Fase 1 — Isolasi (Containment)**:
+   - Blokir akses API eksternal yang terdampak: `php artisan intg:revoke-client {client_id}`.
+   - Cabut sesi aktif seluruh pengguna: `php artisan session:flush-all` atau flush database sessions.
+   - Batasi akses ingress di Web Application Firewall (WAF) Cloudflare.
+2. **Fase 2 — Eradikasi (Eradication)**:
+   - Rotasi instan `APP_KEY`, `BLIND_INDEX_PEPPER`, dan `JWT_SECRET`.
+   - Reset kredensial database dan Redis di `.env` / Kubernetes secrets.
+   - Paksa perubahan kata sandi untuk akun administratif: `php artisan user:force-password-reset --role=admin`.
+3. **Fase 3 — Pemulihan (Recovery) & Verifikasi**:
+   - Jalankan audit lengkap integritas rantai nilai: `php artisan chain:audit-all`.
+   - Jalankan audit rekonsiliasi buku besar: `php artisan bank:reconcile`.
+   - Jalankan suite keamanan: `./vendor/bin/pest tests/Keamanan`.
+
+### 16.4 Matriks Kontak Darurat Tim Keamanan & SRE
+| Peran | Pihak Bertanggung Jawab | Kanal Komunikasi | SLA Respons |
+|---|---|---|---|
+| **Incident Commander** | Lead Platform Engineer | Hotline / PagerDuty P1 | < 15 Menit |
+| **AppSec Lead** | Security Operations Center (SOC) | security@autoserve.test | < 30 Menit |
+| **Data Protection Officer (DPO)**| Legal & Compliance Officer | dpo@autoserve.test | < 60 Menit |
+| **Infra & Database Admin** | SRE Lead | pagerduty:sre-oncall | < 15 Menit |
+
+### 16.5 Konfigurasi Session Secure Cookie (K-13)
+Pada lingkungan produksi (`APP_ENV=production`), transmisi session cookie wajib dienkripsi via HTTPS dengan parameter cookie `secure: true`.
+- Nilai default pada `config/session.php`: `'secure' => env('SESSION_SECURE_COOKIE', env('APP_ENV') === 'production')`.
+- Di lingkungan produksi, `SESSION_SECURE_COOKIE` WAJIB bernilai `true` (atau dibiarkan default otomatis mengikuti `APP_ENV=production`).
+- Di lingkungan lokal/pengembangan, variabel `SESSION_SECURE_COOKIE` dikosongkan/dikomentari di `.env` sehingga bernilai `false`, memungkinkan login sesi bekerja pada HTTP biasa.
+
+
+

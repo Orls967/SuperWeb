@@ -7,6 +7,7 @@ namespace Modules\AutoServe\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Modules\AutoServe\Domain\Models\Booking;
 use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
@@ -25,10 +26,7 @@ class InvoicePaymentController extends Controller
     ): RedirectResponse {
         $user = $request->user();
 
-        // Authorization check: customer or admin
-        if ($booking->customer_id !== $user->id && ! $user->isAdmin()) {
-            abort(403, 'Anda tidak memiliki hak akses untuk membayar tagihan ini.');
-        }
+        Gate::authorize('pay', $booking);
 
         if ($booking->isPaid()) {
             return back()->with('error', 'Tagihan invoice ini sudah berstatus lunas.');
@@ -66,11 +64,7 @@ class InvoicePaymentController extends Controller
         Booking $booking,
         PaymentGateway $paymentGateway,
     ): RedirectResponse {
-        $user = $request->user();
-
-        if (! $user->isAdmin()) {
-            abort(403, 'Hanya Administrator yang dapat melakukan refund pembayaran.');
-        }
+        Gate::authorize('refund', $booking);
 
         if (! $booking->isPaid()) {
             return back()->with('error', 'Hanya invoice berstatus lunas yang dapat di-refund.');

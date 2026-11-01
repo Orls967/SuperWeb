@@ -165,6 +165,19 @@ $restoSeedHelper = function (): void {
     );
 };
 
+$restoManagerSetup = function (User $user) use ($restoSeedHelper): void {
+    $restoSeedHelper();
+    if ($user->hasRole('outlet_manager')) {
+        $outlet = Outlet::first();
+        if ($outlet !== null) {
+            DB::table('resto_staff_assignments')->updateOrInsert(
+                ['user_id' => $user->id, 'outlet_id' => $outlet->id],
+                ['role' => 'outlet_manager', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()]
+            );
+        }
+    }
+};
+
 $logisticsSeedHelper = function () {
     $hubA = Location::firstOrCreate(
         ['code' => 'HUB-BDJ'],
@@ -760,7 +773,20 @@ return [
     ],
     'distribution.scorecards.store' => ['roles' => ['admin', 'procurement']],
     'distribution.securities.store' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
-    'distribution.show' => ['roles' => ['admin', 'auditor', 'distributor', 'procurement'], 'params' => $distributorParamHelper],
+    'distribution.show' => [
+        'roles' => ['admin', 'auditor', 'distributor', 'procurement'],
+        'params' => $distributorParamHelper,
+        'setup' => function (User $user): void {
+            if ($user->role === 'distributor') {
+                $dist = Distributor::firstOrCreate(
+                    ['code' => 'DST-DYNAMIC-01'],
+                    ['name' => 'Dist Dynamic', 'tier' => 'bronze', 'is_active' => true]
+                );
+                $dist->owner_user_id = $user->id;
+                $dist->save();
+            }
+        },
+    ],
     'distribution.sweep' => ['roles' => ['admin', 'procurement']],
     'distribution.targets.store' => ['roles' => ['admin', 'procurement']],
     'distribution.territories.store' => ['roles' => ['admin', 'procurement']],
@@ -1950,6 +1976,7 @@ return [
 
             return ['outlet' => Outlet::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.outlets.edit' => [
         'roles' => ['admin', 'outlet_manager'],
@@ -1958,6 +1985,7 @@ return [
 
             return ['outlet' => Outlet::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.outlets.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
     'resto.outlets.show' => [
@@ -1967,6 +1995,7 @@ return [
 
             return ['outlet' => Outlet::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.outlets.store' => ['roles' => ['admin', 'outlet_manager']],
     'resto.outlets.update' => [
@@ -1976,6 +2005,7 @@ return [
 
             return ['outlet' => Outlet::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.pos.index' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
     'resto.pos.order.pay' => [
@@ -2054,6 +2084,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.purchases.edit' => [
         'roles' => ['admin', 'outlet_manager', 'procurement'],
@@ -2062,6 +2093,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.purchases.index' => ['roles' => ['admin', 'auditor', 'outlet_manager', 'procurement']],
     'resto.purchases.pay' => [
@@ -2071,6 +2103,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.purchases.receive' => [
         'roles' => ['admin', 'outlet_manager', 'procurement'],
@@ -2079,6 +2112,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.purchases.show' => [
         'roles' => ['admin', 'auditor', 'outlet_manager', 'procurement'],
@@ -2087,6 +2121,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.purchases.store' => ['roles' => ['admin', 'outlet_manager', 'procurement']],
     'resto.purchases.update' => [
@@ -2096,6 +2131,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.stock-counts.approve' => [
         'roles' => ['admin', 'outlet_manager'],
@@ -2539,13 +2575,13 @@ return [
     'agri.grading.evaluate' => ['roles' => ['admin', 'farmer', 'procurement']],
     'agri.grading.index' => ['roles' => ['admin', 'farmer', 'procurement']],
     'agri.payout.index' => ['roles' => ['admin', 'farmer', 'procurement']],
-    'agri.payout.settle' => ['roles' => ['admin', 'farmer', 'procurement']],
+    'agri.payout.settle' => ['roles' => ['admin', 'procurement']],
     'b2b.auction.create' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.auction.index' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.dashboard' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.escrow.index' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.escrow.lock' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
-    'b2b.escrow.release' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
+    'b2b.escrow.release' => ['roles' => ['admin', 'procurement']],
     'b2b.wholesale.index' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.wholesale.publish' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'cloud_kitchen.operations.audit-thermal' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],

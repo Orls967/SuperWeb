@@ -7,6 +7,7 @@ namespace Modules\B2b\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Modules\B2b\Application\Actions\PublishWholesaleTierCatalogAction;
 use Modules\B2b\Application\Actions\RunSurplusAssetDutchAuctionAction;
@@ -96,6 +97,8 @@ class B2bOperationsController extends Controller
 
     public function releaseEscrow(Request $request, SettleMultiPartyB2bEscrowViaLedgerAction $action): RedirectResponse
     {
+        Gate::authorize('release', B2bEscrowAccount::class);
+
         $validated = $request->validate([
             'escrow_id' => 'required|string',
             'bast_document_id' => 'required|string',

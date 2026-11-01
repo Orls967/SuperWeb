@@ -7,6 +7,7 @@ namespace Modules\Distribution\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Modules\Distribution\Application\Services\DistributionService;
 use Modules\Distribution\Domain\Models\ArInvoice;
@@ -237,6 +238,8 @@ class DistributionController extends Controller
 
     public function show(Distributor $distributor): View
     {
+        Gate::authorize('view', $distributor);
+
         $distributor->load(['children', 'outlets', 'coverages.territory', 'securities', 'scorecards']);
 
         return view('distribution::show', [

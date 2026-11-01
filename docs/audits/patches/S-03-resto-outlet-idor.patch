@@ -1,0 +1,80 @@
+diff --git a/modules/Resto/Http/Controllers/PurchaseController.php b/modules/Resto/Http/Controllers/PurchaseController.php
+index 195f0ad6..54ceb897 100644
+--- a/modules/Resto/Http/Controllers/PurchaseController.php
++++ b/modules/Resto/Http/Controllers/PurchaseController.php
+@@ -5,6 +5,7 @@
+ namespace Modules\Resto\Http\Controllers;
+ 
+ use App\Http\Controllers\Controller;
++use App\Models\User;
+ use Illuminate\Http\RedirectResponse;
+ use Illuminate\Http\Request;
+ use Illuminate\View\View;
+@@ -15,6 +16,7 @@
+ use Modules\Resto\Domain\Models\Ingredient;
+ use Modules\Resto\Domain\Models\Outlet;
+ use Modules\Resto\Domain\Models\PurchaseOrder;
++use Modules\Resto\Domain\Models\RestoStaffAssignment;
+ use Modules\Resto\Domain\Models\Supplier;
+ 
+ class PurchaseController extends Controller
+@@ -56,6 +58,8 @@ public function store(Request $request, CreatePurchaseOrderAction $action): Redi
+             'lines.*.unit_price' => ['required', 'integer', 'min:0'],
+         ]);
+ 
++        $this->authorizeOutletAccess((int) $validated['outlet_id'], $request->user());
++
+         $po = $action->handle(
+             outletId: (int) $validated['outlet_id'],
+             supplierId: (int) $validated['supplier_id'],
+@@ -69,8 +73,10 @@ public function store(Request $request, CreatePurchaseOrderAction $action): Redi
+             ->with('success', "Pesanan Pembelian #{$po->number} berhasil dibuat dan dikirim ke supplier.");
+     }
+ 
+-    public function show(PurchaseOrder $purchase): View
++    public function show(PurchaseOrder $purchase, Request $request): View
+     {
++        $this->authorizeOutletAccess((int) $purchase->outlet_id, $request->user());
++
+         $purchase->load(['outlet', 'supplier', 'creator', 'lines.ingredient', 'receipts.lines.poLine.ingredient', 'receipts.receiver']);
+ 
+         return view('resto::purchases.show', [
+@@ -80,6 +86,8 @@ public function show(PurchaseOrder $purchase): View
+ 
+     public function receive(Request $request, PurchaseOrder $purchase, ReceiveGoodsAction $action): RedirectResponse
+     {
++        $this->authorizeOutletAccess((int) $purchase->outlet_id, $request->user());
++
+         $validated = $request->validate([
+             'quality' => ['required', 'string', 'in:good,partial_reject'],
+             'note' => ['nullable', 'string', 'max:255'],
+@@ -102,6 +110,8 @@ public function receive(Request $request, PurchaseOrder $purchase, ReceiveGoodsA
+ 
+     public function pay(Request $request, PurchaseOrder $purchase, PaySupplierAction $action): RedirectResponse
+     {
++        $this->authorizeOutletAccess((int) $purchase->outlet_id, $request->user());
++
+         $validated = $request->validate([
+             'amount' => ['required', 'integer', 'min:1'],
+             'note' => ['nullable', 'string', 'max:255'],
+@@ -119,4 +129,20 @@ public function pay(Request $request, PurchaseOrder $purchase, PaySupplierAction
+ 
+         return back()->with('success', 'Pembayaran utang dagang supplier berhasil diposting ke ledger.');
+     }
++
++    private function authorizeOutletAccess(?int $outletId, ?User $user): void
++    {
++        if (! $user || ! in_array($user->role, ['outlet_manager', 'kitchen'], true)) {
++            return;
++        }
++
++        $hasAccess = RestoStaffAssignment::where('user_id', $user->id)
++            ->where('outlet_id', $outletId)
++            ->where('is_active', true)
++            ->exists();
++
++        if (! $hasAccess) {
++            abort(403, 'Akses ditolak: Anda tidak ditugaskan pada outlet ini.');
++        }
++    }
+ }

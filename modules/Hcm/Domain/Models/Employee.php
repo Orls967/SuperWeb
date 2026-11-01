@@ -42,6 +42,12 @@ class Employee extends Model
         'is_active' => 'boolean',
     ];
 
+    protected $hidden = [
+        'nik',
+        'nik_bidx',
+        'nik_hash',
+    ];
+
     /**
      * Find employee by NIK via deterministic blind index.
      */
