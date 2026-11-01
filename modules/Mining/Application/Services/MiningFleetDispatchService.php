@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Mining\Application\Services;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Mining\Domain\Algorithms\AssignmentCertificateVerifier;
 use Modules\Mining\Domain\Models\MiningDispatchAssignment;
@@ -93,11 +94,11 @@ class MiningFleetDispatchService
                 $errors[] = "Royalty discrepancy: Return {$ret->period_local} production ({$ret->total_production_kg}kg) != tickets ({$computedProduction}kg).";
             }
 
-            // Check ledger entry
+            // Check ledger entry (K-18: saldo normal expense adalah debit, tercatat sebagai nilai negatif pada amount)
             $expectedAmount = (int) ($ret->finalized_royalty_idr ?? $ret->calculated_royalty_idr);
             if ($expectedAmount > 0) {
-                $actualLedgerDebit = (int) LedgerEntry::where('account_code', 'expense:min:royalty:IDR')
-                    ->sum('debit_amount');
+                $actualLedgerDebit = -(int) LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'expense:min:royalty:IDR'))
+                    ->sum('amount');
 
                 if ($actualLedgerDebit !== $expectedAmount) {
                     $discrepancies++;
@@ -135,12 +136,16 @@ class MiningFleetDispatchService
             }
         }
 
-        // 6. Double-entry ledger balance
-        $totalDebits = (int) LedgerEntry::sum('debit_amount');
-        $totalCredits = (int) LedgerEntry::sum('credit_amount');
-        if ($totalDebits !== $totalCredits) {
+        // 6. Double-entry ledger balance: SUM(amount) per transaksi = 0 (K-18)
+        $unbalancedTxCount = DB::table('bank_ledger_entries')
+            ->selectRaw('transaction_id, SUM(amount) as balance')
+            ->groupBy('transaction_id')
+            ->havingRaw('ROUND(SUM(amount), 4) != 0')
+            ->count();
+
+        if ($unbalancedTxCount > 0) {
             $discrepancies++;
-            $errors[] = "Ledger out of balance: Debits ({$totalDebits}) != Credits ({$totalCredits}).";
+            $errors[] = "Ledger out of balance: {$unbalancedTxCount} unbalanced transactions detected.";
         }
 
         return [

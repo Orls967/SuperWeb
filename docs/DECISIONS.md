@@ -1998,3 +1998,22 @@
      - Indeks `ven_seat_claims_event_id_section_code_row_label_seat_number_unique` (66 kar) dinamai eksplisit `ven_seat_claims_event_sec_row_seat_unique` (42 kar).
      - Indeks `min_contractor_evaluations_contractor_party_id_period_site_id_unique` (68 kar) dinamai eksplisit `min_contractor_eval_party_period_site_unique` (46 kar).
      - Menghijaukan `SchemaIdentifierLengthTest` dan `MysqlSchemaCompatibilityTest`.
+
+<a id="2026-11-02-ledger-tanpa-kolom-turunan"></a>
+## 2026-11-02: Pemulihan Skema Murni Buku Besar K-18 Tanpa Kolom Turunan
+- **Anchor:** `2026-11-02-ledger-tanpa-kolom-turunan`
+- **Context:**
+  - Merge ML1 (#37) menambahkan kolom turunan `debit_amount`, `credit_amount`, dan redundansi `account_code` pada tabel `bank_ledger_entries`.
+  - Hal ini melanggar prinsip PR4/K-18 dan desain double-entry buku besar inti Antigravity yang mengandalkan single-signed `amount` (debit = negatif, credit = positif, per KONSEP §A2.1).
+- **Decision:**
+  1. Membuang potongan ML1 pada `LedgerService::post`, model `LedgerEntry` (`$fillable`, `$casts`), dan menghapus migrasi `2026_10_30_120101_add_account_code_to_bank_ledger_entries_table.php`.
+  2. Menambahkan migrasi `2026_11_02_000001_drop_derived_columns_from_bank_ledger_entries` untuk membersihkan kolom turunan secara aman di SQLite dan MySQL.
+  3. Memperbaiki audit operasional Venue (`ven:audit`) dan Mining (`min:audit`) agar memverifikasi saldo akun buku besar dari signed `amount` dan relasi `account_id` $\to$ `bank_ledger_accounts.code`, serta menjamin invarian zero-sum balance per transaksi ($\sum \text{amount} = 0$).
+  4. Mengembalikan 10 acceptance test Venue dan Mining agar memverifikasi signed `amount` secara deterministik tanpa membaca kolom turunan.
+  5. Menyesuaikan skenario sabotase agar menguji integritas lewat tabel fakta subledger atau insert entri liar, bukan query update pada entri buku besar (karena terlindungi trigger append-only).
+- **Verification:**
+  - `git grep -n "debit_amount\|credit_amount" -- modules app tests database ':!modules/Integration'` menghasilkan 0 kemunculan.
+  - `vendor/bin/pest modules/Banking/tests/Feature/LedgerPostingTest.php` lulus 15/15.
+  - `vendor/bin/pest tests/Acceptance/Mining` lulus seluruh 89 pengujian.
+  - `vendor/bin/pest tests/Acceptance/Venue` lulus seluruh 76 pengujian.
+  - `php artisan ven:audit` dan `php artisan min:audit` keluar dengan exit code 0 tanpa diskrepansi.

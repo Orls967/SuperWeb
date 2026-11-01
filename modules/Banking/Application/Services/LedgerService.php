@@ -203,19 +203,11 @@ class LedgerService implements Ledger
                 // Save entries & update account cached balances
                 $now = now();
                 foreach ($calculatedEntries as $entryData) {
-                    $acc = $accounts[$entryData['account_id']];
-                    $rawAmount = BigDecimal::of($entryData['amount']);
-                    $debitAmount = $rawAmount->isNegative() ? $rawAmount->abs()->__toString() : '0';
-                    $creditAmount = $rawAmount->isPositive() ? $rawAmount->__toString() : '0';
-
                     LedgerEntry::create([
                         'transaction_id' => $transaction->id,
                         'account_id' => $entryData['account_id'],
-                        'account_code' => $acc->code,
                         'asset_code' => $entryData['asset_code'],
                         'amount' => $entryData['amount'],
-                        'debit_amount' => $debitAmount,
-                        'credit_amount' => $creditAmount,
                         'balance_after' => $entryData['balance_after'],
                         'created_at' => $now,
                     ]);

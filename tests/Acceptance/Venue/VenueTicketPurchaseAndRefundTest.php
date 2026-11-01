@@ -143,8 +143,8 @@ class VenueTicketPurchaseAndRefundTest extends TestCase
         $ticket = $res['tickets'][0];
 
         // Cari baris ledger unearned
-        $unearnedCredit = LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')
-            ->where('credit_amount', 600000)
+        $unearnedCredit = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:ticket_unearned:IDR'))
+            ->where('amount', '600000.000000000000000000')
             ->first();
 
         $this->assertNotNull($unearnedCredit, 'Penjualan tiket harus mengkredit ven:ticket_unearned:IDR (V-7)');
@@ -229,8 +229,8 @@ class VenueTicketPurchaseAndRefundTest extends TestCase
         $this->assertSame('REFUNDED', $ticket->status);
 
         // Verifikasi pembalikan unearned di ledger (debit ven:ticket_unearned:IDR)
-        $unearnedDebit = LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')
-            ->where('debit_amount', 600000)
+        $unearnedDebit = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:ticket_unearned:IDR'))
+            ->where('amount', '-600000.000000000000000000')
             ->first();
 
         $this->assertNotNull($unearnedDebit, 'Refund tiket harus mendebit ven:ticket_unearned:IDR');

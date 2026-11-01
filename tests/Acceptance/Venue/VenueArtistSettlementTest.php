@@ -111,14 +111,14 @@ class VenueArtistSettlementTest extends TestCase
         );
 
         // Beban biaya artis: debit expense:venue_artist_fee:IDR sebesar Rp 100 jt
-        $expenseEntry = LedgerEntry::where('account_code', 'expense:venue_artist_fee:IDR')
-            ->where('debit_amount', 100000000)
+        $expenseEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'expense:venue_artist_fee:IDR'))
+            ->where('amount', '-100000000.000000000000000000')
             ->first();
         $this->assertNotNull($expenseEntry, 'Beban artis harus didebit di expense:venue_artist_fee:IDR');
 
         // Pajak PPh 23: kredit tax:wht23_payable:IDR sebesar Rp 2 jt
-        $taxEntry = LedgerEntry::where('account_code', 'tax:wht23_payable:IDR')
-            ->where('credit_amount', 2000000)
+        $taxEntry = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'tax:wht23_payable:IDR'))
+            ->where('amount', '2000000.000000000000000000')
             ->first();
         $this->assertNotNull($taxEntry, 'PPh 23 harus dikredit di tax:wht23_payable:IDR');
     }
@@ -168,7 +168,7 @@ class VenueArtistSettlementTest extends TestCase
         $res2 = $action->handle((string) $contract->id, 400000000, 200, 'ven:art:settle:004:same');
 
         $this->assertSame($res1['net_payout_idr'], $res2['net_payout_idr']);
-        $this->assertSame(1, LedgerEntry::where('account_code', 'expense:venue_artist_fee:IDR')->where('debit_amount', 80000000)->count());
+        $this->assertSame(1, LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'expense:venue_artist_fee:IDR'))->where('amount', '-80000000.000000000000000000')->count());
     }
 
     public function test_settlement_menolak_eksekusi_tanpa_idempotency_key(): void
@@ -227,8 +227,10 @@ class VenueArtistSettlementTest extends TestCase
         $action = app(ExecuteArtistContractEscrowAndWhtPayoutAction::class);
         $action->handle((string) $contract->id, 600000000, 200, 'ven:art:settle:007:bal');
 
-        $totalDebit = LedgerEntry::sum('debit_amount');
-        $totalCredit = LedgerEntry::sum('credit_amount');
-        $this->assertSame($totalDebit, $totalCredit, 'Double-entry settlement artis harus seimbang nol');
+        $totalDebits = abs((int) LedgerEntry::where('amount', '<', 0)->sum('amount'));
+        $totalCredits = (int) LedgerEntry::where('amount', '>', 0)->sum('amount');
+        $this->assertGreaterThan(0, $totalDebits);
+        $this->assertSame($totalDebits, $totalCredits, 'Double-entry settlement artis harus seimbang nol');
+        $this->assertSame(0, (int) LedgerEntry::sum('amount'));
     }
 }

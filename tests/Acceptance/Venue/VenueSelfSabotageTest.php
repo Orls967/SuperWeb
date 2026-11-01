@@ -7,7 +7,7 @@ namespace Tests\Acceptance\Venue;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Modules\Banking\Contracts\LedgerEntry;
+use Illuminate\Support\Facades\DB;
 use Modules\Venue\Application\Actions\HoldGeneralAdmissionQuotaAction;
 use Modules\Venue\Application\Actions\PurchaseVenueTicketAction;
 use Modules\Venue\Application\Actions\ReserveTableWithMinimumSpendDepositAction;
@@ -94,8 +94,17 @@ class VenueSelfSabotageTest extends TestCase
         $hold = app(HoldGeneralAdmissionQuotaAction::class)->handle($this->event->id, $this->tier->id, 1, 901, 'ven:sab:hold:1');
         app(PurchaseVenueTicketAction::class)->handle($hold['hold_token'], 901, 'wallet', 'ven:sab:buy:1');
 
-        // Sabotase manipulasi nilai credit_amount secara query builder
-        LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')->update(['credit_amount' => 999999999]);
+        // Sabotase: sisipkan entri liar (INSERT diizinkan append-only trigger) yang menyebabkan selisih saldo unearned
+        $unearnedAcc = DB::table('bank_ledger_accounts')->where('code', 'ven:ticket_unearned:IDR')->first();
+        $txId = DB::table('bank_ledger_transactions')->value('id');
+        DB::table('bank_ledger_entries')->insert([
+            'transaction_id' => $txId,
+            'account_id' => $unearnedAcc->id,
+            'asset_code' => 'IDR',
+            'amount' => '999999999.000000000000000000',
+            'balance_after' => '0',
+            'created_at' => now(),
+        ]);
 
         $exitCode = Artisan::call('ven:audit');
         $this->assertSame(1, $exitCode);

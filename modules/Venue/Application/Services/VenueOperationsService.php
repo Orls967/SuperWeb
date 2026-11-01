@@ -190,9 +190,8 @@ class VenueOperationsService
         $overCapacityZones = EntertainmentZone::whereColumn('current_occupancy', '>', 'capacity_limit')->count();
         $discrepancies += $overCapacityZones;
 
-        // 2. Audit dua sumber: Saldo buku besar unearned vs subledger tiket event aktif (KONSEP §A2.8)
-        $ledgerUnearnedBalance = (int) (LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')->sum('credit_amount')
-            - LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')->sum('debit_amount'));
+        // 2. Audit dua sumber: Saldo buku besar unearned vs subledger tiket event aktif (KONSEP §A2.8, K-18)
+        $ledgerUnearnedBalance = (int) LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:ticket_unearned:IDR'))->sum('amount');
 
         $openEventIds = EntertainmentEvent::where('status', '!=', 'CLOSED')->pluck('id');
         $subledgerUnearnedTickets = (int) EntertainmentTicket::whereIn('event_id', $openEventIds)
@@ -203,11 +202,15 @@ class VenueOperationsService
             $discrepancies += abs($ledgerUnearnedBalance - $subledgerUnearnedTickets);
         }
 
-        // 3. Verifikasi double-entry zero-sum balance
-        $totalDebit = (int) LedgerEntry::sum('debit_amount');
-        $totalCredit = (int) LedgerEntry::sum('credit_amount');
-        if ($totalDebit !== $totalCredit) {
-            $discrepancies += abs($totalDebit - $totalCredit);
+        // 3. Verifikasi double-entry zero-sum balance: SUM(amount) per transaksi = 0 (K-18)
+        $unbalancedTxCount = DB::table('bank_ledger_entries')
+            ->selectRaw('transaction_id, SUM(amount) as balance')
+            ->groupBy('transaction_id')
+            ->havingRaw('ROUND(SUM(amount), 4) != 0')
+            ->count();
+
+        if ($unbalancedTxCount > 0) {
+            $discrepancies += $unbalancedTxCount;
         }
 
         // 4. Verifikasi keutuhan rantai hash tiket

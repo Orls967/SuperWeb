@@ -7,6 +7,7 @@ namespace Tests\Acceptance\Venue;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Modules\Banking\Domain\Models\LedgerEntry;
 use Modules\Party\Contracts\PartyAgeVerificationInterface;
 use Modules\Venue\Application\Actions\CloseEntertainmentEventAction;
@@ -108,19 +109,19 @@ class VenueEventClosingAndAuditTest extends TestCase
         $this->assertSame(1900000, $result['organizer_net_share_idr']);
 
         // Akun unearned harus didebit kembali sebesar Rp 2.000.000
-        $debitUnearned = LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')
-            ->where('debit_amount', 2000000)
+        $debitUnearned = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:ticket_unearned:IDR'))
+            ->where('amount', '-2000000.000000000000000000')
             ->first();
         $this->assertNotNull($debitUnearned);
 
         // Akun pendapatan tiket dan fee dikredit
-        $creditRev = LedgerEntry::where('account_code', 'ven:ticket_revenue:IDR')
-            ->where('credit_amount', 1900000)
+        $creditRev = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:ticket_revenue:IDR'))
+            ->where('amount', '1900000.000000000000000000')
             ->first();
         $this->assertNotNull($creditRev);
 
-        $creditFee = LedgerEntry::where('account_code', 'ven:platform_fee_revenue:IDR')
-            ->where('credit_amount', 100000)
+        $creditFee = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:platform_fee_revenue:IDR'))
+            ->where('amount', '100000.000000000000000000')
             ->first();
         $this->assertNotNull($creditFee);
     }
@@ -135,7 +136,7 @@ class VenueEventClosingAndAuditTest extends TestCase
         $res2 = $closeAction->handle($this->event->id, 500, 'ven:close:delmar:same');
 
         $this->assertSame($res1['total_unearned_recognized_idr'], $res2['total_unearned_recognized_idr']);
-        $this->assertSame(1, LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')->where('debit_amount', 1000000)->count());
+        $this->assertSame(1, LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:ticket_unearned:IDR'))->where('amount', '-1000000.000000000000000000')->count());
     }
 
     public function test_tiket_tidak_dapat_dibeli_setelah_event_ditutup(): void
@@ -181,8 +182,17 @@ class VenueEventClosingAndAuditTest extends TestCase
         $hold = app(HoldGeneralAdmissionQuotaAction::class)->handle($this->event->id, $this->tier->id, 1, 505, 'ven:hold:505:1');
         app(PurchaseVenueTicketAction::class)->handle($hold['hold_token'], 505, 'wallet', 'ven:buy:505:1');
 
-        // Sabotase / korupsi: ubah total saldo unearned di ledger secara ilegal
-        LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')->update(['credit_amount' => 99999999]);
+        // Sabotase / korupsi: sisipkan entri ledger liar (INSERT) yang merusak konsistensi
+        $unearnedAcc = DB::table('bank_ledger_accounts')->where('code', 'ven:ticket_unearned:IDR')->first();
+        $txId = DB::table('bank_ledger_transactions')->value('id');
+        DB::table('bank_ledger_entries')->insert([
+            'transaction_id' => $txId,
+            'account_id' => $unearnedAcc->id,
+            'asset_code' => 'IDR',
+            'amount' => '99999999.000000000000000000',
+            'balance_after' => '0',
+            'created_at' => now(),
+        ]);
 
         $exitCode = Artisan::call('ven:audit');
         $this->assertSame(1, $exitCode);
@@ -222,8 +232,9 @@ class VenueEventClosingAndAuditTest extends TestCase
 
     public function test_invarian_ledger_seluruh_pilar_venue_seimbang_nol(): void
     {
-        $totalDebit = LedgerEntry::sum('debit_amount');
-        $totalCredit = LedgerEntry::sum('credit_amount');
-        $this->assertSame($totalDebit, $totalCredit, 'Double-entry ledger seluruh transaksi venue harus balance nol');
+        $totalDebits = abs((int) LedgerEntry::where('amount', '<', 0)->sum('amount'));
+        $totalCredits = (int) LedgerEntry::where('amount', '>', 0)->sum('amount');
+        $this->assertSame($totalDebits, $totalCredits, 'Double-entry ledger seluruh transaksi venue harus balance nol');
+        $this->assertSame(0, (int) LedgerEntry::sum('amount'));
     }
 }

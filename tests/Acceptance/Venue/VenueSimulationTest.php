@@ -232,14 +232,15 @@ class VenueSimulationTest extends TestCase
 
         // 8. Invarian Akhir:
         // A. Zero unearned residue: seluruh saldo kewajiban unearned harus 0
-        $unearnedBalance = (int) (LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')->sum('credit_amount')
-            - LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')->sum('debit_amount'));
+        $unearnedBalance = (int) LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ven:ticket_unearned:IDR'))->sum('amount');
         $this->assertSame(0, $unearnedBalance, 'Residu unearned revenue harus tepat 0 setelah semua event ditutup');
 
         // B. Ledger balance Σ debit == Σ credit
-        $totalDebit = (int) LedgerEntry::sum('debit_amount');
-        $totalCredit = (int) LedgerEntry::sum('credit_amount');
-        $this->assertSame($totalDebit, $totalCredit, 'Double-entry ledger harus seimbang nol');
+        $totalDebits = abs((int) LedgerEntry::where('amount', '<', 0)->sum('amount'));
+        $totalCredits = (int) LedgerEntry::where('amount', '>', 0)->sum('amount');
+        $this->assertGreaterThan(0, $totalDebits);
+        $this->assertSame($totalDebits, $totalCredits, 'Double-entry ledger harus seimbang nol');
+        $this->assertSame(0, (int) LedgerEntry::sum('amount'));
 
         // C. Zero double-selling: nomor tiket unik
         $distinctTicketNumbers = EntertainmentTicket::distinct('ticket_number')->count('ticket_number');
