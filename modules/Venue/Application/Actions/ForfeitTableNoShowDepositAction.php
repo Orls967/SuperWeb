@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Support\Posting;
-use Modules\Payment\Contracts\PaymentGatewayInterface;
+use Modules\Venue\Application\Services\VenuePaymentGateway;
 use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 
 class ForfeitTableNoShowDepositAction
 {
     public function __construct(
         private readonly Ledger $ledgerService,
-        private readonly ?PaymentGatewayInterface $paymentGateway = null
+        private readonly ?VenuePaymentGateway $paymentGateway = null
     ) {}
 
     /**

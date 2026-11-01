@@ -229,6 +229,25 @@ class VenueGateAccessAndQrScanTest extends TestCase
         $this->assertStringContainsString('Data usia belum terverifikasi di KYC Party', $res['message']);
     }
 
+    public function test_default_stub_party_age_verification_mengembalikan_null_dan_menolak_aksi_berbatas_usia(): void
+    {
+        $stub = app(PartyAgeVerificationInterface::class);
+        $this->assertNull($stub->getVerifiedAge(99));
+
+        $action = app(ScanTicketAtGateAction::class);
+
+        $res = $action->handle(
+            qrPayload: $this->validQrString,
+            gateCode: 'GATE-CLIFF-A',
+            direction: 'IN',
+            scannedByUserId: 99,
+            idempotencyKey: 'ven:scan:stub_null:1'
+        );
+
+        $this->assertSame('DENIED', $res['status']);
+        $this->assertStringContainsString('Data usia belum terverifikasi di KYC Party', $res['message']);
+    }
+
     public function test_re_entry_diizinkan_hanya_jika_tier_mengizinkan_dan_posisi_tiket_keluar(): void
     {
         // Ubah tier agar mengizinkan re-entry

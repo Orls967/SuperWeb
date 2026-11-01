@@ -8,11 +8,11 @@ use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Modules\Banking\Contracts\LedgerEntry;
-use Modules\Payment\Contracts\PaymentGatewayInterface;
 use Modules\Venue\Application\Actions\HoldGeneralAdmissionQuotaAction;
 use Modules\Venue\Application\Actions\PurchaseVenueTicketAction;
 use Modules\Venue\Application\Actions\ReserveTableWithMinimumSpendDepositAction;
 use Modules\Venue\Application\Actions\ScanTicketAtGateAction;
+use Modules\Venue\Application\Services\VenuePaymentGateway;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
@@ -161,9 +161,9 @@ class VenueSelfSabotageTest extends TestCase
 
     public function test_sabotase_6_double_booking_meja_vip_ditolak(): void
     {
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->method('authorize')->willReturn(['success' => true]);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         $action = app(ReserveTableWithMinimumSpendDepositAction::class);
         $action->handle($this->event->id, 906, 'SAB-TBL-1', 5000000, 2000000, 'ven:sab:tbl:1');

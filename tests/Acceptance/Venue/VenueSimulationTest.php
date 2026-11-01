@@ -9,7 +9,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Party\Contracts\PartyAgeVerificationInterface;
-use Modules\Payment\Contracts\PaymentGatewayInterface;
 use Modules\Venue\Application\Actions\CaptureTableDepositAction;
 use Modules\Venue\Application\Actions\CloseEntertainmentEventAction;
 use Modules\Venue\Application\Actions\ForfeitTableNoShowDepositAction;
@@ -18,6 +17,7 @@ use Modules\Venue\Application\Actions\PurchaseVenueTicketAction;
 use Modules\Venue\Application\Actions\RefundVenueTicketAction;
 use Modules\Venue\Application\Actions\ReserveTableWithMinimumSpendDepositAction;
 use Modules\Venue\Application\Actions\ScanTicketAtGateAction;
+use Modules\Venue\Application\Services\VenuePaymentGateway;
 use Modules\Venue\database\seeders\VenueRbacSeeder;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
@@ -38,10 +38,10 @@ class VenueSimulationTest extends TestCase
         $this->seed(VenueRbacSeeder::class);
 
         // Mock payment gateway
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->method('authorize')->willReturn(['success' => true]);
         $mockGateway->method('capture')->willReturn(['success' => true]);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         // Mock Party KYC: semua pengunjung usia 25 tahun (di atas 21)
         $mockParty = $this->createMock(PartyAgeVerificationInterface::class);

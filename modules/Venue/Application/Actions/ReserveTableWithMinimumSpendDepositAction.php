@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Modules\Venue\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
-use Modules\Payment\Contracts\PaymentGatewayInterface;
 use Modules\Shared\Application\BaseAction;
+use Modules\Venue\Application\Services\VenuePaymentGateway;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 
 class ReserveTableWithMinimumSpendDepositAction extends BaseAction
 {
     public function __construct(
-        private readonly ?PaymentGatewayInterface $paymentGateway = null
+        private readonly ?VenuePaymentGateway $paymentGateway = null
     ) {}
 
     /**

@@ -7,10 +7,10 @@ namespace Tests\Acceptance\Venue;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerEntry;
-use Modules\Payment\Contracts\PaymentGatewayInterface;
 use Modules\Venue\Application\Actions\CaptureTableDepositAction;
 use Modules\Venue\Application\Actions\ForfeitTableNoShowDepositAction;
 use Modules\Venue\Application\Actions\ReserveTableWithMinimumSpendDepositAction;
+use Modules\Venue\Application\Services\VenuePaymentGateway;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
@@ -51,7 +51,7 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
 
     public function test_reservasi_meja_vip_menghasilkan_booking_code_deterministik_dan_menahan_deposit_hold(): void
     {
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->expects($this->once())
             ->method('authorize')
             ->with($this->callback(function ($params) {
@@ -59,7 +59,7 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
                     && $params['idempotencyKey'] === 'ven:tbl:hold:401:1';
             }))
             ->willReturn(['success' => true, 'authorization_id' => 'auth_vip_401']);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         $action = app(ReserveTableWithMinimumSpendDepositAction::class);
 
@@ -116,7 +116,7 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
             'status' => 'HELD',
         ]);
 
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->expects($this->once())
             ->method('capture')
             ->with($this->callback(function ($params) {
@@ -124,7 +124,7 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
                     && $params['idempotencyKey'] === 'ven:tbl:cap:404:1';
             }))
             ->willReturn(['success' => true]);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         $action = app(CaptureTableDepositAction::class);
         $res = $action->handle(
@@ -153,11 +153,11 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
             'status' => 'HELD',
         ]);
 
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->expects($this->once())
             ->method('capture')
             ->willReturn(['success' => true]);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         $action = app(ForfeitTableNoShowDepositAction::class);
         $res = $action->handle(
@@ -187,9 +187,9 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
             'status' => 'HELD',
         ]);
 
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->method('capture')->willReturn(['success' => true]);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         $action = app(ForfeitTableNoShowDepositAction::class);
 
@@ -230,9 +230,9 @@ class VenueTableBookingAndMinimumSpendTest extends TestCase
             'status' => 'HELD',
         ]);
 
-        $mockGateway = $this->createMock(PaymentGatewayInterface::class);
+        $mockGateway = $this->createMock(VenuePaymentGateway::class);
         $mockGateway->method('capture')->willReturn(['success' => true]);
-        $this->app->instance(PaymentGatewayInterface::class, $mockGateway);
+        $this->app->instance(VenuePaymentGateway::class, $mockGateway);
 
         $action = app(CaptureTableDepositAction::class);
         $action->handle($booking->id, 'ven:tbl:cap:408:balance');
