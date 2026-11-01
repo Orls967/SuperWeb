@@ -2088,3 +2088,31 @@
   - `vendor/bin/pest tests/Feature/Architecture/M5RealForeignKeyConstraintTest.php` lulus 5/5, membuktikan percobaan insert `*_by_user_id` / `buyer_user_id` tanpa user yang valid di database ditolak dengan `QueryException` (FK violation).
   - Seluruh pengujian acceptance `tests/Acceptance/Venue` dan `tests/Acceptance/Mining` lulus 170/170.
   - `php artisan arch:scan` aturan A12 BARU = 0.
+
+<a id="2026-10-31-k10-r3-reopened"></a>
+## 2026-10-31: Pembukaan Kembali Fase R3 Akibat Temuan Audit Keamanan P0 (K-10)
+- **Anchor:** `2026-10-31-k10-r3-reopened`
+- **Context:**
+  - Audit keamanan 2026-10-30 menemukan 5 celah P0 (IDOR & Privilege Escalation) dan 4 celah P1 pada modul operasional yang sebelumnya telah disertifikasi pada Fase R3.
+  - Sesuai prinsip kejujuran progres dan integritas platform, status Fase R3 dibuka kembali (`🔁 DIBUKA KEMBALI`).
+- **Decision:**
+  1. Membuka kembali status audit Fase R3 menjadi `🔁 DIBUKA KEMBALI (2026-10-31, audit keamanan S-01..S-06)`.
+  2. Mencatat seluruh temuan S-01 s/d S-13 dan temuan pola serupa pada Register Minus Fase R3.
+  3. Menerapkan 9 patch audit (S-01 s/d S-13) dengan penegakan otorisasi melalui Policy murni (`DistributorPolicy`, `AgentPolicy`, `PurchaseOrderPolicy`, `B2bEscrowAccountPolicy`, `AgriContractPolicy`, `VehiclePolicy`).
+  4. Menutup pola serupa IDOR outlet dan booking di Zona B via Policy (`OutletPolicy`, `BookingPolicy`).
+- **Verification:**
+  - Suite pengujian keamanan `tests/Keamanan` lulus 20/20.
+  - Seluruh pengujian modul terkait (Distribution, Agency, Resto, B2b, Agri, AutoServe, Logistics, Party, Hcm, Venue, Vending) tetap hijau.
+
+<a id="2026-10-31-k13-session-secure-cookie"></a>
+## 2026-10-31: Konfigurasi Session Secure Cookie Otomatis (K-13)
+- **Anchor:** `2026-10-31-k13-session-secure-cookie`
+- **Context:**
+  - Konfigurasi `SESSION_SECURE_COOKIE` di `.env.example` bernilai `true` secara hardcode, menyulitkan pengembang di lingkungan lokal HTTP dan berisiko salah konfigurasi.
+- **Decision:**
+  1. Mengosongkan/mengomentari `SESSION_SECURE_COOKIE` pada `.env.example`.
+  2. Mengubah konfigurasi `config/session.php` menjadi `'secure' => env('SESSION_SECURE_COOKIE', env('APP_ENV') === 'production')` sehingga default otomatis aman: `true` di produksi dan `false` di lokal.
+  3. Menambahkan prosedur kewajiban nilai `true` di produksi pada `docs/RUNBOOK.md` §16.5.
+- **Verification:**
+  - `SecurityHeadersAndSessionTest::test_session_secure_cookie_configuration_k13` membuktikan produksi bernilai `true` dan lokal bernilai `false`.
+
