@@ -14,6 +14,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Routing\Middleware\ThrottleRequestsWithRedis;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 spl_autoload_register(function (string $class): void {
@@ -71,4 +72,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+    })
+    ->booted(function (): void {
+        Gate::guessPolicyNamesUsing(function (string $class): string {
+            if (preg_match('/^Modules\\\\([^\\\\]+)\\\\Domain\\\\Models\\\\([^\\\\]+)$/', $class, $matches)) {
+                return 'Modules\\'.$matches[1].'\\Policies\\'.$matches[2].'Policy';
+            }
+
+            return 'App\\Policies\\'.class_basename($class).'Policy';
+        });
     })->create();
