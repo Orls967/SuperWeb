@@ -1,0 +1,120 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Mobility\Ev\database\seeders;
+
+use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
+use Illuminate\Database\Seeder;
+use Modules\Banking\Contracts\LedgerAccount;
+use Modules\Banking\Domain\Enums\AccountKind;
+use Modules\Core\Contracts\Vehicle;
+use Modules\Mobility\Ev\Domain\Models\EvBatteryPassport;
+use Modules\Mobility\Ev\Domain\Models\EvCharger;
+use Modules\Mobility\Ev\Domain\Models\EvSession;
+use Modules\Mobility\Ev\Domain\Models\EvStation;
+
+class EvDemoSeeder extends Seeder
+{
+    public function run(): void
+    {
+        (new LedgerAccountsSeeder)->run();
+
+        $user = User::firstOrCreate(
+            ['email' => 'ev_driver@example.com'],
+            ['name' => 'EV Fleet Driver', 'password' => bcrypt('secret123')]
+        );
+
+        // Ensure user wallet exists in ledger
+        LedgerAccount::firstOrCreate(
+            ['code' => "wallet:user:{$user->id}:IDR"],
+            [
+                'name' => "User {$user->id} Wallet IDR",
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ]
+        );
+
+        $vehicle = Vehicle::firstOrCreate(
+            ['vin' => 'VIN-IONIQ-EV-001'],
+            [
+                'user_id' => $user->id,
+                'plate_number' => 'B 5555 EV',
+                'color' => 'White',
+                'odometer_km' => 5000,
+                'status' => 'active',
+            ]
+        );
+
+        $station = EvStation::firstOrCreate(
+            ['station_code' => 'SPKLU-PLN-SUDIRMAN'],
+            [
+                'name' => 'SPKLU PLN Gambir - Sudirman Hub',
+                'location_type' => 'PUBLIC_FAST_CHARGER',
+                'address' => 'Jl. Jenderal Sudirman No. 1, Jakarta Pusat',
+                'latitude' => -6.2088,
+                'longitude' => 106.8456,
+                'is_active' => true,
+            ]
+        );
+
+        $charger = EvCharger::firstOrCreate(
+            ['charger_code' => 'CHG-CCS2-01'],
+            [
+                'station_id' => $station->id,
+                'type' => 'DC_FAST',
+                'max_kw' => 150,
+                'status' => 'available',
+            ]
+        );
+
+        EvSession::firstOrCreate(
+            ['session_code' => 'EV-DEMO-001'],
+            [
+                'charger_id' => $charger->id,
+                'vehicle_id' => $vehicle->id,
+                'user_id' => $user->id,
+                'reserved_from' => now()->subHour(),
+                'reserved_to' => now(),
+                'tariff_per_kwh_idr' => 2500,
+                'energy_wh' => 25000,
+                'total_cost_idr' => 62500,
+                'final_soh_pct' => 98.5,
+                'completed_at' => now(),
+                'status' => 'completed',
+            ]
+        );
+
+        $prevHash = hash('sha256', 'GENESIS:BATTERY:PASSPORT:'.$vehicle->id);
+        $recordedAt = now();
+        $payload = implode('|', [
+            $prevHash,
+            $vehicle->id,
+            'EV-DEMO-001',
+            1,
+            25000,
+            number_format(98.5, 2, '.', ''),
+            number_format(35.0, 2, '.', ''),
+            $recordedAt->toIso8601String(),
+        ]);
+        $blockHash = hash('sha256', $payload);
+
+        EvBatteryPassport::firstOrCreate(
+            ['session_code' => 'EV-DEMO-001'],
+            [
+                'vehicle_id' => $vehicle->id,
+                'cycle_number' => 1,
+                'initial_soh_pct' => 100.0,
+                'final_soh_pct' => 98.5,
+                'delta_soh' => 1.5,
+                'max_cell_temp_c' => 35.0,
+                'energy_wh' => 25000,
+                'prev_hash' => $prevHash,
+                'block_hash' => $blockHash,
+                'recorded_at' => $recordedAt,
+            ]
+        );
+    }
+}

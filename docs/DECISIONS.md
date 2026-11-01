@@ -2017,3 +2017,21 @@
   - `vendor/bin/pest tests/Acceptance/Mining` lulus seluruh 89 pengujian.
   - `vendor/bin/pest tests/Acceptance/Venue` lulus seluruh 76 pengujian.
   - `php artisan ven:audit` dan `php artisan min:audit` keluar dengan exit code 0 tanpa diskrepansi.
+
+<a id="2026-11-02-mobility-konsolidasi"></a>
+## 2026-11-02: Konsolidasi Modul Mobilitas K-12 ke Mobility
+- **Anchor:** `2026-11-02-mobility-konsolidasi`
+- **Context:**
+  - Tiga modul mobilitas terpisah (`Telematics`, `Ev`, `Fleet`) ditambahkan pada ML1 (#37) secara lepas di root `modules/`.
+  - Hal ini memicu 22 entri tabel warisan di `config/modules.php` dan inkonsistensi batas modul K-12 serta pelanggaran kepatuhan arsitektur A1/A2.
+- **Decision:**
+  1. Melakukan pemindahan direktori via `git mv modules/{Telematics,Ev,Fleet} modules/Mobility/` menjadi sub-namespace `Modules\Mobility\{Telematics,Ev,Fleet}\...`.
+  2. Menyesuaikan registrasi Service Provider pada `bootstrap/providers.php` (`Modules\Mobility\{Telematics,Ev,Fleet}\*ServiceProvider`), rute, views, model, listener, dan seluruh pemanggil eksternal (AutoServe, Banking, Telematics, Tlx patch).
+  3. Mengganti penggunaan cross-module domain `Modules\Core\Domain\Models\Vehicle` di seluruh modul Mobility menjadi kontrak resmi `Modules\Core\Contracts\Vehicle`.
+  4. Membersihkan 22 pemetaan `legacy_tables` tabel `oto_*` pada `config/modules.php`, mengembalikannya ke kepemilikan tunggal alami prefiks `'oto_' => 'Mobility'`.
+- **Verification:**
+  - `php artisan arch:scan` A1 BARU = 0 dan A2 BARU = 0 untuk seluruh lini Mobility.
+  - `git grep -nE 'Modules\\(Telematics|Ev|Fleet)\\' -- . ':!docs'` menghasilkan 0 baris.
+  - `php artisan route:list --path=oto` menghasilkan 4 rute identik yang kini mengarah ke `modules/Mobility/`.
+  - `vendor/bin/pest tests/Acceptance/Mobility` lulus seluruh 83 pengujian.
+  - `vendor/bin/pest tests/Acceptance/Telecom` lulus seluruh 87 pengujian.

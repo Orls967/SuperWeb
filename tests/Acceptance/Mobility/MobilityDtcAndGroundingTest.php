@@ -8,10 +8,10 @@ use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Modules\Telematics\Application\Actions\ClearVehicleGroundingAction;
-use Modules\Telematics\Application\Actions\IngestTelematicsTickAction;
-use Modules\Telematics\Contracts\VehicleDispatchEligibilityContract;
-use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Mobility\Telematics\Application\Actions\ClearVehicleGroundingAction;
+use Modules\Mobility\Telematics\Application\Actions\IngestTelematicsTickAction;
+use Modules\Mobility\Telematics\Contracts\VehicleDispatchEligibilityContract;
+use Modules\Mobility\Telematics\Domain\Models\TelematicsDevice;
 use Tests\TestCase;
 
 class MobilityDtcAndGroundingTest extends TestCase

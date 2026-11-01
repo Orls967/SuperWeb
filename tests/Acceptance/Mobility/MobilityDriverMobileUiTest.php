@@ -8,10 +8,10 @@ use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Modules\Ev\Domain\Models\EvCharger;
-use Modules\Ev\Domain\Models\EvSession;
-use Modules\Ev\Domain\Models\EvStation;
-use Modules\Fleet\database\seeders\MobilityRbacSeeder;
+use Modules\Mobility\Ev\Domain\Models\EvCharger;
+use Modules\Mobility\Ev\Domain\Models\EvSession;
+use Modules\Mobility\Ev\Domain\Models\EvStation;
+use Modules\Mobility\Fleet\database\seeders\MobilityRbacSeeder;
 use Tests\TestCase;
 
 class MobilityDriverMobileUiTest extends TestCase

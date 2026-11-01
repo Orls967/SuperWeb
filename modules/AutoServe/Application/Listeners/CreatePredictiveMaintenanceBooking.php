@@ -11,7 +11,7 @@ use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Core\Domain\Models\Vehicle;
-use Modules\Telematics\Domain\Events\VehicleAnomalyDetected;
+use Modules\Mobility\Telematics\Domain\Events\VehicleAnomalyDetected;
 
 class CreatePredictiveMaintenanceBooking
 {

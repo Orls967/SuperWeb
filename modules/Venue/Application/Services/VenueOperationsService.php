@@ -203,8 +203,7 @@ class VenueOperationsService
         }
 
         // 3. Verifikasi double-entry zero-sum balance: SUM(amount) per transaksi = 0 (K-18)
-        $unbalancedTxCount = DB::table('bank_ledger_entries')
-            ->selectRaw('transaction_id, SUM(amount) as balance')
+        $unbalancedTxCount = LedgerEntry::selectRaw('transaction_id, SUM(amount) as balance')
             ->groupBy('transaction_id')
             ->havingRaw('ROUND(SUM(amount), 4) != 0')
             ->count();

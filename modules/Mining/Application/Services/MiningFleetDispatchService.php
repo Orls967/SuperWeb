@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Mining\Application\Services;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Mining\Domain\Algorithms\AssignmentCertificateVerifier;
 use Modules\Mining\Domain\Models\MiningDispatchAssignment;
@@ -137,8 +136,7 @@ class MiningFleetDispatchService
         }
 
         // 6. Double-entry ledger balance: SUM(amount) per transaksi = 0 (K-18)
-        $unbalancedTxCount = DB::table('bank_ledger_entries')
-            ->selectRaw('transaction_id, SUM(amount) as balance')
+        $unbalancedTxCount = LedgerEntry::selectRaw('transaction_id, SUM(amount) as balance')
             ->groupBy('transaction_id')
             ->havingRaw('ROUND(SUM(amount), 4) != 0')
             ->count();
