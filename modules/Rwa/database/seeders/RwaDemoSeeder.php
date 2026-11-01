@@ -11,6 +11,7 @@ use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Rwa\Domain\Models\RwaHolding;
+use Modules\Rwa\Domain\Models\RwaTokenTransfer;
 
 class RwaDemoSeeder extends Seeder
 {
@@ -62,6 +63,20 @@ class RwaDemoSeeder extends Seeder
             ['rwa_asset_id' => $asset->id, 'user_id' => $investor->id],
             [
                 'token_balance' => 2500,
+            ]
+        );
+
+        RwaTokenTransfer::firstOrCreate(
+            [
+                'idempotency_key' => "seed:rwa:issuance:{$asset->id}:{$investor->id}:2500",
+            ],
+            [
+                'rwa_asset_id' => $asset->id,
+                'from_user_id' => null,
+                'to_user_id' => $investor->id,
+                'quantity' => 2500,
+                'transfer_type' => 'PRIMARY_ISSUANCE',
+                'created_at' => now(),
             ]
         );
     }
